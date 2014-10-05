@@ -66,13 +66,13 @@
                 <h2>
                     our 5 pillars
                 </h2>
-                <ol>
+                <ul>
                     <li>secure</li>
                     <li>lightweight</li>
                     <li>beautiful</li>
                     <li>flexible</li>
                     <li>intuitive</li>
-                </ol>
+                </ul>
                 <p>
                     the above pillars are the foundation of phosphorus.ajax, and never compromised, regardless of the arguments.&nbsp;&nbsp;if you 
                     wish to verify our claims, you can inspect the html for phosphorus.ajax, and inspect the http requests being sent towards the 
