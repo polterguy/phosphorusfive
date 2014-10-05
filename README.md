@@ -2,7 +2,8 @@ phosphorus-five
 ===============
 
 phosphorus five is a web application framework for mono and asp.net.  phosphorus 
-adds the fun back into creating web apps.  phosphorus is;
+adds the fun back into creating web apps, and allows you to build software that 
+outlasts the pyramids.  phosphorus is;
 
 * secure
 * lightweight
@@ -58,18 +59,24 @@ don't need to learn anything new to get started
 
 create a reference to *"lib/phosphorus.ajax.dll"* in your asp.net web application
 
-then modify your web.config, and make sure it has something like this inside of the 
-system.web section
+then modify your web.config, and make sure it has something like this inside its 
+*"system.web"* section
 
 ```xml
-<pages>
-  <controls>
-    <add assembly="phosphorus.ajax" namespace="phosphorus.ajax.widgets" tagPrefix="pf" />
-  </controls>
-</pages>
+<system.web>
+  <pages>
+    <controls>
+      <add 
+        assembly="phosphorus.ajax" 
+        namespace="phosphorus.ajax.widgets" 
+        tagPrefix="pf" />
+    </controls>
+  </pages>
+</system.web>
 ```
 
-then create a widget by adding up the code below into one of your .aspx pages
+then create a literal widget by adding up the code below into one of your .aspx 
+pages
 
 ```asp
 <pf:Literal
@@ -93,15 +100,68 @@ protected void hello_onclick (pf.Literal sender, EventArgs e)
 if you wish to have more samples for how to use phosphorus.ajax, you can check out the 
 *"phosphorus.ajax.samples"* project by opening up the *"phosphorus.sln"* file
 
+## the literal and container widgets
 
+in phosphorus.ajax there is only two types of web controls.  there is the *"Literal"* 
+class, and the *"Container"* class.  by combining these two classes, you can create 
+any type of html markup you wish
 
+the literal widget is for controls that contains text or html, and allows you to change 
+its content through the *"innerHTML"* property.  the container widget is for controls 
+who themselves contains controls, and allows you to change their contents through the 
+*"Controls"* collection.  notice that the literal widget can have html elements inside 
+of it, but these will be treated as client side html, and not possible to change on 
+the server side, except by modifying the parent literal control.  everything inside of 
+the beginning and the end of your literal widget in your .aspx markup will be treated 
+as pure html, and not parsed as controls in any ways
 
+the container widget allows you to have child controls, which will be parsed in the 
+.aspx markup as controls, and possible to reference on the server side, and modify 
+in your server side code through its *"Controls"* collection.  everything inside of 
+the beginning and the end of your container widget in your .aspx markup will be 
+treated as a web control
 
+altough the comparison does not do justify the features of the phosphorus widgets, 
+you can think of the literal widget as the *"Label"* equivalent, and the container 
+widget as the *"Panel"* equivalent
 
+#### modifying your widgets
 
+the first thing you have to decide when creating a widget, is what html tag you wish 
+to render it with.  this is set through the *"Tag"* property of your widget.  you can 
+render any widget with any html tag you wish, but remember, that you have to make sure 
+for yourself that what you're creating is html compliant.  phosphorus.ajax supports 
+the html5 standard 100%, but it also supports the html500 standard, even though nobody 
+knows how that looks like today, and its probably wise to stick to the html5 standard 
+for now
 
+then you can start adding attributes for your widget.  this is done by simply adding 
+any attribute you wish, either directly in the markup of your .aspx page, or by using 
+the index operator overload in c#.  the framework will automatically take care of 
+serializing these attributes correctly back to the client
 
+below is an example of how to create a video html5 element using a literal widget
 
+```
+<pf:Literal
+    runat="server"
+    id="video"
+    Tag="video"
+    width="640"
+    controls>
+    <source src="http://download.blender.org/peach/trailer/trailer_1080p.ogg" type="video/ogg" />
+    your browser blows!
+</pf:Literal>
+```
+
+you can modify or add any attribute you wish in the codebehind by using something like this
+
+```
+protected override void OnLoad (EventArgs e)
+{
+    video ["width"] = "1024";
+}
+```
 
 
 

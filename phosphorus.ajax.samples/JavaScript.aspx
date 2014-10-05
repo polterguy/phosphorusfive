@@ -33,6 +33,9 @@
                     event, where we manually raise our hidden event, adding up <em>"onbefore"</em> and <em>"onsuccess"</em> handlers for our 
                     event when we raise it
                 </p>
+                <p>
+                    onwards to the <a href="HTML5.aspx">html5 sample</a>
+                </p>
             </div>
         </form>
     </body>

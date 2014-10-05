@@ -43,6 +43,7 @@
     <Content Include="FormData.aspx" />
     <Content Include="Literal.aspx" />
     <Content Include="JavaScript.aspx" />
+    <Content Include="HTML5.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Default.aspx.cs">
@@ -62,6 +63,9 @@
     </Compile>
     <Compile Include="JavaScript.aspx.cs">
       <DependentUpon>JavaScript.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HTML5.aspx.cs">
+      <DependentUpon>HTML5.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

@@ -35,6 +35,9 @@
                     <li>
                         <a href="JavaScript.aspx">javascript sample</a>
                     </li>
+                    <li>
+                        <a href="HTML5.aspx">html5 sample</a>
+                    </li>
                 </ul>
                 <h2>hello world</h2>
                 <p>
