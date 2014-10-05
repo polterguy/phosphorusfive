@@ -78,7 +78,7 @@ then modify your web.config, and make sure it has something like this inside its
 then create a literal widget by adding up the code below into one of your .aspx 
 pages
 
-```asp
+```xml
 <pf:Literal
     runat="server"
     id="hello"
@@ -142,21 +142,23 @@ serializing these attributes correctly back to the client
 
 below is an example of how to create a video html5 element using a literal widget
 
-```
+```xml
 <pf:Literal
     runat="server"
     id="video"
     Tag="video"
     width="640"
     controls>
-    <source src="http://download.blender.org/peach/trailer/trailer_1080p.ogg" type="video/ogg" />
+    <source 
+        src="http://download.blender.org/peach/trailer/trailer_1080p.ogg" 
+        type="video/ogg" />
     your browser blows!
 </pf:Literal>
 ```
 
 you can modify or add any attribute you wish in the codebehind by using something like this
 
-```
+```csharp
 protected override void OnLoad (EventArgs e)
 {
     video ["width"] = "1024";
