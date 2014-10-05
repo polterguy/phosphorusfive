@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{11644924-3367-4812-BE60-7DA41FC9E4AE}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>phosphorus.ajax</RootNamespace>
+    <AssemblyName>phosphorus.ajax</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions, Version=1.0.61025.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="javascript\" />
+    <Folder Include="widgets\" />
+    <Folder Include="core\" />
+    <Folder Include="core\filters\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="javascript\manager.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="core\Manager.cs" />
+    <Compile Include="core\filters\HtmlFilter.cs" />
+    <Compile Include="core\filters\Filter.cs" />
+    <Compile Include="widgets\Attribute.cs" />
+    <Compile Include="widgets\Widget.cs" />
+    <Compile Include="core\filters\JsonFilter.cs" />
+    <Compile Include="core\AjaxPage.cs" />
+    <Compile Include="core\IAjaxPage.cs" />
+    <Compile Include="core\Utilities.cs" />
+    <Compile Include="widgets\Literal.cs" />
+    <Compile Include="widgets\Container.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\phosphorus.types\phosphorus.types.csproj">
+      <Project>{D2B544A1-1C6F-4427-BF43-0A12E36CB903}</Project>
+      <Name>phosphorus.types</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>
