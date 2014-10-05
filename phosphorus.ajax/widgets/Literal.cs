@@ -21,11 +21,8 @@ namespace phosphorus.ajax.widgets
         /// <value>the inner html</value>
         [PersistenceMode(PersistenceMode.InnerDefaultProperty)]
         public string innerHTML {
-            get { return ViewState["innerHTML"] as string; }
-            set {
-                TrackChanges ("innerHTML", ViewState["innerHTML"] as string, value);
-                ViewState ["innerHTML"] = value;
-            }
+            get { return this ["innerHTML"]; }
+            set { this ["innerHTML"] = value; }
         }
 
         /// <summary>

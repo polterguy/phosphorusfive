@@ -15,7 +15,11 @@ namespace phosphorus.ajax.samples
     {
         protected void hello_onclick (pf.Literal sender, EventArgs e)
         {
-            sender.innerHTML = "hello world";
+            if (sender.innerHTML.Trim () == "click me") {
+                sender.innerHTML = "hello world";
+            } else {
+                sender.innerHTML += ", hello world";
+            }
         }
     }
 }

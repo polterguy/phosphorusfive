@@ -20,13 +20,14 @@
                     runat="server"
                     id="video"
                     Tag="video"
-                    width="640"
+                    width="320"
+                    ondblclick="video_ondblclick"
                     controls>
                     <source src="http://download.blender.org/peach/trailer/trailer_1080p.ogg" type="video/ogg" />
                     your browser sucks!
                 </pf:Literal>
                 <p>
-                    ipsum
+                    ps, try to double click the video element above
                 </p>
             </div>
         </form>

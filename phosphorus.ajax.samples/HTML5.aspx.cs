@@ -13,11 +13,13 @@ namespace phosphorus.ajax.samples
 
     public partial class HTML5 : AjaxPage
     {
-        protected pf.Literal video;
-
-        protected override void OnLoad (EventArgs e)
+        protected void video_ondblclick (pf.Literal video, EventArgs e)
         {
-            video ["width"] = "1024";
+            if (video ["width"] == "320") {
+                video ["width"] = "1024";
+            } else {
+                video ["width"] = "320";
+            }
         }
     }
 }

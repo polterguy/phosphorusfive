@@ -14,27 +14,11 @@ using phosphorus.ajax.core;
 namespace phosphorus.ajax.widgets
 {
     /// <summary>
-    /// generic ajax element
+    /// general ajax html element
     /// </summary>
     public abstract class Widget : Control, IAttributeAccessor
     {
-        /// <summary>
-        /// contains changes
-        /// </summary>
-        Node _changes;
-
-        /// <summary>
-        /// true if we should render html for widget, regardless of whether or not this is a phosphorus.ajax request
-        /// </summary>
         private bool _render;
-
-        /// <summary>
-        /// initializes a new instance of the <see cref="phosphorus.ajax.widgets.Widget"/> class
-        /// </summary>
-        public Widget ()
-        {
-            AttributesExcludedFromViewstate = new List<string> ();
-        }
 
         /// <summary>
         /// gets or sets the tag name used to render the html element
@@ -50,7 +34,7 @@ namespace phosphorus.ajax.widgets
         /// </summary>
         /// <value>the tag name</value>
         public string InvisibleTag {
-            get { return ViewState["InvisibleTag"] == null ? "span" : ViewState["InvisibleTag"] as string; }
+            get { return ViewState ["InvisibleTag"] == null ? "span" : ViewState["InvisibleTag"] as string; }
             set { ViewState ["InvisibleTag"] = value; }
         }
 
@@ -59,35 +43,10 @@ namespace phosphorus.ajax.widgets
         /// </summary>
         /// <param name="attribute">attribute to retrieve or set</param>
         public string this [string attribute] {
-            get { return ((IAttributeAccessor)this).GetAttribute (attribute); }
-            set { ((IAttributeAccessor)this).SetAttribute (attribute, value); }
-        }
-        
-        /// <summary>
-        /// gets <see cref="phosphorus.widget.Attribute"/>  collection for widget
-        /// </summary>
-        /// <value>the attributes for the widget</value>
-        public List<Attribute> Attributes {
-            get { return ViewState["Attributes"] as List<Attribute>; }
+            get { return GetAttribute (attribute); }
+            set { SetAttribute (attribute, value); }
         }
 
-        /// <summary>
-        /// determines whether this instance has the attribute with the specified name
-        /// </summary>
-        /// <returns><c>true</c> if this instance has the attribute with the specified name; otherwise, <c>false</c></returns>
-        /// <param name="name">Name.</param>
-        public bool HasAttribute (string name)
-        {
-            return Attributes != null && Attributes.Find (
-                delegate (Attribute idx) {
-                    return idx.Name == name;
-                }) != null;
-        }
-
-        /// <summary>
-        /// gets or sets a value indicating whether this <see cref="phosphorus.ajax.widgets.Widget"/> is visible or not
-        /// </summary>
-        /// <value><c>true</c> if visible; otherwise, <c>false</c></value>
         public override bool Visible {
             get {
                 return base.Visible;
@@ -99,23 +58,51 @@ namespace phosphorus.ajax.widgets
                 base.Visible = value;
             }
         }
+
+        protected override void LoadViewState (object savedState)
+        {
+            object[] tmp = savedState as object[];
+            base.LoadViewState (tmp [0]);
+            Attribute[] atrs = tmp [1] as Attribute [];
+            foreach (Attribute idx in atrs) {
+                Attributes.RemoveAll (
+                    delegate(Attribute idx2) {
+                        return idx.Name == idx2.Name;
+                    });
+            }
+            Attributes.AddRange (atrs);
+        }
+
+        protected override object SaveViewState ()
+        {
+            object[] retVal = new object [2];
+            retVal [0] = base.SaveViewState ();
+            List<Attribute> dirty = Attributes.FindAll (
+                delegate(Attribute idx) {
+                    return idx.Dirty;
+                });
+            retVal [1] = dirty.ToArray ();
+            return retVal;
+        }
         
-        /// <summary>
-        /// renders the control to the given writer
-        /// </summary>
-        /// <param name="writer">writer</param>
         public override void RenderControl (HtmlTextWriter writer)
         {
             if (AreAncestorsVisible ()) {
                 if (Visible) {
                     if (IsPhosphorusRequest && !IsAncestorRendering ()) {
                         if (_render) {
-                            _changes.Clear ();
-                            _changes ["outerHTML"].Value = GetControlHtml ();
-                            (Page as IAjaxPage).Manager.RegisterWidgetChanges (_changes);
+                            Node tmp = new Node (ClientID);
+                            tmp ["outerHTML"].Value = GetControlHtml ();
+                            (Page as IAjaxPage).Manager.RegisterWidgetChanges (tmp);
                         } else {
-                            if (_changes.Count > 0) {
-                                (Page as IAjaxPage).Manager.RegisterWidgetChanges (_changes);
+                            Node tmp = new Node (ClientID);
+                            foreach (Attribute idx in Attributes) {
+                                if (idx.Dirty) {
+                                    tmp [idx.Name].Value = new Node (idx.OldValue, idx.Value);
+                                }
+                            }
+                            if (tmp.Count > 0) {
+                                (Page as IAjaxPage).Manager.RegisterWidgetChanges (tmp);
                             }
                             RenderChildren (writer);
                         }
@@ -128,57 +115,43 @@ namespace phosphorus.ajax.widgets
             }
         }
 
-        /// <summary>
-        /// list of attributes to remove when serializing viewstate
-        /// </summary>
-        /// <value>The attributes excluded from viewstate.</value>
-        protected List<string> AttributesExcludedFromViewstate {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// raises the init event, overridden to make sure we wire up events correctly
-        /// </summary>
-        /// <param name="e">E.</param>
         protected override void OnInit (EventArgs e)
         {
             base.OnInit (e);
 
             if (Page.IsPostBack)
                 LoadFormData ();
+
             if (IsPhosphorusRequest) {
-                _changes = new Node (ClientID);
-                Page.Load += delegate {
-                    string evt = Page.Request.Params ["__pf_evt"];
-                    string widgetId = Page.Request.Params ["__pf_wdg"];
-                    if (widgetId == ClientID) {
+
+                if (Page.Request.Params ["__pf_wdg"] == ClientID) {
+
+                    Page.Load += delegate {
                         // event was raised for this widget
-                        InvokeEvent (evt);
-                    }
-               };
+                        InvokeEvent (Page.Request.Params ["__pf_evt"]);
+                    };
+                }
             }
         }
 
         /// <summary>
-        /// loads the form data from the http request
+        /// loads the form data from the http request, override this in your own widgets if you 
+        /// have widgets that posts data to the server
         /// </summary>
         protected virtual void LoadFormData ()
         {
             // only elements which are not disabled should post data
-            if (!HasAttribute ("disabled")) {
+            if (this ["disabled"] == null) {
                 // only elements with a given name attribute should post data
-                if (this ["name"] != null) {
+                if (!string.IsNullOrEmpty (this ["name"])) {
 
                     // different types of html elements loads their data in different ways
                     switch (Tag.ToLower ()) {
                     case "input":
                         this ["value"] = Page.Request.Params [this ["name"]];
-                        AttributesExcludedFromViewstate.Add ("value");
                         break;
                     case "textarea":
                         this ["innerHTML"] = Page.Request.Params [this ["name"]];
-                        AttributesExcludedFromViewstate.Add ("innerHTML");
                         break;
                     case "select":
                         string value = Page.Request.Params [this ["name"]];
@@ -188,9 +161,11 @@ namespace phosphorus.ajax.widgets
                                 if (widget ["value"] == value) {
                                     widget ["selected"] = "true";
                                 } else {
-                                    widget ["selected"] = null;
+                                    widget.Attributes.RemoveAll (
+                                        delegate(Attribute idxAtr) {
+                                            return idxAtr.Name == "selected";
+                                        });
                                 }
-                                widget.AttributesExcludedFromViewstate.Add ("value");
                             }
                         }
                         break;
@@ -210,24 +185,7 @@ namespace phosphorus.ajax.widgets
         }
 
         /// <summary>
-        /// saves the viewstate of the control. overridden to remove excluded attributes
-        /// </summary>
-        /// <returns>the saved viewstate</returns>
-        protected override object SaveViewState ()
-        {
-            if (Attributes != null) {
-                foreach (string idx in AttributesExcludedFromViewstate) {
-                    Attributes.RemoveAll (
-                        delegate (Attribute idxA) {
-                        return idxA.Name == idx;
-                    });
-                }
-            }
-            return base.SaveViewState ();
-        }
-
-        /// <summary>
-        /// returns the html for the control
+        /// returns the html for the control, override if you need to create your own custom html in your widgets
         /// </summary>
         /// <returns>the control's html</returns>
         protected virtual string GetControlHtml()
@@ -245,37 +203,22 @@ namespace phosphorus.ajax.widgets
         }
 
         /// <summary>
-        /// tracks changes done to the widget
-        /// </summary>
-        /// <param name="name">name of attribute that has changed</param>
-        /// <param name="value">new value of attribute</param>
-        protected void TrackChanges (string name, string oldValue, string newValue)
-        {
-            if (IsTrackingViewState && IsPhosphorusRequest && oldValue != newValue) {
-
-                // storing oldValue as Name and newValue as Value of Node
-                Node tmp = _changes [name].Get<Node> ();
-                if (tmp == null) {
-                    tmp = new Node (oldValue);
-                }
-                tmp.Value = newValue;
-                _changes [name].Value = tmp;
-            }
-        }
-
-        /// <summary>
         /// returns true if this request is an ajax request
         /// </summary>
         /// <value><c>true</c> if this instance is an ajax request; otherwise, <c>false</c></value>
         protected bool IsPhosphorusRequest {
             get { return Page.Request.Params ["__pf_ajax"] == "1"; }
         }
+        
+        private List<Attribute> Attributes {
+            get {
+                if (ViewState ["Attributes"] == null) {
+                    ViewState ["Attributes"] = new List<Attribute> ();
+                }
+                return ViewState["Attributes"] as List<Attribute>;
+            }
+        }
 
-        /// <summary>
-        /// executes the given method on the given owner passing in the given widget
-        /// </summary>
-        /// <param name="owner">owner where we expect to find method</param>
-        /// <param name="eventHandlerName">name of event handler method</param>
         private void InvokeEventHandler (string eventHandlerName)
         {
             Control owner = this.Parent;
@@ -291,13 +234,9 @@ namespace phosphorus.ajax.widgets
             method.Invoke (owner, new object[] { this, new EventArgs() });
         }
 
-        /// <summary>
-        /// determines whether all ancestors are visible
-        /// </summary>
-        /// <returns><c>true</c> if all ancestors are visible; otherwise, <c>false</c></returns>
         private bool AreAncestorsVisible ()
         {
-            // if this control and all of its ancestors are visible, then return true, else return false
+            // if this control and all of its ancestors are visible, then return true, else false
             Control idx = this.Parent;
             while (idx != null) {
                 if (!idx.Visible)
@@ -309,10 +248,6 @@ namespace phosphorus.ajax.widgets
             return false;
         }
 
-        /// <summary>
-        /// returns whether or not any of its ancestors are rendering html or not
-        /// </summary>
-        /// <returns><c>true</c> if this instance is ancestor rendering; otherwise, <c>false</c>.</returns>
         private bool IsAncestorRendering()
         {
             // returns true if any of its ancestors are rendering html
@@ -326,15 +261,11 @@ namespace phosphorus.ajax.widgets
             return false;
         }
 
-        /// <summary>
-        /// renders html response to the given writer
-        /// </summary>
-        /// <param name="writer">html text writer to render response into</param>
         private void RenderHtmlResponse (HtmlTextWriter writer)
         {
             // opening tag
             writer.Write (string.Format (@"<{0} id=""{1}""", Tag, ClientID));
-            if (Attributes != null && Attributes.Count > 0) {
+            if (Attributes.Count > 0) {
                 writer.Write (" ");
                 RenderAttributes (writer);
             }
@@ -343,10 +274,6 @@ namespace phosphorus.ajax.widgets
             writer.Write (string.Format ("</{0}>", Tag));
         }
 
-        /// <summary>
-        /// renders the attributes for the widget
-        /// </summary>
-        /// <param name="writer">html writer</param>
         private void RenderAttributes (HtmlTextWriter writer)
         {
             bool isFirst = true;
@@ -371,47 +298,46 @@ namespace phosphorus.ajax.widgets
             }
         }
 
-        /// <summary>
-        /// returns attribute for widget
-        /// </summary>
-        /// <returns>the attribute value</returns>
-        /// <param name="key">name of attribute</param>
-        string IAttributeAccessor.GetAttribute (string key)
+        public string GetAttribute (string key)
         {
-            if (Attributes == null)
-                return null;
             Attribute atr = Attributes.Find (
                 delegate (Attribute idx) {
                 return idx.Name == key;
             });
             if (atr == null)
                 return null;
-            return atr.Value;
+            return atr.Value ?? string.Empty;
+        }
+
+        public void SetAttribute (string name, string value)
+        {
+            Attribute atr = Attributes.Find (
+                delegate (Attribute idx) {
+                    return idx.Name == name;
+                });
+            if (atr != null) {
+                if (IsTrackingViewState && atr.Value != value && atr.OldValue == null) {
+                    atr.OldValue = atr.Value;
+                    atr.Dirty = true;
+                }
+                atr.Value = value;
+            } else {
+                atr = new Attribute (name, value);
+                atr.Dirty = IsTrackingViewState;
+                Attributes.Add (atr);
+            }
         }
 
         /// <summary>
-        /// sets attribute for widget
+        /// removes the attribute with the given name
         /// </summary>
-        /// <param name="name">name of attribute</param>
-        /// <param name="value">value of attribute</param>
-        void IAttributeAccessor.SetAttribute (string name, string value)
+        /// <param name="name">name of attribute to remove</param>
+        public void RemoveAttribute (string name)
         {
-            if (Attributes == null) {
-                ViewState ["Attributes"] = new List<Attribute> ();
-            }
-            Attribute atr = Attributes.Find (
-                delegate (Attribute idx) {
-                return idx.Name == name;
-            });
-            string oldValue = null;
-            if (atr != null) {
-                oldValue = atr.Value;
-                atr.Value = value; // already existing, changing existing
-            } else {
-                // not existing, creating new
-                Attributes.Add (new Attribute (name, value));
-            }
-            TrackChanges (name, oldValue, value);
+            Attributes.RemoveAll (
+                delegate(Attribute idx) {
+                    return idx.Name == name;
+                });
         }
     }
 }
