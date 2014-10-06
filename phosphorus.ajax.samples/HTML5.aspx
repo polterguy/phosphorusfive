@@ -21,13 +21,13 @@
                     id="video"
                     Tag="video"
                     width="320"
-                    ondblclick="video_ondblclick"
+                    onclick="video_onclick"
                     controls>
                     <source src="http://download.blender.org/peach/trailer/trailer_1080p.ogg" type="video/ogg" />
                     your browser sucks!
                 </pf:Literal>
                 <p>
-                    ps, try to double click the video element above
+                    ps, try to click the video element above
                 </p>
                 <p>
                     above you can see an example of how to create the html markup you wish.&nbsp;&nbsp;the attributes <em>"width"</em> and 

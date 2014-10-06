@@ -46,6 +46,9 @@
 
   // returns the new value according to the given val
   pf.util.getChange = function(old, val) {
+    if (val === null) {
+      return;
+    }
     if (typeof val === 'object') {
       if (val.length == 2) {
         return old.substring(0, val[0]) + val[1]; // trimming old, concatenating new
@@ -100,6 +103,9 @@
           var id = this.el.id;
           this.el.outerHTML = pf.util.getChange(this.el.outerHTML, value);
           this.el = pf.$(id).el; // updating element since previous element is now gone
+          break;
+        case 'innerHTML':
+          this.el.innerHTML = pf.util.getChange(this.el.innerHTML, value);
           break;
         default:
           this.el.setAttribute(key, pf.util.getChange(this.el[key], value));

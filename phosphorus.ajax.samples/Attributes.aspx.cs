@@ -15,44 +15,28 @@ namespace phosphorus.ajax.samples
     {
         protected pf.Literal literal;
 
-        protected override void OnLoad (EventArgs e)
+        protected void toggleClass_onclick (pf.Literal btn, EventArgs e)
         {
-            if (!IsPostBack)
-                literal.Tag = "p";
-            base.OnLoad (e);
-        }
-
-        protected void addClass_onclick (pf.Literal btn, EventArgs e)
-        {
-            if (btn ["value"] == "add") {
-                literal ["class"] = "green";
-                btn ["value"] = "remove";
-            } else {
+            if (literal.HasAttribute ("class"))
                 literal.RemoveAttribute ("class");
-                btn ["value"] = "add";
-            }
+            else
+                literal ["class"] = "green";
         }
         
         protected void changeTag_onclick (pf.Literal btn, EventArgs e)
         {
-            if (btn ["value"] == "change") {
+            if (literal.Tag == "p")
                 literal.Tag = "div";
-                btn ["value"] = "change back";
-            } else {
+            else
                 literal.Tag = "p";
-                btn ["value"] = "change";
-            }
         }
         
-        protected void visibleChange_onclick (pf.Literal btn, EventArgs e)
+        protected void toggleVisibility_onclick (pf.Literal btn, EventArgs e)
         {
-            if (btn ["value"] == "make element invisible") {
+            if (literal.Visible)
                 literal.Visible = false;
-                btn ["value"] = "make element visible";
-            } else {
+            else
                 literal.Visible = true;
-                btn ["value"] = "make element invisible";
-            }
         }
     }
 }

@@ -1,9 +1,9 @@
-phosphorus-five
+phosphorus five
 ===============
 
 phosphorus five is a web application framework for mono and asp.net.  phosphorus 
 adds the fun back into creating web apps, and allows you to build software that 
-outlasts the pyramids.  phosphorus is;
+can run unchanged for millenniums.  phosphorus is;
 
 * secure
 * lightweight
@@ -14,8 +14,9 @@ outlasts the pyramids.  phosphorus is;
 #### secure
 
 the web, and especially javascript, is insecure by design.  phosphorus fixes this, 
-by making sure all your business logic stay on your server.  phosphorus also ties 
-everything down by default, and makes your systems safe against intrusions
+by making sure all your business logic stays on your server, where it is safe from 
+hackers.  phosphorus also ties everything down by default, and makes your systems 
+safe against intrusions
 
 *"with phosphorus five, you sleep at night"*
 
@@ -23,8 +24,9 @@ everything down by default, and makes your systems safe against intrusions
 
 phosphorus is lightweight in all regards.  the javascript sent to the client is 
 tiny, there is no unnecessary html rendered, the http traffic is tiny, and the 
-server is not clogged with expensive functionality.  phosphorus solves the problems 
-that needs to be solved and nothing more
+server is not clogged with resource intensive functionality.  phosphorus solves 
+the problems you need to solve, nothing more.  phosphorus is medicine against 
+bloatware
 
 *"with phosphorus five, your creations can grow into heaven"*
 
@@ -93,6 +95,7 @@ then add the following code in your codebehind
 ```csharp
 protected void hello_onclick (pf.Literal sender, EventArgs e)
 {
+    // notice how you save a cast operation here ...
     sender.innerHTML = "hello world";
 }
 ```
@@ -103,8 +106,8 @@ if you wish to have more samples for how to use phosphorus.ajax, you can check o
 ## the literal and container widgets
 
 in phosphorus.ajax there is only two types of web controls.  there is the *"Literal"* 
-class, and the *"Container"* class.  by combining these two classes, you can create 
-html markup you wish
+class, and the *"Container"* class.  by cleverly combining these two classes however, 
+you can create any html markup you wish
 
 the **literal** widget is for controls that contains text or html, and allows you to 
 change its content through the *"innerHTML"* property.  notice that the literal widget 
@@ -161,7 +164,6 @@ needs to be sent back to the client
 ```csharp
 protected void video_click (Literal literal, EventArgs e)
 {
-    // notice how you save a cast operation here ...
     literal ["width"] = "1024";
 }
 ```
