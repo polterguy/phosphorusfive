@@ -1,6 +1,6 @@
 /*
  * phosphorus five, copyright 2014 - thomas@magixilluminate.com
- * phosphorus five is licensed as mit, see the enclosed readme.me file for details
+ * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
  */
 
 using System;
@@ -53,14 +53,27 @@ namespace phosphorus.ajax.widgets
 
         /// <summary>
         /// gets or sets a value indicating whether this <see cref="phosphorus.ajax.widgets.Widget"/> should close an empty tag immediately.
-        /// the default value for this property is true, which mean that unless the element has content, either as children controls, or 
-        /// as innerHTML, then the tag to render the element will be closed immediate, and the opening tag will also be the end tag. sometimes 
-        /// this is not what you wish, though for most elements this saves a couple of bytes on the wire
+        /// the default value for this property is false, which mean that if the element has no content, either as children controls, or 
+        /// as innerHTML, then the tag to render the element will still create an end tag element. sometimes this is not what you wish, 
+        /// though for most elements this is according to the standard. if you have a "void element", meaning an element that cannot have 
+        /// any content at all, such as img, br, hr and such, then you can set this value to true, and the tag will be "self-closed". please 
+        /// also be aware of the HasEndTag property, which often can be set to false for the same type of html elements that are void elements
         /// </summary>
-        /// <value><c>true</c> if it close an empty tag immediately; otherwise, <c>false</c></value>
-        public bool CloseEmptyTagImmediately {
-            get { return ViewState ["CloseEmptyTagImmediately"] == null ? true : (bool)ViewState["CloseEmptyTagImmediately"]; }
-            set { ViewState ["CloseEmptyTagImmediately"] = value; }
+        /// <value><c>true</c> if it closes an empty tag immediately; otherwise, <c>false</c></value>
+        public bool SelfClosed {
+            get { return ViewState ["SelfClosed"] == null ? false : (bool)ViewState["SelfClosed"]; }
+            set { ViewState ["SelfClosed"] = value; }
+        }
+
+        /// <summary>
+        /// gets or sets a value indicating whether this instance has an end tag or not. some elements does not require an end tag 
+        /// at all, examples here are p, td, li, and so on. for these tags you can choose to explicitly turn off the rendering of the 
+        /// end tag, and such save a couple of bytes of http traffic. the default value of this property is true
+        /// </summary>
+        /// <value><c>true</c> if this instance has an end tag; otherwise, <c>false</c></value>
+        public bool HasEndTag {
+            get { return ViewState ["HasEndTag"] == null ? true : (bool)ViewState["HasEndTag"]; }
+            set { ViewState ["HasEndTag"] = value; }
         }
 
         /// <summary>
@@ -397,20 +410,23 @@ namespace phosphorus.ajax.widgets
         protected virtual void RenderHtmlResponse (HtmlTextWriter writer)
         {
             writer.Write (string.Format (@"<{0} id=""{1}""", Tag, ClientID));
-            if (Attributes.Count > 0) {
-                writer.Write (" ");
-                RenderAttributes (writer);
-            }
+            RenderAttributes (writer);
             if (HasContent) {
                 writer.Write (">");
                 RenderChildren (writer);
-                writer.Write (string.Format ("</{0}>", Tag));
+                if (HasEndTag) {
+                    writer.Write (string.Format ("</{0}>", Tag));
+                }
             } else {
-                if (CloseEmptyTagImmediately) {
-                    writer.Write (" />");
+                if (HasEndTag) {
+                    if (SelfClosed) {
+                        writer.Write (" />");
+                    } else {
+                        writer.Write (">");
+                        writer.Write (string.Format ("</{0}>", Tag));
+                    }
                 } else {
                     writer.Write (">");
-                    writer.Write (string.Format ("</{0}>", Tag));
                 }
             }
         }
@@ -429,7 +445,6 @@ namespace phosphorus.ajax.widgets
         /// <param name="writer">where to render</param>
         protected virtual void RenderAttributes (HtmlTextWriter writer)
         {
-            bool isFirst = true;
             foreach (Attribute idx in Attributes) {
                 string name = idx.Name;
                 string value;
@@ -438,11 +453,7 @@ namespace phosphorus.ajax.widgets
                 } else {
                     value = idx.Value;
                 }
-                if (isFirst) {
-                    isFirst = false;
-                } else {
-                    writer.Write (" ");
-                }
+                writer.Write (" ");
                 if (value == null) {
                     writer.Write (string.Format (@"{0}", name));
                 } else {

@@ -1,8 +1,9 @@
 
 
-* support for sending objects as parameters over http requests by appending objects in 'onbefore' in pf.element.raise options
+* support for sending objects as parameters over http requests by appending objects in 'onbefore' in pf.element.raise options through parameters
+  that becomes sent as json
 
-* compress javascript files through pre-build step on Linux-Build
+* compress and gzip javascript files through pre-build step on Linux-Build
 
 * create unit tests
 
@@ -13,5 +14,26 @@
   of reflection, since it requires "partial trust" on server, which is not supplied by all web hotels for instance
 
 * move all public methods at the top, then all protected, then all private methods, in all classes, and check up the dox for all methods
+
+* store viewstate in session feature on AjaxPage through boolean property
+
+* web method feature for exposing methods directly not having to go through events to invoke functionality on server
+
+* investigate possibility of creating comet/lazyhttp support
+
+* adding javascript in ajax postbacks
+
+* adding javascript files, and css, plus other types of headers in ajax postback
+
+* make sure all samples validates against w3c validator
+
+* create option to remove unnecssary whitespaces in html sent in HtmlFilter, investigate if this is possible first though
+
+* make sure script inclusions by default don't mess up spacing in html filter
+
+* create possibility of creating global page level "onbefore", "onsuccess" and "oneror" handlers in javascript
+
+* investigate if we can create custom attributes, such as "onclicked", and still retain html compliance
+
 
 
