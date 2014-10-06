@@ -93,11 +93,17 @@ before you create a literal widget, by adding the code below in your .aspx marku
 then add the following code in your codebehind
 
 ```csharp
+using pf = phosphorus.ajax.widgets;
+
+/* ... */
+
 protected void hello_onclick (pf.Literal sender, EventArgs e)
 {
     // notice how you save a cast operation here ...
     sender.innerHTML = "hello world";
 }
+
+/* ... */
 ```
 
 if you wish to have more samples for how to use phosphorus.ajax, you can check out the 
@@ -170,9 +176,7 @@ protected void video_click (Literal literal, EventArgs e)
 
 you can modify any attribute you wish on your widgets, by using the index operator.  
 phosphorus.ajax will automatically keep track of what needs to be sent from the 
-server to the client
-
-
+server to the client.  use the *"RemoveAttribute"* method to remove an attribute
 
 
 

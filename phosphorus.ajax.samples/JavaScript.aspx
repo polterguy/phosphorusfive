@@ -56,13 +56,13 @@
   }
 
   pf_samples.javascript_widget_onclick_onbefore = function(pars, evt) {
-    pars.custom_data = 'howdy world from client';
+    pars.custom_data = 'your browser says; \'hello\'';
   }
 
   pf_samples.javascript_widget_onclick_onsuccess = function(json, evt) {
-    if(json.wdg && json.wdg.javascript_widget) {
-      json.wdg.javascript_widget.innerHTML += ' - \'' + evt + 
-        '\' was executed successfully, its value before dom was updated was; \'' + this.el.innerHTML + '\'';
+    if(json.widgets && json.widgets.javascript_widget) {
+      json.widgets.javascript_widget.innerHTML += '. source of howdies was; \'' + evt + 
+        '\'. before dom was updated, the widget had; \'' + this.el.innerHTML + '\' as its html :)';
     }
   }
 })();

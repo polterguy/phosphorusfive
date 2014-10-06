@@ -41,6 +41,9 @@
                     <li>
                         <a href="Attributes.aspx">attributes example</a>
                     </li>
+                    <li>
+                        <a href="ViewState.aspx">viewstate example</a>
+                    </li>
                 </ul>
                 <h2>hello world</h2>
                 <p>

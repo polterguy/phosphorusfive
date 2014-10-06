@@ -223,10 +223,10 @@
         // success
         var json = eval('(' + xhr.responseText +')');
         options.onsuccess.apply(this, [json, cur.evt]);
-        for (var idxEl in json['wdg']) {
+        for (var idxEl in json['widgets']) {
           var el = pf.$(idxEl);
-          for (var idxAtr in json['wdg'][idxEl]) {
-            el.setVal(idxAtr, json['wdg'][idxEl][idxAtr]);
+          for (var idxAtr in json['widgets'][idxEl]) {
+            el.setVal(idxAtr, json['widgets'][idxEl][idxAtr]);
           }
         }
       } else {

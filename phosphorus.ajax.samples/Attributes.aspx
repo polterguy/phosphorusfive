@@ -74,6 +74,9 @@
                     the <em>"InvisibleTag"</em> property.&nbsp;&nbsp;changing the invisible tag is sometimes necessary when rendering 
                     invisible list item elements for instance
                 </p>
+                <p>
+                    onwards to the <a href="ViewState.aspx">viewstate example</a>
+                </p>
             </div>
         </form>
     </body>

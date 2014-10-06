@@ -88,7 +88,7 @@ namespace phosphorus.ajax.core
         /// <param name="attributes">attributes to register for sending back to client</param>
         internal void RegisterWidgetChanges (Node node)
         {
-            _changes ["wdg"] [node.Name] = node;
+            _changes ["widgets"] [node.Name] = node;
         }
 
         public void SendObject (string id, object value)

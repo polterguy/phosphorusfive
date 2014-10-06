@@ -28,6 +28,7 @@ namespace phosphorus.ajax.widgets
         public Widget ()
         {
             Attributes = new List<Attribute> ();
+            _beforeChanges = new List<Attribute> ();
         }
 
         /// <summary>
@@ -119,7 +120,14 @@ namespace phosphorus.ajax.widgets
             // duplicating attributes to diff against attributes to render such that we can see which 
             // attributes to remove during rendering
             if (IsPhosphorusRequest)
-                _beforeChanges = new List<Attribute> (Attributes);
+                _beforeChanges.AddRange (Attributes);
+        }
+
+        protected override void LoadControlState (object state)
+        {
+            object[] obj = state as object[];
+            Visible = (bool)obj [0];
+            base.LoadControlState (obj [1]);
         }
 
         protected override object SaveViewState ()
@@ -146,6 +154,14 @@ namespace phosphorus.ajax.widgets
                 retVal [2] = removed.ToArray ();
             }
             return retVal;
+        }
+
+        protected override object SaveControlState ()
+        {
+            object[] obj = new object [2];
+            obj [0] = Visible;
+            obj [1] = base.SaveControlState ();
+            return obj;
         }
         
         public override void RenderControl (HtmlTextWriter writer)
@@ -208,6 +224,7 @@ namespace phosphorus.ajax.widgets
 
         protected override void OnInit (EventArgs e)
         {
+            Page.RegisterRequiresControlState(this);
             base.OnInit (e);
 
             if (Page.IsPostBack)
@@ -239,7 +256,16 @@ namespace phosphorus.ajax.widgets
                     // different types of html elements loads their data in different ways
                     switch (Tag.ToLower ()) {
                     case "input":
-                        this ["value"] = Page.Request.Params [this ["name"]];
+                        switch (this ["type"]) {
+                        case "radio":
+                        case "checkbox":
+                            if (!string.IsNullOrEmpty (Page.Request.Params [this ["name"]]))
+                                this ["checked"] = null;
+                            break;
+                        default:
+                            this ["value"] = Page.Request.Params [this ["name"]];
+                            break;
+                        }
                         break;
                     case "textarea":
                         this ["innerHTML"] = Page.Request.Params [this ["name"]];
