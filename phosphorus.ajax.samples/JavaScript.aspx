@@ -33,6 +33,13 @@
                     event, where we manually raise our hidden event, adding up <em>"onbefore"</em> and <em>"onsuccess"</em> handlers for our 
                     event when we raise it
                 </p>
+                    in addition, you can check the checkbox below to make sure no viewstate is sent from the client to the server.&nbsp;&nbsp;what 
+                    this really means though, is explained in our <a href="ViewState.aspx">viewstate section</a>.&nbsp;&nbsp;be sure to read this 
+                    section before you start excluding viewstate on everything you do in phosphorus.ajax
+                </p>
+                <p>
+                    <input type="checkbox" name="no_viewstate" id="no_viewstate" /><label for="no_viewstate">no viewstate</label>
+                </p>
                 <p>
                     onwards to the <a href="HTML5.aspx">html5 example</a>
                 </p>
@@ -48,6 +55,8 @@
 
   // invoked when javascript_widget is clicked
   pf_samples.javascript_widget_onclick = function() {
+
+      // finding element for widget and raising our 'onclicked' event
       var el = pf.$('javascript_widget');
       el.raise('onclicked', {
         onbefore: pf_samples.javascript_widget_onclick_onbefore,
@@ -55,10 +64,24 @@
       });
   }
 
+  // callback invoked just before request is sent to server
+  // here you can add up your own custom parameters, or even remove existing parameters, before the 
+  // http request is sent
   pf_samples.javascript_widget_onclick_onbefore = function(pars, evt) {
+
+    // checking to see if we should exclude viewstate in request
+    // you can exclude any form element data you wish with this method
+    var noState = pf.$('no_viewstate').el.checked;
+    if (noState) {
+      delete pars.__VIEWSTATE;
+    }
+
     pars.custom_data = 'your browser says; \'hello\'';
   }
 
+  // callback invoked when request returns from server, but before json is parsed
+  // here you can massage, add, parse and remove objects from the json return value before it is parsed
+  // or do other things ... :)
   pf_samples.javascript_widget_onclick_onsuccess = function(json, evt) {
     if(json.widgets && json.widgets.javascript_widget) {
       json.widgets.javascript_widget.innerHTML += '. source of howdies was; \'' + evt + 

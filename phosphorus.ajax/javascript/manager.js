@@ -160,9 +160,6 @@
       pars['__pf_ajax'] = 1;
       pars['__pf_evt'] = evt;
       pars['__pf_wdg'] = this.el.id;
-      if (options.viewstate === false) {
-        delete pars['__VIEWSTATE'];
-      }
 
       // creating our xhr object
       var xhr = new XMLHttpRequest();
@@ -199,10 +196,7 @@
         onsuccess: function(/*json, evt*/){},
 
         // invoked if an error occurs during http request, with status code, status text, server response and event name
-        onerror: function(/*code, status, response, evt*/){},
-
-        // if false, will not send viewstate to server
-        viewstate:true
+        onerror: function(/*code, status, response, evt*/){}
       }, options);
 
       // adding to chain
