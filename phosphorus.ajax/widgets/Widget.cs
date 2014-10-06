@@ -1,6 +1,6 @@
 /*
  * phosphorus five, copyright 2014 - thomas@magixilluminate.com
- * phosphorus five is licensed as mit, see the enclosed license.txt file for details
+ * phosphorus five is licensed as mit, see the enclosed readme.me file for details
  */
 
 using System;

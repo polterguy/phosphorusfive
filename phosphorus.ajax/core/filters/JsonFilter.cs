@@ -1,6 +1,6 @@
 /*
  * phosphorus five, copyright 2014 - thomas@magixilluminate.com
- * phosphorus five is licensed as mit, see the enclosed license.txt file for details
+ * phosphorus five is licensed as mit, see the enclosed readme.me file for details
  */
 
 using System;
@@ -40,15 +40,19 @@ namespace phosphorus.ajax.core.filters
             string content = reader.ReadToEnd ();
 
             // registering viewstate for change
-            string viewstate = GetViewState (content);
-            string oldViewstate = Manager.Page.Request.Params ["__VIEWSTATE"];
-            if (viewstate != oldViewstate) {
-                Node node = new Node ("__VIEWSTATE");
-                Node viewStateNode = new Node ();
-                viewStateNode.Name = oldViewstate;
-                viewStateNode.Value = viewstate;
-                node ["value"].Value = viewStateNode;
-                Manager.RegisterWidgetChanges (node);
+            if (Manager.EnableViewState) {
+                string viewstate = GetViewState (content);
+                if (!string.IsNullOrEmpty (viewstate)) {
+                    string oldViewstate = Manager.Page.Request.Params ["__VIEWSTATE"];
+                    if (viewstate != oldViewstate) {
+                        Node node = new Node ("__VIEWSTATE");
+                        Node viewStateNode = new Node ();
+                        viewStateNode.Name = oldViewstate;
+                        viewStateNode.Value = viewstate;
+                        node ["value"].Value = viewStateNode;
+                        Manager.RegisterWidgetChanges (node);
+                    }
+                }
             }
 
             // we could just use the JavaScriptSerializer here, but that would create a significant larger json for us
@@ -56,11 +60,6 @@ namespace phosphorus.ajax.core.filters
             return ToJson (Manager.Changes);
         }
 
-        /// <summary>
-        /// creates a valid client side json string from the node given
-        /// </summary>
-        /// <returns>json</returns>
-        /// <param name="node">node to serialize</param>
         private string ToJson (Node node)
         {
             StringBuilder builder = new StringBuilder ();
@@ -84,11 +83,6 @@ namespace phosphorus.ajax.core.filters
             return builder.ToString ();
         }
 
-        /// <summary>
-        /// creates a json value of the given value
-        /// </summary>
-        /// <param name="builder">builder to render json into</param>
-        /// <param name="value">what to render</param>
         private void ObjectToJson (StringBuilder builder, object value)
         {
             if (value == null) {
@@ -119,11 +113,6 @@ namespace phosphorus.ajax.core.filters
             }
         }
 
-        /// <summary>
-        /// returns a json string containing the begin and end offset of the changes to the property
-        /// </summary>
-        /// <returns>The property changes.</returns>
-        /// <param name="single">Single.</param>
         private object GetPropertyChanges (Node single)
         {
             string old = single.Name;
@@ -159,11 +148,6 @@ namespace phosphorus.ajax.core.filters
             }
         }
 
-        /// <summary>
-        /// returns viewstate from html content
-        /// </summary>
-        /// <returns>The view state.</returns>
-        /// <param name="html">Html.</param>
         private string GetViewState (string html)
         {
             Regex regex = new Regex (@"<input[\s\n]+type=""hidden""[\s\n]+name=""__VIEWSTATE""[\s\n]+id=""__VIEWSTATE""[\s\n]+value=""(.+[^""])""[\s\n]*/>", RegexOptions.Compiled);

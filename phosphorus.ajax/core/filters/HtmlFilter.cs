@@ -1,13 +1,14 @@
 /*
  * phosphorus five, copyright 2014 - thomas@magixilluminate.com
- * phosphorus five is licensed as mit, see the enclosed license.txt file for details
+ * phosphorus five is licensed as mit, see the enclosed readme.me file for details
  */
 
 using System;
 using System.IO;
 using System.Web;
-using System.Web.UI;
 using System.Text;
+using System.Web.UI;
+using System.Text.RegularExpressions;
 using phosphorus.ajax.core;
 
 namespace phosphorus.ajax.core.filters
@@ -34,14 +35,18 @@ namespace phosphorus.ajax.core.filters
             TextReader reader = new StreamReader (this, Manager.Page.Response.ContentEncoding);
             string content = reader.ReadToEnd ();
             content = IncludeJavaScriptFiles (content);
+            if (!Manager.EnableViewState) {
+                content = RemoveViewState (content);
+            }
             return content;
         }
 
-        /// <summary>
-        /// includes the javascript files for this response
-        /// </summary>
-        /// <returns>the javascript files</returns>
-        /// <param name="content">html response content</param>
+        private string RemoveViewState (string content)
+        {
+            Regex regex = new Regex (@"(<input[\s\n]+type=""hidden""[\s\n]+name=""__VIEWSTATE""[\s\n]+id=""__VIEWSTATE""[\s\n]+value="".+[^""]""[\s\n]*/>)", RegexOptions.Compiled);
+            return regex.Replace (content, "");
+        }
+
         private string IncludeJavaScriptFiles (string content)
         {
             if (Manager.JavaScriptFiles.Count == 0)

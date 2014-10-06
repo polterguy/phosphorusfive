@@ -1,6 +1,6 @@
 /*
  * phosphorus five, copyright 2014 - thomas@magixilluminate.com
- * phosphorus five is licensed as mitx11, see the enclosed license.txt file for details
+ * phosphorus five is licensed as mitx11, see the enclosed readme.me file for details
  */
 
 namespace phosphorus.ajax.samples
@@ -42,6 +42,16 @@ namespace phosphorus.ajax.samples
         protected void makeVisible_onclick (pf.Literal btn, EventArgs e)
         {
             content.Visible = true;
+        }
+        
+        protected void addOne_onclick (pf.Literal btn, EventArgs e)
+        {
+            if (!content.EnableViewState) {
+                content.innerHTML = "this only works with viewstate enabled!!";
+                content ["class"] = "red";
+            } else {
+                content.innerHTML += "X";
+            }
         }
     }
 }

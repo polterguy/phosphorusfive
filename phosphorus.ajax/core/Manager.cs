@@ -1,6 +1,6 @@
 /*
  * phosphorus five, copyright 2014 - thomas@magixilluminate.com
- * phosphorus five is licensed as mit, see the enclosed license.txt file for details
+ * phosphorus five is licensed as mit, see the enclosed readme.me file for details
  */
 
 using System;
@@ -32,6 +32,7 @@ namespace phosphorus.ajax.core
         /// <param name="page">the page the manager is managing</param>
         public Manager (Page page)
         {
+            EnableViewState = true;
             Page = page;
             JavaScriptFiles = new List<string> ();
             _changes = new Node ();
@@ -68,6 +69,18 @@ namespace phosphorus.ajax.core
         }
 
         /// <summary>
+        /// gets or sets a value indicating whether this <see cref="phosphorus.ajax.core.Manager"/> enables viewstate for the current 
+        /// http request or not. to turn this off, is not wise unless you know what you're doing, though sometimes when you have 
+        /// server side events or methods, that are only supposed to return json objects back to the client, and not modify any 
+        /// widgets at all, it might be useful to decrease the size of your http requests
+        /// </summary>
+        /// <value><c>true</c> if viewstate is enabled; otherwise, <c>false</c></value>
+        public bool EnableViewState {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// adds a javascript file to include for the current response
         /// </summary>
         /// <param name="file">file</param>
@@ -91,6 +104,11 @@ namespace phosphorus.ajax.core
             _changes ["widgets"] [node.Name] = node;
         }
 
+        /// <summary>
+        /// send an object back to the client as json
+        /// </summary>
+        /// <param name="id">id of object, must be unique for request</param>
+        /// <param name="value">object to serialize back as json</param>
         public void SendObject (string id, object value)
         {
             _changes [id].Value = value;

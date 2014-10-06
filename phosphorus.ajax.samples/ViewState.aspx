@@ -12,6 +12,10 @@
 .green {
     background-color:LightGreen;
 }
+
+.red {
+    background-color:#ffaaaa;
+}
         </style>
     </head>
     <body>
@@ -105,13 +109,41 @@
                 <p>
                     another thing that is unique for phosphorus.ajax, is its ability to incrementally update all values of its widgets, both 
                     the form elements, viewstate, and all other widgets on your page.&nbsp;&nbsp;if you for instance add one character to 
-                    the textarea above, and click cubmit, then only that single character you added will be returned from the server, and 
-                    be added to your paragraph widget, instead of having to send the entire text back from the server.&nbsp;&nbsp;if you inspect 
-                    the http request using your browser, you can see this for yourself
+                    the textarea above, and click submit, then only that single character you added will be returned from the server, if you 
+                    have viewstate enabled.&nbsp;&nbsp;if you inspect the http request using your browser, you can see this for yourself.&nbsp;&nbsp;
+                    below you can try this for yourself
+                </p>
+                <p>
+                    <pf:Literal
+                        runat="server"
+                        id="addOne"
+                        Tag="input"
+                        type="button" 
+                        value="add one x"
+                        onclick="addOne_onclick" />
                 </p>
                 <p>
                     the above feature, combined with the ability to turn off viewstate on individual controls, should easily allow you to 
                     save at least 50% of the bandwidth usage, compared to other ajax libraries that does not have these features
+                </p>
+                <h2>completely remove all viewstate on one http request</h2>
+                <p>
+                    you can also completely eliminate viewstate, by setting the EnableViewState property on the Manager class to false.
+                    &nbsp;&nbsp;but this will probably completely break your page.&nbsp;&nbsp;especially if you're making widgets visible 
+                    or invisible during the request, since it will also eliminate all ControlState for your requests.&nbsp;&nbsp;sometimes 
+                    this might be useful though for some of your http requests that are returning only json back to the client, and who 
+                    are not meant to change properties or attributes of widgets on your page.&nbsp;&nbsp;this will make your http response 
+                    <strong>ultra lightweight</strong> though, and can be useful for some scenarios, such as when interacting with 3rd 
+                    party libraries, such as ExtJS, jQuery and such, to databind values on the client side, fetched from the server
+                </p>
+                <p>
+                    if you wish, you can also eliminate viewstate sent from the client side, by raising an event manually, as shown in our 
+                    <a href="JavaScript.aspx">javascript example</a>, and add up <em>"viewstate:false"</em> as an option to your <em>"raise"</em>
+                    function invocation
+                </p>
+                <p>
+                    as a general rule of thumb, you should never completely eliminate viewstate on your page, unless you are certain that the 
+                    http request as a whole does not update or change attributes or properties on any of your widgets on your page
                 </p>
             </div>
         </form>
