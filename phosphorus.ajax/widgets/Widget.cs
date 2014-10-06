@@ -19,6 +19,16 @@ namespace phosphorus.ajax.widgets
     public abstract class Widget : Control, IAttributeAccessor
     {
         private bool _render;
+        private bool _renderInvisible;
+        private List<Attribute> _beforeChanges;
+
+        /// <summary>
+        /// initializes a new instance of the <see cref="phosphorus.ajax.widgets.Widget"/> class
+        /// </summary>
+        public Widget ()
+        {
+            Attributes = new List<Attribute> ();
+        }
 
         /// <summary>
         /// gets or sets the tag name used to render the html element
@@ -26,7 +36,9 @@ namespace phosphorus.ajax.widgets
         /// <value>the tag name</value>
         public string Tag {
             get { return ViewState["Tag"] as string; }
-            set { ViewState ["Tag"] = value; }
+            set {
+                ViewState ["Tag"] = value;
+            }
         }
 
         /// <summary>
@@ -39,12 +51,21 @@ namespace phosphorus.ajax.widgets
         }
 
         /// <summary>
+        /// gets the attributes for the widget
+        /// </summary>
+        /// <value>the attributes</value>
+        public List<Attribute> Attributes {
+            get;
+            private set;
+        }
+
+        /// <summary>
         /// gets or sets the named attribute for the widget
         /// </summary>
         /// <param name="attribute">attribute to retrieve or set</param>
-        public string this [string attribute] {
-            get { return GetAttribute (attribute); }
-            set { SetAttribute (attribute, value); }
+        public string this [string attributeName] {
+            get { return GetAttribute (attributeName); }
+            set { SetAttribute (attributeName, value); }
         }
 
         public override bool Visible {
@@ -54,6 +75,8 @@ namespace phosphorus.ajax.widgets
             set {
                 if (!base.Visible && value && IsTrackingViewState && IsPhosphorusRequest) {
                     _render = true;
+                } else if (base.Visible && !value && IsTrackingViewState && IsPhosphorusRequest) {
+                    _renderInvisible = true;
                 }
                 base.Visible = value;
             }
@@ -69,8 +92,14 @@ namespace phosphorus.ajax.widgets
                     delegate(Attribute idx2) {
                         return idx.Name == idx2.Name;
                     });
+                idx.InViewState = true;
             }
             Attributes.AddRange (atrs);
+
+            // duplicating attributes to diff against attributes to render such that we can see which 
+            // attributes to remove during rendering
+            if (IsPhosphorusRequest)
+                _beforeChanges = new List<Attribute> (Attributes);
         }
 
         protected override object SaveViewState ()
@@ -79,7 +108,7 @@ namespace phosphorus.ajax.widgets
             retVal [0] = base.SaveViewState ();
             List<Attribute> dirty = Attributes.FindAll (
                 delegate(Attribute idx) {
-                    return idx.Dirty;
+                    return idx.Dirty || idx.InViewState;
                 });
             retVal [1] = dirty.ToArray ();
             return retVal;
@@ -95,11 +124,23 @@ namespace phosphorus.ajax.widgets
                             tmp ["outerHTML"].Value = GetControlHtml ();
                             (Page as IAjaxPage).Manager.RegisterWidgetChanges (tmp);
                         } else {
+                            // only place where we really return "true json updates" back to control
                             Node tmp = new Node (ClientID);
                             foreach (Attribute idx in Attributes) {
                                 if (idx.Dirty) {
                                     tmp [idx.Name].Value = new Node (idx.OldValue, idx.Value);
                                 }
+                            }
+                            foreach (Attribute idx in _beforeChanges) {
+                                if (!Attributes.Exists (
+                                    delegate(Attribute obj) {
+                                        return obj.Name == idx.Name;
+                                    })) {
+                                    tmp ["__pf_del"].Value = idx.Name;
+                                }
+                            }
+                            if (ViewState.IsItemDirty ("Tag")) {
+                                tmp ["tagName"].Value = Tag;
                             }
                             if (tmp.Count > 0) {
                                 (Page as IAjaxPage).Manager.RegisterWidgetChanges (tmp);
@@ -110,7 +151,15 @@ namespace phosphorus.ajax.widgets
                         RenderHtmlResponse (writer);
                     }
                 } else {
-                    writer.Write (string.Format (@"<{0} id=""{1}"" style=""display:none important!;""></{0}>", InvisibleTag, ClientID));
+                    if (IsPhosphorusRequest && _renderInvisible && !IsAncestorRendering ()) {
+                        Node tmp = new Node (ClientID);
+                        tmp ["outerHTML"].Value = string.Format (@"<{0} id=""{1}"" style=""display:none important!;""></{0}>", 
+                                                                 InvisibleTag, 
+                                                                 ClientID);
+                        (Page as IAjaxPage).Manager.RegisterWidgetChanges (tmp);
+                    } else {
+                        writer.Write (string.Format (@"<{0} id=""{1}"" style=""display:none important!;""></{0}>", InvisibleTag, ClientID));
+                    }
                 }
             }
         }
@@ -210,15 +259,6 @@ namespace phosphorus.ajax.widgets
             get { return Page.Request.Params ["__pf_ajax"] == "1"; }
         }
         
-        private List<Attribute> Attributes {
-            get {
-                if (ViewState ["Attributes"] == null) {
-                    ViewState ["Attributes"] = new List<Attribute> ();
-                }
-                return ViewState["Attributes"] as List<Attribute>;
-            }
-        }
-
         private void InvokeEventHandler (string eventHandlerName)
         {
             Control owner = this.Parent;
@@ -261,9 +301,12 @@ namespace phosphorus.ajax.widgets
             return false;
         }
 
-        private void RenderHtmlResponse (HtmlTextWriter writer)
+        /// <summary>
+        /// renders the html response
+        /// </summary>
+        /// <param name="writer">where to render</param>
+        protected virtual void RenderHtmlResponse (HtmlTextWriter writer)
         {
-            // opening tag
             writer.Write (string.Format (@"<{0} id=""{1}""", Tag, ClientID));
             if (Attributes.Count > 0) {
                 writer.Write (" ");
@@ -274,7 +317,11 @@ namespace phosphorus.ajax.widgets
             writer.Write (string.Format ("</{0}>", Tag));
         }
 
-        private void RenderAttributes (HtmlTextWriter writer)
+        /// <summary>
+        /// renders the attributes of widget
+        /// </summary>
+        /// <param name="writer">where to render</param>
+        protected virtual void RenderAttributes (HtmlTextWriter writer)
         {
             bool isFirst = true;
             foreach (Attribute idx in Attributes) {

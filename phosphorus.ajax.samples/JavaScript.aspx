@@ -6,13 +6,13 @@
 <!DOCTYPE html>
 <html>
     <head>
-    	<title>phosphorus.ajax javascript sample</title>
+    	<title>phosphorus.ajax javascript example</title>
         <link rel="stylesheet" type="text/css" href="media/main.css" />
     </head>
     <body>
         <form id="form1" runat="server" autocomplete="off">
             <div class="container">
-                <h1>javascript sample</h1>
+                <h1>javascript example</h1>
                 <p>
                     this example shows how you can intercept phosphorus.ajax http requests
                 </p>
@@ -34,7 +34,7 @@
                     event when we raise it
                 </p>
                 <p>
-                    onwards to the <a href="HTML5.aspx">html5 sample</a>
+                    onwards to the <a href="HTML5.aspx">html5 example</a>
                 </p>
             </div>
         </form>
@@ -60,8 +60,10 @@
   }
 
   pf_samples.javascript_widget_onclick_onsuccess = function(json, evt) {
-    json.wdg.javascript_widget.innerHTML += ' - \'' + evt + 
-      '\' was executed successfully, its value before dom was updated was; \'' + this.el.innerHTML + '\'';
+    if(json.wdg && json.wdg.javascript_widget) {
+      json.wdg.javascript_widget.innerHTML += ' - \'' + evt + 
+        '\' was executed successfully, its value before dom was updated was; \'' + this.el.innerHTML + '\'';
+    }
   }
 })();
     </script>

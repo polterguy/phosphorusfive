@@ -17,6 +17,9 @@ namespace phosphorus.ajax.widgets
         private bool _dirty;
 
         [NonSerialized]
+        private bool _inViewState;
+
+        [NonSerialized]
         private string _oldValue;
 
         /// <summary>
@@ -64,19 +67,16 @@ namespace phosphorus.ajax.widgets
             set;
         }
         
-        /// <summary>
-        /// gets or sets the dirty value
-        /// </summary>
-        /// <value>whether or not attribute is dirty</value>
         internal bool Dirty {
             get { return _dirty; }
             set { _dirty = value; }
         }
         
-        /// <summary>
-        /// gets or sets the old value
-        /// </summary>
-        /// <value>old value of attribute, when it was de-serialized from viewstate</value>
+        internal bool InViewState {
+            get { return _inViewState; }
+            set { _inViewState = value; }
+        }
+
         internal string OldValue {
             get { return _oldValue; }
             set { _oldValue = value; }

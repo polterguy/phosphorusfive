@@ -6,13 +6,13 @@
 <!DOCTYPE html>
 <html>
     <head>
-    	<title>container sample</title>
+    	<title>container example</title>
         <link rel="stylesheet" type="text/css" href="media/main.css" />
     </head>
     <body>
         <form id="form1" runat="server" autocomplete="off">
             <div class="container">
-                <h1>container sample</h1>
+                <h1>container example</h1>
                 <p>
                     this example shows how to use container widgets
                 </p>
@@ -49,7 +49,7 @@
                     widget entirely
                 </p>
                 <p>
-                    onwards to the <a href="FormData.aspx">form data sample</a>
+                    onwards to the <a href="FormData.aspx">form data example</a>
                 </p>
             </div>
         </form>

@@ -19,11 +19,11 @@
   };
 
   // extends the given lhs with every property from rhs and return lhs
-  pf.extend = function(lhs, rhs) {
-    for (var prop in rhs) {
-      lhs[prop] = rhs[prop];
+  pf.extend = function(orig, obj) {
+    for (var p in obj) {
+      orig[p] = obj[p];
     }
-    return lhs;
+    return orig;
   };
 
   // returns a pf.element wrapping the given id html element
@@ -84,16 +84,25 @@
 
       // special handlers for some of our attributes
       switch(key) {
-        case 'class':
-          this.el.className = pf.util.getChange(el.className, value);
+        case '__pf_del':
+          this.el.removeAttribute(value);
+          break;
+        case 'tagName':
+          var oldHtml = this.el.outerHTML;
+          var nHtml = '<' + value + oldHtml.substring(this.el.tagName.length + 1);
+          nHtml = nHtml.substring(0, nHtml.length - (this.el.tagName.length + 1));
+          nHtml += value + '>';
+          var id = this.el.id;
+          this.el.outerHTML = nHtml;
+          this.el = pf.$(id).el; // updating element since previous element is now gone
           break;
         case 'outerHTML':
-          var id = el.id;
+          var id = this.el.id;
           this.el.outerHTML = pf.util.getChange(this.el.outerHTML, value);
           this.el = pf.$(id).el; // updating element since previous element is now gone
           break;
         default:
-          this.el[key] = pf.util.getChange(this.el[key], value);;
+          this.el.setAttribute(key, pf.util.getChange(this.el[key], value));
           break;
       }
     },
@@ -175,13 +184,13 @@
       options = pf.extend({
 
         // invoked before http request is sent, with parameters as object, and event name as evt
-        onbefore: function(pars, evt){},
+        onbefore: function(/*pars, evt*/){},
 
         // invoked after http request is returned, but before dom is updated, with json object as parameter, and evt as event name
-        onsuccess: function(json, evt){},
+        onsuccess: function(/*json, evt*/){},
 
         // invoked if an error occurs during http request, with status code, status text, server response and event name
-        onerror: function(code, status, response, evt){}
+        onerror: function(/*code, status, response, evt*/){}
       }, options);
 
       // adding to chain

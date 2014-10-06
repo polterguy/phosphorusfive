@@ -6,13 +6,13 @@
 <!DOCTYPE html>
 <html>
     <head>
-    	<title>form element sample</title>
+    	<title>form element example</title>
         <link rel="stylesheet" type="text/css" href="media/main.css" />
     </head>
     <body>
         <form id="form1" runat="server" autocomplete="off">
             <div class="container">
-                <h1 id="header">form element sample</h1>
+                <h1 id="header">form element example</h1>
                 <p>
                     this example shows how you can create form elements
                 </p>
@@ -39,7 +39,7 @@
                     combined with adding a 'type' attribute to your widgets
                 </p>
                 <p>
-                    onwards to the <a href="Events.aspx">event sample</a>
+                    onwards to the <a href="Events.aspx">event example</a>
                 </p>
             </div>
         </form>

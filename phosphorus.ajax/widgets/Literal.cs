@@ -25,10 +25,24 @@ namespace phosphorus.ajax.widgets
             set { this ["innerHTML"] = value; }
         }
 
-        /// <summary>
-        /// renders the content
-        /// </summary>
-        /// <param name="writer">html writer</param>
+        protected override void RenderAttributes (HtmlTextWriter writer)
+        {
+            // to not mess with the viewstate, we need to reinsert the attribute from the same place we remove it from
+            // and to not render the innerHTML as an attribute for our html element, we need to remove it before we render the attributes
+            int index = Attributes.FindIndex (
+                delegate(Attribute obj) {
+                    return obj.Name == "innerHTML";
+                });
+            Attribute atr = null;
+            if (index != -1) {
+                atr = Attributes [index];
+                Attributes.RemoveAt (index);
+            }
+            base.RenderAttributes (writer);
+            if (atr != null)
+                Attributes.Insert (index, atr);
+        }
+
         protected override void RenderChildren (HtmlTextWriter writer)
         {
             writer.Write (innerHTML);

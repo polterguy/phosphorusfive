@@ -12,31 +12,34 @@
     <body>
         <form id="form1" runat="server" autocomplete="off">
             <div class="container">
-                <h1>phosphorus.ajax samples</h1>
+                <h1>phosphorus.ajax examples</h1>
                 <p>
-                    the samples for phosphorus.ajax are created such that they are both a learning path for you, in addition to being 
+                    the examples for phosphorus.ajax are created such that they are both a learning path for you, in addition to being 
                     a reference guide.&nbsp;&nbsp;you can either read them as a <em>book</em>, when learning phosphorus.ajax.&nbsp;&nbsp;
                     or you can use them as a reference guide, when you are stuck with a specific problem.&nbsp;&nbsp;if you're new to 
-                    phosphorus, we suggest you start with the first sample; the <a href="Literal.aspx">literal sample</a>
+                    phosphorus, we suggest you start with the first example; the <a href="Literal.aspx">literal example</a>
                 </p>
                 <ul>
                     <li>
-                        <a href="Literal.aspx">literal sample</a>
+                        <a href="Literal.aspx">literal example</a>
                     </li>
                     <li>
-                        <a href="Container.aspx">container sample</a>
+                        <a href="Container.aspx">container example</a>
                     </li>
                     <li>
-                        <a href="FormData.aspx">form data sample</a>
+                        <a href="FormData.aspx">form data example</a>
                     </li>
                     <li>
-                        <a href="Events.aspx">events sample</a>
+                        <a href="Events.aspx">events example</a>
                     </li>
                     <li>
-                        <a href="JavaScript.aspx">javascript sample</a>
+                        <a href="JavaScript.aspx">javascript example</a>
                     </li>
                     <li>
-                        <a href="HTML5.aspx">html5 sample</a>
+                        <a href="HTML5.aspx">html5 example</a>
+                    </li>
+                    <li>
+                        <a href="Attributes.aspx">attributes example</a>
                     </li>
                 </ul>
                 <h2>hello world</h2>
@@ -47,7 +50,7 @@
                         Tag="strong"
                         onclick="hello_onclick">
                         click me
-                    </pf:Literal> to see the hello world sample
+                    </pf:Literal> to see the hello world example
                 </p>
                 <p>
                     the above simplest example you can possibly create with phosphorus.ajax features the literal control, with one event handler, 
@@ -63,7 +66,7 @@
                     clicking the widget above, you will also see that the request and response created is as small as possible to imagine
                 </p>
                 <p>
-                    if you look at the code for the sample, you will notice that it is intuitive and easy to understand, and contains no security 
+                    if you look at the code for this example, you will notice that it is intuitive and easy to understand, and contains no security 
                     issues, such as unnecessary javascript code, further opening up the attack surface of your solution
                 </p>
                 <h2>

@@ -6,13 +6,13 @@
 <!DOCTYPE html>
 <html>
     <head>
-    	<title>phosphorus.ajax events sample</title>
+    	<title>phosphorus.ajax events example</title>
         <link rel="stylesheet" type="text/css" href="media/main.css" />
     </head>
     <body>
         <form id="form1" runat="server" autocomplete="off">
             <div class="container">
-                <h1>events sample</h1>
+                <h1>events example</h1>
                 <p>
                     this example shows how you can raise all sorts of different events on widgets
                 </p>
@@ -85,7 +85,7 @@
                      events
                 </p>
                 <p>
-                    onwards to the <a href="JavaScript.aspx">javascript sample</a>
+                    onwards to the <a href="JavaScript.aspx">javascript example</a>
                 </p>
             </div>
         </form>

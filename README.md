@@ -26,7 +26,7 @@ tiny, there is no unnecessary html rendered, the http traffic is tiny, and the
 server is not clogged with expensive functionality.  phosphorus solves the problems 
 that needs to be solved and nothing more
 
-*"with phosphorus five, you grow into heaven"*
+*"with phosphorus five, your creations can grow into heaven"*
 
 #### beautiful
 
@@ -35,7 +35,7 @@ the class hierarchy is easy to understand.  the javascript and html rendered is 
 to read, and conforms to all known standards.  phosphorus facilitates for you 
 creating beautiful end results
 
-*"with phosphorus five, you are beautiful"*
+*"with phosphorus five, your creations are beautiful"*
 
 #### flexible
 
@@ -132,7 +132,7 @@ to render it with.  this is set through the *"Tag"* property of your widget.  yo
 render any widget with any html tag you wish, but remember, that you have to make sure 
 for yourself that what you're creating is html compliant.  phosphorus.ajax supports 
 the html5 standard 100%, but it also supports the html500 standard, even though nobody 
-knows how that looks like today, and its probably wise to stick to the html5 standard 
+knows how that looks like today, and it is probably wise to stick to the html5 standard 
 for now
 
 then you can start adding attributes for your widget.  this is done by simply adding 
@@ -156,7 +156,9 @@ below is an example of how to create a video html5 element using a literal widge
 </pf:Literal>
 ```
 
-you can modify or add any attribute you wish in the codebehind by using something like this
+you can also modify or add any attribute you wish in the codebehind by using something 
+like this, and the engine will automatically keep track of which items are dirty and 
+needs to be sent back to the client
 
 ```csharp
 protected override void OnLoad (EventArgs e)

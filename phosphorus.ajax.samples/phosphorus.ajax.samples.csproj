@@ -44,6 +44,7 @@
     <Content Include="Literal.aspx" />
     <Content Include="JavaScript.aspx" />
     <Content Include="HTML5.aspx" />
+    <Content Include="Attributes.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Default.aspx.cs">
@@ -66,6 +67,9 @@
     </Compile>
     <Compile Include="HTML5.aspx.cs">
       <DependentUpon>HTML5.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Attributes.aspx.cs">
+      <DependentUpon>Attributes.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
