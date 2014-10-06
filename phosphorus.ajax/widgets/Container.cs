@@ -13,6 +13,12 @@ namespace phosphorus.ajax.widgets
     /// </summary>
     public class Container : Widget
     {
+        public override void SetAttribute (string name, string value)
+        {
+            if (name == "innerHTML")
+                throw new ArgumentException ("you cannot set the innerHTML property of a Container widget");
+            base.SetAttribute (name, value);
+        }
     }
 }
 

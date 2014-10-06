@@ -356,7 +356,7 @@ namespace phosphorus.ajax.widgets
             return atr.Value ?? string.Empty;
         }
 
-        public void SetAttribute (string name, string value)
+        public virtual void SetAttribute (string name, string value)
         {
             Attribute atr = Attributes.Find (
                 delegate (Attribute idx) {

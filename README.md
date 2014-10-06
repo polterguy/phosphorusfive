@@ -35,7 +35,7 @@ the class hierarchy is easy to understand.  the javascript and html rendered is 
 to read, and conforms to all known standards.  phosphorus facilitates for you 
 creating beautiful end results
 
-*"with phosphorus five, your creations are beautiful"*
+*"with phosphorus five, your creations can be beautiful"*
 
 #### flexible
 
@@ -75,8 +75,8 @@ then modify your web.config, and make sure it has something like this inside its
 </system.web>
 ```
 
-then create a literal widget by adding up the code below into one of your .aspx 
-pages
+then either inherit your page from AjaxPage, or implement the IAjaxPage interface, 
+before you create a literal widget, by adding the code below in your .aspx markup
 
 ```xml
 <pf:Literal
@@ -88,7 +88,7 @@ pages
 </pf:Literal>
 ```
 
-and the following code in your codebehind
+then add the following code in your codebehind
 
 ```csharp
 protected void hello_onclick (pf.Literal sender, EventArgs e)
@@ -104,21 +104,19 @@ if you wish to have more samples for how to use phosphorus.ajax, you can check o
 
 in phosphorus.ajax there is only two types of web controls.  there is the *"Literal"* 
 class, and the *"Container"* class.  by combining these two classes, you can create 
-any type of html markup you wish
+html markup you wish
 
-the literal widget is for controls that contains text or html, and allows you to change 
-its content through the *"innerHTML"* property.  the container widget is for controls 
-who themselves contains controls, and allows you to change their contents through the 
-*"Controls"* collection.  notice that the literal widget can have html elements inside 
-of it, but these will be treated as client side html, and not possible to change on 
-the server side, except by modifying the parent literal control.  everything inside of 
-the beginning and the end of your literal widget in your .aspx markup will be treated 
-as pure html, and not parsed as controls in any ways
+the **literal** widget is for controls that contains text or html, and allows you to 
+change its content through the *"innerHTML"* property.  notice that the literal widget 
+can have html elements inside of it, but these will be treated as client side html, 
+and not possible to change on the server side, except by modifying the parent literal 
+control.  everything inside of the beginning and the end of your literal widget in 
+your .aspx markup will be treated as pure html, and not parsed as controls in any ways
 
-the container widget allows you to have child controls, which will be parsed in the 
-.aspx markup as controls, and possible to reference on the server side, and modify 
+the **container** widget can have child controls, which will be parsed in the .aspx 
+markup as controls, and possible to reference on the server side, and modify 
 in your server side code through its *"Controls"* collection.  everything inside of 
-the beginning and the end of your container widget in your .aspx markup will be 
+the beginning and the end of your container widget in your .aspx markup, will be 
 treated as a web control
 
 altough the comparison does not do justify the features of the phosphorus widgets, 
@@ -130,15 +128,14 @@ widget as the *"Panel"* equivalent
 the first thing you have to decide when creating a widget, is what html tag you wish 
 to render it with.  this is set through the *"Tag"* property of your widget.  you can 
 render any widget with any html tag you wish, but remember, that you have to make sure 
-for yourself that what you're creating is html compliant.  phosphorus.ajax supports 
-the html5 standard 100%, but it also supports the html500 standard, even though nobody 
-knows how that looks like today, and it is probably wise to stick to the html5 standard 
-for now
+what you're rendering is html compliant.  phosphorus.ajax supports the html5 standard 
+100%, but it also supports the html500 standard, even though nobody knows how that 
+looks like today, and it is probably wise to stick to the html5 standard for now
 
-then you can start adding attributes for your widget.  this is done by simply adding 
+then you can start adding attributes to your widget.  this is done by simply adding 
 any attribute you wish, either directly in the markup of your .aspx page, or by using 
 the index operator overload in c#.  the framework will automatically take care of 
-serializing these attributes correctly back to the client
+serializing your attributes correctly back to the client
 
 below is an example of how to create a video html5 element using a literal widget
 
@@ -148,6 +145,7 @@ below is an example of how to create a video html5 element using a literal widge
     id="video"
     Tag="video"
     width="640"
+    onclick="video_click"
     controls>
     <source 
         src="http://download.blender.org/peach/trailer/trailer_1080p.ogg" 
@@ -161,11 +159,18 @@ like this, and the engine will automatically keep track of which items are dirty
 needs to be sent back to the client
 
 ```csharp
-protected override void OnLoad (EventArgs e)
+protected void video_click (Literal literal, EventArgs e)
 {
-    video ["width"] = "1024";
+    // notice how you save a cast operation here ...
+    literal ["width"] = "1024";
 }
 ```
+
+you can modify any attribute you wish on your widgets, by using the index operator.  
+phosphorus.ajax will automatically keep track of what needs to be sent from the 
+server to the client
+
+
 
 
 
