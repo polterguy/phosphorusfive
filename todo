@@ -1,0 +1,17 @@
+
+
+* support for sending objects as parameters over http requests by appending objects in 'onbefore' in pf.element.raise options
+
+* compress javascript files through pre-build step on Linux-Build
+
+* create unit tests
+
+* create support for saving class.id in control state for dynamically added widgets, such that dynamically added widgets will
+  be re-created during postbacks
+
+* create cache of MethodInfo to use in InvokeEventHandler to optimize use of reflection, and investigate if we can get completely rid 
+  of reflection, since it requires "partial trust" on server, which is not supplied by all web hotels for instance
+
+* move all public methods at the top, then all protected, then all private methods, in all classes, and check up the dox for all methods
+
+

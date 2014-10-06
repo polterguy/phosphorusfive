@@ -89,10 +89,15 @@
                         onclick="makeVisible_onclick" />
                 </p>
                 <p>
-                    since we're not tracking viewstate for the paragraph literal control, the control will not be able to remember 
-                    its content when it is set to invisible though.&nbsp;&nbsp;try to change its content through the textarea, and its 
+                    try to click all buttons above in order from left to right, and notice the value of the paragraph when it is being 
+                    rendered visible again.&nbsp;&nbsp;then try to turn on viewstate, and do the same, and compare what your result 
+                    becomes when you make the widget visible again
+                </p>
+                <p>
+                    when you're not tracking viewstate for the paragraph literal control, the control will not be able to remember 
+                    its content when it is set to invisible.&nbsp;&nbsp;try to change its content through the textarea, and its 
                     class, for then to make it invisible and then again visible.&nbsp;&nbsp;both with viewstate turned on, and with 
-                    viewstate turned off, and see the difference.&nbsp;&nbsp;this is the disadvantage you add when you turn off viewstate
+                    viewstate turned off, and see the difference.&nbsp;&nbsp;this is the disadvantage you get when you turn off viewstate
                 </p>
                 <p>
                     if you turn off viewstate, and debug this page, and set a breakpoint on the server side, you will also see that none 
@@ -124,26 +129,38 @@
                 </p>
                 <p>
                     the above feature, combined with the ability to turn off viewstate on individual controls, should easily allow you to 
-                    save at least 50% of the bandwidth usage, compared to other ajax libraries that does not have these features
+                    save at least 50% of the bandwidth usage, compared to other ajax libraries that does not have these features that are built 
+                    on top of asp.net
                 </p>
-                <h2>completely remove all viewstate on one http request</h2>
+                <h2>completely remove viewstate sent from server</h2>
                 <p>
-                    you can also completely eliminate viewstate, by setting the EnableViewState property on the Manager class to false.
-                    &nbsp;&nbsp;but this will probably completely break your page.&nbsp;&nbsp;especially if you're making widgets visible 
+                    you can also completely eliminate viewstate sent back from the server, by setting the EnableViewState property on the 
+                    Manager class to false.&nbsp;&nbsp;but this might break your page.&nbsp;&nbsp;especially if you're making widgets visible 
                     or invisible during the request, since it will also eliminate all ControlState for your requests.&nbsp;&nbsp;sometimes 
-                    this might be useful though for some of your http requests that are returning only json back to the client, and who 
-                    are not meant to change properties or attributes of widgets on your page.&nbsp;&nbsp;this will make your http response 
-                    <strong>ultra lightweight</strong> though, and can be useful for some scenarios, such as when interacting with 3rd 
+                    this might be useful though for some of your http requests that are returning only json custom objects back to the client, 
+                    and who are not meant to change properties or attributes of widgets on your page.&nbsp;&nbsp;this will make your http 
+                    response <strong>ultra lightweight</strong> though, and can be useful for some scenarios, such as when interacting with 3rd 
                     party libraries, such as ExtJS, jQuery and such, to databind values on the client side, fetched from the server
                 </p>
                 <p>
                     if you wish, you can also eliminate viewstate sent from the client side, by raising an event manually, as shown in our 
-                    <a href="JavaScript.aspx">javascript example</a>, and add up <em>"viewstate:false"</em> as an option to your <em>"raise"</em>
-                    function invocation
+                    <a href="JavaScript.aspx">javascript example</a>, and remove the '__VIEWSTATE' parameter in your <em>'onbefore'</em>
+                    callback.&nbsp;&nbsp;by careful manipulation of the viewstate, you can easily make your bandwidth usage become an order 
+                    of magnitude less than if you simply keep all defaults, though to do this, you <strong>must understand the consequences 
+                    of your actions</strong>
                 </p>
                 <p>
                     as a general rule of thumb, you should never completely eliminate viewstate on your page, unless you are certain that the 
                     http request as a whole does not update or change attributes or properties on any of your widgets on your page
+                </p>
+                <p>
+                    and as an even more general rule, you should not mess with the viewstate at all in fact, unless you are certain that 
+                    you understand the consequences of your actions.&nbsp;&nbsp;these types of micro-optimizations tends to very often 
+                    return to you and bite you in your back!
+                </p>
+                <p>
+                    <em>"premature optimization is the root of all evil"</em><br /><br />--<br />
+                    Donald Knuth
                 </p>
             </div>
         </form>

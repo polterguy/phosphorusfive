@@ -76,6 +76,8 @@
       delete pars.__VIEWSTATE;
     }
 
+    // adding up a custom parameter
+    // with this logic, you can transfer stuff that's not form element data
     pars.custom_data = 'your browser says; \'hello\'';
   }
 

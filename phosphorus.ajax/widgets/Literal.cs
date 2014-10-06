@@ -57,6 +57,10 @@ namespace phosphorus.ajax.widgets
         {
             writer.Write (innerHTML);
         }
+        
+        protected override bool HasContent {
+            get { return !string.IsNullOrEmpty (this ["innerHTML"]); }
+        }
     }
 }
 

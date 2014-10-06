@@ -52,6 +52,18 @@ namespace phosphorus.ajax.widgets
         }
 
         /// <summary>
+        /// gets or sets a value indicating whether this <see cref="phosphorus.ajax.widgets.Widget"/> should close an empty tag immediately.
+        /// the default value for this property is true, which mean that unless the element has content, either as children controls, or 
+        /// as innerHTML, then the tag to render the element will be closed immediate, and the opening tag will also be the end tag. sometimes 
+        /// this is not what you wish, though for most elements this saves a couple of bytes on the wire
+        /// </summary>
+        /// <value><c>true</c> if it close an empty tag immediately; otherwise, <c>false</c></value>
+        public bool CloseEmptyTagImmediately {
+            get { return ViewState ["CloseEmptyTagImmediately"] == null ? true : (bool)ViewState["CloseEmptyTagImmediately"]; }
+            set { ViewState ["CloseEmptyTagImmediately"] = value; }
+        }
+
+        /// <summary>
         /// gets the attributes for the widget
         /// </summary>
         /// <value>the attributes</value>
@@ -389,9 +401,26 @@ namespace phosphorus.ajax.widgets
                 writer.Write (" ");
                 RenderAttributes (writer);
             }
-            writer.Write (">");
-            RenderChildren (writer);
-            writer.Write (string.Format ("</{0}>", Tag));
+            if (HasContent) {
+                writer.Write (">");
+                RenderChildren (writer);
+                writer.Write (string.Format ("</{0}>", Tag));
+            } else {
+                if (CloseEmptyTagImmediately) {
+                    writer.Write (" />");
+                } else {
+                    writer.Write (">");
+                    writer.Write (string.Format ("</{0}>", Tag));
+                }
+            }
+        }
+
+        /// <summary>
+        /// gets a value indicating whether this instance has content or not
+        /// </summary>
+        /// <value><c>true</c> if this instance has content; otherwise, <c>false</c></value>
+        protected abstract bool HasContent {
+            get;
         }
 
         /// <summary>
@@ -423,7 +452,8 @@ namespace phosphorus.ajax.widgets
         }
 
         /// <summary>
-        /// returns the value of the attribute with the specified key
+        /// returns the value of the attribute with the specified key. please notice that an attribute might exist, even though 
+        /// this method returns null
         /// </summary>
         /// <param name="key">name of attribute</param>
         public virtual string GetAttribute (string key)
@@ -434,7 +464,7 @@ namespace phosphorus.ajax.widgets
             });
             if (atr == null)
                 return null;
-            return atr.Value ?? string.Empty;
+            return atr.Value;
         }
 
         /// <summary>

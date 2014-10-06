@@ -21,6 +21,10 @@ namespace phosphorus.ajax.widgets
                 throw new ArgumentException ("you cannot set the innerHTML property of a Container widget", key);
             base.SetAttribute (key, value);
         }
+        
+        protected override bool HasContent {
+            get { return Controls.Count > 0; }
+        }
     }
 }
 

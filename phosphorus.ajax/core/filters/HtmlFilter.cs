@@ -57,14 +57,14 @@ namespace phosphorus.ajax.core.filters
             int idxPosition = content.Length - 1;
             for (; idxPosition >= 0; idxPosition --) {
                 endBuffer = content [idxPosition] + endBuffer;
-                if (endBuffer.StartsWith ("</html>", StringComparison.InvariantCultureIgnoreCase))
+                if (endBuffer.StartsWith ("</body>", StringComparison.InvariantCultureIgnoreCase))
                     break;
             }
             StringBuilder builder = new StringBuilder (content.Substring (0, idxPosition));
 
             // including javascript files
             foreach (string idxFile in Manager.JavaScriptFiles) {
-                builder.Append (string.Format(@"<script type=""text/javascript"" src=""{0}""></script>", idxFile));
+                builder.Append (string.Format(@"<script type=""text/javascript"" src=""{0}""></script>", idxFile.Replace ("&", "&amp;")));
             }
 
             // adding back up again the "</html>" parts
