@@ -370,7 +370,7 @@
         }
       } else {
 
-        // error, stopping all chained requests before raising 'onerror'
+        // error, stopping all chained requests before calling 'onerror'
         pf._chain = [];
         options.onerror.apply(this, [xhr.status, xhr.statusText, xhr.responseText, cur.evt]);
       }
@@ -391,6 +391,10 @@
 
   /*
    * initiaties the next request in chain
+   *
+   * requests will be initiatied in 'first in, first out' order, 
+   * meaning the 0th request will be initiated before the 1st 
+   * request, and so on
    *
    * for internal use only
    */

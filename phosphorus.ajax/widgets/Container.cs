@@ -12,7 +12,7 @@ namespace phosphorus.ajax.widgets
     /// a widget that contains children widgets. everything between the opening and end declaration of this widget 
     /// in your .aspx markup will be treated as controls
     /// </summary>
-    public class Container : Widget
+    public class Container : Widget, INamingContainer
     {
         // overridden to throw an exception if user tries to explicitly set the innerHTML attribute of this control
         public override void SetAttribute (string key, string value)

@@ -1,8 +1,5 @@
 
 
-* support for sending objects as parameters over http requests by appending objects in 'onbefore' in pf.element.raise options through parameters
-  that becomes sent as json
-
 * compress and gzip javascript files through pre-build step on Linux-Build
 
 * create unit tests
@@ -21,11 +18,11 @@
 
 * investigate possibility of creating comet/lazyhttp support
 
-* adding javascript in ajax postbacks
+* adding javascript in ajax postbacks that will be sent from server to client
 
 * adding javascript files, and css, plus other types of headers in ajax postback
 
-* make sure all samples validates against w3c validator
+* make sure all samples validates against w3c validator ('onclicked' remains)
 
 * create option to remove unnecssary whitespaces in html sent in HtmlFilter, investigate if this is possible first though
 
@@ -33,13 +30,12 @@
 
 * create possibility of creating global page level "onbefore", "onsuccess" and "oneror" handlers in javascript
 
-* investigate if we can create custom attributes, such as "onclicked", and still retain html compliance
+* create better alternative to 'onclicked' for intercepting ajax requests
 
 * verify content is rendered using correct encoding
 
-* modify readme to have functioning complete example of Default.aspx page, with complete codebehind, and complete .aspx markup
+* modify readme to have fully functioning complete example of Default.aspx page, with complete codebehind, and complete .aspx markup
 
-* inform in ViewState.aspx that developer can turn off viewstate on page level
 
 
 

@@ -115,16 +115,24 @@
                    have this in mind before you turn off viewstate on your controls.&nbsp;&nbsp;without viewstate, your controls are no 
                    longer remembering any of their state, except whether or not they're visible or not
 
-                <p>by enabling viewstate on your widgets, your http traffic can easily grow by several orders of magnitude.&nbsp;&nbsp;it is 
+                <p>by disabling viewstate on your widgets, your http traffic can easily be reduced by orders of magnitude.&nbsp;&nbsp;it is 
                    important that you think carefully about which widgets you wish to enable viewstate for, and which you wish to disable 
-                   it for.&nbsp;&nbsp;this is not unique for phosphorus.ajax.&nbsp;&nbsp;but what is unique though, is its beautiful 
-                   handling of viewstate, allowing you to turn it off, while still functioning perfectly, as it should do
+                   it for though, since disabling viewstate on controls unless you know what you're doing, will result in that your page 
+                   breaks down, and you will get a lot of really weird bugs, that are really hard to track down and fix
+
+                <p>in addition, you can remove viewstate on the page directive by setting <em>"EnableViewState"</em> to false on your 
+                   page as a whole.&nbsp;&nbsp;this will remove viewstate on all controls on your page.&nbsp;&nbsp;if you remove 
+                   viewstate on the page as a whole, there will still be small amounts of viewstate remaining.&nbsp;&nbsp;this is because 
+                   of that phosphorus.ajax uses control state to track which controls are visible, among other things.&nbsp;&nbsp;but 
+                   disabling viewstate on the page as a whole, should significantly decrease bandwidth usage for you
+                   
+                <p><strong>disabling viewstate on the whole page should only be done if you know what you're doing</strong>
 
                 <p>another thing that is unique for phosphorus.ajax, is its ability to incrementally update all values of its widgets, both 
                    the form elements, viewstate, and all other widgets on your page.&nbsp;&nbsp;if you for instance add one character to 
-                   the textarea above, and click submit, then only that single character you added will be returned from the server, if you 
-                   have viewstate enabled.&nbsp;&nbsp;if you inspect the http request using your browser, you can see this for yourself.&nbsp;&nbsp;
-                   below you can try this for yourself
+                   the textarea above, and click submit, then only that single character you added will be returned from the server, but only 
+                   if you have viewstate enabled.&nbsp;&nbsp;if you inspect the http request using your browser, you can see this for 
+                   yourself.&nbsp;&nbsp;below you can try this for yourself
 
                 <p><pf:Literal
                         runat="server"
@@ -136,24 +144,23 @@
                         onclick="addOne_onclick" />
 
                 <p>the above feature, combined with the ability to turn off viewstate on individual controls, should easily allow you to 
-                   save at least 50% of the bandwidth usage, compared to other ajax libraries that does not have these features that are built 
-                   on top of asp.net
-
+                   save at least 50% of the bandwidth usage
+                   
                 <h2>completely remove viewstate sent from server</h2>
 
-                <p>you can also completely eliminate viewstate sent back from the server, by setting the EnableViewState property on the 
+                <p>you can also completely eliminate viewstate sent back from the server, by setting the <em>"EnableViewState"</em> property on the 
                    Manager class to false.&nbsp;&nbsp;but this might break your page.&nbsp;&nbsp;especially if you're making widgets visible 
                    or invisible during the request, since it will also eliminate all ControlState for your requests.&nbsp;&nbsp;sometimes 
-                   this might be useful though for some of your http requests that are returning only json custom objects back to the client, 
+                   this might be useful though for some of your http requests that are returning only custom json objects back to the client, 
                    and who are not meant to change properties or attributes of widgets on your page.&nbsp;&nbsp;this will make your http 
                    response <strong>ultra lightweight</strong> though, and can be useful for some scenarios, such as when interacting with 3rd 
                    party libraries, such as ExtJS, jQuery and such, to databind values on the client side, fetched from the server
 
                 <p>if you wish, you can also eliminate viewstate sent from the client side, by raising an event manually, as shown in our 
                    <a href="JavaScript.aspx">javascript example</a>, and remove the '__VIEWSTATE' parameter in your <em>'onbefore'</em>
-                   callback.&nbsp;&nbsp;by careful manipulation of the viewstate, you can easily make your bandwidth usage become an order 
-                   of magnitude less than if you simply keep all defaults, though to do this, you <strong>must understand the consequences 
-                   of your actions</strong>
+                   callback.&nbsp;&nbsp;by careful manipulation of the viewstate, you can easily make your bandwidth usage become several 
+                   orders of magnitudes less than if you simply keep all defaults, though to do this, you <strong>must understand the 
+                   consequences of your actions</strong>
 
                 <p>as a general rule of thumb, you should never completely eliminate viewstate on your page, unless you are certain that the 
                    http request as a whole does not update or change attributes or properties on any of your widgets on your page
