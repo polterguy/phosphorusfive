@@ -13,6 +13,7 @@ namespace phosphorus.ajax.samples
 
     public partial class HTML5 : AjaxPage
     {
+        [WebMethod]
         protected void video_onclick (pf.Literal video, EventArgs e)
         {
             if (video.HasAttribute ("controls"))

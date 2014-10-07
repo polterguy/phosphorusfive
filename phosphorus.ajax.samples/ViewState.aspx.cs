@@ -24,26 +24,31 @@ namespace phosphorus.ajax.samples
             base.OnInit (e);
         }
 
+        [WebMethod]
         protected void submit_onclick (pf.Literal btn, EventArgs e)
         {
             content.innerHTML = txt.innerHTML.Replace (".  ", ".&nbsp;&nbsp;");
         }
         
+        [WebMethod]
         protected void changeClass_onclick (pf.Literal btn, EventArgs e)
         {
             content ["class"] = "green";
         }
         
+        [WebMethod]
         protected void makeInVisible_onclick (pf.Literal btn, EventArgs e)
         {
             content.Visible = false;
         }
         
+        [WebMethod]
         protected void makeVisible_onclick (pf.Literal btn, EventArgs e)
         {
             content.Visible = true;
         }
         
+        [WebMethod]
         protected void addOne_onclick (pf.Literal btn, EventArgs e)
         {
             if (!content.EnableViewState) {

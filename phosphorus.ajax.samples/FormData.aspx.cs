@@ -15,6 +15,7 @@ namespace phosphorus.ajax.samples
     {
         protected pf.Literal lbl;
 
+        [WebMethod]
         protected void txt_onchange (pf.Widget sender, EventArgs e)
         {
             lbl.innerHTML = "value of textbox was; '" + sender ["value"] + "'";

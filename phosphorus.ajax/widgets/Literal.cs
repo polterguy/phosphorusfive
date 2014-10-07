@@ -57,6 +57,11 @@ namespace phosphorus.ajax.widgets
         {
             writer.Write (innerHTML);
         }
+
+        protected override void AddedControl (Control control, int index)
+        {
+            throw new ArgumentException ("Literal widget cannot have children controls");
+        }
         
         protected override bool HasContent {
             get { return !string.IsNullOrEmpty (this ["innerHTML"]); }

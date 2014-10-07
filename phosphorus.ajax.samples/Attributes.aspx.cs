@@ -15,6 +15,7 @@ namespace phosphorus.ajax.samples
     {
         protected pf.Literal literal;
 
+        [WebMethod]
         protected void toggleClass_onclick (pf.Literal btn, EventArgs e)
         {
             if (literal.HasAttribute ("class"))
@@ -23,6 +24,7 @@ namespace phosphorus.ajax.samples
                 literal ["class"] = "green";
         }
         
+        [WebMethod]
         protected void changeTag_onclick (pf.Literal btn, EventArgs e)
         {
             if (literal.Tag == "p")
@@ -31,6 +33,7 @@ namespace phosphorus.ajax.samples
                 literal.Tag = "p";
         }
         
+        [WebMethod]
         protected void toggleVisibility_onclick (pf.Literal btn, EventArgs e)
         {
             if (literal.Visible)

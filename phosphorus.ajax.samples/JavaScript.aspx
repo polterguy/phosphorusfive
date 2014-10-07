@@ -22,8 +22,7 @@
                         runat="server"
                         id="javascript_widget"
                         Tag="strong"
-                        onclick="pf_samples.javascript_widget_onclick(event)"
-                        onclicked="javascript_widget_onclicked">click me</pf:Literal> 
+                        onclick="pf_samples.javascript_widget_onclick(event)">click me</pf:Literal> 
                    to see an example of how to intercept an http request, both before it is being sent, and after it returns from the server.
                    &nbsp;&nbsp;in this example we add a custom http parameter from the client, which we use on the server.&nbsp;&nbsp;in addition, 
                    we also change one of the return values from the server, before the dom is updated
@@ -55,7 +54,7 @@
 
     // finding element for widget and raising our 'onclicked' event
     var el = pf.$(event.target);
-    el.raise('onclicked', {
+    el.raise('javascript_widget_onclicked', {
 
       // called just before request is sent
       onbefore: function(pars, evt) {

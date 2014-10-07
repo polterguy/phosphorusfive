@@ -13,6 +13,7 @@ namespace phosphorus.ajax.samples
 
     public partial class Literal : AjaxPage
     {
+        [WebMethod]
         protected void element_onclick (pf.Literal literal, EventArgs e)
         {
             literal.innerHTML = "this is the updated text";

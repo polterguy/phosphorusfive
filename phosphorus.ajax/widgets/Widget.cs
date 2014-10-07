@@ -261,7 +261,7 @@ namespace phosphorus.ajax.widgets
 
                     Page.LoadComplete += delegate {
                         // event was raised for this widget
-                        InvokeEvent (Page.Request.Params ["__pf_event"]);
+                        InvokeEventHandler (Page.Request.Params ["__pf_event"]);
                     };
                 }
             }
@@ -317,16 +317,6 @@ namespace phosphorus.ajax.widgets
         }
 
         /// <summary>
-        /// raise given event, override to raise your own custom events, but please call base if the event is not yours
-        /// </summary>
-        /// <param name="evt">name of event to raise</param>
-        protected virtual void InvokeEvent (string evt)
-        {
-            string eventHandlerName = this [evt];
-            InvokeEventHandler (eventHandlerName);
-        }
-
-        /// <summary>
         /// returns the html for the widget, override if you need to create your own custom html in your widgets
         /// </summary>
         /// <returns>the widget's html</returns>
@@ -360,9 +350,21 @@ namespace phosphorus.ajax.widgets
         public bool IsPhosphorusRequest {
             get { return !string.IsNullOrEmpty (Page.Request.Params ["__pf_event"]); }
         }
-        
-        private void InvokeEventHandler (string eventHandlerName)
+
+        /// <summary>
+        /// invokes the given event handler
+        /// </summary>
+        /// <param name="eventHandlerName">event handler name</param>
+        protected virtual void InvokeEventHandler (string eventName)
         {
+            string eventHandlerName = null;
+            if (HasAttribute (eventName)) {
+                // probable "onclick" or other types of automatically generated mapping between server method and javascript handler
+                eventHandlerName = this [eventName];
+            } else {
+                // WebMethod invocation
+                eventHandlerName = eventName;
+            }
             Control owner = this.Parent;
             while (!(owner is Page) && !(owner is UserControl) && !(owner is MasterPage))
                 owner = owner.Parent;
@@ -373,6 +375,12 @@ namespace phosphorus.ajax.widgets
                                                             BindingFlags.FlattenHierarchy);
             if (method == null)
                 throw new NotImplementedException ("method + '" + eventHandlerName + "' could not be found");
+
+            // need to verify method has WebMethod attribute
+            object[] atrs = method.GetCustomAttributes (typeof (WebMethod), false /* for security reasons we want method to be explicitly marked as WebMethod */);
+            if (atrs == null || atrs.Length == 0)
+                throw new AccessViolationException ("method + '" + eventHandlerName + "' is illegal to invoke over http");
+
             method.Invoke (owner, new object[] { this, new EventArgs() });
         }
 

@@ -70,6 +70,7 @@
     <Compile Include="core\Utilities.cs" />
     <Compile Include="widgets\Literal.cs" />
     <Compile Include="widgets\Container.cs" />
+    <Compile Include="core\WebMethod.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\phosphorus.types\phosphorus.types.csproj">

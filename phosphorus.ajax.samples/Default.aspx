@@ -30,6 +30,7 @@
                     <li><a href="HTML5.aspx">html5 example</a>
                     <li><a href="Attributes.aspx">attributes example</a>
                     <li><a href="ViewState.aspx">viewstate example</a>
+                    <li><a href="WebMethods.aspx">web methods example</a>
                 </ul>
 
                 <h2>hello world</h2>
@@ -44,7 +45,10 @@
                 <p>the above simplest example you can possibly create with phosphorus.ajax features the literal control, with one event handler, 
                    setting the value of the widget to <em>"hello world"</em> when clicked.&nbsp;&nbsp;as you can see from the codebehind, the value 
                    is set on the server using c#, and automatically sent back to the client using json.&nbsp;&nbsp;the event handler is mapped 
-                   with the <em>"onclick"</em> property, and the tag is set through the <em>"Tag"</em> property in the aspx markup for the control
+                   with the <em>"onclick"</em> property, and the tag is set through the <em>"Tag"</em> property in the aspx markup for the control.
+                   &nbsp;&nbsp;for security issues, and for clarity, phosphorus.ajax always forces you to mark your event handlers and methods you 
+                   wish to invoke from javascript on the client side with the attribute <em>"WebMethod"</em>, as you can see in the codebehind of 
+                   this example
 
                 <p>if you look at the html markup of the page, you will notice that the markup is clean, and follows all html best practices, such 
                    as having all script inclusions at the bottom of the markup, no inline javascript in the html, and so on.&nbsp;&nbsp;in addition, 

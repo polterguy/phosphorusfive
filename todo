@@ -1,11 +1,11 @@
 
 
-* compress and gzip javascript files through pre-build step on Linux-Build
+* gzip javascript files through pre-build step on Release-Linux
 
 * create unit tests
 
 * create support for saving class.id in control state for dynamically added widgets, such that dynamically added widgets will
-  be re-created during postbacks
+  be automatically re-created during postbacks
 
 * create cache of MethodInfo to use in InvokeEventHandler to optimize use of reflection, and investigate if we can get completely rid 
   of reflection, since it requires "partial trust" on server, which is not supplied by all web hotels for instance
@@ -14,25 +14,17 @@
 
 * store viewstate in session feature on AjaxPage through boolean property
 
-* web method feature for exposing methods directly not having to go through events to invoke functionality on server
-
 * investigate possibility of creating comet/lazyhttp support
 
 * adding javascript in ajax postbacks that will be sent from server to client
 
 * adding javascript files, and css, plus other types of headers in ajax postback
 
-* make sure all samples validates against w3c validator ('onclicked' remains)
-
 * create option to remove unnecssary whitespaces in html sent in HtmlFilter, investigate if this is possible first though
 
 * make sure script inclusions by default don't mess up spacing in html filter
 
 * create possibility of creating global page level "onbefore", "onsuccess" and "oneror" handlers in javascript
-
-* create better alternative to 'onclicked' for intercepting ajax requests
-
-* verify content is rendered using correct encoding
 
 * modify readme to have fully functioning complete example of Default.aspx page, with complete codebehind, and complete .aspx markup
 

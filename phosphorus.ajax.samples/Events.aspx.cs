@@ -15,31 +15,37 @@ namespace phosphorus.ajax.samples
     {
         protected pf.Literal li4_span;
 
+        [WebMethod]
         protected void li1_onclick (pf.Literal literal, EventArgs e)
         {
             literal.innerHTML = "widget was clicked";
         }
         
+        [WebMethod]
         protected void li2_onmouseover (pf.Literal literal, EventArgs e)
         {
             literal.innerHTML = "widget has mouse over it";
         }
         
+        [WebMethod]
         protected void li2_onmouseout (pf.Literal literal, EventArgs e)
         {
             literal.innerHTML = "widget had mouse moved away from it";
         }
         
+        [WebMethod]
         protected void li3_onmousedown (pf.Literal literal, EventArgs e)
         {
             literal.innerHTML = "widget has mouse clicking it";
         }
         
+        [WebMethod]
         protected void li3_onmouseup (pf.Literal literal, EventArgs e)
         {
             literal.innerHTML = "widget had mouse release button";
         }
         
+        [WebMethod]
         protected void li4_txt_onchange (pf.Literal literal, EventArgs e)
         {
             li4_span.innerHTML = "new text: '" + literal ["value"] + "'";

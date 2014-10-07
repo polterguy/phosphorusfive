@@ -14,6 +14,7 @@ namespace phosphorus.ajax.samples
     public partial class Container : AjaxPage
     {
         // using the same event handler for both of our literal widgets
+        [WebMethod]
         protected void element_onclick (pf.Literal literal, EventArgs e)
         {
             literal.innerHTML = "widget was clicked";
