@@ -238,7 +238,7 @@ namespace phosphorus.ajax.widgets
                     delegate(Attribute obj) {
                     return obj.Name == idx.Name;
                 })) {
-                    tmp ["__pf_del"].Value = idx.Name;
+                    tmp ["__pf_delete"].Value = idx.Name;
                 }
             }
             if (ViewState.IsItemDirty ("Tag")) {
@@ -257,11 +257,11 @@ namespace phosphorus.ajax.widgets
 
             if (IsPhosphorusRequest) {
 
-                if (Page.Request.Params ["__pf_wdg"] == ClientID) {
+                if (Page.Request.Params ["__pf_widget"] == ClientID) {
 
                     Page.LoadComplete += delegate {
                         // event was raised for this widget
-                        InvokeEvent (Page.Request.Params ["__pf_evt"]);
+                        InvokeEvent (Page.Request.Params ["__pf_event"]);
                     };
                 }
             }
@@ -358,7 +358,7 @@ namespace phosphorus.ajax.widgets
         /// </summary>
         /// <value><c>true</c> if this instance is an ajax request; otherwise, <c>false</c></value>
         public bool IsPhosphorusRequest {
-            get { return Page.Request.Params ["__pf_ajax"] == "1"; }
+            get { return !string.IsNullOrEmpty (Page.Request.Params ["__pf_event"]); }
         }
         
         private void InvokeEventHandler (string eventHandlerName)

@@ -5,20 +5,27 @@
 
 (function() {
 
-  // main namespace
+
+  /*
+   * main namespace
+   * 
+   * all javascript functionality in phosphorus.ajax can be found in 
+   * the 'pf' namespace
+   * 
+   * as a general rule, all functions and properties starting with an 
+   * underscore ('_') are not meant to be used directly, but are for 
+   * internal use in the library. all other methods can be used for 
+   * your convenience as you wish
+   */
   pf = {};
 
-  // 'oo' helper functions
-  // make sure init is invoked when constructing new objects from classes
-  pf.clazz = function() {
-    return function() {
-      if (this.init) {
-        return this.init.apply(this, arguments);
-      }
-    };
-  };
 
-  // extends the given lhs with every property from rhs and return lhs
+  /*
+   * extends 'orig' with values from 'obj'
+   * 
+   * extends the 'orig' object with all values from the 'obj' object 
+   * and returns 'orig' back to caller
+   */
   pf.extend = function(orig, obj) {
     for (var p in obj) {
       orig[p] = obj[p];
@@ -26,7 +33,13 @@
     return orig;
   };
 
-  // returns a pf.element wrapping the given id html element
+
+  /*
+   * returns a 'pf.element' wrapping a dom element
+   * 
+   * pass in the 'id' of the element you wish to wrap
+   * alternatively; pass in the dom element directly
+   */
   pf.$ = function(id) {
     if (id.parentNode) {
       return new pf.element(id);
@@ -35,46 +48,80 @@
     }
   };
 
-  // creates and executes a new ajax request, used as event handler code for html onxxx attributes
+
+  /*
+   * raise server side event
+   *
+   * raises a server side event for a dom element
+   * 'event' is the dom event
+   */
   pf.e = function(event) {
     var el = pf.$(event.target);
     el.raise('on' + event.type);
   };
 
-  // utility namespace
-  pf.util = {};
 
-  // returns the new value according to the given val
-  pf.util.getChange = function(old, val) {
-    if (val === null) {
-      return;
-    }
-    if (typeof val === 'object') {
-      if (val.length == 2) {
-        return old.substring(0, val[0]) + val[1]; // trimming old, concatenating new
-      } else {
-        if (typeof val[0] === 'number') {
-          return old.substring(old, val[0]); // only trimming old
+  /*
+   * returns the new value for element property/attribute
+   *
+   * the server can return 5 possible different values for updating properties and attributes;
+   * 
+   *   - string            (which contains the new value of the property/attribute)
+   * 
+   *   - [number]          (which means the existing value is to have everything removed 
+   *                        starting from 'number' position)
+   * 
+   *   - [string]          (which means the existing value should have the given 'string' 
+   *                        concatenated to its existing value)
+   *
+   *   - [number, string]  (which means the given string it to be shortened from 'number' 
+   *                        position and have 'string' concatenated to its existing value)
+   *
+   *   - null              (property/attribute set to null)
+   *
+   * this function returns the new value of the property/attribute according to the 'val'
+   * object given
+   */
+  pf._getChange = function(old, val) {
+    if (val !== null) {
+      if (typeof val === 'object') {
+        if (val.length == 2) {
+          return old.substring(0, val[0]) + val[1]; // removing from 'number' and concatenating 'string'
         } else {
-          return old + val[0]; // only concatenating
+          if (typeof val[0] === 'number') {
+            return old.substring(0, val[0]); // removing from 'number'
+          } else {
+            return old + val[0]; // only concatenating to existing value
+          }
         }
       }
-    } else {
-      return val;
     }
+    return val; // completely new value
   };
 
-  // element type
-  pf.element = pf.clazz();
+
+  /*
+   * wraps a dom element
+   *
+   * the pf.element type wraps a dom element with some handy 
+   * helper functions for raising server side http ajax requests, 
+   * and help handle the return from the server to update the dom
+   */
+  pf.element = function(el) {
+    this.el = el;
+  };
+
   pf.element.prototype = {
 
-    // initializer, el is expected to be either an id of an element, or a dom element
-    init: function(el) {
-      this.el = el;
-    },
 
-    // returns the first ancestor with the given name
-    getNamedParent: function(name) {
+    /*
+     * returns named ancestor
+     *
+     * returns the first ancestor it can find with the given 'name'.
+     * useful for finding the form for an element, to find out where 
+     * we should post or http request
+     */
+    getAncestor: function(name) {
       var n = this.el;
       while (n.tagName.toLowerCase() != name) {
         n = n.parentNode;
@@ -82,12 +129,22 @@
       return pf.$(n);
     },
 
-    // sets the given key attribute or property to the given value
-    setVal: function(key, value) {
+
+    /*
+     * sets the 'key' property/attribute on dom element with 'value'
+     *
+     * will update one dom element's attribute/property according to 
+     * the return value from the server. might also delete an attribute
+     * entirely. uses pf._getChange internally to figure out how to 
+     * update the given 'key' attribute. this is the main function in 
+     * javascript to update dom elements according to the return value 
+     * from the server after an ajax http request
+     */
+    _set: function(key, value) {
 
       // special handlers for some of our attributes
       switch(key) {
-        case '__pf_del':
+        case '__pf_delete':
           this.el.removeAttribute(value);
           break;
         case 'tagName':
@@ -101,19 +158,28 @@
           break;
         case 'outerHTML':
           var id = this.el.id;
-          this.el.outerHTML = pf.util.getChange(this.el.outerHTML, value);
+          this.el.outerHTML = pf._getChange(this.el.outerHTML, value);
           this.el = pf.$(id).el; // updating element since previous element is now gone
           break;
         case 'innerHTML':
-          this.el.innerHTML = pf.util.getChange(this.el.innerHTML, value);
+          this.el.innerHTML = pf._getChange(this.el.innerHTML, value);
           break;
         default:
-          this.el.setAttribute(key, pf.util.getChange(this.el[key], value));
+          this.el.setAttribute(key, pf._getChange(this.el[key], value));
           break;
       }
     },
 
-    // serialize all form elements beneath this element
+
+    /*
+     * serialize all form elements
+     * 
+     * will serialize all form elements beneath the 'this' element and 
+     * return as key/value object back to caller. will correctly apply 
+     * http and html standards to decide if element should be serialized 
+     * or not, such as avoiding elements that are 'disabled' and have no 
+     * 'name' attribute, etc
+     */
     serialize: function() {
       var val = {};
       var els = this.el.getElementsByTagName('*');
@@ -151,15 +217,16 @@
       return val;
     },
 
-    // creates an xhr request towards the server
+
+    /*
+     * sends one request to the server
+     * 
+     * creates one http ajax request, and sends it to the server
+     */
     _raise: function(evt, options) {
 
-      // serializing form and other parameters
-      var form = this.getNamedParent('form');
-      var pars = form.serialize();
-      pars['__pf_ajax'] = 1;
-      pars['__pf_evt'] = evt;
-      pars['__pf_wdg'] = this.el.id;
+      // finding form
+      var form = this.getAncestor('form');
 
       // creating our xhr object
       var xhr = new XMLHttpRequest();
@@ -167,10 +234,15 @@
       xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
       var T = this;
       xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4) { T.done(xhr); }
+        if (xhr.readyState == 4) { T._done(xhr); }
       };
 
-      // invoking onbefore
+      // serializing form, and adding parameters given through options, before special phosphorus parameters are added
+      // before we call 'onbefore'
+      var pars = pf.extend(pf.extend(form.serialize(), options.parameters), {
+        __pf_event:evt,
+        __pf_widget:this.el.id
+      });
       options.onbefore.apply(this, [pars, evt]);
 
       // sending request
@@ -179,13 +251,67 @@
         if (body != '') {
           body += '&';
         }
-        body += idx + '=' + encodeURIComponent(pars[idx]);
+        var val = pars[idx];
+        if (typeof val != 'string') {
+          val = JSON.stringify(val);
+        }
+        body += idx + '=' + encodeURIComponent(val);
       }
       xhr.send(body);
     },
 
-    // adds up up an ajax request into the chain of ajax requests
-    // and invokes the request, unless there are already other requests waiting
+
+    /*
+     * raise the given 'evt' event with the given 'options'
+     * 
+     * will create an http ajax request, and send to the server, raising 
+     * the given 'evt' event on the widget. pass in options to further 
+     * control how your request is being initiated
+     *
+     * example;
+     *
+     * pf.$('my_id').raise('onclick', {
+     *   onbefore:     function(pars, evt) { // do stuff just before the request is being sent},
+     *   onsuccess:    function(serverReturn, evt) { // do stuff after successful return, but before dom is updated },
+     *   onerror:      function(statusCode, statusText, responseHtml, evt) { // du stuff in case of error },
+     *   parameters:   {
+     *     some_custom_parameter: 56,
+     *     another_custom_parameter: 'howdy world',
+     *     third: true,
+     *     and_even_an_object:{
+     *       x:42,
+     *       y:13
+     *     }
+     *   }
+     * });
+     * 
+     * the above example will raise the event 'onclick' on the server side widget with the id 
+     * of 'my_id'. it will also add up the custom parameters found in the 'parameters' parts.
+     * the 'and_even_an_object' will be serialized as json with the http post request id of 
+     * 'and_even_an_object', and the other parameters will simply be transferred as is, with 
+     * their names being the http post request id used to extract them on the server side
+     *
+     * 'onbefore' will be called just before the http request is sent
+     * 'onsuccess' will be called when response returns, but before request is evaluated
+     * 'onerror' will be called if something goes wrong with the request
+     *
+     * all options are optional, and may be excluded entirely
+     *
+     * the request might not be posted immediately, since all requests are queued up, to make 
+     * sure that there is only one active request at the time. this is because form elements 
+     * and other elements might change as a consequence of one request, which would change how 
+     * the next request posts data to the server
+     *
+     * if there are multiple requests in your chain, and an error occurs, then all other 
+     * chained requests will be removed from the chain and not posted
+     *
+     * if the dom element that originally creates a request is removed before it is executed 
+     * and initiated, then the request will never be posted, but simply moved out of the queue
+     *
+     * on the server side, there must exist a widget with the same id as the dom element you're
+     * initiating the request on behalf of, that have an event handler for the 'evt' you raise, 
+     * otherwise an error will be returned
+     */
     raise: function(evt, options) {
       options = pf.extend({
 
@@ -193,10 +319,13 @@
         onbefore: function(/*pars, evt*/){},
 
         // invoked after http request is returned, but before dom is updated, with json object as parameter, and evt as event name
-        onsuccess: function(/*json, evt*/){},
+        onsuccess: function(/*serverReturn, evt*/){},
 
         // invoked if an error occurs during http request, with status code, status text, server response and event name
-        onerror: function(/*code, status, response, evt*/){}
+        onerror: function(/*statusCode, statusText, responseHtml, evt*/){},
+
+        // custom parameters you wish to send in your http request
+        parameters:{}
       }, options);
 
       // adding to chain
@@ -211,8 +340,18 @@
       if (pf._chain.length == 1) { pf._next(); }
     },
 
-    // invoked when server event is done executing
-    done: function(xhr) {
+
+    /*
+     * executed when http ajax response is returned from server
+     * 
+     * checks the status of the response, and calls either 'onsuccess' or 
+     * 'onerror' depending upon the http status code returned from the server 
+     * before it evaluates the return value from the server, and initiates the 
+     * next request in the chain, if there are any more requests in chain
+     *
+     * for internal use only
+     */
+    _done: function(xhr) {
 
       // removing current request from chain
       var cur = pf._chain.splice(0, 1)[0];
@@ -220,18 +359,19 @@
 
       if (xhr.status >= 200 && xhr.status < 300) {
 
-        // success
+        // success, calling 'onsuccess' before response is evaluated
         var json = eval('(' + xhr.responseText +')');
         options.onsuccess.apply(this, [json, cur.evt]);
         for (var idxEl in json['widgets']) {
           var el = pf.$(idxEl);
           for (var idxAtr in json['widgets'][idxEl]) {
-            el.setVal(idxAtr, json['widgets'][idxEl][idxAtr]);
+            el._set(idxAtr, json['widgets'][idxEl][idxAtr]);
           }
         }
       } else {
 
-        // error
+        // error, stopping all chained requests before raising 'onerror'
+        pf._chain = [];
         options.onerror.apply(this, [xhr.status, xhr.statusText, xhr.responseText, cur.evt]);
       }
 
@@ -240,16 +380,34 @@
     }
   };
 
-  // chain of http requests
+
+  /*
+   * holds our chain of http ajax requests
+   *
+   * for internal use only
+   */
   pf._chain = [];
-  
-  // processes one http request
+
+
+  /*
+   * initiaties the next request in chain
+   *
+   * for internal use only
+   */
   pf._next = function() {
 
     // checking if we have anymore htttp requests in our chain
     if (pf._chain.length > 0) {
       var cur = pf._chain[0];
-      cur.el._raise(cur.evt, cur.options);
+      var el = pf.$(cur.el.el.id);
+      if (!el) {
+        // dom element was removed from dom, and request cannot be initiated
+        // skipping this request, and initiating the next one instead
+        pf._chain.splice(0, 1)[0];
+        pf._next();
+      } else {
+        el._raise(cur.evt, cur.options);
+      }
     }
   };
 

@@ -65,7 +65,7 @@ namespace phosphorus.ajax.core
         /// </summary>
         /// <value><c>true</c> if this instance is an ajax request; otherwise, <c>false</c></value>
         public bool IsPhosphorusRequest {
-            get { return Page.Request.Params ["__pf_ajax"] == "1"; }
+            get { return !string.IsNullOrEmpty (Page.Request.Params ["__pf_event"]); }
         }
 
         /// <summary>

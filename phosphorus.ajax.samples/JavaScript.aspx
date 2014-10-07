@@ -22,7 +22,7 @@
                         runat="server"
                         id="javascript_widget"
                         Tag="strong"
-                        onclick="pf_samples.javascript_widget_onclick()"
+                        onclick="pf_samples.javascript_widget_onclick(event)"
                         onclicked="javascript_widget_onclicked">click me</pf:Literal> 
                    to see an example of how to intercept an http request, both before it is being sent, and after it returns from the server.
                    &nbsp;&nbsp;in this example we add a custom http parameter from the client, which we use on the server.&nbsp;&nbsp;in addition, 
@@ -51,42 +51,40 @@
   pf_samples = {};
 
   // invoked when javascript_widget is clicked
-  pf_samples.javascript_widget_onclick = function() {
+  pf_samples.javascript_widget_onclick = function(event) {
 
-      // finding element for widget and raising our 'onclicked' event
-      var el = pf.$('javascript_widget');
-      el.raise('onclicked', {
-        onbefore: pf_samples.javascript_widget_onclick_onbefore,
-        onsuccess: pf_samples.javascript_widget_onclick_onsuccess
-      });
-  }
+    // finding element for widget and raising our 'onclicked' event
+    var el = pf.$(event.target);
+    el.raise('onclicked', {
 
-  // callback invoked just before request is sent to server
-  // here you can add up your own custom parameters, or even remove existing parameters, before the 
-  // http request is sent
-  pf_samples.javascript_widget_onclick_onbefore = function(pars, evt) {
+      // called just before request is sent
+      onbefore: function(pars, evt) {
+        // checking to see if we should exclude viewstate in request
+        // you can exclude any form element data you wish with this method
+        var noState = pf.$('no_viewstate').el.checked;
+        if (noState) {
+          delete pars.__VIEWSTATE;
+        }
+      },
 
-    // checking to see if we should exclude viewstate in request
-    // you can exclude any form element data you wish with this method
-    var noState = pf.$('no_viewstate').el.checked;
-    if (noState) {
-      delete pars.__VIEWSTATE;
-    }
+      // called when a successful response is returned, but before dom is updated with return value from server
+      onsuccess: function(retVal, evt) {
+        if(retVal.widgets && retVal.widgets.javascript_widget) {
+          retVal.widgets.javascript_widget.innerHTML += '. source of howdies was; \'' + evt + 
+            '\'. before dom was updated, the widget had; \'' + this.el.innerHTML + '\' as its html. widget was clicked ';
+        }
+      },
 
-    // adding up a custom parameter
-    // with this logic, you can transfer stuff that's not form element data
-    pars.custom_data = 'your browser says; \'hello\'';
-  }
-
-  // callback invoked when request returns from server, but before json is parsed
-  // here you can massage, add, parse and remove objects from the json return value before it is parsed
-  // or do other things ... :)
-  pf_samples.javascript_widget_onclick_onsuccess = function(json, evt) {
-    if(json.widgets && json.widgets.javascript_widget) {
-      json.widgets.javascript_widget.innerHTML += '. source of howdies was; \'' + evt + 
-        '\'. before dom was updated, the widget had; \'' + this.el.innerHTML + '\' as its html :)';
-    }
-  }
+      // passing in custom data to event
+      // note that this can also be done in our 'onbefore' callback
+      // also notice that if you have form elements with the same name as your custom parameters, then your 
+      // custom parameters will overwrite your form element values
+      // you can send any object type you wish this way, and it will bee serialized as json automatically for you
+      parameters: {
+        custom_data: 'your browser says; \'hello\''
+      }
+    });
+  };
 })();
         </script>
     </body>

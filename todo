@@ -35,5 +35,11 @@
 
 * investigate if we can create custom attributes, such as "onclicked", and still retain html compliance
 
+* verify content is rendered using correct encoding
+
+* modify readme to have functioning complete example of Default.aspx page, with complete codebehind, and complete .aspx markup
+
+* inform in ViewState.aspx that developer can turn off viewstate on page level
+
 
 
