@@ -52,52 +52,47 @@
                         style="width:950px;display:block;float:left;"
                         Tag="textarea">Lorem ipsum dolor sit amet, consectetur adipiscing elit.  Morbi malesuada, turpis id dapibus elementum, risus justo volutpat nisl, ac consequat turpis risus eget diam.  Donec tristique pellentesque nisi, eget blandit dolor aliquet a.  Aliquam erat volutpat.  Curabitur id massa dapibus, maximus neque non, imperdiet lacus.  Pellentesque posuere ligula tortor, nec eleifend nisi auctor nec.  Integer semper dapibus turpis ac posuere.  Morbi sed massa a mi lobortis viverra.  Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Morbi sodales sem at urna eleifend, eu molestie dolor dapibus</pf:Literal>
 
-                    <pf:Literal
+                    <pf:Void
                         runat="server"
                         id="viewState"
                         name="viewState"
                         Tag="input"
-                        HasEndTag="false"
                         style="display:block;clear:both;float:left;width:20px;"
                         type="checkbox" /><label for="viewState" style="width:120px;float:left;display:block;">viewstate</label>
 
-                    <pf:Literal
+                    <pf:Void
                         runat="server"
                         id="submit"
                         Tag="input"
                         type="button" 
-                        HasEndTag="false"
                         style="display:block;float:left;width:200px;"
                         value="submit new text"
                         onclick="submit_onclick" />
 
-                    <pf:Literal
+                    <pf:Void
                         runat="server"
                         id="changeClass"
                         Tag="input"
                         type="button" 
-                        HasEndTag="false"
                         style="display:block;float:left;width:200px;"
                         value="change class"
                         onclick="changeClass_onclick" />
 
-                    <pf:Literal
+                    <pf:Void
                         runat="server"
                         id="makeInVisible"
                         Tag="input"
                         type="button" 
                         style="display:block;float:left;width:200px;"
-                        HasEndTag="false"
                         value="make invisible"
                         onclick="makeInVisible_onclick" />
 
-                    <pf:Literal
+                    <pf:Void
                         runat="server"
                         id="makeVisible"
                         Tag="input"
                         type="button" 
                         style="display:block;float:left;width:200px;"
-                        HasEndTag="false"
                         value="make visible"
                         onclick="makeVisible_onclick" />
 
@@ -134,7 +129,7 @@
                    if you have viewstate enabled.&nbsp;&nbsp;if you inspect the http request using your browser, you can see this for 
                    yourself.&nbsp;&nbsp;below you can try this for yourself
 
-                <p><pf:Literal
+                <p><pf:Void
                         runat="server"
                         id="addOne"
                         Tag="input"

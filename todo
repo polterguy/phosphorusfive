@@ -28,6 +28,6 @@
 
 * modify readme to have fully functioning complete example of Default.aspx page, with complete codebehind, and complete .aspx markup
 
-
+* create "void element" as a third alternative to Literal and Container to cover all cases, since it is useful for input elements and such
 
 

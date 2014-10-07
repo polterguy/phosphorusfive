@@ -16,7 +16,7 @@
 
                 <h1>html5 example</h1>
 
-                <p>this example shows you how to create an html5 video element, thx to <a href="http://www.bigbuckbunny.org/">big buck bunny</a>>
+                <p>this example shows you how to create an html5 video element, thx to <a href="http://www.bigbuckbunny.org/">big buck bunny</a>
 
                 <p><pf:Literal
                     runat="server"

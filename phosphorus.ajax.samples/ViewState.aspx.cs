@@ -15,7 +15,7 @@ namespace phosphorus.ajax.samples
     {
         protected pf.Literal content;
         protected pf.Literal txt;
-        protected pf.Literal viewState;
+        protected pf.Void viewState;
 
         protected override void OnInit (EventArgs e)
         {
@@ -25,31 +25,31 @@ namespace phosphorus.ajax.samples
         }
 
         [WebMethod]
-        protected void submit_onclick (pf.Literal btn, EventArgs e)
+        protected void submit_onclick (pf.Void btn, EventArgs e)
         {
             content.innerHTML = txt.innerHTML.Replace (".  ", ".&nbsp;&nbsp;");
         }
         
         [WebMethod]
-        protected void changeClass_onclick (pf.Literal btn, EventArgs e)
+        protected void changeClass_onclick (pf.Void btn, EventArgs e)
         {
             content ["class"] = "green";
         }
         
         [WebMethod]
-        protected void makeInVisible_onclick (pf.Literal btn, EventArgs e)
+        protected void makeInVisible_onclick (pf.Void btn, EventArgs e)
         {
             content.Visible = false;
         }
         
         [WebMethod]
-        protected void makeVisible_onclick (pf.Literal btn, EventArgs e)
+        protected void makeVisible_onclick (pf.Void btn, EventArgs e)
         {
             content.Visible = true;
         }
         
         [WebMethod]
-        protected void addOne_onclick (pf.Literal btn, EventArgs e)
+        protected void addOne_onclick (pf.Void btn, EventArgs e)
         {
             if (!content.EnableViewState) {
                 content.innerHTML = "this only works with viewstate enabled!!";

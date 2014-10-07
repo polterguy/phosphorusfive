@@ -46,7 +46,7 @@ namespace phosphorus.ajax.samples
         }
         
         [WebMethod]
-        protected void li4_txt_onchange (pf.Literal literal, EventArgs e)
+        protected void li4_txt_onchange (pf.Void literal, EventArgs e)
         {
             li4_span.innerHTML = "new text: '" + literal ["value"] + "'";
         }

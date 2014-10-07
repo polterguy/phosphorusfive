@@ -18,13 +18,12 @@
 
                 <p>this example shows how you can create form elements
 
-                <p><pf:Container
+                <p><pf:Void
                     runat="server"
                     id="txt"
                     name="txt"
                     placeholder="type into me, then click tab"
                     Tag="input"
-                    HasEndTag="false"
                     type="text"
                     onchange="txt_onchange" />
 

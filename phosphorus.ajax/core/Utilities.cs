@@ -5,7 +5,7 @@
 
 using System;
 
-namespace phosphorus.ajax
+namespace phosphorus.ajax.core
 {
     /// <summary>
     /// utility class, containing some useful helpers

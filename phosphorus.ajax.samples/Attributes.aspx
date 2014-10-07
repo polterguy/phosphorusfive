@@ -34,7 +34,7 @@
                     Tag="p">some piece of text</pf:Literal>
 
                 <ul>
-                    <li><pf:Literal 
+                    <li><pf:Void 
                             runat="server"
                             id="toggleClass"
                             Tag="input"
@@ -43,7 +43,7 @@
                             value="toggle class"
                             onclick="toggleClass_onclick"/> attribute
 
-                    <li><pf:Literal 
+                    <li><pf:Void 
                             runat="server"
                             id="changeTag"
                             Tag="input"
@@ -52,7 +52,7 @@
                             value="change tag"
                             onclick="changeTag_onclick"/> of element
 
-                    <li><pf:Literal 
+                    <li><pf:Void 
                             runat="server"
                             id="toggleVisibility"
                             Tag="input"

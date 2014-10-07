@@ -16,7 +16,7 @@ namespace phosphorus.ajax.samples
         protected pf.Literal literal;
 
         [WebMethod]
-        protected void toggleClass_onclick (pf.Literal btn, EventArgs e)
+        protected void toggleClass_onclick (pf.Void btn, EventArgs e)
         {
             if (literal.HasAttribute ("class"))
                 literal.RemoveAttribute ("class");
@@ -25,7 +25,7 @@ namespace phosphorus.ajax.samples
         }
         
         [WebMethod]
-        protected void changeTag_onclick (pf.Literal btn, EventArgs e)
+        protected void changeTag_onclick (pf.Void btn, EventArgs e)
         {
             if (literal.Tag == "p")
                 literal.Tag = "div";
@@ -34,7 +34,7 @@ namespace phosphorus.ajax.samples
         }
         
         [WebMethod]
-        protected void toggleVisibility_onclick (pf.Literal btn, EventArgs e)
+        protected void toggleVisibility_onclick (pf.Void btn, EventArgs e)
         {
             if (literal.Visible)
                 literal.Visible = false;

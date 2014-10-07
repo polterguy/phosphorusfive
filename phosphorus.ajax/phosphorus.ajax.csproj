@@ -62,7 +62,6 @@
     <Compile Include="core\Manager.cs" />
     <Compile Include="core\filters\HtmlFilter.cs" />
     <Compile Include="core\filters\Filter.cs" />
-    <Compile Include="widgets\Attribute.cs" />
     <Compile Include="widgets\Widget.cs" />
     <Compile Include="core\filters\JsonFilter.cs" />
     <Compile Include="core\AjaxPage.cs" />
@@ -71,6 +70,8 @@
     <Compile Include="widgets\Literal.cs" />
     <Compile Include="widgets\Container.cs" />
     <Compile Include="core\WebMethod.cs" />
+    <Compile Include="core\Attribute.cs" />
+    <Compile Include="widgets\Void.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\phosphorus.types\phosphorus.types.csproj">

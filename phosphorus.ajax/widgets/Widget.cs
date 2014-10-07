@@ -9,7 +9,7 @@ using System.Web.UI;
 using System.Reflection;
 using System.Collections.Generic;
 using phosphorus.types;
-using phosphorus.ajax.core;
+using core = phosphorus.ajax.core;
 
 namespace phosphorus.ajax.widgets
 {
@@ -20,15 +20,15 @@ namespace phosphorus.ajax.widgets
     {
         private bool _render;
         private bool _renderInvisible;
-        private List<Attribute> _beforeChanges;
+        private List<core.Attribute> _beforeChanges;
 
         /// <summary>
         /// initializes a new instance of the <see cref="phosphorus.ajax.widgets.Widget"/> class
         /// </summary>
         public Widget ()
         {
-            Attributes = new List<Attribute> ();
-            _beforeChanges = new List<Attribute> ();
+            Attributes = new List<core.Attribute> ();
+            _beforeChanges = new List<core.Attribute> ();
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace phosphorus.ajax.widgets
         /// gets the attributes for the widget
         /// </summary>
         /// <value>the attributes</value>
-        protected List<Attribute> Attributes {
+        protected List<core.Attribute> Attributes {
             get;
             private set;
         }
@@ -122,10 +122,10 @@ namespace phosphorus.ajax.widgets
             base.LoadViewState (tmp [0]);
 
             // adding attributes that previously have been changed
-            Attribute[] atrs = tmp [1] as Attribute [];
-            foreach (Attribute idx in atrs) {
+            core.Attribute[] atrs = tmp [1] as core.Attribute [];
+            foreach (core.Attribute idx in atrs) {
                 Attributes.RemoveAll (
-                    delegate(Attribute idx2) {
+                    delegate(core.Attribute idx2) {
                         return idx.Name == idx2.Name;
                     });
                 idx.InViewState = true;
@@ -134,9 +134,9 @@ namespace phosphorus.ajax.widgets
 
             // removing attributes that have been previously removed
             if (tmp [2] != null) {
-                foreach (Attribute idx in tmp [2] as Attribute []) {
+                foreach (core.Attribute idx in tmp [2] as core.Attribute []) {
                     Attributes.RemoveAll (
-                        delegate(Attribute idx2) {
+                        delegate(core.Attribute idx2) {
                             return idx.Name == idx2.Name;
                         });
                 }
@@ -161,18 +161,18 @@ namespace phosphorus.ajax.widgets
             retVal [0] = base.SaveViewState ();
 
             // dirty attributes and attributes that are already in the viewstate due to previous changes
-            List<Attribute> dirty = Attributes.FindAll (
-                delegate(Attribute idx) {
+            List<core.Attribute> dirty = Attributes.FindAll (
+                delegate(core.Attribute idx) {
                     return idx.Dirty || idx.InViewState;
                 });
             retVal [1] = dirty.ToArray ();
 
             // attributes that have been removed
             if (_beforeChanges != null) {
-                List<Attribute> removed = _beforeChanges.FindAll (
-                    delegate(Attribute idx) {
+                List<core.Attribute> removed = _beforeChanges.FindAll (
+                    delegate(core.Attribute idx) {
                         return !Attributes.Exists (
-                            delegate(Attribute idx2) {
+                            delegate(core.Attribute idx2) {
                                 return idx.Name == idx2.Name;
                             });
                     });
@@ -197,12 +197,12 @@ namespace phosphorus.ajax.widgets
                         if (_render) {
                             Node tmp = new Node (ClientID);
                             tmp ["outerHTML"].Value = GetWidgetHtml ();
-                            (Page as IAjaxPage).Manager.RegisterWidgetChanges (tmp);
+                            (Page as core.IAjaxPage).Manager.RegisterWidgetChanges (tmp);
                         } else {
                             // only place where we really return "true json updates" back to control
                             Node tmp = GetJsonChanges ();
                             if (tmp.Count > 0) {
-                                (Page as IAjaxPage).Manager.RegisterWidgetChanges (tmp);
+                                (Page as core.IAjaxPage).Manager.RegisterWidgetChanges (tmp);
                             }
                             RenderChildren (writer);
                         }
@@ -213,7 +213,7 @@ namespace phosphorus.ajax.widgets
                     if (IsPhosphorusRequest && _renderInvisible && !IsAncestorRendering ()) {
                         Node tmp = new Node (ClientID);
                         tmp ["outerHTML"].Value = GetWidgetInvisibleHtml ();
-                        (Page as IAjaxPage).Manager.RegisterWidgetChanges (tmp);
+                        (Page as core.IAjaxPage).Manager.RegisterWidgetChanges (tmp);
                     } else {
                         writer.Write (GetWidgetInvisibleHtml ());
                     }
@@ -228,14 +228,14 @@ namespace phosphorus.ajax.widgets
         protected virtual Node GetJsonChanges ()
         {
             Node tmp = new Node (ClientID);
-            foreach (Attribute idx in Attributes) {
+            foreach (core.Attribute idx in Attributes) {
                 if (idx.Dirty) {
                     tmp [idx.Name].Value = new Node (idx.OldValue, idx.Value);
                 }
             }
-            foreach (Attribute idx in _beforeChanges) {
+            foreach (core.Attribute idx in _beforeChanges) {
                 if (!Attributes.Exists (
-                    delegate(Attribute obj) {
+                    delegate(core.Attribute obj) {
                     return obj.Name == idx.Name;
                 })) {
                     tmp ["__pf_delete"].Value = idx.Name;
@@ -304,7 +304,7 @@ namespace phosphorus.ajax.widgets
                                     widget ["selected"] = "true";
                                 } else {
                                     widget.Attributes.RemoveAll (
-                                        delegate(Attribute idxAtr) {
+                                        delegate(core.Attribute idxAtr) {
                                             return idxAtr.Name == "selected";
                                         });
                                 }
@@ -377,7 +377,7 @@ namespace phosphorus.ajax.widgets
                 throw new NotImplementedException ("method + '" + eventHandlerName + "' could not be found");
 
             // need to verify method has WebMethod attribute
-            object[] atrs = method.GetCustomAttributes (typeof (WebMethod), false /* for security reasons we want method to be explicitly marked as WebMethod */);
+            object[] atrs = method.GetCustomAttributes (typeof (core.WebMethod), false /* for security reasons we want method to be explicitly marked as WebMethod */);
             if (atrs == null || atrs.Length == 0)
                 throw new AccessViolationException ("method + '" + eventHandlerName + "' is illegal to invoke over http");
 
@@ -453,10 +453,10 @@ namespace phosphorus.ajax.widgets
         /// <param name="writer">where to render</param>
         protected virtual void RenderAttributes (HtmlTextWriter writer)
         {
-            foreach (Attribute idx in Attributes) {
+            foreach (core.Attribute idx in Attributes) {
                 string name = idx.Name;
                 string value;
-                if (idx.Name.StartsWith ("on") && Utilities.IsLegalMethodName (idx.Value)) {
+                if (idx.Name.StartsWith ("on") && core.Utilities.IsLegalMethodName (idx.Value)) {
                     value = "pf.e(event)";
                 } else {
                     value = idx.Value;
@@ -477,8 +477,8 @@ namespace phosphorus.ajax.widgets
         /// <param name="key">name of attribute</param>
         public virtual string GetAttribute (string key)
         {
-            Attribute atr = Attributes.Find (
-                delegate (Attribute idx) {
+            core.Attribute atr = Attributes.Find (
+                delegate (core.Attribute idx) {
                 return idx.Name == key;
             });
             if (atr == null)
@@ -493,8 +493,8 @@ namespace phosphorus.ajax.widgets
         /// <param name="value">value to set the attribute to, if this is null, an empty attribute will be added</param>
         public virtual void SetAttribute (string key, string value)
         {
-            Attribute atr = Attributes.Find (
-                delegate (Attribute idx) {
+            core.Attribute atr = Attributes.Find (
+                delegate (core.Attribute idx) {
                     return idx.Name == key;
                 });
             if (atr != null) {
@@ -504,7 +504,7 @@ namespace phosphorus.ajax.widgets
                 }
                 atr.Value = value;
             } else {
-                atr = new Attribute (key, value);
+                atr = new core.Attribute (key, value);
                 atr.Dirty = IsTrackingViewState;
                 Attributes.Add (atr);
             }
@@ -517,7 +517,7 @@ namespace phosphorus.ajax.widgets
         public virtual void RemoveAttribute (string key)
         {
             Attributes.RemoveAll (
-                delegate(Attribute idx) {
+                delegate(core.Attribute idx) {
                     return idx.Name == key;
                 });
         }
@@ -530,7 +530,7 @@ namespace phosphorus.ajax.widgets
         public virtual bool HasAttribute (string key)
         {
             if (Attributes.Exists (
-                delegate(Attribute idx) {
+                delegate(core.Attribute idx) {
                     return idx.Name == key;
                 }))
                 return true;

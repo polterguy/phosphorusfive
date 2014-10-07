@@ -5,7 +5,7 @@
 
 using System;
 
-namespace phosphorus.ajax.widgets
+namespace phosphorus.ajax.core
 {
     /// <summary>
     /// class encapsulating one attribute for widgets

@@ -50,12 +50,11 @@
                         runat="server"
                         id="li4"
                         HasEndTag="false"
-                        Tag="li"><pf:Literal
+                        Tag="li"><pf:Void
                             runat="server"
                             id="li4_txt"
                             name="li4_txt"
                             Tag="input"
-                            HasEndTag="false"
                             type="text"
                             onchange="li4_txt_onchange"
                             placeholder="type into me and click tab ..." /> - <pf:Literal

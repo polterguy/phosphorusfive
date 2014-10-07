@@ -11,7 +11,7 @@ namespace phosphorus.ajax.core
     /// attribute for marking methods as web methods, possible to invoke from javascript on client side through ajax
     /// </summary>
     [AttributeUsage (AttributeTargets.Method)]
-    public class WebMethod : Attribute
+    public class WebMethod : System.Attribute
     { }
 }
 

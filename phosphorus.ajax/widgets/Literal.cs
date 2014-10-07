@@ -33,12 +33,12 @@ namespace phosphorus.ajax.widgets
             // be added as an attribute to the controls. to not mess with the viewstate however, we need to 
             // reinsert the attribute the same place afterwards that we remove it from
             int index = Attributes.FindIndex (
-                delegate(Attribute obj) {
+                delegate(core.Attribute obj) {
                     return obj.Name == "innerHTML";
                 });
 
             // removing innerHTML attribute, if it exists
-            Attribute atr = null;
+            core.Attribute atr = null;
             if (index != -1) {
                 atr = Attributes [index];
                 Attributes.RemoveAt (index);
