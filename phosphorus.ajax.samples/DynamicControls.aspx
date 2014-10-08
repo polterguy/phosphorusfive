@@ -21,61 +21,25 @@
                 <pf:Container
                     runat="server"
                     id="list"
-                    Tag="ul">
-                    <pf:Literal
-                        runat="server"
-                        id="first"
-                        Tag="li"
-                        HasEndTag="false"
-                        onclick="item_onclick">toilet paper</pf:Literal>
-                    <pf:Literal
-                        runat="server"
-                        id="second"
-                        Tag="li"
-                        HasEndTag="false"
-                        onclick="item_onclick">bacon</pf:Literal>
-                </pf:Container>
+                    Visible="false"
+                    Tag="ul" />
 
-                <pf:Container
-                    runat="server"
-                    id="position"
-                    style="width:100px;"
-                    name="position"
-                    Tag="select">
-                    <pf:Literal
+                <p>
+                    <pf:Void
                         runat="server"
-                        Tag="option"
-                        value="before"
-                        id="before">before</pf:Literal>
-                    <pf:Literal
+                        id="txt"
+                        Tag="input"
+                        type="text"
+                        name="txt"
+                        placeholder="text of element ..." />
+
+                    <pf:Void
                         runat="server"
-                        Tag="option"
-                        value="after"
-                        id="after">after</pf:Literal>
-                </pf:Container>
-
-                <pf:Container
-                    runat="server"
-                    id="child"
-                    name="child"
-                    style="width:300px;"
-                    Tag="select" />
-
-                <pf:Void
-                    runat="server"
-                    id="txt"
-                    Tag="input"
-                    type="text"
-                    name="txt"
-                    placeholder="text of element ..." />
-
-                <pf:Void
-                    runat="server"
-                    id="insert"
-                    Tag="input"
-                    type="button"
-                    onclick="insert_onclick"
-                    value="insert" />
+                        id="insert"
+                        Tag="input"
+                        type="button"
+                        onclick="insert_onclick"
+                        value="insert" />
 
             </div>
         </form>

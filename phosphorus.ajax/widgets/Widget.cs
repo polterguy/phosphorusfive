@@ -16,17 +16,18 @@ namespace phosphorus.ajax.widgets
     /// <summary>
     /// general ajax html element
     /// </summary>
+    [ViewStateModeById]
     public abstract class Widget : Control, IAttributeAccessor
     {
         // helps determine if we should re-render widget, and if so, in what type of rendering mode
-        private enum RenderMode
+        protected enum RenderMode
         {
             Default,
             RenderVisible,
             RenderInvisible
         };
 
-        private RenderMode _render = RenderMode.Default;
+        protected RenderMode _renderMode = RenderMode.Default;
 
         /// <summary>
         /// initializes a new instance of the <see cref="phosphorus.ajax.widgets.Widget"/> class
@@ -111,11 +112,11 @@ namespace phosphorus.ajax.widgets
                 if (!base.Visible && value && IsTrackingViewState && IsPhosphorusRequest) {
                     // this control was made visible during this request and should be rendered as html
                     // unless any of its ancestors are invisible
-                    _render = RenderMode.RenderVisible;
+                    _renderMode = RenderMode.RenderVisible;
                 } else if (base.Visible && !value && IsTrackingViewState && IsPhosphorusRequest) {
                     // this control was made invisible during this request and should be rendered 
                     // with its invisible  html unless any of its ancestors are invisible
-                    _render = RenderMode.RenderInvisible;
+                    _renderMode = RenderMode.RenderInvisible;
                 }
                 base.Visible = value;
             }
@@ -155,7 +156,7 @@ namespace phosphorus.ajax.widgets
             }
 
             // since viewstate might have invalidated our form data, we need to reload those parts
-            // note, we still need our other reference, since ViewState might be turned off for thise control
+            // note, we still need our other reference, since ViewState might be turned off for this control,
             // at which point this invocation to LoadFormData will never be invoked
             LoadFormData ();
         }
@@ -227,7 +228,7 @@ namespace phosphorus.ajax.widgets
             if (AreAncestorsVisible ()) {
                 if (Visible) {
                     if (IsPhosphorusRequest && !IsAncestorRendering ()) {
-                        if (_render == RenderMode.RenderVisible) {
+                        if (_renderMode == RenderMode.RenderVisible) {
                             Node tmp = new Node (ClientID);
                             tmp ["outerHTML"].Value = GetWidgetHtml ();
                             (Page as core.IAjaxPage).Manager.RegisterWidgetChanges (tmp);
@@ -243,7 +244,7 @@ namespace phosphorus.ajax.widgets
                         RenderHtmlResponse (writer);
                     }
                 } else {
-                    if (IsPhosphorusRequest && _render == RenderMode.RenderInvisible && !IsAncestorRendering ()) {
+                    if (IsPhosphorusRequest && _renderMode == RenderMode.RenderInvisible && !IsAncestorRendering ()) {
                         Node tmp = new Node (ClientID);
                         tmp ["outerHTML"].Value = GetWidgetInvisibleHtml ();
                         (Page as core.IAjaxPage).Manager.RegisterWidgetChanges (tmp);
@@ -279,7 +280,6 @@ namespace phosphorus.ajax.widgets
         protected override void OnInit (EventArgs e)
         {
             Page.RegisterRequiresControlState(this);
-            base.OnInit (e);
 
             if (Page.IsPostBack)
                 LoadFormData ();
@@ -294,6 +294,7 @@ namespace phosphorus.ajax.widgets
                     };
                 }
             }
+            base.OnInit (e);
         }
 
         /// <summary>
@@ -303,7 +304,7 @@ namespace phosphorus.ajax.widgets
         protected virtual void LoadFormData ()
         {
             if (this ["disabled"] == null) {
-                if (!string.IsNullOrEmpty (this ["name"]) || Tag.ToLower () == "option") {
+                if (!string.IsNullOrEmpty (this ["name"]) || (Tag != null && Tag.ToLower () == "option")) {
                     switch (Tag.ToLower ()) {
                     case "input":
                         switch (this ["type"]) {
@@ -360,7 +361,7 @@ namespace phosphorus.ajax.widgets
             return string.Format (@"<{0} id=""{1}"" style=""display:none important!;""></{0}>", InvisibleTag, ClientID);
         }
 
-        private bool IsPhosphorusRequest {
+        protected bool IsPhosphorusRequest {
             get { return !string.IsNullOrEmpty (Page.Request.Params ["__pf_event"]); }
         }
 
@@ -417,7 +418,7 @@ namespace phosphorus.ajax.widgets
             Control idx = this.Parent;
             while (idx != null) {
                 Widget wdg = idx as Widget;
-                if (wdg != null && wdg._render == RenderMode.RenderVisible)
+                if (wdg != null && wdg._renderMode == RenderMode.RenderVisible)
                     return true;
                 idx = idx.Parent;
             }

@@ -30,4 +30,10 @@
 
 * create "void element" as a third alternative to Literal and Container to cover all cases, since it is useful for input elements and such
 
+* make sure input types do NOT return their values as json, investigate if possible to remove values also from viewstate
+
+* make sure Widget does not save Visible in ControlState unless it is invisible ...
+
+* make only added controls and removed controls render in CreatePersistentControl and RemovedControl
+
 

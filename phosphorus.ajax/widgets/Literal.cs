@@ -13,7 +13,7 @@ namespace phosphorus.ajax.widgets
     /// innerHTML property to access the text content of the widget
     /// </summary>
     [ParseChildren(true, "innerHTML")]
-    [PersistChildren(true)]
+    [PersistChildren(false)]
     public class Literal : Widget
     {
         /// <summary>
@@ -60,7 +60,7 @@ namespace phosphorus.ajax.widgets
 
         protected override void AddedControl (Control control, int index)
         {
-            throw new ArgumentException ("Literal widget cannot have children controls");
+            throw new ApplicationException ("Literal widget cannot have children controls");
         }
         
         protected override bool HasContent {
