@@ -170,6 +170,8 @@
                    <br>
                    Donald Knuth
 
+                <p>onwards to the <a href="DynamicControls.aspx">dynamic controls sample</a>
+
             </div>
         </form>
     </body>

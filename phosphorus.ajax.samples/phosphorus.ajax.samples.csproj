@@ -49,6 +49,7 @@
     <Content Include="HTML5.aspx" />
     <Content Include="Attributes.aspx" />
     <Content Include="ViewState.aspx" />
+    <Content Include="DynamicControls.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Default.aspx.cs">
@@ -77,6 +78,9 @@
     </Compile>
     <Compile Include="ViewState.aspx.cs">
       <DependentUpon>ViewState.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="DynamicControls.aspx.cs">
+      <DependentUpon>DynamicControls.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

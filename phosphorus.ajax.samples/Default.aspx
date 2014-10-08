@@ -30,7 +30,7 @@
                     <li><a href="HTML5.aspx">html5 example</a>
                     <li><a href="Attributes.aspx">attributes example</a>
                     <li><a href="ViewState.aspx">viewstate example</a>
-                    <li><a href="WebMethods.aspx">web methods example</a>
+                    <li><a href="DynamicControls.aspx">dynamic controls example</a>
                 </ul>
 
                 <h2>hello world</h2>

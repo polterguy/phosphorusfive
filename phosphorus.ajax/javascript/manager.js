@@ -205,9 +205,9 @@
               val[el.name] = el.value;
               break;
             case 'select':
-              for (var i = 0; i < el.options.length; i++) {
-                if (el.options[i].selected) {
-                  val[el.name] = el.options[i].value;
+              for (var i2 = 0; i2 < el.options.length; i2++) {
+                if (el.options[i2].selected) {
+                  val[el.name] = el.options[i2].value;
                   break;
                 }
               } break;

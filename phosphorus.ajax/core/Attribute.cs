@@ -10,23 +10,23 @@ namespace phosphorus.ajax.core
     /// <summary>
     /// class encapsulating one attribute for widgets
     /// </summary>
-    [Serializable]
     public class Attribute
     {
-        [NonSerialized]
-        private bool _dirty;
-
-        [NonSerialized]
-        private bool _inViewState;
-
-        [NonSerialized]
-        private string _oldValue;
+        // helper for rendering attributes back to client correctly
+        internal enum AttributeState
+        {
+            Dirty = 1, // meaning, updates needs to be sent to client
+            Removed = 2, // meaning it was removed
+            ExistedBeforeViewstate = 4 // helps determine if attribute existed before viewstate was finished loading
+        };
 
         /// <summary>
         /// initializes a new instance of the <see cref="phosphorus.ajax.widgets.Attribute"/> class
         /// </summary>
         public Attribute ()
-        { }
+        {
+            State = 0;
+        }
 
         /// <summary>
         /// initializes a new instance of the <see cref="phosphorus.ajax.widgets.Attribute"/> class
@@ -66,20 +66,20 @@ namespace phosphorus.ajax.core
             get;
             set;
         }
-        
-        internal bool Dirty {
-            get { return _dirty; }
-            set { _dirty = value; }
-        }
-        
-        internal bool InViewState {
-            get { return _inViewState; }
-            set { _inViewState = value; }
-        }
 
         internal string OldValue {
-            get { return _oldValue; }
-            set { _oldValue = value; }
+            get;
+            set;
+        }
+
+        internal string ValueBeforeTracking {
+            get;
+            set;
+        }
+
+        internal int State {
+            get;
+            set;
         }
     }
 }
