@@ -47,11 +47,27 @@
 
                     <pf:Void
                         runat="server"
-                        id="insert"
+                        id="append"
                         Tag="input"
                         type="button"
-                        onclick="insert_onclick"
-                        value="insert" />
+                        onclick="append_onclick"
+                        value="append" />
+
+                    <pf:Void
+                        runat="server"
+                        id="insert_top"
+                        Tag="input"
+                        type="button"
+                        onclick="insert_top_onclick"
+                        value="insert at top" />
+
+                    <pf:Void
+                        runat="server"
+                        id="insert_at_random"
+                        Tag="input"
+                        type="button"
+                        onclick="insert_at_random_onclick"
+                        value="insert at random" />
 
             </div>
         </form>

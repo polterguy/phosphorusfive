@@ -26,7 +26,7 @@ namespace phosphorus.ajax.widgets
         /// <returns>the persistent control</returns>
         /// <param name="id">id of control, if null, and automatic id will be created</param>
         /// <typeparam name="T">the type of control you wish to create</typeparam>
-        public T CreatePersistentControl<T> (string id)  where T : Control, new()
+        public T CreatePersistentControl<T> (string id, int index = -1)  where T : Control, new()
         {
             _isManaging = true;
 
@@ -50,7 +50,11 @@ namespace phosphorus.ajax.widgets
                 // using the supplied id
                 control.ID = id;
             }
+
+        if (index == -1)
             Controls.Add (control);
+        else
+            Controls.AddAt (index, control);
 
             // returning newly created control back to caller, such that he can set his properties and such for it
             return control;
@@ -75,6 +79,9 @@ namespace phosphorus.ajax.widgets
             // reloading persisted controls, if there are any
             object[] tmp = savedState as object[];
             if (tmp != null && tmp.Length > 0 && tmp [0] is string[][]) {
+
+                // we're managing our own controls collection, and need to reload from viewstate all the 
+                // control types and ids, to later merge into control collection
                 _isManaging = true;
                 string[][] ctrls = tmp [0] as string[][];
                 foreach (string[] idx in ctrls) {
@@ -90,6 +97,9 @@ namespace phosphorus.ajax.widgets
         {
             // making sure all persistent controls are persistent to the control state, if there are any
             if (_isManaging) {
+
+                // yup, we're managing our own control collection, and need to save to viewstate all of the controls
+                // types and ids that exists in our control collection
                 var lst = new List<string []> ();
                 foreach (Control idx in Controls) {
                     lst.Add (new string[] { idx.GetType ().AssemblyQualifiedName, idx.ID });
@@ -99,6 +109,8 @@ namespace phosphorus.ajax.widgets
                 tmp [1] = base.SaveControlState ();
                 return tmp;
             } else {
+
+                // "screw this, I'm going home" ... ;)
                 return base.SaveControlState ();
             }
         }
@@ -107,9 +119,11 @@ namespace phosphorus.ajax.widgets
         {
             base.OnLoad (e);
 
-            // clearing existing controls
             if (_isManaging) {
 
+                // removing controls that are not persisted in viewstate
+                // these are normally controls that exists in markup, or was created 
+                // before controls was rooted to page, but later removed by user
                 List<Control> toRemove = new List<Control> ();
                 foreach (Control idx in Controls) {
                     if (!_dynamicControls.Exists (
@@ -122,8 +136,11 @@ namespace phosphorus.ajax.widgets
                     Controls.Remove (idx);
                 }
 
-                // re-creating all of our persistent controls
+                // re-creating all of our persistent controls that does not exist from before
                 // ps, viewstate will reload all properties as long as we get the type and id right
+                // order will be automatically taken care of since we're persisting them into viewstate
+                // in their existing when viewstate is saved
+                int idxNo = 0;
                 foreach (var idx in _dynamicControls) {
                     bool exist = false;
                     foreach (Control idxC in Controls) {
@@ -137,14 +154,16 @@ namespace phosphorus.ajax.widgets
                         ConstructorInfo ctor = type.GetConstructor (new Type[] { });
                         Control ctr = ctor.Invoke (new object[] { }) as Control;
                         ctr.ID = idx.Item2;
-                        Controls.Add (ctr);
+                        Controls.AddAt (idxNo, ctr);
                     }
+                    idxNo += 1;
                 }
             }
         }
 
         protected override void RemovedControl (Control control)
         {
+            // automatically changing the rendering mode of the widget if we should
             if (IsTrackingViewState)
                 RenderingMode = RenderMode.RenderChildren;
             base.RemovedControl (control);
@@ -152,6 +171,7 @@ namespace phosphorus.ajax.widgets
 
         protected override void AddedControl (Control control, int index)
         {
+            // automatically changing the rendering mode of the widget if we should
             if (IsTrackingViewState)
                 RenderingMode = RenderMode.RenderChildren;
             base.AddedControl (control, index);
@@ -159,6 +179,7 @@ namespace phosphorus.ajax.widgets
 
         protected override void AddParsedSubObject (object obj)
         {
+            // simply skipping these buggers, makes ugly markup, but they're too noisy anyway ...
             if (obj is System.Web.UI.LiteralControl)
                 return;
             base.AddParsedSubObject (obj);

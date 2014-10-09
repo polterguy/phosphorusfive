@@ -23,9 +23,30 @@ namespace phosphorus.ajax.samples
         }
         
         [WebMethod]
-        protected void insert_onclick (pf.Void btn, EventArgs e)
+        protected void append_onclick (pf.Void btn, EventArgs e)
         {
             pf.Literal widget = list.CreatePersistentControl<pf.Literal> (null);
+            widget.Tag = "li";
+            widget.HasEndTag = false;
+            widget ["onclick"] = "item_onclick";
+            widget.innerHTML = txt ["value"];
+        }
+        
+        [WebMethod]
+        protected void insert_top_onclick (pf.Void btn, EventArgs e)
+        {
+            pf.Literal widget = list.CreatePersistentControl<pf.Literal> (null, 0);
+            widget.Tag = "li";
+            widget.HasEndTag = false;
+            widget ["onclick"] = "item_onclick";
+            widget.innerHTML = txt ["value"];
+        }
+        
+        [WebMethod]
+        protected void insert_at_random_onclick (pf.Void btn, EventArgs e)
+        {
+            Random rnd = new Random ();
+            pf.Literal widget = list.CreatePersistentControl<pf.Literal> (null, rnd.Next (0, list.Controls.Count));
             widget.Tag = "li";
             widget.HasEndTag = false;
             widget ["onclick"] = "item_onclick";
