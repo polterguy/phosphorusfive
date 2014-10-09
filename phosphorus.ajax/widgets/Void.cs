@@ -15,21 +15,22 @@ namespace phosphorus.ajax.widgets
     {
         public Void ()
         {
-            SelfClosed = true;
             HasEndTag = false;
         }
 
         // overridden to throw an exception if user tries to explicitly set the innerHTML attribute of this control
-        public override void SetAttribute (string key, string value)
-        {
-            if (key == "innerHTML")
-                throw new ArgumentException ("you cannot set the innerHTML property of a Void widget", key);
-            base.SetAttribute (key, value);
+        public override string this [string name] {
+            get { return base [name]; }
+            set {
+                if (name == "innerHTML")
+                    throw new ArgumentException ("you cannot set the 'innerHTML' property of a Void widget");
+                base [name] = value;
+            }
         }
 
         protected override void AddedControl (Control control, int index)
         {
-            throw new ArgumentException ("Void widget cannot have children controls");
+            throw new ArgumentException ("Void widget cannot have children");
         }
         
         protected override bool HasContent {

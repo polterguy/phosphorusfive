@@ -37,3 +37,32 @@
 * make only added controls and removed controls render in CreatePersistentControl and RemovedControl
 
 
+
+
+
+
+================================================================================
+
+             unit tests that needs to be created
+
+================================================================================
+
+* add on attribute, and very dom gets updated
+
+* add one attribute, remove it, and verify viewstate is set back to original value
+
+* add one null attribute, and verify dom gets updated
+
+* add same attribute on server multiple times and verify the server only creates one, both in dom, and on server
+
+* add on attribute, remove it in the same server request, and verify nothing is rendered back to client
+
+* change one attribute, and verify dom gets updated
+
+* change one attribute, change it back to what it was in the same request, and verify nothing gets rendered
+
+
+
+
+
+

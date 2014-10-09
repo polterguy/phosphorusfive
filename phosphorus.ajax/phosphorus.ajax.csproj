@@ -54,6 +54,7 @@
     <Folder Include="widgets\" />
     <Folder Include="core\" />
     <Folder Include="core\filters\" />
+    <Folder Include="core\internals\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="javascript\manager.js" />
@@ -70,8 +71,9 @@
     <Compile Include="widgets\Literal.cs" />
     <Compile Include="widgets\Container.cs" />
     <Compile Include="core\WebMethod.cs" />
-    <Compile Include="core\Attribute.cs" />
     <Compile Include="widgets\Void.cs" />
+    <Compile Include="core\internals\Attribute.cs" />
+    <Compile Include="core\internals\AttributeStorage.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\phosphorus.types\phosphorus.types.csproj">

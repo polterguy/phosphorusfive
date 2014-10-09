@@ -27,31 +27,6 @@ namespace phosphorus.ajax.widgets
             set { this ["innerHTML"] = value; }
         }
 
-        protected override void RenderAttributes (HtmlTextWriter writer)
-        {
-            // unless we remove the innerHTML attribute before rendering, the contents of the control will 
-            // be added as an attribute to the controls. to not mess with the viewstate however, we need to 
-            // reinsert the attribute the same place afterwards that we remove it from
-            int index = Attributes.FindIndex (
-                delegate(core.Attribute obj) {
-                    return obj.Name == "innerHTML";
-                });
-
-            // removing innerHTML attribute, if it exists
-            core.Attribute atr = null;
-            if (index != -1) {
-                atr = Attributes [index];
-                Attributes.RemoveAt (index);
-            }
-
-            // allowing base to render all attributes now, minus the innerHTML attribute
-            base.RenderAttributes (writer);
-
-            // reinserting the innerHTML attribute again, if it exists
-            if (atr != null)
-                Attributes.Insert (index, atr);
-        }
-
         // notice how we do not call base here, and only render the innerHTML and none of its children
         protected override void RenderChildren (HtmlTextWriter writer)
         {
@@ -64,7 +39,7 @@ namespace phosphorus.ajax.widgets
         }
         
         protected override bool HasContent {
-            get { return !string.IsNullOrEmpty (this ["innerHTML"]); }
+            get { return !string.IsNullOrEmpty (innerHTML); }
         }
     }
 }
