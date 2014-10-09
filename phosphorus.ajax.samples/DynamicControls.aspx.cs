@@ -25,7 +25,6 @@ namespace phosphorus.ajax.samples
         [WebMethod]
         protected void insert_onclick (pf.Void btn, EventArgs e)
         {
-            list.Visible = true;
             pf.Literal widget = list.CreatePersistentControl<pf.Literal> (null);
             widget.Tag = "li";
             widget.HasEndTag = false;

@@ -54,6 +54,8 @@ namespace phosphorus.ajax.widgets
         public string Tag {
             get { return ViewState["Tag"] as string; }
             set {
+                if (value.ToLower () != value)
+                    throw new ApplicationException ("phosphorus.ajax doesn't like uppercase tags, you tried to supply; '" + value + "' as tagname");
                 ViewState ["Tag"] = value;
             }
         }
@@ -150,7 +152,7 @@ namespace phosphorus.ajax.widgets
         protected virtual void LoadFormData ()
         {
             if (this ["disabled"] == null) {
-                if (!string.IsNullOrEmpty (this ["name"]) || Tag.ToLower () == "option") {
+                if (!string.IsNullOrEmpty (this ["name"]) || Tag == "option") {
                     switch (Tag.ToLower ()) {
                         case "input":
                             switch (this ["type"]) {

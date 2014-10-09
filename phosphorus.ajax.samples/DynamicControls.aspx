@@ -21,8 +21,20 @@
                 <pf:Container
                     runat="server"
                     id="list"
-                    Visible="false"
-                    Tag="ul" />
+                    Tag="ul">
+                    <pf:Literal
+                        runat="server"
+                        id="static1"
+                        Tag="li"
+                        HasEndTag="false"
+                        onclick="item_onclick">1. static</pf:Literal>
+                    <pf:Literal
+                        runat="server"
+                        id="static2"
+                        Tag="li"
+                        HasEndTag="false"
+                        onclick="item_onclick">2. static</pf:Literal>
+                </pf:Container>
 
                 <p>
                     <pf:Void

@@ -36,6 +36,8 @@
 
 * make only added controls and removed controls render in CreatePersistentControl and RemovedControl
 
+* consolidate HasEndTag with SelfClosed to become enum
+
 
 
 
