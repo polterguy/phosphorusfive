@@ -14,11 +14,19 @@ namespace phosphorus.ajax.samples
     public partial class FormData : AjaxPage
     {
         protected pf.Literal lbl;
+        protected pf.Void txt;
 
         [WebMethod]
         protected void txt_onchange (pf.Widget sender, EventArgs e)
         {
             lbl.innerHTML = "value of textbox was; '" + sender ["value"] + "'";
+        }
+        
+        [WebMethod]
+        protected void btn_onclick (pf.Widget sender, EventArgs e)
+        {
+            txt ["value"] = "some new text";
+            txt_onchange (txt, e);
         }
     }
 }

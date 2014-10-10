@@ -25,7 +25,9 @@ namespace phosphorus.ajax.samples
         [WebMethod]
         protected void append_onclick (pf.Void btn, EventArgs e)
         {
-            pf.Literal widget = list.CreatePersistentControl<pf.Literal> (null);
+            // to make sure our new control does not get the same ID as other existing controls, we explicitly create one
+            string id = Guid.NewGuid ().ToString ().Replace ("-", "");
+            pf.Literal widget = list.CreatePersistentControl<pf.Literal> (id);
             widget.Tag = "li";
             widget.HasEndTag = false;
             widget ["onclick"] = "item_onclick";
@@ -35,7 +37,9 @@ namespace phosphorus.ajax.samples
         [WebMethod]
         protected void insert_top_onclick (pf.Void btn, EventArgs e)
         {
-            pf.Literal widget = list.CreatePersistentControl<pf.Literal> (null, 0);
+            // to make sure our new control does not get the same ID as other existing controls, we explicitly create one
+            string id = Guid.NewGuid ().ToString ().Replace ("-", "");
+            pf.Literal widget = list.CreatePersistentControl<pf.Literal> (id, 0);
             widget.Tag = "li";
             widget.HasEndTag = false;
             widget ["onclick"] = "item_onclick";
@@ -45,8 +49,10 @@ namespace phosphorus.ajax.samples
         [WebMethod]
         protected void insert_at_random_onclick (pf.Void btn, EventArgs e)
         {
+            // to make sure our new control does not get the same ID as other existing controls, we explicitly create one
+            string id = Guid.NewGuid ().ToString ().Replace ("-", "");
             Random rnd = new Random ();
-            pf.Literal widget = list.CreatePersistentControl<pf.Literal> (null, rnd.Next (0, list.Controls.Count));
+            pf.Literal widget = list.CreatePersistentControl<pf.Literal> (id, rnd.Next (0, list.Controls.Count));
             widget.Tag = "li";
             widget.HasEndTag = false;
             widget ["onclick"] = "item_onclick";
@@ -56,17 +62,22 @@ namespace phosphorus.ajax.samples
         [WebMethod]
         protected void replace_random_onclick (pf.Void btn, EventArgs e)
         {
-            Random rnd = new Random ();
-            int which = rnd.Next (0, list.Controls.Count - 1);
-            list.Controls.RemoveAt (which);
+            if (list.Controls.Count == 0) {
+                txt ["value"] += " - could not replace, nothing to replace. appended instead";
+                append_onclick (btn, e);
+            } else {
+                Random rnd = new Random ();
+                int which = rnd.Next (0, list.Controls.Count - 1);
+                list.Controls.RemoveAt (which);
 
-            // to make sure our new control does not get the same ID as other existing controls, we explicitly give 
-            // it an ID here, even though we don't need to give it an ID in the other methods
-            pf.Literal widget = list.CreatePersistentControl<pf.Literal> (Guid.NewGuid ().ToString ().Replace ("-", ""), which);
-            widget.Tag = "li";
-            widget.HasEndTag = false;
-            widget ["onclick"] = "item_onclick";
-            widget.innerHTML = txt ["value"];
+                // to make sure our new control does not get the same ID as other existing controls, we explicitly create one
+                string id = Guid.NewGuid ().ToString ().Replace ("-", "");
+                pf.Literal widget = list.CreatePersistentControl<pf.Literal> (id, which);
+                widget.Tag = "li";
+                widget.HasEndTag = false;
+                widget ["onclick"] = "item_onclick";
+                widget.innerHTML = txt ["value"];
+            }
         }
     }
 }

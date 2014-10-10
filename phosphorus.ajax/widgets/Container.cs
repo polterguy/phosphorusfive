@@ -24,6 +24,7 @@ namespace phosphorus.ajax.widgets
         private bool _isManaging;
         private List<Control> _toRender = new List<Control> ();
         private List<Control> _toRemove = new List<Control> ();
+        private bool _loadDone;
 
         /// <summary>
         /// creates a persistent control that will be automatically re-created during future postbacks
@@ -73,7 +74,7 @@ namespace phosphorus.ajax.widgets
             get { return base [name]; }
             set {
                 if (name == "innerHTML")
-                    throw new ArgumentException ("you cannot set the 'innerHTML' property of a Void widget");
+                    throw new ArgumentException ("you cannot set the 'innerHTML' property of the '" + ID + "' Container widget");
                 base [name] = value;
             }
         }
@@ -167,13 +168,16 @@ namespace phosphorus.ajax.widgets
                     idxNo += 1;
                 }
             }
+            _loadDone = true;
         }
 
         protected override void RemovedControl (Control control)
         {
             // automatically changing the rendering mode of the widget if we should
             if (IsTrackingViewState) {
-                _toRemove.Add (control);
+                _isManaging = true;
+                if (_loadDone)
+                    _toRemove.Add (control);
                 if (RenderingMode == RenderMode.Default) {
                     RenderingMode = RenderMode.RenderChildren;
                 }

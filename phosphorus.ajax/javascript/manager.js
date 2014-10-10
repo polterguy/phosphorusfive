@@ -167,6 +167,9 @@
         case '__pf_remove':
           this.el.removeChild(pf.$(value).el);
           break;
+        case 'value':
+          this.el.value = pf._getChange(this.el[key], value);
+          break;
         default:
           if (key.indexOf('__pf_add_') != -1 ) {
             // inserting html child widget

@@ -18,14 +18,22 @@
 
                 <p>this example shows how you can create form elements
 
-                <p><pf:Void
-                    runat="server"
-                    id="txt"
-                    name="txt"
-                    placeholder="type into me, then click tab"
-                    Tag="input"
-                    type="text"
-                    onchange="txt_onchange" />
+                <p>
+                    <pf:Void
+                        runat="server"
+                        id="txt"
+                        name="txt"
+                        placeholder="type into me, then click tab"
+                        Tag="input"
+                        type="text"
+                        onchange="txt_onchange" />
+                    <pf:Void
+                        runat="server"
+                        id="btn"
+                        Tag="input"
+                        type="button"
+                        value="update textbox"
+                        onclick="btn_onclick" />
 
                 <pf:Literal
                     runat="server"
