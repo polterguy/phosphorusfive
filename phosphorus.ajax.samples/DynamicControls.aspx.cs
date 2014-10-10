@@ -52,6 +52,22 @@ namespace phosphorus.ajax.samples
             widget ["onclick"] = "item_onclick";
             widget.innerHTML = txt ["value"];
         }
+        
+        [WebMethod]
+        protected void replace_random_onclick (pf.Void btn, EventArgs e)
+        {
+            Random rnd = new Random ();
+            int which = rnd.Next (0, list.Controls.Count - 1);
+            list.Controls.RemoveAt (which);
+
+            // to make sure our new control does not get the same ID as other existing controls, we explicitly give 
+            // it an ID here, even though we don't need to give it an ID in the other methods
+            pf.Literal widget = list.CreatePersistentControl<pf.Literal> (Guid.NewGuid ().ToString ().Replace ("-", ""), which);
+            widget.Tag = "li";
+            widget.HasEndTag = false;
+            widget ["onclick"] = "item_onclick";
+            widget.innerHTML = txt ["value"];
+        }
     }
 }
 

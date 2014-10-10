@@ -38,6 +38,13 @@
 
 * consolidate HasEndTag with SelfClosed to become enum
 
+* partial update of single controls when Container had dynamically added children to its collection
+
+* implement html5 tag widgets for all html5 tags
+
+* check if all and only all static controls exists in Containerr controls collection, and if so, set "_manage" to false, and skip 
+  viewstate serialization of control collection logic
+
 
 
 
@@ -48,6 +55,8 @@
              unit tests that needs to be created
 
 ================================================================================
+
+   - attributes
 
 * add on attribute, and very dom gets updated
 
@@ -64,6 +73,15 @@
 * change one attribute, change it back to what it was in the same request, and verify nothing gets rendered
 
 
+   - dynamic controls
+
+* add to collection that contains static controls
+
+* add to empty collection
+
+* remove from static collection
+
+* remove from empty collection that had item added
 
 
 

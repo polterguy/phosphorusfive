@@ -231,6 +231,18 @@ namespace phosphorus.ajax.widgets
             method.Invoke (owner, new object[] { this, new EventArgs() });
         }
 
+        /// <summary>
+        /// renders all children as json update to be sent back to client. override this one if you wish 
+        /// to create custom functionality as an alternative
+        /// </summary>
+        protected virtual void RenderChildrenWidgetsAsJson ()
+        {
+            // re-rendering all children by default
+            Node tmp = new Node (ClientID);
+            tmp ["innerHTML"].Value = GetChildrenHtml ();
+            (Page as core.IAjaxPage).Manager.RegisterWidgetChanges (tmp);
+        }
+
         public override bool Visible {
             get {
                 return base.Visible;
@@ -262,11 +274,7 @@ namespace phosphorus.ajax.widgets
                             tmp ["outerHTML"].Value = GetWidgetHtml ();
                             (Page as core.IAjaxPage).Manager.RegisterWidgetChanges (tmp);
                         } else if (_renderMode == RenderMode.RenderChildren) {
-
-                            // re-rendering all children
-                            Node tmp = new Node (ClientID);
-                            tmp ["innerHTML"].Value = GetChildrenHtml ();
-                            (Page as core.IAjaxPage).Manager.RegisterWidgetChanges (tmp);
+                            RenderChildrenWidgetsAsJson ();
                         } else {
 
                             // only pass changes back to client as json
@@ -386,6 +394,7 @@ namespace phosphorus.ajax.widgets
         {
             using (MemoryStream stream = new MemoryStream ()) {
                 using (HtmlTextWriter txt = new HtmlTextWriter (new StreamWriter (stream))) {
+                    // TODO: Why ......?
                     var oldRender = _renderMode;
                     _renderMode = RenderMode.RenderVisible;
                     RenderChildren (txt);

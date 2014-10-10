@@ -101,7 +101,19 @@ namespace phosphorus.ajax.core
         /// <param name="attributes">attributes to register for sending back to client</param>
         internal void RegisterWidgetChanges (Node node)
         {
-            _changes ["widgets"] [node.Name] = node;
+            List<Node> nodes = _changes ["widgets"].Get<List<Node>> ();
+            Node existing = nodes == null ? null : nodes.Find (
+                delegate(Node idx) {
+                return idx.Name == node.Name;
+            });
+
+            // in case there are other parts of system that have registered changes previously in this request
+            if (existing != null) {
+                List<Node> children = existing.Get<List<Node>> ();
+                children.AddRange (node.Get<List<Node>> ());
+            } else {
+                _changes ["widgets"] [node.Name] = node;
+            }
         }
 
         /// <summary>

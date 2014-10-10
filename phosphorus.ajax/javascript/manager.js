@@ -164,8 +164,21 @@
         case 'innerHTML':
           this.el.innerHTML = pf._getChange(this.el.innerHTML, value);
           break;
+        case '__pf_remove':
+          this.el.removeChild(pf.$(value).el);
+          break;
         default:
-          this.el.setAttribute(key, pf._getChange(this.el[key], value));
+          if (key.indexOf('__pf_add_') != -1 ) {
+            // inserting html child widget
+            var pos = parseInt(key.substring(9), 10);
+            var fragment = document.createDocumentFragment();
+            var tmpEl = document.createElement('div');
+            tmpEl.innerHTML = value;
+            fragment.appendChild(tmpEl.firstChild);
+            this.el.insertBefore(fragment, this.el.childNodes[pos]);
+          } else {
+            this.el.setAttribute(key, pf._getChange(this.el[key], value));
+          }
           break;
       }
     },

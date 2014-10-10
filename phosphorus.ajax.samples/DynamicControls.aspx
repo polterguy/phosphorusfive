@@ -69,6 +69,14 @@
                         onclick="insert_at_random_onclick"
                         value="insert at random" />
 
+                    <pf:Void
+                        runat="server"
+                        id="replace_random"
+                        Tag="input"
+                        type="button"
+                        onclick="replace_random_onclick"
+                        value="replace random element" />
+
             </div>
         </form>
     </body>

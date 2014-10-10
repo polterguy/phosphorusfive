@@ -4,9 +4,12 @@
  */
 
 using System;
+using System.IO;
 using System.Reflection;
 using System.Web.UI;
 using System.Collections.Generic;
+using phosphorus.types;
+using core = phosphorus.ajax.core;
 
 namespace phosphorus.ajax.widgets
 {
@@ -19,12 +22,15 @@ namespace phosphorus.ajax.widgets
     {
         private List<Tuple<string, string>> _dynamicControls = new List<Tuple<string, string>> ();
         private bool _isManaging;
+        private List<Control> _toRender = new List<Control> ();
+        private List<Control> _toRemove = new List<Control> ();
 
         /// <summary>
         /// creates a persistent control that will be automatically re-created during future postbacks
         /// </summary>
         /// <returns>the persistent control</returns>
         /// <param name="id">id of control, if null, and automatic id will be created</param>
+        /// <param name="index">index of where to insert control</param>
         /// <typeparam name="T">the type of control you wish to create</typeparam>
         public T CreatePersistentControl<T> (string id, int index = -1)  where T : Control, new()
         {
@@ -51,10 +57,12 @@ namespace phosphorus.ajax.widgets
                 control.ID = id;
             }
 
-        if (index == -1)
-            Controls.Add (control);
-        else
-            Controls.AddAt (index, control);
+            if (index == -1)
+                Controls.Add (control);
+            else
+                Controls.AddAt (index, control);
+
+            _toRender.Add (control);
 
             // returning newly created control back to caller, such that he can set his properties and such for it
             return control;
@@ -164,25 +172,90 @@ namespace phosphorus.ajax.widgets
         protected override void RemovedControl (Control control)
         {
             // automatically changing the rendering mode of the widget if we should
-            if (IsTrackingViewState)
-                RenderingMode = RenderMode.RenderChildren;
+            if (IsTrackingViewState) {
+                _toRemove.Add (control);
+                if (RenderingMode == RenderMode.Default) {
+                    RenderingMode = RenderMode.RenderChildren;
+                }
+            }
             base.RemovedControl (control);
         }
 
         protected override void AddedControl (Control control, int index)
         {
             // automatically changing the rendering mode of the widget if we should
-            if (IsTrackingViewState)
+            if (IsTrackingViewState && RenderingMode == RenderMode.Default)
                 RenderingMode = RenderMode.RenderChildren;
             base.AddedControl (control, index);
         }
 
         protected override void AddParsedSubObject (object obj)
         {
-            // simply skipping these buggers, makes ugly markup, but they're too noisy anyway ...
+            // simply skipping these buggers, makes ugly markup, and they're noisy also ...
+            // besides, every now and then, some asshole comes around with no id, fucking up the viewstate ...!! :P
             if (obj is System.Web.UI.LiteralControl)
                 return;
             base.AddParsedSubObject (obj);
+        }
+
+        protected override void RenderChildrenWidgetsAsJson ()
+        {
+            // rendering all widgets that was added this request, and returning back as html, and their position in dom
+            var widgets = new List<Tuple<string, int>> ();
+            foreach (Control idx in _toRender) {
+
+                // checking if control is still around
+                if (!Controls.Contains (idx))
+                    continue;
+
+                // getting child html
+                string html;
+                using (MemoryStream stream = new MemoryStream ()) {
+                    using (HtmlTextWriter txt = new HtmlTextWriter (new StreamWriter (stream))) {
+                        idx.RenderControl (txt);
+                        txt.Flush ();
+                    }
+                    stream.Seek (0, SeekOrigin.Begin);
+                    using (TextReader reader = new StreamReader (stream)) {
+                        html = reader.ReadToEnd ();
+                    }
+                }
+
+                // finding position in dom
+                int position = Controls.IndexOf (idx);
+                widgets.Add (new Tuple<string, int> (html, position));
+            }
+
+            // sorting by first at the top
+            widgets.Sort (
+                delegate(Tuple<string, int> lhs, Tuple<string, int> rhs) {
+                return lhs.Item2.CompareTo (rhs.Item2);
+            });
+
+            if (widgets.Count > 0) {
+                // registering json changes
+                Node tmp = new Node (ClientID);
+                foreach (var idx in widgets) {
+                    tmp ["__pf_add_" + idx.Item2].Value = new Node (null, idx.Item1);
+                }
+                (Page as core.IAjaxPage).Manager.RegisterWidgetChanges (tmp);
+            }
+
+            // then rendering all widgets that should be removed
+            var toRemove = new List<string> ();
+            foreach (Control idx in _toRemove) {
+                // finding position in dom
+                toRemove.Add (idx.ClientID);
+            }
+
+            if (toRemove.Count > 0) {
+                // registering json changes
+                Node tmp = new Node (ClientID);
+                foreach (var idx in toRemove) {
+                    tmp ["__pf_remove"].Value = new Node (null, idx);
+                }
+                (Page as core.IAjaxPage).Manager.RegisterWidgetChanges (tmp);
+            }
         }
     }
 }
