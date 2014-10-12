@@ -5,8 +5,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.ajax", "phosphor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.ajax.samples", "phosphorus.ajax.samples\phosphorus.ajax.samples.csproj", "{344B4C0F-683B-4B29-B559-D31170EA6B96}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.types", "phosphorus.types\phosphorus.types.csproj", "{D2B544A1-1C6F-4427-BF43-0A12E36CB903}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{8FAEDF6F-8F53-441B-ACE1-5E8330F8CE00}"
 	ProjectSection(SolutionItems) = preProject
 		LICENSE = LICENSE
@@ -33,12 +31,6 @@ Global
 		{344B4C0F-683B-4B29-B559-D31170EA6B96}.Release|Any CPU.Build.0 = Release|Any CPU
 		{344B4C0F-683B-4B29-B559-D31170EA6B96}.Release-Linux|Any CPU.ActiveCfg = Release|Any CPU
 		{344B4C0F-683B-4B29-B559-D31170EA6B96}.Release-Linux|Any CPU.Build.0 = Release|Any CPU
-		{D2B544A1-1C6F-4427-BF43-0A12E36CB903}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D2B544A1-1C6F-4427-BF43-0A12E36CB903}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D2B544A1-1C6F-4427-BF43-0A12E36CB903}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D2B544A1-1C6F-4427-BF43-0A12E36CB903}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D2B544A1-1C6F-4427-BF43-0A12E36CB903}.Release-Linux|Any CPU.ActiveCfg = Release|Any CPU
-		{D2B544A1-1C6F-4427-BF43-0A12E36CB903}.Release-Linux|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection

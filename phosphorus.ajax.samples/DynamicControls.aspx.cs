@@ -8,6 +8,7 @@ namespace phosphorus.ajax.samples
     using System;
     using System.Web;
     using System.Web.UI;
+    using System.Collections.Generic;
     using phosphorus.ajax.core;
     using pf = phosphorus.ajax.widgets;
 
@@ -19,7 +20,11 @@ namespace phosphorus.ajax.samples
         [WebMethod]
         protected void item_onclick (pf.Literal literal, EventArgs e)
         {
-            literal.Parent.Controls.Remove (literal);
+            if (literal.innerHTML != "are you sure?") {
+                literal.innerHTML = "are you sure?";
+            } else {
+                literal.Parent.Controls.Remove (literal);
+            }
         }
         
         [WebMethod]
@@ -77,6 +82,51 @@ namespace phosphorus.ajax.samples
                 widget.HasEndTag = false;
                 widget ["onclick"] = "item_onclick";
                 widget.innerHTML = txt ["value"];
+            }
+        }
+        
+        [WebMethod]
+        protected void turtle_insert_onclick (pf.Void btn, EventArgs e)
+        {
+            Random rnd = new Random ();
+            pf.Literal turtles = list.Controls [rnd.Next (0, Controls.Count - 1)] as pf.Literal;
+            turtles.innerHTML = "i like turtles!";
+            turtles ["class"] = "turtles";
+
+            // to make sure our new control does not get the same ID as other existing controls, we explicitly create one
+            string id = Guid.NewGuid ().ToString ().Replace ("-", "");
+            pf.Literal widget = list.CreatePersistentControl<pf.Literal> (id);
+            widget.Tag = "li";
+            widget.HasEndTag = false;
+            widget ["onclick"] = "item_onclick";
+            widget.innerHTML = txt ["value"];
+        }
+        
+        [WebMethod]
+        protected void love_bomb_onclick (pf.Void btn, EventArgs e)
+        {
+            Random rnd = new Random ();
+            foreach (Control idx in list.Controls) {
+                pf.Literal lit = idx as pf.Literal;
+                if (lit != null && rnd.Next (0, 3) == 1) {
+                    lit.innerHTML = "i like turtles!";
+                    lit ["class"] = "turtles";
+                }
+            }
+        }
+        
+        [WebMethod]
+        protected void cut_the_crap_onclick (pf.Void btn, EventArgs e)
+        {
+            List<Control> toRemove = new List<Control> ();
+            foreach (Control idx in list.Controls) {
+                pf.Literal lit = idx as pf.Literal;
+                if (lit.innerHTML.Contains ("crap")) {
+                    toRemove.Add (lit);
+                }
+            }
+            foreach (Control idx in toRemove) {
+                idx.Parent.Controls.Remove (idx);
             }
         }
     }

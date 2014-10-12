@@ -8,7 +8,6 @@ using System.IO;
 using System.Reflection;
 using System.Web.UI;
 using System.Collections.Generic;
-using phosphorus.types;
 using core = phosphorus.ajax.core;
 
 namespace phosphorus.ajax.widgets
@@ -20,14 +19,53 @@ namespace phosphorus.ajax.widgets
     /// </summary>
     public class Container : Widget, INamingContainer
     {
-        private List<Tuple<string, string>> _dynamicControls = new List<Tuple<string, string>> ();
-        private bool _isManaging;
-        private List<Control> _toRender = new List<Control> ();
-        private List<Control> _toRemove = new List<Control> ();
-        private bool _loadDone;
+        // interface to create controls to avoid reflection as much as possible
+        private interface ICreator
+        {
+            Control Create ();
+        }
+
+        // some "anti-reflection magic"
+        private class Creator<T> : ICreator where T : Control, new()
+        {
+            public Control Create() {
+                return new T ();
+            }
+        }
+
+        // contains all the creator objects to create our controls when needed
+        // the whole purpose of this bugger is to avoid the use of reflection as much as possible, since it is slow and 
+        // requires lowering security settings on server to be used
+        // by storing "factory objects" like this in a dictionary with the type being the key, we avoid 
+        // having to use anymore reflection than absolutely necessary
+        // please notice that this dictionary is static, and hence will be reused across multiple requests and sessions
+        private static Dictionary<Type, ICreator> _creators = new Dictionary<Type, ICreator>();
+
+        // contains the original controls collection, before we started adding and removing controls
+        private List<Control> _originalCollection;
+
+        // used to lock GetCreator to make sure we don't get a race condition when instantiating new creators
+        private static object _lock = new object ();
+
+        // next available id for controls automatically created
+        private int _nextId;
+
+        // use to make sure we store a reference to our creator instance for later requests
+        private static ICreator GetCreator<T>() where T : Control, new()
+        {
+            if (!_creators.ContainsKey (typeof (T))) {
+                lock (_lock) {
+                    if (!_creators.ContainsKey (typeof(T)))
+                        _creators [typeof(T)] = new Creator<T> ();
+                }
+            }
+            return _creators [typeof(T)];
+        }
 
         /// <summary>
-        /// creates a persistent control that will be automatically re-created during future postbacks
+        /// creates a persistent control that will be automatically re-created during future postbacks. you can create any Control 
+        /// here you wish, but your control must have a public constructor taking no arguments. only controls created through this 
+        /// method will be persisted and automatically re-created in future http requests
         /// </summary>
         /// <returns>the persistent control</returns>
         /// <param name="id">id of control, if null, and automatic id will be created</param>
@@ -35,23 +73,20 @@ namespace phosphorus.ajax.widgets
         /// <typeparam name="T">the type of control you wish to create</typeparam>
         public T CreatePersistentControl<T> (string id, int index = -1)  where T : Control, new()
         {
-            _isManaging = true;
-
-            if (RenderingMode != RenderMode.RenderVisible)
-                RenderingMode = RenderMode.RenderChildren;
+            if (_originalCollection == null) {
+                // storing original collection such that we can do a "diff" during rendering
+                _originalCollection = new List<Control> ();
+                foreach (Control idxCtrl in Controls) {
+                    _originalCollection.Add (idxCtrl);
+                }
+            }
 
             // creating new control, and adding to the controls collection
-            T control = new T ();
+            T control = GetCreator<T>().Create () as T;
             if (string.IsNullOrEmpty (id)) {
 
-                // creating a unique id for widget
-                int highest = 0;
-                foreach (Control idx in Controls) {
-                    int x;
-                    if (!string.IsNullOrEmpty(idx.ID) && idx.ID.Length > 1 && int.TryParse (idx.ID.Substring (1), out x) && x > highest)
-                        highest = x;
-                }
-                control.ID = "x" + (highest + 1);
+                // creating an automatic unique id for widget
+                control.ID = "x" + (_nextId++);
             } else {
 
                 // using the supplied id
@@ -62,8 +97,6 @@ namespace phosphorus.ajax.widgets
                 Controls.Add (control);
             else
                 Controls.AddAt (index, control);
-
-            _toRender.Add (control);
 
             // returning newly created control back to caller, such that he can set his properties and such for it
             return control;
@@ -90,12 +123,52 @@ namespace phosphorus.ajax.widgets
             if (tmp != null && tmp.Length > 0 && tmp [0] is string[][]) {
 
                 // we're managing our own controls collection, and need to reload from viewstate all the 
-                // control types and ids, to later merge into control collection
-                _isManaging = true;
-                string[][] ctrls = tmp [0] as string[][];
-                foreach (string[] idx in ctrls) {
-                    _dynamicControls.Add (new Tuple<string, string> (idx [0], idx [1]));
+                // control types and ids. first figuring out which controls actually exists in this control at the moment
+                var ctrlsViewstate = new List<Tuple<string, string>> ();
+                foreach (string[] idx in tmp [0] as string[][]) {
+                    ctrlsViewstate.Add (new Tuple<string, string> (idx [0], idx [1]));
                 }
+
+                // then removing all controls that is not persisted
+                var toRemove = new List<Control> ();
+                foreach (Control idxControl in Controls) {
+                    if (!ctrlsViewstate.Exists (
+                        delegate (Tuple<string, string> idxViewstate) {
+                        return idxViewstate.Item2 == idxControl.ID;
+                    }))
+                        toRemove.Add (idxControl);
+                }
+                foreach (Control idxCtrl in toRemove) {
+                    Controls.Remove (idxCtrl);
+                }
+
+                // then adding all controls that are persisted but does not exist in controls collection
+                int controlPosition = 0;
+                foreach (var idxTuple in ctrlsViewstate) {
+                    bool exist = false;
+                    foreach (Control idxCtrl in Controls) {
+                        if (idxCtrl.ID == idxTuple.Item2) {
+                            exist = true;
+                            break;
+                        }
+                    }
+                    if (!exist) {
+                        Control control = _creators [Type.GetType (idxTuple.Item1)].Create ();
+                        control.ID = idxTuple.Item2;
+                        Controls.AddAt (controlPosition, control);
+                    }
+                    controlPosition += 1;
+                }
+
+                // making sure future controls gets unique ids
+                _nextId = Controls.Count;
+
+                // then storing the original controls that was there before user starts adding and removing controls
+                _originalCollection = new List<Control> ();
+                foreach (Control idxCtrl in Controls) {
+                    _originalCollection.Add (idxCtrl);
+                }
+
                 base.LoadControlState (tmp [1]);
             } else {
                 base.LoadControlState (savedState);
@@ -104,8 +177,8 @@ namespace phosphorus.ajax.widgets
 
         protected override object SaveControlState ()
         {
-            // making sure all persistent controls are persistent to the control state, if there are any
-            if (_isManaging) {
+            // making sure all dynamically added controls are persistent to the control state, if there are any
+            if (_originalCollection != null) {
 
                 // yup, we're managing our own control collection, and need to save to viewstate all of the controls
                 // types and ids that exists in our control collection
@@ -119,65 +192,26 @@ namespace phosphorus.ajax.widgets
                 return tmp;
             } else {
 
-                // "screw this, I'm going home" ... ;)
+                // not managing controls
                 return base.SaveControlState ();
             }
         }
         
-        protected override void OnLoad (EventArgs e)
-        {
-            base.OnLoad (e);
-
-            if (_isManaging) {
-
-                // removing controls that are not persisted in viewstate
-                // these are normally controls that exists in markup, or was created 
-                // before controls was rooted to page, but later removed by user
-                List<Control> toRemove = new List<Control> ();
-                foreach (Control idx in Controls) {
-                    if (!_dynamicControls.Exists (
-                        delegate(Tuple<string, string> obj) {
-                        return obj.Item2 == idx.ID;
-                    }))
-                        toRemove.Add (idx);
-                }
-                foreach (Control idx in toRemove) {
-                    Controls.Remove (idx);
-                }
-
-                // re-creating all of our persistent controls that does not exist from before
-                // ps, viewstate will reload all properties as long as we get the type and id right
-                // order will be automatically taken care of since we're persisting them into viewstate
-                // in their existing when viewstate is saved
-                int idxNo = 0;
-                foreach (var idx in _dynamicControls) {
-                    bool exist = false;
-                    foreach (Control idxC in Controls) {
-                        if (idxC.ID == idx.Item2) {
-                            exist = true;
-                            break;
-                        }
-                    }
-                    if (!exist) {
-                        Type type = Type.GetType (idx.Item1);
-                        ConstructorInfo ctor = type.GetConstructor (new Type[] { });
-                        Control ctr = ctor.Invoke (new object[] { }) as Control;
-                        ctr.ID = idx.Item2;
-                        Controls.AddAt (idxNo, ctr);
-                    }
-                    idxNo += 1;
-                }
-            }
-            _loadDone = true;
-        }
-
         protected override void RemovedControl (Control control)
         {
-            // automatically changing the rendering mode of the widget if we should
+            // automatically changing the rendering mode of the widget if we should and tracking which controls are removed
             if (IsTrackingViewState) {
-                _isManaging = true;
-                if (_loadDone)
-                    _toRemove.Add (control);
+                if (_originalCollection == null) {
+
+                    // storing original controls that were there before we started adding and removing controls
+                    _originalCollection = new List<Control> ();
+                    foreach (Control idxCtrl in Controls) {
+                        _originalCollection.Add (idxCtrl);
+                    }
+
+                    // we have to add the removed control too, since that bugger is already out of the control collection
+                    _originalCollection.Add (control);
+                }
                 if (RenderingMode == RenderMode.Default) {
                     RenderingMode = RenderMode.RenderChildren;
                 }
@@ -188,8 +222,11 @@ namespace phosphorus.ajax.widgets
         protected override void AddedControl (Control control, int index)
         {
             // automatically changing the rendering mode of the widget if we should
-            if (IsTrackingViewState && RenderingMode == RenderMode.Default)
-                RenderingMode = RenderMode.RenderChildren;
+            if (IsTrackingViewState) {
+                if (RenderingMode == RenderMode.Default) {
+                    RenderingMode = RenderMode.RenderChildren;
+                }
+            }
             base.AddedControl (control, index);
         }
 
@@ -201,18 +238,27 @@ namespace phosphorus.ajax.widgets
                 return;
             base.AddParsedSubObject (obj);
         }
-
-        protected override void RenderChildrenWidgetsAsJson ()
+        
+        protected override void RenderChildrenWidgetsAsJson (HtmlTextWriter writer)
         {
-            // rendering all widgets that was added this request, and returning back as html, and their position in dom
+            if (_originalCollection == null) {
+                base.RenderChildrenWidgetsAsJson (writer);
+            } else {
+                RenderAddedControls ();
+                RenderRemovedControls ();
+                RenderOldControls (writer);
+            }
+        }
+
+        // renders all controls that was added this request, and return list back to caller
+        private void RenderAddedControls ()
+        {
             var widgets = new List<Tuple<string, int>> ();
-            foreach (Control idx in _toRender) {
+            foreach (Control idx in Controls) {
+                if (_originalCollection.Contains (idx))
+                    continue; // control has already been rendered
 
-                // checking if control is still around
-                if (!Controls.Contains (idx))
-                    continue;
-
-                // getting child html
+                // getting control's html
                 string html;
                 using (MemoryStream stream = new MemoryStream ()) {
                     using (HtmlTextWriter txt = new HtmlTextWriter (new StreamWriter (stream))) {
@@ -224,42 +270,51 @@ namespace phosphorus.ajax.widgets
                         html = reader.ReadToEnd ();
                     }
                 }
-
-                // finding position in dom
                 int position = Controls.IndexOf (idx);
                 widgets.Add (new Tuple<string, int> (html, position));
             }
 
-            // sorting by first at the top
+            // we have to insert such that the first controls becomes added before controls behind it, such that the dom position
+            // don't gets messy
             widgets.Sort (
                 delegate(Tuple<string, int> lhs, Tuple<string, int> rhs) {
                 return lhs.Item2.CompareTo (rhs.Item2);
             });
 
+            // informing our manager that the current widget has changes, if we should
             if (widgets.Count > 0) {
-                // registering json changes
-                Node tmp = new Node (ClientID);
                 foreach (var idx in widgets) {
-                    tmp ["__pf_add_" + idx.Item2].Value = new Node (null, idx.Item1);
+                    (Page as core.IAjaxPage).Manager.RegisterWidgetChanges (ClientID, "__pf_add_" + idx.Item2, idx.Item1);
                 }
-                (Page as core.IAjaxPage).Manager.RegisterWidgetChanges (tmp);
             }
+        }
 
-            // then rendering all widgets that should be removed
-            var toRemove = new List<string> ();
-            foreach (Control idx in _toRemove) {
-                // finding position in dom
-                toRemove.Add (idx.ClientID);
-            }
-
-            if (toRemove.Count > 0) {
-                // registering json changes
-                Node tmp = new Node (ClientID);
-                foreach (var idx in toRemove) {
-                    tmp ["__pf_remove"].Value = new Node (null, idx);
+        // renders all controls that was removed, and returns list back to caller
+        private void RenderRemovedControls ()
+        {
+            foreach (Control idxOriginal in _originalCollection) {
+                bool exist = false;
+                foreach (Control idxActual in Controls) {
+                    if (idxActual.ID == idxOriginal.ID) {
+                        exist = true;
+                        break;
+                    }
                 }
-                (Page as core.IAjaxPage).Manager.RegisterWidgetChanges (tmp);
+                if (!exist)
+                    (Page as core.IAjaxPage).Manager.RegisterDeletedWidget (idxOriginal.ClientID);
             }
+        }
+        
+        private void RenderOldControls (HtmlTextWriter writer)
+        {
+            RenderMode old = RenderingMode;
+            RenderingMode = RenderMode.Default;
+            foreach (Control idx in Controls) {
+                if (_originalCollection.Contains (idx)) {
+                    idx.RenderControl (writer);
+                }
+            }
+            RenderingMode = old;
         }
     }
 }

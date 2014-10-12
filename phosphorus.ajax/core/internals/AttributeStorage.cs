@@ -6,7 +6,6 @@
 using System;
 using System.Web.UI;
 using System.Collections.Generic;
-using phosphorus.types;
 using phosphorus.ajax.core;
 
 namespace phosphorus.ajax.core.internals
@@ -196,7 +195,7 @@ namespace phosphorus.ajax.core.internals
             // TODO: create generic version, that allows for supplying a list of removals to do
             lst.RemoveAll (
                 delegate(Attribute idx) {
-                    return idx.Name == "outerHTML" || idx.Name == "innerHTML";
+                    return idx.Name == "outerHTML" || idx.Name == "innerHTML" || idx.Name == "Tag";
                 });
 
             // rendering to html writer
@@ -217,24 +216,23 @@ namespace phosphorus.ajax.core.internals
             }
         }
 
-        internal void RenderJsonChanges (Node node)
+        internal void RegisterChanges (Manager manager, string id)
         {
             // adding up the ones that were deleted during this request
             foreach (Attribute idx in _dynamicallyRemovedThisRequest) {
-                node ["__pf_delete"].Value = idx.Name;
+                manager.RegisterDeletedAttribute (id, idx.Name);
             }
 
             // adding up our changes
             foreach (Attribute idx in _dynamicallyAddedThisRequest) {
-                string value = idx.Value;
 
                 // finding old value, if any
                 var oldAtr = FindAttribute (_originalValue, idx.Name);
                 if (oldAtr != null) {
-                    if (value != oldAtr.Value)
-                        node [idx.Name].Value = new Node (oldAtr.Value, value);
+                    if (oldAtr.Value != idx.Value)
+                        manager.RegisterWidgetChanges (id, idx.Name, idx.Value, oldAtr.Value);
                 } else {
-                    node [idx.Name].Value = new Node (null, value);
+                    manager.RegisterWidgetChanges (id, idx.Name, idx.Value);
                 }
             }
         }

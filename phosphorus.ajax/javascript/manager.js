@@ -144,10 +144,12 @@
 
       // special handlers for some of our attributes
       switch(key) {
-        case '__pf_delete':
-          this.el.removeAttribute(value);
+        case '__pf_del':
+          for (var idx = 0; idx < value.length; idx++) {
+            this.el.removeAttribute(value[idx]);
+          }
           break;
-        case 'tagName':
+        case 'Tag':
           var oldHtml = this.el.outerHTML;
           var nHtml = '<' + value + oldHtml.substring(this.el.tagName.length + 1);
           nHtml = nHtml.substring(0, nHtml.length - (this.el.tagName.length + 1));
@@ -163,9 +165,6 @@
           break;
         case 'innerHTML':
           this.el.innerHTML = pf._getChange(this.el.innerHTML, value);
-          break;
-        case '__pf_remove':
-          this.el.removeChild(pf.$(value).el);
           break;
         case 'value':
           this.el.value = pf._getChange(this.el[key], value);
@@ -370,7 +369,7 @@
     _done: function(xhr) {
 
       // removing current request from chain
-      var cur = pf._chain.splice(0, 1)[0];
+      var cur = pf._chain[0];
       var options = cur.options;
 
       if (xhr.status >= 200 && xhr.status < 300) {
@@ -378,12 +377,27 @@
         // success, calling 'onsuccess' before response is evaluated
         var json = eval('(' + xhr.responseText +')');
         options.onsuccess.apply(this, [json, cur.evt]);
-        for (var idxEl in json['widgets']) {
+
+        // ORDER COUNTS!!
+
+        // removing all removed widgets from dom
+        var arr = json.__pf_del || [];
+        for (var idx = 0; idx < arr.length;idx++) {
+          var el = pf.$(arr[idx]).el;
+          el.parentNode.removeChild(el);
+        }
+
+        // updating all properties and attributes
+        arr = json.__pf_change || {};
+        for (var idxEl in arr) {
           var el = pf.$(idxEl);
-          for (var idxAtr in json['widgets'][idxEl]) {
-            el._set(idxAtr, json['widgets'][idxEl][idxAtr]);
+          for (var idxAtr in arr[idxEl]) {
+            el._set(idxAtr, arr[idxEl][idxAtr]);
           }
         }
+
+        // removing current request from queue
+        pf._chain.splice(0, 1);
       } else {
 
         // error, stopping all chained requests before calling 'onerror'
@@ -419,6 +433,8 @@
     // checking if we have anymore htttp requests in our chain
     if (pf._chain.length > 0) {
       var cur = pf._chain[0];
+
+      // checking if dom element is still around, or if a previous request removed it
       var el = pf.$(cur.el.el.id);
       if (!el) {
         // dom element was removed from dom, and request cannot be initiated

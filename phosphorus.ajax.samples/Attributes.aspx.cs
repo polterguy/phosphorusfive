@@ -27,10 +27,13 @@ namespace phosphorus.ajax.samples
         [WebMethod]
         protected void changeTag_onclick (pf.Void btn, EventArgs e)
         {
-            if (literal.Tag == "p")
+            if (literal.Tag == "p") {
                 literal.Tag = "div";
-            else
+                literal.HasEndTag = true;
+            } else {
                 literal.Tag = "p";
+                literal.HasEndTag = false;
+            }
         }
         
         [WebMethod]

@@ -75,10 +75,4 @@
     <Compile Include="core\internals\Attribute.cs" />
     <Compile Include="core\internals\AttributeStorage.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\phosphorus.types\phosphorus.types.csproj">
-      <Project>{D2B544A1-1C6F-4427-BF43-0A12E36CB903}</Project>
-      <Name>phosphorus.types</Name>
-    </ProjectReference>
-  </ItemGroup>
 </Project>

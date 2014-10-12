@@ -8,7 +8,6 @@ using System.IO;
 using System.Web.UI;
 using System.Reflection;
 using System.Collections.Generic;
-using phosphorus.types;
 using internals = phosphorus.ajax.core.internals;
 
 namespace phosphorus.ajax.widgets
@@ -42,21 +41,15 @@ namespace phosphorus.ajax.widgets
         private RenderMode _renderMode = RenderMode.Default;
 
         /// <summary>
-        /// initializes a new instance of the <see cref="phosphorus.ajax.widgets.Widget"/> class
-        /// </summary>
-        public Widget ()
-        { }
-
-        /// <summary>
         /// gets or sets the tag name used to render the html element
         /// </summary>
         /// <value>the tag name</value>
         public string Tag {
-            get { return ViewState["Tag"] as string; }
+            get { return this ["Tag"]; }
             set {
                 if (value.ToLower () != value)
                     throw new ApplicationException ("phosphorus.ajax doesn't like uppercase tags, you tried to supply; '" + value + "' as tagname");
-                ViewState ["Tag"] = value;
+                this ["Tag"] = value;
             }
         }
 
@@ -140,6 +133,10 @@ namespace phosphorus.ajax.widgets
             get;
         }
 
+        /// <summary>
+        /// gets or sets the rendering mode of the widget
+        /// </summary>
+        /// <value>the rendering mode</value>
         protected RenderMode RenderingMode {
             get { return _renderMode; }
             set { _renderMode = value; }
@@ -235,12 +232,10 @@ namespace phosphorus.ajax.widgets
         /// renders all children as json update to be sent back to client. override this one if you wish 
         /// to create custom functionality as an alternative
         /// </summary>
-        protected virtual void RenderChildrenWidgetsAsJson ()
+        protected virtual void RenderChildrenWidgetsAsJson (HtmlTextWriter writer)
         {
             // re-rendering all children by default
-            Node tmp = new Node (ClientID);
-            tmp ["innerHTML"].Value = GetChildrenHtml ();
-            (Page as core.IAjaxPage).Manager.RegisterWidgetChanges (tmp);
+            (Page as core.IAjaxPage).Manager.RegisterWidgetChanges (ClientID, "innerHTML", GetChildrenHtml ());
         }
 
         public override bool Visible {
@@ -270,18 +265,15 @@ namespace phosphorus.ajax.widgets
                         if (_renderMode == RenderMode.RenderVisible) {
 
                             // re-rendering entire widget
-                            Node tmp = new Node (ClientID);
-                            tmp ["outerHTML"].Value = GetWidgetHtml ();
-                            (Page as core.IAjaxPage).Manager.RegisterWidgetChanges (tmp);
+                            (Page as core.IAjaxPage).Manager.RegisterWidgetChanges (ClientID, "outerHTML", GetWidgetHtml ());
                         } else if (_renderMode == RenderMode.RenderChildren) {
-                            RenderChildrenWidgetsAsJson ();
+
+                            // re-rendering all children controls
+                            RenderChildrenWidgetsAsJson (writer);
                         } else {
 
                             // only pass changes back to client as json
-                            Node tmp = GetJsonChanges ();
-                            if (tmp.Count > 0) {
-                                (Page as core.IAjaxPage).Manager.RegisterWidgetChanges (tmp);
-                            }
+                            _attributes.RegisterChanges ((Page as core.IAjaxPage).Manager, ClientID);
                             RenderChildren (writer);
                         }
                     } else {
@@ -295,9 +287,7 @@ namespace phosphorus.ajax.widgets
                     if (IsPhosphorusRequest && _renderMode == RenderMode.RenderInvisible && !ancestorReRendering) {
 
                         // re-rendering widget's invisible markup
-                        Node tmp = new Node (ClientID);
-                        tmp ["outerHTML"].Value = GetWidgetInvisibleHtml ();
-                        (Page as core.IAjaxPage).Manager.RegisterWidgetChanges (tmp);
+                        (Page as core.IAjaxPage).Manager.RegisterWidgetChanges (ClientID, "outerHTML", GetWidgetInvisibleHtml ());
                     } else if (!IsPhosphorusRequest || ancestorReRendering) {
 
                         // rendering invisible markup
@@ -324,12 +314,10 @@ namespace phosphorus.ajax.widgets
 
         protected override void LoadViewState (object savedState)
         {
-            if (savedState != null) {
-                object[] tmp = savedState as object[];
-                base.LoadViewState (tmp [0]);
-                _attributes.LoadFromViewState (tmp [1]);
-                _attributes.LoadRemovedFromViewState (tmp [2]);
-            }
+            object[] tmp = savedState as object[];
+            base.LoadViewState (tmp [0]);
+            _attributes.LoadFromViewState (tmp [1]);
+            _attributes.LoadRemovedFromViewState (tmp [2]);
         }
 
         protected override object SaveViewState ()
@@ -346,11 +334,8 @@ namespace phosphorus.ajax.widgets
             Page.RegisterRequiresControlState (this);
             if (Page.IsPostBack)
                 LoadFormData ();
-            base.OnInit (e);
-        }
 
-        protected override void OnLoad (EventArgs e)
-        {
+            // making sure event handlers are being processed
             if (IsPhosphorusRequest) {
 
                 if (Page.Request.Params ["__pf_widget"] == ClientID) {
@@ -361,19 +346,8 @@ namespace phosphorus.ajax.widgets
                     };
                 }
             }
-            base.OnLoad (e);
-        }
 
-        private Node GetJsonChanges ()
-        {
-            Node tmp = new Node (ClientID);
-            _attributes.RenderJsonChanges (tmp);
-
-            // checking to see if we should update tagName of element
-            if (ViewState.IsItemDirty ("Tag")) {
-                tmp ["tagName"].Value = Tag;
-            }
-            return tmp;
+            base.OnInit (e);
         }
 
         private string GetWidgetHtml ()
@@ -394,11 +368,13 @@ namespace phosphorus.ajax.widgets
         {
             using (MemoryStream stream = new MemoryStream ()) {
                 using (HtmlTextWriter txt = new HtmlTextWriter (new StreamWriter (stream))) {
-                    // TODO: Why ......?
-                    var oldRender = _renderMode;
-                    _renderMode = RenderMode.RenderVisible;
+                    // TODO: Remove, or verify is unnecessary ...
+                    // since children will only render html if some ancestor is in "RenderVisible" mode, we 
+                    // temporarily change the rendering mode of current widget as its children are being processed
+                    //var oldRender = _renderMode;
+                    //_renderMode = RenderMode.RenderVisible;
                     RenderChildren (txt);
-                    _renderMode = oldRender;
+                    //_renderMode = oldRender;
                     txt.Flush ();
                 }
                 stream.Seek (0, SeekOrigin.Begin);

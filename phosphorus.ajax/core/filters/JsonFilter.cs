@@ -9,7 +9,6 @@ using System.Text;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Web.Script.Serialization;
-using phosphorus.types;
 using phosphorus.ajax.core;
 using pf = phosphorus.ajax.widgets;
 
@@ -45,107 +44,13 @@ namespace phosphorus.ajax.core.filters
                 if (!string.IsNullOrEmpty (viewstate)) {
                     string oldViewstate = Manager.Page.Request.Params ["__VIEWSTATE"];
                     if (viewstate != oldViewstate) {
-                        Node node = new Node ("__VIEWSTATE");
-                        Node viewStateNode = new Node ();
-                        viewStateNode.Name = oldViewstate;
-                        viewStateNode.Value = viewstate;
-                        node ["value"].Value = viewStateNode;
-                        Manager.RegisterWidgetChanges (node);
+                        Manager.RegisterWidgetChanges ("__VIEWSTATE", "value", viewstate, oldViewstate);
                     }
                 }
             }
 
-            // we could just use the JavaScriptSerializer here, but that would create a significant larger json for us
-            // hence we're rolling our own implementation here, with some help from the JavaScriptSerializer class
-            return ToJson (Manager.Changes);
-        }
-
-        private string ToJson (Node node)
-        {
-            StringBuilder builder = new StringBuilder ();
-            builder.Append ("{");
-            List<Node> nodes = node.Get<List<Node>> ();
-            if (nodes != null && nodes.Count > 0) {
-                bool isFirst = true;
-                foreach (Node idx in nodes) {
-                    if (!string.IsNullOrEmpty (idx.Name)) {
-                        if (isFirst) {
-                            isFirst = false;
-                        } else {
-                            builder.Append (",");
-                        }
-                        builder.Append (string.Format (@"""{0}"":", idx.Name));
-                        ObjectToJson (builder, idx.Value);
-                    }
-                }
-            }
-            builder.Append ("}");
-            return builder.ToString ();
-        }
-
-        private void ObjectToJson (StringBuilder builder, object value)
-        {
-            if (value == null) {
-                builder.Append ("null");
-            } else {
-                List<Node> lst = value as List<Node>;
-                if (lst != null) {
-                    builder.Append ("{");
-                    bool isFirst = true;
-                    foreach (Node idx in lst) {
-                        if (isFirst) {
-                            isFirst = false;
-                        } else {
-                            builder.Append (",");
-                        }
-                        builder.Append (string.Format (@"""{0}"":", idx.Name));
-                        ObjectToJson (builder, idx.Value);
-                    }
-                    builder.Append ("}");
-                } else {
-                    Node single = value as Node;
-                    if (single != null) {
-                        new JavaScriptSerializer ().Serialize (GetPropertyChanges (single), builder);
-                    } else {
-                        new JavaScriptSerializer ().Serialize (value, builder);
-                    }
-                }
-            }
-        }
-
-        private object GetPropertyChanges (Node single)
-        {
-            string old = single.Name;
-            string ne = single.Get<string> ();
-            if (old == null || old.Length < 10 || ne == null || ne.Length < 10) {
-                return ne; // no need to reduce size
-            } else {
-                // finding the position of where the changes start such that we can return 
-                // as small amounts of changes back to client as possible, to conserve bandwidth and make response smaller
-                if (old == ne) {
-                    return new object[] { };
-                }
-                int start = -1;
-                string update = null;
-                for (int idx = 0; idx < old.Length && idx < ne.Length; idx++) {
-                    if (old [idx] != ne [idx]) {
-                        start = idx;
-                        if (idx < ne.Length) {
-                            update = ne.Substring (idx);
-                        }
-                        break;
-                    }
-                }
-                if (start == -1 && ne.Length > old.Length) {
-                    return new object[] { old.Length, ne.Substring (old.Length) };
-                } else if (start == -1 && ne.Length < old.Length) {
-                    return new object[] { ne.Length };
-                } else if (start < 5) {
-                    return ne; // we cannot save anything here ...
-                } else {
-                    return new object[] { start, update };
-                }
-            }
+            // returning json
+            return new JavaScriptSerializer ().Serialize (Manager.Changes);
         }
 
         private string GetViewState (string html)

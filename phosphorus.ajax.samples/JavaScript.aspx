@@ -68,8 +68,8 @@
 
       // called when a successful response is returned, but before dom is updated with return value from server
       onsuccess: function(retVal, evt) {
-        if(retVal.widgets && retVal.widgets.javascript_widget) {
-          retVal.widgets.javascript_widget.innerHTML += '. source of howdies was; \'' + evt + 
+        if(retVal.__pf_change && retVal.__pf_change.javascript_widget) {
+          retVal.__pf_change.javascript_widget.innerHTML += '. source of howdies was; \'' + evt + 
             '\'. before dom was updated, the widget had; \'' + this.el.innerHTML + '\' as its html. widget was clicked ';
         }
       },
