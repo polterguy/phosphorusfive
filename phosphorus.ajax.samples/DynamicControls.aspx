@@ -89,15 +89,23 @@
 
                     <pf:Void
                         runat="server"
-                        id="cut_the_crap"
+                        id="harvest_love"
                         ElementType="input"
                         type="button"
                         onclick="harvest_love_onclick"
                         value="harvest love" />
 
-                    <p>
-                        the <em>"Container"</em> widget allows for dynamically adding, removing and updating its controls.&nbsp;&nbsp;use the
-                        <em>"CreatePersistentControl"</em> method to create a control you wish to let the widget remember across postbacks
+                    <pf:Void
+                        runat="server"
+                        id="update"
+                        ElementType="input"
+                        type="button"
+                        onclick="update_onclick"
+                        value="update" />
+
+                <p>
+                    the <em>"Container"</em> widget allows for dynamically adding, removing and updating its controls.&nbsp;&nbsp;use the
+                    <em>"CreatePersistentControl"</em> method to create a control you wish to let the widget remember across postbacks
 
                 <p>
                     back to <a href="Default.aspx">example's home</a>

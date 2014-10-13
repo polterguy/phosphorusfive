@@ -41,14 +41,11 @@ namespace phosphorus.ajax.widgets
         // please notice that this dictionary is static, and hence will be reused across multiple requests and sessions
         private static Dictionary<Type, ICreator> _creators = new Dictionary<Type, ICreator>();
 
-        // contains the original controls collection, before we started adding and removing controls
+        // contains the original controls collection, before we started adding and removing controls for current request
         private List<Control> _originalCollection;
 
         // used to lock GetCreator to make sure we don't get a race condition when instantiating new creators
         private static object _lock = new object ();
-
-        // next available id for controls automatically created
-        private int _nextId;
 
         // use to make sure we store a reference to our creator instance for later requests
         private static ICreator GetCreator<T>() where T : Control, new()
@@ -62,6 +59,24 @@ namespace phosphorus.ajax.widgets
             return _creators [typeof(T)];
         }
 
+        static Container ()
+        {
+            // to make sure we have our LiteralControl creator around
+            GetCreator<LiteralControl> ();
+        }
+
+        /// <summary>
+        /// returns all controls of the given type T from the Controls property
+        /// </summary>
+        /// <returns>the controls</returns>
+        /// <typeparam name="T">type of controls to return</typeparam>
+        public IEnumerable<T> GetControls<T>() where T : Control {
+            foreach (Control idx in Controls) {
+                if (idx is T)
+                    yield return idx as T;
+            }
+        }
+
         /// <summary>
         /// creates a persistent control that will be automatically re-created during future postbacks. you can create any Control 
         /// here you wish, but your control must have a public constructor taking no arguments. only controls created through this 
@@ -71,22 +86,14 @@ namespace phosphorus.ajax.widgets
         /// <param name="id">id of control, if null, and automatic id will be created</param>
         /// <param name="index">index of where to insert control</param>
         /// <typeparam name="T">the type of control you wish to create</typeparam>
-        public T CreatePersistentControl<T> (string id, int index = -1)  where T : Control, new()
+        public T CreatePersistentControl<T> (string id = null, int index = -1)  where T : Control, new()
         {
-            if (_originalCollection == null) {
-                // storing original collection such that we can do a "diff" during rendering
-                _originalCollection = new List<Control> ();
-                foreach (Control idxCtrl in Controls) {
-                    _originalCollection.Add (idxCtrl);
-                }
-            }
-
             // creating new control, and adding to the controls collection
             T control = GetCreator<T>().Create () as T;
             if (string.IsNullOrEmpty (id)) {
 
                 // creating an automatic unique id for widget
-                control.ID = "x" + (_nextId++);
+                control.ID = "x" + Guid.NewGuid ().ToString ().Replace ("-", "");
             } else {
 
                 // using the supplied id
@@ -132,7 +139,7 @@ namespace phosphorus.ajax.widgets
                 // then removing all controls that is not persisted
                 var toRemove = new List<Control> ();
                 foreach (Control idxControl in Controls) {
-                    if (!ctrlsViewstate.Exists (
+                    if (string.IsNullOrEmpty (idxControl.ID) || !ctrlsViewstate.Exists (
                         delegate (Tuple<string, string> idxViewstate) {
                         return idxViewstate.Item2 == idxControl.ID;
                     }))
@@ -142,28 +149,26 @@ namespace phosphorus.ajax.widgets
                     Controls.Remove (idxCtrl);
                 }
 
-                // then adding all controls that are persisted but does not exist in controls collection
+                // then adding all controls that are persisted but does not exist in the controls collection
                 int controlPosition = 0;
                 foreach (var idxTuple in ctrlsViewstate) {
                     bool exist = false;
                     foreach (Control idxCtrl in Controls) {
-                        if (idxCtrl.ID == idxTuple.Item2) {
+                        if (idxTuple.Item2 == idxCtrl.ID) {
                             exist = true;
                             break;
                         }
                     }
+                    Type type = Type.GetType (idxTuple.Item1);
                     if (!exist) {
-                        Control control = _creators [Type.GetType (idxTuple.Item1)].Create ();
+                        Control control = _creators [type].Create ();
                         control.ID = idxTuple.Item2;
                         Controls.AddAt (controlPosition, control);
                     }
                     controlPosition += 1;
                 }
 
-                // making sure future controls gets unique ids
-                _nextId = Controls.Count;
-
-                // then storing the original controls that was there before user starts adding and removing controls
+                // then storing the original controls that was there before user starts adding and removing controls in his own page life cycle
                 _originalCollection = new List<Control> ();
                 foreach (Control idxCtrl in Controls) {
                     _originalCollection.Add (idxCtrl);
@@ -184,7 +189,8 @@ namespace phosphorus.ajax.widgets
                 // types and ids that exists in our control collection
                 var lst = new List<string []> ();
                 foreach (Control idx in Controls) {
-                    lst.Add (new string[] { idx.GetType ().AssemblyQualifiedName, idx.ID });
+                    if (!string.IsNullOrEmpty (idx.ID)) // skipping auto-generated literal controls
+                        lst.Add (new string[] { idx.GetType ().AssemblyQualifiedName, idx.ID });
                 }
                 object[] tmp = new object [2];
                 tmp [0] = lst.ToArray ();
@@ -196,21 +202,37 @@ namespace phosphorus.ajax.widgets
                 return base.SaveControlState ();
             }
         }
-        
+
+        protected override void OnInit (EventArgs e)
+        {
+            if ((Page as core.IAjaxPage).Manager.IsPhosphorusRequest) {
+                List<Control> ctrls = new List<Control> ();
+                foreach (Control idx in Controls) {
+                    if (string.IsNullOrEmpty (idx.ID))
+                        ctrls.Add (idx);
+                }
+                foreach (Control idx in ctrls) {
+                    Controls.Remove (idx);
+                }
+            }
+            base.OnInit (e);
+        }
+
         protected override void RemovedControl (Control control)
         {
-            // automatically changing the rendering mode of the widget if we should and tracking which controls are removed
             if (IsTrackingViewState) {
                 if (_originalCollection == null) {
 
                     // storing original controls that were there before we started adding and removing controls
                     _originalCollection = new List<Control> ();
                     foreach (Control idxCtrl in Controls) {
-                        _originalCollection.Add (idxCtrl);
+                        if (!string.IsNullOrEmpty (idxCtrl.ID))
+                            _originalCollection.Add (idxCtrl);
                     }
 
-                    // we have to add the removed control too, since that bugger is already out of the control collection
-                    _originalCollection.Add (control);
+                    // we have to add the removed control too, since that bugger is already out of the controls collection
+                    if (!string.IsNullOrEmpty (control.ID))
+                        _originalCollection.Add (control);
                 }
                 ReRenderChildren ();
             }
@@ -219,22 +241,21 @@ namespace phosphorus.ajax.widgets
 
         protected override void AddedControl (Control control, int index)
         {
-            // automatically changing the rendering mode of the widget if we should
             if (IsTrackingViewState) {
+                if (_originalCollection == null) {
+
+                    // storing original controls that were there before we started adding and removing controls
+                    _originalCollection = new List<Control> ();
+                    foreach (Control idxCtrl in Controls) {
+                        if (idxCtrl.ID != control.ID) // making sure the newly added control does not make it to the original control collection
+                            _originalCollection.Add (idxCtrl);
+                    }
+                }
                 ReRenderChildren ();
             }
             base.AddedControl (control, index);
         }
 
-        protected override void AddParsedSubObject (object obj)
-        {
-            // simply skipping these buggers, makes ugly markup, and they're noisy also ...
-            // besides, every now and then, some asshole comes around with no id, fucking up the viewstate ...!! :P
-            if (obj is System.Web.UI.LiteralControl)
-                return;
-            base.AddParsedSubObject (obj);
-        }
-        
         protected override void RenderChildrenWidgetsAsJson (HtmlTextWriter writer)
         {
             if (_originalCollection == null) {
@@ -251,8 +272,8 @@ namespace phosphorus.ajax.widgets
         {
             var widgets = new List<Tuple<string, int>> ();
             foreach (Control idx in Controls) {
-                if (_originalCollection.Contains (idx))
-                    continue; // control has already been rendered
+                if (_originalCollection.Contains (idx) || string.IsNullOrEmpty (idx.ID))
+                    continue; // control has already been rendered, or is a literal control without an ID
 
                 // getting control's html
                 string html;
@@ -267,7 +288,7 @@ namespace phosphorus.ajax.widgets
                     }
                 }
                 int position = Controls.IndexOf (idx);
-                widgets.Add (new Tuple<string, int> (html, position));
+                widgets.Add (new Tuple<string, int> (html, position + 1));
             }
 
             // we have to insert such that the first controls becomes added before controls behind it, such that the dom position
@@ -296,7 +317,7 @@ namespace phosphorus.ajax.widgets
                         break;
                     }
                 }
-                if (!exist)
+                if (!exist && !string.IsNullOrEmpty (idxOriginal.ID))
                     (Page as core.IAjaxPage).Manager.RegisterDeletedWidget (idxOriginal.ClientID);
             }
         }

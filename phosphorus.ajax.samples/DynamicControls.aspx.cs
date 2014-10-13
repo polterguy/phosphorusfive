@@ -16,23 +16,42 @@ namespace phosphorus.ajax.samples
     {
         protected pf.Container list;
         protected pf.Void txt;
+        protected pf.Void update;
+
+        private string CurrentEdit {
+            get { return ViewState ["CurrentEdit"] as string; }
+            set { ViewState ["CurrentEdit"] = value; }
+        }
+
+        protected override void OnPreRender (EventArgs e)
+        {
+            if (CurrentEdit != null)
+                update.RemoveAttribute ("disabled");
+            else
+                update ["disabled"] = null;
+            base.OnPreRender (e);
+        }
 
         [WebMethod]
-        protected void item_onclick (pf.Literal literal, EventArgs e)
+        protected void item_onclick (pf.Literal sender, EventArgs e)
         {
-            if (literal.innerHTML == "are you sure?") {
-                literal.Parent.Controls.Remove (literal);
+            if (sender.innerHTML == "are you sure?") {
+                sender.Parent.Controls.Remove (sender);
+                CurrentEdit = null;
             } else {
-                literal.innerHTML = "are you sure?";
+                txt ["value"] = sender.innerHTML;
+                CurrentEdit = sender.ID;
+                sender.innerHTML = "are you sure?";
             }
         }
         
         [WebMethod]
         protected void append_onclick (pf.Void btn, EventArgs e)
         {
-            // to make sure our new control does not get the same ID as other existing controls, we explicitly create one
-            string id = Guid.NewGuid ().ToString ().Replace ("-", "");
-            pf.Literal widget = list.CreatePersistentControl<pf.Literal> (id);
+            CurrentEdit = null;
+            pf.Literal widget = list.CreatePersistentControl<pf.Literal> (
+                null, 
+                list.Controls.Count);
             widget.ElementType = "li";
             widget.RenderType = pf.Widget.RenderingType.NoClose;
             widget ["onclick"] = "item_onclick";
@@ -42,9 +61,8 @@ namespace phosphorus.ajax.samples
         [WebMethod]
         protected void insert_top_onclick (pf.Void btn, EventArgs e)
         {
-            // to make sure our new control does not get the same ID as other existing controls, we explicitly create one
-            string id = Guid.NewGuid ().ToString ().Replace ("-", "");
-            pf.Literal widget = list.CreatePersistentControl<pf.Literal> (id, 0);
+            CurrentEdit = null;
+            pf.Literal widget = list.CreatePersistentControl<pf.Literal> (null, 0);
             widget.ElementType = "li";
             widget.RenderType = pf.Widget.RenderingType.NoClose;
             widget ["onclick"] = "item_onclick";
@@ -54,9 +72,10 @@ namespace phosphorus.ajax.samples
         [WebMethod]
         protected void insert_at_random_onclick (pf.Void btn, EventArgs e)
         {
-            // to make sure our new control does not get the same ID as other existing controls, we explicitly create one
-            string id = Guid.NewGuid ().ToString ().Replace ("-", "");
-            pf.Literal widget = list.CreatePersistentControl<pf.Literal> (id, new Random ().Next (0, list.Controls.Count));
+            CurrentEdit = null;
+            pf.Literal widget = list.CreatePersistentControl<pf.Literal> (
+                null, 
+                new Random ().Next (1, list.Controls.Count));
             widget.ElementType = "li";
             widget.RenderType = pf.Widget.RenderingType.NoClose;
             widget ["onclick"] = "item_onclick";
@@ -66,16 +85,14 @@ namespace phosphorus.ajax.samples
         [WebMethod]
         protected void replace_random_onclick (pf.Void btn, EventArgs e)
         {
+            CurrentEdit = null;
             if (list.Controls.Count == 0) {
-                txt ["value"] += " - could not replace, nothing to replace. appended instead";
-                append_onclick (btn, e);
+                txt ["value"] = "nothing to replace!!";
             } else {
-                int which = new Random ().Next (0, list.Controls.Count - 1);
+                int which = new Random ().Next (1, list.Controls.Count);
                 list.Controls.RemoveAt (which);
 
-                // to make sure our new control does not get the same ID as other existing controls, we explicitly create one
-                string id = Guid.NewGuid ().ToString ().Replace ("-", "");
-                pf.Literal widget = list.CreatePersistentControl<pf.Literal> (id, which);
+                pf.Literal widget = list.CreatePersistentControl<pf.Literal> (null, which);
                 widget.ElementType = "li";
                 widget.RenderType = pf.Widget.RenderingType.NoClose;
                 widget ["onclick"] = "item_onclick";
@@ -86,12 +103,12 @@ namespace phosphorus.ajax.samples
         [WebMethod]
         protected void love_bomb_onclick (pf.Void btn, EventArgs e)
         {
+            CurrentEdit = null;
             Random rnd = new Random ();
-            foreach (Control idx in list.Controls) {
-                pf.Literal lit = idx as pf.Literal;
-                if (lit != null && rnd.Next (0, 3) == 1) {
-                    lit.innerHTML = "i like turtles!";
-                    lit ["class"] = "turtles";
+            foreach (pf.Literal idx in list.GetControls<pf.Literal> ()) {
+                if (rnd.Next (0, 3) == 1) {
+                    idx.innerHTML = "i like turtles!";
+                    idx ["class"] = "turtles";
                 }
             }
         }
@@ -99,16 +116,24 @@ namespace phosphorus.ajax.samples
         [WebMethod]
         protected void harvest_love_onclick (pf.Void btn, EventArgs e)
         {
+            CurrentEdit = null;
             List<Control> toRemove = new List<Control> ();
-            foreach (Control idx in list.Controls) {
-                pf.Literal lit = idx as pf.Literal;
-                if (lit.innerHTML.Contains ("turtles")) {
-                    toRemove.Add (lit);
+            foreach (pf.Literal idx in list.GetControls<pf.Literal> ()) {
+                if (idx.innerHTML.Contains ("turtles")) {
+                    toRemove.Add (idx);
                 }
             }
             foreach (Control idx in toRemove) {
                 idx.Parent.Controls.Remove (idx);
             }
+        }
+        
+        [WebMethod]
+        protected void update_onclick (pf.Void btn, EventArgs e)
+        {
+            pf.Literal liter = list.FindControl (CurrentEdit) as pf.Literal;
+            liter.innerHTML = txt ["value"];
+            CurrentEdit = null;
         }
     }
 }
