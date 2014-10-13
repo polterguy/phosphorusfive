@@ -42,14 +42,10 @@
     <Content Include="Default.aspx" />
     <Content Include="media\main.css" />
     <Content Include="Container.aspx" />
-    <Content Include="Events.aspx" />
-    <Content Include="FormData.aspx" />
     <Content Include="Literal.aspx" />
     <Content Include="JavaScript.aspx" />
-    <Content Include="HTML5.aspx" />
-    <Content Include="Attributes.aspx" />
-    <Content Include="ViewState.aspx" />
     <Content Include="DynamicControls.aspx" />
+    <Content Include="Void.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Default.aspx.cs">
@@ -58,29 +54,17 @@
     <Compile Include="Container.aspx.cs">
       <DependentUpon>Container.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Events.aspx.cs">
-      <DependentUpon>Events.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="FormData.aspx.cs">
-      <DependentUpon>FormData.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Literal.aspx.cs">
       <DependentUpon>Literal.aspx</DependentUpon>
     </Compile>
     <Compile Include="JavaScript.aspx.cs">
       <DependentUpon>JavaScript.aspx</DependentUpon>
     </Compile>
-    <Compile Include="HTML5.aspx.cs">
-      <DependentUpon>HTML5.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Attributes.aspx.cs">
-      <DependentUpon>Attributes.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="ViewState.aspx.cs">
-      <DependentUpon>ViewState.aspx</DependentUpon>
-    </Compile>
     <Compile Include="DynamicControls.aspx.cs">
       <DependentUpon>DynamicControls.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Void.aspx.cs">
+      <DependentUpon>Void.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

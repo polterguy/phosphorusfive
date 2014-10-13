@@ -16,7 +16,7 @@ namespace phosphorus.ajax.samples
         [WebMethod]
         protected void javascript_widget_onclicked (pf.Literal literal, EventArgs e)
         {
-            literal.innerHTML = Page.Request.Params ["custom_data"] + ", your server says; 'hi dude'";
+            literal.innerHTML = Page.Request.Params ["custom_data"] + "your server says; 'hello'. ";
         }
     }
 }

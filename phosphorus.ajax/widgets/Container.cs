@@ -212,9 +212,7 @@ namespace phosphorus.ajax.widgets
                     // we have to add the removed control too, since that bugger is already out of the control collection
                     _originalCollection.Add (control);
                 }
-                if (RenderingMode == RenderMode.Default) {
-                    RenderingMode = RenderMode.RenderChildren;
-                }
+                ReRenderChildren ();
             }
             base.RemovedControl (control);
         }
@@ -223,9 +221,7 @@ namespace phosphorus.ajax.widgets
         {
             // automatically changing the rendering mode of the widget if we should
             if (IsTrackingViewState) {
-                if (RenderingMode == RenderMode.Default) {
-                    RenderingMode = RenderMode.RenderChildren;
-                }
+                ReRenderChildren ();
             }
             base.AddedControl (control, index);
         }
@@ -307,14 +303,14 @@ namespace phosphorus.ajax.widgets
         
         private void RenderOldControls (HtmlTextWriter writer)
         {
-            RenderMode old = RenderingMode;
-            RenderingMode = RenderMode.Default;
+            RenderingMode old = _renderMode;
+            _renderMode = RenderingMode.Default;
             foreach (Control idx in Controls) {
                 if (_originalCollection.Contains (idx)) {
                     idx.RenderControl (writer);
                 }
             }
-            RenderingMode = old;
+            _renderMode = old;
         }
     }
 }

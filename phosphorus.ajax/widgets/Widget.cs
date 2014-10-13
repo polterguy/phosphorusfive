@@ -18,19 +18,36 @@ namespace phosphorus.ajax.widgets
     [ViewStateModeById]
     public abstract class Widget : Control, IAttributeAccessor
     {
-        // helps determine how we should render the widget
-        protected enum RenderMode
+        /// <summary>
+        /// rules for how to render the tag
+        /// </summary>
+        public enum RenderingType
         {
-            // the engine takes care of how to render automatically
+            /// <summary>
+            /// this is for elements that require both an opening element, and a closing element, such as "div" and "ul"
+            /// </summary>
             Default,
 
-            // re-render entire widget, regardless of what type of request this is
-            RenderVisible,
+            /// <summary>
+            /// this forces the element to close itself, even when there is no content, which means it will be rendered with a slash (/) just 
+            /// before the greater-than angle-bracket of the opening element. this creates xhtml compliant rendering for you on your page. examples
+            /// of element that requires this type of rendering are "input" and "br", but only if you wish to follow xhtml practices
+            /// </summary>
+            SelfClosing,
 
-            // re-render children of widget, regardless of what type of request this is
-            RenderChildren,
+            /// <summary>
+            /// this is for elements that does not require a closing element. examples of elements that should be rendered
+            /// with this type are "p", "li", "input" and "br"
+            /// </summary>
+            NoClose
+        }
 
-            // re-render invisible markup, regardless of what type of request this is
+        // used to figure out if element just became visible, in-visible, should re-render children, and so on
+        protected enum RenderingMode
+        {
+            Default,
+            ReRender,
+            ReRenderChildren,
             RenderInvisible
         };
 
@@ -38,60 +55,48 @@ namespace phosphorus.ajax.widgets
         private internals.AttributeStorage _attributes = new internals.AttributeStorage ();
 
         // how to render the widget. normally this is automatically determined, but sometimes it needs to be overridden explicitly
-        private RenderMode _renderMode = RenderMode.Default;
+        protected RenderingMode _renderMode = RenderingMode.Default;
 
         /// <summary>
-        /// gets or sets the tag name used to render the html element
+        /// gets or sets the element type used to render the html element such as "p", "div", "ul" etc
         /// </summary>
         /// <value>the tag name</value>
-        public string Tag {
-            get { return this ["Tag"]; }
+        public string ElementType {
+            get { return this ["et"]; }
             set {
                 if (value.ToLower () != value)
-                    throw new ApplicationException ("phosphorus.ajax doesn't like uppercase tags, you tried to supply; '" + value + "' as tagname");
-                this ["Tag"] = value;
+                    throw new ArgumentException ("phosphorus.ajax doesn't like uppercase element names", "value");
+                this ["et"] = value;
             }
         }
 
         /// <summary>
-        /// gets or sets the tag name used to render the html element when it is invisible
+        /// gets or sets the tag name used to render the html element when it is invisible. this is sometimes useful since the default
+        /// tag rendered when widget is invisible is a span tag, which is not necessarily compatible with the position in the dom you're
+        /// rendering it. for instance, if you have a "ul" tag or widget, which has an invisible "li" widget, then rendering a span
+        /// tag as a child of a "ul" is illegal according to the html standard. in such circumstances you must change the invisible
+        /// tag rendered to become an "li" element
         /// </summary>
         /// <value>the tag name</value>
-        public string InvisibleTag {
-            get { return ViewState ["InvisibleTag"] == null ? "span" : ViewState["InvisibleTag"] as string; }
-            set { ViewState ["InvisibleTag"] = value; }
+        public string InvisibleElement {
+            get { return ViewState ["ie"] == null ? "span" : ViewState ["ie"] as string; }
+            set { ViewState ["ie"] = value; }
         }
 
         /// <summary>
-        /// gets or sets a value indicating whether this <see cref="phosphorus.ajax.widgets.Widget"/> should close an empty tag immediately.
-        /// the default value for this property is false, which mean that if the element has no content, either as children controls, or 
-        /// as innerHTML, then the tag to render the element will still create an end tag element. sometimes this is not what you wish, 
-        /// though for most elements this is according to the standard. if you have a "void element", meaning an element that cannot have 
-        /// any content at all, such as img, br, hr and such, then you can set this value to true, and the tag will be "self-closed". please 
-        /// also be aware of the HasEndTag property, which often can be set to false for the same type of html elements that are void elements
+        /// gets or sets the rendering type of the element, such as whether or not the element is self-closed, has an end element, and so on
         /// </summary>
-        /// <value><c>true</c> if it closes an empty tag immediately; otherwise, <c>false</c></value>
-        public bool SelfClosed {
-            get { return ViewState ["SelfClosed"] == null ? false : (bool)ViewState["SelfClosed"]; }
-            set { ViewState ["SelfClosed"] = value; }
-        }
-
-        /// <summary>
-        /// gets or sets a value indicating whether this instance has an end tag or not. some elements does not require an end tag 
-        /// at all, examples here are p, td, li, and so on. for these tags you can choose to explicitly turn off the rendering of the 
-        /// end tag, and such save a couple of bytes of http traffic. the default value of this property is true
-        /// </summary>
-        /// <value><c>true</c> if this instance has an end tag; otherwise, <c>false</c></value>
-        public bool HasEndTag {
-            get { return ViewState ["HasEndTag"] == null ? true : (bool)ViewState["HasEndTag"]; }
-            set { ViewState ["HasEndTag"] = value; }
+        /// <value>the rendering type of the element</value>
+        public RenderingType RenderType {
+            get { return ViewState ["rt"] == null ? RenderingType.Default : (RenderingType)ViewState ["rt"]; }
+            set { ViewState ["rt"] = value; }
         }
 
         /// <summary>
         /// gets or sets the named attribute for the widget. notice that attribute might exist, even if 
         /// return value is null, since attributes can have "null values", such as for instance "controls" 
         /// for the html5 video element, or the "disabled" attribute on form elements. if you wish to 
-        /// check for the existence of an attribute, then use the <see cref="phosphorus.ajax.widgets.Widget.HasAttribute"/>. 
+        /// check for the existence of an attribute, then use <see cref="phosphorus.ajax.widgets.Widget.HasAttribute"/>. 
         /// if you wish to remove an attribute, use the <see cref="phosphorus.ajax.widgets.Widget.RemoveAttribute"/>
         /// </summary>
         /// <param name="name">attribute to retrieve or set</param>
@@ -126,20 +131,32 @@ namespace phosphorus.ajax.widgets
         }
 
         /// <summary>
+        /// forces a re-rendering of the widget. normally this is not something you should have to mess with yourself, but something the
+        /// framework itself will take care of. however, if you wish to force the control to re-render itself entirely as html back to
+        /// the client, you can call this method
+        /// </summary>
+        public void ReRender ()
+        {
+            _renderMode = RenderingMode.ReRender;
+        }
+
+        /// <summary>
+        /// forces a re-rendering of the widget's children. normally this is not something you should have to mess with yourself, but 
+        /// something the framework itself will take care of. however, if you wish to force the control to re-render its children or content
+        /// as html back to the client, you can call this method
+        /// </summary>
+        public void ReRenderChildren ()
+        {
+            if (_renderMode != RenderingMode.ReRender)
+                _renderMode = RenderingMode.ReRenderChildren;
+        }
+
+        /// <summary>
         /// gets a value indicating whether this instance has content or not
         /// </summary>
         /// <value><c>true</c> if this instance has content; otherwise, <c>false</c></value>
         protected abstract bool HasContent {
             get;
-        }
-
-        /// <summary>
-        /// gets or sets the rendering mode of the widget
-        /// </summary>
-        /// <value>the rendering mode</value>
-        protected RenderMode RenderingMode {
-            get { return _renderMode; }
-            set { _renderMode = value; }
         }
 
         /// <summary>
@@ -149,8 +166,8 @@ namespace phosphorus.ajax.widgets
         protected virtual void LoadFormData ()
         {
             if (this ["disabled"] == null) {
-                if (!string.IsNullOrEmpty (this ["name"]) || Tag == "option") {
-                    switch (Tag.ToLower ()) {
+                if (!string.IsNullOrEmpty (this ["name"]) || ElementType == "option") {
+                    switch (ElementType.ToLower ()) {
                         case "input":
                             switch (this ["type"]) {
                                 case "radio":
@@ -171,7 +188,7 @@ namespace phosphorus.ajax.widgets
                             break;
                         case "option":
                             Widget parent = Parent as Widget;
-                            if (parent != null && !parent.HasAttribute ("disabled") && !string.IsNullOrEmpty (parent ["name"])) {
+                            if (parent != null && parent.ElementType == "select" && !parent.HasAttribute ("disabled") && !string.IsNullOrEmpty (parent ["name"])) {
                                 if (Page.Request.Params [parent ["name"]] == this ["value"]) {
                                     _attributes.SetAttributeFormData ("selected", null);
                                 } else {
@@ -238,6 +255,8 @@ namespace phosphorus.ajax.widgets
             (Page as core.IAjaxPage).Manager.RegisterWidgetChanges (ClientID, "innerHTML", GetChildrenHtml ());
         }
 
+        // overridden asp.net properties and methods
+
         public override bool Visible {
             get {
                 return base.Visible;
@@ -246,11 +265,11 @@ namespace phosphorus.ajax.widgets
                 if (!base.Visible && value && IsTrackingViewState && IsPhosphorusRequest) {
                     // this control was made visible during this request and should be rendered as html
                     // unless any of its ancestors are invisible
-                    _renderMode = RenderMode.RenderVisible;
+                    _renderMode = RenderingMode.ReRender;
                 } else if (base.Visible && !value && IsTrackingViewState && IsPhosphorusRequest) {
                     // this control was made invisible during this request and should be rendered 
                     // with its invisible html, unless any of its ancestors are invisible
-                    _renderMode = RenderMode.RenderInvisible;
+                    _renderMode = RenderingMode.RenderInvisible;
                 }
                 base.Visible = value;
             }
@@ -262,11 +281,11 @@ namespace phosphorus.ajax.widgets
                 bool ancestorReRendering = IsAncestorRendering ();
                 if (Visible) {
                     if (IsPhosphorusRequest && !ancestorReRendering) {
-                        if (_renderMode == RenderMode.RenderVisible) {
+                        if (_renderMode == RenderingMode.ReRender) {
 
                             // re-rendering entire widget
                             (Page as core.IAjaxPage).Manager.RegisterWidgetChanges (ClientID, "outerHTML", GetWidgetHtml ());
-                        } else if (_renderMode == RenderMode.RenderChildren) {
+                        } else if (_renderMode == RenderingMode.ReRenderChildren) {
 
                             // re-rendering all children controls
                             RenderChildrenWidgetsAsJson (writer);
@@ -284,7 +303,7 @@ namespace phosphorus.ajax.widgets
                 } else {
 
                     // invisible widget
-                    if (IsPhosphorusRequest && _renderMode == RenderMode.RenderInvisible && !ancestorReRendering) {
+                    if (IsPhosphorusRequest && _renderMode == RenderingMode.RenderInvisible && !ancestorReRendering) {
 
                         // re-rendering widget's invisible markup
                         (Page as core.IAjaxPage).Manager.RegisterWidgetChanges (ClientID, "outerHTML", GetWidgetInvisibleHtml ());
@@ -350,6 +369,8 @@ namespace phosphorus.ajax.widgets
             base.OnInit (e);
         }
 
+        // private methods for internal use in the class
+
         private string GetWidgetHtml ()
         {
             using (MemoryStream stream = new MemoryStream ()) {
@@ -368,13 +389,7 @@ namespace phosphorus.ajax.widgets
         {
             using (MemoryStream stream = new MemoryStream ()) {
                 using (HtmlTextWriter txt = new HtmlTextWriter (new StreamWriter (stream))) {
-                    // TODO: Remove, or verify is unnecessary ...
-                    // since children will only render html if some ancestor is in "RenderVisible" mode, we 
-                    // temporarily change the rendering mode of current widget as its children are being processed
-                    //var oldRender = _renderMode;
-                    //_renderMode = RenderMode.RenderVisible;
                     RenderChildren (txt);
-                    //_renderMode = oldRender;
                     txt.Flush ();
                 }
                 stream.Seek (0, SeekOrigin.Begin);
@@ -386,7 +401,7 @@ namespace phosphorus.ajax.widgets
 
         private string GetWidgetInvisibleHtml ()
         {
-            return string.Format (@"<{0} id=""{1}"" style=""display:none important!;""></{0}>", InvisibleTag, ClientID);
+            return string.Format (@"<{0} id=""{1}"" style=""display:none important!;""></{0}>", InvisibleElement, ClientID);
         }
 
         private bool IsPhosphorusRequest {
@@ -415,7 +430,7 @@ namespace phosphorus.ajax.widgets
             Control idx = this.Parent;
             while (idx != null) {
                 Widget wdg = idx as Widget;
-                if (wdg != null && (wdg._renderMode == RenderMode.RenderVisible || wdg._renderMode == RenderMode.RenderChildren))
+                if (wdg != null && (wdg._renderMode == RenderingMode.ReRender || wdg._renderMode == RenderingMode.ReRenderChildren))
                     return true;
                 idx = idx.Parent;
             }
@@ -425,7 +440,7 @@ namespace phosphorus.ajax.widgets
         private void RenderHtmlResponse (HtmlTextWriter writer)
         {
             // render opening tag
-            writer.Write (string.Format (@"<{0} id=""{1}""", Tag, ClientID));
+            writer.Write (string.Format (@"<{0} id=""{1}""", ElementType, ClientID));
 
             // render attributes
             _attributes.Render (writer);
@@ -433,27 +448,21 @@ namespace phosphorus.ajax.widgets
             if (HasContent) {
                 writer.Write (">");
                 RenderChildren (writer);
-                if (HasEndTag) {
-                    writer.Write (string.Format ("</{0}>", Tag));
-                }
+                if (RenderType == RenderingType.Default)
+                    writer.Write (string.Format ("</{0}>", ElementType));
             } else {
 
                 // no content in widget
-                if (HasEndTag) {
-                    if (SelfClosed) {
-
-                        // xhtml style of syntax
-                        writer.Write (" />");
-                    } else {
-
-                        // tag must have its ending tag, even though it is empty
-                        writer.Write (">");
-                        writer.Write (string.Format ("</{0}>", Tag));
-                    }
-                } else {
-
-                    // widget doesn't need ending html tag
+                switch (RenderType) {
+                case RenderingType.SelfClosing:
+                    writer.Write (" />");
+                    break;
+                case RenderingType.NoClose:
                     writer.Write (">");
+                    break;
+                case RenderingType.Default:
+                    writer.Write (string.Format ("></{0}>", ElementType));
+                    break;
                 }
             }
         }

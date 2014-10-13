@@ -21,23 +21,24 @@
 
                 <h1>dynamic controls example</h1>
 
-                <p>this example shows you how you can dynamically add and remove controls to your page
+                <p>
+                    this example shows you how you can dynamically add, remove and change controls
 
                 <pf:Container
                     runat="server"
                     id="list"
-                    Tag="ul">
+                    ElementType="ul">
                     <pf:Literal
                         runat="server"
                         id="static1"
-                        Tag="li"
-                        HasEndTag="false"
+                        ElementType="li"
+                        RenderType="NoClose"
                         onclick="item_onclick">1. static</pf:Literal>
                     <pf:Literal
                         runat="server"
                         id="static2"
-                        Tag="li"
-                        HasEndTag="false"
+                        ElementType="li"
+                        RenderType="NoClose"
                         onclick="item_onclick">2. static</pf:Literal>
                 </pf:Container>
 
@@ -45,7 +46,7 @@
                     <pf:Void
                         runat="server"
                         id="txt"
-                        Tag="input"
+                        ElementType="input"
                         type="text"
                         style="width:100px;"
                         name="txt"
@@ -54,7 +55,7 @@
                     <pf:Void
                         runat="server"
                         id="append"
-                        Tag="input"
+                        ElementType="input"
                         type="button"
                         onclick="append_onclick"
                         value="append" />
@@ -62,7 +63,7 @@
                     <pf:Void
                         runat="server"
                         id="insert_top"
-                        Tag="input"
+                        ElementType="input"
                         type="button"
                         onclick="insert_top_onclick"
                         value="insert at top" />
@@ -70,7 +71,7 @@
                     <pf:Void
                         runat="server"
                         id="insert_at_random"
-                        Tag="input"
+                        ElementType="input"
                         type="button"
                         onclick="insert_at_random_onclick"
                         value="insert at random" />
@@ -78,7 +79,7 @@
                     <pf:Void
                         runat="server"
                         id="replace_random"
-                        Tag="input"
+                        ElementType="input"
                         type="button"
                         onclick="replace_random_onclick"
                         value="replace random element" />
@@ -86,7 +87,7 @@
                     <pf:Void
                         runat="server"
                         id="turtle_insert"
-                        Tag="input"
+                        ElementType="input"
                         type="button"
                         onclick="turtle_insert_onclick"
                         value="append and show random love" />
@@ -94,7 +95,7 @@
                     <pf:Void
                         runat="server"
                         id="love_bomb"
-                        Tag="input"
+                        ElementType="input"
                         type="button"
                         onclick="love_bomb_onclick"
                         value="love bomb" />
@@ -102,13 +103,17 @@
                     <pf:Void
                         runat="server"
                         id="cut_the_crap"
-                        Tag="input"
+                        ElementType="input"
                         type="button"
-                        onclick="cut_the_crap_onclick"
-                        value="cut the crap" />
+                        onclick="harvest_love_onclick"
+                        value="harvest love" />
 
-                    <br />
+                    <p>
+                        the <em>"Container"</em> widget allows for dynamically adding, removing and updating its controls.&nbsp;&nbsp;use the
+                        <em>"CreatePersistentControl"</em> method to create a control you wish to let the widget remember across postbacks
 
+                <p>
+                    back to <a href="Default.aspx">example's home</a>
             </div>
         </form>
     </body>

@@ -33,8 +33,8 @@ namespace phosphorus.ajax.samples
             // to make sure our new control does not get the same ID as other existing controls, we explicitly create one
             string id = Guid.NewGuid ().ToString ().Replace ("-", "");
             pf.Literal widget = list.CreatePersistentControl<pf.Literal> (id);
-            widget.Tag = "li";
-            widget.HasEndTag = false;
+            widget.ElementType = "li";
+            widget.RenderType = pf.Widget.RenderingType.NoClose;
             widget ["onclick"] = "item_onclick";
             widget.innerHTML = txt ["value"];
         }
@@ -45,8 +45,8 @@ namespace phosphorus.ajax.samples
             // to make sure our new control does not get the same ID as other existing controls, we explicitly create one
             string id = Guid.NewGuid ().ToString ().Replace ("-", "");
             pf.Literal widget = list.CreatePersistentControl<pf.Literal> (id, 0);
-            widget.Tag = "li";
-            widget.HasEndTag = false;
+            widget.ElementType = "li";
+            widget.RenderType = pf.Widget.RenderingType.NoClose;
             widget ["onclick"] = "item_onclick";
             widget.innerHTML = txt ["value"];
         }
@@ -58,8 +58,8 @@ namespace phosphorus.ajax.samples
             string id = Guid.NewGuid ().ToString ().Replace ("-", "");
             Random rnd = new Random ();
             pf.Literal widget = list.CreatePersistentControl<pf.Literal> (id, rnd.Next (0, list.Controls.Count));
-            widget.Tag = "li";
-            widget.HasEndTag = false;
+            widget.ElementType = "li";
+            widget.RenderType = pf.Widget.RenderingType.NoClose;
             widget ["onclick"] = "item_onclick";
             widget.innerHTML = txt ["value"];
         }
@@ -78,8 +78,8 @@ namespace phosphorus.ajax.samples
                 // to make sure our new control does not get the same ID as other existing controls, we explicitly create one
                 string id = Guid.NewGuid ().ToString ().Replace ("-", "");
                 pf.Literal widget = list.CreatePersistentControl<pf.Literal> (id, which);
-                widget.Tag = "li";
-                widget.HasEndTag = false;
+                widget.ElementType = "li";
+                widget.RenderType = pf.Widget.RenderingType.NoClose;
                 widget ["onclick"] = "item_onclick";
                 widget.innerHTML = txt ["value"];
             }
@@ -96,8 +96,8 @@ namespace phosphorus.ajax.samples
             // to make sure our new control does not get the same ID as other existing controls, we explicitly create one
             string id = Guid.NewGuid ().ToString ().Replace ("-", "");
             pf.Literal widget = list.CreatePersistentControl<pf.Literal> (id);
-            widget.Tag = "li";
-            widget.HasEndTag = false;
+            widget.ElementType = "li";
+            widget.RenderType = pf.Widget.RenderingType.NoClose;
             widget ["onclick"] = "item_onclick";
             widget.innerHTML = txt ["value"];
         }
@@ -116,12 +116,12 @@ namespace phosphorus.ajax.samples
         }
         
         [WebMethod]
-        protected void cut_the_crap_onclick (pf.Void btn, EventArgs e)
+        protected void harvest_love_onclick (pf.Void btn, EventArgs e)
         {
             List<Control> toRemove = new List<Control> ();
             foreach (Control idx in list.Controls) {
                 pf.Literal lit = idx as pf.Literal;
-                if (lit.innerHTML.Contains ("crap")) {
+                if (lit.innerHTML.Contains ("turtles")) {
                     toRemove.Add (lit);
                 }
             }

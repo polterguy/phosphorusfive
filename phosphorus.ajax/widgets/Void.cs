@@ -15,7 +15,7 @@ namespace phosphorus.ajax.widgets
     {
         public Void ()
         {
-            HasEndTag = false;
+            RenderType = RenderingType.NoClose;
         }
 
         // overridden to throw an exception if user tries to explicitly set the innerHTML attribute of this control
