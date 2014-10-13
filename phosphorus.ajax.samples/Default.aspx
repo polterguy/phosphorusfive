@@ -19,14 +19,6 @@
                 <p>
                     the examples for phosphorus, can either be read sequentially, as a book, or you can use them as a reference guide
 
-                <ul>
-                    <li><a href="Literal.aspx">literal example</a>
-                    <li><a href="Container.aspx">container example</a>
-                    <li><a href="Void.aspx">void example</a>
-                    <li><a href="JavaScript.aspx">javascript example</a>
-                    <li><a href="DynamicControls.aspx">dynamic controls example</a>
-                </ul>
-
                 <h2>hello world</h2>
 
                 <p>
@@ -41,10 +33,15 @@
                     you can change the element rendered through the <em>"ElementType"</em> property, and the rendering type through
                     <em>"RenderType"</em>.&nbsp;&nbsp;you can set any event handler or attribute you wish, by adding them directly
                     in markup, or using the index operator overload in your codebehind.&nbsp;&nbsp;for security reasons, all event handlers
-                    must be marked with the <em>"WebMethod"</em> attribute
+                    must be marked with the <em>"WebMethod"</em> attribute.&nbsp;&nbsp;only the changes will be returned from the server
 
-                <p>
-                    onwards to the <a href="Literal.aspx">literal example</a>
+                <ul>
+                    <li><a href="Literal.aspx">literal example</a>
+                    <li><a href="Container.aspx">container example</a>
+                    <li><a href="Void.aspx">void example</a>
+                    <li><a href="JavaScript.aspx">javascript example</a>
+                    <li><a href="DynamicControls.aspx">dynamic controls example</a>
+                </ul>
 
                 <hr>
 
