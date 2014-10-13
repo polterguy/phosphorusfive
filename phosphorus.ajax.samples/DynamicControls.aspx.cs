@@ -17,10 +17,16 @@ namespace phosphorus.ajax.samples
         protected pf.Container list;
         protected pf.Void txt;
         protected pf.Void update;
+        private static int _next = 1;
 
         private string CurrentEdit {
             get { return ViewState ["CurrentEdit"] as string; }
             set { ViewState ["CurrentEdit"] = value; }
+        }
+
+        protected override void OnPreInit (EventArgs e)
+        {
+            base.OnPreInit (e);
         }
 
         protected override void OnPreRender (EventArgs e)
@@ -49,9 +55,7 @@ namespace phosphorus.ajax.samples
         protected void append_onclick (pf.Void btn, EventArgs e)
         {
             CurrentEdit = null;
-            pf.Literal widget = list.CreatePersistentControl<pf.Literal> (
-                null, 
-                list.Controls.Count);
+            pf.Literal widget = list.CreatePersistentControl<pf.Literal> ("x" + (_next ++), list.Controls.Count);
             widget.ElementType = "li";
             widget.RenderType = pf.Widget.RenderingType.NoClose;
             widget ["onclick"] = "item_onclick";
@@ -62,7 +66,7 @@ namespace phosphorus.ajax.samples
         protected void insert_top_onclick (pf.Void btn, EventArgs e)
         {
             CurrentEdit = null;
-            pf.Literal widget = list.CreatePersistentControl<pf.Literal> (null, 0);
+            pf.Literal widget = list.CreatePersistentControl<pf.Literal> ("x" + (_next ++), 0);
             widget.ElementType = "li";
             widget.RenderType = pf.Widget.RenderingType.NoClose;
             widget ["onclick"] = "item_onclick";
@@ -73,9 +77,7 @@ namespace phosphorus.ajax.samples
         protected void insert_at_random_onclick (pf.Void btn, EventArgs e)
         {
             CurrentEdit = null;
-            pf.Literal widget = list.CreatePersistentControl<pf.Literal> (
-                null, 
-                new Random ().Next (1, list.Controls.Count));
+            pf.Literal widget = list.CreatePersistentControl<pf.Literal> ("x" + (_next ++), new Random ().Next (0, list.Controls.Count));
             widget.ElementType = "li";
             widget.RenderType = pf.Widget.RenderingType.NoClose;
             widget ["onclick"] = "item_onclick";
@@ -89,10 +91,10 @@ namespace phosphorus.ajax.samples
             if (list.Controls.Count == 0) {
                 txt ["value"] = "nothing to replace!!";
             } else {
-                int which = new Random ().Next (1, list.Controls.Count);
+                int which = new Random ().Next (0, list.Controls.Count);
                 list.Controls.RemoveAt (which);
 
-                pf.Literal widget = list.CreatePersistentControl<pf.Literal> (null, which);
+                pf.Literal widget = list.CreatePersistentControl<pf.Literal> ("x" + (_next ++), which);
                 widget.ElementType = "li";
                 widget.RenderType = pf.Widget.RenderingType.NoClose;
                 widget ["onclick"] = "item_onclick";

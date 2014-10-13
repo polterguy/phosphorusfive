@@ -17,7 +17,7 @@
                 <h1>javascript example</h1>
 
                 <p>
-                    this example shows how you can intercept phosphorus.ajax http requests
+                    this example shows how you can intercept phosphorus http requests in javascript
 
                 <p>
                     <pf:Literal

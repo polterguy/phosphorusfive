@@ -1,6 +1,7 @@
 <%@ Page 
     Language="C#" 
     Inherits="phosphorus.ajax.samples.DynamicControls"
+    StoreViewStateInSession="true"
     Codebehind="DynamicControls.aspx.cs" %>
 
 <!DOCTYPE html>

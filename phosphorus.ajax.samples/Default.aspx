@@ -33,7 +33,7 @@
                     you can change the element rendered through the <em>"ElementType"</em> property, and the rendering type through
                     <em>"RenderType"</em>.&nbsp;&nbsp;you can set any event handler or attribute you wish, by adding them directly
                     in markup, or using the index operator overload in your codebehind.&nbsp;&nbsp;for security reasons, all event handlers
-                    must be marked with the <em>"WebMethod"</em> attribute.&nbsp;&nbsp;only the changes will be returned from the server
+                    must be marked with the <em>"WebMethod"</em> attribute.&nbsp;&nbsp;only changes will be returned from the server
 
                 <ul>
                     <li><a href="Literal.aspx">literal example</a>

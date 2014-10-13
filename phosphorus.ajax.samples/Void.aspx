@@ -25,13 +25,15 @@
                         id="txt"
                         name="txt"
                         ElementType="input"
+                        style="width:250px;"
+                        placeholder="type text into me and click update ..."
                         type="text" />
                     <pf:Void
                         runat="server"
                         id="btn"
                         ElementType="input"
                         type="button"
-                        value="update textbox"
+                        value="update"
                         onclick="btn_onclick" />
 
                 <pf:Literal

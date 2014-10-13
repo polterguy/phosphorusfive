@@ -43,7 +43,7 @@ namespace phosphorus.ajax.core.filters
 
         private string RemoveViewState (string content)
         {
-            Regex regex = new Regex (@"(<input[\s\n]+type=""hidden""[\s\n]+name=""__VIEWSTATE""[\s\n]+id=""__VIEWSTATE""[\s\n]+value="".+[^""]""[\s\n]*/>)", RegexOptions.Compiled);
+            Regex regex = new Regex (@"([\s\n]+<div[\s\n]+class=""aspNetHidden"">[\s\n\t]+<input[\s\n]+type=""hidden""[\s\n]+name=""__VIEWSTATE""[\s\n]+id=""__VIEWSTATE""[\s\n]+value=""[^""]*""[\s\n]*/>[\s\n\t]+</div>)", RegexOptions.Compiled);
             return regex.Replace (content, "");
         }
 
@@ -64,7 +64,8 @@ namespace phosphorus.ajax.core.filters
 
             // including javascript files
             foreach (string idxFile in Manager.JavaScriptFiles) {
-                builder.Append (string.Format(@"<script type=""text/javascript"" src=""{0}""></script>", idxFile.Replace ("&", "&amp;")));
+                builder.Append (string.Format(@"    <script type=""text/javascript"" src=""{0}""></script>
+    ", idxFile.Replace ("&", "&amp;")));
             }
 
             // adding back up again the "</html>" parts

@@ -74,5 +74,6 @@
     <Compile Include="widgets\Void.cs" />
     <Compile Include="core\internals\Attribute.cs" />
     <Compile Include="core\internals\AttributeStorage.cs" />
+    <Compile Include="core\internals\StatePersister.cs" />
   </ItemGroup>
 </Project>
