@@ -9,20 +9,6 @@
     	<title>phosphorus.ajax examples</title>
         <link rel="stylesheet" type="text/css" href="media/main.css">
         <meta charset="utf-8">
-        <style>
-hr {
-    margin-top:100px;
-    margin-bottom:100px;
-}
-
-h3 {
-    margin-top:45px;
-}
-
-.change-is-the-only-constant {
-    background-color:LightBlue;
-}
-        </style>
     </head>
     <body>
         <form id="form1" runat="server" autocomplete="off">

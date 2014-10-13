@@ -20,10 +20,10 @@ namespace phosphorus.ajax.samples
         [WebMethod]
         protected void item_onclick (pf.Literal literal, EventArgs e)
         {
-            if (literal.innerHTML != "are you sure?") {
-                literal.innerHTML = "are you sure?";
-            } else {
+            if (literal.innerHTML == "are you sure?") {
                 literal.Parent.Controls.Remove (literal);
+            } else {
+                literal.innerHTML = "are you sure?";
             }
         }
         
@@ -56,8 +56,7 @@ namespace phosphorus.ajax.samples
         {
             // to make sure our new control does not get the same ID as other existing controls, we explicitly create one
             string id = Guid.NewGuid ().ToString ().Replace ("-", "");
-            Random rnd = new Random ();
-            pf.Literal widget = list.CreatePersistentControl<pf.Literal> (id, rnd.Next (0, list.Controls.Count));
+            pf.Literal widget = list.CreatePersistentControl<pf.Literal> (id, new Random ().Next (0, list.Controls.Count));
             widget.ElementType = "li";
             widget.RenderType = pf.Widget.RenderingType.NoClose;
             widget ["onclick"] = "item_onclick";
@@ -71,8 +70,7 @@ namespace phosphorus.ajax.samples
                 txt ["value"] += " - could not replace, nothing to replace. appended instead";
                 append_onclick (btn, e);
             } else {
-                Random rnd = new Random ();
-                int which = rnd.Next (0, list.Controls.Count - 1);
+                int which = new Random ().Next (0, list.Controls.Count - 1);
                 list.Controls.RemoveAt (which);
 
                 // to make sure our new control does not get the same ID as other existing controls, we explicitly create one
@@ -83,23 +81,6 @@ namespace phosphorus.ajax.samples
                 widget ["onclick"] = "item_onclick";
                 widget.innerHTML = txt ["value"];
             }
-        }
-        
-        [WebMethod]
-        protected void turtle_insert_onclick (pf.Void btn, EventArgs e)
-        {
-            Random rnd = new Random ();
-            pf.Literal turtles = list.Controls [rnd.Next (0, Controls.Count - 1)] as pf.Literal;
-            turtles.innerHTML = "i like turtles!";
-            turtles ["class"] = "turtles";
-
-            // to make sure our new control does not get the same ID as other existing controls, we explicitly create one
-            string id = Guid.NewGuid ().ToString ().Replace ("-", "");
-            pf.Literal widget = list.CreatePersistentControl<pf.Literal> (id);
-            widget.ElementType = "li";
-            widget.RenderType = pf.Widget.RenderingType.NoClose;
-            widget ["onclick"] = "item_onclick";
-            widget.innerHTML = txt ["value"];
         }
         
         [WebMethod]

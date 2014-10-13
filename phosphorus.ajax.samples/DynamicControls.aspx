@@ -9,11 +9,6 @@
     	<title>dynamic controls example</title>
         <link rel="stylesheet" type="text/css" href="media/main.css">
         <meta charset="utf-8">
-        <style>
-.turtles {
-    background-color:Cyan;
-}
-        </style>
     </head>
     <body>
         <form id="form1" runat="server" autocomplete="off">
@@ -83,14 +78,6 @@
                         type="button"
                         onclick="replace_random_onclick"
                         value="replace random element" />
-
-                    <pf:Void
-                        runat="server"
-                        id="turtle_insert"
-                        ElementType="input"
-                        type="button"
-                        onclick="turtle_insert_onclick"
-                        value="append and show random love" />
 
                     <pf:Void
                         runat="server"

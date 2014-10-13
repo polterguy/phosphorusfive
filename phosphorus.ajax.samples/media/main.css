@@ -16,3 +16,20 @@ div.container {
     margin-bottom:5em;
 }
 
+hr {
+    margin-top:50px;
+    margin-bottom:50px;
+}
+
+h3 {
+    margin-top:45px;
+}
+
+.change-is-the-only-constant {
+    background-color:LightBlue;
+}
+
+.turtles {
+    background-color:Cyan;
+}
+

@@ -27,8 +27,8 @@
 
                 <p>
                     phosphorus at its core, only contains three different widgets.&nbsp;&nbsp;the <em>"Literal"</em> widget is your widget of 
-                    choice when you want to supply text or html to the client.&nbsp;&nbsp;the literal widget contains one property 
-                    called <em>"innerHTML"</em>, which allows you to change its content, as a string of text, on the server
+                    choice when you want to supply text or html to the client.&nbsp;&nbsp;the literal has the <em>"innerHTML"</em> property,
+                    which allows you to change its content, as a string of text, on the server
 
                 <p>onwards to the <a href="Container.aspx">container example</a>
 

@@ -26,7 +26,7 @@
                         ElementType="strong"
                         onclick="pf_samples.javascript_widget_onclick(event)">click me</pf:Literal>
                 <p>
-                    above we intercept the <em>"onclick"</em> event, and add a cusomt parameter to the http request.&nbsp;&nbsp;when the
+                    above we intercept the <em>"onclick"</em> event, and add a custom parameter to the http request.&nbsp;&nbsp;when the
                     response returns, we change the return from the server, before we allow the dom to update
 
                 <p>
