@@ -76,6 +76,14 @@
                             <input type="button" id="invoke_normal" class="undetermined" value="run" onclick="tests.invoke_normal(event)">
                         </td>
                     </tr>
+                    <tr>
+                        <td>
+                            run multiple consecutive requests at the same time while server sleeps .1 seconds
+                        </td>
+                        <td>
+                            <input type="button" id="invoke_multiple" class="undetermined" value="run" onclick="tests.invoke_multiple(event)">
+                        </td>
+                    </tr>
                     <tr class="spacer">
                         <td colspan="2">
                             <h3>attributes</h3>
@@ -216,10 +224,50 @@
                     </tr>
                     <tr>
                         <td>
+                            insert child to container at top
+                        </td>
+                        <td>
+                            <input type="button" id="invoke_insert_child" class="undetermined" value="run" onclick="tests.invoke_insert_child(event)">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
                             add child to container, check exist
                         </td>
                         <td>
                             <input type="button" id="invoke_add_child_check_exist" class="undetermined" value="run" onclick="tests.invoke_add_child_check_exist(event)">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            insert child to container at top, check exist
+                        </td>
+                        <td>
+                            <input type="button" id="invoke_insert_child_check_exist" class="undetermined" value="run" onclick="tests.invoke_insert_child_check_exist(event)">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            remove child from container
+                        </td>
+                        <td>
+                            <input type="button" id="invoke_remove_child" class="undetermined" value="run" onclick="tests.invoke_remove_child(event)">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            remove multiple children from container
+                        </td>
+                        <td>
+                            <input type="button" id="invoke_remove_multiple" class="undetermined" value="run" onclick="tests.invoke_remove_multiple(event)">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            append child to container and remove in same request
+                        </td>
+                        <td>
+                            <input type="button" id="invoke_append_remove" class="undetermined" value="run" onclick="tests.invoke_append_remove(event)">
                         </td>
                     </tr>
                 </table>
@@ -250,6 +298,12 @@
                         id="sandbox_invoke_normal"
                         RenderType="NoClose"
                         onclick="sandbox_invoke_normal_onclick"
+                        ElementType="p" />
+                    <pf:Literal
+                        runat="server"
+                        id="sandbox_invoke_multiple"
+                        RenderType="NoClose"
+                        onclick="sandbox_invoke_multiple_onclick"
                         ElementType="p" />
                     <pf:Literal
                         runat="server"
@@ -373,6 +427,16 @@
                     </pf:Container>
                     <pf:Container
                         runat="server"
+                        id="sandbox_invoke_insert_child"
+                        RenderType="NoClose"
+                        ElementType="p">
+                        <pf:Literal
+                            runat="server"
+                            id="sandbox_invoke_insert_child_child1"
+                            ElementType="strong">foo</pf:Literal>
+                    </pf:Container>
+                    <pf:Container
+                        runat="server"
                         id="sandbox_invoke_add_child_check_exist"
                         RenderType="NoClose"
                         ElementType="p">
@@ -380,6 +444,50 @@
                             runat="server"
                             id="sandbox_invoke_add_child_check_exist_child1"
                             ElementType="strong">foo</pf:Literal>
+                    </pf:Container>
+                    <pf:Container
+                        runat="server"
+                        id="sandbox_invoke_insert_child_check_exist"
+                        RenderType="NoClose"
+                        ElementType="p">
+                        <pf:Literal
+                            runat="server"
+                            id="sandbox_invoke_insert_child_check_exist_child1"
+                            ElementType="strong">foo</pf:Literal>
+                    </pf:Container>
+                    <pf:Container
+                        runat="server"
+                        id="sandbox_invoke_append_remove"
+                        RenderType="NoClose"
+                        ElementType="p">
+                        <pf:Literal
+                            runat="server"
+                            id="sandbox_invoke_append_remove_child"
+                            ElementType="strong">foo</pf:Literal>
+                    </pf:Container>
+                    <pf:Container
+                        runat="server"
+                        id="sandbox_invoke_remove_child"
+                        RenderType="NoClose"
+                        ElementType="p">
+                        <pf:Literal
+                            runat="server"
+                            id="sandbox_invoke_remove_child_child"
+                            ElementType="strong">foo</pf:Literal>
+                    </pf:Container>
+                    <pf:Container
+                        runat="server"
+                        id="sandbox_invoke_remove_multiple"
+                        RenderType="NoClose"
+                        ElementType="p">
+                        <pf:Literal
+                            runat="server"
+                            id="sandbox_invoke_remove_multiple_child1"
+                            ElementType="strong">foo</pf:Literal>
+                        <pf:Literal
+                            runat="server"
+                            id="sandbox_invoke_remove_multiple_child2"
+                            ElementType="strong">bar</pf:Literal>
                     </pf:Container>
                 </div>
 

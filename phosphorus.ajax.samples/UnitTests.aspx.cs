@@ -38,6 +38,13 @@ namespace phosphorus.ajax.samples
         }
 
         [WebMethod]
+        protected void sandbox_invoke_multiple_onclick (pf.Literal literal, EventArgs e)
+        {
+            literal.innerHTML += "x";
+            System.Threading.Thread.Sleep (100);
+        }
+
+        [WebMethod]
         protected void sandbox_invoke_change_content_onclick (pf.Literal literal, EventArgs e)
         {
             literal.innerHTML = "new value";
@@ -185,6 +192,21 @@ namespace phosphorus.ajax.samples
         }
         
         [WebMethod]
+        protected void sandbox_invoke_insert_child_onclick (pf.Container container, EventArgs e)
+        {
+            pf.Literal literal = container.CreatePersistentControl<pf.Literal> (null, 0);
+            literal.ElementType = "strong";
+            literal.innerHTML = "howdy world";
+
+            var existing = new List<pf.Literal> (container.GetControls<pf.Literal> ());
+            if (existing.Count != 2)
+                throw new ApplicationException ("widget disappeared somehow after insertion");
+
+            if (existing[0].innerHTML != "howdy world")
+                throw new ApplicationException ("widget had wrong innerHTML");
+        }
+
+        [WebMethod]
         protected void sandbox_invoke_add_child_check_exist_1_onclick (pf.Container container, EventArgs e)
         {
             pf.Literal literal = container.CreatePersistentControl<pf.Literal> ();
@@ -215,6 +237,64 @@ namespace phosphorus.ajax.samples
             
             if (existing[2].innerHTML != "howdy world 2")
                 throw new ApplicationException ("widget had wrong innerHTML");
+        }
+        
+        [WebMethod]
+        protected void sandbox_invoke_insert_child_check_exist_1_onclick (pf.Container container, EventArgs e)
+        {
+            pf.Literal literal = container.CreatePersistentControl<pf.Literal> (null, 0);
+            literal.ElementType = "strong";
+            literal.innerHTML = "howdy world";
+        }
+
+        [WebMethod]
+        protected void sandbox_invoke_insert_child_check_exist_2_onclick (pf.Container container, EventArgs e)
+        {
+            List<pf.Literal> existing = new List<pf.Literal> (container.GetControls<pf.Literal> ());
+            if (existing.Count != 2)
+                throw new ApplicationException ("widget disappeared somehow");
+
+            if (existing[0].innerHTML != "howdy world")
+                throw new ApplicationException ("widget had wrong innerHTML");
+
+            if (existing[1].innerHTML != "foo")
+                throw new ApplicationException ("widget had wrong innerHTML");
+
+            pf.Literal literal = container.CreatePersistentControl<pf.Literal> (null, 1);
+            literal.ElementType = "strong";
+            literal.innerHTML = "howdy world 2";
+
+            existing = new List<pf.Literal> (container.GetControls<pf.Literal> ());
+            if (existing.Count != 3)
+                throw new ApplicationException ("widget disappeared somehow after insertion");
+
+            if (existing[1].innerHTML != "howdy world 2")
+                throw new ApplicationException ("widget had wrong innerHTML");
+        }
+        
+        [WebMethod]
+        protected void sandbox_invoke_remove_child_onclick (pf.Container container, EventArgs e)
+        {
+            List<pf.Literal> literals = new List<pf.Literal> (container.GetControls<pf.Literal> ());
+            container.Controls.Remove (literals [0]);
+        }
+        
+        [WebMethod]
+        protected void sandbox_invoke_remove_multiple_onclick (pf.Container container, EventArgs e)
+        {
+            List<pf.Literal> literals = new List<pf.Literal> (container.GetControls<pf.Literal> ());
+            container.Controls.Remove (literals [0]);
+            container.Controls.Remove (literals [1]);
+        }
+
+        [WebMethod]
+        protected void sandbox_invoke_append_remove_onclick (pf.Container container, EventArgs e)
+        {
+            List<pf.Literal> literals = new List<pf.Literal> (container.GetControls<pf.Literal> ());
+            container.Controls.Remove (literals [0]);
+            pf.Literal literal = container.CreatePersistentControl<pf.Literal> (null, 0);
+            literal.ElementType = "strong";
+            literal.innerHTML = "howdy world";
         }
     }
 }

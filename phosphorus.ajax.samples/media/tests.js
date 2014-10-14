@@ -138,7 +138,7 @@ tests.invoke_no_webmethod = function(event) {
 
 
 /*
- * invokes an event handler not marked as WebMethod, asserting 'onerror' is called
+ * invokes an event handler as 'onclick'
  */
 tests.invoke_normal = function(event) {
   var el = pf.$('sandbox_invoke_normal');
@@ -149,6 +149,81 @@ tests.invoke_normal = function(event) {
 
     onsuccess: function(serverReturn, evt) {
       tests.setSuccess('invoke_normal');
+    }
+  });
+};
+
+
+/*
+ * invokes an event handler not marked as WebMethod, asserting 'onerror' is called
+ */
+tests.invoke_multiple = function(event) {
+  var success = 'maybe';
+  var el = pf.$('sandbox_invoke_multiple');
+  el.raise('onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setError('invoke_multiple');
+      success = 'no';
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      if (success == 'maybe' && serverReturn.__pf_change.sandbox_invoke_multiple.innerHTML != 'x') {
+        success = 'no';
+      }
+    }
+  });
+  el.raise('onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setError('invoke_multiple');
+      success = 'no';
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      if (success == 'maybe' && serverReturn.__pf_change.sandbox_invoke_multiple.innerHTML != 'xx') {
+        success = 'no';
+      }
+    }
+  });
+  el.raise('onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setError('invoke_multiple');
+      success = 'no';
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      if (success == 'maybe' && serverReturn.__pf_change.sandbox_invoke_multiple.innerHTML != 'xxx') {
+        success = 'no';
+      }
+    }
+  });
+  el.raise('onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setError('invoke_multiple');
+      success = 'no';
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      if (success == 'maybe' && serverReturn.__pf_change.sandbox_invoke_multiple.innerHTML != 'xxxx') {
+        success = 'no';
+      }
+    }
+  });
+  el.raise('onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setError('invoke_multiple');
+      success = 'no';
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      if (success == 'maybe' && serverReturn.__pf_change.sandbox_invoke_multiple.innerHTML != 'xxxxx') {
+        tests.setError('invoke_multiple');
+      } else {
+        if (success == 'maybe') {
+          tests.setSuccess('invoke_multiple');
+        } else {
+          tests.setError('invoke_multiple');
+        }
+      }
     }
   });
 };
@@ -706,6 +781,36 @@ tests.invoke_add_child = function(event) {
 
 
 /*
+ * insert child to container widget at top
+ */
+tests.invoke_insert_child = function(event) {
+  var el = pf.$('sandbox_invoke_insert_child');
+  el.raise('sandbox_invoke_insert_child_onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setError('invoke_insert_child');
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+        tests.setError('invoke_insert_child');
+        return;
+      }
+      if (serverReturn.__pf_change.sandbox_invoke_insert_child.__pf_add_1.indexOf ('howdy world') == -1) {
+        tests.setError('invoke_insert_child');
+        return;
+      }
+      if (serverReturn.__pf_change.sandbox_invoke_insert_child.__pf_add_1.indexOf ('strong') == -1) {
+        tests.setError('invoke_insert_child');
+        return;
+      }
+
+      tests.setSuccess('invoke_insert_child');
+    }
+  });
+};
+
+
+/*
  * add child to container widget, check it exists in a new request
  */
 tests.invoke_add_child_check_exist = function(event) {
@@ -751,6 +856,159 @@ tests.invoke_add_child_check_exist = function(event) {
           tests.setSuccess('invoke_add_child_check_exist');
         }
       });
+    }
+  });
+};
+
+
+/*
+ * insert child to container widget at top, check it exists in a new request
+ */
+tests.invoke_insert_child_check_exist = function(event) {
+  var el = pf.$('sandbox_invoke_insert_child_check_exist');
+  el.raise('sandbox_invoke_insert_child_check_exist_1_onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setError('invoke_insert_child_check_exist');
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+        tests.setError('invoke_insert_child_check_exist');
+        return;
+      }
+      if (serverReturn.__pf_change.sandbox_invoke_insert_child_check_exist.__pf_add_1.indexOf ('howdy world') == -1) {
+        tests.setError('invoke_insert_child_check_exist');
+        return;
+      }
+      if (serverReturn.__pf_change.sandbox_invoke_insert_child_check_exist.__pf_add_1.indexOf ('strong') == -1) {
+        tests.setError('invoke_insert_child_check_exist');
+        return;
+      }
+
+      el.raise('sandbox_invoke_insert_child_check_exist_2_onclick', {
+        onerror: function(statusCode, statusText, responseHtml, evt) {
+          tests.setError('invoke_insert_child_check_exist');
+        },
+
+        onsuccess: function(serverReturn, evt) {
+          if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+            tests.setError('invoke_insert_child_check_exist');
+            return;
+          }
+          if (serverReturn.__pf_change.sandbox_invoke_insert_child_check_exist.__pf_add_2.indexOf ('howdy world 2') == -1) {
+            tests.setError('invoke_add_child_check_exist');
+            return;
+          }
+          if (serverReturn.__pf_change.sandbox_invoke_insert_child_check_exist.__pf_add_2.indexOf ('strong') == -1) {
+            tests.setError('invoke_insert_child_check_exist');
+            return;
+          }
+
+          tests.setSuccess('invoke_insert_child_check_exist');
+        }
+      });
+    }
+  });
+};
+
+
+/*
+ * insert child to container widget at top, check it exists in a new request
+ */
+tests.invoke_append_remove = function(event) {
+  var el = pf.$('sandbox_invoke_append_remove');
+  el.raise('sandbox_invoke_append_remove_onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setError('invoke_append_remove');
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      if (tests.countMembers(serverReturn) != 2 || tests.countMembers(serverReturn.__pf_change) != 2) {
+        tests.setError('invoke_append_remove');
+        return;
+      }
+      if (serverReturn.__pf_change.sandbox_invoke_append_remove.__pf_add_1.indexOf ('howdy world') == -1) {
+        tests.setError('invoke_append_remove');
+        return;
+      }
+      if (serverReturn.__pf_change.sandbox_invoke_append_remove.__pf_add_1.indexOf ('strong') == -1) {
+        tests.setError('invoke_append_remove');
+        return;
+      }
+      if (serverReturn.__pf_del.length != 1) {
+        tests.setError('invoke_append_remove');
+        return;
+      }
+      if (serverReturn.__pf_del[0] != 'sandbox_invoke_append_remove_child') {
+        tests.setError('invoke_append_remove');
+        return;
+      }
+
+      tests.setSuccess('invoke_append_remove');
+    }
+  });
+};
+
+
+/*
+ * removes a child from a container
+ */
+tests.invoke_remove_child = function(event) {
+  var el = pf.$('sandbox_invoke_remove_child');
+  el.raise('sandbox_invoke_remove_child_onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setError('invoke_remove_child');
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      if (tests.countMembers(serverReturn) != 2) {
+        tests.setError('invoke_remove_child');
+        return;
+      }
+      if (serverReturn.__pf_del.length != 1) {
+        tests.setError('invoke_remove_child');
+        return;
+      }
+      if (serverReturn.__pf_del[0] != 'sandbox_invoke_remove_child_child') {
+        tests.setError('invoke_remove_child');
+        return;
+      }
+
+      tests.setSuccess('invoke_remove_child');
+    }
+  });
+};
+
+
+/*
+ * removes multiple children from container
+ */
+tests.invoke_remove_multiple = function(event) {
+  var el = pf.$('sandbox_invoke_remove_multiple');
+  el.raise('sandbox_invoke_remove_multiple_onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setError('invoke_remove_multiple');
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      if (tests.countMembers(serverReturn) != 2) {
+        tests.setError('invoke_remove_multiple');
+        return;
+      }
+      if (serverReturn.__pf_del.length != 2) {
+        tests.setError('invoke_remove_multiple');
+        return;
+      }
+      if (serverReturn.__pf_del[0] != 'sandbox_invoke_remove_multiple_child1' && serverReturn.__pf_del[1] != 'sandbox_invoke_remove_multiple_child1') {
+        tests.setError('invoke_remove_multiple');
+        return;
+      }
+      if (serverReturn.__pf_del[0] != 'sandbox_invoke_remove_multiple_child2' && serverReturn.__pf_del[1] != 'sandbox_invoke_remove_multiple_child2') {
+        tests.setError('invoke_remove_multiple');
+        return;
+      }
+
+      tests.setSuccess('invoke_remove_multiple');
     }
   });
 };
