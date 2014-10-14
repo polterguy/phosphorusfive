@@ -560,6 +560,36 @@ tests.invoke_make_container_visible = function(event) {
 
 
 /*
+ * make container widget visible and verify child is still invisible
+ */
+tests.invoke_make_container_visible_invisible_child = function(event) {
+  var el = pf.$('sandbox_invoke_make_container_visible_invisible_child');
+  el.raise('sandbox_invoke_make_container_visible_invisible_child_onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setError('invoke_make_container_visible_invisible_child');
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+        tests.setError('invoke_make_container_visible_invisible_child');
+        return;
+      }
+      if (serverReturn.__pf_change.sandbox_invoke_make_container_visible_invisible_child.outerHTML.indexOf('foo') != -1) {
+        tests.setError('invoke_make_container_visible_invisible_child');
+        return;
+      }
+      if (serverReturn.__pf_change.sandbox_invoke_make_container_visible_invisible_child.outerHTML.indexOf('strong') != -1) {
+        tests.setError('invoke_make_container_visible_invisible_child');
+        return;
+      }
+
+      tests.setSuccess('invoke_make_container_visible_invisible_child');
+    }
+  });
+};
+
+
+/*
  * make child invisible, then make container visible
  */
 tests.invoke_make_container_visible_child_invisible = function(event) {
@@ -595,6 +625,49 @@ tests.invoke_make_container_visible_child_invisible = function(event) {
           }
 
           tests.setSuccess('invoke_make_container_visible_child_invisible');
+        }
+      });
+    }
+  });
+};
+
+
+/*
+ * make child visible, then make container visible
+ */
+tests.invoke_make_container_visible_child_visible = function(event) {
+  var el = pf.$('sandbox_invoke_make_container_visible_child_visible');
+  el.raise('sandbox_invoke_make_container_visible_child_visible_1_onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setError('invoke_make_container_visible_child_visible');
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 1) {
+        tests.setError('invoke_make_container_visible_child_visible');
+        return;
+      }
+
+      el.raise('sandbox_invoke_make_container_visible_child_visible_2_onclick', {
+        onerror: function(statusCode, statusText, responseHtml, evt) {
+          tests.setError('invoke_make_container_visible_child_visible');
+        },
+
+        onsuccess: function(serverReturn, evt) {
+          if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+            tests.setError('invoke_make_container_visible_child_visible');
+            return;
+          }
+          if (serverReturn.__pf_change.sandbox_invoke_make_container_visible_child_visible.outerHTML.indexOf('foo') == -1) {
+            tests.setError('invoke_make_container_visible_child_visible');
+            return;
+          }
+          if (serverReturn.__pf_change.sandbox_invoke_make_container_visible_child_visible.outerHTML.indexOf('strong') == -1) {
+            tests.setError('invoke_make_container_visible_child_visible');
+            return;
+          }
+
+          tests.setSuccess('invoke_make_container_visible_child_visible');
         }
       });
     }

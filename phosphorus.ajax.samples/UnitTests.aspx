@@ -176,10 +176,18 @@
                     </tr>
                     <tr>
                         <td>
-                            make container widget visible
+                            make container widget visible with visible children
                         </td>
                         <td>
                             <input type="button" id="invoke_make_container_visible" class="undetermined" value="run" onclick="tests.invoke_make_container_visible(event)">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            make container widget visible with invisible children
+                        </td>
+                        <td>
+                            <input type="button" id="invoke_make_container_visible_invisible_child" class="undetermined" value="run" onclick="tests.invoke_make_container_visible_invisible_child(event)">
                         </td>
                     </tr>
                     <tr>
@@ -188,6 +196,14 @@
                         </td>
                         <td>
                             <input type="button" id="invoke_make_container_visible_child_invisible" class="undetermined" value="run" onclick="tests.invoke_make_container_visible_child_invisible(event)">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            make child visible, then container visible
+                        </td>
+                        <td>
+                            <input type="button" id="invoke_make_container_visible_child_visible" class="undetermined" value="run" onclick="tests.invoke_make_container_visible_child_visible(event)">
                         </td>
                     </tr>
                 </table>
@@ -296,6 +312,18 @@
                     </pf:Container>
                     <pf:Container
                         runat="server"
+                        id="sandbox_invoke_make_container_visible_invisible_child"
+                        Visible="false"
+                        RenderType="NoClose"
+                        ElementType="p">
+                        <pf:Literal
+                            runat="server"
+                            Visible="false"
+                            id="sandbox_invoke_make_container_visible_child_invisible_child"
+                            ElementType="strong">foo</pf:Literal>
+                    </pf:Container>
+                    <pf:Container
+                        runat="server"
                         id="sandbox_invoke_make_container_visible_child_invisible"
                         Visible="false"
                         RenderType="NoClose"
@@ -303,6 +331,18 @@
                         <pf:Literal
                             runat="server"
                             id="sandbox_invoke_make_container_visible_child_child_invisible"
+                            ElementType="strong">foo</pf:Literal>
+                    </pf:Container>
+                    <pf:Container
+                        runat="server"
+                        id="sandbox_invoke_make_container_visible_child_visible"
+                        Visible="false"
+                        RenderType="NoClose"
+                        ElementType="p">
+                        <pf:Literal
+                            runat="server"
+                            Visible="false"
+                            id="sandbox_invoke_make_container_visible_child_child_visible"
                             ElementType="strong">foo</pf:Literal>
                     </pf:Container>
                 </div>

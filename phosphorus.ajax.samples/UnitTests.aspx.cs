@@ -131,6 +131,12 @@ namespace phosphorus.ajax.samples
         }
         
         [WebMethod]
+        protected void sandbox_invoke_make_container_visible_invisible_child_onclick (pf.Container container, EventArgs e)
+        {
+            container.Visible = true;
+        }
+
+        [WebMethod]
         protected void sandbox_invoke_make_container_visible_child_invisible_1_onclick (pf.Container container, EventArgs e)
         {
             List<pf.Literal> literals = new List<pf.Literal> (container.GetControls<pf.Literal> ());
@@ -139,6 +145,19 @@ namespace phosphorus.ajax.samples
         
         [WebMethod]
         protected void sandbox_invoke_make_container_visible_child_invisible_2_onclick (pf.Container container, EventArgs e)
+        {
+            container.Visible = true;
+        }
+        
+        [WebMethod]
+        protected void sandbox_invoke_make_container_visible_child_visible_1_onclick (pf.Container container, EventArgs e)
+        {
+            List<pf.Literal> literals = new List<pf.Literal> (container.GetControls<pf.Literal> ());
+            literals [0].Visible = true;
+        }
+
+        [WebMethod]
+        protected void sandbox_invoke_make_container_visible_child_visible_2_onclick (pf.Container container, EventArgs e)
         {
             container.Visible = true;
         }

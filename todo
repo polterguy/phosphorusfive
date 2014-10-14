@@ -45,6 +45,8 @@
 * check if all and only all static controls exists in Containerr controls collection, and if so, set "_manage" to false, and skip 
   viewstate serialization of control collection logic
 
+* do we really need check if ancestors are visible, since the Visible property kind of already does this ...?
+
 
 
 
