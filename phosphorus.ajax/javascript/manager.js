@@ -308,7 +308,8 @@
      *
      * 'onbefore' will be called just before the http request is sent
      * 'onsuccess' will be called when response returns, but before request is evaluated
-     * 'onerror' will be called if something goes wrong with the request
+     * 'onerror' will be called if something goes wrong with the request. unless your 'onerror' 
+     * handler returns true, then all chained requests will be stopped
      *
      * all options are optional, and may be excluded entirely
      *
@@ -400,9 +401,12 @@
         pf._chain.splice(0, 1);
       } else {
 
-        // error, stopping all chained requests before calling 'onerror'
-        pf._chain = [];
-        options.onerror.apply(this, [xhr.status, xhr.statusText, xhr.responseText, cur.evt]);
+        var cont = options.onerror.apply(this, [xhr.status, xhr.statusText, xhr.responseText, cur.evt]);
+        if (cont === true) {
+          pf._chain.splice(0, 1);
+        } else {
+          pf._chain = [];
+        }
       }
 
       // processing next request

@@ -62,11 +62,11 @@ namespace phosphorus.ajax.widgets
         /// </summary>
         /// <value>the tag name</value>
         public string ElementType {
-            get { return this ["et"]; }
+            get { return this ["Tag"]; }
             set {
                 if (value.ToLower () != value)
                     throw new ArgumentException ("phosphorus.ajax doesn't like uppercase element names", "value");
-                this ["et"] = value;
+                this ["Tag"] = value;
             }
         }
 

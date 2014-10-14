@@ -75,15 +75,22 @@ namespace phosphorus.ajax.core.internals
         /// <param name="name">name of attribute to remove</param>
         public void RemoveAttribute (string name)
         {
-            // changing attribute, but first storing old value
-            StoreOldValue (name);
-            SetAttributeInternal (_dynamicallyRemovedThisRequest, name, null);
+            if (FindAttribute (_dynamicallyAddedThisRequest, name) != null) {
+
+                // attribute was added this request, simply removing the add
+                RemoveAttributeInternal (_dynamicallyAddedThisRequest, name);
+            } else {
+
+                // changing attribute, but first storing old value
+                StoreOldValue (name);
+                SetAttributeInternal (_dynamicallyRemovedThisRequest, name, null);
             
-            // removing from all other lists
-            RemoveAttributeInternal (_dynamicallyAddedThisRequest, name);
-            RemoveAttributeInternal (_formDataThisRequest, name);
-            RemoveAttributeInternal (_viewStatePersistedRemoved, name);
-            RemoveAttributeInternal (_viewStatePersisted, name);
+                // removing from all other lists
+                RemoveAttributeInternal (_dynamicallyAddedThisRequest, name);
+                RemoveAttributeInternal (_formDataThisRequest, name);
+                RemoveAttributeInternal (_viewStatePersistedRemoved, name);
+                RemoveAttributeInternal (_viewStatePersisted, name);
+            }
         }
 
         // invoked before viewstate is being tracked

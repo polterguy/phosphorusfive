@@ -22,6 +22,7 @@
                 <pf:Literal
                     runat="server"
                     id="element"
+                    RenderType="NoClose"
                     ElementType="p"
                     onclick="element_onclick">click me</pf:Literal>
 
@@ -30,7 +31,8 @@
                     choice when you want to supply text or html to the client.&nbsp;&nbsp;the literal has the <em>"innerHTML"</em> property,
                     which allows you to change its content, as a string of text, on the server
 
-                <p>onwards to the <a href="Container.aspx">container example</a>
+                <p>
+                    onwards to the <a href="Container.aspx">container example</a>
 
             </div>
         </form>

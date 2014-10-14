@@ -109,6 +109,10 @@
                     <em>"CreatePersistentControl"</em> method to create a control you wish to let the widget remember across postbacks
 
                 <p>
+                    this example also stores its viewstate in the session by utilizing the <em>"StoreViewStateInSession"</em> feature of 
+                    the <em>"AjaxPage"</em> helper class
+
+                <p>
                     back to <a href="Default.aspx">example's home</a>
             </div>
         </form>

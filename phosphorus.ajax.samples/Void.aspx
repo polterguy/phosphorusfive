@@ -46,7 +46,8 @@
                     a void widget has no content, neither text, nor controls.&nbsp;&nbsp;the void widget is typically used for
                     some form elements, such as <em>"select"</em>, and <em>"input"</em> elements
 
-                <p>onwards to the <a href="JavaScript.aspx">javascript example</a>
+                <p>
+                    onwards to the <a href="JavaScript.aspx">javascript example</a>
 
             </div>
         </form>

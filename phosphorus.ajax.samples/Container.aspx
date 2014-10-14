@@ -41,7 +41,8 @@
                     above is a container widget.&nbsp;&nbsp;a container widget can contain other widgets and controls.&nbsp;&nbsp;the container
                     widget can have children declared in its aspx markup, or added through its <em>"Controls"</em> collection
 
-                <p>onwards to the <a href="Void.aspx">void example</a>
+                <p>
+                    onwards to the <a href="Void.aspx">void example</a>
             </div>
         </form>
     </body>

@@ -46,6 +46,8 @@
     <Content Include="JavaScript.aspx" />
     <Content Include="DynamicControls.aspx" />
     <Content Include="Void.aspx" />
+    <Content Include="UnitTests.aspx" />
+    <Content Include="media\tests.js" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Default.aspx.cs">
@@ -65,6 +67,9 @@
     </Compile>
     <Compile Include="Void.aspx.cs">
       <DependentUpon>Void.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="UnitTests.aspx.cs">
+      <DependentUpon>UnitTests.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
