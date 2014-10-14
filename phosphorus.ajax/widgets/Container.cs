@@ -59,12 +59,6 @@ namespace phosphorus.ajax.widgets
             return _creators [typeof(T)];
         }
 
-        static Container ()
-        {
-            // to make sure we have our LiteralControl creator around
-            GetCreator<LiteralControl> ();
-        }
-
         /// <summary>
         /// returns all controls of the given type T from the Controls property
         /// </summary>
@@ -136,7 +130,7 @@ namespace phosphorus.ajax.widgets
                     ctrlsViewstate.Add (new Tuple<string, string> (idx [0], idx [1]));
                 }
 
-                // then removing all controls that is not persisted
+                // then removing all controls that is not persisted, and all LiteralControls since they tend to mess up their IDs
                 var toRemove = new List<Control> ();
                 foreach (Control idxControl in Controls) {
                     if (string.IsNullOrEmpty (idxControl.ID) || !ctrlsViewstate.Exists (
@@ -159,8 +153,8 @@ namespace phosphorus.ajax.widgets
                             break;
                         }
                     }
-                    Type type = Type.GetType (idxTuple.Item1);
                     if (!exist) {
+                        Type type = Type.GetType (idxTuple.Item1);
                         Control control = _creators [type].Create ();
                         control.ID = idxTuple.Item2;
                         Controls.AddAt (controlPosition, control);
@@ -205,6 +199,7 @@ namespace phosphorus.ajax.widgets
 
         protected override void OnInit (EventArgs e)
         {
+            // making sure all the automatically generated LiteralControls are removed, since they mess up their IDs
             if ((Page as core.IAjaxPage).Manager.IsPhosphorusRequest) {
                 List<Control> ctrls = new List<Control> ();
                 foreach (Control idx in Controls) {
@@ -223,7 +218,8 @@ namespace phosphorus.ajax.widgets
             if (IsTrackingViewState) {
                 if (_originalCollection == null) {
 
-                    // storing original controls that were there before we started adding and removing controls
+                    // this is our first removal/add operator, hence we store the original controls that were there before 
+                    // we started adding and removing controls
                     _originalCollection = new List<Control> ();
                     foreach (Control idxCtrl in Controls) {
                         if (!string.IsNullOrEmpty (idxCtrl.ID))
