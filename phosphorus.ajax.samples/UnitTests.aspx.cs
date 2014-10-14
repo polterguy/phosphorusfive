@@ -26,6 +26,11 @@ namespace phosphorus.ajax.samples
             throw new ApplicationException ("this is an intentional error");
         }
         
+        //[WebMethod] intentionally commented out
+        protected void sandbox_invoke_no_webmethod_onclick (pf.Literal literal, EventArgs e)
+        {
+        }
+
         [WebMethod]
         protected void sandbox_invoke_change_content_onclick (pf.Literal literal, EventArgs e)
         {
@@ -63,6 +68,30 @@ namespace phosphorus.ajax.samples
         {
             literal ["class"] = "mumbo";
             literal ["class"] = "jumbo";
+        }
+        
+        [WebMethod]
+        protected void sandbox_invoke_change_markup_attribute_onclick (pf.Literal literal, EventArgs e)
+        {
+            literal ["class"] = "bar";
+        }
+        
+        [WebMethod]
+        protected void sandbox_invoke_remove_markup_attribute_onclick (pf.Literal literal, EventArgs e)
+        {
+            literal.RemoveAttribute ("class");
+        }
+        
+        [WebMethod]
+        protected void sandbox_invoke_remove_add_markup_attribute_1_onclick (pf.Literal literal, EventArgs e)
+        {
+            literal.RemoveAttribute ("class");
+        }
+        
+        [WebMethod]
+        protected void sandbox_invoke_remove_add_markup_attribute_2_onclick (pf.Literal literal, EventArgs e)
+        {
+            literal ["class"] = "bar";
         }
     }
 }

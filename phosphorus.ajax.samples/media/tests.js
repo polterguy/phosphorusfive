@@ -50,7 +50,7 @@ tests.countMembers = function(obj) {
 tests.run_all = function(id) {
   var els = document.getElementsByTagName('input');
   for (var idx = 0; idx < els.length; idx++) {
-    if (els[idx].id.indexOf('invoke') == 0) {
+    if (els[idx].id.indexOf('invoke') == 0 && els[idx].className == 'undetermined') {
       // this is a unit test
       try {
       tests[els[idx].id]();
@@ -96,6 +96,60 @@ tests.invoke_exception = function(event) {
 
     onsuccess: function(serverReturn, evt) {
       tests.setError('invoke_exception');
+    }
+  });
+};
+
+
+/*
+ * invokes a non-existing event handler, asserting 'onerror' is called
+ */
+tests.invoke_non_existing = function(event) {
+  var el = pf.$('sandbox_invoke_non_existing');
+  el.raise('sandbox_invoke_non_existing_onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setSuccess('invoke_non_existing');
+      return true;
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      tests.setError('invoke_non_existing');
+    }
+  });
+};
+
+
+/*
+ * invokes an event handler not marked as WebMethod, asserting 'onerror' is called
+ */
+tests.invoke_non_existing = function(event) {
+  var el = pf.$('sandbox_invoke_non_existing');
+  el.raise('sandbox_invoke_non_existing_onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setSuccess('invoke_non_existing');
+      return true;
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      tests.setError('invoke_non_existing');
+    }
+  });
+};
+
+
+/*
+ * invokes an event handler not marked as WebMethod, asserting 'onerror' is called
+ */
+tests.invoke_no_webmethod = function(event) {
+  var el = pf.$('sandbox_invoke_no_webmethod');
+  el.raise('sandbox_invoke_no_webmethod_onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setSuccess('invoke_no_webmethod');
+      return true;
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      tests.setError('invoke_no_webmethod');
     }
   });
 };
@@ -257,6 +311,109 @@ tests.invoke_change_twice = function(event) {
       }
 
       tests.setSuccess('invoke_change_twice');
+    }
+  });
+};
+
+
+/*
+ * changes an attribute twice on the server
+ */
+tests.invoke_change_markup_attribute = function(event) {
+  var el = pf.$('sandbox_invoke_change_markup_attribute');
+  el.raise('sandbox_invoke_change_markup_attribute_onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setError('invoke_change_markup_attribute');
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+        tests.setError('invoke_change_markup_attribute');
+        return;
+      }
+      if (serverReturn.__pf_change.sandbox_invoke_change_markup_attribute.class != 'bar') {
+        tests.setError('invoke_change_markup_attribute');
+        return;
+      }
+
+      tests.setSuccess('invoke_change_markup_attribute');
+    }
+  });
+};
+
+
+/*
+ * changes an attribute twice on the server
+ */
+tests.invoke_remove_markup_attribute = function(event) {
+  var el = pf.$('sandbox_invoke_remove_markup_attribute');
+  el.raise('sandbox_invoke_remove_markup_attribute_onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setError('invoke_remove_markup_attribute');
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+        tests.setError('invoke_remove_markup_attribute');
+        return;
+      }
+      if (serverReturn.__pf_change.sandbox_invoke_remove_markup_attribute.__pf_del.length != 1) {
+        tests.setError('invoke_remove_markup_attribute');
+        return;
+      }
+      if (serverReturn.__pf_change.sandbox_invoke_remove_markup_attribute.__pf_del[0] != 'class') {
+        tests.setError('invoke_remove_markup_attribute');
+        return;
+      }
+
+      tests.setSuccess('invoke_remove_markup_attribute');
+    }
+  });
+};
+
+
+/*
+ * changes an attribute twice on the server
+ */
+tests.invoke_remove_add_markup_attribute = function(event) {
+  var el = pf.$('sandbox_invoke_remove_add_markup_attribute');
+  el.raise('sandbox_invoke_remove_add_markup_attribute_1_onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setError('invoke_remove_add_markup_attribute');
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+        tests.setError('invoke_remove_add_markup_attribute');
+        return;
+      }
+      if (serverReturn.__pf_change.sandbox_invoke_remove_add_markup_attribute.__pf_del.length != 1) {
+        tests.setError('invoke_remove_add_markup_attribute');
+        return;
+      }
+      if (serverReturn.__pf_change.sandbox_invoke_remove_add_markup_attribute.__pf_del[0] != 'class') {
+        tests.setError('invoke_remove_add_markup_attribute');
+        return;
+      }
+
+      el.raise('sandbox_invoke_remove_add_markup_attribute_2_onclick', {
+        onerror: function(statusCode, statusText, responseHtml, evt) {
+          tests.setError('invoke_remove_add_markup_attribute');
+        },
+
+        onsuccess: function(serverReturn, evt) {
+          if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+            tests.setError('invoke_remove_add_markup_attribute');
+            return;
+          }
+          if (serverReturn.__pf_change.sandbox_invoke_remove_add_markup_attribute.class != 'bar') {
+            tests.setError('invoke_remove_add_markup_attribute');
+            return;
+          }
+
+          tests.setSuccess('invoke_remove_add_markup_attribute');
+        }
+      });
     }
   });
 };

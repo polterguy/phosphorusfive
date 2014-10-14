@@ -8,15 +8,8 @@
     <head>
     	<title>unit tests</title>
         <link rel="stylesheet" type="text/css" href="media/main.css">
+        <link rel="stylesheet" type="text/css" href="media/tests.css">
         <meta charset="utf-8">
-        <style>
-.failed {
-    background-color:Red;
-}
-.success {
-    background-color:LightGreen;
-}
-        </style>
     </head>
     <body>
         <form id="form1" runat="server" autocomplete="off">
@@ -24,25 +17,28 @@
 
                 <h1>unit tests</h1>
 
-                <p>
-                    these are the unit tests for phosphorus
-
                 <table id="tests">
-                    <tr>
-                        <th>description</th>
+                    <tr class="spacer">
+                        <th>
+                            <h3>description</h3>
+                        </th>
                         <th>
                             <input type="button" id="run_all" class="undetermined" value="run all" onclick="tests.run_all(event)">
                         </th>
                     </tr>
-                    <tr>
+                    <tr class="spacer">
+                        <td colspan="2">
+                            these are the unit tests for phosphorus.ajax
+                        </td>
+                    </tr>
+                    <tr class="spacer">
                         <td colspan="2">
                             <h3>basic event handling</h3>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            will verify that an event handler can be successfully invoked, returning nothing,
-                            if nothing changes on the server
+                            invoke nothing event handler
                         </td>
                         <td>
                             <input type="button" id="invoke_empty" class="undetermined" value="run" onclick="tests.invoke_empty(event)">
@@ -50,7 +46,7 @@
                     </tr>
                     <tr>
                         <td>
-                            will verify that an event handler that throws an exception will invoke the 'onerror' javascript callback
+                            invoke exception event handler
                         </td>
                         <td>
                             <input type="button" id="invoke_exception" class="undetermined" value="run" onclick="tests.invoke_exception(event)">
@@ -58,7 +54,28 @@
                     </tr>
                     <tr>
                         <td>
-                            will verify that an event handler can successfully change a widget's innerHTML
+                            invoke non existing event handler
+                        </td>
+                        <td>
+                            <input type="button" id="invoke_non_existing" class="undetermined" value="run" onclick="tests.invoke_non_existing(event)">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            invoke event handler not marked as WebMethod
+                        </td>
+                        <td>
+                            <input type="button" id="invoke_no_webmethod" class="undetermined" value="run" onclick="tests.invoke_no_webmethod(event)">
+                        </td>
+                    </tr>
+                    <tr class="spacer">
+                        <td colspan="2">
+                            <h3>attributes</h3>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            change innerHTML
                         </td>
                         <td>
                             <input type="button" id="invoke_change_content" class="undetermined" value="run" onclick="tests.invoke_change_content(event)">
@@ -66,7 +83,7 @@
                     </tr>
                     <tr>
                         <td>
-                            will verify that an event handler can successfully change two properties at the same time for a widget
+                            change two attributes on widget
                         </td>
                         <td>
                             <input type="button" id="invoke_change_two_properties" class="undetermined" value="run" onclick="tests.invoke_change_two_properties(event)">
@@ -74,15 +91,15 @@
                     </tr>
                     <tr>
                         <td>
-                            will verify that an event handler can add a property, and another event handler remove it successfully later
+                            change attribute twice in same event handler
                         </td>
                         <td>
-                            <input type="button" id="invoke_add_remove" class="undetermined" value="run" onclick="tests.invoke_add_remove(event)">
+                            <input type="button" id="invoke_change_twice" class="undetermined" value="run" onclick="tests.invoke_change_twice(event)">
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            will verify that if an event handler adds an attribute, and later removes it in the same request, then nothing is returned
+                            add attribute, then remove it in the same event handler
                         </td>
                         <td>
                             <input type="button" id="invoke_add_remove_same" class="undetermined" value="run" onclick="tests.invoke_add_remove_same(event)">
@@ -90,10 +107,34 @@
                     </tr>
                     <tr>
                         <td>
-                            will verify that if an event handler changes an attribute twice, the correct value is returned
+                            change attribute declared in markup
                         </td>
                         <td>
-                            <input type="button" id="invoke_change_twice" class="undetermined" value="run" onclick="tests.invoke_change_twice(event)">
+                            <input type="button" id="invoke_change_markup_attribute" class="undetermined" value="run" onclick="tests.invoke_change_markup_attribute(event)">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            remove attribute declared in markup
+                        </td>
+                        <td>
+                            <input type="button" id="invoke_remove_markup_attribute" class="undetermined" value="run" onclick="tests.invoke_remove_markup_attribute(event)">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            add attribute in event handler, then remove the same attribute in a new event handler
+                        </td>
+                        <td>
+                            <input type="button" id="invoke_add_remove" class="undetermined" value="run" onclick="tests.invoke_add_remove(event)">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            remove attribute declared in markup, then add it back in new event handler
+                        </td>
+                        <td>
+                            <input type="button" id="invoke_remove_add_markup_attribute" class="undetermined" value="run" onclick="tests.invoke_remove_add_markup_attribute(event)">
                         </td>
                     </tr>
                 </table>
@@ -111,6 +152,16 @@
                         ElementType="p" />
                     <pf:Literal
                         runat="server"
+                        id="sandbox_invoke_non_existing"
+                        RenderType="NoClose"
+                        ElementType="p" />
+                    <pf:Literal
+                        runat="server"
+                        id="sandbox_invoke_no_webmethod"
+                        RenderType="NoClose"
+                        ElementType="p" />
+                    <pf:Literal
+                        runat="server"
                         id="sandbox_invoke_change_content"
                         RenderType="NoClose"
                         ElementType="p" />
@@ -121,18 +172,36 @@
                         ElementType="p" />
                     <pf:Literal
                         runat="server"
-                        id="sandbox_invoke_add_remove"
+                        id="sandbox_invoke_add_remove_same"
                         RenderType="NoClose"
                         ElementType="p" />
                     <pf:Literal
                         runat="server"
-                        id="sandbox_invoke_add_remove_same"
+                        id="sandbox_invoke_add_remove"
                         RenderType="NoClose"
                         ElementType="p" />
                     <pf:Literal
                         runat="server"
                         id="sandbox_invoke_change_twice"
                         RenderType="NoClose"
+                        ElementType="p" />
+                    <pf:Literal
+                        runat="server"
+                        id="sandbox_invoke_change_markup_attribute"
+                        RenderType="NoClose"
+                        class="foo"
+                        ElementType="p" />
+                    <pf:Literal
+                        runat="server"
+                        id="sandbox_invoke_remove_markup_attribute"
+                        RenderType="NoClose"
+                        class="foo"
+                        ElementType="p" />
+                    <pf:Literal
+                        runat="server"
+                        id="sandbox_invoke_remove_add_markup_attribute"
+                        RenderType="NoClose"
+                        class="foo"
                         ElementType="p" />
                 </div>
 

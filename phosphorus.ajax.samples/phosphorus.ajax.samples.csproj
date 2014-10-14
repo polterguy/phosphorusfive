@@ -48,6 +48,7 @@
     <Content Include="Void.aspx" />
     <Content Include="UnitTests.aspx" />
     <Content Include="media\tests.js" />
+    <Content Include="media\tests.css" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Default.aspx.cs">
