@@ -8,6 +8,7 @@ namespace phosphorus.ajax.samples
     using System;
     using System.Web;
     using System.Web.UI;
+    using System.Collections.Generic;
     using phosphorus.ajax.core;
     using pf = phosphorus.ajax.widgets;
 
@@ -28,6 +29,11 @@ namespace phosphorus.ajax.samples
         
         //[WebMethod] intentionally commented out
         protected void sandbox_invoke_no_webmethod_onclick (pf.Literal literal, EventArgs e)
+        {
+        }
+
+        [WebMethod]
+        protected void sandbox_invoke_normal_onclick (pf.Literal literal, EventArgs e)
         {
         }
 
@@ -110,6 +116,31 @@ namespace phosphorus.ajax.samples
         protected void sandbox_invoke_create_concatenate_long_attribute_2_onclick (pf.Literal literal, EventArgs e)
         {
             literal ["class"] += "abcdefghijklmnopqrstuvwxyz";
+        }
+        
+        [WebMethod]
+        protected void sandbox_invoke_change_container_child_child_onclick (pf.Literal literal, EventArgs e)
+        {
+            literal ["class"] += "bar";
+        }
+        
+        [WebMethod]
+        protected void sandbox_invoke_make_container_visible_onclick (pf.Container container, EventArgs e)
+        {
+            container.Visible = true;
+        }
+        
+        [WebMethod]
+        protected void sandbox_invoke_make_container_visible_child_invisible_1_onclick (pf.Container container, EventArgs e)
+        {
+            List<pf.Literal> literals = new List<pf.Literal> (container.GetControls<pf.Literal> ());
+            literals [0].Visible = false;
+        }
+        
+        [WebMethod]
+        protected void sandbox_invoke_make_container_visible_child_invisible_2_onclick (pf.Container container, EventArgs e)
+        {
+            container.Visible = true;
         }
     }
 }

@@ -263,10 +263,12 @@ namespace phosphorus.ajax.widgets
             }
             set {
                 if (!base.Visible && value && IsTrackingViewState && IsPhosphorusRequest) {
+
                     // this control was made visible during this request and should be rendered as html
                     // unless any of its ancestors are invisible
                     _renderMode = RenderingMode.ReRender;
                 } else if (base.Visible && !value && IsTrackingViewState && IsPhosphorusRequest) {
+
                     // this control was made invisible during this request and should be rendered 
                     // with its invisible html, unless any of its ancestors are invisible
                     _renderMode = RenderingMode.RenderInvisible;
@@ -314,21 +316,6 @@ namespace phosphorus.ajax.widgets
                     } // else, nothing to render since widget is in-visible, and this was an ajaxx request
                 }
             }
-        }
-
-        protected override void LoadControlState (object state)
-        {
-            object[] obj = state as object[];
-            base.Visible = (bool)obj [0];
-            base.LoadControlState (obj [1]);
-        }
-
-        protected override object SaveControlState ()
-        {
-            object[] obj = new object [2];
-            obj [0] = base.Visible;
-            obj [1] = base.SaveControlState ();
-            return obj;
         }
 
         protected override void LoadViewState (object savedState)

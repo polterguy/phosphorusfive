@@ -68,6 +68,14 @@
                             <input type="button" id="invoke_no_webmethod" class="undetermined" value="run" onclick="tests.invoke_no_webmethod(event)">
                         </td>
                     </tr>
+                    <tr>
+                        <td>
+                            invoke event handler as 'onclick'
+                        </td>
+                        <td>
+                            <input type="button" id="invoke_normal" class="undetermined" value="run" onclick="tests.invoke_normal(event)">
+                        </td>
+                    </tr>
                     <tr class="spacer">
                         <td colspan="2">
                             <h3>attributes</h3>
@@ -153,6 +161,35 @@
                             <input type="button" id="invoke_create_concatenate_long_attribute" class="undetermined" value="run" onclick="tests.invoke_create_concatenate_long_attribute(event)">
                         </td>
                     </tr>
+                    <tr class="spacer">
+                        <td colspan="2">
+                            <h3>container widgets</h3>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            change attribute of child of container widget
+                        </td>
+                        <td>
+                            <input type="button" id="invoke_change_container_child" class="undetermined" value="run" onclick="tests.invoke_change_container_child(event)">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            make container widget visible
+                        </td>
+                        <td>
+                            <input type="button" id="invoke_make_container_visible" class="undetermined" value="run" onclick="tests.invoke_make_container_visible(event)">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            make child invisible, then container visible
+                        </td>
+                        <td>
+                            <input type="button" id="invoke_make_container_visible_child_invisible" class="undetermined" value="run" onclick="tests.invoke_make_container_visible_child_invisible(event)">
+                        </td>
+                    </tr>
                 </table>
 
                 <div style="display:none;" id="sandbox">
@@ -175,6 +212,12 @@
                         runat="server"
                         id="sandbox_invoke_no_webmethod"
                         RenderType="NoClose"
+                        ElementType="p" />
+                    <pf:Literal
+                        runat="server"
+                        id="sandbox_invoke_normal"
+                        RenderType="NoClose"
+                        onclick="sandbox_invoke_normal_onclick"
                         ElementType="p" />
                     <pf:Literal
                         runat="server"
@@ -230,6 +273,38 @@
                         id="sandbox_invoke_create_concatenate_long_attribute"
                         RenderType="NoClose"
                         ElementType="p" />
+                    <pf:Container
+                        runat="server"
+                        id="sandbox_invoke_change_container_child"
+                        ElementType="p">
+                        <pf:Literal
+                            runat="server"
+                            id="sandbox_invoke_change_container_child_child"
+                            class="foo"
+                            ElementType="strong">foo</pf:Literal>
+                    </pf:Container>
+                    <pf:Container
+                        runat="server"
+                        id="sandbox_invoke_make_container_visible"
+                        Visible="false"
+                        RenderType="NoClose"
+                        ElementType="p">
+                        <pf:Literal
+                            runat="server"
+                            id="sandbox_invoke_make_container_visible_child"
+                            ElementType="strong">foo</pf:Literal>
+                    </pf:Container>
+                    <pf:Container
+                        runat="server"
+                        id="sandbox_invoke_make_container_visible_child_invisible"
+                        Visible="false"
+                        RenderType="NoClose"
+                        ElementType="p">
+                        <pf:Literal
+                            runat="server"
+                            id="sandbox_invoke_make_container_visible_child_child_invisible"
+                            ElementType="strong">foo</pf:Literal>
+                    </pf:Container>
                 </div>
 
                 <p>

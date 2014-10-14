@@ -138,6 +138,23 @@ tests.invoke_no_webmethod = function(event) {
 
 
 /*
+ * invokes an event handler not marked as WebMethod, asserting 'onerror' is called
+ */
+tests.invoke_normal = function(event) {
+  var el = pf.$('sandbox_invoke_normal');
+  el.raise('onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setError('invoke_normal');
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      tests.setSuccess('invoke_normal');
+    }
+  });
+};
+
+
+/*
  * invokes an event handler changing content of widget
  */
 tests.invoke_change_content = function(event) {
@@ -479,6 +496,105 @@ tests.invoke_create_concatenate_long_attribute = function(event) {
           }
 
           tests.setSuccess('invoke_create_concatenate_long_attribute');
+        }
+      });
+    }
+  });
+};
+
+
+/*
+ * change attribute of container's child
+ */
+tests.invoke_change_container_child = function(event) {
+  var el = pf.$('sandbox_invoke_change_container_child_child');
+  el.raise('sandbox_invoke_change_container_child_child_onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setError('invoke_change_container_child');
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+        tests.setError('invoke_change_container_child');
+        return;
+      }
+      if (serverReturn.__pf_change.sandbox_invoke_change_container_child_child.class == 'bar') {
+        tests.setError('invoke_change_container_child');
+        return;
+      }
+
+      tests.setSuccess('invoke_change_container_child');
+    }
+  });
+};
+
+
+/*
+ * make container widget visible and verify child is also visible
+ */
+tests.invoke_make_container_visible = function(event) {
+  var el = pf.$('sandbox_invoke_make_container_visible');
+  el.raise('sandbox_invoke_make_container_visible_onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setError('invoke_make_container_visible');
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+        tests.setError('invoke_make_container_visible');
+        return;
+      }
+      if (serverReturn.__pf_change.sandbox_invoke_make_container_visible.outerHTML.indexOf('foo') == -1) {
+        tests.setError('invoke_make_container_visible');
+        return;
+      }
+      if (serverReturn.__pf_change.sandbox_invoke_make_container_visible.outerHTML.indexOf('strong') == -1) {
+        tests.setError('invoke_make_container_visible');
+        return;
+      }
+
+      tests.setSuccess('invoke_make_container_visible');
+    }
+  });
+};
+
+
+/*
+ * make child invisible, then make container visible
+ */
+tests.invoke_make_container_visible_child_invisible = function(event) {
+  var el = pf.$('sandbox_invoke_make_container_visible_child_invisible');
+  el.raise('sandbox_invoke_make_container_visible_child_invisible_1_onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setError('invoke_make_container_visible_child_invisible');
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 1) {
+        tests.setError('invoke_make_container_visible_child_invisible');
+        return;
+      }
+
+      el.raise('sandbox_invoke_make_container_visible_child_invisible_2_onclick', {
+        onerror: function(statusCode, statusText, responseHtml, evt) {
+          tests.setError('invoke_make_container_visible_child_invisible');
+        },
+
+        onsuccess: function(serverReturn, evt) {
+          if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+            tests.setError('invoke_make_container_visible_child_invisible');
+            return;
+          }
+          if (serverReturn.__pf_change.sandbox_invoke_make_container_visible_child_invisible.outerHTML.indexOf('foo') != -1) {
+            tests.setError('invoke_make_container_visible_child_invisible');
+            return;
+          }
+          if (serverReturn.__pf_change.sandbox_invoke_make_container_visible_child_invisible.outerHTML.indexOf('strong') != -1) {
+            tests.setError('invoke_make_container_visible_child_invisible');
+            return;
+          }
+
+          tests.setSuccess('invoke_make_container_visible_child_invisible');
         }
       });
     }
