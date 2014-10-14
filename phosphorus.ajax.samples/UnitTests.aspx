@@ -206,6 +206,22 @@
                             <input type="button" id="invoke_make_container_visible_child_visible" class="undetermined" value="run" onclick="tests.invoke_make_container_visible_child_visible(event)">
                         </td>
                     </tr>
+                    <tr>
+                        <td>
+                            add child to container
+                        </td>
+                        <td>
+                            <input type="button" id="invoke_add_child" class="undetermined" value="run" onclick="tests.invoke_add_child(event)">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            add child to container, check exist
+                        </td>
+                        <td>
+                            <input type="button" id="invoke_add_child_check_exist" class="undetermined" value="run" onclick="tests.invoke_add_child_check_exist(event)">
+                        </td>
+                    </tr>
                 </table>
 
                 <div style="display:none;" id="sandbox">
@@ -343,6 +359,26 @@
                             runat="server"
                             Visible="false"
                             id="sandbox_invoke_make_container_visible_child_child_visible"
+                            ElementType="strong">foo</pf:Literal>
+                    </pf:Container>
+                    <pf:Container
+                        runat="server"
+                        id="sandbox_invoke_add_child"
+                        RenderType="NoClose"
+                        ElementType="p">
+                        <pf:Literal
+                            runat="server"
+                            id="sandbox_invoke_add_child_child1"
+                            ElementType="strong">foo</pf:Literal>
+                    </pf:Container>
+                    <pf:Container
+                        runat="server"
+                        id="sandbox_invoke_add_child_check_exist"
+                        RenderType="NoClose"
+                        ElementType="p">
+                        <pf:Literal
+                            runat="server"
+                            id="sandbox_invoke_add_child_check_exist_child1"
                             ElementType="strong">foo</pf:Literal>
                     </pf:Container>
                 </div>

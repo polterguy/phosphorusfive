@@ -675,6 +675,87 @@ tests.invoke_make_container_visible_child_visible = function(event) {
 };
 
 
+/*
+ * add child to container widget
+ */
+tests.invoke_add_child = function(event) {
+  var el = pf.$('sandbox_invoke_add_child');
+  el.raise('sandbox_invoke_add_child_onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setError('invoke_add_child');
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+        tests.setError('invoke_add_child');
+        return;
+      }
+      if (serverReturn.__pf_change.sandbox_invoke_add_child.__pf_add_2.indexOf ('howdy world') == -1) {
+        tests.setError('invoke_add_child');
+        return;
+      }
+      if (serverReturn.__pf_change.sandbox_invoke_add_child.__pf_add_2.indexOf ('strong') == -1) {
+        tests.setError('invoke_add_child');
+        return;
+      }
+
+      tests.setSuccess('invoke_add_child');
+    }
+  });
+};
+
+
+/*
+ * add child to container widget, check it exists in a new request
+ */
+tests.invoke_add_child_check_exist = function(event) {
+  var el = pf.$('sandbox_invoke_add_child_check_exist');
+  el.raise('sandbox_invoke_add_child_check_exist_1_onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setError('invoke_add_child_check_exist');
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+        tests.setError('invoke_add_child_check_exist');
+        return;
+      }
+      if (serverReturn.__pf_change.sandbox_invoke_add_child_check_exist.__pf_add_2.indexOf ('howdy world') == -1) {
+        tests.setError('invoke_add_child_check_exist');
+        return;
+      }
+      if (serverReturn.__pf_change.sandbox_invoke_add_child_check_exist.__pf_add_2.indexOf ('strong') == -1) {
+        tests.setError('invoke_add_child_check_exist');
+        return;
+      }
+
+      el.raise('sandbox_invoke_add_child_check_exist_2_onclick', {
+        onerror: function(statusCode, statusText, responseHtml, evt) {
+          tests.setError('invoke_add_child_check_exist');
+        },
+
+        onsuccess: function(serverReturn, evt) {
+          if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+            tests.setError('invoke_add_child_check_exist');
+            return;
+          }
+          if (serverReturn.__pf_change.sandbox_invoke_add_child_check_exist.__pf_add_3.indexOf ('howdy world 2') == -1) {
+            tests.setError('invoke_add_child_check_exist');
+            return;
+          }
+          if (serverReturn.__pf_change.sandbox_invoke_add_child_check_exist.__pf_add_3.indexOf ('strong') == -1) {
+            tests.setError('invoke_add_child_check_exist');
+            return;
+          }
+
+          tests.setSuccess('invoke_add_child_check_exist');
+        }
+      });
+    }
+  });
+};
+
+
 
 
 

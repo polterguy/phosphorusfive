@@ -161,6 +161,61 @@ namespace phosphorus.ajax.samples
         {
             container.Visible = true;
         }
+        
+        [WebMethod]
+        protected void sandbox_invoke_add_child_onclick (pf.Container container, EventArgs e)
+        {
+            List<pf.Literal> existing = new List<pf.Literal> (container.GetControls<pf.Literal> ());
+            if (existing.Count != 1)
+                throw new ApplicationException ("widget disappeared somehow");
+
+            if (existing[0].innerHTML != "foo")
+                throw new ApplicationException ("widget had wrong innerHTML");
+
+            pf.Literal literal = container.CreatePersistentControl<pf.Literal> ();
+            literal.ElementType = "strong";
+            literal.innerHTML = "howdy world";
+
+            existing = new List<pf.Literal> (container.GetControls<pf.Literal> ());
+            if (existing.Count != 2)
+                throw new ApplicationException ("widget disappeared somehow after insertion");
+            
+            if (existing[1].innerHTML != "howdy world")
+                throw new ApplicationException ("widget had wrong innerHTML");
+        }
+        
+        [WebMethod]
+        protected void sandbox_invoke_add_child_check_exist_1_onclick (pf.Container container, EventArgs e)
+        {
+            pf.Literal literal = container.CreatePersistentControl<pf.Literal> ();
+            literal.ElementType = "strong";
+            literal.innerHTML = "howdy world";
+        }
+        
+        [WebMethod]
+        protected void sandbox_invoke_add_child_check_exist_2_onclick (pf.Container container, EventArgs e)
+        {
+            List<pf.Literal> existing = new List<pf.Literal> (container.GetControls<pf.Literal> ());
+            if (existing.Count != 2)
+                throw new ApplicationException ("widget disappeared somehow");
+            
+            if (existing[0].innerHTML != "foo")
+                throw new ApplicationException ("widget had wrong innerHTML");
+            
+            if (existing[1].innerHTML != "howdy world")
+                throw new ApplicationException ("widget had wrong innerHTML");
+
+            pf.Literal literal = container.CreatePersistentControl<pf.Literal> ();
+            literal.ElementType = "strong";
+            literal.innerHTML = "howdy world 2";
+
+            existing = new List<pf.Literal> (container.GetControls<pf.Literal> ());
+            if (existing.Count != 3)
+                throw new ApplicationException ("widget disappeared somehow after insertion");
+            
+            if (existing[2].innerHTML != "howdy world 2")
+                throw new ApplicationException ("widget had wrong innerHTML");
+        }
     }
 }
 
