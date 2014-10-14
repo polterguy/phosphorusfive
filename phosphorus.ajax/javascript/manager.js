@@ -166,8 +166,8 @@
         case 'innerHTML':
           this.el.innerHTML = pf._getChange(this.el.innerHTML, value);
           break;
-        case 'value':
-          this.el.value = pf._getChange(this.el[key], value);
+        case 'class':
+          this.el.className = pf._getChange(this.el.className, value);
           break;
         default:
           if (key.indexOf('__pf_add_') != -1 ) {

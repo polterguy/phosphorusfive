@@ -93,6 +93,24 @@ namespace phosphorus.ajax.samples
         {
             literal ["class"] = "bar";
         }
+        
+        [WebMethod]
+        protected void sandbox_invoke_concatenate_long_attribute_onclick (pf.Literal literal, EventArgs e)
+        {
+            literal ["class"] += "qwerty";
+        }
+        
+        [WebMethod]
+        protected void sandbox_invoke_create_concatenate_long_attribute_1_onclick (pf.Literal literal, EventArgs e)
+        {
+            literal ["class"] = "x1234567890";
+        }
+        
+        [WebMethod]
+        protected void sandbox_invoke_create_concatenate_long_attribute_2_onclick (pf.Literal literal, EventArgs e)
+        {
+            literal ["class"] += "abcdefghijklmnopqrstuvwxyz";
+        }
     }
 }
 

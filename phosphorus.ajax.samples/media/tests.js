@@ -84,7 +84,7 @@ tests.invoke_empty = function(event) {
 
 
 /*
- * invokes an empty event handler, asserting it returns nothing
+ * invokes an empty event handler that throws an exception, asserting it calls 'onerror'
  */
 tests.invoke_exception = function(event) {
   var el = pf.$('sandbox_invoke_exception');
@@ -122,24 +122,6 @@ tests.invoke_non_existing = function(event) {
 /*
  * invokes an event handler not marked as WebMethod, asserting 'onerror' is called
  */
-tests.invoke_non_existing = function(event) {
-  var el = pf.$('sandbox_invoke_non_existing');
-  el.raise('sandbox_invoke_non_existing_onclick', {
-    onerror: function(statusCode, statusText, responseHtml, evt) {
-      tests.setSuccess('invoke_non_existing');
-      return true;
-    },
-
-    onsuccess: function(serverReturn, evt) {
-      tests.setError('invoke_non_existing');
-    }
-  });
-};
-
-
-/*
- * invokes an event handler not marked as WebMethod, asserting 'onerror' is called
- */
 tests.invoke_no_webmethod = function(event) {
   var el = pf.$('sandbox_invoke_no_webmethod');
   el.raise('sandbox_invoke_no_webmethod_onclick', {
@@ -156,7 +138,7 @@ tests.invoke_no_webmethod = function(event) {
 
 
 /*
- * invokes an empty event handler, asserting it returns nothing
+ * invokes an event handler changing content of widget
  */
 tests.invoke_change_content = function(event) {
   var el = pf.$('sandbox_invoke_change_content');
@@ -185,7 +167,7 @@ tests.invoke_change_content = function(event) {
 
 
 /*
- * invokes an empty event handler, asserting it returns nothing
+ * invokes an event handler changing two attributes of widget
  */
 tests.invoke_change_two_properties = function(event) {
   var el = pf.$('sandbox_invoke_change_two_properties');
@@ -218,7 +200,7 @@ tests.invoke_change_two_properties = function(event) {
 
 
 /*
- * invokes an empty event handler, asserting it returns nothing
+ * invokes an event handler adding an attribute, then a new event handler removing the same attribute
  */
 tests.invoke_add_remove = function(event) {
   var el = pf.$('sandbox_invoke_add_remove');
@@ -269,7 +251,7 @@ tests.invoke_add_remove = function(event) {
 
 
 /*
- * invokes an empty event handler, asserting it returns nothing
+ * invokes an event handler that adds and removes the same attribute in the same request
  */
 tests.invoke_add_remove_same = function(event) {
   var el = pf.$('sandbox_invoke_add_remove_same');
@@ -317,7 +299,7 @@ tests.invoke_change_twice = function(event) {
 
 
 /*
- * changes an attribute twice on the server
+ * changes an attribute declared in markup on server
  */
 tests.invoke_change_markup_attribute = function(event) {
   var el = pf.$('sandbox_invoke_change_markup_attribute');
@@ -343,7 +325,7 @@ tests.invoke_change_markup_attribute = function(event) {
 
 
 /*
- * changes an attribute twice on the server
+ * removes an attribute declared in markup on server
  */
 tests.invoke_remove_markup_attribute = function(event) {
   var el = pf.$('sandbox_invoke_remove_markup_attribute');
@@ -373,7 +355,7 @@ tests.invoke_remove_markup_attribute = function(event) {
 
 
 /*
- * changes an attribute twice on the server
+ * removes an attribute declared in markup on server, then invokes new event handler that adds the same attribute back up again
  */
 tests.invoke_remove_add_markup_attribute = function(event) {
   var el = pf.$('sandbox_invoke_remove_add_markup_attribute');
@@ -412,6 +394,91 @@ tests.invoke_remove_add_markup_attribute = function(event) {
           }
 
           tests.setSuccess('invoke_remove_add_markup_attribute');
+        }
+      });
+    }
+  });
+};
+
+
+/*
+ * concatenate long attribute and verify only changes are returned
+ */
+tests.invoke_concatenate_long_attribute = function(event) {
+  var el = pf.$('sandbox_invoke_concatenate_long_attribute');
+  el.raise('sandbox_invoke_concatenate_long_attribute_onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setError('invoke_concatenate_long_attribute');
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+        tests.setError('invoke_concatenate_long_attribute');
+        return;
+      }
+      if (serverReturn.__pf_change.sandbox_invoke_concatenate_long_attribute.class.length != 2) {
+        tests.setError('invoke_concatenate_long_attribute');
+        return;
+      }
+      if (serverReturn.__pf_change.sandbox_invoke_concatenate_long_attribute.class[0] != 37) {
+        tests.setError('invoke_concatenate_long_attribute');
+        return;
+      }
+      if (serverReturn.__pf_change.sandbox_invoke_concatenate_long_attribute.class[1] != 'qwerty') {
+        tests.setError('invoke_concatenate_long_attribute');
+        return;
+      }
+
+      tests.setSuccess('invoke_concatenate_long_attribute');
+    }
+  });
+};
+
+
+/*
+ * create attribute, then concatenate value
+ */
+tests.invoke_create_concatenate_long_attribute = function(event) {
+  var el = pf.$('sandbox_invoke_create_concatenate_long_attribute');
+  el.raise('sandbox_invoke_create_concatenate_long_attribute_1_onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setError('invoke_create_concatenate_long_attribute');
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+        tests.setError('invoke_create_concatenate_long_attribute');
+        return;
+      }
+      if (serverReturn.__pf_change.sandbox_invoke_create_concatenate_long_attribute.class != 'x1234567890') {
+        tests.setError('invoke_create_concatenate_long_attribute');
+        return;
+      }
+
+      el.raise('sandbox_invoke_create_concatenate_long_attribute_2_onclick', {
+        onerror: function(statusCode, statusText, responseHtml, evt) {
+          tests.setError('invoke_create_concatenate_long_attribute');
+        },
+
+        onsuccess: function(serverReturn, evt) {
+          if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+            tests.setError('invoke_create_concatenate_long_attribute');
+            return;
+          }
+          if (serverReturn.__pf_change.sandbox_invoke_create_concatenate_long_attribute.class.length != 2) {
+            tests.setError('invoke_create_concatenate_long_attribute');
+            return;
+          }
+          if (serverReturn.__pf_change.sandbox_invoke_create_concatenate_long_attribute.class[0] != 11) {
+            tests.setError('invoke_create_concatenate_long_attribute');
+            return;
+          }
+          if (serverReturn.__pf_change.sandbox_invoke_create_concatenate_long_attribute.class[1] != 'abcdefghijklmnopqrstuvwxyz') {
+            tests.setError('invoke_create_concatenate_long_attribute');
+            return;
+          }
+
+          tests.setSuccess('invoke_create_concatenate_long_attribute');
         }
       });
     }

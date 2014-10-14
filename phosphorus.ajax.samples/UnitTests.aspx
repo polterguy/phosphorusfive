@@ -91,7 +91,7 @@
                     </tr>
                     <tr>
                         <td>
-                            change attribute twice in same event handler
+                            change attribute twice in the same event handler
                         </td>
                         <td>
                             <input type="button" id="invoke_change_twice" class="undetermined" value="run" onclick="tests.invoke_change_twice(event)">
@@ -131,10 +131,26 @@
                     </tr>
                     <tr>
                         <td>
-                            remove attribute declared in markup, then add it back in new event handler
+                            remove attribute declared in markup, then add it back up in a new event handler
                         </td>
                         <td>
                             <input type="button" id="invoke_remove_add_markup_attribute" class="undetermined" value="run" onclick="tests.invoke_remove_add_markup_attribute(event)">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            concatenate long attribute
+                        </td>
+                        <td>
+                            <input type="button" id="invoke_concatenate_long_attribute" class="undetermined" value="run" onclick="tests.invoke_concatenate_long_attribute(event)">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            create attribute then concatenate long string
+                        </td>
+                        <td>
+                            <input type="button" id="invoke_create_concatenate_long_attribute" class="undetermined" value="run" onclick="tests.invoke_create_concatenate_long_attribute(event)">
                         </td>
                     </tr>
                 </table>
@@ -202,6 +218,17 @@
                         id="sandbox_invoke_remove_add_markup_attribute"
                         RenderType="NoClose"
                         class="foo"
+                        ElementType="p" />
+                    <pf:Literal
+                        runat="server"
+                        id="sandbox_invoke_concatenate_long_attribute"
+                        RenderType="NoClose"
+                        class="x1234567890abcdefghijklmnopqrstuvwxyz"
+                        ElementType="p" />
+                    <pf:Literal
+                        runat="server"
+                        id="sandbox_invoke_create_concatenate_long_attribute"
+                        RenderType="NoClose"
                         ElementType="p" />
                 </div>
 

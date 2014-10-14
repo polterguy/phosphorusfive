@@ -253,6 +253,9 @@ namespace phosphorus.ajax.core.internals
                 var old = FindAttribute (_formDataThisRequest, name);
                 if (old == null) {
                     old = FindAttribute (_viewStatePersisted, name);
+                    if (old == null) {
+                        old = FindAttribute (_preViewState, name);
+                    }
                 }
                 if (old != null) {
 
