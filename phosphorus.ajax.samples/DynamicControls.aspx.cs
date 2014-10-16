@@ -42,7 +42,7 @@ namespace phosphorus.ajax.samples
         protected void item_onclick (pf.Literal sender, EventArgs e)
         {
             if (sender.innerHTML == "are you sure?") {
-                sender.Parent.Controls.Remove (sender);
+                list.RemoveControlPersistent (sender);
                 CurrentEdit = null;
             } else {
                 txt ["value"] = sender.innerHTML;
@@ -92,7 +92,7 @@ namespace phosphorus.ajax.samples
                 txt ["value"] = "nothing to replace!!";
             } else {
                 int which = new Random ().Next (0, list.Controls.Count);
-                list.Controls.RemoveAt (which);
+                list.RemoveControlPersistentAt (which);
 
                 pf.Literal widget = list.CreatePersistentControl<pf.Literal> ("x" + (_next ++), which);
                 widget.ElementType = "li";
@@ -107,7 +107,7 @@ namespace phosphorus.ajax.samples
         {
             CurrentEdit = null;
             Random rnd = new Random ();
-            foreach (pf.Literal idx in list.GetControls<pf.Literal> ()) {
+            foreach (pf.Literal idx in list.GetChildControls<pf.Literal> ()) {
                 if (rnd.Next (0, 3) == 1) {
                     idx.innerHTML = "i like turtles!";
                     idx ["class"] = "turtles";
@@ -120,13 +120,13 @@ namespace phosphorus.ajax.samples
         {
             CurrentEdit = null;
             List<Control> toRemove = new List<Control> ();
-            foreach (pf.Literal idx in list.GetControls<pf.Literal> ()) {
+            foreach (pf.Literal idx in list.GetChildControls<pf.Literal> ()) {
                 if (idx.innerHTML.Contains ("turtles")) {
                     toRemove.Add (idx);
                 }
             }
             foreach (Control idx in toRemove) {
-                idx.Parent.Controls.Remove (idx);
+                list.RemoveControlPersistent (idx);
             }
         }
         

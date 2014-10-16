@@ -146,7 +146,7 @@ namespace phosphorus.ajax.samples
         [WebMethod]
         protected void sandbox_invoke_make_container_visible_child_invisible_1_onclick (pf.Container container, EventArgs e)
         {
-            List<pf.Literal> literals = new List<pf.Literal> (container.GetControls<pf.Literal> ());
+            List<pf.Literal> literals = new List<pf.Literal> (container.GetChildControls<pf.Literal> ());
             literals [0].Visible = false;
         }
         
@@ -159,7 +159,7 @@ namespace phosphorus.ajax.samples
         [WebMethod]
         protected void sandbox_invoke_make_container_visible_child_visible_1_onclick (pf.Container container, EventArgs e)
         {
-            List<pf.Literal> literals = new List<pf.Literal> (container.GetControls<pf.Literal> ());
+            List<pf.Literal> literals = new List<pf.Literal> (container.GetChildControls<pf.Literal> ());
             literals [0].Visible = true;
         }
 
@@ -172,7 +172,7 @@ namespace phosphorus.ajax.samples
         [WebMethod]
         protected void sandbox_invoke_add_child_onclick (pf.Container container, EventArgs e)
         {
-            List<pf.Literal> existing = new List<pf.Literal> (container.GetControls<pf.Literal> ());
+            List<pf.Literal> existing = new List<pf.Literal> (container.GetChildControls<pf.Literal> ());
             if (existing.Count != 1)
                 throw new ApplicationException ("widget disappeared somehow");
 
@@ -183,7 +183,7 @@ namespace phosphorus.ajax.samples
             literal.ElementType = "strong";
             literal.innerHTML = "howdy world";
 
-            existing = new List<pf.Literal> (container.GetControls<pf.Literal> ());
+            existing = new List<pf.Literal> (container.GetChildControls<pf.Literal> ());
             if (existing.Count != 2)
                 throw new ApplicationException ("widget disappeared somehow after insertion");
             
@@ -198,7 +198,7 @@ namespace phosphorus.ajax.samples
             literal.ElementType = "strong";
             literal.innerHTML = "howdy world";
 
-            var existing = new List<pf.Literal> (container.GetControls<pf.Literal> ());
+            var existing = new List<pf.Literal> (container.GetChildControls<pf.Literal> ());
             if (existing.Count != 2)
                 throw new ApplicationException ("widget disappeared somehow after insertion");
 
@@ -217,7 +217,7 @@ namespace phosphorus.ajax.samples
         [WebMethod]
         protected void sandbox_invoke_add_child_check_exist_2_onclick (pf.Container container, EventArgs e)
         {
-            List<pf.Literal> existing = new List<pf.Literal> (container.GetControls<pf.Literal> ());
+            List<pf.Literal> existing = new List<pf.Literal> (container.GetChildControls<pf.Literal> ());
             if (existing.Count != 2)
                 throw new ApplicationException ("widget disappeared somehow");
             
@@ -231,7 +231,7 @@ namespace phosphorus.ajax.samples
             literal.ElementType = "strong";
             literal.innerHTML = "howdy world 2";
 
-            existing = new List<pf.Literal> (container.GetControls<pf.Literal> ());
+            existing = new List<pf.Literal> (container.GetChildControls<pf.Literal> ());
             if (existing.Count != 3)
                 throw new ApplicationException ("widget disappeared somehow after insertion");
             
@@ -250,7 +250,7 @@ namespace phosphorus.ajax.samples
         [WebMethod]
         protected void sandbox_invoke_insert_child_check_exist_2_onclick (pf.Container container, EventArgs e)
         {
-            List<pf.Literal> existing = new List<pf.Literal> (container.GetControls<pf.Literal> ());
+            List<pf.Literal> existing = new List<pf.Literal> (container.GetChildControls<pf.Literal> ());
             if (existing.Count != 2)
                 throw new ApplicationException ("widget disappeared somehow");
 
@@ -264,7 +264,7 @@ namespace phosphorus.ajax.samples
             literal.ElementType = "strong";
             literal.innerHTML = "howdy world 2";
 
-            existing = new List<pf.Literal> (container.GetControls<pf.Literal> ());
+            existing = new List<pf.Literal> (container.GetChildControls<pf.Literal> ());
             if (existing.Count != 3)
                 throw new ApplicationException ("widget disappeared somehow after insertion");
 
@@ -275,26 +275,66 @@ namespace phosphorus.ajax.samples
         [WebMethod]
         protected void sandbox_invoke_remove_child_onclick (pf.Container container, EventArgs e)
         {
-            List<pf.Literal> literals = new List<pf.Literal> (container.GetControls<pf.Literal> ());
-            container.Controls.Remove (literals [0]);
+            List<pf.Literal> literals = new List<pf.Literal> (container.GetChildControls<pf.Literal> ());
+            container.RemoveControlPersistent (literals [0]);
         }
         
         [WebMethod]
         protected void sandbox_invoke_remove_multiple_onclick (pf.Container container, EventArgs e)
         {
-            List<pf.Literal> literals = new List<pf.Literal> (container.GetControls<pf.Literal> ());
-            container.Controls.Remove (literals [0]);
-            container.Controls.Remove (literals [1]);
+            List<pf.Literal> literals = new List<pf.Literal> (container.GetChildControls<pf.Literal> ());
+            container.RemoveControlPersistent (literals [0]);
+            container.RemoveControlPersistent (literals [1]);
         }
 
         [WebMethod]
         protected void sandbox_invoke_append_remove_onclick (pf.Container container, EventArgs e)
         {
-            List<pf.Literal> literals = new List<pf.Literal> (container.GetControls<pf.Literal> ());
-            container.Controls.Remove (literals [0]);
+            List<pf.Literal> literals = new List<pf.Literal> (container.GetChildControls<pf.Literal> ());
+            container.RemoveControlPersistent (literals [0]);
             pf.Literal literal = container.CreatePersistentControl<pf.Literal> (null, 0);
             literal.ElementType = "strong";
             literal.innerHTML = "howdy world";
+        }
+        
+        [WebMethod]
+        protected void sandbox_invoke_remove_many_onclick (pf.Container container, EventArgs e)
+        {
+            // removing three controls
+            container.RemoveControlPersistentAt (1); // sandbox_invoke_remove_many_2
+            ((pf.Container)container.Controls [1]).RemoveControlPersistentAt (2); // sandbox_invoke_remove_many_6
+            ((pf.Container)((pf.Container)container.Controls [1]).Controls [1]).RemoveControlPersistentAt (1); // sandbox_invoke_remove_many_9
+
+            // creating two new controls
+
+            // parent is sandbox_invoke_remove_many
+            pf.Literal lit1 = container.CreatePersistentControl<pf.Literal> (null, 0);
+            lit1.ElementType = "strong";
+            lit1.innerHTML = "howdy";
+
+            // parent is sandbox_invoke_remove_many_5
+            pf.Literal lit2 = ((pf.Container)((pf.Container)container.Controls [2]).Controls [1]).CreatePersistentControl<pf.Literal> ();
+            lit2.ElementType = "em";
+            lit2.innerHTML = "world";
+        }
+        
+        [WebMethod]
+        protected void sandbox_invoke_remove_many_verify_onclick (pf.Container container, EventArgs e)
+        {
+            if (container.Controls.Count != 3)
+                throw new ApplicationException ("control count not correct on postback");
+            if (container.Controls [2].Controls.Count != 2)
+                throw new ApplicationException ("control count not correct on postback");
+            if (container.Controls [2].Controls [1].Controls.Count != 3)
+                throw new ApplicationException ("control count not correct on postback");
+            if (((pf.Literal)container.Controls [0]).innerHTML != "howdy")
+                throw new ApplicationException ("control value not correct on postback");
+            if (((pf.Literal)container.Controls [0]).ElementType != "strong")
+                throw new ApplicationException ("control element not correct on postback");
+            if (((pf.Literal)container.Controls [2].Controls [1].Controls [2]).innerHTML != "world")
+                throw new ApplicationException ("control value not correct on postback");
+            if (((pf.Literal)container.Controls [2].Controls [1].Controls [2]).ElementType != "em")
+                throw new ApplicationException ("control element not correct on postback");
         }
     }
 }

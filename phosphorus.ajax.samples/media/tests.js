@@ -1014,6 +1014,64 @@ tests.invoke_remove_multiple = function(event) {
 };
 
 
+/*
+ * removes three children from container and its children, and adds up two new controls
+ */
+tests.invoke_remove_many = function(event) {
+  var el = pf.$('sandbox_invoke_remove_many');
+  el.raise('sandbox_invoke_remove_many_onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setError('invoke_remove_many');
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      if (tests.countMembers(serverReturn) != 2) {
+        tests.setError('invoke_remove_many');
+        return;
+      }
+      if (serverReturn.__pf_del.length != 3) {
+        tests.setError('invoke_remove_many');
+        return;
+      }
+      if (serverReturn.__pf_del[0] != 'sandbox_invoke_remove_many_2') {
+        tests.setError('invoke_remove_many');
+        return;
+      }
+      if (serverReturn.__pf_del[1] != 'sandbox_invoke_remove_many_6') {
+        tests.setError('invoke_remove_many');
+        return;
+      }
+      if (serverReturn.__pf_del[2] != 'sandbox_invoke_remove_many_9') {
+        tests.setError('invoke_remove_many');
+        return;
+      }
+      if (serverReturn.__pf_change.sandbox_invoke_remove_many.__pf_add_1.indexOf('howdy') == -1) {
+        tests.setError('invoke_remove_many');
+        return;
+      }
+      if (serverReturn.__pf_change.sandbox_invoke_remove_many_5.__pf_add_3.indexOf('world') == -1) {
+        tests.setError('invoke_remove_many');
+        return;
+      }
+
+      el.raise('sandbox_invoke_remove_many_verify_onclick', {
+        onerror: function(statusCode, statusText, responseHtml, evt) {
+          tests.setError('invoke_remove_many');
+        },
+
+        onsuccess: function(serverReturn, evt) {
+          if (tests.countMembers(serverReturn) != 0) {
+            tests.setError('invoke_remove_many');
+            return;
+          }
+          tests.setSuccess('invoke_remove_many');
+        }
+      });
+    }
+  });
+};
+
+
 
 
 

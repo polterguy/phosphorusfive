@@ -270,6 +270,14 @@
                             <input type="button" id="invoke_append_remove" class="undetermined" value="run" onclick="tests.invoke_append_remove(event)">
                         </td>
                     </tr>
+                    <tr>
+                        <td>
+                            remove and add multiple controls from complex control tree, and check they exist in next response
+                        </td>
+                        <td>
+                            <input type="button" id="invoke_remove_many" class="undetermined" value="run" onclick="tests.invoke_remove_many(event)">
+                        </td>
+                    </tr>
                 </table>
 
                 <div style="display:none;" id="sandbox">
@@ -488,6 +496,49 @@
                             runat="server"
                             id="sandbox_invoke_remove_multiple_child2"
                             ElementType="strong">bar</pf:Literal>
+                    </pf:Container>
+                    <pf:Container
+                        runat="server"
+                        id="sandbox_invoke_remove_many"
+                        ElementType="div">
+                        <pf:Literal
+                            runat="server"
+                            id="sandbox_invoke_remove_many_1"
+                            ElementType="p">foo</pf:Literal>
+                        <pf:Literal
+                            runat="server"
+                            id="sandbox_invoke_remove_many_2"
+                            ElementType="p">bar</pf:Literal>
+                        <pf:Container
+                            runat="server"
+                            id="sandbox_invoke_remove_many_3"
+                            ElementType="div">
+                            <pf:Literal
+                                runat="server"
+                                id="sandbox_invoke_remove_many_4"
+                                ElementType="strong">foo</pf:Literal>
+                            <pf:Container
+                                runat="server"
+                                id="sandbox_invoke_remove_many_5"
+                                ElementType="div">bar</pf:Literal>
+                                <pf:Literal
+                                    runat="server"
+                                    id="sandbox_invoke_remove_many_8"
+                                    ElementType="strong">foo</pf:Literal>
+                                <pf:Literal
+                                    runat="server"
+                                    id="sandbox_invoke_remove_many_9"
+                                    ElementType="strong">bar</pf:Literal>
+                                <pf:Literal
+                                    runat="server"
+                                    id="sandbox_invoke_remove_many_10"
+                                    ElementType="strong">bar 2</pf:Literal>
+                            </pf:Container>
+                            <pf:Literal
+                                runat="server"
+                                id="sandbox_invoke_remove_many_6"
+                                ElementType="strong">bar 2</pf:Literal>
+                        </pf:Container>
                     </pf:Container>
                 </div>
 

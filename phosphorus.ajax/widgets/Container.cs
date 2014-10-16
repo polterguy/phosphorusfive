@@ -41,34 +41,36 @@ namespace phosphorus.ajax.widgets
         // please notice that this dictionary is static, and hence will be reused across multiple requests and sessions
         private static Dictionary<Type, ICreator> _creators = new Dictionary<Type, ICreator>();
 
+        private static List<Tuple<string, Type>> _typeMapper = new List<Tuple<string, Type>> ();
+
         // contains the original controls collection, before we started adding and removing controls for current request
         private List<Control> _originalCollection;
 
         // used to lock GetCreator to make sure we don't get a race condition when instantiating new creators
         private static object _lock = new object ();
 
-        // use to make sure we store a reference to our creator instance for later requests
-        private static ICreator GetCreator<T>() where T : Control, new()
-        {
-            if (!_creators.ContainsKey (typeof (T))) {
-                lock (_lock) {
-                    if (!_creators.ContainsKey (typeof(T)))
-                        _creators [typeof(T)] = new Creator<T> ();
-                }
-            }
-            return _creators [typeof(T)];
-        }
-
         /// <summary>
-        /// returns all controls of the given type T from the Controls property
+        /// returns all controls of the given type T from the Controls collection
         /// </summary>
         /// <returns>the controls</returns>
         /// <typeparam name="T">type of controls to return</typeparam>
-        public IEnumerable<T> GetControls<T>() where T : Control {
+        public IEnumerable<T> GetChildControls<T> () where T : Control
+        {
             foreach (Control idx in Controls) {
-                if (idx is T)
-                    yield return idx as T;
+                T tmp = idx as T;
+                if (idx != null)
+                    yield return tmp;
             }
+        }
+
+        /// <summary>
+        /// returns all descendant controls of type T
+        /// </summary>
+        /// <returns>all controls of type T that are children, or children of childre, etc of this control</returns>
+        /// <typeparam name="T">the type of controls to return</typeparam>
+        public IEnumerable<T> GetDescendantControls<T> () where T : Control
+        {
+            return GetDescendantControlsImplementation<T> (this);
         }
 
         /// <summary>
@@ -82,6 +84,9 @@ namespace phosphorus.ajax.widgets
         /// <typeparam name="T">the type of control you wish to create</typeparam>
         public T CreatePersistentControl<T> (string id = null, int index = -1)  where T : Control, new()
         {
+            StoreOriginalControls ();
+            ReRenderChildren ();
+
             // creating new control, and adding to the controls collection
             T control = GetCreator<T>().Create () as T;
             if (string.IsNullOrEmpty (id)) {
@@ -101,6 +106,28 @@ namespace phosphorus.ajax.widgets
 
             // returning newly created control back to caller, such that he can set his properties and such for it
             return control;
+        }
+
+        /// <summary>
+        /// removes a control from the control collection, and persist the change
+        /// </summary>
+        /// <param name="control">control to remove</param>
+        public void RemoveControlPersistent (Control control)
+        {
+            StoreOriginalControls ();
+            Controls.Remove (control);
+            ReRenderChildren ();
+        }
+
+        /// <summary>
+        /// removes a control from the control collection, and persist the change
+        /// </summary>
+        /// <param name="index">index of control to remove</param>
+        public void RemoveControlPersistentAt (int index)
+        {
+            StoreOriginalControls ();
+            Controls.RemoveAt (index);
+            ReRenderChildren ();
         }
 
         // overridden to throw an exception if user tries to explicitly set the innerHTML attribute of this control
@@ -154,19 +181,14 @@ namespace phosphorus.ajax.widgets
                         }
                     }
                     if (!exist) {
-                        Type type = Type.GetType (idxTuple.Item1);
-                        Control control = _creators [type].Create ();
+                        Control control = _creators [GetTypeFromID (idxTuple.Item1)].Create ();
                         control.ID = idxTuple.Item2;
                         Controls.AddAt (controlPosition, control);
                     }
                     controlPosition += 1;
                 }
 
-                // then storing the original controls that was there before user starts adding and removing controls in his own page life cycle
-                _originalCollection = new List<Control> ();
-                foreach (Control idxCtrl in Controls) {
-                    _originalCollection.Add (idxCtrl);
-                }
+                StoreOriginalControls ();
 
                 base.LoadControlState (tmp [1]);
             } else {
@@ -184,7 +206,7 @@ namespace phosphorus.ajax.widgets
                 var lst = new List<string []> ();
                 foreach (Control idx in Controls) {
                     if (!string.IsNullOrEmpty (idx.ID)) // skipping auto-generated literal controls
-                        lst.Add (new string[] { idx.GetType ().AssemblyQualifiedName, idx.ID });
+                        lst.Add (new string[] { GetTypeID ( idx.GetType ()), idx.ID });
                 }
                 object[] tmp = new object [2];
                 tmp [0] = lst.ToArray ();
@@ -199,7 +221,8 @@ namespace phosphorus.ajax.widgets
 
         protected override void OnInit (EventArgs e)
         {
-            // making sure all the automatically generated LiteralControls are removed, since they mess up their IDs
+            // making sure all the automatically generated LiteralControls are removed, since they mess up their IDs,
+            // but not in a normal postback, or initial loading of the page, since we need the formatting they provide
             if ((Page as core.IAjaxPage).Manager.IsPhosphorusRequest) {
                 List<Control> ctrls = new List<Control> ();
                 foreach (Control idx in Controls) {
@@ -211,45 +234,6 @@ namespace phosphorus.ajax.widgets
                 }
             }
             base.OnInit (e);
-        }
-
-        protected override void RemovedControl (Control control)
-        {
-            if (IsTrackingViewState) {
-                if (_originalCollection == null) {
-
-                    // this is our first removal/add operator, hence we store the original controls that were there before 
-                    // we started adding and removing controls
-                    _originalCollection = new List<Control> ();
-                    foreach (Control idxCtrl in Controls) {
-                        if (!string.IsNullOrEmpty (idxCtrl.ID))
-                            _originalCollection.Add (idxCtrl);
-                    }
-
-                    // we have to add the removed control too, since that bugger is already out of the controls collection
-                    if (!string.IsNullOrEmpty (control.ID))
-                        _originalCollection.Add (control);
-                }
-                ReRenderChildren ();
-            }
-            base.RemovedControl (control);
-        }
-
-        protected override void AddedControl (Control control, int index)
-        {
-            if (IsTrackingViewState) {
-                if (_originalCollection == null) {
-
-                    // storing original controls that were there before we started adding and removing controls
-                    _originalCollection = new List<Control> ();
-                    foreach (Control idxCtrl in Controls) {
-                        if (idxCtrl.ID != control.ID) // making sure the newly added control does not make it to the original control collection
-                            _originalCollection.Add (idxCtrl);
-                    }
-                }
-                ReRenderChildren ();
-            }
-            base.AddedControl (control, index);
         }
 
         protected override void RenderChildrenWidgetsAsJson (HtmlTextWriter writer)
@@ -288,7 +272,7 @@ namespace phosphorus.ajax.widgets
             }
 
             // we have to insert such that the first controls becomes added before controls behind it, such that the dom position
-            // don't gets messy
+            // don't become messed up
             widgets.Sort (
                 delegate(Tuple<string, int> lhs, Tuple<string, int> rhs) {
                 return lhs.Item2.CompareTo (rhs.Item2);
@@ -328,6 +312,72 @@ namespace phosphorus.ajax.widgets
                 }
             }
             _renderMode = old;
+        }
+
+        // storing original controls that were there before we started adding and removing controls
+        private void StoreOriginalControls ()
+        {
+            if (_originalCollection == null) {
+                _originalCollection = new List<Control> ();
+                foreach (Control idxCtrl in Controls) {
+                    _originalCollection.Add (idxCtrl);
+                }
+            }
+        }
+        
+        // use to make sure we store a reference to our creator instance for later requests
+        private static ICreator GetCreator<T>() where T : Control, new()
+        {
+            if (!_creators.ContainsKey (typeof (T))) {
+                lock (_lock) {
+                    if (!_creators.ContainsKey (typeof(T)))
+                        _creators [typeof(T)] = new Creator<T> ();
+                }
+            }
+            return _creators [typeof(T)];
+        }
+
+        // used to "pack" the types stored in the ControlState to make viewstate as small as possible
+        private static string GetTypeID (Type type)
+        {
+            foreach (var idx in _typeMapper) {
+                if (idx.Item2 == type)
+                    return idx.Item1;
+            }
+
+            // didn't exist, need to create it
+            lock (_lock) {
+                if (!_typeMapper.Exists (
+                    delegate(Tuple<string, Type> idx) {
+                    return idx.Item2 == type;
+                }))
+                    _typeMapper.Add (new Tuple<string, Type> (_typeMapper.Count.ToString (), type));
+            }
+            return GetTypeID (type);
+        }
+
+        // used to retrieve the type from the type mapper collection
+        private static Type GetTypeFromID (string id)
+        {
+            return _typeMapper.Find (
+                delegate(Tuple<string, Type> idx) {
+                return idx.Item1 == id;
+            }).Item2;
+        }
+
+        // used to retrieve all descendant controls of type T
+        private static IEnumerable<T> GetDescendantControlsImplementation<T> (Control from) where T : Control
+        {
+            foreach (Control idx in from.Controls) {
+                T tmp = idx as T;
+                if (tmp != null) {
+                    yield return tmp;
+                }
+                var tmpCollection = GetDescendantControlsImplementation<T> (idx);
+                foreach (var idxChild in tmpCollection) {
+                    yield return idxChild;
+                }
+            }
         }
     }
 }
