@@ -1101,6 +1101,57 @@ tests.invoke_remove_many = function(event) {
 };
 
 
+/*
+ * raise an active event handled by page object
+ */
+tests.invoke_raise_page = function(event) {
+  var el = pf.$('sandbox_invoke_raise_page');
+  el.raise('sandbox_invoke_raise_page_onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setError('invoke_raise_page');
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      tests.setSuccess('invoke_raise_page');
+    }
+  });
+};
+
+
+/*
+ * raise an active event handled by page object
+ */
+tests.invoke_register_twice = function(event) {
+  var el = pf.$('sandbox_invoke_register_twice');
+  el.raise('sandbox_invoke_register_twice_onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setError('invoke_register_twice');
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      tests.setSuccess('invoke_register_twice');
+    }
+  });
+};
+
+
+/*
+ * raise an active event handled by page object
+ */
+tests.invoke_unregister = function(event) {
+  var el = pf.$('sandbox_invoke_unregister');
+  el.raise('sandbox_invoke_unregister_onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setError('invoke_unregister');
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      tests.setSuccess('invoke_unregister');
+    }
+  });
+};
+
+
 
 
 

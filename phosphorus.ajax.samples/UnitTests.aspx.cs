@@ -8,7 +8,9 @@ namespace phosphorus.ajax.samples
     using System;
     using System.Web;
     using System.Web.UI;
+    using System.Reflection;
     using System.Collections.Generic;
+    using phosphorus.core;
     using phosphorus.ajax.core;
     using pf = phosphorus.ajax.widgets;
 
@@ -341,6 +343,62 @@ namespace phosphorus.ajax.samples
                 throw new ApplicationException ("control value not correct on postback");
             if (((pf.Literal)container.Controls [2].Controls [1].Controls [2]).ElementType != "em")
                 throw new ApplicationException ("control element not correct on postback");
+        }
+
+        [ActiveEvent(Name="foo")]
+        public void sandbox_invoke_raise_page_onclick_event (object sender, ActiveEventArgs e)
+        {
+            e.Args.Value = "success";
+        }
+        
+        [WebMethod]
+        protected void sandbox_invoke_raise_page_onclick (pf.Literal container, EventArgs e)
+        {
+            Loader.Instance.LoadAssembly (Assembly.GetExecutingAssembly ());
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            context.RegisterListeningObject (this);
+            Node node = new Node ();
+            context.Raise ("foo", this, node);
+            if (!node.Value.Equals ("success"))
+                throw new ApplicationException ("active event wasn't handled");
+        }
+        
+        [ActiveEvent(Name="foo2")]
+        public void sandbox_invoke_register_twice_onclick_event (object sender, ActiveEventArgs e)
+        {
+            e.Args.Value += "success";
+        }
+
+        [WebMethod]
+        protected void sandbox_invoke_register_twice_onclick (pf.Literal container, EventArgs e)
+        {
+            Loader.Instance.LoadAssembly (Assembly.GetExecutingAssembly ());
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            context.RegisterListeningObject (this);
+            context.RegisterListeningObject (this);
+            Node node = new Node ();
+            context.Raise ("foo2", this, node);
+            if (!node.Value.Equals ("success"))
+                throw new ApplicationException ("active event was handled twice");
+        }
+        
+        [ActiveEvent(Name="foo3")]
+        public void sandbox_invoke_unregister_onclick_onclick_event (object sender, ActiveEventArgs e)
+        {
+            e.Args.Value = "failure";
+        }
+
+        [WebMethod]
+        protected void sandbox_invoke_unregister_onclick (pf.Literal container, EventArgs e)
+        {
+            Loader.Instance.LoadAssembly (Assembly.GetExecutingAssembly ());
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            context.RegisterListeningObject (this);
+            context.UnregisterListeningObject (this);
+            Node node = new Node (null, "success");
+            context.Raise ("foo3", this, node);
+            if (!node.Value.Equals ("success"))
+                throw new ApplicationException ("active event listener wasn't unregistered");
         }
     }
 }

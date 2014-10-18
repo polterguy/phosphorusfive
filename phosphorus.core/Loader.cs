@@ -34,6 +34,22 @@ namespace phosphorus.core
             return context;
         }
 
+        public void LoadAssembly (Assembly assembly)
+        {
+            if (_assemblies.Exists (
+                delegate(Assembly idx) {
+                return idx == assembly;
+            }))
+                return;
+
+            foreach (var idxAsm in AppDomain.CurrentDomain.GetAssemblies ()) {
+                if (idxAsm == assembly) {
+                    InitializeAssembly (idxAsm);
+                    _assemblies.Add (idxAsm);
+                }
+            }
+        }
+
         public void LoadAssembly (string path, string name)
         {
             if (_assemblies.Exists (
@@ -80,7 +96,7 @@ namespace phosphorus.core
                         var atrs = idxMethod.GetCustomAttributes (typeof(ActiveEventAttribute), true) as ActiveEventAttribute[];
                         if (atrs != null && atrs.Length > 0) {
                             ParameterInfo[] pars = idxMethod.GetParameters ();
-                            if (pars.Length != 2 || pars [0].GetType () != typeof(object) || pars [1].GetType () != typeof(ActiveEventArgs))
+                            if (pars.Length != 2 || pars [0].ParameterType != typeof(object) || pars [1].ParameterType != typeof(ActiveEventArgs))
                                 throw new ArgumentException (
                                     string.Format("method '{0}.{1}' is not a valid active event", 
                                               idxMethod.DeclaringType.FullName,
@@ -91,7 +107,8 @@ namespace phosphorus.core
                             }
                         }
                     }
-                    idx.Item2 [idxType] = activeEvents;
+                    if (activeEvents.Count > 0)
+                        idx.Item2 [idxType] = activeEvents;
                 }
             }
         }

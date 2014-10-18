@@ -286,6 +286,35 @@
                             <input type="button" id="invoke_remove_many" class="undetermined" value="run" onclick="tests.invoke_remove_many(event)">
                         </td>
                     </tr>
+                    <tr class="spacer">
+                        <td colspan="2">
+                            <h3>active events</h3>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            raise an active event handled on page object
+                        </td>
+                        <td>
+                            <input type="button" id="invoke_raise_page" class="undetermined" value="run" onclick="tests.invoke_raise_page(event)">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            register an active event listener twice
+                        </td>
+                        <td>
+                            <input type="button" id="invoke_register_twice" class="undetermined" value="run" onclick="tests.invoke_register_twice(event)">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            unregister an active event listener
+                        </td>
+                        <td>
+                            <input type="button" id="invoke_unregister" class="undetermined" value="run" onclick="tests.invoke_unregister(event)">
+                        </td>
+                    </tr>
                 </table>
 
                 <div style="display:none;" id="sandbox">
@@ -554,6 +583,21 @@
                                 ElementType="strong">bar 2</pf:Literal>
                         </pf:Container>
                     </pf:Container>
+                    <pf:Literal
+                        runat="server"
+                        id="sandbox_invoke_raise_page"
+                        RenderType="NoClose"
+                        ElementType="p" />
+                    <pf:Literal
+                        runat="server"
+                        id="sandbox_invoke_register_twice"
+                        RenderType="NoClose"
+                        ElementType="p" />
+                    <pf:Literal
+                        runat="server"
+                        id="sandbox_invoke_unregister"
+                        RenderType="NoClose"
+                        ElementType="p" />
                 </div>
 
                 <p>

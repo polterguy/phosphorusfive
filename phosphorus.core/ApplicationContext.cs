@@ -19,7 +19,7 @@ namespace phosphorus.core
             Dictionary<Type, List<Tuple<ActiveEventAttribute, MethodInfo>>> staticEvents)
         {
             _registeredActiveEvents = new Dictionary<string, List<Tuple<MethodInfo, object>>> ();
-            _typesInstanceActiveEvents = new Dictionary<Type, List<Tuple<ActiveEventAttribute, MethodInfo>>> ();
+            _typesInstanceActiveEvents = instanceEvents;
 
             // looping through, creating active event mappings for all static active events
             foreach (var idxType in staticEvents.Keys) {
@@ -38,15 +38,26 @@ namespace phosphorus.core
                 throw new ArgumentNullException ();
 
             Type type = instance.GetType ();
-            if (!_typesInstanceActiveEvents.ContainsKey (type))
-                return;
-            var list = _typesInstanceActiveEvents [type];
-            foreach (var idxTuple in list) {
-                if (!_registeredActiveEvents.ContainsKey (idxTuple.Item1.Name)) {
-                    _registeredActiveEvents [idxTuple.Item1.Name] = new List<Tuple<MethodInfo, object>> ();
+            while (type != typeof(object)) {
+                if (_typesInstanceActiveEvents.ContainsKey (type)) {
+                    var list = _typesInstanceActiveEvents [type];
+                    foreach (var idxTuple in list) {
+                        if (!_registeredActiveEvents.ContainsKey (idxTuple.Item1.Name)) {
+                            _registeredActiveEvents [idxTuple.Item1.Name] = new List<Tuple<MethodInfo, object>> ();
+                        }
+                        var methods = _registeredActiveEvents [idxTuple.Item1.Name];
+                        bool exist = false;
+                        foreach (var idxExisting in methods) {
+                            if (idxExisting.Item2.Equals (instance)) {
+                                exist = true;
+                                break;
+                            }
+                        }
+                        if (!exist)
+                            methods.Add (new Tuple<MethodInfo, object> (idxTuple.Item2, instance));
+                    }
                 }
-                var methods = _registeredActiveEvents [idxTuple.Item1.Name];
-                methods.Add (new Tuple<MethodInfo, object> (idxTuple.Item2, instance));
+                type = type.BaseType;
             }
         }
 
@@ -56,20 +67,23 @@ namespace phosphorus.core
                 throw new ArgumentNullException ();
 
             Type type = instance.GetType ();
-            if (!_typesInstanceActiveEvents.ContainsKey (type))
-                return;
-            var list = _typesInstanceActiveEvents [type];
-            foreach (var idxTuple in list) {
-                if (!_registeredActiveEvents.ContainsKey (idxTuple.Item1.Name)) {
-                    throw new ApplicationException ("tried to unregister an object that was not registered");
+            while (type != typeof(object)) {
+                if (_typesInstanceActiveEvents.ContainsKey (type)) {
+                    var list = _typesInstanceActiveEvents [type];
+                    foreach (var idxTuple in list) {
+                        if (!_registeredActiveEvents.ContainsKey (idxTuple.Item1.Name)) {
+                            throw new ApplicationException ("tried to unregister an object that was not registered");
+                        }
+                        var methods = _registeredActiveEvents [idxTuple.Item1.Name];
+                        methods.RemoveAll (
+                            delegate(Tuple<MethodInfo, object> idxTupleToRemove) {
+                            return idxTupleToRemove.Item2 != null && idxTupleToRemove.Item2 == instance;
+                        });
+                        if (methods.Count == 0)
+                            _registeredActiveEvents.Remove (idxTuple.Item1.Name);
+                    }
                 }
-                var methods = _registeredActiveEvents [idxTuple.Item1.Name];
-                methods.RemoveAll (
-                    delegate(Tuple<MethodInfo, object> idxTupleToRemove) {
-                    return idxTupleToRemove.Item2 != null && idxTupleToRemove.Item2 == instance;
-                });
-                if (methods.Count == 0)
-                    _registeredActiveEvents.Remove (idxTuple.Item1.Name);
+                type = type.BaseType;
             }
         }
 

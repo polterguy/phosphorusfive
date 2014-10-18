@@ -87,6 +87,10 @@
       <Project>{11644924-3367-4812-BE60-7DA41FC9E4AE}</Project>
       <Name>phosphorus.ajax</Name>
     </ProjectReference>
+    <ProjectReference Include="..\phosphorus.core\phosphorus.core.csproj">
+      <Project>{C783FEDB-C973-4F38-8EBB-55A0163612F5}</Project>
+      <Name>phosphorus.core</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\" />
