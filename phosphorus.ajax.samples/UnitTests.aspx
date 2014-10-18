@@ -84,6 +84,14 @@
                             <input type="button" id="invoke_multiple" class="undetermined" value="run" onclick="tests.invoke_multiple(event)">
                         </td>
                     </tr>
+                    <tr>
+                        <td>
+                            add custom parameters from javascript
+                        </td>
+                        <td>
+                            <input type="button" id="invoke_javascript" class="undetermined" value="run" onclick="tests.invoke_javascript(event)">
+                        </td>
+                    </tr>
                     <tr class="spacer">
                         <td colspan="2">
                             <h3>attributes</h3>
@@ -312,6 +320,12 @@
                         id="sandbox_invoke_multiple"
                         RenderType="NoClose"
                         onclick="sandbox_invoke_multiple_onclick"
+                        ElementType="p" />
+                    <pf:Literal
+                        runat="server"
+                        id="sandbox_invoke_javascript"
+                        RenderType="NoClose"
+                        onclick="sandbox_invoke_javascript_onclick"
                         ElementType="p" />
                     <pf:Literal
                         runat="server"

@@ -50,7 +50,7 @@
 
       // called just before request is sent
       onbefore: function(pars, evt) {
-        pars.custom_data += '\'hello\'. ';
+        pars.custom_data = 'your browser says; \'hello\'. ';
       },
 
       // called when a successful response is returned, but before dom is updated with return value from server
@@ -58,15 +58,6 @@
         if(retVal.__pf_change && retVal.__pf_change.javascript_widget) {
           retVal.__pf_change.javascript_widget.innerHTML += 'browser says \'hello again\'';
         }
-      },
-
-      // passing in custom data to event
-      // note that this can also be done in our 'onbefore' callback
-      // also notice that if you have form elements with the same name as your custom parameters, then your 
-      // custom parameters will overwrite your form element values
-      // you can send any object type you wish this way, and it will bee serialized as json automatically for you
-      parameters: {
-        custom_data: 'your browser says; '
       }
     });
   };

@@ -28,7 +28,7 @@
    */
   pf.extend = function(orig, obj) {
     for (var p in obj) {
-      orig[p] = obj[p];
+      orig [p] = obj [p];
     }
     return orig;
   };
@@ -121,7 +121,7 @@
      * useful for finding the form for an element, to find out where 
      * we should post or http request
      */
-    getAncestor: function(name) {
+    _getAncestor: function(name) {
       var n = this.el;
       while (n.tagName.toLowerCase() != name) {
         n = n.parentNode;
@@ -241,7 +241,7 @@
     _raise: function(evt, options) {
 
       // finding form
-      var form = this.getAncestor('form');
+      var form = this._getAncestor('form');
 
       // creating our xhr object
       var xhr = new XMLHttpRequest();
@@ -252,9 +252,8 @@
         if (xhr.readyState == 4) { T._done(xhr); }
       };
 
-      // serializing form, and adding parameters given through options, before special phosphorus parameters are added
-      // before we call 'onbefore'
-      var pars = pf.extend(pf.extend(form.serialize(), options.parameters), {
+      // serializing form before we call 'onbefore'
+      var pars = pf.extend(form.serialize(), {
         __pf_event:evt,
         __pf_widget:this.el.id
       });
@@ -288,16 +287,7 @@
      * pf.$('my_id').raise('onclick', {
      *   onbefore:     function(pars, evt) { // do stuff just before the request is being sent},
      *   onsuccess:    function(serverReturn, evt) { // do stuff after successful return, but before dom is updated },
-     *   onerror:      function(statusCode, statusText, responseHtml, evt) { // du stuff in case of error },
-     *   parameters:   {
-     *     some_custom_parameter: 56,
-     *     another_custom_parameter: 'howdy world',
-     *     third: true,
-     *     and_even_an_object:{
-     *       x:42,
-     *       y:13
-     *     }
-     *   }
+     *   onerror:      function(statusCode, statusText, responseHtml, evt) { // du stuff in case of error }
      * });
      * 
      * the above example will raise the event 'onclick' on the server side widget with the id 
@@ -338,10 +328,8 @@
         onsuccess: function(/*serverReturn, evt*/){},
 
         // invoked if an error occurs during http request, with status code, status text, server response and event name
-        onerror: function(/*statusCode, statusText, responseHtml, evt*/){},
+        onerror: function(/*statusCode, statusText, responseHtml, evt*/){}
 
-        // custom parameters you wish to send in your http request
-        parameters:{}
       }, options);
 
       // adding to chain

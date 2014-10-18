@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{8FAEDF6F-8
 		todo = todo
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.core", "phosphorus.core\phosphorus.core.csproj", "{C783FEDB-C973-4F38-8EBB-55A0163612F5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,12 @@ Global
 		{344B4C0F-683B-4B29-B559-D31170EA6B96}.Release|Any CPU.Build.0 = Release|Any CPU
 		{344B4C0F-683B-4B29-B559-D31170EA6B96}.Release-Linux|Any CPU.ActiveCfg = Release|Any CPU
 		{344B4C0F-683B-4B29-B559-D31170EA6B96}.Release-Linux|Any CPU.Build.0 = Release|Any CPU
+		{C783FEDB-C973-4F38-8EBB-55A0163612F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C783FEDB-C973-4F38-8EBB-55A0163612F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C783FEDB-C973-4F38-8EBB-55A0163612F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C783FEDB-C973-4F38-8EBB-55A0163612F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C783FEDB-C973-4F38-8EBB-55A0163612F5}.Release-Linux|Any CPU.ActiveCfg = Release|Any CPU
+		{C783FEDB-C973-4F38-8EBB-55A0163612F5}.Release-Linux|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection

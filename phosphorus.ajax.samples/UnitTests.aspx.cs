@@ -43,6 +43,12 @@ namespace phosphorus.ajax.samples
             literal.innerHTML += "x";
             System.Threading.Thread.Sleep (100);
         }
+        
+        [WebMethod]
+        protected void sandbox_invoke_javascript_onclick (pf.Literal literal, EventArgs e)
+        {
+            literal.innerHTML = Page.Request.Params ["mumbo"] + " jumbo";
+        }
 
         [WebMethod]
         protected void sandbox_invoke_change_content_onclick (pf.Literal literal, EventArgs e)

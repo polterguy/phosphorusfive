@@ -47,6 +47,8 @@
 
 * do we really need check if ancestors are visible, since the Visible property kind of already does this ...?
 
+* add up "chain" boolean property in pf.raise, and allow only STATIC methods to be invoked on server side through this mechanism
+
 
 
 

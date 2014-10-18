@@ -232,6 +232,35 @@ tests.invoke_multiple = function(event) {
 /*
  * invokes an event handler changing content of widget
  */
+tests.invoke_javascript = function(event) {
+  var el = pf.$('sandbox_invoke_javascript');
+  el.raise('sandbox_invoke_javascript_onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setError('invoke_javascript');
+    },
+
+    onbefore: function(pars, evt) {
+      pars.mumbo = 'mumbo';
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+        tests.setError('invoke_javascript');
+        return;
+      }
+      if (serverReturn.__pf_change.sandbox_invoke_javascript.innerHTML != 'mumbo jumbo') {
+        tests.setError('invoke_javascript');
+        return;
+      }
+      tests.setSuccess('invoke_javascript');
+    }
+  });
+};
+
+
+/*
+ * invokes an event handler changing content of widget
+ */
 tests.invoke_change_content = function(event) {
   var el = pf.$('sandbox_invoke_change_content');
   el.raise('sandbox_invoke_change_content_onclick', {
