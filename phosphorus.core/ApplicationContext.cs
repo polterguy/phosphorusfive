@@ -48,7 +48,7 @@ namespace phosphorus.core
                         var methods = _registeredActiveEvents [idxTuple.Item1.Name];
                         bool exist = false;
                         foreach (var idxExisting in methods) {
-                            if (idxExisting.Item2.Equals (instance)) {
+                            if (idxExisting.Item2.Equals (instance) && idxExisting.Item1 == idxTuple.Item2) {
                                 exist = true;
                                 break;
                             }
@@ -71,9 +71,8 @@ namespace phosphorus.core
                 if (_typesInstanceActiveEvents.ContainsKey (type)) {
                     var list = _typesInstanceActiveEvents [type];
                     foreach (var idxTuple in list) {
-                        if (!_registeredActiveEvents.ContainsKey (idxTuple.Item1.Name)) {
-                            throw new ApplicationException ("tried to unregister an object that was not registered");
-                        }
+                        if (!_registeredActiveEvents.ContainsKey (idxTuple.Item1.Name))
+                            continue;
                         var methods = _registeredActiveEvents [idxTuple.Item1.Name];
                         methods.RemoveAll (
                             delegate(Tuple<MethodInfo, object> idxTupleToRemove) {

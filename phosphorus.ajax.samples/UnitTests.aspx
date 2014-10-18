@@ -315,6 +315,14 @@
                             <input type="button" id="invoke_unregister" class="undetermined" value="run" onclick="tests.invoke_unregister(event)">
                         </td>
                     </tr>
+                    <tr>
+                        <td>
+                            handle active event twice
+                        </td>
+                        <td>
+                            <input type="button" id="invoke_handle_twice" class="undetermined" value="run" onclick="tests.invoke_handle_twice(event)">
+                        </td>
+                    </tr>
                 </table>
 
                 <div style="display:none;" id="sandbox">
@@ -596,6 +604,11 @@
                     <pf:Literal
                         runat="server"
                         id="sandbox_invoke_unregister"
+                        RenderType="NoClose"
+                        ElementType="p" />
+                    <pf:Literal
+                        runat="server"
+                        id="sandbox_invoke_handle_twice"
                         RenderType="NoClose"
                         ElementType="p" />
                 </div>

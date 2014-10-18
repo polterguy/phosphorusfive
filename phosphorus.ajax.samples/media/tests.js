@@ -1119,7 +1119,7 @@ tests.invoke_raise_page = function(event) {
 
 
 /*
- * raise an active event handled by page object
+ * register active event listener twice
  */
 tests.invoke_register_twice = function(event) {
   var el = pf.$('sandbox_invoke_register_twice');
@@ -1136,7 +1136,7 @@ tests.invoke_register_twice = function(event) {
 
 
 /*
- * raise an active event handled by page object
+ * unregister an active event 
  */
 tests.invoke_unregister = function(event) {
   var el = pf.$('sandbox_invoke_unregister');
@@ -1147,6 +1147,23 @@ tests.invoke_unregister = function(event) {
 
     onsuccess: function(serverReturn, evt) {
       tests.setSuccess('invoke_unregister');
+    }
+  });
+};
+
+
+/*
+ * handle an active event twice
+ */
+tests.invoke_handle_twice = function(event) {
+  var el = pf.$('sandbox_invoke_handle_twice');
+  el.raise('sandbox_invoke_handle_twice_onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setError('invoke_handle_twice');
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      tests.setSuccess('invoke_handle_twice');
     }
   });
 };

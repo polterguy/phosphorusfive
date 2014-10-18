@@ -400,6 +400,30 @@ namespace phosphorus.ajax.samples
             if (!node.Value.Equals ("success"))
                 throw new ApplicationException ("active event listener wasn't unregistered");
         }
+        
+        [ActiveEvent(Name="foo4")]
+        public void sandbox_invoke_handle_twice_onclick_1_event (object sender, ActiveEventArgs e)
+        {
+            e.Args.Value += "x";
+        }
+
+        [ActiveEvent(Name="foo4")]
+        public void sandbox_invoke_handle_twice_onclick_2_event (object sender, ActiveEventArgs e)
+        {
+            e.Args.Value += "y";
+        }
+
+        [WebMethod]
+        protected void sandbox_invoke_handle_twice_onclick (pf.Literal container, EventArgs e)
+        {
+            Loader.Instance.LoadAssembly (Assembly.GetExecutingAssembly ());
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            context.RegisterListeningObject (this);
+            Node node = new Node (null, "");
+            context.Raise ("foo4", this, node);
+            if (!node.Value.Equals ("xy") && !node.Value.Equals ("yx"))
+                throw new ApplicationException ("active event was not handled twice");
+        }
     }
 }
 
