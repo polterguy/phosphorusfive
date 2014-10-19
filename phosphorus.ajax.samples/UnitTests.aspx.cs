@@ -488,6 +488,24 @@ namespace phosphorus.ajax.samples
             if (!node.Value.Equals ("qwertyqwerty"))
                 throw new ApplicationException ("active event was not handled twice");
         }
+        
+        [WebMethod]
+        protected void sandbox_invoke_handle_trice_onclick (pf.Literal container, EventArgs e)
+        {
+            Loader.Instance.LoadAssembly (Assembly.GetExecutingAssembly ());
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Tmp tmp = new Tmp ();
+            context.RegisterListeningObject (tmp);
+            Node node = new Node (null, "");
+            context.Raise ("foo7", this, node);
+            if (!node.Value.Equals ("qwertyqwerty"))
+                throw new ApplicationException ("active event was not handled twice");
+            context.UnregisterListeningObject (tmp);
+            node = new Node (null, "");
+            context.Raise ("foo7", this, node);
+            if (!node.Value.Equals ("qwerty"))
+                throw new ApplicationException ("active event was not handled twice");
+        }
     }
 }
 

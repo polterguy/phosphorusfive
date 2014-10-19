@@ -1220,6 +1220,23 @@ tests.invoke_handle_twice_domain = function(event) {
 };
 
 
+/*
+ *raise an active event twice, once handled twice, then unregister and re-raise
+ */
+tests.invoke_handle_trice = function(event) {
+  var el = pf.$('sandbox_invoke_handle_trice');
+  el.raise('sandbox_invoke_handle_trice_onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setError('invoke_handle_trice');
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      tests.setSuccess('invoke_handle_trice');
+    }
+  });
+};
+
+
 
 
 

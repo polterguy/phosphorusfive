@@ -341,10 +341,18 @@
                     </tr>
                     <tr>
                         <td>
-                            handle active event twice, once static domain, once instance domain
+                            handle active event twice, once in static domain, and once in instance domain
                         </td>
                         <td>
                             <input type="button" id="invoke_handle_twice_domain" class="undetermined" value="run" onclick="tests.invoke_handle_twice_domain(event)">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            raise active event twice, once handled twice, then unregister instance, and re-raise
+                        </td>
+                        <td>
+                            <input type="button" id="invoke_handle_trice" class="undetermined" value="run" onclick="tests.invoke_handle_trice(event)">
                         </td>
                     </tr>
                 </table>
@@ -648,6 +656,11 @@
                     <pf:Literal
                         runat="server"
                         id="sandbox_invoke_handle_twice_domain"
+                        RenderType="NoClose"
+                        ElementType="p" />
+                    <pf:Literal
+                        runat="server"
+                        id="sandbox_invoke_handle_trice"
                         RenderType="NoClose"
                         ElementType="p" />
                 </div>
