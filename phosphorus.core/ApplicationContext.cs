@@ -37,9 +37,12 @@ namespace phosphorus.core
             if (instance == null)
                 throw new ArgumentNullException ();
 
+            bool found = false;
+
             Type type = instance.GetType ();
             while (type != typeof(object)) {
                 if (_typesInstanceActiveEvents.ContainsKey (type)) {
+                    found = true;
                     var list = _typesInstanceActiveEvents [type];
                     foreach (var idxTuple in list) {
                         if (!_registeredActiveEvents.ContainsKey (idxTuple.Item1.Name)) {
@@ -59,6 +62,10 @@ namespace phosphorus.core
                 }
                 type = type.BaseType;
             }
+
+            if (!found)
+                throw new ArgumentNullException (string.Format ("object of type '{0}' did not contain any instance active event listeners", 
+                                                                instance.GetType ().FullName));
         }
 
         public void UnregisterListeningObject (object instance)

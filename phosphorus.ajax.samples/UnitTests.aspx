@@ -355,6 +355,22 @@
                             <input type="button" id="invoke_handle_trice" class="undetermined" value="run" onclick="tests.invoke_handle_trice(event)">
                         </td>
                     </tr>
+                    <tr>
+                        <td>
+                            register a domain object listener with no active event handler
+                        </td>
+                        <td>
+                            <input type="button" id="invoke_handle_null" class="undetermined" value="run" onclick="tests.invoke_handle_null(event)">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            raise an active event without any handlers
+                        </td>
+                        <td>
+                            <input type="button" id="invoke_raise_null" class="undetermined" value="run" onclick="tests.invoke_raise_null(event)">
+                        </td>
+                    </tr>
                 </table>
 
                 <div style="display:none;" id="sandbox">
@@ -661,6 +677,16 @@
                     <pf:Literal
                         runat="server"
                         id="sandbox_invoke_handle_trice"
+                        RenderType="NoClose"
+                        ElementType="p" />
+                    <pf:Literal
+                        runat="server"
+                        id="sandbox_invoke_handle_null"
+                        RenderType="NoClose"
+                        ElementType="p" />
+                    <pf:Literal
+                        runat="server"
+                        id="sandbox_invoke_raise_null"
                         RenderType="NoClose"
                         ElementType="p" />
                 </div>

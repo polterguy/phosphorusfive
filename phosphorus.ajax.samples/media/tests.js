@@ -1221,7 +1221,7 @@ tests.invoke_handle_twice_domain = function(event) {
 
 
 /*
- *raise an active event twice, once handled twice, then unregister and re-raise
+ * raise an active event twice, once handled twice, then unregister and re-raise
  */
 tests.invoke_handle_trice = function(event) {
   var el = pf.$('sandbox_invoke_handle_trice');
@@ -1232,6 +1232,41 @@ tests.invoke_handle_trice = function(event) {
 
     onsuccess: function(serverReturn, evt) {
       tests.setSuccess('invoke_handle_trice');
+    }
+  });
+};
+
+
+/*
+ * register a domain object as listener with no active event handler
+ */
+tests.invoke_handle_null = function(event) {
+  var el = pf.$('sandbox_invoke_handle_null');
+  el.raise('sandbox_invoke_handle_null_onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setSuccess('invoke_handle_null');
+      return true;
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      tests.setError('invoke_handle_null');
+    }
+  });
+};
+
+
+/*
+ * register a domain object as listener with no active event handler
+ */
+tests.invoke_raise_null = function(event) {
+  var el = pf.$('sandbox_invoke_raise_null');
+  el.raise('sandbox_invoke_raise_null_onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setError('invoke_raise_null');
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      tests.setSuccess('invoke_raise_null');
     }
   });
 };
