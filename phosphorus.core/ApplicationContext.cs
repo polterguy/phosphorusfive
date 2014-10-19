@@ -48,7 +48,7 @@ namespace phosphorus.core
                         var methods = _registeredActiveEvents [idxTuple.Item1.Name];
                         bool exist = false;
                         foreach (var idxExisting in methods) {
-                            if (idxExisting.Item2.Equals (instance) && idxExisting.Item1 == idxTuple.Item2) {
+                            if (instance.Equals (idxExisting.Item2) && idxExisting.Item1 == idxTuple.Item2) {
                                 exist = true;
                                 break;
                             }

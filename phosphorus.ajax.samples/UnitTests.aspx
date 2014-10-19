@@ -323,6 +323,30 @@
                             <input type="button" id="invoke_handle_twice" class="undetermined" value="run" onclick="tests.invoke_handle_twice(event)">
                         </td>
                     </tr>
+                    <tr>
+                        <td>
+                            handle active event in domain object
+                        </td>
+                        <td>
+                            <input type="button" id="invoke_handle_domain" class="undetermined" value="run" onclick="tests.invoke_handle_domain(event)">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            handle active event in static method
+                        </td>
+                        <td>
+                            <input type="button" id="invoke_handle_static" class="undetermined" value="run" onclick="tests.invoke_handle_static(event)">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            handle active event twice, once static domain, once instance domain
+                        </td>
+                        <td>
+                            <input type="button" id="invoke_handle_twice_domain" class="undetermined" value="run" onclick="tests.invoke_handle_twice_domain(event)">
+                        </td>
+                    </tr>
                 </table>
 
                 <div style="display:none;" id="sandbox">
@@ -609,6 +633,21 @@
                     <pf:Literal
                         runat="server"
                         id="sandbox_invoke_handle_twice"
+                        RenderType="NoClose"
+                        ElementType="p" />
+                    <pf:Literal
+                        runat="server"
+                        id="sandbox_invoke_handle_domain"
+                        RenderType="NoClose"
+                        ElementType="p" />
+                    <pf:Literal
+                        runat="server"
+                        id="sandbox_invoke_handle_static"
+                        RenderType="NoClose"
+                        ElementType="p" />
+                    <pf:Literal
+                        runat="server"
+                        id="sandbox_invoke_handle_twice_domain"
                         RenderType="NoClose"
                         ElementType="p" />
                 </div>

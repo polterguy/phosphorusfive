@@ -1169,6 +1169,57 @@ tests.invoke_handle_twice = function(event) {
 };
 
 
+/*
+ * handle an active event in a domain object
+ */
+tests.invoke_handle_domain = function(event) {
+  var el = pf.$('sandbox_invoke_handle_domain');
+  el.raise('sandbox_invoke_handle_domain_onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setError('invoke_handle_domain');
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      tests.setSuccess('invoke_handle_domain');
+    }
+  });
+};
+
+
+/*
+ * handle an active event in a static event handler
+ */
+tests.invoke_handle_static = function(event) {
+  var el = pf.$('sandbox_invoke_handle_static');
+  el.raise('sandbox_invoke_handle_static_onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setError('invoke_handle_static');
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      tests.setSuccess('invoke_handle_static');
+    }
+  });
+};
+
+
+/*
+ * handle an active event twice, once in instance domain, once in static domain
+ */
+tests.invoke_handle_twice_domain = function(event) {
+  var el = pf.$('sandbox_invoke_handle_twice_domain');
+  el.raise('sandbox_invoke_handle_twice_domain_onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setError('invoke_handle_twice_domain');
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      tests.setSuccess('invoke_handle_twice_domain');
+    }
+  });
+};
+
+
 
 
 

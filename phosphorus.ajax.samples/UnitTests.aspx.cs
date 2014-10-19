@@ -424,6 +424,70 @@ namespace phosphorus.ajax.samples
             if (!node.Value.Equals ("xy") && !node.Value.Equals ("yx"))
                 throw new ApplicationException ("active event was not handled twice");
         }
+
+        private class Tmp
+        {
+            [ActiveEvent(Name="foo5")]
+            public void foo (object sender, ActiveEventArgs e)
+            {
+                e.Args.Value += "tjobing";
+            }
+
+            [ActiveEvent(Name="foo6")]
+            public static void foo2 (object sender, ActiveEventArgs e)
+            {
+                e.Args.Value += "tjobing2";
+            }
+            
+            [ActiveEvent(Name="foo7")]
+            public static void foo3 (object sender, ActiveEventArgs e)
+            {
+                e.Args.Value += "qwerty";
+            }
+            
+            [ActiveEvent(Name="foo7")]
+            public void foo4 (object sender, ActiveEventArgs e)
+            {
+                e.Args.Value += "qwerty";
+            }
+        }
+        
+        [WebMethod]
+        protected void sandbox_invoke_handle_domain_onclick (pf.Literal container, EventArgs e)
+        {
+            Loader.Instance.LoadAssembly (Assembly.GetExecutingAssembly ());
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Tmp tmp = new Tmp ();
+            context.RegisterListeningObject (tmp);
+            Node node = new Node (null, "");
+            context.Raise ("foo5", this, node);
+            if (!node.Value.Equals ("tjobing"))
+                throw new ApplicationException ("active event was not handled twice");
+        }
+        
+        [WebMethod]
+        protected void sandbox_invoke_handle_static_onclick (pf.Literal container, EventArgs e)
+        {
+            Loader.Instance.LoadAssembly (Assembly.GetExecutingAssembly ());
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node node = new Node (null, "");
+            context.Raise ("foo6", this, node);
+            if (!node.Value.Equals ("tjobing2"))
+                throw new ApplicationException ("active event was not handled twice");
+        }
+
+        [WebMethod]
+        protected void sandbox_invoke_handle_twice_domain_onclick (pf.Literal container, EventArgs e)
+        {
+            Loader.Instance.LoadAssembly (Assembly.GetExecutingAssembly ());
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Tmp tmp = new Tmp ();
+            context.RegisterListeningObject (tmp);
+            Node node = new Node (null, "");
+            context.Raise ("foo7", this, node);
+            if (!node.Value.Equals ("qwertyqwerty"))
+                throw new ApplicationException ("active event was not handled twice");
+        }
     }
 }
 
