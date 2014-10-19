@@ -1,6 +1,6 @@
 <%@ Page 
     Language="C#" 
-    Inherits="phosphorus.ajax.samples.JavaScript"
+    Inherits="phosphorus.five.samples.JavaScript"
     Codebehind="JavaScript.aspx.cs" %>
 
 <!DOCTYPE html>

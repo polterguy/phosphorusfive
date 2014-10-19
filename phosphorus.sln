@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.ajax", "phosphorus.ajax\phosphorus.ajax.csproj", "{11644924-3367-4812-BE60-7DA41FC9E4AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.ajax.samples", "phosphorus.ajax.samples\phosphorus.ajax.samples.csproj", "{344B4C0F-683B-4B29-B559-D31170EA6B96}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.five.samples", "phosphorus.five.samples\phosphorus.five.samples.csproj", "{344B4C0F-683B-4B29-B559-D31170EA6B96}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{8FAEDF6F-8F53-441B-ACE1-5E8330F8CE00}"
 	ProjectSection(SolutionItems) = preProject
@@ -43,7 +43,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = phosphorus.ajax.samples\phosphorus.ajax.samples.csproj
+		StartupItem = phosphorus.five.samples\phosphorus.five.samples.csproj
 		Policies = $0
 		$0.DotNetNamingPolicy = $1
 		$1.DirectoryNamespaceAssociation = None

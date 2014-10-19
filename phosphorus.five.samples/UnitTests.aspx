@@ -1,6 +1,6 @@
 <%@ Page 
     Language="C#" 
-    Inherits="phosphorus.ajax.samples.UnitTests"
+    Inherits="phosphorus.five.samples.UnitTests"
     Codebehind="UnitTests.aspx.cs" %>
 
 <!DOCTYPE html>
@@ -357,7 +357,7 @@
                     </tr>
                     <tr>
                         <td>
-                            register a domain object listener with no active event handler
+                            register a domain object listener without any instance active event handlers
                         </td>
                         <td>
                             <input type="button" id="invoke_handle_null" class="undetermined" value="run" onclick="tests.invoke_handle_null(event)">

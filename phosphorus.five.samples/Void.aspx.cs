@@ -3,7 +3,7 @@
  * phosphorus five is licensed as mitx11, see the enclosed LICENSE file for details
  */
 
-namespace phosphorus.ajax.samples
+namespace phosphorus.five.samples
 {
     using System;
     using System.Web;
@@ -11,13 +11,15 @@ namespace phosphorus.ajax.samples
     using phosphorus.ajax.core;
     using pf = phosphorus.ajax.widgets;
 
-    public partial class Container : AjaxPage
+    public partial class Void : AjaxPage
     {
-        // using the same event handler for both of our literal widgets
+        protected pf.Literal lbl;
+        protected pf.Void txt;
+
         [WebMethod]
-        protected void element_onclick (pf.Literal literal, EventArgs e)
+        protected void btn_onclick (pf.Widget sender, EventArgs e)
         {
-            literal.innerHTML = "widget was clicked";
+            lbl.innerHTML = "value of textbox was; '" + txt ["value"] + "'";
         }
     }
 }

@@ -1,12 +1,12 @@
 <%@ Page 
     Language="C#" 
-    Inherits="phosphorus.ajax.samples.Default"
+    Inherits="phosphorus.five.samples.Default"
     Codebehind="Default.aspx.cs" %>
 
 <!DOCTYPE html>
 <html>
     <head>
-    	<title>phosphorus.ajax examples</title>
+    	<title>phosphorus five examples</title>
         <link rel="stylesheet" type="text/css" href="media/main.css">
         <meta charset="utf-8">
     </head>
@@ -14,7 +14,7 @@
         <form id="form1" runat="server" autocomplete="off">
             <div class="container">
 
-                <h1>phosphorus.ajax examples</h1>
+                <h1>phosphorus five examples</h1>
 
                 <p>
                     the examples for phosphorus, can either be read sequentially, as a book, or you can use them as a reference guide
@@ -41,6 +41,7 @@
                     <li><a href="Void.aspx">void example</a>
                     <li><a href="JavaScript.aspx">javascript example</a>
                     <li><a href="DynamicControls.aspx">dynamic controls example</a>
+                    <li><a href="ActiveEvents.aspx">active events example</a>
                 </ul>
 
                 <p>
@@ -48,7 +49,7 @@
 
                 <hr>
 
-                <h2>the 5 pillars of phosphorus</h2>
+                <h2>the 5 pillars of phosphorus five</h2>
 
                 <p>
                     phosphorus builds on top of the following pillars

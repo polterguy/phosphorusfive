@@ -8,8 +8,8 @@
     <ProjectGuid>{344B4C0F-683B-4B29-B559-D31170EA6B96}</ProjectGuid>
     <ProjectTypeGuids>{349C5851-65DF-11DA-9384-00065B846F21};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
-    <RootNamespace>phosphorus.ajax.samples</RootNamespace>
-    <AssemblyName>phosphorus.ajax.samples</AssemblyName>
+    <RootNamespace>phosphorus.five.samples</RootNamespace>
+    <AssemblyName>phosphorus.five.samples</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -49,6 +49,7 @@
     <Content Include="UnitTests.aspx" />
     <Content Include="media\tests.js" />
     <Content Include="media\tests.css" />
+    <Content Include="ActiveEvents.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Default.aspx.cs">
@@ -71,6 +72,9 @@
     </Compile>
     <Compile Include="UnitTests.aspx.cs">
       <DependentUpon>UnitTests.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ActiveEvents.aspx.cs">
+      <DependentUpon>ActiveEvents.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
