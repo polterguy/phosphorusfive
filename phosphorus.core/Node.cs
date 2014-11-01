@@ -12,9 +12,7 @@ namespace phosphorus.core
     public class Node
     {
         public Node ()
-        {
-            Children = new List<Node> ();
-        }
+        { }
 
         public Node (string name)
             : this ()
@@ -36,11 +34,6 @@ namespace phosphorus.core
         public object Value {
             get;
             set;
-        }
-
-        public List<Node> Children {
-            get;
-            private set;
         }
     }
 }

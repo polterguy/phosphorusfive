@@ -180,9 +180,12 @@ server to the client.  use the *"RemoveAttribute"* method to remove an attribute
 
 ## license
 
+phosphorus five is licensed to Mother Earth.  this means that every single living
+man, woman and child in the World has an equal amount of ownership to the copyright
+
 The MIT License (MIT)
 
-Copyright (c) 2014 Thomas Hansen
+Copyright (c) 2014 Mother Earth, Jannah, Gaia
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
