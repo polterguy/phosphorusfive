@@ -7,6 +7,9 @@ using System;
 
 namespace phosphorus.core
 {
+    /// <summary>
+    /// Active Event arguments
+    /// </summary>
     public class ActiveEventArgs : EventArgs
     {
         internal ActiveEventArgs (Node args)
@@ -14,6 +17,10 @@ namespace phosphorus.core
             Args = args;
         }
 
+        /// <summary>
+        /// Arguments passed in and returned from Active Events
+        /// </summary>
+        /// <value>the arguments</value>
         public Node Args {
             get;
             private set;

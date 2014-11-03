@@ -10,7 +10,16 @@ namespace phosphorus.five.applicationpool
 {
     public class ActiveEventConfiguration : ConfigurationSection
     {
-        [ConfigurationProperty("assemblies")]
+        [ConfigurationProperty ("pluginDirectory", DefaultValue="plugins", IsRequired = false)]
+        public string PluginDirectory
+        {
+            get
+            {
+                return this ["pluginDirectory"] as string;
+            }
+        }
+
+        [ConfigurationProperty ("assemblies")]
         public ActiveEventAssemblyCollection Assemblies {
             get {
                 return this ["assemblies"] as ActiveEventAssemblyCollection; 

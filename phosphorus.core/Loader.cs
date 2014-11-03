@@ -9,6 +9,10 @@ using System.Collections.Generic;
 
 namespace phosphorus.core
 {
+    /// <summary>
+    /// loads up assemblies for handling Active Events. class is a natural singleton, use the Instance static member to access
+    /// the singleton instance
+    /// </summary>
     public class Loader
     {
         private static Loader _instance = new Loader ();
@@ -22,18 +26,31 @@ namespace phosphorus.core
             _staticActiveEvents = new Dictionary<Type, List<Tuple<ActiveEventAttribute, MethodInfo>>> ();
         }
 
+        /// <summary>
+        /// gets the instance
+        /// </summary>
+        /// <value>the singleton instance</value>
         public static Loader Instance {
             get {
                 return _instance;
             }
         }
 
+        /// <summary>
+        /// creates an application context. there should be one application context for every user in the system. an application
+        /// context is being used for registering instance Active Event handlers and raising Active Events
+        /// </summary>
+        /// <returns>the application context</returns>
         public ApplicationContext CreateApplicationContext ()
         {
             ApplicationContext context = new ApplicationContext (_instanceActiveEvents, _staticActiveEvents);
             return context;
         }
 
+        /// <summary>
+        /// loads an assembly for handling Active Events
+        /// </summary>
+        /// <param name="assembly">assembly to load</param>
         public void LoadAssembly (Assembly assembly)
         {
             if (_assemblies.Exists (
@@ -50,6 +67,11 @@ namespace phosphorus.core
             }
         }
 
+        /// <summary>
+        /// loads an assembly for handling Active Events
+        /// </summary>
+        /// <param name="path">directory of assembly</param>
+        /// <param name="name">name of assembly</param>
         public void LoadAssembly (string path, string name)
         {
             if (_assemblies.Exists (
@@ -67,7 +89,7 @@ namespace phosphorus.core
             }
 
             // loading assembly
-            Assembly assembly = AppDomain.CurrentDomain.Load (path + name);
+            Assembly assembly = Assembly.LoadFile (path + name);
             InitializeAssembly (assembly);
             _assemblies.Add (assembly);
         }
@@ -96,7 +118,9 @@ namespace phosphorus.core
                         var atrs = idxMethod.GetCustomAttributes (typeof(ActiveEventAttribute), true) as ActiveEventAttribute[];
                         if (atrs != null && atrs.Length > 0) {
                             ParameterInfo[] pars = idxMethod.GetParameters ();
-                            if (pars.Length != 2 || pars [0].ParameterType != typeof(object) || pars [1].ParameterType != typeof(ActiveEventArgs))
+                            if (pars.Length != 2 || 
+                                pars [0].ParameterType != typeof(ApplicationContext) || 
+                                pars [1].ParameterType != typeof(ActiveEventArgs))
                                 throw new ArgumentException (
                                     string.Format("method '{0}.{1}' is not a valid active event", 
                                               idxMethod.DeclaringType.FullName,

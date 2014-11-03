@@ -7,12 +7,22 @@ using System;
 
 namespace phosphorus.core
 {
+    /// <summary>
+    /// Active Event attribute
+    /// </summary>
     [AttributeUsage (AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
     public class ActiveEventAttribute : Attribute
     {
+        /// <summary>
+        /// initializes a new instance of the <see cref="phosphorus.core.ActiveEventAttribute"/> class
+        /// </summary>
         public ActiveEventAttribute ()
         { }
 
+        /// <summary>
+        /// the name of the Active Event
+        /// </summary>
+        /// <value>the name</value>
         public string Name {
             get;
             set;

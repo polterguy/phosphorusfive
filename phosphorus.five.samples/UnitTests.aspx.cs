@@ -346,7 +346,7 @@ namespace phosphorus.five.samples
         }
 
         [ActiveEvent(Name="foo")]
-        public void sandbox_invoke_raise_page_onclick_event (object sender, ActiveEventArgs e)
+        public void sandbox_invoke_raise_page_onclick_event (ApplicationContext sender, ActiveEventArgs e)
         {
             e.Args.Value = "success";
         }
@@ -358,13 +358,13 @@ namespace phosphorus.five.samples
             ApplicationContext context = Loader.Instance.CreateApplicationContext ();
             context.RegisterListeningObject (this);
             Node node = new Node ();
-            context.Raise ("foo", this, node);
+            context.Raise ("foo", node);
             if (!node.Value.Equals ("success"))
                 throw new ApplicationException ("active event wasn't handled");
         }
         
         [ActiveEvent(Name="foo2")]
-        public void sandbox_invoke_register_twice_onclick_event (object sender, ActiveEventArgs e)
+        public void sandbox_invoke_register_twice_onclick_event (ApplicationContext sender, ActiveEventArgs e)
         {
             e.Args.Value += "success";
         }
@@ -377,13 +377,13 @@ namespace phosphorus.five.samples
             context.RegisterListeningObject (this);
             context.RegisterListeningObject (this);
             Node node = new Node ();
-            context.Raise ("foo2", this, node);
-            if (!node.Value.Equals ("success"))
+            context.Raise ("foo2", node);
+            if (!node.Value.Equals ("successsuccess"))
                 throw new ApplicationException ("active event was handled twice");
         }
         
         [ActiveEvent(Name="foo3")]
-        public void sandbox_invoke_unregister_onclick_onclick_event (object sender, ActiveEventArgs e)
+        public void sandbox_invoke_unregister_onclick_onclick_event (ApplicationContext sender, ActiveEventArgs e)
         {
             e.Args.Value = "failure";
         }
@@ -396,19 +396,19 @@ namespace phosphorus.five.samples
             context.RegisterListeningObject (this);
             context.UnregisterListeningObject (this);
             Node node = new Node (null, "success");
-            context.Raise ("foo3", this, node);
+            context.Raise ("foo3", node);
             if (!node.Value.Equals ("success"))
                 throw new ApplicationException ("active event listener wasn't unregistered");
         }
         
         [ActiveEvent(Name="foo4")]
-        public void sandbox_invoke_handle_twice_onclick_1_event (object sender, ActiveEventArgs e)
+        public void sandbox_invoke_handle_twice_onclick_1_event (ApplicationContext sender, ActiveEventArgs e)
         {
             e.Args.Value += "x";
         }
 
         [ActiveEvent(Name="foo4")]
-        public void sandbox_invoke_handle_twice_onclick_2_event (object sender, ActiveEventArgs e)
+        public void sandbox_invoke_handle_twice_onclick_2_event (ApplicationContext sender, ActiveEventArgs e)
         {
             e.Args.Value += "y";
         }
@@ -420,7 +420,7 @@ namespace phosphorus.five.samples
             ApplicationContext context = Loader.Instance.CreateApplicationContext ();
             context.RegisterListeningObject (this);
             Node node = new Node (null, "");
-            context.Raise ("foo4", this, node);
+            context.Raise ("foo4", node);
             if (!node.Value.Equals ("xy") && !node.Value.Equals ("yx"))
                 throw new ApplicationException ("active event was not handled twice");
         }
@@ -428,25 +428,25 @@ namespace phosphorus.five.samples
         private class Tmp
         {
             [ActiveEvent(Name="foo5")]
-            public void foo (object sender, ActiveEventArgs e)
+            public void foo (ApplicationContext sender, ActiveEventArgs e)
             {
                 e.Args.Value += "tjobing";
             }
 
             [ActiveEvent(Name="foo6")]
-            public static void foo2 (object sender, ActiveEventArgs e)
+            public static void foo2 (ApplicationContext sender, ActiveEventArgs e)
             {
                 e.Args.Value += "tjobing2";
             }
             
             [ActiveEvent(Name="foo7")]
-            public static void foo3 (object sender, ActiveEventArgs e)
+            public static void foo3 (ApplicationContext sender, ActiveEventArgs e)
             {
                 e.Args.Value += "qwerty";
             }
             
             [ActiveEvent(Name="foo7")]
-            public void foo4 (object sender, ActiveEventArgs e)
+            public void foo4 (ApplicationContext sender, ActiveEventArgs e)
             {
                 e.Args.Value += "qwerty";
             }
@@ -460,7 +460,7 @@ namespace phosphorus.five.samples
             Tmp tmp = new Tmp ();
             context.RegisterListeningObject (tmp);
             Node node = new Node (null, "");
-            context.Raise ("foo5", this, node);
+            context.Raise ("foo5", node);
             if (!node.Value.Equals ("tjobing"))
                 throw new ApplicationException ("active event was not handled twice");
         }
@@ -471,7 +471,7 @@ namespace phosphorus.five.samples
             Loader.Instance.LoadAssembly (Assembly.GetExecutingAssembly ());
             ApplicationContext context = Loader.Instance.CreateApplicationContext ();
             Node node = new Node (null, "");
-            context.Raise ("foo6", this, node);
+            context.Raise ("foo6", node);
             if (!node.Value.Equals ("tjobing2"))
                 throw new ApplicationException ("active event was not handled twice");
         }
@@ -484,7 +484,7 @@ namespace phosphorus.five.samples
             Tmp tmp = new Tmp ();
             context.RegisterListeningObject (tmp);
             Node node = new Node (null, "");
-            context.Raise ("foo7", this, node);
+            context.Raise ("foo7", node);
             if (!node.Value.Equals ("qwertyqwerty"))
                 throw new ApplicationException ("active event was not handled twice");
         }
@@ -497,12 +497,12 @@ namespace phosphorus.five.samples
             Tmp tmp = new Tmp ();
             context.RegisterListeningObject (tmp);
             Node node = new Node (null, "");
-            context.Raise ("foo7", this, node);
+            context.Raise ("foo7", node);
             if (!node.Value.Equals ("qwertyqwerty"))
                 throw new ApplicationException ("active event was not handled twice");
             context.UnregisterListeningObject (tmp);
             node = new Node (null, "");
-            context.Raise ("foo7", this, node);
+            context.Raise ("foo7", node);
             if (!node.Value.Equals ("qwerty"))
                 throw new ApplicationException ("active event was not handled twice");
         }
@@ -525,7 +525,7 @@ namespace phosphorus.five.samples
             Loader.Instance.LoadAssembly (Assembly.GetExecutingAssembly ());
             ApplicationContext context = Loader.Instance.CreateApplicationContext ();
             Node node = new Node (null, "");
-            context.Raise ("foo8", this, node);
+            context.Raise ("foo8", node);
             if (!node.Value.Equals (""))
                 throw new ApplicationException ("active event was handled");
         }

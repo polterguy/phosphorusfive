@@ -39,6 +39,7 @@
   <ItemGroup>
     <Content Include="web.config" />
     <Content Include="Default.aspx" />
+    <Content Include="Global.asax" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
@@ -56,6 +57,9 @@
     <Compile Include="code\ActiveEventAssembly.cs" />
     <Compile Include="code\ActiveEventAssemblyCollection.cs" />
     <Compile Include="code\ActiveEventConfiguration.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\phosphorus.ajax\phosphorus.ajax.csproj">

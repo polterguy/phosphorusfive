@@ -16,6 +16,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.core", "phosphor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.five.application-pool", "phosphorus.five.application-pool\phosphorus.five.application-pool.csproj", "{B6F3798D-ADBE-4033-A2CD-E01F3B2BF16A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plugins", "plugins", "{4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.hyperlisp", "plugins\phosphorus.hyperlisp\phosphorus.hyperlisp.csproj", "{C02D30A6-7DA2-4045-8644-9710AB40B629}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +45,12 @@ Global
 		{B6F3798D-ADBE-4033-A2CD-E01F3B2BF16A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B6F3798D-ADBE-4033-A2CD-E01F3B2BF16A}.Release-Linux|Any CPU.ActiveCfg = Release|Any CPU
 		{B6F3798D-ADBE-4033-A2CD-E01F3B2BF16A}.Release-Linux|Any CPU.Build.0 = Release|Any CPU
+		{C02D30A6-7DA2-4045-8644-9710AB40B629}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C02D30A6-7DA2-4045-8644-9710AB40B629}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C02D30A6-7DA2-4045-8644-9710AB40B629}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C02D30A6-7DA2-4045-8644-9710AB40B629}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C02D30A6-7DA2-4045-8644-9710AB40B629}.Release-Linux|Any CPU.ActiveCfg = Release|Any CPU
+		{C02D30A6-7DA2-4045-8644-9710AB40B629}.Release-Linux|Any CPU.Build.0 = Release|Any CPU
 		{C783FEDB-C973-4F38-8EBB-55A0163612F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C783FEDB-C973-4F38-8EBB-55A0163612F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C783FEDB-C973-4F38-8EBB-55A0163612F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -49,9 +59,10 @@ Global
 		{C783FEDB-C973-4F38-8EBB-55A0163612F5}.Release-Linux|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{C02D30A6-7DA2-4045-8644-9710AB40B629} = {4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = phosphorus.five.application-pool\phosphorus.five.application-pool.csproj
+		StartupItem = phosphorus.five.samples\phosphorus.five.samples.csproj
 		Policies = $0
 		$0.DotNetNamingPolicy = $1
 		$1.DirectoryNamespaceAssociation = None

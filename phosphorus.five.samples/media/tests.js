@@ -1244,12 +1244,11 @@ tests.invoke_handle_null = function(event) {
   var el = pf.$('sandbox_invoke_handle_null');
   el.raise('sandbox_invoke_handle_null_onclick', {
     onerror: function(statusCode, statusText, responseHtml, evt) {
-      tests.setSuccess('invoke_handle_null');
-      return true;
+      tests.setError('invoke_handle_null');
     },
 
     onsuccess: function(serverReturn, evt) {
-      tests.setError('invoke_handle_null');
+      tests.setSuccess('invoke_handle_null');
     }
   });
 };

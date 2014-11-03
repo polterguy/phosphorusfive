@@ -18,7 +18,7 @@ namespace phosphorus.five.samples
         public class StaticListener
         {
             [ActiveEvent (Name = "foo")]
-            protected static void foo (object sender, ActiveEventArgs e)
+            protected static void foo (ApplicationContext sender, ActiveEventArgs e)
             {
                 e.Args.Value += " - StaticListener was invoked - ";
             }
@@ -27,7 +27,7 @@ namespace phosphorus.five.samples
         public class InstanceListener
         {
             [ActiveEvent (Name = "foo")]
-            protected void foo (object sender, ActiveEventArgs e)
+            protected void foo (ApplicationContext sender, ActiveEventArgs e)
             {
                 e.Args.Value += " - InstanceListener was invoked - ";
             }
@@ -40,13 +40,15 @@ namespace phosphorus.five.samples
             Loader.Instance.LoadAssembly (Assembly.GetExecutingAssembly ());
             ApplicationContext context = Loader.Instance.CreateApplicationContext ();
 
-            // registering an instance listener. static listeners will automatically be wired up
+            // registering an instance listener, static listeners will automatically be wired up
             InstanceListener instance = new InstanceListener ();
             context.RegisterListeningObject (instance);
 
             // raising an active event, and showing the return value as the innerHTML of our literal being clicked
+            // please notice that BOTH ActiveEvent handlers will at this point be invoked, since static event listeners are
+            // automatically mapped
             Node node = new Node ();
-            context.Raise ("foo", this, node);
+            context.Raise ("foo", node);
             literal.innerHTML = node.Value.ToString ();
         }
     }

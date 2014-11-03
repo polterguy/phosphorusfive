@@ -17,10 +17,9 @@ namespace phosphorus.five.applicationpool
     {
         protected override void OnInit (EventArgs e)
         {
-            var configuration = ConfigurationManager.GetSection ("activeEventAsemblies") as ActiveEventConfiguration;
-            foreach (ActiveEventAssembly idxAssembly in configuration.Assemblies) {
-                Loader.Instance.LoadAssembly (Request.MapPath ("~"), idxAssembly.Assembly);
-            }
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node node = new Node (null, "");
+            context.Raise ("pf.execute", node);
             base.OnInit (e);
         }
     }
