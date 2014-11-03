@@ -184,3 +184,4 @@ FakesAssemblies/
 
 # phosphorus five custom
 !lib/phosphorus.ajax.dll
+phosphorus.five.application-pool/plugins/*
