@@ -15,11 +15,32 @@ namespace phosphorus.five.applicationpool
 
     public partial class Default : AjaxPage
     {
+        private ApplicationContext _context;
+
         protected override void OnInit (EventArgs e)
         {
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node node = new Node (null, "");
-            context.Raise ("pf.execute", node);
+            _context = Loader.Instance.CreateApplicationContext ();
+            Init += delegate {
+                if (!IsPostBack) {
+                    _context.Raise ("pf.init", null);
+                } else {
+                    _context.Raise ("pf.init-postback", null);
+                }
+            };
+            Load += delegate {
+                if (!IsPostBack) {
+                    _context.Raise ("pf.load", null);
+                } else {
+                    _context.Raise ("pf.load-postback", null);
+                }
+            };
+            PreRender += delegate {
+                if (!IsPostBack) {
+                    _context.Raise ("pf.prerender", null);
+                } else {
+                    _context.Raise ("pf.prerender-postback", null);
+                }
+            };
             base.OnInit (e);
         }
     }

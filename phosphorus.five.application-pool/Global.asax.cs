@@ -16,20 +16,37 @@ namespace phosphorus.five.applicationpool
 
     public class Global : HttpApplication
     {
+        private ApplicationContext _context;
 
         protected void Application_Start(Object sender, EventArgs e)
         {
-            var configuration = ConfigurationManager.GetSection ("activeEventAssemblies") as ActiveEventConfiguration;
+            // adding all assemblies from web.config
+            var configuration = ConfigurationManager.GetSection ("activeEventAssemblies") as ActiveEventAssemblies;
             foreach (ActiveEventAssembly idxAssembly in configuration.Assemblies) {
                 Loader.Instance.LoadAssembly (Server.MapPath (configuration.PluginDirectory), idxAssembly.Assembly);
             }
 
             // then adding up executing (this) assembly
             Loader.Instance.LoadAssembly (Assembly.GetExecutingAssembly ());
+
+            // then raising the application start active event
+            _context = Loader.Instance.CreateApplicationContext ();
+            _context.Raise ("pf.application-start", null);
         }
 
         protected void Session_Start(Object sender, EventArgs e)
         {
+            _context.Raise ("pf.session-start", null);
+        }
+        
+        protected void Session_End(Object sender, EventArgs e)
+        {
+            _context.Raise ("pf.session-end", null);
+        }
+        
+        protected void Application_Error(Object sender, EventArgs e)
+        {
+            _context.Raise ("pf.application-error", null);
         }
 
         protected void Application_BeginRequest(Object sender, EventArgs e)
@@ -41,14 +58,6 @@ namespace phosphorus.five.applicationpool
         }
 
         protected void Application_AuthenticateRequest(Object sender, EventArgs e)
-        {
-        }
-
-        protected void Application_Error(Object sender, EventArgs e)
-        {
-        }
-
-        protected void Session_End(Object sender, EventArgs e)
         {
         }
 

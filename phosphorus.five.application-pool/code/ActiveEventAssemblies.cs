@@ -8,14 +8,14 @@ using System.Configuration;
 
 namespace phosphorus.five.applicationpool
 {
-    public class ActiveEventConfiguration : ConfigurationSection
+    public class ActiveEventAssemblies : ConfigurationSection
     {
-        [ConfigurationProperty ("pluginDirectory", DefaultValue="plugins", IsRequired = false)]
+        [ConfigurationProperty ("assemblyDirectory", DefaultValue="~/plugins/", IsRequired = false)]
         public string PluginDirectory
         {
             get
             {
-                return this ["pluginDirectory"] as string;
+                return this ["assemblyDirectory"] as string;
             }
         }
 

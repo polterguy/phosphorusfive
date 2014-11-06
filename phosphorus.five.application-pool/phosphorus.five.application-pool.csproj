@@ -56,10 +56,10 @@
     </Compile>
     <Compile Include="code\ActiveEventAssembly.cs" />
     <Compile Include="code\ActiveEventAssemblyCollection.cs" />
-    <Compile Include="code\ActiveEventConfiguration.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="code\ActiveEventAssemblies.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\phosphorus.ajax\phosphorus.ajax.csproj">
