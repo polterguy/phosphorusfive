@@ -529,6 +529,66 @@ namespace phosphorus.five.samples
             if (!node.Value.Equals (""))
                 throw new ApplicationException ("active event was handled");
         }
+        
+        [WebMethod]
+        protected void sandbox_invoke_dna_onclick (pf.Literal container, EventArgs e)
+        {
+            Node root = new Node ();
+            root.Add (new Node ());
+            root.Add (new Node ());
+            if (!(root [0].Position < root [1].Position))
+                throw new ApplicationException ("comparison malfunctioned");
+            if (!(root [0].Position <= root [1].Position))
+                throw new ApplicationException ("comparison malfunctioned");
+            if (!(root [1].Position > root [0].Position))
+                throw new ApplicationException ("comparison malfunctioned");
+            if (!(root [1].Position >= root [0].Position))
+                throw new ApplicationException ("comparison malfunctioned");
+            if (!(root [0].Position == root [0].Position))
+                throw new ApplicationException ("comparison malfunctioned");
+            if (root [0].Position != root [0].Position)
+                throw new ApplicationException ("comparison malfunctioned");
+
+            root [0].Add (new Node ());
+            root [0].Add (new Node ());
+            if (!(root [0][0].Position < root [0][1].Position))
+                throw new ApplicationException ("comparison malfunctioned");
+            if (!(root [0][0].Position <= root [0][1].Position))
+                throw new ApplicationException ("comparison malfunctioned");
+            if (!(root [0][1].Position > root [0][0].Position))
+                throw new ApplicationException ("comparison malfunctioned");
+            if (!(root [0][1].Position >= root [0][0].Position))
+                throw new ApplicationException ("comparison malfunctioned");
+            if (!(root [0][0].Position == root [0][0].Position))
+                throw new ApplicationException ("comparison malfunctioned");
+            if (root [0][0].Position != root [0][0].Position)
+                throw new ApplicationException ("comparison malfunctioned");
+
+            if (root [0].Position == root [0][0].Position)
+                throw new ApplicationException ("comparison malfunctioned");
+            if (!(root [0].Position != root [0][0].Position))
+                throw new ApplicationException ("comparison malfunctioned");
+            if (!(root [0].Position < root [0][0].Position))
+                throw new ApplicationException ("comparison malfunctioned");
+            if (!(root [0].Position <= root [0][0].Position))
+                throw new ApplicationException ("comparison malfunctioned");
+            if (root [0].Position > root [0][0].Position)
+                throw new ApplicationException ("comparison malfunctioned");
+            if (root [0].Position >= root [0][0].Position)
+                throw new ApplicationException ("comparison malfunctioned");
+            if (!(root [0][0].Position > root [0].Position))
+                throw new ApplicationException ("comparison malfunctioned");
+            if (!(root [0][0].Position >= root [0].Position))
+                throw new ApplicationException ("comparison malfunctioned");
+            if (root [0][0].Position < root [0].Position)
+                throw new ApplicationException ("comparison malfunctioned");
+            if (root [0][0].Position <= root [0].Position)
+                throw new ApplicationException ("comparison malfunctioned");
+            if (!(root [0][0].Position <= root [0][0].Position))
+                throw new ApplicationException ("comparison malfunctioned");
+            if (!(root [0][0].Position >= root [0][0].Position))
+                throw new ApplicationException ("comparison malfunctioned");
+        }
     }
 }
 

@@ -33,6 +33,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="execute.cs" />
+    <Compile Include="tiedown.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

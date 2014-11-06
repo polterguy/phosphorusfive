@@ -1271,6 +1271,23 @@ tests.invoke_raise_null = function(event) {
 };
 
 
+/*
+ * verifies dna codes are handled correctly
+ */
+tests.invoke_dna = function(event) {
+  var el = pf.$('sandbox_invoke_dna');
+  el.raise('sandbox_invoke_dna_onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setError('invoke_dna');
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      tests.setSuccess('invoke_dna');
+    }
+  });
+};
+
+
 
 
 

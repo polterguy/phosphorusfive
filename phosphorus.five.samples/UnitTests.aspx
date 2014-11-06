@@ -28,12 +28,12 @@
                     </tr>
                     <tr class="spacer">
                         <td colspan="2">
-                            these are the unit tests for phosphorus.ajax
+                            these are the unit tests for phosphorus five
                         </td>
                     </tr>
                     <tr class="spacer">
                         <td colspan="2">
-                            <h3>basic event handling</h3>
+                            <h3>basic ajax event handling</h3>
                         </td>
                     </tr>
                     <tr>
@@ -94,7 +94,7 @@
                     </tr>
                     <tr class="spacer">
                         <td colspan="2">
-                            <h3>attributes</h3>
+                            <h3>ajax widgets attributes</h3>
                         </td>
                     </tr>
                     <tr>
@@ -179,7 +179,7 @@
                     </tr>
                     <tr class="spacer">
                         <td colspan="2">
-                            <h3>container widgets</h3>
+                            <h3>container ajax widgets</h3>
                         </td>
                     </tr>
                     <tr>
@@ -369,6 +369,19 @@
                         </td>
                         <td>
                             <input type="button" id="invoke_raise_null" class="undetermined" value="run" onclick="tests.invoke_raise_null(event)">
+                        </td>
+                    </tr>
+                    <tr class="spacer">
+                        <td colspan="2">
+                            <h3>nodes</h3>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            compare dna codes
+                        </td>
+                        <td>
+                            <input type="button" id="invoke_dna" class="undetermined" value="run" onclick="tests.invoke_dna(event)">
                         </td>
                     </tr>
                 </table>
@@ -687,6 +700,11 @@
                     <pf:Literal
                         runat="server"
                         id="sandbox_invoke_raise_null"
+                        RenderType="NoClose"
+                        ElementType="p" />
+                    <pf:Literal
+                        runat="server"
+                        id="sandbox_invoke_dna"
                         RenderType="NoClose"
                         ElementType="p" />
                 </div>

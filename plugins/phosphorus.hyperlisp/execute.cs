@@ -10,18 +10,6 @@ namespace phosphorus.hyperlisp
 {
     public static class execute
     {
-        [ActiveEvent (Name = "pf.application-start")]
-        private static void pf_application_start (ApplicationContext sender, ActiveEventArgs e)
-        {
-            // execute startup hyperlisp file
-        }
-
-        [ActiveEvent (Name = "pf.load")]
-        private static void pf_load (ApplicationContext sender, ActiveEventArgs e)
-        {
-            // execute load hyperlisp file
-        }
-
         [ActiveEvent (Name = "pf.execute")]
         private static void execute_impl (ApplicationContext sender, ActiveEventArgs e)
         {
