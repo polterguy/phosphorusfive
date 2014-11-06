@@ -588,6 +588,44 @@ namespace phosphorus.five.samples
                 throw new ApplicationException ("comparison malfunctioned");
             if (!(root [0][0].Position >= root [0][0].Position))
                 throw new ApplicationException ("comparison malfunctioned");
+
+            root [0] [1].Add (new Node ());
+            root [0] [1].Add (new Node ());
+            root [0] [1] [0].Add (new Node ());
+            root [0] [1] [0] [0].Add (new Node ());
+            root [0] [1] [1].Add (new Node ());
+            root [0] [1] [1] [0].Add (new Node ());
+            Node tmp = root.Find (root [0] [1] [0] [0] [0].Position & root [0] [1] [1] [0] [0].Position);
+            if (tmp.Position != root [0] [1].Position)
+                throw new ApplicationException ("find from DNA, or DNA AND operation malfunctioned");
+
+            if (root [0] [1] [1] [0].Position.Count != 4)
+                throw new ApplicationException ("DNA count malfunctioned");
+
+            tmp = new Node();
+            tmp.Add (new Node ());
+            tmp.Add (new Node ());
+            tmp.Add (new Node ());
+            int idxNo = 0;
+            Node idxNode = tmp.FirstChild;
+            while (idxNode != null) {
+                idxNo += 1;
+                idxNode = idxNode.NextSibling;
+            }
+            if (idxNo != 3)
+                throw new ApplicationException ("iterating using NextSibling malfunctioned");
+
+            idxNo = 0;
+            idxNode = tmp.LastChild;
+            while (idxNode != null) {
+                idxNo += 1;
+                idxNode = idxNode.PreviousSibling;
+            }
+            if (idxNo != 3)
+                throw new ApplicationException ("iterating using NextSibling malfunctioned");
+
+            if (root [0] [1] [0].Root.Position != root.Position)
+                throw new ApplicationException ("accessing root node malfunctioned");
         }
     }
 }

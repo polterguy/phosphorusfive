@@ -378,7 +378,7 @@
                     </tr>
                     <tr>
                         <td>
-                            compare dna codes
+                            compare dna codes, iterate nodes, etc
                         </td>
                         <td>
                             <input type="button" id="invoke_dna" class="undetermined" value="run" onclick="tests.invoke_dna(event)">

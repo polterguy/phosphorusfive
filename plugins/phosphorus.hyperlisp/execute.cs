@@ -10,9 +10,21 @@ namespace phosphorus.hyperlisp
 {
     public static class execute
     {
+        /// <summary>
+        /// hyperlisp main execution Active Event entry point
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.execute")]
-        private static void execute_impl (ApplicationContext sender, ActiveEventArgs e)
+        private static void execute_impl (ApplicationContext context, ActiveEventArgs e)
         {
+            Node iterNode = e.Args.FirstChild;
+            while (iterNode != null) {
+                string activeEvent = iterNode.Name;
+                Node next = iterNode.NextSibling;
+                context.Raise (activeEvent, iterNode);
+                iterNode = next;
+            }
         }
     }
 }
