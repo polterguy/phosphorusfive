@@ -220,6 +220,27 @@ namespace phosphorus.core
         }
 
         /// <summary>
+        /// returns the number of chilren nodes
+        /// </summary>
+        /// <value>number of children</value>
+        public int Count {
+            get {
+                return _children.Count;
+            }
+        }
+
+        public T Get<T> ()
+        {
+            if (Value == null)
+                return default (T);
+
+            if (typeof(T) == Value.GetType ())
+                return (T)Value;
+
+            return (T)Convert.ChangeType (Value, typeof(T), System.Globalization.CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
         /// gets the children of this instance
         /// </summary>
         /// <value>its children</value>
@@ -341,6 +362,17 @@ namespace phosphorus.core
         {
             node._parent = this;
             _children.Add (node);
+        }
+
+        /// <summary>
+        /// adds a range of nodes
+        /// </summary>
+        /// <param name="nodes">nodes to add</param>
+        public void AddRange (IEnumerable<Node> nodes)
+        {
+            foreach (Node idxNode in nodes) {
+                Add (idxNode);
+            }
         }
 
         /// <summary>

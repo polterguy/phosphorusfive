@@ -182,6 +182,8 @@ server to the client.  use the *"RemoveAttribute"* method to remove an attribute
 
 phosphorus five is licensed to Mother Earth.  this means that every single living
 man, woman and child in the World has an equal amount of ownership to the copyright
+of the project.  one of its implications, is that if you sue any living human being
+over the software in any ways, you loose all usage rights
 
 The MIT License (MIT)
 

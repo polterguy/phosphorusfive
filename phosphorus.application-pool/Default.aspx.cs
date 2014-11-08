@@ -22,23 +22,23 @@ namespace phosphorus.five.applicationpool
             _context = Loader.Instance.CreateApplicationContext ();
             Init += delegate {
                 if (!IsPostBack) {
-                    _context.Raise ("pf.init", null);
+                    _context.Raise ("pf.page-init", null);
                 } else {
-                    _context.Raise ("pf.init-postback", null);
+                    _context.Raise ("pf.page-init-postback", null);
                 }
             };
             Load += delegate {
                 if (!IsPostBack) {
-                    _context.Raise ("pf.load", null);
+                    _context.Raise ("pf.page-load", null);
                 } else {
-                    _context.Raise ("pf.load-postback", null);
+                    _context.Raise ("pf.page-load-postback", null);
                 }
             };
             PreRender += delegate {
                 if (!IsPostBack) {
-                    _context.Raise ("pf.prerender", null);
+                    _context.Raise ("pf.page-prerender", null);
                 } else {
-                    _context.Raise ("pf.prerender-postback", null);
+                    _context.Raise ("pf.page-prerender-postback", null);
                 }
             };
             base.OnInit (e);

@@ -5,10 +5,10 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{C02D30A6-7DA2-4045-8644-9710AB40B629}</ProjectGuid>
+    <ProjectGuid>{8EB5FDEA-D073-4147-AE65-376A01B463DF}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>phosphorus.hyperlisp</RootNamespace>
-    <AssemblyName>phosphorus.hyperlisp</AssemblyName>
+    <RootNamespace>phosphorus.execute</RootNamespace>
+    <AssemblyName>phosphorus.execute</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -32,7 +32,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="hyperlisp.cs" />
+    <Compile Include="executor.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

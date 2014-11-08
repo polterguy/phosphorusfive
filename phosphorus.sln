@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.ajax", "phosphorus.ajax\phosphorus.ajax.csproj", "{11644924-3367-4812-BE60-7DA41FC9E4AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.five.samples", "phosphorus.five.samples\phosphorus.five.samples.csproj", "{344B4C0F-683B-4B29-B559-D31170EA6B96}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.samples", "phosphorus.samples\phosphorus.samples.csproj", "{344B4C0F-683B-4B29-B559-D31170EA6B96}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{8FAEDF6F-8F53-441B-ACE1-5E8330F8CE00}"
 	ProjectSection(SolutionItems) = preProject
@@ -14,11 +14,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{8FAEDF6F-8
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.core", "phosphorus.core\phosphorus.core.csproj", "{C783FEDB-C973-4F38-8EBB-55A0163612F5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.five.application-pool", "phosphorus.five.application-pool\phosphorus.five.application-pool.csproj", "{B6F3798D-ADBE-4033-A2CD-E01F3B2BF16A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.application-pool", "phosphorus.application-pool\phosphorus.application-pool.csproj", "{B6F3798D-ADBE-4033-A2CD-E01F3B2BF16A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plugins", "plugins", "{4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.hyperlisp", "plugins\phosphorus.hyperlisp\phosphorus.hyperlisp.csproj", "{C02D30A6-7DA2-4045-8644-9710AB40B629}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.execute", "plugins\phosphorus.execute\phosphorus.execute.csproj", "{8EB5FDEA-D073-4147-AE65-376A01B463DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.tiedown", "plugins\phosphorus.tiedown\phosphorus.tiedown.csproj", "{27409EA4-A00B-4C5A-AA06-992BE4D412EC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,12 +37,24 @@ Global
 		{11644924-3367-4812-BE60-7DA41FC9E4AE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{11644924-3367-4812-BE60-7DA41FC9E4AE}.Release-Linux|Any CPU.ActiveCfg = Release-Linux|Any CPU
 		{11644924-3367-4812-BE60-7DA41FC9E4AE}.Release-Linux|Any CPU.Build.0 = Release-Linux|Any CPU
+		{27409EA4-A00B-4C5A-AA06-992BE4D412EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27409EA4-A00B-4C5A-AA06-992BE4D412EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27409EA4-A00B-4C5A-AA06-992BE4D412EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27409EA4-A00B-4C5A-AA06-992BE4D412EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27409EA4-A00B-4C5A-AA06-992BE4D412EC}.Release-Linux|Any CPU.ActiveCfg = Release|Any CPU
+		{27409EA4-A00B-4C5A-AA06-992BE4D412EC}.Release-Linux|Any CPU.Build.0 = Release|Any CPU
 		{344B4C0F-683B-4B29-B559-D31170EA6B96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{344B4C0F-683B-4B29-B559-D31170EA6B96}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{344B4C0F-683B-4B29-B559-D31170EA6B96}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{344B4C0F-683B-4B29-B559-D31170EA6B96}.Release|Any CPU.Build.0 = Release|Any CPU
 		{344B4C0F-683B-4B29-B559-D31170EA6B96}.Release-Linux|Any CPU.ActiveCfg = Release|Any CPU
 		{344B4C0F-683B-4B29-B559-D31170EA6B96}.Release-Linux|Any CPU.Build.0 = Release|Any CPU
+		{8EB5FDEA-D073-4147-AE65-376A01B463DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EB5FDEA-D073-4147-AE65-376A01B463DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EB5FDEA-D073-4147-AE65-376A01B463DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EB5FDEA-D073-4147-AE65-376A01B463DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EB5FDEA-D073-4147-AE65-376A01B463DF}.Release-Linux|Any CPU.ActiveCfg = Release|Any CPU
+		{8EB5FDEA-D073-4147-AE65-376A01B463DF}.Release-Linux|Any CPU.Build.0 = Release|Any CPU
 		{B6F3798D-ADBE-4033-A2CD-E01F3B2BF16A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B6F3798D-ADBE-4033-A2CD-E01F3B2BF16A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B6F3798D-ADBE-4033-A2CD-E01F3B2BF16A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -60,9 +76,11 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{C02D30A6-7DA2-4045-8644-9710AB40B629} = {4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}
+		{8EB5FDEA-D073-4147-AE65-376A01B463DF} = {4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}
+		{27409EA4-A00B-4C5A-AA06-992BE4D412EC} = {4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = phosphorus.five.samples\phosphorus.five.samples.csproj
+		StartupItem = phosphorus.application-pool\phosphorus.application-pool.csproj
 		Policies = $0
 		$0.DotNetNamingPolicy = $1
 		$1.DirectoryNamespaceAssociation = None

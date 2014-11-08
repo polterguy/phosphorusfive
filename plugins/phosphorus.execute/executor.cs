@@ -6,17 +6,20 @@
 using System;
 using phosphorus.core;
 
-namespace phosphorus.hyperlisp
+namespace phosphorus.execute
 {
-    public static class execute
+    /// <summary>
+    /// class to help execute nodes
+    /// </summary>
+    public static class executor
     {
         /// <summary>
-        /// hyperlisp main execution Active Event entry point
+        /// main execution Active Event entry point for executing nodes as execution trees
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.execute")]
-        private static void execute_impl (ApplicationContext context, ActiveEventArgs e)
+        private static void execute (ApplicationContext context, ActiveEventArgs e)
         {
             Node iterNode = e.Args.FirstChild;
             while (iterNode != null) {
