@@ -34,18 +34,26 @@ namespace phosphorus.tiedown
         private static void pf_page_load (ApplicationContext context, ActiveEventArgs e)
         {
             // execute load hyperlisp file
-            string code = @"foo:howdy
-  hello:world
+            string code = @"
+foo:howdy
+  :joppla
+  hel/\lo"":  world      
   long-string:@""jo dude, this is
 a test of """"how cool"""" it is possible to be :)
 since it tests the nice stuff :D""
-    h1:x
-    h2:y
+    h1:@"" x""
+    h2:@""y ""
+    zz:THOMAS
   xx:yy
     zz:ff
-d:qwerty";
+d:qwerty
+pf.set:@/**/zz/value
+  :@/foo//value";
             Node node = new Node (null, code);
-            context.Raise ("pf.hl-2-node", node);
+            context.Raise ("pf.hyperlisp-2-node", node);
+            context.Raise ("pf.execute", node);
+            node.Value = null;
+            context.Raise ("pf.node-2-hyperlisp", node);
         }
     }
 }

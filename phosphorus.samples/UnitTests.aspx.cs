@@ -536,57 +536,57 @@ namespace phosphorus.five.samples
             Node root = new Node ();
             root.Add (new Node ());
             root.Add (new Node ());
-            if (!(root [0].Position < root [1].Position))
+            if (!(root [0].Path < root [1].Path))
                 throw new ApplicationException ("comparison malfunctioned");
-            if (!(root [0].Position <= root [1].Position))
+            if (!(root [0].Path <= root [1].Path))
                 throw new ApplicationException ("comparison malfunctioned");
-            if (!(root [1].Position > root [0].Position))
+            if (!(root [1].Path > root [0].Path))
                 throw new ApplicationException ("comparison malfunctioned");
-            if (!(root [1].Position >= root [0].Position))
+            if (!(root [1].Path >= root [0].Path))
                 throw new ApplicationException ("comparison malfunctioned");
-            if (!(root [0].Position == root [0].Position))
+            if (!(root [0].Path == root [0].Path))
                 throw new ApplicationException ("comparison malfunctioned");
-            if (root [0].Position != root [0].Position)
+            if (root [0].Path != root [0].Path)
                 throw new ApplicationException ("comparison malfunctioned");
 
             root [0].Add (new Node ());
             root [0].Add (new Node ());
-            if (!(root [0][0].Position < root [0][1].Position))
+            if (!(root [0][0].Path < root [0][1].Path))
                 throw new ApplicationException ("comparison malfunctioned");
-            if (!(root [0][0].Position <= root [0][1].Position))
+            if (!(root [0][0].Path <= root [0][1].Path))
                 throw new ApplicationException ("comparison malfunctioned");
-            if (!(root [0][1].Position > root [0][0].Position))
+            if (!(root [0][1].Path > root [0][0].Path))
                 throw new ApplicationException ("comparison malfunctioned");
-            if (!(root [0][1].Position >= root [0][0].Position))
+            if (!(root [0][1].Path >= root [0][0].Path))
                 throw new ApplicationException ("comparison malfunctioned");
-            if (!(root [0][0].Position == root [0][0].Position))
+            if (!(root [0][0].Path == root [0][0].Path))
                 throw new ApplicationException ("comparison malfunctioned");
-            if (root [0][0].Position != root [0][0].Position)
+            if (root [0][0].Path != root [0][0].Path)
                 throw new ApplicationException ("comparison malfunctioned");
 
-            if (root [0].Position == root [0][0].Position)
+            if (root [0].Path == root [0][0].Path)
                 throw new ApplicationException ("comparison malfunctioned");
-            if (!(root [0].Position != root [0][0].Position))
+            if (!(root [0].Path != root [0][0].Path))
                 throw new ApplicationException ("comparison malfunctioned");
-            if (!(root [0].Position < root [0][0].Position))
+            if (!(root [0].Path < root [0][0].Path))
                 throw new ApplicationException ("comparison malfunctioned");
-            if (!(root [0].Position <= root [0][0].Position))
+            if (!(root [0].Path <= root [0][0].Path))
                 throw new ApplicationException ("comparison malfunctioned");
-            if (root [0].Position > root [0][0].Position)
+            if (root [0].Path > root [0][0].Path)
                 throw new ApplicationException ("comparison malfunctioned");
-            if (root [0].Position >= root [0][0].Position)
+            if (root [0].Path >= root [0][0].Path)
                 throw new ApplicationException ("comparison malfunctioned");
-            if (!(root [0][0].Position > root [0].Position))
+            if (!(root [0][0].Path > root [0].Path))
                 throw new ApplicationException ("comparison malfunctioned");
-            if (!(root [0][0].Position >= root [0].Position))
+            if (!(root [0][0].Path >= root [0].Path))
                 throw new ApplicationException ("comparison malfunctioned");
-            if (root [0][0].Position < root [0].Position)
+            if (root [0][0].Path < root [0].Path)
                 throw new ApplicationException ("comparison malfunctioned");
-            if (root [0][0].Position <= root [0].Position)
+            if (root [0][0].Path <= root [0].Path)
                 throw new ApplicationException ("comparison malfunctioned");
-            if (!(root [0][0].Position <= root [0][0].Position))
+            if (!(root [0][0].Path <= root [0][0].Path))
                 throw new ApplicationException ("comparison malfunctioned");
-            if (!(root [0][0].Position >= root [0][0].Position))
+            if (!(root [0][0].Path >= root [0][0].Path))
                 throw new ApplicationException ("comparison malfunctioned");
 
             root [0] [1].Add (new Node ());
@@ -595,11 +595,11 @@ namespace phosphorus.five.samples
             root [0] [1] [0] [0].Add (new Node ());
             root [0] [1] [1].Add (new Node ());
             root [0] [1] [1] [0].Add (new Node ());
-            Node tmp = root.Find (root [0] [1] [0] [0] [0].Position & root [0] [1] [1] [0] [0].Position);
-            if (tmp.Position != root [0] [1].Position)
+            Node tmp = root.Find (root [0] [1] [0] [0] [0].Path & root [0] [1] [1] [0] [0].Path);
+            if (tmp.Path != root [0] [1].Path)
                 throw new ApplicationException ("find from DNA, or DNA AND operation malfunctioned");
 
-            if (root [0] [1] [1] [0].Position.Count != 4)
+            if (root [0] [1] [1] [0].Path.Count != 4)
                 throw new ApplicationException ("DNA count malfunctioned");
 
             tmp = new Node();
@@ -624,7 +624,7 @@ namespace phosphorus.five.samples
             if (idxNo != 3)
                 throw new ApplicationException ("iterating using NextSibling malfunctioned");
 
-            if (root [0] [1] [0].Root.Position != root.Position)
+            if (root [0] [1] [0].Root.Path != root.Path)
                 throw new ApplicationException ("accessing root node malfunctioned");
         }
     }

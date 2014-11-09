@@ -4,6 +4,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using phosphorus.core;
 
 namespace phosphorus.execute
@@ -19,14 +20,11 @@ namespace phosphorus.execute
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.execute")]
-        private static void execute (ApplicationContext context, ActiveEventArgs e)
+        private static void pf_execute (ApplicationContext context, ActiveEventArgs e)
         {
-            Node iterNode = e.Args.FirstChild;
-            while (iterNode != null) {
-                string activeEvent = iterNode.Name;
-                Node next = iterNode.NextSibling;
-                context.Raise (activeEvent, iterNode);
-                iterNode = next;
+            List<Node> nodes = new List<Node> (e.Args.Children);
+            foreach (Node idx in nodes) {
+                context.Raise (idx.Name, idx);
             }
         }
     }

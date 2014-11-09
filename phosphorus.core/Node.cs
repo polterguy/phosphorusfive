@@ -147,7 +147,7 @@ namespace phosphorus.core
                     tmp += "-" + idx;
                 }
                 tmp = tmp.Trim (new char[] { '-' });
-                return string.Format ("[DNA: Value={0}]", tmp);
+                return tmp;
             }
 
             public int CompareTo (object obj)
@@ -241,6 +241,26 @@ namespace phosphorus.core
         }
 
         /// <summary>
+        /// unties the node from its parent
+        /// </summary>
+        public void Untie ()
+        {
+            _parent._children.Remove (this);
+            _parent = null;
+        }
+
+        /// <summary>
+        /// replace the specified node
+        /// </summary>
+        /// <param name="node">node to replace current node with</param>
+        public void Replace (Node node)
+        {
+            node._parent = this._parent;
+            this._parent._children [this._parent._children.IndexOf (this)] = node;
+            this._parent = null;
+        }
+
+        /// <summary>
         /// gets the children of this instance
         /// </summary>
         /// <value>its children</value>
@@ -254,7 +274,7 @@ namespace phosphorus.core
         /// returns DNA code for Node
         /// </summary>
         /// <value>the DNA code, or position in Node tree</value>
-        public DNA Position {
+        public DNA Path {
             get {
                 return new DNA (this);
             }
@@ -284,6 +304,16 @@ namespace phosphorus.core
                 if (_children.Count > 0)
                     return _children [0];
                 return null;
+            }
+        }
+        
+        /// <summary>
+        /// returns the parent of node
+        /// </summary>
+        /// <value>parent node</value>
+        public Node Parent {
+            get {
+                return _parent;
             }
         }
 
@@ -373,6 +403,28 @@ namespace phosphorus.core
             foreach (Node idxNode in nodes) {
                 Add (idxNode);
             }
+        }
+
+        /// <summary>
+        /// clears the children collection
+        /// </summary>
+        public void Clear ()
+        {
+            _children.Clear ();
+        }
+
+        /// <summary>
+        /// clones this instance
+        /// </summary>
+        public Node Clone ()
+        {
+            Node retVal = new Node ();
+            retVal.Name = Name;
+            retVal.Value = Value;
+            foreach (Node idxChild in _children) {
+                retVal.Add (idxChild.Clone ());
+            }
+            return retVal;
         }
 
         /// <summary>

@@ -5,6 +5,7 @@
 
 using System;
 using System.IO;
+using System.Text;
 using System.Collections.Generic;
 using phosphorus.core;
 
@@ -16,12 +17,12 @@ namespace phosphorus.hyperlisp
     public static class hyperlisp
     {
         /// <summary>
-        /// helper to transform between hyperlisp code syntax and <see cref="phosphorus.core.Node"/> 
+        /// helper to transform from hyperlisp code syntax to <see cref="phosphorus.core.Node"/> tree structure
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.hl-2-node")]
-        private static void hl_2_node (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.hyperlisp-2-node")]
+        private static void pf_hyperlisp_2_node (ApplicationContext context, ActiveEventArgs e)
         {
             string[] tokens = TokenizeHyperlisp (e.Args.Get<string> ());
             Node node = new Node ();
@@ -29,11 +30,54 @@ namespace phosphorus.hyperlisp
             e.Args.AddRange (node.Children);
         }
 
+        /// <summary>
+        /// helper to transform from <see cref="phosphorus.core.Node"/> tree structure to hyperlisp code syntax
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.node-2-hyperlisp")]
+        private static void pf_node_2_hyperlisp (ApplicationContext context, ActiveEventArgs e)
+        {
+            StringBuilder builder = new StringBuilder ();
+            Node2Hyperlisp (builder, e.Args, 0);
+            if (builder.Length == 0) {
+                e.Args.Value = null;
+            } else {
+                string value = builder.ToString ();
+                e.Args.Value = value.Substring (0, value.Length - 2); // getting rid of last carriage return
+            }
+        }
+
+        /*
+         * responsible for creating hyperlisp code from node tree structure
+         */
+        private static void Node2Hyperlisp (StringBuilder builder, Node node, int level)
+        {
+            foreach (Node idx in node.Children) {
+                int idxLevel = level;
+                while (idxLevel-- > 0) {
+                    builder.Append ("  ");
+                }
+                builder.Append (string.Format ("{0}", idx.Name));
+                string value = idx.Get<string> ();
+                if (value != null) {
+                    if (value.Contains ("\r\n") || value.Trim () != value) {
+                        builder.Append (string.Format (@":@""{0}""", value.Replace (@"""", @"""""")));
+                    } else {
+                        builder.Append (string.Format (":{0}", value));
+                    }
+                }
+                builder.Append ("\r\n");
+                Node2Hyperlisp (builder, idx, level + 1);
+            }
+        }
+
         /*
          * responsible for tokenizing hyperlisp code syntax
          */
         private static string[] TokenizeHyperlisp (string code)
         {
+            code = (code ?? "").TrimStart ();
             List<string> retVal = new List<string> ();
             retVal.Add ("");
             using (TextReader reader = new StringReader (code)) {
@@ -66,12 +110,13 @@ namespace phosphorus.hyperlisp
                         }
                     }
                     if (retVal [retVal.Count - 1].StartsWith (@"@""")) {
-                        retVal [retVal.Count - 1] = retVal [retVal.Count - 1].Replace (@"""""", @"""");
-                        buffer = retVal [retVal.Count - 1];
+                        buffer = retVal [retVal.Count - 1].Replace (@"""""", @"""");
                         while ((buffer.Length - buffer.TrimEnd (new char[]{ '"' }).Length) % 2 != 1) {
                             buffer += "\r\n" + reader.ReadLine ().Replace (@"""""", @"""");
                         }
-                        retVal [retVal.Count - 1] = buffer;
+                        retVal [retVal.Count - 1] = buffer.Substring (2, buffer.Length - 3); // removing @" start and " end parts
+                    } else {
+                        retVal [retVal.Count - 1] = retVal [retVal.Count - 1].Trim ();
                     }
                     buffer = reader.ReadLine ();
                 }
@@ -100,8 +145,6 @@ namespace phosphorus.hyperlisp
                         if (!eon) {
                             node.Add (new Node ());
                             string name = tokens [idxCur];
-                            if (name.StartsWith (@""""))
-                                name = name.Substring (1, name.Length - 2);
                             node [node.Count - 1].Name = name;
                             eon = true;
                             if (idxCur < tokens.Length && tokens [idxCur + 1] == ":")
@@ -110,12 +153,9 @@ namespace phosphorus.hyperlisp
                                 noSpace = 0;
                         } else {
                             string value = tokens [idxCur];
-                            if (value.StartsWith (@"@"""))
-                                value = value.Substring (2, value.Length - 3);
-                            else if (value.StartsWith (@""""))
-                                value = value.Substring (1, value.Length - 2);
                             node [node.Count - 1].Value = value;
                             noSpace = 0;
+                            eon = false;
                         }
                     } else {
                         if (noSpace < level) {
@@ -123,6 +163,7 @@ namespace phosphorus.hyperlisp
                         } else {
                             idxCur = NodeFromHyperlispTokens (node [node.Count - 1], tokens, level + 1, idxCur - noSpace) - 1;
                             noSpace = 0;
+                            eon = false;
                         }
                     }
                 }
