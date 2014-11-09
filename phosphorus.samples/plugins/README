@@ -1,3 +1,0 @@
-this directory is for your plugins that you wish to dynamically load as 
-plugin assemblies.  make sure you also add your plugins in your web.config
-file if you wish to use them in your application pool
