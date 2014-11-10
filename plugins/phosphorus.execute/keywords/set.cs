@@ -32,10 +32,12 @@ namespace phosphorus.execute
                 return; // destination node not found
 
             if (e.Args.Count > 0) {
-                if (!e.Args [0].Get<string> ().StartsWith ("@") || e.Args [0].Get<string> ().StartsWith (@"@"""))
-                    destinationMatch.Assign (e.Args [0].Get<string> ());
-                else
-                    destinationMatch.Assign (new Expression (e.Args [0].Get<string> ()).Evaluate (e.Args [0]));
+                string source = Expression.FormatNode (e.Args.FirstChild);
+                if (!Expression.IsExpression (source)) {
+                    destinationMatch.Assign (source);
+                } else {
+                    destinationMatch.Assign (new Expression (source).Evaluate (e.Args.FirstChild));
+                }
             } else {
                 destinationMatch.Assign ();
             }

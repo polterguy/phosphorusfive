@@ -55,6 +55,69 @@ namespace phosphorus.execute
         }
 
         /// <summary>
+        /// return number of nodes in match
+        /// </summary>
+        /// <value>number of nodes</value>
+        public int Count {
+            get {
+                return _nodes.Count;
+            }
+        }
+
+        /// <summary>
+        /// gets the type of match
+        /// </summary>
+        /// <value>the type of match</value>
+        public MatchType TypeOfMatch {
+            get {
+                return _type;
+            }
+        }
+
+        /// <summary>
+        /// gets the <see cref="phosphorus.execute.Match"/> at the specified index
+        /// </summary>
+        /// <param name="index">index</param>
+        public Node this [int index] {
+            get {
+                return _nodes [index];
+            }
+        }
+
+        /// <summary>
+        /// returns the value for the given index
+        /// </summary>
+        /// <returns>the value of the match</returns>
+        /// <param name="index">index</param>
+        public object GetValue (int index)
+        {
+            switch (_type) {
+            case MatchType.Children:
+                return _nodes [index].Children;
+            case MatchType.Name:
+                return _nodes [index].Name;
+            case MatchType.Node:
+                return _nodes [index];
+            case MatchType.Path:
+                return _nodes [index].Path;
+            case MatchType.Value:
+                return _nodes [index].Value;
+            default:
+                throw new ArgumentException ("unknown type of match");
+            }
+        }
+
+        /// <summary>
+        /// return all nodes in match
+        /// </summary>
+        /// <value>the matches</value>
+        public IEnumerable<Node> Matches {
+            get {
+                return _nodes;
+            }
+        }
+
+        /// <summary>
         /// changes the nodes in this <see cref="phosphorus.execute.Expression.Match"/> to null
         /// </summary>
         public void Assign ()

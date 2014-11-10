@@ -47,8 +47,12 @@ since it tests the nice stuff :D""
   xx:yy
     zz:ff
 d:qwerty
+xyz:fo
 pf.set:@/**/zz/value
-  :@/foo//value";
+  :@/{1}//{0}
+    :value
+    :{0}o
+      :@..../xyz/value";
             Node node = new Node (null, code);
             context.Raise ("pf.hyperlisp-2-node", node);
             context.Raise ("pf.execute", node);

@@ -4,6 +4,7 @@
  */
 
 using System;
+using System.Globalization;
 using System.Collections.Generic;
 using phosphorus.core;
 
@@ -29,6 +30,47 @@ namespace phosphorus.execute
             _tokens = TokenizeExpression (expression);
             if (_tokens.Length == 0)
                 throw new ArgumentException (string.Format ("'{0}' is not a valid expression", expression));
+        }
+
+        /// <summary>
+        /// determines if string is an expression or not
+        /// </summary>
+        /// <returns><c>true</c> if string is an expression; otherwise, <c>false</c>.</returns>
+        /// <param name="value">string to check</param>
+        public static bool IsExpression (string value)
+        {
+            return value.StartsWith ("@") && !value.StartsWith (@"@""");
+        }
+
+        /// <summary>
+        /// returns formatted node according to children nodes
+        /// </summary>
+        /// <returns>the formatted string expression</returns>
+        /// <param name="node">node to format</param>
+        public static string FormatNode (Node node)
+        {
+            string retVal = node.Get<string> ();
+            if (node.Count > 0) {
+                string[] childrenValues = new string[node.Count];
+                int idxNo = 0;
+                foreach (Node idxNode in node.Children) {
+                    string value = idxNode.Get<string> ();
+                    if (idxNode.Count > 0)
+                        value = FormatNode (idxNode);
+                    if (IsExpression (value)) {
+                        var match = new Expression (value).Evaluate (idxNode);
+                        if (match.Count > 1)
+                            throw new ArgumentException ("expression in format node returned more than one match");
+                        else if (match.Count == 0)
+                            value = null;
+                        else
+                            value = match.GetValue (0) as string;
+                    }
+                    childrenValues [idxNo++] = value;
+                }
+                retVal = string.Format (CultureInfo.InvariantCulture, retVal, childrenValues);
+            }
+            return retVal;
         }
 
         /// <summary>
