@@ -45,12 +45,12 @@ namespace phosphorus.execute
             Path,
         }
 
-        private List<Node> _nodes;
         private MatchType _type;
+        private List<Node> _nodes;
 
-        internal Match (List<Node> nodes, MatchType type)
+        internal Match (MatchIterator matchIterator, MatchType type)
         {
-            _nodes = nodes;
+            _nodes = new List<Node> (matchIterator.Nodes);
             _type = type;
         }
 
@@ -92,18 +92,18 @@ namespace phosphorus.execute
         public object GetValue (int index)
         {
             switch (_type) {
-            case MatchType.Children:
-                return _nodes [index].Children;
-            case MatchType.Name:
-                return _nodes [index].Name;
-            case MatchType.Node:
-                return _nodes [index];
-            case MatchType.Path:
-                return _nodes [index].Path;
-            case MatchType.Value:
-                return _nodes [index].Value;
-            default:
-                throw new ArgumentException ("unknown type of match");
+                case MatchType.Children:
+                    return _nodes [index].Children;
+                case MatchType.Name:
+                    return _nodes [index].Name;
+                case MatchType.Node:
+                    return _nodes [index];
+                case MatchType.Path:
+                    return _nodes [index].Path;
+                case MatchType.Value:
+                    return _nodes [index].Value;
+                default:
+                    throw new ArgumentException ("unknown type of match");
             }
         }
 
@@ -132,9 +132,7 @@ namespace phosphorus.execute
         public void Assign (string value)
         {
             Node node = new Node ("", value);
-            List<Node> list = new List<Node> ();
-            list.Add (node);
-            Match match = new Match (list, MatchType.Value);
+            Match match = new Match (MatchIterator.Create (node), MatchType.Value);
             Assign (match);
         }
         

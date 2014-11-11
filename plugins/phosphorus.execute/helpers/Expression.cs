@@ -15,7 +15,8 @@ namespace phosphorus.execute
     /// </summary>
     public class Expression
     {
-        private string[] _tokens;
+        private List<string> _tokens;
+        private string _expression;
 
         /// <summary>
         /// initializes a new instance of the <see cref="phosphorus.execute.Expression"/> class
@@ -25,10 +26,10 @@ namespace phosphorus.execute
         {
             if (string.IsNullOrEmpty(expression) || !expression.StartsWith ("@"))
                 throw new ArgumentException (string.Format ("'{0}' is not a valid expression", expression));
-            expression = expression.Substring (1);
+            _expression = expression.Substring (1);
 
-            _tokens = TokenizeExpression (expression);
-            if (_tokens.Length == 0)
+            _tokens = TokenizeExpression (_expression);
+            if (_tokens.Count == 0)
                 throw new ArgumentException (string.Format ("'{0}' is not a valid expression", expression));
         }
 
@@ -63,8 +64,13 @@ namespace phosphorus.execute
                             throw new ArgumentException ("expression in format node returned more than one match");
                         else if (match.Count == 0)
                             value = null;
-                        else
-                            value = match.GetValue (0) as string;
+                        else {
+                            object obj = match.GetValue (0);
+                            if (obj != null)
+                                value = obj.ToString ();
+                            else
+                                value = null;
+                        }
                     }
                     childrenValues [idxNo++] = value;
                 }
@@ -78,145 +84,63 @@ namespace phosphorus.execute
         /// </summary>
         public Match Evaluate (Node node)
         {
-            List<Node> result = new List<Node> (new Node[] { node });
-            string lastToken = null;
-            for (int idxNo = 0; idxNo < _tokens.Length - 1; idxNo ++) {
-                string idxToken = _tokens [idxNo];
-                result = FindMatches (result, idxToken, lastToken);
-                if (result.Count == 0)
+            MatchIterator currentIterator = MatchIterator.Create (node);
+            List<string> previousTokens = new List<string> ();
+            for (int idxNo = 0; idxNo < _tokens.Count - 1; idxNo ++) {
+                previousTokens.Add (_tokens [idxNo]);
+                currentIterator = FindMatches (currentIterator, previousTokens);
+                if (!currentIterator.HasMatch)
                     return null;
-                lastToken = idxToken;
             }
-            switch (_tokens [_tokens.Length - 1]) {
+            switch (_tokens [_tokens.Count - 1]) {
                 case "name":
-                    return new Match (result, Match.MatchType.Name);
+                    return new Match (currentIterator, Match.MatchType.Name);
                 case "value":
-                   return new Match (result, Match.MatchType.Value);
+                   return new Match (currentIterator, Match.MatchType.Value);
                 case "path":
-                    return new Match (result, Match.MatchType.Path);
+                    return new Match (currentIterator, Match.MatchType.Path);
                 case @"\":
-                    return new Match (result, Match.MatchType.Node);
+                    return new Match (currentIterator, Match.MatchType.Node);
                 case "/":
-                    return new Match (result, Match.MatchType.Children);
+                    return new Match (currentIterator, Match.MatchType.Children);
                 default:
-                    throw new ArgumentException ("that is not a valid expression, don't know how to return; '" + lastToken + "'");
+                    throw new ArgumentException ("that is not a valid expression, don't know how to return; '" + _tokens [_tokens.Count - 1] + "'");
             }
         }
         
         /*
          * return matches according to token
          */
-        private List<Node> FindMatches (List<Node> lastMatches, string token, string lastToken)
+        private MatchIterator FindMatches (MatchIterator lastMatches, List<string> previousTokens)
         {
+            string token = previousTokens [previousTokens.Count - 1];
             switch (token) {
                 case "/":
-                    return FindSlashMatches (lastMatches, lastToken);
-                case "*":
-                    return FindAsterixMatches (lastMatches);
-                case "**":
-                    return FindDoubleAsterixMatches (lastMatches);
-                case ".":
-                    return FindDotMatches (lastMatches);
-                default:
-                    return FindNamedMatches (lastMatches, token);
-            }
-        }
-
-        /*
-         * returns matches for / token
-         */
-        private List<Node> FindSlashMatches (List<Node> lastMatches, string lastToken)
-        {
-            if (lastToken == null) {
-
-                // returning root
-                return new List<Node> (new Node[] { lastMatches [0].Root });
-            } else if (lastToken == "/") {
-
-                // returning all nodes with empty names
-                List<Node> retVal = new List<Node> ();
-                foreach (Node idxOldResult in lastMatches) {
-                    foreach (Node idxInner in idxOldResult.Children) {
-                        if (idxInner.Name == string.Empty)
-                            retVal.Add (idxInner);
+                    if (previousTokens.Count == 1) {
+                        // returning root since "/" is found as first token of expression
+                        return new MatchIteratorRoot (lastMatches);
+                    } else if (previousTokens [previousTokens.Count - 2] == "/") {
+                        // returning all nodes with empty names since two / tokens have followed each other
+                        return new MatchIteratorNamedNode (lastMatches, "");
+                    } else {
+                        // token is simply here to separate one token from the next, hence we return simply last match
+                        return lastMatches;
                     }
-                }
-                return retVal;
-            }
-
-            // token is simply there to separate one token from the next
-            return lastMatches;
-        }
-
-        /*
-         * returns matches for * token
-         */
-        private List<Node> FindAsterixMatches (List<Node> lastMatches)
-        {
-            List<Node> retValAllChildren = new List<Node> ();
-            foreach (Node idxOldResult in lastMatches) {
-                retValAllChildren.AddRange (idxOldResult.Children);
-            }
-            return retValAllChildren;
-        }
-        
-        /*
-         * returns matches for ** token
-         */
-        private List<Node> FindDoubleAsterixMatches (List<Node> lastMatches)
-        {
-            List<Node> retValAllDescendants = new List<Node> ();
-            foreach (Node idxDescendant in lastMatches) {
-                retValAllDescendants.AddRange (FindAllDescendants (idxDescendant));
-            }
-            return retValAllDescendants;
-        }
-        
-        /*
-         * returns matches for . token
-         */
-        private List<Node> FindDotMatches (List<Node> lastMatches)
-        {
-            List<Node> retValAllParents = new List<Node> ();
-            foreach (Node idxOldResult in lastMatches) {
-                if (idxOldResult.Parent != null)
-                    retValAllParents.Add (idxOldResult.Parent);
-            }
-            return retValAllParents;
-        }
-        
-        /*
-         * returns matches for named token
-         */
-        private List<Node> FindNamedMatches (List<Node> lastMatches, string token)
-        {
-            List<Node> retValNamedNodes = new List<Node> ();
-            foreach (Node idxOldResult in lastMatches) {
-                foreach (Node idxOldResultChild in idxOldResult.Children) {
-                    if (idxOldResultChild.Name == token)
-                        retValNamedNodes.Add (idxOldResultChild);
-                }
-            }
-            return retValNamedNodes;
-        }
-
-        /*
-         * returns all descendants of given node
-         */
-        IEnumerable<Node> FindAllDescendants (Node node)
-        {
-            foreach (Node idx in node.Children) {
-                yield return idx;
-                foreach (Node idxInner in FindAllDescendants (idx)) {
-                    yield return idxInner;
-                }
+                case "*":
+                    return new MatchIteratorAllChildren (lastMatches);
+                case "**":
+                    return new MatchIteratorAllDescendants (lastMatches);
+                case ".":
+                    return new MatchIteratorAllParents (lastMatches);
+                default:
+                    return new MatchIteratorNamedNode (lastMatches, token);
             }
         }
 
         /*
          * responsible for tokenizing expression
          */
-        private string[] TokenizeExpression (string expression)
+        private static List<string> TokenizeExpression (string expression)
         {
             List<string> tokens = new List<string> ();
             string buffer = string.Empty;
@@ -246,13 +170,13 @@ namespace phosphorus.execute
             }
             if (buffer != string.Empty)
                 tokens.Add (buffer);
-            return tokens.ToArray ();
+            return tokens;
         }
         
         /*
          * reads string literal during tokenization process
          */
-        private string ReadStringLiteral (string expression, ref int idxNo)
+        private static string ReadStringLiteral (string expression, ref int idxNo)
         {
             string buffer = "";
             idxNo += 2; // skipping @" parts, and looping until end of string literal
