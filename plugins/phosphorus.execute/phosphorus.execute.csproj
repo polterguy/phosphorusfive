@@ -42,6 +42,8 @@
     <Compile Include="helpers\MatchIteratorAllChildren.cs" />
     <Compile Include="helpers\MatchIteratorAllDescendants.cs" />
     <Compile Include="helpers\MatchIteratorAllParents.cs" />
+    <Compile Include="helpers\MatchIteratorNumberedNode.cs" />
+    <Compile Include="helpers\MatchIteratorValuedNode.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -109,35 +109,6 @@ namespace phosphorus.execute
         }
         
         /*
-         * return matches according to token
-         */
-        private MatchIterator FindMatches (MatchIterator lastMatches, List<string> previousTokens)
-        {
-            string token = previousTokens [previousTokens.Count - 1];
-            switch (token) {
-                case "/":
-                    if (previousTokens.Count == 1) {
-                        // returning root since "/" is found as first token of expression
-                        return new MatchIteratorRoot (lastMatches);
-                    } else if (previousTokens [previousTokens.Count - 2] == "/") {
-                        // returning all nodes with empty names since two / tokens have followed each other
-                        return new MatchIteratorNamedNode (lastMatches, "");
-                    } else {
-                        // token is simply here to separate one token from the next, hence we return simply last match
-                        return lastMatches;
-                    }
-                case "*":
-                    return new MatchIteratorAllChildren (lastMatches);
-                case "**":
-                    return new MatchIteratorAllDescendants (lastMatches);
-                case ".":
-                    return new MatchIteratorAllParents (lastMatches);
-                default:
-                    return new MatchIteratorNamedNode (lastMatches, token);
-            }
-        }
-
-        /*
          * responsible for tokenizing expression
          */
         private static List<string> TokenizeExpression (string expression)
@@ -150,13 +121,14 @@ namespace phosphorus.execute
                     case '/':
                     case '\\':
                     case '.':
+                    case '=':
                         if (buffer != string.Empty) {
                             tokens.Add (buffer);
                             buffer = string.Empty;
                         }
                         tokens.Add (idxChar.ToString ());
                         break;
-                    case '@':
+                    case '"':
                         if (buffer != string.Empty) {
                             tokens.Add (buffer);
                             buffer = string.Empty;
@@ -172,23 +144,92 @@ namespace phosphorus.execute
                 tokens.Add (buffer);
             return tokens;
         }
-        
+
         /*
          * reads string literal during tokenization process
          */
         private static string ReadStringLiteral (string expression, ref int idxNo)
         {
-            string buffer = "";
-            idxNo += 2; // skipping @" parts, and looping until end of string literal
+            string buffer = string.Empty;
+            idxNo += 1; // skipping " parts, and looping until end of string literal
             while (true) {
                 char idxChar = expression [idxNo];
-                if (buffer.Length > 0 && idxChar != '"' && (buffer.Length - buffer.TrimEnd (new char[] { '"' }).Length) % 2 == 1)
+                if (idxChar == '"' && !buffer.EndsWith ("\\"))
                     break;
                 buffer += idxChar.ToString ();
                 idxNo += 1;
             }
-            --idxNo;
-            return buffer.Substring (0, buffer.Length - 1).Replace (@"""""", @"""");
+            return buffer.Replace (@"\""", @"""");
+        }
+
+        /*
+         * return matches according to token
+         */
+        private MatchIterator FindMatches (MatchIterator lastMatches, List<string> previousTokens)
+        {
+            string token = previousTokens [previousTokens.Count - 1];
+            switch (token) {
+                case "/":
+                    return FindMatchesSlashToken (lastMatches, previousTokens);
+                case "*":
+                    return new MatchIteratorAllChildren (lastMatches);
+                case "**":
+                    return new MatchIteratorAllDescendants (lastMatches);
+                case ".":
+                    return new MatchIteratorAllParents (lastMatches);
+                case "=":
+                    return lastMatches;
+                default:
+                    return FindMatchesDefaultToken (lastMatches, previousTokens);
+            }
+        }
+        
+        /*
+         * return matches when token is slash "/"
+         */
+        private MatchIterator FindMatchesSlashToken (MatchIterator lastMatches, List<string> previousTokens)
+        {
+            if (previousTokens.Count == 1) {
+                // returning root since "/" is found as first token of expression
+                return new MatchIteratorRoot (lastMatches);
+            } else if (previousTokens [previousTokens.Count - 2] == "/") {
+                // returning all nodes with empty names since two / tokens have followed each other
+                return new MatchIteratorNamedNode (lastMatches, string.Empty);
+            } else {
+                // token is simply here to separate one token from the next, hence we return simply last match
+                return lastMatches;
+            }
+        }
+
+        /*
+         * return matches when token is not specialized token
+         */
+        private MatchIterator FindMatchesDefaultToken (MatchIterator lastMatches, List<string> previousTokens)
+        {
+            string token = previousTokens [previousTokens.Count - 1];
+            if (previousTokens.Count > 1 && previousTokens [previousTokens.Count - 2] == "=") {
+                // looking for value
+                return new MatchIteratorValuedNode (lastMatches, token);
+            } else {
+                // looking for name
+                if (IsAllNumbers (token)) {
+                    return new MatchIteratorNumberedNode (lastMatches, int.Parse (token));
+                } else {
+                    return new MatchIteratorNamedNode (lastMatches, token);
+                }
+            }
+        }
+
+        /*
+         * returns true if string contains nothing but numbers
+         */
+        private bool IsAllNumbers (string token)
+        {
+            foreach (char idx in token) {
+                if ("0123456789".IndexOf (idx) == -1)
+                    return false;
+            }
+            return true;
         }
     }
 }

@@ -44,15 +44,13 @@ since it tests the nice stuff :D""
     h1:@"" x""
     h2:@""y ""
     zz:THOMAS
+      qq:@""tjolla """"hopp/sann sa""
   xx:yy
     zz:ff
 d:qwerty
-xyz:fo
-pf.set:@/**/zz/value
-  :@/{1}//{0}
-    :value
-    :{0}o
-      :@..../xyz/value";
+pf.set:@/**/zz/0=""tjolla \""hopp/sann sa""/value
+  :@""PIPPI LANGSTRØMPE
+er kuul!!""";
             Node node = new Node (null, code);
             context.Raise ("pf.hyperlisp-2-node", node);
             context.Raise ("pf.execute", node);
