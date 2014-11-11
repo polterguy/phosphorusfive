@@ -44,11 +44,12 @@ since it tests the nice stuff :D""
     h1:@"" x""
     h2:@""y ""
     zz:THOMAS
-      qq:@""tjolla """"hopp/sann sa""
+      qq:@""tjolla """"hopp/sann
+sa""
   xx:yy
     zz:ff
 d:qwerty
-pf.set:@/**/zz/0=""tjolla \""hopp/sann sa""/value
+pf.set:@/**/zz/0=""tjolla \""hopp/sann\r\nsa""/value
   :@""PIPPI LANGSTRØMPE
 er kuul!!""";
             Node node = new Node (null, code);

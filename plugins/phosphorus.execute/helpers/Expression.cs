@@ -156,10 +156,25 @@ namespace phosphorus.execute
                 char idxChar = expression [idxNo];
                 if (idxChar == '"' && !buffer.EndsWith ("\\"))
                     break;
+                else if (idxChar == '\\') {
+                    idxNo += 1;
+                    idxChar = expression [idxNo];
+                    switch (idxChar) {
+                        case 'r':
+                            idxChar = '\r';
+                            break;
+                        case 'n':
+                            idxChar = '\n';
+                            break;
+                        case 't':
+                            idxChar = '\t';
+                            break;
+                    }
+                }
                 buffer += idxChar.ToString ();
                 idxNo += 1;
             }
-            return buffer.Replace (@"\""", @"""");
+            return buffer;
         }
 
         /*
