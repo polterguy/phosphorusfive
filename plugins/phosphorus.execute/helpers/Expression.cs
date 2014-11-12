@@ -24,7 +24,7 @@ namespace phosphorus.execute
         /// <param name="expression">execution engine expression</param>
         public Expression (string expression)
         {
-            if (string.IsNullOrEmpty(expression) || !expression.StartsWith ("@"))
+            if (string.IsNullOrEmpty(expression) || !expression.StartsWith ("@") && !expression.StartsWith (@"@"""))
                 throw new ArgumentException (string.Format ("'{0}' is not a valid expression", expression));
             _expression = expression.Substring (1);
 
@@ -84,14 +84,15 @@ namespace phosphorus.execute
         /// </summary>
         public Match Evaluate (Node node)
         {
-            MatchIterator currentIterator = MatchIterator.Create (node);
+            MatchIterator currentIterator = new MatchIteratorStart (node);
             List<string> previousTokens = new List<string> ();
             for (int idxNo = 0; idxNo < _tokens.Count - 1; idxNo ++) {
                 previousTokens.Add (_tokens [idxNo]);
-                currentIterator = FindMatches (currentIterator, previousTokens);
-                if (!currentIterator.HasMatch)
-                    return null;
+                currentIterator = FindMatches (currentIterator, previousTokens, ref idxNo);
             }
+            if (!currentIterator.HasMatch)
+                return null;
+
             switch (_tokens [_tokens.Count - 1]) {
                 case "name":
                     return new Match (currentIterator, Match.MatchType.Name);
@@ -107,7 +108,7 @@ namespace phosphorus.execute
                     throw new ArgumentException ("that is not a valid expression, don't know how to return; '" + _tokens [_tokens.Count - 1] + "'");
             }
         }
-        
+
         /*
          * responsible for tokenizing expression
          */
@@ -121,6 +122,12 @@ namespace phosphorus.execute
                     case '/':
                     case '\\':
                     case '.':
+                    case '|':
+                    case '&':
+                    case '!':
+                    case '^':
+                    case '(':
+                    case ')':
                     case '=':
                         if (buffer != string.Empty) {
                             tokens.Add (buffer);
@@ -157,7 +164,7 @@ namespace phosphorus.execute
         /*
          * return matches according to token
          */
-        private MatchIterator FindMatches (MatchIterator lastMatches, List<string> previousTokens)
+        private MatchIterator FindMatches (MatchIterator lastMatches, List<string> previousTokens, ref int idxNo)
         {
             string token = previousTokens [previousTokens.Count - 1];
             switch (token) {
@@ -165,6 +172,14 @@ namespace phosphorus.execute
                     return FindMatchesSlashToken (lastMatches, previousTokens);
                 case "*":
                     return new MatchIteratorAllChildren (lastMatches);
+                case "|":
+                    return FindMatchesLogical (lastMatches, previousTokens, ref idxNo, MatchIteratorLogical.LogicalType.OR);
+                case "&":
+                    return FindMatchesLogical (lastMatches, previousTokens, ref idxNo, MatchIteratorLogical.LogicalType.AND);
+                case "!":
+                    return FindMatchesLogical (lastMatches, previousTokens, ref idxNo, MatchIteratorLogical.LogicalType.NOT);
+                case "^":
+                    return FindMatchesLogical (lastMatches, previousTokens, ref idxNo, MatchIteratorLogical.LogicalType.XOR);
                 case "**":
                     return new MatchIteratorAllDescendants (lastMatches);
                 case ".":
@@ -175,13 +190,44 @@ namespace phosphorus.execute
                     return FindMatchesDefaultToken (lastMatches, previousTokens);
             }
         }
+
+        /*
+         * returns a logical match operator
+         */
+        private MatchIteratorLogical FindMatchesLogical (
+            MatchIterator lastMatches, 
+            List<string> previousTokens, 
+            ref int idxNo, 
+            MatchIteratorLogical.LogicalType type)
+        {
+            MatchIterator root = lastMatches;
+            while (root.Parent != null)
+                root = root.Parent;
+            Node node = (root as MatchIteratorStart).Node;
+            MatchIterator currentIterator = new MatchIteratorStart (node);
+            for (idxNo++; idxNo < _tokens.Count - 1; idxNo++) {
+                if (_tokens [idxNo] == "|" || 
+                    _tokens [idxNo] == "&" || 
+                    _tokens [idxNo] == "!" || 
+                    _tokens [idxNo] == "^" || 
+                    _tokens [idxNo] == ")" || 
+                    _tokens [idxNo] == "(")
+                    break;
+                previousTokens.Add (_tokens [idxNo]);
+                currentIterator = FindMatches (currentIterator, previousTokens, ref idxNo);
+            }
+            idxNo -= 1;
+            return new MatchIteratorLogical (node, lastMatches, currentIterator, type);
+        }
         
         /*
          * return matches when token is slash "/"
          */
         private MatchIterator FindMatchesSlashToken (MatchIterator lastMatches, List<string> previousTokens)
         {
-            if (previousTokens.Count == 1) {
+            if (previousTokens.Count == 1 || 
+                ("|&!^".IndexOf (previousTokens [previousTokens.Count - 2]) != -1 && 
+                previousTokens [previousTokens.Count - 2].Length == 1)) {
                 // returning root since "/" is found as first token of expression
                 return new MatchIteratorRoot (lastMatches);
             } else if (previousTokens [previousTokens.Count - 2] == "/") {

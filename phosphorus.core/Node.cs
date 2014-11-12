@@ -33,7 +33,7 @@ namespace phosphorus.core
                 while (idxNode._parent != null) {
                     for (int idxNo = 0; idxNo < idxNode._parent._children.Count; idxNo ++) {
                         if (idxNode == idxNode._parent._children [idxNo]) {
-                            _value.Add (idxNo);
+                            _value.Insert (0, idxNo);
                             break;
                         }
                     }

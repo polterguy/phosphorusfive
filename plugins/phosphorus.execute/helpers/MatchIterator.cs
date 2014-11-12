@@ -12,16 +12,15 @@ namespace phosphorus.execute
     /// <summary>
     /// iterator base class for traversing matches in <see cref="phosphorus.core.Node"/> 
     /// </summary>
-    public class MatchIterator
+    public abstract class MatchIterator
     {
-        private Node _node;
         private MatchIterator _parent;
 
-        private MatchIterator (Node node)
-        {
-            _node = node;
-            _parent = null;
-        }
+        /// <summary>
+        /// initializes a new instance of the <see cref="phosphorus.execute.MatchIterator"/> class
+        /// </summary>
+        public MatchIterator ()
+        { }
 
         /// <summary>
         /// initializes a new instance of the <see cref="phosphorus.execute.MatchIterator"/> class
@@ -33,22 +32,11 @@ namespace phosphorus.execute
         }
 
         /// <summary>
-        /// static constructor creating a root match iterator object
-        /// </summary>
-        /// <param name="node">root node for match iterator hierarchy</param>
-        public static MatchIterator Create (Node node)
-        {
-            return new MatchIterator (node);
-        }
-
-        /// <summary>
         /// returns nodes matching criteria
         /// </summary>
         /// <value>the nodes matching the criteria</value>
-        public virtual IEnumerable<Node> Nodes {
-            get {
-                yield return _node;
-            }
+        public abstract IEnumerable<Node> Nodes {
+            get;
         }
 
         /// <summary>
@@ -65,7 +53,7 @@ namespace phosphorus.execute
         /// returns parent match iterator object
         /// </summary>
         /// <value>the parent match iterator of the current instance</value>
-        protected MatchIterator Parent {
+        public MatchIterator Parent {
             get {
                 return _parent;
             }

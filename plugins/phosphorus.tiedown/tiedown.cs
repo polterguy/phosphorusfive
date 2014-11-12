@@ -49,7 +49,7 @@ sa\""
   xx:yy
     zz:ff
 d:qwerty
-pf.get:@/**/long-string/./**/path";
+pf.get:@/*/0|/*/1|/*/2&/*/long-string|/*/0/path";
             Node node = new Node (null, code);
             context.Raise ("pf.hyperlisp-2-node", node);
             context.Raise ("pf.execute", node);

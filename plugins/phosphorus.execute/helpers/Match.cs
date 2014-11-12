@@ -132,7 +132,7 @@ namespace phosphorus.execute
         public void Assign (string value)
         {
             Node node = new Node ("", value);
-            Match match = new Match (MatchIterator.Create (node), MatchType.Value);
+            Match match = new Match (new MatchIteratorStart (node), MatchType.Value);
             Assign (match);
         }
         
