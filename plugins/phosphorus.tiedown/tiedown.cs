@@ -35,11 +35,10 @@ namespace phosphorus.tiedown
         {
             // execute load hyperlisp file
             string code = @"
-""foo"":howdy
+foo:howdy
   :joppla
   hel/\lo"":""  world      ""
-  @""long
--str""""i""""ng"":@""jo dude, this is
+  long-string:@""jo dude, this is
 a test of """"how cool"""" it is possible to be :)
 since it tests the nice stuff :D""
     h1:@"" x""
@@ -50,10 +49,7 @@ sa\""
   xx:yy
     zz:ff
 d:qwerty
-pf.set:@""@/**/zz/0=@""""tjolla """"""""hopp/sann
-sa\""""/value""
-  :@""\@PIPPI LANGSTRØMPE
-er kuul!!/value""";
+pf.get:@/**/long-string/./**/path";
             Node node = new Node (null, code);
             context.Raise ("pf.hyperlisp-2-node", node);
             context.Raise ("pf.execute", node);

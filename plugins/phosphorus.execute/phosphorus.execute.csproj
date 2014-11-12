@@ -44,6 +44,7 @@
     <Compile Include="helpers\MatchIteratorAllParents.cs" />
     <Compile Include="helpers\MatchIteratorNumberedNode.cs" />
     <Compile Include="helpers\MatchIteratorValuedNode.cs" />
+    <Compile Include="keywords\get.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

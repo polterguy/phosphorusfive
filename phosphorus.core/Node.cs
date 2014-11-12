@@ -17,7 +17,7 @@ namespace phosphorus.core
         /// <summary>
         /// DNA code for Node
         /// </summary>
-        public class DNA : IComparable
+        public class DNA : IComparable, IConvertible
         {
             internal List<int> _value;
 
@@ -167,6 +167,93 @@ namespace phosphorus.core
                     return -1;
                 return 0;
             }
+
+            public TypeCode GetTypeCode ()
+            {
+                return TypeCode.Object;
+            }
+
+            public bool ToBoolean (IFormatProvider provider)
+            {
+                throw new ApplicationException ("cannot convert a DNA path to Boolean");
+            }
+
+            public byte ToByte (IFormatProvider provider)
+            {
+                throw new ApplicationException ("cannot convert a DNA path to byte");
+            }
+
+            public char ToChar (IFormatProvider provider)
+            {
+                throw new ApplicationException ("cannot convert a DNA path to char");
+            }
+
+            public DateTime ToDateTime (IFormatProvider provider)
+            {
+                throw new ApplicationException ("cannot convert a DNA path to DateTime");
+            }
+
+            public decimal ToDecimal (IFormatProvider provider)
+            {
+                throw new ApplicationException ("cannot convert a DNA path to decimal");
+            }
+
+            public double ToDouble (IFormatProvider provider)
+            {
+                throw new ApplicationException ("cannot convert a DNA path to double");
+            }
+
+            public short ToInt16 (IFormatProvider provider)
+            {
+                throw new ApplicationException ("cannot convert a DNA path to short");
+            }
+
+            public int ToInt32 (IFormatProvider provider)
+            {
+                throw new ApplicationException ("cannot convert a DNA path to int");
+            }
+
+            public long ToInt64 (IFormatProvider provider)
+            {
+                throw new ApplicationException ("cannot convert a DNA path to long");
+            }
+
+            public sbyte ToSByte (IFormatProvider provider)
+            {
+                throw new ApplicationException ("cannot convert a DNA path to sbyte");
+            }
+
+            public float ToSingle (IFormatProvider provider)
+            {
+                throw new ApplicationException ("cannot convert a DNA path to float");
+            }
+
+            public string ToString (IFormatProvider provider)
+            {
+                return ToString ();
+            }
+
+            public object ToType (Type conversionType, IFormatProvider provider)
+            {
+                if (conversionType != typeof(string))
+                    throw new ApplicationException ("cannot convert a DNA path to; " + conversionType);
+                return ToString ();
+            }
+
+            public ushort ToUInt16 (IFormatProvider provider)
+            {
+                throw new ApplicationException ("cannot convert a DNA path to ushort");
+            }
+
+            public uint ToUInt32 (IFormatProvider provider)
+            {
+                throw new ApplicationException ("cannot convert a DNA path to uint");
+            }
+
+            public ulong ToUInt64 (IFormatProvider provider)
+            {
+                throw new ApplicationException ("cannot convert a DNA path to ulong");
+            }
         }
 
         private List<Node> _children;
@@ -195,7 +282,7 @@ namespace phosphorus.core
         /// </summary>
         /// <param name="name">name of node</param>
         /// <param name="value">value of node</param>
-        public Node (string name, string value)
+        public Node (string name, object value)
             : this (name)
         {
             Value = value;
