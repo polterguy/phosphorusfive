@@ -60,11 +60,11 @@ namespace phosphorus.execute
                         value = FormatNode (idxNode);
                     if (IsExpression (value)) {
                         var match = new Expression (value).Evaluate (idxNode);
-                        if (match.Count > 1)
+                        if (match.Count > 1) {
                             throw new ArgumentException ("expression in format node returned more than one match");
-                        else if (match.Count == 0)
+                        } else if (match.Count == 0) {
                             value = null;
-                        else {
+                        } else {
                             object obj = match.GetValue (0);
                             if (obj != null)
                                 value = obj.ToString ();
@@ -133,7 +133,16 @@ namespace phosphorus.execute
                             tokens.Add (buffer);
                             buffer = string.Empty;
                         }
-                        tokens.Add (ReadStringLiteral (expression, ref idxNo));
+                        tokens.Add (Utilities.GetStringToken (expression, ref idxNo));
+                        idxNo -= 1;
+                        break;
+                    case '@':
+                        if (buffer != string.Empty) {
+                            tokens.Add (buffer);
+                            buffer = string.Empty;
+                        }
+                        tokens.Add (Utilities.GetMultilineStringToken (expression, ref idxNo));
+                        idxNo -= 1;
                         break;
                     default:
                         buffer += idxChar;
@@ -143,38 +152,6 @@ namespace phosphorus.execute
             if (buffer != string.Empty)
                 tokens.Add (buffer);
             return tokens;
-        }
-
-        /*
-         * reads string literal during tokenization process
-         */
-        private static string ReadStringLiteral (string expression, ref int idxNo)
-        {
-            string buffer = string.Empty;
-            idxNo += 1; // skipping " parts, and looping until end of string literal
-            while (true) {
-                char idxChar = expression [idxNo];
-                if (idxChar == '"' && !buffer.EndsWith ("\\"))
-                    break;
-                else if (idxChar == '\\') {
-                    idxNo += 1;
-                    idxChar = expression [idxNo];
-                    switch (idxChar) {
-                        case 'r':
-                            idxChar = '\r';
-                            break;
-                        case 'n':
-                            idxChar = '\n';
-                            break;
-                        case 't':
-                            idxChar = '\t';
-                            break;
-                    }
-                }
-                buffer += idxChar.ToString ();
-                idxNo += 1;
-            }
-            return buffer;
         }
 
         /*

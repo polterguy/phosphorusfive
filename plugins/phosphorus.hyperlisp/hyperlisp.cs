@@ -24,7 +24,7 @@ namespace phosphorus.hyperlisp
         [ActiveEvent (Name = "pf.hyperlisp-2-node")]
         private static void pf_hyperlisp_2_node (ApplicationContext context, ActiveEventArgs e)
         {
-            string[] tokens = TokenizeHyperlisp (e.Args.Get<string> ());
+            string[] tokens = TokenizeHyperlisp (e.Args.Get<string> ("").TrimStart ());
             Node node = new Node ();
             NodeFromHyperlispTokens (node, tokens, 0, 0);
             e.Args.AddRange (node.Children);
@@ -58,7 +58,12 @@ namespace phosphorus.hyperlisp
                 while (idxLevel-- > 0) {
                     builder.Append ("  ");
                 }
-                builder.Append (string.Format ("{0}", idx.Name));
+                string name = idx.Name;
+                if (name.Contains ("\r") || name.Contains ("\n") || name.Contains (@"""") || name.Trim () != name) {
+                    builder.Append (string.Format (@"@""{0}""", name.Replace (@"""", @"""""")));
+                } else {
+                    builder.Append (string.Format ("{0}", name));
+                }
                 string value = idx.Get<string> ();
                 if (value != null) {
                     if (value.Contains ("\r\n") || value.Trim () != value) {
@@ -77,54 +82,88 @@ namespace phosphorus.hyperlisp
          */
         private static string[] TokenizeHyperlisp (string code)
         {
-            code = (code ?? "").TrimStart ();
-            List<string> retVal = new List<string> ();
-            retVal.Add ("");
-            using (TextReader reader = new StringReader (code)) {
-                string buffer = reader.ReadLine ();
-                while (buffer != null) {
-                    bool eos = false;
-                    bool eon = false;
-                    for (int idxNo = 0; idxNo < buffer.Length; idxNo++) {
-                        if (!eos && buffer [idxNo] == ' ') {
-                            if (retVal [retVal.Count - 1] == " ")
-                                retVal [retVal.Count - 1] += " ";
-                            else
-                                retVal.Add (" ");
-                        } else {
-                            if (!eos) {
-                                retVal.Add ("");
-                                eos = true;
-                            }
-                            if (!eon && buffer [idxNo] != ':') {
-                                retVal [retVal.Count - 1] += buffer [idxNo];
-                            } else {
-                                if (!eon) {
-                                    retVal.Add (":");
-                                    retVal.Add ("");
-                                    eon = true;
-                                } else {
-                                    retVal [retVal.Count - 1] += buffer [idxNo];
-                                }
-                            }
-                        }
-                    }
-                    if (retVal [retVal.Count - 1].StartsWith (@"@""")) {
-                        buffer = retVal [retVal.Count - 1].Replace (@"""""", @"""");
-                        while ((buffer.Length - buffer.TrimEnd (new char[]{ '"' }).Length) % 2 != 1) {
-                            buffer += "\r\n" + reader.ReadLine ().Replace (@"""""", @"""");
-                        }
-                        retVal [retVal.Count - 1] = buffer.Substring (2, buffer.Length - 3); // removing @" start and " end parts
-                    } else {
-                        retVal [retVal.Count - 1] = retVal [retVal.Count - 1].Trim ();
-                    }
-                    buffer = reader.ReadLine ();
-                }
+            List<string> tokens = new List<string> ();
+            int idxNo = 0;
+            string previousToken = null;
+            string token = GetNextToken (code, ref idxNo, previousToken);
+            while (token != null) {
+                tokens.Add (token);
+                previousToken = token;
+                token = GetNextToken (code, ref idxNo, previousToken);
             }
-            retVal.RemoveAt (0);
-            return retVal.ToArray ();
+            return tokens.ToArray ();
         }
 
+        /*
+         * reads next token from code
+         */
+        private static string GetNextToken (string code, ref int index, string previousToken)
+        {
+            if (index >= code.Length)
+                return null;
+
+            char tmp = code [index];
+            StringBuilder builder = new StringBuilder ();
+            switch (tmp) {
+                case ':':
+                    if (previousToken == null || previousToken == "  " || previousToken == "\r\n") {
+                        return "";
+                    }
+                    index++;
+                    return ":";
+                case ' ':
+                    if (previousToken != ":") {
+                        if (code [index + 1] != ' ')
+                            throw new ArgumentException ("syntax error in hyperlisp, to few spaces in separator");
+                        index += 2;
+                        return "  ";
+                    }
+                    index += 1;
+                    builder.Append (tmp);
+                    break;
+                case '\r':
+                    index += 2;
+                    return "\r\n";
+                case '\n':
+                    index += 1;
+                    return "\r\n";
+                case '@':
+                    if (code [index + 1] == '"')
+                        return Utilities.GetMultilineStringToken (code, ref index);
+                    index += 1;
+                    builder.Append ('@');
+                    break;
+                case '"':
+                    return Utilities.GetStringToken (code, ref index);
+                default:
+                    index += 1;
+                    builder.Append (tmp);
+                    break;
+            }
+            bool finished = false;
+            while (true) {
+                tmp = code [index];
+                switch (tmp) {
+                    case ':':
+                        finished = true;
+                        break;
+                    case '\r':
+                        finished = true;
+                        break;
+                    case '\n':
+                        finished = true;
+                        break;
+                    default:
+                        index += 1;
+                        builder.Append (tmp); // appending character to token
+                        break;
+                }
+                if (finished || index >= code.Length)
+                    break;
+            }
+            return builder.ToString ().Trim ();
+        }
+        
         /*
          * responsible for parsing tokenized hyperlisp syntax and create Node structure from it
          */
@@ -133,6 +172,9 @@ namespace phosphorus.hyperlisp
             int noSpace = 0;
             bool eon = false;
             for (int idxCur = start; idxCur < tokens.Length; idxCur++) {
+                if (tokens [idxCur] == "\r\n") {
+                    continue;
+                }
                 if (tokens [idxCur] == "  ") {
                     if (eon) {
                         eon = false;

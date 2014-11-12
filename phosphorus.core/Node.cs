@@ -229,10 +229,30 @@ namespace phosphorus.core
             }
         }
 
+        /// <summary>
+        /// returns the value of this instance as typeof(T). converts to T if necessary
+        /// </summary>
+        /// <typeparam name="T">type to return</typeparam>
         public T Get<T> ()
         {
             if (Value == null)
                 return default (T);
+
+            if (typeof(T) == Value.GetType ())
+                return (T)Value;
+
+            return (T)Convert.ChangeType (Value, typeof(T), System.Globalization.CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        /// returns the value of this instance as typeof(T). converts to T if necessary. if value is null, then defaultValue is returned instead
+        /// </summary>
+        /// <param name="defaultValue">default value to return if no value exist</param>
+        /// <typeparam name="T">type to return</typeparam>
+        public T Get<T> (T defaultValue)
+        {
+            if (Value == null)
+                return defaultValue;
 
             if (typeof(T) == Value.GetType ())
                 return (T)Value;

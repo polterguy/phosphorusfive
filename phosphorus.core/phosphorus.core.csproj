@@ -38,5 +38,6 @@
     <Compile Include="ApplicationContext.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="ActiveEventArgs.cs" />
+    <Compile Include="Utilities.cs" />
   </ItemGroup>
 </Project>

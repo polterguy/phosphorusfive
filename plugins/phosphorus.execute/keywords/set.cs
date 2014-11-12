@@ -34,6 +34,8 @@ namespace phosphorus.execute
             if (e.Args.Count > 0) {
                 string source = Expression.FormatNode (e.Args.FirstChild);
                 if (!Expression.IsExpression (source)) {
+                    if (source.StartsWith (@"\@"))
+                        source = source.Substring (1); // escaped expression
                     destinationMatch.Assign (source);
                 } else {
                     destinationMatch.Assign (new Expression (source).Evaluate (e.Args.FirstChild));
