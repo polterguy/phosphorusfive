@@ -85,6 +85,23 @@ namespace phosphorus.execute
         }
 
         /// <summary>
+        /// returns value of index match as typeof(T)
+        /// </summary>
+        /// <returns>the value converted to T if possible</returns>
+        /// <param name="index">index of which match to retrieve</param>
+        /// <param name="defaultValue">default value to return if there is no match at index position, or match yields null</param>
+        /// <typeparam name="T">type to convert match into</typeparam>
+        public T GetValue<T> (int index, T defaultValue)
+        {
+            if (index >= _nodes.Count)
+                return defaultValue;
+            object retVal = GetValue (index);
+            if (retVal != null)
+                return (T)Convert.ChangeType (retVal, typeof(T));
+            return defaultValue;
+        }
+
+        /// <summary>
         /// returns the value for the given index
         /// </summary>
         /// <returns>the value of the match</returns>
@@ -120,28 +137,28 @@ namespace phosphorus.execute
         /// <summary>
         /// changes the nodes in this <see cref="phosphorus.execute.Expression.Match"/> to null
         /// </summary>
-        public void Assign ()
+        public void AssignNull ()
         {
-            Assign (null as Match);
+            AssignMatch (null as Match);
         }
 
         /// <summary>
         /// changes the nodes in this <see cref="phosphorus.execute.Expression.Match"/> to the given value 
         /// </summary>
         /// <param name="value">new value</param>
-        public void Assign (string value)
+        public void AssignValue (object value)
         {
             Node node = new Node ("", value);
             Match match = new Match (new MatchIteratorStart (node), MatchType.Value);
-            Assign (match);
+            AssignMatch (match);
         }
         
         /// <summary>
-        /// changes the nodes in this <see cref="phosphorus.execute.Expression.Match"/> to the given rhs
+        /// changes the nodes in this <see cref="phosphorus.execute.Expression.Match"/> to the given rhs match
         /// </summary>
         /// <param name="rhs">new value(s) for nodes in match</param>
         /// <param name="context"><see cref="phosphorus.core.ApplicationContext"/> currently executing within</param>
-        public void Assign (Match rhs)
+        public void AssignMatch (Match rhs)
         {
             switch (_type) {
                 case MatchType.Name:

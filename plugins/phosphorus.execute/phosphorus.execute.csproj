@@ -34,19 +34,19 @@
   <ItemGroup>
     <Compile Include="executor.cs" />
     <Compile Include="keywords\set.cs" />
-    <Compile Include="helpers\Expression.cs" />
-    <Compile Include="helpers\Match.cs" />
-    <Compile Include="helpers\MatchIterator.cs" />
-    <Compile Include="helpers\MatchIteratorRoot.cs" />
-    <Compile Include="helpers\MatchIteratorNamedNode.cs" />
-    <Compile Include="helpers\MatchIteratorAllChildren.cs" />
-    <Compile Include="helpers\MatchIteratorAllDescendants.cs" />
-    <Compile Include="helpers\MatchIteratorAllParents.cs" />
-    <Compile Include="helpers\MatchIteratorNumberedNode.cs" />
-    <Compile Include="helpers\MatchIteratorValuedNode.cs" />
     <Compile Include="keywords\get.cs" />
-    <Compile Include="helpers\MatchIteratorStart.cs" />
-    <Compile Include="helpers\MatchIteratorLogical.cs" />
+    <Compile Include="expressions\Expression.cs" />
+    <Compile Include="expressions\Match.cs" />
+    <Compile Include="expressions\iterators\MatchIterator.cs" />
+    <Compile Include="expressions\iterators\MatchIteratorAllChildren.cs" />
+    <Compile Include="expressions\iterators\MatchIteratorAllDescendants.cs" />
+    <Compile Include="expressions\iterators\MatchIteratorAllParents.cs" />
+    <Compile Include="expressions\iterators\MatchIteratorLogical.cs" />
+    <Compile Include="expressions\iterators\MatchIteratorNamedNode.cs" />
+    <Compile Include="expressions\iterators\MatchIteratorNumberedNode.cs" />
+    <Compile Include="expressions\iterators\MatchIteratorRoot.cs" />
+    <Compile Include="expressions\iterators\MatchIteratorStart.cs" />
+    <Compile Include="expressions\iterators\MatchIteratorValuedNode.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="keywords\" />
-    <Folder Include="helpers\" />
+    <Folder Include="expressions\" />
+    <Folder Include="expressions\iterators\" />
   </ItemGroup>
 </Project>

@@ -24,7 +24,7 @@ namespace phosphorus.execute
         /// <param name="expression">execution engine expression</param>
         public Expression (string expression)
         {
-            if (string.IsNullOrEmpty(expression) || !expression.StartsWith ("@") && !expression.StartsWith (@"@"""))
+            if (!IsExpression (expression))
                 throw new ArgumentException (string.Format ("'{0}' is not a valid expression", expression));
             _expression = expression.Substring (1);
 
@@ -40,7 +40,7 @@ namespace phosphorus.execute
         /// <param name="value">string to check</param>
         public static bool IsExpression (string value)
         {
-            return value.StartsWith ("@") && !value.StartsWith (@"@""");
+            return value != null && value.StartsWith ("@") && !value.StartsWith (@"@""");
         }
 
         /// <summary>
@@ -59,18 +59,8 @@ namespace phosphorus.execute
                     if (idxNode.Count > 0)
                         value = FormatNode (idxNode);
                     if (IsExpression (value)) {
-                        var match = new Expression (value).Evaluate (idxNode);
-                        if (match.Count > 1) {
-                            throw new ArgumentException ("expression in format node returned more than one match");
-                        } else if (match.Count == 0) {
-                            value = null;
-                        } else {
-                            object obj = match.GetValue (0);
-                            if (obj != null)
-                                value = obj.ToString ();
-                            else
-                                value = null;
-                        }
+                        Match match = new Expression (value).Evaluate (idxNode);
+                        value = match.GetValue (0, string.Empty);
                     }
                     childrenValues [idxNo++] = value;
                 }
@@ -93,7 +83,8 @@ namespace phosphorus.execute
             if (!currentIterator.HasMatch)
                 return null;
 
-            switch (_tokens [_tokens.Count - 1]) {
+            string matchType = _tokens [_tokens.Count - 1];
+            switch (matchType) {
                 case "name":
                     return new Match (currentIterator, Match.MatchType.Name);
                 case "value":
@@ -105,7 +96,7 @@ namespace phosphorus.execute
                 case "/":
                     return new Match (currentIterator, Match.MatchType.Children);
                 default:
-                    throw new ArgumentException ("that is not a valid expression, don't know how to return; '" + _tokens [_tokens.Count - 1] + "'");
+                    throw new ArgumentException ("that is not a valid expression, don't know how to return; '" + matchType + "'");
             }
         }
 
@@ -206,12 +197,7 @@ namespace phosphorus.execute
             Node node = (root as MatchIteratorStart).Node;
             MatchIterator currentIterator = new MatchIteratorStart (node);
             for (idxNo++; idxNo < _tokens.Count - 1; idxNo++) {
-                if (_tokens [idxNo] == "|" || 
-                    _tokens [idxNo] == "&" || 
-                    _tokens [idxNo] == "!" || 
-                    _tokens [idxNo] == "^" || 
-                    _tokens [idxNo] == ")" || 
-                    _tokens [idxNo] == "(")
+                if (_tokens [idxNo].Length == 1 && "|&!^()".IndexOf (_tokens [idxNo]) != -1)
                     break;
                 previousTokens.Add (_tokens [idxNo]);
                 currentIterator = FindMatches (currentIterator, previousTokens, ref idxNo);

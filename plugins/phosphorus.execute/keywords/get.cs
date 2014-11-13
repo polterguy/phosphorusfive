@@ -22,8 +22,6 @@ namespace phosphorus.execute
         [ActiveEvent (Name = "pf.get")]
         private static void pf_get (ApplicationContext context, ActiveEventArgs e)
         {
-            if (e.Args.Name != "pf.get")
-                throw new ApplicationException ("reached [pf.get] without execution node being [pf.get]");
             if (string.IsNullOrEmpty (e.Args.Get<string> ()) || !e.Args.Get<string> ().StartsWith ("@"))
                 throw new ApplicationException ("[pf.get] needs at the very least an expression as its value");
 

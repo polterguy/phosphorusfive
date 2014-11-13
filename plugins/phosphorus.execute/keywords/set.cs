@@ -22,11 +22,10 @@ namespace phosphorus.execute
         [ActiveEvent (Name = "pf.set")]
         private static void pf_set (ApplicationContext context, ActiveEventArgs e)
         {
-            if (e.Args.Name != "pf.set")
-                throw new ApplicationException ("reached [pf.set] without execution node being [pf.set]");
-            if (string.IsNullOrEmpty (e.Args.Get<string> ()) || !e.Args.Get<string> ().StartsWith ("@"))
+            if (!Expression.IsExpression (e.Args.Get<string> ()))
                 throw new ApplicationException ("[pf.set] needs at the very least an expression as its value");
 
+            // finding Match object for destination
             Match destinationMatch = new Expression (e.Args.Get<string> ()).Evaluate (e.Args);
             if (destinationMatch == null)
                 return; // destination node not found
@@ -34,14 +33,20 @@ namespace phosphorus.execute
             if (e.Args.Count > 0) {
                 string source = Expression.FormatNode (e.Args.FirstChild);
                 if (!Expression.IsExpression (source)) {
-                    if (source.StartsWith (@"\@"))
-                        source = source.Substring (1); // escaped expression
-                    destinationMatch.Assign (source);
+
+                    // source is a string literal value
+                    if (source.StartsWith (@"\"))
+                        source = source.Substring (1); // escaped value, possible escaped expression
+                    destinationMatch.AssignValue (source);
                 } else {
-                    destinationMatch.Assign (new Expression (source).Evaluate (e.Args.FirstChild));
+
+                    // source is an expression
+                    destinationMatch.AssignMatch (new Expression (source).Evaluate (e.Args.FirstChild));
                 }
             } else {
-                destinationMatch.Assign ();
+
+                // there is no source, hence we assign null to destination
+                destinationMatch.AssignNull ();
             }
         }
     }
