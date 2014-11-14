@@ -118,6 +118,10 @@ namespace phosphorus.execute
             case "*":
                 current.AddIterator (new IteratorChildren ());
                 break;
+            case "+":
+            case "-":
+                current.AddIterator (new IteratorSibling (token == "+" ? 1 : -1));
+                break;
             case "**":
                 current.AddIterator (new IteratorDescendants ());
                 break;
@@ -145,6 +149,11 @@ namespace phosphorus.execute
                 if (previousToken == "=") {
                     // looking for value, current token is value to look for, changing Value of current MatchIterator
                     ((IteratorValued)current.LastIterator).Value = token;
+                } else if (previousToken == "+" || previousToken == "-") {
+                    // looking for sibling, current token is offset to look for
+                    if (!IsNumber (token))
+                        throw new ArgumentException ("a sibling operator must have an integer number as its next token");
+                    ((IteratorSibling)current.LastIterator).Offset = previousToken == "-" ? -int.Parse (token) : int.Parse (token);
                 } else {
                     if ("/\\".IndexOf (previousToken) == -1)
                         throw new ArgumentException ("syntax error in expression; '" + _expression + "' probably missing a slash '/' before named or numbered token; '" + token + "'");
@@ -168,7 +177,7 @@ namespace phosphorus.execute
             string buffer = string.Empty;
             for (int idxNo = 1 /* skipping first @ character */; idxNo < expression.Length; idxNo++) {
                 char idxChar = expression [idxNo];
-                if (@"/\.|&!^()=?".IndexOf (idxChar) > -1) {
+                if (@"/\.|&!^()=?+-".IndexOf (idxChar) > -1) {
                     if (buffer != string.Empty) {
                         yield return buffer;
                         buffer = string.Empty;

@@ -31,6 +31,11 @@ namespace phosphorus.execute
             Value,
             
             /// <summary>
+            /// matches number of nodes in <see cref="phosphorus.execute.Match"/> 
+            /// </summary>
+            Count,
+
+            /// <summary>
             /// matches path of node(s)
             /// </summary>
             Path,
@@ -48,20 +53,23 @@ namespace phosphorus.execute
         {
             _nodes = new List<Node> (group.Evaluate);
             switch (type) {
-                case "name":
-                    _type = MatchType.Name;
-                    break;
-                case "value":
-                    _type = MatchType.Value;
-                    break;
-                case "path":
-                    _type = MatchType.Path;
-                    break;
-                case @"node":
-                    _type = MatchType.Node;
-                    break;
-                default:
-                    throw new ArgumentException ("don't know how to construct a match type out of; " + type);
+            case "name":
+                _type = MatchType.Name;
+                break;
+            case "value":
+                _type = MatchType.Value;
+                break;
+            case "path":
+                _type = MatchType.Path;
+                break;
+            case "node":
+                _type = MatchType.Node;
+                break;
+            case "count":
+                _type = MatchType.Count;
+                break;
+            default:
+                throw new ArgumentException ("don't know how to construct a match type out of; " + type);
             }
         }
 
@@ -86,7 +94,7 @@ namespace phosphorus.execute
         }
 
         /// <summary>
-        /// gets the <see cref="phosphorus.execute.Match"/> at the specified index
+        /// gets the <see cref="phosphorus.core.Node"/> at the specified index
         /// </summary>
         /// <param name="index">index</param>
         public Node this [int index] {
@@ -120,16 +128,16 @@ namespace phosphorus.execute
         public object GetValue (int index)
         {
             switch (_type) {
-                case MatchType.Name:
-                    return _nodes [index].Name;
-                case MatchType.Value:
-                    return _nodes [index].Value;
-                case MatchType.Path:
-                    return _nodes [index].Path;
-                case MatchType.Node:
-                    return _nodes [index];
-                default:
-                    throw new ArgumentException ("unknown type of match");
+            case MatchType.Name:
+                return _nodes [index].Name;
+            case MatchType.Value:
+                return _nodes [index].Value;
+            case MatchType.Path:
+                return _nodes [index].Path;
+            case MatchType.Node:
+                return _nodes [index];
+            default:
+                throw new ArgumentException ("cannot get indexed value from match");
             }
         }
 
@@ -162,17 +170,17 @@ namespace phosphorus.execute
         public void AssignMatch (Match rhs)
         {
             switch (_type) {
-                case MatchType.Name:
-                    AssignName (rhs);
-                    break;
-                case MatchType.Value:
-                    AssignValue (rhs);
-                    break;
-                case MatchType.Path:
-                    throw new ArgumentException ("cannot assign path of node, path is read only");
-                case MatchType.Node:
-                    AssignNode (rhs);
-                    break;
+            case MatchType.Name:
+                AssignName (rhs);
+                break;
+            case MatchType.Value:
+                AssignValue (rhs);
+                break;
+            case MatchType.Node:
+                AssignNode (rhs);
+                break;
+            default:
+                throw new ArgumentException ("match is unassignable and read only");
             }
         }
 
@@ -190,17 +198,20 @@ namespace phosphorus.execute
                     throw new ArgumentException ("source match cannot have multiple values when assigning name of match");
                 string sourceValue = null;
                 switch (rhs._type) {
-                    case MatchType.Name:
-                        sourceValue = rhs._nodes [0].Name;
-                        break;
-                    case MatchType.Value:
-                        sourceValue = rhs._nodes [0].Get<string> ();
-                        break;
-                    case MatchType.Path:
-                        sourceValue = rhs._nodes [0].Path.ToString ();
-                        break;
-                    default:
-                        throw new ArgumentException ("cannot assign name anything but another name, value or path");
+                case MatchType.Name:
+                    sourceValue = rhs._nodes [0].Name;
+                    break;
+                case MatchType.Value:
+                    sourceValue = rhs._nodes [0].Get<string> ();
+                    break;
+                case MatchType.Path:
+                    sourceValue = rhs._nodes [0].Path.ToString ();
+                    break;
+                case MatchType.Count:
+                    sourceValue = rhs.Count.ToString ();
+                    break;
+                default:
+                    throw new ArgumentException ("cannot assign name anything but another name, value, count or path");
                 }
                 sourceValue = sourceValue ?? "";
                 if (sourceValue.IndexOfAny (new char[] { ' ', '"', '\n', '\r', '\t', ':' }) != -1)
@@ -225,17 +236,20 @@ namespace phosphorus.execute
                     throw new ArgumentException ("source match cannot have multiple values when assigning value");
                 string sourceValue = null;
                 switch (rhs._type) {
-                    case MatchType.Name:
-                        sourceValue = rhs._nodes [0].Name;
-                        break;
-                    case MatchType.Value:
-                        sourceValue = rhs._nodes [0].Get<string> ();
-                        break;
-                    case MatchType.Path:
-                        sourceValue = rhs._nodes [0].Path.ToString ();
-                        break;
-                    default:
-                        throw new ArgumentException ("cannot assign value anything but another value, name or path");
+                case MatchType.Name:
+                    sourceValue = rhs._nodes [0].Name;
+                    break;
+                case MatchType.Value:
+                    sourceValue = rhs._nodes [0].Get<string> ();
+                    break;
+                case MatchType.Path:
+                    sourceValue = rhs._nodes [0].Path.ToString ();
+                    break;
+                case MatchType.Count:
+                    sourceValue = rhs.Count.ToString ();
+                    break;
+                default:
+                    throw new ArgumentException ("cannot assign value anything but another value, name or path");
                 }
                 foreach (Node idxDest in _nodes) {
                     idxDest.Value = sourceValue;

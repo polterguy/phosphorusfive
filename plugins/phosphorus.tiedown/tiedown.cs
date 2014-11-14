@@ -47,14 +47,12 @@ foo:howdy
     child2:y
 :kokko
 kakao
-pf.get:@./*/qwerty=joppla2\**?value";
+pf.get:@./*/qwerty=joppla2\*/qwerty/+3/-2?node";
             Node node = new Node ("root", code);
             context.Raise ("pf.hyperlisp-2-node", node);
             node.Value = null;
             context.Raise ("pf.execute", node);
             context.Raise ("pf.node-2-hyperlisp", node);
-            node.Clear ();
-            context.Raise ("pf.hyperlisp-2-node", node);
         }
     }
 }

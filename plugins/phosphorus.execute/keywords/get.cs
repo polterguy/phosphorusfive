@@ -29,20 +29,24 @@ namespace phosphorus.execute
             if (sourceMatch == null)
                 return; // destination node not found
 
-            foreach (Node idxMatch in sourceMatch.Matches) {
-                switch (sourceMatch.TypeOfMatch) {
-                case Match.MatchType.Name:
-                    e.Args.Add (new Node (string.Empty, idxMatch.Name));
-                    break;
-                case Match.MatchType.Value:
-                    e.Args.Add (new Node (string.Empty, idxMatch.Value));
-                    break;
-                case Match.MatchType.Path:
-                    e.Args.Add (new Node (string.Empty, idxMatch.Path));
-                    break;
-                case Match.MatchType.Node:
-                    e.Args.Add (idxMatch.Clone ());
-                    break;
+            if (sourceMatch.TypeOfMatch == Match.MatchType.Count) {
+                e.Args.Add (new Node (string.Empty, sourceMatch.Count));
+            } else {
+                foreach (Node idxMatch in sourceMatch.Matches) {
+                    switch (sourceMatch.TypeOfMatch) {
+                    case Match.MatchType.Name:
+                        e.Args.Add (new Node (string.Empty, idxMatch.Name));
+                        break;
+                    case Match.MatchType.Value:
+                        e.Args.Add (new Node (string.Empty, idxMatch.Value));
+                        break;
+                    case Match.MatchType.Path:
+                        e.Args.Add (new Node (string.Empty, idxMatch.Path));
+                        break;
+                    case Match.MatchType.Node:
+                        e.Args.Add (idxMatch.Clone ());
+                        break;
+                    }
                 }
             }
         }
