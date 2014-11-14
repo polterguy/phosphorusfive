@@ -140,12 +140,12 @@ namespace phosphorus.execute
                 current.AddIterator (new IteratorValued ()); // actual value will be set in next token
                 break;
             default:
-                if (current.Left is IteratorValued) {
+                if (previousToken == "=") {
                     // looking for value, current token is value to look for, changing Value of current MatchIterator
                     ((IteratorValued)current.LastIterator).Value = token;
                 } else {
                     // looking for name
-                    if (IsAllNumbers (token)) {
+                    if (token.Length > 0 && IsAllNumbers (token)) {
                         current.AddIterator (new IteratorNumbered (int.Parse (token)));
                     } else {
                         current.AddIterator (new IteratorNamed (token));

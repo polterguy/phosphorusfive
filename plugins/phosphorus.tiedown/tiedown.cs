@@ -35,12 +35,18 @@ namespace phosphorus.tiedown
         {
             // execute load hyperlisp file
             string code = @"
+:joppla2
+  first-child:@""mumbo
+howdy""
 foo:howdy
   x1:joppla1
   x2:joppla2
+    child:x
   x3:joppla3
-pf.get:@(/*/0)|(/*/1)|(/*/2)&(/*/*)?\";
-            Node node = new Node (null, code);
+    child1:x
+    child2:y
+pf.get:@(((((/*)!(/""pf.get""))/first-child)))?node";
+            Node node = new Node ("root", code);
             context.Raise ("pf.hyperlisp-2-node", node);
             context.Raise ("pf.execute", node);
             node.Value = null;

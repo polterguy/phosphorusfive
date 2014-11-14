@@ -49,7 +49,7 @@ namespace phosphorus.core
         /// <param name="index">index of where to sttart, expected to be at the opening " quote of the string</param>
         public static string GetStringToken (string code, ref int index)
         {
-            if (code.StartsWith (@"@"))
+            if (code[index] == '@')
                 return GetMultilineStringToken (code, ref index);
             StringBuilder builder = new StringBuilder ();
             index += 1;

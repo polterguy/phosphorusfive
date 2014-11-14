@@ -29,21 +29,16 @@ namespace phosphorus.execute
             /// matches value of node(s)
             /// </summary>
             Value,
-
-            /// <summary>
-            /// matches children of node(s)
-            /// </summary>
-            Children,
-
-            /// <summary>
-            /// matches node itself of node(s)
-            /// </summary>
-            Node,
-
+            
             /// <summary>
             /// matches path of node(s)
             /// </summary>
             Path,
+
+            /// <summary>
+            /// matches node itself of node(s)
+            /// </summary>
+            Node
         }
 
         private MatchType _type;
@@ -62,11 +57,8 @@ namespace phosphorus.execute
                 case "path":
                     _type = MatchType.Path;
                     break;
-                case @"\":
+                case @"node":
                     _type = MatchType.Node;
-                    break;
-                case "/":
-                    _type = MatchType.Children;
                     break;
                 default:
                     throw new ArgumentException ("don't know how to construct a match type out of; " + type);
@@ -128,16 +120,14 @@ namespace phosphorus.execute
         public object GetValue (int index)
         {
             switch (_type) {
-                case MatchType.Children:
-                    return _nodes [index].Children;
                 case MatchType.Name:
                     return _nodes [index].Name;
-                case MatchType.Node:
-                    return _nodes [index];
-                case MatchType.Path:
-                    return _nodes [index].Path;
                 case MatchType.Value:
                     return _nodes [index].Value;
+                case MatchType.Path:
+                    return _nodes [index].Path;
+                case MatchType.Node:
+                    return _nodes [index];
                 default:
                     throw new ArgumentException ("unknown type of match");
             }
@@ -183,9 +173,6 @@ namespace phosphorus.execute
                 case MatchType.Node:
                     AssignNode (rhs);
                     break;
-                case MatchType.Children:
-                    AssignChildren (rhs);
-                    break;
             }
         }
 
@@ -212,8 +199,8 @@ namespace phosphorus.execute
                     case MatchType.Path:
                         sourceValue = rhs._nodes [0].Path.ToString ();
                         break;
-                    case MatchType.Children:
-                        throw new ArgumentException ("cannot assign node list to node name");
+                    default:
+                        throw new ArgumentException ("cannot assign name anything but another name, value or path");
                 }
                 sourceValue = sourceValue ?? "";
                 if (sourceValue.IndexOfAny (new char[] { ' ', '"', '\n', '\r', '\t', ':' }) != -1)
@@ -247,8 +234,8 @@ namespace phosphorus.execute
                     case MatchType.Path:
                         sourceValue = rhs._nodes [0].Path.ToString ();
                         break;
-                    case MatchType.Children:
-                        throw new ArgumentException ("cannot assign node list to node value");
+                    default:
+                        throw new ArgumentException ("cannot assign value anything but another value, name or path");
                 }
                 foreach (Node idxDest in _nodes) {
                     idxDest.Value = sourceValue;
@@ -270,33 +257,6 @@ namespace phosphorus.execute
                     throw new ArgumentException ("you can only assign a node to one other node");
                 foreach (Node idxDest in _nodes) {
                     idxDest.Replace (rhs._nodes [0].Clone ());
-                }
-            }
-        }
-
-        /*
-         * assigns children of resulting nodes
-         */
-        private void AssignChildren (Match rhs)
-        {
-            if (rhs == null) {
-                foreach (Node idxDest in _nodes) {
-                    idxDest.Clear ();
-                }
-            } else {
-                if (rhs._type != MatchType.Children)
-                    throw new ArgumentException ("you can only assign a node list to another node list");
-                List<Node> sourceNodes = new List<Node> ();
-                foreach (Node idxSource in rhs._nodes) {
-                    foreach (Node idxSourceChild in idxSource.Children) {
-                        sourceNodes.Add (idxSourceChild.Clone ());
-                    }
-                }
-                foreach (Node idxDest in _nodes) {
-                    idxDest.Clear ();
-                    foreach (Node idxSource in sourceNodes) {
-                        idxDest.Add (idxSource.Clone ());
-                    }
                 }
             }
         }
