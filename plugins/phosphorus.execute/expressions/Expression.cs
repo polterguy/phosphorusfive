@@ -107,13 +107,13 @@ namespace phosphorus.execute
                 current = current.ParentGroup;
                 break;
             case "/":
-                if (current.LastIterator.Left == null) {
-                    // this is first real token in this group, hence we return "root" match
-                    current.AddIterator (new IteratorRoot ());
-                } else if (previousToken == "/") {
+                if (previousToken == "/") {
                     // two slashes "//" preceded each other, hence we're looking for a named value, where its name is string.Empty
                     current.AddIterator (new IteratorNamed (string.Empty));
                 }
+                break;
+            case "\\":
+                current.AddIterator (new IteratorRoot ());
                 break;
             case "*":
                 current.AddIterator (new IteratorChildren ());
@@ -137,6 +137,8 @@ namespace phosphorus.execute
                 current.AddLogical (node, new Logical (Logical.LogicalType.XOR));
                 break;
             case "=":
+                if ("/\\".IndexOf (previousToken) == -1 && !(current.LastIterator is IteratorNamed))
+                    throw new ArgumentException ("syntax error in expression; '" + _expression + "' probably missing a slash '/' before valued token; '" + token + "'");
                 current.AddIterator (new IteratorValued ()); // actual value will be set in next token
                 break;
             default:
@@ -144,8 +146,10 @@ namespace phosphorus.execute
                     // looking for value, current token is value to look for, changing Value of current MatchIterator
                     ((IteratorValued)current.LastIterator).Value = token;
                 } else {
-                    // looking for name
-                    if (token.Length > 0 && IsAllNumbers (token)) {
+                    if ("/\\".IndexOf (previousToken) == -1)
+                        throw new ArgumentException ("syntax error in expression; '" + _expression + "' probably missing a slash '/' before named or numbered token; '" + token + "'");
+                    // looking for named or numbered node
+                    if (IsNumber (token)) {
                         current.AddIterator (new IteratorNumbered (int.Parse (token)));
                     } else {
                         current.AddIterator (new IteratorNamed (token));
@@ -186,15 +190,15 @@ namespace phosphorus.execute
         }
 
         /*
-         * returns true if string contains nothing but numbers
+         * returns true if string can be converted to an integer
          */
-        private bool IsAllNumbers (string token)
+        private bool IsNumber (string token)
         {
             foreach (char idx in token) {
                 if ("0123456789".IndexOf (idx) == -1)
                     return false;
             }
-            return true;
+            return token.Length > 0;
         }
     }
 }

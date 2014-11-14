@@ -59,7 +59,8 @@ namespace phosphorus.hyperlisp
                     builder.Append ("  ");
                 }
                 string name = idx.Name;
-                if (name.Contains ("\r") || name.Contains ("\n") || name.Contains (@"""") || name.Trim () != name) {
+                if (name.Contains ("\r") || name.Contains ("\n") || name.Contains (@"""") || name.Trim () != name || 
+                    (name == string.Empty && idx.Value == null)) {
                     builder.Append (string.Format (@"@""{0}""", name.Replace (@"""", @"""""")));
                 } else {
                     builder.Append (string.Format ("{0}", name));
@@ -173,6 +174,8 @@ namespace phosphorus.hyperlisp
             bool eon = false;
             for (int idxCur = start; idxCur < tokens.Length; idxCur++) {
                 if (tokens [idxCur] == "\r\n") {
+                    noSpace = 0;
+                    eon = false;
                     continue;
                 }
                 if (tokens [idxCur] == "  ") {
@@ -196,8 +199,6 @@ namespace phosphorus.hyperlisp
                         } else {
                             string value = tokens [idxCur];
                             node [node.Count - 1].Value = value;
-                            noSpace = 0;
-                            eon = false;
                         }
                     } else {
                         if (noSpace < level) {

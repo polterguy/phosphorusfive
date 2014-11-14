@@ -35,7 +35,7 @@ namespace phosphorus.tiedown
         {
             // execute load hyperlisp file
             string code = @"
-:joppla2
+qwerty:joppla2
   first-child:@""mumbo
 howdy""
 foo:howdy
@@ -45,12 +45,16 @@ foo:howdy
   x3:joppla3
     child1:x
     child2:y
-pf.get:@(((((/*)!(/""pf.get""))/first-child)))?node";
+:kokko
+kakao
+pf.get:@./*/qwerty=joppla2\**?value";
             Node node = new Node ("root", code);
             context.Raise ("pf.hyperlisp-2-node", node);
-            context.Raise ("pf.execute", node);
             node.Value = null;
+            context.Raise ("pf.execute", node);
             context.Raise ("pf.node-2-hyperlisp", node);
+            node.Clear ();
+            context.Raise ("pf.hyperlisp-2-node", node);
         }
     }
 }
