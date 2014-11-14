@@ -17,6 +17,8 @@ namespace phosphorus.execute.iterators
         {
             AddLogical (node, new Logical (Logical.LogicalType.OR));
             ParentGroup = parent;
+            if (parent != null)
+                parent.AddIterator (this);
         }
 
         public IteratorGroup ParentGroup {
@@ -45,38 +47,7 @@ namespace phosphorus.execute.iterators
             get {
                 List<Node> retVal = new List<Node> ();
                 foreach (Logical idxLogical in _logicals) {
-                    switch (idxLogical.TypeOfLogical) {
-                    case Logical.LogicalType.AND:
-                        retVal = new List<Node> (new List<Node> (idxLogical.Evaluate).FindAll (
-                            delegate(Node idxNode) {
-                            return retVal.Contains (idxNode);
-                        }));
-                        break;
-                    case Logical.LogicalType.OR:
-                        retVal.AddRange (new List<Node> (idxLogical.Evaluate).FindAll (
-                            delegate (Node idxNode) {
-                            return !retVal.Contains (idxNode);
-                        }));
-                        break;
-                    case Logical.LogicalType.XOR:
-                        List<Node> tmpRhs = new List<Node> (idxLogical.Evaluate);
-                        List<Node> tmpLhs = new List<Node> (retVal.FindAll (
-                            delegate (Node idxNode) {
-                            return !tmpRhs.Contains (idxNode);
-                        }));
-                        tmpLhs.AddRange (tmpRhs.FindAll (
-                            delegate (Node idxNode) {
-                            return !retVal.Contains (idxNode);
-                        }));
-                        retVal = tmpLhs;
-                        break;
-                    case Logical.LogicalType.NOT:
-                        List<Node> tmpToRemove = new List<Node> (idxLogical.Evaluate);
-                        retVal.RemoveAll (delegate (Node idxNode) {
-                            return tmpToRemove.Contains (idxNode);
-                        });
-                        break;
-                    }
+                    retVal = idxLogical.EvaluateNodes (retVal);
                 }
                 return retVal;
             }

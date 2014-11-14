@@ -45,10 +45,42 @@ namespace phosphorus.execute.iterators
             }
         }
 
-        public IEnumerable<Node> Evaluate {
-            get {
-                return _iterator.Evaluate;
+        public List<Node> EvaluateNodes (List<Node> nodes)
+        {
+            List<Node> rhs = new List<Node> (_iterator.Evaluate);
+            List<Node> retVal = new List<Node> ();
+            switch (_type) {
+            case LogicalType.OR:
+                retVal.AddRange (nodes);
+                foreach (Node idx in rhs) {
+                    if (!retVal.Contains (idx))
+                        retVal.Add (idx);
+                }
+                break;
+            case LogicalType.AND:
+                retVal.AddRange (nodes.FindAll (
+                    delegate (Node idx) {
+                    return rhs.Contains (idx);
+                }));
+                break;
+            case LogicalType.XOR:
+                retVal.AddRange (nodes.FindAll (
+                    delegate (Node idx) {
+                    return !rhs.Contains (idx);
+                }));
+                retVal.AddRange (rhs.FindAll (
+                    delegate (Node idx) {
+                    return !nodes.Contains (idx);
+                }));
+                break;
+            case LogicalType.NOT:
+                retVal.AddRange (nodes.FindAll (
+                    delegate (Node idx) {
+                    return !rhs.Contains (idx);
+                }));
+                break;
             }
+            return retVal;
         }
     }
 }

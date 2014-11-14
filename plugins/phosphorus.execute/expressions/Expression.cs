@@ -74,13 +74,11 @@ namespace phosphorus.execute
         {
             IteratorGroup current = new IteratorGroup (node, null);
             string typeOfExpression = null;
-            bool seenQuestionMark = false;
             string previousToken = null;
             foreach (string idxToken in TokenizeExpression (_expression)) {
-                if (seenQuestionMark) {
+                if (previousToken == "?") {
                     typeOfExpression = idxToken;
-                } else if (idxToken == "?") {
-                    seenQuestionMark = true;
+                    break;
                 } else {
                     current = FindMatches (current, idxToken, previousToken, node);
                 }
@@ -100,6 +98,8 @@ namespace phosphorus.execute
         private IteratorGroup FindMatches (IteratorGroup current, string token, string previousToken, Node node)
         {
             switch (token) {
+            case "?":
+                break;
             case "(":
                 current = new IteratorGroup (node, current);
                 break;
@@ -169,6 +169,7 @@ namespace phosphorus.execute
                         yield return buffer;
                         buffer = string.Empty;
                     }
+                    yield return idxChar.ToString ();
                 } else if (@"""@".IndexOf (idxChar) > -1) {
                     if (buffer != string.Empty) {
                         yield return buffer;

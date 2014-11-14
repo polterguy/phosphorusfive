@@ -39,7 +39,7 @@ foo:howdy
   x1:joppla1
   x2:joppla2
   x3:joppla3
-pf.get:@/*/*|(/*/1&/*/2)?\";
+pf.get:@(/*/0)|(/*/1)|(/*/2)&(/*/*)?\";
             Node node = new Node (null, code);
             context.Raise ("pf.hyperlisp-2-node", node);
             context.Raise ("pf.execute", node);
