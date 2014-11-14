@@ -27,8 +27,8 @@ namespace phosphorus.execute
 
             // finding Match object for destination
             Match destinationMatch = new Expression (e.Args.Get<string> ()).Evaluate (e.Args);
-            if (destinationMatch == null)
-                return; // destination node not found
+            if (destinationMatch.Count == 0)
+                return; // no destination node(s) not found
 
             if (e.Args.Count > 0) {
                 string source = Expression.FormatNode (e.Args.FirstChild);
@@ -41,12 +41,13 @@ namespace phosphorus.execute
                 } else {
 
                     // source is an expression
-                    destinationMatch.AssignMatch (new Expression (source).Evaluate (e.Args.FirstChild));
+                    Match sourceMatch = new Expression (source).Evaluate (e.Args.FirstChild);
+                    destinationMatch.AssignMatch (sourceMatch);
                 }
             } else {
 
                 // there is no source, hence we assign null to destination
-                destinationMatch.AssignNull ();
+                destinationMatch.AssignMatch (null);
             }
         }
     }

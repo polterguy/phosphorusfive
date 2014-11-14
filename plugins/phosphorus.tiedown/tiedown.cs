@@ -36,20 +36,10 @@ namespace phosphorus.tiedown
             // execute load hyperlisp file
             string code = @"
 foo:howdy
-  :joppla
-  hel/\lo"":""  world      ""
-  long-string:@""jo dude, this is
-a test of """"how cool"""" it is possible to be :)
-since it tests the nice stuff :D""
-    h1:@"" x""
-    h2:@""y ""
-    zz:THOMAS
-      qq:@""tjolla """"hopp/sann
-sa\""
-  xx:yy
-    zz:ff
-d:qwerty
-pf.get:@/*/0|/*/1|/*/2&/*/long-string|/*/0/path";
+  x1:joppla1
+  x2:joppla2
+  x3:joppla3
+pf.get:@/*/*|(/*/1&/*/2)?\";
             Node node = new Node (null, code);
             context.Raise ("pf.hyperlisp-2-node", node);
             context.Raise ("pf.execute", node);

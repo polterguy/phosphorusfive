@@ -5,6 +5,7 @@
 
 using System;
 using System.Text;
+using System.Collections.Generic;
 
 namespace phosphorus.core
 {
@@ -19,7 +20,7 @@ namespace phosphorus.core
         /// <returns>the multiline string token</returns>
         /// <param name="code">code to read string from</param>
         /// <param name="index">index of where to start, expected to be at the "@" position of the beginning of the multiline literal</param>
-        public static string GetMultilineStringToken (string code, ref int index)
+        private static string GetMultilineStringToken (string code, ref int index)
         {
             StringBuilder builder = new StringBuilder ();
             index += 2;
@@ -48,6 +49,8 @@ namespace phosphorus.core
         /// <param name="index">index of where to sttart, expected to be at the opening " quote of the string</param>
         public static string GetStringToken (string code, ref int index)
         {
+            if (code.StartsWith (@"@"))
+                return GetMultilineStringToken (code, ref index);
             StringBuilder builder = new StringBuilder ();
             index += 1;
             bool finished = false;

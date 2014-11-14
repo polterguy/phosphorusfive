@@ -7,24 +7,13 @@ using System;
 using System.Collections.Generic;
 using phosphorus.core;
 
-namespace phosphorus.execute
+namespace phosphorus.execute.iterators
 {
-    /// <summary>
-    /// <see cref="phosphorus.execute.MatchIterator"/> class for returning all descendant <see cref="phosphorus.core.Node"/>s of tree hierarchy
-    /// </summary>
-    public class MatchIteratorAllDescendants : MatchIterator
+    public class IteratorDescendants : Iterator
     {
-        /// <summary>
-        /// initializes a new instance of the <see cref="phosphorus.execute.MatchIteratorRoot"/> class
-        /// </summary>
-        /// <param name="parent">parent match iterator</param>
-        public MatchIteratorAllDescendants (MatchIterator parent)
-            : base (parent)
-        { }
-
-        public override IEnumerable<Node> Nodes {
+        public override IEnumerable<Node> Evaluate {
             get {
-                foreach (Node idxCurrent in Parent.Nodes) {
+                foreach (Node idxCurrent in Left.Evaluate) {
                     foreach (Node idxChild in ReturnChildren (idxCurrent)) {
                         yield return idxChild;
                     }

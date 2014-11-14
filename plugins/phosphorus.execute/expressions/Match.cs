@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using phosphorus.core;
+using phosphorus.execute.iterators;
 
 namespace phosphorus.execute
 {
@@ -48,10 +49,28 @@ namespace phosphorus.execute
         private MatchType _type;
         private List<Node> _nodes;
 
-        internal Match (MatchIterator matchIterator, MatchType type)
+        internal Match (IteratorGroup group, string type)
         {
-            _nodes = new List<Node> (matchIterator.Nodes);
-            _type = type;
+            _nodes = new List<Node> (group.Evaluate);
+            switch (type) {
+                case "name":
+                    _type = MatchType.Name;
+                    break;
+                case "value":
+                    _type = MatchType.Value;
+                    break;
+                case "path":
+                    _type = MatchType.Path;
+                    break;
+                case @"\":
+                    _type = MatchType.Node;
+                    break;
+                case "/":
+                    _type = MatchType.Children;
+                    break;
+                default:
+                    throw new ArgumentException ("don't know how to construct a match type out of; " + type);
+            }
         }
 
         /// <summary>
@@ -135,21 +154,13 @@ namespace phosphorus.execute
         }
 
         /// <summary>
-        /// changes the nodes in this <see cref="phosphorus.execute.Expression.Match"/> to null
-        /// </summary>
-        public void AssignNull ()
-        {
-            AssignMatch (null as Match);
-        }
-
-        /// <summary>
         /// changes the nodes in this <see cref="phosphorus.execute.Expression.Match"/> to the given value 
         /// </summary>
         /// <param name="value">new value</param>
         public void AssignValue (object value)
         {
             Node node = new Node ("", value);
-            Match match = new Match (new MatchIteratorStart (node), MatchType.Value);
+            Match match = new Match (new IteratorGroup (node, null), "value");
             AssignMatch (match);
         }
         

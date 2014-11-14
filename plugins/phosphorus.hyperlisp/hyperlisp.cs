@@ -129,7 +129,7 @@ namespace phosphorus.hyperlisp
                     return "\r\n";
                 case '@':
                     if (code [index + 1] == '"')
-                        return Utilities.GetMultilineStringToken (code, ref index);
+                        return Utilities.GetStringToken (code, ref index);
                     index += 1;
                     builder.Append ('@');
                     break;

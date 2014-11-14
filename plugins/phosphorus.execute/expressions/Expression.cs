@@ -7,6 +7,7 @@ using System;
 using System.Globalization;
 using System.Collections.Generic;
 using phosphorus.core;
+using phosphorus.execute.iterators;
 
 namespace phosphorus.execute
 {
@@ -15,7 +16,6 @@ namespace phosphorus.execute
     /// </summary>
     public class Expression
     {
-        private List<string> _tokens;
         private string _expression;
 
         /// <summary>
@@ -26,11 +26,7 @@ namespace phosphorus.execute
         {
             if (!IsExpression (expression))
                 throw new ArgumentException (string.Format ("'{0}' is not a valid expression", expression));
-            _expression = expression.Substring (1);
-
-            _tokens = TokenizeExpression (_expression);
-            if (_tokens.Count == 0)
-                throw new ArgumentException (string.Format ("'{0}' is not a valid expression", expression));
+            _expression = expression;
         }
 
         /// <summary>
@@ -40,7 +36,10 @@ namespace phosphorus.execute
         /// <param name="value">string to check</param>
         public static bool IsExpression (string value)
         {
-            return value != null && value.StartsWith ("@") && !value.StartsWith (@"@""");
+            return value != null && 
+                value.StartsWith ("@") && 
+                !value.StartsWith (@"@""") && 
+                value.Length > 1;
         }
 
         /// <summary>
@@ -50,198 +49,139 @@ namespace phosphorus.execute
         /// <param name="node">node to format</param>
         public static string FormatNode (Node node)
         {
-            string retVal = node.Get<string> ();
+            string retVal = null;
             if (node.Count > 0) {
-                string[] childrenValues = new string[node.Count];
-                int idxNo = 0;
+                List<string> childrenValues = new List<string> ();
                 foreach (Node idxNode in node.Children) {
-                    string value = idxNode.Get<string> ();
-                    if (idxNode.Count > 0)
-                        value = FormatNode (idxNode);
-                    if (IsExpression (value)) {
-                        Match match = new Expression (value).Evaluate (idxNode);
-                        value = match.GetValue (0, string.Empty);
-                    }
-                    childrenValues [idxNo++] = value;
+                    string value = idxNode.Count == 0 ? 
+                        idxNode.Get<string> () : // simple value
+                        FormatNode (idxNode); // recursive formatting string literal
+                    if (IsExpression (value))
+                        value = new Expression (value).Evaluate (idxNode).GetValue (0, string.Empty);
+                    childrenValues.Add (value);
                 }
-                retVal = string.Format (CultureInfo.InvariantCulture, retVal, childrenValues);
+                retVal = string.Format (CultureInfo.InvariantCulture, retVal, childrenValues.ToArray ());
+            } else {
+                retVal = node.Get<string> ();
             }
             return retVal;
         }
 
         /// <summary>
-        /// evaluates expression for given <see cref="phosphorus.core.Node"/>  and returns <see cref="phosphorus.execute.Expression.Match"/> 
+        /// evaluates expression for given <see cref="phosphorus.core.Node"/>  and returns <see cref="phosphorus.execute.Expression.Match"/>
         /// </summary>
         public Match Evaluate (Node node)
         {
-            MatchIterator currentIterator = new MatchIteratorStart (node);
-            List<string> previousTokens = new List<string> ();
-            for (int idxNo = 0; idxNo < _tokens.Count - 1; idxNo ++) {
-                previousTokens.Add (_tokens [idxNo]);
-                currentIterator = FindMatches (currentIterator, previousTokens, ref idxNo);
-            }
-            if (!currentIterator.HasMatch)
-                return null;
-
-            string matchType = _tokens [_tokens.Count - 1];
-            switch (matchType) {
-                case "name":
-                    return new Match (currentIterator, Match.MatchType.Name);
-                case "value":
-                   return new Match (currentIterator, Match.MatchType.Value);
-                case "path":
-                    return new Match (currentIterator, Match.MatchType.Path);
-                case @"\":
-                    return new Match (currentIterator, Match.MatchType.Node);
-                case "/":
-                    return new Match (currentIterator, Match.MatchType.Children);
-                default:
-                    throw new ArgumentException ("that is not a valid expression, don't know how to return; '" + matchType + "'");
-            }
-        }
-
-        /*
-         * responsible for tokenizing expression
-         */
-        private static List<string> TokenizeExpression (string expression)
-        {
-            List<string> tokens = new List<string> ();
-            string buffer = string.Empty;
-            for (int idxNo = 0; idxNo < expression.Length; idxNo++) {
-                char idxChar = expression [idxNo];
-                switch (idxChar) {
-                    case '/':
-                    case '\\':
-                    case '.':
-                    case '|':
-                    case '&':
-                    case '!':
-                    case '^':
-                    case '(':
-                    case ')':
-                    case '=':
-                        if (buffer != string.Empty) {
-                            tokens.Add (buffer);
-                            buffer = string.Empty;
-                        }
-                        tokens.Add (idxChar.ToString ());
-                        break;
-                    case '"':
-                        if (buffer != string.Empty) {
-                            tokens.Add (buffer);
-                            buffer = string.Empty;
-                        }
-                        tokens.Add (Utilities.GetStringToken (expression, ref idxNo));
-                        idxNo -= 1;
-                        break;
-                    case '@':
-                        if (buffer != string.Empty) {
-                            tokens.Add (buffer);
-                            buffer = string.Empty;
-                        }
-                        tokens.Add (Utilities.GetMultilineStringToken (expression, ref idxNo));
-                        idxNo -= 1;
-                        break;
-                    default:
-                        buffer += idxChar;
-                        break;
+            IteratorGroup current = new IteratorGroup (node, null);
+            string typeOfExpression = null;
+            bool seenQuestionMark = false;
+            string previousToken = null;
+            foreach (string idxToken in TokenizeExpression (_expression)) {
+                if (seenQuestionMark) {
+                    typeOfExpression = idxToken;
+                } else if (idxToken == "?") {
+                    seenQuestionMark = true;
+                } else {
+                    current = FindMatches (current, idxToken, previousToken, node);
                 }
+                previousToken = idxToken;
             }
-            if (buffer != string.Empty)
-                tokens.Add (buffer);
-            return tokens;
-        }
 
-        /*
-         * return matches according to token
-         */
-        private MatchIterator FindMatches (MatchIterator lastMatches, List<string> previousTokens, ref int idxNo)
-        {
-            string token = previousTokens [previousTokens.Count - 1];
-            switch (token) {
-                case "/":
-                    return FindMatchesSlashToken (lastMatches, previousTokens);
-                case "*":
-                    return new MatchIteratorAllChildren (lastMatches);
-                case "|":
-                    return FindMatchesLogical (lastMatches, previousTokens, ref idxNo, MatchIteratorLogical.LogicalType.OR);
-                case "&":
-                    return FindMatchesLogical (lastMatches, previousTokens, ref idxNo, MatchIteratorLogical.LogicalType.AND);
-                case "!":
-                    return FindMatchesLogical (lastMatches, previousTokens, ref idxNo, MatchIteratorLogical.LogicalType.NOT);
-                case "^":
-                    return FindMatchesLogical (lastMatches, previousTokens, ref idxNo, MatchIteratorLogical.LogicalType.XOR);
-                case "**":
-                    return new MatchIteratorAllDescendants (lastMatches);
-                case ".":
-                    return new MatchIteratorAllParents (lastMatches);
-                case "=":
-                    return lastMatches;
-                default:
-                    return FindMatchesDefaultToken (lastMatches, previousTokens);
-            }
-        }
+            if (current.ParentGroup != null)
+                throw new ArgumentException ("unclosed group while evaluating; " + _expression);
 
-        /*
-         * returns a logical match operator
-         */
-        private MatchIteratorLogical FindMatchesLogical (
-            MatchIterator lastMatches, 
-            List<string> previousTokens, 
-            ref int idxNo, 
-            MatchIteratorLogical.LogicalType type)
-        {
-            MatchIterator root = lastMatches;
-            while (root.Parent != null)
-                root = root.Parent;
-            Node node = (root as MatchIteratorStart).Node;
-            MatchIterator currentIterator = new MatchIteratorStart (node);
-            for (idxNo++; idxNo < _tokens.Count - 1; idxNo++) {
-                if (_tokens [idxNo].Length == 1 && "|&!^()".IndexOf (_tokens [idxNo]) != -1)
-                    break;
-                previousTokens.Add (_tokens [idxNo]);
-                currentIterator = FindMatches (currentIterator, previousTokens, ref idxNo);
-            }
-            idxNo -= 1;
-            return new MatchIteratorLogical (node, lastMatches, currentIterator, type);
+            // returning match object
+            return new Match (current, typeOfExpression);
         }
         
         /*
-         * return matches when token is slash "/"
+         * return matches according to token
          */
-        private MatchIterator FindMatchesSlashToken (MatchIterator lastMatches, List<string> previousTokens)
+        private IteratorGroup FindMatches (IteratorGroup current, string token, string previousToken, Node node)
         {
-            if (previousTokens.Count == 1 || 
-                ("|&!^".IndexOf (previousTokens [previousTokens.Count - 2]) != -1 && 
-                previousTokens [previousTokens.Count - 2].Length == 1)) {
-                // returning root since "/" is found as first token of expression
-                return new MatchIteratorRoot (lastMatches);
-            } else if (previousTokens [previousTokens.Count - 2] == "/") {
-                // returning all nodes with empty names since two / tokens have followed each other
-                return new MatchIteratorNamedNode (lastMatches, string.Empty);
-            } else {
-                // token is simply here to separate one token from the next, hence we return simply last match
-                return lastMatches;
-            }
-        }
-
-        /*
-         * return matches when token is not specialized token
-         */
-        private MatchIterator FindMatchesDefaultToken (MatchIterator lastMatches, List<string> previousTokens)
-        {
-            string token = previousTokens [previousTokens.Count - 1];
-            if (previousTokens.Count > 1 && previousTokens [previousTokens.Count - 2] == "=") {
-                // looking for value
-                return new MatchIteratorValuedNode (lastMatches, token);
-            } else {
-                // looking for name
-                if (IsAllNumbers (token)) {
-                    return new MatchIteratorNumberedNode (lastMatches, int.Parse (token));
+            switch (token) {
+            case "(":
+                current = new IteratorGroup (node, current);
+                break;
+            case ")":
+                current = current.ParentGroup;
+                break;
+            case "/":
+                if (current.LastIterator.Left == null) {
+                    // this is first real token in this group, hence we return "root" match
+                    current.AddIterator (new IteratorRoot ());
+                } else if (previousToken == "/") {
+                    // two slashes "//" preceded each other, hence we're looking for a named value, where its name is string.Empty
+                    current.AddIterator (new IteratorNamed (string.Empty));
+                }
+                break;
+            case "*":
+                current.AddIterator (new IteratorChildren ());
+                break;
+            case "**":
+                current.AddIterator (new IteratorDescendants ());
+                break;
+            case ".":
+                current.AddIterator (new IteratorParents ());
+                break;
+            case "|":
+                current.AddLogical (node, new Logical (Logical.LogicalType.OR));
+                break;
+            case "&":
+                current.AddLogical (node, new Logical (Logical.LogicalType.AND));
+                break;
+            case "!":
+                current.AddLogical (node, new Logical (Logical.LogicalType.NOT));
+                break;
+            case "^":
+                current.AddLogical (node, new Logical (Logical.LogicalType.XOR));
+                break;
+            case "=":
+                current.AddIterator (new IteratorValued ()); // actual value will be set in next token
+                break;
+            default:
+                if (current.Left is IteratorValued) {
+                    // looking for value, current token is value to look for, changing Value of current MatchIterator
+                    ((IteratorValued)current.LastIterator).Value = token;
                 } else {
-                    return new MatchIteratorNamedNode (lastMatches, token);
+                    // looking for name
+                    if (IsAllNumbers (token)) {
+                        current.AddIterator (new IteratorNumbered (int.Parse (token)));
+                    } else {
+                        current.AddIterator (new IteratorNamed (token));
+                    }
+                }
+                break;
+            }
+            return current;
+        }
+        
+        /*
+         * responsible for tokenizing expression
+         */
+        private static IEnumerable<string> TokenizeExpression (string expression)
+        {
+            string buffer = string.Empty;
+            for (int idxNo = 1 /* skipping first @ character */; idxNo < expression.Length; idxNo++) {
+                char idxChar = expression [idxNo];
+                if (@"/\.|&!^()=?".IndexOf (idxChar) > -1) {
+                    if (buffer != string.Empty) {
+                        yield return buffer;
+                        buffer = string.Empty;
+                    }
+                } else if (@"""@".IndexOf (idxChar) > -1) {
+                    if (buffer != string.Empty) {
+                        yield return buffer;
+                        buffer = string.Empty;
+                    }
+                    yield return Utilities.GetStringToken (expression, ref idxNo);
+                    idxNo -= 1;
+                } else {
+                    buffer += idxChar;
                 }
             }
+            if (buffer != string.Empty)
+                yield return buffer;
         }
 
         /*
