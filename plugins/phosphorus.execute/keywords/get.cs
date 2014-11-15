@@ -25,7 +25,8 @@ namespace phosphorus.execute
             if (string.IsNullOrEmpty (e.Args.Get<string> ()) || !e.Args.Get<string> ().StartsWith ("@"))
                 throw new ApplicationException ("[pf.get] needs at the very least an expression as its value");
 
-            Match sourceMatch = new Expression (e.Args.Get<string> ()).Evaluate (e.Args);
+            string expression = Expression.FormatNode (e.Args);
+            Match sourceMatch = new Expression (expression).Evaluate (e.Args);
             if (sourceMatch == null)
                 return; // destination node not found
 

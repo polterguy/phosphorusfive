@@ -60,7 +60,7 @@ namespace phosphorus.execute
                         value = new Expression (value).Evaluate (idxNode).GetValue (0, string.Empty);
                     childrenValues.Add (value);
                 }
-                retVal = string.Format (CultureInfo.InvariantCulture, retVal, childrenValues.ToArray ());
+                retVal = string.Format (CultureInfo.InvariantCulture, node.Get<string> (), childrenValues.ToArray ());
             } else {
                 retVal = node.Get<string> ();
             }
@@ -98,23 +98,47 @@ namespace phosphorus.execute
         {
             switch (token) {
             case "?":
+                if (previousToken != "/")
+                    throw new ArgumentException ("unclosed iterator at end of expression; '" + _expression + "'");
                 break;
             case "(":
+                if (previousToken == null || (previousToken.Length != 1 || "(|&^!/".IndexOf (previousToken) == - 1))
+                    throw new ArgumentException ("syntax error in expression; '" + 
+                                                 _expression + 
+                                                 "' probably missing a slash '/' before token; '" + 
+                                                 token + "'");
                 current = new IteratorGroup (current);
                 break;
             case ")":
+                if (previousToken != "/" && previousToken != ")")
+                    throw new ArgumentException ("syntax error in expression; '" + 
+                                                 _expression + 
+                                                 "' probably missing a slash '/' before token; '" + 
+                                                 token + "'");
+                if (current.ParentGroup == null)
+                    throw new ArgumentException ("too many parantheses ')' in expression; '" + _expression + "'");
                 current = current.ParentGroup;
                 break;
             case "/":
                 if (previousToken == "/") {
-                    // two slashes "//" preceded each other, hence we're looking for a named value, where its name is string.Empty
+                    // two slashes "//" preceding each other, hence we're looking for a named value, where its name is string.Empty
                     current.AddIterator (new IteratorNamed (string.Empty));
                 }
                 break;
             case "\\":
+                if (previousToken != "/")
+                    throw new ArgumentException ("syntax error in expression; '" + 
+                                                 _expression + 
+                                                 "' probably missing a slash '/' before token; '" + 
+                                                 token + "'");
                 current.AddIterator (new IteratorRoot ());
                 break;
             case "*":
+                if (previousToken != "/")
+                    throw new ArgumentException ("syntax error in expression; '" + 
+                                                 _expression + 
+                                                 "' probably missing a slash '/' before token; '" + 
+                                                 token + "'");
                 current.AddIterator (new IteratorChildren ());
                 break;
             case "+":
@@ -122,6 +146,11 @@ namespace phosphorus.execute
                 current.AddIterator (new IteratorSibling (token == "+" ? 1 : -1));
                 break;
             case "**":
+                if (previousToken != "/")
+                    throw new ArgumentException ("syntax error in expression; '" + 
+                                                 _expression + 
+                                                 "' probably missing a slash '/' before token; '" + 
+                                                 token + "'");
                 current.AddIterator (new IteratorDescendants ());
                 break;
             case ".":
@@ -140,6 +169,11 @@ namespace phosphorus.execute
                 current.AddLogical (new Logical (Logical.LogicalType.XOR));
                 break;
             case "=":
+                if (previousToken != "/" && previousToken != ")")
+                    throw new ArgumentException ("syntax error in expression; '" + 
+                                                 _expression + 
+                                                 "' probably missing a slash '/' before token; '" + 
+                                                 token + "'");
                 current.AddIterator (new IteratorValued ()); // actual value will be set in next token
                 break;
             default:
@@ -149,11 +183,14 @@ namespace phosphorus.execute
                 } else if (previousToken == "+" || previousToken == "-") {
                     // looking for sibling, current token is offset to look for
                     if (!IsNumber (token))
-                        throw new ArgumentException ("a sibling operator must have an integer number as its next token");
+                        throw new ArgumentException ("a sibling operator must have an integer number as its next token, syntax error close to; '" + token + "' in expression;'" + _expression + "'");
                     ((IteratorSibling)current.LastIterator).Offset = previousToken == "-" ? -int.Parse (token) : int.Parse (token);
                 } else {
-                    if ("/\\()|&^!".IndexOf (previousToken) == -1)
-                        throw new ArgumentException ("syntax error in expression; '" + _expression + "' probably missing a slash '/' before named or numbered token; '" + token + "'");
+                    if (previousToken != "/")
+                        throw new ArgumentException ("syntax error in expression; '" + 
+                                                     _expression + 
+                                                     "' probably missing a slash '/' before token; '" + 
+                                                     token + "'");
                     // looking for named or numbered node
                     if (IsNumber (token)) {
                         current.AddIterator (new IteratorNumbered (int.Parse (token)));
