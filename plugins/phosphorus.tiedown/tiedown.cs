@@ -35,19 +35,22 @@ namespace phosphorus.tiedown
         {
             // execute load hyperlisp file
             string code = @"
-qwerty:joppla2
-  first-child:@""mumbo
-howdy""
-foo:howdy
-  x1:joppla1
-  x2:joppla2
-    child:x
-  x3:joppla3
-    child1:x
-    child2:y
-:kokko
-kakao
-pf.get:@./*/qwerty=joppla2\*/qwerty/+3/-2?node";
+item:first
+  a:abba
+    abbas-first
+  b:bravo
+    bravos-first
+  c:charlie
+    challies-value
+item:second
+  c:howdy
+    d:world
+pf.get:@\*/(item=first|=second)/*(*/""bravos-first""/.|c)*?node";
+            /*
+             * TODO;
+             * make IteratorGroup take an IEnumerable<Node> and make a new group "()" able to iterate on the result of the "outer group"
+             * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+             */
             Node node = new Node ("root", code);
             context.Raise ("pf.hyperlisp-2-node", node);
             node.Value = null;

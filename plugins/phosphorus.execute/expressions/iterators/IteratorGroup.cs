@@ -13,12 +13,18 @@ namespace phosphorus.execute.iterators
     {
         private List<Logical> _logicals = new List<Logical> ();
 
-        public IteratorGroup (Node node, IteratorGroup parent)
+        public IteratorGroup (Node node)
         {
-            AddLogical (node, new Logical (Logical.LogicalType.OR));
+            AddLogical (new Logical (Logical.LogicalType.OR));
+            AddIterator (new IteratorNode (new Node[] { node }));
+        }
+
+        public IteratorGroup (IteratorGroup parent)
+        {
+            AddLogical (new Logical (Logical.LogicalType.OR));
+            AddIterator (new IteratorLeftParent (parent.LastIterator));
             ParentGroup = parent;
-            if (parent != null)
-                parent.AddIterator (this);
+            ParentGroup.AddIterator (this);
         }
 
         public IteratorGroup ParentGroup {
@@ -32,10 +38,15 @@ namespace phosphorus.execute.iterators
             }
         }
 
-        public void AddLogical (Node node, Logical logical)
+        public void AddLogical (Logical logical)
         {
             _logicals.Add (logical);
-            AddIterator (new IteratorNode (node)); 
+            if (_logicals.Count > 1) {
+                Iterator leftMost = _logicals [0].Iterator;
+                while (leftMost.Left != null)
+                    leftMost = leftMost.Left;
+                _logicals [_logicals.Count - 1].AddIterator (leftMost);
+            }
         }
 
         public void AddIterator (Iterator iterator)

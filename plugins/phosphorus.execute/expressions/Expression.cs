@@ -72,15 +72,14 @@ namespace phosphorus.execute
         /// </summary>
         public Match Evaluate (Node node)
         {
-            IteratorGroup current = new IteratorGroup (node, null);
-            string typeOfExpression = null;
-            string previousToken = null;
+            IteratorGroup current = new IteratorGroup (node);
+            string typeOfExpression = null, previousToken = null;
             foreach (string idxToken in TokenizeExpression (_expression)) {
                 if (previousToken == "?") {
                     typeOfExpression = idxToken;
                     break;
                 } else {
-                    current = FindMatches (current, idxToken, previousToken, node);
+                    current = FindMatches (current, idxToken, previousToken);
                 }
                 previousToken = idxToken;
             }
@@ -95,13 +94,13 @@ namespace phosphorus.execute
         /*
          * return matches according to token
          */
-        private IteratorGroup FindMatches (IteratorGroup current, string token, string previousToken, Node node)
+        private IteratorGroup FindMatches (IteratorGroup current, string token, string previousToken)
         {
             switch (token) {
             case "?":
                 break;
             case "(":
-                current = new IteratorGroup (node, current);
+                current = new IteratorGroup (current);
                 break;
             case ")":
                 current = current.ParentGroup;
@@ -129,20 +128,18 @@ namespace phosphorus.execute
                 current.AddIterator (new IteratorParents ());
                 break;
             case "|":
-                current.AddLogical (node, new Logical (Logical.LogicalType.OR));
+                current.AddLogical (new Logical (Logical.LogicalType.OR));
                 break;
             case "&":
-                current.AddLogical (node, new Logical (Logical.LogicalType.AND));
+                current.AddLogical (new Logical (Logical.LogicalType.AND));
                 break;
             case "!":
-                current.AddLogical (node, new Logical (Logical.LogicalType.NOT));
+                current.AddLogical (new Logical (Logical.LogicalType.NOT));
                 break;
             case "^":
-                current.AddLogical (node, new Logical (Logical.LogicalType.XOR));
+                current.AddLogical (new Logical (Logical.LogicalType.XOR));
                 break;
             case "=":
-                if ("/\\".IndexOf (previousToken) == -1 && !(current.LastIterator is IteratorNamed))
-                    throw new ArgumentException ("syntax error in expression; '" + _expression + "' probably missing a slash '/' before valued token; '" + token + "'");
                 current.AddIterator (new IteratorValued ()); // actual value will be set in next token
                 break;
             default:
@@ -155,7 +152,7 @@ namespace phosphorus.execute
                         throw new ArgumentException ("a sibling operator must have an integer number as its next token");
                     ((IteratorSibling)current.LastIterator).Offset = previousToken == "-" ? -int.Parse (token) : int.Parse (token);
                 } else {
-                    if ("/\\".IndexOf (previousToken) == -1)
+                    if ("/\\()|&^!".IndexOf (previousToken) == -1)
                         throw new ArgumentException ("syntax error in expression; '" + _expression + "' probably missing a slash '/' before named or numbered token; '" + token + "'");
                     // looking for named or numbered node
                     if (IsNumber (token)) {

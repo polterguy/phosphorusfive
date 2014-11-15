@@ -49,6 +49,7 @@
     <Compile Include="expressions\iterators\IteratorValued.cs" />
     <Compile Include="expressions\iterators\IteratorGroup.cs" />
     <Compile Include="expressions\iterators\IteratorSibling.cs" />
+    <Compile Include="expressions\iterators\IteratorLeftParent.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

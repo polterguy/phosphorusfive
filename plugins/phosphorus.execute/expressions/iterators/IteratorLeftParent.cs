@@ -9,19 +9,19 @@ using phosphorus.core;
 
 namespace phosphorus.execute.iterators
 {
-    public class IteratorNode : Iterator
+    public class IteratorLeftParent : Iterator
     {
-        private IEnumerable<Node> _nodes;
+        private Iterator _leftParent;
 
-        public IteratorNode (IEnumerable<Node> nodes)
+        public IteratorLeftParent (Iterator leftParent)
         {
-            _nodes = nodes;
+            _leftParent = leftParent;
         }
 
         public override IEnumerable<Node> Evaluate {
             get {
-                foreach (Node idx in _nodes) {
-                    yield return idx;
+                foreach (Node idxCurrent in _leftParent.Evaluate) {
+                    yield return idxCurrent;
                 }
             }
         }

@@ -158,7 +158,8 @@ namespace phosphorus.execute
         public void AssignValue (object value)
         {
             Node node = new Node ("", value);
-            Match match = new Match (new IteratorGroup (node, null), "value");
+            IteratorGroup iGroup = new IteratorGroup (node);
+            Match match = new Match (iGroup, "value");
             AssignMatch (match);
         }
         
