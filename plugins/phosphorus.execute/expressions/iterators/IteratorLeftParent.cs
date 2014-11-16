@@ -20,9 +20,7 @@ namespace phosphorus.execute.iterators
 
         public override IEnumerable<Node> Evaluate {
             get {
-                foreach (Node idxCurrent in _leftParent.Evaluate) {
-                    yield return idxCurrent;
-                }
+                return _leftParent.Evaluate;
             }
         }
     }

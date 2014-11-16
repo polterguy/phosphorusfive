@@ -46,7 +46,7 @@ _ex:/(/\/*//=liv/)/**/
       hundedyr:coyote, ulv, hund
 
 
-pf.get:@{0}(/kattedyr/|/mennesker/)/?value
+pf.get:@""@{0}(/kattedyr/|/reptiler/|/primater/0/)/?value""
   get-life:@/\/*/_ex/?value";
             Node node = new Node ("root", code);
             context.Raise ("pf.hyperlisp-2-node", node);

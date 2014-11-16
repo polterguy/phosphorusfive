@@ -13,10 +13,11 @@ namespace phosphorus.execute.iterators
     {
         private List<Logical> _logicals = new List<Logical> ();
         private Iterator _groupRoot;
+        private List<Node> _cachedEvaluatedNodes;
 
         public IteratorGroup (Node node)
         {
-            _groupRoot = new IteratorNode (new Node[] { node });
+            _groupRoot = new IteratorNode (node);
             AddLogical (new Logical (Logical.LogicalType.OR));
         }
 
@@ -42,6 +43,8 @@ namespace phosphorus.execute.iterators
         public void AddLogical (Logical logical)
         {
             _logicals.Add (logical);
+
+            // making sure "group root iterator" is root iterator of all Logicals
             _logicals [_logicals.Count - 1].AddIterator (_groupRoot);
         }
 
@@ -52,11 +55,13 @@ namespace phosphorus.execute.iterators
 
         public override IEnumerable<Node> Evaluate {
             get {
-                List<Node> retVal = new List<Node> ();
-                foreach (Logical idxLogical in _logicals) {
-                    retVal = idxLogical.EvaluateNodes (retVal);
+                if (_cachedEvaluatedNodes == null) {
+                    _cachedEvaluatedNodes = new List<Node> ();
+                    foreach (Logical idxLogical in _logicals) {
+                        _cachedEvaluatedNodes = idxLogical.EvaluateNodes (_cachedEvaluatedNodes);
+                    }
                 }
-                return retVal;
+                return _cachedEvaluatedNodes;
             }
         }
     }

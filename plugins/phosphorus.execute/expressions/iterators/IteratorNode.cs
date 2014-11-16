@@ -11,18 +11,16 @@ namespace phosphorus.execute.iterators
 {
     public class IteratorNode : Iterator
     {
-        private IEnumerable<Node> _nodes;
+        private Node _node;
 
-        public IteratorNode (IEnumerable<Node> nodes)
+        public IteratorNode (Node node)
         {
-            _nodes = nodes;
+            _node = node;
         }
 
         public override IEnumerable<Node> Evaluate {
             get {
-                foreach (Node idx in _nodes) {
-                    yield return idx;
-                }
+                yield return _node;
             }
         }
     }
