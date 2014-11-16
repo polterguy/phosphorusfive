@@ -33,13 +33,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="executor.cs" />
-    <Compile Include="keywords\set.cs" />
     <Compile Include="expressions\Expression.cs" />
     <Compile Include="expressions\Match.cs" />
     <Compile Include="expressions\iterators\Iterator.cs" />
     <Compile Include="expressions\iterators\Logical.cs" />
     <Compile Include="expressions\iterators\IteratorChildren.cs" />
-    <Compile Include="expressions\iterators\IteratorDescendants.cs" />
     <Compile Include="expressions\iterators\IteratorNamed.cs" />
     <Compile Include="expressions\iterators\IteratorNode.cs" />
     <Compile Include="expressions\iterators\IteratorNumbered.cs" />
@@ -49,7 +47,8 @@
     <Compile Include="expressions\iterators\IteratorGroup.cs" />
     <Compile Include="expressions\iterators\IteratorSibling.cs" />
     <Compile Include="expressions\iterators\IteratorLeftParent.cs" />
-    <Compile Include="keywords\add.cs" />
+    <Compile Include="expressions\iterators\IteratorFlatten.cs" />
+    <Compile Include="keywords\put.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

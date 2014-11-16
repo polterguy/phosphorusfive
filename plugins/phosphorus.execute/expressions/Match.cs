@@ -152,6 +152,31 @@ namespace phosphorus.execute
         }
 
         /// <summary>
+        /// returns true if the <see cref="phosphorus.execute.Match"/> contains only one match, and the match will return a single
+        /// object literal
+        /// </summary>
+        /// <value><c>true</c> if this instance is a single literal; otherwise, <c>false</c></value>
+        public bool IsSingleLiteral {
+            get {
+                return _nodes.Count == 1 && 
+                    (_type == MatchType.Name || 
+                     _type == MatchType.Value || 
+                     _type == MatchType.Count || 
+                     _type == MatchType.Path);
+            }
+        }
+
+        /// <summary>
+        /// returns true if <see cref="phosphorus.execute.Match"/> is assignable
+        /// </summary>
+        /// <value><c>true</c> if this instance is assignable; otherwise, <c>false</c></value>
+        public bool IsAssignable {
+            get {
+                return _type == MatchType.Name || _type == MatchType.Value || _type == MatchType.Node;
+            }
+        }
+
+        /// <summary>
         /// changes the nodes in this <see cref="phosphorus.execute.Expression.Match"/> to the given value 
         /// </summary>
         /// <param name="value">new value</param>
@@ -178,7 +203,7 @@ namespace phosphorus.execute
                 AssignValue (rhs);
                 break;
             case MatchType.Node:
-                AssignNode (rhs);
+                AssignNodes (rhs);
                 break;
             default:
                 throw new ArgumentException ("match is unassignable and read only");
@@ -195,7 +220,7 @@ namespace phosphorus.execute
                     idxDest.Name = string.Empty; // name should and cannot be null, hence empty string
                 }
             } else {
-                if (rhs._nodes.Count > 1)
+                if (rhs._nodes.Count > 1 && rhs._type != MatchType.Count)
                     throw new ArgumentException ("source match cannot have multiple values when assigning name of match");
                 string sourceValue = null;
                 switch (rhs._type) {
@@ -233,7 +258,7 @@ namespace phosphorus.execute
                     idxDest.Value = null;
                 }
             } else {
-                if (rhs._nodes.Count > 1)
+                if (rhs._nodes.Count > 1 && rhs._type != MatchType.Count)
                     throw new ArgumentException ("source match cannot have multiple values when assigning value");
                 string sourceValue = null;
                 switch (rhs._type) {
@@ -261,17 +286,35 @@ namespace phosphorus.execute
         /*
          * assigns node of resulting nodes
          */
-        private void AssignNode (Match rhs)
+        private void AssignNodes (Match rhs)
         {
-            if (rhs == null) {
+            if (rhs._type == MatchType.Node) {
                 foreach (Node idxDest in _nodes) {
-                    idxDest.Untie ();
+                    foreach (Node idxSource in rhs.Matches) {
+                        idxDest.Add (idxSource.Clone ());
+                    }
                 }
-            } else {
-                if (rhs._type != MatchType.Node || rhs._nodes.Count != 1)
-                    throw new ArgumentException ("you can only assign a node to one other node");
+            } else if (rhs._type == MatchType.Name) {
                 foreach (Node idxDest in _nodes) {
-                    idxDest.Replace (rhs._nodes [0].Clone ());
+                    foreach (Node idxSource in rhs.Matches) {
+                        idxDest.Add (new Node ("", idxSource.Name));
+                    }
+                }
+            } else if (rhs._type == MatchType.Value) {
+                foreach (Node idxDest in _nodes) {
+                    foreach (Node idxSource in rhs.Matches) {
+                        idxDest.Add (new Node ("", idxSource.Value));
+                    }
+                }
+            } else if (rhs._type == MatchType.Count) {
+                foreach (Node idxDest in _nodes) {
+                    idxDest.Add (new Node ("", rhs.Count));
+                }
+            } else if (rhs._type == MatchType.Path) {
+                foreach (Node idxDest in _nodes) {
+                    foreach (Node idxSource in rhs.Matches) {
+                        idxDest.Add (new Node ("", idxSource.Path));
+                    }
                 }
             }
         }

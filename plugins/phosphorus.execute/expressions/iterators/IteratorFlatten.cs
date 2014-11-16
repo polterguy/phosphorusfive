@@ -10,9 +10,9 @@ using phosphorus.core;
 namespace phosphorus.execute.iterators
 {
     /// <summary>
-    /// return all descendants of previous iterator, or children, children of children, and so on recursively
+    /// return all nodes and descendants of previous iterator, flattening hierarchy
     /// </summary>
-    public class IteratorDescendants : Iterator
+    public class IteratorFlatten : Iterator
     {
         public override IEnumerable<Node> Evaluate {
             get {
@@ -29,6 +29,7 @@ namespace phosphorus.execute.iterators
          */
         private IEnumerable<Node> ReturnChildren (Node idx)
         {
+            yield return idx;
             foreach (Node idxChild in idx.Children) {
                 yield return idxChild;
                 foreach (Node idxChildChild in ReturnChildren (idxChild)) {

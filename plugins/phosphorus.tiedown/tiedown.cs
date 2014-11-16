@@ -40,12 +40,20 @@ namespace phosphorus.tiedown
     reptiler:slanger, osv
     pattedyr:hunder, mennesker, osv
       kattedyr:pus, tiger, osv
+        tigre:bengalsk
+        løver:afrika
       primater:apekatter, osv
         mennesker:per, ole og jens
       hundedyr:coyote, ulv, hund
+        ulv:grå
+        coyote:ørken
 _val
-pf.add:@/-/?node
-  :@/\/0//=liv/*/flercellede/*/pattedyr/*/(/primater/|/kattedyr/)/?node";
+pf.put:@/-/?node
+  :@/\/0/0/*/pattedyr/*/(/primater/|/kattedyr/)/**/kattedyr/*/?node";
+            /////////////////////////////////////////////
+            /// "adressible nodes" through DNA code
+            /// "pf.put" instead of "pf.add" :)
+            /////////////////////////////////////////////
             Node node = new Node ("root", code);
             context.Raise ("pf.hyperlisp-2-node", node);
             node.Value = null;
