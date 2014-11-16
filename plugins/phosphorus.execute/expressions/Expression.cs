@@ -291,9 +291,11 @@ namespace phosphorus.execute
         private IteratorGroup FindMatchDefaultToken (IteratorGroup current, string token, string previousToken)
         {
             if (previousToken == "=") {
+
                 // looking for value, current token is value to look for, changing Value of current MatchIterator
                 ((IteratorValued)current.LastIterator).Value = token;
             } else if (previousToken == "+" || previousToken == "-") {
+
                 // looking for sibling, current token is offset to look for
                 if (!IsNumber (token)) {
                     throw new ArgumentException ("a sibling operator must have an integer number as its next token, syntax error close to; '" + 
@@ -301,13 +303,14 @@ namespace phosphorus.execute
                 }
                 ((IteratorSibling)current.LastIterator).Offset = previousToken == "-" ? -int.Parse (token) : int.Parse (token);
             } else {
+
+                // looking for named or numbered node
                 if (previousToken != "/") {
                     throw new ArgumentException ("syntax error in expression; '" + 
                         _expression + 
                         "' probably missing a slash '/' before token; '" + 
                         token + "'");
                 }
-                // looking for named or numbered node
                 if (IsNumber (token)) {
                     current.AddIterator (new IteratorNumbered (int.Parse (token)));
                 } else {
@@ -325,7 +328,7 @@ namespace phosphorus.execute
             string buffer = string.Empty;
             for (int idxNo = 1 /* skipping first @ character */; idxNo < expression.Length; idxNo++) {
                 char idxChar = expression [idxNo];
-                if (@"/\.|&!^()=?+-".IndexOf (idxChar) > -1) {
+                if ("/\\.|&!^()=?+-".IndexOf (idxChar) > -1) {
                     if (buffer != string.Empty) {
                         yield return buffer;
                         buffer = string.Empty;

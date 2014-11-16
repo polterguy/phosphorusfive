@@ -9,10 +9,17 @@ using phosphorus.core;
 
 namespace phosphorus.execute.iterators
 {
+    /// <summary>
+    /// iterator for returning all n'th children of previous iterator result
+    /// </summary>
     public class IteratorNumbered : Iterator
     {
         private int _number;
 
+        /// <summary>
+        /// initializes a new instance of the <see cref="phosphorus.execute.iterators.IteratorNumbered"/> class
+        /// </summary>
+        /// <param name="number">n'th child to return if it exists in previous result</param>
         public IteratorNumbered (int number)
         {
             _number = number;

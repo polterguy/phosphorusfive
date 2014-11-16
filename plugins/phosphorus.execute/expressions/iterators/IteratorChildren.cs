@@ -9,6 +9,9 @@ using phosphorus.core;
 
 namespace phosphorus.execute.iterators
 {
+    /// <summary>
+    /// returns all children of previous iterator
+    /// </summary>
     public class IteratorChildren : Iterator
     {
         public override IEnumerable<Node> Evaluate {

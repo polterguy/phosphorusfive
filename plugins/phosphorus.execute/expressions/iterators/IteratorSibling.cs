@@ -9,15 +9,26 @@ using phosphorus.core;
 
 namespace phosphorus.execute.iterators
 {
+    /// <summary>
+    /// returns an offset sibling <see cref="phosphorus.core.Node"/>
+    /// </summary>
     public class IteratorSibling : Iterator
     {
         private int _offset;
 
+        /// <summary>
+        /// initializes a new instance of the <see cref="phosphorus.execute.iterators.IteratorSibling"/> class
+        /// </summary>
+        /// <param name="offset">offset siblings from current nodes</param>
         public IteratorSibling (int offset)
         {
             _offset = offset;
         }
 
+        /// <summary>
+        /// gets or sets the offset value
+        /// </summary>
+        /// <value>the offset</value>
         public int Offset {
             get {
                 return _offset;

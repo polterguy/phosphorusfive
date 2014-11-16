@@ -9,10 +9,17 @@ using phosphorus.core;
 
 namespace phosphorus.execute.iterators
 {
+    /// <summary>
+    /// returns all nodes with the specified name of the previous iterator
+    /// </summary>
     public class IteratorNamed : Iterator
     {
         private string _name;
 
+        /// <summary>
+        /// initializes a new instance of the <see cref="phosphorus.execute.iterators.IteratorNamed"/> class
+        /// </summary>
+        /// <param name="name">name to match</param>
         public IteratorNamed (string name)
         {
             if (name.StartsWith ("\\"))

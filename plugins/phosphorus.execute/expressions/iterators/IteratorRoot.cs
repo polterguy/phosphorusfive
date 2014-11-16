@@ -9,6 +9,9 @@ using phosphorus.core;
 
 namespace phosphorus.execute.iterators
 {
+    /// <summary>
+    /// returns the "root" <see cref="phosphorus.core.Node"/> of the entire tree which the iterator is iterating
+    /// </summary>
     public class IteratorRoot : Iterator
     {
         public override IEnumerable<Node> Evaluate {

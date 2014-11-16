@@ -9,10 +9,17 @@ using phosphorus.core;
 
 namespace phosphorus.execute.iterators
 {
+    /// <summary>
+    /// returns all <see cref="phosphorus.core.Node"/>s from previous iterated result with a specified string value
+    /// </summary>
     public class IteratorValued : Iterator
     {
         private string _value;
 
+        /// <summary>
+        /// gets or sets the value to search for
+        /// </summary>
+        /// <value>The value.</value>
         public string Value {
             get {
                 return _value;
