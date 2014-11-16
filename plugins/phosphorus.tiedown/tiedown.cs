@@ -35,7 +35,6 @@ namespace phosphorus.tiedown
         {
             // execute load hyperlisp file
             string code = @"
-_ex:/(/\/*//=liv/)/**/
 :liv
   flercellede:dyr
     reptiler:slanger, osv
@@ -44,10 +43,9 @@ _ex:/(/\/*//=liv/)/**/
       primater:apekatter, osv
         mennesker:per, ole og jens
       hundedyr:coyote, ulv, hund
-
-
-pf.get:@""@{0}(/kattedyr/|/reptiler/|/primater/0/)/?value""
-  get-life:@/\/*/_ex/?value";
+_val
+pf.add:@/-/?node
+  :@/\/0//=liv/*/flercellede/*/pattedyr/*/(/primater/|/kattedyr/)/?node";
             Node node = new Node ("root", code);
             context.Raise ("pf.hyperlisp-2-node", node);
             node.Value = null;

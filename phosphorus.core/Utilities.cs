@@ -66,28 +66,28 @@ namespace phosphorus.core
                 else if (idxChar == '\\') {
                     char tmpChar = code [index + 1];
                     switch (tmpChar) {
-                        case 'r':
+                    case 'r':
+                        index += 1;
+                        idxChar = '\r';
+                        break;
+                    case 'n':
+                        index += 1;
+                        idxChar = '\n';
+                        break;
+                    case 't':
+                        index += 1;
+                        idxChar = '\t';
+                        break;
+                    case '"':
+                        if ((builder.Length - builder.ToString ().TrimEnd (new char[] { '\\' }).Length) % 2 == 0) {
                             index += 1;
-                            idxChar = '\r';
-                            break;
-                        case 'n':
-                            index += 1;
-                            idxChar = '\n';
-                            break;
-                        case 't':
-                            index += 1;
-                            idxChar = '\t';
-                            break;
-                        case '"':
-                            if ((builder.Length - builder.ToString ().TrimEnd (new char[] { '\\' }).Length) % 2 == 0) {
-                                index += 1;
-                                idxChar = '"';
-                            }
-                            break;
-                        case '\\':
-                            break;
-                        default:
-                            throw new ArgumentException ("unknown escaping character in; " + code);
+                            idxChar = '"';
+                        }
+                        break;
+                    case '\\':
+                        break;
+                    default:
+                        throw new ArgumentException ("unknown escaping character in; " + code);
                     }
                 }
                 builder.Append (idxChar.ToString ());
