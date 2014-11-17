@@ -49,7 +49,7 @@ _data:liv
         coyote:ørken
 _val
 pf.add:@/-/?node
-  :@/\/**/_data/**/(/[2,5]/&/[3,12]&/[4,10]/|/[2,8]/)/?name
+  :@/\/**/_data/**/[1,]/%3/?name
 ";
             /////////////////////////////////////////////
             /// "adressible nodes" through DNA code, which is usable in for instance 
