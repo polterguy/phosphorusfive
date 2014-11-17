@@ -123,9 +123,42 @@ namespace phosphorus.execute
                 return FindMatchLogicalToken (current, token, previousToken);
             case "=":
                 return FindMatchEqualSignToken (current, previousToken);
+            case "[":
+                return FindMatchOpenRangeToken (current, previousToken);
+            case ",":
+                return FindMatchCommaToken (current, previousToken);
+            case "]":
+                return FindMatchCloseRangeToken (current, previousToken);
             default:
                 return FindMatchDefaultToken (current, token, previousToken);
             }
+        }
+        
+        /*
+         * handles "[" token
+         */
+        private IteratorGroup FindMatchOpenRangeToken (IteratorGroup current, string previousToken)
+        {
+            if (previousToken != "/") {
+                throw new ArgumentException ("unclosed iterator before question mark '?' in expression; '" + _expression + "'");
+            }
+            return current;
+        }
+        
+        /*
+         * handles "," token
+         */
+        private IteratorGroup FindMatchCommaToken (IteratorGroup current, string previousToken)
+        {
+            return current;
+        }
+
+        /*
+         * handles "]" token
+         */
+        private IteratorGroup FindMatchCloseRangeToken (IteratorGroup current, string previousToken)
+        {
+            return current;
         }
 
         /*
@@ -302,6 +335,18 @@ namespace phosphorus.execute
                         token + "' in expression; '" + _expression + "'");
                 }
                 ((IteratorSibling)current.LastIterator).Offset = previousToken == "-" ? -int.Parse (token) : int.Parse (token);
+            } else if (previousToken == "[") {
+
+                // looking for range token, current token is "start"
+                if (!IsNumber (token))
+                    throw new ArgumentException ("start of range was not a number, syntax error at; '" + token + "' in expression; '" + _expression + "'");
+                current.AddIterator (new IteratorRange (int.Parse (token)));
+            } else if (previousToken == ",") {
+
+                // looking for range token, current token is "end"
+                if (!IsNumber (token))
+                    throw new ArgumentException ("end of range was not a number, syntax error at; '" + token + "' in expression; '" + _expression + "'");
+                ((IteratorRange)current.LastIterator).End = int.Parse (token);
             } else {
 
                 // looking for named or numbered node
@@ -328,7 +373,7 @@ namespace phosphorus.execute
             string buffer = string.Empty;
             for (int idxNo = 1 /* skipping first @ character */; idxNo < expression.Length; idxNo++) {
                 char idxChar = expression [idxNo];
-                if ("/\\.|&!^()=?+-".IndexOf (idxChar) > -1) {
+                if ("/\\.|&^!()=?+-[],".IndexOf (idxChar) > -1) {
                     if (buffer != string.Empty) {
                         yield return buffer;
                         buffer = string.Empty;

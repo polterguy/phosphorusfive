@@ -50,6 +50,7 @@
     <Compile Include="expressions\iterators\IteratorFlatten.cs" />
     <Compile Include="keywords\set.cs" />
     <Compile Include="keywords\add.cs" />
+    <Compile Include="expressions\iterators\IteratorRange.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -16,10 +16,13 @@ namespace phosphorus.execute.iterators
     {
         public override IEnumerable<Node> Evaluate {
             get {
+                List<Node> retVal = new List<Node> ();
                 foreach (Node idxCurrent in Left.Evaluate) {
-                    foreach (Node idxChild in ReturnChildren (idxCurrent)) {
-                        yield return idxChild;
-                    }
+                    retVal.Add (idxCurrent);
+                    ReturnChildren (idxCurrent, retVal);
+                }
+                foreach (Node idx in retVal) {
+                    yield return idx;
                 }
             }
         }
@@ -27,14 +30,11 @@ namespace phosphorus.execute.iterators
         /*
          * recursively invoked for all descendant nodes
          */
-        private IEnumerable<Node> ReturnChildren (Node idx)
+        private void ReturnChildren (Node idx, List<Node> retVal)
         {
-            yield return idx;
             foreach (Node idxChild in idx.Children) {
-                yield return idxChild;
-                foreach (Node idxChildChild in ReturnChildren (idxChild)) {
-                    yield return idxChildChild;
-                }
+                retVal.Add (idxChild);
+                ReturnChildren (idxChild, retVal);
             }
         }
     }

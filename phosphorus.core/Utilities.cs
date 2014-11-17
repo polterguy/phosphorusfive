@@ -15,33 +15,6 @@ namespace phosphorus.core
     public static class Utilities
     {
         /// <summary>
-        /// reads multiline string literal from code, incrementing index to position of character after end of multiline text literal
-        /// </summary>
-        /// <returns>the multiline string token</returns>
-        /// <param name="code">code to read string from</param>
-        /// <param name="index">index of where to start, expected to be at the "@" position of the beginning of the multiline literal</param>
-        private static string GetMultilineStringToken (string code, ref int index)
-        {
-            StringBuilder builder = new StringBuilder ();
-            index += 2;
-            while (index < code.Length) {
-                char idxChar = code [index];
-                if (builder.Length > 0 && idxChar != '"' && (builder.Length - builder.ToString ().TrimEnd (new char[] { '"' }).Length) % 2 == 1)
-                    break;
-                if (idxChar == '\n') {
-                    builder.Append ("\r\n"); // normalizing carriage returns
-                } else if (idxChar == '\r') {
-                    builder.Append ("\r\n"); // normalizing carriage returns
-                    index += 1;
-                } else {
-                    builder.Append (idxChar.ToString ());
-                }
-                index += 1;
-            }
-            return builder.ToString ().Substring (0, builder.Length - 1).Replace (@"""""", @"""");
-        }
-
-        /// <summary>
         /// reads string literal from code, and increments index to the position after the end of the string
         /// </summary>
         /// <returns>the string token</returns>
@@ -96,6 +69,30 @@ namespace phosphorus.core
             if (!finished)
                 throw new ArgumentException ("unfinished string literal in; " + code);
             return builder.ToString ().Replace (@"\\", @"\");
+        }
+
+        /*
+         * reads a multiline string literal
+         */
+        private static string GetMultilineStringToken (string code, ref int index)
+        {
+            StringBuilder builder = new StringBuilder ();
+            index += 2;
+            while (index < code.Length) {
+                char idxChar = code [index];
+                if (builder.Length > 0 && idxChar != '"' && (builder.Length - builder.ToString ().TrimEnd (new char[] { '"' }).Length) % 2 == 1)
+                    break;
+                if (idxChar == '\n') {
+                    builder.Append ("\r\n"); // normalizing carriage returns
+                } else if (idxChar == '\r') {
+                    builder.Append ("\r\n"); // normalizing carriage returns
+                    index += 1;
+                } else {
+                    builder.Append (idxChar.ToString ());
+                }
+                index += 1;
+            }
+            return builder.ToString ().Substring (0, builder.Length - 1).Replace (@"""""", @"""");
         }
     }
 }
