@@ -94,12 +94,43 @@ namespace phosphorus.execute
         }
 
         /// <summary>
+        /// returns true if the <see cref="phosphorus.execute.Match"/> contains only one match, and the match will return a single
+        /// object literal and not a <see cref="phosphorus.core.Node"/> 
+        /// </summary>
+        /// <value><c>true</c> if this instance is a single literal; otherwise, <c>false</c></value>
+        public bool IsSingleLiteral {
+            get {
+                return _nodes.Count == 1 && _type != MatchType.Node;
+            }
+        }
+
+        /// <summary>
+        /// returns true if <see cref="phosphorus.execute.Match"/> is assignable
+        /// </summary>
+        /// <value><c>true</c> if this instance is assignable; otherwise, <c>false</c></value>
+        public bool IsAssignable {
+            get {
+                return _type == MatchType.Name || _type == MatchType.Value || _type == MatchType.Node;
+            }
+        }
+
+        /// <summary>
         /// gets the <see cref="phosphorus.core.Node"/> at the specified index
         /// </summary>
         /// <param name="index">index</param>
         public Node this [int index] {
             get {
                 return _nodes [index];
+            }
+        }
+
+        /// <summary>
+        /// return all nodes in match
+        /// </summary>
+        /// <value>the matches</value>
+        public IEnumerable<Node> Matches {
+            get {
+                return _nodes;
             }
         }
 
@@ -138,173 +169,6 @@ namespace phosphorus.execute
                 return _nodes [index];
             default:
                 throw new ArgumentException ("cannot get indexed value from match");
-            }
-        }
-
-        /// <summary>
-        /// return all nodes in match
-        /// </summary>
-        /// <value>the matches</value>
-        public IEnumerable<Node> Matches {
-            get {
-                return _nodes;
-            }
-        }
-
-        /// <summary>
-        /// returns true if the <see cref="phosphorus.execute.Match"/> contains only one match, and the match will return a single
-        /// object literal
-        /// </summary>
-        /// <value><c>true</c> if this instance is a single literal; otherwise, <c>false</c></value>
-        public bool IsSingleLiteral {
-            get {
-                return _nodes.Count == 1 && 
-                    (_type == MatchType.Name || 
-                     _type == MatchType.Value || 
-                     _type == MatchType.Count || 
-                     _type == MatchType.Path);
-            }
-        }
-
-        /// <summary>
-        /// returns true if <see cref="phosphorus.execute.Match"/> is assignable
-        /// </summary>
-        /// <value><c>true</c> if this instance is assignable; otherwise, <c>false</c></value>
-        public bool IsAssignable {
-            get {
-                return _type == MatchType.Name || _type == MatchType.Value || _type == MatchType.Node;
-            }
-        }
-
-        /// <summary>
-        /// changes the nodes in this <see cref="phosphorus.execute.Expression.Match"/> to the given value 
-        /// </summary>
-        /// <param name="value">new value</param>
-        public void AssignValue (object value)
-        {
-            Node node = new Node ("", value);
-            IteratorGroup iGroup = new IteratorGroup (node);
-            Match match = new Match (iGroup, "value");
-            AssignMatch (match, null);
-        }
-        
-        /// <summary>
-        /// changes the nodes in this <see cref="phosphorus.execute.Expression.Match"/> to the given rhs match
-        /// </summary>
-        /// <param name="rhs">new value(s) for nodes in match</param>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext"/> currently executing within</param>
-        public void AssignMatch (Match rhs, ApplicationContext context)
-        {
-            switch (_type) {
-            case MatchType.Name:
-                AssignName (rhs, context);
-                break;
-            case MatchType.Value:
-                AssignValue (rhs, context);
-                break;
-            case MatchType.Node:
-                AssignNodes (rhs);
-                break;
-            default:
-                throw new ArgumentException ("match is unassignable and read only, only 'name', 'value' and 'node' can be assigned");
-            }
-        }
-
-        /*
-         * returns all values from match object
-         */
-        private object GetValue (ApplicationContext context)
-        {
-            if (_type == MatchType.Count) {
-                return Count;
-            } else if (Count == 0) {
-                return null;
-            } else if (_type == MatchType.Node) {
-                Node tmpCode = new Node ("root");
-                foreach (Node idx in Matches) {
-                    tmpCode.Add (idx.Clone ());
-                }
-                context.Raise ("pf.node-2-hyperlisp", tmpCode);
-                return tmpCode.Value;
-            } else if (Count == 1) {
-                return GetValue (0);
-            } else {
-                string retVal = "";
-                for (int idxNo = 0; idxNo < Count; idxNo++) {
-                    object tmpVal = GetValue (idxNo);
-                    if (tmpVal == null) {
-                        retVal += ",";
-                    } else {
-                        string tmpStringVal = tmpVal.ToString ();
-                        if (tmpStringVal.Contains ("\r") || 
-                            tmpStringVal.Contains ("\n") || 
-                            tmpStringVal.Contains (@"""") || 
-                            tmpStringVal.Contains (",") || 
-                            tmpStringVal.Trim () != tmpStringVal)
-                            retVal += string.Format (@",@""{0}""", tmpStringVal.Replace (@"""", @""""""));
-                        else
-                            retVal += string.Format (@",{0}", tmpStringVal);
-                    }
-                }
-                return string.Format (@"[{0}]", retVal.Trim (new char[] { ',' }));
-            }
-        }
-
-        /*
-         * assigns value of result nodes
-         */
-        private void AssignValue (Match rhs, ApplicationContext context)
-        {
-            object sourceValue = rhs.GetValue (context);
-            foreach (Node idxDest in _nodes) {
-                idxDest.Value = sourceValue;
-            }
-        }
-        
-        /*
-         * assigns name of result nodes
-         */
-        private void AssignName (Match rhs, ApplicationContext context)
-        {
-            object sourceValue = rhs.GetValue (context);
-            foreach (Node idxDest in _nodes) {
-                idxDest.Name = (sourceValue ?? "").ToString ();
-            }
-        }
-
-        /*
-         * assigns node of resulting nodes
-         */
-        private void AssignNodes (Match rhs)
-        {
-            if (rhs._type == MatchType.Node) {
-                foreach (Node idxDest in _nodes) {
-                    foreach (Node idxSource in rhs.Matches) {
-                        idxDest.Add (idxSource.Clone ());
-                    }
-                }
-            } else if (rhs._type == MatchType.Name) {
-                foreach (Node idxDest in _nodes) {
-                    foreach (Node idxSource in rhs.Matches) {
-                        idxDest.Add (new Node ("", idxSource.Name));
-                    }
-                }
-            } else if (rhs._type == MatchType.Value) {
-                foreach (Node idxDest in _nodes) {
-                    foreach (Node idxSource in rhs.Matches) {
-                        idxDest.Add (new Node ("", idxSource.Value));
-                    }
-                }
-            } else if (rhs._type == MatchType.Count) {
-                foreach (Node idxDest in _nodes) {
-                    idxDest.Add (new Node ("", rhs.Count));
-                }
-            } else if (rhs._type == MatchType.Path) {
-                foreach (Node idxDest in _nodes) {
-                    foreach (Node idxSource in rhs.Matches) {
-                        idxDest.Add (new Node ("", idxSource.Path));
-                    }
-                }
             }
         }
     }

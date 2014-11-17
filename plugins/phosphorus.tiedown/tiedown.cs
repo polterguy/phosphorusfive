@@ -48,8 +48,10 @@ namespace phosphorus.tiedown
         ulv:grå
         coyote:ørken
 _val
-pf.put:@/-/?node
-  :@/\/**/(/kattedyr/|/ulv/)/?node
+pf.set:@/-/?name
+  howdy:world
+    this:is pretty darn cool :D
+  tjobing
 ";
             /////////////////////////////////////////////
             /// "adressible nodes" through DNA code, which is usable in for instance 

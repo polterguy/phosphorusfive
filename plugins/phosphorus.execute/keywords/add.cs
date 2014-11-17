@@ -10,43 +10,39 @@ using phosphorus.core;
 namespace phosphorus.execute
 {
     /// <summary>
-    /// class wrapping execution engine keyword "put", which allows for changing values of nodes
+    /// class wrapping execution engine keyword "add", which allows for changing values of nodes
     /// </summary>
-    public static class put
+    public static class add
     {
         /// <summary>
         /// put keyword for execution engine
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.put")]
-        private static void pf_put (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.add")]
+        private static void pf_add (ApplicationContext context, ActiveEventArgs e)
         {
-            Match destinationMatch = GetDestinationMatch (e.Args);
-            if (e.Args.Count == 1 && Expression.IsExpression (e.Args.FirstChild.Get<string> ())) {
+            /*Match destinationMatch = GetDestinationMatch (e.Args);
+            if (e.Args.Count == 1 && Expression.IsExpression (e.Args.FirstChild.Get<string> ()) && e.Args.FirstChild.Name == string.Empty) {
 
                 // we're assigning an expression here
                 Match sourceMatch = new Expression (e.Args.FirstChild.Get<string> ()).Evaluate (e.Args.FirstChild);
-                destinationMatch.AssignMatch (sourceMatch, context);
+                if (sourceMatch.Count == 0)
+                    throw new ArgumentException ("source expression yielded no matches, [pf.put] must have an existing source");
+                destinationMatch.AssignMatch (sourceMatch, context, false);
             } else {
 
                 // source is not an expression, either it's a "null assignment" or we're putting a bunch of nodes into another node
                 if (e.Args.Count == 0) {
 
-                    // "null assignment"
-                    destinationMatch.AssignMatch (null, null);
+                    // "null assignment", and they're not legal here
+                    throw new ArgumentException ("you cannot [pf.put] a null value, [pf.put] needs an existing source");
                 } else {
 
                     // assigning a bunch of nodes to destination
-                    if (destinationMatch.TypeOfMatch != Match.MatchType.Node)
-                        throw new ArgumentException ("cannot assign a list of nodes to expression; '" + e.Args.Get<string> () + "'");
-                    foreach (Node idxSource in e.Args.Children) {
-                        foreach (Node idxDestination in destinationMatch.Matches) {
-                            idxDestination.Add (idxSource.Clone ());
-                        }
-                    }
+                    destinationMatch.AssignNodes (e.Args.Children, context, false);
                 }
-            }
+            }*/
         }
 
         /*
@@ -56,7 +52,7 @@ namespace phosphorus.execute
         {
             string destinationExpression = node.Get<string> ();
             if (!Expression.IsExpression (destinationExpression))
-                throw new ApplicationException ("[pf.put] needs an expression as its value");
+                throw new ApplicationException ("[pf.put] needs a valid expression yielding an actual result as its value");
 
             // finding Match object for destination
             Match destinationMatch = new Expression (destinationExpression).Evaluate (node);
