@@ -185,7 +185,7 @@ namespace phosphorus.execute
             Node node = new Node ("", value);
             IteratorGroup iGroup = new IteratorGroup (node);
             Match match = new Match (iGroup, "value");
-            AssignMatch (match);
+            AssignMatch (match, null);
         }
         
         /// <summary>
@@ -193,96 +193,85 @@ namespace phosphorus.execute
         /// </summary>
         /// <param name="rhs">new value(s) for nodes in match</param>
         /// <param name="context"><see cref="phosphorus.core.ApplicationContext"/> currently executing within</param>
-        public void AssignMatch (Match rhs)
+        public void AssignMatch (Match rhs, ApplicationContext context)
         {
             switch (_type) {
             case MatchType.Name:
-                AssignName (rhs);
+                AssignName (rhs, context);
                 break;
             case MatchType.Value:
-                AssignValue (rhs);
+                AssignValue (rhs, context);
                 break;
             case MatchType.Node:
                 AssignNodes (rhs);
                 break;
             default:
-                throw new ArgumentException ("match is unassignable and read only");
+                throw new ArgumentException ("match is unassignable and read only, only 'name', 'value' and 'node' can be assigned");
             }
         }
 
         /*
-         * assigns name of result nodes
+         * returns all values from match object
          */
-        private void AssignName (Match rhs)
+        private object GetValue (ApplicationContext context)
         {
-            if (rhs == null) {
-                foreach (Node idxDest in _nodes) {
-                    idxDest.Name = string.Empty; // name should and cannot be null, hence empty string
+            if (_type == MatchType.Count) {
+                return Count;
+            } else if (Count == 0) {
+                return null;
+            } else if (_type == MatchType.Node) {
+                Node tmpCode = new Node ("root");
+                foreach (Node idx in Matches) {
+                    tmpCode.Add (idx.Clone ());
                 }
+                context.Raise ("pf.node-2-hyperlisp", tmpCode);
+                return tmpCode.Value;
+            } else if (Count == 1) {
+                return GetValue (0);
             } else {
-                if (rhs._nodes.Count > 1 && rhs._type != MatchType.Count)
-                    throw new ArgumentException ("source match cannot have multiple values when assigning name of match");
-                string sourceValue = null;
-                switch (rhs._type) {
-                case MatchType.Name:
-                    sourceValue = rhs._nodes [0].Name;
-                    break;
-                case MatchType.Value:
-                    sourceValue = rhs._nodes [0].Get<string> ();
-                    break;
-                case MatchType.Path:
-                    sourceValue = rhs._nodes [0].Path.ToString ();
-                    break;
-                case MatchType.Count:
-                    sourceValue = rhs.Count.ToString ();
-                    break;
-                default:
-                    throw new ArgumentException ("cannot assign name anything but another name, value, count or path");
+                string retVal = "";
+                for (int idxNo = 0; idxNo < Count; idxNo++) {
+                    object tmpVal = GetValue (idxNo);
+                    if (tmpVal == null) {
+                        retVal += ",";
+                    } else {
+                        string tmpStringVal = tmpVal.ToString ();
+                        if (tmpStringVal.Contains ("\r") || 
+                            tmpStringVal.Contains ("\n") || 
+                            tmpStringVal.Contains (@"""") || 
+                            tmpStringVal.Contains (",") || 
+                            tmpStringVal.Trim () != tmpStringVal)
+                            retVal += string.Format (@",@""{0}""", tmpStringVal.Replace (@"""", @""""""));
+                        else
+                            retVal += string.Format (@",{0}", tmpStringVal);
+                    }
                 }
-                sourceValue = sourceValue ?? "";
-                if (sourceValue.IndexOfAny (new char[] { ' ', '"', '\n', '\r', '\t', ':' }) != -1)
-                    throw new ArgumentException (string.Format ("'{0}' was illegal value for name of node", sourceValue));
-                foreach (Node idxDest in _nodes) {
-                    idxDest.Name = sourceValue;
-                }
+                return string.Format (@"[{0}]", retVal.Trim (new char[] { ',' }));
             }
         }
 
         /*
          * assigns value of result nodes
          */
-        private void AssignValue (Match rhs)
+        private void AssignValue (Match rhs, ApplicationContext context)
         {
-            if (rhs == null) {
-                foreach (Node idxDest in _nodes) {
-                    idxDest.Value = null;
-                }
-            } else {
-                if (rhs._nodes.Count > 1 && rhs._type != MatchType.Count)
-                    throw new ArgumentException ("source match cannot have multiple values when assigning value");
-                string sourceValue = null;
-                switch (rhs._type) {
-                case MatchType.Name:
-                    sourceValue = rhs._nodes [0].Name;
-                    break;
-                case MatchType.Value:
-                    sourceValue = rhs._nodes [0].Get<string> ();
-                    break;
-                case MatchType.Path:
-                    sourceValue = rhs._nodes [0].Path.ToString ();
-                    break;
-                case MatchType.Count:
-                    sourceValue = rhs.Count.ToString ();
-                    break;
-                default:
-                    throw new ArgumentException ("cannot assign value anything but another value, name or path");
-                }
-                foreach (Node idxDest in _nodes) {
-                    idxDest.Value = sourceValue;
-                }
+            object sourceValue = rhs.GetValue (context);
+            foreach (Node idxDest in _nodes) {
+                idxDest.Value = sourceValue;
             }
         }
         
+        /*
+         * assigns name of result nodes
+         */
+        private void AssignName (Match rhs, ApplicationContext context)
+        {
+            object sourceValue = rhs.GetValue (context);
+            foreach (Node idxDest in _nodes) {
+                idxDest.Name = (sourceValue ?? "").ToString ();
+            }
+        }
+
         /*
          * assigns node of resulting nodes
          */

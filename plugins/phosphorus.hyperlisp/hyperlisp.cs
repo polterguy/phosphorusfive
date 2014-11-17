@@ -67,7 +67,7 @@ namespace phosphorus.hyperlisp
                 }
                 string value = idx.Get<string> ();
                 if (value != null) {
-                    if (value.Contains ("\r\n") || value.Trim () != value) {
+                    if (value.Contains ("\r") || value.Contains ("\n") || value.Contains (@"""") || value.Trim () != value) {
                         builder.Append (string.Format (@":@""{0}""", value.Replace (@"""", @"""""")));
                     } else {
                         builder.Append (string.Format (":{0}", value));
@@ -145,19 +145,24 @@ namespace phosphorus.hyperlisp
             while (true) {
                 tmp = code [index];
                 switch (tmp) {
-                    case ':':
-                        finished = true;
-                        break;
-                    case '\r':
-                        finished = true;
-                        break;
-                    case '\n':
-                        finished = true;
-                        break;
-                    default:
+                case ':':
+                    if (previousToken == ":") {
                         index += 1;
                         builder.Append (tmp); // appending character to token
-                        break;
+                    } else {
+                        finished = true;
+                    }
+                    break;
+                case '\r':
+                    finished = true;
+                    break;
+                case '\n':
+                    finished = true;
+                    break;
+                default:
+                    index += 1;
+                    builder.Append (tmp); // appending character to token
+                    break;
                 }
                 if (finished || index >= code.Length)
                     break;

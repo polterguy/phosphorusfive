@@ -27,14 +27,14 @@ namespace phosphorus.execute
 
                 // we're assigning an expression here
                 Match sourceMatch = new Expression (e.Args.FirstChild.Get<string> ()).Evaluate (e.Args.FirstChild);
-                destinationMatch.AssignMatch (sourceMatch);
+                destinationMatch.AssignMatch (sourceMatch, context);
             } else {
 
                 // source is not an expression, either it's a "null assignment" or we're putting a bunch of nodes into another node
                 if (e.Args.Count == 0) {
 
                     // "null assignment"
-                    destinationMatch.AssignMatch (null);
+                    destinationMatch.AssignMatch (null, null);
                 } else {
 
                     // assigning a bunch of nodes to destination

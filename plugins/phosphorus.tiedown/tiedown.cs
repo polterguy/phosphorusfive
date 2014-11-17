@@ -39,7 +39,7 @@ namespace phosphorus.tiedown
   flercellede:dyr
     reptiler:slanger, osv
     pattedyr:hunder, mennesker, osv
-      kattedyr:pus, tiger, osv
+      kattedyr:pusekatter, tigre, løver og sånt no :)
         tigre:bengalsk
         løver:afrika
       primater:apekatter, osv
@@ -49,10 +49,11 @@ namespace phosphorus.tiedown
         coyote:ørken
 _val
 pf.put:@/-/?node
-  :@/\/0/0/*/pattedyr/*/(/primater/|/kattedyr/)/**/kattedyr/*/?node";
+  :@/\/**/(/kattedyr/|/ulv/)/?node
+";
             /////////////////////////////////////////////
-            /// "adressible nodes" through DNA code
-            /// "pf.put" instead of "pf.add" :)
+            /// "adressible nodes" through DNA code, which is usable in for instance 
+            /// "for-each" and "storing execution state" of execution engine
             /////////////////////////////////////////////
             Node node = new Node ("root", code);
             context.Raise ("pf.hyperlisp-2-node", node);
