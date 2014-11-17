@@ -25,7 +25,10 @@ namespace phosphorus.execute
             // getting destination match nodes
             Match destinationMatch = GetDestinationMatch (e.Args);
 
-            if (e.Args.Count == 1 && Expression.IsExpression (e.Args.FirstChild.Get<string> ()) && e.Args.FirstChild.Name == string.Empty) {
+            // checking type of assignment
+            if (e.Args.Count == 1 && 
+                e.Args.FirstChild.Name == string.Empty && 
+                Expression.IsExpression (e.Args.FirstChild.Get<string> ())) {
 
                 // we're assigning an expression here
                 Match sourceMatch = new Expression (e.Args.FirstChild.Get<string> ()).Evaluate (e.Args.FirstChild);
@@ -36,7 +39,7 @@ namespace phosphorus.execute
                 }
             } else {
 
-                // source is not an expression, either it's a "null assignment" or we're putting a bunch of nodes into another node
+                // source is not an expression, either it's a "null assignment", or we're putting a bunch of nodes into another node
                 if (e.Args.Count == 0) {
 
                     // "null assignment"
@@ -47,6 +50,28 @@ namespace phosphorus.execute
                     if (e.Args.Count > 1)
                         throw new ArgumentException ("you can only replace a node with a single node, source contained multiple nodes");
                     AssignNode (context, destinationMatch, e.Args.FirstChild);
+                }
+            }
+        }
+
+        /*
+         * assigns null to the given match object
+         */
+        private static void AssignNull (Match destination)
+        {
+            foreach (Node idxDest in destination.Matches) {
+                switch (destination.TypeOfMatch) {
+                case Match.MatchType.Name:
+                    idxDest.Name = "";
+                    break;
+                case Match.MatchType.Value:
+                    idxDest.Value = null;
+                    break;
+                case Match.MatchType.Node:
+                    idxDest.Untie ();
+                    break;
+                default:
+                    throw new ArgumentException ("you can only assign to a 'name', 'value' or 'node' expression");
                 }
             }
         }
@@ -85,43 +110,59 @@ namespace phosphorus.execute
             if (match.Count == 1) {
 
                 // single match
-                switch (match.TypeOfMatch) {
-                case Match.MatchType.Name:
-                    return match [0].Name;
-                case Match.MatchType.Value:
-                    return match [0].Value;
-                case Match.MatchType.Path:
-                    return match [0].Path;
-                case Match.MatchType.Node:
-                    Node tmpCode = new Node ("root");
-                    tmpCode.Add (match [0].Clone ());
-                    context.Raise ("pf.node-2-hyperlisp", tmpCode);
-                    return tmpCode.Value;
-                }
+                return GetSingleObjectFromMatch (context, match);
             } else {
 
                 // multiple matches
+                return GetMultipleObjectFromMatch (context, match);
+            }
+        }
+        
+        /*
+         * returns a single object from match
+         */
+        private static object GetSingleObjectFromMatch (ApplicationContext context, Match match)
+        {
+            switch (match.TypeOfMatch) {
+            case Match.MatchType.Name:
+                return match [0].Name;
+            case Match.MatchType.Value:
+                return match [0].Value;
+            case Match.MatchType.Path:
+                return match [0].Path;
+            case Match.MatchType.Node:
                 Node tmpCode = new Node ("root");
-                foreach (Node idx in match.Matches) {
-                    switch (match.TypeOfMatch) {
-                    case Match.MatchType.Name:
-                        tmpCode.Add (new Node (string.Empty, idx.Name));
-                        break;
-                    case Match.MatchType.Value:
-                        tmpCode.Add (new Node (string.Empty, idx.Value));
-                        break;
-                    case Match.MatchType.Path:
-                        tmpCode.Add (new Node (string.Empty, idx.Path));
-                        break;
-                    case Match.MatchType.Node:
-                        tmpCode.Add (idx.Clone ());
-                        break;
-                    }
-                }
+                tmpCode.Add (match [0].Clone ());
                 context.Raise ("pf.node-2-hyperlisp", tmpCode);
                 return tmpCode.Value;
             }
-            return null; // we should really never get here, but to make sure compiler doesn't "hickup", we'll need this line of code regardless
+            return null; // we should never get here, but compiler hicksup unless we return something at end ...
+        }
+        
+        /*
+         * returns multiple objects from match
+         */
+        private static object GetMultipleObjectFromMatch (ApplicationContext context, Match match)
+        {
+            Node tmpCode = new Node ("root");
+            foreach (Node idx in match.Matches) {
+                switch (match.TypeOfMatch) {
+                case Match.MatchType.Name:
+                    tmpCode.Add (new Node (string.Empty, idx.Name));
+                    break;
+                case Match.MatchType.Value:
+                    tmpCode.Add (new Node (string.Empty, idx.Value));
+                    break;
+                case Match.MatchType.Path:
+                    tmpCode.Add (new Node (string.Empty, idx.Path));
+                    break;
+                case Match.MatchType.Node:
+                    tmpCode.Add (idx.Clone ());
+                    break;
+                }
+            }
+            context.Raise ("pf.node-2-hyperlisp", tmpCode);
+            return tmpCode.Value;
         }
 
         /*
@@ -144,28 +185,6 @@ namespace phosphorus.execute
                     else
                         idxDest.Value = tmpCode.Value;
                     break;
-                }
-            }
-        }
-
-        /*
-         * assigns null to the given match object
-         */
-        private static void AssignNull (Match destination)
-        {
-            foreach (Node idxDest in destination.Matches) {
-                switch (destination.TypeOfMatch) {
-                case Match.MatchType.Name:
-                    idxDest.Name = "";
-                    break;
-                case Match.MatchType.Value:
-                    idxDest.Value = null;
-                    break;
-                case Match.MatchType.Node:
-                    idxDest.Untie ();
-                    break;
-                default:
-                    throw new ArgumentException ("you can only assign to a 'name', 'value' or 'node' expression");
                 }
             }
         }

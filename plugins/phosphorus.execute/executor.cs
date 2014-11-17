@@ -24,7 +24,7 @@ namespace phosphorus.execute
         {
             List<Node> nodes = new List<Node> (e.Args.Children);
             foreach (Node idx in nodes) {
-                if (idx.Parent != null)
+                if (idx.Parent != null && !idx.Name.StartsWith ("_"))
                     context.Raise (idx.Name, idx);
             }
         }

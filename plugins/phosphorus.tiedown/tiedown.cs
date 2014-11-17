@@ -35,7 +35,7 @@ namespace phosphorus.tiedown
         {
             // execute load hyperlisp file
             string code = @"
-:liv
+_data:liv
   flercellede:dyr
     reptiler:slanger, osv
     pattedyr:hunder, mennesker, osv
@@ -48,10 +48,9 @@ namespace phosphorus.tiedown
         ulv:grå
         coyote:ørken
 _val
-pf.set:@/-/?name
-  howdy:world
-    this:is pretty darn cool :D
-  tjobing
+pf.add:@/-/?node
+  foo:howdy
+  bar:world
 ";
             /////////////////////////////////////////////
             /// "adressible nodes" through DNA code, which is usable in for instance 
