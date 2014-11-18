@@ -48,7 +48,6 @@ namespace phosphorus.execute
 
         private MatchType _type;
         private List<Node> _nodes;
-        private bool _isReference;
 
         internal Match (IteratorGroup group, string type)
         {
@@ -65,22 +64,6 @@ namespace phosphorus.execute
                 break;
             case "node":
                 _type = MatchType.Node;
-                break;
-            case "refname":
-                _type = MatchType.Name;
-                _isReference = true;
-                break;
-            case "refvalue":
-                _type = MatchType.Value;
-                _isReference = true;
-                break;
-            case "refpath":
-                _type = MatchType.Path;
-                _isReference = true;
-                break;
-            case "refnode":
-                _type = MatchType.Node;
-                _isReference = true;
                 break;
             case "count":
                 _type = MatchType.Count;
@@ -137,11 +120,7 @@ namespace phosphorus.execute
         /// <param name="index">index</param>
         public Node this [int index] {
             get {
-                if (_isReference) {
-                    return _nodes [index].Find (_nodes [index].Get<Node.DNA> ());
-                } else {
-                    return _nodes [index];
-                }
+                return _nodes [index];
             }
         }
 
@@ -151,15 +130,7 @@ namespace phosphorus.execute
         /// <value>the matches</value>
         public IEnumerable<Node> Matches {
             get {
-                if (_isReference) {
-                    List<Node> tmp = new List<Node> ();
-                    foreach (Node idx in _nodes) {
-                        tmp.Add (idx.Find (idx.Get<Node.DNA> ()));
-                    }
-                    return tmp;
-                } else {
-                    return _nodes;
-                }
+                return _nodes;
             }
         }
 
@@ -188,8 +159,6 @@ namespace phosphorus.execute
         public object GetValue (int index)
         {
             Node retVal = _nodes [index];
-            if (_isReference)
-                retVal = retVal.Find (retVal.Get<Node.DNA> ());
             switch (_type) {
             case MatchType.Name:
                 return retVal.Name;

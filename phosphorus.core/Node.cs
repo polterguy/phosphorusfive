@@ -26,6 +26,14 @@ namespace phosphorus.core
                 _value = new List<int> ();
             }
 
+            public DNA (string value)
+            {
+                _value = new List<int> ();
+                foreach (string idxInt in value.Split (new char[] { '-' })) {
+                    _value.Add (int.Parse (idxInt));
+                }
+            }
+
             internal DNA (Node node)
                 : this ()
             {
@@ -393,6 +401,8 @@ namespace phosphorus.core
         /// <param name="dna">dna of node to find</param>
         public Node Find (DNA dna)
         {
+            if (dna.Equals (null))
+                return null;
             Node idxNode = this;
             while (idxNode._parent != null)
                 idxNode = idxNode._parent;

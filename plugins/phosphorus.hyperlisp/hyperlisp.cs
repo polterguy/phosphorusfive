@@ -39,7 +39,7 @@ namespace phosphorus.hyperlisp
         private static void pf_nodes_2_hyperlisp (ApplicationContext context, ActiveEventArgs e)
         {
             StringBuilder builder = new StringBuilder ();
-            Nodes2Hyperlisp (builder, e.Args.Children, 0);
+            Nodes2Hyperlisp (builder, e.Args.Children, 0, context);
             if (builder.Length == 0) {
                 e.Args.Value = null;
             } else {
@@ -57,7 +57,7 @@ namespace phosphorus.hyperlisp
         private static void pf_node_2_hyperlisp (ApplicationContext context, ActiveEventArgs e)
         {
             StringBuilder builder = new StringBuilder ();
-            Nodes2Hyperlisp (builder, new Node[] { e.Args }, 0);
+            Nodes2Hyperlisp (builder, new Node[] { e.Args }, 0, context);
             if (builder.Length == 0) {
                 e.Args.Value = null;
             } else {
@@ -69,7 +69,7 @@ namespace phosphorus.hyperlisp
         /*
          * responsible for creating hyperlisp code from node tree structure
          */
-        private static void Nodes2Hyperlisp (StringBuilder builder, IEnumerable<Node> nodes, int level)
+        private static void Nodes2Hyperlisp (StringBuilder builder, IEnumerable<Node> nodes, int level, ApplicationContext context)
         {
             foreach (Node idx in nodes) {
                 int idxLevel = level;
@@ -83,16 +83,32 @@ namespace phosphorus.hyperlisp
                 } else {
                     builder.Append (string.Format ("{0}", name));
                 }
-                string value = idx.Get<string> ();
-                if (value != null) {
-                    if (value.Contains ("\r") || value.Contains ("\n") || value.Contains (@"""") || value.Trim () != value) {
-                        builder.Append (string.Format (@":@""{0}""", value.Replace (@"""", @"""""")));
+                if (idx.Value is Node) {
+                    Node nodeValue = idx.Get<Node> ();
+                    if (nodeValue == idx.Find (nodeValue.Path)) {
+
+                        // using DNA when constructing value
+                        builder.Append (string.Format (":{0}", nodeValue.Path));
                     } else {
-                        builder.Append (string.Format (":{0}", value));
+
+                        // must convert node to hyperlisp, since it's not from "this tree"
+                        Node tmpCode = new Node ("root");
+                        tmpCode.Add (nodeValue.Clone ());
+                        context.Raise ("pf.nodes-2-hyperlisp", tmpCode);
+                        builder.Append (string.Format (@":@""{0}""", tmpCode.Get<string> ().Replace (@"""", @"""""")));
+                    }
+                } else {
+                    string value = idx.Get<string> ();
+                    if (value != null) {
+                        if (value.Contains ("\r") || value.Contains ("\n") || value.Contains (@"""") || value.Trim () != value) {
+                            builder.Append (string.Format (@":@""{0}""", value.Replace (@"""", @"""""")));
+                        } else {
+                            builder.Append (string.Format (":{0}", value));
+                        }
                     }
                 }
                 builder.Append ("\r\n");
-                Nodes2Hyperlisp (builder, idx.Children, level + 1);
+                Nodes2Hyperlisp (builder, idx.Children, level + 1, context);
             }
         }
 
@@ -147,7 +163,7 @@ namespace phosphorus.hyperlisp
                     index += 1;
                     return "\r\n";
                 case '@':
-                    if (code [index + 1] == '"')
+                    if (code.Length > index + 1 && code [index + 1] == '"')
                         return Utilities.GetStringToken (code, ref index);
                     index += 1;
                     builder.Append ('@');

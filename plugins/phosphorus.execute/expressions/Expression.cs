@@ -131,11 +131,25 @@ namespace phosphorus.execute
                 return FindMatchCloseRangeToken (current, previousToken);
             case "%":
                 return FindMatchModuloToken (current, previousToken);
+            case "#":
+                return FindMatchHashToken (current, previousToken);
             default:
                 return FindMatchDefaultToken (current, token, previousToken);
             }
         }
         
+        /*
+         * handles "#" token
+         */
+        private IteratorGroup FindMatchHashToken (IteratorGroup current, string previousToken)
+        {
+            if (previousToken != "/") {
+                throw new ArgumentException ("unclosed iterator before hash '#' in expression; '" + _expression + "'");
+            }
+            current.AddIterator (new IteratorReference ());
+            return current;
+        }
+
         /*
          * handles "%" token
          */
@@ -395,7 +409,7 @@ namespace phosphorus.execute
             string buffer = string.Empty;
             for (int idxNo = 1 /* skipping first @ character */; idxNo < expression.Length; idxNo++) {
                 char idxChar = expression [idxNo];
-                if ("/\\.|&^!()=?+-[],%".IndexOf (idxChar) > -1) {
+                if ("/\\.|&^!()=?+-[],%#".IndexOf (idxChar) > -1) {
                     if (buffer != string.Empty) {
                         yield return buffer;
                         buffer = string.Empty;

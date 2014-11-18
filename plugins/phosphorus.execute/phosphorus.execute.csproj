@@ -52,6 +52,8 @@
     <Compile Include="keywords\add.cs" />
     <Compile Include="expressions\iterators\IteratorRange.cs" />
     <Compile Include="expressions\iterators\IteratorModulo.cs" />
+    <Compile Include="keywords\for-each.cs" />
+    <Compile Include="expressions\iterators\IteratorReference.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

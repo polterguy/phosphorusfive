@@ -24,12 +24,12 @@ namespace phosphorus.execute
         {
             Node ip = new Node ("__pf_ip", null);
             e.Args.Root.Add (ip);
-            if (Expression.IsExpression (e.Args.Get<string> ())) {
+            if (e.Args.Name == "pf.execute" && Expression.IsExpression (e.Args.Get<string> ())) {
                 
                 // executing expression
                 Match executionMatch = new Expression (e.Args.Get<string> ()).Evaluate (e.Args);
                 foreach (Node current in executionMatch.Matches) {
-                    ip.Value = current.Path;
+                    ip.Value = current;
                     context.Raise (current.Name, current); // we're also raising active events starting with "_" here
                 }
             } else {
@@ -38,7 +38,7 @@ namespace phosphorus.execute
                 Node current = e.Args.FirstChild;
                 while (current != null) {
                     if (!current.Name.StartsWith ("_")) {
-                        ip.Value = current.Path;
+                        ip.Value = current;
                         context.Raise (current.Name, current);
                     }
                     current = current.NextSibling;
