@@ -423,7 +423,13 @@ namespace phosphorus.execute
                 if (IsNumber (token)) {
                     current.AddIterator (new IteratorNumbered (int.Parse (token)));
                 } else {
-                    current.AddIterator (new IteratorNamed (token));
+                    if (token.StartsWith ("/")) {
+                        if (token.LastIndexOf ("/") == 0)
+                            throw new ArgumentException ("token; '" + token + "' in expression; '" + _expression + "' is not a valid regular expression");
+                        current.AddIterator (new IteratorNamedRegex (token));
+                    } else {
+                        current.AddIterator (new IteratorNamed (token));
+                    }
                 }
             }
             return current;

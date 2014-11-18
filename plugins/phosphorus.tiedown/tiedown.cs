@@ -48,14 +48,10 @@ _data:liv
       hundedyr:coyote, ulv, hund
         ulv:grå
         coyote:ørken
-pf.for-each:@/\/**/_data/**/%2/</</</</>/>/?node
+pf.for-each:@/\/**/""/_d??a/ig""/**/%2/</</</</>/>/?node
   pf.set:@/./*/__pf_dp/#/?value
-    :changed
+    :@/././*/__pf_dp/#/?name
 ";
-            /////////////////////////////////////////////
-            /// "adressible nodes" through DNA code, which is usable in for instance 
-            /// "for-each" and "storing execution state" of execution engine
-            /////////////////////////////////////////////
             Node node = new Node ("root", code);
             context.Raise ("pf.hyperlisp-2-node", node);
             node.Value = null;
