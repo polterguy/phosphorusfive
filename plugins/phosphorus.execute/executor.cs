@@ -27,24 +27,60 @@ namespace phosphorus.execute
             if (e.Args.Name == "pf.execute" && Expression.IsExpression (e.Args.Get<string> ())) {
                 
                 // executing expression
-                Match executionMatch = new Expression (e.Args.Get<string> ()).Evaluate (e.Args);
-                foreach (Node current in executionMatch.Matches) {
-                    ip.Value = current;
-                    context.Raise (current.Name, current); // we're also raising active events starting with "_" here
-                }
+                ExecuteLambda (context, e.Args, ip);
             } else {
                 
                 // executing current scope
-                Node current = e.Args.FirstChild;
-                while (current != null) {
-                    if (!current.Name.StartsWith ("_")) {
-                        ip.Value = current;
-                        context.Raise (current.Name, current);
-                    }
-                    current = current.NextSibling;
-                }
+                ExecuteBlock (context, e.Args, ip);
             }
             ip.Untie ();
+        }
+
+        /*
+         * executes a block of nodes
+         */
+        private static void ExecuteBlock (ApplicationContext context, Node exe, Node ip)
+        {
+            Node current = exe.FirstChild;
+            while (current != null) {
+                if (!current.Name.StartsWith ("_")) {
+                    ip.Value = current;
+                    context.Raise (current.Name, current);
+                }
+                current = current.NextSibling;
+            }
+        }
+
+        /*
+         * executes a "lambda execution" block
+         */
+        private static void ExecuteLambda (ApplicationContext context, Node exe, Node ip)
+        {
+            Match executionMatch = new Expression (exe.Get<string> ()).Evaluate (exe);
+            if (executionMatch.TypeOfMatch != Match.MatchType.Node)
+                throw new ArgumentException ("you can only execute a 'node' expression, [pf.execute] was given illegal expression; '" + exe.Get<string> () + "'");
+            foreach (Node current in executionMatch.Matches) {
+                List<Node> oldCurrentChildren = new List<Node> ();
+                if (exe.Count > 0) {
+
+                    // arguments are being passed into "lambda" execution block, making sure we store old children list such that execution 
+                    // becomes "immutable"
+                    foreach (Node idx in current.Children) {
+                        oldCurrentChildren.Add (idx.Clone ());
+                    }
+                    foreach (Node idx in exe.Children) {
+                        current.Add (idx.Clone ());
+                    }
+                }
+                ip.Value = current;
+                context.Raise (current.Name, current); // we're also raising active events starting with "_" here
+                if (exe.Count > 0) {
+                    current.Clear ();
+                    foreach (Node idx in oldCurrentChildren) {
+                        current.Add (idx);
+                    }
+                }
+            }
         }
     }
 }

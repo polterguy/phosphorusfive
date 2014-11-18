@@ -77,7 +77,7 @@ namespace phosphorus.hyperlisp
                     builder.Append ("  ");
                 }
                 string name = idx.Name;
-                if (name.Contains ("\r") || name.Contains ("\n") || name.Trim () != name || (name == string.Empty && idx.Value == null)) {
+                if (name.Contains ("\r") || name.Contains ("\n") || name.Contains (":") || name.Trim () != name || (name == string.Empty && idx.Value == null)) {
                     builder.Append (string.Format (@"@""{0}""", name.Replace (@"""", @"""""")));
                 } else {
                     builder.Append (string.Format ("{0}", name));

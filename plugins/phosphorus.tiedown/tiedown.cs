@@ -48,9 +48,12 @@ _data:liv
       hundedyr:coyote, ulv, hund
         ulv:grå
         coyote:ørken
-pf.for-each:@/\/**/""/_d??a/ig""/**/%2/</</</</>/>/?node
-  pf.set:@/./*/__pf_dp/#/?value
-    :@/././*/__pf_dp/#/?name
+_x
+  pf.for-each:@/\/**/""/_d??a/imce""/**/%2/</</</</>/>/?node
+    pf.set:@/./*/__pf_dp/#/?value
+      :@/././*/_name/?value
+pf.execute:@/-/*/?node
+  _name:thomas hansen ER KUUUUUUUUUUUUUUUUUUUL!!!!!!!
 ";
             Node node = new Node ("root", code);
             context.Raise ("pf.hyperlisp-2-node", node);
