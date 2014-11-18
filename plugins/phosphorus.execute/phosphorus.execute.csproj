@@ -54,6 +54,8 @@
     <Compile Include="expressions\iterators\IteratorModulo.cs" />
     <Compile Include="keywords\for-each.cs" />
     <Compile Include="expressions\iterators\IteratorReference.cs" />
+    <Compile Include="expressions\iterators\IteratorShiftLeft.cs" />
+    <Compile Include="expressions\iterators\IteratorShiftRight.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -48,12 +48,9 @@ _data:liv
       hundedyr:coyote, ulv, hund
         ulv:grå
         coyote:ørken
-_val:0-0
-pf.for-each:@/\/**/_data/**/%2/?node
+pf.for-each:@/\/**/_data/**/%2/</</</</>/>/?node
   pf.set:@/./*/__pf_dp/#/?value
-    :@/././*/__pf_dp/#/?name
-pf.set:@/./*/_val/#/?value
-  :this one was 'dyr'
+    :changed
 ";
             /////////////////////////////////////////////
             /// "adressible nodes" through DNA code, which is usable in for instance 
