@@ -24,11 +24,11 @@ namespace phosphorus.execute
         {
             // getting destination match nodes
             Match destinationMatch = GetDestinationMatch (e.Args);
+            if (destinationMatch.Count == 0)
+                return; // "do nothing" operation
 
             // checking type of assignment
-            if (e.Args.Count == 1 && 
-                e.Args.FirstChild.Name == string.Empty && 
-                Expression.IsExpression (e.Args.FirstChild.Get<string> ())) {
+            if (e.Args.Count == 1 && e.Args.FirstChild.Name == string.Empty && Expression.IsExpression (e.Args.FirstChild.Get<string> ())) {
 
                 // we're assigning an expression here
                 Match sourceMatch = new Expression (e.Args.FirstChild.Get<string> ()).Evaluate (e.Args.FirstChild);
@@ -37,24 +37,16 @@ namespace phosphorus.execute
                 } else {
                     AssignMatch (context, destinationMatch, sourceMatch);
                 }
-            } else if (e.Args.Count == 1 && 
-                e.Args.FirstChild.Name == string.Empty && 
-                !Expression.IsExpression (e.Args.FirstChild.Get<string> ())) {
+            } else if (e.Args.Count == 1 && e.Args.FirstChild.Name == string.Empty && !Expression.IsExpression (e.Args.FirstChild.Get<string> ())) {
                 AssignValue (destinationMatch, e.Args.FirstChild.Value);
+            } else if (e.Args.Count == 0) {
+
+                // "null assignment"
+                AssignNull (destinationMatch);
             } else {
 
-                // source is not an expression, either it's a "null assignment", or we're putting a bunch of nodes into another node
-                if (e.Args.Count == 0) {
-
-                    // "null assignment"
-                    AssignNull (destinationMatch);
-                } else {
-
-                    // replacing all match nodes with child node
-                    if (e.Args.Count > 1)
-                        throw new ArgumentException ("you can only replace a node with a single node, source contained multiple nodes");
-                    AssignNode (context, destinationMatch, e.Args.FirstChild);
-                }
+                // replacing all match nodes with first child node
+                AssignNode (context, destinationMatch, e.Args.FirstChild);
             }
         }
 
@@ -87,7 +79,8 @@ namespace phosphorus.execute
         {
             // cloning our source is both destination and source is node, in case source is also one of our destinations
             Node copy = null;
-            if (sourceMatch.TypeOfMatch == Match.MatchType.Node && destinationMatch.TypeOfMatch == Match.MatchType.Node && sourceMatch.Count == 1)
+            if (sourceMatch.TypeOfMatch == Match.MatchType.Node && 
+                destinationMatch.TypeOfMatch == Match.MatchType.Node)
                 copy = sourceMatch [0].Clone ();
 
             foreach (Node idxDest in destinationMatch.Matches) {
@@ -101,8 +94,6 @@ namespace phosphorus.execute
                 case Match.MatchType.Node:
                     if (sourceMatch.TypeOfMatch != Match.MatchType.Node)
                         throw new ArgumentException ("tried to assign a non-node match to a node match, you can only assign a node match to another node match");
-                    if (sourceMatch.Count > 1)
-                        throw new ArgumentException ("tried to assign multiple nodes to a node match, you can only replace one node with one other node");
                     idxDest.Replace (copy.Clone ());
                     break;
                 }
@@ -110,7 +101,7 @@ namespace phosphorus.execute
         }
 
         /*
-         * asigns a value to match
+         * assigns a value to match
          */
         private static void AssignValue (Match destinationMatch, object value)
         {
@@ -164,7 +155,7 @@ namespace phosphorus.execute
                 context.Raise ("pf.node-2-hyperlisp", tmpCode);
                 return tmpCode.Value;
             }
-            return null; // we should never get here, but compiler hicksup unless we return something at end ...
+            return null; // we should never get here, but compiler creates hickup unless we return something at end of method here
         }
         
         /*
@@ -228,8 +219,6 @@ namespace phosphorus.execute
 
             // finding Match object for destination
             Match destinationMatch = new Expression (destinationExpression).Evaluate (node);
-            if (destinationMatch.Count == 0)
-                throw new ArgumentException ("destination expression for [pf.set] yielded no result, expression was; '" + destinationExpression + "'");
 
             if (!destinationMatch.IsAssignable)
                 throw new ArgumentException ("destination expression for [pf.set] is not assignable, expression was; '" + destinationExpression + "'");

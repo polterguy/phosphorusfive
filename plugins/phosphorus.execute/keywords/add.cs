@@ -22,18 +22,18 @@ namespace phosphorus.execute
         [ActiveEvent (Name = "pf.add")]
         private static void pf_add (ApplicationContext context, ActiveEventArgs e)
         {
+            if (e.Args.Count == 0)
+                return; // "do nothing" operation
+
             Match destinationMatch = GetDestinationMatch (e.Args);
-            if (e.Args.Count == 1 && 
-                e.Args.FirstChild.Name == string.Empty && 
-                Expression.IsExpression (e.Args.FirstChild.Get<string> ())) {
+            if (destinationMatch.Count == 0)
+                return; // "do nothing" operation
+
+            if (e.Args.Count == 1 && e.Args.FirstChild.Name == string.Empty && Expression.IsExpression (e.Args.FirstChild.Get<string> ())) {
 
                 // source is an expression
                 Match sourceMatch = new Expression (e.Args.FirstChild.Get<string> ()).Evaluate (e.Args.FirstChild);
                 AppendMatch (destinationMatch, sourceMatch);
-            } else if (e.Args.Count == 0) {
-
-                // tried to add "null", which is illegal
-                throw new ArgumentException ("[pf.add] was given nothing to add into destination");
             } else {
 
                 // source is a node list
@@ -64,18 +64,8 @@ namespace phosphorus.execute
                             idxDest.Add (idxSource.Clone ());
                         }
                     } else {
-                        foreach (Node idxSource in sourceMatch.Matches) {
-                            switch (sourceMatch.TypeOfMatch) {
-                            case Match.MatchType.Name:
-                                idxDest.Add (new Node (string.Empty, idxSource.Name));
-                                break;
-                            case Match.MatchType.Value:
-                                idxDest.Add (new Node (string.Empty, idxSource.Value));
-                                break;
-                            case Match.MatchType.Path:
-                                idxDest.Add (new Node (string.Empty, idxSource.Path));
-                                break;
-                            }
+                        for (int idxSource = 0; idxSource < sourceMatch.Count; idxSource ++) {
+                            idxDest.Add (new Node (string.Empty, sourceMatch.GetValue (idxSource)));
                         }
                     }
                 }
@@ -105,8 +95,6 @@ namespace phosphorus.execute
 
             // finding Match object for destination
             Match destinationMatch = new Expression (destinationExpression).Evaluate (node);
-            if (destinationMatch.Count == 0)
-                throw new ArgumentException ("destination expression for [pf.add] yielded no result, expression was; '" + destinationExpression + "'");
 
             if (destinationMatch.TypeOfMatch != Match.MatchType.Node)
                 throw new ArgumentException ("destination expression for [pf.add] is not of type 'node', expression was; '" + destinationExpression + "'");

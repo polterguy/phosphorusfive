@@ -50,7 +50,7 @@ _data:liv
         coyote:ørken
 _val
 pf.add:@/-/?node
-  :@/\/**/_data/**/[2,]/%3/?path
+  :@/\/**/_data/**/[2,]/%2/?path
 pf.set:@/-2/*/?refnode
   :@/\/**/mennesker/?node
 ";
