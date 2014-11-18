@@ -152,7 +152,7 @@ namespace phosphorus.execute
             case Match.MatchType.Node:
                 Node tmpCode = new Node ("root");
                 tmpCode.Add (match [0].Clone ());
-                context.Raise ("pf.node-2-hyperlisp", tmpCode);
+                context.Raise ("pf.nodes-2-hyperlisp", tmpCode);
                 return tmpCode.Value;
             }
             return null; // we should never get here, but compiler creates hickup unless we return something at end of method here
@@ -180,7 +180,7 @@ namespace phosphorus.execute
                     break;
                 }
             }
-            context.Raise ("pf.node-2-hyperlisp", tmpCode);
+            context.Raise ("pf.nodes-2-hyperlisp", tmpCode);
             return tmpCode.Value;
         }
 
@@ -198,7 +198,7 @@ namespace phosphorus.execute
                 case Match.MatchType.Value:
                     Node tmpCode = new Node ("root");
                     tmpCode.Add (node.Clone ());
-                    context.Raise ("pf.node-2-hyperlisp", tmpCode);
+                    context.Raise ("pf.nodes-2-hyperlisp", tmpCode);
                     if (destination.TypeOfMatch == Match.MatchType.Name)
                         idxDest.Name = (tmpCode.Value ?? "").ToString ();
                     else

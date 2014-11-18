@@ -62,7 +62,7 @@ pf.set:@/-2/*/?refnode
             context.Raise ("pf.hyperlisp-2-node", node);
             node.Value = null;
             context.Raise ("pf.execute", node);
-            context.Raise ("pf.node-2-hyperlisp", node);
+            context.Raise ("pf.nodes-2-hyperlisp", node);
         }
     }
 }

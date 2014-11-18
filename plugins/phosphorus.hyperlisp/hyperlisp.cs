@@ -35,11 +35,29 @@ namespace phosphorus.hyperlisp
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.nodes-2-hyperlisp")]
+        private static void pf_nodes_2_hyperlisp (ApplicationContext context, ActiveEventArgs e)
+        {
+            StringBuilder builder = new StringBuilder ();
+            Nodes2Hyperlisp (builder, e.Args.Children, 0);
+            if (builder.Length == 0) {
+                e.Args.Value = null;
+            } else {
+                string value = builder.ToString ();
+                e.Args.Value = value.Substring (0, value.Length - 2); // getting rid of last carriage return
+            }
+        }
+
+        /// <summary>
+        /// helper to transform from <see cref="phosphorus.core.Node"/> tree structure to hyperlisp code syntax
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.node-2-hyperlisp")]
         private static void pf_node_2_hyperlisp (ApplicationContext context, ActiveEventArgs e)
         {
             StringBuilder builder = new StringBuilder ();
-            Node2Hyperlisp (builder, e.Args, 0);
+            Nodes2Hyperlisp (builder, new Node[] { e.Args }, 0);
             if (builder.Length == 0) {
                 e.Args.Value = null;
             } else {
@@ -51,9 +69,9 @@ namespace phosphorus.hyperlisp
         /*
          * responsible for creating hyperlisp code from node tree structure
          */
-        private static void Node2Hyperlisp (StringBuilder builder, Node node, int level)
+        private static void Nodes2Hyperlisp (StringBuilder builder, IEnumerable<Node> nodes, int level)
         {
-            foreach (Node idx in node.Children) {
+            foreach (Node idx in nodes) {
                 int idxLevel = level;
                 while (idxLevel-- > 0) {
                     builder.Append ("  ");
@@ -74,7 +92,7 @@ namespace phosphorus.hyperlisp
                     }
                 }
                 builder.Append ("\r\n");
-                Node2Hyperlisp (builder, idx, level + 1);
+                Nodes2Hyperlisp (builder, idx.Children, level + 1);
             }
         }
 
