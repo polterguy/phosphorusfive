@@ -445,23 +445,7 @@ namespace phosphorus.core
                 return null;
             }
         }
-
-        /// <summary>
-        /// returns the next sibling of the current node
-        /// </summary>
-        /// <value>the next sibling</value>
-        public Node NextSibling {
-            get {
-                if (_parent == null)
-                    return null;
-                int idxNo = _parent._children.IndexOf (this);
-                idxNo += 1;
-                if (idxNo < _parent._children.Count)
-                    return _parent._children [idxNo];
-                return null;
-            }
-        }
-
+        
         /// <summary>
         /// returns the previous sibling of the current node
         /// </summary>
@@ -479,6 +463,61 @@ namespace phosphorus.core
                 idxNo -= 1;
                 if (idxNo >= 0)
                     return _parent._children [idxNo];
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// returns the next sibling of the current node
+        /// </summary>
+        /// <value>the next sibling</value>
+        public Node NextSibling {
+            get {
+                if (_parent == null)
+                    return null;
+                int idxNo = _parent._children.IndexOf (this);
+                idxNo += 1;
+                if (idxNo < _parent._children.Count)
+                    return _parent._children [idxNo];
+                return null;
+            }
+        }
+        
+        /// <summary>
+        /// returns the previous node from the current node
+        /// </summary>
+        /// <value>the previous node</value>
+        public Node PreviousNode {
+            get {
+                Node idx = PreviousSibling;
+                if (idx != null) {
+                    while (idx.Count > 0) {
+                        idx = idx [idx.Count - 1];
+                    }
+                    return idx;
+                }
+                return Parent;
+            }
+        }
+
+        /// <summary>
+        /// returns the next node from the current node
+        /// </summary>
+        /// <value>the next node</value>
+        public Node NextNode {
+            get {
+                if (Count > 0)
+                    return FirstChild;
+                Node nextSibling = NextSibling;
+                if (nextSibling != null)
+                    return nextSibling;
+                Node idxParent = Parent;
+                while (idxParent != null) {
+                    Node next = idxParent.NextSibling;
+                    if (next != null)
+                        return next;
+                    idxParent = idxParent.Parent;
+                }
                 return null;
             }
         }
