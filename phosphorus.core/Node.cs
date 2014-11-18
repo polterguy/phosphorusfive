@@ -444,12 +444,7 @@ namespace phosphorus.core
             get {
                 if (_parent == null)
                     return null;
-                int idxNo = 0;
-                foreach (Node idxNode in _parent._children) {
-                    if (idxNode == this)
-                        break;
-                    idxNo += 1;
-                }
+                int idxNo = _parent._children.IndexOf (this);
                 idxNo += 1;
                 if (idxNo < _parent._children.Count)
                     return _parent._children [idxNo];

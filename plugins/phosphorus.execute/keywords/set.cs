@@ -37,6 +37,10 @@ namespace phosphorus.execute
                 } else {
                     AssignMatch (context, destinationMatch, sourceMatch);
                 }
+            } else if (e.Args.Count == 1 && 
+                e.Args.FirstChild.Name == string.Empty && 
+                !Expression.IsExpression (e.Args.FirstChild.Get<string> ())) {
+                AssignValue (destinationMatch, e.Args.FirstChild.Value);
             } else {
 
                 // source is not an expression, either it's a "null assignment", or we're putting a bunch of nodes into another node
@@ -81,6 +85,11 @@ namespace phosphorus.execute
          */
         private static void AssignMatch (ApplicationContext context, Match destinationMatch, Match sourceMatch)
         {
+            // cloning our source is both destination and source is node, in case source is also one of our destinations
+            Node copy = null;
+            if (sourceMatch.TypeOfMatch == Match.MatchType.Node && destinationMatch.TypeOfMatch == Match.MatchType.Node && sourceMatch.Count == 1)
+                copy = sourceMatch [0].Clone ();
+
             foreach (Node idxDest in destinationMatch.Matches) {
                 switch (destinationMatch.TypeOfMatch) {
                 case Match.MatchType.Name:
@@ -94,8 +103,27 @@ namespace phosphorus.execute
                         throw new ArgumentException ("tried to assign a non-node match to a node match, you can only assign a node match to another node match");
                     if (sourceMatch.Count > 1)
                         throw new ArgumentException ("tried to assign multiple nodes to a node match, you can only replace one node with one other node");
-                    idxDest.Replace (sourceMatch [0].Clone ());
+                    idxDest.Replace (copy.Clone ());
                     break;
+                }
+            }
+        }
+
+        /*
+         * asigns a value to match
+         */
+        private static void AssignValue (Match destinationMatch, object value)
+        {
+            foreach (Node idxDest in destinationMatch.Matches) {
+                switch (destinationMatch.TypeOfMatch) {
+                case Match.MatchType.Name:
+                    idxDest.Name = (value ?? "").ToString ();
+                    break;
+                case Match.MatchType.Value:
+                    idxDest.Value = value;
+                    break;
+                case Match.MatchType.Node:
+                    throw new ArgumentException ("you cannot assign a value to a node match");
                 }
             }
         }

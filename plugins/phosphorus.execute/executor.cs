@@ -22,10 +22,11 @@ namespace phosphorus.execute
         [ActiveEvent (Name = "pf.execute")]
         private static void pf_execute (ApplicationContext context, ActiveEventArgs e)
         {
-            List<Node> nodes = new List<Node> (e.Args.Children);
-            foreach (Node idx in nodes) {
-                if (idx.Parent != null && !idx.Name.StartsWith ("_"))
-                    context.Raise (idx.Name, idx);
+            Node current = e.Args.FirstChild;
+            while (current != null) {
+                if (!current.Name.StartsWith ("_"))
+                    context.Raise (current.Name, current);
+                current = current.NextSibling;
             }
         }
     }

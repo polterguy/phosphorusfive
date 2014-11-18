@@ -44,12 +44,15 @@ _data:liv
         løver:afrika
       primater:apekatter, osv
         mennesker:per, ole og jens
+          johan:kult!!
       hundedyr:coyote, ulv, hund
         ulv:grå
         coyote:ørken
 _val
 pf.add:@/-/?node
-  :@/\/**/_data/**/[1,]/%3/?name
+  :@/\/**/_data/**/[2,]/%3/?path
+pf.set:@/-2/*/?refnode
+  :@/\/**/mennesker/?node
 ";
             /////////////////////////////////////////////
             /// "adressible nodes" through DNA code, which is usable in for instance 

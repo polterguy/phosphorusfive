@@ -46,24 +46,36 @@ namespace phosphorus.execute
          */
         private static void AppendMatch (Match destinationMatch, Match sourceMatch)
         {
+            List<Node> copy = null;
+            if (sourceMatch.TypeOfMatch == Match.MatchType.Node) {
+
+                // cloning source first, in case source is also one of our destinations
+                copy = new List<Node> ();
+                foreach (Node idxSource in sourceMatch.Matches) {
+                    copy.Add (idxSource.Clone ());
+                }
+            }
             foreach (Node idxDest in destinationMatch.Matches) {
                 if (sourceMatch.TypeOfMatch == Match.MatchType.Count) {
                     idxDest.Add (new Node (string.Empty, sourceMatch.Count));
                 } else {
-                    foreach (Node idxSource in sourceMatch.Matches) {
-                        switch (sourceMatch.TypeOfMatch) {
-                        case Match.MatchType.Name:
-                            idxDest.Add (new Node (string.Empty, idxSource.Name));
-                            break;
-                        case Match.MatchType.Value:
-                            idxDest.Add (new Node (string.Empty, idxSource.Value));
-                            break;
-                        case Match.MatchType.Path:
-                            idxDest.Add (new Node (string.Empty, idxSource.Path));
-                            break;
-                        case Match.MatchType.Node:
+                    if (sourceMatch.TypeOfMatch == Match.MatchType.Node) {
+                        foreach (Node idxSource in copy) {
                             idxDest.Add (idxSource.Clone ());
-                            break;
+                        }
+                    } else {
+                        foreach (Node idxSource in sourceMatch.Matches) {
+                            switch (sourceMatch.TypeOfMatch) {
+                            case Match.MatchType.Name:
+                                idxDest.Add (new Node (string.Empty, idxSource.Name));
+                                break;
+                            case Match.MatchType.Value:
+                                idxDest.Add (new Node (string.Empty, idxSource.Value));
+                                break;
+                            case Match.MatchType.Path:
+                                idxDest.Add (new Node (string.Empty, idxSource.Path));
+                                break;
+                            }
                         }
                     }
                 }
