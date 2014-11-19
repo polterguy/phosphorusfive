@@ -12,9 +12,10 @@ namespace phosphorus.core
     /// </summary>
     public class ActiveEventArgs : EventArgs
     {
-        internal ActiveEventArgs (Node args)
+        internal ActiveEventArgs (Node args, string name)
         {
             Args = args;
+            Name = name;
         }
 
         /// <summary>
@@ -22,6 +23,11 @@ namespace phosphorus.core
         /// </summary>
         /// <value>the arguments</value>
         public Node Args {
+            get;
+            private set;
+        }
+
+        public string Name {
             get;
             private set;
         }

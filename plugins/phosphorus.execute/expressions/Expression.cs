@@ -336,7 +336,7 @@ namespace phosphorus.execute
                     _expression + 
                     "' probably missing a slash '/' before '**' token");
             }
-            current.AddIterator (new IteratorParents ());
+            current.AddIterator (new IteratorParent ());
             return current;
         }
         

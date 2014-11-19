@@ -51,8 +51,10 @@ namespace phosphorus.execute.iterators
                     options |= RegexOptions.Singleline;
                 Regex regex = new Regex (_regex, options);
                 foreach (Node idxCurrent in Left.Evaluate) {
-                    if (regex.IsMatch (idxCurrent.Name))
-                        yield return idxCurrent;
+                    foreach (Node idxChild in idxCurrent.Children) {
+                        if (regex.IsMatch (idxChild.Name))
+                            yield return idxChild;
+                    }
                 }
             }
         }

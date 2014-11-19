@@ -22,7 +22,7 @@ namespace phosphorus.execute.iterators
                         reference = idxCurrent.Find (idxCurrent.Get <Node.DNA> ());
                     } else if (idxCurrent.Value is Node) {
                         reference = idxCurrent.Get<Node> ();
-                    } else {
+                    } else if (Node.DNA.IsPath (idxCurrent.Get<string> ())) {
                         Node.DNA dna = new Node.DNA (idxCurrent.Get<string> ());
                         reference = idxCurrent.Find (dna);
                     }

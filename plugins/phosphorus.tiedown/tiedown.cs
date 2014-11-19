@@ -49,21 +49,37 @@ _data:liv
         ulv:grå
         coyote:ørken
 _x
-  pf.for-each:@/../0/**/%2/(/>/&/</)/?node
-    pf.set:@/+/+/0/?value
-      :@/""..pf.for-each""/*/__pf_dp/#/?value
-    pf.set:@/""..pf.for-each""/*/__pf_dp/#/?value
-      :@/""..pf.for-each""/*/_name/#/?value
-    pf.add:@/./*/_name/#/?node
+  for-each:@/../0/**/%2/(/>/&/</)/?node
+    set:@/+/+/0/?value
+      :@/""..for-each""/__dp/#/?value
+    set:@/""..for-each""/__dp/#/?value
+      :@/"".._x""/_name/#/?value
+    add:@/././_name/#/?node
       node
-pf.execute:@/-/*/?node
+lambda:@/-/?node
   _name:thomas hansen ER KUUUUUUUUUUUUUUUUUUUL!!!!!!!
+_z:fff
+set:@/-/./(/_z/&/=fff/&/=""/f?f/""/&/""/_?z/""/)/?value
+  :FOUND MATCH!!
+_z_code:@""set:@/../_return/#/?value
+  :howdy world""
+lambda:@/-/?value
+  _return:before
+pf.file.save
 ";
+            // //////////////////////////////////////////////////////////////////////////////////////////////////////////
+            // / operators; "=", "!=", ">", "<", ">=", "<="
+            // / "or" && "and"
+            // / allow execution of "text", meaning expressions in "pf.execute" can also return "name" or "value"
+            // / in addition to text values of "pf.execute" if value is not an expression
+            // 
+            // immutable "for-each" and "pf.execution", maybe it's enough with immutable "pf.execution" ...?
+            // //////////////////////////////////////////////////////////////////////////////////////////////////////////
             Node node = new Node ("root", code);
-            context.Raise ("pf.hyperlisp-2-node", node);
+            context.Raise ("pf.code-2-nodes", node);
             node.Value = null;
-            context.Raise ("pf.execute", node);
-            context.Raise ("pf.nodes-2-hyperlisp", node);
+            context.Raise ("lambda", node);
+            context.Raise ("pf.nodes-2-code", node);
         }
     }
 }

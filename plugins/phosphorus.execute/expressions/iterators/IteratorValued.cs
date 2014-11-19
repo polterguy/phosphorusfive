@@ -58,15 +58,22 @@ namespace phosphorus.execute.iterators
                         options |= RegexOptions.Singleline;
                     Regex regex = new Regex (value.Substring (1, value.LastIndexOf ("/") - 1), options);
                     foreach (Node idxCurrent in Left.Evaluate) {
-                        if (regex.IsMatch (idxCurrent.Get<string> ()))
-                            yield return idxCurrent;
+                        foreach (Node idxChild in idxCurrent.Children) {
+                            if (idxChild.Value != null && !(idxChild.Value is Node)) {
+                                if (regex.IsMatch (idxChild.Get<string> ()))
+                                    yield return idxChild;
+                            }
+                        }
                     }
                 } else {
-                    if (value.StartsWith ("\\"))
+                    // to support iterators who's value starts with "/" or ".." to escape out of Regex and named ancestor iterators
+                   if (value.StartsWith ("\\"))
                         value = value.Substring (1);
                     foreach (Node idxCurrent in Left.Evaluate) {
-                        if (idxCurrent.Get<string> () == value)
-                            yield return idxCurrent;
+                        foreach (Node idxChild in idxCurrent.Children) {
+                            if (value.Equals (idxChild.Value))
+                                yield return idxChild;
+                        }
                     }
                 }
             }

@@ -25,20 +25,19 @@ namespace phosphorus.execute
             if (e.Args.Count == 0)
                 return; // "do nothing" operation
 
-            Match destinationMatch = GetDestinationMatch (e.Args);
-            Node dp = new Node ("__pf_dp", null);
-            e.Args.Add (dp);
-            foreach (Node idxSource in destinationMatch.Matches) {
-                dp.Value = idxSource;
-                context.Raise ("pf.execute", e.Args);
+            Match dataSource = GetDataSource (e.Args);
+            foreach (Node idxSource in dataSource.Matches) {
+                Node dp = new Node ("__dp", idxSource);
+                e.Args.Insert (0, dp);
+                context.Raise ("pf.lambda", e.Args);
+                e.Args.RemoveAt (0);
             }
-            dp.Untie ();
         }
 
         /*
          * will return a Match object for the destination of the "pf.add"
          */
-        private static Match GetDestinationMatch (Node node)
+        private static Match GetDataSource (Node node)
         {
             string destinationExpression = node.Get<string> ();
             if (!Expression.IsExpression (destinationExpression))

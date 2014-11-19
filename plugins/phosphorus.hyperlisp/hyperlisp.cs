@@ -21,8 +21,8 @@ namespace phosphorus.hyperlisp
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.hyperlisp-2-node")]
-        private static void pf_hyperlisp_2_node (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.hyperlisp-2-nodes")]
+        private static void pf_hyperlisp_2_nodes (ApplicationContext context, ActiveEventArgs e)
         {
             string[] tokens = TokenizeHyperlisp (e.Args.Get<string> ("").TrimStart ());
             Node node = new Node ();
@@ -232,7 +232,7 @@ namespace phosphorus.hyperlisp
                             string name = tokens [idxCur];
                             node [node.Count - 1].Name = name;
                             eon = true;
-                            if (idxCur < tokens.Length && tokens [idxCur + 1] == ":")
+                            if (idxCur < tokens.Length && tokens.Length > idxCur + 1 && tokens [idxCur + 1] == ":")
                                 idxCur += 1;
                             else
                                 noSpace = 0;

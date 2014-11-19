@@ -98,7 +98,7 @@ namespace phosphorus.core
             if (!_registeredActiveEvents.ContainsKey (name))
                 return;
 
-            ActiveEventArgs e = new ActiveEventArgs (args);
+            ActiveEventArgs e = new ActiveEventArgs (args, name);
             foreach (var idxMethod in _registeredActiveEvents [name]) {
                 idxMethod.Item1.Invoke (idxMethod.Item2, new object[] { this, e });
             }

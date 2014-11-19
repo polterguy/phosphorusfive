@@ -60,6 +60,20 @@ namespace phosphorus.core
             }
 
             /// <summary>
+            /// determines if is given value is a DNA path or not
+            /// </summary>
+            /// <returns><c>true</c> if is value is dna; otherwise, <c>false</c></returns>
+            /// <param name="value">value to check</param>
+            public static bool IsPath (string dna)
+            {
+                foreach (char idx in dna) {
+                    if ("0123456789-".IndexOf (idx) == -1)
+                        return false;
+                }
+                return true;
+            }
+
+            /// <summary>
             /// compares two nodes for equality
             /// </summary>
             /// <param name="lhs">left hand side node</param>
@@ -335,7 +349,6 @@ namespace phosphorus.core
 
             if (typeof(T) == Value.GetType ())
                 return (T)Value;
-
             return (T)Convert.ChangeType (Value, typeof(T), System.Globalization.CultureInfo.InvariantCulture);
         }
 
@@ -407,6 +420,8 @@ namespace phosphorus.core
             while (idxNode._parent != null)
                 idxNode = idxNode._parent;
             foreach (var idxNo in dna._value) {
+                if (idxNo < 0 || idxNo >= idxNode._children.Count)
+                    return null;
                 idxNode = idxNode [idxNo];
             }
             return idxNode;
@@ -543,6 +558,26 @@ namespace phosphorus.core
         {
             node._parent = this;
             _children.Add (node);
+        }
+
+        /// <summary>
+        /// removes the node at the specified index
+        /// </summary>
+        /// <param name="index">where node to remove recides in the children collection</param>
+        public void RemoveAt (int index)
+        {
+            _children [index].Untie ();
+        }
+
+        /// <summary>
+        /// inserts a child node to its children collection at the specified index
+        /// </summary>
+        /// <param name="node">node to add</param>
+        /// <param name="index">where to add</param>
+        public void Insert (int index, Node node)
+        {
+            node._parent = this;
+            _children.Insert (index, node);
         }
 
         /// <summary>
