@@ -44,7 +44,7 @@ namespace phosphorus.hyperlisp
                 e.Args.Value = null;
             } else {
                 string value = builder.ToString ();
-                e.Args.Value = value.Substring (0, value.Length - 2); // getting rid of last carriage return
+                e.Args.Value = value.TrimEnd ('\r', '\n'); // getting rid of last carriage return
             }
         }
 
@@ -77,8 +77,10 @@ namespace phosphorus.hyperlisp
                     builder.Append ("  ");
                 }
                 string name = idx.Name;
-                if (name.Contains ("\r") || name.Contains ("\n") || name.Contains (":") || name.Trim () != name || (name == string.Empty && idx.Value == null)) {
+                if (name.Contains ("\r") || name.Contains ("\n")) {
                     builder.Append (string.Format (@"@""{0}""", name.Replace (@"""", @"""""")));
+                } else if ((name == string.Empty && idx.Value == null) || name.Contains (":") || name.Trim () != name) {
+                    builder.Append (string.Format (@"""{0}""", name.Replace (@"""", @"\""")));
                 } else {
                     builder.Append (string.Format ("{0}", name));
                 }

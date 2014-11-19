@@ -22,6 +22,7 @@ namespace phosphorus.execute.iterators
         /// <param name="name">name to match</param>
         public IteratorNamed (string name)
         {
+            // to support iterators who's value starts with "/" or ".." to escape out of Regex and named ancestor iterators
             if (name.StartsWith ("\\"))
                 name = name.Substring (1);
             _name = name;

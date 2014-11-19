@@ -35,6 +35,29 @@ namespace phosphorus.execute
             }
             ip.Untie ();
         }
+        
+        /*
+         * executes a "lambda execution" block
+         */
+        private static void ExecuteLambda (ApplicationContext context, Node exe, Node ip)
+        {
+            Match executionMatch = new Expression (exe.Get<string> ()).Evaluate (exe);
+            if (executionMatch.TypeOfMatch != Match.MatchType.Node)
+                throw new ArgumentException ("you can only execute a 'node' expression, [pf.execute] was given illegal expression; '" + exe.Get<string> () + "'");
+
+            foreach (Node current in executionMatch.Matches) {
+                if (!current.Name.StartsWith ("_")) {
+                    List<Node> originalNodes = new List<Node> (current.Children);
+                    foreach (Node idx in exe.Children) {
+                        current.Add (new Node (idx.Name, idx));
+                    }
+                    ip.Value = current;
+                    context.Raise (current.Name, current);
+                    current.Clear ();
+                    current.AddRange (originalNodes);
+                }
+            }
+        }
 
         /*
          * executes a block of nodes
@@ -48,38 +71,6 @@ namespace phosphorus.execute
                     context.Raise (current.Name, current);
                 }
                 current = current.NextSibling;
-            }
-        }
-
-        /*
-         * executes a "lambda execution" block
-         */
-        private static void ExecuteLambda (ApplicationContext context, Node exe, Node ip)
-        {
-            Match executionMatch = new Expression (exe.Get<string> ()).Evaluate (exe);
-            if (executionMatch.TypeOfMatch != Match.MatchType.Node)
-                throw new ArgumentException ("you can only execute a 'node' expression, [pf.execute] was given illegal expression; '" + exe.Get<string> () + "'");
-            foreach (Node current in executionMatch.Matches) {
-                List<Node> oldCurrentChildren = new List<Node> ();
-                if (exe.Count > 0) {
-
-                    // arguments are being passed into "lambda" execution block, making sure we store old children list such that execution 
-                    // becomes "immutable"
-                    foreach (Node idx in current.Children) {
-                        oldCurrentChildren.Add (idx.Clone ());
-                    }
-                    foreach (Node idx in exe.Children) {
-                        current.Add (idx.Clone ());
-                    }
-                }
-                ip.Value = current;
-                context.Raise (current.Name, current); // we're also raising active events starting with "_" here
-                if (exe.Count > 0) {
-                    current.Clear ();
-                    foreach (Node idx in oldCurrentChildren) {
-                        current.Add (idx);
-                    }
-                }
             }
         }
     }

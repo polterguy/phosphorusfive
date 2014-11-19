@@ -49,9 +49,13 @@ _data:liv
         ulv:grå
         coyote:ørken
 _x
-  pf.for-each:@/\/**/""/_d??a/imce""/**/%2/</</</</>/>/?node
-    pf.set:@/./*/__pf_dp/#/?value
-      :@/././*/_name/?value
+  pf.for-each:@/../0/**/%2/(/>/&/</)/?node
+    pf.set:@/+/+/0/?value
+      :@/""..pf.for-each""/*/__pf_dp/#/?value
+    pf.set:@/""..pf.for-each""/*/__pf_dp/#/?value
+      :@/""..pf.for-each""/*/_name/#/?value
+    pf.add:@/./*/_name/#/?node
+      node
 pf.execute:@/-/*/?node
   _name:thomas hansen ER KUUUUUUUUUUUUUUUUUUUL!!!!!!!
 ";

@@ -105,8 +105,6 @@ namespace phosphorus.execute
                 return FindMatchCloseGroup (current, previousToken);
             case "/":
                 return FindMatchSlashToken (current, previousToken);
-            case "\\":
-                return FindMatchBackSlashToken (current, previousToken);
             case "*":
                 return FindMatchAsterixToken (current, previousToken);
             case "**":
@@ -116,6 +114,8 @@ namespace phosphorus.execute
                 return FindMatchSiblingToken (current, token, previousToken);
             case ".":
                 return FindMatchDotToken (current, previousToken);
+            case "..":
+                return FindMatchDoubleDotToken (current, previousToken);
             case "|":
             case "&":
             case "^":
@@ -273,12 +273,12 @@ namespace phosphorus.execute
         /*
          * handles "\" token
          */
-        private IteratorGroup FindMatchBackSlashToken (IteratorGroup current, string previousToken)
+        private IteratorGroup FindMatchDoubleDotToken (IteratorGroup current, string previousToken)
         {
             if (previousToken != "/") {
                 throw new ArgumentException ("syntax error in expression; '" + 
                     _expression + 
-                    "' probably missing a slash '/' before root token '\\'");
+                    "' probably missing a slash '/' before root token '..'");
             }
             current.AddIterator (new IteratorRoot ());
             return current;
@@ -427,6 +427,9 @@ namespace phosphorus.execute
                         if (token.LastIndexOf ("/") == 0)
                             throw new ArgumentException ("token; '" + token + "' in expression; '" + _expression + "' is not a valid regular expression");
                         current.AddIterator (new IteratorNamedRegex (token));
+                    } else if (token.StartsWith ("..")) {
+                        // named ancestor
+                        current.AddIterator (new IteratorNamedAncestor (token.Substring (2)));
                     } else {
                         current.AddIterator (new IteratorNamed (token));
                     }
@@ -443,12 +446,17 @@ namespace phosphorus.execute
             string buffer = string.Empty;
             for (int idxNo = 1 /* skipping first @ character */; idxNo < expression.Length; idxNo++) {
                 char idxChar = expression [idxNo];
-                if ("/\\.|&^!()=?+-[],%#<>".IndexOf (idxChar) > -1) {
+                if ("/.|&^!()=?+-[],%#<>".IndexOf (idxChar) > -1) {
                     if (buffer != string.Empty) {
                         yield return buffer;
                         buffer = string.Empty;
                     }
-                    yield return idxChar.ToString ();
+                    if (idxChar == '.' && idxNo + 1 < expression.Length && expression [idxNo + 1] == '.') {
+                        idxNo += 1;
+                        yield return "..";
+                    } else {
+                        yield return idxChar.ToString ();
+                    }
                 } else if (@"""@".IndexOf (idxChar) > -1) {
                     if (buffer != string.Empty) {
                         yield return buffer;

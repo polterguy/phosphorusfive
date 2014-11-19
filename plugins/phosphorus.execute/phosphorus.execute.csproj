@@ -57,6 +57,7 @@
     <Compile Include="expressions\iterators\IteratorShiftLeft.cs" />
     <Compile Include="expressions\iterators\IteratorShiftRight.cs" />
     <Compile Include="expressions\iterators\IteratorNamedRegex.cs" />
+    <Compile Include="expressions\iterators\IteratorNamedAncestor.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
