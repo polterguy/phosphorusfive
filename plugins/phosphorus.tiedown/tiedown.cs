@@ -70,10 +70,6 @@ pf.file.save
             // //////////////////////////////////////////////////////////////////////////////////////////////////////////
             // / operators; "=", "!=", ">", "<", ">=", "<="
             // / "or" && "and"
-            // / allow execution of "text", meaning expressions in "pf.execute" can also return "name" or "value"
-            // / in addition to text values of "pf.execute" if value is not an expression
-            // 
-            // immutable "for-each" and "pf.execution", maybe it's enough with immutable "pf.execution" ...?
             // //////////////////////////////////////////////////////////////////////////////////////////////////////////
             Node node = new Node ("root", code);
             context.Raise ("pf.code-2-nodes", node);

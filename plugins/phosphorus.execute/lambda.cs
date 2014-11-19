@@ -57,8 +57,12 @@ namespace phosphorus.execute
                     for (int idxNo = 0; idxNo < executionMatch.Count; idxNo++) {
                         var idxRes = executionMatch.GetValue (idxNo);
                         if (idxRes is Node) {
+
+                            // current match was a reference node, executing node
                             ExecuteBlock (context, idxRes as Node, args.Children);
                         } else {
+
+                            // current match was a string or something that (hopefully) can be converted into a string
                             ExecuteLambdaText (context, (idxRes ?? "").ToString (), args.Children);
                         }
                     }
@@ -76,41 +80,54 @@ namespace phosphorus.execute
         private static void ExecuteLambdaText (ApplicationContext context, string code, IEnumerable<Node> args)
         {
             if (string.IsNullOrEmpty (code))
-                return;
+                return; // nothing to execute here
 
+            // first transforming code into nodes
             Node exe = new Node ("root", code);
             context.Raise ("pf.code-2-nodes", exe);
+
+            // then executing nodes created from "code" parameter
             ExecuteBlock (context, exe, args);
         }
 
         /*
-         * executes a block of nodes
+         * executes a block of nodes, this is where the actual execution happens
+         * this is the "heart beat" method of the "pf.lambda" execution engine
          */
         private static void ExecuteBlock (ApplicationContext context, Node exe, IEnumerable<Node> args = null)
         {
-            // storing "old nodes" to make sure execution block stays "immutable"
+            // storing "old nodes"
             List<Node> oldNodes = new List<Node> ();
             foreach (Node idx in exe.Children) {
                 oldNodes.Add (idx.Clone ());
             }
+
+            // passing in arguments
             if (args != null) {
                 foreach (Node idx in args) {
                     exe.Add (new Node (idx.Name, idx));
                 }
             }
-            Node current = exe.FirstChild;
-            while (current != null) {
-                if (!current.Name.StartsWith ("_")) {
-                    string avName = current.Name;
+
+            // iterating through all nodes in execution scope
+            Node idxExe = exe.FirstChild;
+            while (idxExe != null) {
+
+                // we don't execute nodes that start with an underscore "_" since these are considered "data segments"
+                if (!idxExe.Name.StartsWith ("_")) {
+                    string avName = idxExe.Name;
+
+                    // making sure our active event is prefixed with a "pf." if it doesn't contain a period "." in its name anywhere
                     if (!avName.Contains ("."))
                         avName = "pf." + avName;
-                    context.Raise (avName, current);
+                    context.Raise (avName, idxExe);
                 }
-                current = current.NextSibling;
+                idxExe = idxExe.NextSibling;
             }
+
+            // clearing all nodes from execution scope, and reinserting "old nodes", to make sure our execution block stays "immutable"
             exe.Clear ();
             exe.AddRange (oldNodes);
         }
     }
 }
-
