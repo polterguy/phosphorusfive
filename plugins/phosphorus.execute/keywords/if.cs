@@ -74,28 +74,38 @@ namespace phosphorus.execute
                 object rhs = GetRightHandSide (node, out rhsNode);
                 retVal = CompareValues (lhs, rhs, lhsNode, rhsNode, oper);
             }
-            if (retVal) {
+            return EvaluateRelatedComparisons (node, nextComp, retVal);
+        }
+
+        /*
+         * checks related comparisons
+         */
+        private static bool EvaluateRelatedComparisons (Node node, Node nextComp, bool isTrue)
+        {
+            if (isTrue) {
                 if (node.FirstChild != null) {
 
                     // checking nested "and" statements
-                    retVal = EvaluateConsecutiveAndNodes (node.FirstChild);
+                    isTrue = EvaluateConsecutiveAndNodes (node.FirstChild);
                 }
-                if (retVal && nextComp != null) {
+                if (isTrue && nextComp != null) {
 
                     // checking consecutive "and" statements
-                    retVal = EvaluateConsecutiveAndNodes (nextComp);
+                    isTrue = EvaluateConsecutiveAndNodes (nextComp);
                 }
             } else {
                 if (node.FirstChild != null) {
 
-                    // checking nested "and" statements
-                    retVal = EvaluateConsecutiveOrNodes (node.FirstChild);
+                    // checking nested "or" statements
+                    isTrue = EvaluateConsecutiveOrNodes (node.FirstChild);
                 }
-                if (!retVal && nextComp != null) {
-                    retVal = EvaluateConsecutiveOrNodes (nextComp);
+                if (!isTrue && nextComp != null) {
+
+                    // checking consecutive "or" statements
+                    isTrue = EvaluateConsecutiveOrNodes (nextComp);
                 }
             }
-            return retVal;
+            return isTrue;
         }
         
         /*

@@ -79,11 +79,13 @@ if:@/-/?name
         =:jumbo2
       and:@/../**/_xxx/?value
         =:thomas
+      or:@/../**/_xxx/?value
+        =:thomas2
   lambda
     set:@/././+/?value
       :conditional branching was true
 mumbo:jumbo2
-_xxx:thomas
+_xxx:thomas2
 pf.file.save
 ";
             // //////////////////////////////////////////////////////////////////////////////////////////////////////////
