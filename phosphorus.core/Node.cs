@@ -4,6 +4,7 @@
  */
 
 using System;
+using System.Reflection;
 using System.Collections.Generic;
 
 namespace phosphorus.core
@@ -369,26 +370,6 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// unties the node from its parent
-        /// </summary>
-        public void Untie ()
-        {
-            _parent._children.Remove (this);
-            _parent = null;
-        }
-
-        /// <summary>
-        /// replace the specified node
-        /// </summary>
-        /// <param name="node">node to replace current node with</param>
-        public void Replace (Node node)
-        {
-            node._parent = this._parent;
-            this._parent._children [this._parent._children.IndexOf (this)] = node;
-            this._parent = null;
-        }
-
-        /// <summary>
         /// gets the children of this instance
         /// </summary>
         /// <value>its children</value>
@@ -409,25 +390,6 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// finds a node according to the given <see cref="phosphorus.core.Node+DNA"/>
-        /// </summary>
-        /// <param name="dna">dna of node to find</param>
-        public Node Find (DNA dna)
-        {
-            if (dna.Equals (null))
-                return null;
-            Node idxNode = this;
-            while (idxNode._parent != null)
-                idxNode = idxNode._parent;
-            foreach (var idxNo in dna._value) {
-                if (idxNo < 0 || idxNo >= idxNode._children.Count)
-                    return null;
-                idxNode = idxNode [idxNo];
-            }
-            return idxNode;
-        }
-
-        /// <summary>
         /// returns the first child of the node
         /// </summary>
         /// <value>the first child</value>
@@ -438,7 +400,7 @@ namespace phosphorus.core
                 return null;
             }
         }
-        
+
         /// <summary>
         /// returns the parent of node
         /// </summary>
@@ -460,7 +422,7 @@ namespace phosphorus.core
                 return null;
             }
         }
-        
+
         /// <summary>
         /// returns the previous sibling of the current node
         /// </summary>
@@ -497,7 +459,7 @@ namespace phosphorus.core
                 return null;
             }
         }
-        
+
         /// <summary>
         /// returns the previous node from the current node
         /// </summary>
@@ -548,6 +510,45 @@ namespace phosphorus.core
                     idxNode = idxNode._parent;
                 return idxNode;
             }
+        }
+
+        /// <summary>
+        /// unties the node from its parent
+        /// </summary>
+        public void Untie ()
+        {
+            _parent._children.Remove (this);
+            _parent = null;
+        }
+
+        /// <summary>
+        /// replace the specified node
+        /// </summary>
+        /// <param name="node">node to replace current node with</param>
+        public void Replace (Node node)
+        {
+            node._parent = this._parent;
+            this._parent._children [this._parent._children.IndexOf (this)] = node;
+            this._parent = null;
+        }
+
+        /// <summary>
+        /// finds a node according to the given <see cref="phosphorus.core.Node+DNA"/>
+        /// </summary>
+        /// <param name="dna">dna of node to find</param>
+        public Node Find (DNA dna)
+        {
+            if (dna.Equals (null))
+                return null;
+            Node idxNode = this;
+            while (idxNode._parent != null)
+                idxNode = idxNode._parent;
+            foreach (var idxNo in dna._value) {
+                if (idxNo < 0 || idxNo >= idxNode._children.Count)
+                    return null;
+                idxNode = idxNode [idxNo];
+            }
+            return idxNode;
         }
 
         /// <summary>
@@ -609,6 +610,43 @@ namespace phosphorus.core
             retVal.Value = Value;
             foreach (Node idxChild in _children) {
                 retVal.Add (idxChild.Clone ());
+            }
+            return retVal;
+        }
+
+        /// <summary>
+        /// compares two nodes for equality and returns -1 if this is "less than" rhs, +1 if this is "more than" rhs, and 0
+        /// if they are equal, meaning they contain similar nodes
+        /// </summary>
+        /// <returns>-1, 0 or 1 depending upon the equality of the this and rhs</returns>
+        /// <param name="rhs">node to compare again the current instance for equality</param>
+        public int CompareTo (Node rhs)
+        {
+            int retVal = Name.CompareTo (rhs.Name);
+            if (retVal != 0)
+                return retVal;
+            if (Value == null) {
+                if (rhs.Value != null)
+                    return -1;
+            } else if (rhs.Value == null) {
+                return 1;
+            } else {
+                // using reflection to find "CompareTo" method of type
+                MethodInfo method = Value.GetType ().GetMethod ("CompareTo", new Type[] { typeof(object) });
+                retVal = (int)method.Invoke (rhs.Value, new object[] { rhs });
+                if (retVal != 0)
+                    return retVal;
+                if (_children.Count < rhs._children.Count) {
+                    return -1;
+                } else if (rhs._children.Count < _children.Count) {
+                    return 1;
+                } else {
+                    for (int idxNo = 0; idxNo < Count; idxNo ++) {
+                        retVal = _children [idxNo].CompareTo (rhs._children [idxNo]);
+                        if (retVal != 0)
+                            return retVal;
+                    }
+                }
             }
             return retVal;
         }

@@ -10,7 +10,7 @@ using phosphorus.core;
 namespace phosphorus.execute
 {
     /// <summary>
-    /// class wrapping execution engine keyword "put", which allows for changing values of nodes
+    /// class wrapping execution engine keyword "put", which allows for changing the value and name of nodes, or the node itself
     /// </summary>
     public static class set
     {

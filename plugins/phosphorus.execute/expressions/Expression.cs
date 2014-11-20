@@ -30,15 +30,18 @@ namespace phosphorus.execute
         }
 
         /// <summary>
-        /// determines if string is an expression or not
+        /// determines if object is an expression or not
         /// </summary>
-        /// <returns><c>true</c> if string is an expression; otherwise, <c>false</c>.</returns>
-        /// <param name="value">string to check</param>
-        public static bool IsExpression (string value)
+        /// <returns><c>true</c> if object is an expression; otherwise, <c>false</c></returns>
+        /// <param name="value">object to check</param>
+        public static bool IsExpression (object value)
         {
-            return value != null && 
-                value.StartsWith ("@") && 
-                value.Length > 1;
+            if (value == null)
+                return false;
+            string strValue = value as string;
+            return strValue != null && 
+                strValue.StartsWith ("@") && 
+                strValue.Length > 1;
         }
 
         /// <summary>

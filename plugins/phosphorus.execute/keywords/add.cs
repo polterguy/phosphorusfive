@@ -10,7 +10,7 @@ using phosphorus.core;
 namespace phosphorus.execute
 {
     /// <summary>
-    /// class wrapping execution engine keyword "add", which allows for changing appending nodes into a node's list of children
+    /// class wrapping execution engine keyword "add", which allows for appending nodes into a node's list of children
     /// </summary>
     public static class add
     {

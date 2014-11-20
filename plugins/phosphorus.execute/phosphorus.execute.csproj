@@ -60,6 +60,7 @@
     <Compile Include="code.cs" />
     <Compile Include="expressions\iterators\IteratorParent.cs" />
     <Compile Include="lambda.cs" />
+    <Compile Include="keywords\if.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

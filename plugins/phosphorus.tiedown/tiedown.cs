@@ -63,8 +63,27 @@ set:@/-/./(/_z/&/=fff/&/=""/f?f/""/&/""/_?z/""/)/?value
   :FOUND MATCH!!
 _z_code:@""set:@/../_return/#/?value
   :howdy world""
-lambda:@/-/?value
+pf.lambda:@/-/?value
   _return:before
+if:@/-/?name
+  =:lambda
+  or:@/./-/?name
+    =:pf.lambda
+  and:@/./+/?name
+    =:mumbo
+    and:@/././+/?value
+      =:jumbo
+    or:@/././+/?value
+      =:jumbo5
+      or:@/./././+/?value
+        =:jumbo2
+      and:@/../**/_xxx/?value
+        =:thomas
+  lambda
+    set:@/././+/?value
+      :conditional branching was true
+mumbo:jumbo2
+_xxx:thomas
 pf.file.save
 ";
             // //////////////////////////////////////////////////////////////////////////////////////////////////////////
