@@ -166,21 +166,8 @@ namespace phosphorus.execute
                 if (match.TypeOfMatch == Match.MatchType.Count) {
                     retVal.Add (new Node (string.Empty, match.Count));
                 } else {
-                    foreach (Node idxMatch in match.Matches) {
-                        switch (match.TypeOfMatch) {
-                        case Match.MatchType.Name:
-                            retVal.Add (new Node (string.Empty, idxMatch.Name));
-                            break;
-                        case Match.MatchType.Node:
-                            retVal.Add (idxMatch);
-                            break;
-                        case Match.MatchType.Path:
-                            retVal.Add (new Node (string.Empty, idxMatch.Path));
-                            break;
-                        case Match.MatchType.Value:
-                            retVal.Add (new Node (string.Empty, idxMatch.Value));
-                            break;
-                        }
+                    for (int idxSource = 0; idxSource < match.Count; idxSource ++) {
+                        retVal.Add (new Node (string.Empty, match.GetValue (idxSource)));
                     }
                 }
                 return retVal;

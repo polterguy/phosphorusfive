@@ -515,10 +515,11 @@ namespace phosphorus.core
         /// <summary>
         /// unties the node from its parent
         /// </summary>
-        public void Untie ()
+        public Node Untie ()
         {
             _parent._children.Remove (this);
             _parent = null;
+            return this;
         }
 
         /// <summary>

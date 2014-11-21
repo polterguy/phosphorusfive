@@ -35,11 +35,14 @@ namespace phosphorus.tiedown
         {
             // execute load hyperlisp file
             string code = @"
+_integer:int:5
+_nodes:node:@""tmp:5
+  jo:dude!!""
 _data:liv
   flercellede:dyr
     reptiler:slanger, osv
     pattedyr:hunder, mennesker, osv
-      kattedyr:pusekatter, tigre, løver og sånt no :)
+      kattedyr:""pusekatter, tigre, løver og sånt no :)""
         tigre:bengalsk
         løver:afrika
       primater:apekatter, osv
@@ -49,7 +52,7 @@ _data:liv
         ulv:grå
         coyote:ørken
 _x
-  for-each:@/../0/**/%2/(/>/&/</)/?node
+  for-each:@/../_data/**/%2/(/>/&/</)/?node
     set:@/+/+/0/?value
       :@/""..for-each""/__dp/#/?value
     set:@/""..for-each""/__dp/#/?value
