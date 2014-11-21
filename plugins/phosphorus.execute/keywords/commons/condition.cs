@@ -100,6 +100,9 @@ namespace phosphorus.execute
             }
         }
 
+        /*
+         * actual evaluation of statement, invokes itself recursively for all "related 'or' and/or 'and' statements" if it is required
+         */
         private bool EvaluateStatement (Node currentStatement)
         {
             Operator oper = GetOperator (currentStatement);
@@ -125,11 +128,17 @@ namespace phosphorus.execute
             }
         }
 
+        /*
+         * evaluates existence
+         */
         private bool Exist (Node currentStatement)
         {
             return new Expression (currentStatement.Get<string> ()).Evaluate (currentStatement).Count > 0;
         }
 
+        /*
+         * compres two expressions or constants
+         */
         private int Compare (Node currentStatement)
         {
             var lhs = GetNodeList (currentStatement);
@@ -146,6 +155,9 @@ namespace phosphorus.execute
             return 0;
         }
 
+        /*
+         * creates a node list out of the value of the given node
+         */
         private List<Node> GetNodeList (Node currentStatement)
         {
             if (Expression.IsExpression (currentStatement.Value)) {
@@ -178,15 +190,18 @@ namespace phosphorus.execute
             return new List<Node> (new Node[] { new Node (string.Empty, currentStatement.Value) });
         }
 
+        /*
+         * recursively evaluates all related "and" conditions
+         */
         private bool EvaluateRelatedAnd (Node currentStatement)
         {
-            Node nextChild = FindNextStatement (currentStatement.FirstChild, "and");
+            Node nextChild = FindNextCondition (currentStatement.FirstChild, "and");
             if (nextChild != null) {
                 if (!EvaluateStatement (nextChild))
                     return false;
             }
             if (currentStatement != _statementNode) {
-                Node nextSibling = FindNextStatement (currentStatement.NextSibling, "and");
+                Node nextSibling = FindNextCondition (currentStatement.NextSibling, "and");
                 if (nextSibling != null) {
                     if (!EvaluateStatement (nextSibling))
                         return false;
@@ -195,15 +210,18 @@ namespace phosphorus.execute
             return true;
         }
 
+        /*
+         * recursively evaluates all "or" conditions
+         */
         private bool EvaluateRelatedOr (Node currentStatement)
         {
-            Node nextChild = FindNextStatement (currentStatement.FirstChild, "or");
+            Node nextChild = FindNextCondition (currentStatement.FirstChild, "or");
             if (nextChild != null) {
                 if (EvaluateStatement (nextChild))
                     return true;
             }
             if (currentStatement != _statementNode) {
-                Node nextSibling = FindNextStatement (currentStatement.NextSibling, "or");
+                Node nextSibling = FindNextCondition (currentStatement.NextSibling, "or");
                 if (nextSibling != null) {
                     if (EvaluateStatement (nextSibling))
                         return true;
@@ -212,7 +230,10 @@ namespace phosphorus.execute
             return false;
         }
 
-        private Node FindNextStatement (Node node, string type)
+        /*
+         * finds next condition
+         */
+        private Node FindNextCondition (Node node, string type)
         {
             if (node == null)
                 return null;
@@ -230,7 +251,10 @@ namespace phosphorus.execute
                 return node;
             return null;
         }
-        
+
+        /*
+         * returns the operator for the current condition
+         */
         private Operator GetOperator (Node currentStatement)
         {
             switch (currentStatement.FirstChild.Name) {

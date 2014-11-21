@@ -256,8 +256,11 @@ namespace phosphorus.execute
                     _expression + 
                     "' probably missing a slash '/' before group was closed in one of your ')' tokens");
             }
-            if (current.ParentGroup == null)
-                throw new ArgumentException ("too many parantheses ')' in expression; '" + _expression + "', tried to close a group that didn't exist");
+            if (current.ParentGroup == null) {
+                throw new ArgumentException ("too many parantheses ')' in expression; '" + 
+                    _expression + 
+                    "', tried to close a group that didn't exist");
+            }
             return current.ParentGroup;
         }
 
@@ -385,38 +388,17 @@ namespace phosphorus.execute
         private IteratorGroup FindMatchDefaultToken (IteratorGroup current, string token, string previousToken)
         {
             if (previousToken == "=") {
-
-                // looking for value, current token is value to look for, changing Value of current MatchIterator
                 ((IteratorValued)current.LastIterator).Value = token;
+                return current;
             } else if (previousToken == "+" || previousToken == "-") {
-
-                // looking for sibling, current token is offset to look for
-                if (!IsNumber (token)) {
-                    throw new ArgumentException ("a sibling operator must have an integer number as its next token, syntax error close to; '" + 
-                        token + "' in expression; '" + _expression + "'");
-                }
-                ((IteratorSibling)current.LastIterator).Offset = previousToken == "-" ? -int.Parse (token) : int.Parse (token);
+                return FindMatchSiblingIntegerToken (current, token, previousToken);
             } else if (previousToken == "[") {
-
-                // looking for range token, current token is "start"
-                if (!IsNumber (token))
-                    throw new ArgumentException ("start of range was not a number, syntax error at; '" + token + "' in expression; '" + _expression + "'");
-                current.AddIterator (new IteratorRange (int.Parse (token)));
+                return FindMatchRangeBeginToken (current, token);
             } else if (previousToken == ",") {
-
-                // looking for range token, current token is "end"
-                if (!IsNumber (token))
-                    throw new ArgumentException ("end of range was not a number, syntax error at; '" + token + "' in expression; '" + _expression + "'");
-                ((IteratorRange)current.LastIterator).End = int.Parse (token);
+                return FindMatchRangeEndToken (current, token);
             } else if (previousToken == "%") {
-
-                // looking for range token, current token is "end"
-                if (!IsNumber (token))
-                    throw new ArgumentException ("modulo was not a number, syntax error at; '" + token + "' in expression; '" + _expression + "'");
-                ((IteratorModulo)current.LastIterator).Modulo = int.Parse (token);
+                return FindMatchModuloIntegerToken (current, token);
             } else {
-
-                // looking for named or numbered node
                 if (previousToken != "/") {
                     throw new ArgumentException ("syntax error in expression; '" + 
                         _expression + 
@@ -425,18 +407,90 @@ namespace phosphorus.execute
                 }
                 if (IsNumber (token)) {
                     current.AddIterator (new IteratorNumbered (int.Parse (token)));
+                    return current;
                 } else {
-                    if (token.StartsWith ("/")) {
-                        if (token.LastIndexOf ("/") == 0)
-                            throw new ArgumentException ("token; '" + token + "' in expression; '" + _expression + "' is not a valid regular expression");
-                        current.AddIterator (new IteratorNamedRegex (token));
-                    } else if (token.StartsWith ("..")) {
-                        // named ancestor
-                        current.AddIterator (new IteratorNamedAncestor (token.Substring (2)));
-                    } else {
-                        current.AddIterator (new IteratorNamed (token));
-                    }
+                    return FindMatchNamedToken (current, token);
                 }
+            }
+        }
+        
+        /*
+         * handles integer value following "+" and "-" tokens
+         */
+        private IteratorGroup FindMatchSiblingIntegerToken (IteratorGroup current, string token, string previousToken)
+        {
+            if (!IsNumber (token)) {
+                throw new ArgumentException ("a sibling operator must have an integer number as its next token, syntax error close to; '" + 
+                    token + "' in expression; '" + _expression + "'");
+            }
+            ((IteratorSibling)current.LastIterator).Offset = previousToken == "-" ? -int.Parse (token) : int.Parse (token);
+            return current;
+        }
+        
+        /*
+         * handles integer value following "[" token
+         */
+        private IteratorGroup FindMatchRangeBeginToken (IteratorGroup current, string token)
+        {
+            if (!IsNumber (token)) {
+                throw new ArgumentException ("start of range was not a number, syntax error at; '" + 
+                    token + 
+                    "' in expression; '" + 
+                    _expression + "'");
+            }
+            current.AddIterator (new IteratorRange (int.Parse (token)));
+            return current;
+        }
+        
+        /*
+         * handles integer value following "," token
+         */
+        private IteratorGroup FindMatchRangeEndToken (IteratorGroup current, string token)
+        {
+            if (!IsNumber (token)) {
+                throw new ArgumentException ("end of range was not a number, syntax error at; '" + 
+                    token + 
+                    "' in expression; '" + 
+                    _expression + "'");
+            }
+            ((IteratorRange)current.LastIterator).End = int.Parse (token);
+            return current;
+        }
+        
+        /*
+         * handles integer value following "%" token
+         */
+        private IteratorGroup FindMatchModuloIntegerToken (IteratorGroup current, string token)
+        {
+            if (!IsNumber (token)) {
+                throw new ArgumentException ("modulo was not a number, syntax error at; '" + 
+                    token + 
+                    "' in expression; '" + 
+                    _expression + "'");
+            }
+            ((IteratorModulo)current.LastIterator).Modulo = int.Parse (token);
+            return current;
+        }
+
+        /*
+         * handles named tokens, both named ancestors, named children and regex-named children
+         */
+        private IteratorGroup FindMatchNamedToken (IteratorGroup current, string token)
+        {
+            if (token.StartsWith ("/")) {
+                if (token.LastIndexOf ("/") == 0) {
+                    throw new ArgumentException ("token; '" + 
+                        token + 
+                        "' in expression; '" + 
+                        _expression + 
+                        "' is not a valid regular expression");
+                }
+                current.AddIterator (new IteratorNamedRegex (token));
+            } else if (token.StartsWith ("..")) {
+                // named ancestor
+                current.AddIterator (new IteratorNamedAncestor (token.Substring (2)));
+            } else {
+                current.AddIterator (new IteratorNamed (token));
             }
             return current;
         }
