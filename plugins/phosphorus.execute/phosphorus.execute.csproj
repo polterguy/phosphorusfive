@@ -63,6 +63,7 @@
     <Compile Include="keywords\commons\condition.cs" />
     <Compile Include="keywords\branching.cs" />
     <Compile Include="keywords\while.cs" />
+    <Compile Include="keywords\move.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
