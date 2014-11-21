@@ -27,7 +27,7 @@ namespace phosphorus.execute
             if (e.Args.Count == 0)
                 throw new ArgumentException ("syntax error in [pf.if], no children makes for invalid statement");
 
-            var condition = new Condition (e.Args);
+            var condition = new Conditions (e.Args);
             if (condition.Evaluate ()) {
                 foreach (Node idxExe in condition.ExecutionLambdas) {
                     context.Raise (idxExe.Name, idxExe);
@@ -62,7 +62,7 @@ namespace phosphorus.execute
                     e.Args.Parent.RemoveAt (0);
                 }
             } else {
-                var condition = new Condition (e.Args);
+                var condition = new Conditions (e.Args);
                 if (condition.Evaluate ()) {
                     foreach (Node idxExe in condition.ExecutionLambdas) {
                         context.Raise (idxExe.Name, idxExe);
@@ -97,7 +97,7 @@ namespace phosphorus.execute
                     e.Args.Parent.RemoveAt (0);
                 }
             } else {
-                var condition = new Condition (e.Args); // easy way to access all lambda objects beneath "else"
+                var condition = new Conditions (e.Args); // easy way to access all lambda objects beneath "else"
                 foreach (Node idxExe in condition.ExecutionLambdas) {
                     context.Raise (idxExe.Name, idxExe);
                 }

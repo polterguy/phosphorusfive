@@ -27,7 +27,7 @@ namespace phosphorus.execute
             if (e.Args.Count == 0)
                 throw new ArgumentException ("syntax error in [pf.while], no children makes for invalid statement");
 
-            var condition = new Condition (e.Args);
+            var condition = new Conditions (e.Args);
             while (condition.Evaluate ()) {
                 foreach (Node idxExe in condition.ExecutionLambdas) {
                     context.Raise (idxExe.Name, idxExe);

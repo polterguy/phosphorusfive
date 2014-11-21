@@ -13,7 +13,7 @@ namespace phosphorus.execute
     /// <summary>
     /// class wrapping any statement that somehow yields a condition, such as "pf.if" and "pf.while"
     /// </summary>
-    public class Condition
+    public class Conditions
     {
         /// <summary>
         /// the different types of legal conditions you can create
@@ -71,7 +71,7 @@ namespace phosphorus.execute
         /// initializes a new instance of the <see cref="phosphorus.execute.Condition"/> class
         /// </summary>
         /// <param name="statementNode">the node of the conditional statement</param>
-        public Condition (Node statementNode)
+        public Conditions (Node statementNode)
         {
             if (statementNode == null)
                 throw new ArgumentException ("you must submit a node to Condition for it to be able to evaluate a statement, statementNode was null");

@@ -59,10 +59,10 @@
     <Compile Include="code.cs" />
     <Compile Include="expressions\iterators\IteratorParent.cs" />
     <Compile Include="lambda.cs" />
-    <Compile Include="keywords\commons\condition.cs" />
     <Compile Include="keywords\branching.cs" />
     <Compile Include="keywords\while.cs" />
     <Compile Include="expressions\Logical.cs" />
+    <Compile Include="keywords\commons\Conditions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
