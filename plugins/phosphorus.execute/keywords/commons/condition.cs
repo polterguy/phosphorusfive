@@ -16,48 +16,50 @@ namespace phosphorus.execute
     public class Condition
     {
         /// <summary>
-        /// the legal types of conditions you can create
+        /// the different types of legal conditions you can create
         /// </summary>
         private enum Operator
         {
             /// <summary>
-            /// equality
+            /// equality, token '='
             /// </summary>
             Equals,
 
             /// <summary>
-            /// inequality
+            /// inequality, token '!='
             /// </summary>
             NotEquals,
 
             /// <summary>
-            /// more than
+            /// more than, token '>'
             /// </summary>
             MoreThan,
 
             /// <summary>
-            /// less than
+            /// less than, token '<'
             /// </summary>
             LessThan,
 
             /// <summary>
-            /// more than or equals
+            /// more than or equals, token '>='
             /// </summary>
             MoreThanEquals,
 
             /// <summary>
-            /// less than or equals
+            /// less than or equals, token '<='
             /// </summary>
             LessThanEquals,
 
             /// <summary>
             /// not, meaning "does not exist". checks if an expression returns anything, and if it does, Not evaluates to false.
-            /// opposite of Exist
+            /// opposite of Exist, token '!', but token is in "front" of epxression or constant, meaning it changes position
+            /// with the expression or constant you wish to "not"
             /// </summary>
             Not,
 
             /// <summary>
             /// exist, meaning "do exist". checks if an expression returns anything, and if it does, Exist evaluates to true.
+            /// opposite of "Not". has no token, but is the default logical operator being used if no operator is given
             /// opposite of Not
             /// </summary>
             Exist
@@ -71,6 +73,8 @@ namespace phosphorus.execute
         /// <param name="statementNode">the node of the conditional statement</param>
         public Condition (Node statementNode)
         {
+            if (statementNode == null)
+                throw new ArgumentException ("you must submit a node to Condition for it to be able to evaluate a statement, statementNode was null");
             _statementNode = statementNode;
         }
 
@@ -79,7 +83,7 @@ namespace phosphorus.execute
         /// </summary>
         public bool Evaluate ()
         {
-            return Evaluate (_statementNode);
+            return EvaluateStatement (_statementNode);
         }
 
         /// <summary>
@@ -96,331 +100,154 @@ namespace phosphorus.execute
             }
         }
 
-        /*
-         * evaluates a comparison and returns true if evaluation yields true, otherwise false
-         */
-        private bool Evaluate (Node node)
+        private bool EvaluateStatement (Node currentStatement)
         {
-            bool retVal = false;
-            Operator oper = GetOperator (node);
-            Node lhsNode;
-            object lhs = GetLeftHandSide (node, oper, out lhsNode);
-            if (oper == Operator.Exist) {
-                retVal = CheckExistence (node, lhs);
-            } else if (oper == Operator.Not) {
-                retVal = !CheckExistence (node, lhs);
-            } else {
-                Node rhsNode;
-                object rhs = GetRightHandSide (node, out rhsNode);
-                retVal = CompareValues (lhs, rhs, lhsNode, rhsNode, oper);
-            }
-            return EvaluateRelatedComparisons (node, retVal);
-        }
-
-        /*
-         * checks related comparisons
-         */
-        private bool EvaluateRelatedComparisons (Node node, bool isTrue)
-        {
-            if (isTrue) {
-                if (node.FirstChild != null) {
-
-                    // checking nested "and" statements
-                    isTrue = EvaluateConsecutiveAndNodes (node.FirstChild);
-                }
-                if (isTrue && (node.Name == "or" || node.Name == "and")) {
-
-                    // checking consecutive "and" statements
-                    Node nextSibling = node.NextSibling;
-                    if (nextSibling != null && nextSibling.Name == "and")
-                        isTrue = EvaluateConsecutiveAndNodes (nextSibling);
-                }
-            } else {
-                if (node.FirstChild != null) {
-
-                    // checking nested "or" statements
-                    isTrue = EvaluateConsecutiveOrNodes (node.FirstChild);
-                }
-                if (!isTrue && (node.Name == "or" || node.Name == "and")) {
-
-                    // checking consecutive "or" statements
-                    Node nextSibling = node.NextSibling;
-                    if (nextSibling != null && nextSibling.Name == "or")
-                        isTrue = EvaluateConsecutiveOrNodes (nextSibling);
-                }
-            }
-            return isTrue;
-        }
-        
-        /*
-         * evaluates consecutive "and" nodes
-         */
-        private bool EvaluateConsecutiveAndNodes (Node node)
-        {
-            bool retVal = true;
-            Node next = GetNextComparisonInChain (node);
-            while (next != null) {
-                if (next.Name == "and") {
-                    retVal = Evaluate (next);
-                    if (!retVal)
-                        break;
-                } else {
-                    break;
-                }
-                next = GetNextComparisonInChain (next.NextSibling);
-            }
-            if (!retVal && next != null)
-                retVal = EvaluateConsecutiveOrNodes (next);
-            return retVal;
-        }
-
-        /*
-         * evaluates consecutive "or" nodes
-         */
-        private bool EvaluateConsecutiveOrNodes (Node node)
-        {
-            bool retVal = false;
-            Node next = GetNextComparisonInChain (node);
-            while (next != null) {
-                if (next.Name == "or") {
-                    retVal = Evaluate (next);
-                    if (retVal)
-                        break;
-                }
-                next = GetNextComparisonInChain (next.NextSibling);
-            }
-            if (retVal && next != null)
-                retVal = EvaluateConsecutiveAndNodes (next);
-            return retVal;
-        }
-
-        /*
-         * returns next comparison node in current chain
-         */
-        private Node GetNextComparisonInChain (Node index)
-        {
-            if (index == null)
-                return null;
-            while (index != null) {
-                if (index.Name == "or" || index.Name == "and")
-                    break;
-                index = index.NextSibling;
-            }
-            return index;
-        }
-
-        /*
-         * compares the lhs to the rhs and returns true if comparison yields true, otherwise false
-         */
-        private bool CompareValues (object lhs, object rhs, Node lhsNode, Node rhsNode, Operator oper)
-        {
+            Operator oper = GetOperator (currentStatement);
             switch (oper) {
+            case Operator.Exist:
+                return (Exist (currentStatement) && EvaluateRelatedAnd (currentStatement)) || EvaluateRelatedOr (currentStatement);
+            case Operator.Not:
+                return (!Exist (currentStatement) && EvaluateRelatedAnd (currentStatement)) || EvaluateRelatedOr (currentStatement);
             case Operator.Equals:
-                return Compare (lhs, rhs, lhsNode, rhsNode) == 0;
+                return (Compare (currentStatement) == 0 && EvaluateRelatedAnd (currentStatement)) || EvaluateRelatedOr (currentStatement);
             case Operator.NotEquals:
-                return Compare (lhs, rhs, lhsNode, rhsNode) != 0;
+                return (Compare (currentStatement) != 0 && EvaluateRelatedAnd (currentStatement)) || EvaluateRelatedOr (currentStatement);
             case Operator.LessThan:
-                return Compare (lhs, rhs, lhsNode, rhsNode) == -1;
-            case Operator.MoreThan:
-                return Compare (lhs, rhs, lhsNode, rhsNode) == 1;
+                return (Compare (currentStatement) == -1 && EvaluateRelatedAnd (currentStatement)) || EvaluateRelatedOr (currentStatement);
             case Operator.LessThanEquals:
-                return Compare (lhs, rhs, lhsNode, rhsNode) != 1;
+                return (Compare (currentStatement) != 1 && EvaluateRelatedAnd (currentStatement)) || EvaluateRelatedOr (currentStatement);
+            case Operator.MoreThan:
+                return (Compare (currentStatement) == 1 && EvaluateRelatedAnd (currentStatement)) || EvaluateRelatedOr (currentStatement);
             case Operator.MoreThanEquals:
-                return Compare (lhs, rhs, lhsNode, rhsNode) != -1;
+                return (Compare (currentStatement) != -1 && EvaluateRelatedAnd (currentStatement)) || EvaluateRelatedOr (currentStatement);
+            default:
+                throw new ArgumentException (); // should never come here, but since compiler vommits unless we have this, we've added a "dummy default"
             }
-            throw new ArgumentException ("shouldn't be here ...??");
         }
 
-        /*
-         * compares lhs to rhs and returns 0 if they are equal, -1 if lhs is "less" and +1 if rhs is "less"
-         */
-        private int Compare (object lhs, object rhs, Node lhsNode, Node rhsNode)
+        private bool Exist (Node currentStatement)
         {
-            if (Expression.IsExpression (lhs)) {
-                lhs = GetNodeListFromExpression (lhs as string, lhsNode);
-            }
-            if (Expression.IsExpression (rhs)) {
-                rhs = GetNodeListFromExpression (rhs as string, rhsNode);
-            }
-            return CompareObjects (lhs, rhs);
+            return new Expression (currentStatement.Get<string> ()).Evaluate (currentStatement).Count > 0;
         }
 
-        /*
-         * returns an object according to what type of expression we're dealing with
-         */
-        private object GetNodeListFromExpression (string expression, Node node)
+        private int Compare (Node currentStatement)
         {
-            var match = new Expression (expression).Evaluate (node);
-            if (match.TypeOfMatch == Match.MatchType.Count)
-                return match.Count;
-
-            List<Node> retVal = new List<Node> ();
-            foreach (Node idxMatch in match.Matches) {
-                switch (match.TypeOfMatch) {
-                case Match.MatchType.Name:
-                    retVal.Add (new Node (string.Empty, idxMatch.Name));
-                    break;
-                case Match.MatchType.Node:
-                    retVal.Add (idxMatch);
-                    break;
-                case Match.MatchType.Path:
-                    retVal.Add (new Node (string.Empty, idxMatch.Path));
-                    break;
-                case Match.MatchType.Value:
-                    retVal.Add (new Node (string.Empty, idxMatch.Value));
-                    break;
-                }
-            }
-            return retVal;
-        }
-
-        /*
-         * compares two objects against each other, and returns -1 if lhs is "less", 1 if rhs is "less", otherwise 0
-         */
-        private int CompareObjects (object lhs, object rhs)
-        {
-            if (lhs == null) {
-                if (rhs == null)
-                    return 0;
+            var lhs = GetNodeList (currentStatement);
+            var rhs = GetNodeList (currentStatement.FirstChild);
+            if (lhs.Count < rhs.Count)
                 return -1;
-            } else if (rhs == null) {
+            if (lhs.Count > rhs.Count)
                 return 1;
-            }
-
-            int retVal = 0;
-
-            // none of our objects are "null" here, and if they originally were expressions, then they're now "list<Node>" from matches,
-            // so lhs and rhs is either a "List<Node>", or any other "System" type
-            if (lhs.GetType () != rhs.GetType ()) {
-                List<Node> lhsAsNodes = lhs as List<Node>;
-                List<Node> rhsAsNodes = rhs as List<Node>;
-                if (lhsAsNodes != null) {
-                    retVal = -1;
-                    foreach (Node idx in lhsAsNodes) {
-                        retVal = CompareObjects (idx.Value, rhs);
-                        if (retVal != 0)
-                            break;
-                    }
-                } else if (rhsAsNodes != null) {
-                    retVal = 1;
-                    foreach (Node idx in rhsAsNodes) {
-                        retVal = CompareObjects (lhs, idx.Value);
-                        if (retVal != 0)
-                            break;
-                    }
-                } else {
-                    rhs = Convert.ChangeType (rhs, lhs.GetType (), System.Globalization.CultureInfo.InvariantCulture);
-                    MethodInfo method = lhs.GetType ().GetMethod ("CompareTo", new Type[] { typeof(object) });
-                    retVal = (int)method.Invoke (lhs, new object[] { rhs });
-                }
-            } else if (lhs is List<Node>) {
-
-                // comparing node lists
-                retVal = CompareNodeLists (lhs as List<Node>, rhs as List<Node>);
-            } else {
-
-                // using reflection to find "CompareTo" method of type
-                MethodInfo method = lhs.GetType ().GetMethod ("CompareTo", new Type[] { typeof(object) });
-                retVal = (int)method.Invoke (lhs, new object[] { rhs });
-            }
-            return retVal;
-        }
-
-        /*
-         * compares two node lists for equality
-         */
-        private int CompareNodeLists (List<Node> lhs, List<Node> rhs)
-        {
-            if (lhs.Count < rhs.Count) {
-                return -1;
-            } else if (rhs.Count < lhs.Count) {
-                return 1;
-            } else {
-                for (int idxNo = 0; idxNo < lhs.Count; idxNo++) {
-                    int retVal = lhs [idxNo].CompareTo (rhs [idxNo]);
-                    if (retVal != 0)
-                        return retVal;
-                }
+            for (int idxNo = 0; idxNo < lhs.Count; idxNo++) {
+                int idxCompare = lhs [idxNo].CompareTo (rhs [idxNo]);
+                if (idxCompare != 0)
+                    return idxCompare;
             }
             return 0;
         }
 
-        /*
-         * checks for existence of expression, object or string
-         */
-        private bool CheckExistence (Node node, object lhs)
+        private List<Node> GetNodeList (Node currentStatement)
         {
-            if (lhs is string) {
-                string lhsStr = lhs as string;
-                if (Expression.IsExpression (lhsStr)) {
-                    var match = new Expression (lhsStr).Evaluate (node);
-                    return match.Count > 0;
+            if (Expression.IsExpression (currentStatement.Value)) {
+                List<Node> retVal = new List<Node> ();
+                var match = new Expression (currentStatement.Get<string> ()).Evaluate (currentStatement);
+                if (match.TypeOfMatch == Match.MatchType.Count) {
+                    retVal.Add (new Node (string.Empty, match.Count));
                 } else {
+                    foreach (Node idxMatch in match.Matches) {
+                        switch (match.TypeOfMatch) {
+                        case Match.MatchType.Name:
+                            retVal.Add (new Node (string.Empty, idxMatch.Name));
+                            break;
+                        case Match.MatchType.Node:
+                            retVal.Add (idxMatch);
+                            break;
+                        case Match.MatchType.Path:
+                            retVal.Add (new Node (string.Empty, idxMatch.Path));
+                            break;
+                        case Match.MatchType.Value:
+                            retVal.Add (new Node (string.Empty, idxMatch.Value));
+                            break;
+                        }
+                    }
+                }
+                return retVal;
+            }
+            if (currentStatement.Value == null)
+                return new List<Node> (currentStatement.Children);
+            return new List<Node> (new Node[] { new Node (string.Empty, currentStatement.Value) });
+        }
+
+        private bool EvaluateRelatedAnd (Node currentStatement)
+        {
+            Node nextChild = FindNextStatement (currentStatement.FirstChild, "and");
+            if (nextChild != null) {
+                if (!EvaluateStatement (nextChild))
+                    return false;
+            }
+            if (currentStatement != _statementNode) {
+                Node nextSibling = FindNextStatement (currentStatement.NextSibling, "and");
+                if (nextSibling != null) {
+                    if (!EvaluateStatement (nextSibling))
+                        return false;
+                }
+            }
+            return true;
+        }
+
+        private bool EvaluateRelatedOr (Node currentStatement)
+        {
+            Node nextChild = FindNextStatement (currentStatement.FirstChild, "or");
+            if (nextChild != null) {
+                if (EvaluateStatement (nextChild))
                     return true;
+            }
+            if (currentStatement != _statementNode) {
+                Node nextSibling = FindNextStatement (currentStatement.NextSibling, "or");
+                if (nextSibling != null) {
+                    if (EvaluateStatement (nextSibling))
+                        return true;
                 }
-            } else {
-                return true;
             }
+            return false;
         }
 
-        /*
-         * returns left hand side of comparison
-         */
-        private object GetLeftHandSide (Node node, Operator oper, out Node lhsNode)
+        private Node FindNextStatement (Node node, string type)
         {
-            if (oper == Operator.Not) {
-                Node firstChild = node.FirstChild;
-                if (firstChild == null)
-                    throw new ArgumentException ("syntax error in comparison, no value beneath comparison node; '" + node.Name + "'");
-                else if (firstChild.Name != string.Empty)
-                    throw new ArgumentException ("syntax error in comparison, unexpected 'name' of node; '" + firstChild.Name + "'");
-                else if (firstChild.Value == null)
-                    throw new ArgumentException ("syntax error in comparison, 'value' didn't exist");
-                lhsNode = firstChild;
-                return firstChild.Value;
-            }
-            if (node.Value == null)
-                throw new ArgumentException ("syntax error in comparison, 'value' didn't exist");
-            lhsNode = node;
-            return node.Value;
-        }
-
-        /*
-         * returns right hand side of comparison
-         */
-        private object GetRightHandSide (Node node, out Node rhsNode)
-        {
-            rhsNode = node.FirstChild;
-            if (rhsNode.Value == null) {
-                // "node" comparison, meaning rhs is a static node
-                return new List<Node> (rhsNode.Children);
-            }
-            return rhsNode.Value;
-        }
-
-        /*
-         * returns operator for comparison
-         */
-        private Operator GetOperator (Node node)
-        {
-            if (node.FirstChild == null) {
-                return Operator.Exist;
-            } else {
-                switch (node.FirstChild.Name) {
-                case "=":
-                    return Operator.Equals;
-                case "!=":
-                    return Operator.NotEquals;
-                case ">":
-                    return Operator.MoreThan;
-                case "<":
-                    return Operator.LessThan;
-                case ">=":
-                    return Operator.MoreThanEquals;
-                case "<=":
-                    return Operator.LessThanEquals;
+            if (node == null)
+                return null;
+            if (node.Name == type)
+                return node;
+            node = node.NextSibling;
+            if (type == "or") {
+                while (node != null) {
+                    if (node.Name == "or")
+                        return node;
+                    node = node.NextSibling;
                 }
-                if (node.Name == "!")
+            }
+            if (node != null && node.Name == type)
+                return node;
+            return null;
+        }
+        
+        private Operator GetOperator (Node currentStatement)
+        {
+            switch (currentStatement.FirstChild.Name) {
+            case "=":
+                return Operator.Equals;
+            case "!=":
+                return Operator.NotEquals;
+            case ">":
+                return Operator.MoreThan;
+            case "<":
+                return Operator.LessThan;
+            case ">=":
+                return Operator.MoreThanEquals;
+            case "<=":
+                return Operator.LessThanEquals;
+            default:
+                if (currentStatement.Name == "!")
                     return Operator.Not;
                 return Operator.Exist;
             }

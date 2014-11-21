@@ -631,9 +631,8 @@ namespace phosphorus.core
             } else if (rhs.Value == null) {
                 return 1;
             } else {
-                // using reflection to find "CompareTo" method of type
-                MethodInfo method = Value.GetType ().GetMethod ("CompareTo", new Type[] { typeof(object) });
-                retVal = (int)method.Invoke (rhs.Value, new object[] { rhs });
+                IComparable thisValue = Value as IComparable;
+                retVal = thisValue.CompareTo (rhs.Value);
                 if (retVal != 0)
                     return retVal;
                 if (_children.Count < rhs._children.Count) {
@@ -648,7 +647,7 @@ namespace phosphorus.core
                     }
                 }
             }
-            return retVal;
+            return 0;
         }
 
         /// <summary>
