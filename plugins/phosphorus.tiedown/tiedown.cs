@@ -97,6 +97,16 @@ else
       :else was struck
 mumbo:jumbo2
 _xxx:thomas3
+_zzz
+  one:1
+  two:2
+  three:3
+while:@/-/*/?node
+  lambda
+    add:@/../**/_ccc/?node
+      :@/../**/_zzz/0/?node
+    set:@/../**/_zzz/0/?node
+_ccc
 pf.file.save
 ";
             // //////////////////////////////////////////////////////////////////////////////////////////////////////////
