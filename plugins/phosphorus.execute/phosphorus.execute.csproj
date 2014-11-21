@@ -36,7 +36,6 @@
     <Compile Include="expressions\Expression.cs" />
     <Compile Include="expressions\Match.cs" />
     <Compile Include="expressions\iterators\Iterator.cs" />
-    <Compile Include="expressions\iterators\Logical.cs" />
     <Compile Include="expressions\iterators\IteratorChildren.cs" />
     <Compile Include="expressions\iterators\IteratorNamed.cs" />
     <Compile Include="expressions\iterators\IteratorNode.cs" />
@@ -63,6 +62,7 @@
     <Compile Include="keywords\commons\condition.cs" />
     <Compile Include="keywords\branching.cs" />
     <Compile Include="keywords\while.cs" />
+    <Compile Include="expressions\Logical.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
