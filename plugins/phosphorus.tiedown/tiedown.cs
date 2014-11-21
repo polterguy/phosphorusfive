@@ -103,8 +103,9 @@ _zzz
   three:3
 while:@/-/*/?node
   lambda
-    move:@/../**/_ccc/?node
+    add:@/../**/_ccc/?node
       :@/../**/_zzz/0/?node
+    set:@/../**/_zzz/0/?node
 _ccc
 pf.file.save
 ";
