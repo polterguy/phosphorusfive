@@ -60,7 +60,8 @@
     <Compile Include="code.cs" />
     <Compile Include="expressions\iterators\IteratorParent.cs" />
     <Compile Include="lambda.cs" />
-    <Compile Include="keywords\if.cs" />
+    <Compile Include="keywords\commons\condition.cs" />
+    <Compile Include="keywords\branching.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -73,5 +74,6 @@
     <Folder Include="keywords\" />
     <Folder Include="expressions\" />
     <Folder Include="expressions\iterators\" />
+    <Folder Include="keywords\commons\" />
   </ItemGroup>
 </Project>

@@ -11,55 +11,95 @@ using phosphorus.core;
 namespace phosphorus.execute
 {
     /// <summary>
-    /// class wrapping execution engine keyword "if", which allows for branching or conditional execution of nodes
+    /// class wrapping any statement that somehow yields a condition, such as "pf.if" and "pf.while"
     /// </summary>
-    public static class pfIf
+    public class Condition
     {
+        /// <summary>
+        /// the legal types of conditions you can create
+        /// </summary>
         private enum Operator
         {
+            /// <summary>
+            /// equality
+            /// </summary>
             Equals,
+
+            /// <summary>
+            /// inequality
+            /// </summary>
             NotEquals,
+
+            /// <summary>
+            /// more than
+            /// </summary>
             MoreThan,
+
+            /// <summary>
+            /// less than
+            /// </summary>
             LessThan,
+
+            /// <summary>
+            /// more than or equals
+            /// </summary>
             MoreThanEquals,
+
+            /// <summary>
+            /// less than or equals
+            /// </summary>
             LessThanEquals,
+
+            /// <summary>
+            /// not, meaning "does not exist". checks if an expression returns anything, and if it does, Not evaluates to false.
+            /// opposite of Exist
+            /// </summary>
             Not,
+
+            /// <summary>
+            /// exist, meaning "do exist". checks if an expression returns anything, and if it does, Exist evaluates to true.
+            /// opposite of Not
+            /// </summary>
             Exist
         }
 
-        /// <summary>
-        /// if keyword for execution engine
-        /// </summary>
-        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.if")]
-        private static void pf_if (ApplicationContext context, ActiveEventArgs e)
-        {
-            if (e.Args.Count == 0)
-                throw new ArgumentException ("syntax error in [pf.if], no children makes for invalid statement");
+        private Node _statementNode;
 
-            if (Evaluate (e.Args, e.Args.FirstChild)) {
-                foreach (Node idxExe in FindExecutionNodes (e.Args)) {
-                    context.Raise (idxExe.Name, idxExe);
-                }
-            }
+        /// <summary>
+        /// initializes a new instance of the <see cref="phosphorus.execute.Condition"/> class
+        /// </summary>
+        /// <param name="statementNode">the node of the conditional statement</param>
+        public Condition (Node statementNode)
+        {
+            _statementNode = statementNode;
         }
 
-        /*
-         * returns all "lambda" nodes beneath root execution node
-         */
-        private static IEnumerable<Node> FindExecutionNodes (Node node)
+        /// <summary>
+        /// returns true if statement evaluates to true
+        /// </summary>
+        public bool Evaluate ()
         {
-            foreach (Node idxChild in node.Children) {
-                if (idxChild.Name == "lambda" || idxChild.Name == "pf.lambda")
-                    yield return idxChild;
+            return Evaluate (_statementNode);
+        }
+
+        /// <summary>
+        /// returns all execution lambda objects beneath the statement to execute if statement evaluates to true
+        /// </summary>
+        /// <value>The execution lambdas.</value>
+        public IEnumerable<Node> ExecutionLambdas
+        {
+            get {
+                foreach (Node idxChild in _statementNode.Children) {
+                    if (idxChild.Name == "lambda" || idxChild.Name == "pf.lambda")
+                        yield return idxChild;
+                }
             }
         }
 
         /*
          * evaluates a comparison and returns true if evaluation yields true, otherwise false
          */
-        private static bool Evaluate (Node node, Node nextComp)
+        private bool Evaluate (Node node)
         {
             bool retVal = false;
             Operator oper = GetOperator (node);
@@ -74,13 +114,13 @@ namespace phosphorus.execute
                 object rhs = GetRightHandSide (node, out rhsNode);
                 retVal = CompareValues (lhs, rhs, lhsNode, rhsNode, oper);
             }
-            return EvaluateRelatedComparisons (node, nextComp, retVal);
+            return EvaluateRelatedComparisons (node, retVal);
         }
 
         /*
          * checks related comparisons
          */
-        private static bool EvaluateRelatedComparisons (Node node, Node nextComp, bool isTrue)
+        private bool EvaluateRelatedComparisons (Node node, bool isTrue)
         {
             if (isTrue) {
                 if (node.FirstChild != null) {
@@ -88,10 +128,12 @@ namespace phosphorus.execute
                     // checking nested "and" statements
                     isTrue = EvaluateConsecutiveAndNodes (node.FirstChild);
                 }
-                if (isTrue && nextComp != null) {
+                if (isTrue && (node.Name == "or" || node.Name == "and")) {
 
                     // checking consecutive "and" statements
-                    isTrue = EvaluateConsecutiveAndNodes (nextComp);
+                    Node nextSibling = node.NextSibling;
+                    if (nextSibling != null && nextSibling.Name == "and")
+                        isTrue = EvaluateConsecutiveAndNodes (nextSibling);
                 }
             } else {
                 if (node.FirstChild != null) {
@@ -99,10 +141,12 @@ namespace phosphorus.execute
                     // checking nested "or" statements
                     isTrue = EvaluateConsecutiveOrNodes (node.FirstChild);
                 }
-                if (!isTrue && nextComp != null) {
+                if (!isTrue && (node.Name == "or" || node.Name == "and")) {
 
                     // checking consecutive "or" statements
-                    isTrue = EvaluateConsecutiveOrNodes (nextComp);
+                    Node nextSibling = node.NextSibling;
+                    if (nextSibling != null && nextSibling.Name == "or")
+                        isTrue = EvaluateConsecutiveOrNodes (nextSibling);
                 }
             }
             return isTrue;
@@ -111,13 +155,13 @@ namespace phosphorus.execute
         /*
          * evaluates consecutive "and" nodes
          */
-        private static bool EvaluateConsecutiveAndNodes (Node node)
+        private bool EvaluateConsecutiveAndNodes (Node node)
         {
             bool retVal = true;
             Node next = GetNextComparisonInChain (node);
             while (next != null) {
                 if (next.Name == "and") {
-                    retVal = Evaluate (next, next.NextSibling);
+                    retVal = Evaluate (next);
                     if (!retVal)
                         break;
                 } else {
@@ -133,17 +177,15 @@ namespace phosphorus.execute
         /*
          * evaluates consecutive "or" nodes
          */
-        private static bool EvaluateConsecutiveOrNodes (Node node)
+        private bool EvaluateConsecutiveOrNodes (Node node)
         {
             bool retVal = false;
             Node next = GetNextComparisonInChain (node);
             while (next != null) {
                 if (next.Name == "or") {
-                    retVal = Evaluate (next, next.NextSibling);
+                    retVal = Evaluate (next);
                     if (retVal)
                         break;
-                } else {
-                    break;
                 }
                 next = GetNextComparisonInChain (next.NextSibling);
             }
@@ -155,7 +197,7 @@ namespace phosphorus.execute
         /*
          * returns next comparison node in current chain
          */
-        private static Node GetNextComparisonInChain (Node index)
+        private Node GetNextComparisonInChain (Node index)
         {
             if (index == null)
                 return null;
@@ -170,7 +212,7 @@ namespace phosphorus.execute
         /*
          * compares the lhs to the rhs and returns true if comparison yields true, otherwise false
          */
-        private static bool CompareValues (object lhs, object rhs, Node lhsNode, Node rhsNode, Operator oper)
+        private bool CompareValues (object lhs, object rhs, Node lhsNode, Node rhsNode, Operator oper)
         {
             switch (oper) {
             case Operator.Equals:
@@ -192,7 +234,7 @@ namespace phosphorus.execute
         /*
          * compares lhs to rhs and returns 0 if they are equal, -1 if lhs is "less" and +1 if rhs is "less"
          */
-        private static int Compare (object lhs, object rhs, Node lhsNode, Node rhsNode)
+        private int Compare (object lhs, object rhs, Node lhsNode, Node rhsNode)
         {
             if (Expression.IsExpression (lhs)) {
                 lhs = GetNodeListFromExpression (lhs as string, lhsNode);
@@ -206,7 +248,7 @@ namespace phosphorus.execute
         /*
          * returns an object according to what type of expression we're dealing with
          */
-        private static object GetNodeListFromExpression (string expression, Node node)
+        private object GetNodeListFromExpression (string expression, Node node)
         {
             var match = new Expression (expression).Evaluate (node);
             if (match.TypeOfMatch == Match.MatchType.Count)
@@ -235,7 +277,7 @@ namespace phosphorus.execute
         /*
          * compares two objects against each other, and returns -1 if lhs is "less", 1 if rhs is "less", otherwise 0
          */
-        private static int CompareObjects (object lhs, object rhs)
+        private int CompareObjects (object lhs, object rhs)
         {
             if (lhs == null) {
                 if (rhs == null)
@@ -287,7 +329,7 @@ namespace phosphorus.execute
         /*
          * compares two node lists for equality
          */
-        private static int CompareNodeLists (List<Node> lhs, List<Node> rhs)
+        private int CompareNodeLists (List<Node> lhs, List<Node> rhs)
         {
             if (lhs.Count < rhs.Count) {
                 return -1;
@@ -306,7 +348,7 @@ namespace phosphorus.execute
         /*
          * checks for existence of expression, object or string
          */
-        private static bool CheckExistence (Node node, object lhs)
+        private bool CheckExistence (Node node, object lhs)
         {
             if (lhs is string) {
                 string lhsStr = lhs as string;
@@ -324,7 +366,7 @@ namespace phosphorus.execute
         /*
          * returns left hand side of comparison
          */
-        private static object GetLeftHandSide (Node node, Operator oper, out Node lhsNode)
+        private object GetLeftHandSide (Node node, Operator oper, out Node lhsNode)
         {
             if (oper == Operator.Not) {
                 Node firstChild = node.FirstChild;
@@ -346,7 +388,7 @@ namespace phosphorus.execute
         /*
          * returns right hand side of comparison
          */
-        private static object GetRightHandSide (Node node, out Node rhsNode)
+        private object GetRightHandSide (Node node, out Node rhsNode)
         {
             rhsNode = node.FirstChild;
             if (rhsNode.Value == null) {
@@ -359,7 +401,7 @@ namespace phosphorus.execute
         /*
          * returns operator for comparison
          */
-        private static Operator GetOperator (Node node)
+        private Operator GetOperator (Node node)
         {
             if (node.FirstChild == null) {
                 return Operator.Exist;

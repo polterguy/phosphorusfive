@@ -71,26 +71,40 @@ if:@/-/?name
     =:pf.lambda
   and:@/./+/?name
     =:mumbo
-    and:@/././+/?value
+    and:@/././+/+/+/?value
       =:jumbo
-    or:@/././+/?value
+    or:@/././+/+/+/?value
       =:jumbo5
-      or:@/./././+/?value
+      or:@/./././+/+/+/?value
         =:jumbo2
       and:@/../**/_xxx/?value
         =:thomas
       or:@/../**/_xxx/?value
         =:thomas2
   lambda
-    set:@/././+/?value
+    set:@/././+/+/+/?value
       :conditional branching was true
+else-if:@/+/+/?name
+  =:mumbo
+  and:@/./+/+/?value
+  =:jumbo2
+  lambda
+    set:@/././+/+/?value
+      :else-if branching was true
+else
+  lambda
+    set:@/././+/?value
+      :else was struck
 mumbo:jumbo2
-_xxx:thomas2
+_xxx:thomas3
 pf.file.save
 ";
             // //////////////////////////////////////////////////////////////////////////////////////////////////////////
             // / operators; "=", "!=", ">", "<", ">=", "<="
             // / "or" && "and"
+            // if (name='lambda' || {name='pf.lambda' && 
+            //        name2='mumbo' && (value2='jumbo' || value2='jumbo5' || ({value2='jumbo2' && value3='thomas'} || value3='thomas2'))})
+            // / CACHE Reflection according to types in "if.cs" and "Node.cs"
             // //////////////////////////////////////////////////////////////////////////////////////////////////////////
             Node node = new Node ("root", code);
             context.Raise ("pf.code-2-nodes", node);
