@@ -36,8 +36,12 @@ namespace phosphorus.tiedown
             // execute load hyperlisp file
             string code = @"
 _integer:int:5
+_decimal:decimal:100.567
+_float:float:999.437
+_bool:bool:true
 _nodes:node:@""tmp:5
   jo:dude!!""
+_date:datetime:""2014.11.25T23:59:57""
 _data:liv
   flercellede:dyr
     reptiler:slanger, osv

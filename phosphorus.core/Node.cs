@@ -281,6 +281,7 @@ namespace phosphorus.core
 
         private List<Node> _children;
         private Node _parent;
+        private string _name;
 
         /// <summary>
         /// initializes a new instance of the <see cref="phosphorus.core.Node"/> class
@@ -288,6 +289,7 @@ namespace phosphorus.core
         public Node ()
         {
             _children = new List<Node> ();
+            Name = string.Empty;
         }
 
         /// <summary>
@@ -316,8 +318,14 @@ namespace phosphorus.core
         /// </summary>
         /// <value>the name</value>
         public string Name {
-            get;
-            set;
+            get {
+                return _name;
+            }
+            set {
+                if (value == null)
+                    throw new ArgumentException ("you cannot set a node's name to 'null'");
+                _name = value;
+            }
         }
 
         /// <summary>
