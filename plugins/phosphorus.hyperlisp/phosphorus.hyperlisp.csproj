@@ -36,6 +36,7 @@
     <Compile Include="helpers\HyperlispBuilder.cs" />
     <Compile Include="helpers\typeconverters.cs" />
     <Compile Include="helpers\NodeBuilder.cs" />
+    <Compile Include="helpers\Token.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

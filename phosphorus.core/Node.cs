@@ -388,6 +388,17 @@ namespace phosphorus.core
         }
 
         /// <summary>
+        /// gets the children of this instance, while also untying them
+        /// </summary>
+        /// <value>its children after being untied</value>
+        public IEnumerable<Node> UntieChildren ()
+        {
+            while (_children.Count > 0) {
+                yield return _children [0].Untie ();
+            }
+        }
+
+        /// <summary>
         /// returns DNA code for Node
         /// </summary>
         /// <value>the DNA code, or position in Node tree</value>

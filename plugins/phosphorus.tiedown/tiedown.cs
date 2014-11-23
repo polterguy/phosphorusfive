@@ -36,12 +36,17 @@ namespace phosphorus.tiedown
             // execute load hyperlisp file
             string code = @"
 _integer:int:5
+_integer:int16:5656
+_single:single:999.437
+_double:double:999.437
 _decimal:decimal:100.567
-_float:float:999.437
 _bool:bool:true
+_byte:byte:115
+_bool:char:%
+_date:date:""2014.11.25T23:59:57""
+_path:path:0
 _nodes:node:@""tmp:5
   jo:dude!!""
-_date:datetime:""2014.11.25T23:59:57""
 _data:liv
   flercellede:dyr
     reptiler:slanger, osv
@@ -116,8 +121,7 @@ while:@/-/*/?node
       :@/../**/_zzz/0/?node
     set:@/../**/_zzz/0/?node
 _ccc
-pf.file.save
-";
+pf.file.save";
             // //////////////////////////////////////////////////////////////////////////////////////////////////////////
             // / operators; "=", "!=", ">", "<", ">=", "<="
             // / "or" && "and"

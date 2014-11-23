@@ -72,6 +72,18 @@ namespace phosphorus.hyperlisp
             if (type == typeof(string))
                 return; // string is "default" type information
 
+            if (type == typeof(Node) && node.Get<Node> ().Root == node.Root) {
+                // appending DNA Path and not node itself, since this is a reference node to another node inside the same tree
+                builder.Append (":path");
+                return;
+            } else if (type == typeof(Node.DNA)) {
+                builder.Append (":path");
+                return;
+            } else if (type == typeof(Node)) {
+                builder.Append (":node");
+                return;
+            }
+
             string activeEventName = "pf.hyperlist.get-type-name." + node.Value.GetType ();
             Node typeNode = new Node ();
             context.Raise (activeEventName, typeNode);
@@ -99,10 +111,19 @@ namespace phosphorus.hyperlisp
             if (type == typeof(string)) {
                 value = node.Get <string> ();
             } else if (type == typeof(Node)) {
-                Node tmp = new Node ();
-                tmp.Add ((node.Value as Node).Clone ());
-                context.Raise ("pf.nodes-2-hyperlisp", tmp);
-                value = tmp.Value as string;
+
+                // nodes are automatically handled, since they're native to hyperlisp, *obviously* ...!!
+                if (node.Get<Node> ().Root == node.Root) {
+                    // this is a "reference node", pointing to another node inside the same tree, hence we store the DNA
+                    // and NOT the Node itself
+                    value = node.Get<Node> ().Path.ToString ();
+                } else {
+                    // this is a "free node", meaning a node that is not a "reference node"
+                    Node tmp = new Node ();
+                    tmp.Add ((node.Value as Node).Clone ());
+                    context.Raise ("pf.nodes-2-hyperlisp", tmp);
+                    value = tmp.Value as string;
+                }
             } else {
                 // notice that this will yield a "null invocation" for all native types that supports automatic conversion 
                 // through IConvertible unless a type converter Active Event is explicitly given. this means that the Get<string> () 
@@ -113,8 +134,10 @@ namespace phosphorus.hyperlisp
                 context.Raise (activeEventName, valueNode);
                 value = valueNode.Get<string> ();
             }
-            if (value.Contains ("\r") || value.Contains ("\n") || value.Contains (":") || value.Trim () != value) {
+            if (value.Contains ("\r") || value.Contains ("\n")) {
                 builder.Append (string.Format (@":@""{0}""", value.Replace (@"""", @"""""")));
+            } else if (value.Contains (":") || value.Trim () != value) {
+                builder.Append (string.Format (@":""{0}""", value.Replace (@"""", @"\""")));
             } else {
                 builder.Append (string.Format (":{0}", value));
             }
