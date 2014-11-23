@@ -202,14 +202,20 @@ namespace phosphorus.hyperlisp
         }
 
         /// <summary>
-        /// returns date's value in ISO string representation format, or date as "yyyy.MM.ddTHH:mm:ss" with other words
+        /// returns date's value in ISO string representation format, meaning date in "yyyy.MM.ddTHH:mm:ss" format
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">parameters</param>
         [ActiveEvent (Name = "pf.hyperlist.get-string-value.System.DateTime")]
         private static void pf_hyperlist_get_string_value_System_DateTime (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = e.Args.Get<DateTime> () .ToString ("yyyy.MM.ddTHH:mm:ss", CultureInfo.InvariantCulture);
+            DateTime date = e.Args.Get<DateTime> ();
+            if (date.Hour == 0 && date.Minute == 0 && date.Second == 0)
+                e.Args.Value = date.ToString ("yyyy-MM-dd", CultureInfo.InvariantCulture);
+            else if (date.Millisecond == 0)
+                e.Args.Value = date.ToString ("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+            else
+                e.Args.Value = date.ToString ("yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture);
         }
         
         /// <summary>
@@ -252,7 +258,7 @@ namespace phosphorus.hyperlisp
             if (tmp.Count == 1)
                 e.Args.Value = tmp [0].Clone ();
             else if (tmp.Count > 1)
-                throw new ArgumentException ("cannot convert a node with multiple root nodes to a single node");
+                throw new ArgumentException ("cannot use a node with multiple root nodes as a value of another node");
             else
                 e.Args.Value = null;
         }
@@ -366,7 +372,15 @@ namespace phosphorus.hyperlisp
         [ActiveEvent (Name = "pf.hyperlist.get-object-value.date")]
         private static void pf_hyperlist_get_object_value_date (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = DateTime.ParseExact (e.Args.Get<string> (), "yyyy.MM.ddTHH:mm:ss", CultureInfo.InvariantCulture);
+            string strDate = e.Args.Get<string> ();
+            if (strDate.Length == 10)
+                e.Args.Value = DateTime.ParseExact (strDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+            else if (strDate.Length == 19)
+                e.Args.Value = DateTime.ParseExact (strDate, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+            else if (strDate.Length == 23)
+                e.Args.Value = DateTime.ParseExact (strDate, "yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture);
+            else
+                throw new ArgumentException ("date; '" + strDate + "' is not recognized as a valid date");
         }
     }
 }

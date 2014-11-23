@@ -43,7 +43,9 @@ _decimal:decimal:100.567
 _bool:bool:true
 _byte:byte:115
 _bool:char:%
-_date:date:""2014.11.25T23:59:57""
+_date:date:""2014-11-25T23:59:57.876""
+_date:date:""2014-11-25T23:59:57""
+_date:date:2014-12-24
 _path:path:0
 _nodes:node:@""tmp:5
   jo:dude!!""

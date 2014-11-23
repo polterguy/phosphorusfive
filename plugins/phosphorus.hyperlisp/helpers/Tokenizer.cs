@@ -80,7 +80,7 @@ namespace phosphorus.hyperlisp
                     return NextSpaceToken ();
                 } else {
                     // whitespace only carry semantics as first token in each line in hyperlisp content
-                    // therefor we must "trim" the reader, before retrieving next token
+                    // therefor we must "left-trim" the reader, before retrieving next token
                     TrimReader ();
                     return NextToken (previousToken);
                 }
@@ -126,9 +126,9 @@ namespace phosphorus.hyperlisp
         {
             int nextChar = _reader.Read ();
             if (nextChar == -1)
-                throw new ArgumentException ("syntax error in hyperlisp carriage return character found, but no new line character found at end of file");
+                throw new ArgumentException ("syntax error in hyperlisp, carriage return character found, but no new line character found at end of file");
             if (nextChar != '\n')
-                throw new ArgumentException ("syntax error in hyperlisp carriage return character found, but no new line character found");
+                throw new ArgumentException ("syntax error in hyperlisp, carriage return character found, but no new line character found");
             return new Token (Token.TokenType.CarriageReturn, "\r\n");
         }
 
@@ -166,7 +166,7 @@ namespace phosphorus.hyperlisp
                 previousToken != null && previousToken.Type == Token.TokenType.Separator ? 
                     Token.TokenType.TypeOrContent : 
                     Token.TokenType.Name, 
-                buffer.Trim ());
+                buffer.Trim ()); // whitespace has no semantics, and are not part of tokens, except if within string literals, or before name token type
         }
 
         /*

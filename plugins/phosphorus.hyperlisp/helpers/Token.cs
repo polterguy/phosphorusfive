@@ -59,7 +59,7 @@ namespace phosphorus.hyperlisp
         {
             if (type == TokenType.Spacer) {
                 if (value.Length % 2 != 0)
-                    throw new ArgumentException ("number of spaces in front of hyperlisp value was not even");
+                    throw new ArgumentException ("odd number of spaces in front of hyperlisp name, which is a syntax error in hyperlisp");
             }
             Type = type;
             Value = value;
