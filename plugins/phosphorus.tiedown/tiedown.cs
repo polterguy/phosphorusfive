@@ -35,7 +35,11 @@ namespace phosphorus.tiedown
         {
             // execute load hyperlisp file
             string code = @"
+_nodes9:node:""""
 _nodes4:node:
+_nodes8  :  node  :     @            
+_nodes7:node:@
+_nodes6:node:tjalla
 _nodes5:node:@""tmp:5
   str:@""""howdy """"""""tjobing
 world""""""

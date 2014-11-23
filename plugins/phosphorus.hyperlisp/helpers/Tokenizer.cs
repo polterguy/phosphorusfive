@@ -181,14 +181,13 @@ namespace phosphorus.hyperlisp
             int nextChar = _reader.Read ();
             while (nextChar != -1) {
                 buffer += (char)nextChar;
-                nextChar = _reader.Read ();
                 if (nextChar == '"' && 
-                    (buffer.Length == 0 || 
+                    (buffer.Length == 1 || 
                          buffer [buffer.Length - 1] != '\\' || 
                          (buffer.Length - buffer.TrimEnd ('\\').Length) % 2 == 0)) {
-                    buffer += (char)nextChar;
                     break;
                 }
+                nextChar = _reader.Read ();
             }
             if (buffer [buffer.Length - 1] != '"')
                 throw new ArgumentException ("unclosed string literal in hyperlisp file");

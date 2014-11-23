@@ -198,10 +198,7 @@ namespace phosphorus.hyperlisp
             Node tmp = new Node ();
             tmp.Add (node.Clone ());
             context.Raise ("pf.nodes-2-code", tmp);
-            if (tmp.Get<string> () == @"""""")
-                e.Args.Value = string.Empty; // node contained one node, with no value, and its name was empty
-            else
-                e.Args.Value = tmp.Value;
+            e.Args.Value = tmp.Value;
         }
 
         /// <summary>
