@@ -67,7 +67,10 @@ namespace phosphorus.hyperlisp
             string buffer = string.Empty;
             if (_reader.Peek () == ':' && (previousToken == null || previousToken.Type == Token.TokenType.Spacer)) {
                 // empty name
-                return new Token (Token.TokenType.Name, "");
+                return new Token (Token.TokenType.Name, string.Empty);
+            }
+            if ((_reader.Peek () == '\r' || _reader.Peek () == '\n') && (previousToken != null && previousToken.Type == Token.TokenType.Separator)) {
+                return new Token (Token.TokenType.TypeOrContent, string.Empty);
             }
             int nextChar = _reader.Read ();
             if (nextChar == -1)

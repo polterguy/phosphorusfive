@@ -35,7 +35,11 @@ namespace phosphorus.tiedown
         {
             // execute load hyperlisp file
             string code = @"
-_integer:int:5
+_nodes4:node:
+_nodes5:node:@""tmp:5
+  str:@""""howdy """"""""tjobing
+world""""""
+_integer   :   int   :   5
 _integer:int16:5656
 _single:single:999.437
 _double:double:999.437
@@ -45,16 +49,18 @@ _byte:byte:115
 _bool:char:%
 _date:date:""2014-11-25T23:59:57.876""
 _date:date:""2014-11-25T23:59:57""
-_date:date:2014-12-24
-_path:path:0
-_nodes:node:@""tmp:5
-  jo:dude!!""
+_date:date:  2014-12-24    
+_path:  path :0
+_nodes:node:    @""tmp:5
+  jo:dude!!""          
+_nodes2:node:""@""
+_nodes3:node:@
 _data:liv
-  flercellede:dyr
+  flercellede:    dyr    
     reptiler:slanger, osv
     pattedyr:hunder, mennesker, osv
-      kattedyr:""pusekatter, tigre, løver og sånt no :)""
-        tigre:bengalsk
+      kattedyr:    ""pusekatter, tigre, løver og sånt no :)""            
+        tigre            :                                          bengalsk
         løver:afrika
       primater:apekatter, osv
         mennesker:per, ole og jens

@@ -41,7 +41,7 @@ namespace phosphorus.hyperlisp
         public List<Node> Nodes {
             get {
                 if (string.IsNullOrEmpty (_hyperlisp))
-                    return new List<Node> (); // empty result
+                    return new List<Node> (new Node[] { new Node(string.Empty) }); // empty result
 
                 // we need a text reader for our tokenizer
                 using (var tokenizer = new Tokenizer (_hyperlisp)) {
