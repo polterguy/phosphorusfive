@@ -11,27 +11,40 @@ using phosphorus.core;
 namespace phosphorus.hyperlisp
 {
     /// <summary>
-    /// class responsible for creating hyperlisp from a <see cref="phosphorus.core.Node"/> hierarchy
+    /// class responsible for creating hyperlisp from a <see cref="phosphorus.core.Node"/> list
     /// </summary>
-    public static class HyperlispBuilder
+    public class HyperlispBuilder
     {
+        private ApplicationContext _context;
+        private IEnumerable<Node> _nodes;
+
         /// <summary>
-        /// creates hyperlisp from a <see cref="phosphorus.core.Node"/> hierarchy
+        /// initializes a new instance of the <see cref="phosphorus.hyperlisp.HyperlispBuilder"/> class
         /// </summary>
-        /// <param name="builder">where to put the resulting hyperlisp</param>
-        /// <param name="nodes">which nodes to construct hyperlisp from</param>
-        /// <param name="context">application context</param>
-        public static StringBuilder Nodes2Hyperlisp (ApplicationContext context, IEnumerable<Node> nodes)
+        /// <param name="context">application context object</param>
+        /// <param name="nodes">nodes to convert into hyperlisp</param>
+        public HyperlispBuilder (ApplicationContext context, IEnumerable<Node> nodes)
         {
-            StringBuilder builder = new StringBuilder ();
-            Nodes2Hyperlisp (context, builder, nodes, 0);
-            return builder;
+            _context = context;
+            _nodes = nodes;
+        }
+
+        /// <summary>
+        /// retrieves the hyperlisp
+        /// </summary>
+        /// <value>hyperlisp</value>
+        public string Hyperlisp {
+            get {
+                StringBuilder builder = new StringBuilder ();
+                Nodes2Hyperlisp (builder, _nodes, 0);
+                return builder.ToString ().TrimEnd ('\r', '\n');
+            }
         }
 
         /*
          * recursively invoked for every "level" in node hierarchy
          */
-        private static void Nodes2Hyperlisp (ApplicationContext context, StringBuilder builder, IEnumerable<Node> nodes, int level)
+        private void Nodes2Hyperlisp (StringBuilder builder, IEnumerable<Node> nodes, int level)
         {
             foreach (Node idxNode in nodes) {
                 int idxLevel = level;
@@ -39,17 +52,17 @@ namespace phosphorus.hyperlisp
                     builder.Append ("  ");
                 }
                 AppendName (builder, idxNode);
-                AppendType (context, builder, idxNode);
-                AppendValue (context, builder, idxNode);
+                AppendType (builder, idxNode);
+                AppendValue (builder, idxNode);
                 builder.Append ("\r\n");
-                Nodes2Hyperlisp (context, builder, idxNode.Children, level + 1);
+                Nodes2Hyperlisp (builder, idxNode.Children, level + 1);
             }
         }
 
         /*
          * appends node's name to hyperlisp stringbuilder output
          */
-        private static void AppendName (StringBuilder builder, Node node)
+        private void AppendName (StringBuilder builder, Node node)
         {
             if (node.Name.Contains ("\r") || node.Name.Contains ("\n")) {
                 builder.Append (string.Format (@"@""{0}""", node.Name.Replace (@"""", @"""""")));
@@ -63,7 +76,7 @@ namespace phosphorus.hyperlisp
         /*
          * appends node's type to hyperlisp stringbuilder output
          */
-        private static void AppendType (ApplicationContext context, StringBuilder builder, Node node)
+        private void AppendType (StringBuilder builder, Node node)
         {
             if (node.Value == null)
                 return; // no type information here
@@ -72,21 +85,9 @@ namespace phosphorus.hyperlisp
             if (type == typeof(string))
                 return; // string is "default" type information
 
-            if (type == typeof(Node) && node.Get<Node> ().Root == node.Root) {
-                // appending DNA Path and not node itself, since this is a reference node to another node inside the same tree
-                builder.Append (":path");
-                return;
-            } else if (type == typeof(Node.DNA)) {
-                builder.Append (":path");
-                return;
-            } else if (type == typeof(Node)) {
-                builder.Append (":node");
-                return;
-            }
-
             string activeEventName = "pf.hyperlist.get-type-name." + node.Value.GetType ();
             Node typeNode = new Node ();
-            context.Raise (activeEventName, typeNode);
+            _context.Raise (activeEventName, typeNode);
             if (typeNode.Value == null) {
                 throw new ArgumentException ("cannot convert type; '" + 
                                              type.FullName + 
@@ -101,7 +102,7 @@ namespace phosphorus.hyperlisp
         /*
          * appends node's value to hyperlisp stringbuilder output
          */
-        private static void AppendValue (ApplicationContext context, StringBuilder builder, Node node)
+        private void AppendValue (StringBuilder builder, Node node)
         {
             if (node.Value == null)
                 return; // nothing to append here
@@ -109,29 +110,15 @@ namespace phosphorus.hyperlisp
             Type type = node.Value.GetType ();
             string value = null;
             if (type == typeof(string)) {
-                value = node.Get <string> ();
-            } else if (type == typeof(Node)) {
-
-                // nodes are automatically handled, since they're native to hyperlisp, *obviously* ...!!
-                if (node.Get<Node> ().Root == node.Root) {
-                    // this is a "reference node", pointing to another node inside the same tree, hence we store the DNA
-                    // and NOT the Node itself
-                    value = node.Get<Node> ().Path.ToString ();
-                } else {
-                    // this is a "free node", meaning a node that is not a "reference node"
-                    Node tmp = new Node ();
-                    tmp.Add ((node.Value as Node).Clone ());
-                    context.Raise ("pf.nodes-2-hyperlisp", tmp);
-                    value = tmp.Value as string;
-                }
+                value = node.Value as string;
             } else {
                 // notice that this will yield a "null invocation" for all native types that supports automatic conversion 
-                // through IConvertible unless a type converter Active Event is explicitly given. this means that the Get<string> () 
+                // through IConvertible, unless a type converter Active Event is explicitly given. this means that the Get<string> () 
                 // invocation after the null Active Event invocation will do its magic automatically, hence we don't need
-                // type converters for anything that automatically supports conversion to string natively
+                // type converters for anything that automatically supports conversion to string natively, in a *sane* way
                 string activeEventName = "pf.hyperlist.get-string-value." + node.Value.GetType ();
                 Node valueNode = new Node (string.Empty, node.Value);
-                context.Raise (activeEventName, valueNode);
+                _context.Raise (activeEventName, valueNode);
                 value = valueNode.Get<string> ();
             }
             if (value.Contains ("\r") || value.Contains ("\n")) {

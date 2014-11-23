@@ -21,7 +21,7 @@ namespace phosphorus.hyperlisp
          * hyperlisp type name Active Events for converting fully qualified typenames into hyperlisp typenames. if you
          * create your own types that you wish to store in hyperlisp using some sort of string representation, representing
          * your objects, then you need to implement your own hyperlisp type name conversion Active Events. these Active Events
-         * will be named "pf.hyperlisp.get-type-name.*", where "*" is the fully qualified name of your type, meaning
+         * must be named "pf.hyperlisp.get-type-name.*", where "*" is the fully qualified name of your type, meaning
          * typeof(MyType).FullName
          * 
          * if you wish for hyperlisp to support your own custom types, you will have to implement three Active Events;
@@ -35,13 +35,33 @@ namespace phosphorus.hyperlisp
          *   3. "pf.hyperlisp.get-object-value.*" - (*) being the hyperlisp typename of your type, 
          *      returned from your "pf.hyperlisp.get-type-name.*",
          *      that returns an object created from the string representing your object
-         * 
-         * pst, Node is automatically handled in the hyperlisp engine, since it is native to hyperlisp, *obviously*...!!
          */
 
         /*
          * retrieving type name active events
          */
+
+        /// <summary>
+        /// returns "node" for using as type information for the phosphorus.core.Node type in hyperlisp
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">parameters</param>
+        [ActiveEvent (Name = "pf.hyperlist.get-type-name.phosphorus.core.Node")]
+        private static void pf_hyperlist_get_type_name_phosphorus_core_Node (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "node";
+        }
+
+        /// <summary>
+        /// returns "path" for using as type information for the phosphorus.core.Node+DNA type in hyperlisp
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">parameters</param>
+        [ActiveEvent (Name = "pf.hyperlist.get-type-name.phosphorus.core.Node+DNA")]
+        private static void pf_hyperlist_get_type_name_phosphorus_core_Node_DNA (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "path";
+        }
 
         /// <summary>
         /// returns "int" for using as type information for the given System type in hyperlisp
@@ -157,22 +177,32 @@ namespace phosphorus.hyperlisp
          * retrieving value in string format Active Events. all types that support automatic conversion
          * from their object representation to a string, do not need their own event handlers, since the
          * default logic is to use "Convert.ChangeType". hence you only need to implement Active Event converters
-         * for types who does not implement IConvertible, or whos default implementation of IConvertible is
-         * not sufficient for creating a [*sane*] string representation of your object, such as DateTime, since it
-         * creates a non-ISO date string representation by default, and Boolean, since it creates "True" and
+         * for types that do not implement IConvertible, or whos default implementation of IConvertible is
+         * not sufficient for creating a [*sane*] string representation of your object. examples are DateTime and 
+         * bool, since it creates a non-ISO date string representation by default, and Boolean, since it creates "True" and
          * "False", instead of "true" and "false" - [capital letters are avoided in hyperlisp, if we can]
          * 
-         * the name of all of these Active Events is "pf.hyperlist.get-string-value." + the hyperlisp typename returned
-         * in your "pf.hyperlist.get-type-name.*" Active Events. if you create your own type conversion Active Events,
-         * then please make sure that your Active Events have an application wide unique name. this can be done by prefixing
-         * your type with the name of your company, such as "pf.hyperlist.get-object-value.my-company.my-type", or something
-         * similar
-         * 
-         * pst, nodes are handled automatically by hyperlisp engine, since they're native to the engine, *obviously* ...!
+         * the name of all of these Active Events is "pf.hyperlist.get-string-value." + the fully qualified name of your type,
+         * or the return value of "typeof(YourType).FullName"
          */
 
         /// <summary>
-        /// returns date in ISO string representation as "yyyy.MM.ddTHH:mm:ss"
+        /// returns Node as string value
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">parameters</param>
+        [ActiveEvent (Name = "pf.hyperlist.get-string-value.phosphorus.core.Node")]
+        private static void pf_hyperlist_get_string_value_phosphorus_core_Node (ApplicationContext context, ActiveEventArgs e)
+        {
+            Node node = e.Args.Get<Node> ();
+            Node tmp = new Node ();
+            tmp.Add (node.Clone ());
+            context.Raise ("pf.nodes-2-code", tmp);
+            e.Args.Value = tmp.Value;
+        }
+
+        /// <summary>
+        /// returns date's value in ISO string representation format, or date as "yyyy.MM.ddTHH:mm:ss" with other words
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">parameters</param>
@@ -194,14 +224,50 @@ namespace phosphorus.hyperlisp
         }
 
         /*
+         * the rest of the native System types are automatically returning a "sane" string value through their 
+         * IConvertible implementation ...
+         */
+
+        /*
          * retrieving object value from string representation Active Events
          * 
          * the name of all of these Active Events is "pf.hyperlist.get-object-value." + the hyperlisp typename returned
-         * in your "pf.hyperlist.get-type-name.*" Active Events
-         * 
-         * pst, nodes are handled automatically by hyperlisp engine, since they're native to the engine, *obviously* ...!
+         * in your "pf.hyperlist.get-type-name.*" Active Events. if you create support for your own types in hyperlisp, then
+         * make sure you return an application wide unique hyperlisp typename in your "pf.hyperlist.get-type-name.*" Active 
+         * Event. this can be done by using a "your-company.your-type" format for your hyperlisp type and "get-type-name"
+         * Active Event
          */
         
+        /// <summary>
+        /// returns a Node created from its string representation
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">parameters</param>
+        [ActiveEvent (Name = "pf.hyperlist.get-object-value.node")]
+        private static void pf_hyperlist_get_object_value_node (ApplicationContext context, ActiveEventArgs e)
+        {
+            string code = e.Args.Get<string> ();
+            Node tmp = new Node (string.Empty, code);
+            context.Raise ("pf.code-2-nodes", tmp);
+            if (tmp.Count == 1)
+                e.Args.Value = tmp [0].Clone ();
+            else if (tmp.Count > 1)
+                throw new ArgumentException ("cannot convert a node with multiple root nodes to a single node");
+            else
+                e.Args.Value = null;
+        }
+        
+        /// <summary>
+        /// returns a DNA created from its string representation
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">parameters</param>
+        [ActiveEvent (Name = "pf.hyperlist.get-object-value.path")]
+        private static void pf_hyperlist_get_object_value_path (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = new Node.DNA (e.Args.Get<string> ());
+        }
+
         /// <summary>
         /// returns an integer created from its string representation
         /// </summary>

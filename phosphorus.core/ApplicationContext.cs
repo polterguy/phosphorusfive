@@ -93,15 +93,16 @@ namespace phosphorus.core
         /// </summary>
         /// <param name="name">name of Active Event to raise</param>
         /// <param name="args">arguments to pass into the Active Event</param>
-        public void Raise (string name, Node args)
+        public Node Raise (string name, Node args)
         {
             if (!_registeredActiveEvents.ContainsKey (name))
-                return;
+                return args; // no Active Event registered with that name
 
             ActiveEventArgs e = new ActiveEventArgs (args, name);
             foreach (var idxMethod in _registeredActiveEvents [name]) {
                 idxMethod.Item1.Invoke (idxMethod.Item2, new object[] { this, e });
             }
+            return e.Args;
         }
     }
 }

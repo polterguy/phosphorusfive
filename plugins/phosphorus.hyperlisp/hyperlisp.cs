@@ -18,48 +18,29 @@ namespace phosphorus.hyperlisp
     public static class hyperlisp
     {
         /// <summary>
-        /// helper to transform from hyperlisp code syntax to <see cref="phosphorus.core.Node"/> tree structure
+        /// helper to transform from hyperlisp code syntax to <see cref="phosphorus.core.Node"/> tree structure.
+        /// will transform the given hyperlisp into a list of nodes and append them into the root node given
+        /// through the active event args
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.hyperlisp-2-nodes")]
         private static void pf_hyperlisp_2_nodes (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.AddRange (NodeBuilder.NodesFromHyperlisp (context, e.Args.Get<string> ()));
+            e.Args.AddRange (new NodeBuilder (context, e.Args.Get<string> ()).Nodes);
         }
 
         /// <summary>
-        /// helper to transform from <see cref="phosphorus.core.Node"/> tree structure to hyperlisp code syntax
+        /// helper to transform from <see cref="phosphorus.core.Node"/> tree structure to hyperlisp code syntax.
+        /// will transform the children nodes of the given active event args into hyperlisp and return as string
+        /// value of the value of the given active event args
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.nodes-2-hyperlisp")]
         private static void pf_nodes_2_hyperlisp (ApplicationContext context, ActiveEventArgs e)
         {
-            StringBuilder builder = HyperlispBuilder.Nodes2Hyperlisp (context, e.Args.Children);
-            if (builder.Length == 0) {
-                e.Args.Value = string.Empty;
-            } else {
-                string value = builder.ToString ();
-                e.Args.Value = value.TrimEnd ('\r', '\n'); // getting rid of last carriage return
-            }
-        }
-
-        /// <summary>
-        /// helper to transform from <see cref="phosphorus.core.Node"/> tree structure to hyperlisp code syntax
-        /// </summary>
-        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.node-2-hyperlisp")]
-        private static void pf_node_2_hyperlisp (ApplicationContext context, ActiveEventArgs e)
-        {
-            StringBuilder builder = HyperlispBuilder.Nodes2Hyperlisp (context, new Node[] { e.Args });
-            if (builder.Length == 0) {
-                e.Args.Value = string.Empty;
-            } else {
-                string value = builder.ToString ();
-                e.Args.Value = value.Substring (0, value.Length - 2); // getting rid of last carriage return
-            }
+            e.Args.Value = new HyperlispBuilder (context, e.Args.Children).Hyperlisp;
         }
     }
 }

@@ -16,18 +16,40 @@ namespace phosphorus.hyperlisp
     /*
      * class used internall to tokenize hyperlisp
      */
-    internal class Token
+    public class Token
     {
         /*
          * type of token
          */
         public enum TokenType
         {
+            /*
+             * "\r\n" token
+             */
             CarriageReturn,
+
+            /*
+             * ":" token
+             */
             Separator,
+
+            /*
+             * "  " [two spaces] token
+             */
             Spacer,
+
+            /*
+             * name of node token
+             */
             Name,
-            ContentOrType
+
+            /*
+             * type, or content token
+             * whether or not it's a type or a content token is defined if another TypeOrContent token follows it.
+             * if another ContentOrType token follows it, with a Separator token between then, but no CarriageReturn
+             * token between them, the token is a "type token". otherwise it's a "content token" type
+             */
+            TypeOrContent
         }
 
         /*
@@ -48,7 +70,7 @@ namespace phosphorus.hyperlisp
          */
         public TokenType Type {
             get;
-            set;
+            private set;
         }
 
         /*
@@ -57,7 +79,7 @@ namespace phosphorus.hyperlisp
          */
         public string Value {
             get;
-            set;
+            private set;
         }
 
         /*
@@ -66,7 +88,7 @@ namespace phosphorus.hyperlisp
         public int Scope {
             get {
                 if (Type != TokenType.Spacer)
-                    return 0;
+                    return -1;
                 return Value.Length / 2;
             }
         }
