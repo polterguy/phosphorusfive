@@ -75,7 +75,7 @@ namespace phosphorus.core
         public void LoadAssembly (string path, string name)
         {
             if (_assemblies.Exists (
-                delegate(Assembly idx) {
+                delegate (Assembly idx) {
                 return idx.ManifestModule.Name.ToLower () == name.ToLower ();
             }))
                 return;
@@ -88,7 +88,7 @@ namespace phosphorus.core
                 }
             }
 
-            // loading assembly
+            // we must load assembly and link in
             Assembly assembly = Assembly.LoadFile (path + name);
             InitializeAssembly (assembly);
             _assemblies.Add (assembly);

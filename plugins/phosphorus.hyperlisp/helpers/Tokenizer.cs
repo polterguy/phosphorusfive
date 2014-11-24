@@ -18,7 +18,7 @@ namespace phosphorus.hyperlisp
     /// </summary>
     public class Tokenizer : IDisposable
     {
-        private TextReader _reader;
+        private StringReader _reader;
         private bool _disposed;
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace phosphorus.hyperlisp
         /// <value>tokens from hyperlisp</value>
         public IEnumerable<Token> Tokens {
             get {
-                Token previousToken = null;
+                Token previousToken = new Token (Token.TokenType.CarriageReturn, "\r\n"); // we start out with a CR/LF token
                 while (true) {
                     Token token = NextToken (previousToken);
                     if (token == null)
@@ -64,21 +64,19 @@ namespace phosphorus.hyperlisp
          */
         private Token NextToken (Token previousToken)
         {
-            string buffer = string.Empty;
-            if (_reader.Peek () == ':' && (previousToken == null || previousToken.Type == Token.TokenType.Spacer)) {
+            if (_reader.Peek () == ':' && previousToken.Type == Token.TokenType.Spacer) {
                 // empty name
                 return new Token (Token.TokenType.Name, string.Empty);
             }
-            if ((_reader.Peek () == '\r' || _reader.Peek () == '\n') && (previousToken != null && previousToken.Type == Token.TokenType.Separator)) {
+            if ((_reader.Peek () == '\r' || _reader.Peek () == '\n') && previousToken.Type == Token.TokenType.Separator) {
                 return new Token (Token.TokenType.TypeOrContent, string.Empty);
             }
             int nextChar = _reader.Read ();
             if (nextChar == -1)
                 return null;
-            buffer += (char)nextChar;
-            if (buffer == ":")
+            if (nextChar == ':')
                 return new Token (Token.TokenType.Separator, ":");
-            if (buffer == " ") {
+            if (nextChar == ' ') {
                 if (previousToken.Type == Token.TokenType.CarriageReturn) {
                     return NextSpaceToken ();
                 } else {
@@ -87,12 +85,15 @@ namespace phosphorus.hyperlisp
                     TrimReader ();
                     return NextToken (previousToken);
                 }
-            } else if (buffer == "\r") {
+            }
+            if (nextChar == '\r') {
                 return NextCRLFToken ();
-            } else if (buffer == "\n") {
+            } else if (nextChar == '\n') {
                 return new Token (Token.TokenType.CarriageReturn, "\r\n"); // normalizing carriage returns
             } else {
-                return NextDefaultToken (buffer, previousToken);
+                StringBuilder builder = new StringBuilder ();
+                builder.Append ((char)nextChar);
+                return NextDefaultToken (builder, previousToken);
             }
         }
 
@@ -138,38 +139,33 @@ namespace phosphorus.hyperlisp
         /*
          * reads next "default token" from text reader, can be string, multiline string or simply legal unescaped characters
          */
-        private Token NextDefaultToken (string buffer, Token previousToken)
+        private Token NextDefaultToken (StringBuilder builder, Token previousToken)
         {
-            if (buffer == @"""") {
-                return new Token (
-                    previousToken != null && previousToken.Type == Token.TokenType.Separator ? 
-                        Token.TokenType.TypeOrContent : 
-                        Token.TokenType.Name, 
-                    ReadSingleLineStringLiteral ());
-            } else if (buffer == "@") {
-                int nextMultilineChar = _reader.Peek ();
-                if (nextMultilineChar != -1) {
-                    if (nextMultilineChar == '"') {
-                        _reader.Read (); // skipping '"' part
-                        return new Token (
-                            previousToken != null && previousToken.Type == Token.TokenType.Separator ? 
-                                Token.TokenType.TypeOrContent : 
-                                Token.TokenType.Name, 
-                            ReadMultiLineStringLiteral ());
-                    }
+            if (builder [0] == '"') {
+                return new Token (GetTokenType (previousToken), ReadSingleLineStringLiteral ());
+            } else if (builder [0] == '@') {
+                if ((char)_reader.Peek () == '"') {
+                    _reader.Read (); // skipping '"' part
+                    return new Token (GetTokenType (previousToken), ReadMultiLineStringLiteral ());
                 }
             }
             int nextChar = _reader.Peek ();
-            while (nextChar != -1 && (char)nextChar != '\r' && (char)nextChar != '\n' && (char)nextChar != ':') {
-                buffer += (char)nextChar;
+            while (nextChar != -1 && "\r\n:".IndexOf ((char)nextChar) == -1) {
+                builder.Append ((char)nextChar);
                 _reader.Read ();
                 nextChar = _reader.Peek ();
             }
-            return new Token (
-                previousToken != null && previousToken.Type == Token.TokenType.Separator ? 
-                    Token.TokenType.TypeOrContent : 
-                    Token.TokenType.Name, 
-                buffer.Trim ()); // whitespace has no semantics, and are not part of tokens, except if within string literals, or before name token type
+            return new Token (GetTokenType (previousToken), builder.ToString ().Trim ()); // whitespace has no semantics, and are not part of tokens, except if within string literals, or before name token type
+        }
+
+        /*
+         * returns the curent token's type according to the previous token type
+         */
+        private Token.TokenType GetTokenType (Token previousToken)
+        {
+            if (previousToken != null && previousToken.Type == Token.TokenType.Separator)
+                return Token.TokenType.TypeOrContent;
+            return Token.TokenType.Name;
         }
 
         /*
