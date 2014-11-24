@@ -187,3 +187,4 @@ FakesAssemblies/
 
 # ignoring unit tests output directory
 test-results/
+phosphorus.userprefs
