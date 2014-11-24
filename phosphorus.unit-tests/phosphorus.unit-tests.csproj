@@ -38,7 +38,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CoreTests.cs" />
+    <Compile Include="ContextAndLoaderTests.cs" />
+    <Compile Include="HyperlispTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

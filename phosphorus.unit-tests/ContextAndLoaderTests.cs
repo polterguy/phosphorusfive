@@ -10,7 +10,7 @@ using phosphorus.core;
 namespace phosphorus.unittests
 {
     [TestFixture]
-    public class CoreTests
+    public class ContextAndLoaderTests
     {
         [Test]
         public void LoadAssembly ()
@@ -229,6 +229,50 @@ namespace phosphorus.unittests
             Node tmp = new Node (string.Empty, string.Empty);
             context.Raise ("foo9", tmp);
             Assert.AreEqual ("success", tmp.Value, "context contained previously registered instance listener");
+        }
+        
+        [ActiveEvent (Name = "foo10")]
+        private static void foo10 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value += "success";
+        }
+
+        [Test]
+        public void UnloadAssemblyVerifyStaticEventHandlerIsNotInvoked ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
+            Loader.Instance.UnloadAssembly ("phosphorus.unit-tests");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node (string.Empty, string.Empty);
+            context.Raise ("foo10", tmp);
+            Assert.AreEqual (string.Empty, tmp.Value, "assembly didn't unload correctly");
+        }
+        
+        [ActiveEvent (Name = "foo11")]
+        private void foo11 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value += "success";
+        }
+
+        [Test]
+        public void UnloadAssemblyVerifyInstanceEventHandlerIsNotInvoked ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            context.RegisterListeningObject (this);
+            Loader.Instance.UnloadAssembly ("phosphorus.unit-tests");
+            context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node (string.Empty, string.Empty);
+            context.Raise ("foo11", tmp);
+            Assert.AreEqual (string.Empty, tmp.Value, "assembly didn't unload correctly");
+        }
+        
+        [Test]
+        public void InvokeNullEventHandler ()
+        {
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node (string.Empty, string.Empty);
+            context.Raise ("non-existing", tmp);
         }
     }
 }

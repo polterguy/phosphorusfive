@@ -25,7 +25,7 @@ namespace phosphorus.execute
         private static void code_transformer (ApplicationContext context, ActiveEventArgs e)
         {
             string language = ConfigurationManager.AppSettings ["default-execution-language"];
-            context.Raise (e.Name.Replace ("code", language), e.Args);
+            context.Raise (e.Name.Replace ("code", language ?? "hyperlisp"), e.Args);
         }
     }
 }

@@ -29,7 +29,7 @@ namespace phosphorus.hyperlisp
         public NodeBuilder (ApplicationContext context, string hyperlisp)
         {
             _context = context;
-            _hyperlisp = (hyperlisp ?? "").Trim ();
+            _hyperlisp = (hyperlisp ?? "").TrimStart ('\r', '\n').TrimEnd ('\r', '\n');
         }
 
         /// <summary>
