@@ -38,6 +38,7 @@
         <Command type="BeforeBuild" command="cp ${ProjectDir}/javascript/manager.js ${ProjectDir}/javascript/manager.backup.js" workingdir="" />
         <Command type="BeforeBuild" command="uglifyjs -o ${ProjectDir}/javascript/manager.js ${ProjectDir}/javascript/manager.backup.js" />
         <Command type="AfterBuild" command="cp ${ProjectDir}/javascript/manager.backup.js ${ProjectDir}/javascript/manager.js" />
+        <Command type="AfterBuild" command="rm ${ProjectDir}/javascript/manager.backup.js" />
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>

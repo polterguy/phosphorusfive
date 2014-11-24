@@ -20,11 +20,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plugins", "plugins", "{4A1B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.hyperlisp", "plugins\phosphorus.hyperlisp\phosphorus.hyperlisp.csproj", "{C02D30A6-7DA2-4045-8644-9710AB40B629}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.execute", "plugins\phosphorus.execute\phosphorus.execute.csproj", "{8EB5FDEA-D073-4147-AE65-376A01B463DF}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.tiedown", "plugins\phosphorus.tiedown\phosphorus.tiedown.csproj", "{27409EA4-A00B-4C5A-AA06-992BE4D412EC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.file", "plugins\phosphorus.file\phosphorus.file.csproj", "{89C744BE-B583-4C6D-84B9-941E0C7CEBF4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.lambda", "plugins\phosphorus.lambda\phosphorus.lambda.csproj", "{8EB5FDEA-D073-4147-AE65-376A01B463DF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.unit-tests", "phosphorus.unit-tests\phosphorus.unit-tests.csproj", "{D709ED7D-C599-4703-B192-613F0EFF7D97}"
 EndProject
@@ -92,12 +92,12 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{C02D30A6-7DA2-4045-8644-9710AB40B629} = {4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}
-		{8EB5FDEA-D073-4147-AE65-376A01B463DF} = {4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}
 		{27409EA4-A00B-4C5A-AA06-992BE4D412EC} = {4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}
 		{89C744BE-B583-4C6D-84B9-941E0C7CEBF4} = {4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}
+		{8EB5FDEA-D073-4147-AE65-376A01B463DF} = {4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = phosphorus.unit-tests\phosphorus.unit-tests.csproj
+		StartupItem = phosphorus.application-pool\phosphorus.application-pool.csproj
 		Policies = $0
 		$0.DotNetNamingPolicy = $1
 		$1.DirectoryNamespaceAssociation = None
