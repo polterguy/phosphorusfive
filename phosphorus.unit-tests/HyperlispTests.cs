@@ -218,6 +218,73 @@ x:y
         }
         
         [Test]
+        [ExpectedException]
+        public void SyntaxError4 ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+x:y
+   z:""howdy"; // open string literal
+            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+        }
+        
+        [Test]
+        [ExpectedException]
+        public void SyntaxError5 ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+x:y
+   z:"""; // empty and open string literal
+            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+        }
+        
+        [Test]
+        [ExpectedException]
+        public void SyntaxError6 ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+x:y
+   z:@"""; // empty and open multiline string literal
+            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+        }
+        
+        [Test]
+        [ExpectedException]
+        public void SyntaxError7 ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+x:y
+   z:@""howdy"; // open multiline string literal
+            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+        }
+        
+        [Test]
+        [ExpectedException]
+        public void SyntaxError8 ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+x:y
+   z:@""howdy
+
+"; // open multiline string literal
+            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+        }
+
+        [Test]
         public void ComplexNamesAndNonExistentType ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
