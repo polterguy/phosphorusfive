@@ -186,4 +186,4 @@ FakesAssemblies/
 !lib/phosphorus.ajax.dll
 
 # ignoring unit tests output directory
-test-results/*
+test-results/
