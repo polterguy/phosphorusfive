@@ -178,7 +178,7 @@ namespace phosphorus.hyperlisp
         private string ReadSingleLineStringLiteral ()
         {
             var builder = new StringBuilder ();
-            for (var c = _reader.Read(); c != -1; c = _reader.Read()) {
+            for (var c = _reader.Read (); c != -1; c = _reader.Read ()) {
                 switch (c) {
                 case '"':
                     return builder.ToString ();
@@ -187,7 +187,7 @@ namespace phosphorus.hyperlisp
                     break;
                 case '\n':
                 case '\r':
-                    throw new ArgumentException ("Single line string contains new line");
+                    throw new ArgumentException ("syntax error in hyperlisp, single line string literal contains new line");
                 default:
                     builder.Append ((char)c);
                     break;
@@ -199,12 +199,12 @@ namespace phosphorus.hyperlisp
         /*
          * appends an escape character to stringbuilder
          */
-        private void AppendEscapeCharacter(StringBuilder builder)
+        private void AppendEscapeCharacter (StringBuilder builder)
         {
             var c = _reader.Read(); 
             switch (c) {
             case -1:
-                throw new ArgumentException("Unexpected end of input");
+                throw new ArgumentException ("syntax error in hyperlisp, end of input found when looking for escape character in single line string literal");
             case '"':
             case '\\':
                 builder.Append((char)c);
@@ -213,6 +213,7 @@ namespace phosphorus.hyperlisp
                 builder.Append("\r\n"); // normalizing carriage return
                 break;
             case 'r':
+                // '\r' must be followed by '\n'
                 if ((char)_reader.Read () != '\\' || (char)_reader.Read () != 'n')
                     throw new ArgumentException ("syntax error in hyperlisp, carriage return found, but no new line character found");
                 builder.Append("\r\n");
@@ -227,21 +228,30 @@ namespace phosphorus.hyperlisp
          */
         private string ReadMultiLineStringLiteral ()
         {
-            StringBuilder buffer = new StringBuilder ();
-            int nextChar = _reader.Read ();
-            while (nextChar != -1) {
-                buffer.Append ((char)nextChar);
-                nextChar = _reader.Peek ();
-                if (nextChar != '"' && (buffer.Length - buffer.ToString ().TrimEnd ('"').Length) % 2 == 1)
+            var builder = new StringBuilder ();
+            for (var c = _reader.Read (); c != -1; c = _reader.Read ()) {
+                switch (c) {
+                case '"':
+                    if ((char)_reader.Peek () == '"') {
+                        builder.Append ((char)_reader.Read ());
+                    } else {
+                        return builder.ToString ();
+                    }
                     break;
-                nextChar = _reader.Read ();
+                case '\n':
+                    builder.Append ("\r\n"); // normalizing carriage return
+                    break;
+                case '\r':
+                    if ((char)_reader.Read () != '\n')
+                        throw new ArgumentException ("syntax error in hyperlisp, carriage return found but no new line character in multi line string literal");
+                    builder.Append ("\r\n");
+                    break;
+                default:
+                    builder.Append ((char)c);
+                    break;
+                }
             }
-            if (buffer.Length == 0 || buffer [buffer.Length - 1] != '"')
-                throw new ArgumentException ("unclosed multiline string literal in hyperlisp close to end of hyperlisp");
-            return buffer.ToString ().Substring (0, buffer.Length - 1)
-                .Replace (@"""""", @"""")
-                .Replace ("\n", "\r\n") // normalizing carriage returns
-                .Replace ("\r\r\n", "\r\n");
+            throw new ArgumentException ("syntax error in hyperlisp, multi line string literal not closed before end of input");
         }
 
         /*

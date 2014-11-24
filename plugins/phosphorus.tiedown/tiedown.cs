@@ -35,6 +35,8 @@ namespace phosphorus.tiedown
         {
             // execute load hyperlisp file
             string code = @"
+_tmp:@""howdy world, this is pretty """" cool,
+right ...?""
 _tmp:""thomas hansen\"" is\n cool\r\nhowdy \\world""
 _nodes9:node:""""
 _nodes4:node:
