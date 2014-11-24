@@ -216,7 +216,7 @@ x:y
    z:q"; // three spaces when opening children collection
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
         }
-        
+
         [Test]
         [ExpectedException]
         public void SyntaxError4 ()
@@ -226,7 +226,7 @@ x:y
             Node tmp = new Node ();
             tmp.Value = @"
 x:y
-   z:""howdy"; // open string literal
+  z:""howdy"; // open string literal
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
         }
         
@@ -239,7 +239,7 @@ x:y
             Node tmp = new Node ();
             tmp.Value = @"
 x:y
-   z:"""; // empty and open string literal
+  z:"""; // empty and open string literal
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
         }
         
@@ -252,7 +252,7 @@ x:y
             Node tmp = new Node ();
             tmp.Value = @"
 x:y
-   z:@"""; // empty and open multiline string literal
+  z:@"""; // empty and open multiline string literal
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
         }
         
@@ -265,7 +265,7 @@ x:y
             Node tmp = new Node ();
             tmp.Value = @"
 x:y
-   z:@""howdy"; // open multiline string literal
+  z:@""howdy"; // open multiline string literal
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
         }
         
@@ -278,9 +278,22 @@ x:y
             Node tmp = new Node ();
             tmp.Value = @"
 x:y
-   z:@""howdy
+  z:@""howdy
 
 "; // open multiline string literal
+            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+        }
+        
+        [Test]
+        [ExpectedException]
+        public void SyntaxError9 ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+z:node:@""howdy:x
+ f:g"""; // syntax error in hyperlisp node content, only one space while opening child collection of "howdy" node
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
         }
 
