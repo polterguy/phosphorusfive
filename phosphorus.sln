@@ -26,6 +26,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.tiedown", "plugi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.file", "plugins\phosphorus.file\phosphorus.file.csproj", "{89C744BE-B583-4C6D-84B9-941E0C7CEBF4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.unit-tests", "phosphorus.unit-tests\phosphorus.unit-tests.csproj", "{D709ED7D-C599-4703-B192-613F0EFF7D97}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,12 @@ Global
 		{C783FEDB-C973-4F38-8EBB-55A0163612F5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C783FEDB-C973-4F38-8EBB-55A0163612F5}.Release-Linux|Any CPU.ActiveCfg = Release|Any CPU
 		{C783FEDB-C973-4F38-8EBB-55A0163612F5}.Release-Linux|Any CPU.Build.0 = Release|Any CPU
+		{D709ED7D-C599-4703-B192-613F0EFF7D97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D709ED7D-C599-4703-B192-613F0EFF7D97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D709ED7D-C599-4703-B192-613F0EFF7D97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D709ED7D-C599-4703-B192-613F0EFF7D97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D709ED7D-C599-4703-B192-613F0EFF7D97}.Release-Linux|Any CPU.ActiveCfg = Release|Any CPU
+		{D709ED7D-C599-4703-B192-613F0EFF7D97}.Release-Linux|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{C02D30A6-7DA2-4045-8644-9710AB40B629} = {4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}
@@ -89,7 +97,7 @@ Global
 		{89C744BE-B583-4C6D-84B9-941E0C7CEBF4} = {4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = phosphorus.application-pool\phosphorus.application-pool.csproj
+		StartupItem = phosphorus.unit-tests\phosphorus.unit-tests.csproj
 		Policies = $0
 		$0.DotNetNamingPolicy = $1
 		$1.DirectoryNamespaceAssociation = None

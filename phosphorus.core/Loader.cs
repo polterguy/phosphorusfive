@@ -66,6 +66,16 @@ namespace phosphorus.core
                 }
             }
         }
+        
+        /// <summary>
+        /// loads an assembly for handling Active Events using the current directory as the directory
+        /// for the assembly to load
+        /// </summary>
+        /// <param name="name">name of assembly</param>
+        public void LoadAssembly (string name)
+        {
+            LoadAssembly (string.Empty, name);
+        }
 
         /// <summary>
         /// loads an assembly for handling Active Events
@@ -74,6 +84,8 @@ namespace phosphorus.core
         /// <param name="name">name of assembly</param>
         public void LoadAssembly (string path, string name)
         {
+            if (!name.ToLower ().EndsWith (".dll"))
+                name += ".dll";
             if (_assemblies.Exists (
                 delegate (Assembly idx) {
                 return idx.ManifestModule.Name.ToLower () == name.ToLower ();
