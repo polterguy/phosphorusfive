@@ -177,25 +177,49 @@ namespace phosphorus.hyperlisp
          */
         private string ReadSingleLineStringLiteral ()
         {
-            string buffer = string.Empty;
-            int nextChar = _reader.Read ();
-            while (nextChar != -1) {
-                buffer += (char)nextChar;
-                if (nextChar == '"' && 
-                    (buffer.Length == 1 || 
-                         buffer [buffer.Length - 1] != '\\' || 
-                         (buffer.Length - buffer.TrimEnd ('\\').Length) % 2 == 0)) {
+            var builder = new StringBuilder ();
+            for (var c = _reader.Read(); c != -1; c = _reader.Read()) {
+                switch (c) {
+                case '"':
+                    return builder.ToString ();
+                case '\\':
+                    AppendEscapeCharacter (builder);
+                    break;
+                case '\n':
+                case '\r':
+                    throw new ArgumentException ("Single line string contains new line");
+                default:
+                    builder.Append ((char)c);
                     break;
                 }
-                nextChar = _reader.Read ();
             }
-            if (buffer [buffer.Length - 1] != '"')
-                throw new ArgumentException ("unclosed string literal in hyperlisp file");
-            return buffer.Substring (0, buffer.Length - 1)
-                .Replace ("\n", "\r\n") // normalizing carriage returns
-                .Replace ("\r\r\n", "\r\n")
-                .Replace ("\\\"", "\"")
-                .Replace ("\\\\", "\\");
+            throw new ArgumentException ("syntax error in hyperlisp, single line string literal not closed before end of input");
+        }
+
+        /*
+         * appends an escape character to stringbuilder
+         */
+        private void AppendEscapeCharacter(StringBuilder builder)
+        {
+            var c = _reader.Read(); 
+            switch (c) {
+            case -1:
+                throw new ArgumentException("Unexpected end of input");
+            case '"':
+            case '\\':
+                builder.Append((char)c);
+                break;
+            case 'n':
+                builder.Append("\r\n"); // normalizing carriage return
+                break;
+            case 'r':
+                if ((char)_reader.Read () != '\\' || (char)_reader.Read () != 'n')
+                    throw new ArgumentException ("syntax error in hyperlisp, carriage return found, but no new line character found");
+                builder.Append("\r\n");
+                break;
+            default:
+                throw new ArgumentException (string.Format ("invalid escape sequence in hyperlisp; '\\{0}'", (char)c));
+            }
         }
 
         /*
@@ -203,18 +227,18 @@ namespace phosphorus.hyperlisp
          */
         private string ReadMultiLineStringLiteral ()
         {
-            string buffer = string.Empty;
+            StringBuilder buffer = new StringBuilder ();
             int nextChar = _reader.Read ();
             while (nextChar != -1) {
-                buffer += (char)nextChar;
+                buffer.Append ((char)nextChar);
                 nextChar = _reader.Peek ();
-                if (nextChar != '"' && (buffer.Length - buffer.TrimEnd ('"').Length) % 2 == 1)
+                if (nextChar != '"' && (buffer.Length - buffer.ToString ().TrimEnd ('"').Length) % 2 == 1)
                     break;
                 nextChar = _reader.Read ();
             }
             if (buffer.Length == 0 || buffer [buffer.Length - 1] != '"')
                 throw new ArgumentException ("unclosed multiline string literal in hyperlisp close to end of hyperlisp");
-            return buffer.Substring (0, buffer.Length - 1)
+            return buffer.ToString ().Substring (0, buffer.Length - 1)
                 .Replace (@"""""", @"""")
                 .Replace ("\n", "\r\n") // normalizing carriage returns
                 .Replace ("\r\r\n", "\r\n");
