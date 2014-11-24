@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using phosphorus.core;
 
-namespace phosphorus.execute.iterators
+namespace phosphorus.lambda.iterators
 {
     /// <summary>
     /// returns all nodes found through value of previous node's matched converted to path or node

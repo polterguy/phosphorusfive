@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using phosphorus.core;
 
-namespace phosphorus.execute.iterators
+namespace phosphorus.lambda.iterators
 {
     /// <summary>
     /// iterator for returning all n'th children of previous iterator result

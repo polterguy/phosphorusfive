@@ -7,9 +7,9 @@ using System;
 using System.Globalization;
 using System.Collections.Generic;
 using phosphorus.core;
-using phosphorus.execute.iterators;
+using phosphorus.lambda.iterators;
 
-namespace phosphorus.execute
+namespace phosphorus.lambda
 {
     /// <summary>
     /// expression class, for retrieving and changing values in node tree according to execution expressions

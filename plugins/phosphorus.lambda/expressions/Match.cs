@@ -6,9 +6,9 @@
 using System;
 using System.Collections.Generic;
 using phosphorus.core;
-using phosphorus.execute.iterators;
+using phosphorus.lambda.iterators;
 
-namespace phosphorus.execute
+namespace phosphorus.lambda
 {
     /// <summary>
     /// expression result class, contains evaluated result of an <see cref="phosphorus.execute.Expression"/> 

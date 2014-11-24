@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using phosphorus.core;
 
-namespace phosphorus.execute
+namespace phosphorus.lambda
 {
     /// <summary>
     /// class wrapping execution engine keyword "put", which allows for changing the value and name of nodes, or the node itself

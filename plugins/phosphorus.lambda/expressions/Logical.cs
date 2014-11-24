@@ -6,9 +6,9 @@
 using System;
 using System.Collections.Generic;
 using phosphorus.core;
-using phosphorus.execute.iterators;
+using phosphorus.lambda.iterators;
 
-namespace phosphorus.execute
+namespace phosphorus.lambda
 {
     /// <summary>
     /// logical class, for performing boolean algebra on <see cref="phosphorus.execute.iterators.Iterator"/>, making it

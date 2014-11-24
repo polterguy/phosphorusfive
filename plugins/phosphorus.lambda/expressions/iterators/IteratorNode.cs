@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using phosphorus.core;
 
-namespace phosphorus.execute.iterators
+namespace phosphorus.lambda.iterators
 {
     /// <summary>
     /// <see cref="phosphorus.core.Node"/> iterator, which is useful for using as the outer most iterator for the hyperlisp expression,

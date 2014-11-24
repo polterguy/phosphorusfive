@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using phosphorus.core;
 
-namespace phosphorus.execute.iterators
+namespace phosphorus.lambda.iterators
 {
     /// <summary>
     /// returns an offset sibling <see cref="phosphorus.core.Node"/>

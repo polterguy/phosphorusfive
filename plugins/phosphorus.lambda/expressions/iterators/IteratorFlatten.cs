@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using phosphorus.core;
 
-namespace phosphorus.execute.iterators
+namespace phosphorus.lambda.iterators
 {
     /// <summary>
     /// return all nodes and descendants of previous iterator, flattening hierarchy

@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using phosphorus.core;
 
-namespace phosphorus.execute
+namespace phosphorus.lambda
 {
     /// <summary>
     /// class wrapping execution engine keyword "pf.if", "pf.else-if" and "pf.else", which allows for branching or

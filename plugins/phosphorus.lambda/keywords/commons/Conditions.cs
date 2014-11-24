@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using phosphorus.core;
 
-namespace phosphorus.execute
+namespace phosphorus.lambda
 {
     /// <summary>
     /// class wrapping any statement that somehow yields a condition, such as "pf.if" and "pf.while"

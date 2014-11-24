@@ -7,7 +7,7 @@ using System;
 using System.Configuration;
 using phosphorus.core;
 
-namespace phosphorus.execute
+namespace phosphorus.lambda
 {
     /// <summary>
     /// class to help transform between code and <see cref="phosphorus.core.Node"/> 
