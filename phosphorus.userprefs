@@ -1,35 +1,32 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench ActiveDocument="phosphorus.unit-tests/HyperlispTests.cs">
+    <Files>
+      <File FileName="plugins/phosphorus.execute/code.cs" Line="1" Column="1" />
+      <File FileName="plugins/phosphorus.tiedown/tiedown.cs" Line="49" Column="1" />
+      <File FileName="phosphorus.unit-tests/HyperlispTests.cs" Line="15" Column="15" />
+      <File FileName="phosphorus.core/ApplicationContext.cs" Line="1" Column="1" />
+      <File FileName="phosphorus.core/Loader.cs" Line="44" Column="59" />
+    </Files>
     <Pads>
       <Pad Id="ProjectPad">
-        <State expanded="True">
-          <Node name="plugins" expanded="True">
-            <Node name="phosphorus.execute" expanded="True">
-              <Node name="expressions" expanded="True">
-                <Node name="iterators" expanded="True" />
-                <Node name="Expression.cs" selected="True" />
-              </Node>
-              <Node name="keywords" expanded="True" />
-            </Node>
-            <Node name="phosphorus.hyperlisp" expanded="True" />
-            <Node name="phosphorus.tiedown" expanded="True" />
-          </Node>
-          <Node name="phosphorus.core" expanded="True" />
+        <State expanded="True" selected="True">
+          <Node name="plugins" expanded="True" />
+          <Node name="phosphorus.unit-tests" expanded="True" />
         </State>
       </Pad>
       <Pad Id="MonoDevelop.Debugger.WatchPad">
         <State>
-          <Value>idxChar</Value>
+          <Value>typeInfo</Value>
+          <Value>activeEventName</Value>
         </State>
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
-      <Breakpoint file="/home/polterguy/projects/software/phosphorus/plugins/phosphorus.tiedown/tiedown.cs" line="48" column="1" />
-      <Breakpoint file="/home/polterguy/projects/software/phosphorus/plugins/phosphorus.tiedown/tiedown.cs" line="43" column="1" />
-      <Breakpoint file="/home/polterguy/projects/software/phosphorus/plugins/phosphorus.execute/keywords/get.cs" line="25" column="1" />
+      <Breakpoint file="/home/polterguy/projects/software/phosphorus/plugins/phosphorus.tiedown/tiedown.cs" line="148" column="1" />
+      <Breakpoint file="/home/polterguy/projects/software/phosphorus/phosphorus.unit-tests/HyperlispTests.cs" line="20" column="1" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
