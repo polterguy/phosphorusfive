@@ -296,6 +296,19 @@ z:node:@""howdy:x
  f:g"""; // syntax error in hyperlisp node content, only one space while opening child collection of "howdy" node
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
         }
+        
+        [Test]
+        [ExpectedException]
+        public void SyntaxError10 ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+z:node:@""howdy:x
+f:g"""; // logical error in hyperlisp node content, multiple "root" nodes
+            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+        }
 
         [Test]
         public void ComplexNamesAndNonExistentType ()
