@@ -15,7 +15,7 @@
         <form id="form1" runat="server" autocomplete="off">
             <div class="container">
 
-                <h1>unit tests</h1>
+                <h1>unit tests for phosphorus.ajax</h1>
 
                 <table id="tests">
                     <tr class="spacer">
@@ -28,7 +28,8 @@
                     </tr>
                     <tr class="spacer">
                         <td colspan="2">
-                            these are the unit tests for phosphorus five
+                            these are the unit tests for phosphorus.ajax, unit tests for the rest of phosphorus.five can be found in
+                            the source as project <em>"phosphorus.unit-tests"</em>
                         </td>
                     </tr>
                     <tr class="spacer">
@@ -284,104 +285,6 @@
                         </td>
                         <td>
                             <input type="button" id="invoke_remove_many" class="undetermined" value="run" onclick="tests.invoke_remove_many(event)">
-                        </td>
-                    </tr>
-                    <tr class="spacer">
-                        <td colspan="2">
-                            <h3>active events</h3>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            raise an active event handled on page object
-                        </td>
-                        <td>
-                            <input type="button" id="invoke_raise_page" class="undetermined" value="run" onclick="tests.invoke_raise_page(event)">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            register an active event listener twice
-                        </td>
-                        <td>
-                            <input type="button" id="invoke_register_twice" class="undetermined" value="run" onclick="tests.invoke_register_twice(event)">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            unregister an active event listener
-                        </td>
-                        <td>
-                            <input type="button" id="invoke_unregister" class="undetermined" value="run" onclick="tests.invoke_unregister(event)">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            handle active event twice
-                        </td>
-                        <td>
-                            <input type="button" id="invoke_handle_twice" class="undetermined" value="run" onclick="tests.invoke_handle_twice(event)">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            handle active event in domain object
-                        </td>
-                        <td>
-                            <input type="button" id="invoke_handle_domain" class="undetermined" value="run" onclick="tests.invoke_handle_domain(event)">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            handle active event in static method
-                        </td>
-                        <td>
-                            <input type="button" id="invoke_handle_static" class="undetermined" value="run" onclick="tests.invoke_handle_static(event)">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            handle active event twice, once in static domain, and once in instance domain
-                        </td>
-                        <td>
-                            <input type="button" id="invoke_handle_twice_domain" class="undetermined" value="run" onclick="tests.invoke_handle_twice_domain(event)">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            raise active event twice, once handled twice, then unregister instance, and re-raise
-                        </td>
-                        <td>
-                            <input type="button" id="invoke_handle_trice" class="undetermined" value="run" onclick="tests.invoke_handle_trice(event)">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            register a domain object listener without any instance active event handlers
-                        </td>
-                        <td>
-                            <input type="button" id="invoke_handle_null" class="undetermined" value="run" onclick="tests.invoke_handle_null(event)">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            raise an active event without any handlers
-                        </td>
-                        <td>
-                            <input type="button" id="invoke_raise_null" class="undetermined" value="run" onclick="tests.invoke_raise_null(event)">
-                        </td>
-                    </tr>
-                    <tr class="spacer">
-                        <td colspan="2">
-                            <h3>nodes</h3>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            compare dna codes, iterate nodes, etc
-                        </td>
-                        <td>
-                            <input type="button" id="invoke_dna" class="undetermined" value="run" onclick="tests.invoke_dna(event)">
                         </td>
                     </tr>
                 </table>
@@ -652,61 +555,6 @@
                                 ElementType="strong">bar 2</pf:Literal>
                         </pf:Container>
                     </pf:Container>
-                    <pf:Literal
-                        runat="server"
-                        id="sandbox_invoke_raise_page"
-                        RenderType="NoClose"
-                        ElementType="p" />
-                    <pf:Literal
-                        runat="server"
-                        id="sandbox_invoke_register_twice"
-                        RenderType="NoClose"
-                        ElementType="p" />
-                    <pf:Literal
-                        runat="server"
-                        id="sandbox_invoke_unregister"
-                        RenderType="NoClose"
-                        ElementType="p" />
-                    <pf:Literal
-                        runat="server"
-                        id="sandbox_invoke_handle_twice"
-                        RenderType="NoClose"
-                        ElementType="p" />
-                    <pf:Literal
-                        runat="server"
-                        id="sandbox_invoke_handle_domain"
-                        RenderType="NoClose"
-                        ElementType="p" />
-                    <pf:Literal
-                        runat="server"
-                        id="sandbox_invoke_handle_static"
-                        RenderType="NoClose"
-                        ElementType="p" />
-                    <pf:Literal
-                        runat="server"
-                        id="sandbox_invoke_handle_twice_domain"
-                        RenderType="NoClose"
-                        ElementType="p" />
-                    <pf:Literal
-                        runat="server"
-                        id="sandbox_invoke_handle_trice"
-                        RenderType="NoClose"
-                        ElementType="p" />
-                    <pf:Literal
-                        runat="server"
-                        id="sandbox_invoke_handle_null"
-                        RenderType="NoClose"
-                        ElementType="p" />
-                    <pf:Literal
-                        runat="server"
-                        id="sandbox_invoke_raise_null"
-                        RenderType="NoClose"
-                        ElementType="p" />
-                    <pf:Literal
-                        runat="server"
-                        id="sandbox_invoke_dna"
-                        RenderType="NoClose"
-                        ElementType="p" />
                 </div>
 
                 <p>

@@ -195,7 +195,7 @@ tests.store-nodes";
             Assert.AreEqual (1, _executionNodes [0].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual (0, _executionNodes [0] [0].Count, "wrong value of node after executing lambda object");
         }
-        
+
         [Test]
         public void AlmostExpression ()
         {
@@ -214,6 +214,79 @@ tests.store-nodes";
             Assert.AreEqual (string.Empty, _executionNodes [0] [0].Name, "wrong value of node after executing lambda object");
             Assert.AreEqual ("@./+/*/**/?count", _executionNodes [0] [0].Value, "wrong value of node after executing lambda object");
             Assert.AreEqual (1, _executionNodes [0].Count, "wrong value of node after executing lambda object");
+        }
+        
+        [Test]
+        public void MultipleDestinationsWithExpressionSource ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+_out1
+_out2
+add:@/-/|/-/-/?node
+  :@/./+/?value
+:dfg
+tests.store-nodes";
+            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("pf.lambda", tmp);
+            Assert.AreEqual ("dfg", _executionNodes [0] [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("dfg", _executionNodes [1] [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("", _executionNodes [0] [0].Name, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("", _executionNodes [1] [0].Name, "wrong value of node after executing lambda object");
+        }
+
+        [Test]
+        public void MultipleDestinationsWithStaticSource ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+_out1
+_out2
+add:@/-/|/-/-/?node
+  :dfg
+tests.store-nodes";
+            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("pf.lambda", tmp);
+            Assert.AreEqual ("dfg", _executionNodes [0] [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("dfg", _executionNodes [1] [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("", _executionNodes [0] [0].Name, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("", _executionNodes [1] [0].Name, "wrong value of node after executing lambda object");
+        }
+        
+        [Test]
+        public void AddMultipleSourceNodes ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+_out1
+_out2
+add:@/-/|/-/-/?node
+  :@/./+/|/./+/+/?node
+_x1:y1
+_x2:y2
+tests.store-nodes";
+            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("pf.lambda", tmp);
+            Assert.AreEqual ("_x1", _executionNodes [0] [0].Name, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("y1", _executionNodes [0] [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("_x2", _executionNodes [0] [1].Name, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("y2", _executionNodes [0] [1].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("_x1", _executionNodes [1] [0].Name, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("y1", _executionNodes [1] [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("_x2", _executionNodes [1] [1].Name, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("y2", _executionNodes [1] [1].Value, "wrong value of node after executing lambda object");
         }
 
         [Test]

@@ -22,10 +22,13 @@ namespace phosphorus.lambda
         [ActiveEvent (Name = "pf.set")]
         private static void pf_set (ApplicationContext context, ActiveEventArgs e)
         {
+            if (e.Args.Count > 1)
+                throw new ArgumentException ("[pf.set] was given multiple sources, which is illegal");
+
             // getting destination match nodes
             Match destinationMatch = GetDestinationMatch (e.Args);
             if (destinationMatch.Count == 0)
-                return; // "do nothing" operation
+                return; // no destination
 
             // checking type of assignment
             if (e.Args.Count == 1 && e.Args.FirstChild.Name == string.Empty && Expression.IsExpression (e.Args.FirstChild.Get<string> ())) {
@@ -34,8 +37,12 @@ namespace phosphorus.lambda
                 Match sourceMatch = new Expression (e.Args.FirstChild.Get<string> ()).Evaluate (e.Args.FirstChild);
                 if (sourceMatch.Count == 0) {
                     AssignNull (destinationMatch);
-                } else {
+                } else if (sourceMatch.Count == 1 || destinationMatch.TypeOfMatch == Match.MatchType.Name || destinationMatch.TypeOfMatch == Match.MatchType.Value) {
                     AssignMatch (context, destinationMatch, sourceMatch);
+                } else {
+                    throw new ArgumentException ("[pf.set] requires a source expression yielding 0 or 1 result when setting a node, expression; '" + 
+                        e.Args.FirstChild.Get<string> () + 
+                        "' returned multiple results");
                 }
             } else if (e.Args.Count == 1 && e.Args.FirstChild.Name == string.Empty && !Expression.IsExpression (e.Args.FirstChild.Get<string> ())) {
                 AssignValue (destinationMatch, e.Args.FirstChild.Value);
@@ -129,33 +136,12 @@ namespace phosphorus.lambda
             if (match.Count == 1) {
 
                 // single match
-                return GetSingleObjectFromMatch (context, match);
+                return match.GetValue (0);
             } else {
 
                 // multiple matches
                 return GetMultipleObjectFromMatch (context, match);
             }
-        }
-        
-        /*
-         * returns a single object from match
-         */
-        private static object GetSingleObjectFromMatch (ApplicationContext context, Match match)
-        {
-            switch (match.TypeOfMatch) {
-            case Match.MatchType.Name:
-                return match [0].Name;
-            case Match.MatchType.Value:
-                return match [0].Value;
-            case Match.MatchType.Path:
-                return match [0].Path;
-            case Match.MatchType.Node:
-                Node tmpCode = new Node ("root");
-                tmpCode.Add (match [0].Clone ());
-                context.Raise ("pf.nodes-2-code", tmpCode);
-                return tmpCode.Value;
-            }
-            return null; // we should never get here, but compiler creates hickup unless we return something at end of method here
         }
         
         /*
