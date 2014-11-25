@@ -15,26 +15,26 @@ namespace phosphorus.unittests
         [Test]
         public void LoadAssembly ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.execute");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
         }
 
         [Test]
         public void LoadAssemblyWithExtension ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.execute.dll");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda.dll");
         }
 
         [Test]
         public void LoadAssemblyTwice ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.execute");
-            Loader.Instance.LoadAssembly ("phosphorus.execute");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
         }
         
         [Test]
         public void LoadTwoAssemblies ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.execute");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
             Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
         }
         

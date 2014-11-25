@@ -40,6 +40,7 @@
   <ItemGroup>
     <Compile Include="ContextAndLoaderTests.cs" />
     <Compile Include="HyperlispTests.cs" />
+    <Compile Include="LambdaTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

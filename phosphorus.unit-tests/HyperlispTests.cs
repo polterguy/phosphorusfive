@@ -151,7 +151,7 @@ t:h";
         public void ParseTypes ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.execute");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
             ApplicationContext context = Loader.Instance.CreateApplicationContext ();
             Node tmp = new Node ();
             tmp.Value = @"
