@@ -17,7 +17,11 @@ namespace phosphorus.unittests
         // since pf.lambda executes its nodes "immutable", we need a mechanism to store the execution nodes
         // before the pf.lambda returns. this event handler stores the nodes in a static variable, such
         // that we have something to compare when comparing the "output" after execution after execution of
-        // lambda objects
+        // lambda objects. notice we could have used "reference nodes", but this construct kind of creates more
+        // beautiful code, and will work as long as all tests are executed on the same thread consecutively,
+        // and two tests are never executed at the same time, creating a race condition
+        // for another way to retrieve output from "pf.lambda" invocations, see the "PassInReferenceOutputNode"
+        // unit tests further down in this file, which is a cleaner way for client code to retrieve output values
         [ActiveEvent (Name = "tests.store-nodes")]
         private static void StoreExecutionNodes (ApplicationContext context, ActiveEventArgs e)
         {
@@ -231,6 +235,32 @@ tests.store-nodes";
             Assert.AreEqual ("add", _executionNodes [3].Get<Node> ().Name, "wrong value of node after executing lambda object");
             Assert.AreEqual (1, _executionNodes [3].Get<Node> ().Count, "wrong value of node after executing lambda object");
             Assert.AreEqual (null, _executionNodes [3].Get<Node> ().Parent, "wrong value of node after executing lambda object");
+        }
+        
+        [Test]
+        public void PassInReferenceOutputNode ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+set:@/+/#/?value
+  :world";
+            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+
+            // here we pass in a "reference node" that's being used for retrieving output from lambda
+            // basically the Value of one of the execution nodes is a node itself, which we can retrieve after execution, since the
+            // immutable parts of "pf.lambda" will not clone the value of nodes, but create a "shallow copy" of the value of all nodes
+            // cloned. hence the node will be copied by reference inside the "pf.lambda", meaning the node we pass in, will be accessible
+            // from the outside of the "pf.lambda" after execution
+            tmp.Add (new Node (string.Empty, new Node ()));
+
+            // executing lambda, now with a "reference node" being used for retrieving value(s) from inside the lambda object
+            context.Raise ("lambda", tmp);
+            Assert.AreEqual ("world", tmp [1].Get<Node> ().Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual (string.Empty, tmp [1].Get<Node> ().Name, "wrong value of node after executing lambda object");
         }
     }
 }

@@ -23,7 +23,7 @@ namespace phosphorus.lambda
         private static void pf_add (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Count == 0)
-                return; // "do nothing" operation
+                throw new ArgumentException ("nothing to add in [pf.add]. [pf.add] needs either a source expression, or a list of children nodes");
 
             Match destinationMatch = GetDestinationMatch (e.Args);
             if (destinationMatch.Count == 0)

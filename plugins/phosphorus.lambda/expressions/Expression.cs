@@ -40,7 +40,7 @@ namespace phosphorus.lambda
                 return false;
             string strValue = value as string;
             return strValue != null && 
-                strValue.StartsWith ("@") && 
+                strValue.StartsWith ("@/") && 
                 strValue.Length > 1;
         }
 

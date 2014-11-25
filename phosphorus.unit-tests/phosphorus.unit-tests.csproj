@@ -41,6 +41,8 @@
     <Compile Include="ContextAndLoaderTests.cs" />
     <Compile Include="HyperlispTests.cs" />
     <Compile Include="LambdaTests.cs" />
+    <Compile Include="AddTests.cs" />
+    <Compile Include="SetTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
