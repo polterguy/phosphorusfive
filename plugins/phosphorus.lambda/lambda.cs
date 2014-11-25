@@ -59,7 +59,13 @@ namespace phosphorus.lambda
                         if (idxRes is Node) {
 
                             // current match was a reference node, executing node
-                            ExecuteBlock (context, idxRes as Node, args.Children);
+                            // notice since current executing node is a "root node", we'll need to create a new node being
+                            // the actual node executed, containing the previous "root node" as its child
+                            Node exeRootNode = idxRes as Node;
+                            Node tmpExe = new Node ();
+                            tmpExe.Add (exeRootNode);
+                            ExecuteBlock (context, tmpExe, args.Children);
+                            exeRootNode.Untie (); // cleaning up
                         } else {
 
                             // current match was a string or something that (hopefully) can be converted into a string
