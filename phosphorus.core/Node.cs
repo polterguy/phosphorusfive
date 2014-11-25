@@ -155,7 +155,14 @@ namespace phosphorus.core
             {
                 if (!(obj is DNA))
                     return false;
-                return _value.Equals (((DNA)obj)._value);
+                DNA rhs = obj as DNA;
+                if (Count != rhs.Count)
+                    return false;
+                for (var idxNo = 0; idxNo < Count; idxNo++) {
+                    if (_value [idxNo] != rhs._value [idxNo])
+                        return false;
+                }
+                return true;
             }
 
             public override int GetHashCode ()
