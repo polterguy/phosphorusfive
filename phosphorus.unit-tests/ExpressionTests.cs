@@ -428,7 +428,7 @@ _tmp1:x2
             Assert.AreEqual (2, match.Count);
             Assert.AreEqual ("x", match [0].Value);
             Assert.AreEqual ("x2", match [1].Value);
-        }// psst, modulo, shift-expressions, logicals and grouping
+        }// TODO; psst, modulo, shift-expressions, logicals and grouping
     }
 }
 

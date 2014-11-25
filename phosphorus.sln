@@ -28,6 +28,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.lambda", "plugin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.unit-tests", "phosphorus.unit-tests\phosphorus.unit-tests.csproj", "{D709ED7D-C599-4703-B192-613F0EFF7D97}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.exe", "phosphorus.exe\phosphorus.exe.csproj", "{6C5F05C3-5480-42D0-8FA3-00B8749EAC5C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,26 +47,32 @@ Global
 		{27409EA4-A00B-4C5A-AA06-992BE4D412EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27409EA4-A00B-4C5A-AA06-992BE4D412EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27409EA4-A00B-4C5A-AA06-992BE4D412EC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{27409EA4-A00B-4C5A-AA06-992BE4D412EC}.Release-Linux|Any CPU.ActiveCfg = Release|Any CPU
-		{27409EA4-A00B-4C5A-AA06-992BE4D412EC}.Release-Linux|Any CPU.Build.0 = Release|Any CPU
+		{27409EA4-A00B-4C5A-AA06-992BE4D412EC}.Release-Linux|Any CPU.ActiveCfg = Release-Linux|Any CPU
+		{27409EA4-A00B-4C5A-AA06-992BE4D412EC}.Release-Linux|Any CPU.Build.0 = Release-Linux|Any CPU
 		{344B4C0F-683B-4B29-B559-D31170EA6B96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{344B4C0F-683B-4B29-B559-D31170EA6B96}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{344B4C0F-683B-4B29-B559-D31170EA6B96}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{344B4C0F-683B-4B29-B559-D31170EA6B96}.Release|Any CPU.Build.0 = Release|Any CPU
 		{344B4C0F-683B-4B29-B559-D31170EA6B96}.Release-Linux|Any CPU.ActiveCfg = Release|Any CPU
 		{344B4C0F-683B-4B29-B559-D31170EA6B96}.Release-Linux|Any CPU.Build.0 = Release|Any CPU
+		{6C5F05C3-5480-42D0-8FA3-00B8749EAC5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C5F05C3-5480-42D0-8FA3-00B8749EAC5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C5F05C3-5480-42D0-8FA3-00B8749EAC5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C5F05C3-5480-42D0-8FA3-00B8749EAC5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C5F05C3-5480-42D0-8FA3-00B8749EAC5C}.Release-Linux|Any CPU.ActiveCfg = Release-Linux|Any CPU
+		{6C5F05C3-5480-42D0-8FA3-00B8749EAC5C}.Release-Linux|Any CPU.Build.0 = Release-Linux|Any CPU
 		{89C744BE-B583-4C6D-84B9-941E0C7CEBF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{89C744BE-B583-4C6D-84B9-941E0C7CEBF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89C744BE-B583-4C6D-84B9-941E0C7CEBF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89C744BE-B583-4C6D-84B9-941E0C7CEBF4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{89C744BE-B583-4C6D-84B9-941E0C7CEBF4}.Release-Linux|Any CPU.ActiveCfg = Release|Any CPU
-		{89C744BE-B583-4C6D-84B9-941E0C7CEBF4}.Release-Linux|Any CPU.Build.0 = Release|Any CPU
+		{89C744BE-B583-4C6D-84B9-941E0C7CEBF4}.Release-Linux|Any CPU.ActiveCfg = Release-Linux|Any CPU
+		{89C744BE-B583-4C6D-84B9-941E0C7CEBF4}.Release-Linux|Any CPU.Build.0 = Release-Linux|Any CPU
 		{8EB5FDEA-D073-4147-AE65-376A01B463DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8EB5FDEA-D073-4147-AE65-376A01B463DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8EB5FDEA-D073-4147-AE65-376A01B463DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8EB5FDEA-D073-4147-AE65-376A01B463DF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8EB5FDEA-D073-4147-AE65-376A01B463DF}.Release-Linux|Any CPU.ActiveCfg = Release|Any CPU
-		{8EB5FDEA-D073-4147-AE65-376A01B463DF}.Release-Linux|Any CPU.Build.0 = Release|Any CPU
+		{8EB5FDEA-D073-4147-AE65-376A01B463DF}.Release-Linux|Any CPU.ActiveCfg = Release-Linux|Any CPU
+		{8EB5FDEA-D073-4147-AE65-376A01B463DF}.Release-Linux|Any CPU.Build.0 = Release-Linux|Any CPU
 		{B6F3798D-ADBE-4033-A2CD-E01F3B2BF16A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B6F3798D-ADBE-4033-A2CD-E01F3B2BF16A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B6F3798D-ADBE-4033-A2CD-E01F3B2BF16A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -75,14 +83,14 @@ Global
 		{C02D30A6-7DA2-4045-8644-9710AB40B629}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C02D30A6-7DA2-4045-8644-9710AB40B629}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C02D30A6-7DA2-4045-8644-9710AB40B629}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C02D30A6-7DA2-4045-8644-9710AB40B629}.Release-Linux|Any CPU.ActiveCfg = Release|Any CPU
-		{C02D30A6-7DA2-4045-8644-9710AB40B629}.Release-Linux|Any CPU.Build.0 = Release|Any CPU
+		{C02D30A6-7DA2-4045-8644-9710AB40B629}.Release-Linux|Any CPU.ActiveCfg = Release-Linux|Any CPU
+		{C02D30A6-7DA2-4045-8644-9710AB40B629}.Release-Linux|Any CPU.Build.0 = Release-Linux|Any CPU
 		{C783FEDB-C973-4F38-8EBB-55A0163612F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C783FEDB-C973-4F38-8EBB-55A0163612F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C783FEDB-C973-4F38-8EBB-55A0163612F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C783FEDB-C973-4F38-8EBB-55A0163612F5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C783FEDB-C973-4F38-8EBB-55A0163612F5}.Release-Linux|Any CPU.ActiveCfg = Release|Any CPU
-		{C783FEDB-C973-4F38-8EBB-55A0163612F5}.Release-Linux|Any CPU.Build.0 = Release|Any CPU
+		{C783FEDB-C973-4F38-8EBB-55A0163612F5}.Release-Linux|Any CPU.ActiveCfg = Release-Linux|Any CPU
+		{C783FEDB-C973-4F38-8EBB-55A0163612F5}.Release-Linux|Any CPU.Build.0 = Release-Linux|Any CPU
 		{D709ED7D-C599-4703-B192-613F0EFF7D97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D709ED7D-C599-4703-B192-613F0EFF7D97}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D709ED7D-C599-4703-B192-613F0EFF7D97}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -97,7 +105,7 @@ Global
 		{8EB5FDEA-D073-4147-AE65-376A01B463DF} = {4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = phosphorus.samples\phosphorus.samples.csproj
+		StartupItem = phosphorus.exe\phosphorus.exe.csproj
 		Policies = $0
 		$0.DotNetNamingPolicy = $1
 		$1.DirectoryNamespaceAssociation = None

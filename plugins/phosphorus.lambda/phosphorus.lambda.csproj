@@ -26,6 +26,11 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release-Linux|AnyCPU' ">
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release-Linux</OutputPath>
+    <WarningLevel>4</WarningLevel>
     <CustomCommands>
       <CustomCommands>
         <Command type="AfterBuild" command="cp ${TargetFile} ${SolutionDir}/lib/plugins" />
