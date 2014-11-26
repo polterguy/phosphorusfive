@@ -94,7 +94,7 @@ namespace phosphorus.lambda
         {
             get {
                 foreach (Node idxChild in _statementNode.Children) {
-                    if (idxChild.Name == "lambda" || idxChild.Name == "pf.lambda")
+                    if (idxChild.Name == "then")
                         yield return idxChild;
                 }
             }

@@ -30,7 +30,7 @@ namespace phosphorus.lambda
             var condition = new Conditions (e.Args);
             if (condition.Evaluate ()) {
                 foreach (Node idxExe in condition.ExecutionLambdas) {
-                    context.Raise (idxExe.Name, idxExe);
+                    ExecuteThen (context, idxExe);
                 }
                 Node next = e.Args.NextSibling;
                 if (next != null && (next.Name == "pf.else-if" || next.Name == "else-if" || next.Name == "pf.else" || next.Name == "else")) {
@@ -65,7 +65,7 @@ namespace phosphorus.lambda
                 var condition = new Conditions (e.Args);
                 if (condition.Evaluate ()) {
                     foreach (Node idxExe in condition.ExecutionLambdas) {
-                        context.Raise (idxExe.Name, idxExe);
+                        ExecuteThen (context, idxExe);
                     }
                     Node next = e.Args.NextSibling;
                     if (next != null && (next.Name == "pf.else-if" || next.Name == "else-if" || next.Name == "pf.else" || next.Name == "else")) {
@@ -97,10 +97,28 @@ namespace phosphorus.lambda
                     e.Args.Parent.RemoveAt (0);
                 }
             } else {
-                var condition = new Conditions (e.Args); // easy way to access all lambda objects beneath "else"
-                foreach (Node idxExe in condition.ExecutionLambdas) {
-                    context.Raise (idxExe.Name, idxExe);
+                ExecuteThen (context, e.Args);
+            }
+        }
+
+        /*
+         * executes "then" statement
+         */
+        private static void ExecuteThen (ApplicationContext context, Node exe)
+        {
+            Node idxExe = exe.FirstChild;
+            while (idxExe != null) {
+
+                // we don't execute nodes that start with an underscore "_" since these are considered "data segments"
+                if (!idxExe.Name.StartsWith ("_")) {
+                    string avName = idxExe.Name;
+
+                    // making sure our active event is prefixed with a "pf." if it doesn't contain a period "." in its name anywhere
+                    if (!avName.Contains ("."))
+                        avName = "pf." + avName;
+                    context.Raise (avName, idxExe);
                 }
+                idxExe = idxExe.NextSibling;
             }
         }
     }

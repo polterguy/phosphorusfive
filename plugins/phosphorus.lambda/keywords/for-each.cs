@@ -27,10 +27,29 @@ namespace phosphorus.lambda
 
             Match dataSource = GetDataSource (e.Args);
             foreach (Node idxSource in dataSource.Matches) {
+                // storing "old nodes"
+                List<Node> oldNodes = new List<Node> ();
+                foreach (Node idx in e.Args.Children) {
+                    oldNodes.Add (idx.Clone ());
+                }
                 Node dp = new Node ("__dp", idxSource);
                 e.Args.Insert (0, dp);
-                context.Raise ("pf.lambda", e.Args);
-                e.Args.RemoveAt (0);
+                Node idxExe = e.Args.FirstChild;
+                while (idxExe != null) {
+
+                    // we don't execute nodes that start with an underscore "_" since these are considered "data segments"
+                    if (!idxExe.Name.StartsWith ("_")) {
+                        string avName = idxExe.Name;
+
+                        // making sure our active event is prefixed with a "pf." if it doesn't contain a period "." in its name anywhere
+                        if (!avName.Contains ("."))
+                            avName = "pf." + avName;
+                        context.Raise (avName, idxExe);
+                    }
+                    idxExe = idxExe.NextSibling;
+                }
+                e.Args.Clear ();
+                e.Args.AddRange (oldNodes);
             }
         }
 

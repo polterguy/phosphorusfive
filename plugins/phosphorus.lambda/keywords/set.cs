@@ -45,7 +45,7 @@ namespace phosphorus.lambda
                         "' returned multiple results");
                 }
             } else if (e.Args.Count == 1 && e.Args.FirstChild.Name == string.Empty && !Expression.IsExpression (e.Args.FirstChild.Get<string> ())) {
-                AssignValue (destinationMatch, e.Args.FirstChild.Value);
+                AssignValue (destinationMatch, e.Args.FirstChild);
             } else if (e.Args.Count == 0) {
 
                 // "null assignment"
@@ -110,12 +110,16 @@ namespace phosphorus.lambda
         /*
          * assigns a value to match
          */
-        private static void AssignValue (Match destinationMatch, object value)
+        private static void AssignValue (Match destinationMatch, Node valueNode)
         {
+            object value = valueNode.Value;
+            if (valueNode.Count > 0) {
+                value = Expression.FormatNode (valueNode);
+            }
             foreach (Node idxDest in destinationMatch.Matches) {
                 switch (destinationMatch.TypeOfMatch) {
                 case Match.MatchType.Name:
-                    idxDest.Name = (value ?? "").ToString ();
+                    idxDest.Name = (value ?? "").ToString (); // name cannot be null
                     break;
                 case Match.MatchType.Value:
                     idxDest.Value = value;

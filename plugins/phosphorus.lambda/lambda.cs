@@ -102,16 +102,14 @@ namespace phosphorus.lambda
          */
         private static void ExecuteBlock (ApplicationContext context, Node exe, IEnumerable<Node> args = null)
         {
-            // storing "old nodes"
-            List<Node> oldNodes = new List<Node> ();
-            foreach (Node idx in exe.Children) {
-                oldNodes.Add (idx.Clone ());
-            }
+            // making sure lambda is executed immutable, without access to parameters from outside of itself
+            // (besides from parameters passed into it by reference though of course)
+            exe = exe.Clone ();
 
             // passing in arguments
             if (args != null) {
                 foreach (Node idx in args) {
-                    exe.Add (new Node (idx.Name, idx));
+                    exe.Add (idx.Clone ());
                 }
             }
 
@@ -130,10 +128,6 @@ namespace phosphorus.lambda
                 }
                 idxExe = idxExe.NextSibling;
             }
-
-            // clearing all nodes from execution scope, and reinserting "old nodes", to make sure our execution block stays "immutable"
-            exe.Clear ();
-            exe.AddRange (oldNodes);
         }
     }
 }

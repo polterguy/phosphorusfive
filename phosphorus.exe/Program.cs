@@ -6,6 +6,7 @@
 using System;
 using System.Reflection;
 using phosphorus.core;
+using phosphorus.lambda;
 
 namespace phosphorus.exe
 {
@@ -20,10 +21,38 @@ namespace phosphorus.exe
         /// </summary>
         /// <param name="context">Context.</param>
         /// <param name="e">E.</param>
+        [ActiveEvent (Name = "pf.console.write-line")]
         [ActiveEvent (Name = "pf.console.output")]
-        private static void console_output (ApplicationContext context, ActiveEventArgs e)
+        private static void console_write_line (ApplicationContext context, ActiveEventArgs e)
         {
-            Console.WriteLine (e.Args.Get<string> (string.Empty));
+            string value = e.Args.Value as string;
+            if (Expression.IsExpression (e.Args.Value)) {
+                var match = new Expression (value).Evaluate (e.Args);
+                for (int idxNo = 0; idxNo < match.Count; idxNo++) {
+                    Console.WriteLine (match.GetValue (idxNo) ?? "");
+                }
+            } else {
+                Console.WriteLine (value ?? "");
+            }
+        }
+
+        /// <summary>
+        /// helper active event to make it possible to output stuff to console
+        /// </summary>
+        /// <param name="context">Context.</param>
+        /// <param name="e">E.</param>
+        [ActiveEvent (Name = "pf.console.write")]
+        private static void console_write (ApplicationContext context, ActiveEventArgs e)
+        {
+            string value = e.Args.Value as string;
+            if (Expression.IsExpression (e.Args.Value)) {
+                var match = new Expression (value).Evaluate (e.Args);
+                for (int idxNo = 0; idxNo < match.Count; idxNo++) {
+                    Console.Write (match.GetValue (idxNo) ?? "");
+                }
+            } else {
+                Console.Write (value ?? "");
+            }
         }
 
         // yup, you know this bugger :)
@@ -31,9 +60,15 @@ namespace phosphorus.exe
         {
             // phosphorus.core initialization
             Loader.Instance.LoadAssembly (Assembly.GetExecutingAssembly ());
+#if DEBUG
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            Loader.Instance.LoadAssembly ("phosphorus.file");
+#else
             Loader.Instance.LoadAssembly ("plugins/", "phosphorus.hyperlisp");
             Loader.Instance.LoadAssembly ("plugins/", "phosphorus.lambda");
             Loader.Instance.LoadAssembly ("plugins/", "phosphorus.file");
+#endif
             ApplicationContext context = Loader.Instance.CreateApplicationContext ();
 
             Node exeNode = CreateParameters (args);
