@@ -28,32 +28,66 @@ namespace phosphorus.lambda
             // getting destination match nodes
             Match destinationMatch = GetDestinationMatch (e.Args);
             if (destinationMatch.Count == 0)
-                return; // no destination
+                return; // no destination, no reasons to go further
 
             // checking type of assignment
             if (e.Args.Count == 1 && e.Args.FirstChild.Name == string.Empty && Expression.IsExpression (e.Args.FirstChild.Get<string> ())) {
 
-                // we're assigning an expression here
-                Match sourceMatch = new Expression (e.Args.FirstChild.Get<string> ()).Evaluate (e.Args.FirstChild);
+                // assigning the result of an expression here
+                string expression = Expression.FormatNode (e.Args.FirstChild);
+                Match sourceMatch = new Expression (expression).Evaluate (e.Args.FirstChild);
                 if (sourceMatch.Count == 0) {
+
+                    // source expression returned nothing
                     AssignNull (destinationMatch);
-                } else if (sourceMatch.Count == 1 || destinationMatch.TypeOfMatch == Match.MatchType.Name || destinationMatch.TypeOfMatch == Match.MatchType.Value) {
+                } else if (sourceMatch.Count == 1 || sourceMatch.TypeOfMatch == Match.MatchType.Count) {
+
+                    // destination is either an expression of type 'count' or has only one result
                     AssignMatch (context, destinationMatch, sourceMatch);
                 } else {
-                    throw new ArgumentException ("[set] requires a source expression yielding 0 or 1 result when setting a node, expression; '" + 
-                        e.Args.FirstChild.Get<string> () + 
-                        "' returned multiple results");
+                    throw new ArgumentException ("[set] requires a source expression yielding no more than 1 match as its result, " + 
+                        "unless the source expression is of type 'count'. expression; '" + 
+                        expression + "' returned multiple results and was not a 'count' expression, and hence operation is a logical error");
                 }
-            } else if (e.Args.Count == 1 && e.Args.FirstChild.Name == string.Empty && !Expression.IsExpression (e.Args.FirstChild.Get<string> ())) {
+            } else if (e.Args.Count == 1 && e.Args.FirstChild.Name == string.Empty && !Expression.IsExpression (e.Args.FirstChild.Value)) {
+
+                // assigning a "constant" to destination
                 AssignValue (destinationMatch, e.Args.FirstChild);
             } else if (e.Args.Count == 0) {
 
-                // "null assignment"
+                // assigning "null" to destination
                 AssignNull (destinationMatch);
-            } else {
+            } else if (e.Args.Count == 1 && destinationMatch.TypeOfMatch == Match.MatchType.Node) {
 
                 // replacing all match nodes with first child node
                 AssignNode (context, destinationMatch, e.Args.FirstChild);
+            } else {
+                throw new ArgumentException ("[set] cannot handle multiple sources, neither as result of expressions, nor as constant nodes beneath itself");
+            }
+        }
+
+        /*
+         * assigns a value to match
+         */
+        private static void AssignValue (Match destinationMatch, Node valueNode)
+        {
+            object value = valueNode.Value;
+            if (valueNode.Count > 0) {
+
+                // this is a formatting expression, where the source is the result of a formatting operation
+                value = Expression.FormatNode (valueNode);
+            }
+            foreach (Node idxDest in destinationMatch.Matches) {
+                switch (destinationMatch.TypeOfMatch) {
+                case Match.MatchType.Name:
+                    idxDest.Name = (value ?? "").ToString (); // name cannot be null
+                    break;
+                case Match.MatchType.Value:
+                    idxDest.Value = value;
+                    break;
+                case Match.MatchType.Node:
+                    throw new ArgumentException ("you cannot assign a value to a destination expression of type 'node'");
+                }
             }
         }
 
@@ -73,8 +107,6 @@ namespace phosphorus.lambda
                 case Match.MatchType.Node:
                     idxDest.Untie ();
                     break;
-                default:
-                    throw new ArgumentException ("[set] can only assign to a 'name', 'value' or 'node' expression");
                 }
             }
         }
@@ -84,7 +116,7 @@ namespace phosphorus.lambda
          */
         private static void AssignMatch (ApplicationContext context, Match destinationMatch, Match sourceMatch)
         {
-            // cloning our source is both destination and source is node, in case source is also one of our destinations
+            // cloning our source if both destination and source is node, in case source is also one of our destinations
             Node copy = null;
             if (sourceMatch.TypeOfMatch == Match.MatchType.Node && 
                 destinationMatch.TypeOfMatch == Match.MatchType.Node)
@@ -108,70 +140,18 @@ namespace phosphorus.lambda
         }
 
         /*
-         * assigns a value to match
-         */
-        private static void AssignValue (Match destinationMatch, Node valueNode)
-        {
-            object value = valueNode.Value;
-            if (valueNode.Count > 0) {
-                value = Expression.FormatNode (valueNode);
-            }
-            foreach (Node idxDest in destinationMatch.Matches) {
-                switch (destinationMatch.TypeOfMatch) {
-                case Match.MatchType.Name:
-                    idxDest.Name = (value ?? "").ToString (); // name cannot be null
-                    break;
-                case Match.MatchType.Value:
-                    idxDest.Value = value;
-                    break;
-                case Match.MatchType.Node:
-                    throw new ArgumentException ("you cannot assign a value to a node match");
-                }
-            }
-        }
-
-        /*
          * returns an object from match
          */
         private static object GetObjectFromMatch (ApplicationContext context, Match match)
         {
             if (match.TypeOfMatch == Match.MatchType.Count)
                 return match.Count;
-            if (match.Count == 1) {
+            else if (match.Count == 1) {
 
                 // single match
                 return match.GetValue (0);
-            } else {
-
-                // multiple matches
-                return GetMultipleObjectFromMatch (context, match);
             }
-        }
-        
-        /*
-         * returns multiple objects from match
-         */
-        private static object GetMultipleObjectFromMatch (ApplicationContext context, Match match)
-        {
-            Node tmpCode = new Node ("root");
-            foreach (Node idx in match.Matches) {
-                switch (match.TypeOfMatch) {
-                case Match.MatchType.Name:
-                    tmpCode.Add (new Node (string.Empty, idx.Name));
-                    break;
-                case Match.MatchType.Value:
-                    tmpCode.Add (new Node (string.Empty, idx.Value));
-                    break;
-                case Match.MatchType.Path:
-                    tmpCode.Add (new Node (string.Empty, idx.Path));
-                    break;
-                case Match.MatchType.Node:
-                    tmpCode.Add (idx.Clone ());
-                    break;
-                }
-            }
-            context.Raise ("pf.nodes-2-code", tmpCode);
-            return tmpCode.Value;
+            throw new ArgumentException ("[set] cannot assign the result of a source expression yielding multiple results");
         }
 
         /*
@@ -180,21 +160,7 @@ namespace phosphorus.lambda
         private static void AssignNode (ApplicationContext context, Match destination, Node node)
         {
             foreach (Node idxDest in destination.Matches) {
-                switch (destination.TypeOfMatch) {
-                case Match.MatchType.Node:
-                    idxDest.Replace (node.Clone ());
-                    break;
-                case Match.MatchType.Name:
-                case Match.MatchType.Value:
-                    Node tmpCode = new Node ("root");
-                    tmpCode.Add (node.Clone ());
-                    context.Raise ("pf.nodes-2-code", tmpCode);
-                    if (destination.TypeOfMatch == Match.MatchType.Name)
-                        idxDest.Name = (tmpCode.Value ?? "").ToString ();
-                    else
-                        idxDest.Value = tmpCode.Value;
-                    break;
-                }
+                idxDest.Replace (node.Clone ());
             }
         }
 

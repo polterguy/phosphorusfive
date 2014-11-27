@@ -66,6 +66,7 @@ namespace phosphorus.lambda
         }
 
         private Node _statementNode;
+        private bool _isSimpleExist;
 
         /// <summary>
         /// initializes a new instance of the <see cref="phosphorus.execute.Condition"/> class
@@ -76,6 +77,7 @@ namespace phosphorus.lambda
             if (statementNode == null)
                 throw new ArgumentException ("you must submit a node to Condition for it to be able to evaluate a statement, statementNode was null");
             _statementNode = statementNode;
+            _isSimpleExist = true;
         }
 
         /// <summary>
@@ -83,6 +85,7 @@ namespace phosphorus.lambda
         /// </summary>
         public bool Evaluate ()
         {
+            _isSimpleExist = false;
             return EvaluateStatement (_statementNode);
         }
 
@@ -94,7 +97,7 @@ namespace phosphorus.lambda
         {
             get {
                 foreach (Node idxChild in _statementNode.Children) {
-                    if (idxChild.Name.StartsWith ("lambda"))
+                    if (_isSimpleExist || idxChild.Name.StartsWith ("lambda"))
                         yield return idxChild;
                 }
             }
@@ -108,6 +111,10 @@ namespace phosphorus.lambda
             Operator oper = GetOperator (currentStatement);
             switch (oper) {
             case Operator.Exist:
+                if (currentStatement == _statementNode && 
+                    FindNextCondition (currentStatement.FirstChild, "or") == null && 
+                    FindNextCondition (currentStatement.FirstChild, "and") == null)
+                    _isSimpleExist = true;
                 return (Exist (currentStatement) && EvaluateRelatedAnd (currentStatement)) || EvaluateRelatedOr (currentStatement);
             case Operator.Not:
                 return (!Exist (currentStatement) && EvaluateRelatedAnd (currentStatement)) || EvaluateRelatedOr (currentStatement);
@@ -133,7 +140,22 @@ namespace phosphorus.lambda
          */
         private bool Exist (Node currentStatement)
         {
-            return new Expression (currentStatement.Get<string> ()).Evaluate (currentStatement).Count > 0;
+            var match = new Expression (currentStatement.Get<string> ()).Evaluate (currentStatement);
+            if (match.TypeOfMatch == Match.MatchType.Count || match.TypeOfMatch == Match.MatchType.Path || match.TypeOfMatch == Match.MatchType.Node)
+                return match.Count > 0;
+            foreach (var idx in match.Matches) {
+                switch (match.TypeOfMatch) {
+                case Match.MatchType.Name:
+                    if (idx.Name == string.Empty)
+                        return false;
+                    break;
+                case Match.MatchType.Value:
+                    if (idx.Value == null)
+                        return false;
+                    break;
+                }
+            }
+            return true;
         }
 
         /*
