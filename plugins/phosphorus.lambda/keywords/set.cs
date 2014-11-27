@@ -15,15 +15,15 @@ namespace phosphorus.lambda
     public static class set
     {
         /// <summary>
-        /// set keyword for execution engine
+        /// [set] keyword for execution engine. allows changing the node tree. legal sources and destinations are 'name', 'value' or 'node'
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.set")]
-        private static void pf_set (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "set")]
+        private static void lambda_set (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Count > 1)
-                throw new ArgumentException ("[pf.set] was given multiple sources, which is illegal");
+                throw new ArgumentException ("[set] was given multiple sources, which is illegal. make sure [set] has 0 or one children nodes");
 
             // getting destination match nodes
             Match destinationMatch = GetDestinationMatch (e.Args);
@@ -40,7 +40,7 @@ namespace phosphorus.lambda
                 } else if (sourceMatch.Count == 1 || destinationMatch.TypeOfMatch == Match.MatchType.Name || destinationMatch.TypeOfMatch == Match.MatchType.Value) {
                     AssignMatch (context, destinationMatch, sourceMatch);
                 } else {
-                    throw new ArgumentException ("[pf.set] requires a source expression yielding 0 or 1 result when setting a node, expression; '" + 
+                    throw new ArgumentException ("[set] requires a source expression yielding 0 or 1 result when setting a node, expression; '" + 
                         e.Args.FirstChild.Get<string> () + 
                         "' returned multiple results");
                 }
@@ -74,7 +74,7 @@ namespace phosphorus.lambda
                     idxDest.Untie ();
                     break;
                 default:
-                    throw new ArgumentException ("you can only assign to a 'name', 'value' or 'node' expression");
+                    throw new ArgumentException ("[set] can only assign to a 'name', 'value' or 'node' expression");
                 }
             }
         }
@@ -100,7 +100,7 @@ namespace phosphorus.lambda
                     break;
                 case Match.MatchType.Node:
                     if (sourceMatch.TypeOfMatch != Match.MatchType.Node)
-                        throw new ArgumentException ("tried to assign a non-node match to a node match, you can only assign a node match to another node match");
+                        throw new ArgumentException ("tried to assign a non-node match to a node match with [set], you can only assign a node match to another node match");
                     idxDest.Replace (copy.Clone ());
                     break;
                 }

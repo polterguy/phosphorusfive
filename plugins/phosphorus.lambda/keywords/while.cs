@@ -17,15 +17,15 @@ namespace phosphorus.lambda
     public static class pfWhile
     {
         /// <summary>
-        /// "pf.while" statement, allowing for evaluating condition, and executing lambda(s) as long as statement evaluates to true
+        /// "while" statement, allowing for evaluating condition, and executing lambda(s) as long as statement evaluates to true
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.while")]
-        private static void pf_while (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "while")]
+        private static void lambda_while (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Count == 0)
-                throw new ArgumentException ("syntax error in [pf.while], no children makes for invalid statement");
+                throw new ArgumentException ("syntax error in [while]. [while] needs at the very least a [lambda] child to execute if statement yields true");
 
             var condition = new Conditions (e.Args);
             while (condition.Evaluate ()) {

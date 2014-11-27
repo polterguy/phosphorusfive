@@ -25,15 +25,8 @@ namespace phosphorus.exe
         [ActiveEvent (Name = "pf.console.output")]
         private static void console_write_line (ApplicationContext context, ActiveEventArgs e)
         {
-            string value = e.Args.Value as string;
-            if (Expression.IsExpression (e.Args.Value)) {
-                var match = new Expression (value).Evaluate (e.Args);
-                for (int idxNo = 0; idxNo < match.Count; idxNo++) {
-                    Console.WriteLine (match.GetValue (idxNo) ?? "");
-                }
-            } else {
-                Console.WriteLine (value ?? "");
-            }
+            string value = Expression.FormatNode (e.Args);
+            Console.WriteLine (value ?? "");
         }
 
         /// <summary>
@@ -44,15 +37,9 @@ namespace phosphorus.exe
         [ActiveEvent (Name = "pf.console.write")]
         private static void console_write (ApplicationContext context, ActiveEventArgs e)
         {
-            string value = e.Args.Value as string;
-            if (Expression.IsExpression (e.Args.Value)) {
-                var match = new Expression (value).Evaluate (e.Args);
-                for (int idxNo = 0; idxNo < match.Count; idxNo++) {
-                    Console.Write (match.GetValue (idxNo) ?? "");
-                }
-            } else {
-                Console.Write (value ?? "");
-            }
+            string value = Expression.FormatNode (e.Args);
+            if (value != null)
+                Console.WriteLine (value);
         }
 
         // yup, you know this bugger :)

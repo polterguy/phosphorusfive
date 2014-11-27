@@ -12,32 +12,71 @@ namespace phosphorus.lambda
     /// <summary>
     /// class to help execute nodes
     /// </summary>
-    public static class lambda
+    public static class pfLambda
     {
+        /*
+         * type of lambda statement
+         */
+        private enum LambdaType
+        {
+            // execution of lambda has access to the entire tree
+            Normal,
+
+            // execution is done on a copy of the nodes executed, and not the original nodes, meaning the execution will
+            // not have access to nodes outside of the [lambda] statement itself, unless passed in as reference nodes
+            Copy,
+
+            // execution is done immutable, such that the executed nodes will be set back to their original state after the
+            // execution. execution still has access to the entire tree, but no changes done inside the [lambda] itself, will
+            // exist after the execution of the lambda is done
+            Immutable
+        }
+
         /// <summary>
-        /// main execution Active Event entry point for executing nodes as execution tree
+        /// main execution Active Event entry point for executing nodes as execution tree. [lambda] simply executes the given
+        /// block or expression. [copy.lambda] creates a copy of the block or expression before executing the copy, which means
+        /// it does not have access to any nodes outside of its own scope. [immutable.lambda] will allow the block or expression
+        /// execute to have access to the entire tree, but will create a copy of the nodes executed, and after execution it will
+        /// set the entire execution block or expression back to its original state
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.lambda")]
         [ActiveEvent (Name = "lambda")]
-        private static void pf_lambda (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "lambda.copy")]
+        [ActiveEvent (Name = "lambda.immutable")]
+        private static void lambda (ApplicationContext context, ActiveEventArgs e)
         {
-            if ((e.Args.Name == "pf.lambda" || e.Args.Name == "lambda") && !string.IsNullOrEmpty (e.Args.Get<string> ())) {
+            if (e.Args.Name.StartsWith ("lambda") && !string.IsNullOrEmpty (e.Args.Get<string> ())) {
 
-                // executing expression
-                ExecuteLambdaExpression (context, e.Args);
+                // executing expression or string value with code
+                ExecuteLambdaValue (context, e.Args, GetLambdaType (e));
             } else {
                 
                 // executing current scope
-                ExecuteBlock (context, e.Args);
+                ExecuteBlock (context, e.Args, null, GetLambdaType (e));
             }
         }
-        
+
+        /*
+         * returns the type of [lambda] statement, Normal, Copy or Immutable
+         */
+        private static LambdaType GetLambdaType (ActiveEventArgs e)
+        {
+            switch (e.Name) {
+            case "lambda":
+                return LambdaType.Normal;
+            case "lambda.copy":
+                return LambdaType.Copy;
+            case "lambda.immutable":
+                return LambdaType.Immutable;
+            }
+            throw new ArgumentException ("unknown type of lambda execution; '" + e.Name + "'");
+        }
+
         /*
          * executes a "lambda execution" block
          */
-        private static void ExecuteLambdaExpression (ApplicationContext context, Node args)
+        private static void ExecuteLambdaValue (ApplicationContext context, Node args, LambdaType type)
         {
             string codeOrExpression = args.Get<string> ();
             if (Expression.IsExpression (codeOrExpression)) {
@@ -49,7 +88,7 @@ namespace phosphorus.lambda
 
                     // expression returned "node"(s)
                     foreach (Node current in executionMatch.Matches) {
-                        ExecuteBlock (context, current, args.Children);
+                        ExecuteBlock (context, current, args.Children, type);
                     }
                 } else {
 
@@ -64,7 +103,7 @@ namespace phosphorus.lambda
                             Node exeRootNode = idxRes as Node;
                             Node tmpExe = new Node ();
                             tmpExe.Add (exeRootNode);
-                            ExecuteBlock (context, tmpExe, args.Children);
+                            ExecuteBlock (context, tmpExe, args.Children, type);
                             exeRootNode.Untie (); // cleaning up
                         } else {
 
@@ -76,7 +115,7 @@ namespace phosphorus.lambda
             } else {
 
                 // value of execution node is code in text format, making sure we escape it, in case it starts with "@"
-                ExecuteLambdaText (context, codeOrExpression.TrimStart ('\\'), args.Children);
+                ExecuteLambdaText (context, codeOrExpression, args.Children);
             }
         }
 
@@ -93,18 +132,26 @@ namespace phosphorus.lambda
             context.Raise ("pf.code-2-nodes", exe);
 
             // then executing nodes created from "code" parameter
-            ExecuteBlock (context, exe, args);
+            ExecuteBlock (context, exe, args, LambdaType.Normal);
         }
 
         /*
          * executes a block of nodes, this is where the actual execution happens
          * this is the "heart beat" method of the "pf.lambda" execution engine
          */
-        private static void ExecuteBlock (ApplicationContext context, Node exe, IEnumerable<Node> args = null)
+        private static void ExecuteBlock (ApplicationContext context, Node exe, IEnumerable<Node> args, LambdaType type)
         {
-            // making sure lambda is executed immutable, without access to parameters from outside of itself
+            // making sure lambda is executed on copy of execution nodes, if we should, without access to nodes outside of its own scope
             // (besides from parameters passed into it by reference though of course)
-            exe = exe.Clone ();
+            exe = type == LambdaType.Copy ? exe.Clone () : exe;
+
+            // storing "old nodes" to allow [lambda] to execute immutably, but only if type == Immutable
+            List<Node> oldNodes = new List<Node> ();
+            if (type == LambdaType.Immutable) {
+                foreach (Node idx in exe.Children) {
+                    oldNodes.Add (idx.Clone ());
+                }
+            }
 
             // passing in arguments
             if (args != null) {
@@ -119,14 +166,14 @@ namespace phosphorus.lambda
 
                 // we don't execute nodes that start with an underscore "_" since these are considered "data segments"
                 if (!idxExe.Name.StartsWith ("_")) {
-                    string avName = idxExe.Name;
-
-                    // making sure our active event is prefixed with a "pf." if it doesn't contain a period "." in its name anywhere
-                    if (!avName.Contains ("."))
-                        avName = "pf." + avName;
-                    context.Raise (avName, idxExe);
+                    context.Raise (idxExe.Name, idxExe);
                 }
                 idxExe = idxExe.NextSibling;
+            }
+
+            if (type == LambdaType.Immutable) {
+                exe.Clear ();
+                exe.AddRange (oldNodes);
             }
         }
     }

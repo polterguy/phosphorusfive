@@ -15,41 +15,22 @@ namespace phosphorus.lambda
     public static class forEach
     {
         /// <summary>
-        /// for-each keyword for execution engine
+        /// [for-each] keyword for execution engine, allowing for iterating over an expression returning a list of nodes
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.for-each")]
-        private static void pf_for_each (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "for-each")]
+        private static void lambda_for_each (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Count == 0)
                 return; // "do nothing" operation
 
             Match dataSource = GetDataSource (e.Args);
             foreach (Node idxSource in dataSource.Matches) {
-                // storing "old nodes"
-                List<Node> oldNodes = new List<Node> ();
-                foreach (Node idx in e.Args.Children) {
-                    oldNodes.Add (idx.Clone ());
-                }
                 Node dp = new Node ("__dp", idxSource);
                 e.Args.Insert (0, dp);
-                Node idxExe = e.Args.FirstChild;
-                while (idxExe != null) {
-
-                    // we don't execute nodes that start with an underscore "_" since these are considered "data segments"
-                    if (!idxExe.Name.StartsWith ("_")) {
-                        string avName = idxExe.Name;
-
-                        // making sure our active event is prefixed with a "pf." if it doesn't contain a period "." in its name anywhere
-                        if (!avName.Contains ("."))
-                            avName = "pf." + avName;
-                        context.Raise (avName, idxExe);
-                    }
-                    idxExe = idxExe.NextSibling;
-                }
-                e.Args.Clear ();
-                e.Args.AddRange (oldNodes);
+                context.Raise ("lambda.immutable", e.Args);
+                e.Args [0].Untie ();
             }
         }
 
@@ -60,13 +41,14 @@ namespace phosphorus.lambda
         {
             string destinationExpression = node.Get<string> ();
             if (!Expression.IsExpression (destinationExpression))
-                throw new ApplicationException ("[pf.for-each] needs a valid expression yielding an actual result as its value");
+                throw new ApplicationException ("[for-each] needs a valid source expression yielding an actual result as its value");
 
             // finding Match object for destination
             Match destinationMatch = new Expression (destinationExpression).Evaluate (node);
 
             if (destinationMatch.TypeOfMatch != Match.MatchType.Node)
-                throw new ArgumentException ("destination expression for [pf.for-each] is not of type 'node', expression was; '" + destinationExpression + "'");
+                throw new ArgumentException ("source expression for [for-each] is not of type 'node', expression was; '" + 
+                    destinationExpression + "'. make sure you end your [for-each] expression with '?node'");
 
             return destinationMatch;
         }

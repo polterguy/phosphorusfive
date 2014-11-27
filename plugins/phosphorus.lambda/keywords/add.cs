@@ -15,15 +15,15 @@ namespace phosphorus.lambda
     public static class add
     {
         /// <summary>
-        /// add keyword for execution engine
+        /// [add] keyword for execution engine. allows adding nodes from one part of your tree to another part
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.add")]
-        private static void pf_add (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "add")]
+        private static void lambda_add (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Count == 0)
-                throw new ArgumentException ("nothing to add in [pf.add]. [pf.add] needs either a source expression, or a list of children nodes");
+                throw new ArgumentException ("[add] needs either a source expression, or a list of children nodes");
 
             Match destinationMatch = GetDestinationMatch (e.Args);
             if (destinationMatch.Count == 0)
@@ -91,13 +91,14 @@ namespace phosphorus.lambda
         {
             string destinationExpression = node.Get<string> ();
             if (!Expression.IsExpression (destinationExpression))
-                throw new ApplicationException ("[pf.add] needs a valid expression yielding an actual result as its value");
+                throw new ApplicationException ("[add] needs a valid expression as its value, yielding an actual result");
 
             // finding Match object for destination
             Match destinationMatch = new Expression (destinationExpression).Evaluate (node);
 
             if (destinationMatch.TypeOfMatch != Match.MatchType.Node)
-                throw new ArgumentException ("destination expression for [pf.add] is not of type 'node', expression was; '" + destinationExpression + "'");
+                throw new ArgumentException ("destination expression for [add] is not of type 'node', expression was; '" + 
+                    destinationExpression + "'. make sure you [add] destination expression ends with a '?node'");
 
             return destinationMatch;
         }
