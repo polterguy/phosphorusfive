@@ -70,10 +70,8 @@ namespace phosphorus.lambda.iterators
                    if (value.StartsWith ("\\"))
                         value = value.Substring (1);
                     foreach (Node idxCurrent in Left.Evaluate) {
-                        foreach (Node idxChild in idxCurrent.Children) {
-                            if (value.Equals (idxChild.Value))
-                                yield return idxChild;
-                        }
+                        if (value.Equals (idxCurrent.Value))
+                            yield return idxCurrent;
                     }
                 }
             }
