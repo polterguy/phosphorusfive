@@ -8,7 +8,7 @@
     <ProjectGuid>{6C5F05C3-5480-42D0-8FA3-00B8749EAC5C}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>phosphorus.exe</RootNamespace>
-    <AssemblyName>pfexe</AssemblyName>
+    <AssemblyName>lambda</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

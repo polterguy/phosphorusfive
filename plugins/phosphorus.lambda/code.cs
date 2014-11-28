@@ -14,6 +14,8 @@ namespace phosphorus.lambda
     /// </summary>
     public static class code
     {
+        private static string _language;
+
         /// <summary>
         /// helper to transform from code code syntax to <see cref="phosphorus.core.Node"/> tree structure and vice versa
         /// </summary>
@@ -24,8 +26,23 @@ namespace phosphorus.lambda
         [ActiveEvent (Name = "pf.node-2-code")]
         private static void code_transformer (ApplicationContext context, ActiveEventArgs e)
         {
-            string language = ConfigurationManager.AppSettings ["default-execution-language"];
-            context.Raise (e.Name.Replace ("code", language ?? "hyperlisp"), e.Args);
+            if (!string.IsNullOrEmpty (_language)) {
+                context.Raise (e.Name.Replace ("code", _language), e.Args);
+            } else {
+                string language = ConfigurationManager.AppSettings ["default-execution-language"];
+                context.Raise (e.Name.Replace ("code", language ?? "hyperlisp"), e.Args);
+            }
+        }
+
+        /// <summary>
+        /// change the default execution language of the lambda engine
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.set-default-execution-language")]
+        private static void set_execution_language (ApplicationContext context, ActiveEventArgs e)
+        {
+            _language = e.Args.Get<string> ();
         }
     }
 }

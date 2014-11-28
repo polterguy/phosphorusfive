@@ -83,19 +83,16 @@ _x
       :@/"".._x""/_name/#/?value
     add:@/././_name/#/?node
       node
-lambda:@/-/?node
-  _name:thomas hansen ER KUUUUUUUUUUUUUUUUUUUL!!!!!!!
+lambda.immutable:@/-/?node
+  _name:node:@""_val:thomas hansen ER KUUUUUUUUUUUUUUUUUUUL!!!!!!!""
 _z:fff
 set:@/-/./(/_z/&/=fff/&/=""/f?f/""/&/""/_?z/""/)/?value
   :FOUND MATCH!!
-_z_code:@""set:@/../_return/#/?value
-  :howdy world""
-pf.lambda:@/-/?value
-  _return:before
+_xxx
 if:@/-/?name
   =:lambda
   or:@/./-/?name
-    =:pf.lambda
+    =:_xxx
   and:@/./+/+/+/?name
     =:mumbo
     and:@/././+/+/+/?value
@@ -124,7 +121,7 @@ else
   lambda
     set:@/././+/?value
       :else was struck
-mumbo:jumbo7
+mumbo:jumbo
 _xxx:thomas3
 _zzz
   one:1

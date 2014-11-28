@@ -105,7 +105,7 @@ Global
 		{8EB5FDEA-D073-4147-AE65-376A01B463DF} = {4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = phosphorus.exe\phosphorus.exe.csproj
+		StartupItem = phosphorus.application-pool\phosphorus.application-pool.csproj
 		Policies = $0
 		$0.DotNetNamingPolicy = $1
 		$1.DirectoryNamespaceAssociation = None
