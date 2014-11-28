@@ -64,7 +64,7 @@ namespace phosphorus.hyperlisp
          */
         private void AppendName (StringBuilder builder, Node node)
         {
-            if (node.Name.Contains ("\r") || node.Name.Contains ("\n")) {
+            if (node.Name.Contains ("\n")) {
                 builder.Append (string.Format (@"@""{0}""", node.Name.Replace (@"""", @"""""")));
             } else if ((node.Name == string.Empty && node.Value == null) || node.Name.Contains (":") || node.Name.Trim () != node.Name) {
                 builder.Append (string.Format (@"""{0}""", node.Name.Replace (@"""", @"\""")));
@@ -90,10 +90,10 @@ namespace phosphorus.hyperlisp
             _context.Raise (activeEventName, typeNode);
             if (typeNode.Value == null) {
                 throw new ArgumentException ("cannot convert type; '" + 
-                                             type.FullName + 
-                                             "' to hyperlisp since no converter exist. make sure you create an Active Event called; '" +
-                                             "pf.hyperlisp.get-type-name." + node.Value.GetType () + 
-                                             "' that returns the hyperlisp typename for your type, such as 'int', 'decimal', 'node', etc");
+                    type.FullName + 
+                    "' to hyperlisp since no converter exist. make sure you create an Active Event called; '" +
+                    "pf.hyperlisp.get-type-name." + node.Value.GetType () + 
+                    "' that returns the hyperlisp typename for your type, such as 'int', 'decimal', 'node', etc");
             } else {
                 builder.Append (string.Format (":{0}", typeNode.Get<string> ()));
             }
@@ -121,7 +121,7 @@ namespace phosphorus.hyperlisp
                 _context.Raise (activeEventName, valueNode);
                 value = valueNode.Get<string> ();
             }
-            if (value.Contains ("\r") || value.Contains ("\n")) {
+            if (value.Contains ("\n")) {
                 builder.Append (string.Format (@":@""{0}""", value.Replace (@"""", @"""""")));
             } else if (value.Contains (":") || value.Trim () != value) {
                 builder.Append (string.Format (@":""{0}""", value.Replace (@"""", @"\""")));

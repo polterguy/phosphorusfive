@@ -40,7 +40,7 @@ namespace phosphorus.lambda
                 return false;
             string strValue = value as string;
             return strValue != null && 
-                strValue.StartsWith ("@/") && 
+                strValue.StartsWith ("@") && 
                 strValue.Length > 1;
         }
 
@@ -76,14 +76,16 @@ namespace phosphorus.lambda
         {
             IteratorGroup current = new IteratorGroup (node);
             string typeOfExpression = null, previousToken = null;
-            foreach (string idxToken in TokenizeExpression (_expression)) {
-                if (previousToken == "?") {
-                    typeOfExpression = idxToken;
-                    break;
-                } else {
-                    current = FindMatches (current, idxToken, previousToken);
+            using (Tokenizer tokenizer = new Tokenizer (_expression)) {
+                foreach (string idxToken in tokenizer.Tokens) {
+                    if (previousToken == "?") {
+                        typeOfExpression = idxToken;
+                        break;
+                    } else {
+                        current = FindMatches (current, idxToken, previousToken);
+                    }
+                    previousToken = idxToken;
                 }
-                previousToken = idxToken;
             }
 
             // checking to see if we have open groups, which is a bug
@@ -493,40 +495,6 @@ namespace phosphorus.lambda
                 current.AddIterator (new IteratorNamed (token));
             }
             return current;
-        }
-
-        /*
-         * responsible for tokenizing expression
-         */
-        private static IEnumerable<string> TokenizeExpression (string expression)
-        {
-            string buffer = string.Empty;
-            for (int idxNo = 1 /* skipping first @ character */; idxNo < expression.Length; idxNo++) {
-                char idxChar = expression [idxNo];
-                if ("/.|&^!()=?+-[],%#<>".IndexOf (idxChar) > -1) {
-                    if (buffer != string.Empty) {
-                        yield return buffer;
-                        buffer = string.Empty;
-                    }
-                    if (idxChar == '.' && idxNo + 1 < expression.Length && expression [idxNo + 1] == '.') {
-                        idxNo += 1;
-                        yield return "..";
-                    } else {
-                        yield return idxChar.ToString ();
-                    }
-                } else if (@"""@".IndexOf (idxChar) > -1) {
-                    if (buffer != string.Empty) {
-                        yield return buffer;
-                        buffer = string.Empty;
-                    }
-                    yield return Utilities.GetStringToken (expression, ref idxNo);
-                    idxNo -= 1;
-                } else {
-                    buffer += idxChar;
-                }
-            }
-            if (buffer != string.Empty)
-                yield return buffer;
         }
 
         /*
