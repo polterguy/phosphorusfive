@@ -252,7 +252,7 @@ _tmp1:x2
         }
         
         [Test]
-        public void ValuedChildExpression ()
+        public void ValuedExpression ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
             Loader.Instance.LoadAssembly ("phosphorus.lambda");
@@ -265,7 +265,7 @@ _tmp2:y
 _tmp1:x2
 ";
             context.Raise ("pf.code-2-nodes", tmp);
-            var ex = new Expression (@"@/=x2/?node");
+            var ex = new Expression (@"@/_tmp1/=x2/?node");
             var match = ex.Evaluate (tmp);
             Assert.AreEqual (1, match.Count);
             Assert.AreEqual ("x2", match [0].Value);
