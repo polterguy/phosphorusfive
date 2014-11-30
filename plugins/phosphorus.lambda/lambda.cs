@@ -95,16 +95,11 @@ namespace phosphorus.lambda
                     // expression returned anything but "node", executing result as text, unless "value" is a reference node
                     for (int idxNo = 0; idxNo < executionMatch.Count; idxNo++) {
                         var idxRes = executionMatch.GetValue (idxNo);
-                        if (idxRes is Node) {
+                        Node idxResNode = idxRes as Node;
+                        if (idxResNode != null) {
 
-                            // current match was a reference node, executing node
-                            // notice since current executing node is a "root node", we'll need to create a new node being
-                            // the actual node executed, containing the previous "root node" as its child
-                            Node exeRootNode = idxRes as Node;
-                            Node tmpExe = new Node ();
-                            tmpExe.Add (exeRootNode);
-                            ExecuteBlock (context, tmpExe, args.Children, type);
-                            exeRootNode.Untie (); // cleaning up
+                            // current value of node was in fact a reference node, hence we execute it as a node
+                            ExecuteBlock (context, idxResNode, args.Children, type);
                         } else {
 
                             // current match was a string or something that (hopefully) can be converted into a string

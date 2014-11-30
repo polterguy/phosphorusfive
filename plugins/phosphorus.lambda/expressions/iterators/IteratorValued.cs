@@ -58,11 +58,9 @@ namespace phosphorus.lambda.iterators
                         options |= RegexOptions.Singleline;
                     Regex regex = new Regex (value.Substring (1, value.LastIndexOf ("/") - 1), options);
                     foreach (Node idxCurrent in Left.Evaluate) {
-                        foreach (Node idxChild in idxCurrent.Children) {
-                            if (idxChild.Value != null && !(idxChild.Value is Node)) {
-                                if (regex.IsMatch (idxChild.Get<string> ()))
-                                    yield return idxChild;
-                            }
+                        if (idxCurrent.Value != null) {
+                            if (regex.IsMatch (idxCurrent.Get<string> ()))
+                                yield return idxCurrent;
                         }
                     }
                 } else {

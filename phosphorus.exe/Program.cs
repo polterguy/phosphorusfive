@@ -39,7 +39,7 @@ namespace phosphorus.exe
         {
             string value = Expression.FormatNode (e.Args);
             if (value != null)
-                Console.WriteLine (value);
+                Console.Write (value);
         }
 
         /// <summary>
