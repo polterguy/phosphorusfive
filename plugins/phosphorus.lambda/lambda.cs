@@ -46,7 +46,7 @@ namespace phosphorus.lambda
         [ActiveEvent (Name = "lambda.immutable")]
         private static void lambda (ApplicationContext context, ActiveEventArgs e)
         {
-            if (e.Args.Name.StartsWith ("lambda") && !string.IsNullOrEmpty (e.Args.Get<string> ())) {
+            if (e.Args.Name.StartsWith ("lambda") && e.Args.Value != null) {
 
                 // executing expression or string value with code
                 ExecuteLambdaValue (context, e.Args, GetLambdaType (e));
@@ -78,39 +78,43 @@ namespace phosphorus.lambda
          */
         private static void ExecuteLambdaValue (ApplicationContext context, Node args, LambdaType type)
         {
-            string codeOrExpression = args.Get<string> ();
-            if (Expression.IsExpression (codeOrExpression)) {
+            if (args.Value is Node) {
+                ExecuteBlock (context, args.Get<Node> (), args.Children, type);
+            } else {
+                string codeOrExpression = args.Get<string> ();
+                if (Expression.IsExpression (codeOrExpression)) {
 
-                // value of execution node is an expression, figuring out if our expression returns "node" 
-                // or "something else" before we invoke further execution logic
-                Match executionMatch = new Expression (args.Get<string> ()).Evaluate (args);
-                if (executionMatch.TypeOfMatch == Match.MatchType.Node) {
+                    // value of execution node is an expression, figuring out if our expression returns "node" 
+                    // or "something else" before we invoke further execution logic
+                    Match executionMatch = new Expression (args.Get<string> ()).Evaluate (args);
+                    if (executionMatch.TypeOfMatch == Match.MatchType.Node) {
 
-                    // expression returned "node"(s)
-                    foreach (Node current in executionMatch.Matches) {
-                        ExecuteBlock (context, current, args.Children, type);
+                        // expression returned "node"(s)
+                        foreach (Node current in executionMatch.Matches) {
+                            ExecuteBlock (context, current, args.Children, type);
+                        }
+                    } else {
+
+                        // expression returned anything but "node", executing result as text, unless "value" is a reference node
+                        for (int idxNo = 0; idxNo < executionMatch.Count; idxNo++) {
+                            var idxRes = executionMatch.GetValue (idxNo);
+                            Node idxResNode = idxRes as Node;
+                            if (idxResNode != null) {
+
+                                // current value of node was in fact a reference node, hence we execute it as a node
+                                ExecuteBlock (context, idxResNode, args.Children, type);
+                            } else {
+
+                                // current match was a string or something that (hopefully) can be converted into a string
+                                ExecuteLambdaText (context, (idxRes ?? "").ToString (), args.Children);
+                            }
+                        }
                     }
                 } else {
 
-                    // expression returned anything but "node", executing result as text, unless "value" is a reference node
-                    for (int idxNo = 0; idxNo < executionMatch.Count; idxNo++) {
-                        var idxRes = executionMatch.GetValue (idxNo);
-                        Node idxResNode = idxRes as Node;
-                        if (idxResNode != null) {
-
-                            // current value of node was in fact a reference node, hence we execute it as a node
-                            ExecuteBlock (context, idxResNode, args.Children, type);
-                        } else {
-
-                            // current match was a string or something that (hopefully) can be converted into a string
-                            ExecuteLambdaText (context, (idxRes ?? "").ToString (), args.Children);
-                        }
-                    }
+                    // value of execution node is code in text format, making sure we escape it, in case it starts with "@"
+                    ExecuteLambdaText (context, codeOrExpression, args.Children);
                 }
-            } else {
-
-                // value of execution node is code in text format, making sure we escape it, in case it starts with "@"
-                ExecuteLambdaText (context, codeOrExpression, args.Children);
             }
         }
 
