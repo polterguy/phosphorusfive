@@ -229,7 +229,7 @@ namespace phosphorus.lambda
          */
         private IteratorGroup FindMatchQuestionMarkToken (IteratorGroup current, string previousToken)
         {
-            if (previousToken != "/") {
+            if (previousToken != "/" && previousToken != ")") {
                 throw new ArgumentException ("unclosed iterator before question mark '?' in expression; '" + _expression + "'");
             }
             return current;

@@ -423,12 +423,211 @@ _tmp2:y
 _tmp1:x2
 ";
             context.Raise ("pf.code-2-nodes", tmp);
-            var ex = new Expression (@"@/=""/x+/""/?node");
+            var ex = new Expression (@"@/*/=""/x+/""/?node");
             var match = ex.Evaluate (tmp);
             Assert.AreEqual (2, match.Count);
             Assert.AreEqual ("x", match [0].Value);
             Assert.AreEqual ("x2", match [1].Value);
-        }// TODO; psst, modulo, shift-expressions, logicals and grouping
+        }
+        
+        [Test]
+        public void ModuloExpression ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+_tmp1:x
+_tmp2:y
+_tmp3:x2
+";
+            context.Raise ("pf.code-2-nodes", tmp);
+            var ex = new Expression (@"@/*/%2/?node");
+            var match = ex.Evaluate (tmp);
+            Assert.AreEqual (2, match.Count);
+            Assert.AreEqual ("_tmp1", match [0].Name);
+            Assert.AreEqual ("_tmp3", match [1].Name);
+        }
+        
+        [Test]
+        public void LeftShiftExpression ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ("foo");
+            tmp.Value = @"
+_tmp1:x
+_tmp2:y
+_tmp3:x2
+";
+            context.Raise ("pf.code-2-nodes", tmp);
+            var ex = new Expression (@"@/*/%2/</?node");
+            var match = ex.Evaluate (tmp);
+            Assert.AreEqual (2, match.Count);
+            Assert.AreEqual ("foo", match [0].Name);
+            Assert.AreEqual ("_tmp2", match [1].Name);
+        }
+        
+        [Test]
+        public void RightShiftExpression ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+_tmp1:x
+_tmp2:y
+_tmp3:x2
+";
+            context.Raise ("pf.code-2-nodes", tmp);
+            var ex = new Expression (@"@/*/%2/>/?node");
+            var match = ex.Evaluate (tmp);
+            Assert.AreEqual (1, match.Count);
+            Assert.AreEqual ("_tmp2", match [0].Name);
+        }
+        
+        [Test]
+        public void OrExpression ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+_tmp1:x
+_tmp2:y
+_tmp3:x2
+";
+            context.Raise ("pf.code-2-nodes", tmp);
+            var ex = new Expression (@"@/_tmp1/|/_tmp2/?node");
+            var match = ex.Evaluate (tmp);
+            Assert.AreEqual (2, match.Count);
+            Assert.AreEqual ("_tmp1", match [0].Name);
+            Assert.AreEqual ("_tmp2", match [1].Name);
+        }
+        
+        [Test]
+        public void AndExpression ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+_tmp1:x
+_tmp2:y
+_tmp3:x2
+";
+            context.Raise ("pf.code-2-nodes", tmp);
+            var ex = new Expression (@"@/_tmp1/&/*/=x/?node");
+            var match = ex.Evaluate (tmp);
+            Assert.AreEqual (1, match.Count);
+            Assert.AreEqual ("_tmp1", match [0].Name);
+        }
+        
+        [Test]
+        public void XorExpression ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+_tmp1:x
+_tmp2:y
+_tmp3:x2
+";
+            context.Raise ("pf.code-2-nodes", tmp);
+            var ex = new Expression (@"@/_tmp1/^/_tmp2/?node");
+            var match = ex.Evaluate (tmp);
+            Assert.AreEqual (2, match.Count);
+            Assert.AreEqual ("_tmp1", match [0].Name);
+            Assert.AreEqual ("_tmp2", match [1].Name);
+        }
+        
+        [Test]
+        public void NotExpression ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+_tmp1:x
+_tmp1:y
+_tmp1:x2
+";
+            context.Raise ("pf.code-2-nodes", tmp);
+            var ex = new Expression (@"@/_tmp1/!/*/=x2/?node");
+            var match = ex.Evaluate (tmp);
+            Assert.AreEqual (2, match.Count);
+            Assert.AreEqual ("_tmp1", match [0].Name);
+            Assert.AreEqual ("_tmp1", match [1].Name);
+            Assert.AreEqual ("x", match [0].Value);
+            Assert.AreEqual ("y", match [1].Value);
+        }
+        
+        [Test]
+        public void NoPrecedenceExpression ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+_tmp1:x
+_tmp2:y
+_tmp3:x2
+";
+            context.Raise ("pf.code-2-nodes", tmp);
+            var ex = new Expression (@"@/_tmp1/|/_tmp2/&/*/=y/?node");
+            var match = ex.Evaluate (tmp);
+            Assert.AreEqual (1, match.Count);
+            Assert.AreEqual ("_tmp2", match [0].Name);
+        }
+        
+        [Test]
+        public void OrderedExpression ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+_tmp1:x
+_tmp2:y
+_tmp3:x2
+";
+            context.Raise ("pf.code-2-nodes", tmp);
+            var ex = new Expression (@"@/_tmp2/|/_tmp1/?node");
+            var match = ex.Evaluate (tmp);
+            Assert.AreEqual (2, match.Count);
+            Assert.AreEqual ("_tmp2", match [0].Name);
+            Assert.AreEqual ("_tmp1", match [1].Name);
+        }
+
+        [Test]
+        public void GroupExpression ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+_tmp1:x
+_tmp2:y
+_tmp3:x2
+";
+            context.Raise ("pf.code-2-nodes", tmp);
+            var ex = new Expression (@"@/_tmp1/|(/_tmp2/&/*/=y/)?node");
+            var match = ex.Evaluate (tmp);
+            Assert.AreEqual (2, match.Count);
+            Assert.AreEqual ("_tmp1", match [0].Name);
+            Assert.AreEqual ("_tmp2", match [1].Name);
+        }
     }
 }
 

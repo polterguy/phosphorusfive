@@ -67,7 +67,7 @@ namespace phosphorus.lambda
             }
 
             nextChar = _reader.Peek ();
-            while (nextChar != -1 && "/|&^!()=?+-[],%".IndexOf ((char)nextChar) == -1) {
+            while (nextChar != -1 && "/,]".IndexOf ((char)nextChar) == -1) {
                 builder.Append ((char)_reader.Read ());
                 nextChar = _reader.Peek ();
             }
