@@ -180,6 +180,32 @@ _bool:bool:true
         }
         
         [Test]
+        public void ComplexNamesAndNonExistentType ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+""_tmp1\nthomas"":howdy
+@""_tmp2"":howdy22
+  @""_tmp3"":""mumbo-jumbo-type"":@""value""
+  @""_tmp4
+is cool"":@""mumbo-
+jumbo-type"":@""value
+   value""
+";
+            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            Assert.AreEqual ("_tmp1\r\nthomas", tmp [0].Name, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual ("howdy", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual ("_tmp2", tmp [1].Name, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual ("howdy22", tmp [1].Value, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual ("_tmp3", tmp [1][0].Name, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual ("value", tmp [1][0].Value, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual ("_tmp4\r\nis cool", tmp [1][1].Name, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual ("value\r\n   value", tmp [1][1].Value, "wrong value of node after parsing of hyperlisp");
+        }
+
+        [Test]
         [ExpectedException]
         public void SyntaxError1 ()
         {
@@ -308,32 +334,6 @@ z:node:@""howdy:x
 z:node:@""howdy:x
 f:g"""; // logical error in hyperlisp node content, multiple "root" nodes
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
-        }
-
-        [Test]
-        public void ComplexNamesAndNonExistentType ()
-        {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-""_tmp1\nthomas"":howdy
-@""_tmp2"":howdy22
-  @""_tmp3"":""mumbo-jumbo-type"":@""value""
-  @""_tmp4
-is cool"":@""mumbo-
-jumbo-type"":@""value
-   value""
-";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
-            Assert.AreEqual ("_tmp1\r\nthomas", tmp [0].Name, "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual ("howdy", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual ("_tmp2", tmp [1].Name, "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual ("howdy22", tmp [1].Value, "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual ("_tmp3", tmp [1][0].Name, "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual ("value", tmp [1][0].Value, "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual ("_tmp4\r\nis cool", tmp [1][1].Name, "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual ("value\r\n   value", tmp [1][1].Value, "wrong value of node after parsing of hyperlisp");
         }
     }
 }

@@ -32,7 +32,7 @@ namespace phosphorus.lambda
             if (e.Args.Count == 1 && e.Args.FirstChild.Name == string.Empty && Expression.IsExpression (e.Args.FirstChild.Get<string> ())) {
 
                 // source is an expression
-                Match sourceMatch = new Expression (e.Args.FirstChild.Get<string> ()).Evaluate (e.Args.FirstChild);
+                Match sourceMatch = Expression.Create (e.Args.FirstChild.Get<string> ()).Evaluate (e.Args.FirstChild);
                 AppendMatch (destinationMatch, sourceMatch);
             } else {
 
@@ -46,28 +46,17 @@ namespace phosphorus.lambda
          */
         private static void AppendMatch (Match destinationMatch, Match sourceMatch)
         {
-            List<Node> copy = null;
-            if (sourceMatch.TypeOfMatch == Match.MatchType.Node) {
+            if (sourceMatch.TypeOfMatch != Match.MatchType.Node)
+                throw new ArgumentException ("[add] can only add from a 'node' source expression");
 
-                // cloning source first, in case source is also one of our destinations
-                copy = new List<Node> ();
-                foreach (Node idxSource in sourceMatch.Matches) {
-                    copy.Add (idxSource.Clone ());
-                }
+            // cloning source first, in case source is also one of our destinations
+            List<Node> copy = new List<Node> ();
+            foreach (Node idxSource in sourceMatch.Matches) {
+                copy.Add (idxSource.Clone ());
             }
             foreach (Node idxDest in destinationMatch.Matches) {
-                if (sourceMatch.TypeOfMatch == Match.MatchType.Count) {
-                    idxDest.Add (new Node (string.Empty, sourceMatch.Count));
-                } else {
-                    if (sourceMatch.TypeOfMatch == Match.MatchType.Node) {
-                        foreach (Node idxSource in copy) {
-                            idxDest.Add (idxSource.Clone ());
-                        }
-                    } else {
-                        for (int idxSource = 0; idxSource < sourceMatch.Count; idxSource ++) {
-                            idxDest.Add (new Node (string.Empty, sourceMatch.GetValue (idxSource)));
-                        }
-                    }
+                foreach (Node idxSource in copy) {
+                    idxDest.Add (idxSource.Clone ());
                 }
             }
         }
@@ -94,7 +83,7 @@ namespace phosphorus.lambda
                 throw new ApplicationException ("[add] needs a valid expression as its value, yielding an actual result");
 
             // finding Match object for destination
-            Match destinationMatch = new Expression (destinationExpression).Evaluate (node);
+            Match destinationMatch = Expression.Create (destinationExpression).Evaluate (node);
 
             if (destinationMatch.TypeOfMatch != Match.MatchType.Node)
                 throw new ArgumentException ("destination expression for [add] is not of type 'node', expression was; '" + 

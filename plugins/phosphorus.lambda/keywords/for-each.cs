@@ -22,10 +22,9 @@ namespace phosphorus.lambda
         [ActiveEvent (Name = "for-each")]
         private static void lambda_for_each (ApplicationContext context, ActiveEventArgs e)
         {
+            Match dataSource = GetDataSource (e.Args);
             if (e.Args.Count == 0)
                 return; // "do nothing" operation
-
-            Match dataSource = GetDataSource (e.Args);
             foreach (Node idxSource in dataSource.Matches) {
                 Node dp = new Node ("__dp", idxSource);
                 e.Args.Insert (0, dp);
@@ -39,18 +38,18 @@ namespace phosphorus.lambda
          */
         private static Match GetDataSource (Node node)
         {
-            string destinationExpression = node.Get<string> ();
-            if (!Expression.IsExpression (destinationExpression))
+            string dataSourceExpression = node.Get<string> ();
+            if (!Expression.IsExpression (dataSourceExpression))
                 throw new ApplicationException ("[for-each] needs a valid source expression yielding an actual result as its value");
 
             // finding Match object for destination
-            Match destinationMatch = new Expression (destinationExpression).Evaluate (node);
+            Match dataSourceMatch = Expression.Create (dataSourceExpression).Evaluate (node);
 
-            if (destinationMatch.TypeOfMatch != Match.MatchType.Node)
+            if (dataSourceMatch.TypeOfMatch != Match.MatchType.Node)
                 throw new ArgumentException ("source expression for [for-each] is not of type 'node', expression was; '" + 
-                    destinationExpression + "'. make sure you end your [for-each] expression with '?node'");
+                    dataSourceExpression + "'. make sure you end your [for-each] expression with '?node'");
 
-            return destinationMatch;
+            return dataSourceMatch;
         }
     }
 }

@@ -24,9 +24,6 @@ namespace phosphorus.lambda
         [ActiveEvent (Name = "while")]
         private static void lambda_while (ApplicationContext context, ActiveEventArgs e)
         {
-            if (e.Args.Count == 0)
-                throw new ArgumentException ("syntax error in [while]. [while] needs at the very least a [lambda] child to execute if statement yields true");
-
             var condition = new Conditions (e.Args);
             while (condition.Evaluate ()) {
                 foreach (Node idxExe in condition.ExecutionLambdas) {

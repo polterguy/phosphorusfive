@@ -22,11 +22,9 @@ namespace phosphorus.lambda
         /// initializes a new instance of the <see cref="phosphorus.execute.Expression"/> class
         /// </summary>
         /// <param name="expression">execution engine expression</param>
-        public Expression (string expression)
+        public static Expression Create (string expression)
         {
-            if (!IsExpression (expression))
-                throw new ArgumentException (string.Format ("'{0}' is not a valid expression", expression));
-            _expression = expression;
+            return new Expression (expression);
         }
 
         /// <summary>
@@ -38,7 +36,16 @@ namespace phosphorus.lambda
         {
             if (value == null)
                 return false;
-            string strValue = value as string;
+            return IsExpression (value as string);
+        }
+
+        /// <summary>
+        /// determines if object is an expression or not
+        /// </summary>
+        /// <returns><c>true</c> if object is an expression; otherwise, <c>false</c></returns>
+        /// <param name="strValue">string to check</param>
+        public static bool IsExpression (string strValue)
+        {
             return strValue != null && 
                 strValue.StartsWith ("@") && 
                 strValue.Length > 1;
@@ -94,6 +101,16 @@ namespace phosphorus.lambda
 
             // returning match object
             return new Match (current, typeOfExpression);
+        }
+        
+        /*
+         * private ctor, to make sure we can in future versions do lokkup against cache, for instance
+         */
+        private Expression (string expression)
+        {
+            if (!IsExpression (expression))
+                throw new ArgumentException (string.Format ("'{0}' is not a valid expression", expression));
+            _expression = expression;
         }
 
         /*
@@ -211,6 +228,10 @@ namespace phosphorus.lambda
          */
         private IteratorGroup FindMatchCommaToken (IteratorGroup current, string previousToken)
         {
+            if (previousToken == "[") {
+                // empty "start" part
+                current.AddIterator (new IteratorRange (0));
+            }
             return current;
         }
 

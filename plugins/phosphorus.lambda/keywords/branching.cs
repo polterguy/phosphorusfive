@@ -24,9 +24,6 @@ namespace phosphorus.lambda
         [ActiveEvent (Name = "if")]
         private static void lambda_if (ApplicationContext context, ActiveEventArgs e)
         {
-            if (e.Args.Count == 0)
-                throw new ArgumentException ("syntax error in [if]. [if] needs at the very least a [lambda] child to execute if statement yields true");
-
             var condition = new Conditions (e.Args);
             if (condition.Evaluate ()) {
                 foreach (Node idxExe in condition.ExecutionLambdas) {

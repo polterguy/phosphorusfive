@@ -117,7 +117,7 @@ namespace phosphorus.lambda
                     _isSimpleExist = true;
                 return (Exist (currentStatement) && EvaluateRelatedAnd (currentStatement)) || EvaluateRelatedOr (currentStatement);
             case Operator.Not:
-                return (!Exist (currentStatement) && EvaluateRelatedAnd (currentStatement)) || EvaluateRelatedOr (currentStatement);
+                return (!Exist (currentStatement.FirstChild) && EvaluateRelatedAnd (currentStatement)) || EvaluateRelatedOr (currentStatement);
             case Operator.Equals:
                 return (Compare (currentStatement) == 0 && EvaluateRelatedAnd (currentStatement)) || EvaluateRelatedOr (currentStatement);
             case Operator.NotEquals:
@@ -140,7 +140,7 @@ namespace phosphorus.lambda
          */
         private bool Exist (Node currentStatement)
         {
-            var match = new Expression (currentStatement.Get<string> ()).Evaluate (currentStatement);
+            var match = Expression.Create (currentStatement.Get<string> ()).Evaluate (currentStatement);
             if (match.TypeOfMatch == Match.MatchType.Count || match.TypeOfMatch == Match.MatchType.Path || match.TypeOfMatch == Match.MatchType.Node)
                 return match.Count > 0;
             foreach (var idx in match.Matches) {
@@ -155,7 +155,7 @@ namespace phosphorus.lambda
                     break;
                 }
             }
-            return true;
+            return match.Count > 0;
         }
 
         /*
@@ -184,7 +184,7 @@ namespace phosphorus.lambda
         {
             if (Expression.IsExpression (currentStatement.Value)) {
                 List<Node> retVal = new List<Node> ();
-                var match = new Expression (currentStatement.Get<string> ()).Evaluate (currentStatement);
+                var match = Expression.Create (currentStatement.Get<string> ()).Evaluate (currentStatement);
                 if (match.TypeOfMatch == Match.MatchType.Count) {
                     retVal.Add (new Node (string.Empty, match.Count));
                 } else {
@@ -266,6 +266,8 @@ namespace phosphorus.lambda
          */
         private Operator GetOperator (Node currentStatement)
         {
+            if (currentStatement.Count == 0)
+                return Operator.Exist;
             switch (currentStatement.FirstChild.Name) {
             case "=":
                 return Operator.Equals;
@@ -280,7 +282,7 @@ namespace phosphorus.lambda
             case "<=":
                 return Operator.LessThanEquals;
             default:
-                if (currentStatement.Name == "!")
+                if ("!" == currentStatement.Get<string> ())
                     return Operator.Not;
                 return Operator.Exist;
             }

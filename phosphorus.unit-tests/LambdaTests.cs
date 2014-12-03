@@ -13,7 +13,7 @@ namespace phosphorus.unittests
     public class LambdaTests
     {
         [Test]
-        public void InvokeLambda ()
+        public void InvokeEmptyLambda ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
             Loader.Instance.LoadAssembly ("phosphorus.lambda");
@@ -283,7 +283,7 @@ lambda:@/-/?node";
         }
         
         [Test]
-        public void InvokeMultipleInnerExpressionsLambda ()
+        public void InvokeMultipleExpressionsLambda ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
             Loader.Instance.LoadAssembly ("phosphorus.lambda");
@@ -305,6 +305,30 @@ lambda:@/../_x/?node";
             Assert.AreEqual ("world", tmp [1].Value, "wrong value of node after executing lambda object");
         }
         
+        [Test]
+        public void InvokeMultipleExpressionsValueWithArgsLambda ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+_x:node:@""_x
+  set:@/./_arg/#/?value
+    :howdy""
+_x:@""set:@/./_arg/#/?value
+  :{0} world
+    :@/./././_arg/#/?value""
+_arg
+set:@/+/_arg/?value
+  :@/./-/?node
+lambda:@/../_x/?value
+  _arg";
+            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("lambda", tmp);
+            Assert.AreEqual ("howdy world", tmp [2].Value, "wrong value of node after executing lambda object");
+        }
+
         [Test]
         public void PassInReferenceOutputNode ()
         {
@@ -486,4 +510,3 @@ _x
         }
     }
 }
-

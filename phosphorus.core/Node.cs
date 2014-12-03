@@ -13,7 +13,7 @@ namespace phosphorus.core
     /// arguments passed into and returned from Active Events
     /// </summary>
     [Serializable]
-    public class Node
+    public class Node : IComparable
     {
         /// <summary>
         /// DNA code for Node
@@ -642,6 +642,19 @@ namespace phosphorus.core
         }
 
         /// <summary>
+        /// IComparable implementation, compares node to another object
+        /// </summary>
+        /// <returns>-1 if this node is "less than", +1 if rhs is "less than", 0 if objects are equal</returns>
+        /// <param name="rhs">the object to compare the node against</param>
+        public int CompareTo (object rhs)
+        {
+            Node rhsNode = rhs as Node;
+            if (rhsNode == null)
+                return 1;
+            return CompareTo (rhsNode);
+        }
+
+        /// <summary>
         /// compares two nodes for equality and returns -1 if this is "less than" rhs, +1 if this is "more than" rhs, and 0
         /// if they are equal, meaning they contain similar nodes
         /// </summary>
@@ -657,24 +670,38 @@ namespace phosphorus.core
                     return -1;
             } else if (rhs.Value == null) {
                 return 1;
+            }
+            retVal = CompareValueObjects (Value, rhs.Value);
+            if (retVal != 0)
+                return retVal;
+            if (_children.Count < rhs._children.Count) {
+                return -1;
+            } else if (rhs._children.Count < _children.Count) {
+                return 1;
             } else {
-                IComparable thisValue = Value as IComparable;
-                retVal = thisValue.CompareTo (rhs.Value);
-                if (retVal != 0)
-                    return retVal;
-                if (_children.Count < rhs._children.Count) {
-                    return -1;
-                } else if (rhs._children.Count < _children.Count) {
-                    return 1;
-                } else {
-                    for (int idxNo = 0; idxNo < Count; idxNo ++) {
-                        retVal = _children [idxNo].CompareTo (rhs._children [idxNo]);
-                        if (retVal != 0)
-                            return retVal;
-                    }
+                for (int idxNo = 0; idxNo < Count; idxNo ++) {
+                    retVal = _children [idxNo].CompareTo (rhs._children [idxNo]);
+                    if (retVal != 0)
+                        return retVal;
                 }
             }
             return 0;
+        }
+
+        /*
+         * does actual comparison of two non-null Node values
+         */
+        private int CompareValueObjects (object value, object rhsValue)
+        {
+            if (value == null && rhsValue == null)
+                return 0;
+            if (value.GetType () != rhsValue.GetType ()) {
+                return value.GetType ().ToString ().CompareTo (rhsValue.GetType ().ToString ());
+            }
+            IComparable thisValue = value as IComparable;
+            if (thisValue == null)
+                throw new ArgumentException ("cannot compare two objects of type; '" + value.GetType () + "'");
+            return thisValue.CompareTo (rhsValue);
         }
 
         /// <summary>

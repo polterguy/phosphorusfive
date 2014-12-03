@@ -86,7 +86,7 @@ namespace phosphorus.lambda
 
                     // value of execution node is an expression, figuring out if our expression returns "node" 
                     // or "something else" before we invoke further execution logic
-                    Match executionMatch = new Expression (args.Get<string> ()).Evaluate (args);
+                    Match executionMatch = Expression.Create (args.Get<string> ()).Evaluate (args);
                     if (executionMatch.TypeOfMatch == Match.MatchType.Node) {
 
                         // expression returned "node"(s)

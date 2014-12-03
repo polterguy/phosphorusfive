@@ -35,7 +35,7 @@ namespace phosphorus.lambda
 
                 // assigning the result of an expression here
                 string expression = Expression.FormatNode (e.Args.FirstChild);
-                Match sourceMatch = new Expression (expression).Evaluate (e.Args.FirstChild);
+                Match sourceMatch = Expression.Create (expression).Evaluate (e.Args.FirstChild);
                 if (sourceMatch.Count == 0) {
 
                     // source expression returned nothing
@@ -125,10 +125,10 @@ namespace phosphorus.lambda
             foreach (Node idxDest in destinationMatch.Matches) {
                 switch (destinationMatch.TypeOfMatch) {
                 case Match.MatchType.Name:
-                    idxDest.Name = (GetObjectFromMatch (context, sourceMatch) ?? "").ToString ();
+                    idxDest.Name = ConvertObjectToString (context, GetObjectFromMatch (sourceMatch));
                     break;
                 case Match.MatchType.Value:
-                    idxDest.Value = GetObjectFromMatch (context, sourceMatch);
+                    idxDest.Value = GetObjectFromMatch (sourceMatch);
                     break;
                 case Match.MatchType.Node:
                     if (sourceMatch.TypeOfMatch != Match.MatchType.Node)
@@ -140,9 +140,25 @@ namespace phosphorus.lambda
         }
 
         /*
+         * converts an object to string
+         */
+        private static string ConvertObjectToString (ApplicationContext context, object obj)
+        {
+            if (obj is Node) {
+                Node tmp = obj as Node;
+                Node convert = new Node (string.Empty);
+                convert.Add (tmp.Clone ());
+                context.Raise ("pf.nodes-2-code", convert);
+                return convert.Get<string> ();
+            } else {
+                return obj.ToString ();
+            }
+        }
+
+        /*
          * returns an object from match
          */
-        private static object GetObjectFromMatch (ApplicationContext context, Match match)
+        private static object GetObjectFromMatch (Match match)
         {
             if (match.TypeOfMatch == Match.MatchType.Count)
                 return match.Count;
@@ -174,7 +190,7 @@ namespace phosphorus.lambda
                 throw new ApplicationException ("[pf.set] needs a valid expression yielding an actual result as its value");
 
             // finding Match object for destination
-            Match destinationMatch = new Expression (destinationExpression).Evaluate (node);
+            Match destinationMatch = Expression.Create (destinationExpression).Evaluate (node);
 
             if (!destinationMatch.IsAssignable)
                 throw new ArgumentException ("destination expression for [pf.set] is not assignable, expression was; '" + destinationExpression + "'");
