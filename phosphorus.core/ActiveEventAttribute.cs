@@ -27,6 +27,15 @@ namespace phosphorus.core
             get;
             set;
         }
+
+        /// <summary>
+        /// the name of the Active Event this Active Event is overriding
+        /// </summary>
+        /// <value>the Active Event override</value>
+        public string Overrides {
+            get;
+            set;
+        }
     }
 }
 

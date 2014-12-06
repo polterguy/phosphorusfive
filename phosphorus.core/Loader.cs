@@ -11,7 +11,11 @@ namespace phosphorus.core
 {
     /// <summary>
     /// loads up assemblies for handling Active Events. class is a natural singleton, use the Instance static member to access
-    /// the singleton instance
+    /// the singleton instance. this class is also responsible for creating your <see cref="phosphorus.core.ApplicationContext"/>,
+    /// but make sure you create you application context after you have initialized all assemblies you wish should have Active Events
+    /// for you, since once you've created your application context, you can no longer load more assemblies to handle Active Events, 
+    /// without creating a new application context. every time you load or unload an assembly, you should re-create your application
+    /// context
     /// </summary>
     public class Loader
     {
@@ -53,12 +57,14 @@ namespace phosphorus.core
         /// <param name="assembly">assembly to load</param>
         public void LoadAssembly (Assembly assembly)
         {
+            // checking to see if assembly is already loaded up, to avoid initializing the same assembly twice
             if (_assemblies.Exists (
                 delegate(Assembly idx) {
                 return idx == assembly;
             }))
                 return;
 
+            // finding the assembly in our current AppDomain, for then to initialize it
             foreach (var idxAsm in AppDomain.CurrentDomain.GetAssemblies ()) {
                 if (idxAsm == assembly) {
                     InitializeAssembly (idxAsm);
@@ -84,14 +90,18 @@ namespace phosphorus.core
         /// <param name="name">name of assembly</param>
         public void LoadAssembly (string path, string name)
         {
+            // "normalizing" name of assembly
             if (!name.ToLower ().EndsWith (".dll"))
                 name += ".dll";
+
+            // checking to see if assembly is already loaded
             if (_assemblies.Exists (
                 delegate (Assembly idx) {
                     return idx.ManifestModule.Name.ToLower () == name.ToLower ();
             }))
                 return;
 
+            // checking our current AppDomain to see if assembly is already a part of our AppDomain
             foreach (var idxAsm in AppDomain.CurrentDomain.GetAssemblies ()) {
                 if (idxAsm.ManifestModule.Name.ToLower () == name.ToLower ()) {
                     InitializeAssembly (idxAsm);
@@ -100,7 +110,7 @@ namespace phosphorus.core
                 }
             }
 
-            // we must load assembly and link in
+            // we must dynamically load assembly and initialize it
             Assembly assembly = Assembly.LoadFile (path + name);
             InitializeAssembly (assembly);
             _assemblies.Add (assembly);
@@ -112,85 +122,120 @@ namespace phosphorus.core
         /// <param name="name">name of assembly to unload</param>
         public void UnloadAssembly (string name)
         {
+            // "normalizing" assembly name
             if (!name.ToLower ().EndsWith (".dll"))
                 name += ".dll";
+
+            // finding the assembly in our list of initialized assemblies
             Assembly assembly = _assemblies.Find (
                 delegate (Assembly idx) {
                     return idx.ManifestModule.Name.ToLower () == name;
             });
-            _assemblies.Remove (assembly);
-            RemoveAssembly (assembly);
+
+            if (assembly != null) {
+
+                // removing assembly, and making sure all Active Events are "unregistered"
+                // please notice that assembly is still in AppDomain, but will no longer handle Active Events
+                // TODO: figure out how to "unload" assembly from AppDomain
+                _assemblies.Remove (assembly);
+                RemoveAssembly (assembly);
+            }
         }
-        
+
+        /*
+         * removes an assembly such that all Active Events from given assembly will no longer
+         * be a part of our list of potential invocation objects for Active Events
+         */
         private void RemoveAssembly (Assembly assembly)
         {
+            // looping through all types from assembly, to see if they're handling Active Events
             foreach (Type idxType in assembly.GetTypes ())
             {
-                MethodInfo[] instanceMethods = idxType.GetMethods (
-                    BindingFlags.FlattenHierarchy | 
-                    BindingFlags.Instance | 
-                    BindingFlags.NonPublic | 
-                    BindingFlags.Public);
-                foreach (var idxMethod in instanceMethods) {
-                    var atrs = idxMethod.GetCustomAttributes (typeof(ActiveEventAttribute), true) as ActiveEventAttribute[];
-                    if (atrs != null && atrs.Length > 0)
-                        _instanceActiveEvents.Remove (idxType);
-                }
-
-                MethodInfo[] staticMethods = idxType.GetMethods (
-                    BindingFlags.FlattenHierarchy | 
-                    BindingFlags.Static | 
-                    BindingFlags.NonPublic | 
-                    BindingFlags.Public);
-                foreach (var idxMethod in staticMethods) {
-                    var atrs = idxMethod.GetCustomAttributes (typeof(ActiveEventAttribute), true) as ActiveEventAttribute[];
-                    if (atrs != null && atrs.Length > 0)
-                        _staticActiveEvents.Remove (idxType);
-                }
+                if (_instanceActiveEvents.ContainsKey (idxType))
+                    _instanceActiveEvents.Remove (idxType);
+                if (_staticActiveEvents.ContainsKey (idxType))
+                    _staticActiveEvents.Remove (idxType);
             }
         }
 
+        /*
+         * initializes an assembly by looping through all types from it, and see if type has
+         * Active Event attributes for one or more of its methods, and if it does, we register
+         * type as Active Event sink
+         */
         private void InitializeAssembly (Assembly assembly)
         {
+            // looping through all types in assembly
             foreach (Type idxType in assembly.GetTypes ())
             {
+                // adding instance Active Events
                 MethodInfo[] instanceMethods = idxType.GetMethods (
                     BindingFlags.FlattenHierarchy | 
                     BindingFlags.Instance | 
                     BindingFlags.NonPublic | 
                     BindingFlags.Public);
+                AddActiveEventsForType (idxType, instanceMethods, _instanceActiveEvents);
+
+                // adding static Active Events
                 MethodInfo[] staticMethods = idxType.GetMethods (
                     BindingFlags.FlattenHierarchy | 
                     BindingFlags.Static | 
                     BindingFlags.NonPublic | 
                     BindingFlags.Public);
+                AddActiveEventsForType (idxType, staticMethods, _staticActiveEvents);
+            }
+        }
 
-                foreach (var idx in 
-                         new Tuple<MethodInfo[], Dictionary<Type, List<Tuple<ActiveEventAttribute, MethodInfo>>>>[] { 
-                            new Tuple<MethodInfo[], Dictionary<Type, List<Tuple<ActiveEventAttribute, MethodInfo>>>> (instanceMethods, _instanceActiveEvents), 
-                            new Tuple<MethodInfo[], Dictionary<Type, List<Tuple<ActiveEventAttribute, MethodInfo>>>> (staticMethods, _staticActiveEvents) }) {
-                    var activeEvents = new List<Tuple<ActiveEventAttribute, MethodInfo>> ();
-                    foreach (var idxMethod in idx.Item1) {
-                        var atrs = idxMethod.GetCustomAttributes (typeof(ActiveEventAttribute), true) as ActiveEventAttribute[];
-                        if (atrs != null && atrs.Length > 0) {
-                            ParameterInfo[] pars = idxMethod.GetParameters ();
-                            if (pars.Length != 2 || 
-                                pars [0].ParameterType != typeof(ApplicationContext) || 
-                                pars [1].ParameterType != typeof(ActiveEventArgs))
-                                throw new ArgumentException (
-                                    string.Format("method '{0}.{1}' is not a valid active event, parameters of method is wrong", 
-                                              idxMethod.DeclaringType.FullName,
-                                              idxMethod.Name));
-                            foreach (var idxAtr in atrs) {
-                                var tuple = new Tuple<ActiveEventAttribute, MethodInfo> (idxAtr, idxMethod);
-                                activeEvents.Add (tuple);
-                            }
-                        }
+        /*
+         * loops through all MethodInfo objects given, and adds them to the associated dictionary with type as key,
+         * if they have Active Event attributes declared
+         */
+        private void AddActiveEventsForType (
+            Type type, 
+            MethodInfo[] methods, 
+            Dictionary<Type, List<Tuple<ActiveEventAttribute, MethodInfo>>> dictionary)
+        {
+            // creating a list of Active Events for our type, which we check later if it contains any items, and if it does, we
+            // associate it with our type
+            var activeEvents = new List<Tuple<ActiveEventAttribute, MethodInfo>> ();
+
+            // looping through all MethodInfo from type we currently are iterating
+            foreach (var idxMethod in methods) {
+
+                // checking to see if current MethodInfo has our Active Event attribute, and if it does, we check if it has
+                // the right signature before we add it to our list of Active Event sinks
+                var atrs = idxMethod.GetCustomAttributes (typeof(ActiveEventAttribute), true) as ActiveEventAttribute[];
+                if (atrs != null && atrs.Length > 0) {
+
+                    // checking if Active Event has a valid signature
+                    VerifyActiveEventSignature (idxMethod);
+
+                    // adding all Active Event attributes such that they become associate with our MethodInfo, to our list of Active Events
+                    foreach (var idxAtr in atrs) {
+                        var tuple = new Tuple<ActiveEventAttribute, MethodInfo> (idxAtr, idxMethod);
+                        activeEvents.Add (tuple);
                     }
-                    if (activeEvents.Count > 0)
-                        idx.Item2 [idxType] = activeEvents;
                 }
             }
+
+            // making sure we only add type as Active Event sinks, if it actually has Active Events declared through ActiveEventAttribute
+            if (activeEvents.Count > 0)
+                dictionary [type] = activeEvents;
+        }
+
+        /*
+         * verifies that the signature of our Active Event is correct
+         */
+        private void VerifyActiveEventSignature (MethodInfo method)
+        {
+            ParameterInfo[] pars = method.GetParameters ();
+            if (pars.Length != 2 || 
+                pars [0].ParameterType != typeof(ApplicationContext) || 
+                pars [1].ParameterType != typeof(ActiveEventArgs))
+                throw new ArgumentException (
+                    string.Format("method '{0}.{1}' is not a valid active event, parameters of method is wrong. all Active Events must take an ApplicationContext and an ActiveEventArgs object", 
+                              method.DeclaringType.FullName,
+                              method.Name));
         }
     }
 }

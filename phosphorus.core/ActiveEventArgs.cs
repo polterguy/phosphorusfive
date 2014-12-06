@@ -12,22 +12,39 @@ namespace phosphorus.core
     /// </summary>
     public class ActiveEventArgs : EventArgs
     {
-        internal ActiveEventArgs (Node args, string name)
+        /*
+         * initializes a new instance of this class
+         */
+        internal ActiveEventArgs (string name, Node args, ActiveEventArgs baseEvent = null)
         {
             Args = args;
             Name = name;
+            Base = baseEvent;
         }
 
         /// <summary>
-        /// Arguments passed in and returned from Active Events
+        /// arguments passed in and returned from Active Events
         /// </summary>
         /// <value>the arguments</value>
         public Node Args {
             get;
+            set;
+        }
+
+        /// <summary>
+        /// name of the Active Event
+        /// </summary>
+        /// <value>the name</value>
+        public string Name {
+            get;
             private set;
         }
 
-        public string Name {
+        /// <summary>
+        /// returns the base Active Event for the currently raised Active Event, if any
+        /// </summary>
+        /// <value>the base Active Event</value>
+        public ActiveEventArgs Base {
             get;
             private set;
         }
