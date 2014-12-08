@@ -30,7 +30,14 @@ namespace phosphorus.core
             _registeredActiveEvents = new Dictionary<string, List<Tuple<MethodInfo, object>>> ();
             _typesInstanceActiveEvents = instanceEvents;
             _overrides = new Dictionary<string, List<string>> ();
+            InitializeApplicationContext (staticEvents);
+        }
 
+        /*
+         * initializes app context
+         */
+        private void InitializeApplicationContext (Dictionary<Type, List<Tuple<ActiveEventAttribute, MethodInfo>>> staticEvents)
+        {
             // looping through each Type in static Active Events given
             foreach (var idxType in staticEvents.Keys) {
 
@@ -56,6 +63,9 @@ namespace phosphorus.core
                     methods.Add (new Tuple<MethodInfo, object> (idxTupleAVMethodInfo.Item2, null));
                 }
             }
+
+            // raising "initialize" Active Event
+            Raise ("pf.core.initialize-application-context");
         }
 
         /// <summary>
@@ -170,6 +180,23 @@ namespace phosphorus.core
             // However, since we're using the _overrides as a "stack", when removing overrides, this is the correct
             // semantic way to do this
             _overrides [baseActiveEvent].Add (newActiveEvent);
+        }
+
+        /// <summary>
+        /// determines whether this instance has an override for the specified baseActiveEvent. if newActiveEvent
+        /// is null, it will simply check to see if baseActiveEvent has an override. if newActiveEvent is not null,
+        /// it will check to see if there's an override for baseActiveEvent pointing to newActiveEvent
+        /// </summary>
+        /// <returns><c>true</c> if this instance has and override for the specified baseActiveEvent, pointing to newActiveEvent; otherwise, <c>false</c></returns>
+        /// <param name="baseActiveEvent">base Active Event</param>
+        /// <param name="newActiveEvent">override Active Event</param>
+        public bool HasOverride (string baseActiveEvent, string newActiveEvent = null)
+        {
+            if (!_overrides.ContainsKey (baseActiveEvent))
+                return false;
+            if (newActiveEvent == null)
+                return true;
+            return _overrides [baseActiveEvent].Contains (newActiveEvent);
         }
 
         /// <summary>

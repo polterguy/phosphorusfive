@@ -555,6 +555,32 @@ namespace phosphorus.unittests
             Assert.AreEqual ("failure", node.Value, "active event wasn't correctly overridden");
         }
         
+        [Test]
+        public void InvokeOverriddenByCodeActiveEventDiscardAppContext ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
+            var context = Loader.Instance.CreateApplicationContext ();
+
+            // raising without overriding Active Event
+            Node node = new Node ();
+            context.Raise ("foo28", node);
+            Assert.AreEqual ("failure", node.Value, "active event wasn't correctly overridden");
+
+            // raising when Active event is overridden
+            context.Override ("foo28", "foo29");
+            node = new Node ();
+            context.Raise ("foo28", node);
+            Assert.AreEqual ("success", node.Value, "active event wasn't correctly overridden");
+
+            // discarding previous application context to make sure new context does NOT have override from previous context
+            context = Loader.Instance.CreateApplicationContext ();
+
+            // then re-raising Active Event
+            node = new Node ();
+            context.Raise ("foo28", node);
+            Assert.AreEqual ("failure", node.Value, "active event wasn't correctly overridden");
+        }
+
         [ActiveEvent (Name = "foo30")]
         private void foo30 (ApplicationContext context, ActiveEventArgs e)
         {
@@ -854,6 +880,65 @@ namespace phosphorus.unittests
             node = new Node ();
             context.Raise ("foo49", node);
             Assert.AreEqual ("success", node.Value, "active event wasn't correctly overridden");
+        }
+        
+        [ActiveEvent (Name = "foo50")]
+        private static void foo50 (ApplicationContext context, ActiveEventArgs e)
+        {
+            context.CallBase (e);
+            e.Args.Value += "failure1";
+        }
+        
+        [ActiveEvent (Name = "foo51", Overrides = "foo50")]
+        private static void foo51 (ApplicationContext context, ActiveEventArgs e)
+        {
+            context.CallBase (e);
+            e.Args.Value += "failure2";
+        }
+        
+        [ActiveEvent (Name = "foo52", Overrides = "foo50")]
+        private static void foo52 (ApplicationContext context, ActiveEventArgs e)
+        {
+            context.CallBase (e);
+            e.Args.Value += "failure3";
+        }
+        
+        [ActiveEvent (Name = "foo53_1", Overrides = "foo51")]
+        [ActiveEvent (Name = "foo53_2", Overrides = "foo52")]
+        private static void foo53 (ApplicationContext context, ActiveEventArgs e)
+        {
+            context.CallBase (e);
+            e.Args.Value += "success";
+        }
+
+        [Test]
+        public void InvokeEventOverriddenMultipleTimesThenOverridesOverriddenByOne ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
+            var context = Loader.Instance.CreateApplicationContext ();
+
+            // raising first Active Event
+            Node node = new Node ();
+            context.Raise ("foo50", node);
+            Assert.IsTrue (node.Get<string> () == "failure1failure2successfailure1failure3success" || 
+                           node.Get<string> () == "failure1failure3successfailure1failure2success", "active event wasn't correctly overridden");
+        }
+        
+        [ActiveEvent (Name = "foo54")]
+        [ActiveEvent (Name = "foo54")]
+        private static void foo54 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value += "success";
+        }
+
+        [Test]
+        public void RaiseActiveEventWithSameAttributeTwice ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            context.Raise ("foo54", tmp);
+            Assert.AreEqual ("successsuccess", tmp.Value, "Active Event in current assembly did not execute as expected");
         }
     }
 }

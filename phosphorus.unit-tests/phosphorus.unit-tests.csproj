@@ -47,6 +47,7 @@
     <Compile Include="ForEachTests.cs" />
     <Compile Include="BranchingTests.cs" />
     <Compile Include="WhileTests.cs" />
+    <Compile Include="EventTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

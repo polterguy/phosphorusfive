@@ -71,8 +71,11 @@
     <Compile Include="keywords\branching.cs" />
     <Compile Include="keywords\while.cs" />
     <Compile Include="expressions\Logical.cs" />
-    <Compile Include="keywords\commons\Conditions.cs" />
     <Compile Include="expressions\Tokenizer.cs" />
+    <Compile Include="keywords\events.cs" />
+    <Compile Include="keywords\helpers\Conditions.cs" />
+    <Compile Include="keywords\helpers\Event.cs" />
+    <Compile Include="keywords\helpers\Override.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -85,6 +88,6 @@
     <Folder Include="keywords\" />
     <Folder Include="expressions\" />
     <Folder Include="expressions\iterators\" />
-    <Folder Include="keywords\commons\" />
+    <Folder Include="keywords\helpers\" />
   </ItemGroup>
 </Project>
