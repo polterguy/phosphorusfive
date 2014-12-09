@@ -21,7 +21,8 @@ namespace phosphorus.lambda
         private static List<Override> _overrides = new List<Override> ();
 
         /// <summary>
-        /// creates a new Active Event
+        /// creates a new Active Event. pass in [lambda] and [overrides]. [overrides] can either be a 
+        /// string through value, or a list of values as children
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
@@ -30,11 +31,11 @@ namespace phosphorus.lambda
         {
             // verifying syntax
             if (e.Args.Count > 2 || e.Args.Count == 0)
-                throw new ArgumentException ("syntax error in [event], only two arguments are legal; [overrides] and [code], and [code] is mandatory");
-            else if (e.Args.Count == 2 && (e.Args [0].Name != "overrides" || e.Args [1].Name != "code"))
-                throw new ArgumentException ("syntax error in [event], only [overrides] and [code] are legal arguments, and [overrides] must come before [code]");
-            else if (e.Args.Count == 1 && e.Args [0].Name != "code")
-                throw new ArgumentException ("syntax error in [event], [code] is mandatory argument");
+                throw new ArgumentException ("syntax error in [event], only two arguments are legal; [overrides] and [lambda], and [lambda] is mandatory");
+            else if (e.Args.Count == 2 && (e.Args [0].Name != "overrides" || e.Args [1].Name != "lambda"))
+                throw new ArgumentException ("syntax error in [event], only [overrides] and [lambda] are legal arguments, and [overrides] must come before [lambda]");
+            else if (e.Args.Count == 1 && e.Args [0].Name != "lambda")
+                throw new ArgumentException ("syntax error in [event], [lambda] is mandatory argument");
 
             // retrieving [name]
             string name = e.Args.Get<string> ();
@@ -42,10 +43,9 @@ namespace phosphorus.lambda
                 throw new ArgumentException ("no event name given to [event]");
 
             // retrieving [overrides] and [code]
-            string overrides = null;
             Node lambda = null;
             if (e.Args.Count == 2) {
-                overrides = e.Args [0].Get<string> ();
+                CreateOverride (context, name, GetOverrides (e.Args [0]));
                 lambda = e.Args [1].Clone ();
             } else {
                 lambda = e.Args [0].Clone ();
@@ -53,21 +53,17 @@ namespace phosphorus.lambda
 
             // creating event
             CreateEvent (context, name, lambda);
-
-            // creating override, if any
-            if (!string.IsNullOrEmpty (overrides))
-                CreateOverride (context, name, overrides);
         }
 
         /// <summary>
-        /// deletes all existing events with the given name
+        /// deletes all existing events with the given name given through the value of the [delete-event] node
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "delete-event")]
         private static void lambda_delete_event (ApplicationContext context, ActiveEventArgs e)
         {
-            // retrieving [name]
+            // retrieving [name] of event to delete
             string name = e.Args.Get<string> ();
             if (string.IsNullOrEmpty (name))
                 throw new ArgumentException ("no event name given to [delete-event]");
@@ -76,11 +72,74 @@ namespace phosphorus.lambda
             if (e.Args.Count > 0)
                 throw new ArgumentException ("[delete-event] does not take any arguments");
 
+            // actually deleting event
             DeleteEvent (context, name);
         }
 
         /// <summary>
-        /// responsible for "re-mapping" all dynamically created Active Events and overrides
+        /// [call-base] calls the base Active Event, if any, for the given invocation of the currently
+        /// executing Active Event. pass in arguments to base as children, otherwise base event won't
+        /// have any arguments during execution
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "call-base")]
+        private static void lambda_call_base (ApplicationContext context, ActiveEventArgs e)
+        {
+            // checking to see if current Active Event actually has a base, and if we're even inside an Active Event
+            if (e.Args.Root [0].Name == "__base" && e.Args.Root [0].Count > 0) {
+
+                // retrieving base Active Event name, making sure "current base" ise removed, but all other
+                // base event data is passed onwards into the hierarchy
+                string activeEventName = e.Args.Root [0] [0].Get<string> ();
+
+                // appending base information to current invocation, and removing "this" event from base list
+                // of args passed into "this invocation", but only if base has additional base events
+                if (e.Args.Root [0].Count > 1) {
+                    e.Args.Insert (0, e.Args.Root [0].Clone ());
+                    e.Args [0] [0].Untie ();
+                }
+
+                // invoking base event
+                InvokeEvent (context, activeEventName, e.Args);
+
+                // cleaning up "base list" after execution of base, but only if there is any "base events" for current base
+                if (e.Args [0].Name == "__base")
+                    e.Args [0].Untie ();
+            }
+        }
+
+        /// <summary>
+        /// dynamically overrides one method with another. pass in the method to override as value, and
+        /// the method you wish to override it with as [with]
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "override")]
+        private static void lambda_override (ApplicationContext context, ActiveEventArgs e)
+        {
+            // verifying syntax
+            if (e.Args.Count != 1 || e.Args [0].Name != "with")
+                throw new ArgumentException ("you must pass in [with] to [override] as event to override with");
+            if (e.Args [0].Value == null && e.Args [0].Count == 0)
+                throw new ArgumentException ("you must pass in either a value or children to [override] as event(s) you wish to override");
+            if (e.Args [0].Value != null && e.Args [0].Count > 0)
+                throw new ArgumentException ("you must pass in either a value or children to [override] as event(s) you wish to override, not both");
+
+            string baseEvt = e.Args.Get<string> ();
+            if (e.Args [0].Value != null) {
+                CreateOverride (context, e.Args [0].Get<string> (), new string [] { baseEvt });
+            } else {
+                foreach (var idxWith in e.Args [0].Children) {
+                    CreateOverride (context, idxWith.Get<string> (), new string [] { baseEvt });
+                }
+            }
+        }
+
+        /// <summary>
+        /// responsible for "re-mapping" all dynamically created Active Events and overrides. automatically
+        /// called by the framework when a new <see cref="phosphorus.core.ApplicationContext"/> is created
+        /// and initialized
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
@@ -99,21 +158,79 @@ namespace phosphorus.lambda
                 InitializeOverride (context, idxOverride);
             }
         }
-        
+
         /*
          * responsible for executing all dynamically created Active Events or lambda objects
          */
         [ActiveEvent (Name = "_pf.core.execute-dynamic-lambda")]
         private static void _pf_core_execute_dynamic_lambda (ApplicationContext context, ActiveEventArgs e)
         {
+            // retrieving actual event name raised
             string actualEvtName = e.Base.Name;
+
+            // making sure "base event" is attached to lambda execution object, in case 
+            // event invokes "call-base", if there is a base event
+            if (e.Base.Base != null) {
+
+                // attaching all base Active Events in consecutive order
+                e.Args.Insert (0, new Node ("__base"));
+                ActiveEventArgs idxArgs = e.Base.Base;
+                while (idxArgs != null) {
+                    e.Args [0].Add (new Node (string.Empty, idxArgs.Name));
+                    idxArgs = idxArgs.Base;
+                }
+
+                // invoking event
+                InvokeEvent (context, actualEvtName, e.Args);
+
+                // removing "base event" arguments
+                e.Args [0].Untie ();
+            } else {
+
+                // no reason to massage this bugger
+                InvokeEvent (context, actualEvtName, e.Args);
+            }
+        }
+
+        /*
+         * responsible for actually invoking an Active Event from our list of dynamically created events
+         */
+        private static void InvokeEvent (ApplicationContext context, string actualEvtName, Node args)
+        {
+            // checking to see if we have an Active Event with the given name
             if (_events.ContainsKey (actualEvtName)) {
+
+                // looping through all dynamically created Active Events with the given name
                 foreach (var evt in _events [actualEvtName]) {
+
+                    // creating our lambda execution object, appending all the parameters given to it
                     Node exe = evt.Lambda.Clone ();
-                    foreach (Node idxArg in e.Args.Children) {
-                        exe.Add (idxArg.Clone ());
+                    foreach (Node idxArg in args.Children) {
+                        if (idxArg.Name == "__base")
+                            exe.Insert (0, idxArg.Clone ());
+                        else
+                            exe.Add (idxArg.Clone ());
                     }
+
+                    // actually executing event implementation. no needs to invoke "copy" version, since we've done the dirty
+                    // works already copying the event code anyway, and to invoke the [lamba] simple version saves some cycles
                     context.Raise ("lambda", exe);
+                }
+            }
+        }
+
+        /*
+         * returns list of overrides
+         */
+        private static IEnumerable<string> GetOverrides (Node overrideNode)
+        {
+            if (overrideNode.Value != null && overrideNode.Count > 0)
+                throw new ArgumentException ("you cannot declare overrides for [event] both as value and as children, choose one");
+            if (overrideNode.Value != null) {
+                yield return overrideNode.Get<string> ();
+            } else {
+                foreach (var idxOverride in overrideNode.Children) {
+                    yield return idxOverride.Get<string> ();
                 }
             }
         }
@@ -123,10 +240,13 @@ namespace phosphorus.lambda
          */
         private static void CreateEvent (ApplicationContext context, string name, Node lambda)
         {
+            // creating new dynamic Active Event and adding to our (static) list of events
             Event evt = new Event (name, lambda);
             if (!_events.ContainsKey (name))
                 _events [name] = new List<Event> ();
             _events [name].Add (evt);
+
+            // initializing event by creating the correct overrides and such
             InitializeEvent (context, evt);
         }
 
@@ -151,11 +271,16 @@ namespace phosphorus.lambda
         /*
          * creates an override from one Active Event to another
          */
-        private static void CreateOverride (ApplicationContext context, string overrideEvent, string overriddenEvent)
+        private static void CreateOverride (ApplicationContext context, string overrideEvent, IEnumerable<string> overrides)
         {
-            Override over = new Override (overrideEvent, overriddenEvent);
-            _overrides.Add (over);
-            InitializeOverride (context, over);
+            // looping through all overrides given for event to override, and creating associated overrides as static list
+            foreach (var overriddenEvent in overrides) {
+                Override over = new Override (overrideEvent, overriddenEvent);
+                _overrides.Add (over);
+
+                // actually initializing our override
+                InitializeOverride (context, over);
+            }
         }
 
         /*
@@ -166,7 +291,6 @@ namespace phosphorus.lambda
         {
             context.RemoveOverride (over.OverriddenEvent, "_pf.core.execute-dynamic-lambda");
             context.Override (over.OverriddenEvent, over.OverrideEvent);
-            context.Override (over.OverrideEvent, "_pf.core.execute-dynamic-lambda");
         }
     }
 }

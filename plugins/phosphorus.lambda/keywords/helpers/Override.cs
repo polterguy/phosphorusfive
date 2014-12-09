@@ -22,6 +22,8 @@ namespace phosphorus.lambda
         /// <param name="oldActiveEvent">name of the Active Event that is overridden</param>
         public Override (string overrideEvent, string overriddenEvent)
         {
+            OverrideEvent = overrideEvent;
+            OverriddenEvent = overriddenEvent;
         }
 
         /// <summary>
