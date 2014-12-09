@@ -1107,6 +1107,35 @@ test.foo60
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("success", tmp [2].Value, "wrong value of node after executing lambda object");
         }
+        
+        [Test]
+        public void CallEmptyBase ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+event:test.foo61
+  lambda
+    bar
+event:test.foo62
+  overrides:test.foo61
+  lambda
+    call-base
+    set:@/../_out/#/?value
+      :{0}{1}
+        :@/./././_out/#/?value
+        :success
+_out
+set:@/+/_out/?value
+  :@/./-/?node
+test.foo61
+  _out";
+            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("lambda", tmp);
+            Assert.AreEqual ("success", tmp [2].Value, "wrong value of node after executing lambda object");
+        }
     }
 }
 

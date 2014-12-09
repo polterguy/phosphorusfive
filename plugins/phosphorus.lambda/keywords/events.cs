@@ -104,7 +104,7 @@ namespace phosphorus.lambda
                 InvokeEvent (context, activeEventName, e.Args);
 
                 // cleaning up "base list" after execution of base, but only if there is any "base events" for current base
-                if (e.Args [0].Name == "__base")
+                if (e.Args.Count > 0 && e.Args [0].Name == "__base")
                     e.Args [0].Untie ();
             }
         }
