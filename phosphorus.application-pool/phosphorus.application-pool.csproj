@@ -76,16 +76,21 @@
       <Project>{C02D30A6-7DA2-4045-8644-9710AB40B629}</Project>
       <Name>phosphorus.hyperlisp</Name>
     </ProjectReference>
-    <ProjectReference Include="..\plugins\phosphorus.tiedown\phosphorus.tiedown.csproj">
-      <Project>{27409EA4-A00B-4C5A-AA06-992BE4D412EC}</Project>
-      <Name>phosphorus.tiedown</Name>
-    </ProjectReference>
     <ProjectReference Include="..\plugins\phosphorus.lambda\phosphorus.lambda.csproj">
       <Project>{8EB5FDEA-D073-4147-AE65-376A01B463DF}</Project>
       <Name>phosphorus.lambda</Name>
     </ProjectReference>
+    <ProjectReference Include="..\plugins\phosphorus.tiedown\phosphorus.tiedown.csproj">
+      <Project>{27409EA4-A00B-4C5A-AA06-992BE4D412EC}</Project>
+      <Name>phosphorus.tiedown</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="code\" />
+    <Folder Include="system42\startup-files\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="system42\application-startup" />
+    <None Include="system42\startup-files\execute-file" />
   </ItemGroup>
 </Project>

@@ -16,53 +16,39 @@ namespace phosphorus.five.applicationpool
 
     public class Global : HttpApplication
     {
-        private ApplicationContext _context;
+        private static string _applicationBasePath;
 
+        /*
+         * loads up all plugins assemblies and raises the [pf.application-start] Active Event
+         */
         protected void Application_Start(Object sender, EventArgs e)
         {
-            // adding all assemblies from web.config
+            // sotring application base path for later usage
+            _applicationBasePath = Server.MapPath ("~");
+
+            // adding up executing (this) assembly as Active Event handler
+            Loader.Instance.LoadAssembly (Assembly.GetExecutingAssembly ());
+
+            // adding all Active Event handler assemblies from web.config
             var configuration = ConfigurationManager.GetSection ("activeEventAssemblies") as ActiveEventAssemblies;
             foreach (ActiveEventAssembly idxAssembly in configuration.Assemblies) {
                 Loader.Instance.LoadAssembly (Server.MapPath (configuration.PluginDirectory), idxAssembly.Assembly);
             }
 
-            // then adding up executing (this) assembly
-            Loader.Instance.LoadAssembly (Assembly.GetExecutingAssembly ());
-
             // then raising the application start active event
-            _context = Loader.Instance.CreateApplicationContext ();
-            _context.Raise ("pf.application-start", null);
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            context.Raise ("pf.application-start", null);
         }
 
-        protected void Session_Start(Object sender, EventArgs e)
+        /// <summary>
+        /// returns the application base path as value of given args node
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.get-application-root-folder")]
+        private static void pf_get_application_root_folder (ApplicationContext context, ActiveEventArgs e)
         {
-            _context.Raise ("pf.session-start", null);
-        }
-        
-        protected void Session_End(Object sender, EventArgs e)
-        {
-            _context.Raise ("pf.session-end", null);
-        }
-        
-        protected void Application_Error(Object sender, EventArgs e)
-        {
-            _context.Raise ("pf.application-error", null);
-        }
-
-        protected void Application_BeginRequest(Object sender, EventArgs e)
-        {
-        }
-
-        protected void Application_EndRequest(Object sender, EventArgs e)
-        {
-        }
-
-        protected void Application_AuthenticateRequest(Object sender, EventArgs e)
-        {
-        }
-
-        protected void Application_End(Object sender, EventArgs e)
-        {
+            e.Args.Value = _applicationBasePath;
         }
     }
 }

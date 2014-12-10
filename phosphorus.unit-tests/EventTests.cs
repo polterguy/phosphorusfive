@@ -177,7 +177,9 @@ test.foo5
 event:test.foo6
   lambda
     if:@/../?name
-      =:lambda
+      =:test.foo6
+      and:@/../?value
+        =:howdy
       lambda
         set:@/../_out/#/?value
           :{0}{1}
@@ -186,7 +188,7 @@ event:test.foo6
 _out
 set:@/+/_out/?value
   :@/./-/?node
-test.foo6
+test.foo6:howdy
   _out";
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
             context.Raise ("lambda", tmp);
@@ -1135,7 +1137,7 @@ test.foo61
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("success", tmp [2].Value, "wrong value of node after executing lambda object");
-        }
+        } // TODO: create tests and keyword for "delete-override"
     }
 }
 

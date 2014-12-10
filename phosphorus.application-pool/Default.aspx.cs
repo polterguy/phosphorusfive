@@ -20,27 +20,19 @@ namespace phosphorus.five.applicationpool
         protected override void OnInit (EventArgs e)
         {
             _context = Loader.Instance.CreateApplicationContext ();
-            Init += delegate {
-                if (!IsPostBack) {
-                    _context.Raise ("pf.page-init", null);
-                } else {
-                    _context.Raise ("pf.page-init-postback", null);
-                }
-            };
-            Load += delegate {
-                if (!IsPostBack) {
-                    _context.Raise ("pf.page-load", null);
-                } else {
-                    _context.Raise ("pf.page-load-postback", null);
-                }
-            };
-            PreRender += delegate {
-                if (!IsPostBack) {
-                    _context.Raise ("pf.page-prerender", null);
-                } else {
-                    _context.Raise ("pf.page-prerender-postback", null);
-                }
-            };
+            if (!IsPostBack) {
+                Load += delegate {
+
+                    // retrieving "form name", and passing it into [pf.form-load], which for web is the local path and name of webpage
+                    // executing, minus ".aspx" parts, in lower characters
+                    var formName = Request.Url.LocalPath.TrimStart ('/').ToLower ();
+                    formName = formName.Substring (0, formName.LastIndexOf ("."));
+                    // TODO: pass in http GET parameters
+
+                    // raising our [pf.form-load] Active Event
+                    _context.Raise ("pf.load-form", new Node (string.Empty, formName));
+                };
+            }
             base.OnInit (e);
         }
     }

@@ -211,6 +211,8 @@ namespace phosphorus.lambda
                         else
                             exe.Add (idxArg.Clone ());
                     }
+                    exe.Name = args.Name;
+                    exe.Value = args.Value;
 
                     // actually executing event implementation. no needs to invoke "copy" version, since we've done the dirty
                     // works already copying the event code anyway, and to invoke the [lamba] simple version saves some cycles

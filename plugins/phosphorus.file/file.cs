@@ -16,7 +16,7 @@ namespace phosphorus.file
     public static class file
     {
         /// <summary>
-        /// helper to load text file
+        /// loads a text file from the path given as value of args given and returns as first child node's value
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
@@ -26,26 +26,21 @@ namespace phosphorus.file
             string fileName = e.Args.Get<string> ();
             using (TextReader reader = File.OpenText (fileName)) {
                 string content = reader.ReadToEnd ();
-                e.Args.Add (new Node (string.Empty, content));
+                e.Args.Insert (0, new Node (string.Empty, content));
             }
         }
 
         /// <summary>
-        /// helper to save text as file
+        /// list all the files in directory given as value of args given
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.file.save")]
-        private static void pf_file_save (ApplicationContext context, ActiveEventArgs e)
+        /// <param name="context">Context.</param>
+        /// <param name="e">E.</param>
+        [ActiveEvent (Name = "pf.file.list-files")]
+        private static void pf_file_list_files (ApplicationContext context, ActiveEventArgs e)
         {
-            Node tmp = new Node ("code");
-            foreach (Node idx in e.Args.Root.Children) {
-                tmp.Add (idx.Clone ());
-            }
-            context.Raise ("pf.nodes-2-code", tmp);
-            string fileName = HttpContext.Current.Server.MapPath ("~/debug.txt");
-            using (TextWriter writer = File.CreateText (fileName)) {
-                writer.WriteLine (tmp.Get <string> ());
+            // iterating all files in given directory, and returning as nodes beneath args given
+            foreach (var idxFile in Directory.GetFiles (e.Args.Get<string> ())) {
+                e.Args.Add (new Node (string.Empty, idxFile));
             }
         }
     }
