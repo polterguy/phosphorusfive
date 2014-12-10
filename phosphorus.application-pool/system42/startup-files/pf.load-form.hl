@@ -1,0 +1,3 @@
+event:pf.load-form
+  lambda
+    pf.execute-lambda-file:system42/forms/default-form.hl
