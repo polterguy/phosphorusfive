@@ -1,0 +1,12 @@
+event:pf.load-form
+  lambda
+    pf.create-form
+      ID:mumbo-jumbo
+      ElementType:div
+      RenderType:Default
+      Controls
+        Literal
+          ID:my-lit
+          ElementType:p
+          RenderType:NoClose
+          innerHTML:"this is hello world to web :D"

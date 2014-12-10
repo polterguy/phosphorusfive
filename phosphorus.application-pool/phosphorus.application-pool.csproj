@@ -84,6 +84,10 @@
       <Project>{27409EA4-A00B-4C5A-AA06-992BE4D412EC}</Project>
       <Name>phosphorus.tiedown</Name>
     </ProjectReference>
+    <ProjectReference Include="..\plugins\UI\phosphorus.web.forms\phosphorus.web.forms.csproj">
+      <Project>{C327C19F-28B0-44FC-ABE3-3A5ABA7CCC6E}</Project>
+      <Name>phosphorus.web.forms</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="code\" />
@@ -92,5 +96,6 @@
   <ItemGroup>
     <None Include="system42\application-startup" />
     <None Include="system42\startup-files\execute-file" />
+    <None Include="system42\startup-files\load-form" />
   </ItemGroup>
 </Project>
