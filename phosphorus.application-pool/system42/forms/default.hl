@@ -1,6 +1,3 @@
-if:@/../_args/?node
-  set:@/../**/label/=my-label/value/?value
-    :mongo in tha house!!
 pf.create-form:mumbo-jumbo
   controls
     label:my-label

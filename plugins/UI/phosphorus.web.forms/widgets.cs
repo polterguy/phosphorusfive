@@ -27,7 +27,7 @@ namespace phosphorus.web.forms
         }
 
         /// <summary>
-        /// creates a literal type of widget, that can have static text as content
+        /// creates a label type of widget, that can have static text as content
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
@@ -79,6 +79,12 @@ namespace phosphorus.web.forms
                     break;
                 case "class":
                     widget ["class"] = idxArg.Get<string> ();
+                    break;
+                case "element":
+                    widget.ElementType = idxArg.Get<string> ();
+                    break;
+                case "render-type":
+                    widget.RenderType = (Widget.RenderingType)Enum.Parse (typeof(Widget.RenderingType), idxArg.Get<string> ());
                     break;
                 default:
                     if (idxArg.Name.StartsWith ("on")) {

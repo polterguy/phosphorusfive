@@ -38,6 +38,7 @@ namespace phosphorus.five.applicationpool
         {
             // creating application context
             _context = Loader.Instance.CreateApplicationContext ();
+            StoreViewStateInSession = true;
 
             // registering "this" web page as listener object
             _context.RegisterListeningObject (this);
