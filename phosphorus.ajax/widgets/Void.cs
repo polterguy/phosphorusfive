@@ -18,6 +18,14 @@ namespace phosphorus.ajax.widgets
             RenderType = RenderingType.NoClose;
         }
 
+        /// <summary>
+        /// initializes a new instance of the <see cref="phosphorus.ajax.widgets.Void"/> class
+        /// </summary>
+        /// <param name="elementType">html element to render widget with</param>
+        public Void (string elementType)
+            : base (elementType)
+        { }
+
         // overridden to throw an exception if user tries to explicitly set the innerHTML attribute of this control
         public override string this [string name] {
             get { return base [name]; }

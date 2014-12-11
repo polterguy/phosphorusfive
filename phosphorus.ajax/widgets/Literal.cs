@@ -17,6 +17,53 @@ namespace phosphorus.ajax.widgets
     public class Literal : Widget
     {
         /// <summary>
+        /// initializes a new instance of the <see cref="phosphorus.ajax.widgets.Literal"/> class
+        /// </summary>
+        public Literal ()
+        { }
+
+        /// <summary>
+        /// initializes a new instance of the <see cref="phosphorus.ajax.widgets.Literal"/> class
+        /// </summary>
+        /// <param name="elementType">html element to render widget with</param>
+        public Literal (string elementType)
+            : base (elementType)
+        { }
+
+        /// <summary>
+        /// initializes a new instance of the <see cref="phosphorus.ajax.widgets.Literal"/> class
+        /// </summary>
+        /// <param name="elementType">html element to render widget with</param>
+        /// <param name="renderType">how to render the widget</param>
+        public Literal (string elementType, Widget.RenderingType renderType)
+            : base (elementType, renderType)
+        { }
+
+        /// <summary>
+        /// initializes a new instance of the <see cref="phosphorus.ajax.widgets.Literal"/> class
+        /// </summary>
+        /// <param name="elementType">html element to render widget with</param>
+        /// <param name="renderType">how to render the widget</param>
+        /// <param name="innerHTML">content of literal</param>
+        public Literal (string elementType, Widget.RenderingType renderType, string innerHTML)
+            : base (elementType, renderType)
+        {
+            this.innerHTML = innerHTML;
+        }
+
+        // overridden to supply default html element
+        public override string ElementType {
+            get {
+                if (string.IsNullOrEmpty (base.ElementType))
+                    return "p";
+                return base.ElementType;
+            }
+            set {
+                base.ElementType = value;
+            }
+        }
+
+        /// <summary>
         /// gets or sets the innerHTML property of the widget. this is also the inner default property of the widget, 
         /// which means the stuff between the opening and end declaration of the widget in your .aspx markup
         /// </summary>

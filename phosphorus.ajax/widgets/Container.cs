@@ -50,6 +50,41 @@ namespace phosphorus.ajax.widgets
         private static object _lock = new object ();
 
         /// <summary>
+        /// initializes a new instance of the <see cref="phosphorus.ajax.widgets.Container"/> class
+        /// </summary>
+        public Container ()
+        { }
+
+        /// <summary>
+        /// initializes a new instance of the <see cref="phosphorus.ajax.widgets.Container"/> class
+        /// </summary>
+        /// <param name="elementType">html element to render widget with</param>
+        public Container (string elementType)
+            : base (elementType)
+        { }
+
+        /// <summary>
+        /// initializes a new instance of the <see cref="phosphorus.ajax.widgets.Container"/> class
+        /// </summary>
+        /// <param name="elementType">html element to render widget with</param>
+        /// <param name="renderType">how to render the widget</param>
+        public Container (string elementType, Widget.RenderingType renderType)
+            : base (elementType, renderType)
+        { }
+
+        // overridden to supply default element
+        public override string ElementType {
+            get {
+                if (string.IsNullOrEmpty (base.ElementType))
+                    return "div";
+                return base.ElementType;
+            }
+            set {
+                base.ElementType = value;
+            }
+        }
+
+        /// <summary>
         /// returns all controls of the given type T from the Controls collection
         /// </summary>
         /// <returns>the controls</returns>

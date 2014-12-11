@@ -11,6 +11,10 @@
     </head>
     <body>
         <form id="form1" runat="server" autocomplete="off">
+            <pf:Container
+                runat="server"
+                class="container"
+                id="container" />
         </form>
     </body>
 </html>

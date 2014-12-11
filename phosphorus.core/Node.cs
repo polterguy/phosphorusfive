@@ -365,6 +365,8 @@ namespace phosphorus.core
 
             if (typeof(T) == Value.GetType ())
                 return (T)Value;
+            if (Value is T)
+                return (T)Value;
             return (T)Convert.ChangeType (Value, typeof(T), System.Globalization.CultureInfo.InvariantCulture);
         }
 

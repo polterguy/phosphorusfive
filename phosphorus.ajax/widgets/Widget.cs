@@ -19,6 +19,26 @@ namespace phosphorus.ajax.widgets
     public abstract class Widget : Control, IAttributeAccessor
     {
         /// <summary>
+        /// wrapper for an ajax server-side event
+        /// </summary>
+        public class AjaxEventArgs : EventArgs
+        {
+            public AjaxEventArgs (string name)
+            {
+                Name = name;
+            }
+
+            /// <summary>
+            /// retrieves the name of the event raised
+            /// </summary>
+            /// <value>the name of the event raised on client side</value>
+            public string Name {
+                get;
+                private set;
+            }
+        }
+
+        /// <summary>
         /// rules for how to render the tag
         /// </summary>
         public enum RenderingType
@@ -58,10 +78,36 @@ namespace phosphorus.ajax.widgets
         protected RenderingMode _renderMode = RenderingMode.Default;
 
         /// <summary>
+        /// initializes a new instance of the <see cref="phosphorus.ajax.widgets.Widget"/> class
+        /// </summary>
+        public Widget ()
+        { }
+
+        /// <summary>
+        /// initializes a new instance of the <see cref="phosphorus.ajax.widgets.Widget"/> class
+        /// </summary>
+        /// <param name="elementType">html element to render widget with</param>
+        public Widget (string elementType)
+        {
+            ElementType = elementType;
+        }
+
+        /// <summary>
+        /// initializes a new instance of the <see cref="phosphorus.ajax.widgets.Widget"/> class
+        /// </summary>
+        /// <param name="elementType">html element to render widget with</param>
+        /// <param name="renderType">how to render the widget</param>
+        public Widget (string elementType, RenderingType renderType)
+            : this (elementType)
+        {
+            RenderType = renderType;
+        }
+
+        /// <summary>
         /// gets or sets the element type used to render the html element such as "p", "div", "ul" etc
         /// </summary>
         /// <value>the tag name</value>
-        public string ElementType {
+        public virtual string ElementType {
             get { return this ["Tag"]; }
             set {
                 if (value.ToLower () != value)
@@ -242,7 +288,7 @@ namespace phosphorus.ajax.widgets
                 throw new AccessViolationException ("method + '" + eventHandlerName + "' is illegal to invoke over http");
 
             // invoking methods with the "this" widget and empty event args
-            method.Invoke (owner, new object[] { this, new EventArgs() });
+            method.Invoke (owner, new object[] { this, new AjaxEventArgs(eventName) });
         }
 
         /// <summary>

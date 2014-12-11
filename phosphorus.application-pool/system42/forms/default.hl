@@ -1,0 +1,12 @@
+if:@/../_args/?node
+  set:@/../**/label/=my-label/value/?value
+    :mongo in tha house!!
+pf.create-form:mumbo-jumbo
+  controls
+    label:my-label
+      value:"this is hello world to web :D"
+      onclick
+        pf.create-form
+          controls
+            label:my-label-2
+              value:"this is ALSO hello world to web :D"

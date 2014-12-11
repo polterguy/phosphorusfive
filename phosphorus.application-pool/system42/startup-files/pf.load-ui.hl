@@ -1,0 +1,8 @@
+event:pf.load-ui
+  lambda
+    add:@/+2/?node
+      :@/../_args/?node
+    set:@/+/?value
+      :system42/forms/{0}.hl
+        :@/../_form/?value
+    pf.execute-lambda-file
