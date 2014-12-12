@@ -17,6 +17,7 @@ namespace phosphorus.ajax.widgets
     /// in your .aspx markup will be treated as controls. you can also dynamically add child controls to this widget
     /// by using the <see cref="phosphorus.ajax.widgets.Container.CreatePersistentControl"/> method
     /// </summary>
+    [ViewStateModeById]
     public class Container : Widget, INamingContainer
     {
         // interface to create controls to avoid reflection as much as possible
@@ -101,7 +102,7 @@ namespace phosphorus.ajax.widgets
         /// <summary>
         /// returns all descendant controls of type T
         /// </summary>
-        /// <returns>all controls of type T that are children, or children of childre, etc of this control</returns>
+        /// <returns>all controls of type T that are children, or children of children, etc of this control</returns>
         /// <typeparam name="T">the type of controls to return</typeparam>
         public IEnumerable<T> GetDescendantControls<T> () where T : Control
         {
@@ -179,7 +180,7 @@ namespace phosphorus.ajax.widgets
             get { return Controls.Count > 0; }
         }
 
-        protected override void LoadControlState (object savedState)
+        protected override void LoadViewState (object savedState)
         {
             // reloading persisted controls, if there are any
             object[] tmp = savedState as object[];
@@ -225,13 +226,13 @@ namespace phosphorus.ajax.widgets
 
                 StoreOriginalControls ();
 
-                base.LoadControlState (tmp [1]);
+                base.LoadViewState (tmp [1]);
             } else {
-                base.LoadControlState (savedState);
+                base.LoadViewState (savedState);
             }
         }
 
-        protected override object SaveControlState ()
+        protected override object SaveViewState ()
         {
             // making sure all dynamically added controls are persistent to the control state, if there are any
             if (_originalCollection != null) {
@@ -245,12 +246,12 @@ namespace phosphorus.ajax.widgets
                 }
                 object[] tmp = new object [2];
                 tmp [0] = lst.ToArray ();
-                tmp [1] = base.SaveControlState ();
+                tmp [1] = base.SaveViewState ();
                 return tmp;
             } else {
 
                 // not managing controls
-                return base.SaveControlState ();
+                return base.SaveViewState ();
             }
         }
 
@@ -303,7 +304,7 @@ namespace phosphorus.ajax.widgets
                     }
                 }
                 int position = Controls.IndexOf (idx);
-                widgets.Add (new Tuple<string, int> (html, position + 1));
+                widgets.Add (new Tuple<string, int> (html, position));
             }
 
             // we have to insert such that the first controls becomes added before controls behind it, such that the dom position
@@ -372,7 +373,7 @@ namespace phosphorus.ajax.widgets
             return _creators [typeof(T)];
         }
 
-        // used to "pack" the types stored in the ControlState to make viewstate as small as possible
+        // used to "pack" the types stored in the ViewState to make viewstate as small as possible
         private static string GetTypeID (Type type)
         {
             foreach (var idx in _typeMapper) {

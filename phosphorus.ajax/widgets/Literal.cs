@@ -14,6 +14,7 @@ namespace phosphorus.ajax.widgets
     /// </summary>
     [ParseChildren(true, "innerHTML")]
     [PersistChildren(false)]
+    [ViewStateModeById]
     public class Literal : Widget
     {
         /// <summary>

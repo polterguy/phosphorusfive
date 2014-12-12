@@ -4,6 +4,11 @@ pf.create-form:mumbo-jumbo
       value:"this is hello world to web :D"
       onclick
         pf.create-form
+          parent:mumbo-jumbo
           controls
-            label:my-label-2
+            label
               value:"this is ALSO hello world to web :D"
+              onclick
+                set:@/+/?value
+                  :@/../_form-id/?value
+                pf.remove-widget

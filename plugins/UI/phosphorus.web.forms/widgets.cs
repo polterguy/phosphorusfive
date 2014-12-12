@@ -44,11 +44,22 @@ namespace phosphorus.web.forms
          */
         private static T CreateControl<T> (Node node, string elementType, Widget.RenderingType type = Widget.RenderingType.Default) where T : Widget, new()
         {
+            // creating widget as persistent control
             Container parent = node [0].Get<Container> ();
             T widget = parent.CreatePersistentControl<T> (node.Get<string> ());
+
+            // in case no ID was given, we "return" it to creator as value of current node
+            if (node.Value == null)
+                node.Value = widget.ID;
+
+            // setting ElementType (html element) of Widget
             widget.ElementType = elementType;
+
+            // setting rendering type (no closing element, void or default)
             if (type != Widget.RenderingType.Default)
                 widget.RenderType = type;
+
+            // returning widget to caller
             return widget;
         }
 
@@ -74,11 +85,14 @@ namespace phosphorus.web.forms
                 case "controls":
                     foreach (Node idxChild in idxArg.Children) {
                         idxChild.Insert (0, new Node ("__parent", widget));
-                        widget.Controls.Add (context.Raise ("pf.web.widgets." + idxChild.Name, idxChild).Get<Widget> ());
+                        context.Raise ("pf.web.widgets." + idxChild.Name, idxChild);
                     }
                     break;
                 case "class":
                     widget ["class"] = idxArg.Get<string> ();
+                    break;
+                case "style":
+                    widget ["style"] = idxArg.Get<string> ();
                     break;
                 case "element":
                     widget.ElementType = idxArg.Get<string> ();
@@ -107,11 +121,17 @@ namespace phosphorus.web.forms
                 widget [node.Name] = node.Get<string> ();
             } else {
 
-                // pf.lambda event handler
-                widget [node.Name] = "common_event_handler";
-                Node eventNode = new Node (string.Empty, widget.ID);
+                // creating our pf.lambda object, and invoking our [pf.web.add-widget-event] Active Event to map the
+                // ajax event to our pf.lambda object, passing in the widget that contains the Ajax Event
+                Node eventNode = new Node (string.Empty, widget);
                 eventNode.Add (node.Clone ());
-                context.Raise ("pf.add-widget-event", eventNode);
+
+                // making sure [_form-id] and [_widget-id] is passed into pf.lambda object as parameters
+                eventNode [0].Insert (0, new Node ("_form-id", node.Root.Value));
+                eventNode [0].Insert (1, new Node ("_widget-id", node.Parent.Value));
+
+                // raising the Active Event that actually creates our ajax event handler for our pf.lambda object
+                context.Raise ("pf.web.add-widget-event", eventNode);
             }
         }
     }

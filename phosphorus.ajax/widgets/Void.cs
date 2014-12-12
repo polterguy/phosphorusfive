@@ -11,6 +11,7 @@ namespace phosphorus.ajax.widgets
     /// <summary>
     /// a widget that has no children and no content and is self closed
     /// </summary>
+    [ViewStateModeById]
     public class Void : Widget
     {
         public Void ()

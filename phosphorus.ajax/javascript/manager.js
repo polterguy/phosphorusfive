@@ -169,6 +169,9 @@
         case 'class':
           this.el.className = pf._getChange(this.el.className, value);
           break;
+        case 'value':
+          this.el.value = pf._getChange(this.el.value, value);
+          break;
         default:
           if (key.indexOf('__pf_add_') != -1 ) {
             // inserting html child widget
@@ -177,7 +180,7 @@
             var tmpEl = document.createElement('div');
             tmpEl.innerHTML = value;
             fragment.appendChild(tmpEl.firstChild);
-            this.el.insertBefore(fragment, this.el.childNodes[pos]);
+            this.el.insertBefore(fragment, this.el.children[pos]);
           } else {
             this.el.setAttribute(key, pf._getChange(this.el[key], value));
           }

@@ -40,6 +40,32 @@ namespace phosphorus.five.applicationpool
             context.Raise ("pf.application-start", null);
         }
 
+        /*
+         * handled to create support for "beautiful URLs", to rewrite path, to support non-existing pages, through pf.lambda
+         */
+        protected void Application_BeginRequest(object sender, EventArgs e)
+        {
+            // rewriting path such that "x.com/somefolder/somefile" becomes "x.com?file=somefolder/somefile"
+            string localPath = HttpContext.Current.Request.Url.LocalPath.Trim ('/').ToLower ();
+            if (string.IsNullOrEmpty (Request.QueryString ["file"]) && (localPath == "default.aspx" || !localPath.Contains ("."))) {
+
+                // if file requested is Default.aspx, we change it to simply "?file=default"
+                if (localPath == "default.aspx")
+                    localPath = localPath.Replace (".aspx", "");
+                localPath = "?file=" + localPath;
+
+                // making sure we pass in any HTTP GET parameters
+                if (Request.QueryString.HasKeys ()) {
+                    foreach (var idxArg in Request.QueryString.AllKeys) {
+                        localPath += "&" + idxArg + "=" + Request.QueryString [idxArg];
+                    }
+                }
+
+                // rewriting path
+                HttpContext.Current.RewritePath ("~/Default.aspx" + localPath);
+            }
+        }
+        
         /// <summary>
         /// returns the application base path as value of given args node
         /// </summary>

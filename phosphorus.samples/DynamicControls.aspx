@@ -27,15 +27,13 @@
                     <pf:Literal
                         runat="server"
                         id="static1"
-                        ElementType="li"
-                        RenderType="NoClose"
-                        onclick="item_onclick">1. static</pf:Literal>
+                        onclick="item_onclick"
+                        ElementType="li">static 1</pf:Literal>
                     <pf:Literal
                         runat="server"
                         id="static2"
-                        ElementType="li"
-                        RenderType="NoClose"
-                        onclick="item_onclick">2. static</pf:Literal>
+                        onclick="item_onclick"
+                        ElementType="li">static 2</pf:Literal>
                 </pf:Container>
 
                 <p>

@@ -259,13 +259,11 @@ namespace phosphorus.ajax.widgets
         /// <param name="eventName">event name such as 'onclick', or name of c# method on page, usercontrol or masterpage</param>
         protected virtual void InvokeEventHandler (string eventName)
         {
-            string eventHandlerName = null;
+            string eventHandlerName = eventName; // defaulting to event name for WebMethod invocations from JavaScript
             if (HasAttribute (eventName)) {
+
                 // probably "onclick" or other types of automatically generated mapping between server method and javascript handler
                 eventHandlerName = this [eventName];
-            } else {
-                // WebMethod invocation
-                eventHandlerName = eventName;
             }
 
             // finding out at what context to invoke the method within
@@ -383,7 +381,6 @@ namespace phosphorus.ajax.widgets
 
         protected override void OnInit (EventArgs e)
         {
-            Page.RegisterRequiresControlState (this);
             if (Page.IsPostBack)
                 LoadFormData ();
 
