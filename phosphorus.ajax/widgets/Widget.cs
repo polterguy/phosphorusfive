@@ -139,6 +139,16 @@ namespace phosphorus.ajax.widgets
         }
 
         /// <summary>
+        /// if this property is true, then no ID will be rendered back to the client for the given Widget, which is useful for
+        /// for instance option widgets, and similar constructs, where the id attribute is not supposed to be rendered to the client
+        /// </summary>
+        /// <value>the tag name</value>
+        public virtual bool NoIDAttribute {
+            get { return ViewState ["noid"] == null ? false : (bool)ViewState ["noid"]; }
+            set { ViewState ["noid"] = value; }
+        }
+
+        /// <summary>
         /// gets or sets the named attribute for the widget. notice that attribute might exist, even if 
         /// return value is null, since attributes can have "null values", such as for instance "controls" 
         /// for the html5 video element, or the "disabled" attribute on form elements. if you wish to 
@@ -470,7 +480,11 @@ namespace phosphorus.ajax.widgets
         private void RenderHtmlResponse (HtmlTextWriter writer)
         {
             // render opening tag
-            writer.Write (string.Format (@"<{0} id=""{1}""", ElementType, ClientID));
+            if (NoIDAttribute) {
+                writer.Write (string.Format (@"<{0}", ElementType));
+            } else {
+                writer.Write (string.Format (@"<{0} id=""{1}""", ElementType, ClientID));
+            }
 
             // render attributes
             _attributes.Render (writer);
