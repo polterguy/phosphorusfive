@@ -197,7 +197,7 @@ below is an example of how you can create an Active Event
 using phosphorus.core;
 
 [ActiveEvent (Name = "foo")]
-protected void foo (ApplicationContext literal, ActiveEventArgs e)
+protected static void foo (ApplicationContext literal, ActiveEventArgs e)
 {
     /* ... do stuff with e.Args ... */
 }
@@ -210,7 +210,8 @@ your functions/methods/Active Events. this allows you to dynamically replace any
 functionality in your system, with other modules and pieces of functionality
 
 to raise an Active Event, you use the *"Raise"* method on your ApplicationContext
-object, passing in a Node which are your arguments to the invocation
+object, passing in a Node, which will become the arguments passed into your Active
+Event
 
 ```csharp
 ApplicationContext ctx = Loader.Instance.CreateApplicationContext ();
@@ -220,8 +221,8 @@ ctx.Raise ("foo", node);
 
 then from inside your Active Event, you can either extract arguments passed in
 to your method, or return arguments, by modifying and retrieving values from your
-Node, which is actually a tree structure, capable of passing in any type of argument
-you wish
+Node. the Node class is actually a tree structure, capable of passing in any type
+of argument you wish
 
 you can dynamically load assemblies into your application, through the
 *"Loader.Instance.LoadAssembly"* method to *inject* new Active Event handlers into
@@ -235,7 +236,7 @@ rudimentary programming language constructs, such as *"while"*, *"for-each"*, *"
 and so on
 
 pf.lambda is very easy to learn, since it doesn't contain more than ~15 keywords, 
-and should be used in symbiosis with your own Active Events to provide an environment
+and should be used in symbiosis with your own Active Events, to provide an environment
 where you can *"orchestrate"* your applications together, by combining existing C#
 logic together, to form an *"application"* based upon loosely coupled plugins and
 modules
@@ -245,6 +246,10 @@ as its *"language"*, such as XML or JSON, but by default, a file format called
 *"Hyperlisp"* is being used. below is a simple pf.lambda program written in Hyperlisp
 
 ```
+
+for more information about phosphorus.five, check out its author's blog at;
+http://magixilluminate.com/category/phosphorus/
+
 _x
   foo1:bar1
   foo2:bar
@@ -260,7 +265,8 @@ for-each:@/./_x/*/?node
 phosphorus five is licensed to Mother Earth.  this means that every single living
 man, woman and child in the World has an equal amount of ownership to the copyright
 of the project.  one of its implications, is that if you sue any living human being
-over the software in any ways, you loose all usage rights
+over the software in any ways, you loose all usage rights.  this also includes the
+JavaScript portions of the library
 
 The MIT License (MIT)
 
