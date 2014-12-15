@@ -220,8 +220,12 @@ ctx.Raise ("foo", node);
 
 then from inside of your Active Event, you can either extract arguments passed in
 to your method, or return arguments, by modifying and retrieving values from your
-Node, which is really a tree structure, capable of passing in any type of argument
+Node, which is actually a tree structure, capable of passing in any type of argument
 you wish
+
+you can dynamically load assemblies into your application, through the
+*"Loader.Instance.LoadAssembly"* method to *inject* new Active Event handlers into
+your application pool
 
 
 ## license
