@@ -246,10 +246,6 @@ as its *"language"*, such as XML or JSON, but by default, a file format called
 *"Hyperlisp"* is being used. below is a simple pf.lambda program written in Hyperlisp
 
 ```
-
-for more information about phosphorus.five, check out its author's blog at;
-http://magixilluminate.com/category/phosphorus/
-
 _x
   foo1:bar1
   foo2:bar
@@ -259,6 +255,9 @@ for-each:@/./_x/*/?node
     :@/././__dp/#/?name
     :@/././__dp/#/?value
 ```
+
+for more information about phosphorus.five, check out its author's blog at;
+http://magixilluminate.com/category/phosphorus/
 
 ## license
 
