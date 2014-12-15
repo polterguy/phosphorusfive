@@ -227,6 +227,23 @@ you can dynamically load assemblies into your application, through the
 *"Loader.Instance.LoadAssembly"* method to *inject* new Active Event handlers into
 your application pool
 
+## about pf.lambda
+
+pf.lambda is a *"programming language"* created on top of Active Events. at its core,
+it is really nothing but loosely coupled Active Events, capable of executing
+rudimentary programming language constructs, such as *"while"*, *"for-each"*, *"if"*
+and so on
+
+pf.lambda is very easy to learn, since it doesn't contain more than ~15 keywords, 
+and should be used in symbiosis with your own Active Events to provide an environment
+where you can *"orchestrate"* your applications together, by combining existing C#
+logic together, to form an *"application"* based upon loosely coupled plugins and
+modules
+
+
+
+
+
 
 ## license
 
