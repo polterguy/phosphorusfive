@@ -93,10 +93,12 @@ before you create a literal widget, by adding the code below in your .aspx marku
 then add the following code in your codebehind
 
 ```csharp
+using phosphorus.ajax.core;
 using pf = phosphorus.ajax.widgets;
 
 /* ... */
 
+[WebMethod]
 protected void hello_onclick (pf.Literal sender, EventArgs e)
 {
     // notice how you save a cast operation here ...
@@ -168,6 +170,7 @@ like this, and the engine will automatically keep track of which items are dirty
 needs to be sent back to the client
 
 ```csharp
+[WebMethod]
 protected void video_click (Literal literal, EventArgs e)
 {
     literal ["width"] = "1024";
@@ -177,6 +180,49 @@ protected void video_click (Literal literal, EventArgs e)
 you can modify any attribute you wish on your widgets, by using the index operator.  
 phosphorus.ajax will automatically keep track of what needs to be sent from the 
 server to the client.  use the *"RemoveAttribute"* method to remove an attribute
+
+## getting started with Active Events
+
+Active Events are an alternative to OOP which facilitates for better encapsulation
+and polymorphism than traditional inheritance through its classes and interfaces
+
+instead of inheriting from a class, and override methods from the base class, you
+can directly override and replace any Active Event with any other Active Event.
+this makes it easier for you to create plugins and modules that have no 
+dependencies
+
+below is an example of how you can create an Active Event
+
+```csharp
+using phosphorus.core;
+
+[ActiveEvent (Name = "foo")]
+protected void foo (ApplicationContext literal, ActiveEventArgs e)
+{
+    /* ... do stuff with e.Args ... */
+}
+```
+
+with Active Events you don't invoke the method directly, but rather indirectly,
+through its *"Name"* property declared in your *"ActiveEvent"* attribute. this
+means that you never have dependencies between the caller and the implementor of
+your functions/methods/Active Events. this allows you to dynamically replace any
+functionality in your system, with other modules and pieces of functionality
+
+to raise an Active Event, you use the *"Raise"* method on your ApplicationContext
+object, passing in a Node which are your arguments to the invocation
+
+```csharp
+ApplicationContext ctx = Loader.Instance.CreateApplicationContext ();
+Node node = new Node ();
+ctx.Raise ("foo", node);
+```
+
+then from inside of your Active Event, you can either extract arguments passed in
+to your method, or return arguments, by modifying and retrieving values from your
+Node, which is really a tree structure, capable of passing in any type of argument
+you wish
+
 
 ## license
 
