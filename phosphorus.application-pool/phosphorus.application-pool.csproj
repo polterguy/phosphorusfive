@@ -38,6 +38,7 @@
     <Content Include="web.config" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
+    <Content Include="media\css\main.css" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
@@ -92,11 +93,26 @@
   <ItemGroup>
     <Folder Include="code\" />
     <Folder Include="system42\startup-files\" />
+    <Folder Include="media\" />
+    <Folder Include="media\css\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="system42\application-startup" />
-    <None Include="system42\startup-files\pf.execute-lambda-file.hl" />
     <None Include="system42\startup-files\pf.load-ui.hl" />
     <None Include="system42\forms\default.hl" />
+    <None Include="system42\application-startup.hl" />
+    <None Include="system42\startup-files\web\web-widgets\pf.web.widgets.label.hl" />
+    <None Include="system42\startup-files\web\web-widgets\pf.web.widgets.panel.hl" />
+    <None Include="system42\startup-files\web\web-widgets\pf.web.widgets.textbox.hl" />
+    <None Include="system42\startup-files\web\web-widgets\pf.web.widgets.checkbox.hl" />
+    <None Include="system42\startup-files\web\web-widgets\pf.web.widgets.radio.hl" />
+    <None Include="system42\startup-files\web\web-widgets\pf.web.widgets.hidden.hl" />
+    <None Include="system42\startup-files\web\web-widgets\pf.web.widgets.select.hl" />
+    <None Include="system42\startup-files\web\web-widgets\pf.web.widgets.option.hl" />
+    <None Include="system42\startup-files\web\web-widgets\pf.web.widgets.button.hl" />
+    <None Include="system42\startup-files\web\web-widgets\pf.web.widgets.textarea.hl" />
+    <None Include="system42\startup-files\web\web-widgets\pf.web.widgets.usercontrol.hl" />
+    <None Include="system42\startup-files\web\web-widgets\pf.web.widgets.hyperlink.hl" />
+    <None Include="system42\user-controls\header.hl" />
+    <None Include="system42\user-controls\menu.hl" />
   </ItemGroup>
 </Project>

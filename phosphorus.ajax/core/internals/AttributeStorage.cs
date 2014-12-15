@@ -184,7 +184,7 @@ namespace phosphorus.ajax.core.internals
         }
 
         // invoked when rendering of attributes to html is required
-        internal void Render (HtmlTextWriter writer)
+        internal void Render (HtmlTextWriter writer, phosphorus.ajax.widgets.Widget widget)
         {
             // adding all changes
             List<Attribute> lst = new List<Attribute> ();
@@ -210,6 +210,8 @@ namespace phosphorus.ajax.core.internals
                 string name = idx.Name;
                 string value;
                 if (idx.Name.StartsWith ("on") && Utilities.IsLegalMethodName (idx.Value)) {
+                    if (widget.NoIDAttribute)
+                        throw new ArgumentException ("cannot have events on a Widget that doesn't render its ID attribute");
                     value = "pf.e(event)";
                 } else {
                     value = idx.Value;

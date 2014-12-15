@@ -128,7 +128,7 @@ namespace phosphorus.ajax.widgets
             if (string.IsNullOrEmpty (id)) {
 
                 // creating an automatic unique id for widget
-                control.ID = "x" + Guid.NewGuid ().ToString ().Replace ("-", "");
+                control.ID = CreateID ();
             } else {
 
                 // using the supplied id
@@ -281,6 +281,17 @@ namespace phosphorus.ajax.widgets
                 RenderRemovedControls ();
                 RenderOldControls (writer);
             }
+        }
+
+        /*
+         * creates a new unique ID
+         */
+        private string CreateID ()
+        {
+            // TODO: statistically this is supposed to become a unique 7 digits hexadecimal number, but we should improve this logic later!
+            string retVal = Guid.NewGuid ().ToString ().Replace ("-", "");
+            retVal = "x" + retVal [0] + retVal [5] + retVal [10] + retVal [15] + retVal [20] + retVal [25] + retVal [30];
+            return retVal;
         }
 
         // renders all controls that was added this request, and return list back to caller

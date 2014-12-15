@@ -1,53 +1,21 @@
-pf.create-form:mumbo-jumbo
+pf.create-widget:template
+  class:main
   controls
-    text
-      value:"howdy world"
-    textarea
-      innerHTML:"howdy, this is world calling"
-    literal
-      element:address
-      innerHTML:"tjobing"
-      noid:true
-    select
+    usercontrol:header
+      file:system42/user-controls/header.hl
+      class:span-24 header
+    usercontrol:menu
+      file:system42/user-controls/menu.hl
+      class:span-3 menu
+    panel:content
+      class:span-21 last content
       controls
-        option
-          value:some-dude
-          innerHTML:Some Dude
-        option
-          value:some-other-dude
-          innerHTML:Some OTHER Dude
-    label:my-label
-      innerHTML:"this is hello world to web :D"
-      onclick
-        pf.create-form
-          parent:mumbo-jumbo
-          controls
-            label
-              innerHTML:"this is ALSO hello world to web :D"
-            checkbox
-              value:choose
-              onchange
-                set:@/+/?value
-                  :@/../_form-id/?value
-                pf.remove-widget
-            radio
-              value:choose1
-              name:my-radio
-            radio
-              value:choose2
-              checked:checked
-              name:my-radio
-            button
-              innerHTML:"click me"
-              onclick
-                set:@/+/?value
-                  :@/../_form-id/?value
-                pf.remove-widget
-            select
-              controls
-                option
-                  value:some-dude
-                  innerHTML:Some Dude
-                option
-                  value:some-other-dude
-                  innerHTML:Some OTHER Dude
+        label
+          has-id:false
+          value:@"welcome to phosphorus.five"
+    panel:footer
+      class:span-24 footer
+      controls
+        label
+          has-id:false
+          value:"a phosphorus.five productions!"

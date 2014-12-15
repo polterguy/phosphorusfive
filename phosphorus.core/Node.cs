@@ -581,6 +581,15 @@ namespace phosphorus.core
         }
 
         /// <summary>
+        /// finds the specified match
+        /// </summary>
+        /// <param name="match">node matchin the given predicate</param>
+        public Node Find (Predicate<Node> match)
+        {
+            return _children.Find (match);
+        }
+
+        /// <summary>
         /// adds a child node to its children collection
         /// </summary>
         /// <param name="node">node to add</param>

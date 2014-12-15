@@ -81,7 +81,8 @@ namespace phosphorus.five.applicationpool
                 // retrieving all GET parameters and passing in as [_args]
                 args.Add (new Node ("_args"));
                 foreach (var idxArg in Request.QueryString.AllKeys) {
-                    args [1].Add (new Node (idxArg, Request.QueryString [idxArg]));
+                    if (idxArg != "file")
+                        args [1].Add (new Node (idxArg, Request.QueryString [idxArg]));
                 }
             }
 
@@ -94,8 +95,8 @@ namespace phosphorus.five.applicationpool
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.create-form")]
-        private void pf_create_form (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.create-widget")]
+        private void pf_create_widget (ApplicationContext context, ActiveEventArgs e)
         {
             // finding parent widget first, which defaults to "container" widget, if no widget is given
             Container parent = container;
@@ -104,6 +105,7 @@ namespace phosphorus.five.applicationpool
             foreach (Node idxNode in e.Args.Children) {
                 if (idxNode.Name == "parent") {
                     parent = FindWidget<Container> (idxNode.Get<string> (), Page);
+                    break;
                 }
             }
 
@@ -178,6 +180,7 @@ namespace phosphorus.five.applicationpool
         private void CreateForm (ApplicationContext context, Node node, Container parent)
         {
             node.Insert (0, new Node ("__parent", parent));
+            node.Insert (1, new Node ("_form-id", node.Value));
             context.Raise ("pf.web.widgets.panel", node);
         }
         

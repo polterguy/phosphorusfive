@@ -1,0 +1,17 @@
+event:pf.web.widgets.usercontrol
+  lambda
+    lambda
+      add:@/+7/?node
+        :@/../*/!/../*/lambda/!/../*/file/?node
+      set:@/+6/?value
+        :@/../?value
+      set:@/+/?value
+        :@/../*/file/?value
+      pf.file.load
+      set:@/+/?value
+        :@/./-/0/?value
+      pf.code-2-nodes
+      add:@/+/*/controls/?node
+        :@/./-/*/?node
+      pf.web.widgets.panel
+        controls

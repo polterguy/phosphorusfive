@@ -22,10 +22,10 @@ namespace phosphorus.unittests
             tmp.Value = @"
 event:test.foo
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :success
 _out
-set:@/+/_out/?value
+set:@/+/*/_out/?value
   :@/./-/?node
 test.foo
   _out";
@@ -46,7 +46,7 @@ test.foo
             tmp.Value = @"
 event:test.foo2
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :success";
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
             context.Raise ("lambda", tmp);
@@ -56,7 +56,7 @@ event:test.foo2
             tmp = new Node ();
             tmp.Value = @"
 _out
-set:@/+/_out/?value
+set:@/+/*/_out/?value
   :@/./-/?node
 test.foo2
   _out";
@@ -75,18 +75,18 @@ test.foo2
             tmp.Value = @"
 event:test.foo3
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success
 event:test.foo3
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success
 _out
-set:@/+/_out/?value
+set:@/+/*/_out/?value
   :@/./-/?node
 test.foo3
   _out";
@@ -107,15 +107,15 @@ test.foo3
             tmp.Value = @"
 event:test.foo4
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success
 event:test.foo4
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success";
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
             context.Raise ("lambda", tmp);
@@ -124,7 +124,7 @@ event:test.foo4
             tmp = new Node ();
             tmp.Value = @"
 _out
-set:@/+/_out/?value
+set:@/+/*/_out/?value
   :@/./-/?node
 test.foo4
   _out";
@@ -144,19 +144,19 @@ test.foo4
             tmp.Value = @"
 event:test.foo5
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success
     set:@/-/?name
       :mumbo
 _out
-set:@/+/_out/?value
+set:@/+/*/_out/?value
   :@/./-/?node
 test.foo5
   _out
 _out
-set:@/+/_out/?value
+set:@/+/*/_out/?value
   :@/./-/?node
 test.foo5
   _out";
@@ -181,12 +181,12 @@ event:test.foo6
       and:@/../?value
         =:howdy
       lambda
-        set:@/../_out/#/?value
+        set:@/../*/_out/#/?value
           :{0}{1}
-            :@/./././_out/#/?value
+            :@/./././*/_out/#/?value
             :success
 _out
-set:@/+/_out/?value
+set:@/+/*/_out/?value
   :@/./-/?node
 test.foo6:howdy
   _out";
@@ -205,13 +205,13 @@ test.foo6:howdy
             tmp.Value = @"
 event:test.foo7
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success
 delete-event:test.foo7
 _out
-set:@/+/_out/?value
+set:@/+/*/_out/?value
   :@/./-/?node
 test.foo7
   _out";
@@ -230,19 +230,19 @@ test.foo7
             tmp.Value = @"
 event:test.foo8
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success
 event:test.foo8
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success
 delete-event:test.foo8
 _out
-set:@/+/_out/?value
+set:@/+/*/_out/?value
   :@/./-/?node
 test.foo8
   _out";
@@ -261,19 +261,19 @@ test.foo8
             tmp.Value = @"
 event:test.foo9
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :failure
 event:test.foo10
   overrides:test.foo9
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success
 _out
-set:@/+/_out/?value
+set:@/+/*/_out/?value
   :@/./-/?node
 test.foo9
   _out";
@@ -292,26 +292,26 @@ test.foo9
             tmp.Value = @"
 event:test.foo11
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :failure
 event:test.foo12
   overrides:test.foo11
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success1
 event:test.foo13
   overrides:test.foo11
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success2
 _out
-set:@/+/_out/?value
+set:@/+/*/_out/?value
   :@/./-/?node
 test.foo11
   _out";
@@ -330,25 +330,25 @@ test.foo11
             tmp.Value = @"
 event:test.foo14
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :failure
 event:test.foo15
   overrides:test.foo14
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success1
 event:test.foo15
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success2
 _out
-set:@/+/_out/?value
+set:@/+/*/_out/?value
   :@/./-/?node
 test.foo14
   _out";
@@ -367,26 +367,26 @@ test.foo14
             tmp.Value = @"
 event:test.foo16
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :failure
 event:test.foo17
   overrides:test.foo16
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :failure
 event:test.foo18
   overrides:test.foo17
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success
 _out
-set:@/+/_out/?value
+set:@/+/*/_out/?value
   :@/./-/?node
 test.foo16
   _out";
@@ -405,32 +405,32 @@ test.foo16
             tmp.Value = @"
 event:test.foo19
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :failure
 event:test.foo20
   overrides:test.foo19
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :failure
 event:test.foo21
   overrides:test.foo20
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success1
 event:test.foo21
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success2
 _out
-set:@/+/_out/?value
+set:@/+/*/_out/?value
   :@/./-/?node
 test.foo19
   _out";
@@ -449,32 +449,32 @@ test.foo19
             tmp.Value = @"
 event:test.foo22
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :failure
 event:test.foo23
   overrides:test.foo22
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :failure
 event:test.foo24
   overrides:test.foo23
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success1
 event:test.foo24
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success2
 _out
-set:@/+/_out/?value
+set:@/+/*/_out/?value
   :@/./-/?node
 test.foo23
   _out";
@@ -493,32 +493,32 @@ test.foo23
             tmp.Value = @"
 event:test.foo25
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :failure
 event:test.foo26
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :failure
 event:test.foo27
   overrides
     :test.foo25
     :test.foo26
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success
 _out
-set:@/+/_out/?value
+set:@/+/*/_out/?value
   :@/./-/?node
 test.foo25
   _out
 _out
-set:@/+/_out/?value
+set:@/+/*/_out/?value
   :@/./-/?node
 test.foo26
   _out";
@@ -538,23 +538,23 @@ test.foo26
             tmp.Value = @"
 event:test.foo28
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :failure
 event:test.foo29
   overrides:test.foo28
   lambda
-    set:@/+/_out/?value
-      :@/../_out/?value
+    set:@/+/*/_out/?value
+      :@/../*/_out/?value
     call-base
       _out
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success
 _out
-set:@/+/_out/?value
+set:@/+/*/_out/?value
   :@/./-/?node
 test.foo28
   _out";
@@ -573,21 +573,21 @@ test.foo28
             tmp.Value = @"
 event:test.bar1
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :failure
 event:test.bar2
   overrides:test.bar1
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :success
-    set:@/+/_out/?value
-      :@/../_out/?value
+    set:@/+/*/_out/?value
+      :@/../*/_out/?value
     call-base
       _out
 _out
-set:@/+/_out/?value
+set:@/+/*/_out/?value
   :@/./-/?node
 test.bar1
   _out";
@@ -606,34 +606,34 @@ test.bar1
             tmp.Value = @"
 event:test.foo30
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success1
 event:test.foo31
   overrides:test.foo30
   lambda
-    set:@/+/_out/?value
-      :@/../_out/?value
+    set:@/+/*/_out/?value
+      :@/../*/_out/?value
     call-base
       _out
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success2
 event:test.foo32
   overrides:test.foo31
   lambda
-    set:@/+/_out/?value
-      :@/../_out/?value
+    set:@/+/*/_out/?value
+      :@/../*/_out/?value
     call-base
       _out
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success3
 _out
-set:@/+/_out/?value
+set:@/+/*/_out/?value
   :@/./-/?node
 test.foo30
   _out";
@@ -652,34 +652,34 @@ test.foo30
             tmp.Value = @"
 event:test.foo33
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success1
 event:test.foo34
   overrides:test.foo33
   lambda
-    set:@/+/_out/?value
-      :@/../_out/?value
+    set:@/+/*/_out/?value
+      :@/../*/_out/?value
     call-base
       _out
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success2
 event:test.foo35
   overrides:test.foo33
   lambda
-    set:@/+/_out/?value
-      :@/../_out/?value
+    set:@/+/*/_out/?value
+      :@/../*/_out/?value
     call-base
       _out
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success3
 _out
-set:@/+/_out/?value
+set:@/+/*/_out/?value
   :@/./-/?node
 test.foo33
   _out";
@@ -698,36 +698,36 @@ test.foo33
             tmp.Value = @"
 event:test.foo36
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success1
 event:test.foo37
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success2
 event:test.foo38
   overrides
     :test.foo36
     :test.foo37
   lambda
-    set:@/+/_out/?value
-      :@/../_out/?value
+    set:@/+/*/_out/?value
+      :@/../*/_out/?value
     call-base
       _out
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success3
 _out
-set:@/+/_out/?value
+set:@/+/*/_out/?value
   :@/./-/?node
 test.foo36
   _out
 _out
-set:@/+/_out/?value
+set:@/+/*/_out/?value
   :@/./-/?node
 test.foo37
   _out";
@@ -747,16 +747,16 @@ test.foo37
             tmp.Value = @"
 event:test.foo39
   lambda
-    set:@/+/_out/?value
-      :@/../_out/?value
+    set:@/+/*/_out/?value
+      :@/../*/_out/?value
     call-base
       _out
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success
 _out
-set:@/+/_out/?value
+set:@/+/*/_out/?value
   :@/./-/?node
 test.foo39
   _out";
@@ -775,23 +775,23 @@ test.foo39
             tmp.Value = @"
 event:test.foo40
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :failure
 event:test.foo41
   overrides:test.foo40
   lambda
-    set:@/+/_out/?value
-      :@/../_out/?value
+    set:@/+/*/_out/?value
+      :@/../*/_out/?value
     call-base
       _out
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success
 _out
-set:@/+/_out/?value
+set:@/+/*/_out/?value
   :@/./-/?node
 test.foo41
   _out";
@@ -810,20 +810,20 @@ test.foo41
             tmp.Value = @"
 event:test.foo42
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :failure
 event:test.foo43
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success
 _out
 override:test.foo42
   with:test.foo43
-set:@/+/_out/?value
+set:@/+/*/_out/?value
   :@/./-/-/?node
 test.foo42
   _out";
@@ -842,28 +842,28 @@ test.foo42
             tmp.Value = @"
 event:test.foo44
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :failure
 event:test.foo45
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success1
 event:test.foo46
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success2
 _out
 override:test.foo44
   with
     :test.foo45
     :test.foo46
-set:@/+/_out/?value
+set:@/+/*/_out/?value
   :@/./-/-/?node
 test.foo44
   _out";
@@ -882,36 +882,36 @@ test.foo44
             tmp.Value = @"
 event:test.foo47
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :failure
 event:test.foo48
   lambda
-    set:@/+/_out/?value
-      :@/../_out/?value
+    set:@/+/*/_out/?value
+      :@/../*/_out/?value
     call-base
       _out
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success1
 event:test.foo49
   lambda
-    set:@/+/_out/?value
-      :@/../_out/?value
+    set:@/+/*/_out/?value
+      :@/../*/_out/?value
     call-base
       _out
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success2
 _out
 override:test.foo47
   with
     :test.foo48
     :test.foo49
-set:@/+/_out/?value
+set:@/+/*/_out/?value
   :@/./-/-/?node
 test.foo47
   _out";
@@ -930,40 +930,40 @@ test.foo47
             tmp.Value = @"
 event:test.foo50
   lambda
-    set:@/+/_out/?value
-      :@/../_out/?value
+    set:@/+/*/_out/?value
+      :@/../*/_out/?value
     call-base
       _out
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success1
 event:test.foo51
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success2
-    set:@/+/_out/?value
-      :@/../_out/?value
+    set:@/+/*/_out/?value
+      :@/../*/_out/?value
     call-base
       _out
 event:test.foo52
   lambda
-    set:@/+/_out/?value
-      :@/../_out/?value
+    set:@/+/*/_out/?value
+      :@/../*/_out/?value
     call-base
       _out
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success3
 _out
 override:test.foo50
   with:test.foo51
 override:test.foo51
   with:test.foo52
-set:@/+/_out/?value
+set:@/+/*/_out/?value
   :@/./-3/?node
 test.foo50
   _out";
@@ -982,36 +982,36 @@ test.foo50
             tmp.Value = @"
 event:test.foo53
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :failure
 event:test.foo54
   lambda
-    set:@/+/_out/?value
-      :@/../_out/?value
+    set:@/+/*/_out/?value
+      :@/../*/_out/?value
     call-base
       _out
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success1
 event:test.foo55
   lambda
-    set:@/+/_out/?value
-      :@/../_out/?value
+    set:@/+/*/_out/?value
+      :@/../*/_out/?value
     call-base
       _out
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success2
 _out
 override:test.foo53
   with:test.foo54
 override:test.foo53
   with:test.foo55
-set:@/+/_out/?value
+set:@/+/*/_out/?value
   :@/./-3/?node
 test.foo53
   _out";
@@ -1030,41 +1030,41 @@ test.foo53
             tmp.Value = @"
 event:test.foo56
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success1
 event:test.foo57
   lambda
-    set:@/+/_out/?value
-      :@/../_out/?value
+    set:@/+/*/_out/?value
+      :@/../*/_out/?value
     call-base
       _out
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success2
 event:test.foo58
   lambda
-    set:@/+/_out/?value
-      :@/../_out/?value
+    set:@/+/*/_out/?value
+      :@/../*/_out/?value
     call-base
       _out
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success3
 _out
 override:test.foo56
   with:test.foo58
 override:test.foo57
   with:test.foo58
-set:@/+/_out/?value
+set:@/+/*/_out/?value
   :@/./-3/?node
 test.foo56
   _out
 _out
-set:@/+/_out/?value
+set:@/+/*/_out/?value
   :@/./-/?node
 test.foo57
   _out";
@@ -1084,24 +1084,24 @@ test.foo57
             tmp.Value = @"
 event:test.foo59
   lambda
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :failure
 event:test.foo60
   lambda
-    set:@/+/_out/?value
-      :@/../_out/?value
+    set:@/+/*/_out/?value
+      :@/../*/_out/?value
     call-base
       _out
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success
 _out
 override:test.foo59
   with:test.foo60
-set:@/+/_out/?value
+set:@/+/*/_out/?value
   :@/./-2/?node
 test.foo60
   _out";
@@ -1125,12 +1125,12 @@ event:test.foo62
   overrides:test.foo61
   lambda
     call-base
-    set:@/../_out/#/?value
+    set:@/../*/_out/#/?value
       :{0}{1}
-        :@/./././_out/#/?value
+        :@/./././*/_out/#/?value
         :success
 _out
-set:@/+/_out/?value
+set:@/+/*/_out/?value
   :@/./-/?node
 test.foo61
   _out";

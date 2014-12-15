@@ -1,0 +1,30 @@
+event:pf.execute-lambda-file
+  lambda
+    set:@/+/?value
+      :@/../?value
+    pf.file.load
+    set:@/+/?value
+      :@/./-/0/?value
+    pf.code-2-nodes
+    add:@/+/?node
+      :@/../_args/?node
+    lambda.copy:@/-2/?node
+
+event:pf.execute-all-files-recursively
+  lambda
+    set:@/+/?value
+      :@/../?value
+    pf.file.list-files
+    for-each:@/-/*/?node
+      set:@/+/?value
+        :@/././*/__dp/#/?value
+      pf.execute-lambda-file
+    set:@/+/?value
+      :@/../?value
+    pf.file.list-folders
+    for-each:@/-/*/?node
+      set:@/+/?value
+        :@/././*/__dp/#/?value
+      pf.execute-all-files-recursively
+
+pf.execute-all-files-recursively:system42/startup-files

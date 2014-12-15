@@ -487,7 +487,7 @@ namespace phosphorus.ajax.widgets
             }
 
             // render attributes
-            _attributes.Render (writer);
+            _attributes.Render (writer, this);
 
             if (HasContent) {
                 writer.Write (">");

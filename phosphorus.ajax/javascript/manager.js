@@ -58,6 +58,7 @@
   pf.e = function(event) {
     var el = pf.$(event.target);
     el.raise('on' + event.type);
+    event.preventDefault();
   };
 
 
@@ -429,9 +430,9 @@
     if (pf._chain.length > 0) {
       var cur = pf._chain[0];
 
-      // checking if dom element is still around, or if a previous request removed it
+      // checking if dom element is still around, or if a previous request has removed it
       var el = pf.$(cur.el.el.id);
-      if (!el) {
+      if (!el.el) {
         // dom element was removed from dom, and request cannot be initiated
         // skipping this request, and initiating the next one instead
         pf._chain.splice(0, 1)[0];

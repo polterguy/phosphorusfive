@@ -128,7 +128,7 @@ _val";
 _x
 if:@/-/?node
   if:@/?name
-    set:@/../_x/?value
+    set:@/../*/_x/?value
       :x
 ";
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
@@ -147,7 +147,7 @@ if:@/-/?node
 _x
 if:@/-/?node
 if:@/?name
-  set:@/../_x/?value
+  set:@/../*/_x/?value
     :x
 ";
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
@@ -167,7 +167,7 @@ _x:x
 if:@/-/?value
   =:x
   lambda
-    set:@/../_x/?value
+    set:@/../*/_x/?value
       :y
 ";
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
@@ -187,7 +187,7 @@ _x:x
 if:@/-/?value
   !=:z
   lambda
-    set:@/../_x/?value
+    set:@/../*/_x/?value
       :y
 ";
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
@@ -207,7 +207,7 @@ _x:b
 if:@/-/?value
   >:a
   lambda
-    set:@/../_x/?value
+    set:@/../*/_x/?value
       :y
 ";
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
@@ -227,7 +227,7 @@ _x:a
 if:@/-/?value
   <:b
   lambda
-    set:@/../_x/?value
+    set:@/../*/_x/?value
       :y
 ";
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
@@ -247,7 +247,7 @@ _x:a
 if:@/-/?value
   >=:a
   lambda
-    set:@/../_x/?value
+    set:@/../*/_x/?value
       :y
 ";
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
@@ -267,7 +267,7 @@ _x:a
 if:@/-/?value
   <=:a
   lambda
-    set:@/../_x/?value
+    set:@/../*/_x/?value
       :y
 ";
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
@@ -287,7 +287,7 @@ _x:int:5
 if:@/-/?value
   =:int:5
   lambda
-    set:@/../_x/?value
+    set:@/../*/_x/?value
       :y
 ";
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
@@ -329,7 +329,7 @@ if:@/-/?value
   or:@/./-/?value
     =:5
   lambda
-    set:@/../_x/?value
+    set:@/../*/_x/?value
       :y
 ";
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
@@ -373,7 +373,7 @@ if:@/-/?value
   and:@/./-/?name
     =:_x
   lambda
-    set:@/../_x/?value
+    set:@/../*/_x/?value
       :y
 ";
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
@@ -443,7 +443,7 @@ if:@/-/?value
   or:@/./-/?name
     =:_x
   lambda
-    set:@/../_x/?value
+    set:@/../*/_x/?value
       :y
 ";
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
@@ -462,18 +462,18 @@ if:@/-/?value
 _x:5
 if:@/-/?value
   =:0
-  or:@/../_x/?value
+  or:@/../*/_x/?value
     =:1
-    or:@/../_x/?value
+    or:@/../*/_x/?value
       =:2
-      or:@/../_x/?value
+      or:@/../*/_x/?value
         =:3
-        or:@/../_x/?value
+        or:@/../*/_x/?value
           =:4
-          or:@/../_x/?value
+          or:@/../*/_x/?value
             =:5
   lambda
-    set:@/../_x/?value
+    set:@/../*/_x/?value
       :y
 ";
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
@@ -492,23 +492,23 @@ if:@/-/?value
 _x:6
 if:@/-/?value
   =:0
-  or:@/../_x/?value
+  or:@/../*/_x/?value
     =:1
-    or:@/../_x/?value
+    or:@/../*/_x/?value
       =:2
-      or:@/../_x/?value
+      or:@/../*/_x/?value
         =:3
-        or:@/../_x/?value
+        or:@/../*/_x/?value
           =:4
-          or:@/../_x/?value
+          or:@/../*/_x/?value
             =:5
   lambda
-    set:@/../_x/?value
+    set:@/../*/_x/?value
       :y
 else-if:@/-2/?value
   =:6
   lambda
-    set:@/../_x/?value
+    set:@/../*/_x/?value
       :q
 ";
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
@@ -533,7 +533,7 @@ _x
 if:@/-2/?node
   =:@/./-1/?node
   lambda
-    set:@/../_x/?value
+    set:@/../*/_x/?value
       :y
 ";
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
@@ -580,7 +580,7 @@ _x
 if:@/-1/?path
   =:@/./-1/?path
   lambda
-    set:@/../_x/?value
+    set:@/../*/_x/?value
       :y
 ";
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
@@ -620,7 +620,7 @@ _x
 if:@/-/?path
   <:@/./?path
   lambda
-    set:@/../_x/?value
+    set:@/../*/_x/?value
       :y
 ";
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
@@ -665,7 +665,7 @@ _x
 if:@/-2/**/?count
   =:@/./-1/**/?count
   lambda
-    set:@/../_x/?value
+    set:@/../*/_x/?value
       :y
 ";
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
@@ -711,7 +711,7 @@ _x:int:5
 if:@/-/?value
   <:int:6
   lambda
-    set:@/../_x/?value
+    set:@/../*/_x/?value
       :y
 ";
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
@@ -731,7 +731,7 @@ _x:int:5
 if:@/-/?value
   >:int:4
   lambda
-    set:@/../_x/?value
+    set:@/../*/_x/?value
       :y
 ";
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
@@ -751,10 +751,10 @@ _x:int:5
 if:@/-/?value
   =:int:5
   lambda
-    set:@/../_x/?value
+    set:@/../*/_x/?value
       :y
   lambda
-    set:@/../_x/?name
+    set:@/../*/_x/?name
       :_y
 ";
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
@@ -774,9 +774,9 @@ if:@/-/?value
 _x:int:5
 if:@/-/?value
   =:int:5
-  lambda:@/../_exe/?node
+  lambda:@/../*/_exe/?node
 _exe
-  set:@/../_x/?value
+  set:@/../*/_x/?value
     :y
 ";
             context.Raise ("pf.hyperlisp-2-nodes", tmp);

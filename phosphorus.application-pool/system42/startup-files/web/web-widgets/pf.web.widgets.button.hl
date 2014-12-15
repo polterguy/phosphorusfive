@@ -1,0 +1,20 @@
+event:pf.web.widgets.button
+  lambda
+    lambda
+      if:@/../*/value/?node
+        set:@/+3/*/innerHTML/?value
+          :@/../*/value/?value
+        add:@/+2/?node
+          :@/../*/!/../*/lambda/!/../*/value/?node
+        set:@/+1/?value
+          :@/../?value
+        pf.web.widgets.literal
+          element:button
+          innerHTML
+      else
+        add:@/+2/?node
+          :@/../*/!/../*/lambda/?node
+        set:@/+1/?value
+          :@/../?value
+        pf.web.widgets.container
+          element:button

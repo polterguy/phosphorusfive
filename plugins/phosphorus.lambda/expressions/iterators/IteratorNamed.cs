@@ -31,10 +31,8 @@ namespace phosphorus.lambda.iterators
         public override IEnumerable<Node> Evaluate {
             get {
                 foreach (Node idxCurrent in Left.Evaluate) {
-                    foreach (Node idxChild in idxCurrent.Children) {
-                        if (idxChild.Name == _name)
-                            yield return idxChild;
-                    }
+                    if (idxCurrent.Name == _name)
+                        yield return idxCurrent;
                 }
             }
         }

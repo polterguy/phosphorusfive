@@ -35,7 +35,7 @@ for-each:@/-/?node";
             tmp.Value = @"
 _x
 for-each:@/-/?node
-  set:@/./__dp/#/?node";
+  set:@/./*/__dp/#/?node";
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (1, tmp.Count);
@@ -53,7 +53,7 @@ _x
   :x
   :y
 for-each:@/-/*/?node
-  set:@/./__dp/#/?value
+  set:@/./*/__dp/#/?value
     :z";
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
             context.Raise ("lambda", tmp);
@@ -77,10 +77,10 @@ _x
     :h
     :j
 for-each:@/-/*/?node
-  for-each:@/./__dp/#/*/?node
-    set:@/./__dp/#/?value
+  for-each:@/./*/__dp/#/*/?node
+    set:@/./*/__dp/#/?value
       :q
-    set:@/././__dp/#/?value
+    set:@/././*/__dp/#/?value
       :z";
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
             context.Raise ("lambda", tmp);

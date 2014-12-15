@@ -1,0 +1,13 @@
+event:pf.web.widgets.option
+  lambda
+    lambda
+      set:@/+3/*/innerHTML/?value
+        :@/../*/text/?value
+      add:@/+2/?node
+        :@/../*/!/../*/lambda/!/../*/text/?node
+      set:@/+1/?value
+        :@/../?value
+      pf.web.widgets.literal
+        element:option
+        innerHTML
+        has-id:false

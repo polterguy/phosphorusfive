@@ -226,7 +226,7 @@ _tmp1:x
   _tmp3:z
 _tmp2:y";
             context.Raise ("pf.code-2-nodes", tmp);
-            var ex = Expression.Create (@"@/_tmp2/?node");
+            var ex = Expression.Create (@"@/*/_tmp2/?node");
             var match = ex.Evaluate (tmp);
             Assert.AreEqual (1, match.Count);
             Assert.AreEqual ("_tmp2", match [0].Name);
@@ -246,7 +246,7 @@ _tmp2:y
 _tmp1:x2
 ";
             context.Raise ("pf.code-2-nodes", tmp);
-            var ex = Expression.Create (@"@/_tmp1/?node");
+            var ex = Expression.Create (@"@/*/_tmp1/?node");
             var match = ex.Evaluate (tmp);
             Assert.AreEqual (2, match.Count);
             Assert.AreEqual ("x", match [0].Value);
@@ -267,7 +267,7 @@ _tmp2:y
 _tmp1:x2
 ";
             context.Raise ("pf.code-2-nodes", tmp);
-            var ex = Expression.Create (@"@/_tmp1/=x2/?node");
+            var ex = Expression.Create (@"@/*/_tmp1/=x2/?node");
             var match = ex.Evaluate (tmp);
             Assert.AreEqual (1, match.Count);
             Assert.AreEqual ("x2", match [0].Value);
@@ -447,7 +447,7 @@ _xmp2:y
 _tmp1:x2
 ";
             context.Raise ("pf.code-2-nodes", tmp);
-            var ex = Expression.Create (@"@/""/_tmp+/""/?node");
+            var ex = Expression.Create (@"@/*/""/_tmp+/""/?node");
             var match = ex.Evaluate (tmp);
             Assert.AreEqual (2, match.Count);
             Assert.AreEqual ("x", match [0].Value);
@@ -546,7 +546,7 @@ _tmp2:y
 _tmp3:x2
 ";
             context.Raise ("pf.code-2-nodes", tmp);
-            var ex = Expression.Create (@"@/_tmp1/|/_tmp2/?node");
+            var ex = Expression.Create (@"@/*/_tmp1/|/*/_tmp2/?node");
             var match = ex.Evaluate (tmp);
             Assert.AreEqual (2, match.Count);
             Assert.AreEqual ("_tmp1", match [0].Name);
@@ -566,7 +566,7 @@ _tmp2:y
 _tmp3:x2
 ";
             context.Raise ("pf.code-2-nodes", tmp);
-            var ex = Expression.Create (@"@/_tmp1/&/*/=x/?node");
+            var ex = Expression.Create (@"@/*/_tmp1/&/*/=x/?node");
             var match = ex.Evaluate (tmp);
             Assert.AreEqual (1, match.Count);
             Assert.AreEqual ("_tmp1", match [0].Name);
@@ -585,7 +585,7 @@ _tmp2:y
 _tmp3:x2
 ";
             context.Raise ("pf.code-2-nodes", tmp);
-            var ex = Expression.Create (@"@/(/_tmp1/|/_tmp3/)^(/_tmp2/|/_tmp3/)?node");
+            var ex = Expression.Create (@"@/(/*/_tmp1/|/*/_tmp3/)^(/*/_tmp2/|/*/_tmp3/)?node");
             var match = ex.Evaluate (tmp);
             Assert.AreEqual (2, match.Count);
             Assert.AreEqual ("_tmp1", match [0].Name);
@@ -605,7 +605,7 @@ _tmp1:x2
 _tmp1:y
 ";
             context.Raise ("pf.code-2-nodes", tmp);
-            var ex = Expression.Create (@"@/_tmp1/!/*/=x2/?node");
+            var ex = Expression.Create (@"@/*/_tmp1/!/*/=x2/?node");
             var match = ex.Evaluate (tmp);
             Assert.AreEqual (2, match.Count);
             Assert.AreEqual ("_tmp1", match [0].Name);
@@ -627,7 +627,7 @@ _tmp2:y
 _tmp3:x2
 ";
             context.Raise ("pf.code-2-nodes", tmp);
-            var ex = Expression.Create (@"@/_tmp1/|/_tmp2/&/*/=y/?node");
+            var ex = Expression.Create (@"@/*/_tmp1/|/*/_tmp2/&/*/=y/?node");
             var match = ex.Evaluate (tmp);
             Assert.AreEqual (1, match.Count);
             Assert.AreEqual ("_tmp2", match [0].Name);
@@ -646,7 +646,7 @@ _tmp2:y
 _tmp3:x2
 ";
             context.Raise ("pf.code-2-nodes", tmp);
-            var ex = Expression.Create (@"@/_tmp2/|/_tmp1/?node");
+            var ex = Expression.Create (@"@/*/_tmp2/|/*/_tmp1/?node");
             var match = ex.Evaluate (tmp);
             Assert.AreEqual (2, match.Count);
             Assert.AreEqual ("_tmp2", match [0].Name);
@@ -666,7 +666,7 @@ _tmp2:y
 _tmp3:x2
 ";
             context.Raise ("pf.code-2-nodes", tmp);
-            var ex = Expression.Create (@"@/_tmp1/|(/_tmp2/&/*/=y/)?node");
+            var ex = Expression.Create (@"@/*/_tmp1/|(/*/_tmp2/&/*/=y/)?node");
             var match = ex.Evaluate (tmp);
             Assert.AreEqual (2, match.Count);
             Assert.AreEqual ("_tmp1", match [0].Name);
@@ -683,7 +683,7 @@ _tmp3:x2
             tmp.Value = @"
 ""_tmp\n1"":x";
             context.Raise ("pf.code-2-nodes", tmp);
-            var ex = Expression.Create (@"@/@""_tmp
+            var ex = Expression.Create (@"@/*/@""_tmp
 1""/?node");
             var match = ex.Evaluate (tmp);
             Assert.AreEqual (1, match.Count);

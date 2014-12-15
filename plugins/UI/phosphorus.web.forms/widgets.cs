@@ -15,170 +15,23 @@ namespace phosphorus.web.forms
     public static class widgets
     {
         /// <summary>
-        /// creates a container type of widget, that can have children widgets
+        /// creates a generic container type of Widget, that will only allow for child controls, and not content besides that
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.widgets.panel")]
-        private static void pf_web_controls_panel (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.widgets.container")]
+        private static void pf_web_controls_container (ApplicationContext context, ActiveEventArgs e)
         {
             Container widget = CreateControl<Container> (e.Args, "div");
+            Node formId = e.Args.Find (
+                delegate (Node idx) {
+                    return idx.Name == "_form-id";
+            });
+            if (formId != null && formId.Value == null)
+                formId.Value = widget.ClientID;
             e.Args.Value = DecorateWidget (context, widget, e.Args);
-        }
-
-        /// <summary>
-        /// creates a label type of widget, that can have static text as content
-        /// </summary>
-        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.widgets.label")]
-        private static void pf_web_controls_label (ApplicationContext context, ActiveEventArgs e)
-        {
-            Literal widget = CreateControl<Literal> (e.Args, "p", Widget.RenderingType.NoClose);
-            e.Args.Value = DecorateWidget (context, widget, e.Args);
-        }
-
-        /// <summary>
-        /// creates a button type of widget, that is a natural clickable element. the button can have either [value] or children controls
-        /// through [controls], but not both
-        /// </summary>
-        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.widgets.button")]
-        private static void pf_web_controls_button (ApplicationContext context, ActiveEventArgs e)
-        {
-            Widget widget;
-            string value = GetNodeValue (e.Args, "innerHTML");
-            if (!string.IsNullOrEmpty (value)) {
-
-                // creating a Literal widget since [value] was passed in
-                widget = CreateControl<Literal> (e.Args, "button", Widget.RenderingType.Default);
-            } else {
-
-                // no [value] was given, hence we create a Container widget, in case button contains children controls
-                widget = CreateControl<Container> (e.Args, "button", Widget.RenderingType.Default);
-            }
-            e.Args.Value = DecorateWidget (context, widget, e.Args);
-        }
-
-        /// <summary>
-        /// creates a check-box type of widget, that can be checked and unchecked
-        /// </summary>
-        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.widgets.checkbox")]
-        private static void pf_web_controls_checkbox (ApplicationContext context, ActiveEventArgs e)
-        {
-            phosphorus.ajax.widgets.Void widget = CreateControl<phosphorus.ajax.widgets.Void> (e.Args, "input");
-            widget ["type"] = "checkbox";
-            widget ["name"] = e.Args.Get<string> ();
-            e.Args.Value = DecorateWidget (context, widget, e.Args);
-        }
-
-        /// <summary>
-        /// creates a radio button type of widget, that can be checked and unchecked, in groups of other similar radio buttons
-        /// </summary>
-        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.widgets.radio")]
-        private static void pf_web_controls_radio (ApplicationContext context, ActiveEventArgs e)
-        {
-            phosphorus.ajax.widgets.Void widget = CreateControl<phosphorus.ajax.widgets.Void> (e.Args, "input");
-            widget ["type"] = "radio";
-            widget ["name"] = e.Args.Get<string> ();
-            e.Args.Value = DecorateWidget (context, widget, e.Args);
-        }
-
-        /// <summary>
-        /// creates a select type of widget, that can have the user select one of many items from a drop down list of items
-        /// </summary>
-        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.widgets.select")]
-        private static void pf_web_controls_select (ApplicationContext context, ActiveEventArgs e)
-        {
-            Container widget = CreateControl<Container> (e.Args, "select");
-            e.Args.Value = DecorateWidget (context, widget, e.Args);
-        }
-
-        /// <summary>
-        /// creates an option value for a select list widget. parent must be [select]
-        /// </summary>
-        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.widgets.option")]
-        private static void pf_web_controls_option (ApplicationContext context, ActiveEventArgs e)
-        {
-            if (!(e.Args [0].Value is Container) && e.Args [0].Get<Container> ().ElementType == "select")
-                throw new ArgumentException ("you cannot have an [option] widget outside a [select] widget");
-            Literal widget = CreateControl<Literal> (e.Args, "option");
-            widget.NoIDAttribute = true;
-            e.Args.Value = DecorateWidget (context, widget, e.Args);
-        }
-
-        /// <summary>
-        /// creates a hidden input type of widget, that can store values in your forms, with no visual interface
-        /// </summary>
-        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.widgets.hidden")]
-        private static void pf_web_controls_hidden (ApplicationContext context, ActiveEventArgs e)
-        {
-            phosphorus.ajax.widgets.Void widget = CreateControl<phosphorus.ajax.widgets.Void> (e.Args, "input");
-            widget ["type"] = "hidden";
-            widget ["name"] = widget.ID;
-            e.Args.Value = DecorateWidget (context, widget, e.Args);
-        }
-
-        /// <summary>
-        /// creates a text input type of widget, that can have the user type single line text values into it
-        /// </summary>
-        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.widgets.text")]
-        private static void pf_web_controls_text (ApplicationContext context, ActiveEventArgs e)
-        {
-            phosphorus.ajax.widgets.Void widget = CreateControl<phosphorus.ajax.widgets.Void> (e.Args, "input");
-            widget ["type"] = "text";
-            widget ["name"] = widget.ID;
-            e.Args.Value = DecorateWidget (context, widget, e.Args);
-        }
-
-        /// <summary>
-        /// creates a text area input type of widget, that can have the user type multiple lines of text values into it
-        /// </summary>
-        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.widgets.textarea")]
-        private static void pf_web_controls_textarea (ApplicationContext context, ActiveEventArgs e)
-        {
-            Literal widget = CreateControl<Literal> (e.Args, "textarea");
-            widget ["name"] = widget.ID;
-            e.Args.Value = DecorateWidget (context, widget, e.Args);
-        }
-
-        /// <summary>
-        /// creates an image type of control, that will display an image on the form
-        /// </summary>
-        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.widgets.img")]
-        private static void pf_web_controls_img (ApplicationContext context, ActiveEventArgs e)
-        {
-            phosphorus.ajax.widgets.Void widget = CreateControl<phosphorus.ajax.widgets.Void> (e.Args, "img");
-            e.Args.Value = DecorateWidget (context, widget, e.Args);
-        }
-
-        /// <summary>
-        /// creates a generic void type of Widget, that will not allow for any content, but only attributes
-        /// </summary>
-        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.widgets.void")]
-        private static void pf_web_controls_void (ApplicationContext context, ActiveEventArgs e)
-        {
-            phosphorus.ajax.widgets.Void widget = CreateControl<phosphorus.ajax.widgets.Void> (e.Args, "void");
-            e.Args.Value = DecorateWidget (context, widget, e.Args);
+            if (widget.ElementType == "select" && !widget.HasAttribute ("name"))
+                widget ["name"] = widget.ClientID;
         }
 
         /// <summary>
@@ -189,32 +42,26 @@ namespace phosphorus.web.forms
         [ActiveEvent (Name = "pf.web.widgets.literal")]
         private static void pf_web_controls_literal (ApplicationContext context, ActiveEventArgs e)
         {
-            Literal widget = CreateControl<Literal> (e.Args, "literal");
+            Literal widget = CreateControl<Literal> (e.Args, "p");
             e.Args.Value = DecorateWidget (context, widget, e.Args);
+            if (widget.ElementType == "textarea" && !widget.HasAttribute ("name"))
+                widget ["name"] = widget.ClientID;
         }
 
         /// <summary>
-        /// creates a generic containerr type of Widget, that will only allow for child controls, and not content besides that
+        /// creates a generic void type of Widget, that will not allow for any content, but only attributes
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.widgets.container")]
-        private static void pf_web_controls_container (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.widgets.void")]
+        private static void pf_web_controls_void (ApplicationContext context, ActiveEventArgs e)
         {
-            Container widget = CreateControl<Container> (e.Args, "container");
+            phosphorus.ajax.widgets.Void widget = CreateControl<phosphorus.ajax.widgets.Void> (e.Args, "input");
             e.Args.Value = DecorateWidget (context, widget, e.Args);
-        } // TODO: create UserControl type of widget, that allows for linking in pf.lambda files, or something .......
-
-        /*
-         * returns the "name" children value from the node given
-         */
-        private static string GetNodeValue (Node node, string name)
-        {
-            foreach (Node idx in node.Children) {
-                if (idx.Name == name)
-                    return idx.Get<string> ();
-            }
-            return null;
+            if (widget.ElementType == "input" && !widget.HasAttribute ("name"))
+                widget ["name"] = widget.ClientID;
+            if (widget.ElementType == "input" && widget ["type"] == "radio" && !widget.HasAttribute ("value"))
+                widget ["value"] = widget.ClientID;
         }
 
         /*
@@ -223,7 +70,10 @@ namespace phosphorus.web.forms
         private static T CreateControl<T> (Node node, string elementType, Widget.RenderingType type = Widget.RenderingType.Default) where T : Widget, new()
         {
             // creating widget as persistent control
-            Container parent = node [0].Get<Container> ();
+            Container parent = node.Find (
+                delegate (Node idx) {
+                    return idx.Name == "__parent";
+            }).Get<Container> ();
             T widget = parent.CreatePersistentControl<T> (node.Get<string> ());
 
             // in case no ID was given, we "return" it to creator as value of current node
@@ -249,11 +99,8 @@ namespace phosphorus.web.forms
             // looping through all children nodes of Widget's node to decorate Widget
             foreach (Node idxArg in args.Children) {
                 switch (idxArg.Name) {
-                case "checked":
-                    SetChecked (widget, idxArg.Get<string> ());
-                    break;
-                case "noid":
-                    if (idxArg.Get<bool> ())
+                case "has-id":
+                    if (!idxArg.Get<bool> ())
                         widget.NoIDAttribute = true;
                     break;
                 case "render-type":
@@ -265,6 +112,10 @@ namespace phosphorus.web.forms
                 case "controls":
                     CreateChildWidgets (context, widget, idxArg);
                     break;
+                case "checked":
+                    if (idxArg.Value == null || idxArg.Get<bool> ())
+                        widget ["checked"] = null;
+                    break;
                 default:
 
                     // this might be an event, it might be a node we should ignore (starting with "_") or it might be any arbitrary attribute
@@ -274,15 +125,6 @@ namespace phosphorus.web.forms
                 }
             }
             return widget;
-        }
-
-        /*
-         * sets the checked property of widget
-         */
-        private static void SetChecked (Widget widget, string checkedValue)
-        {
-            if (checkedValue == "checked")
-                widget ["checked"] = null;
         }
 
         /*
@@ -308,6 +150,10 @@ namespace phosphorus.web.forms
         {
             foreach (Node idxChild in children.Children) {
                 idxChild.Insert (0, new Node ("__parent", widget));
+                idxChild.Insert (1, new Node ("_form-id", children.Parent.Find (
+                    delegate (Node idx) {
+                        return idx.Name == "_form-id";
+                }).Value));
                 context.Raise ("pf.web.widgets." + idxChild.Name, idxChild);
             }
         }
@@ -341,7 +187,10 @@ namespace phosphorus.web.forms
                 eventNode.Add (node.Clone ());
 
                 // making sure [_form-id] and [_widget-id] is passed into pf.lambda object as parameters
-                eventNode [0].Insert (0, new Node ("_form-id", node.Root.Value));
+                eventNode [0].Insert (0, new Node ("_form-id", node.Root.Find (
+                    delegate (Node idx) {
+                        return idx.Name == "_form-id";
+                }).Value));
                 eventNode [0].Insert (1, new Node ("_widget-id", node.Parent.Value));
 
                 // raising the Active Event that actually creates our ajax event handler for our pf.lambda object

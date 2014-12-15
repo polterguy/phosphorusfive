@@ -183,10 +183,10 @@ lambda.copy:@/-/?node";
             Node tmp = new Node ();
             tmp.Value = @"
 _input
-set:@/+/_input/?value
+set:@/+/*/_input/?value
   :@/./-/?node
 lambda.copy:@""
-set:@/./_input/#/?value
+set:@/./*/_input/#/?value
   :howdy
 ""
   _input";
@@ -204,10 +204,10 @@ set:@/./_input/#/?value
             Node tmp = new Node ();
             tmp.Value = @"
 _input
-set:@/+/_input/?value
+set:@/+/*/_input/?value
   :@/./-/?node
 lambda:node:@""_x
-  set:@/./_input/#/?value
+  set:@/./*/_input/#/?value
     :howdy
   set:@/?value
     :no-val""
@@ -227,10 +227,10 @@ lambda:node:@""_x
             Node tmp = new Node ();
             tmp.Value = @"
 _input
-set:@/+/_input/?value
+set:@/+/*/_input/?value
   :@/./-/?node
 lambda.copy:node:@""_x
-  set:@/./_input/#/?value
+  set:@/./*/_input/#/?value
     :howdy
   set:@/?value
     :no-val""
@@ -250,10 +250,10 @@ lambda.copy:node:@""_x
             Node tmp = new Node ();
             tmp.Value = @"
 _input
-set:@/+/_input/?value
+set:@/+/*/_input/?value
   :@/./-/?node
 lambda.immutable:node:@""_x
-  set:@/./_input/#/?value
+  set:@/./*/_input/#/?value
     :howdy
   set:@/?value
     :no-val""
@@ -298,7 +298,7 @@ _x
 _x
   set:@/./-/-/?value
     :world
-lambda:@/../_x/?node";
+lambda:@/../*/_x/?node";
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("howdy", tmp [0].Value, "wrong value of node after executing lambda object");
@@ -314,15 +314,15 @@ lambda:@/../_x/?node";
             Node tmp = new Node ();
             tmp.Value = @"
 _x:node:@""_x
-  set:@/./_arg/#/?value
+  set:@/./*/_arg/#/?value
     :howdy""
-_x:@""set:@/./_arg/#/?value
+_x:@""set:@/./*/_arg/#/?value
   :{0} world
-    :@/./././_arg/#/?value""
+    :@/./././*/_arg/#/?value""
 _arg
-set:@/+/_arg/?value
+set:@/+/*/_arg/?value
   :@/./-/?node
-lambda:@/../_x/?value
+lambda:@/../*/_x/?value
   _arg";
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
             context.Raise ("lambda", tmp);

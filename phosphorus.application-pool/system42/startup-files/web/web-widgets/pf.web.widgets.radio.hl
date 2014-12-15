@@ -1,0 +1,10 @@
+event:pf.web.widgets.radio
+  lambda
+    lambda
+      add:@/+2/?node
+        :@/../*/!/../*/lambda/?node
+      set:@/+1/?value
+        :@/../?value
+      pf.web.widgets.void
+        element:input
+        type:radio

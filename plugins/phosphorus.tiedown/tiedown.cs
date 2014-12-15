@@ -27,8 +27,7 @@ namespace phosphorus.tiedown
             if (!string.IsNullOrEmpty (ConfigurationManager.AppSettings ["application-startup-file"])) {
 
                 // there is an application-startup-file declared in app.config file, executing it as pf.lambda file
-                string rootFolder = context.Raise ("pf.get-application-root-folder").Get<string> ();
-                string appStartFilePath = rootFolder + ConfigurationManager.AppSettings ["application-startup-file"];
+                string appStartFilePath = ConfigurationManager.AppSettings ["application-startup-file"];
                 Utilities.ExecuteLambdaFile (context, appStartFilePath);
             }
         }
