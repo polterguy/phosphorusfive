@@ -1,0 +1,32 @@
+set:@/../**/={header}/?value
+  :@/../*/_args/*/_header/?value
+set:@/../**/={content}/?value
+  :@/../*/_args/*/_content/?value
+
+pf.create-widget:template
+  class:main
+  controls
+    label:header
+      class:span-20 last header prepend-top prepend-4
+      element:h1
+      value:{header}
+    panel:menu
+      class:span-4 menu prepend-top
+      controls
+        hyperlink
+          value:about
+          href:about
+          has-id:false
+    panel:content
+      class:span-20 last content prepend-top
+      controls
+        label
+          has-id:false
+          value:{content}
+    panel:footer
+      class:span-24 footer
+      controls
+        label
+          has-id:false
+          value:"a phosphorus.five productions!"
+          class:prepend-8 prepend-top span-6

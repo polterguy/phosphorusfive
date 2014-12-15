@@ -95,6 +95,7 @@
     <Folder Include="system42\startup-files\" />
     <Folder Include="media\" />
     <Folder Include="media\css\" />
+    <Folder Include="system42\templates\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="system42\startup-files\pf.load-ui.hl" />
@@ -112,7 +113,6 @@
     <None Include="system42\startup-files\web\web-widgets\pf.web.widgets.textarea.hl" />
     <None Include="system42\startup-files\web\web-widgets\pf.web.widgets.usercontrol.hl" />
     <None Include="system42\startup-files\web\web-widgets\pf.web.widgets.hyperlink.hl" />
-    <None Include="system42\user-controls\header.hl" />
-    <None Include="system42\user-controls\menu.hl" />
+    <None Include="system42\templates\main.hl" />
   </ItemGroup>
 </Project>

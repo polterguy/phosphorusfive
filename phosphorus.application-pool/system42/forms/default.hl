@@ -1,21 +1,7 @@
-pf.create-widget:template
-  class:main
-  controls
-    usercontrol:header
-      file:system42/user-controls/header.hl
-      class:span-24 header
-    usercontrol:menu
-      file:system42/user-controls/menu.hl
-      class:span-3 menu
-    panel:content
-      class:span-21 last content
-      controls
-        label
-          has-id:false
-          value:@"welcome to phosphorus.five"
-    panel:footer
-      class:span-24 footer
-      controls
-        label
-          has-id:false
-          value:"a phosphorus.five productions!"
+pf.execute-lambda-file:system42/templates/main.hl
+  _args
+    _header:"welcome to phosphorus.five"
+    _content:@"
+<a href=""https://github.com/polterguy/phosphorus-five"">phosphorus.five</a> is an open source web application platform,
+and a content management system
+"

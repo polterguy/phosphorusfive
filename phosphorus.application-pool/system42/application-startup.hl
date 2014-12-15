@@ -7,7 +7,7 @@ event:pf.execute-lambda-file
       :@/./-/0/?value
     pf.code-2-nodes
     add:@/+/?node
-      :@/../_args/?node
+      :@/../*/_args/?node
     lambda.copy:@/-2/?node
 
 event:pf.execute-all-files-recursively
