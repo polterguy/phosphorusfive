@@ -218,7 +218,7 @@ Node node = new Node ();
 ctx.Raise ("foo", node);
 ```
 
-then from inside of your Active Event, you can either extract arguments passed in
+then from inside your Active Event, you can either extract arguments passed in
 to your method, or return arguments, by modifying and retrieving values from your
 Node, which is actually a tree structure, capable of passing in any type of argument
 you wish
@@ -240,10 +240,20 @@ where you can *"orchestrate"* your applications together, by combining existing 
 logic together, to form an *"application"* based upon loosely coupled plugins and
 modules
 
+pf.lambda can use any file format capable of constructing key/value/children nodes
+as its *"language"*, such as XML or JSON, but by default, a file format called
+*"Hyperlisp"* is being used. below is a simple pf.lambda program written in Hyperlisp
 
-
-
-
+```
+_x
+  foo1:bar1
+  foo2:bar
+  foo3:bar
+for-each:@/./_x/*/?node
+  pf.console.write-line:"{0}:{1}"
+    :@/././__dp/#/?name
+    :@/././__dp/#/?value
+```
 
 ## license
 
