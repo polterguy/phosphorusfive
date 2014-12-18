@@ -581,12 +581,21 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// finds the specified match
+        /// finds the specified match according to the given predicate
         /// </summary>
-        /// <param name="match">node matchin the given predicate</param>
+        /// <param name="match">node matching the given predicate, or null if none</param>
         public Node Find (Predicate<Node> match)
         {
             return _children.Find (match);
+        }
+
+        /// <summary>
+        /// sorts the children of the node
+        /// </summary>
+        /// <param name="comparison">comparison delegate</param>
+        public void Sort (Comparison<Node> comparison)
+        {
+            _children.Sort (comparison);
         }
 
         /// <summary>

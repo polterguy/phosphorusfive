@@ -202,7 +202,7 @@ namespace phosphorus.ajax.core.internals
             // TODO: create generic version, that allows for supplying a list of removals to do
             lst.RemoveAll (
                 delegate(Attribute idx) {
-                    return idx.Name == "outerHTML" || idx.Name == "innerHTML" || idx.Name == "Tag";
+                    return idx.Name == "outerHTML" || idx.Name == "innerValue" || idx.Name == "Tag";
                 });
 
             // rendering to html writer

@@ -240,7 +240,7 @@ namespace phosphorus.ajax.widgets
                             }
                             break;
                         case "textarea":
-                            _attributes.SetAttributeFormData ("innerHTML", Page.Request.Params [this ["name"]]);
+                            _attributes.SetAttributeFormData ("innerValue", Page.Request.Params [this ["name"]]);
                             break;
                         case "option":
                             Widget parent = Parent as Widget;
@@ -306,7 +306,7 @@ namespace phosphorus.ajax.widgets
         protected virtual void RenderChildrenWidgetsAsJson (HtmlTextWriter writer)
         {
             // re-rendering all children by default
-            (Page as core.IAjaxPage).Manager.RegisterWidgetChanges (ClientID, "innerHTML", GetChildrenHtml ());
+            (Page as core.IAjaxPage).Manager.RegisterWidgetChanges (ClientID, "innerValue", GetChildrenHtml ());
         }
 
         // overridden asp.net properties and methods

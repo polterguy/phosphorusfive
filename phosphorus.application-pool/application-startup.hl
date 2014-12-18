@@ -1,0 +1,33 @@
+event:pf.remove-additional-hello
+  lambda
+    set:@/+/?value
+      :@/../?value
+    pf.remove-widget
+
+event:pf.create-additional-hello
+  lambda
+    pf.create-widget
+      parent:main
+      controls
+        literal
+          innerValue:"hello again :) - click me 2!"
+          onclick
+            set:@/+/?value
+              :@/../*/_form-id/?value
+            pf.remove-additional-hello
+
+event:pf.load-ui
+  lambda
+    pf.create-widget:main
+      controls
+        literal
+          element:h1
+          innerValue:"phosphorus.five, hello world app"
+          class:span-24 prepend-top
+        literal
+          innerValue:@"to see the code that creates this page, take a look at 'application-startup.hl' at the root
+of the 'phosphorus.application-pool' folder"
+        literal
+          innerValue:"<strong>hello world - click me!</strong>"
+          onclick
+            pf.create-additional-hello

@@ -27,12 +27,12 @@ namespace phosphorus.ajax.widgets
             : base (elementType)
         { }
 
-        // overridden to throw an exception if user tries to explicitly set the innerHTML attribute of this control
+        // overridden to throw an exception if user tries to explicitly set the innerValue attribute of this control
         public override string this [string name] {
             get { return base [name]; }
             set {
-                if (name == "innerHTML")
-                    throw new ArgumentException ("you cannot set the 'innerHTML' property of a Void widget");
+                if (name == "innerValue")
+                    throw new ArgumentException ("you cannot set the 'innerValue' property of a Void widget");
                 base [name] = value;
             }
         }

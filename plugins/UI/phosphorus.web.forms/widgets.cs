@@ -35,7 +35,7 @@ namespace phosphorus.web.forms
         }
 
         /// <summary>
-        /// creates a generic literal type of Widget, that will allow for only innerHTML and no children controls
+        /// creates a generic literal type of Widget, that will allow for only innerValue and no children controls
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
@@ -115,6 +115,8 @@ namespace phosphorus.web.forms
                 case "checked":
                     if (idxArg.Value == null || idxArg.Get<bool> ())
                         widget ["checked"] = null;
+                    break;
+                case "parent":
                     break;
                 default:
 

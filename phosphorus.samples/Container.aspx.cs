@@ -17,7 +17,7 @@ namespace phosphorus.five.samples
         [WebMethod]
         protected void element_onclick (pf.Literal literal, EventArgs e)
         {
-            literal.innerHTML = "widget was clicked";
+            literal.innerValue = "widget was clicked";
         }
     }
 }

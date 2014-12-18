@@ -167,7 +167,7 @@ tests.invoke_multiple = function(event) {
     },
 
     onsuccess: function(serverReturn, evt) {
-      if (success == 'maybe' && serverReturn.__pf_change.sandbox_invoke_multiple.innerHTML != 'x') {
+      if (success == 'maybe' && serverReturn.__pf_change.sandbox_invoke_multiple.innerValue != 'x') {
         success = 'no';
       }
     }
@@ -179,7 +179,7 @@ tests.invoke_multiple = function(event) {
     },
 
     onsuccess: function(serverReturn, evt) {
-      if (success == 'maybe' && serverReturn.__pf_change.sandbox_invoke_multiple.innerHTML != 'xx') {
+      if (success == 'maybe' && serverReturn.__pf_change.sandbox_invoke_multiple.innerValue != 'xx') {
         success = 'no';
       }
     }
@@ -191,7 +191,7 @@ tests.invoke_multiple = function(event) {
     },
 
     onsuccess: function(serverReturn, evt) {
-      if (success == 'maybe' && serverReturn.__pf_change.sandbox_invoke_multiple.innerHTML != 'xxx') {
+      if (success == 'maybe' && serverReturn.__pf_change.sandbox_invoke_multiple.innerValue != 'xxx') {
         success = 'no';
       }
     }
@@ -203,7 +203,7 @@ tests.invoke_multiple = function(event) {
     },
 
     onsuccess: function(serverReturn, evt) {
-      if (success == 'maybe' && serverReturn.__pf_change.sandbox_invoke_multiple.innerHTML != 'xxxx') {
+      if (success == 'maybe' && serverReturn.__pf_change.sandbox_invoke_multiple.innerValue != 'xxxx') {
         success = 'no';
       }
     }
@@ -215,7 +215,7 @@ tests.invoke_multiple = function(event) {
     },
 
     onsuccess: function(serverReturn, evt) {
-      if (success == 'maybe' && serverReturn.__pf_change.sandbox_invoke_multiple.innerHTML != 'xxxxx') {
+      if (success == 'maybe' && serverReturn.__pf_change.sandbox_invoke_multiple.innerValue != 'xxxxx') {
         tests.setError('invoke_multiple');
       } else {
         if (success == 'maybe') {
@@ -248,7 +248,7 @@ tests.invoke_javascript = function(event) {
         tests.setError('invoke_javascript');
         return;
       }
-      if (serverReturn.__pf_change.sandbox_invoke_javascript.innerHTML != 'mumbo jumbo') {
+      if (serverReturn.__pf_change.sandbox_invoke_javascript.innerValue != 'mumbo jumbo') {
         tests.setError('invoke_javascript');
         return;
       }
@@ -273,7 +273,7 @@ tests.invoke_change_content = function(event) {
         tests.setError('invoke_change_content');
         return;
       }
-      if (serverReturn.__pf_change.sandbox_invoke_change_content.innerHTML != 'new value') {
+      if (serverReturn.__pf_change.sandbox_invoke_change_content.innerValue != 'new value') {
         tests.setError('invoke_change_content');
         return;
       }
@@ -306,7 +306,7 @@ tests.invoke_change_two_properties = function(event) {
         tests.setError('invoke_change_two_properties');
         return;
       }
-      if (serverReturn.__pf_change.sandbox_invoke_change_two_properties.innerHTML != 'new value 2') {
+      if (serverReturn.__pf_change.sandbox_invoke_change_two_properties.innerValue != 'new value 2') {
         tests.setError('invoke_change_two_properties');
         return;
       }

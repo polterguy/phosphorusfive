@@ -56,7 +56,7 @@
    * 'event' is the dom event
    */
   pf.e = function(event) {
-    var el = pf.$(event.target);
+    var el = pf.$(event.currentTarget);
     el.raise('on' + event.type);
     event.preventDefault();
   };
@@ -164,7 +164,7 @@
           this.el.outerHTML = pf._getChange(this.el.outerHTML, value);
           this.el = pf.$(id).el; // updating element since previous element is now gone
           break;
-        case 'innerHTML':
+        case 'innerValue':
           this.el.innerHTML = pf._getChange(this.el.innerHTML, value);
           break;
         case 'class':

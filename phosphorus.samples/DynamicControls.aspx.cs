@@ -41,13 +41,13 @@ namespace phosphorus.five.samples
         [WebMethod]
         protected void item_onclick (pf.Literal sender, EventArgs e)
         {
-            if (sender.innerHTML == "are you sure?") {
+            if (sender.innerValue == "are you sure?") {
                 list.RemoveControlPersistent (sender);
                 CurrentEdit = null;
             } else {
-                txt ["value"] = sender.innerHTML;
+                txt ["value"] = sender.innerValue;
                 CurrentEdit = sender.ID;
-                sender.innerHTML = "are you sure?";
+                sender.innerValue = "are you sure?";
             }
         }
         
@@ -59,7 +59,7 @@ namespace phosphorus.five.samples
             widget.ElementType = "li";
             widget.RenderType = pf.Widget.RenderingType.NoClose;
             widget ["onclick"] = "item_onclick";
-            widget.innerHTML = txt ["value"];
+            widget.innerValue = txt ["value"];
         }
         
         [WebMethod]
@@ -70,7 +70,7 @@ namespace phosphorus.five.samples
             widget.ElementType = "li";
             widget.RenderType = pf.Widget.RenderingType.NoClose;
             widget ["onclick"] = "item_onclick";
-            widget.innerHTML = txt ["value"];
+            widget.innerValue = txt ["value"];
         }
         
         [WebMethod]
@@ -81,7 +81,7 @@ namespace phosphorus.five.samples
             widget.ElementType = "li";
             widget.RenderType = pf.Widget.RenderingType.NoClose;
             widget ["onclick"] = "item_onclick";
-            widget.innerHTML = txt ["value"];
+            widget.innerValue = txt ["value"];
         }
         
         [WebMethod]
@@ -98,7 +98,7 @@ namespace phosphorus.five.samples
                 widget.ElementType = "li";
                 widget.RenderType = pf.Widget.RenderingType.NoClose;
                 widget ["onclick"] = "item_onclick";
-                widget.innerHTML = txt ["value"];
+                widget.innerValue = txt ["value"];
             }
         }
         
@@ -109,7 +109,7 @@ namespace phosphorus.five.samples
             Random rnd = new Random ();
             foreach (pf.Literal idx in list.GetChildControls<pf.Literal> ()) {
                 if (rnd.Next (0, 3) == 1) {
-                    idx.innerHTML = "i like turtles!";
+                    idx.innerValue = "i like turtles!";
                     idx ["class"] = "turtles";
                 }
             }
@@ -121,7 +121,7 @@ namespace phosphorus.five.samples
             CurrentEdit = null;
             List<Control> toRemove = new List<Control> ();
             foreach (pf.Literal idx in list.GetChildControls<pf.Literal> ()) {
-                if (idx.innerHTML.Contains ("turtles")) {
+                if (idx.innerValue.Contains ("turtles")) {
                     toRemove.Add (idx);
                 }
             }
@@ -134,7 +134,7 @@ namespace phosphorus.five.samples
         protected void update_onclick (pf.Void btn, EventArgs e)
         {
             pf.Literal liter = list.FindControl (CurrentEdit) as pf.Literal;
-            liter.innerHTML = txt ["value"];
+            liter.innerValue = txt ["value"];
             CurrentEdit = null;
         }
     }

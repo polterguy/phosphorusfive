@@ -56,7 +56,7 @@
       // called when a successful response is returned, but before dom is updated with return value from server
       onsuccess: function(retVal, evt) {
         if(retVal.__pf_change && retVal.__pf_change.javascript_widget) {
-          retVal.__pf_change.javascript_widget.innerHTML += 'browser says \'hello again\'';
+          retVal.__pf_change.javascript_widget.innerValue += 'browser says \'hello again\'';
         }
       }
     });

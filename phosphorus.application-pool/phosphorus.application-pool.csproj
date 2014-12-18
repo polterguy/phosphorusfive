@@ -39,6 +39,7 @@
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
     <Content Include="media\css\main.css" />
+    <Content Include="media\css\src\grid.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
@@ -96,23 +97,14 @@
     <Folder Include="media\" />
     <Folder Include="media\css\" />
     <Folder Include="system42\templates\" />
+    <Folder Include="media\css\src\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="system42\startup-files\pf.load-ui.hl" />
     <None Include="system42\forms\default.hl" />
     <None Include="system42\application-startup.hl" />
-    <None Include="system42\startup-files\web\web-widgets\pf.web.widgets.label.hl" />
-    <None Include="system42\startup-files\web\web-widgets\pf.web.widgets.panel.hl" />
-    <None Include="system42\startup-files\web\web-widgets\pf.web.widgets.textbox.hl" />
-    <None Include="system42\startup-files\web\web-widgets\pf.web.widgets.checkbox.hl" />
-    <None Include="system42\startup-files\web\web-widgets\pf.web.widgets.radio.hl" />
-    <None Include="system42\startup-files\web\web-widgets\pf.web.widgets.hidden.hl" />
-    <None Include="system42\startup-files\web\web-widgets\pf.web.widgets.select.hl" />
-    <None Include="system42\startup-files\web\web-widgets\pf.web.widgets.option.hl" />
-    <None Include="system42\startup-files\web\web-widgets\pf.web.widgets.button.hl" />
-    <None Include="system42\startup-files\web\web-widgets\pf.web.widgets.textarea.hl" />
-    <None Include="system42\startup-files\web\web-widgets\pf.web.widgets.usercontrol.hl" />
-    <None Include="system42\startup-files\web\web-widgets\pf.web.widgets.hyperlink.hl" />
     <None Include="system42\templates\main.hl" />
+    <None Include="application-startup.hl" />
+    <None Include="system42\forms\about.hl" />
   </ItemGroup>
 </Project>

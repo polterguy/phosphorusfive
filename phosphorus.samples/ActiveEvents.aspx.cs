@@ -51,12 +51,12 @@ namespace phosphorus.five.samples
             InstanceListener instance = new InstanceListener ();
             context.RegisterListeningObject (instance);
 
-            // raising an active event, and showing the return value as the innerHTML of our literal being clicked
+            // raising an active event, and showing the return value as the innerValue of our literal being clicked
             // please notice that BOTH ActiveEvent handlers will at this point be invoked, since static event listeners are
             // automatically mapped and invoked as long as the assembly containing the type where they're defined is loaded
             Node node = new Node ();
             context.Raise ("foo", node);
-            literal.innerHTML = node.Value.ToString ();
+            literal.innerValue = node.Value.ToString ();
         }
     }
 }

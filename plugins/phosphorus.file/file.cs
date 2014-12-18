@@ -6,6 +6,7 @@
 using System;
 using System.IO;
 using System.Web;
+using System.Reflection;
 using phosphorus.core;
 
 namespace phosphorus.file
@@ -28,6 +29,80 @@ namespace phosphorus.file
                 string content = reader.ReadToEnd ();
                 e.Args.Insert (0, new Node (string.Empty, content));
             }
+        }
+
+        /// <summary>
+        /// saves a piece of text from the first child node's value to the path given as value of args
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.file.save")]
+        private static void pf_file_save (ApplicationContext context, ActiveEventArgs e)
+        {
+            string fileName = GetRootFolder (context) + e.Args.Get<string> ();
+            using (TextWriter writer = File.CreateText (fileName)) {
+                writer.Write (e.Args [0].Get<string> ());
+            }
+        }
+
+        /// <summary>
+        /// removes a file from disc
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.file.remove")]
+        private static void pf_file_remove (ApplicationContext context, ActiveEventArgs e)
+        {
+            string fileName = GetRootFolder (context) + e.Args.Get<string> ();
+            File.Delete (fileName);
+        }
+
+        /// <summary>
+        /// checks to see if a file exists on disc
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.file.exists")]
+        private static void pf_file_exists (ApplicationContext context, ActiveEventArgs e)
+        {
+            string fileName = GetRootFolder (context) + e.Args.Get<string> ();
+            e.Args.Add (new Node (string.Empty, File.Exists (fileName)));
+        }
+
+        /// <summary>
+        /// creates a directory on disc
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.file.create-folder")]
+        private static void pf_file_create_folder (ApplicationContext context, ActiveEventArgs e)
+        {
+            string folderName = GetRootFolder (context) + e.Args.Get<string> ();
+            Directory.CreateDirectory (folderName);
+        }
+
+        /// <summary>
+        /// removes a folder from disc
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.file.remove-folder")]
+        private static void pf_file_remove_folder (ApplicationContext context, ActiveEventArgs e)
+        {
+            string folderName = GetRootFolder (context) + e.Args.Get<string> ();
+            Directory.Delete (folderName);
+        }
+
+        /// <summary>
+        /// checks to see if a folder exist on disc
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.file.folder-exists")]
+        private static void pf_file_folder_exists (ApplicationContext context, ActiveEventArgs e)
+        {
+            string folderName = GetRootFolder (context) + e.Args.Get<string> ();
+            e.Args.Add (new Node (string.Empty, Directory.Exists (folderName)));
         }
 
         /// <summary>
@@ -65,6 +140,10 @@ namespace phosphorus.file
                 Node rootNode = new Node ();
                 context.Raise ("pf.get-application-root-folder", rootNode);
                 _rootFolder = rootNode.Get<string> ();
+                if (string.IsNullOrEmpty (_rootFolder)) {
+                    _rootFolder = Assembly.GetCallingAssembly ().Location;
+                    _rootFolder = _rootFolder.Substring (0, _rootFolder.LastIndexOf ("/") + 1);
+                }
             }
             return _rootFolder;
         }

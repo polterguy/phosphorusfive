@@ -19,7 +19,7 @@ namespace phosphorus.five.samples
         [WebMethod]
         protected void btn_onclick (pf.Widget sender, EventArgs e)
         {
-            lbl.innerHTML = "value of textbox was; '" + txt ["value"] + "'";
+            lbl.innerValue = "value of textbox was; '" + txt ["value"] + "'";
         }
     }
 }

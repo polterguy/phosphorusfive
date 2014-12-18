@@ -99,15 +99,11 @@ namespace phosphorus.five.applicationpool
         private void pf_create_widget (ApplicationContext context, ActiveEventArgs e)
         {
             // finding parent widget first, which defaults to "container" widget, if no widget is given
-            Container parent = container;
-
-            // checking to see if "parent" is explicitly given
-            foreach (Node idxNode in e.Args.Children) {
-                if (idxNode.Name == "parent") {
-                    parent = FindWidget<Container> (idxNode.Get<string> (), Page);
-                    break;
-                }
-            }
+            Node parentNode = e.Args.Find (
+                delegate (Node idx) {
+                    return idx.Name == "parent";
+            });
+            Container parent = parentNode != null ? FindWidget<Container> (parentNode.Get<string> (), Page) : container;
 
             // creating widget
             CreateForm (context, e.Args.Clone (), parent);
@@ -181,7 +177,7 @@ namespace phosphorus.five.applicationpool
         {
             node.Insert (0, new Node ("__parent", parent));
             node.Insert (1, new Node ("_form-id", node.Value));
-            context.Raise ("pf.web.widgets.panel", node);
+            context.Raise ("pf.web.widgets.container", node);
         }
         
         /*
@@ -212,11 +208,6 @@ namespace phosphorus.five.applicationpool
             foreach (Node idxLambda in lambdas) {
                 _context.Raise ("lambda", idxLambda.Clone ());
             }
-        }
-
-        protected override void OnPreRender (EventArgs e)
-        {
-            base.OnPreRender (e);
         }
     }
 }

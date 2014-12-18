@@ -1,9 +1,0 @@
-event:pf.web.widgets.select
-  lambda
-    lambda
-      add:@/+2/?node
-        :@/../*/!/../*/lambda/?node
-      set:@/+1/?value
-        :@/../?value
-      pf.web.widgets.container
-        element:select

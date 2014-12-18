@@ -100,7 +100,7 @@
                     </tr>
                     <tr>
                         <td>
-                            change innerHTML
+                            change innerValue
                         </td>
                         <td>
                             <input type="button" id="invoke_change_content" class="undetermined" value="run" onclick="tests.invoke_change_content(event)">

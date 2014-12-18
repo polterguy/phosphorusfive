@@ -10,9 +10,9 @@ namespace phosphorus.ajax.widgets
 {
     /// <summary>
     /// a widget that does not contain children widgets, but instead it contains only text as its inner content. use the 
-    /// innerHTML property to access the text content of the widget
+    /// innerValue property to access the text content of the widget
     /// </summary>
-    [ParseChildren(true, "innerHTML")]
+    [ParseChildren(true, "innerValue")]
     [PersistChildren(false)]
     [ViewStateModeById]
     public class Literal : Widget
@@ -45,11 +45,11 @@ namespace phosphorus.ajax.widgets
         /// </summary>
         /// <param name="elementType">html element to render widget with</param>
         /// <param name="renderType">how to render the widget</param>
-        /// <param name="innerHTML">content of literal</param>
-        public Literal (string elementType, Widget.RenderingType renderType, string innerHTML)
+        /// <param name="innerValue">content of literal</param>
+        public Literal (string elementType, Widget.RenderingType renderType, string innerValue)
             : base (elementType, renderType)
         {
-            this.innerHTML = innerHTML;
+            this.innerValue = innerValue;
         }
 
         // overridden to supply default html element
@@ -65,20 +65,20 @@ namespace phosphorus.ajax.widgets
         }
 
         /// <summary>
-        /// gets or sets the innerHTML property of the widget. this is also the inner default property of the widget, 
+        /// gets or sets the innerValue property of the widget. this is also the inner default property of the widget, 
         /// which means the stuff between the opening and end declaration of the widget in your .aspx markup
         /// </summary>
         /// <value>the inner html</value>
         [PersistenceMode(PersistenceMode.InnerDefaultProperty)]
-        public string innerHTML {
-            get { return this ["innerHTML"]; }
-            set { this ["innerHTML"] = value; }
+        public string innerValue {
+            get { return this ["innerValue"]; }
+            set { this ["innerValue"] = value; }
         }
 
-        // notice how we do not call base here, and only render the innerHTML and none of its children
+        // notice how we do not call base here, and only render the innerValue and none of its children
         protected override void RenderChildren (HtmlTextWriter writer)
         {
-            writer.Write (innerHTML);
+            writer.Write (innerValue);
         }
 
         protected override void AddedControl (Control control, int index)
@@ -87,7 +87,7 @@ namespace phosphorus.ajax.widgets
         }
         
         protected override bool HasContent {
-            get { return !string.IsNullOrEmpty (innerHTML); }
+            get { return !string.IsNullOrEmpty (innerValue); }
         }
     }
 }

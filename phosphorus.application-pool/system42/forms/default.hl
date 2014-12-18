@@ -1,7 +1,23 @@
+add:@/../*/"pf.execute-lambda-file"/*/_args/?node
+  :@/../*/_args/*/?node
+
 pf.execute-lambda-file:system42/templates/main.hl
   _args
-    _header:"welcome to phosphorus.five"
-    _content:@"
-<a href=""https://github.com/polterguy/phosphorus-five"">phosphorus.five</a> is an open source web application platform,
-and a content management system
-"
+    _header:"welcome to system42"
+    _content:@"<p>system42 is an open source content management system, and web application development platform,
+built on top of <a href=""github.com/polterguy/phosphorus-five"">phosphorus.five</a>. its purpose is to be a minimalistic
+CMS, while at the same time allowing you to create your own web apps easily, without forcing you to learn advanced
+programming constructs</p>
+
+<p>this allows you to build more complex functionality than a normal CMS would allow you to. with system42 you can create
+your own web applications, easily, without having to dive into complex constructs, such as C#, OOP, advanced programming,
+and so on. while still retaining the possibility of doing such, if you wish</p>
+
+<p>through pf.lambda, you can orchestrate your web application together, using a high-level abstraction language, that doesn't
+require from you to know programming, but instead allows you to focus on your domain problem. this creates
+opportunities for non-developers to create complex web applications, while at the same time retaining the possibility to
+dive into programming for system developers, to further enrich its features</p>
+
+<p>this way your developers can focus on what they should focus on, allowing your non-technical staff to orchestrate
+together what your developers create. system42 is the fusion between system-development, web-design, and non-technical
+solution architecture, allowing your people to do what they should do</p>"

@@ -166,12 +166,12 @@ namespace phosphorus.ajax.widgets
             ReRenderChildren ();
         }
 
-        // overridden to throw an exception if user tries to explicitly set the innerHTML attribute of this control
+        // overridden to throw an exception if user tries to explicitly set the innerValue attribute of this control
         public override string this [string name] {
             get { return base [name]; }
             set {
-                if (name == "innerHTML")
-                    throw new ArgumentException ("you cannot set the 'innerHTML' property of the '" + ID + "' Container widget");
+                if (name == "innerValue")
+                    throw new ArgumentException ("you cannot set the 'innerValue' property of the '" + ID + "' Container widget");
                 base [name] = value;
             }
         }

@@ -16,7 +16,7 @@ namespace phosphorus.five.samples
         [WebMethod]
         protected void element_onclick (pf.Literal literal, EventArgs e)
         {
-            literal.innerHTML = "this is the updated text";
+            literal.innerValue = "this is the updated text";
         }
     }
 }

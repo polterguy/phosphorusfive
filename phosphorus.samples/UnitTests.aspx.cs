@@ -42,27 +42,27 @@ namespace phosphorus.five.samples
         [WebMethod]
         protected void sandbox_invoke_multiple_onclick (pf.Literal literal, EventArgs e)
         {
-            literal.innerHTML += "x";
+            literal.innerValue += "x";
             System.Threading.Thread.Sleep (100);
         }
         
         [WebMethod]
         protected void sandbox_invoke_javascript_onclick (pf.Literal literal, EventArgs e)
         {
-            literal.innerHTML = Page.Request.Params ["mumbo"] + " jumbo";
+            literal.innerValue = Page.Request.Params ["mumbo"] + " jumbo";
         }
 
         [WebMethod]
         protected void sandbox_invoke_change_content_onclick (pf.Literal literal, EventArgs e)
         {
-            literal.innerHTML = "new value";
+            literal.innerValue = "new value";
         }
         
         [WebMethod]
         protected void sandbox_invoke_change_two_properties_onclick (pf.Literal literal, EventArgs e)
         {
             literal ["class"] = "new value 1";
-            literal.innerHTML = "new value 2";
+            literal.innerValue = "new value 2";
         }
         
         [WebMethod]
@@ -184,19 +184,19 @@ namespace phosphorus.five.samples
             if (existing.Count != 1)
                 throw new ApplicationException ("widget disappeared somehow");
 
-            if (existing[0].innerHTML != "foo")
-                throw new ApplicationException ("widget had wrong innerHTML");
+            if (existing[0].innerValue != "foo")
+                throw new ApplicationException ("widget had wrong innerValue");
 
             pf.Literal literal = container.CreatePersistentControl<pf.Literal> ();
             literal.ElementType = "strong";
-            literal.innerHTML = "howdy world";
+            literal.innerValue = "howdy world";
 
             existing = new List<pf.Literal> (container.GetChildControls<pf.Literal> ());
             if (existing.Count != 2)
                 throw new ApplicationException ("widget disappeared somehow after insertion");
             
-            if (existing[1].innerHTML != "howdy world")
-                throw new ApplicationException ("widget had wrong innerHTML");
+            if (existing[1].innerValue != "howdy world")
+                throw new ApplicationException ("widget had wrong innerValue");
         }
         
         [WebMethod]
@@ -204,14 +204,14 @@ namespace phosphorus.five.samples
         {
             pf.Literal literal = container.CreatePersistentControl<pf.Literal> (null, 0);
             literal.ElementType = "strong";
-            literal.innerHTML = "howdy world";
+            literal.innerValue = "howdy world";
 
             var existing = new List<pf.Literal> (container.GetChildControls<pf.Literal> ());
             if (existing.Count != 2)
                 throw new ApplicationException ("widget disappeared somehow after insertion");
 
-            if (existing[0].innerHTML != "howdy world")
-                throw new ApplicationException ("widget had wrong innerHTML");
+            if (existing[0].innerValue != "howdy world")
+                throw new ApplicationException ("widget had wrong innerValue");
         }
 
         [WebMethod]
@@ -219,7 +219,7 @@ namespace phosphorus.five.samples
         {
             pf.Literal literal = container.CreatePersistentControl<pf.Literal> ();
             literal.ElementType = "strong";
-            literal.innerHTML = "howdy world";
+            literal.innerValue = "howdy world";
         }
         
         [WebMethod]
@@ -229,22 +229,22 @@ namespace phosphorus.five.samples
             if (existing.Count != 2)
                 throw new ApplicationException ("widget disappeared somehow");
             
-            if (existing[0].innerHTML != "foo")
-                throw new ApplicationException ("widget had wrong innerHTML");
+            if (existing[0].innerValue != "foo")
+                throw new ApplicationException ("widget had wrong innerValue");
             
-            if (existing[1].innerHTML != "howdy world")
-                throw new ApplicationException ("widget had wrong innerHTML");
+            if (existing[1].innerValue != "howdy world")
+                throw new ApplicationException ("widget had wrong innerValue");
 
             pf.Literal literal = container.CreatePersistentControl<pf.Literal> ();
             literal.ElementType = "strong";
-            literal.innerHTML = "howdy world 2";
+            literal.innerValue = "howdy world 2";
 
             existing = new List<pf.Literal> (container.GetChildControls<pf.Literal> ());
             if (existing.Count != 3)
                 throw new ApplicationException ("widget disappeared somehow after insertion");
             
-            if (existing[2].innerHTML != "howdy world 2")
-                throw new ApplicationException ("widget had wrong innerHTML");
+            if (existing[2].innerValue != "howdy world 2")
+                throw new ApplicationException ("widget had wrong innerValue");
         }
         
         [WebMethod]
@@ -252,7 +252,7 @@ namespace phosphorus.five.samples
         {
             pf.Literal literal = container.CreatePersistentControl<pf.Literal> (null, 0);
             literal.ElementType = "strong";
-            literal.innerHTML = "howdy world";
+            literal.innerValue = "howdy world";
         }
 
         [WebMethod]
@@ -262,22 +262,22 @@ namespace phosphorus.five.samples
             if (existing.Count != 2)
                 throw new ApplicationException ("widget disappeared somehow");
 
-            if (existing[0].innerHTML != "howdy world")
-                throw new ApplicationException ("widget had wrong innerHTML");
+            if (existing[0].innerValue != "howdy world")
+                throw new ApplicationException ("widget had wrong innerValue");
 
-            if (existing[1].innerHTML != "foo")
-                throw new ApplicationException ("widget had wrong innerHTML");
+            if (existing[1].innerValue != "foo")
+                throw new ApplicationException ("widget had wrong innerValue");
 
             pf.Literal literal = container.CreatePersistentControl<pf.Literal> (null, 1);
             literal.ElementType = "strong";
-            literal.innerHTML = "howdy world 2";
+            literal.innerValue = "howdy world 2";
 
             existing = new List<pf.Literal> (container.GetChildControls<pf.Literal> ());
             if (existing.Count != 3)
                 throw new ApplicationException ("widget disappeared somehow after insertion");
 
-            if (existing[1].innerHTML != "howdy world 2")
-                throw new ApplicationException ("widget had wrong innerHTML");
+            if (existing[1].innerValue != "howdy world 2")
+                throw new ApplicationException ("widget had wrong innerValue");
         }
         
         [WebMethod]
@@ -302,7 +302,7 @@ namespace phosphorus.five.samples
             container.RemoveControlPersistent (literals [0]);
             pf.Literal literal = container.CreatePersistentControl<pf.Literal> (null, 0);
             literal.ElementType = "strong";
-            literal.innerHTML = "howdy world";
+            literal.innerValue = "howdy world";
         }
         
         [WebMethod]
@@ -318,12 +318,12 @@ namespace phosphorus.five.samples
             // parent is sandbox_invoke_remove_many
             pf.Literal lit1 = container.CreatePersistentControl<pf.Literal> (null, 0);
             lit1.ElementType = "strong";
-            lit1.innerHTML = "howdy";
+            lit1.innerValue = "howdy";
 
             // parent is sandbox_invoke_remove_many_5
             pf.Literal lit2 = ((pf.Container)((pf.Container)container.Controls [2]).Controls [1]).CreatePersistentControl<pf.Literal> ();
             lit2.ElementType = "em";
-            lit2.innerHTML = "world";
+            lit2.innerValue = "world";
         }
         
         [WebMethod]
@@ -335,11 +335,11 @@ namespace phosphorus.five.samples
                 throw new ApplicationException ("control count not correct on postback");
             if (container.Controls [2].Controls [1].Controls.Count != 3)
                 throw new ApplicationException ("control count not correct on postback");
-            if (((pf.Literal)container.Controls [0]).innerHTML != "howdy")
+            if (((pf.Literal)container.Controls [0]).innerValue != "howdy")
                 throw new ApplicationException ("control value not correct on postback");
             if (((pf.Literal)container.Controls [0]).ElementType != "strong")
                 throw new ApplicationException ("control element not correct on postback");
-            if (((pf.Literal)container.Controls [2].Controls [1].Controls [2]).innerHTML != "world")
+            if (((pf.Literal)container.Controls [2].Controls [1].Controls [2]).innerValue != "world")
                 throw new ApplicationException ("control value not correct on postback");
             if (((pf.Literal)container.Controls [2].Controls [1].Controls [2]).ElementType != "em")
                 throw new ApplicationException ("control element not correct on postback");
