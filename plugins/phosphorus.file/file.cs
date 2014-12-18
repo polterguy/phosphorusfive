@@ -90,7 +90,7 @@ namespace phosphorus.file
         private static void pf_file_remove_folder (ApplicationContext context, ActiveEventArgs e)
         {
             string folderName = GetRootFolder (context) + e.Args.Get<string> ();
-            Directory.Delete (folderName);
+            Directory.Delete (folderName, true);
         }
 
         /// <summary>

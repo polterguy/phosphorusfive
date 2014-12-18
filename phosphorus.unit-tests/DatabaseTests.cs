@@ -141,6 +141,8 @@ pf.data.select:@/*/*/_test4/*/query_field/*/x/=y/././?node
             Assert.AreEqual (1, tmp [2].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("_test4", tmp [2] [0].Name, "wrong value of node after executing lambda object");
             Assert.AreEqual ("world2", tmp [2] [0] [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("x", tmp [2] [0] [1] [0].Name, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("y", tmp [2] [0] [1] [0].Value, "wrong value of node after executing lambda object");
         }
     }
 }
