@@ -188,3 +188,6 @@ FakesAssemblies/
 # ignoring unit tests output directory
 test-results/
 phosphorus.userprefs
+
+#ignoring "system42" folder
+phosphorus.application-pool/system42/
