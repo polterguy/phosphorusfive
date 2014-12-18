@@ -93,18 +93,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="code\" />
-    <Folder Include="system42\startup-files\" />
     <Folder Include="media\" />
     <Folder Include="media\css\" />
-    <Folder Include="system42\templates\" />
     <Folder Include="media\css\src\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="system42\startup-files\pf.load-ui.hl" />
-    <None Include="system42\forms\default.hl" />
-    <None Include="system42\application-startup.hl" />
-    <None Include="system42\templates\main.hl" />
     <None Include="application-startup.hl" />
-    <None Include="system42\forms\about.hl" />
   </ItemGroup>
 </Project>
