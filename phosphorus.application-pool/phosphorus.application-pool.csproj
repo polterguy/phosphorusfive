@@ -90,6 +90,10 @@
       <Project>{0F68BFA7-1CF7-4737-9058-CED4A9ED3427}</Project>
       <Name>phosphorus.web.forms</Name>
     </ProjectReference>
+    <ProjectReference Include="..\plugins\phosphorus.data\phosphorus.data.csproj">
+      <Project>{CA83A3ED-BD5D-4557-AA1B-A7C04ABD4D4F}</Project>
+      <Name>phosphorus.data</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="code\" />

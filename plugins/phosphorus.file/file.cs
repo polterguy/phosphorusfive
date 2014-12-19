@@ -115,7 +115,8 @@ namespace phosphorus.file
         {
             // iterating all files in given directory, and returning as nodes beneath args given
             foreach (var idxFile in Directory.GetFiles (GetRootFolder (context) + e.Args.Get<string> ())) {
-                e.Args.Add (new Node (string.Empty, idxFile.Replace (GetRootFolder (context), "")));
+                if (!idxFile.EndsWith ("~"))
+                    e.Args.Add (new Node (string.Empty, idxFile.Replace (GetRootFolder (context), "")));
             }
         }
         
