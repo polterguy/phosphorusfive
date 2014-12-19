@@ -51,8 +51,8 @@ namespace phosphorus.five.applicationpool
 
                 // if file requested is Default.aspx, we change it to simply "?file=default"
                 if (localPath == "default.aspx")
-                    localPath = localPath.Replace (".aspx", "");
-                localPath = "?file=" + localPath;
+                    localPath = "";
+                localPath = "?file=/" + localPath;
 
                 // making sure we pass in any HTTP GET parameters
                 if (Request.QueryString.HasKeys ()) {

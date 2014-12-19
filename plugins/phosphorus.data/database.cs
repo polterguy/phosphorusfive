@@ -350,11 +350,11 @@ namespace phosphorus.data
                     if (!filesList.Exists (
                         delegate (string file)
                         {
-                        return file == idxDirectory + "db" + idxNo + ".hl";
+                        return file == idxDirectory + "/db" + idxNo + ".hl";
                     }))
-                        return idxDirectory + "db" + idxNo + ".hl";
+                        return idxDirectory + "/db" + idxNo + ".hl";
                 }
-                return idxDirectory + "db" + filesList.Count + ".hl";
+                return idxDirectory + "/db" + filesList.Count + ".hl";
             }
 
             // didn't find an available filename, without creating new directory
