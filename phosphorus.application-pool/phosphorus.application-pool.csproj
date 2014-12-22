@@ -47,6 +47,11 @@
     <MonoDevelop>
       <Properties VerifyCodeBehindFields="True" VerifyCodeBehindEvents="True">
         <XspParameters Port="8080" Address="127.0.0.1" SslMode="None" SslProtocol="Default" KeyType="None" CertFile="" KeyFile="" PasswordOptions="None" Password="" Verbose="True" />
+        <WebDeployTargets>
+          <Target Name="">
+            <FileCopier Handler="MonoDevelop.Deployment.LocalFileCopyHandler" TargetDirectory="/home/polterguy/projects/software/phosphorus/lib/application-pool" ctype="LocalFileCopyConfiguration" />
+          </Target>
+        </WebDeployTargets>
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
