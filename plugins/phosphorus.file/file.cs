@@ -129,7 +129,7 @@ namespace phosphorus.file
         private static void pf_file_list_folders (ApplicationContext context, ActiveEventArgs e)
         {
             // iterating all files in given directory, and returning as nodes beneath args given
-            foreach (var idxFolder in Directory.GetDirectories (e.Args.Get<string> ())) {
+            foreach (var idxFolder in Directory.GetDirectories (GetRootFolder (context) + e.Args.Get<string> ())) {
                 e.Args.Add (new Node (string.Empty, idxFolder.Replace (GetRootFolder (context), "")));
             }
         }

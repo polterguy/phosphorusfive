@@ -408,8 +408,16 @@ namespace phosphorus.data
             }
 
             // creating new node and appending into database
-            Node newNode = new Node (string.Empty, FindAvailableNewFileName (context));
+            string newFileName = FindAvailableNewFileName (context);
+            Node newNode = new Node (string.Empty, newFileName);
             _database.Add (newNode);
+
+            // making sure fil exists on disc, for future new creations of files before save operation occurs
+            Node createFile = new Node (string.Empty, newFileName);
+            createFile.Add (new Node (string.Empty, ""));
+            context.Raise ("pf.file.save", createFile);
+
+            // returning available file node back to caller
             return newNode;
         }
 

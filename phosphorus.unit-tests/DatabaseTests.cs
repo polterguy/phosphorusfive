@@ -4,6 +4,7 @@
  */
 
 using System;
+using System.Reflection;
 using NUnit.Framework;
 using phosphorus.core;
 
@@ -12,6 +13,14 @@ namespace phosphorus.unittests
     [TestFixture]
     public class DatabaseTests
     {
+        [ActiveEvent (Name = "pf.get-application-root-folder")]
+        private static void GetRootFolder (ApplicationContext context, ActiveEventArgs e)
+        {
+            string asmPath = Assembly.GetExecutingAssembly ().Location;
+            asmPath = asmPath.Substring (0, asmPath.LastIndexOf ("/") + 1);
+            e.Args.Value = asmPath;
+        }
+
         [Test]
         public void SelectNonExisting ()
         {
@@ -732,6 +741,67 @@ pf.data.select:@/*/*/_test9/?node
             Assert.AreEqual ("_howdy", tmp [4] [0] [0].Get<Node> ().Name, "wrong value of node after executing lambda object");
             Assert.AreEqual ("world", tmp [4] [0] [0].Get<Node> ().Value, "wrong value of node after executing lambda object");
             Assert.AreEqual (0, tmp [4] [0] [0].Get<Node> ().Count, "wrong value of node after executing lambda object");
+        }
+        
+        [Test]
+        public void InsertVeryManyValues ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            Loader.Instance.LoadAssembly ("phosphorus.file");
+            Loader.Instance.LoadAssembly ("phosphorus.data");
+            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+pf.data.delete:@/*/*/_testMany/?node
+for-each:@/0/*/**/?node
+  pf.data.insert
+    _testMany
+      howdy:world
+    _testMany
+      howdy:world
+    _testMany
+      howdy:world
+    _testMany
+      howdy:world
+    _testMany
+      howdy:world
+    _testMany
+      howdy:world
+    _testMany
+      howdy:world
+    _testMany
+      howdy:world
+    _testMany
+      howdy:world
+    _testMany
+      howdy:world
+    _testMany
+      howdy:world
+    _testMany
+      howdy:world
+    _testMany
+      howdy:world
+    _testMany
+      howdy:world
+    _testMany
+      howdy:world
+    _testMany
+      howdy:world
+    _testMany
+      howdy:world
+    _testMany
+      howdy:world
+    _testMany
+      howdy:world
+    _testMany
+      howdy:world
+pf.data.select:@/*/*/_testMany/?count
+";
+            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("lambda", tmp);
+            Assert.AreEqual (800, tmp [2] [0].Value, "wrong value of node after executing lambda object");
         }
     }
 }
