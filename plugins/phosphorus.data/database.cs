@@ -333,8 +333,8 @@ namespace phosphorus.data
             dbFoldersNode.Sort (
                 delegate (Node left, Node right)
                 {
-                    int leftInt = int.Parse (left.Name.Replace (_dbPath, "").Substring (2));
-                    int rightInt = int.Parse (right.Name.Replace (_dbPath, "").Substring (2));
+                    int leftInt = int.Parse (left.Get<string> ().Replace (_dbPath, "").Substring (2));
+                    int rightInt = int.Parse (right.Get<string> ().Replace (_dbPath, "").Substring (2));
                     return leftInt.CompareTo (rightInt);
             });
 
@@ -353,8 +353,8 @@ namespace phosphorus.data
             dbFoldersNode.Sort (
                 delegate (Node left, Node right)
                 {
-                    int leftInt = int.Parse (left.Name.Replace (directory, "").Substring (3).Replace (".hl", ""));
-                    int rightInt = int.Parse (right.Name.Replace (directory, "").Substring (3).Replace (".hl", ""));
+                    int leftInt = int.Parse (left.Get<string> ().Replace (directory, "").Substring (3).Replace (".hl", ""));
+                    int rightInt = int.Parse (right.Get<string> ().Replace (directory, "").Substring (3).Replace (".hl", ""));
                     return leftInt.CompareTo (rightInt);
             });
 
