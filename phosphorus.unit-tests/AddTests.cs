@@ -95,7 +95,7 @@ add:@/-/?node
 _out1
 _out2
 add:@/-/|/-/-/?node
-  :@/./+/?value
+  :@/./+/?node
 :dfg";
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
             context.Raise ("lambda", tmp);

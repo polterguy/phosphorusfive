@@ -47,7 +47,10 @@ namespace phosphorus.data
         }
 
         /// <summary>
-        /// updates the nodes in your database matching the expression given as value to the node given as child of statement
+        /// updates your database according to the expression given as value to either
+        /// the node given as the first child, or expression given as first child's value, if first child
+        /// name is empty and first child's value is an expression, or the value of the first child node,
+        /// if name is empty, and value is not an expression
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
@@ -57,14 +60,11 @@ namespace phosphorus.data
             // making sure database is initialized
             Initialize (context);
 
-            // verifying syntax of statement
-            if (e.Args.Count != 1)
-                throw new ArgumentException ("[pf.data.update] takes one and only one argument");
+            // finding source to update destination with, which might be a collection of nodes, or an expression
+            object sourceValue = GetUpdateSourceValue (e.Args);
 
-            // updating all nodes from database matching expression given as value of [pf.data.save]
-            // to whatever node is given as first child of [pf.data.save]
-            var expression = Expression.Create (e.Args.Get<string> ());
-            var match = expression.Evaluate (_database);
+            // updating all nodes from database matching expression given as value of [pf.data.update]
+            var match = Expression.Create (e.Args.Get<string> ()).Evaluate (_database);
 
             // looping through database matches and updating nodes while storing which files have been changed
             List<Node> changed = new List<Node> ();
@@ -81,14 +81,61 @@ namespace phosphorus.data
                 if (!changed.Contains (dnaFile))
                     changed.Add (dnaFile);
 
-                // replacing node in database
-                idxDest.Replace (e.Args [0].Clone ());
+                // updating value in database
+                switch (match.TypeOfMatch) {
+                case Match.MatchType.Name:
+                    if (sourceValue is Node)
+                        throw new ArgumentException ("cannot update name to become a node");
+                    idxDest.Name = (sourceValue ?? "").ToString ();
+                    break;
+                case Match.MatchType.Node:
+                    if (!(sourceValue is Node))
+                        throw new ArgumentException ("cannot only update node to become another node");
+                    idxDest.Replace ((sourceValue as Node).Clone ());
+                    break;
+                case Match.MatchType.Value:
+                    idxDest.Value = sourceValue;
+                    break;
+                default:
+                    throw new ArgumentException ("you cannot update path or count with [pf.data.update]");
+                }
             }
 
             // saving all affected files
             foreach (Node idxNode in changed) {
                 SaveFileNode (context, idxNode);
             }
+        }
+
+        /*
+         * returns the source node for an update operation
+         */
+        private static object GetUpdateSourceValue (Node node)
+        {
+            // verifying syntax of statement
+            if (node.Count != 1)
+                throw new ArgumentException ("[pf.data.update] takes one and only one argument");
+
+            // finding source, destination is expression in value of e.args, by default source is first child of e.Args,
+            // but source can also be an expression, pointing to a position in the execution tree
+            Node sourceNode = node [0];
+            if (sourceNode.Name == string.Empty && !Expression.IsExpression (sourceNode.Value)) {
+                return sourceNode.Value;
+            } else if (sourceNode.Name == string.Empty) {
+
+                // assigning the result of an expression here
+                Match sourceMatch = Expression.Create (Expression.FormatNode (sourceNode)).Evaluate (sourceNode);
+                if (sourceMatch.Count == 1) {
+
+                    // destination is an expression with only one result
+                    return sourceMatch.GetValue (0);
+                } else if (sourceMatch.TypeOfMatch == Match.MatchType.Count) {
+                    return sourceMatch.Count;
+                } else {
+                    throw new ArgumentException ("[pf.data.update] needs a source expression yielding 1 node match as its result");
+                }
+            }
+            return sourceNode;
         }
         
         /// <summary>
@@ -141,7 +188,7 @@ namespace phosphorus.data
             
             // verifying syntax of statement
             if (e.Args.Count != 0)
-                throw new ArgumentException ("[pf.data.remove] does not take any arguments");
+                throw new ArgumentException ("[pf.data.delete] does not take any arguments");
 
             // finding all nodes to remove
             var expression = Expression.Create (e.Args.Get<string> ());

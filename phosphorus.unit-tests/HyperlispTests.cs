@@ -26,6 +26,19 @@ x:y";
         }
 
         [Test]
+        public void ParseEmptyRootName ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+:y";
+            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            Assert.AreEqual (string.Empty, tmp [0].Name, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual ("y", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
+        }
+
+        [Test]
         public void ParseStringLiteral ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");

@@ -65,7 +65,8 @@ namespace phosphorus.hyperlisp
         private Token NextToken (Token previousToken)
         {
             int nextChar = _reader.Peek ();
-            if ((nextChar == ':' || nextChar == -1) && previousToken.Type == Token.TokenType.Spacer)
+            if ((nextChar == ':' || nextChar == -1) && 
+                (previousToken == null || previousToken.Type == Token.TokenType.Spacer || previousToken.Type == Token.TokenType.CarriageReturn))
                 return new Token (Token.TokenType.Name, string.Empty); // empty name
             if ((nextChar == '\r' || nextChar == '\n' || nextChar == -1) && previousToken.Type == Token.TokenType.Separator)
                 return new Token (Token.TokenType.TypeOrContent, string.Empty); // empty name
