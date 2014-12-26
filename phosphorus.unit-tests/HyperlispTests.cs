@@ -39,6 +39,67 @@ x:y";
         }
 
         [Test]
+        public void ParseEmptySingleLineCommentToken ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"//";
+            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            Assert.AreEqual (0, tmp.Count, "wrong value of node after parsing of hyperlisp");
+        }
+
+        [Test]
+        public void ParseSingleLineCommentToken ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+// comment";
+            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            Assert.AreEqual (0, tmp.Count, "wrong value of node after parsing of hyperlisp");
+        }
+
+        [Test]
+        public void ParseEmptyMultiLineCommentToken ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"/**/";
+            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            Assert.AreEqual (0, tmp.Count, "wrong value of node after parsing of hyperlisp");
+        }
+
+        [Test]
+        public void ParseMultiLineCommentToken ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"/*
+comment */";
+            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            Assert.AreEqual (0, tmp.Count, "wrong value of node after parsing of hyperlisp");
+        }
+
+        [Test]
+        public void ParseNodesWithCommentTokens ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+// comment
+jo:dude
+/*comment */
+hello";
+            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            Assert.AreEqual (2, tmp.Count, "wrong value of node after parsing of hyperlisp");
+        }
+
+        [Test]
         public void ParseStringLiteral ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");

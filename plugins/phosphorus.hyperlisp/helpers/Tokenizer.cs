@@ -65,11 +65,14 @@ namespace phosphorus.hyperlisp
         private Token NextToken (Token previousToken)
         {
             int nextChar = _reader.Peek ();
-            if ((nextChar == ':' || nextChar == -1) && 
+            if ((nextChar == ':') && 
                 (previousToken == null || previousToken.Type == Token.TokenType.Spacer || previousToken.Type == Token.TokenType.CarriageReturn))
                 return new Token (Token.TokenType.Name, string.Empty); // empty name
             if ((nextChar == '\r' || nextChar == '\n' || nextChar == -1) && previousToken.Type == Token.TokenType.Separator)
                 return new Token (Token.TokenType.TypeOrContent, string.Empty); // empty name
+            if (nextChar == '/' && 
+                (previousToken == null || previousToken.Type == Token.TokenType.CarriageReturn || previousToken.Type == Token.TokenType.Spacer))
+                return SkipCommentToken ();
             if (nextChar == -1)
                 return null; // end of stream
 
@@ -80,6 +83,7 @@ namespace phosphorus.hyperlisp
                 if (previousToken.Type == Token.TokenType.CarriageReturn) {
                     return NextSpaceToken ();
                 } else {
+
                     // whitespace only carry semantics as first token in each line in hyperlisp content
                     // therefor we must "left-trim" the reader, before retrieving next token
                     TrimReader ();
@@ -93,6 +97,32 @@ namespace phosphorus.hyperlisp
             } else {
                 return NextDefaultToken (nextChar, previousToken);
             }
+        }
+
+        /*
+         * skips the comment token starting at current position of reader
+         */
+        private Token SkipCommentToken()
+        {
+            _reader.Read (); // skipping current character, which is a '/' character, next character should be either '/' or '*'
+            int nextChar = _reader.Read ();
+            if (nextChar == '/') {
+                _reader.ReadLine ();
+            } else if (nextChar == '*') {
+                while (true) {
+                    nextChar = _reader.Read ();
+                    if (nextChar == -1)
+                        throw new ArgumentException ("unclosed comment in Hyperlisp");
+                    if (nextChar == '*') {
+                        nextChar = _reader.Read ();
+                        if (nextChar == '/')
+                            break;
+                    }
+                }
+            } else {
+                throw new ArgumentException ("syntax error in comment of Hyperlisp");
+            }
+            return new Token (Token.TokenType.CarriageReturn, "\r\n");
         }
 
         /*
