@@ -389,7 +389,7 @@ namespace phosphorus.ajax.widgets
             return retVal;
         }
 
-        protected override void OnInit (EventArgs e)
+        protected override void OnLoad (EventArgs e)
         {
             if (Page.IsPostBack)
                 LoadFormData ();
@@ -406,7 +406,7 @@ namespace phosphorus.ajax.widgets
                 }
             }
 
-            base.OnInit (e);
+            base.OnLoad (e);
         }
 
         // private methods for internal use in the class

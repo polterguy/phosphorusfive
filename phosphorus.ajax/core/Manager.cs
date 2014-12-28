@@ -92,6 +92,19 @@ namespace phosphorus.ajax.core
         }
 
         /// <summary>
+        /// sends the given javascript to client for execution
+        /// </summary>
+        /// <param name="script">javascript to execute on client</param>
+        public void SendJavaScriptToClient (string script)
+        {
+            if (!_changes.Contains ("__pf_script")) {
+                _changes ["__pf_script"] = new List<string> ();
+            }
+            List<string> lst = _changes ["__pf_script"] as List<string>;
+            lst.Add (script);
+        }
+
+        /// <summary>
         /// send an object back to the client as json
         /// </summary>
         /// <param name="id">id of object, must be unique for request</param>

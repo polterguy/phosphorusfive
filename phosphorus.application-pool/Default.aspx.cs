@@ -103,10 +103,21 @@ namespace phosphorus.five.applicationpool
                 delegate (Node idx) {
                     return idx.Name == "parent";
             });
-            Container parent = parentNode != null ? FindWidget<Container> (parentNode.Get<string> (), Page) : container;
+            Container parent = parentNode != null ? FindControl<Container> (parentNode.Get<string> (), Page) : container;
 
             // creating widget
             CreateForm (context, e.Args.Clone (), parent);
+        }
+        
+        /// <summary>
+        /// reloads the current URL
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.reload-location")]
+        private void pf_reload_location (ApplicationContext context, ActiveEventArgs e)
+        {
+            Manager.SendJavaScriptToClient ("location.reload();");
         }
 
         /// <summary>
@@ -118,7 +129,7 @@ namespace phosphorus.five.applicationpool
         private void pf_remove_widget (ApplicationContext context, ActiveEventArgs e)
         {
             // finding widget to remove
-            Widget widget = FindWidget<Widget> (e.Args.Get<string> (), Page);
+            Widget widget = FindControl<Widget> (e.Args.Get<string> (), Page);
 
             // removing all event handlers for widget
             RemoveEvents (widget);
@@ -154,16 +165,37 @@ namespace phosphorus.five.applicationpool
             // mapping the widget's ajax event to our common event handler on page
             widget [eventName] = "common_event_handler";
         }
+        
+        /// <summary>
+        /// returns the control with the given ID as first child of args, from optionally [parent] control's ID given
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.find-control")]
+        private void pf_find_control (ApplicationContext context, ActiveEventArgs e)
+        {
+            // defaulting parent to page object, but checking to see if an explicit parent is given through e.Args
+            Control parentCtrl = Page;
+            Node parentNode = e.Args.Find (
+                delegate (Node idx) {
+                    return idx.Name == "parent";
+            });
+            if (parentNode != null)
+                parentCtrl = FindControl<Control> (parentNode.Get<string> (), Page);
+
+            // returning control as first child of e.Args
+            e.Args.Insert (0, new Node (string.Empty, FindControl<Control> (e.Args.Get<string> (), parentCtrl)));
+        }
 
         /*
          * recursively searches through page for Container with specified id, starting from "idx"
          */
-        public T FindWidget<T> (string id, Control idx) where T : Widget
+        private T FindControl<T> (string id, Control idx) where T : Control
         {
             if (idx.ID == id)
                 return idx as T;
             foreach (Control idxChild in idx.Controls) {
-                T tmpRet = FindWidget<T> (id, idxChild);
+                T tmpRet = FindControl<T> (id, idxChild);
                 if (tmpRet != null)
                     return tmpRet;
             }

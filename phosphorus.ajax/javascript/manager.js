@@ -389,6 +389,12 @@
           }
         }
 
+        // executing all the JavaScript sent from server
+        arr = json.__pf_script || [];
+        for (var idxScript = 0; idxScript < arr.length; idxScript++) {
+          eval (arr [idxScript]);
+        }
+
         // removing current request from queue
         pf._chain.splice(0, 1);
       } else {
