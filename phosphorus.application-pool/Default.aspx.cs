@@ -187,6 +187,18 @@ namespace phosphorus.five.applicationpool
             e.Args.Insert (0, new Node (string.Empty, FindControl<Control> (e.Args.Get<string> (), parentCtrl)));
         }
 
+        /// <summary>
+        /// includes a JavaScript file on the client side
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.insert-javascript-file")]
+        private void pf_insert_javascript_file (ApplicationContext context, ActiveEventArgs e)
+        {
+            string file = e.Args.Get<string> ();
+            Manager.AddJavaScriptFile (file);
+        }
+
         /*
          * recursively searches through page for Container with specified id, starting from "idx"
          */

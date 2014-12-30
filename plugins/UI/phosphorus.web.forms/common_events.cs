@@ -10,6 +10,7 @@ using System.Web.UI;
 using System.Globalization;
 using System.Security.Cryptography;
 using phosphorus.core;
+using phosphorus.lambda;
 using phosphorus.ajax.widgets;
 
 namespace phosphorus.web.forms
@@ -36,6 +37,43 @@ namespace phosphorus.web.forms
                     return idx.Name == "name";
             });
             e.Args.Insert (0, new Node ("value", widget [nameNode.Get<string> ()]));
+        }
+
+        /// <summary>
+        /// set a property of the widget with the ID of the value of [pf.set-widget-property] to the value of the [value] child node
+        /// of [pf.set-widget-property]. the property to set, is given through the [name] child of [pf.set-widget-property]. the [value]
+        /// node can also contain formatting parameters if you wish
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.set-widget-property")]
+        private static void pf_set_widget_property (ApplicationContext context, ActiveEventArgs e)
+        {
+            Node findCtrl = new Node (string.Empty, e.Args.Value);
+            context.Raise ("pf.find-control", findCtrl);
+            Widget widget = findCtrl [0].Get<Widget> ();
+            Node nameNode = e.Args.Find (
+                delegate (Node idx) {
+                    return idx.Name == "name";
+            });
+            Node valueNode = e.Args.Find (
+                delegate (Node idx) {
+                    return idx.Name == "value";
+            });
+            string value = valueNode.Get<string> ();
+            if (Expression.IsExpression (value)) {
+                var match = Expression.Create (value).Evaluate (valueNode);
+                if (match.TypeOfMatch == Match.MatchType.Count) {
+                    value = match.Count.ToString ();
+                } else if (!match.IsSingleLiteral) {
+                    throw new ArgumentException ("[pf.set-widget-property] can only take a single literal expression");
+                } else {
+                    value = match.GetValue (0).ToString ();
+                }
+            } else if (valueNode.Count > 0) {
+                value = Expression.FormatNode (valueNode);
+            }
+            widget [nameNode.Get<string> ()] = value;
         }
 
         /// <summary>
