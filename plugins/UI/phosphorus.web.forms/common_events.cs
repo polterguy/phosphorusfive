@@ -36,7 +36,21 @@ namespace phosphorus.web.forms
                 delegate (Node idx) {
                     return idx.Name == "name";
             });
-            e.Args.Insert (0, new Node ("value", widget [nameNode.Get<string> ()]));
+            if (widget.ElementType == "select" && nameNode.Get<string> () == "value") {
+
+                // special treatment for select html elements
+                foreach (var idxCtrl in widget.Controls) {
+                    Widget idxWidget = idxCtrl as Widget;
+                    if (idxWidget != null) {
+                        if (idxWidget.HasAttribute ("selected")) {
+                            e.Args.Insert (0, new Node ("value", idxWidget ["value"]));
+                            break;
+                        }
+                    }
+                }
+            } else {
+                e.Args.Insert (0, new Node ("value", widget [nameNode.Get<string> ()]));
+            }
         }
 
         /// <summary>

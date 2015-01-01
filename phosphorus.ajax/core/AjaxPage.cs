@@ -5,6 +5,7 @@
 
 using System;
 using System.Web.UI;
+using System.Collections.Generic;
 
 namespace phosphorus.ajax.core
 {
@@ -18,6 +19,7 @@ namespace phosphorus.ajax.core
     {
         private Manager _manager;
         private PageStatePersister _statePersister;
+        private List<string> _javaScriptFilesToPush = new List<string> ();
 
         protected override void OnPreInit (EventArgs e)
         {
@@ -31,6 +33,30 @@ namespace phosphorus.ajax.core
         /// <value>the ajax manager</value>
         public Manager Manager {
             get { return _manager; }
+        }
+
+        /// <summary>
+        /// registers JavaScript for page
+        /// </summary>
+        /// <param name="url">url to JavaScript to register</param>
+        void IAjaxPage.RegisterJavaScriptFile (string url)
+        {
+            if (ViewState ["__pf_js_files"] == null)
+                ViewState ["__pf_js_files"] = new List<string> ();
+            List<string> lst = ViewState ["__pf_js_files"] as List<string>;
+            if (!lst.Contains (url)) {
+                lst.Add (url);
+                _javaScriptFilesToPush.Add (url);
+            }
+        }
+
+        /*
+         * returns the JavaScript file URL's we need to push to client during this request
+         */
+        List<string> IAjaxPage.JavaScriptFilesToPush {
+            get {
+                return _javaScriptFilesToPush;
+            }
         }
 
         /// <summary>

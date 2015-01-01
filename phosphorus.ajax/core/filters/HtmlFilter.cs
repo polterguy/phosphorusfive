@@ -8,6 +8,7 @@ using System.IO;
 using System.Web;
 using System.Text;
 using System.Web.UI;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using phosphorus.ajax.core;
 
@@ -32,19 +33,12 @@ namespace phosphorus.ajax.core.filters
         /// <returns>the response returned back to client</returns>
         protected override string RenderResponse ()
         {
+            // TODO: pass in ContentEncoding directly in ctor, since Response is not necessarily available in this context (.net)
             TextReader reader = new StreamReader (this, Manager.Page.Response.ContentEncoding);
             string content = reader.ReadToEnd ();
             content = IncludeJavaScriptFiles (content);
-            if (!Manager.EnableViewState) {
-                content = RemoveViewState (content);
-            }
+            content = IncludeJavaScriptContent (content);
             return content;
-        }
-
-        private string RemoveViewState (string content)
-        {
-            Regex regex = new Regex (@"([\s\n]+<div[\s\n]+class=""aspNetHidden"">[\s\n\t]+<input[\s\n]+type=""hidden""[\s\n]+name=""__VIEWSTATE""[\s\n]+id=""__VIEWSTATE""[\s\n]+value=""[^""]*""[\s\n]*/>[\s\n\t]+</div>)", RegexOptions.Compiled);
-            return regex.Replace (content, "");
         }
 
         private string IncludeJavaScriptFiles (string content)
@@ -52,12 +46,13 @@ namespace phosphorus.ajax.core.filters
             if (Manager.JavaScriptFiles.Count == 0)
                 return content; // nothing to do here
 
-            // stripping away "</html>" from the end
+            // stripping away "</body>...</html>" from the end, and keeping the "</body>...</html>" parts to concatenate into result after
+            // inserting all JavaScript files inbetween
             string endBuffer = "";
             int idxPosition = content.Length - 1;
             for (; idxPosition >= 0; idxPosition --) {
                 endBuffer = content [idxPosition] + endBuffer;
-                if (endBuffer.StartsWith ("</body>", StringComparison.InvariantCultureIgnoreCase))
+                if (endBuffer.StartsWith ("<") && endBuffer.StartsWith ("</body>", StringComparison.InvariantCultureIgnoreCase))
                     break;
             }
             StringBuilder builder = new StringBuilder (content.Substring (0, idxPosition));
@@ -66,6 +61,33 @@ namespace phosphorus.ajax.core.filters
             foreach (string idxFile in Manager.JavaScriptFiles) {
                 builder.Append (string.Format(@"    <script type=""text/javascript"" src=""{0}""></script>
     ", idxFile.Replace ("&", "&amp;")));
+            }
+
+            // adding back up again the "</html>" parts
+            builder.Append (endBuffer);
+            return builder.ToString ();
+        }
+        
+        private string IncludeJavaScriptContent (string content)
+        {
+            if (!Manager.Changes.Contains ("__pf_script"))
+                return content; // nothing to do here
+
+            // stripping away "</body>...</html>" from the end, and keeping the "</body>...</html>" parts to concatenate into result after
+            // inserting all JavaScript files inbetween
+            string endBuffer = "";
+            int idxPosition = content.Length - 1;
+            for (; idxPosition >= 0; idxPosition --) {
+                endBuffer = content [idxPosition] + endBuffer;
+                if (endBuffer.StartsWith ("<") && endBuffer.StartsWith ("</body>", StringComparison.InvariantCultureIgnoreCase))
+                    break;
+            }
+            StringBuilder builder = new StringBuilder (content.Substring (0, idxPosition));
+
+            // including javascript files
+            foreach (string idxFile in Manager.Changes ["__pf_script"] as List<string>) {
+                builder.Append (string.Format(@"    <script type=""text/javascript"">{0}</script>
+    ", idxFile));
             }
 
             // adding back up again the "</html>" parts

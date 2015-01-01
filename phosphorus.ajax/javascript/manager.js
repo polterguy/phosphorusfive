@@ -389,6 +389,26 @@
           }
         }
 
+        // inserting all JavaScript files sent from server
+        arr = json.__pf_js_files || [];
+        for (var idxScript = 0; idxScript < arr.length; idxScript++) {
+          var xhr = new XMLHttpRequest();
+          xhr.open("GET", arr[idxScript], false);
+          xhr.onload = function (e) {
+            if (xhr.readyState === 4) {
+              if (xhr.status === 200) {
+                eval(xhr.responseText);
+              } else {
+                alert("couldn't download JavaScript file; '" + arr[idxScript] + "'");
+              }
+            }
+          };
+          xhr.onerror = function (e) {
+            alert("couldn't download JavaScript file; '" + arr[idxScript] + "'");
+          };
+          xhr.send(null);
+        }
+
         // executing all the JavaScript sent from server
         arr = json.__pf_script || [];
         for (var idxScript = 0; idxScript < arr.length; idxScript++) {

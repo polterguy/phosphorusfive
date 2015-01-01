@@ -4,6 +4,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 
 namespace phosphorus.ajax.core
 {
@@ -19,6 +20,16 @@ namespace phosphorus.ajax.core
         /// </summary>
         /// <value>the manager</value>
         Manager Manager {
+            get;
+        }
+
+        /// <summary>
+        /// registers a JavaScript file to be transmitted to the client
+        /// </summary>
+        /// <param name="url">URL to JavaScript file</param>
+        void RegisterJavaScriptFile (string url);
+
+        List<string> JavaScriptFilesToPush {
             get;
         }
     }

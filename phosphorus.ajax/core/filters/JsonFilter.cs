@@ -35,18 +35,21 @@ namespace phosphorus.ajax.core.filters
         {
             Manager.Page.Response.Headers ["Content-Type"] = "application/json";
 
+            // TODO: pass in ContentEncoding directly in ctor, since Response is not necessarily available in this context (.net)
             TextReader reader = new StreamReader (this, Manager.Page.Response.ContentEncoding);
             string content = reader.ReadToEnd ();
 
             // registering viewstate for change
-            if (Manager.EnableViewState) {
-                string viewstate = GetViewState (content);
-                if (!string.IsNullOrEmpty (viewstate)) {
-                    string oldViewstate = Manager.Page.Request.Params ["__VIEWSTATE"];
-                    if (viewstate != oldViewstate) {
-                        Manager.RegisterWidgetChanges ("__VIEWSTATE", "value", viewstate, oldViewstate);
-                    }
+            string viewstate = GetViewState (content);
+            if (!string.IsNullOrEmpty (viewstate)) {
+                string oldViewstate = Manager.Page.Request.Params ["__VIEWSTATE"];
+                if (viewstate != oldViewstate) {
+                    Manager.RegisterWidgetChanges ("__VIEWSTATE", "value", viewstate, oldViewstate);
                 }
+            }
+
+            if ((Manager.Page as IAjaxPage).JavaScriptFilesToPush.Count > 0) {
+                Manager.SendObject ("__pf_js_files", (Manager.Page as IAjaxPage).JavaScriptFilesToPush);
             }
 
             // returning json

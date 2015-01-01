@@ -1,6 +1,7 @@
 <%@ Page 
     Language="C#" 
     Inherits="phosphorus.five.applicationpool.Default"
+    ValidateRequest="false"
     Codebehind="Default.aspx.cs" %>
 
 <!DOCTYPE html>

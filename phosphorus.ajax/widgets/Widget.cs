@@ -248,7 +248,8 @@ namespace phosphorus.ajax.widgets
                                 if (Page.Request.Params [parent ["name"]] == this ["value"]) {
                                     _attributes.SetAttributeFormData ("selected", null);
                                 } else {
-                                    _attributes.RemoveAttribute ("selected");
+                                    if (HasAttribute ("selected"))
+                                        _attributes.RemoveAttribute ("selected");
                                 }
                             }
                             break;

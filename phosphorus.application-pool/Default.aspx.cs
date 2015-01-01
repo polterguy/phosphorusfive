@@ -121,6 +121,30 @@ namespace phosphorus.five.applicationpool
         }
 
         /// <summary>
+        /// sends the given JavaScript to the client. JavaScript is given as value of [pf.send-javascript]
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.send-javascript")]
+        private void pf_send_javascript (ApplicationContext context, ActiveEventArgs e)
+        {
+            Manager.SendJavaScriptToClient (e.Args.Get<string> ());
+        }
+
+        /// <summary>
+        /// clear the given widget, by removing all its child controls
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.clear-widget")]
+        private void pf_clear_widget (ApplicationContext context, ActiveEventArgs e)
+        {
+            Container ctrl = FindControl<Container> (e.Args.Get<string> (), Page);
+            ctrl.Controls.Clear ();
+            ctrl.ReRenderChildren ();
+        }
+
+        /// <summary>
         /// deletes the widget with the id of the value of the [pf.delete-widget]
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
