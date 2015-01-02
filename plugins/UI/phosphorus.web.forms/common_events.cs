@@ -161,6 +161,36 @@ namespace phosphorus.web.forms
                 }
             }
         }
+        
+        /// <summary>
+        /// sets the given session key to the nodes given as children of [pf.set-session]. if no nodes are given,
+        /// the session with the given key is cleared
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.set-session")]
+        private static void pf_set_session (ApplicationContext context, ActiveEventArgs e)
+        {
+            string sessionKey = e.Args.Get<string> ();
+            if (e.Args.Count > 0)
+                HttpContext.Current.Session [sessionKey] = e.Args.Clone ();
+            else
+                HttpContext.Current.Session.Remove (sessionKey);
+        }
+
+        /// <summary>
+        /// returns the session object given through the value of [pf.get-session] as a node
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.get-session")]
+        private static void pf_get_session (ApplicationContext context, ActiveEventArgs e)
+        {
+            string sessionKey = e.Args.Get<string> ();
+            object tmp = HttpContext.Current.Session [sessionKey];
+            if (tmp != null)
+                e.Args.AddRange ((tmp as Node).Clone ().Children);
+        }
 
         /// <summary>
         /// creates a hash out of the value from [pf.hash-string] and returns the hash value as the value of

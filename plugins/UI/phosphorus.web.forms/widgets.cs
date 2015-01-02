@@ -22,7 +22,7 @@ namespace phosphorus.web.forms
         [ActiveEvent (Name = "pf.web.widgets.container")]
         private static void pf_web_controls_container (ApplicationContext context, ActiveEventArgs e)
         {
-            Container widget = CreateControl<Container> (e.Args, "div");
+            Container widget = CreateControl<Container> (context, e.Args, "div");
             Node formId = e.Args.Find (
                 delegate (Node idx) {
                     return idx.Name == "_form-id";
@@ -42,7 +42,7 @@ namespace phosphorus.web.forms
         [ActiveEvent (Name = "pf.web.widgets.literal")]
         private static void pf_web_controls_literal (ApplicationContext context, ActiveEventArgs e)
         {
-            Literal widget = CreateControl<Literal> (e.Args, "p");
+            Literal widget = CreateControl<Literal> (context, e.Args, "p");
             e.Args.Value = DecorateWidget (context, widget, e.Args);
             if (widget.ElementType == "textarea" && !widget.HasAttribute ("name"))
                 widget ["name"] = widget.ClientID;
@@ -56,7 +56,7 @@ namespace phosphorus.web.forms
         [ActiveEvent (Name = "pf.web.widgets.void")]
         private static void pf_web_controls_void (ApplicationContext context, ActiveEventArgs e)
         {
-            phosphorus.ajax.widgets.Void widget = CreateControl<phosphorus.ajax.widgets.Void> (e.Args, "input");
+            phosphorus.ajax.widgets.Void widget = CreateControl<phosphorus.ajax.widgets.Void> (context, e.Args, "input");
             e.Args.Value = DecorateWidget (context, widget, e.Args);
             if (widget.ElementType == "input" && !widget.HasAttribute ("name"))
                 widget ["name"] = widget.ClientID;
@@ -67,7 +67,7 @@ namespace phosphorus.web.forms
         /*
          * creates a widget from the given node
          */
-        private static T CreateControl<T> (Node node, string elementType, Widget.RenderingType type = Widget.RenderingType.Default) where T : Widget, new()
+        private static T CreateControl<T> (ApplicationContext context, Node node, string elementType, Widget.RenderingType type = Widget.RenderingType.Default) where T : Widget, new()
         {
             // creating widget as persistent control
             Container parent = node.Find (
@@ -86,6 +86,23 @@ namespace phosphorus.web.forms
             // setting rendering type (no closing element, void or default)
             if (type != Widget.RenderingType.Default)
                 widget.RenderType = type;
+
+            // checking to see if we've got an "initialload" Active Event for widget, and if so, handle it
+            Node onInitialLoad = node.Find (
+                delegate (Node idx) {
+                    return idx.Name == "oninitialload";
+            });
+            if (onInitialLoad != null) {
+                widget.Load += delegate {
+                    onInitialLoad = onInitialLoad.Clone ();
+                    onInitialLoad.Insert (0, new Node ("_form-id", node.Root.Find (
+                        delegate (Node idx) {
+                        return idx.Name == "_form-id";
+                    }).Value));
+                    onInitialLoad.Insert (1, new Node ("_widget-id", widget.ID));
+                    context.Raise ("lambda", onInitialLoad);
+                };
+            }
 
             // returning widget to caller
             return widget;
