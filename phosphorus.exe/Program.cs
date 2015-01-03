@@ -71,7 +71,7 @@ namespace phosphorus.exe
                     context.Raise ("pf.set-default-execution-language", new Node (string.Empty, language));
 
                 // raising our application startup Active Event, in case there are modules loaded depending upon its
-                context.Raise ("pf.application-start", new Node ());
+                context.Raise ("pf.core.application-start", new Node ());
 
                 // loads and convert file to lambda nodes
                 Node convertExeFile = context.Raise ("pf.code-2-nodes", new Node (string.Empty, 

@@ -7,8 +7,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{0F68BFA7-1CF7-4737-9058-CED4A9ED3427}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>phosphorus.web.forms</RootNamespace>
-    <AssemblyName>phosphorus.web.forms</AssemblyName>
+    <RootNamespace>phosphorus.web</RootNamespace>
+    <AssemblyName>phosphorus.web</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -44,7 +44,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="widgets.cs" />
-    <Compile Include="common_events.cs" />
+    <Compile Include="widget_events.cs" />
+    <Compile Include="session.cs" />
+    <Compile Include="security.cs" />
+    <Compile Include="cookie.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

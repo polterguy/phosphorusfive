@@ -20,8 +20,8 @@ namespace phosphorus.tiedown
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.application-start")]
-        private static void pf_application_start (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.core.application-start")]
+        private static void pf_core_application_start (ApplicationContext context, ActiveEventArgs e)
         {
             // execute startup hyperlisp file, if we should
             if (!string.IsNullOrEmpty (ConfigurationManager.AppSettings ["application-startup-file"])) {

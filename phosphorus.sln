@@ -28,7 +28,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.lambda", "plugin
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{C01D7EA5-9FE8-46D4-8382-4ADD06D9E3D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.web.forms", "plugins\UI\phosphorus.web.forms\phosphorus.web.forms.csproj", "{0F68BFA7-1CF7-4737-9058-CED4A9ED3427}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.web", "plugins\UI\phosphorus.web\phosphorus.web.csproj", "{0F68BFA7-1CF7-4737-9058-CED4A9ED3427}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.data", "plugins\phosphorus.data\phosphorus.data.csproj", "{CA83A3ED-BD5D-4557-AA1B-A7C04ABD4D4F}"
 EndProject

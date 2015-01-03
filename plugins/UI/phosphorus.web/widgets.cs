@@ -7,7 +7,7 @@ using System;
 using phosphorus.core;
 using phosphorus.ajax.widgets;
 
-namespace phosphorus.web.forms
+namespace phosphorus.web
 {
     /// <summary>
     /// class for creating web widgets
@@ -87,6 +87,17 @@ namespace phosphorus.web.forms
             if (type != Widget.RenderingType.Default)
                 widget.RenderType = type;
 
+            CreateLoadingEvents (context, node, widget);
+            
+            // returning widget to caller
+            return widget;
+        }
+
+        /*
+         * creates the [oninitialload] event for widget, if we should
+         */
+        private static void CreateLoadingEvents (ApplicationContext context, Node node, Widget widget)
+        {
             // checking to see if we've got an "initialload" Active Event for widget, and if so, handle it
             Node onInitialLoad = node.Find (
                 delegate (Node idx) {
@@ -97,15 +108,12 @@ namespace phosphorus.web.forms
                     onInitialLoad = onInitialLoad.Clone ();
                     onInitialLoad.Insert (0, new Node ("_form-id", node.Root.Find (
                         delegate (Node idx) {
-                        return idx.Name == "_form-id";
+                            return idx.Name == "_form-id";
                     }).Value));
                     onInitialLoad.Insert (1, new Node ("_widget-id", widget.ID));
                     context.Raise ("lambda", onInitialLoad);
                 };
             }
-
-            // returning widget to caller
-            return widget;
         }
 
         /*

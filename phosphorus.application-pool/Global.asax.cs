@@ -19,7 +19,7 @@ namespace phosphorus.five.applicationpool
         private static string _applicationBasePath;
 
         /*
-         * loads up all plugins assemblies and raises the [pf.application-start] Active Event
+         * loads up all plugins assemblies and raises the [pf.core.application-start] Active Event
          */
         protected void Application_Start(Object sender, EventArgs e)
         {
@@ -37,7 +37,7 @@ namespace phosphorus.five.applicationpool
 
             // then raising the application start active event
             ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            context.Raise ("pf.application-start", null);
+            context.Raise ("pf.core.application-start", null);
         }
 
         /*
