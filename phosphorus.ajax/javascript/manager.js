@@ -173,6 +173,9 @@
         case 'value':
           this.el.value = pf._getChange(this.el.value, value);
           break;
+        case "style":
+          this.el.style.cssText = pf._getChange(this.el.style.cssText, value);
+          break;
         default:
           if (key.indexOf('__pf_add_') != -1 ) {
             // inserting html child widget
