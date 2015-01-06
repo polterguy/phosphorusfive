@@ -21,8 +21,7 @@ namespace phosphorus.web
     public static class widget_events
     {
         /// <summary>
-        /// returns the [name] property of widget with ID of the value of [pf.web.widgets.get-property] as first child of
-        /// [pf.web.widgets.get-property], named [value]
+        /// returns properties requested by caller as children nodes of [pf.web.widgets.get-property]
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
@@ -32,24 +31,28 @@ namespace phosphorus.web
             Node findCtrl = new Node (string.Empty, e.Args.Value);
             context.Raise ("pf.find-control", findCtrl);
             Widget widget = findCtrl [0].Get<Widget> ();
-            Node nameNode = e.Args.Find (
-                delegate (Node idx) {
-                    return idx.Name == "name";
-            });
-            if (widget.ElementType == "select" && nameNode.Get<string> () == "value") {
 
-                // special treatment for select html elements
-                foreach (var idxCtrl in widget.Controls) {
-                    Widget idxWidget = idxCtrl as Widget;
-                    if (idxWidget != null) {
-                        if (idxWidget.HasAttribute ("selected")) {
-                            e.Args.Insert (0, new Node ("value", idxWidget ["value"]));
-                            break;
+            foreach (Node nameNode in e.Args.Children) {
+
+                string propertyName = nameNode.Name;
+                if (propertyName == "parent")
+                    continue; // referring to where to start looking for widget, and not what property to retrieve
+
+                if (widget.ElementType == "select" && propertyName == "value") {
+
+                    // special treatment for select html elements
+                    foreach (var idxCtrl in widget.Controls) {
+                        Widget idxWidget = idxCtrl as Widget;
+                        if (idxWidget != null) {
+                            if (idxWidget.HasAttribute ("selected")) {
+                                nameNode.Value = idxWidget ["value"];
+                                break;
+                            }
                         }
                     }
+                } else {
+                    nameNode.Value = widget [propertyName];
                 }
-            } else {
-                e.Args.Insert (0, new Node ("value", widget [nameNode.Get<string> ()]));
             }
         }
 
@@ -66,28 +69,32 @@ namespace phosphorus.web
             Node findCtrl = new Node (string.Empty, e.Args.Value);
             context.Raise ("pf.find-control", findCtrl);
             Widget widget = findCtrl [0].Get<Widget> ();
-            Node nameNode = e.Args.Find (
-                delegate (Node idx) {
-                    return idx.Name == "name";
-            });
-            Node valueNode = e.Args.Find (
-                delegate (Node idx) {
-                    return idx.Name == "value";
-            });
-            string value = valueNode.Get<string> ();
-            if (Expression.IsExpression (value)) {
-                var match = Expression.Create (value).Evaluate (valueNode);
-                if (match.TypeOfMatch == Match.MatchType.Count) {
-                    value = match.Count.ToString ();
-                } else if (!match.IsSingleLiteral) {
-                    throw new ArgumentException ("[pf.set-widget-property] can only take a single literal expression");
-                } else {
-                    value = match.GetValue (0).ToString ();
+
+            foreach (Node valueNode in e.Args.Children) {
+
+                string propertyValue = valueNode.Get<string> ();
+                string propertyName = valueNode.Name;
+                if (propertyName == "parent")
+                    continue; // referring to where to start looking for widget, and not what property to retrieve
+
+                if (Expression.IsExpression (propertyValue)) {
+
+                    // value is an expression, hence returning value of expression and not value directly
+                    var match = Expression.Create (propertyValue).Evaluate (valueNode);
+                    if (match.TypeOfMatch == Match.MatchType.Count) {
+                        propertyValue = match.Count.ToString ();
+                    } else if (!match.IsSingleLiteral) {
+                        throw new ArgumentException ("[pf.set-widget-property] can only take a single literal expression");
+                    } else {
+                        propertyValue = match.GetValue (0).ToString ();
+                    }
+                } else if (valueNode.Count > 0) {
+
+                    // making sure we support formatting nodes
+                    propertyValue = Expression.FormatNode (valueNode);
                 }
-            } else if (valueNode.Count > 0) {
-                value = Expression.FormatNode (valueNode);
+                widget [propertyName] = propertyValue == null ? null : propertyValue.TrimStart ('\\');
             }
-            widget [nameNode.Get<string> ()] = value;
         }
     }
 }
