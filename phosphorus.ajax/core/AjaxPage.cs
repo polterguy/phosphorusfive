@@ -20,6 +20,7 @@ namespace phosphorus.ajax.core
         private Manager _manager;
         private PageStatePersister _statePersister;
         private List<string> _javaScriptFilesToPush = new List<string> ();
+        private List<string> _stylesheetFilesToPush = new List<string> ();
 
         protected override void OnPreInit (EventArgs e)
         {
@@ -39,7 +40,7 @@ namespace phosphorus.ajax.core
         /// registers JavaScript for page
         /// </summary>
         /// <param name="url">url to JavaScript to register</param>
-        void IAjaxPage.RegisterJavaScriptFile (string url)
+        public void RegisterJavaScriptFile (string url)
         {
             if (ViewState ["__pf_js_files"] == null)
                 ViewState ["__pf_js_files"] = new List<string> ();
@@ -58,14 +59,29 @@ namespace phosphorus.ajax.core
                 return _javaScriptFilesToPush;
             }
         }
-
+        
         /// <summary>
-        /// gets or sets a value indicating whether this <see cref="phosphorus.ajax.core.AjaxPage"/> stores its viewstate in the session object
+        /// registers stylesheet for page
         /// </summary>
-        /// <value><c>true</c> if it should store its viewstate in the session object; otherwise, <c>false</c></value>
-        public bool StoreViewStateInSession {
-            get;
-            set;
+        /// <param name="url">url to stylesheet to register</param>
+        public void RegisterStylesheetFile (string url)
+        {
+            if (ViewState ["__pf_css_files"] == null)
+                ViewState ["__pf_css_files"] = new List<string> ();
+            List<string> lst = ViewState ["__pf_css_files"] as List<string>;
+            if (!lst.Contains (url)) {
+                lst.Add (url);
+                _stylesheetFilesToPush.Add (url);
+            }
+        }
+
+        /*
+         * returns the JavaScript file URL's we need to push to client during this request
+         */
+        List<string> IAjaxPage.StylesheetFilesToPush {
+            get {
+                return _stylesheetFilesToPush;
+            }
         }
 
         /// <summary>
@@ -85,12 +101,9 @@ namespace phosphorus.ajax.core
         {
             get
             {
-                if (StoreViewStateInSession) {
-                    if (_statePersister == null)
-                        _statePersister = new StatePersister (this, ViewStateSessionEntries);
-                    return _statePersister;
-                }
-                return base.PageStatePersister;
+                if (_statePersister == null)
+                    _statePersister = new StatePersister (this, ViewStateSessionEntries);
+                return _statePersister;
             }
         }
     }

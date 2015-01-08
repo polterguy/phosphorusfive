@@ -7,6 +7,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Web.UI;
+using System.Globalization;
 using phosphorus.ajax.core;
 
 namespace phosphorus.ajax.core.filters
@@ -18,6 +19,7 @@ namespace phosphorus.ajax.core.filters
     {
         private Stream _next;
         private MemoryStream _stream;
+        private Encoding _encoding;
 
         /// <summary>
         /// initializes a new instance of the <see cref="phosphorus.ajax.core.filters.Filter"/> class
@@ -28,6 +30,7 @@ namespace phosphorus.ajax.core.filters
             Manager = manager;
             _stream = new MemoryStream();
             _next = (Manager.Page as Page).Response.Filter;
+            _encoding = manager.Page.Response.ContentEncoding;
         }
 
         /// <summary>
@@ -37,6 +40,15 @@ namespace phosphorus.ajax.core.filters
         public Manager Manager {
             get;
             private set;
+        }
+
+        /// <summary>
+        /// gets or sets the encoding.
+        /// </summary>
+        /// <value>The encoding.</value>
+        public Encoding Encoding {
+            get { return _encoding; }
+            set { _encoding = value; }
         }
 
         /// <summary>

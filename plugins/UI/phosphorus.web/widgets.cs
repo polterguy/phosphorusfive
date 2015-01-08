@@ -191,7 +191,8 @@ namespace phosphorus.web
         private static void HandleDefaultProperty (ApplicationContext context, Widget widget, Node node)
         {
             if (node.Name.StartsWith ("on")) {
-                CreateEventHandler (context, widget, node);
+                if (node.Name != "oninitialload")
+                    CreateEventHandler (context, widget, node);
             } else if (!node.Name.StartsWith ("_")) {
                 widget [node.Name] = node.Get<string> ();
             }

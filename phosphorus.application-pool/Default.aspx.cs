@@ -46,11 +46,6 @@ namespace phosphorus.five.applicationpool
             // creating application context
             _context = Loader.Instance.CreateApplicationContext ();
 
-            // making sure we store our ViewState in our session object. this is CRUCIAL since we store pf.lambda execution
-            // objects in the ViewState, and unless we don't do this, pf.lambda code executed on the server, might be changed by the client
-            // which is a huge security risk!
-            StoreViewStateInSession = true;
-
             // registering "this" web page as listener object
             _context.RegisterListeningObject (this);
 
@@ -220,7 +215,19 @@ namespace phosphorus.five.applicationpool
         private void pf_insert_javascript_file (ApplicationContext context, ActiveEventArgs e)
         {
             string file = e.Args.Get<string> ();
-            Manager.AddJavaScriptFile (file);
+            RegisterJavaScriptFile (file);
+        }
+
+        /// <summary>
+        /// includes a stylesheet file on the client side
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.insert-stylesheet-file")]
+        private void pf_insert_stylesheet_file (ApplicationContext context, ActiveEventArgs e)
+        {
+            string file = e.Args.Get<string> ();
+            RegisterStylesheetFile (file);
         }
 
         /*

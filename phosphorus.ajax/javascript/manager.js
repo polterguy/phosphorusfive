@@ -392,6 +392,18 @@
           }
         }
 
+        // inserting all stylesheet files sent from server
+        arr = json.__pf_css_files || [];
+        for (var idxCss = 0; idxCss < arr.length; idxCss++) {
+          var el = document.createElement("link");
+          var href = arr[idxCss];
+          el.href = href;
+          el.rel = 'stylesheet';
+          el.type = 'text/css';
+          var head = document.getElementsByTagName('head')[0];
+          head.appendChild(el);
+        }
+
         // inserting all JavaScript files sent from server
         arr = json.__pf_js_files || [];
         for (var idxScript = 0; idxScript < arr.length; idxScript++) {

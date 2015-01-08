@@ -35,8 +35,7 @@ namespace phosphorus.ajax.core.filters
         {
             Manager.Page.Response.Headers ["Content-Type"] = "application/json";
 
-            // TODO: pass in ContentEncoding directly in ctor, since Response is not necessarily available in this context (.net)
-            TextReader reader = new StreamReader (this, Manager.Page.Response.ContentEncoding);
+            TextReader reader = new StreamReader (this, Encoding);
             string content = reader.ReadToEnd ();
 
             // registering viewstate for change
@@ -48,8 +47,14 @@ namespace phosphorus.ajax.core.filters
                 }
             }
 
+            // JavaScript files
             if ((Manager.Page as IAjaxPage).JavaScriptFilesToPush.Count > 0) {
                 Manager.SendObject ("__pf_js_files", (Manager.Page as IAjaxPage).JavaScriptFilesToPush);
+            }
+
+            // stylesheet files
+            if ((Manager.Page as IAjaxPage).StylesheetFilesToPush.Count > 0) {
+                Manager.SendObject ("__pf_css_files", (Manager.Page as IAjaxPage).StylesheetFilesToPush);
             }
 
             // returning json

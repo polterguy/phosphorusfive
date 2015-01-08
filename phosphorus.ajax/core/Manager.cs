@@ -31,7 +31,6 @@ namespace phosphorus.ajax.core
         public Manager (Page page)
         {
             Page = page;
-            JavaScriptFiles = new List<string> ();
 
             // determining if we should create an ajax filter or a normal html filter for rendering the response
             if (IsPhosphorusRequest) {
@@ -45,7 +44,7 @@ namespace phosphorus.ajax.core
             // including main javascript file
             Page.Load += delegate {
                 string coreScriptFileUrl = Page.ClientScript.GetWebResourceUrl (typeof(Manager), "phosphorus.ajax.javascript.manager.js");
-                AddJavaScriptFile (coreScriptFileUrl);
+                (Page as IAjaxPage).RegisterJavaScriptFile (coreScriptFileUrl);
             };
         }
 
@@ -64,22 +63,6 @@ namespace phosphorus.ajax.core
         /// <value><c>true</c> if this instance is an ajax request; otherwise, <c>false</c></value>
         public bool IsPhosphorusRequest {
             get { return !string.IsNullOrEmpty (Page.Request.Params ["__pf_event"]); }
-        }
-
-        /// <summary>
-        /// adds a javascript file to include for the current response
-        /// </summary>
-        /// <param name="file">file</param>
-        public void AddJavaScriptFile (string file)
-        {
-            // making sure we only include each javascript file once
-            if (!JavaScriptFiles.Exists (
-                delegate (string idxFile) {
-                return idxFile.Equals (file, StringComparison.InvariantCultureIgnoreCase);
-            })) {
-                JavaScriptFiles.Add (file);
-                (Page as IAjaxPage).RegisterJavaScriptFile (file);
-            }
         }
 
         /// <summary>
@@ -146,11 +129,6 @@ namespace phosphorus.ajax.core
             get { return _changes; }
         }
 
-        internal List<string> JavaScriptFiles {
-            get;
-            private set;
-        }
-        
         private object GetPropertyChanges (string oldValue, string newValue)
         {
             if (oldValue == null || oldValue.Length < 10 || newValue == null || newValue.Length < 10) {

@@ -29,7 +29,25 @@ namespace phosphorus.ajax.core
         /// <param name="url">URL to JavaScript file</param>
         void RegisterJavaScriptFile (string url);
 
+        /// <summary>
+        /// returns the list of JavaScript files that was added during this request, and must be pushed back to client somehow
+        /// </summary>
+        /// <value>The java script files to push.</value>
         List<string> JavaScriptFilesToPush {
+            get;
+        }
+        
+        /// <summary>
+        /// registers a css stylesheet file to be transmitted to the client
+        /// </summary>
+        /// <param name="url">URL to stylesheet file</param>
+        void RegisterStylesheetFile (string url);
+
+        /// <summary>
+        /// returns the list of JavaScript files that was added during this request, and must be pushed back to client somehow
+        /// </summary>
+        /// <value>The java script files to push.</value>
+        List<string> StylesheetFilesToPush {
             get;
         }
     }

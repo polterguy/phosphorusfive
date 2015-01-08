@@ -33,17 +33,49 @@ namespace phosphorus.ajax.core.filters
         /// <returns>the response returned back to client</returns>
         protected override string RenderResponse ()
         {
-            // TODO: pass in ContentEncoding directly in ctor, since Response is not necessarily available in this context (.net)
-            TextReader reader = new StreamReader (this, Manager.Page.Response.ContentEncoding);
+            TextReader reader = new StreamReader (this, Encoding);
             string content = reader.ReadToEnd ();
+            content = IncludeStylesheetFiles (content);
             content = IncludeJavaScriptFiles (content);
             content = IncludeJavaScriptContent (content);
             return content;
         }
 
+        /*
+         * includes the CSS stylesheet files we should include for this response
+         */
+        private string IncludeStylesheetFiles (string content)
+        {
+            if ((Manager.Page as IAjaxPage).StylesheetFilesToPush.Count == 0)
+                return content; // nothing to do here
+
+            // stripping away "</body>...</html>" from the end, and keeping the "</body>...</html>" parts to concatenate into result after
+            // inserting all JavaScript files inbetween
+            string endBuffer = "";
+            int idxPosition = 0;
+            for (; idxPosition < content.Length; idxPosition ++) {
+                if (endBuffer.EndsWith (">") && endBuffer.EndsWith ("<head>", StringComparison.InvariantCultureIgnoreCase))
+                    break;
+            }
+            StringBuilder builder = new StringBuilder (content.Substring (0, idxPosition));
+
+            // including javascript files
+            foreach (string idxFile in (Manager.Page as IAjaxPage).StylesheetFilesToPush) {
+                builder.Append (string.Format(@"    <link rel=""stylesheet"" type=""text/css"" href=""{0}""></script>
+    ", idxFile.Replace ("&", "&amp;")));
+            }
+
+            // adding back up again the "</html>" parts
+            builder.Append (content.Substring (idxPosition));
+            return builder.ToString ();
+        }
+        
+        /*
+         * includes the JavaScript files we should include for this response
+         */
         private string IncludeJavaScriptFiles (string content)
         {
-            if (Manager.JavaScriptFiles.Count == 0)
+            if ((Manager.Page as IAjaxPage).JavaScriptFilesToPush.Count == 0)
                 return content; // nothing to do here
 
             // stripping away "</body>...</html>" from the end, and keeping the "</body>...</html>" parts to concatenate into result after
@@ -58,7 +90,7 @@ namespace phosphorus.ajax.core.filters
             StringBuilder builder = new StringBuilder (content.Substring (0, idxPosition));
 
             // including javascript files
-            foreach (string idxFile in Manager.JavaScriptFiles) {
+            foreach (string idxFile in (Manager.Page as IAjaxPage).JavaScriptFilesToPush) {
                 builder.Append (string.Format(@"    <script type=""text/javascript"" src=""{0}""></script>
     ", idxFile.Replace ("&", "&amp;")));
             }
@@ -67,7 +99,10 @@ namespace phosphorus.ajax.core.filters
             builder.Append (endBuffer);
             return builder.ToString ();
         }
-        
+
+        /*
+         * includes the JavaScript content we should include for this response
+         */
         private string IncludeJavaScriptContent (string content)
         {
             if (!Manager.Changes.Contains ("__pf_script"))
@@ -85,10 +120,14 @@ namespace phosphorus.ajax.core.filters
             StringBuilder builder = new StringBuilder (content.Substring (0, idxPosition));
 
             // including javascript files
-            foreach (string idxFile in Manager.Changes ["__pf_script"] as List<string>) {
-                builder.Append (string.Format(@"    <script type=""text/javascript"">{0}</script>
-    ", idxFile));
+            builder.Append (@"    <script type=""text/javascript"">window.onload = function() {
+");
+            foreach (string idxScript in Manager.Changes ["__pf_script"] as List<string>) {
+                builder.Append (idxScript);
+                builder.Append ("\r\n");
             }
+            builder.Append (@"}    </script>
+");
 
             // adding back up again the "</html>" parts
             builder.Append (endBuffer);
