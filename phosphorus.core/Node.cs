@@ -367,7 +367,12 @@ namespace phosphorus.core
                 return (T)Value;
             if (Value is T)
                 return (T)Value;
-            return (T)Convert.ChangeType (Value, typeof(T), System.Globalization.CultureInfo.InvariantCulture);
+            if (Value is IConvertible)
+                return (T)Convert.ChangeType (Value, typeof(T), System.Globalization.CultureInfo.InvariantCulture);
+
+            // stuff like for instance Guids don't implement IConvertible, but still return sane values if we
+            // first do ToString on them, for then to cast them to object, for then to cast them to T
+            return (T)(object)Value.ToString ();
         }
 
         /// <summary>

@@ -64,6 +64,17 @@ namespace phosphorus.hyperlisp
         }
 
         /// <summary>
+        /// returns "guid" for using as type information for the given System type in hyperlisp
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">parameters</param>
+        [ActiveEvent (Name = "pf.hyperlist.get-type-name.System.Guid")]
+        private static void pf_hyperlist_get_type_name_System_Guid (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "guid";
+        }
+
+        /// <summary>
         /// returns "int" for using as type information for the given System type in hyperlisp
         /// </summary>
         /// <param name="context">application context</param>
@@ -274,6 +285,17 @@ namespace phosphorus.hyperlisp
             e.Args.Value = new Node.DNA (e.Args.Get<string> ());
         }
 
+        /// <summary>
+        /// returns a guid created from its string representation
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">parameters</param>
+        [ActiveEvent (Name = "pf.hyperlist.get-object-value.guid")]
+        private static void pf_hyperlist_get_object_value_guid (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = Guid.Parse (e.Args.Get<string> ());
+        }
+        
         /// <summary>
         /// returns an integer created from its string representation
         /// </summary>

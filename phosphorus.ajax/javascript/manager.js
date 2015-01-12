@@ -165,7 +165,11 @@
           this.el = pf.$(id).el; // updating element since previous element is now gone
           break;
         case 'innerValue':
-          this.el.innerHTML = pf._getChange(this.el.innerHTML, value);
+          if (this.el.tagName == 'TEXTAREA') {
+            this.el.value = pf._getChange(this.el.value, value);
+          } else {
+            this.el.innerHTML = pf._getChange(this.el.innerHTML, value);
+          }
           break;
         case 'class':
           this.el.className = pf._getChange(this.el.className, value);

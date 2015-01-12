@@ -172,6 +172,17 @@ namespace phosphorus.data
                     idxNode.Untie ();
             }
         }
+        
+        /// <summary>
+        /// generates a new Guid for you, which you can use as a unique ID for database objects
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.data.new-guid")]
+        private static void pf_data_new_guid (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = Guid.NewGuid ();
+        }
 
         /*
          * returns the source for which node(s) to insert into the database
