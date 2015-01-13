@@ -46,23 +46,22 @@ namespace phosphorus.five.applicationpool
         protected void Application_BeginRequest(object sender, EventArgs e)
         {
             // rewriting path such that "x.com/somefolder/somefile" becomes "x.com?file=somefolder/somefile"
-            string localPath = HttpContext.Current.Request.Url.LocalPath.Trim ('/').ToLower ();
-            if (string.IsNullOrEmpty (Request.QueryString ["file"]) && (localPath == "default.aspx" || !localPath.Contains ("."))) {
+            string localPath = HttpContext.Current.Request.Url.LocalPath;
+
+            // checking to see if this is a [pf.page] request, and if so, we rewrite the path to "Default.aspx"
+            // and store the original URL in the HttpContext.Item collection for later references
+            // TODO: Support paths with "." in them, since now we don't support folders and paths with "." within their names
+            if (localPath.ToLower ().Trim ('/') == "default.aspx" || !localPath.Contains (".")) {
 
                 // if file requested is Default.aspx, we change it to simply "?file=default"
-                if (localPath == "default.aspx")
-                    localPath = "";
-                localPath = "?file=/" + localPath;
+                if (localPath == "/Default.aspx")
+                    localPath = "/";
 
-                // making sure we pass in any HTTP GET parameters
-                if (Request.QueryString.HasKeys ()) {
-                    foreach (var idxArg in Request.QueryString.AllKeys) {
-                        localPath += "&" + idxArg + "=" + Request.QueryString [idxArg];
-                    }
-                }
+                // storing original path
+                HttpContext.Current.Items ["__pf_original_url"] = localPath;
 
                 // rewriting path
-                HttpContext.Current.RewritePath ("~/Default.aspx" + localPath);
+                HttpContext.Current.RewritePath ("~/Default.aspx");
             }
         }
         

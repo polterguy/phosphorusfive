@@ -49,6 +49,11 @@ namespace phosphorus.five.applicationpool
             // registering "this" web page as listener object
             _context.RegisterListeningObject (this);
 
+            // rewriting path to what was actually requested, such that HTML form element doesn't become garbage ...
+            // this ensures that our HTML form element stays correct. basically "undoing" what was done in Global.asax.cs
+            // in addition, when retrieving request URL later, we get the "correct" request URL, and not the URL to "Default.aspx"
+            HttpContext.Current.RewritePath (HttpContext.Current.Items ["__pf_original_url"] as string);
+
             // mapping up our Page_Load event for initial loading of web page
             if (!IsPostBack)
                 Load += Page_LoadInitialLoading;
@@ -62,22 +67,18 @@ namespace phosphorus.five.applicationpool
          */
         private void Page_LoadInitialLoading (object sender, EventArgs e)
         {
-            // retrieving "form name", and passing it into [pf.load-form], which for web is the local path and name of webpage requested
-            // minus ".aspx" parts, in lower characters
-            string formName = Request.Params ["file"];
-
-            // raising our [pf.form-load] Active Event, creating the node to passs in first
+            // raising our [pf.form-ui] Active Event, creating the node to pass in first
+            // where the [_form] node becomes the name of thr form requested
             Node args = new Node ();
-            args.Add (new Node ("_form", formName));
+            args.Add (new Node ("_form", HttpContext.Current.Items ["__pf_original_url"] as string));
 
             // making sure we pass in any HTTP GET parameters
-            if (Request.QueryString.Keys.Count > 1) {
+            if (Request.QueryString.Keys.Count > 0) {
 
                 // retrieving all GET parameters and passing in as [_args]
                 args.Add (new Node ("_args"));
                 foreach (var idxArg in Request.QueryString.AllKeys) {
-                    if (idxArg != "file")
-                        args [1].Add (new Node (idxArg, Request.QueryString [idxArg]));
+                    args [1].Add (new Node (idxArg, Request.QueryString [idxArg]));
                 }
             }
 
