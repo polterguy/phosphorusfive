@@ -9,6 +9,7 @@ using System.Text;
 using System.Globalization;
 using System.Collections.Generic;
 using phosphorus.core;
+using phosphorus.lambda;
 
 namespace phosphorus.hyperlisp
 {
@@ -27,7 +28,20 @@ namespace phosphorus.hyperlisp
         [ActiveEvent (Name = "pf.hyperlisp-2-nodes")]
         private static void pf_hyperlisp_2_nodes (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.AddRange (new NodeBuilder (context, e.Args.Get<string> ()).Nodes);
+            string hyperlisp = e.Args.Get<string> ();
+            if (Expression.IsExpression (hyperlisp)) {
+
+                // retrieving hyperlisp as a function of the expression
+                var match = Expression.Create (hyperlisp).Evaluate (e.Args);
+                if (match.TypeOfMatch != Match.MatchType.Value)
+                    throw new ArgumentException ("[pf.hyperlisp-2-nodes] can only take an expression of 'value' type");
+
+                hyperlisp = string.Empty;
+                foreach (Node idx in match.Matches) {
+                    hyperlisp += "\r\n" + idx.Get<string> ();
+                }
+            }
+            e.Args.AddRange (new NodeBuilder (context, hyperlisp).Nodes);
         }
 
         /// <summary>
@@ -40,7 +54,14 @@ namespace phosphorus.hyperlisp
         [ActiveEvent (Name = "pf.nodes-2-hyperlisp")]
         private static void pf_nodes_2_hyperlisp (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = new HyperlispBuilder (context, e.Args.Children).Hyperlisp;
+            if (Expression.IsExpression (e.Args.Value)) {
+                var match = Expression.Create (e.Args.Get<string> ()).Evaluate (e.Args);
+                if (match.TypeOfMatch != Match.MatchType.Node)
+                    throw new ArgumentException ("[pf.nodes-2-hyperlisp] can only take an expression of 'node' type");
+                e.Args.Value = new HyperlispBuilder (context, match.Matches).Hyperlisp;
+            } else {
+                e.Args.Value = new HyperlispBuilder (context, e.Args.Children).Hyperlisp;
+            }
         }
         
         /// <summary>
