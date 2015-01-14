@@ -23,7 +23,6 @@ namespace phosphorus.lambda
         /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.code-2-nodes")]
         [ActiveEvent (Name = "pf.nodes-2-code")]
-        [ActiveEvent (Name = "pf.node-2-code")]
         private static void code_transformer (ApplicationContext context, ActiveEventArgs e)
         {
             if (!string.IsNullOrEmpty (_language)) {

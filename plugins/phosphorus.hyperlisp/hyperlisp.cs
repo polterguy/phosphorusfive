@@ -36,10 +36,12 @@ namespace phosphorus.hyperlisp
                 if (match.TypeOfMatch != Match.MatchType.Value)
                     throw new ArgumentException ("[pf.hyperlisp-2-nodes] can only take an expression of 'value' type");
 
-                hyperlisp = string.Empty;
+                StringBuilder builder = new StringBuilder ();
                 foreach (Node idx in match.Matches) {
-                    hyperlisp += "\r\n" + idx.Get<string> ();
+                    builder.Append ("\r\n");
+                    builder.Append (idx.Get<string> ());
                 }
+                hyperlisp = builder.ToString ();
             }
             e.Args.AddRange (new NodeBuilder (context, hyperlisp).Nodes);
         }
@@ -62,18 +64,6 @@ namespace phosphorus.hyperlisp
             } else {
                 e.Args.Value = new HyperlispBuilder (context, e.Args.Children).Hyperlisp;
             }
-        }
-        
-        /// <summary>
-        /// helper to transform from <see cref="phosphorus.core.Node"/> tree structure to hyperlisp code syntax.
-        /// will transform the given root node of the active event args into hyperlisp and return as string value
-        /// </summary>
-        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.node-2-hyperlisp")]
-        private static void pf_node_2_hyperlisp (ApplicationContext context, ActiveEventArgs e)
-        {
-            e.Args.Value = new HyperlispBuilder (context, new Node[] { e.Args }).Hyperlisp;
         }
     }
 }

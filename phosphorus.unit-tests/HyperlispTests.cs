@@ -237,6 +237,7 @@ _double:double:10.54
 _node:node:@""x:z""
 _string:""string:""
 _bool:bool:true
+_guid:guid:E5A53FC9-A306-4609-89E5-9CC2964DA0AC
 ";
             context.Raise ("pf.hyperlisp-2-nodes", tmp);
             Assert.AreEqual ("", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
@@ -251,6 +252,7 @@ _bool:bool:true
             Assert.AreEqual ("z", tmp [5].Get<Node> ().Value, "wrong value of node after parsing of hyperlisp");
             Assert.AreEqual ("string:", tmp [6].Value, "wrong value of node after parsing of hyperlisp");
             Assert.AreEqual (true, tmp [7].Value, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual (Guid.Parse ("E5A53FC9-A306-4609-89E5-9CC2964DA0AC"), tmp [8].Value, "wrong value of node after parsing of hyperlisp");
         }
         
         [Test]
@@ -277,6 +279,117 @@ jumbo-type"":@""value
             Assert.AreEqual ("value", tmp [1][0].Value, "wrong value of node after parsing of hyperlisp");
             Assert.AreEqual ("_tmp4\r\nis cool", tmp [1][1].Name, "wrong value of node after parsing of hyperlisp");
             Assert.AreEqual ("value\r\n   value", tmp [1][1].Value, "wrong value of node after parsing of hyperlisp");
+        }
+
+        [Test]
+        public void ParseUsingExpression ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+_data:@""_foo
+  tmp1
+  tmp2:howdy world""
+pf.code-2-nodes:@/-/?value
+";
+            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("lambda", tmp);
+            Assert.AreEqual ("_foo", tmp [1][0].Name, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual (1, tmp [1].Count, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual (2, tmp [1][0].Count, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual ("tmp1", tmp [1][0][0].Name, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual ("tmp2", tmp [1][0][1].Name, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual ("howdy world", tmp [1][0][1].Value, "wrong value of node after parsing of hyperlisp");
+        }
+
+        [Test]
+        public void ParseUsingExpressionYieldingMultipleResults ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+_data:@""_foo
+  tmp1
+  tmp2:howdy world""
+_data:@""_foo2
+  tmp12
+  tmp22:howdy world2""
+pf.code-2-nodes:@/../*/_data/?value
+";
+            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("lambda", tmp);
+            Assert.AreEqual (2, tmp [2].Count, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual (2, tmp [2][0].Count, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual (2, tmp [2][1].Count, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual ("_foo", tmp [2][0].Name, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual ("tmp1", tmp [2][0][0].Name, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual ("tmp2", tmp [2][0][1].Name, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual ("howdy world", tmp [2][0][1].Value, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual ("_foo2", tmp [2][1].Name, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual ("tmp12", tmp [2][1][0].Name, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual ("tmp22", tmp [2][1][1].Name, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual ("howdy world2", tmp [2][1][1].Value, "wrong value of node after parsing of hyperlisp");
+        }
+        
+        [Test]
+        public void CreateHyperlispFromNodes ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+pf.nodes-2-hyperlisp
+  _data
+    tmp1
+    tmp2:howdy world
+";
+            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("lambda", tmp);
+            Assert.AreEqual ("_data\r\n  tmp1\r\n  tmp2:howdy world", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
+        }
+
+        [Test]
+        public void CreateHyperlispFromNodesUsingExpression ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+_data
+  tmp1
+  tmp2:howdy world
+pf.nodes-2-hyperlisp:@/-/?node
+";
+            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("lambda", tmp);
+            Assert.AreEqual ("_data\r\n  tmp1\r\n  tmp2:howdy world", tmp [1].Value, "wrong value of node after parsing of hyperlisp");
+        }
+
+        [Test]
+        public void CreateHyperlispFromNodesUsingExpressionYieldingMultipleResults ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+_data
+  tmp1
+  tmp2:howdy world
+_data
+  tmp12
+  tmp22:howdy world2
+pf.nodes-2-hyperlisp:@/../*/_data/?node
+";
+            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("lambda", tmp);
+            Assert.AreEqual ("_data\r\n  tmp1\r\n  tmp2:howdy world\r\n_data\r\n  tmp12\r\n  tmp22:howdy world2", tmp [2].Value, "wrong value of node after parsing of hyperlisp");
         }
 
         [Test]
