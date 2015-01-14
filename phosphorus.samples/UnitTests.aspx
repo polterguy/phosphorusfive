@@ -209,22 +209,6 @@
                     </tr>
                     <tr>
                         <td>
-                            make child invisible, then container visible
-                        </td>
-                        <td>
-                            <input type="button" id="invoke_make_container_visible_child_invisible" class="undetermined" value="run" onclick="tests.invoke_make_container_visible_child_invisible(event)">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            make child visible, then container visible
-                        </td>
-                        <td>
-                            <input type="button" id="invoke_make_container_visible_child_visible" class="undetermined" value="run" onclick="tests.invoke_make_container_visible_child_visible(event)">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
                             add child to container
                         </td>
                         <td>
@@ -413,17 +397,6 @@
                             runat="server"
                             Visible="false"
                             id="sandbox_invoke_make_container_visible_child_invisible_child"
-                            ElementType="strong">foo</pf:Literal>
-                    </pf:Container>
-                    <pf:Container
-                        runat="server"
-                        id="sandbox_invoke_make_container_visible_child_invisible"
-                        Visible="false"
-                        RenderType="NoClose"
-                        ElementType="p">
-                        <pf:Literal
-                            runat="server"
-                            id="sandbox_invoke_make_container_visible_child_child_invisible"
                             ElementType="strong">foo</pf:Literal>
                     </pf:Container>
                     <pf:Container

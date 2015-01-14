@@ -244,7 +244,7 @@ tests.invoke_javascript = function(event) {
     },
 
     onsuccess: function(serverReturn, evt) {
-      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 1) {
         tests.setError('invoke_javascript');
         return;
       }
@@ -269,15 +269,11 @@ tests.invoke_change_content = function(event) {
     },
 
     onsuccess: function(serverReturn, evt) {
-      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 1) {
         tests.setError('invoke_change_content');
         return;
       }
       if (serverReturn.__pf_change.sandbox_invoke_change_content.innerValue != 'new value') {
-        tests.setError('invoke_change_content');
-        return;
-      }
-      if (!serverReturn.__pf_change.__VIEWSTATE) {
         tests.setError('invoke_change_content');
         return;
       }
@@ -298,7 +294,7 @@ tests.invoke_change_two_properties = function(event) {
     },
 
     onsuccess: function(serverReturn, evt) {
-      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 1) {
         tests.setError('invoke_change_two_properties');
         return;
       }
@@ -307,10 +303,6 @@ tests.invoke_change_two_properties = function(event) {
         return;
       }
       if (serverReturn.__pf_change.sandbox_invoke_change_two_properties.innerValue != 'new value 2') {
-        tests.setError('invoke_change_two_properties');
-        return;
-      }
-      if (!serverReturn.__pf_change.__VIEWSTATE) {
         tests.setError('invoke_change_two_properties');
         return;
       }
@@ -331,15 +323,11 @@ tests.invoke_add_remove = function(event) {
     },
 
     onsuccess: function(serverReturn, evt) {
-      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 1) {
         tests.setError('invoke_add_remove');
         return;
       }
       if (serverReturn.__pf_change.sandbox_invoke_add_remove.class != 'new value 1') {
-        tests.setError('invoke_add_remove');
-        return;
-      }
-      if (!serverReturn.__pf_change.__VIEWSTATE) {
         tests.setError('invoke_add_remove');
         return;
       }
@@ -351,15 +339,11 @@ tests.invoke_add_remove = function(event) {
         },
 
         onsuccess: function(serverReturn, evt) {
-          if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+          if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 1) {
             tests.setError('invoke_add_remove');
             return;
           }
           if (serverReturn.__pf_change.sandbox_invoke_add_remove.__pf_del[0] != 'class') {
-            tests.setError('invoke_add_remove');
-            return;
-          }
-          if (!serverReturn.__pf_change.__VIEWSTATE) {
             tests.setError('invoke_add_remove');
             return;
           }
@@ -404,7 +388,7 @@ tests.invoke_change_twice = function(event) {
     },
 
     onsuccess: function(serverReturn, evt) {
-      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 1) {
         tests.setError('invoke_change_twice');
         return;
       }
@@ -430,7 +414,7 @@ tests.invoke_change_markup_attribute = function(event) {
     },
 
     onsuccess: function(serverReturn, evt) {
-      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 1) {
         tests.setError('invoke_change_markup_attribute');
         return;
       }
@@ -456,7 +440,7 @@ tests.invoke_remove_markup_attribute = function(event) {
     },
 
     onsuccess: function(serverReturn, evt) {
-      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 1) {
         tests.setError('invoke_remove_markup_attribute');
         return;
       }
@@ -486,7 +470,7 @@ tests.invoke_remove_add_markup_attribute = function(event) {
     },
 
     onsuccess: function(serverReturn, evt) {
-      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 1) {
         tests.setError('invoke_remove_add_markup_attribute');
         return;
       }
@@ -505,7 +489,7 @@ tests.invoke_remove_add_markup_attribute = function(event) {
         },
 
         onsuccess: function(serverReturn, evt) {
-          if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+          if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 1) {
             tests.setError('invoke_remove_add_markup_attribute');
             return;
           }
@@ -533,7 +517,7 @@ tests.invoke_concatenate_long_attribute = function(event) {
     },
 
     onsuccess: function(serverReturn, evt) {
-      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 1) {
         tests.setError('invoke_concatenate_long_attribute');
         return;
       }
@@ -567,7 +551,7 @@ tests.invoke_create_concatenate_long_attribute = function(event) {
     },
 
     onsuccess: function(serverReturn, evt) {
-      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 1) {
         tests.setError('invoke_create_concatenate_long_attribute');
         return;
       }
@@ -582,7 +566,7 @@ tests.invoke_create_concatenate_long_attribute = function(event) {
         },
 
         onsuccess: function(serverReturn, evt) {
-          if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+          if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 1) {
             tests.setError('invoke_create_concatenate_long_attribute');
             return;
           }
@@ -618,7 +602,7 @@ tests.invoke_change_container_child = function(event) {
     },
 
     onsuccess: function(serverReturn, evt) {
-      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 1) {
         tests.setError('invoke_change_container_child');
         return;
       }
@@ -644,7 +628,7 @@ tests.invoke_make_container_visible = function(event) {
     },
 
     onsuccess: function(serverReturn, evt) {
-      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 1) {
         tests.setError('invoke_make_container_visible');
         return;
       }
@@ -674,7 +658,7 @@ tests.invoke_make_container_visible_invisible_child = function(event) {
     },
 
     onsuccess: function(serverReturn, evt) {
-      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 1) {
         tests.setError('invoke_make_container_visible_invisible_child');
         return;
       }
@@ -694,92 +678,6 @@ tests.invoke_make_container_visible_invisible_child = function(event) {
 
 
 /*
- * make child invisible, then make container visible
- */
-tests.invoke_make_container_visible_child_invisible = function(event) {
-  var el = pf.$('sandbox_invoke_make_container_visible_child_invisible');
-  el.raise('sandbox_invoke_make_container_visible_child_invisible_1_onclick', {
-    onerror: function(statusCode, statusText, responseHtml, evt) {
-      tests.setError('invoke_make_container_visible_child_invisible');
-    },
-
-    onsuccess: function(serverReturn, evt) {
-      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 1) {
-        tests.setError('invoke_make_container_visible_child_invisible');
-        return;
-      }
-
-      el.raise('sandbox_invoke_make_container_visible_child_invisible_2_onclick', {
-        onerror: function(statusCode, statusText, responseHtml, evt) {
-          tests.setError('invoke_make_container_visible_child_invisible');
-        },
-
-        onsuccess: function(serverReturn, evt) {
-          if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
-            tests.setError('invoke_make_container_visible_child_invisible');
-            return;
-          }
-          if (serverReturn.__pf_change.sandbox_invoke_make_container_visible_child_invisible.outerHTML.indexOf('foo') != -1) {
-            tests.setError('invoke_make_container_visible_child_invisible');
-            return;
-          }
-          if (serverReturn.__pf_change.sandbox_invoke_make_container_visible_child_invisible.outerHTML.indexOf('strong') != -1) {
-            tests.setError('invoke_make_container_visible_child_invisible');
-            return;
-          }
-
-          tests.setSuccess('invoke_make_container_visible_child_invisible');
-        }
-      });
-    }
-  });
-};
-
-
-/*
- * make child visible, then make container visible
- */
-tests.invoke_make_container_visible_child_visible = function(event) {
-  var el = pf.$('sandbox_invoke_make_container_visible_child_visible');
-  el.raise('sandbox_invoke_make_container_visible_child_visible_1_onclick', {
-    onerror: function(statusCode, statusText, responseHtml, evt) {
-      tests.setError('invoke_make_container_visible_child_visible');
-    },
-
-    onsuccess: function(serverReturn, evt) {
-      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 1) {
-        tests.setError('invoke_make_container_visible_child_visible');
-        return;
-      }
-
-      el.raise('sandbox_invoke_make_container_visible_child_visible_2_onclick', {
-        onerror: function(statusCode, statusText, responseHtml, evt) {
-          tests.setError('invoke_make_container_visible_child_visible');
-        },
-
-        onsuccess: function(serverReturn, evt) {
-          if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
-            tests.setError('invoke_make_container_visible_child_visible');
-            return;
-          }
-          if (serverReturn.__pf_change.sandbox_invoke_make_container_visible_child_visible.outerHTML.indexOf('foo') == -1) {
-            tests.setError('invoke_make_container_visible_child_visible');
-            return;
-          }
-          if (serverReturn.__pf_change.sandbox_invoke_make_container_visible_child_visible.outerHTML.indexOf('strong') == -1) {
-            tests.setError('invoke_make_container_visible_child_visible');
-            return;
-          }
-
-          tests.setSuccess('invoke_make_container_visible_child_visible');
-        }
-      });
-    }
-  });
-};
-
-
-/*
  * add child to container widget
  */
 tests.invoke_add_child = function(event) {
@@ -790,15 +688,15 @@ tests.invoke_add_child = function(event) {
     },
 
     onsuccess: function(serverReturn, evt) {
-      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 1) {
         tests.setError('invoke_add_child');
         return;
       }
-      if (serverReturn.__pf_change.sandbox_invoke_add_child.__pf_add_2.indexOf ('howdy world') == -1) {
+      if (serverReturn.__pf_change.sandbox_invoke_add_child.__pf_add_1.indexOf ('howdy world') == -1) {
         tests.setError('invoke_add_child');
         return;
       }
-      if (serverReturn.__pf_change.sandbox_invoke_add_child.__pf_add_2.indexOf ('strong') == -1) {
+      if (serverReturn.__pf_change.sandbox_invoke_add_child.__pf_add_1.indexOf ('strong') == -1) {
         tests.setError('invoke_add_child');
         return;
       }
@@ -820,15 +718,15 @@ tests.invoke_insert_child = function(event) {
     },
 
     onsuccess: function(serverReturn, evt) {
-      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 1) {
         tests.setError('invoke_insert_child');
         return;
       }
-      if (serverReturn.__pf_change.sandbox_invoke_insert_child.__pf_add_1.indexOf ('howdy world') == -1) {
+      if (serverReturn.__pf_change.sandbox_invoke_insert_child.__pf_add_0.indexOf ('howdy world') == -1) {
         tests.setError('invoke_insert_child');
         return;
       }
-      if (serverReturn.__pf_change.sandbox_invoke_insert_child.__pf_add_1.indexOf ('strong') == -1) {
+      if (serverReturn.__pf_change.sandbox_invoke_insert_child.__pf_add_0.indexOf ('strong') == -1) {
         tests.setError('invoke_insert_child');
         return;
       }
@@ -850,15 +748,15 @@ tests.invoke_add_child_check_exist = function(event) {
     },
 
     onsuccess: function(serverReturn, evt) {
-      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 1) {
         tests.setError('invoke_add_child_check_exist');
         return;
       }
-      if (serverReturn.__pf_change.sandbox_invoke_add_child_check_exist.__pf_add_2.indexOf ('howdy world') == -1) {
+      if (serverReturn.__pf_change.sandbox_invoke_add_child_check_exist.__pf_add_1.indexOf ('howdy world') == -1) {
         tests.setError('invoke_add_child_check_exist');
         return;
       }
-      if (serverReturn.__pf_change.sandbox_invoke_add_child_check_exist.__pf_add_2.indexOf ('strong') == -1) {
+      if (serverReturn.__pf_change.sandbox_invoke_add_child_check_exist.__pf_add_1.indexOf ('strong') == -1) {
         tests.setError('invoke_add_child_check_exist');
         return;
       }
@@ -869,15 +767,15 @@ tests.invoke_add_child_check_exist = function(event) {
         },
 
         onsuccess: function(serverReturn, evt) {
-          if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+          if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 1) {
             tests.setError('invoke_add_child_check_exist');
             return;
           }
-          if (serverReturn.__pf_change.sandbox_invoke_add_child_check_exist.__pf_add_3.indexOf ('howdy world 2') == -1) {
+          if (serverReturn.__pf_change.sandbox_invoke_add_child_check_exist.__pf_add_2.indexOf ('howdy world 2') == -1) {
             tests.setError('invoke_add_child_check_exist');
             return;
           }
-          if (serverReturn.__pf_change.sandbox_invoke_add_child_check_exist.__pf_add_3.indexOf ('strong') == -1) {
+          if (serverReturn.__pf_change.sandbox_invoke_add_child_check_exist.__pf_add_2.indexOf ('strong') == -1) {
             tests.setError('invoke_add_child_check_exist');
             return;
           }
@@ -901,15 +799,15 @@ tests.invoke_insert_child_check_exist = function(event) {
     },
 
     onsuccess: function(serverReturn, evt) {
-      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+      if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 1) {
         tests.setError('invoke_insert_child_check_exist');
         return;
       }
-      if (serverReturn.__pf_change.sandbox_invoke_insert_child_check_exist.__pf_add_1.indexOf ('howdy world') == -1) {
+      if (serverReturn.__pf_change.sandbox_invoke_insert_child_check_exist.__pf_add_0.indexOf ('howdy world') == -1) {
         tests.setError('invoke_insert_child_check_exist');
         return;
       }
-      if (serverReturn.__pf_change.sandbox_invoke_insert_child_check_exist.__pf_add_1.indexOf ('strong') == -1) {
+      if (serverReturn.__pf_change.sandbox_invoke_insert_child_check_exist.__pf_add_0.indexOf ('strong') == -1) {
         tests.setError('invoke_insert_child_check_exist');
         return;
       }
@@ -920,15 +818,15 @@ tests.invoke_insert_child_check_exist = function(event) {
         },
 
         onsuccess: function(serverReturn, evt) {
-          if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 2) {
+          if (tests.countMembers(serverReturn) != 1 || tests.countMembers(serverReturn.__pf_change) != 1) {
             tests.setError('invoke_insert_child_check_exist');
             return;
           }
-          if (serverReturn.__pf_change.sandbox_invoke_insert_child_check_exist.__pf_add_2.indexOf ('howdy world 2') == -1) {
+          if (serverReturn.__pf_change.sandbox_invoke_insert_child_check_exist.__pf_add_1.indexOf ('howdy world 2') == -1) {
             tests.setError('invoke_add_child_check_exist');
             return;
           }
-          if (serverReturn.__pf_change.sandbox_invoke_insert_child_check_exist.__pf_add_2.indexOf ('strong') == -1) {
+          if (serverReturn.__pf_change.sandbox_invoke_insert_child_check_exist.__pf_add_1.indexOf ('strong') == -1) {
             tests.setError('invoke_insert_child_check_exist');
             return;
           }
@@ -952,15 +850,15 @@ tests.invoke_append_remove = function(event) {
     },
 
     onsuccess: function(serverReturn, evt) {
-      if (tests.countMembers(serverReturn) != 2 || tests.countMembers(serverReturn.__pf_change) != 2) {
+      if (tests.countMembers(serverReturn) != 2 || tests.countMembers(serverReturn.__pf_change) != 1) {
         tests.setError('invoke_append_remove');
         return;
       }
-      if (serverReturn.__pf_change.sandbox_invoke_append_remove.__pf_add_1.indexOf ('howdy world') == -1) {
+      if (serverReturn.__pf_change.sandbox_invoke_append_remove.__pf_add_0.indexOf ('howdy world') == -1) {
         tests.setError('invoke_append_remove');
         return;
       }
-      if (serverReturn.__pf_change.sandbox_invoke_append_remove.__pf_add_1.indexOf ('strong') == -1) {
+      if (serverReturn.__pf_change.sandbox_invoke_append_remove.__pf_add_0.indexOf ('strong') == -1) {
         tests.setError('invoke_append_remove');
         return;
       }
@@ -990,7 +888,7 @@ tests.invoke_remove_child = function(event) {
     },
 
     onsuccess: function(serverReturn, evt) {
-      if (tests.countMembers(serverReturn) != 2) {
+      if (tests.countMembers(serverReturn) != 1) {
         tests.setError('invoke_remove_child');
         return;
       }
@@ -1020,7 +918,7 @@ tests.invoke_remove_multiple = function(event) {
     },
 
     onsuccess: function(serverReturn, evt) {
-      if (tests.countMembers(serverReturn) != 2) {
+      if (tests.countMembers(serverReturn) != 1) {
         tests.setError('invoke_remove_multiple');
         return;
       }
@@ -1074,11 +972,11 @@ tests.invoke_remove_many = function(event) {
         tests.setError('invoke_remove_many');
         return;
       }
-      if (serverReturn.__pf_change.sandbox_invoke_remove_many.__pf_add_1.indexOf('howdy') == -1) {
+      if (serverReturn.__pf_change.sandbox_invoke_remove_many.__pf_add_0.indexOf('howdy') == -1) {
         tests.setError('invoke_remove_many');
         return;
       }
-      if (serverReturn.__pf_change.sandbox_invoke_remove_many_5.__pf_add_3.indexOf('world') == -1) {
+      if (serverReturn.__pf_change.sandbox_invoke_remove_many_5.__pf_add_2.indexOf('world') == -1) {
         tests.setError('invoke_remove_many');
         return;
       }
