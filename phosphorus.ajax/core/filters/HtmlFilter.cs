@@ -56,13 +56,13 @@ namespace phosphorus.ajax.core.filters
             for (; idxPosition < content.Length; idxPosition ++) {
                 if (endBuffer.EndsWith (">") && endBuffer.EndsWith ("<head>", StringComparison.InvariantCultureIgnoreCase))
                     break;
+                endBuffer += content [idxPosition];
             }
-            StringBuilder builder = new StringBuilder (content.Substring (0, idxPosition));
+            StringBuilder builder = new StringBuilder (endBuffer + "\r\n");
 
             // including javascript files
             foreach (string idxFile in (Manager.Page as IAjaxPage).StylesheetFilesToPush) {
-                builder.Append (string.Format(@"    <link rel=""stylesheet"" type=""text/css"" href=""{0}""></script>
-    ", idxFile.Replace ("&", "&amp;")));
+                builder.Append (string.Format("        <link rel=\"stylesheet\" type=\"text/css\" href=\"{0}\"></link>\r\n", idxFile));
             }
 
             // adding back up again the "</html>" parts

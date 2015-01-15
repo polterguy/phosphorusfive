@@ -212,6 +212,8 @@ namespace phosphorus.ajax.core.internals
                 if (idx.Name.StartsWith ("on") && Utilities.IsLegalMethodName (idx.Value)) {
                     if (widget.NoIDAttribute)
                         throw new ArgumentException ("cannot have events on a Widget that doesn't render its ID attribute");
+                    if (name.EndsWith ("_"))
+                        continue; // "invisible" event
                     value = "pf.e(event)";
                 } else {
                     value = idx.Value;

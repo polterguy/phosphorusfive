@@ -7,10 +7,12 @@ namespace phosphorus.five.applicationpool
 {
     using System;
     using System.Web;
+    using System.Text;
     using System.Web.UI;
     using System.Configuration;
     using System.Collections.Generic;
     using phosphorus.core;
+    using phosphorus.lambda;
     using phosphorus.ajax.core;
     using phosphorus.ajax.widgets;
     using pf = phosphorus.ajax.widgets;
@@ -117,14 +119,54 @@ namespace phosphorus.five.applicationpool
         }
 
         /// <summary>
-        /// sends the given JavaScript to the client. JavaScript is given as value of [pf.send-javascript]
+        /// sends the given JavaScript to the client. JavaScript is given as value of [pf.send-javascript], and can
+        /// be a constant, an expression or a formatting expression
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.send-javascript")]
         private void pf_send_javascript (ApplicationContext context, ActiveEventArgs e)
         {
-            Manager.SendJavaScriptToClient (e.Args.Get<string> ());
+            string js = e.Args.Get<string> ();
+            if (Expression.IsExpression (js)) {
+                var match = Expression.Create (js).Evaluate (e.Args);
+                if (match.TypeOfMatch != Match.MatchType.Value)
+                    throw new ArgumentException ("[pf.send-javascript] can only take expressions of type 'value'");
+
+                StringBuilder builder = new StringBuilder ();
+                foreach (Node idx in match.Matches) {
+                    builder.Append (idx.Value);
+                }
+                js = builder.ToString ();
+            } else if (e.Args.Count > 0) {
+                js = Expression.FormatNode (e.Args);
+            }
+            Manager.SendJavaScriptToClient (js);
+        }
+        
+        /// <summary>
+        /// send the given string back to browser as JSON
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.send-string")]
+        private void pf_send_string (ApplicationContext context, ActiveEventArgs e)
+        {
+            string key = e.Args.Get<string> ();
+            string str = e.Args [0].Get<string> ();
+            if (Expression.IsExpression (str)) {
+                var match = Expression.Create (str).Evaluate (e.Args [0]);
+                if (match.TypeOfMatch != Match.MatchType.Value)
+                    throw new ArgumentException ("cannot use anything but a 'value' expression in [pf.send-string]");
+                StringBuilder builder = new StringBuilder ();
+                foreach (Node idx in match.Matches) {
+                    builder.Append (idx.Get<string> ());
+                }
+                str = builder.ToString ();
+            } else if (e.Args [0].Count > 0) {
+                str = Expression.FormatNode (e.Args [0]);
+            }
+            Manager.SendObject (key, str);
         }
 
         /// <summary>
