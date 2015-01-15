@@ -146,8 +146,12 @@ namespace phosphorus.lambda
             if (index >= _nodes.Count)
                 return defaultValue;
             object retVal = GetValue (index);
-            if (retVal != null)
-                return (T)Convert.ChangeType (retVal, typeof(T));
+            if (retVal != null) {
+                if (retVal is IConvertible)
+                    return (T)Convert.ChangeType (retVal, typeof(T));
+                else
+                    return (T)(object)retVal.ToString ();
+            }
             return defaultValue;
         }
 
