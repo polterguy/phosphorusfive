@@ -21,13 +21,13 @@ namespace phosphorus.web
     public static class security
     {
         /// <summary>
-        /// creates a hash out of the value from [pf.hash-string] and returns the hash value as the value of
-        /// the first child of [pf.hash-string] named [value]
+        /// creates a hash out of the value from [pf.crypto.hash-string] and returns the hash value as the value of
+        /// the first child of [pf.crypto.hash-string] named [value]
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.hash-string")]
-        private static void pf_hash_string (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.crypto.hash-string")]
+        private static void pf_crypto_hash_string (ApplicationContext context, ActiveEventArgs e)
         {
             using (MD5 md5 = MD5.Create ()) {
                 string hashValue = Convert.ToBase64String (md5.ComputeHash (Encoding.UTF8.GetBytes (e.Args.Get<string> ())));
