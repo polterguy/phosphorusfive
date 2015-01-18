@@ -19,7 +19,7 @@ namespace phosphorus.unittests
             Loader.Instance.LoadAssembly ("phosphorus.lambda");
             ApplicationContext context = Loader.Instance.CreateApplicationContext ();
             Node tmp = new Node ();
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
         }
         
@@ -34,7 +34,7 @@ namespace phosphorus.unittests
 _out
 set:@/-/?value
   :howdy";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("howdy", tmp [0].Value, "wrong value of node after executing lambda object");
         }
@@ -50,7 +50,7 @@ set:@/-/?value
 _out
 set:@/-/?value
   :howdy";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda.copy", tmp);
             Assert.AreNotEqual ("howdy", tmp [0].Value, "wrong value of node after executing lambda object");
         }
@@ -66,7 +66,7 @@ set:@/-/?value
 _out
 set:@/-/?value
   :howdy";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda.immutable", tmp);
             Assert.AreNotEqual ("howdy", tmp [0].Value, "wrong value of node after executing lambda object");
         }
@@ -83,7 +83,7 @@ _out
 lambda
   set:@/./-/?value
     :howdy";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("howdy", tmp [0].Value, "wrong value of node after executing lambda object");
         }
@@ -103,7 +103,7 @@ lambda.immutable
   set:@/+/?value
     :no-show
   _no_out";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("howdy", tmp [0].Value, "wrong value of node after executing lambda object");
             Assert.AreEqual (null, tmp [1] [2].Value, "wrong value of node after executing lambda object");
@@ -124,7 +124,7 @@ lambda.copy
   set:@/+/?value
     :no-show
   _no_out";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (null, tmp [0].Value, "wrong value of node after executing lambda object");
             Assert.AreEqual (null, tmp [1] [2].Value, "wrong value of node after executing lambda object");
@@ -146,7 +146,7 @@ _exe
     :no-show
   _no_out
 lambda.immutable:@/-/?node";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("howdy", tmp [0].Value, "wrong value of node after executing lambda object");
             Assert.AreEqual (null, tmp [1] [2].Value, "wrong value of node after executing lambda object");
@@ -168,7 +168,7 @@ _exe
     :no-show
   _no_out
 lambda.copy:@/-/?node";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (null, tmp [0].Value, "wrong value of node after executing lambda object");
             Assert.AreEqual (null, tmp [1] [2].Value, "wrong value of node after executing lambda object");
@@ -190,7 +190,7 @@ set:@/./*/_input/#/?value
   :howdy
 ""
   _input";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("howdy", tmp [0].Value, "wrong value of node after executing lambda object");
         }
@@ -212,7 +212,7 @@ lambda:node:@""_x
   set:@/?value
     :no-val""
   _input";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("howdy", tmp [0].Value, "wrong value of node after executing lambda object");
             Assert.AreEqual ("no-val", tmp [2].Get<Node> () [1].Value, "wrong value of node after executing lambda object");
@@ -235,7 +235,7 @@ lambda.copy:node:@""_x
   set:@/?value
     :no-val""
   _input";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("howdy", tmp [0].Value, "wrong value of node after executing lambda object");
             Assert.AreNotEqual ("no-val", tmp [2].Get<Node> () [1].Value, "wrong value of node after executing lambda object");
@@ -258,7 +258,7 @@ lambda.immutable:node:@""_x
   set:@/?value
     :no-val""
   _input";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("howdy", tmp [0].Value, "wrong value of node after executing lambda object");
             Assert.AreNotEqual ("no-val", tmp [2].Get<Node> () [1].Value, "wrong value of node after executing lambda object");
@@ -277,7 +277,7 @@ _x
   set:@/./-/?value
     :howdy
 lambda:@/-/?node";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("howdy", tmp [0].Value, "wrong value of node after executing lambda object");
         }
@@ -299,7 +299,7 @@ _x
   set:@/./-/-/?value
     :world
 lambda:@/../*/_x/?node";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("howdy", tmp [0].Value, "wrong value of node after executing lambda object");
             Assert.AreEqual ("world", tmp [1].Value, "wrong value of node after executing lambda object");
@@ -324,7 +324,7 @@ set:@/+/*/_arg/?value
   :@/./-/?node
 lambda:@/../*/_x/?value
   _arg";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("howdy world", tmp [2].Value, "wrong value of node after executing lambda object");
         }
@@ -339,7 +339,7 @@ lambda:@/../*/_x/?value
             tmp.Value = @"
 set:@/+/#/?value
   :world";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
 
             // here we pass in a "reference node" that's being used for retrieving output from lambda
             // basically the Value of one of the execution nodes is a node itself, which we can retrieve after execution, since the
@@ -364,7 +364,7 @@ set:@/+/#/?value
             Node tmp = new Node ();
             tmp.Value = @"
 set:syntax-error";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
         }
         
@@ -380,7 +380,7 @@ set:syntax-error";
 _x
   set:syntax-error
 lambda:@/-/?node";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
         }
         
@@ -395,7 +395,7 @@ lambda:@/-/?node";
             tmp.Value = @"
 lambda
   set:syntax-error";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
         }
         
@@ -410,7 +410,7 @@ lambda
             tmp.Value = @"
 lambda.copy
   set:syntax-error";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
         }
         
@@ -425,7 +425,7 @@ lambda.copy
             tmp.Value = @"
 lambda.immutable
   set:syntax-error";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
         }
         
@@ -441,7 +441,7 @@ lambda.immutable
 lambda.copy:@/+/?node
 _x
   set:syntax-error";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
         }
         
@@ -457,7 +457,7 @@ _x
 lambda.immutable:@/+/?node
 _x
   set:syntax-error";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
         }
         
@@ -473,7 +473,7 @@ _x
 lambda:node:""
 _x
   set:syntax-error""";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
         }
         
@@ -489,7 +489,7 @@ _x
 lambda.copy:node:""
 _x
   set:syntax-error""";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
         }
         
@@ -505,7 +505,7 @@ _x
 lambda.immutable:node:""
 _x
   set:syntax-error""";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
         }
     }

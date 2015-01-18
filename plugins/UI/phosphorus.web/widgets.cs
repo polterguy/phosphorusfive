@@ -209,7 +209,7 @@ namespace phosphorus.web
                 widget [node.Name] = node.Get<string> ();
             } else {
 
-                // creating our pf.lambda object, and invoking our [pf.web.add-widget-event] Active Event to map the
+                // creating our pf.lambda object, and invoking our [_pf.web.add-widget-event] Active Event to map the
                 // ajax event to our pf.lambda object, passing in the widget that contains the Ajax Event
                 Node eventNode = new Node (string.Empty, widget);
                 eventNode.Add (node.Clone ());
@@ -222,7 +222,7 @@ namespace phosphorus.web
                 eventNode [0].Insert (1, new Node ("_widget-id", node.Parent.Value));
 
                 // raising the Active Event that actually creates our ajax event handler for our pf.lambda object
-                context.Raise ("pf.web.add-widget-event", eventNode);
+                context.Raise ("_pf.web.add-widget-event", eventNode);
             }
         }
     }

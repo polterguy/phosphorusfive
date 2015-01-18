@@ -29,7 +29,7 @@ set:@/+/*/_out/?value
   :@/./-/?node
 test.foo
   _out";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("success", tmp [1].Value, "wrong value of node after executing lambda object");
         }
@@ -48,7 +48,7 @@ event:test.foo2
   lambda
     set:@/../*/_out/#/?value
       :success";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
 
             // then executing our lambda event in another context
@@ -60,7 +60,7 @@ set:@/+/*/_out/?value
   :@/./-/?node
 test.foo2
   _out";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("success", tmp [0].Value, "wrong value of node after executing lambda object");
         }
@@ -90,7 +90,7 @@ set:@/+/*/_out/?value
   :@/./-/?node
 test.foo3
   _out";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("successsuccess", tmp [2].Value, "wrong value of node after executing lambda object");
         }
@@ -117,7 +117,7 @@ event:test.foo4
       :{0}{1}
         :@/./././*/_out/#/?value
         :success";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
 
             // then invoking active events in different context
@@ -129,7 +129,7 @@ set:@/+/*/_out/?value
 test.foo4
   _out";
             context = Loader.Instance.CreateApplicationContext ();
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("successsuccess", tmp [0].Value, "wrong value of node after executing lambda object");
         }
@@ -160,7 +160,7 @@ set:@/+/*/_out/?value
   :@/./-/?node
 test.foo5
   _out";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("success", tmp [1].Value, "wrong value of node after executing lambda object");
             Assert.AreEqual ("success", tmp [4].Value, "wrong value of node after executing lambda object");
@@ -190,7 +190,7 @@ set:@/+/*/_out/?value
   :@/./-/?node
 test.foo6:howdy
   _out";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("success", tmp [1].Value, "wrong value of node after executing lambda object");
         }
@@ -215,7 +215,7 @@ set:@/+/*/_out/?value
   :@/./-/?node
 test.foo7
   _out";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (null, tmp [2].Value, "wrong value of node after executing lambda object");
         }
@@ -246,7 +246,7 @@ set:@/+/*/_out/?value
   :@/./-/?node
 test.foo8
   _out";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (null, tmp [3].Value, "wrong value of node after executing lambda object");
         }
@@ -277,7 +277,7 @@ set:@/+/*/_out/?value
   :@/./-/?node
 test.foo9
   _out";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("success", tmp [2].Value, "wrong value of node after executing lambda object");
         }
@@ -315,7 +315,7 @@ set:@/+/*/_out/?value
   :@/./-/?node
 test.foo11
   _out";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.IsTrue (tmp [3].Get<string> () == "success2success1" || tmp [3].Get<string> () == "success1success2", "wrong value of node after executing lambda object");
         }
@@ -352,7 +352,7 @@ set:@/+/*/_out/?value
   :@/./-/?node
 test.foo14
   _out";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.IsTrue (tmp [3].Get<string> () == "success1success2" || tmp [3].Get<string> () == "success2success1", "wrong value of node after executing lambda object");
         }
@@ -390,7 +390,7 @@ set:@/+/*/_out/?value
   :@/./-/?node
 test.foo16
   _out";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("success", tmp [3].Value, "wrong value of node after executing lambda object");
         }
@@ -434,7 +434,7 @@ set:@/+/*/_out/?value
   :@/./-/?node
 test.foo19
   _out";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.IsTrue (tmp [4].Get<string> () == "success1success2" || tmp [4].Get<string> () == "success2success1", "wrong value of node after executing lambda object");
         }
@@ -478,7 +478,7 @@ set:@/+/*/_out/?value
   :@/./-/?node
 test.foo23
   _out";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.IsTrue (tmp [4].Get<string> () == "success1success2" || tmp [4].Get<string> () == "success2success1", "wrong value of node after executing lambda object");
         }
@@ -522,7 +522,7 @@ set:@/+/*/_out/?value
   :@/./-/?node
 test.foo26
   _out";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("success", tmp [3].Value, "wrong value of node after executing lambda object");
             Assert.AreEqual ("success", tmp [6].Value, "wrong value of node after executing lambda object");
@@ -558,7 +558,7 @@ set:@/+/*/_out/?value
   :@/./-/?node
 test.foo28
   _out";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("failuresuccess", tmp [2].Value, "wrong value of node after executing lambda object");
         }
@@ -591,7 +591,7 @@ set:@/+/*/_out/?value
   :@/./-/?node
 test.bar1
   _out";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("successfailure", tmp [2].Value, "wrong value of node after executing lambda object");
         }
@@ -637,7 +637,7 @@ set:@/+/*/_out/?value
   :@/./-/?node
 test.foo30
   _out";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("success1success2success3", tmp [3].Value, "wrong value of node after executing lambda object");
         }
@@ -683,7 +683,7 @@ set:@/+/*/_out/?value
   :@/./-/?node
 test.foo33
   _out";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.IsTrue (tmp [3].Get<string> () == "success1success2success1success3" || tmp [3].Get<string> () == "success1success3success1success2", "wrong value of node after executing lambda object");
         }
@@ -731,7 +731,7 @@ set:@/+/*/_out/?value
   :@/./-/?node
 test.foo37
   _out";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("success1success3", tmp [3].Value, "wrong value of node after executing lambda object");
             Assert.AreEqual ("success2success3", tmp [6].Value, "wrong value of node after executing lambda object");
@@ -760,7 +760,7 @@ set:@/+/*/_out/?value
   :@/./-/?node
 test.foo39
   _out";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("success", tmp [1].Value, "wrong value of node after executing lambda object");
         }
@@ -795,7 +795,7 @@ set:@/+/*/_out/?value
   :@/./-/?node
 test.foo41
   _out";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("success", tmp [2].Value, "wrong value of node after executing lambda object");
         }
@@ -827,7 +827,7 @@ set:@/+/*/_out/?value
   :@/./-/-/?node
 test.foo42
   _out";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("success", tmp [2].Value, "wrong value of node after executing lambda object");
         }
@@ -867,7 +867,7 @@ set:@/+/*/_out/?value
   :@/./-/-/?node
 test.foo44
   _out";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.IsTrue (tmp [3].Get<string> () == "success1success2" || tmp [2].Get<string> () == "success2success1", "wrong value of node after executing lambda object");
         }
@@ -915,7 +915,7 @@ set:@/+/*/_out/?value
   :@/./-/-/?node
 test.foo47
   _out";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.IsTrue (tmp [3].Get<string> () == "failuresuccess1failuresuccess2" || tmp [2].Get<string> () == "failuresuccess2failuresuccess1", "wrong value of node after executing lambda object");
         }
@@ -967,7 +967,7 @@ set:@/+/*/_out/?value
   :@/./-3/?node
 test.foo50
   _out";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("success2success1success3", tmp [3].Value, "wrong value of node after executing lambda object");
         }
@@ -1015,7 +1015,7 @@ set:@/+/*/_out/?value
   :@/./-3/?node
 test.foo53
   _out";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.IsTrue (tmp [3].Get<string> () == "failuresuccess1failuresuccess2" || tmp [2].Get<string> () == "failuresuccess2failuresuccess1", "wrong value of node after executing lambda object");
         }
@@ -1068,7 +1068,7 @@ set:@/+/*/_out/?value
   :@/./-/?node
 test.foo57
   _out";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("success1success3", tmp [3].Value, "wrong value of node after executing lambda object");
             Assert.AreEqual ("success2success3", tmp [8].Value, "wrong value of node after executing lambda object");
@@ -1105,7 +1105,7 @@ set:@/+/*/_out/?value
   :@/./-2/?node
 test.foo60
   _out";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("success", tmp [2].Value, "wrong value of node after executing lambda object");
         }
@@ -1134,7 +1134,7 @@ set:@/+/*/_out/?value
   :@/./-/?node
 test.foo61
   _out";
-            context.Raise ("pf.hyperlisp-2-nodes", tmp);
+            context.Raise ("hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("success", tmp [2].Value, "wrong value of node after executing lambda object");
         } // TODO: create tests and keyword for "delete-override"

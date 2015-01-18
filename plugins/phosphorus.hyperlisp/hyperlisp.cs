@@ -25,8 +25,8 @@ namespace phosphorus.hyperlisp
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.hyperlisp-2-nodes")]
-        private static void pf_hyperlisp_2_nodes (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.hyperlisp.hyperlisp2lambda")]
+        private static void pf_hyperlisp_hyperlisp2lambda (ApplicationContext context, ActiveEventArgs e)
         {
             string hyperlisp = e.Args.Get<string> ();
             if (Expression.IsExpression (hyperlisp)) {
@@ -34,7 +34,7 @@ namespace phosphorus.hyperlisp
                 // retrieving hyperlisp as a function of the expression
                 var match = Expression.Create (hyperlisp).Evaluate (e.Args);
                 if (match.TypeOfMatch != Match.MatchType.Value)
-                    throw new ArgumentException ("[pf.hyperlisp-2-nodes] can only take an expression of 'value' type");
+                    throw new ArgumentException ("[pf.hyperlisp.hyperlisp2lambda] can only take an expression of 'value' type");
 
                 StringBuilder builder = new StringBuilder ();
                 foreach (Node idx in match.Matches) {
@@ -53,13 +53,13 @@ namespace phosphorus.hyperlisp
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.nodes-2-hyperlisp")]
-        private static void pf_nodes_2_hyperlisp (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.hyperlisp.lambda2hyperlisp")]
+        private static void pf_code_lambda2hyperlisp (ApplicationContext context, ActiveEventArgs e)
         {
             if (Expression.IsExpression (e.Args.Value)) {
                 var match = Expression.Create (e.Args.Get<string> ()).Evaluate (e.Args);
                 if (match.TypeOfMatch != Match.MatchType.Node)
-                    throw new ArgumentException ("[pf.nodes-2-hyperlisp] can only take an expression of 'node' type");
+                    throw new ArgumentException ("[lambda2hyperlisp] can only take an expression of 'node' type");
                 e.Args.Value = new HyperlispBuilder (context, match.Matches).Hyperlisp;
             } else {
                 e.Args.Value = new HyperlispBuilder (context, e.Args.Children).Hyperlisp;

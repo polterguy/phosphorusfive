@@ -28,7 +28,7 @@ namespace phosphorus.tiedown
 
             // converting file to lambda tree
             Node fileToNodes = new Node (string.Empty, loadFileNode [0].Get<string> ());
-            context.Raise ("pf.code-2-nodes", fileToNodes);
+            context.Raise ("code2lambda", fileToNodes);
 
             // appending args into lambda tree
             if (args != null) {

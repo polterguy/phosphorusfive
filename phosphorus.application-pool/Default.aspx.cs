@@ -85,7 +85,7 @@ namespace phosphorus.five.applicationpool
             }
 
             // invoking the Active Event that actually loads our UI, now with a [_file] node, and possibly an [_args] node
-            _context.Raise ("pf.load-ui", args);
+            _context.Raise ("pf.core.load-ui", args);
         }
 
         /// <summary>
@@ -93,8 +93,8 @@ namespace phosphorus.five.applicationpool
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.create-widget")]
-        private void pf_create_widget (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.create-widget")]
+        private void pf_web_create_widget (ApplicationContext context, ActiveEventArgs e)
         {
             // finding parent widget first, which defaults to "container" widget, if no widget is given
             Node parentNode = e.Args.Find (
@@ -112,26 +112,26 @@ namespace phosphorus.five.applicationpool
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.reload-location")]
-        private void pf_reload_location (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.reload-location")]
+        private void pf_web_reload_location (ApplicationContext context, ActiveEventArgs e)
         {
             Manager.SendJavaScriptToClient ("location.reload();");
         }
 
         /// <summary>
-        /// sends the given JavaScript to the client. JavaScript is given as value of [pf.send-javascript], and can
+        /// sends the given JavaScript to the client. JavaScript is given as value of [pf.web.include-javascript], and can
         /// be a constant, an expression or a formatting expression
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.send-javascript")]
-        private void pf_send_javascript (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.include-javascript")]
+        private void pf_web_include_javascript (ApplicationContext context, ActiveEventArgs e)
         {
             string js = e.Args.Get<string> ();
             if (Expression.IsExpression (js)) {
                 var match = Expression.Create (js).Evaluate (e.Args);
                 if (match.TypeOfMatch != Match.MatchType.Value)
-                    throw new ArgumentException ("[pf.send-javascript] can only take expressions of type 'value'");
+                    throw new ArgumentException ("[pf.web.include-javascript] can only take expressions of type 'value'");
 
                 StringBuilder builder = new StringBuilder ();
                 foreach (Node idx in match.Matches) {
@@ -145,19 +145,21 @@ namespace phosphorus.five.applicationpool
         }
         
         /// <summary>
-        /// send the given string back to browser as JSON
+        /// send the given string back to browser as JSON with the key given as value of [pf.web.return-value], and the string
+        /// sent being the value of the first child of [pf.web.return-value]. the value to send, can either be an expression, a
+        /// constant, or a node formatting expression
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.send-string")]
-        private void pf_send_string (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.return-value")]
+        private void pf_web_return_value (ApplicationContext context, ActiveEventArgs e)
         {
             string key = e.Args.Get<string> ();
             string str = e.Args [0].Get<string> ();
             if (Expression.IsExpression (str)) {
                 var match = Expression.Create (str).Evaluate (e.Args [0]);
                 if (match.TypeOfMatch != Match.MatchType.Value)
-                    throw new ArgumentException ("cannot use anything but a 'value' expression in [pf.send-string]");
+                    throw new ArgumentException ("cannot use anything but a 'value' expression in [pf.web.return-value]");
                 StringBuilder builder = new StringBuilder ();
                 foreach (Node idx in match.Matches) {
                     builder.Append (idx.Get<string> ());
@@ -170,12 +172,12 @@ namespace phosphorus.five.applicationpool
         }
 
         /// <summary>
-        /// clear the given widget, by removing all its child controls
+        /// clears the given widget, removes all its children widgets
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.clear-widget")]
-        private void pf_clear_widget (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.clear-widget")]
+        private void pf_web_clear_widget (ApplicationContext context, ActiveEventArgs e)
         {
             Container ctrl = FindControl<Container> (e.Args.Get<string> (), Page);
             ctrl.Controls.Clear ();
@@ -183,12 +185,12 @@ namespace phosphorus.five.applicationpool
         }
 
         /// <summary>
-        /// deletes the widget with the id of the value of the [pf.delete-widget]
+        /// removes the widget with the id of the value of the [pf.web.remove-widget]
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.remove-widget")]
-        private void pf_remove_widget (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.remove-widget")]
+        private void pf_web_remove_widget (ApplicationContext context, ActiveEventArgs e)
         {
             // finding widget to remove
             Widget widget = FindControl<Widget> (e.Args.Get<string> (), Page);
@@ -206,8 +208,8 @@ namespace phosphorus.five.applicationpool
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.add-widget-event")]
-        private void pf_web_add_widget_event (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "_pf.web.add-widget-event")]
+        private void _pf_web_add_widget_event (ApplicationContext context, ActiveEventArgs e)
         {
             // retrieving widget id, and creating an event collection for the given widget
             Widget widget = e.Args.Get<Widget> ();
@@ -233,8 +235,8 @@ namespace phosphorus.five.applicationpool
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.find-control")]
-        private void pf_find_control (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "_pf.web.find-control")]
+        private void _pf_web_find_control (ApplicationContext context, ActiveEventArgs e)
         {
             // defaulting parent to page object, but checking to see if an explicit parent is given through e.Args
             Control parentCtrl = Page;
@@ -254,8 +256,8 @@ namespace phosphorus.five.applicationpool
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.insert-javascript-file")]
-        private void pf_insert_javascript_file (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.add-javascript-file")]
+        private void pf_web_add_javascript_file (ApplicationContext context, ActiveEventArgs e)
         {
             string file = e.Args.Get<string> ();
             RegisterJavaScriptFile (file);
@@ -266,8 +268,8 @@ namespace phosphorus.five.applicationpool
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.insert-stylesheet-file")]
-        private void pf_insert_stylesheet_file (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.add-stylesheet-file")]
+        private void pf_web_add_stylesheet_file (ApplicationContext context, ActiveEventArgs e)
         {
             string file = e.Args.Get<string> ();
             RegisterStylesheetFile (file);

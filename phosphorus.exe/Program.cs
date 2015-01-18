@@ -68,13 +68,13 @@ namespace phosphorus.exe
 
                 // change our default execution language, if we should
                 if (!string.IsNullOrEmpty (language))
-                    context.Raise ("pf.set-default-execution-language", new Node (string.Empty, language));
+                    context.Raise ("execution-language", new Node (string.Empty, language));
 
                 // raising our application startup Active Event, in case there are modules loaded depending upon its
                 context.Raise ("pf.core.application-start", new Node ());
 
                 // loads and convert file to lambda nodes
-                Node convertExeFile = context.Raise ("pf.code-2-nodes", new Node (string.Empty, 
+                Node convertExeFile = context.Raise ("code2lambda", new Node (string.Empty, 
                     context.Raise ("pf.file.load", new Node (string.Empty, exeNode.Value)) [0].Get<string> ()));
 
                 // appending nodes from lambda file into execution objects, and execute lambda file given through command-line arguments

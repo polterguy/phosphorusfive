@@ -2,11 +2,11 @@ event:pf.remove-additional-hello
   lambda
     set:@/+/?value
       :@/../?value
-    pf.remove-widget
+    pf.web.remove-widget
 
 event:pf.create-additional-hello
   lambda
-    pf.create-widget
+    pf.web.create-widget
       parent:main
       controls
         literal
@@ -16,9 +16,9 @@ event:pf.create-additional-hello
               :@/../*/_form-id/?value
             pf.remove-additional-hello
 
-event:pf.load-ui
+event:pf.core.load-ui
   lambda
-    pf.create-widget:main
+    pf.web.create-widget:main
       controls
         literal
           element:h1

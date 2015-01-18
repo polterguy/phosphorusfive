@@ -44,10 +44,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="widgets.cs" />
-    <Compile Include="widget_events.cs" />
     <Compile Include="session.cs" />
     <Compile Include="security.cs" />
     <Compile Include="cookie.cs" />
+    <Compile Include="properties.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -18,7 +18,7 @@ namespace phosphorus.web
     /// <summary>
     /// helper to retrieve and change properties of widgets
     /// </summary>
-    public static class widget_events
+    public static class properties
     {
         /// <summary>
         /// returns properties requested by caller as children nodes of [pf.web.widgets.get-property]. the properties you
@@ -134,7 +134,7 @@ namespace phosphorus.web
                 widgetId = match.GetValue (0) as string;
             }
             Node findCtrl = new Node (string.Empty, widgetId);
-            context.Raise ("pf.find-control", findCtrl);
+            context.Raise ("_pf.web.find-control", findCtrl);
             return findCtrl [0].Get<Widget> ();
         }
     }

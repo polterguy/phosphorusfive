@@ -139,7 +139,7 @@ namespace phosphorus.file
         {
             if (_rootFolder == null) {
                 Node rootNode = new Node ();
-                context.Raise ("pf.get-application-root-folder", rootNode);
+                context.Raise ("pf.core.application-folder", rootNode);
                 _rootFolder = rootNode.Get<string> ();
                 if (string.IsNullOrEmpty (_rootFolder)) {
                     _rootFolder = Assembly.GetEntryAssembly ().Location;

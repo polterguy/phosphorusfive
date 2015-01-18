@@ -208,7 +208,7 @@ namespace phosphorus.hyperlisp
             Node node = e.Args.Get<Node> ();
             Node tmp = new Node ();
             tmp.Add (node.Clone ());
-            context.Raise ("pf.nodes-2-code", tmp);
+            context.Raise ("lambda2code", tmp);
             e.Args.Value = tmp.Value;
         }
 
@@ -265,7 +265,7 @@ namespace phosphorus.hyperlisp
         {
             string code = e.Args.Get<string> ();
             Node tmp = new Node (string.Empty, code);
-            context.Raise ("pf.code-2-nodes", tmp);
+            context.Raise ("code2lambda", tmp);
             if (tmp.Count == 1)
                 e.Args.Value = tmp [0].Clone ();
             else if (tmp.Count > 1)

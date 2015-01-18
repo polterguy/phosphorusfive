@@ -21,27 +21,33 @@ namespace phosphorus.lambda
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.code-2-nodes")]
-        [ActiveEvent (Name = "pf.nodes-2-code")]
+        [ActiveEvent (Name = "code2lambda")]
+        [ActiveEvent (Name = "lambda2code")]
         private static void code_transformer (ApplicationContext context, ActiveEventArgs e)
         {
             if (!string.IsNullOrEmpty (_language)) {
-                context.Raise (e.Name.Replace ("code", _language), e.Args);
+                context.Raise ("pf." + _language + "." + e.Name.Replace ("code", _language), e.Args);
             } else {
-                string language = ConfigurationManager.AppSettings ["default-execution-language"];
-                context.Raise (e.Name.Replace ("code", language ?? "hyperlisp"), e.Args);
+                _language = ConfigurationManager.AppSettings ["default-execution-language"] ?? "hyperlisp";
+                context.Raise (e.Name, e.Args);
             }
         }
 
         /// <summary>
-        /// change the default execution language of the lambda engine
+        /// changes or retrieves the default execution language of the lambda engine. if the value of the
+        /// execution node is empty, it will return the default execution language, otherwise it will
+        /// change the default execution language to the value given
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.set-default-execution-language")]
-        private static void set_execution_language (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "execution-language")]
+        private static void execution_language (ApplicationContext context, ActiveEventArgs e)
         {
-            _language = e.Args.Get<string> ();
+            if (e.Args.Value == null) {
+                e.Args.Value = _language;
+            } else {
+                _language = e.Args.Get<string> ();
+            }
         }
     }
 }

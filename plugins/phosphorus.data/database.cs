@@ -325,7 +325,7 @@ namespace phosphorus.data
 
             // converting file to Node
             Node convertNode = new Node (string.Empty, loadFileNode [0].Value);
-            context.Raise ("pf.code-2-nodes", convertNode);
+            context.Raise ("code2lambda", convertNode);
 
             // returning Node with node value being path, and content being children
             Node retVal = new Node (string.Empty, path);
@@ -396,7 +396,7 @@ namespace phosphorus.data
                 foreach (Node idx in fileNode.Children) {
                     convertNode.Add (idx.Clone ());
                 }
-                context.Raise ("pf.nodes-2-code", convertNode);
+                context.Raise ("lambda2code", convertNode);
 
                 // saves code
                 Node saveNode = new Node (string.Empty, fileNode.Value);

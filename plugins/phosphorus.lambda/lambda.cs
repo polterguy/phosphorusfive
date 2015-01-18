@@ -128,7 +128,7 @@ namespace phosphorus.lambda
 
             // first transforming code into nodes
             Node exe = new Node ("root", code);
-            context.Raise ("pf.code-2-nodes", exe);
+            context.Raise ("code2lambda", exe);
 
             // then executing nodes created from "code" parameter
             ExecuteBlock (context, exe, args, LambdaType.Normal);

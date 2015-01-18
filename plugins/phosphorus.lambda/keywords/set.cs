@@ -148,7 +148,7 @@ namespace phosphorus.lambda
                 Node tmp = obj as Node;
                 Node convert = new Node (string.Empty);
                 convert.Add (tmp.Clone ());
-                context.Raise ("pf.nodes-2-code", convert);
+                context.Raise ("lambda2code", convert);
                 return convert.Get<string> ();
             } else {
                 return obj.ToString ();

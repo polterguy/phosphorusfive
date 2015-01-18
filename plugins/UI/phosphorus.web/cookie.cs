@@ -42,7 +42,7 @@ namespace phosphorus.web
                 // creating persistent cookie
                 HttpCookie cookie = new HttpCookie (e.Args.Get<string> ());
                 convert = convert.Clone ();
-                context.Raise ("pf.nodes-2-code", convert);
+                context.Raise ("lambda2code", convert);
                 cookie.Value = HttpUtility.UrlEncode (convert.Get<string> ());
 
                 // setting date of cookie
@@ -80,7 +80,7 @@ namespace phosphorus.web
                 if (!string.IsNullOrEmpty (cookieValue)) {
 
                     Node convertNode = new Node (string.Empty, cookieValue);
-                    context.Raise ("pf.code-2-nodes", convertNode);
+                    context.Raise ("code2lambda", convertNode);
                     if (convertNode.Count > 0) {
                         Node valueNode = new Node ("value");
                         e.Args.Add (valueNode);

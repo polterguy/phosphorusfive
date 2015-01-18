@@ -142,6 +142,7 @@ Global
 		$3.scope = text/x-csharp
 		$0.TextStylePolicy = $4
 		$4.FileWidth = 120
+		$4.EolMarker = Windows
 		$4.inheritsSet = VisualStudio
 		$4.inheritsScope = text/plain
 		$4.scope = text/plain
@@ -298,5 +299,8 @@ Global
 		$36.MessageStyle = $37
 		$37.LineAlign = 0
 		$36.inheritsSet = Mono
+		$0.TextStylePolicy = $38
+		$38.inheritsSet = null
+		$38.scope = application/javascript
 	EndGlobalSection
 EndGlobal

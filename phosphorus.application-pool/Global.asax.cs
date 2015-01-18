@@ -70,8 +70,8 @@ namespace phosphorus.five.applicationpool
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.get-application-root-folder")]
-        private static void pf_get_application_root_folder (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.core.application-folder")]
+        private static void pf_core_application_folder (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = _applicationBasePath;
         }
