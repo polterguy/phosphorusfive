@@ -33,39 +33,28 @@ namespace phosphorus.core
             InitializeApplicationContext (staticEvents);
         }
 
-        /*
-         * initializes app context
-         */
-        private void InitializeApplicationContext (Dictionary<Type, List<Tuple<ActiveEventAttribute, MethodInfo>>> staticEvents)
-        {
-            // looping through each Type in static Active Events given
-            foreach (var idxType in staticEvents.Keys) {
-
-                // looping through each ActiveEvent/MethodInfo tuple in Type
-                foreach (var idxTupleAVMethodInfo in staticEvents [idxType]) {
-
-                    // checking to see if there exist a string Key for the name of our current iterated Active Event
-                    // and if not, we create a string key, with a list of MethodInfo/InstanceObject tuples
-                    // before we add the current MethodInfo as a handler of that given Active Event name
-                    if (!_registeredActiveEvents.ContainsKey (idxTupleAVMethodInfo.Item1.Name))
-                        _registeredActiveEvents [idxTupleAVMethodInfo.Item1.Name] = new List<Tuple<MethodInfo, object>> ();
-
-                    // checking to see if this is an override of another Active Event, and if it is, we register it as an override
-                    if (idxTupleAVMethodInfo.Item1.Overrides != null) {
-
-                        // this is an override of another Active Event, making sure we get our mappings right here
-                        Override (idxTupleAVMethodInfo.Item1.Overrides, idxTupleAVMethodInfo.Item1.Name);
-                    }
-
-                    // retrieving the list of MethodInfo/InstanceObject typles for Active Event name,
-                    // and adding currently iterated method, with a "null instance object" since it's static
-                    var methods = _registeredActiveEvents [idxTupleAVMethodInfo.Item1.Name];
-                    methods.Add (new Tuple<MethodInfo, object> (idxTupleAVMethodInfo.Item2, null));
+        /// <summary>
+        /// returns all Active Events registered within the system
+        /// </summary>
+        /// <value>The active events.</value>
+        public IEnumerable<string> ActiveEvents {
+            get {
+                foreach (var idx in _registeredActiveEvents) {
+                    yield return idx.Key;
                 }
             }
+        }
 
-            // raising "initialize" Active Event
-            Raise ("pf.core.initialize-application-context");
+        /// <summary>
+        /// returns all overrides in system
+        /// </summary>
+        /// <value>The active events.</value>
+        public IEnumerable<Tuple<string, List<string>>> Overrides {
+            get {
+                foreach (var idx in _overrides) {
+                    yield return new Tuple<string, List<string>> (idx.Key, idx.Value);
+                }
+            }
         }
 
         /// <summary>
@@ -246,6 +235,41 @@ namespace phosphorus.core
                 return e.Base.Args;
             }
             return e.Args;
+        }
+        
+        /*
+         * initializes app context
+         */
+        private void InitializeApplicationContext (Dictionary<Type, List<Tuple<ActiveEventAttribute, MethodInfo>>> staticEvents)
+        {
+            // looping through each Type in static Active Events given
+            foreach (var idxType in staticEvents.Keys) {
+
+                // looping through each ActiveEvent/MethodInfo tuple in Type
+                foreach (var idxTupleAVMethodInfo in staticEvents [idxType]) {
+
+                    // checking to see if there exist a string Key for the name of our current iterated Active Event
+                    // and if not, we create a string key, with a list of MethodInfo/InstanceObject tuples
+                    // before we add the current MethodInfo as a handler of that given Active Event name
+                    if (!_registeredActiveEvents.ContainsKey (idxTupleAVMethodInfo.Item1.Name))
+                        _registeredActiveEvents [idxTupleAVMethodInfo.Item1.Name] = new List<Tuple<MethodInfo, object>> ();
+
+                    // checking to see if this is an override of another Active Event, and if it is, we register it as an override
+                    if (idxTupleAVMethodInfo.Item1.Overrides != null) {
+
+                        // this is an override of another Active Event, making sure we get our mappings right here
+                        Override (idxTupleAVMethodInfo.Item1.Overrides, idxTupleAVMethodInfo.Item1.Name);
+                    }
+
+                    // retrieving the list of MethodInfo/InstanceObject typles for Active Event name,
+                    // and adding currently iterated method, with a "null instance object" since it's static
+                    var methods = _registeredActiveEvents [idxTupleAVMethodInfo.Item1.Name];
+                    methods.Add (new Tuple<MethodInfo, object> (idxTupleAVMethodInfo.Item2, null));
+                }
+            }
+
+            // raising "initialize" Active Event
+            Raise ("pf.core.initialize-application-context");
         }
 
         /*

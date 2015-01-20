@@ -63,6 +63,7 @@ a img { border: none; }
 .container {
   width: 950px;
   margin: 0 auto;
+  position:relative;
 }
 
 /* Use this class on any .span / container to see the grid. */

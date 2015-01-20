@@ -87,8 +87,9 @@ namespace phosphorus.web
             if (type != Widget.RenderingType.Default)
                 widget.RenderType = type;
 
+            // hooks up "oninitialload" event
             CreateLoadingEvents (context, node, widget);
-            
+
             // returning widget to caller
             return widget;
         }
@@ -151,7 +152,35 @@ namespace phosphorus.web
                     break;
                 }
             }
+
+            // ensures "name" property is created, if necessary
+            EnsureNameProperty (widget);
+
             return widget;
+        }
+
+        /*
+         * ensuring the "name" property is the same as the "ID" of the widget, unless a name property is explicitly given,
+         * or element type doesn't necessarily require a "name" to function correctly
+         */
+        private static void EnsureNameProperty (Widget widget)
+        {
+            // making sure "input", "select" and "textarea" widgets have a name corresponding to 
+            // their ID unless name is explicitly given
+            bool addName = false;
+            switch (widget.ElementType) {
+            case "input":
+                if (widget.ElementType != "button")
+                    addName = true;
+                break;
+            case "textarea":
+            case "select":
+                addName = true;
+                break;
+            }
+            if (addName) {
+                widget ["name"] = widget.ID;
+            }
         }
 
         /*

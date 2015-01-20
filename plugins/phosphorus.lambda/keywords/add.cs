@@ -46,17 +46,27 @@ namespace phosphorus.lambda
          */
         private static void AppendMatch (Match destinationMatch, Match sourceMatch)
         {
-            if (sourceMatch.TypeOfMatch != Match.MatchType.Node)
-                throw new ArgumentException ("[add] can only add from a 'node' source expression");
+            if (sourceMatch.TypeOfMatch != Match.MatchType.Node && sourceMatch.TypeOfMatch != Match.MatchType.Value)
+                throw new ArgumentException ("[add] can only add from a 'node' source expression or a 'value' expression containing a node");
 
             // cloning source first, in case source is also one of our destinations
             List<Node> copy = new List<Node> ();
             foreach (Node idxSource in sourceMatch.Matches) {
-                copy.Add (idxSource.Clone ());
+                if (sourceMatch.TypeOfMatch == Match.MatchType.Node) {
+                    copy.Add (idxSource.Clone ());
+                } else {
+                    copy.Add (idxSource.Get<Node> ().Clone ());
+                }
             }
             foreach (Node idxDest in destinationMatch.Matches) {
                 foreach (Node idxSource in copy) {
-                    idxDest.Add (idxSource.Clone ());
+                    Node destination = null;
+                    if (destinationMatch.TypeOfMatch == Match.MatchType.Node) {
+                        destination = idxDest;
+                    } else {
+                        destination = idxDest.Get<Node> ();
+                    }
+                    destination.Add (idxSource.Clone ());
                 }
             }
         }
@@ -85,9 +95,13 @@ namespace phosphorus.lambda
             // finding Match object for destination
             Match destinationMatch = Expression.Create (destinationExpression).Evaluate (node);
 
-            if (destinationMatch.TypeOfMatch != Match.MatchType.Node)
-                throw new ArgumentException ("destination expression for [add] is not of type 'node', expression was; '" + 
-                    destinationExpression + "'. make sure you [add] destination expression ends with a '?node'");
+            if (destinationMatch.TypeOfMatch != Match.MatchType.Node) {
+                foreach (Node idxNode in destinationMatch.Matches) {
+                    if (!(idxNode.Value is Node))
+                        throw new ArgumentException ("destination expression for [add] is not of type 'node', expression was; '" + 
+                            destinationExpression + "'. make sure you [add] destination expression ends with a '?node'");
+                }
+            }
 
             return destinationMatch;
         }

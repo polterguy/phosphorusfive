@@ -76,6 +76,7 @@
     <Compile Include="keywords\helpers\Conditions.cs" />
     <Compile Include="keywords\helpers\Event.cs" />
     <Compile Include="keywords\helpers\Override.cs" />
+    <Compile Include="active-events.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

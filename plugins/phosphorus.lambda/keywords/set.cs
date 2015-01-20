@@ -164,8 +164,12 @@ namespace phosphorus.lambda
                 return match.Count;
             else if (match.Count == 1) {
 
-                // single match
-                return match.GetValue (0);
+                // single match, making sure it's cloned if match is a Node
+                object retVal = match.GetValue (0);
+                Node retValNode = retVal as Node;
+                if (retValNode != null)
+                    return retValNode.Clone ();
+                return retVal;
             }
             throw new ArgumentException ("[set] cannot assign the result of a source expression yielding multiple results");
         }
