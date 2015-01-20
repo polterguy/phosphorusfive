@@ -33,7 +33,7 @@ namespace phosphorus.unittests
             tmp.Value = @"
 pf.data.select:@/*/*/_mumbo_field/=jumbo_value/?node
 ";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (0, tmp [0].Count, "wrong value of node after executing lambda object");
         }
@@ -55,7 +55,7 @@ pf.data.select:@/*/*/_test1/?node
 pf.data.delete:@/*/*/_test1/?node
 pf.data.select:@/*/*/_test1/?node
 ";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (1, tmp [1].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("_test1", tmp [1] [0].Name, "wrong value of node after executing lambda object");
@@ -81,7 +81,7 @@ pf.data.insert
     howdy:world
 pf.data.select:@/*/*/_testX/0/?name
 ";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (1, tmp [2].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual (string.Empty, tmp [2] [0].Name, "wrong value of node after executing lambda object");
@@ -104,7 +104,7 @@ pf.data.insert
     howdy:world
 pf.data.select:@/*/*/_testX/0/?value
 ";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (1, tmp [2].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual (string.Empty, tmp [2] [0].Name, "wrong value of node after executing lambda object");
@@ -127,7 +127,7 @@ pf.data.insert
     howdy:world
 pf.data.select:@/*/*/_testX/0/?count
 ";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (1, tmp [2].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual (string.Empty, tmp [2] [0].Name, "wrong value of node after executing lambda object");
@@ -150,7 +150,7 @@ pf.data.insert
     howdy:world
 pf.data.select:@/*/*/_testX/0/?path
 ";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (1, tmp [2].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual (string.Empty, tmp [2] [0].Name, "wrong value of node after executing lambda object");
@@ -175,7 +175,7 @@ pf.data.insert
     howdy2:world2
 pf.data.select:@/*/*/_testX/0/?name
 ";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (2, tmp [2].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual (string.Empty, tmp [2] [0].Name, "wrong value of node after executing lambda object");
@@ -202,7 +202,7 @@ pf.data.insert
     howdy2:world2
 pf.data.select:@/*/*/_testX/0/?value
 ";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (2, tmp [2].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual (string.Empty, tmp [2] [0].Name, "wrong value of node after executing lambda object");
@@ -229,7 +229,7 @@ pf.data.insert
     howdy2:world2
 pf.data.select:@/*/*/_testX/0/?path
 ";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (2, tmp [2].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual (string.Empty, tmp [2] [0].Name, "wrong value of node after executing lambda object");
@@ -256,7 +256,7 @@ pf.data.insert
     howdy2:world2
 pf.data.select:@/*/*/_testX/?count
 ";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (1, tmp [2].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual (string.Empty, tmp [2] [0].Name, "wrong value of node after executing lambda object");
@@ -279,7 +279,7 @@ _testX
   howdy:world
 pf.data.select:@/*/*/_testX/?node
 ";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (1, tmp [3].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("_testX", tmp [3] [0].Name, "wrong value of node after executing lambda object");
@@ -306,7 +306,7 @@ _testX
   howdy:world
 pf.data.select:@/*/*/_testX/?node
 ";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (2, tmp [4].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("_testX", tmp [4] [0].Name, "wrong value of node after executing lambda object");
@@ -335,7 +335,7 @@ pf.data.insert
     howdy:world
 pf.data.select:@/*/*/_test2/?count
 ";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (1, tmp [2].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual (1, tmp [2] [0].Value, "wrong value of node after executing lambda object");
@@ -362,7 +362,7 @@ pf.data.insert
 pf.data.select:@/*/*/_test3/?count
 pf.data.select:@/*/*/_test3/?node
 ";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (3, tmp [2] [0].Value, "wrong value of node after executing lambda object");
             Assert.AreEqual (3, tmp [3].Count, "wrong value of node after executing lambda object");
@@ -399,7 +399,7 @@ pf.data.insert
     howdy:world3
 pf.data.select:@/*/*/_test4/*/query_field/*/x/=y/././?node
 ";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (1, tmp [2].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("_test4", tmp [2] [0].Name, "wrong value of node after executing lambda object");
@@ -433,7 +433,7 @@ pf.data.update:@/*/*/_test5/*/query_field/?node
     x:zz
 pf.data.select:@/*/*/_test5/*/query_field2/*/x/=zz/././?node
 ";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (1, tmp [3].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("_test5", tmp [3] [0].Name, "wrong value of node after executing lambda object");
@@ -467,7 +467,7 @@ pf.data.update:@/*/*/_test6/?node
 pf.data.select:@/*/*/_test6_update/?node
 pf.data.select:@/*/*/_test6/?node
 ";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (3, tmp [4].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual (0, tmp [5].Count, "wrong value of node after executing lambda object");
@@ -496,7 +496,7 @@ pf.data.update:@/*/*/_testX/?value
     :world
 pf.data.select:@/*/*/_testX/?node
 ";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (1, tmp [3].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("_testX", tmp [3] [0].Name, "wrong value of node after executing lambda object");
@@ -524,7 +524,7 @@ _test7_update
 pf.data.select:@/*/*/_test7_update/?node
 pf.data.select:@/*/*/_test7/?node
 ";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (1, tmp [4].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual (0, tmp [5].Count, "wrong value of node after executing lambda object");
@@ -552,7 +552,7 @@ pf.data.update:@/*/*/_test8/*/howdy/?value
 :world2
 pf.data.select:@/*/*/_test8/?node
 ";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (1, tmp [4].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("_test8", tmp [4] [0].Name, "wrong value of node after executing lambda object");
@@ -578,7 +578,7 @@ pf.data.update:@/*/*/_test8/*/howdy/?value
 world2
 pf.data.select:@/*/*/_test8/?node
 ";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (1, tmp [4].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("_test8", tmp [4] [0].Name, "wrong value of node after executing lambda object");
@@ -604,7 +604,7 @@ pf.data.update:@/*/*/_test9/*/howdy/?name
 :howdy2
 pf.data.select:@/*/*/_test9/?node
 ";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (1, tmp [4].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("_test9", tmp [4] [0].Name, "wrong value of node after executing lambda object");
@@ -630,7 +630,7 @@ pf.data.update:@/*/*/_test9/*/howdy/?name
 howdy2
 pf.data.select:@/*/*/_test9/?node
 ";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (1, tmp [4].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("_test9", tmp [4] [0].Name, "wrong value of node after executing lambda object");
@@ -656,7 +656,7 @@ pf.data.update:@/*/*/_test9/*/howdy/?node
 howdy2:world2
 pf.data.select:@/*/*/_test9/?node
 ";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (1, tmp [4].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("_test9", tmp [4] [0].Name, "wrong value of node after executing lambda object");
@@ -682,7 +682,7 @@ pf.data.update:@/*/*/_test9/*/howdy/?value
   :@/../*/?count
 pf.data.select:@/*/*/_test9/?node
 ";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (1, tmp [3].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("_test9", tmp [3] [0].Name, "wrong value of node after executing lambda object");
@@ -707,7 +707,7 @@ pf.data.update:@/*/*/_test9/*/howdy/?name
   :@/../*/?count
 pf.data.select:@/*/*/_test9/?node
 ";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (1, tmp [3].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("_test9", tmp [3] [0].Name, "wrong value of node after executing lambda object");
@@ -733,7 +733,7 @@ pf.data.update:@/*/*/_test9/*/howdy/?value
 _howdy:world
 pf.data.select:@/*/*/_test9/?node
 ";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (1, tmp [4].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("_test9", tmp [4] [0].Name, "wrong value of node after executing lambda object");
@@ -799,7 +799,7 @@ for-each:@/0/*/**/?node
       howdy:world
 pf.data.select:@/*/*/_testMany/?count
 ";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (800, tmp [2] [0].Value, "wrong value of node after executing lambda object");
         }

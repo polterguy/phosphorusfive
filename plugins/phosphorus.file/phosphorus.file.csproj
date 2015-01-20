@@ -51,5 +51,9 @@
       <Project>{C783FEDB-C973-4F38-8EBB-55A0163612F5}</Project>
       <Name>phosphorus.core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\phosphorus.lambda\phosphorus.lambda.csproj">
+      <Project>{8EB5FDEA-D073-4147-AE65-376A01B463DF}</Project>
+      <Name>phosphorus.lambda</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

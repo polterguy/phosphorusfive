@@ -21,7 +21,7 @@ namespace phosphorus.unittests
             Node tmp = new Node ();
             tmp.Value = @"
 for-each:@/-/?node";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
         }
 
@@ -36,7 +36,7 @@ for-each:@/-/?node";
 _x
 for-each:@/-/?node
   set:@/./*/__dp/#/?node";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (1, tmp.Count);
         }
@@ -55,7 +55,7 @@ _x
 for-each:@/-/*/?node
   set:@/./*/__dp/#/?value
     :z";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("z", tmp [0] [0].Value);
             Assert.AreEqual ("z", tmp [0] [1].Value);
@@ -82,7 +82,7 @@ for-each:@/-/*/?node
       :q
     set:@/././*/__dp/#/?value
       :z";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("z", tmp [0] [0].Value);
             Assert.AreEqual ("z", tmp [0] [1].Value);
@@ -102,7 +102,7 @@ for-each:@/-/*/?node
             ApplicationContext context = Loader.Instance.CreateApplicationContext ();
             Node tmp = new Node ();
             tmp.Value = @"for-each:@/-/*/?value";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
         }
         
@@ -115,7 +115,7 @@ for-each:@/-/*/?node
             ApplicationContext context = Loader.Instance.CreateApplicationContext ();
             Node tmp = new Node ();
             tmp.Value = @"for-each:@/-/*/?path";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
         }
         
@@ -128,7 +128,7 @@ for-each:@/-/*/?node
             ApplicationContext context = Loader.Instance.CreateApplicationContext ();
             Node tmp = new Node ();
             tmp.Value = @"for-each:@/-/*/?count";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
         }
         
@@ -141,7 +141,7 @@ for-each:@/-/*/?node
             ApplicationContext context = Loader.Instance.CreateApplicationContext ();
             Node tmp = new Node ();
             tmp.Value = @"for-each:@/-/*/?name";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
         }
         
@@ -154,7 +154,7 @@ for-each:@/-/*/?node
             ApplicationContext context = Loader.Instance.CreateApplicationContext ();
             Node tmp = new Node ();
             tmp.Value = @"for-each:mumbo-jumbo";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
         }
     }

@@ -25,7 +25,7 @@ pf.file.save:mumbo.txt
   :""this is mumbo""
 pf.file.load:mumbo.txt
 ";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (1, tmp [1].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("this is mumbo", tmp [1] [0].Value, "wrong value of node after executing lambda object");
@@ -46,7 +46,7 @@ pf.file.save:mumbo.txt
   :""this is mumbo, shorter""
 pf.file.load:mumbo.txt
 ";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (1, tmp [2].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("this is mumbo, shorter", tmp [2] [0].Value, "wrong value of node after executing lambda object");
@@ -67,7 +67,7 @@ pf.file.exists:mumbo.txt
 pf.file.remove:mumbo.txt
 pf.file.exists:mumbo.txt
 ";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (true, tmp [1] [0].Value, "wrong value of node after executing lambda object");
             Assert.AreEqual (false, tmp [3] [0].Value, "wrong value of node after executing lambda object");
@@ -87,7 +87,7 @@ pf.file.folder-exists:mumbo
 pf.file.remove-folder:mumbo
 pf.file.folder-exists:mumbo
 ";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (true, tmp [1] [0].Value, "wrong value of node after executing lambda object");
             Assert.AreEqual (false, tmp [3] [0].Value, "wrong value of node after executing lambda object");
@@ -112,7 +112,7 @@ pf.file.save:list-files/mumbo3.txt
 pf.file.list-files:list-files
 pf.file.remove-folder:list-files
 ";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (3, tmp [4].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("list-files/mumbo1.txt", tmp [4] [0].Value, "wrong value of node after executing lambda object");
@@ -136,7 +136,7 @@ pf.file.create-folder:list-folders/mumbo3
 pf.file.list-folders:list-folders
 pf.file.remove-folder:list-folders
 ";
-            context.Raise ("hyperlisp2lambda", tmp);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (3, tmp [4].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("list-folders/mumbo1", tmp [4] [0].Value, "wrong value of node after executing lambda object");
