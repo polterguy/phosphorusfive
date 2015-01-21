@@ -1,9 +1,16 @@
+
+/*
+ * removes one of our "hello" widgets
+ */
 event:pf.remove-additional-hello
   lambda
     set:@/+/?value
       :@/../?value
     pf.web.remove-widget
 
+/*
+ * creates one "hello" widget
+ */
 event:pf.create-additional-hello
   lambda
     pf.web.create-widget
@@ -16,6 +23,10 @@ event:pf.create-additional-hello
               :@/../*/_form-id/?value
             pf.remove-additional-hello
 
+/*
+ * sink invoked from main framework, creates a widget that
+ * once clicked creates another widget
+ */
 event:pf.core.load-ui
   lambda
     pf.web.create-widget:main

@@ -10,4 +10,3 @@
 * make sure script inclusions by default don't mess up spacing in html filter
 
 * modify readme to have fully functioning complete example of Default.aspx page, with complete codebehind, and complete .aspx markup
-
