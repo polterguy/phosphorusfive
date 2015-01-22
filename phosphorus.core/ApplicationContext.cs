@@ -305,6 +305,13 @@ namespace phosphorus.core
          */
         private void RaiseDirectly (ActiveEventArgs e)
         {
+            // first looping through all "null Active Event handlers" and raising these
+            if (_registeredActiveEvents.ContainsKey ("")) {
+                foreach (var idxMethod in _registeredActiveEvents [""]) {
+                    idxMethod.Item1.Invoke (idxMethod.Item2, new object[] { this, e });
+                }
+            }
+
             if (!_registeredActiveEvents.ContainsKey (e.Name))
                 return; // no Active Event registered with that name
 

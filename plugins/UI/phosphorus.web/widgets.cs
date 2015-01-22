@@ -144,6 +144,8 @@ namespace phosphorus.web
                         widget ["checked"] = null;
                     break;
                 case "parent":
+                case "events":
+                    // skipping these buggers, since they're not supposed to be handled here
                     break;
                 default:
 

@@ -105,7 +105,87 @@ namespace phosphorus.five.applicationpool
             Container parent = parentNode != null ? FindControl<Container> (parentNode.Get<string> (), Page) : container;
 
             // creating widget
-            CreateForm (context, e.Args.Clone (), parent);
+            Node creationalArgs = e.Args.Clone ();
+            CreateForm (context, creationalArgs, parent);
+            Control widget = creationalArgs.Get<Control> ();
+
+            // creating events for form
+            Node eventNode = e.Args.Find (
+                delegate (Node idx) {
+                    return idx.Name == "events";
+            });
+            if (eventNode != null) {
+                CreateWidgetEvents (widget, eventNode);
+            }
+        }
+
+        /// <summary>
+        /// creates events for widget form
+        /// </summary>
+        /// <param name="widget">widget to which events belongs to</param>
+        /// <param name="eventNode">node containing all events for widget</param>
+        private void CreateWidgetEvents (Control widget, Node eventNode)
+        {
+            // first retrieving all events
+            List<Node> evts = null;
+            if (Expression.IsExpression (eventNode.Value)) {
+                evts = new List<Node> ();
+                var match = Expression.Create (eventNode.Get<string> ()).Evaluate (eventNode);
+                for (int idxNo = 0; idxNo < match.Count; idxNo ++) {
+                    var curEvt = match.GetValue (idxNo);
+                    Node curEvtNode = curEvt as Node;
+                    if (curEvtNode == null) {
+                        throw new ArgumentException ("expression for creating events for widget yielded a result that was not of 'node' type");
+                    }
+                    evts.Add (curEvtNode);
+                }
+            } else {
+                evts = new List<Node> (eventNode.Children);
+            }
+
+            // then looping through all Active Event nodes, and adding them up as callback sinks for the specified Active Event
+            foreach (Node idxEvt in evts) {
+                if (!PageEvents.ContainsKey (idxEvt.Name)) {
+                    PageEvents [idxEvt.Name] = new List<Tuple<string, Node>> ();
+                }
+                PageEvents [idxEvt.Name].Add (new Tuple<string, Node> (widget.ID, idxEvt.Clone ()));
+            }
+        }
+
+        /// <summary>
+        /// null Active Event handler, for handling widget specific Active Events
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "")]
+        private void null_handler (ApplicationContext context, ActiveEventArgs e)
+        {
+            if (PageEvents.ContainsKey (e.Name)) {
+
+                // this Active Event is handled by one of the widgets on this page object
+                // making sure we raise it passing in the arguments passed in to this Active Event cloned
+                foreach (Tuple<string, Node> idxEvt in PageEvents [e.Name]) {
+                    Node exeCopy = idxEvt.Item2.Clone ();
+                    exeCopy.Value = e.Args.Value;
+                    foreach (Node idxArg in e.Args.Children) {
+                        exeCopy.Add (idxArg.Clone ());
+                    }
+                    context.Raise ("lambda", exeCopy);
+                }
+            }
+        }
+
+        /// <summary>
+        /// returns all events for page, dynamically created on a per widget basis
+        /// </summary>
+        /// <value>the events dynamically created for each widget</value>
+        private Dictionary<string, List<Tuple<string, Node>>> PageEvents {
+            get {
+                if (ViewState ["pf.widgets.events"] == null) {
+                    ViewState ["pf.widgets.events"] = new Dictionary<string, List<Tuple<string, Node>>> ();
+                }
+                return (Dictionary<string, List<Tuple<string, Node>>>)ViewState ["pf.widgets.events"];
+            }
         }
         
         /// <summary>
@@ -181,6 +261,14 @@ namespace phosphorus.five.applicationpool
         private void pf_web_clear_widget (ApplicationContext context, ActiveEventArgs e)
         {
             Container ctrl = FindControl<Container> (e.Args.Get<string> (), Page);
+
+            // removing all Active Event handlers and all Ajax Event handlers for widget
+            foreach (Control idx in ctrl.Controls) {
+                RemoveActiveEvents (idx);
+                RemoveEvents (idx);
+            }
+
+            // clearing child controls, and re-rendering widget
             ctrl.Controls.Clear ();
             ctrl.ReRenderChildren ();
         }
@@ -196,12 +284,46 @@ namespace phosphorus.five.applicationpool
             // finding widget to remove
             Widget widget = FindControl<Widget> (e.Args.Get<string> (), Page);
 
-            // removing all event handlers for widget
+            // removing all Ajax event handlers for widget
             RemoveEvents (widget);
+
+            // removing all Active Event handlers for widget
+            RemoveActiveEvents (widget);
 
             // actually removing widget from Page control collection, and persisting our change
             Container parent = widget.Parent as Container;
             parent.RemoveControlPersistent (widget);
+        }
+
+        /*
+         * clears all Active Events for widget
+         */
+        private void RemoveActiveEvents (Control widget)
+        {
+            // removing all Active Events for given widget
+            List<string> keysToRemove = new List<string> ();
+            foreach (string idxKey in PageEvents.Keys) {
+                List<Tuple<string, Node>> toRemove = new List<Tuple<string, Node>> ();
+                foreach (var idxTuple in PageEvents [idxKey]) {
+                    if (idxTuple.Item1 == widget.ID) {
+                        toRemove.Add (idxTuple);
+                    }
+                }
+                foreach (var idxToRemove in toRemove) {
+                    PageEvents [idxKey].Remove (idxToRemove);
+                }
+                if (PageEvents [idxKey].Count == 0) {
+                    keysToRemove.Add (idxKey);
+                }
+            }
+            foreach (string idxKeyToRemove in keysToRemove) {
+                PageEvents.Remove (idxKeyToRemove);
+            }
+
+            // looping through all child widgets, and removing those, by recursively calling self
+            foreach (Control idxChild in widget.Controls) {
+                RemoveActiveEvents (idxChild);
+            }
         }
 
         /// <summary>
