@@ -65,7 +65,7 @@ namespace phosphorus.lambda.iterators
                         }
                     }
                 } else {
-                    // to support iterators who's value starts with "/" or ".." to escape out of Regex and named ancestor iterators
+                   // to support iterators who's value starts with "/" or ".." to escape out of Regex and named ancestor iterators
                    if (value.StartsWith ("\\"))
                         value = value.Substring (1);
                     foreach (Node idxCurrent in Left.Evaluate) {

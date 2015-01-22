@@ -1138,6 +1138,40 @@ test.foo61
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("success", tmp [2].Value, "wrong value of node after executing lambda object");
-        } // TODO: create tests and keyword for "delete-override"
+        }
+
+        [Test]
+        public void DynamicallyDeleteOverride ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+event:test.foo63
+  lambda
+    set:@/../*/_out/#/?value
+      :{0}{1}
+        :@/../*/_out/#/?value
+        :success
+event:test.foo64
+  lambda
+    set:@/../*/_out/#/?value
+      :{0}{1}
+        :@/../*/_out/#/?value
+        :failure
+_out
+override:test.foo63
+  with:test.foo64
+delete-override:test.foo63
+  :test.foo64
+set:@/+/*/_out/?value
+  :@/./-3/?node
+test.foo63
+  _out";
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
+            context.Raise ("lambda", tmp);
+            Assert.AreEqual ("success", tmp [2].Value, "wrong value of node after executing lambda object");
+        }
     }
 }

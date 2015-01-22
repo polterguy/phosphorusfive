@@ -41,6 +41,19 @@ namespace phosphorus.five.applicationpool
         }
 
         /*
+         * contains all dynamically created "widget events", which are Active Events local for a specific widget,
+         * created as parts of the [events] keyword
+         */
+        private Dictionary<string, List<Tuple<string, Node>>> PageEvents {
+            get {
+                if (ViewState ["PageEvents"] == null) {
+                    ViewState ["PageEvents"] = new Dictionary<string, List<Tuple<string, Node>>> ();
+                }
+                return (Dictionary<string, List<Tuple<string, Node>>>)ViewState ["PageEvents"];
+            }
+        }
+
+        /*
          * overridden to create context, and do other initialization, such as mapping up our Page_Load event,
          * but only for the initial loading of our page
          */
@@ -70,7 +83,7 @@ namespace phosphorus.five.applicationpool
          */
         private void Page_LoadInitialLoading (object sender, EventArgs e)
         {
-            // raising our [pf.form-ui] Active Event, creating the node to pass in first
+            // raising our [pf.core.load-ui] Active Event, creating the node to pass in first
             // where the [_form] node becomes the name of thr form requested
             Node args = new Node ();
             args.Add (new Node ("_form", HttpContext.Current.Items ["__pf_original_url"] as string));
@@ -109,7 +122,7 @@ namespace phosphorus.five.applicationpool
             CreateForm (context, creationalArgs, parent);
             Control widget = creationalArgs.Get<Control> ();
 
-            // creating events for form
+            // creating events for widget
             Node eventNode = e.Args.Find (
                 delegate (Node idx) {
                     return idx.Name == "events";
@@ -128,12 +141,11 @@ namespace phosphorus.five.applicationpool
         {
             // first retrieving all events
             List<Node> evts = null;
-            if (Expression.IsExpression (eventNode.Value)) {
+            if (eventNode.Value != null && Expression.IsExpression (eventNode.Value)) {
                 evts = new List<Node> ();
                 var match = Expression.Create (eventNode.Get<string> ()).Evaluate (eventNode);
                 for (int idxNo = 0; idxNo < match.Count; idxNo ++) {
-                    var curEvt = match.GetValue (idxNo);
-                    Node curEvtNode = curEvt as Node;
+                    Node curEvtNode = match.GetValue (idxNo) as Node;
                     if (curEvtNode == null) {
                         throw new ArgumentException ("expression for creating events for widget yielded a result that was not of 'node' type");
                     }
@@ -143,7 +155,9 @@ namespace phosphorus.five.applicationpool
                 evts = new List<Node> (eventNode.Children);
             }
 
-            // then looping through all Active Event nodes, and adding them up as callback sinks for the specified Active Event
+            // then looping through all Active Event nodes, and adding them up as callback sinks for the specified Active Event,
+            // with the "name" of the Active Event being the Dictionary Key, and the contents being a Tuple with the ID of the widget
+            // being the first item, and a cloned version of the node defining the Active Event callback being the second item
             foreach (Node idxEvt in evts) {
                 if (!PageEvents.ContainsKey (idxEvt.Name)) {
                     PageEvents [idxEvt.Name] = new List<Tuple<string, Node>> ();
@@ -160,10 +174,11 @@ namespace phosphorus.five.applicationpool
         [ActiveEvent (Name = "")]
         private void null_handler (ApplicationContext context, ActiveEventArgs e)
         {
+            // checking to see if the currently raised Active Event has a calllback within our page
             if (PageEvents.ContainsKey (e.Name)) {
 
                 // this Active Event is handled by one of the widgets on this page object
-                // making sure we raise it passing in the arguments passed in to this Active Event cloned
+                // making sure we raise it passing in the arguments passed in to the Active Event cloned
                 foreach (Tuple<string, Node> idxEvt in PageEvents [e.Name]) {
                     Node exeCopy = idxEvt.Item2.Clone ();
                     exeCopy.Value = e.Args.Value;
@@ -176,84 +191,7 @@ namespace phosphorus.five.applicationpool
         }
 
         /// <summary>
-        /// returns all events for page, dynamically created on a per widget basis
-        /// </summary>
-        /// <value>the events dynamically created for each widget</value>
-        private Dictionary<string, List<Tuple<string, Node>>> PageEvents {
-            get {
-                if (ViewState ["pf.widgets.events"] == null) {
-                    ViewState ["pf.widgets.events"] = new Dictionary<string, List<Tuple<string, Node>>> ();
-                }
-                return (Dictionary<string, List<Tuple<string, Node>>>)ViewState ["pf.widgets.events"];
-            }
-        }
-        
-        /// <summary>
-        /// reloads the current URL
-        /// </summary>
-        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.reload-location")]
-        private void pf_web_reload_location (ApplicationContext context, ActiveEventArgs e)
-        {
-            Manager.SendJavaScriptToClient ("location.reload();");
-        }
-
-        /// <summary>
-        /// sends the given JavaScript to the client. JavaScript is given as value of [pf.web.include-javascript], and can
-        /// be a constant, an expression or a formatting expression
-        /// </summary>
-        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.include-javascript")]
-        private void pf_web_include_javascript (ApplicationContext context, ActiveEventArgs e)
-        {
-            string js = e.Args.Get<string> ();
-            if (Expression.IsExpression (js)) {
-                var match = Expression.Create (js).Evaluate (e.Args);
-                if (match.TypeOfMatch != Match.MatchType.Value)
-                    throw new ArgumentException ("[pf.web.include-javascript] can only take expressions of type 'value'");
-
-                StringBuilder builder = new StringBuilder ();
-                foreach (Node idx in match.Matches) {
-                    builder.Append (idx.Value);
-                }
-                js = builder.ToString ();
-            } else if (e.Args.Count > 0) {
-                js = Expression.FormatNode (e.Args);
-            }
-            Manager.SendJavaScriptToClient (js);
-        }
-        
-        /// <summary>
-        /// send the given string back to browser as JSON with the key given as value of [pf.web.return-value], and the string
-        /// sent being the value of the first child of [pf.web.return-value]. the value to send, can either be an expression, a
-        /// constant, or a node formatting expression
-        /// </summary>
-        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.return-value")]
-        private void pf_web_return_value (ApplicationContext context, ActiveEventArgs e)
-        {
-            string key = e.Args.Get<string> ();
-            string str = e.Args [0].Get<string> ();
-            if (Expression.IsExpression (str)) {
-                var match = Expression.Create (str).Evaluate (e.Args [0]);
-                if (match.TypeOfMatch != Match.MatchType.Value)
-                    throw new ArgumentException ("cannot use anything but a 'value' expression in [pf.web.return-value]");
-                StringBuilder builder = new StringBuilder ();
-                foreach (Node idx in match.Matches) {
-                    builder.Append (idx.Get<string> ());
-                }
-                str = builder.ToString ();
-            } else if (e.Args [0].Count > 0) {
-                str = Expression.FormatNode (e.Args [0]);
-            }
-            Manager.SendObject (key, str);
-        }
-
-        /// <summary>
-        /// clears the given widget, removes all its children widgets
+        /// clears the given widget, removing all its children widgets
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
@@ -327,6 +265,70 @@ namespace phosphorus.five.applicationpool
         }
 
         /// <summary>
+        /// reloads the current URL
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.web.reload-location")]
+        private void pf_web_reload_location (ApplicationContext context, ActiveEventArgs e)
+        {
+            Manager.SendJavaScriptToClient ("location.reload();");
+        }
+
+        /// <summary>
+        /// sends the given JavaScript to the client. JavaScript is given as value of [pf.web.include-javascript], and can
+        /// be a constant, an expression or a formatting expression
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.web.include-javascript")]
+        private void pf_web_include_javascript (ApplicationContext context, ActiveEventArgs e)
+        {
+            string js = e.Args.Get<string> ();
+            if (Expression.IsExpression (js)) {
+                var match = Expression.Create (js).Evaluate (e.Args);
+                if (match.TypeOfMatch != Match.MatchType.Value)
+                    throw new ArgumentException ("[pf.web.include-javascript] can only take expressions of type 'value'");
+
+                StringBuilder builder = new StringBuilder ();
+                foreach (Node idx in match.Matches) {
+                    builder.Append (idx.Value);
+                }
+                js = builder.ToString ();
+            } else if (e.Args.Count > 0) {
+                js = Expression.FormatNode (e.Args);
+            }
+            Manager.SendJavaScriptToClient (js);
+        }
+        
+        /// <summary>
+        /// send the given string back to browser as JSON with the key given as value of [pf.web.return-value], and the string
+        /// sent being the value of the first child of [pf.web.return-value]. the value to send, can either be an expression, a
+        /// constant, or a node formatting expression
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.web.return-value")]
+        private void pf_web_return_value (ApplicationContext context, ActiveEventArgs e)
+        {
+            string key = e.Args.Get<string> ();
+            string str = e.Args [0].Get<string> ();
+            if (Expression.IsExpression (str)) {
+                var match = Expression.Create (str).Evaluate (e.Args [0]);
+                if (match.TypeOfMatch != Match.MatchType.Value)
+                    throw new ArgumentException ("cannot use anything but a 'value' expression in [pf.web.return-value]");
+                StringBuilder builder = new StringBuilder ();
+                foreach (Node idx in match.Matches) {
+                    builder.Append (idx.Get<string> ());
+                }
+                str = builder.ToString ();
+            } else if (e.Args [0].Count > 0) {
+                str = Expression.FormatNode (e.Args [0]);
+            }
+            Manager.SendObject (key, str);
+        }
+
+        /// <summary>
         /// creates an ajax event containing pf.lambda code for the given widget's event
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
@@ -352,7 +354,7 @@ namespace phosphorus.five.applicationpool
             // mapping the widget's ajax event to our common event handler on page
             widget [eventName] = "common_event_handler";
         }
-        
+
         /// <summary>
         /// returns the control with the given ID as first child of args, from optionally [parent] control's ID given
         /// </summary>

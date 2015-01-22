@@ -138,6 +138,61 @@ namespace phosphorus.lambda
         }
 
         /// <summary>
+        /// dynamically removes an existing override
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "delete-override")]
+        private static void lambda_delete_override (ApplicationContext context, ActiveEventArgs e)
+        {
+            string baseActiveEvent = e.Args.Get<string> ();
+            if (baseActiveEvent == null) {
+                throw new ArgumentException ("[delete-override] requires either an expression, or a constant defining which override to delete");
+            }
+            if (e.Args.Count == 0) {
+                throw new ArgumentException ("[delete-event] requires either an expression, or a constant defining which overrided Active Event you wish to delete");
+            }
+            string newActiveEvent = e.Args [0].Get<string> ();
+            List<string> newActiveEvents = new List<string> ();
+            if (Expression.IsExpression (newActiveEvent)) {
+                var match = Expression.Create (newActiveEvent).Evaluate (e.Args [0]);
+                for (int idxNo = 0; idxNo < match.Count; idxNo ++) {
+                    string idxNewAV = match.GetValue (idxNo) as string;
+                    if (idxNewAV == null) {
+                        throw new ArgumentException ("expression given to [delete-override] yielded a result that was not of type 'string'");
+                    }
+                    newActiveEvents.Add (idxNewAV);
+                }
+            } else {
+                newActiveEvents.Add (newActiveEvent);
+            }
+            List<string> baseActiveEvents = new List<string> ();
+            if (Expression.IsExpression (baseActiveEvent)) {
+                var match = Expression.Create (baseActiveEvent).Evaluate (e.Args);
+                for (int idxNo = 0; idxNo < match.Count; idxNo ++) {
+                    string overrideToRemove = match.GetValue (idxNo) as string;
+                    if (overrideToRemove == null) {
+                        throw new ArgumentException ("expression given to [delete-override] yielded a result that was not of type 'string'");
+                    }
+                    baseActiveEvents.Add (overrideToRemove);
+                }
+            } else {
+                baseActiveEvents.Add (baseActiveEvent);
+            }
+            foreach (string idxBase in baseActiveEvents) {
+                foreach (string idxNew in newActiveEvents) {
+                    foreach (var ovr in _overrides) {
+                        if (ovr.OverriddenEvent == idxBase && ovr.OverrideEvent == idxNew) {
+                            _overrides.Remove (ovr);
+                            UnInitializeOverride (context, ovr);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// responsible for "re-mapping" all dynamically created Active Events and overrides. automatically
         /// called by the framework when a new <see cref="phosphorus.core.ApplicationContext"/> is created
         /// and initialized
@@ -294,6 +349,16 @@ namespace phosphorus.lambda
         {
             context.RemoveOverride (over.OverriddenEvent, "_pf.core.execute-dynamic-lambda");
             context.Override (over.OverriddenEvent, over.OverrideEvent);
+        }
+        
+        /*
+         * UN-initializes override by removing any existing mapping on the application context to make sure override is 
+         * removed correctly
+         */
+        private static void UnInitializeOverride (ApplicationContext context, Override over)
+        {
+            context.RemoveOverride (over.OverriddenEvent, over.OverrideEvent);
+            context.Override (over.OverriddenEvent, "_pf.core.execute-dynamic-lambda");
         }
     }
 }

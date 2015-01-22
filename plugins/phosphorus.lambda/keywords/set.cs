@@ -73,10 +73,16 @@ namespace phosphorus.lambda
         private static void AssignValue (Match destinationMatch, Node valueNode)
         {
             object value = valueNode.Value;
+            string valueStr = value as string;
             if (valueNode.Count > 0) {
 
                 // this is a formatting expression, where the source is the result of a formatting operation
                 value = Expression.FormatNode (valueNode);
+            } else if (valueStr != null && valueStr.StartsWith ("\\")) {
+
+                // to support values who's value are expressions, where we do not want to 
+                // evaluate the expression, but pass it onwards to become the value of the destination node
+                value = valueStr.Substring (1);
             }
             foreach (Node idxDest in destinationMatch.Matches) {
                 switch (destinationMatch.TypeOfMatch) {

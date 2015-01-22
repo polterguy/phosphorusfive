@@ -91,6 +91,9 @@ namespace phosphorus.web
                     // making sure we support formatting nodes
                     propertyValue = Expression.FormatNode (valueNode);
                 } else if (propertyValue.StartsWith ("\\")) {
+
+                    // to support values who's value are expressions, where we do not want to 
+                    // evaluate the expression, but pass it onwards to the value of a widget's property
                     propertyValue = propertyValue.Substring (1);
                 }
                 switch (valueNode.Name) {
