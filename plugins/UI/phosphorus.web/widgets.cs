@@ -75,7 +75,11 @@ namespace phosphorus.web
                 delegate (Node idx) {
                     return idx.Name == "__parent";
             }).Get<Container> ();
-            T widget = parent.CreatePersistentControl<T> (node.Get<string> ());
+            T widget = parent.CreatePersistentControl<T> (node.Get<string> (), -1, delegate (object sender, EventArgs e) {
+
+                // hooks up "oninitialload" event, if we're supposed to
+                CreateLoadingEvents (context, node, sender as Widget);
+            });
 
             // in case no ID was given, we "return" it to creator as value of current node
             if (node.Value == null)
@@ -87,9 +91,6 @@ namespace phosphorus.web
             // setting rendering type (no closing element, void or default)
             if (type != Widget.RenderingType.Default)
                 widget.RenderType = type;
-
-            // hooks up "oninitialload" event
-            CreateLoadingEvents (context, node, widget);
 
             // returning widget to caller
             return widget;
@@ -106,15 +107,13 @@ namespace phosphorus.web
                     return idx.Name == "oninitialload";
             });
             if (onInitialLoad != null) {
-                widget.Load += delegate {
-                    onInitialLoad = onInitialLoad.Clone ();
-                    onInitialLoad.Insert (0, new Node ("_form-id", node.Root.Find (
-                        delegate (Node idx) {
-                            return idx.Name == "_form-id";
-                    }).Value));
-                    onInitialLoad.Insert (1, new Node ("_widget-id", widget.ID));
-                    context.Raise ("lambda", onInitialLoad);
-                };
+                onInitialLoad = onInitialLoad.Clone ();
+                onInitialLoad.Insert (0, new Node ("_form-id", node.Root.Find (
+                    delegate (Node idx) {
+                        return idx.Name == "_form-id";
+                }).Value));
+                onInitialLoad.Insert (1, new Node ("_widget-id", widget.ID));
+                context.Raise ("lambda", onInitialLoad);
             }
         }
 

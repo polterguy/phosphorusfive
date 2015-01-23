@@ -17,11 +17,12 @@ namespace phosphorus.lambda.iterators
     public class IteratorValued : Iterator
     {
         private string _value;
+        private string _type;
 
         /// <summary>
         /// gets or sets the value to search for
         /// </summary>
-        /// <value>The value.</value>
+        /// <value>the value</value>
         public string Value {
             get {
                 return _value;
@@ -31,10 +32,32 @@ namespace phosphorus.lambda.iterators
             }
         }
 
+        /// <summary>
+        /// gets or sets the type the value is
+        /// </summary>
+        /// <value>the type</value>
+        public string Type {
+            get {
+                return _type;
+            }
+            set {
+                _type = value;
+            }
+        }
+
         public override IEnumerable<Node> Evaluate {
             get {
                 string value = _value;
-                if (value.StartsWith ("/")) {
+                if (!string.IsNullOrEmpty (Type)) {
+                    if (value.StartsWith ("\\"))
+                        value = value.Substring (1);
+                    ApplicationContext ctx = Loader.Instance.CreateApplicationContext ();
+                    object objValue = ctx.Raise ("pf.hyperlist.get-object-value." + Type, new Node (string.Empty, value)).Value;
+                    foreach (Node idxCurrent in Left.Evaluate) {
+                        if (objValue.Equals (idxCurrent.Value))
+                            yield return idxCurrent;
+                    }
+                } else if (value.StartsWith ("/")) {
 
                     // regular expression
                     if (value.LastIndexOf ("/") == 0)

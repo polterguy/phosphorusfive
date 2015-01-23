@@ -119,7 +119,7 @@ namespace phosphorus.ajax.widgets
         /// <param name="id">id of control, if null, and automatic id will be created</param>
         /// <param name="index">index of where to insert control</param>
         /// <typeparam name="T">the type of control you wish to create</typeparam>
-        public T CreatePersistentControl<T> (string id = null, int index = -1)  where T : Control, new()
+        public T CreatePersistentControl<T> (string id = null, int index = -1, EventHandler onLoad = null)  where T : Control, new()
         {
             StoreOriginalControls ();
             ReRenderChildren ();
@@ -134,6 +134,10 @@ namespace phosphorus.ajax.widgets
 
                 // using the supplied id
                 control.ID = id;
+            }
+
+            if (onLoad != null) {
+                control.Load += onLoad;
             }
 
             if (index == -1)

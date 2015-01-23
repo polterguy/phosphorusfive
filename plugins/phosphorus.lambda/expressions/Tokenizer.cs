@@ -56,7 +56,7 @@ namespace phosphorus.lambda
 
             StringBuilder builder = new StringBuilder ();
             builder.Append ((char)nextChar);
-            if ("/|&^!()=?+-[],%".IndexOf ((char)nextChar) != -1) {
+            if ("/|&^!()=?+-[],%:".IndexOf ((char)nextChar) != -1) {
                 return builder.ToString (); // single character token
             }
 
@@ -68,7 +68,7 @@ namespace phosphorus.lambda
             }
 
             nextChar = _reader.Peek ();
-            while (nextChar != -1 && "/,]".IndexOf ((char)nextChar) == -1) {
+            while (nextChar != -1 && "/,]:".IndexOf ((char)nextChar) == -1) {
                 builder.Append ((char)_reader.Read ());
                 nextChar = _reader.Peek ();
             }

@@ -146,6 +146,11 @@ namespace phosphorus.lambda
                 return FindMatchLogicalToken (current, token, previousToken);
             case "=":
                 return FindMatchEqualSignToken (current, previousToken);
+            case ":":
+                if (!(current.LastIterator is IteratorValued))
+                    throw new ArgumentException ("syntax error in expression, ':' found at unexpected position");
+                // "typed" value expression
+                return current;
             case "[":
                 return FindMatchOpenRangeToken (current, previousToken);
             case ",":
@@ -413,6 +418,14 @@ namespace phosphorus.lambda
         {
             if (previousToken == "=") {
                 ((IteratorValued)current.LastIterator).Value = token;
+                return current;
+            } else if (previousToken == ":") {
+                if (!(current.LastIterator is IteratorValued))
+                    throw new ArgumentException ("syntax error in expression, ':' found at unexpected position");
+                if (string.IsNullOrEmpty (((IteratorValued)current.LastIterator).Type))
+                    ((IteratorValued)current.LastIterator).Type = token;
+                else
+                    ((IteratorValued)current.LastIterator).Value = token;
                 return current;
             } else if (previousToken == "+" || previousToken == "-") {
                 return FindMatchSiblingIntegerToken (current, token, previousToken);
