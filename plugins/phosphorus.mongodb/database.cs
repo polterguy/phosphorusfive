@@ -66,6 +66,7 @@ namespace phosphorus.mongodb
         }
 
         /// <summary>
+        /// inserts a node hierarchy into MongoDB instance
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
@@ -79,29 +80,49 @@ namespace phosphorus.mongodb
             var server = _client.GetServer ();
             var db = server.GetDatabase (_db);
 
+            // looping through all nodes to insert
             foreach (Node idxNode in list) {
+
+                // using the node name as the "database table name"
                 var collection = db.GetCollection<BsonDocument> (idxNode.Name);
+
+                // looping through all properties on node recursively, adding them to bson document
                 BsonDocument doc = new BsonDocument (true);
                 foreach (Node idxInner in idxNode.Children) {
-                    doc.Add (new BsonElement (idxInner.Name, GetNextDoc (idxInner)));
+                    doc.Add (idxInner.Name, CreateBsonValueFromNode (idxInner));
                 }
+
+                // doing actually insert into database, and returning the "ID" created by MongoDB as "value"
+                // of current node inserted
                 collection.Insert (doc);
                 idxNode.Value = doc ["_id"];
             }
         }
 
-        private static BsonValue GetNextDoc (Node node)
+        /*
+         * creates a BsonValue from the given node and returns to caller
+         */
+        private static BsonValue CreateBsonValueFromNode (Node node)
         {
+            // if both "value" and "children" are null/empty, we return null as value of node
             if (node.Value == null && node.Count == 0)
                 return BsonNull.Value;
+
+            // document to contain both "value" and "children" nodes
             BsonDocument ret = new BsonDocument ();
+
+            // we only return "value" node if value is not null
             if (node.Value != null) {
-                ret.Add (new BsonElement ("value", node.Value == null ? BsonNull.Value : BsonValue.Create (node.Value)));
+                ret.Add ("value", BsonValue.Create (node.Value));
             }
+
+            // we only return "children" node, if there are any children
             if (node.Count > 0) {
+
+                // recursively iterating through children to add them up into "children" doc of current node
                 BsonDocument children = new BsonDocument (true);
                 foreach (Node idx in node.Children) {
-                    children.Add (idx.Name, GetNextDoc (idx));
+                    children.Add (idx.Name, CreateBsonValueFromNode (idx));
                 }
                 ret.Add ("children", children);
             }
