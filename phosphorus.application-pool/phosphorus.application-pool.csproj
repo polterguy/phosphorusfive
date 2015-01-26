@@ -99,6 +99,10 @@
       <Project>{0F68BFA7-1CF7-4737-9058-CED4A9ED3427}</Project>
       <Name>phosphorus.web</Name>
     </ProjectReference>
+    <ProjectReference Include="..\plugins\phosphorus.mongodb\phosphorus.mongodb.csproj">
+      <Project>{CB706162-9ED3-4CAB-863C-B8F960EC5AC6}</Project>
+      <Name>phosphorus.mongodb</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="code\" />

@@ -5,10 +5,10 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{0F68BFA7-1CF7-4737-9058-CED4A9ED3427}</ProjectGuid>
+    <ProjectGuid>{CB706162-9ED3-4CAB-863C-B8F960EC5AC6}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>phosphorus.web</RootNamespace>
-    <AssemblyName>phosphorus.web</AssemblyName>
+    <RootNamespace>phosphorus.mongodb</RootNamespace>
+    <AssemblyName>phosphorus.mongodb</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -28,39 +28,30 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release-Linux|AnyCPU' ">
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release-Linux</OutputPath>
-    <WarningLevel>4</WarningLevel>
-    <CustomCommands>
-      <CustomCommands>
-        <Command type="AfterBuild" command="cp ${TargetFile} ${SolutionDir}/lib/plugins" />
-      </CustomCommands>
-    </CustomCommands>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Web" />
+    <Reference Include="MongoDB.Bson">
+      <HintPath>..\..\resources\MongoDB.Bson.dll</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Driver">
+      <HintPath>..\..\resources\MongoDB.Driver.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Reactive.Linq, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Data.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="widgets.cs" />
-    <Compile Include="session.cs" />
-    <Compile Include="security.cs" />
-    <Compile Include="cookie.cs" />
-    <Compile Include="properties.cs" />
-    <Compile Include="application.cs" />
+    <Compile Include="database.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\..\..\phosphorus.ajax\phosphorus.ajax.csproj">
-      <Project>{11644924-3367-4812-BE60-7DA41FC9E4AE}</Project>
-      <Name>phosphorus.ajax</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\phosphorus.core\phosphorus.core.csproj">
+    <ProjectReference Include="..\..\phosphorus.core\phosphorus.core.csproj">
       <Project>{C783FEDB-C973-4F38-8EBB-55A0163612F5}</Project>
       <Name>phosphorus.core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\phosphorus.lambda\phosphorus.lambda.csproj">
+    <ProjectReference Include="..\phosphorus.lambda\phosphorus.lambda.csproj">
       <Project>{8EB5FDEA-D073-4147-AE65-376A01B463DF}</Project>
       <Name>phosphorus.lambda</Name>
     </ProjectReference>

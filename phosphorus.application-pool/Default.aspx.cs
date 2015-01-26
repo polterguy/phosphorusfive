@@ -376,6 +376,7 @@ namespace phosphorus.five.applicationpool
             e.Args.Insert (0, new Node (string.Empty, FindControl<Control> (e.Args.Get<string> (), parentCtrl)));
         }
 
+        // TODO: create support for expressions in these active events
         /// <summary>
         /// includes a JavaScript file on the client side
         /// </summary>
@@ -398,6 +399,18 @@ namespace phosphorus.five.applicationpool
         {
             string file = e.Args.Get<string> ();
             RegisterStylesheetFile (file);
+        }
+
+        /// <summary>
+        /// changes the "title" HTML element's value of the portal
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.web.set-title")]
+        private void pf_web_set_title (ApplicationContext context, ActiveEventArgs e)
+        {
+            string title = e.Args.Get<string> ();
+            Title = title;
         }
 
         /*
