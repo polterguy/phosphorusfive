@@ -36,6 +36,12 @@
     <Reference Include="nunit.core, Version=2.6.0.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
       <Private>False</Private>
     </Reference>
+    <Reference Include="MongoDB.Bson">
+      <HintPath>..\resources\MongoDB.Bson.dll</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Driver">
+      <HintPath>..\resources\MongoDB.Driver.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ContextAndLoaderTests.cs" />
@@ -50,6 +56,7 @@
     <Compile Include="EventTests.cs" />
     <Compile Include="DatabaseTests.cs" />
     <Compile Include="FileTests.cs" />
+    <Compile Include="MongoDBTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -72,6 +79,10 @@
     <ProjectReference Include="..\plugins\phosphorus.file\phosphorus.file.csproj">
       <Project>{89C744BE-B583-4C6D-84B9-941E0C7CEBF4}</Project>
       <Name>phosphorus.file</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\plugins\phosphorus.mongodb\phosphorus.mongodb.csproj">
+      <Project>{CB706162-9ED3-4CAB-863C-B8F960EC5AC6}</Project>
+      <Name>phosphorus.mongodb</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

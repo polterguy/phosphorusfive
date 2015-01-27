@@ -30,8 +30,8 @@ namespace phosphorus.mongodb
          */
         static common ()
         {
-            _connectionString = ConfigurationManager.AppSettings ["mongodb-connection-string"];
-            _db = ConfigurationManager.AppSettings ["mongodb-database"];
+            _connectionString = ConfigurationManager.AppSettings ["mongodb-connection-string"] ?? "mongodb://localhost";
+            _db = ConfigurationManager.AppSettings ["mongodb-database"] ?? "phosphorus";
             _client = new MongoClient (_connectionString);
         }
         
