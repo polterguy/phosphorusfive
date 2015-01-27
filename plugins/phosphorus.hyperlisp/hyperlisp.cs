@@ -58,10 +58,16 @@ namespace phosphorus.hyperlisp
         private static void pf_code_lambda2hyperlisp (ApplicationContext context, ActiveEventArgs e)
         {
             if (Expression.IsExpression (e.Args.Value)) {
-                var match = Expression.Create (e.Args.Get<string> ()).Evaluate (e.Args);
+                string expression = e.Args.Get<string> ();
+                if (e.Args.Count > 0) {
+                    expression = Expression.FormatNode (e.Args);
+                }
+                var match = Expression.Create (expression).Evaluate (e.Args);
                 if (match.TypeOfMatch != Match.MatchType.Node)
                     throw new ArgumentException ("[lambda2hyperlisp] can only take an expression of 'node' type");
                 e.Args.Value = new HyperlispBuilder (context, match.Matches).Hyperlisp;
+            } else if (e.Args.Value is Node) {
+                e.Args.Value = new HyperlispBuilder (context, new Node [] { e.Args.Get<Node> () }).Hyperlisp;
             } else {
                 e.Args.Value = new HyperlispBuilder (context, e.Args.Children).Hyperlisp;
             }
