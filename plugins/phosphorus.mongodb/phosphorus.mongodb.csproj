@@ -42,9 +42,6 @@
     </Reference>
     <Reference Include="System.Data.Linq" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="database.cs" />
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\..\phosphorus.core\phosphorus.core.csproj">
@@ -55,5 +52,12 @@
       <Project>{8EB5FDEA-D073-4147-AE65-376A01B463DF}</Project>
       <Name>phosphorus.lambda</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="insert.cs" />
+    <Compile Include="select.cs" />
+    <Compile Include="common.cs" />
+    <Compile Include="delete.cs" />
+    <Compile Include="update.cs" />
   </ItemGroup>
 </Project>

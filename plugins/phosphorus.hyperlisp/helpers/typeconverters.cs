@@ -80,6 +80,17 @@ namespace phosphorus.hyperlisp
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">parameters</param>
+        [ActiveEvent (Name = "pf.hyperlist.get-type-name.System.Int64")]
+        private static void pf_hyperlist_get_type_name_System_Int64 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "long";
+        }
+        
+        /// <summary>
+        /// returns "int" for using as type information for the given System type in hyperlisp
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">parameters</param>
         [ActiveEvent (Name = "pf.hyperlist.get-type-name.System.Int32")]
         private static void pf_hyperlist_get_type_name_System_Int32 (ApplicationContext context, ActiveEventArgs e)
         {
@@ -297,6 +308,17 @@ namespace phosphorus.hyperlisp
             e.Args.Value = Guid.Parse (e.Args.Get<string> ());
         }
         
+        /// <summary>
+        /// returns an integer created from its string representation
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">parameters</param>
+        [ActiveEvent (Name = "pf.hyperlist.get-object-value.long")]
+        private static void pf_hyperlist_get_object_value_long (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = long.Parse (e.Args.Get<string> ());
+        }
+
         /// <summary>
         /// returns an integer created from its string representation
         /// </summary>
