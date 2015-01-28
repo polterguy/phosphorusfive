@@ -19,7 +19,7 @@ namespace phosphorus.mongodb
     /// <summary>
     /// wraps the MongoDB "delete" statement
     /// </summary>
-    public static class update
+    public static class mongo_update
     {
         /// <summary>
         /// updates items from the MongoDB database according to the criteria given

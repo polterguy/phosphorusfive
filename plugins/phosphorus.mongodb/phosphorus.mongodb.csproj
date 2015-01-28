@@ -54,10 +54,23 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="insert.cs" />
-    <Compile Include="select.cs" />
-    <Compile Include="common.cs" />
-    <Compile Include="delete.cs" />
-    <Compile Include="update.cs" />
+    <Compile Include="helpers\common.cs" />
+    <Compile Include="helpers\typeconverters.cs" />
+    <Compile Include="mongo_delete.cs" />
+    <Compile Include="mongo_insert.cs" />
+    <Compile Include="mongo_select.cs" />
+    <Compile Include="mongo_update.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="helpers\" />
+  </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <TextStylePolicy EolMarker="Windows" inheritsSet="VisualStudio" inheritsScope="text/plain" scope="text/plain" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
 </Project>

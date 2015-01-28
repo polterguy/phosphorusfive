@@ -233,12 +233,25 @@ t:h";
 _string:string:@""""
 _string:string:
 _int:int:5
-_single:single:10.55
+_float:float:10.55
 _double:double:10.54
 _node:node:@""x:z""
 _string:""string:""
 _bool:bool:true
 _guid:guid:E5A53FC9-A306-4609-89E5-9CC2964DA0AC
+_dna:path:0-1
+_long:long:-9223372036854775808
+_ulong:ulong:18446744073709551615
+_uint:uint:4294967295
+_short:short:-32768
+_decimal:decimal:456.89
+_byte:byte:255
+_sbyte:sbyte:-128
+_char:char:x
+_date:date:2012-12-21
+_date:date:""2012-12-21T23:59:59""
+_date:date:""2012-12-21T23:59:59.987""
+_time:time:""15.23:57:53.567""
 ";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             Assert.AreEqual ("", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
@@ -254,6 +267,19 @@ _guid:guid:E5A53FC9-A306-4609-89E5-9CC2964DA0AC
             Assert.AreEqual ("string:", tmp [6].Value, "wrong value of node after parsing of hyperlisp");
             Assert.AreEqual (true, tmp [7].Value, "wrong value of node after parsing of hyperlisp");
             Assert.AreEqual (Guid.Parse ("E5A53FC9-A306-4609-89E5-9CC2964DA0AC"), tmp [8].Value, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual (new Node.DNA ("0-1"), tmp [9].Value, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual (-9223372036854775808L, tmp [10].Value, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual (18446744073709551615L, tmp [11].Value, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual (4294967295, tmp [12].Value, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual (-32768, tmp [13].Value, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual (456.89M, tmp [14].Value, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual (255, tmp [15].Value, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual (-128, tmp [16].Value, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual ('x', tmp [17].Value, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual (new DateTime (2012, 12, 21).ToUniversalTime(), tmp [18].Value, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual (new DateTime (2012, 12, 21, 23, 59, 59).ToUniversalTime(), tmp [19].Value, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual (new DateTime (2012, 12, 21, 23, 59, 59, 987).ToUniversalTime(), tmp [20].Value, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual (new TimeSpan (15, 23, 57, 53, 567), tmp [21].Value, "wrong value of node after parsing of hyperlisp");
         }
         
         [Test]

@@ -76,7 +76,7 @@ namespace phosphorus.hyperlisp
         }
 
         /// <summary>
-        /// returns "int" for using as type information for the given System type in hyperlisp
+        /// returns "long" for using as type information for the given System type in hyperlisp
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">parameters</param>
@@ -86,6 +86,17 @@ namespace phosphorus.hyperlisp
             e.Args.Value = "long";
         }
         
+        /// <summary>
+        /// returns "ulong" for using as type information for the given System type in hyperlisp
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">parameters</param>
+        [ActiveEvent (Name = "pf.hyperlist.get-type-name.System.UInt64")]
+        private static void pf_hyperlist_get_type_name_System_UInt64 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "ulong";
+        }
+
         /// <summary>
         /// returns "int" for using as type information for the given System type in hyperlisp
         /// </summary>
@@ -98,14 +109,36 @@ namespace phosphorus.hyperlisp
         }
 
         /// <summary>
-        /// returns "int16" for using as type information for the given System type in hyperlisp
+        /// returns "uint" for using as type information for the given System type in hyperlisp
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">parameters</param>
+        [ActiveEvent (Name = "pf.hyperlist.get-type-name.System.UInt32")]
+        private static void pf_hyperlist_get_type_name_System_UInt32 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "uint";
+        }
+
+        /// <summary>
+        /// returns "short" for using as type information for the given System type in hyperlisp
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">parameters</param>
         [ActiveEvent (Name = "pf.hyperlist.get-type-name.System.Int16")]
         private static void pf_hyperlist_get_type_name_System_Int16 (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = "int16";
+            e.Args.Value = "short";
+        }
+
+        /// <summary>
+        /// returns "ushort" for using as type information for the given System type in hyperlisp
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">parameters</param>
+        [ActiveEvent (Name = "pf.hyperlist.get-type-name.System.UInt16")]
+        private static void pf_hyperlist_get_type_name_System_UInt16 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "ushort";
         }
 
         /// <summary>
@@ -116,7 +149,7 @@ namespace phosphorus.hyperlisp
         [ActiveEvent (Name = "pf.hyperlist.get-type-name.System.Single")]
         private static void pf_hyperlist_get_type_name_System_Single (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = "single";
+            e.Args.Value = "float";
         }
 
         /// <summary>
@@ -163,6 +196,17 @@ namespace phosphorus.hyperlisp
             e.Args.Value = "byte";
         }
         
+        /// <summary>
+        /// returns "sbyte" for using as type information for the given System type in hyperlisp
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">parameters</param>
+        [ActiveEvent (Name = "pf.hyperlist.get-type-name.System.SByte")]
+        private static void pf_hyperlist_get_type_name_System_SByte (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "sbyte";
+        }
+
         /// <summary>
         /// returns "char" for using as type information for the given System type in hyperlisp
         /// </summary>
@@ -232,13 +276,24 @@ namespace phosphorus.hyperlisp
         [ActiveEvent (Name = "pf.hyperlist.get-string-value.System.DateTime")]
         private static void pf_hyperlist_get_string_value_System_DateTime (ApplicationContext context, ActiveEventArgs e)
         {
-            DateTime date = e.Args.Get<DateTime> ();
-            if (date.Hour == 0 && date.Minute == 0 && date.Second == 0)
+            DateTime date = e.Args.Get<DateTime> ().ToUniversalTime();
+            if (date.Hour == 0 && date.Minute == 0 && date.Second == 0 && date.Millisecond == 0)
                 e.Args.Value = date.ToString ("yyyy-MM-dd", CultureInfo.InvariantCulture);
             else if (date.Millisecond == 0)
                 e.Args.Value = date.ToString ("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
             else
                 e.Args.Value = date.ToString ("yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture);
+        }
+        
+        /// <summary>
+        /// returns string representation of TimeSpan object
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">parameters</param>
+        [ActiveEvent (Name = "pf.hyperlist.get-string-value.System.TimeSpan")]
+        private static void pf_hyperlist_get_string_value_System_TimeSpan (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = e.Args.Get<TimeSpan> ().ToString ("c", CultureInfo.InvariantCulture);
         }
         
         /// <summary>
@@ -249,7 +304,7 @@ namespace phosphorus.hyperlisp
         [ActiveEvent (Name = "pf.hyperlist.get-string-value.System.Boolean")]
         private static void pf_hyperlist_get_string_value_System_Boolean (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = e.Args.Get<bool> () .ToString ().ToLower ();
+            e.Args.Value = e.Args.Get<bool> ().ToString ().ToLower ();
         }
 
         /*
@@ -309,14 +364,25 @@ namespace phosphorus.hyperlisp
         }
         
         /// <summary>
-        /// returns an integer created from its string representation
+        /// returns a long created from its string representation
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">parameters</param>
         [ActiveEvent (Name = "pf.hyperlist.get-object-value.long")]
         private static void pf_hyperlist_get_object_value_long (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = long.Parse (e.Args.Get<string> ());
+            e.Args.Value = long.Parse (e.Args.Get<string> (), CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        /// returns a ulong created from its string representation
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">parameters</param>
+        [ActiveEvent (Name = "pf.hyperlist.get-object-value.ulong")]
+        private static void pf_hyperlist_get_object_value_ulong (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = ulong.Parse (e.Args.Get<string> (), CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -327,7 +393,18 @@ namespace phosphorus.hyperlisp
         [ActiveEvent (Name = "pf.hyperlist.get-object-value.int")]
         private static void pf_hyperlist_get_object_value_int (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = int.Parse (e.Args.Get<string> ());
+            e.Args.Value = int.Parse (e.Args.Get<string> (), CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        /// returns an integer created from its string representation
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">parameters</param>
+        [ActiveEvent (Name = "pf.hyperlist.get-object-value.uint")]
+        private static void pf_hyperlist_get_object_value_uint (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = uint.Parse (e.Args.Get<string> (), CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -335,10 +412,10 @@ namespace phosphorus.hyperlisp
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">parameters</param>
-        [ActiveEvent (Name = "pf.hyperlist.get-object-value.int16")]
-        private static void pf_hyperlist_get_object_value_int16 (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.hyperlist.get-object-value.short")]
+        private static void pf_hyperlist_get_object_value_short (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = Int16.Parse (e.Args.Get<string> ());
+            e.Args.Value = short.Parse (e.Args.Get<string> (), CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -346,10 +423,10 @@ namespace phosphorus.hyperlisp
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">parameters</param>
-        [ActiveEvent (Name = "pf.hyperlist.get-object-value.single")]
-        private static void pf_hyperlist_get_object_value_single (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.hyperlist.get-object-value.float")]
+        private static void pf_hyperlist_get_object_value_float (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = Single.Parse (e.Args.Get<string> ());
+            e.Args.Value = float.Parse (e.Args.Get<string> (), CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -360,7 +437,7 @@ namespace phosphorus.hyperlisp
         [ActiveEvent (Name = "pf.hyperlist.get-object-value.double")]
         private static void pf_hyperlist_get_object_value_double (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = Double.Parse (e.Args.Get<string> ());
+            e.Args.Value = Double.Parse (e.Args.Get<string> (), CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -371,7 +448,7 @@ namespace phosphorus.hyperlisp
         [ActiveEvent (Name = "pf.hyperlist.get-object-value.decimal")]
         private static void pf_hyperlist_get_object_value_decimal (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = decimal.Parse (e.Args.Get<string> ());
+            e.Args.Value = decimal.Parse (e.Args.Get<string> (), CultureInfo.InvariantCulture);
         }
         
         /// <summary>
@@ -394,7 +471,18 @@ namespace phosphorus.hyperlisp
         [ActiveEvent (Name = "pf.hyperlist.get-object-value.byte")]
         private static void pf_hyperlist_get_object_value_byte (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = byte.Parse (e.Args.Get<string> ());
+            e.Args.Value = byte.Parse (e.Args.Get<string> (), CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        /// returns a sbyte value from its string representation
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">parameters</param>
+        [ActiveEvent (Name = "pf.hyperlist.get-object-value.sbyte")]
+        private static void pf_hyperlist_get_object_value_sbyte (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = sbyte.Parse (e.Args.Get<string> (), CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -419,13 +507,25 @@ namespace phosphorus.hyperlisp
         {
             string strDate = e.Args.Get<string> ();
             if (strDate.Length == 10)
-                e.Args.Value = DateTime.ParseExact (strDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                e.Args.Value = DateTime.ParseExact (strDate, "yyyy-MM-dd", CultureInfo.InvariantCulture).ToUniversalTime();
             else if (strDate.Length == 19)
-                e.Args.Value = DateTime.ParseExact (strDate, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+                e.Args.Value = DateTime.ParseExact (strDate, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture).ToUniversalTime();
             else if (strDate.Length == 23)
-                e.Args.Value = DateTime.ParseExact (strDate, "yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture);
+                e.Args.Value = DateTime.ParseExact (strDate, "yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture).ToUniversalTime();
             else
                 throw new ArgumentException ("date; '" + strDate + "' is not recognized as a valid date");
+        }
+        
+        /// <summary>
+        /// returns a TimeSpan parsed from the given node's value
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">parameters</param>
+        [ActiveEvent (Name = "pf.hyperlist.get-object-value.time")]
+        private static void pf_hyperlist_get_object_value_time (ApplicationContext context, ActiveEventArgs e)
+        {
+            string str = e.Args.Get<string> ();
+            e.Args.Value = TimeSpan.ParseExact (str, "c", CultureInfo.InvariantCulture);
         }
     }
 }

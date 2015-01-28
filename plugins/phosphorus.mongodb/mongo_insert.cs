@@ -19,7 +19,7 @@ namespace phosphorus.mongodb
     /// <summary>
     /// wraps the MongoDB "insert" statement
     /// </summary>
-    public static class insert
+    public static class mongo_insert
     {
         /// <summary>
         /// inserts a node hierarchy into MongoDB instance, the nodes to insert can either be given as children nodes of [pf.mongo.insert],

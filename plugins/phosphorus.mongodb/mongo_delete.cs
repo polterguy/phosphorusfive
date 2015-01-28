@@ -19,7 +19,7 @@ namespace phosphorus.mongodb
     /// <summary>
     /// wraps the MongoDB "delete" statement
     /// </summary>
-    public static class mongoDelete
+    public static class mongo_delete
     {
         /// <summary>
         /// deletes items from the MongoDB database according to the criteria given
