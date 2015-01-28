@@ -45,6 +45,8 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Compile Include="file.cs" />
+    <Compile Include="folder.cs" />
+    <Compile Include="common.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\phosphorus.core\phosphorus.core.csproj">

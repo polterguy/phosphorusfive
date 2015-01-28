@@ -36,7 +36,7 @@ namespace phosphorus.file
             } else if (e.Args.Count > 0) {
                 fileName = Expression.FormatNode (e.Args);
             }
-            using (TextReader reader = File.OpenText (GetRootFolder (context) + fileName)) {
+            using (TextReader reader = File.OpenText (common.GetRootFolder (context) + fileName)) {
                 string content = reader.ReadToEnd ();
                 e.Args.Insert (0, new Node (string.Empty, content));
             }
@@ -58,7 +58,7 @@ namespace phosphorus.file
                     throw new ArgumentException ("[pf.file.save] must be given an expression returning one single 'value' or 'name'");
                 fileName = match.GetValue (0) as string;
             }
-            using (TextWriter writer = File.CreateText (GetRootFolder (context) + fileName)) {
+            using (TextWriter writer = File.CreateText (common.GetRootFolder (context) + fileName)) {
                 writer.Write (e.Args [0].Get<string> ());
             }
         }
@@ -80,7 +80,7 @@ namespace phosphorus.file
             } else if (e.Args.Count > 0) {
                 fileName = Expression.FormatNode (e.Args);
             }
-            File.Delete (GetRootFolder (context) + fileName);
+            File.Delete (common.GetRootFolder (context) + fileName);
         }
 
         /// <summary>
@@ -100,131 +100,7 @@ namespace phosphorus.file
             } else if (e.Args.Count > 0) {
                 fileName = Expression.FormatNode (e.Args);
             }
-            e.Args.Add (new Node (string.Empty, File.Exists (GetRootFolder (context) + fileName)));
-        }
-
-        /// <summary>
-        /// creates a directory on disc
-        /// </summary>
-        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.file.create-folder")]
-        private static void pf_file_create_folder (ApplicationContext context, ActiveEventArgs e)
-        {
-            string folderName = e.Args.Get<string> ();
-            if (Expression.IsExpression (folderName)) {
-                var match = Expression.Create (folderName).Evaluate (e.Args);
-                if (!match.IsSingleLiteral)
-                    throw new ArgumentException ("[pf.file.remove] must be given an expression returning one single 'value' or 'name'");
-                folderName = match.GetValue (0) as string;
-            } else if (e.Args.Count > 0) {
-                folderName = Expression.FormatNode (e.Args);
-            }
-            Directory.CreateDirectory (GetRootFolder (context) + folderName);
-        }
-
-        /// <summary>
-        /// removes a folder from disc
-        /// </summary>
-        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.file.remove-folder")]
-        private static void pf_file_remove_folder (ApplicationContext context, ActiveEventArgs e)
-        {
-            string folderName = e.Args.Get<string> ();
-            if (Expression.IsExpression (folderName)) {
-                var match = Expression.Create (folderName).Evaluate (e.Args);
-                if (!match.IsSingleLiteral)
-                    throw new ArgumentException ("[pf.file.remove] must be given an expression returning one single 'value' or 'name'");
-                folderName = match.GetValue (0) as string;
-            } else if (e.Args.Count > 0) {
-                folderName = Expression.FormatNode (e.Args);
-            }
-            Directory.Delete (GetRootFolder (context) + folderName, true);
-        }
-
-        /// <summary>
-        /// checks to see if a folder exist on disc
-        /// </summary>
-        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.file.folder-exists")]
-        private static void pf_file_folder_exists (ApplicationContext context, ActiveEventArgs e)
-        {
-            string folderName = e.Args.Get<string> ();
-            if (Expression.IsExpression (folderName)) {
-                var match = Expression.Create (folderName).Evaluate (e.Args);
-                if (!match.IsSingleLiteral)
-                    throw new ArgumentException ("[pf.file.remove] must be given an expression returning one single 'value' or 'name'");
-                folderName = match.GetValue (0) as string;
-            } else if (e.Args.Count > 0) {
-                folderName = Expression.FormatNode (e.Args);
-            }
-            e.Args.Add (new Node (string.Empty, Directory.Exists (GetRootFolder (context) + folderName)));
-        }
-
-        /// <summary>
-        /// list all the files in folder given as value of args given
-        /// </summary>
-        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.file.list-files")]
-        private static void pf_file_list_files (ApplicationContext context, ActiveEventArgs e)
-        {
-            string folderName = e.Args.Get<string> ();
-            if (Expression.IsExpression (folderName)) {
-                var match = Expression.Create (folderName).Evaluate (e.Args);
-                if (!match.IsSingleLiteral)
-                    throw new ArgumentException ("[pf.file.remove] must be given an expression returning one single 'value' or 'name'");
-                folderName = match.GetValue (0) as string;
-            } else if (e.Args.Count > 0) {
-                folderName = Expression.FormatNode (e.Args);
-            }
-
-            // iterating all files in given directory, and returning as nodes beneath args given
-            foreach (var idxFile in Directory.GetFiles (GetRootFolder (context) + folderName)) {
-                if (!idxFile.EndsWith ("~")) // "hidden" file ...
-                    e.Args.Add (new Node (string.Empty, idxFile.Replace (GetRootFolder (context), "")));
-            }
-        }
-        
-        /// <summary>
-        /// list all the folders in folder given as value of args given
-        /// </summary>
-        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.file.list-folders")]
-        private static void pf_file_list_folders (ApplicationContext context, ActiveEventArgs e)
-        {
-            string folderName = e.Args.Get<string> ();
-            if (Expression.IsExpression (folderName)) {
-                var match = Expression.Create (folderName).Evaluate (e.Args);
-                if (!match.IsSingleLiteral)
-                    throw new ArgumentException ("[pf.file.remove] must be given an expression returning one single 'value' or 'name'");
-                folderName = match.GetValue (0) as string;
-            } else if (e.Args.Count > 0) {
-                folderName = Expression.FormatNode (e.Args);
-            }
-
-            // iterating all files in given directory, and returning as nodes beneath args given
-            foreach (var idxFolder in Directory.GetDirectories (GetRootFolder (context) + folderName)) {
-                e.Args.Add (new Node (string.Empty, idxFolder.Replace (GetRootFolder (context), "")));
-            }
-        }
-
-        private static string _rootFolder;
-        private static string GetRootFolder (ApplicationContext context)
-        {
-            if (_rootFolder == null) {
-                Node rootNode = new Node ();
-                context.Raise ("pf.core.application-folder", rootNode);
-                _rootFolder = rootNode.Get<string> ();
-                if (string.IsNullOrEmpty (_rootFolder)) {
-                    _rootFolder = Assembly.GetEntryAssembly ().Location;
-                    _rootFolder = _rootFolder.Substring (0, _rootFolder.LastIndexOf ("/") + 1);
-                }
-            }
-            return _rootFolder;
+            e.Args.Add (new Node (string.Empty, File.Exists (common.GetRootFolder (context) + fileName)));
         }
     }
 }
