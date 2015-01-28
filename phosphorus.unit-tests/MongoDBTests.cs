@@ -228,5 +228,98 @@ pf.mongo.select:unit_tests
             context.Raise ("lambda", tmp);
             Assert.AreEqual (1, tmp [1].Count, "wrong value of node after executing lambda object");
         }
+        
+        [Test]
+        public void SelectWithMultipleCriteria ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            Loader.Instance.LoadAssembly ("phosphorus.mongodb");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+pf.mongo.insert
+  unit_tests
+    value:int:5
+    name:john doe
+  unit_tests
+    value:int:6
+    name:john doe
+pf.mongo.select:unit_tests
+  where
+    value:int:5
+    name:john doe
+";
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
+            context.Raise ("lambda", tmp);
+            Assert.AreEqual (1, tmp [1] [1].Count, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("value", tmp [1] [1] [0] [0].Name, "wrong value of node after executing lambda object");
+            Assert.AreEqual (5, tmp [1] [1] [0] [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("name", tmp [1] [1] [0] [1].Name, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("john doe", tmp [1] [1] [0] [1].Value, "wrong value of node after executing lambda object");
+        }
+        
+        [Test]
+        public void InsertWithChildrenNodes ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            Loader.Instance.LoadAssembly ("phosphorus.mongodb");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+pf.mongo.insert
+  unit_tests
+    name:john doe
+    address
+      zip:98765
+      street:Dunbar Rd.
+pf.mongo.select:unit_tests
+";
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
+            context.Raise ("lambda", tmp);
+            Assert.AreEqual (1, tmp [1] [0].Count, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("name", tmp [1] [0] [0] [0].Name, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("john doe", tmp [1] [0] [0] [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("address", tmp [1] [0] [0] [1].Name, "wrong value of node after executing lambda object");
+            Assert.AreEqual (null, tmp [1] [0] [0] [1].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("zip", tmp [1] [0] [0] [1] [0].Name, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("98765", tmp [1] [0] [0] [1] [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("street", tmp [1] [0] [0] [1] [1].Name, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("Dunbar Rd.", tmp [1] [0] [0] [1] [1].Value, "wrong value of node after executing lambda object");
+        }
+        
+        [Test]
+        public void InsertDeepHierarchyMultipleTypes ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            Loader.Instance.LoadAssembly ("phosphorus.mongodb");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+pf.mongo.insert
+  unit_tests
+    name:john doe
+    title:CEO
+    department:California
+      sub-department-id:int:12
+      date-created:date:""2012-12-21T23:44:56.123""
+      _x:@""sdfpih sdfih sdf
+sdfijj dsfihj sdf""
+    address
+      zip:int:98765
+      street:Dunbar Rd.
+      pho_no_id:guid:E5A53FC9-A306-4609-89E5-9CC2964DA0ac
+pf.mongo.select:unit_tests
+set:@/../**/unit_tests/?value
+if:@/../*/""pf.mongo.insert""/0/?node
+  !=:@/../*/""pf.mongo.select""/0/result/*/?node
+  lambda
+    _set:faking exception due to expression being parsed late, and only if equality fails
+";
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
+            context.Raise ("lambda", tmp);
+        }
     }
 }

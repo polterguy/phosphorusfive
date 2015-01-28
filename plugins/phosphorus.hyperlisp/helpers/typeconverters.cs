@@ -197,6 +197,17 @@ namespace phosphorus.hyperlisp
         }
         
         /// <summary>
+        /// returns "blob" for using as type information for the given System type in hyperlisp
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">parameters</param>
+        [ActiveEvent (Name = "pf.hyperlist.get-type-name.System.Byte[]")]
+        private static void pf_hyperlist_get_type_name_System_ByteBlob (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "blob";
+        }
+
+        /// <summary>
         /// returns "sbyte" for using as type information for the given System type in hyperlisp
         /// </summary>
         /// <param name="context">application context</param>
@@ -305,6 +316,17 @@ namespace phosphorus.hyperlisp
         private static void pf_hyperlist_get_string_value_System_Boolean (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = e.Args.Get<bool> ().ToString ().ToLower ();
+        }
+
+        /// <summary>
+        /// returns base64 string from byte[]
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">parameters</param>
+        [ActiveEvent (Name = "pf.hyperlist.get-string-value.System.Byte[]")]
+        private static void pf_hyperlist_get_string_value_System_ByteBlob (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = Convert.ToBase64String (e.Args.Get<byte[]> ());
         }
 
         /*
@@ -472,6 +494,17 @@ namespace phosphorus.hyperlisp
         private static void pf_hyperlist_get_object_value_byte (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = byte.Parse (e.Args.Get<string> (), CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        /// returns a byte[] value from its string representation
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">parameters</param>
+        [ActiveEvent (Name = "pf.hyperlist.get-object-value.blob")]
+        private static void pf_hyperlist_get_object_value_blob (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = Convert.FromBase64String (e.Args.Get<string> ());
         }
 
         /// <summary>

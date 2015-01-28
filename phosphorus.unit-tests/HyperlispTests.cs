@@ -283,6 +283,20 @@ _time:time:""15.23:57:53.567""
         }
         
         [Test]
+        public void BinaryTypes ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Add (new Node ("_blob", new byte [] { 134, 254, 12 }));
+            context.Raise ("pf.hyperlisp.lambda2hyperlisp", tmp);
+            Assert.AreEqual ("_blob:blob:hv4M", tmp.Value, "wrong value of node after parsing of hyperlisp");
+            tmp = new Node (string.Empty, tmp.Value);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
+            Assert.AreEqual (new byte [] { 134, 254, 12 }, tmp [0].Value, "wrong value of node after parsing of hyperlisp");
+        }
+
+        [Test]
         public void ComplexNamesAndNonExistentType ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
