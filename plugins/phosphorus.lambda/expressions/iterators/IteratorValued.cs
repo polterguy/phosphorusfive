@@ -68,6 +68,7 @@ namespace phosphorus.lambda.iterators
                     if (value.LastIndexOf ("/") == 0)
                         throw new ArgumentException ("token; '" + value + "' is not a valid regular expression");
                     string _options = value.Substring (value.LastIndexOf ("/") + 1);
+                    bool distinct = _options.IndexOf ('d') > -1;
                     RegexOptions options = RegexOptions.CultureInvariant;
                     if (_options.IndexOf ('i') > -1)
                         options |= RegexOptions.IgnoreCase;
@@ -86,10 +87,23 @@ namespace phosphorus.lambda.iterators
                     if (_options.IndexOf ('s') > -1)
                         options |= RegexOptions.Singleline;
                     Regex regex = new Regex (value.Substring (1, value.LastIndexOf ("/") - 1), options);
-                    foreach (Node idxCurrent in Left.Evaluate) {
-                        if (idxCurrent.Value != null) {
-                            if (regex.IsMatch (idxCurrent.Get<string> ()))
-                                yield return idxCurrent;
+                    if (distinct) {
+                        Dictionary<string, bool> dict = new Dictionary<string, bool> ();
+                        foreach (Node idxCurrent in Left.Evaluate) {
+                            if (idxCurrent.Value != null) {
+                                string valueOfNode = idxCurrent.Get<string>();
+                                if (regex.IsMatch (valueOfNode) && !dict.ContainsKey (valueOfNode)) {
+                                    dict [valueOfNode] = true;
+                                    yield return idxCurrent;
+                                }
+                            }
+                        }
+                    } else {
+                        foreach (Node idxCurrent in Left.Evaluate) {
+                            if (idxCurrent.Value != null) {
+                                if (regex.IsMatch (idxCurrent.Get<string> ()))
+                                    yield return idxCurrent;
+                            }
                         }
                     }
                 } else {

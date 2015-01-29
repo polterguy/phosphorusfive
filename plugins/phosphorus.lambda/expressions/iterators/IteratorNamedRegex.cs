@@ -31,6 +31,7 @@ namespace phosphorus.lambda.iterators
 
         public override IEnumerable<Node> Evaluate {
             get {
+                bool distinct = _options.IndexOf ('d') > -1;
                 RegexOptions options = RegexOptions.None;
                 if (_options.IndexOf ('i') > -1)
                     options |= RegexOptions.IgnoreCase;
@@ -51,9 +52,19 @@ namespace phosphorus.lambda.iterators
                 if (_options.IndexOf ('s') > -1)
                     options |= RegexOptions.Singleline;
                 Regex regex = new Regex (_regex, options);
-                foreach (Node idxCurrent in Left.Evaluate) {
-                    if (regex.IsMatch (idxCurrent.Name))
-                        yield return idxCurrent;
+                if (distinct) {
+                    Dictionary<string, bool> dict = new Dictionary<string, bool> ();
+                    foreach (Node idxCurrent in Left.Evaluate) {
+                        if (regex.IsMatch (idxCurrent.Name) && !dict.ContainsKey (idxCurrent.Name)) {
+                            dict [idxCurrent.Name] = true;
+                            yield return idxCurrent;
+                        }
+                    }
+                } else {
+                    foreach (Node idxCurrent in Left.Evaluate) {
+                        if (regex.IsMatch (idxCurrent.Name))
+                            yield return idxCurrent;
+                    }
                 }
             }
         }

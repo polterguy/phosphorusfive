@@ -103,6 +103,10 @@
       <Project>{CB706162-9ED3-4CAB-863C-B8F960EC5AC6}</Project>
       <Name>phosphorus.mongodb</Name>
     </ProjectReference>
+    <ProjectReference Include="..\plugins\phosphorus.crypto\phosphorus.crypto.csproj">
+      <Project>{46D8DEF8-01ED-4058-B2D5-689890865494}</Project>
+      <Name>phosphorus.crypto</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="code\" />

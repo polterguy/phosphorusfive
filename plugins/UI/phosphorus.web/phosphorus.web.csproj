@@ -52,7 +52,6 @@
     <Compile Include="cookie.cs" />
     <Compile Include="application.cs" />
     <Compile Include="widget_properties.cs" />
-    <Compile Include="crypto.cs" />
     <Compile Include="html.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
