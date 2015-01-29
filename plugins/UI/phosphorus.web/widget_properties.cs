@@ -19,7 +19,7 @@ namespace phosphorus.web
     /// <summary>
     /// helper to retrieve and change properties of widgets
     /// </summary>
-    public static class properties
+    public static class widget_properties
     {
         /// <summary>
         /// returns properties requested by caller as children nodes of [pf.web.widgets.get-property]. the properties you

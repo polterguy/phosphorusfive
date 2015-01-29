@@ -19,6 +19,11 @@ namespace phosphorus.lambda.iterators
         private string _value;
         private string _type;
 
+        public IteratorValued ()
+        {
+            _value = string.Empty;
+        }
+
         /// <summary>
         /// gets or sets the value to search for
         /// </summary>

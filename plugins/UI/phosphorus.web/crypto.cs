@@ -5,21 +5,16 @@
  */
 
 using System;
-using System.Web;
 using System.Text;
-using System.Web.UI;
-using System.Globalization;
 using System.Security.Cryptography;
 using phosphorus.core;
-using phosphorus.lambda;
-using phosphorus.ajax.widgets;
 
 namespace phosphorus.web
 {
     /// <summary>
-    /// helper to retrieve and change properties of widgets
+    /// helper wrapping some cryptographic Active Events
     /// </summary>
-    public static class security
+    public static class crypto
     {
         /// <summary>
         /// creates a hash out of the value from [pf.crypto.hash-string] and returns the hash value as the value of

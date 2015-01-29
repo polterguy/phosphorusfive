@@ -41,14 +41,19 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Web" />
+    <Reference Include="HtmlAgilityPack">
+      <HintPath>..\..\..\resources\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="widgets.cs" />
     <Compile Include="session.cs" />
-    <Compile Include="security.cs" />
     <Compile Include="cookie.cs" />
-    <Compile Include="properties.cs" />
     <Compile Include="application.cs" />
+    <Compile Include="widget_properties.cs" />
+    <Compile Include="crypto.cs" />
+    <Compile Include="html.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

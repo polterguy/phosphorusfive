@@ -7,6 +7,7 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Text;
 using System.Reflection;
 using phosphorus.core;
 using phosphorus.lambda;
@@ -31,10 +32,11 @@ namespace phosphorus.file
             Expression.Iterate<string> (e.Args, true, 
             delegate (string idx) {
                 if (idx.StartsWith ("http://")) {
-                    WebRequest request = WebRequest.Create (idx);
-                    WebResponse response = request.GetResponse ();
+                    HttpWebRequest request = WebRequest.Create (idx) as HttpWebRequest;
+                    HttpWebResponse response = (HttpWebResponse)request.GetResponse ();
+                    Encoding encoding = Encoding.GetEncoding (response.CharacterSet);
                     using (Stream stream = response.GetResponseStream ()) {
-                        using (TextReader reader = new StreamReader (stream)) {
+                        using (TextReader reader = new StreamReader (stream, encoding)) {
                             e.Args.Add (new Node (idx, reader.ReadToEnd ()));
                         }
                     }
