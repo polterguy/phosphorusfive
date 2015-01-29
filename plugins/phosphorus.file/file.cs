@@ -31,13 +31,16 @@ namespace phosphorus.file
             string rootFolder = common.GetRootFolder (context);
             Expression.Iterate<string> (e.Args, true, 
             delegate (string idx) {
-                if (idx.StartsWith ("http://")) {
+                if (idx.StartsWith ("http://") || idx.StartsWith ("https://")) {
                     HttpWebRequest request = WebRequest.Create (idx) as HttpWebRequest;
+                    request.AllowAutoRedirect = true;
+                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3;
+                    ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
                     HttpWebResponse response = (HttpWebResponse)request.GetResponse ();
                     Encoding encoding = Encoding.GetEncoding (response.CharacterSet);
                     using (Stream stream = response.GetResponseStream ()) {
                         using (TextReader reader = new StreamReader (stream, encoding)) {
-                            e.Args.Add (new Node (idx, reader.ReadToEnd ()));
+                            e.Args.Add (new Node (response.ResponseUri.ToString (), reader.ReadToEnd ()));
                         }
                     }
                 } else {
