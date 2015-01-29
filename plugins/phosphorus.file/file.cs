@@ -6,7 +6,7 @@
 
 using System;
 using System.IO;
-using System.Web;
+using System.Net;
 using System.Reflection;
 using phosphorus.core;
 using phosphorus.lambda;
@@ -19,8 +19,8 @@ namespace phosphorus.file
     public static class file
     {
         /// <summary>
-        /// loads zero or more files from disc. can be given either an expression or a constant. if file does not
-        /// exist, false will be returned as value
+        /// loads zero or more files from disc or over http. can be given either an expression or a constant.
+        /// if file does not exist, false will be returned as value
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
@@ -30,12 +30,21 @@ namespace phosphorus.file
             string rootFolder = common.GetRootFolder (context);
             Expression.Iterate<string> (e.Args, true, 
             delegate(string idx) {
-                if (!File.Exists (rootFolder + idx)) {
-                    e.Args.Add (new Node (idx, false));
+                if (idx.StartsWith ("http://")) {
+                    WebRequest request = WebRequest.Create (idx);
+                    WebResponse response = request.GetResponse ();
+                    using (Stream stream = response.GetResponseStream ()) {
+                        using (TextReader reader = new StreamReader (stream)) {
+                            e.Args.Add (new Node (idx, reader.ReadToEnd ()));
+                        }
+                    }
                 } else {
-                    using (TextReader reader = File.OpenText (rootFolder + idx)) {
-                        string content = reader.ReadToEnd ();
-                        e.Args.Add (new Node (idx, content));
+                    if (!File.Exists (rootFolder + idx)) {
+                        e.Args.Add (new Node (idx, false));
+                    } else {
+                        using (TextReader reader = File.OpenText (rootFolder + idx)) {
+                            e.Args.Add (new Node (idx, reader.ReadToEnd ()));
+                        }
                     }
                 }
             });
