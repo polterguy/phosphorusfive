@@ -13,7 +13,8 @@ using phosphorus.lambda.iterators;
 namespace phosphorus.lambda
 {
     /// <summary>
-    /// expression class, for retrieving and changing values in node tree according to execution expressions
+    /// expression class, for retrieving and changing values in node trees according to
+    /// pf.lambda expressions
     /// </summary>
     public class Expression
     {
@@ -75,6 +76,54 @@ namespace phosphorus.lambda
                 retVal = node.Get<string> ();
             }
             return retVal;
+        }
+
+        public delegate bool IteratorCallback<T> (T idx);
+
+        /// <summary>
+        /// iterates a value of a node, which might be either a constant, or an expression, and
+        /// invokes callback for each value in constant or expression result. if callback returns
+        /// false, iteration will stop and this method will return
+        /// </summary>
+        /// <param name="node">node that contains constant or expression as value</param>
+        /// <param name="formatExpression">if set to <c>true</c> will format expressions</param>
+        /// <param name="callback">code to invoke once for each result</param>
+        /// <typeparam name="T">the type of object 'value' is</typeparam>
+        public static void Iterate<T> (Node node, bool formatExpression, IteratorCallback<T> callback)
+        {
+            object nodeValue = null;
+            if (formatExpression && node.Count > 0) {
+                nodeValue = FormatNode (node);
+            } else {
+                nodeValue = node.Value;
+            }
+            if (IsExpression (nodeValue)) {
+                var match = Create (nodeValue as string).Evaluate (node);
+                for (int idxNo = 0; idxNo < match.Count; idxNo++) {
+                    if (!callback (match.GetValue<T> (idxNo)))
+                        return;
+                }
+            } else {
+                callback (nodeValue == null ? default (T) : (T)nodeValue);
+            }
+        }
+
+        public static T Single<T> (Node node, bool formatExpression)
+        {
+            object nodeValue = null;
+            if (formatExpression) {
+                nodeValue = FormatNode (node);
+            } else {
+                nodeValue = node.Value;
+            }
+            if (IsExpression (nodeValue)) {
+                var match = Create (nodeValue as string).Evaluate (node);
+                if (!match.IsSingleLiteral)
+                    throw new ArgumentException ("Single expected single value of expression, but expression returned multiple results");
+                return match.GetValue<T> (0);
+            } else {
+                return nodeValue == null ? default (T) : (T)nodeValue;
+            }
         }
 
         /// <summary>

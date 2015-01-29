@@ -46,16 +46,12 @@ namespace phosphorus.file
         [ActiveEvent (Name = "pf.file.remove-folder")]
         private static void pf_file_remove_folder (ApplicationContext context, ActiveEventArgs e)
         {
-            string folderName = e.Args.Get<string> ();
-            if (Expression.IsExpression (folderName)) {
-                var match = Expression.Create (folderName).Evaluate (e.Args);
-                if (!match.IsSingleLiteral)
-                    throw new ArgumentException ("[pf.file.remove] must be given an expression returning one single 'value' or 'name'");
-                folderName = match.GetValue (0) as string;
-            } else if (e.Args.Count > 0) {
-                folderName = Expression.FormatNode (e.Args);
-            }
-            Directory.Delete (common.GetRootFolder (context) + folderName, true);
+            Expression.Iterate<string> (e.Args, true, 
+            delegate(string idx) {
+                if (Directory.Exists (common.GetRootFolder (context) + idx))
+                    Directory.Delete (common.GetRootFolder (context) + idx, true);
+                return true;
+            });
         }
 
         /// <summary>

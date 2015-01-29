@@ -14,6 +14,12 @@ namespace phosphorus.unittests
     [TestFixture]
     public class DatabaseTests
     {
+        [SetUp]
+        public void SetUp ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
+        }
+
         [ActiveEvent (Name = "pf.core.application-folder")]
         private static void GetRootFolder (ApplicationContext context, ActiveEventArgs e)
         {

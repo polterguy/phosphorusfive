@@ -142,7 +142,7 @@ namespace phosphorus.lambda
         /// <param name="index">index of which match to retrieve</param>
         /// <param name="defaultValue">default value to return if there is no match at index position, or match yields null</param>
         /// <typeparam name="T">type to convert match into</typeparam>
-        public T GetValue<T> (int index, T defaultValue)
+        public T GetValue<T> (int index, T defaultValue = default (T))
         {
             if (index >= _nodes.Count)
                 return defaultValue;
