@@ -29,7 +29,7 @@ namespace phosphorus.file
         {
             string rootFolder = common.GetRootFolder (context);
             Expression.Iterate<string> (e.Args, true, 
-            delegate(string idx) {
+            delegate (string idx) {
                 if (idx.StartsWith ("http://")) {
                     WebRequest request = WebRequest.Create (idx);
                     WebResponse response = request.GetResponse ();
@@ -61,7 +61,7 @@ namespace phosphorus.file
         {
             string rootFolder = common.GetRootFolder (context);
             Expression.Iterate<string> (e.Args, true, 
-            delegate(string idx) {
+            delegate (string idx) {
                 using (TextWriter writer = File.CreateText (rootFolder + idx)) {
                     writer.Write (e.Args.LastChild.Get<string> ());
                 }
@@ -81,7 +81,7 @@ namespace phosphorus.file
         {
             string rootFolder = common.GetRootFolder (context);
             Expression.Iterate<string> (e.Args, true, 
-            delegate(string idx) {
+            delegate (string idx) {
                 if (File.Exists (rootFolder + idx)) {
                     File.Delete (rootFolder + idx);
                     e.Args.Add (new Node (idx, true));
@@ -101,7 +101,7 @@ namespace phosphorus.file
         {
             string rootFolder = common.GetRootFolder (context);
             Expression.Iterate<string> (e.Args, true, 
-            delegate(string idx) {
+            delegate (string idx) {
                 e.Args.Add (new Node (idx, File.Exists (rootFolder + idx)));
             });
         }

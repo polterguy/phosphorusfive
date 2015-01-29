@@ -31,7 +31,7 @@ namespace phosphorus.file
         {
             string rootFolder = common.GetRootFolder (context);
             Expression.Iterate<string> (e.Args, true, 
-            delegate(string idx) {
+            delegate (string idx) {
                 if (!Directory.Exists (rootFolder + idx)) {
                     Directory.CreateDirectory (rootFolder + idx);
                     e.Args.Add (new Node (idx, true));
@@ -54,7 +54,7 @@ namespace phosphorus.file
         {
             string rootFolder = common.GetRootFolder (context);
             Expression.Iterate<string> (e.Args, true, 
-            delegate(string idx) {
+            delegate (string idx) {
                 if (Directory.Exists (rootFolder + idx)) {
                     Directory.Delete (rootFolder + idx, true);
                     e.Args.Add (new Node (idx, true));
@@ -77,12 +77,8 @@ namespace phosphorus.file
         {
             string rootFolder = common.GetRootFolder (context);
             Expression.Iterate<string> (e.Args, true, 
-            delegate(string idx) {
-                if (!Directory.Exists (rootFolder + idx)) {
-                    e.Args.Add (new Node (idx, false));
-                } else {
-                    e.Args.Add (new Node (idx, true));
-                }
+            delegate (string idx) {
+                e.Args.Add (new Node (idx, Directory.Exists (rootFolder + idx)));
             });
         }
 
@@ -96,7 +92,7 @@ namespace phosphorus.file
         {
             string rootFolder = common.GetRootFolder (context);
             Expression.Iterate<string> (e.Args, true, 
-            delegate(string idx) {
+            delegate (string idx) {
 
                 // iterating all files in current directory, and returning as nodes beneath args given
                 foreach (var idxFile in Directory.GetFiles (rootFolder + idx)) {
@@ -115,7 +111,7 @@ namespace phosphorus.file
         {
             string rootFolder = common.GetRootFolder (context);
             Expression.Iterate<string> (e.Args, true, 
-            delegate(string idx) {
+            delegate (string idx) {
 
                 // iterating all folders in current directory, and returning as nodes beneath args given
                 foreach (var idxFolder in Directory.GetDirectories (rootFolder + idx)) {
