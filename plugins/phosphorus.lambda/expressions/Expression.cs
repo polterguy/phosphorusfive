@@ -78,18 +78,28 @@ namespace phosphorus.lambda
             return retVal;
         }
 
-        public delegate bool IteratorCallback<T> (T idx);
+        /// <summary>
+        /// iterator callback for iterating node expressions
+        /// </summary>
+        public delegate bool IteratorCallbackBool<T> (T idx);
+
+        /// <summary>
+        /// iterator callback for iterating node expressions
+        /// </summary>
+        public delegate void IteratorCallbackVoid<T> (T idx);
 
         /// <summary>
         /// iterates a value of a node, which might be either a constant, or an expression, and
         /// invokes callback for each value in constant or expression result. if callback returns
-        /// false, iteration will stop and this method will return
+        /// false, iteration will stop and this method will return false. if iterations are all
+        /// returning true, this method will return true
         /// </summary>
+        /// <returns>true if all iterations are successfully completed without being stopped</returns>
         /// <param name="node">node that contains constant or expression as value</param>
         /// <param name="formatExpression">if set to <c>true</c> will format expressions</param>
         /// <param name="callback">code to invoke once for each result</param>
         /// <typeparam name="T">the type of object 'value' is</typeparam>
-        public static void Iterate<T> (Node node, bool formatExpression, IteratorCallback<T> callback)
+        public static bool Iterate<T> (Node node, bool formatExpression, IteratorCallbackBool<T> callback)
         {
             object nodeValue = null;
             if (formatExpression && node.Count > 0) {
@@ -101,7 +111,34 @@ namespace phosphorus.lambda
                 var match = Create (nodeValue as string).Evaluate (node);
                 for (int idxNo = 0; idxNo < match.Count; idxNo++) {
                     if (!callback (match.GetValue<T> (idxNo)))
-                        return;
+                        return false;
+                }
+                return true;
+            } else {
+                return callback (nodeValue == null ? default (T) : (T)nodeValue);
+            }
+        }
+
+        /// <summary>
+        /// iterates a value of a node, which might be either a constant, or an expression, and
+        /// invokes callback for each value in constant or expression result
+        /// </summary>
+        /// <param name="node">node that contains constant or expression as value</param>
+        /// <param name="formatExpression">if set to <c>true</c> will format expressions</param>
+        /// <param name="callback">code to invoke once for each result</param>
+        /// <typeparam name="T">the type of object 'value' is</typeparam>
+        public static void Iterate<T> (Node node, bool formatExpression, IteratorCallbackVoid<T> callback)
+        {
+            object nodeValue = null;
+            if (formatExpression && node.Count > 0) {
+                nodeValue = FormatNode (node);
+            } else {
+                nodeValue = node.Value;
+            }
+            if (IsExpression (nodeValue)) {
+                var match = Create (nodeValue as string).Evaluate (node);
+                for (int idxNo = 0; idxNo < match.Count; idxNo++) {
+                    callback (match.GetValue<T> (idxNo));
                 }
             } else {
                 callback (nodeValue == null ? default (T) : (T)nodeValue);

@@ -19,10 +19,8 @@ namespace phosphorus.file
     public static class file
     {
         /// <summary>
-        /// loads one or more text files from the path given as value of args, which might be a constant,
-        /// or an expression. if it is an expression, the expression is expected to return the path to the
-        /// file as its result. multiple files can be loaded if expression leads to multiple results. each
-        /// file will be appended as value of child nodes, in order retrieved from expression
+        /// loads zero or more files from disc. can be given either an expression or a constant. if file does not
+        /// exist, false will be returned as value
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
@@ -32,19 +30,20 @@ namespace phosphorus.file
             string rootFolder = common.GetRootFolder (context);
             Expression.Iterate<string> (e.Args, true, 
             delegate(string idx) {
-                using (TextReader reader = File.OpenText (rootFolder + idx)) {
-                    string content = reader.ReadToEnd ();
-                    e.Args.Add (new Node (idx, content));
+                if (!File.Exists (rootFolder + idx)) {
+                    e.Args.Add (new Node (idx, false));
+                } else {
+                    using (TextReader reader = File.OpenText (rootFolder + idx)) {
+                        string content = reader.ReadToEnd ();
+                        e.Args.Add (new Node (idx, content));
+                    }
                 }
-                return true;
             });
         }
 
         /// <summary>
-        /// saves the last child of main node, as one or more text files from the path given as value of args, 
-        /// which might be a constant, or an expression. if it is an expression, the expression is expected 
-        /// to return the path to the file as its result. multiple files can be saved if expression leads to 
-        /// multiple results
+        /// saves the last child of node, as one or more text files from the path given as value of args, 
+        /// which might be a constant, or an expression
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
@@ -57,14 +56,14 @@ namespace phosphorus.file
                 using (TextWriter writer = File.CreateText (rootFolder + idx)) {
                     writer.Write (e.Args.LastChild.Get<string> ());
                 }
-                return true;
             });
         }
 
         /// <summary>
         /// removes one or more files from the path given as value of args, which might be a constant, or
-        /// an expression. if it is an expression, the expression is expected to return the path to the
-        /// file as its result. multiple files can be removed if expression leads to multiple results
+        /// an expression. all files that are successfully removed, will be returned as children nodes, 
+        /// with path of file being name, and value being true. if file is not successfully removed, return
+        /// value for that file will be false
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
@@ -74,19 +73,17 @@ namespace phosphorus.file
             string rootFolder = common.GetRootFolder (context);
             Expression.Iterate<string> (e.Args, true, 
             delegate(string idx) {
-                if (File.Exists (rootFolder + idx))
+                if (File.Exists (rootFolder + idx)) {
                     File.Delete (rootFolder + idx);
-                return true;
+                    e.Args.Add (new Node (idx, true));
+                } else {
+                    e.Args.Add (new Node (idx, false));
+                }
             });
         }
 
         /// <summary>
-        /// checks to see if one or more files exists, from the path given as value of args, which might
-        /// be a constant, or an expression. if it is an expression, the expression is expected to return
-        /// the path to the file as its result. multiple files can be checked for existence if expression
-        /// leads to multiple results. if multiple files are givne through a constant, then all files must
-        /// exist for Active Event to return true, otherwise Active Event will return false, and path to
-        /// file that did not exist will be given as 'name' of node containing false
+        /// returns true for each file in constant or expression of path given as args that exists
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
@@ -96,13 +93,8 @@ namespace phosphorus.file
             string rootFolder = common.GetRootFolder (context);
             Expression.Iterate<string> (e.Args, true, 
             delegate(string idx) {
-                if (!File.Exists (rootFolder + idx)) {
-                    e.Args.Add (new Node (idx, false));
-                    return false;
-                }
-                return true;
+                e.Args.Add (new Node (idx, File.Exists (rootFolder + idx)));
             });
-            e.Args.Add (new Node (string.Empty, true));
         }
     }
 }

@@ -196,7 +196,9 @@ pf.file.exists:@/-3/*/?value
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (true, tmp [5] [0].Value, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("", tmp [5] [0].Name, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("mumbo1.txt", tmp [5] [0].Name, "wrong value of node after executing lambda object");
+            Assert.AreEqual (true, tmp [5] [1].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("mumbo2.txt", tmp [5] [1].Name, "wrong value of node after executing lambda object");
         }
 
         [Test]
@@ -223,8 +225,42 @@ pf.file.exists:@/-3/*/?value
 ";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
-            Assert.AreEqual (false, tmp [6] [0].Value, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("mumbo3.txt", tmp [6] [0].Name, "wrong value of node after executing lambda object");
+            Assert.AreEqual (true, tmp [6] [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("mumbo1.txt", tmp [6] [0].Name, "wrong value of node after executing lambda object");
+            Assert.AreEqual (true, tmp [6] [1].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("mumbo2.txt", tmp [6] [1].Name, "wrong value of node after executing lambda object");
+            Assert.AreEqual (false, tmp [6] [2].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("mumbo3.txt", tmp [6] [2].Name, "wrong value of node after executing lambda object");
+        }
+
+        [Test]
+        public void RemoveMultipleFilesReturnsFalse ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            Loader.Instance.LoadAssembly ("phosphorus.file");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+pf.file.remove:mumbo1.txt
+pf.file.remove:mumbo2.txt
+pf.file.remove:mumbo3.txt
+_data
+  :mumbo1.txt
+  :mumbo2.txt
+  :mumbo3.txt
+pf.file.save:mumbo1.txt
+  :""this is mumbo1""
+pf.file.remove:@/-2/*/?value
+";
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
+            context.Raise ("lambda", tmp);
+            Assert.AreEqual (true, tmp [5] [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("mumbo1.txt", tmp [5] [0].Name, "wrong value of node after executing lambda object");
+            Assert.AreEqual (false, tmp [5] [1].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("mumbo2.txt", tmp [5] [1].Name, "wrong value of node after executing lambda object");
+            Assert.AreEqual (false, tmp [5] [2].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("mumbo3.txt", tmp [5] [2].Name, "wrong value of node after executing lambda object");
         }
 
         [Test]
@@ -249,6 +285,98 @@ pf.file.folder-exists:mumbo
         }
         
         [Test]
+        public void CreateAndRemoveMultipleFolders ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            Loader.Instance.LoadAssembly ("phosphorus.file");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+pf.file.remove-folder:mumbo1
+pf.file.remove-folder:mumbo2
+_data
+  :mumbo1
+  :mumbo2
+pf.file.create-folder:@/-/*/?value
+pf.file.folder-exists:mumbo1
+pf.file.folder-exists:mumbo2
+pf.file.remove-folder:@/-4/*/?value
+pf.file.folder-exists:mumbo1
+pf.file.folder-exists:mumbo2
+";
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
+            context.Raise ("lambda", tmp);
+            Assert.AreEqual (true, tmp [4] [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual (true, tmp [5] [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual (false, tmp [7] [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual (false, tmp [8] [0].Value, "wrong value of node after executing lambda object");
+        }
+        
+        [Test]
+        public void CreateAndRemoveMultipleFoldersReturnsFalse ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            Loader.Instance.LoadAssembly ("phosphorus.file");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+pf.file.remove-folder:mumbo1
+pf.file.remove-folder:mumbo2
+pf.file.remove-folder:mumbo3
+_data
+  :mumbo1
+  :mumbo2
+  :mumbo3
+pf.file.create-folder:mumbo1
+pf.file.folder-exists:@/-2/*/?value
+";
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
+            context.Raise ("lambda", tmp);
+            Assert.AreEqual (true, tmp [5] [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("mumbo1", tmp [5] [0].Name, "wrong value of node after executing lambda object");
+            Assert.AreEqual (false, tmp [5] [1].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("mumbo2", tmp [5] [1].Name, "wrong value of node after executing lambda object");
+            Assert.AreEqual (false, tmp [5] [2].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("mumbo3", tmp [5] [2].Name, "wrong value of node after executing lambda object");
+        }
+        
+        [Test]
+        public void RemoveNonExistingFolder ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            Loader.Instance.LoadAssembly ("phosphorus.file");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+pf.file.remove-folder:qwertyuiopXXXXX
+";
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
+            context.Raise ("lambda", tmp);
+            Assert.AreEqual (false, tmp [0] [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("qwertyuiopXXXXX", tmp [0] [0].Name, "wrong value of node after executing lambda object");
+        }
+        
+        [Test]
+        public void CheckNonExistingFolder ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            Loader.Instance.LoadAssembly ("phosphorus.file");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+pf.file.folder-exists:qwertyuiopXXXXX
+";
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
+            context.Raise ("lambda", tmp);
+            Assert.AreEqual (false, tmp [0] [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("qwertyuiopXXXXX", tmp [0] [0].Name, "wrong value of node after executing lambda object");
+        }
+        
+        [Test]
         public void ListFiles ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
@@ -257,6 +385,7 @@ pf.file.folder-exists:mumbo
             ApplicationContext context = Loader.Instance.CreateApplicationContext ();
             Node tmp = new Node ();
             tmp.Value = @"
+pf.file.remove-folder:list-files
 pf.file.create-folder:list-files
 pf.file.save:list-files/mumbo1.txt
   :""mumbo1""
@@ -269,10 +398,10 @@ pf.file.remove-folder:list-files
 ";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
-            Assert.AreEqual (3, tmp [4].Count, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("list-files/mumbo1.txt", tmp [4] [0].Value, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("list-files/mumbo2.txt", tmp [4] [1].Value, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("list-files/mumbo3.txt", tmp [4] [2].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual (3, tmp [5].Count, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("list-files/mumbo1.txt", tmp [5] [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("list-files/mumbo2.txt", tmp [5] [1].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("list-files/mumbo3.txt", tmp [5] [2].Value, "wrong value of node after executing lambda object");
         }
         
         [Test]
