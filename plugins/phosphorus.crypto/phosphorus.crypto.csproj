@@ -45,4 +45,10 @@
     <Compile Include="hash.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\..\phosphorus.core\phosphorus.core.csproj">
+      <Project>{C783FEDB-C973-4F38-8EBB-55A0163612F5}</Project>
+      <Name>phosphorus.core</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>
