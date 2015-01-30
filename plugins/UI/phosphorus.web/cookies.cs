@@ -93,7 +93,7 @@ namespace phosphorus.web
                 // but removing "property nodes" such as [duration] before converting
                 Node convert = node.Clone ().Remove ("duration").Remove ("http-only");
 
-                // in case there is no actual value, but only [duration] and "property nodes"
+                // in case there is no actual value, but only [duration] and other "property nodes"
                 if (convert.Count > 0) {
 
                     // this node structure actually have values to be stored in cookie
@@ -101,21 +101,15 @@ namespace phosphorus.web
                     string value = HttpUtility.UrlEncode (convert.Get<string> ());
 
                     // finding duration, defaulting to 365 if none
-                    int duration = 365;
-                    Node durationNode = node.Find ("duration");
-                    if (durationNode != null)
-                        duration = durationNode.Get<int> ();
+                    int duration = node.GetChildValue ("duration", 365);
 
                     // creating cookie to send back to caller
                     retVal = new HttpCookie (name, value);
                     retVal.Expires = DateTime.Now.Date.AddDays (duration);
 
                     // making sure cookie is "secured" before we send it back to client, unless
-                    // caller explicitly tells us he does not want it secured
-                    retVal.HttpOnly = true;
-                    Node httpOnly = node.Find ("http-only");
-                    if (httpOnly != null)
-                        retVal.HttpOnly = httpOnly.Get<bool> ();
+                    // caller explicitly tells us he or she does not want it secured
+                    retVal.HttpOnly = node.GetChildValue ("http-only", true);
                 }
             }
 

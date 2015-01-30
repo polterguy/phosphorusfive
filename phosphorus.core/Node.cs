@@ -609,6 +609,19 @@ namespace phosphorus.core
         }
 
         /// <summary>
+        /// finds the first node having the given name
+        /// </summary>
+        /// <param name="name">name of node to return</param>
+        public T GetChildValue<T> (string name, T defaultValue = default (T))
+        {
+            Node child = _children.Find (
+            delegate (Node idx) {
+                return idx.Name == name;
+            });
+            return child == null ? defaultValue : child.Get<T> (defaultValue);
+        }
+
+        /// <summary>
         /// removes all nodes with given name
         /// </summary>
         /// <param name="name">name of nodes to remove</param>
