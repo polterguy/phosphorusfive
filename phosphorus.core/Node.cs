@@ -560,11 +560,12 @@ namespace phosphorus.core
         /// replace the specified node
         /// </summary>
         /// <param name="node">node to replace current node with</param>
-        public void Replace (Node node)
+        public Node Replace (Node node)
         {
             node._parent = this._parent;
             this._parent._children [this._parent._children.IndexOf (this)] = node;
             this._parent = null;
+            return this;
         }
 
         /// <summary>
@@ -608,31 +609,51 @@ namespace phosphorus.core
         }
 
         /// <summary>
+        /// removes all nodes with given name
+        /// </summary>
+        /// <param name="name">name of nodes to remove</param>
+        public Node Remove (string name)
+        {
+            List<Node> toRemove = new List<Node> ();
+            foreach (Node idx in _children) {
+                if (idx.Name == name)
+                    toRemove.Add (idx);
+            }
+            foreach (Node idx in toRemove) {
+                idx.Untie ();
+            }
+            return this;
+        }
+
+        /// <summary>
         /// sorts the children of the node
         /// </summary>
         /// <param name="comparison">comparison delegate</param>
-        public void Sort (Comparison<Node> comparison)
+        public Node Sort (Comparison<Node> comparison)
         {
             _children.Sort (comparison);
+            return this;
         }
 
         /// <summary>
         /// adds a child node to its children collection
         /// </summary>
         /// <param name="node">node to add</param>
-        public void Add (Node node)
+        public Node Add (Node node)
         {
             node._parent = this;
             _children.Add (node);
+            return this;
         }
 
         /// <summary>
         /// removes the node at the specified index
         /// </summary>
         /// <param name="index">where node to remove recides in the children collection</param>
-        public void RemoveAt (int index)
+        public Node RemoveAt (int index)
         {
             _children [index].Untie ();
+            return this;
         }
 
         /// <summary>
@@ -640,29 +661,32 @@ namespace phosphorus.core
         /// </summary>
         /// <param name="node">node to add</param>
         /// <param name="index">where to add</param>
-        public void Insert (int index, Node node)
+        public Node Insert (int index, Node node)
         {
             node._parent = this;
             _children.Insert (index, node);
+            return this;
         }
 
         /// <summary>
         /// adds a range of nodes
         /// </summary>
         /// <param name="nodes">nodes to add</param>
-        public void AddRange (IEnumerable<Node> nodes)
+        public Node AddRange (IEnumerable<Node> nodes)
         {
             foreach (Node idxNode in nodes) {
                 Add (idxNode);
             }
+            return this;
         }
 
         /// <summary>
         /// clears the children collection
         /// </summary>
-        public void Clear ()
+        public Node Clear ()
         {
             _children.Clear ();
+            return this;
         }
 
         /// <summary>

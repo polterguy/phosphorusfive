@@ -43,6 +43,7 @@
     <Reference Include="HtmlAgilityPack">
       <HintPath>..\..\resources\HtmlAgilityPack.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="html2lambda.cs" />

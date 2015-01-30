@@ -6,13 +6,8 @@
 
 using System;
 using System.Web;
-using System.Text;
-using System.Web.UI;
-using System.Globalization;
-using System.Security.Cryptography;
 using phosphorus.core;
 using phosphorus.lambda;
-using phosphorus.ajax.widgets;
 
 namespace phosphorus.web
 {
@@ -31,44 +26,23 @@ namespace phosphorus.web
         [ActiveEvent (Name = "pf.web.cookie.set")]
         private static void pf_web_cookie_set (ApplicationContext context, ActiveEventArgs e)
         {
-            // finding value to set as cookie, if any, and converting to code syntax
-            string value = null;
-            int duration = 365;
-            Node convert = e.Args.Find ("value");
-            if (convert != null) {
-
-                // converting value to Hyperlisp, and URL encoding it for our cookie
-                convert = convert.Clone ();
-                context.Raise ("lambda2code", convert);
-                value = HttpUtility.UrlEncode (convert.Get<string> ());
-
-                // finding duration, defaulting to 365 if none
-                Node durationNode = e.Args.Find ("duration");
-                if (durationNode != null)
-                    duration = durationNode.Get<int> ();
-            }
-
             Expression.Iterate<string> (e.Args, false, 
             delegate (string idx) {
-                if (value != null) {
 
-                    // creating cookie to send back to client
-                    HttpCookie cookie = new HttpCookie (idx);
-                    cookie.Value = value;
-                    cookie.Expires = DateTime.Now.Date.AddDays (duration);
+                // creating cookie
+                HttpCookie cookie = CreateCookieFromNode (context, idx, e.Args);
+                if (cookie != null) {
 
-                    // making sure cookie is "secured" before we send it back to client
-                    cookie.HttpOnly = true;
+                    // returning cookie to client
                     HttpContext.Current.Response.Cookies.Add (cookie);
-                } else {
+                } else if (HttpContext.Current.Response.Cookies.Get (idx) != null) {
 
-                    // removing cookie, if it exists
-                    if (HttpContext.Current.Response.Cookies.Get (idx) != null)
-                        HttpContext.Current.Response.Cookies [idx].Expires = DateTime.Now.Date.AddDays (-1);
+                    // removing cookie
+                    HttpContext.Current.Response.Cookies [idx].Expires = DateTime.Now.Date.AddDays (-1);
                 }
             });
         }
-        
+
         /// <summary>
         /// retrieves one or more cookies from client, and converts to pf.lambda, returning the name
         /// of the cookie as a child of the main node, containing all children nodes from cookie. cookie(s)
@@ -103,6 +77,52 @@ namespace phosphorus.web
                     }
                 }
             });
+        }
+
+        /*
+         * creates a cookie from given Node and returns back to caller. returns null if no cookie
+         * values exists in node
+         */
+        private static HttpCookie CreateCookieFromNode (ApplicationContext context, string name, Node node)
+        {
+            HttpCookie retVal = null;
+
+            if (node.Count > 0) {
+
+                // converting value to Hyperlisp, and URL encoding it for our cookie
+                // but removing "property nodes" such as [duration] before converting
+                Node convert = new Node ().AddRange (node.Clone ().Children);
+                convert.Remove ("duration");
+                convert.Remove ("http-only");
+
+                // in case there is no actual value, but only [duration] and "property nodes"
+                if (convert.Count > 0) {
+
+                    // this node structure actually have values to be stored in cookie
+                    context.Raise ("lambda2code", convert);
+                    string value = HttpUtility.UrlEncode (convert.Get<string> ());
+
+                    // finding duration, defaulting to 365 if none
+                    int duration = 365;
+                    Node durationNode = node.Find ("duration");
+                    if (durationNode != null)
+                        duration = durationNode.Get<int> ();
+
+                    // creating cookie to send back to caller
+                    retVal = new HttpCookie (name, value);
+                    retVal.Expires = DateTime.Now.Date.AddDays (duration);
+
+                    // making sure cookie is "secured" before we send it back to client, unless
+                    // caller explicitly tells us he does not want it secured
+                    retVal.HttpOnly = true;
+                    Node httpOnly = node.Find ("http-only");
+                    if (httpOnly != null)
+                        retVal.HttpOnly = httpOnly.Get<bool> ();
+                }
+            }
+
+            // returning cookie (or null) back to caller
+            return retVal;
         }
     }
 }
