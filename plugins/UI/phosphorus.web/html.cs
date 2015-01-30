@@ -18,15 +18,18 @@ namespace phosphorus.web
     public static class html
     {
         /// <summary>
+        /// parses an HTML document and creates a pf.lambda structure from it
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.html.parse")]
         private static void pf_html_parse (ApplicationContext context, ActiveEventArgs e)
         {
+            // making sure "form" element conforms to relational structure
+            HtmlNode.ElementsFlags.Remove ("form");
+
             Expression.Iterate<string> (e.Args, true, 
             delegate (string idx) {
-                HtmlNode.ElementsFlags.Remove ("form");
                 HtmlDocument doc = new HtmlDocument ();
                 doc.LoadHtml (idx);
                 e.Args.Add (new Node ());
@@ -34,6 +37,9 @@ namespace phosphorus.web
             });
         }
 
+        /*
+         * helper for above, recursively parses HTML node given
+         */
         private static void ParseHtmlDocument (Node res, HtmlNode cur)
         {
             res.Name = cur.Name;

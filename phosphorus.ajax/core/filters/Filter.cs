@@ -57,7 +57,10 @@ namespace phosphorus.ajax.core.filters
         /// </summary>
         /// <returns>the response</returns>
         protected abstract string RenderResponse ();
-        
+
+        /// <summary>
+        /// closes the stream
+        /// </summary>
         public override void Close ()
         {
             _stream.Seek (0, SeekOrigin.Begin);

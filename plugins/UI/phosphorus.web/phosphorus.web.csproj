@@ -53,6 +53,8 @@
     <Compile Include="application.cs" />
     <Compile Include="widget_properties.cs" />
     <Compile Include="html.cs" />
+    <Compile Include="echo.cs" />
+    <Compile Include="headers.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
