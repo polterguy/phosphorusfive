@@ -91,9 +91,7 @@ namespace phosphorus.web
 
                 // converting value to Hyperlisp, and URL encoding it for our cookie
                 // but removing "property nodes" such as [duration] before converting
-                Node convert = new Node ().AddRange (node.Clone ().Children);
-                convert.Remove ("duration");
-                convert.Remove ("http-only");
+                Node convert = node.Clone ().Remove ("duration").Remove ("http-only");
 
                 // in case there is no actual value, but only [duration] and "property nodes"
                 if (convert.Count > 0) {
