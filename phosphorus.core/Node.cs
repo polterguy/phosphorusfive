@@ -372,7 +372,8 @@ namespace phosphorus.core
                 return (T)Convert.ChangeType (Value, typeof(T), System.Globalization.CultureInfo.InvariantCulture);
 
             // stuff like for instance Guids don't implement IConvertible, but still return sane values if we
-            // first do ToString on them, for then to cast them to object, for then to cast them to T
+            // first do ToString on them, for then to cast them to object, for then to cast them to T, if the caller
+            // is requesting to have them returned as string
             return (T)(object)Value.ToString ();
         }
 
@@ -609,6 +610,22 @@ namespace phosphorus.core
         }
 
         /// <summary>
+        /// finds the first node having the given name, if no node exists with given name,
+        /// then a new node with the given name will be created and returned to caller
+        /// </summary>
+        /// <param name="name">name of node to return</param>
+        public Node FindOrCreate (string name)
+        {
+            Node retVal = _children.Find (
+                delegate (Node idx) {
+                return idx.Name == name;
+            });
+            if (retVal != null)
+                return retVal;
+            return Add (new Node (name)).LastChild;
+        }
+
+        /// <summary>
         /// finds the first node having the given name
         /// </summary>
         /// <param name="name">name of node to return</param>
@@ -654,6 +671,18 @@ namespace phosphorus.core
         /// <param name="node">node to add</param>
         public Node Add (Node node)
         {
+            node._parent = this;
+            _children.Add (node);
+            return this;
+        }
+
+        /// <summary>
+        /// adds a child node to its children collection with given name
+        /// </summary>
+        /// <param name="name">name of node to add</param>
+        public Node Add (string name)
+        {
+            Node node = new Node (name);
             node._parent = this;
             _children.Add (node);
             return this;

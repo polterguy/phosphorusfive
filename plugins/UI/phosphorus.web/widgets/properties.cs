@@ -5,11 +5,7 @@
  */
 
 using System;
-using System.Web;
-using System.Text;
-using System.Web.UI;
-using System.Globalization;
-using System.Security.Cryptography;
+using System.Collections.Generic;
 using phosphorus.core;
 using phosphorus.lambda;
 using phosphorus.ajax.widgets;
@@ -32,32 +28,47 @@ namespace phosphorus.web
         [ActiveEvent (Name = "pf.web.widgets.get-property")]
         private static void pf_web_widgets_get_property (ApplicationContext context, ActiveEventArgs e)
         {
-            Widget widget = FindWidget (context, e.Args);
-            foreach (Node nameNode in e.Args.Children) {
-
-                if (widget.ElementType == "select" && nameNode.Name == "value") {
-
-                    // special treatment for select html elements
-                    foreach (var idxCtrl in widget.Controls) {
-                        Widget idxWidget = idxCtrl as Widget;
-                        if (idxWidget != null) {
-                            if (idxWidget.HasAttribute ("selected")) {
-                                nameNode.Value = idxWidget ["value"];
-                                break;
+            var origNodeList = new List<Node> (e.Args.Children);
+            Expression.Iterate<string> (e.Args, true, 
+            delegate (string idx) {
+                Widget widget = FindWidget (context, idx);
+                foreach (Node nameNode in origNodeList) {
+                    if (widget.ElementType == "select" && nameNode.Name == "value") {
+                        foreach (var idxCtrl in widget.Controls) {
+                            Widget idxWidget = idxCtrl as Widget;
+                            if (idxWidget != null) {
+                                if (idxWidget.HasAttribute ("selected")) {
+                                    if (Expression.IsExpression (e.Args.Value)) {
+                                        e.Args.FindOrCreate (nameNode.Name).Value = idxWidget ["value"];
+                                    } else {
+                                        nameNode.Value = idxWidget ["value"];
+                                    }
+                                    break;
+                                }
                             }
                         }
-                    }
-                } else {
-                    switch (nameNode.Name) {
-                    case "element":
-                        nameNode.Value = widget.ElementType;
-                        break;
-                    default:
-                        nameNode.Value = widget [nameNode.Name];
-                        break;
+                    } else {
+                        switch (nameNode.Name) {
+                        case "element":
+                            if (Expression.IsExpression (e.Args.Value)) {
+                                e.Args.FindOrCreate (nameNode.Name).Value = widget.ElementType;
+                            } else {
+                                nameNode.Value = widget.ElementType;
+                            }
+                            break;
+                        default:
+                            if (!string.IsNullOrEmpty (nameNode.Name)) {
+                                if (Expression.IsExpression (e.Args.Value)) {
+                                    e.Args.FindOrCreate (widget.ID).Add (nameNode.Name).LastChild.Value = widget [nameNode.Name];
+                                } else {
+                                    nameNode.Value = widget [nameNode.Name];
+                                }
+                            }
+                            break;
+                        }
                     }
                 }
-            }
+            });
         }
 
         /// <summary>
@@ -71,40 +82,30 @@ namespace phosphorus.web
         [ActiveEvent (Name = "pf.web.widgets.set-property")]
         private static void pf_web_widgets_set_property (ApplicationContext context, ActiveEventArgs e)
         {
-            Widget widget = FindWidget (context, e.Args);
-            foreach (Node valueNode in e.Args.Children) {
-
-                string propertyValue = valueNode.Get<string> ();
-                if (Expression.IsExpression (propertyValue)) {
-
-                    // value is an expression, hence returning value of expression and not value directly
-                    var match = Expression.Create (propertyValue).Evaluate (valueNode);
-                    if (match.TypeOfMatch == Match.MatchType.Count) {
-                        propertyValue = match.Count.ToString ();
-                    } else if (!match.IsSingleLiteral) {
-                        throw new ArgumentException ("[pf.web.widgets.set-property] can only take a single literal expression");
-                    } else {
-                        propertyValue = match.GetValue (0).ToString ();
+            Expression.Iterate<string> (e.Args, true, 
+            delegate (string idx) {
+                Widget widget = FindWidget (context, idx);
+                foreach (Node valueNode in e.Args.Children) {
+                    string propertyValue;
+                    switch (valueNode.Name) {
+                    case "element":
+                        propertyValue = Expression.Single (valueNode, true);
+                        widget.ElementType = propertyValue;
+                        break;
+                    default:
+                        if (valueNode.Name == "class")
+                            propertyValue = Expression.Single (valueNode, true, " ");
+                        else if (valueNode.Name == "style")
+                            propertyValue = Expression.SingleNameValuePair (valueNode, true, ";", ":");
+                        else
+                            propertyValue = Expression.Single (valueNode, true);
+                        if (propertyValue.StartsWith ("\\")) // supporting escaped expressions
+                            propertyValue = propertyValue.Substring (1);
+                        widget [valueNode.Name] = propertyValue;
+                        break;
                     }
-                } else if (valueNode.Count > 0) {
-
-                    // making sure we support formatting nodes
-                    propertyValue = Expression.FormatNode (valueNode);
-                } else if (propertyValue.StartsWith ("\\")) {
-
-                    // to support values who's value are expressions, where we do not want to 
-                    // evaluate the expression, but pass it onwards to the value of a widget's property
-                    propertyValue = propertyValue.Substring (1);
                 }
-                switch (valueNode.Name) {
-                case "element":
-                    widget.ElementType = valueNode.Get<string> ();
-                    break;
-                default:
-                    widget [valueNode.Name] = propertyValue == null ? null : propertyValue;
-                    break;
-                }
-            }
+            });
         }
 
         /// <summary>
@@ -118,25 +119,20 @@ namespace phosphorus.web
         [ActiveEvent (Name = "pf.web.widgets.remove-property")]
         private static void pf_web_widgets_remove_property (ApplicationContext context, ActiveEventArgs e)
         {
-            Widget widget = FindWidget (context, e.Args);
-            foreach (Node nameNode in e.Args.Children) {
-
-                widget.RemoveAttribute (nameNode.Name);
-            }
+            Expression.Iterate<string> (e.Args, true, 
+            delegate (string idx) {
+                Widget widget = FindWidget (context, idx);
+                foreach (Node nameNode in e.Args.Children) {
+                    widget.RemoveAttribute (nameNode.Name);
+                }
+            });
         }
 
         /*
          * returns the widget we're looking for
          */
-        private static Widget FindWidget (ApplicationContext context, Node node)
+        private static Widget FindWidget (ApplicationContext context, string widgetId)
         {
-            string widgetId = node.Get<string> ();
-            if (Expression.IsExpression (widgetId)) {
-                var match = Expression.Create (widgetId).Evaluate (node);
-                if (!match.IsSingleLiteral || !match.IsAssignable || match.TypeOfMatch == Match.MatchType.Node)
-                    throw new ArgumentException ("find widget requires an expression being a single literal of type 'value' or 'name'");
-                widgetId = match.GetValue (0) as string;
-            }
             Node findCtrl = new Node (string.Empty, widgetId);
             context.Raise ("_pf.web.find-control", findCtrl);
             return findCtrl [0].Get<Widget> ();

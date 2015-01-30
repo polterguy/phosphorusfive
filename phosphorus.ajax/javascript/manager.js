@@ -148,7 +148,28 @@
       switch(key) {
         case '__pf_del':
           for (var idx = 0; idx < value.length; idx++) {
-            this.el.removeAttribute(value[idx]);
+            var atr = value[idx];
+            switch (atr) {
+              case 'innerValue':
+                if (this.el.tagName == 'TEXTAREA') {
+                  this.el.value = '';
+                } else {
+                  this.el.innerHTML = '';
+                }
+                break;
+              case 'class':
+                this.el.className = '';
+                break;
+              case 'value':
+                this.el.value = '';
+                break;
+              case 'style':
+                this.el.style.cssText = '';
+                break;
+              default:
+                this.el.removeAttribute(atr);
+                break;
+            }
           }
           break;
         case 'Tag':

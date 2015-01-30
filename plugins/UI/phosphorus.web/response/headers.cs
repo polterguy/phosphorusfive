@@ -5,9 +5,7 @@
  */
 
 using System;
-using System.IO;
 using System.Web;
-using System.Text;
 using phosphorus.core;
 using phosphorus.lambda;
 
@@ -19,16 +17,29 @@ namespace phosphorus.web
     public static class headers
     {
         /// <summary>
-        /// changes an existing or adds a new HTTP header to response
+        /// changes or removes existing HTTP headers, or adds new HTTP headers to response
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.headers.set")]
         private static void pf_web_headers_set (ApplicationContext context, ActiveEventArgs e)
         {
-            string name = Expression.Single<string> (e.Args, true);
-            string value = Expression.Single<string> (e.Args.LastChild, true);
-            HttpContext.Current.Response.AddHeader (name, value);
+            if (e.Args.Count == 0) {
+
+                // "remove headers" invocation, looping through all headers user wish to remove
+                Expression.Iterate<string> (e.Args, false, 
+                delegate (string idx) {
+                    HttpContext.Current.Response.Headers.Remove (idx);
+                });
+            } else {
+
+                // adding header(s) invocation
+                string value = Expression.Single (e.Args.LastChild, true, "; ");
+                Expression.Iterate<string> (e.Args, false, 
+                delegate (string idx) {
+                    HttpContext.Current.Response.AddHeader (idx, value);
+                });
+            }
         }
     }
 }

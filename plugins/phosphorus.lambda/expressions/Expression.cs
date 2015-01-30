@@ -141,14 +141,26 @@ namespace phosphorus.lambda
                     callback (match.GetValue<T> (idxNo));
                 }
             } else {
-                callback (nodeValue == null ? default (T) : (T)nodeValue);
+                if (!formatExpression || node.Count == 0) {
+
+                    // short hand helper for converting type correctly
+                    callback (node.Get<T> ());
+                } else {
+                    callback (nodeValue == null ? default (T) : (T)nodeValue);
+                }
             }
         }
 
+        /// <summary>
+        /// returns a single value of type T from expression in node's value given
+        /// </summary>
+        /// <param name="node">node containing expression, being current node for expression</param>
+        /// <param name="formatExpression">if set to <c>true</c> will format expression</param>
+        /// <typeparam name="T">the 1st type parameter</typeparam>
         public static T Single<T> (Node node, bool formatExpression)
         {
             object nodeValue = null;
-            if (formatExpression) {
+            if (formatExpression && node.Count > 0) {
                 nodeValue = FormatNode (node);
             } else {
                 nodeValue = node.Value;
@@ -159,7 +171,79 @@ namespace phosphorus.lambda
                     throw new ArgumentException ("Single expected single value of expression, but expression returned multiple results");
                 return match.GetValue<T> (0);
             } else {
+                if (!formatExpression || node.Count == 0)
+                    return node.Get<T> (); // short hand helper for converting type correctly
                 return nodeValue == null ? default (T) : (T)nodeValue;
+            }
+        }
+
+        /// <summary>
+        /// returns a single string value from expression in node's value given by concatenating results
+        /// if expression results to multiple results
+        /// </summary>
+        /// <param name="node">node containing expression, being current node for expression</param>
+        /// <param name="formatExpression">if set to <c>true</c> will format expression</param>
+        /// <param name="spacingString">string to put between all results before returning value to caller</param>
+        public static string Single (Node node, bool formatExpression, string spacingString = "")
+        {
+            string nodeValue = null;
+            if (formatExpression && node.Count > 0) {
+                nodeValue = FormatNode (node);
+            } else {
+                nodeValue = node.Get<string> ();
+            }
+            if (IsExpression (nodeValue)) {
+                var match = Create (nodeValue).Evaluate (node);
+                if (match.IsSingleLiteral)
+                    return match.GetValue<string> (0);
+                string retVal = "";
+                bool first = true;
+                for (int idxNo = 0; idxNo < match.Count; idxNo++) {
+                    if (first) {
+                        first = false;
+                    } else {
+                        retVal += spacingString;
+                    }
+                    retVal += match.GetValue (idxNo).ToString ();
+                }
+                return retVal;
+            } else {
+                return nodeValue;
+            }
+        }
+
+        /// <summary>
+        /// returns a single string value from expression in node's value given by concatenating results
+        /// if expression results to multiple results
+        /// </summary>
+        /// <param name="node">node containing expression, being current node for expression</param>
+        /// <param name="formatExpression">if set to <c>true</c> will format expression</param>
+        /// <param name="spacingString">string to put between all results before returning value to caller</param>
+        public static string SingleNameValuePair (Node node, bool formatExpression, string spacingString = "", string inbetweenPairString = "")
+        {
+            string nodeValue = null;
+            if (formatExpression && node.Count > 0) {
+                nodeValue = FormatNode (node);
+            } else {
+                nodeValue = node.Get<string> ();
+            }
+            if (IsExpression (nodeValue)) {
+                var match = Create (nodeValue).Evaluate (node);
+                if (match.IsSingleLiteral)
+                    return match [0].Name + spacingString + match.GetValue<string> (0);
+                string retVal = "";
+                bool first = true;
+                for (int idxNo = 0; idxNo < match.Count; idxNo++) {
+                    if (first) {
+                        first = false;
+                    } else {
+                        retVal += spacingString;
+                    }
+                    retVal += match [idxNo].Name + inbetweenPairString + match.GetValue (idxNo).ToString ();
+                }
+                return retVal;
+            } else {
+                return nodeValue;
             }
         }
 

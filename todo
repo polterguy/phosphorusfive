@@ -10,3 +10,16 @@
 * make sure script inclusions by default don't mess up spacing in html filter
 
 * modify readme to have fully functioning complete example of Default.aspx page, with complete codebehind, and complete .aspx markup
+
+* create support for "array" pf.lambda type, which allows to be used as an expression for Expression.Iterate, such that
+  users may submit a static array of values to stuff such as "for-each", "set", "session.set", etc
+
+* entirely modify the way [event] works, and unroll the entire event pf.lambda code, inline into code, upon invocation, to
+  support events that modifies the code tree outside of themselves
+
+* create "plugin" support for "for-each", "set", "add" etc, to allow iterating for instance Widgets, and change their properties
+  directly to create less verbose code
+
+* verifies properties of widgets can be changed immediately after [pf.web.create-widget] without resorting to [oninitialload]
+
+
