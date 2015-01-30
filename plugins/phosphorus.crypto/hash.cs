@@ -8,6 +8,7 @@ using System;
 using System.Text;
 using System.Security.Cryptography;
 using phosphorus.core;
+using phosphorus.lambda;
 
 namespace phosphorus.crypto
 {
@@ -25,8 +26,9 @@ namespace phosphorus.crypto
         [ActiveEvent (Name = "pf.crypto.hash-string")]
         private static void pf_crypto_hash_string (ApplicationContext context, ActiveEventArgs e)
         {
+            string whatToHash = Expression.Single<string> (e.Args, true);
             using (MD5 md5 = MD5.Create ()) {
-                string hashValue = Convert.ToBase64String (md5.ComputeHash (Encoding.UTF8.GetBytes (e.Args.Get<string> ())));
+                string hashValue = Convert.ToBase64String (md5.ComputeHash (Encoding.UTF8.GetBytes (whatToHash)));
                 e.Args.Add (new Node ("value", hashValue));
             }
         }

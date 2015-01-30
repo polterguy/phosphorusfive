@@ -30,21 +30,13 @@ namespace phosphorus.web
         [ActiveEvent (Name = "pf.web.application.set")]
         private static void pf_web_application_set (ApplicationContext context, ActiveEventArgs e)
         {
-            string key = e.Args.Get<string> ();
-            if (Expression.IsExpression (key)) {
-                var match = Expression.Create (key).Evaluate (e.Args);
-                if (!match.IsSingleLiteral || match.TypeOfMatch == Match.MatchType.Count || match.TypeOfMatch == Match.MatchType.Path) {
-                    throw new ArgumentException ("expression for [pf.web.application.set] must be an expression returning on value of type 'value' or 'name'");
-                }
-                key = match.GetValue (0) as string;
-                if (string.IsNullOrEmpty (key)) {
-                    throw new ArgumentException ("expression value given to [pf.web.application.set] was null or empty");
-                }
-            }
-            if (e.Args.Count > 0)
-                HttpContext.Current.Application [key] = e.Args.Clone ();
-            else
-                HttpContext.Current.Application.Remove (key);
+            Expression.Iterate<string> (e.Args, false, 
+            delegate (string idx) {
+                if (e.Args.Count > 0)
+                    HttpContext.Current.Application [idx] = e.Args.Clone ();
+                else
+                    HttpContext.Current.Application.Remove (idx);
+            });
         }
 
         /// <summary>
@@ -55,22 +47,22 @@ namespace phosphorus.web
         [ActiveEvent (Name = "pf.web.application.get")]
         private static void pf_web_application_get (ApplicationContext context, ActiveEventArgs e)
         {
-            string key = e.Args.Get<string> ();
-            if (Expression.IsExpression (key)) {
-                var match = Expression.Create (key).Evaluate (e.Args);
-                if (!match.IsSingleLiteral || match.TypeOfMatch == Match.MatchType.Count || match.TypeOfMatch == Match.MatchType.Path) {
-                    throw new ArgumentException ("expression for [pf.web.application.get] must be an expression returning on value of type 'value' or 'name'");
+            Expression.Iterate<string> (e.Args, false, 
+            delegate (string idx) {
+                Node tmp = HttpContext.Current.Application [idx] as Node;
+                if (tmp != null) {
+                    if (Expression.IsExpression (e.Args.Value)) {
+
+                        // adding key node, and values beneath key node
+                        e.Args.Add (new Node (idx));
+                        e.Args.LastChild.AddRange ((tmp as Node).Clone ().Children);
+                    } else {
+
+                        // since this is not an expression, we simply append values into main node
+                        e.Args.AddRange ((tmp as Node).Clone ().Children);
+                    }
                 }
-                key = match.GetValue (0) as string;
-                if (string.IsNullOrEmpty (key)) {
-                    throw new ArgumentException ("expression value given to [pf.web.application.get] was null or empty");
-                }
-            } else if (e.Args.Count > 0) {
-                key = Expression.FormatNode (e.Args);
-            }
-            object tmp = HttpContext.Current.Application [key];
-            if (tmp != null)
-                e.Args.AddRange ((tmp as Node).Clone ().Children);
+            });
         }
     }
 }

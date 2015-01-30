@@ -596,6 +596,18 @@ namespace phosphorus.core
         }
 
         /// <summary>
+        /// finds the first node having the given name
+        /// </summary>
+        /// <param name="name">name of node to return</param>
+        public Node Find (string name)
+        {
+            return _children.Find (
+            delegate (Node idx) {
+                return idx.Name == name;
+            });
+        }
+
+        /// <summary>
         /// sorts the children of the node
         /// </summary>
         /// <param name="comparison">comparison delegate</param>

@@ -107,6 +107,10 @@
       <Project>{46D8DEF8-01ED-4058-B2D5-689890865494}</Project>
       <Name>phosphorus.crypto</Name>
     </ProjectReference>
+    <ProjectReference Include="..\plugins\phosphorus.html\phosphorus.html.csproj">
+      <Project>{68EE106A-06BF-431B-9671-DF328666E03E}</Project>
+      <Name>phosphorus.html</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="code\" />

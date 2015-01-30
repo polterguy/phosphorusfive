@@ -10,10 +10,10 @@ using HtmlAgilityPack;
 using phosphorus.core;
 using phosphorus.lambda;
 
-namespace phosphorus.web
+namespace phosphorus.html
 {
     /// <summary>
-    /// helper to semantically manipulate or view HTML documents
+    /// helper to semantically manipulate or view HTML documents as pf.lambda nodes
     /// </summary>
     public static class html
     {
@@ -22,14 +22,14 @@ namespace phosphorus.web
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.html.parse")]
-        private static void pf_html_parse (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.html.html2lambda")]
+        private static void pf_html_html2lambda (ApplicationContext context, ActiveEventArgs e)
         {
             // making sure "form" element conforms to relational structure
             HtmlNode.ElementsFlags.Remove ("form");
 
             Expression.Iterate<string> (e.Args, true, 
-            delegate (string idx) {
+                                        delegate (string idx) {
                 HtmlDocument doc = new HtmlDocument ();
                 doc.LoadHtml (idx);
                 e.Args.Add (new Node ());

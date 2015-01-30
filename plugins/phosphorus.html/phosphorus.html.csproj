@@ -5,10 +5,10 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{0F68BFA7-1CF7-4737-9058-CED4A9ED3427}</ProjectGuid>
+    <ProjectGuid>{68EE106A-06BF-431B-9671-DF328666E03E}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>phosphorus.web</RootNamespace>
-    <AssemblyName>phosphorus.web</AssemblyName>
+    <RootNamespace>phosphorus.html</RootNamespace>
+    <AssemblyName>phosphorus.html</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -40,35 +40,22 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Xml" />
+    <Reference Include="HtmlAgilityPack">
+      <HintPath>..\..\resources\HtmlAgilityPack.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="session.cs" />
-    <Compile Include="application.cs" />
-    <Compile Include="widgets\widgets.cs" />
-    <Compile Include="cookies.cs" />
-    <Compile Include="response\echo.cs" />
-    <Compile Include="response\headers.cs" />
-    <Compile Include="widgets\properties.cs" />
+    <Compile Include="html2lambda.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\..\..\phosphorus.ajax\phosphorus.ajax.csproj">
-      <Project>{11644924-3367-4812-BE60-7DA41FC9E4AE}</Project>
-      <Name>phosphorus.ajax</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\phosphorus.core\phosphorus.core.csproj">
+    <ProjectReference Include="..\..\phosphorus.core\phosphorus.core.csproj">
       <Project>{C783FEDB-C973-4F38-8EBB-55A0163612F5}</Project>
       <Name>phosphorus.core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\phosphorus.lambda\phosphorus.lambda.csproj">
+    <ProjectReference Include="..\phosphorus.lambda\phosphorus.lambda.csproj">
       <Project>{8EB5FDEA-D073-4147-AE65-376A01B463DF}</Project>
       <Name>phosphorus.lambda</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="widgets\" />
-    <Folder Include="response\" />
   </ItemGroup>
 </Project>

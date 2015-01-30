@@ -22,55 +22,46 @@ namespace phosphorus.web
     public static class session
     {
         /// <summary>
-        /// sets the given session key to the nodes given as children of [pf.web.session.set]. if no nodes are given,
-        /// the session with the given key is cleared
+        /// sets one or more session values
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.session.set")]
         private static void pf_web_session_set (ApplicationContext context, ActiveEventArgs e)
         {
-            string key = e.Args.Get<string> ();
-            if (Expression.IsExpression (key)) {
-                var match = Expression.Create (key).Evaluate (e.Args);
-                if (!match.IsSingleLiteral || match.TypeOfMatch == Match.MatchType.Count || match.TypeOfMatch == Match.MatchType.Path) {
-                    throw new ArgumentException ("expression for [pf.web.session.set] must be an expression returning on value of type 'value' or 'name'");
-                }
-                key = match.GetValue (0) as string;
-                if (string.IsNullOrEmpty (key)) {
-                    throw new ArgumentException ("expression value given to [pf.web.session.set] was null or empty");
-                }
-            }
-            if (e.Args.Count > 0)
-                HttpContext.Current.Session [key] = e.Args.Clone ();
-            else
-                HttpContext.Current.Session.Remove (key);
+            Expression.Iterate<string> (e.Args, false, 
+            delegate (string idx) {
+                if (e.Args.Count > 0)
+                    HttpContext.Current.Session [idx] = e.Args.Clone ();
+                else
+                    HttpContext.Current.Session.Remove (idx);
+            });
         }
 
         /// <summary>
-        /// returns the session object given through the value of [pf.web.session.get] as a node
+        /// returns one or more session values back to caller as nodes
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.session.get")]
         private static void pf_web_session_get (ApplicationContext context, ActiveEventArgs e)
         {
-            string key = e.Args.Get<string> ();
-            if (Expression.IsExpression (key)) {
-                var match = Expression.Create (key).Evaluate (e.Args);
-                if (!match.IsSingleLiteral || match.TypeOfMatch == Match.MatchType.Count || match.TypeOfMatch == Match.MatchType.Path) {
-                    throw new ArgumentException ("expression for [pf.web.session.get] must be an expression returning on value of type 'value' or 'name'");
+            Expression.Iterate<string> (e.Args, false, 
+            delegate (string idx) {
+                Node tmp = HttpContext.Current.Session [idx] as Node;
+                if (tmp != null) {
+                    if (Expression.IsExpression (e.Args.Value)) {
+
+                        // adding key node, and values beneath key node
+                        e.Args.Add (new Node (idx));
+                        e.Args.LastChild.AddRange ((tmp as Node).Clone ().Children);
+                    } else {
+
+                        // since this is not an expression, we simply append values into main node
+                        e.Args.AddRange ((tmp as Node).Clone ().Children);
+                    }
                 }
-                key = match.GetValue (0) as string;
-                if (string.IsNullOrEmpty (key)) {
-                    throw new ArgumentException ("expression value given to [pf.web.session.get] was null or empty");
-                }
-            } else if (e.Args.Count > 0) {
-                key = Expression.FormatNode (e.Args);
-            }
-            object tmp = HttpContext.Current.Session [key];
-            if (tmp != null)
-                e.Args.AddRange ((tmp as Node).Clone ().Children);
+            });
         }
     }
 }
