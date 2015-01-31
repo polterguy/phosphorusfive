@@ -5,10 +5,10 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{68EE106A-06BF-431B-9671-DF328666E03E}</ProjectGuid>
+    <ProjectGuid>{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>phosphorus.html</RootNamespace>
-    <AssemblyName>phosphorus.html</AssemblyName>
+    <RootNamespace>phosphorus.expressions</RootNamespace>
+    <AssemblyName>phosphorus.expressions</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -29,34 +29,48 @@
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release-Linux|AnyCPU' ">
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Release-Linux</OutputPath>
     <WarningLevel>4</WarningLevel>
     <CustomCommands>
       <CustomCommands>
-        <Command type="AfterBuild" command="cp ${TargetFile} ${SolutionDir}/lib/plugins" />
+        <Command type="AfterBuild" command="cp ${TargetFile} ${SolutionDir}/lib" />
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="HtmlAgilityPack">
-      <HintPath>..\..\resources\HtmlAgilityPack.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="html2lambda.cs" />
+    <Compile Include="Expression.cs" />
+    <Compile Include="Logical.cs" />
+    <Compile Include="Match.cs" />
+    <Compile Include="Tokenizer.cs" />
+    <Compile Include="iterators\Iterator.cs" />
+    <Compile Include="iterators\IteratorChildren.cs" />
+    <Compile Include="iterators\IteratorFlatten.cs" />
+    <Compile Include="iterators\IteratorGroup.cs" />
+    <Compile Include="iterators\IteratorLeftParent.cs" />
+    <Compile Include="iterators\IteratorModulo.cs" />
+    <Compile Include="iterators\IteratorNamed.cs" />
+    <Compile Include="iterators\IteratorNamedAncestor.cs" />
+    <Compile Include="iterators\IteratorNamedRegex.cs" />
+    <Compile Include="iterators\IteratorNode.cs" />
+    <Compile Include="iterators\IteratorNumbered.cs" />
+    <Compile Include="iterators\IteratorParent.cs" />
+    <Compile Include="iterators\IteratorRange.cs" />
+    <Compile Include="iterators\IteratorReference.cs" />
+    <Compile Include="iterators\IteratorRoot.cs" />
+    <Compile Include="iterators\IteratorShiftLeft.cs" />
+    <Compile Include="iterators\IteratorShiftRight.cs" />
+    <Compile Include="iterators\IteratorSibling.cs" />
+    <Compile Include="iterators\IteratorValued.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\..\phosphorus.core\phosphorus.core.csproj">
+    <ProjectReference Include="..\phosphorus.core\phosphorus.core.csproj">
       <Project>{C783FEDB-C973-4F38-8EBB-55A0163612F5}</Project>
       <Name>phosphorus.core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\phosphorus.expressions\phosphorus.expressions.csproj">
-      <Project>{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}</Project>
-      <Name>phosphorus.expressions</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

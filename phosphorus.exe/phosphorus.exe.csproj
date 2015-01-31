@@ -64,5 +64,9 @@
       <Project>{89C744BE-B583-4C6D-84B9-941E0C7CEBF4}</Project>
       <Name>phosphorus.file</Name>
     </ProjectReference>
+    <ProjectReference Include="..\phosphorus.expressions\phosphorus.expressions.csproj">
+      <Project>{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}</Project>
+      <Name>phosphorus.expressions</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

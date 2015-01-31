@@ -111,6 +111,10 @@
       <Project>{68EE106A-06BF-431B-9671-DF328666E03E}</Project>
       <Name>phosphorus.html</Name>
     </ProjectReference>
+    <ProjectReference Include="..\phosphorus.expressions\phosphorus.expressions.csproj">
+      <Project>{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}</Project>
+      <Name>phosphorus.expressions</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="code\" />

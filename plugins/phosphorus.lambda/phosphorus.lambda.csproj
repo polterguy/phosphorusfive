@@ -42,36 +42,13 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="expressions\Expression.cs" />
-    <Compile Include="expressions\Match.cs" />
-    <Compile Include="expressions\iterators\Iterator.cs" />
-    <Compile Include="expressions\iterators\IteratorChildren.cs" />
-    <Compile Include="expressions\iterators\IteratorNamed.cs" />
-    <Compile Include="expressions\iterators\IteratorNode.cs" />
-    <Compile Include="expressions\iterators\IteratorNumbered.cs" />
-    <Compile Include="expressions\iterators\IteratorRoot.cs" />
-    <Compile Include="expressions\iterators\IteratorValued.cs" />
-    <Compile Include="expressions\iterators\IteratorGroup.cs" />
-    <Compile Include="expressions\iterators\IteratorSibling.cs" />
-    <Compile Include="expressions\iterators\IteratorLeftParent.cs" />
-    <Compile Include="expressions\iterators\IteratorFlatten.cs" />
     <Compile Include="keywords\set.cs" />
     <Compile Include="keywords\add.cs" />
-    <Compile Include="expressions\iterators\IteratorRange.cs" />
-    <Compile Include="expressions\iterators\IteratorModulo.cs" />
     <Compile Include="keywords\for-each.cs" />
-    <Compile Include="expressions\iterators\IteratorReference.cs" />
-    <Compile Include="expressions\iterators\IteratorShiftLeft.cs" />
-    <Compile Include="expressions\iterators\IteratorShiftRight.cs" />
-    <Compile Include="expressions\iterators\IteratorNamedRegex.cs" />
-    <Compile Include="expressions\iterators\IteratorNamedAncestor.cs" />
     <Compile Include="code.cs" />
-    <Compile Include="expressions\iterators\IteratorParent.cs" />
     <Compile Include="lambda.cs" />
     <Compile Include="keywords\branching.cs" />
     <Compile Include="keywords\while.cs" />
-    <Compile Include="expressions\Logical.cs" />
-    <Compile Include="expressions\Tokenizer.cs" />
     <Compile Include="keywords\events.cs" />
     <Compile Include="keywords\helpers\Conditions.cs" />
     <Compile Include="keywords\helpers\Event.cs" />
@@ -84,11 +61,13 @@
       <Project>{C783FEDB-C973-4F38-8EBB-55A0163612F5}</Project>
       <Name>phosphorus.core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\phosphorus.expressions\phosphorus.expressions.csproj">
+      <Project>{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}</Project>
+      <Name>phosphorus.expressions</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="keywords\" />
-    <Folder Include="expressions\" />
-    <Folder Include="expressions\iterators\" />
     <Folder Include="keywords\helpers\" />
   </ItemGroup>
 </Project>

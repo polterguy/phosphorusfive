@@ -42,6 +42,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.unit-tests", "ph
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.exe", "phosphorus.exe\phosphorus.exe.csproj", "{6C5F05C3-5480-42D0-8FA3-00B8749EAC5C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.expressions", "phosphorus.expressions\phosphorus.expressions.csproj", "{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,12 @@ Global
 		{11644924-3367-4812-BE60-7DA41FC9E4AE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{11644924-3367-4812-BE60-7DA41FC9E4AE}.Release-Linux|Any CPU.ActiveCfg = Release-Linux|Any CPU
 		{11644924-3367-4812-BE60-7DA41FC9E4AE}.Release-Linux|Any CPU.Build.0 = Release-Linux|Any CPU
+		{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}.Release-Linux|Any CPU.ActiveCfg = Release-Linux|Any CPU
+		{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}.Release-Linux|Any CPU.Build.0 = Release-Linux|Any CPU
 		{27409EA4-A00B-4C5A-AA06-992BE4D412EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{27409EA4-A00B-4C5A-AA06-992BE4D412EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27409EA4-A00B-4C5A-AA06-992BE4D412EC}.Release|Any CPU.ActiveCfg = Release|Any CPU

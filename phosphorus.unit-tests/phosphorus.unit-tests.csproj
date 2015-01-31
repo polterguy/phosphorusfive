@@ -84,5 +84,9 @@
       <Project>{CB706162-9ED3-4CAB-863C-B8F960EC5AC6}</Project>
       <Name>phosphorus.mongodb</Name>
     </ProjectReference>
+    <ProjectReference Include="..\phosphorus.expressions\phosphorus.expressions.csproj">
+      <Project>{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}</Project>
+      <Name>phosphorus.expressions</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>
