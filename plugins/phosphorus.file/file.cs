@@ -8,7 +8,6 @@ using System;
 using System.IO;
 using System.Net;
 using System.Text;
-using System.Reflection;
 using phosphorus.core;
 using phosphorus.lambda;
 
@@ -32,6 +31,8 @@ namespace phosphorus.file
             Expression.Iterate<string> (e.Args, true, 
             delegate (string idx) {
                 if (idx.StartsWith ("http://") || idx.StartsWith ("https://")) {
+
+                    // HTTP web request, making sure settings are correct before we download file
                     HttpWebRequest request = WebRequest.Create (idx) as HttpWebRequest;
                     request.AllowAutoRedirect = true;
                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3;

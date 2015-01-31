@@ -99,8 +99,6 @@ namespace phosphorus.web
                             propertyValue = Expression.SingleNameValuePair (valueNode, true, ";", ":");
                         else
                             propertyValue = Expression.Single (valueNode, true);
-                        if (propertyValue.StartsWith ("\\")) // supporting escaped expressions
-                            propertyValue = propertyValue.Substring (1);
                         widget [valueNode.Name] = propertyValue;
                         break;
                     }

@@ -95,6 +95,22 @@ for-each:@/-/*/?node
         }
         
         [Test]
+        public void ForEachingNodeValueBeingNode ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"_data:node:""_foo""
+for-each:@/-/?value
+  set:@/./*/__dp/#/?value
+    :bar";
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
+            context.Raise ("lambda", tmp);
+            Assert.AreEqual ("bar", tmp [0].Get<Node> ().Value);
+        }
+
+        [Test]
         [ExpectedException]
         public void SyntaxError1 ()
         {
@@ -102,7 +118,8 @@ for-each:@/-/*/?node
             Loader.Instance.LoadAssembly ("phosphorus.lambda");
             ApplicationContext context = Loader.Instance.CreateApplicationContext ();
             Node tmp = new Node ();
-            tmp.Value = @"for-each:@/-/*/?value";
+            tmp.Value = @"_data:foo
+for-each:@/-/?value";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
         }
@@ -110,45 +127,6 @@ for-each:@/-/*/?node
         [Test]
         [ExpectedException]
         public void SyntaxError2 ()
-        {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"for-each:@/-/*/?path";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
-        }
-        
-        [Test]
-        [ExpectedException]
-        public void SyntaxError3 ()
-        {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"for-each:@/-/*/?count";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
-        }
-        
-        [Test]
-        [ExpectedException]
-        public void SyntaxError4 ()
-        {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"for-each:@/-/*/?name";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
-        }
-        
-        [Test]
-        [ExpectedException]
-        public void SyntaxError5 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
             Loader.Instance.LoadAssembly ("phosphorus.lambda");

@@ -364,8 +364,6 @@ namespace phosphorus.core
             if (Value == null)
                 return default (T);
 
-            if (typeof(T) == Value.GetType ())
-                return (T)Value;
             if (Value is T)
                 return (T)Value;
             if (Value is IConvertible)
@@ -563,6 +561,8 @@ namespace phosphorus.core
         /// <param name="node">node to replace current node with</param>
         public Node Replace (Node node)
         {
+            if (node == null)
+                throw new ArgumentException ("cannot replace a node with null");
             node._parent = this._parent;
             this._parent._children [this._parent._children.IndexOf (this)] = node;
             this._parent = null;

@@ -26,85 +26,28 @@ namespace phosphorus.lambda
             if (e.Args.Count == 0)
                 throw new ArgumentException ("[add] needs either a source expression, or a list of children nodes");
 
-            Match destinationMatch = GetDestinationMatch (e.Args);
-            if (destinationMatch.Count == 0)
-                return; // "do nothing" operation
+            if (Expression.IsExpression (e.Args.LastChild.Value) && e.Args.Count == 1) {
 
-            if (e.Args.Count == 1 && e.Args.FirstChild.Name == string.Empty && Expression.IsExpression (e.Args.FirstChild.Get<string> ())) {
+                // source is an expression, cloning source first, in case source is overlapping destination
+                List<Node> sourceNodes = new List<Node> (Expression.Clone (e.Args.LastChild, true));
 
-                // source is an expression
-                Match sourceMatch = Expression.Create (e.Args.FirstChild.Get<string> ()).Evaluate (e.Args.FirstChild);
-                AppendMatch (destinationMatch, sourceMatch);
+                // looping through each destination, adding every cloned source node, into every destination node
+                Expression.Iterate<Node> (e.Args, false, 
+                delegate (Node idxDestination) {
+                    foreach (Node idxSource in sourceNodes) {
+                        idxDestination.Add (idxSource.Clone());
+                    }
+                });
             } else {
 
-                // source is a node list
-                AppendNodes (destinationMatch, e.Args.Children);
-            }
-        }
-
-        /*
-         * appends from a match object
-         */
-        private static void AppendMatch (Match destinationMatch, Match sourceMatch)
-        {
-            if (sourceMatch.TypeOfMatch != Match.MatchType.Node && sourceMatch.TypeOfMatch != Match.MatchType.Value)
-                throw new ArgumentException ("[add] can only add from a 'node' source expression or a 'value' expression containing a node");
-
-            // cloning source first, in case source is also one of our destinations
-            List<Node> copy = new List<Node> ();
-            foreach (Node idxSource in sourceMatch.Matches) {
-                if (sourceMatch.TypeOfMatch == Match.MatchType.Node) {
-                    copy.Add (idxSource.Clone ());
-                } else {
-                    copy.Add (idxSource.Get<Node> ().Clone ());
-                }
-            }
-            foreach (Node idxDest in destinationMatch.Matches) {
-                foreach (Node idxSource in copy) {
-                    Node destination = null;
-                    if (destinationMatch.TypeOfMatch == Match.MatchType.Node) {
-                        destination = idxDest;
-                    } else {
-                        destination = idxDest.Get<Node> ();
+                // adding a bunch of children nodes into source
+                Expression.Iterate<Node> (e.Args, false, 
+                delegate (Node idxDestination) {
+                    foreach (Node idxSource in e.Args.Children) {
+                        idxDestination.Add (idxSource.Clone());
                     }
-                    destination.Add (idxSource.Clone ());
-                }
+                });
             }
-        }
-
-        /*
-         * appends from a list of nodes
-         */
-        private static void AppendNodes (Match destinationMatch, IEnumerable<Node> sourceNodes)
-        {
-            foreach (Node idxDest in destinationMatch.Matches) {
-                foreach (Node idxSource in sourceNodes) {
-                    idxDest.Add (idxSource.Clone ());
-                }
-            }
-        }
-
-        /*
-         * will return a Match object for the destination of the "pf.add"
-         */
-        private static Match GetDestinationMatch (Node node)
-        {
-            string destinationExpression = node.Get<string> ();
-            if (!Expression.IsExpression (destinationExpression))
-                throw new ApplicationException ("[add] needs a valid expression as its value, yielding an actual result");
-
-            // finding Match object for destination
-            Match destinationMatch = Expression.Create (destinationExpression).Evaluate (node);
-
-            if (destinationMatch.TypeOfMatch != Match.MatchType.Node) {
-                foreach (Node idxNode in destinationMatch.Matches) {
-                    if (!(idxNode.Value is Node))
-                        throw new ArgumentException ("destination expression for [add] is not of type 'node', expression was; '" + 
-                            destinationExpression + "'. make sure you [add] destination expression ends with a '?node'");
-                }
-            }
-
-            return destinationMatch;
         }
     }
 }

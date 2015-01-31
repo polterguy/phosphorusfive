@@ -148,10 +148,11 @@ namespace phosphorus.lambda
                 return defaultValue;
             object retVal = GetValue (index);
             if (retVal != null) {
+                if (retVal is T)
+                    return (T)retVal;
                 if (retVal is IConvertible)
                     return (T)Convert.ChangeType (retVal, typeof(T));
-                else
-                    return (T)(object)retVal.ToString ();
+                return (T)(object)retVal.ToString ();
             }
             return defaultValue;
         }

@@ -81,43 +81,12 @@ namespace phosphorus.lambda
         /// <summary>
         /// iterator callback for iterating node expressions
         /// </summary>
-        public delegate bool IteratorCallbackBool<T> (T idx);
+        public delegate void IteratorCallbackVoid<T> (T idx);
 
         /// <summary>
         /// iterator callback for iterating node expressions
         /// </summary>
-        public delegate void IteratorCallbackVoid<T> (T idx);
-
-        /// <summary>
-        /// iterates a value of a node, which might be either a constant, or an expression, and
-        /// invokes callback for each value in constant or expression result. if callback returns
-        /// false, iteration will stop and this method will return false. if iterations are all
-        /// returning true, this method will return true
-        /// </summary>
-        /// <returns>true if all iterations are successfully completed without being stopped</returns>
-        /// <param name="node">node that contains constant or expression as value</param>
-        /// <param name="formatExpression">if set to <c>true</c> will format expressions</param>
-        /// <param name="callback">code to invoke once for each result</param>
-        /// <typeparam name="T">the type of object 'value' is</typeparam>
-        public static bool Iterate<T> (Node node, bool formatExpression, IteratorCallbackBool<T> callback)
-        {
-            object nodeValue = null;
-            if (formatExpression && node.Count > 0) {
-                nodeValue = FormatNode (node);
-            } else {
-                nodeValue = node.Value;
-            }
-            if (IsExpression (nodeValue)) {
-                var match = Create (nodeValue as string).Evaluate (node);
-                for (int idxNo = 0; idxNo < match.Count; idxNo++) {
-                    if (!callback (match.GetValue<T> (idxNo)))
-                        return false;
-                }
-                return true;
-            } else {
-                return callback (nodeValue == null ? default (T) : (T)nodeValue);
-            }
-        }
+        public delegate void IteratorCallbackNode (Node idx, Match.MatchType type);
 
         /// <summary>
         /// iterates a value of a node, which might be either a constant, or an expression, and
@@ -152,6 +121,55 @@ namespace phosphorus.lambda
         }
 
         /// <summary>
+        /// iterates a value of a node, which might be either a constant, or an expression, and
+        /// invokes callback for each value in constant or expression result
+        /// </summary>
+        /// <param name="node">node that contains constant or expression as value</param>
+        /// <param name="formatExpression">if set to <c>true</c> will format expressions</param>
+        /// <param name="callback">code to invoke once for each result</param>
+        /// <typeparam name="T">the type of object 'value' is</typeparam>
+        public static void IterateNodes (Node node, bool formatExpression, IteratorCallbackNode callback)
+        {
+            object nodeValue = null;
+            if (formatExpression && node.Count > 0) {
+                nodeValue = FormatNode (node);
+            } else {
+                nodeValue = node.Value;
+            }
+            if (IsExpression (nodeValue)) {
+                var match = Create (nodeValue as string).Evaluate (node);
+                foreach (Node idx in match.Matches) {
+                    callback (idx, match.TypeOfMatch);
+                }
+            } else {
+                throw new ArgumentException ("IterateNodes expected an expression, but was not given one");
+            }
+        }
+
+        /// <summary>
+        /// clones all nodes in expression of node's value, if no expression exists,
+        /// all children nodes of node are cloned and returned
+        /// </summary>
+        /// <param name="node">Node.</param>
+        /// <param name="formatExpression">If set to <c>true</c> format expression.</param>
+        public static IEnumerable<Node> Clone (Node node, bool formatExpression)
+        {
+            List<Node> retVal = null;
+            if (IsExpression (node.Value)) {
+                retVal = new List<Node> ();
+                Iterate<Node> (node, formatExpression,
+                delegate (Node idx) {
+                    retVal.Add (idx.Clone ());
+                });
+            } else {
+                retVal = new List<Node> (node.Children);
+            }
+            foreach (Node idx in retVal) {
+                yield return idx.Clone ();
+            }
+        }
+
+        /// <summary>
         /// returns a single value of type T from expression in node's value given
         /// </summary>
         /// <param name="node">node containing expression, being current node for expression</param>
@@ -167,7 +185,9 @@ namespace phosphorus.lambda
             }
             if (IsExpression (nodeValue)) {
                 var match = Create (nodeValue as string).Evaluate (node);
-                if (!match.IsSingleLiteral)
+                if (match.TypeOfMatch == Match.MatchType.Count)
+                    return (T)(object)match.Count;
+                if (match.Count > 1)
                     throw new ArgumentException ("Single expected single value of expression, but expression returned multiple results");
                 return match.GetValue<T> (0);
             } else {
@@ -208,6 +228,8 @@ namespace phosphorus.lambda
                 }
                 return retVal;
             } else {
+                if (nodeValue.StartsWith ("\\"))
+                    nodeValue = nodeValue.Substring (1); // supporting escaped expressions
                 return nodeValue;
             }
         }
@@ -243,6 +265,8 @@ namespace phosphorus.lambda
                 }
                 return retVal;
             } else {
+                if (nodeValue.StartsWith ("\\"))
+                    nodeValue = nodeValue.Substring (1); // supporting escaped expressions
                 return nodeValue;
             }
         }

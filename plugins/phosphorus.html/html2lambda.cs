@@ -29,7 +29,7 @@ namespace phosphorus.html
             HtmlNode.ElementsFlags.Remove ("form");
 
             Expression.Iterate<string> (e.Args, true, 
-                                        delegate (string idx) {
+            delegate (string idx) {
                 HtmlDocument doc = new HtmlDocument ();
                 doc.LoadHtml (idx);
                 e.Args.Add (new Node ());

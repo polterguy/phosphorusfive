@@ -29,22 +29,12 @@ namespace phosphorus.hyperlisp
         [ActiveEvent (Name = "pf.hyperlisp.hyperlisp2lambda")]
         private static void pf_hyperlisp_hyperlisp2lambda (ApplicationContext context, ActiveEventArgs e)
         {
-            string hyperlisp = e.Args.Get<string> ();
-            if (Expression.IsExpression (hyperlisp)) {
-
-                // retrieving hyperlisp as a function of the expression
-                var match = Expression.Create (hyperlisp).Evaluate (e.Args);
-                if (match.TypeOfMatch != Match.MatchType.Value)
-                    throw new ArgumentException ("[pf.hyperlisp.hyperlisp2lambda] can only take an expression of 'value' type");
-
-                StringBuilder builder = new StringBuilder ();
-                foreach (Node idx in match.Matches) {
-                    builder.Append ("\r\n");
-                    builder.Append (idx.Get<string> ());
-                }
-                hyperlisp = builder.ToString ();
-            }
-            e.Args.AddRange (new NodeBuilder (context, hyperlisp).Nodes);
+            StringBuilder builder = new StringBuilder ();
+            Expression.Iterate<string> (e.Args, true, 
+            delegate (string idx) {
+                builder.Append (idx + "\n");
+            });
+            e.Args.AddRange (new NodeBuilder (context, builder.ToString ()).Nodes);
         }
 
         /// <summary>
@@ -58,14 +48,12 @@ namespace phosphorus.hyperlisp
         private static void pf_code_lambda2hyperlisp (ApplicationContext context, ActiveEventArgs e)
         {
             if (Expression.IsExpression (e.Args.Value)) {
-                string expression = e.Args.Get<string> ();
-                if (e.Args.Count > 0) {
-                    expression = Expression.FormatNode (e.Args);
-                }
-                var match = Expression.Create (expression).Evaluate (e.Args);
-                if (match.TypeOfMatch != Match.MatchType.Node)
-                    throw new ArgumentException ("[lambda2hyperlisp] can only take an expression of 'node' type");
-                e.Args.Value = new HyperlispBuilder (context, match.Matches).Hyperlisp;
+                List<Node> nodeList = new List<Node> ();
+                Expression.Iterate<Node> (e.Args, true, 
+                delegate (Node idx) {
+                    nodeList.Add (idx);
+                });
+                e.Args.Value = new HyperlispBuilder (context, nodeList).Hyperlisp;
             } else if (e.Args.Value is Node) {
                 e.Args.Value = new HyperlispBuilder (context, new Node [] { e.Args.Get<Node> () }).Hyperlisp;
             } else {

@@ -54,24 +54,8 @@ namespace phosphorus.lambda
             } else {
                 
                 // executing current scope
-                ExecuteBlock (context, e.Args, null, GetLambdaType (e));
+                ExecuteBlock (context, e.Args, new Node [] {}, GetLambdaType (e));
             }
-        }
-
-        /*
-         * returns the type of [lambda] statement, Normal, Copy or Immutable
-         */
-        private static LambdaType GetLambdaType (ActiveEventArgs e)
-        {
-            switch (e.Name) {
-            case "lambda":
-                return LambdaType.Normal;
-            case "lambda.copy":
-                return LambdaType.Copy;
-            case "lambda.immutable":
-                return LambdaType.Immutable;
-            }
-            throw new ArgumentException ("unknown type of lambda execution; '" + e.Name + "'");
         }
 
         /*
@@ -79,60 +63,14 @@ namespace phosphorus.lambda
          */
         private static void ExecuteLambdaValue (ApplicationContext context, Node args, LambdaType type)
         {
-            if (args.Value is Node) {
-                ExecuteBlock (context, args.Get<Node> (), args.Children, type);
-            } else {
-                string codeOrExpression = args.Get<string> ();
-                if (Expression.IsExpression (codeOrExpression)) {
-
-                    // value of execution node is an expression, figuring out if our expression returns "node" 
-                    // or "something else" before we invoke further execution logic
-                    Match executionMatch = Expression.Create (args.Get<string> ()).Evaluate (args);
-                    if (executionMatch.TypeOfMatch == Match.MatchType.Node) {
-
-                        // expression returned "node"(s)
-                        foreach (Node current in executionMatch.Matches) {
-                            ExecuteBlock (context, current, args.Children, type);
-                        }
-                    } else {
-
-                        // expression returned anything but "node", executing result as text, unless "value" is a reference node
-                        for (int idxNo = 0; idxNo < executionMatch.Count; idxNo++) {
-                            var idxRes = executionMatch.GetValue (idxNo);
-                            Node idxResNode = idxRes as Node;
-                            if (idxResNode != null) {
-
-                                // current value of node was in fact a reference node, hence we execute it as a node
-                                ExecuteBlock (context, idxResNode, args.Children, type);
-                            } else {
-
-                                // current match was a string or something that (hopefully) can be converted into a string
-                                ExecuteLambdaText (context, (idxRes ?? "").ToString (), args.Children);
-                            }
-                        }
-                    }
+            Expression.Iterate<object> (args, false, 
+            delegate (object idxSource) {
+                if (idxSource is Node) {
+                    ExecuteBlock (context, idxSource as Node, args.Children, type);
                 } else {
-
-                    // value of execution node is code in text format, making sure we escape it, in case it starts with "@"
-                    ExecuteLambdaText (context, codeOrExpression, args.Children);
+                    ExecuteLambdaText (context, (idxSource ?? "").ToString (), args.Children);
                 }
-            }
-        }
-
-        /*
-         * executes a piece of text
-         */
-        private static void ExecuteLambdaText (ApplicationContext context, string code, IEnumerable<Node> args)
-        {
-            if (string.IsNullOrEmpty (code))
-                return; // nothing to execute here
-
-            // first transforming code into nodes
-            Node exe = new Node ("root", code);
-            context.Raise ("code2lambda", exe);
-
-            // then executing nodes created from "code" parameter
-            ExecuteBlock (context, exe, args, LambdaType.Normal);
+            });
         }
 
         /*
@@ -154,13 +92,11 @@ namespace phosphorus.lambda
             }
 
             // passing in arguments
-            if (args != null) {
-                foreach (Node idx in args) {
-                    exe.Add (idx.Clone ());
-                }
+            foreach (Node idx in args) {
+                exe.Add (idx.Clone ());
             }
 
-            // iterating through all nodes in execution scope
+            // iterating through all nodes in execution scope, and raising these as Active Events
             Node idxExe = exe.FirstChild;
             while (idxExe != null) {
 
@@ -171,10 +107,43 @@ namespace phosphorus.lambda
                 idxExe = idxExe.NextSibling;
             }
 
+            // making sure we reset original nodes, if execution type was "Immutable"
             if (type == LambdaType.Immutable) {
                 exe.Clear ();
                 exe.AddRange (oldNodes);
             }
+        }
+
+        /*
+         * returns the type of [lambda] statement, Normal, Copy or Immutable
+         */
+        private static LambdaType GetLambdaType (ActiveEventArgs e)
+        {
+            switch (e.Name) {
+            case "lambda":
+                return LambdaType.Normal;
+            case "lambda.copy":
+                return LambdaType.Copy;
+            case "lambda.immutable":
+                return LambdaType.Immutable;
+            }
+            throw new ArgumentException ("unknown type of lambda execution; '" + e.Name + "'");
+        }
+
+        /*
+         * executes a piece of text
+         */
+        private static void ExecuteLambdaText (ApplicationContext context, string code, IEnumerable<Node> args)
+        {
+            if (string.IsNullOrEmpty (code))
+                return; // nothing to execute here
+
+            // first transforming code into nodes
+            Node exe = new Node ("root", code);
+            context.Raise ("code2lambda", exe);
+
+            // then executing nodes created from "code" parameter
+            ExecuteBlock (context, exe, args, LambdaType.Normal);
         }
     }
 }

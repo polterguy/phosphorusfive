@@ -199,23 +199,6 @@ set:@/-/?name
         }
 
         [Test]
-        public void SetNameFromNodeExpression ()
-        {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-_out
-set:@/-/?name
-  :@/./+/?node
-x:y";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
-            Assert.AreEqual ("x:y", tmp [0].Name, "wrong value of node after executing lambda object");
-        }
-
-        [Test]
         public void SetMultipleValuesFromExpression ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
