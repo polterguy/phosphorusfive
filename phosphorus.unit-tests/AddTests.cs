@@ -23,8 +23,9 @@ namespace phosphorus.unittests
             tmp.Value = @"
 _out
 add:@/-/?node
-  x:y
-    z:q";
+  source
+    x:y
+      z:q";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("x", tmp [0] [0].Name, "wrong value of node after executing lambda object");
@@ -33,10 +34,10 @@ add:@/-/?node
             Assert.AreEqual ("q", tmp [0] [0] [0].Value, "wrong value of node after executing lambda object");
 
             // making sure source nodes are still around, and that add adds a copy of the nodes to add
-            Assert.AreEqual ("x", tmp [1] [0].Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("y", tmp [1] [0].Value, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("z", tmp [1] [0] [0].Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("q", tmp [1] [0] [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("x", tmp [1] [0] [0].Name, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("y", tmp [1] [0] [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("z", tmp [1] [0] [0] [0].Name, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("q", tmp [1] [0] [0] [0].Value, "wrong value of node after executing lambda object");
         }
         
         [Test]
@@ -49,7 +50,7 @@ add:@/-/?node
             tmp.Value = @"
 _out
 add:@/-/?node
-  :@/./+/*/?node
+  source:@/./+/*/?node
 _x
   x:y
     z:q";
@@ -68,7 +69,7 @@ _x
         }
 
         [Test]
-        public void AlmostExpression ()
+        public void AddNodesFromFormattedSourceExpression ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
             Loader.Instance.LoadAssembly ("phosphorus.lambda");
@@ -77,14 +78,43 @@ _x
             tmp.Value = @"
 _out
 add:@/-/?node
-  :"" @./+/*/**/?count""";
+  source:@/{0}/{1}/*/?node
+    :.
+    :+
+_x
+  x:y
+    z:q";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
-            Assert.AreEqual (string.Empty, tmp [0] [0].Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual (" @./+/*/**/?count", tmp [0] [0].Value, "wrong value of node after executing lambda object");
-            Assert.AreEqual (1, tmp [0].Count, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("x", tmp [0] [0].Name, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("y", tmp [0] [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("z", tmp [0] [0] [0].Name, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("q", tmp [0] [0] [0].Value, "wrong value of node after executing lambda object");
         }
-        
+
+        [Test]
+        public void AddNodesFromFormatedDestinationExpression ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+_out
+add:@/{0}/?node
+  :-
+  source:@/./+/*/?node
+_x
+  x:y
+    z:q";
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
+            context.Raise ("lambda", tmp);
+            Assert.AreEqual ("x", tmp [0] [0].Name, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("y", tmp [0] [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("z", tmp [0] [0] [0].Name, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("q", tmp [0] [0] [0].Value, "wrong value of node after executing lambda object");
+        }
+
         [Test]
         public void MultipleDestinationsWithExpressionSource ()
         {
@@ -96,7 +126,7 @@ add:@/-/?node
 _out1
 _out2
 add:@/-/|/-/-/?node
-  :@/./+/?node
+  source:@/./+/?node
 :dfg";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -117,7 +147,8 @@ add:@/-/|/-/-/?node
 _out1
 _out2
 add:@/-/|/-/-/?node
-  :dfg";
+  source
+    :dfg";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("dfg", tmp [0] [0].Value, "wrong value of node after executing lambda object");
@@ -137,8 +168,9 @@ add:@/-/|/-/-/?node
 _out1
 _out2
 add:@/-/|/-/-/?node
-  _x1:y1
-  _x2:y2";
+  source
+    _x1:y1
+    _x2:y2";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("_x1", tmp [0] [0].Name, "wrong value of node after executing lambda object");
@@ -162,7 +194,7 @@ add:@/-/|/-/-/?node
 _out1
 _out2
 add:@/-/|/-/-/?node
-  :@/./+/|/./+/+/?node
+  source:@/./+/|/./+/+/?node
 _x1:y1
 _x2:y2";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
@@ -186,7 +218,7 @@ _x2:y2";
             Node tmp = new Node ();
             tmp.Value = @"
 add:@/+/|/+/+/?node
-  :@/./+/|/./+/+/?node
+  source:@/./+/|/./+/+/?node
 _x1:y1
 _x2:y2";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
@@ -226,7 +258,7 @@ _x2:y2";
             tmp.Value = @"
 _out
 add:@/-/?value
-  :@/./+/*/**/?count
+  source:@/./+/*/**/?count
 _x
   x:y
     z:q
@@ -246,7 +278,7 @@ _x
             tmp.Value = @"
 _out
 add:@/-/?name
-  :@/./+/*/**/?count
+  source:@/./+/*/**/?count
 _x
   x:y
     z:q
@@ -266,7 +298,7 @@ _x
             tmp.Value = @"
 _out
 add:@/-/?count
-  :@/./+/*/**/?count
+  source:@/./+/*/**/?count
 _x
   x:y
     z:q
@@ -286,7 +318,7 @@ _x
             tmp.Value = @"
 _out
 add:@/-/?path
-  :@/./+/*/**/?count
+  source:@/./+/*/**/?count
 _x
   x:y
     z:q
@@ -321,7 +353,7 @@ add:@/-/?node";
             tmp.Value = @"
 _out
 add:@/-/?node
-  :@/./+/*/?value
+  source:@/./+/*/?value
 _x
   x:y
     z:q
@@ -341,7 +373,7 @@ _x
             tmp.Value = @"
 _out
 add:@/-/?node
-  :@/./+/*/**/?name
+  source:@/./+/*/**/?name
 _x
   x:y
     z:q
@@ -361,7 +393,7 @@ _x
             tmp.Value = @"
 _out
 add:@/-/?node
-  :@/./+/*/**/?path
+  source:@/./+/*/**/?path
 _x
   x:y
     z:q
@@ -381,7 +413,7 @@ _x
             tmp.Value = @"
 _out
 add:@/-/?node
-  :@/./+/*/**/?count
+  source:@/./+/*/**/?count
 _x
   x:y
     z:q

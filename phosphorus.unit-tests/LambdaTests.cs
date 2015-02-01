@@ -34,7 +34,7 @@ namespace phosphorus.unittests
             tmp.Value = @"
 _out
 set:@/-/?value
-  :howdy";
+  value:howdy";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("howdy", tmp [0].Value, "wrong value of node after executing lambda object");
@@ -83,7 +83,7 @@ set:@/-/?value
 _out
 lambda
   set:@/./-/?value
-    :howdy";
+    value:howdy";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("howdy", tmp [0].Value, "wrong value of node after executing lambda object");
@@ -100,9 +100,9 @@ lambda
 _out
 lambda.immutable
   set:@/./-/?value
-    :howdy
+    value:howdy
   set:@/+/?value
-    :no-show
+    value:no-show
   _no_out";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -142,9 +142,9 @@ lambda.copy
 _copy
 _exe
   set:@/./-/?value
-    :howdy
+    value:howdy
   set:@/+/?value
-    :no-show
+    value:no-show
   _no_out
 lambda.immutable:@/-/?node";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
@@ -185,10 +185,10 @@ lambda.copy:@/-/?node";
             tmp.Value = @"
 _input
 set:@/+/*/_input/?value
-  :@/./-/?node
+  value:@/./-/?node
 lambda.copy:@""
 set:@/./*/_input/#/?value
-  :howdy
+  value:howdy
 ""
   _input";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
@@ -206,12 +206,12 @@ set:@/./*/_input/#/?value
             tmp.Value = @"
 _input
 set:@/+/*/_input/?value
-  :@/./-/?node
+  value:@/./-/?node
 lambda:node:@""_x
   set:@/./*/_input/#/?value
-    :howdy
+    value:howdy
   set:@/?value
-    :no-val""
+    value:no-val""
   _input";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -229,12 +229,12 @@ lambda:node:@""_x
             tmp.Value = @"
 _input
 set:@/+/*/_input/?value
-  :@/./-/?node
+  value:@/./-/?node
 lambda.copy:node:@""_x
   set:@/./*/_input/#/?value
-    :howdy
+    value:howdy
   set:@/?value
-    :no-val""
+    value:no-val""
   _input";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -252,12 +252,12 @@ lambda.copy:node:@""_x
             tmp.Value = @"
 _input
 set:@/+/*/_input/?value
-  :@/./-/?node
+  value:@/./-/?node
 lambda.immutable:node:@""_x
   set:@/./*/_input/#/?value
-    :howdy
+    value:howdy
   set:@/?value
-    :no-val""
+    value:no-val""
   _input";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -276,7 +276,7 @@ lambda.immutable:node:@""_x
 _out
 _x
   set:@/./-/?value
-    :howdy
+    value:howdy
 lambda:@/-/?node";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -295,10 +295,10 @@ _out1
 _out2
 _x
   set:@/./-/-/?value
-    :howdy
+    value:howdy
 _x
   set:@/./-/-/?value
-    :world
+    value:world
 lambda:@/../*/_x/?node";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -316,13 +316,13 @@ lambda:@/../*/_x/?node";
             tmp.Value = @"
 _x:node:@""_x
   set:@/./*/_arg/#/?value
-    :howdy""
+    value:howdy""
 _x:@""set:@/./*/_arg/#/?value
-  :{0} world
+  value:{0} world
     :@/./././*/_arg/#/?value""
 _arg
 set:@/+/*/_arg/?value
-  :@/./-/?node
+  value:@/./-/?node
 lambda:@/../*/_x/?value
   _arg";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
@@ -339,7 +339,7 @@ lambda:@/../*/_x/?value
             Node tmp = new Node ();
             tmp.Value = @"
 set:@/+/#/?value
-  :world";
+  value:world";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
 
             // here we pass in a "reference node" that's being used for retrieving output from lambda

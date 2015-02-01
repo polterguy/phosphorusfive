@@ -39,4 +39,5 @@
 
 * refactor [set] statement to use Expression.Iterator, or similar techniques
 
+* remove Event.cs and Override.cs from phosphorus.lambda/helpers directory when done refactoring [event] statement
 

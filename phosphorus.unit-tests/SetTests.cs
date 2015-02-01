@@ -14,7 +14,7 @@ namespace phosphorus.unittests
     public class SetTests
     {
         [Test]
-        public void SetValueFromConstant ()
+        public void SetValueFromConstantString ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
             Loader.Instance.LoadAssembly ("phosphorus.lambda");
@@ -23,14 +23,30 @@ namespace phosphorus.unittests
             tmp.Value = @"
 _out
 set:@/-/?value
-  :y";
+  source:y";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("y", tmp [0].Value, "wrong value of node after executing lambda object");
         }
         
         [Test]
-        public void SetNameFromConstant ()
+        public void SetValueFromConstantInteger ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+_out
+set:@/-/?value
+  source:int:5";
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
+            context.Raise ("lambda", tmp);
+            Assert.AreEqual (5, tmp [0].Value, "wrong value of node after executing lambda object");
+        }
+
+        [Test]
+        public void SetNameFromConstantString ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
             Loader.Instance.LoadAssembly ("phosphorus.lambda");
@@ -39,10 +55,26 @@ set:@/-/?value
             tmp.Value = @"
 _out
 set:@/-/?name
-  :y";
+  source:y";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("y", tmp [0].Name, "wrong value of node after executing lambda object");
+        }
+
+        [Test]
+        public void SetNameFromConstantInteger ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+_out
+set:@/-/?name
+  source:int:5";
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
+            context.Raise ("lambda", tmp);
+            Assert.AreEqual ("5", tmp [0].Name, "wrong value of node after executing lambda object");
         }
 
         [Test]
@@ -55,7 +87,8 @@ set:@/-/?name
             tmp.Value = @"
 _out
 set:@/-/?node
-  x:y";
+  source
+    x:y";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("x", tmp [0].Name, "wrong value of node after executing lambda object");
@@ -63,7 +96,7 @@ set:@/-/?node
         }
 
         [Test]
-        public void SetValueFromExpression ()
+        public void SetValueFromExpressionString ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
             Loader.Instance.LoadAssembly ("phosphorus.lambda");
@@ -72,7 +105,7 @@ set:@/-/?node
             tmp.Value = @"
 _out
 set:@/-/?value
-  :@/./+/?value
+  source:@/./+/?value
 _source:x";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -80,7 +113,24 @@ _source:x";
         }
         
         [Test]
-        public void SetNameFromExpression ()
+        public void SetValueFromExpressionInteger ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+_out
+set:@/-/?value
+  source:@/./+/?value
+_source:int:5";
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
+            context.Raise ("lambda", tmp);
+            Assert.AreEqual (5, tmp [0].Value, "wrong value of node after executing lambda object");
+        }
+
+        [Test]
+        public void SetNameFromExpressionString ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
             Loader.Instance.LoadAssembly ("phosphorus.lambda");
@@ -89,13 +139,30 @@ _source:x";
             tmp.Value = @"
 _out
 set:@/-/?name
-  :@/./+/?value
+  source:@/./+/?value
 _source:x";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("x", tmp [0].Name, "wrong value of node after executing lambda object");
         }
         
+        [Test]
+        public void SetNameFromExpressionInteger ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+_out
+set:@/-/?name
+  source:@/./+/?value
+_source:int:5";
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
+            context.Raise ("lambda", tmp);
+            Assert.AreEqual ("5", tmp [0].Name, "wrong value of node after executing lambda object");
+        }
+
         [Test]
         public void SetNodeFromExpression ()
         {
@@ -106,7 +173,7 @@ _source:x";
             tmp.Value = @"
 _out
 set:@/-/?node
-  :@/./+/?node
+  source:@/./+/?node
 x:y";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -124,7 +191,7 @@ x:y";
             tmp.Value = @"
 _out
 set:@/-/?value
-  :@/./+/?path
+  source:@/./+/?path
 _source:x";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -141,7 +208,7 @@ _source:x";
             tmp.Value = @"
 _out
 set:@/-/?value
-  :@/../*/**/?count";
+  source:@/../*/**/?count";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual (3, tmp [0].Value, "wrong value of node after executing lambda object");
@@ -157,7 +224,7 @@ set:@/-/?value
             tmp.Value = @"
 _out
 set:@/-/?value
-  :@/./+/?node
+  source:@/./+/?node
 x:y";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -175,7 +242,7 @@ x:y";
             tmp.Value = @"
 _out
 set:@/-/?name
-  :@/./+/?path
+  source:@/./+/?path
 _source:x";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -192,10 +259,28 @@ _source:x";
             tmp.Value = @"
 _out
 set:@/-/?name
-  :@/../*/**/?count";
+  source:@/../*/**/?count";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("3", tmp [0].Name, "wrong value of node after executing lambda object");
+        }
+
+        [Test]
+        public void SetMultipleValuesFromConstant ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+_out1
+_out2
+set:@/-/|/-/-/?value
+  source:x";
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
+            context.Raise ("lambda", tmp);
+            Assert.AreEqual ("x", tmp [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("x", tmp [1].Value, "wrong value of node after executing lambda object");
         }
 
         [Test]
@@ -209,26 +294,8 @@ set:@/-/?name
 _out1
 _out2
 set:@/-/|/-/-/?value
-  :@/./+/?value
+  source:@/./+/?value
 _source:x";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
-            Assert.AreEqual ("x", tmp [0].Value, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("x", tmp [1].Value, "wrong value of node after executing lambda object");
-        }
-        
-        [Test]
-        public void SetMultipleValuesFromConstant ()
-        {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-_out1
-_out2
-set:@/-/|/-/-/?value
-  :x";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("x", tmp [0].Value, "wrong value of node after executing lambda object");
@@ -246,7 +313,8 @@ set:@/-/|/-/-/?value
 _out1
 _out2
 set:@/-/|/-/-/?node
-  x:y";
+  source
+    x:y";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("x", tmp [0].Name, "wrong value of node after executing lambda object");
@@ -266,7 +334,7 @@ set:@/-/|/-/-/?node
 _out1
 _out2
 set:@/-/|/-/-/?node
-  :@/./+/?node
+  source:@/./+/?node
 _x:y";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -374,6 +442,59 @@ set:@/-/|/-/-/?node";
         }
 
         [Test]
+        public void SourceIsFormattingExpression ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+_out
+set:@/-/?value
+  source:y{0}
+    :x";
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
+            context.Raise ("lambda", tmp);
+            Assert.AreEqual ("yx", tmp [0].Value, "wrong value of node after executing lambda object");
+        }
+
+        [Test]
+        public void DestinationIsFormattingExpression ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+_out
+set:@/{0}/?value
+  :-
+  source:y";
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
+            context.Raise ("lambda", tmp);
+            Assert.AreEqual ("y", tmp [0].Value, "wrong value of node after executing lambda object");
+        }
+        
+        [Test]
+        public void DestinationIsRecursiveFormattingExpression ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+_out
+set:@/../*/{0}/?value
+  :{0}{1}
+    :_o
+    :ut
+  source:y";
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
+            context.Raise ("lambda", tmp);
+            Assert.AreEqual ("y", tmp [0].Value, "wrong value of node after executing lambda object");
+        }
+
+        [Test]
         [ExpectedException]
         public void SyntaxError1 ()
         {
@@ -384,8 +505,9 @@ set:@/-/|/-/-/?node";
             tmp.Value = @"
 _out1
 set:@/-/?node
-  _x1:y
-  _x2:y";
+  source:@/./+/|/./+/+/?node
+_x1:f
+_x2:g";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
         }
@@ -400,10 +522,7 @@ set:@/-/?node
             Node tmp = new Node ();
             tmp.Value = @"
 _out1
-set:@/-/?node
-  :@/./+/|/./+/+/?node
-_x1:f
-_x2:g";
+set:@/-/?path";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
         }
@@ -418,7 +537,7 @@ _x2:g";
             Node tmp = new Node ();
             tmp.Value = @"
 _out1
-set:@/-/?path";
+set:@/-/?count";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
         }
@@ -433,11 +552,14 @@ set:@/-/?path";
             Node tmp = new Node ();
             tmp.Value = @"
 _out1
-set:@/-/?count";
+set:@/-/?value
+  source:@/./+/|/./+/+/?value
+_x1:f
+_x2:g";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
         }
-        
+
         [Test]
         [ExpectedException]
         public void SyntaxError5 ()
@@ -448,14 +570,14 @@ set:@/-/?count";
             Node tmp = new Node ();
             tmp.Value = @"
 _out1
-set:@/-/?value
-  :@/./+/|/./+/+/?value
+set:@/-/?name
+  source:@/./+/|/./+/+/?value
 _x1:f
 _x2:g";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
         }
-
+        
         [Test]
         [ExpectedException]
         public void SyntaxError6 ()
@@ -466,8 +588,8 @@ _x2:g";
             Node tmp = new Node ();
             tmp.Value = @"
 _out1
-set:@/-/?name
-  :@/./+/|/./+/+/?value
+set:@/-/?node
+  source:@/./+/|/./+/+/?value
 _x1:f
 _x2:g";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
@@ -484,10 +606,10 @@ _x2:g";
             Node tmp = new Node ();
             tmp.Value = @"
 _out1
-set:@/-/?node
-  :@/./+/|/./+/+/?value
-_x1:f
-_x2:g";
+set:@/-/?value
+  source:@/./+/?value
+  source:@/./+/?value
+_x1:f";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
         }

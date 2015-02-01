@@ -55,7 +55,7 @@ _x
   :y
 for-each:@/-/*/?node
   set:@/./*/__dp/#/?value
-    :z";
+    value:z";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("z", tmp [0] [0].Value);
@@ -80,9 +80,9 @@ _x
 for-each:@/-/*/?node
   for-each:@/./*/__dp/#/*/?node
     set:@/./*/__dp/#/?value
-      :q
+      value:q
     set:@/././*/__dp/#/?value
-      :z";
+      value:z";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("z", tmp [0] [0].Value);
@@ -104,7 +104,7 @@ for-each:@/-/*/?node
             tmp.Value = @"_data:node:""_foo""
 for-each:@/-/?value
   set:@/./*/__dp/#/?value
-    :bar";
+    value:bar";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("bar", tmp [0].Get<Node> ().Value);

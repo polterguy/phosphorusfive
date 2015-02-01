@@ -610,6 +610,18 @@ namespace phosphorus.core
         }
 
         /// <summary>
+        /// finds all nodes having the given name
+        /// </summary>
+        /// <param name="name">name of node to return</param>
+        public IEnumerable<Node> FindAll (string name)
+        {
+            foreach (Node idx in _children) {
+                if (idx.Name == name)
+                    yield return idx;
+            }
+        }
+
+        /// <summary>
         /// finds the first node having the given name, if no node exists with given name,
         /// then a new node with the given name will be created and returned to caller
         /// </summary>

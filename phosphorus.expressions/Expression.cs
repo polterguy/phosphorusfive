@@ -99,7 +99,8 @@ namespace phosphorus.lambda
         public static void Iterate<T> (Node node, bool formatExpression, IteratorCallbackVoid<T> callback)
         {
             object nodeValue = null;
-            if (formatExpression && node.Count > 0) {
+            List<Node> formatters = new List<Node> (node.FindAll (""));
+            if (formatExpression && formatters.Count > 0) {
                 nodeValue = FormatNode (node);
             } else {
                 nodeValue = node.Value;
@@ -131,7 +132,8 @@ namespace phosphorus.lambda
         public static void IterateNodes (Node node, bool formatExpression, IteratorCallbackNode callback)
         {
             object nodeValue = null;
-            if (formatExpression && node.Count > 0) {
+            List<Node> formatters = new List<Node> (node.FindAll (""));
+            if (formatExpression && formatters.Count > 0) {
                 nodeValue = FormatNode (node);
             } else {
                 nodeValue = node.Value;

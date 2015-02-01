@@ -24,29 +24,50 @@ namespace phosphorus.lambda
         private static void lambda_add (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Count == 0)
-                throw new ArgumentException ("[add] needs either a source expression, or a list of children nodes");
+                throw new ArgumentException ("[add] needs a [source]");
 
-            if (Expression.IsExpression (e.Args.LastChild.Value) && e.Args.Count == 1) {
+            // fetching source nodes
+            var source = new List<Node> (GetSource (e.Args));
 
-                // source is an expression, cloning source first, in case source is overlapping destination
-                List<Node> sourceNodes = new List<Node> (Expression.Clone (e.Args.LastChild, true));
+            // looping through every destination node, adding a copy of every source node, to its children collection
+            Expression.Iterate<Node> (e.Args, true, 
+            delegate (Node idxDestination) {
+                foreach (Node idxSource in source) {
+                    idxDestination.Add (idxSource.Clone());
+                }
+            });
+        }
 
-                // looping through each destination, adding every cloned source node, into every destination node
-                Expression.Iterate<Node> (e.Args, false, 
+        /*
+         * returns source back to caller
+         */
+        private static IEnumerable<Node> GetSource (Node node)
+        {
+            var sourceNodes = new List<Node> (node.FindAll ("source"));
+
+            // verifying syntax
+            if (sourceNodes.Count > 1)
+                throw new ArgumentException ("[add] can only handle one [source]");
+            if (sourceNodes [0] != node.LastChild)
+                throw new ArgumentException ("[source] must be the last child of [add] statement");
+
+            if (Expression.IsExpression (sourceNodes [0].Value)) {
+
+                // source is an expression
+                List<Node> retVal = new List<Node> ();
+                Expression.Iterate<Node> (sourceNodes [0], true, 
                 delegate (Node idxDestination) {
-                    foreach (Node idxSource in sourceNodes) {
-                        idxDestination.Add (idxSource.Clone());
-                    }
+                    retVal.Add (idxDestination.Clone ()); // cloning in case source and destination overlaps
                 });
+                return retVal;
+            } else if (sourceNodes [0].Value != null) {
+
+                // source node's value is not empty, still not an expression, which is a bug
+                throw new ArgumentException ("[source] node contained a value which was not an expression");
             } else {
 
-                // adding a bunch of children nodes into source
-                Expression.Iterate<Node> (e.Args, false, 
-                delegate (Node idxDestination) {
-                    foreach (Node idxSource in e.Args.Children) {
-                        idxDestination.Add (idxSource.Clone());
-                    }
-                });
+                // source is a bunch of static children
+                return sourceNodes [0].Children;
             }
         }
     }

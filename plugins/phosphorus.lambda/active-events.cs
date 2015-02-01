@@ -25,11 +25,11 @@ namespace phosphorus.lambda
         {
             string query = e.Args.Get<string> ();
             foreach (var idx in context.ActiveEvents) {
-                if (query == null || idx.Contains (query))
+                if (string.IsNullOrEmpty (query) || idx.Contains (query))
                     e.Args.Add (new Node (string.Empty, idx));
             }
             foreach (var idx in context.Overrides) {
-                if (query == null || idx.Item1.Contains (query))
+                if (string.IsNullOrEmpty (query) || idx.Item1.Contains (query))
                     e.Args.Add (new Node (string.Empty, idx.Item1));
             }
         }

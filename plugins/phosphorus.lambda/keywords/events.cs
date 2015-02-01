@@ -16,10 +16,10 @@ namespace phosphorus.lambda
     public static class events
     {
         // contains our list of dynamically created Active Events
-        private static Dictionary<string, List<Event>> _events = new Dictionary<string, List<Event>> ();
+        private static Dictionary<string, Node> _events = new Dictionary<string, Node> ();
 
         // contains our list of overrides
-        private static List<Override> _overrides = new List<Override> ();
+        private static Dictionary<string, List<string>> _overrides = new Dictionary<string, List<string>> ();
 
         /// <summary>
         /// creates a new Active Event. pass in [lambda] and [overrides]. [overrides] can either be a 
@@ -30,30 +30,41 @@ namespace phosphorus.lambda
         [ActiveEvent (Name = "event")]
         private static void lambda_event (ApplicationContext context, ActiveEventArgs e)
         {
-            // verifying syntax
-            if (e.Args.Count > 2 || e.Args.Count == 0)
-                throw new ArgumentException ("syntax error in [event], only two arguments are legal; [overrides] and [lambda], and [lambda] is mandatory");
-            else if (e.Args.Count == 2 && (e.Args [0].Name != "overrides" || e.Args [1].Name != "lambda"))
-                throw new ArgumentException ("syntax error in [event], only [overrides] and [lambda] are legal arguments, and [overrides] must come before [lambda]");
-            else if (e.Args.Count == 1 && e.Args [0].Name != "lambda")
-                throw new ArgumentException ("syntax error in [event], [lambda] is mandatory argument");
-
             // retrieving [name]
-            string name = e.Args.Get<string> ();
+            string name = Expression.Single<string> (e.Args, false);
             if (string.IsNullOrEmpty (name))
-                throw new ArgumentException ("no event name given to [event]");
+                throw new ArgumentException ("no event name given to [event] statement");
 
-            // retrieving [overrides] and [code]
-            Node lambda = null;
-            if (e.Args.Count == 2) {
-                CreateOverride (context, name, GetOverrides (e.Args [0]));
-                lambda = e.Args [1].Clone ();
-            } else {
-                lambda = e.Args [0].Clone ();
+            // creating overrides
+            Node overrides = e.Args.Find ("overrides");
+            if (overrides != null) {
+
+                // adding all overrides from [overrides] node, first "main override"
+                string mainBaseEvent = Expression.Single<string> (overrides, false);
+
+                // making sure our override dictionary contains the key for the current Active Event name
+                if (!string.IsNullOrEmpty (mainBaseEvent) && !_overrides.ContainsKey (mainBaseEvent)) {
+                    _overrides [mainBaseEvent] = new List<string> ();
+                }
+                if (!string.IsNullOrEmpty (mainBaseEvent)) {
+                    _overrides [mainBaseEvent].Add (name);
+                    context.Override (mainBaseEvent, name);
+                }
+
+                // then all "children" overrides
+                foreach (Node idxBaseNode in overrides.Children) {
+                    string idxBaseName = Expression.Single<string> (idxBaseNode, true);
+                    if (!_overrides.ContainsKey (idxBaseName))
+                        _overrides [idxBaseName] = new List<string> ();
+                    _overrides [idxBaseName].Add (name);
+                    context.Override (idxBaseName, name);
+                }
             }
 
-            // creating event
-            CreateEvent (context, name, lambda);
+            // creating event, but removing [overrides] node, if it exists
+            if (!_events.ContainsKey (name))
+                _events [name] = new Node ();
+            _events [name].AddRange (e.Args.Clone ().Remove ("overrides").Children);
         }
 
         /// <summary>
@@ -65,16 +76,12 @@ namespace phosphorus.lambda
         private static void lambda_delete_event (ApplicationContext context, ActiveEventArgs e)
         {
             // retrieving [name] of event to delete
-            string name = e.Args.Get<string> ();
+            string name = Expression.Single<string> (e.Args, true);
             if (string.IsNullOrEmpty (name))
                 throw new ArgumentException ("no event name given to [delete-event]");
 
-            // verifying syntax
-            if (e.Args.Count > 0)
-                throw new ArgumentException ("[delete-event] does not take any arguments");
-
             // actually deleting event
-            DeleteEvent (context, name);
+            _events.Remove (name);
         }
 
         /// <summary>
@@ -87,53 +94,65 @@ namespace phosphorus.lambda
         [ActiveEvent (Name = "call-base")]
         private static void lambda_call_base (ApplicationContext context, ActiveEventArgs e)
         {
-            // checking to see if current Active Event actually has a base, and if we're even inside an Active Event
-            if (e.Args.Root [0].Name == "__base" && e.Args.Root [0].Count > 0) {
+            // finding Active Event node, such that we can retrieve base Active Event
+            Node current = e.Args.Parent;
+            while (current [0].Name != "__base") {
+                current = current.Parent;
+                if (current == null)
+                    return;
+            }
 
-                // retrieving base Active Event name, making sure "current base" ise removed, but all other
-                // base event data is passed onwards into the hierarchy
-                string activeEventName = e.Args.Root [0] [0].Get<string> ();
+            // retrieving base Active Event name
+            string activeEventName = current [0] [0].Get<string> ();
 
+            // invoking base event
+            if (_events.ContainsKey (activeEventName)) {
+                
                 // appending base information to current invocation, and removing "this" event from base list
                 // of args passed into "this invocation", but only if base has additional base events
-                if (e.Args.Root [0].Count > 1) {
-                    e.Args.Insert (0, e.Args.Root [0].Clone ());
+                if (current [0].Count > 1) {
+                    e.Args.Insert (0, current [0].Clone ());
                     e.Args [0] [0].Untie ();
                 }
 
-                // invoking base event
-                InvokeEvent (context, activeEventName, e.Args);
-
+                // invoking event
+                e.Args.AddRange (_events [activeEventName].Clone ().Children);
+                context.Raise ("lambda", e.Args);
+                
                 // cleaning up "base list" after execution of base, but only if there is any "base events" for current base
                 if (e.Args.Count > 0 && e.Args [0].Name == "__base")
                     e.Args [0].Untie ();
+            } else {
+
+                // leaving it up to core to figure out base events
+                context.CallBase (e);
             }
         }
 
         /// <summary>
         /// dynamically overrides one method with another. pass in the method to override as value, and
-        /// the method you wish to override it with as [with]
+        /// the method you wish to override as children's values
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "override")]
         private static void lambda_override (ApplicationContext context, ActiveEventArgs e)
         {
-            // verifying syntax
-            if (e.Args.Count != 1 || e.Args [0].Name != "with")
-                throw new ArgumentException ("you must pass in [with] to [override] as event to override with");
-            if (e.Args [0].Value == null && e.Args [0].Count == 0)
-                throw new ArgumentException ("you must pass in either a value or children to [override] as event(s) you wish to override");
-            if (e.Args [0].Value != null && e.Args [0].Count > 0)
-                throw new ArgumentException ("you must pass in either a value or children to [override] as event(s) you wish to override, not both");
+            // retrieving base event
+            string mainBaseEvt = Expression.Single<string> (e.Args, false);
+            if (string.IsNullOrEmpty (mainBaseEvt))
+                return;
 
-            string baseEvt = e.Args.Get<string> ();
-            if (e.Args [0].Value != null) {
-                CreateOverride (context, e.Args [0].Get<string> (), new string [] { baseEvt });
-            } else {
-                foreach (var idxWith in e.Args [0].Children) {
-                    CreateOverride (context, idxWith.Get<string> (), new string [] { baseEvt });
-                }
+            // making sure we've got a key for event overridden
+            if (!_overrides.ContainsKey (mainBaseEvt)) {
+                _overrides [mainBaseEvt] = new List<string> ();
+            }
+
+            // adding up every override
+            foreach (Node idx in e.Args.Children) {
+                string overrideIdx = Expression.Single<string> (idx, true);
+                _overrides [mainBaseEvt].Add (overrideIdx);
+                context.Override (mainBaseEvt, overrideIdx);
             }
         }
 
@@ -145,50 +164,14 @@ namespace phosphorus.lambda
         [ActiveEvent (Name = "delete-override")]
         private static void lambda_delete_override (ApplicationContext context, ActiveEventArgs e)
         {
-            string baseActiveEvent = e.Args.Get<string> ();
-            if (baseActiveEvent == null) {
-                throw new ArgumentException ("[delete-override] requires either an expression, or a constant defining which override to delete");
-            }
-            if (e.Args.Count == 0) {
-                throw new ArgumentException ("[delete-event] requires either an expression, or a constant defining which overrided Active Event you wish to delete");
-            }
-            string newActiveEvent = e.Args [0].Get<string> ();
-            List<string> newActiveEvents = new List<string> ();
-            if (Expression.IsExpression (newActiveEvent)) {
-                var match = Expression.Create (newActiveEvent).Evaluate (e.Args [0]);
-                for (int idxNo = 0; idxNo < match.Count; idxNo ++) {
-                    string idxNewAV = match.GetValue (idxNo) as string;
-                    if (idxNewAV == null) {
-                        throw new ArgumentException ("expression given to [delete-override] yielded a result that was not of type 'string'");
-                    }
-                    newActiveEvents.Add (idxNewAV);
-                }
-            } else {
-                newActiveEvents.Add (newActiveEvent);
-            }
-            List<string> baseActiveEvents = new List<string> ();
-            if (Expression.IsExpression (baseActiveEvent)) {
-                var match = Expression.Create (baseActiveEvent).Evaluate (e.Args);
-                for (int idxNo = 0; idxNo < match.Count; idxNo ++) {
-                    string overrideToRemove = match.GetValue (idxNo) as string;
-                    if (overrideToRemove == null) {
-                        throw new ArgumentException ("expression given to [delete-override] yielded a result that was not of type 'string'");
-                    }
-                    baseActiveEvents.Add (overrideToRemove);
-                }
-            } else {
-                baseActiveEvents.Add (baseActiveEvent);
-            }
-            foreach (string idxBase in baseActiveEvents) {
-                foreach (string idxNew in newActiveEvents) {
-                    foreach (var ovr in _overrides) {
-                        if (ovr.OverriddenEvent == idxBase && ovr.OverrideEvent == idxNew) {
-                            _overrides.Remove (ovr);
-                            UnInitializeOverride (context, ovr);
-                            break;
-                        }
-                    }
-                }
+            // retrieving base event
+            string baseEvent = Expression.Single<string> (e.Args, false);
+
+            // looping through all children as overrides
+            foreach (Node idxOverrideNode in e.Args.Children) {
+                string idxOverrideName = Expression.Single<string> (idxOverrideNode, true);
+                _overrides [baseEvent].Remove (idxOverrideName);
+                context.RemoveOverride (baseEvent, idxOverrideName);
             }
         }
 
@@ -202,163 +185,46 @@ namespace phosphorus.lambda
         [ActiveEvent (Name = "pf.core.initialize-application-context")]
         private static void pf_core_initialize_application_context (ApplicationContext context, ActiveEventArgs e)
         {
-            // initializing all Active Event lambda objects
-            foreach (var idxKey in _events.Keys) {
-                foreach (var evt in _events [idxKey]) {
-                    InitializeEvent (context, evt);
-                }
-            }
-
             // initializing all overrides
-            foreach (var idxOverride in _overrides) {
-                InitializeOverride (context, idxOverride);
+            foreach (string idxOverrideBase in _overrides.Keys) {
+                foreach (string idxOverridden in _overrides [idxOverrideBase]) {
+                    context.Override (idxOverrideBase, idxOverridden);
+                }
             }
         }
 
         /*
          * responsible for executing all dynamically created Active Events or lambda objects
          */
-        [ActiveEvent (Name = "_pf.core.execute-dynamic-lambda")]
-        private static void _pf_core_execute_dynamic_lambda (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "")]
+        private static void _pf_core_null_active_event (ApplicationContext context, ActiveEventArgs e)
         {
-            // retrieving actual event name raised
-            string actualEvtName = e.Base.Name;
+            if (_events.ContainsKey (e.Name)) {
 
-            // making sure "base event" is attached to lambda execution object, in case 
-            // event invokes "call-base", if there is a base event
-            if (e.Base.Base != null) {
+                // making sure "base event" is attached, if there is a base event
+                if (e.Base != null) {
 
-                // attaching all base Active Events in consecutive order
-                e.Args.Insert (0, new Node ("__base"));
-                ActiveEventArgs idxArgs = e.Base.Base;
-                while (idxArgs != null) {
-                    e.Args [0].Add (new Node (string.Empty, idxArgs.Name));
-                    idxArgs = idxArgs.Base;
-                }
-
-                // invoking event
-                InvokeEvent (context, actualEvtName, e.Args);
-
-                // removing "base event" arguments
-                e.Args [0].Untie ();
-            } else {
-
-                // no reason to massage this bugger
-                InvokeEvent (context, actualEvtName, e.Args);
-            }
-        }
-
-        /*
-         * responsible for actually invoking an Active Event from our list of dynamically created events
-         */
-        private static void InvokeEvent (ApplicationContext context, string actualEvtName, Node args)
-        {
-            // checking to see if we have an Active Event with the given name
-            if (_events.ContainsKey (actualEvtName)) {
-
-                // looping through all dynamically created Active Events with the given name
-                foreach (var evt in _events [actualEvtName]) {
-
-                    // creating our lambda execution object, appending all the parameters given to it
-                    Node exe = evt.Lambda.Clone ();
-                    foreach (Node idxArg in args.Children) {
-                        if (idxArg.Name == "__base")
-                            exe.Insert (0, idxArg.Clone ());
-                        else
-                            exe.Add (idxArg.Clone ());
+                    // attaching all base Active Events in consecutive order
+                    e.Args.Insert (0, new Node ("__base"));
+                    ActiveEventArgs idxArgs = e.Base;
+                    while (idxArgs != null) {
+                        e.Args [0].Add (new Node (string.Empty, idxArgs.Name));
+                        idxArgs = idxArgs.Base;
                     }
-                    exe.Name = args.Name;
-                    exe.Value = args.Value;
 
-                    // actually executing event implementation. no needs to invoke "copy" version, since we've done the dirty
-                    // works already copying the event code anyway, and to invoke the [lamba] simple version saves some cycles
-                    context.Raise ("lambda", exe);
+                    // invoking event
+                    e.Args.AddRange (_events [e.Name].Clone ().Children);
+                    context.Raise ("lambda", e.Args);
+
+                    // removing "base event" arguments
+                    e.Args [0].Untie ();
+                } else {
+
+                    // no reason to massage this bugger
+                    e.Args.AddRange (_events [e.Name].Clone ().Children);
+                    context.Raise ("lambda", e.Args);
                 }
             }
-        }
-
-        /*
-         * returns list of overrides
-         */
-        private static IEnumerable<string> GetOverrides (Node overrideNode)
-        {
-            if (overrideNode.Value != null && overrideNode.Count > 0)
-                throw new ArgumentException ("you cannot declare overrides for [event] both as value and as children, choose one");
-            if (overrideNode.Value != null) {
-                yield return overrideNode.Get<string> ();
-            } else {
-                foreach (var idxOverride in overrideNode.Children) {
-                    yield return idxOverride.Get<string> ();
-                }
-            }
-        }
-
-        /*
-         * creates new Active Event sink
-         */
-        private static void CreateEvent (ApplicationContext context, string name, Node lambda)
-        {
-            // creating new dynamic Active Event and adding to our (static) list of events
-            Event evt = new Event (name, lambda);
-            if (!_events.ContainsKey (name))
-                _events [name] = new List<Event> ();
-            _events [name].Add (evt);
-
-            // initializing event by creating the correct overrides and such
-            InitializeEvent (context, evt);
-        }
-
-        /*
-         * initializes Active Event by creating the mapping necessary to execute lambda object when Active Event is raised
-         */
-        private static void InitializeEvent (ApplicationContext context, Event evt)
-        {
-            if (!context.HasOverride (evt.Name, "_pf.core.execute-dynamic-lambda"))
-                context.Override (evt.Name, "_pf.core.execute-dynamic-lambda");
-        }
-
-        /*
-         * deletes the given event
-         */
-        private static void DeleteEvent (ApplicationContext context, string evt)
-        {
-            _events.Remove (evt);
-            context.RemoveOverride (evt, "_pf.core.execute-dynamic-lambda");
-        }
-
-        /*
-         * creates an override from one Active Event to another
-         */
-        private static void CreateOverride (ApplicationContext context, string overrideEvent, IEnumerable<string> overrides)
-        {
-            // looping through all overrides given for event to override, and creating associated overrides as static list
-            foreach (var overriddenEvent in overrides) {
-                Override over = new Override (overrideEvent, overriddenEvent);
-                _overrides.Add (over);
-
-                // actually initializing our override
-                InitializeOverride (context, over);
-            }
-        }
-
-        /*
-         * initializes override by creating the necessary mapping on the application context to make sure override is 
-         * invoked correctly
-         */
-        private static void InitializeOverride (ApplicationContext context, Override over)
-        {
-            context.RemoveOverride (over.OverriddenEvent, "_pf.core.execute-dynamic-lambda");
-            context.Override (over.OverriddenEvent, over.OverrideEvent);
-        }
-        
-        /*
-         * UN-initializes override by removing any existing mapping on the application context to make sure override is 
-         * removed correctly
-         */
-        private static void UnInitializeOverride (ApplicationContext context, Override over)
-        {
-            context.RemoveOverride (over.OverriddenEvent, over.OverrideEvent);
-            context.Override (over.OverriddenEvent, "_pf.core.execute-dynamic-lambda");
         }
     }
 }
