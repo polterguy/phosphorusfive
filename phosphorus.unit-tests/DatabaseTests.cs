@@ -12,24 +12,27 @@ using phosphorus.core;
 namespace phosphorus.unittests
 {
     [TestFixture]
-    public class DatabaseTests
+    public class DatabaseTests : TestBase
     {
+        public DatabaseTests ()
+        {
+            Loader.Instance.LoadAssembly ("phosphorus.types");
+            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            Loader.Instance.LoadAssembly ("phosphorus.file");
+            Loader.Instance.LoadAssembly ("phosphorus.data");
+            _context = Loader.Instance.CreateApplicationContext ();
+        }
+
         /*
          * runs before every unit test, deletes all documents from "unit_tests"
          */
         [SetUp]
         public void SetUp ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.data.delete:@/*/*/?node
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+            // deleting entire database, in case there already are items in it
+            ExecuteLambda (@"pf.data.delete:@/*/*/?node");
         }
 
         [ActiveEvent (Name = "pf.core.application-folder")]
@@ -43,39 +46,19 @@ pf.data.delete:@/*/*/?node
         [Test]
         public void SelectNonExisting ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.file");
-            Loader.Instance.LoadAssembly ("phosphorus.data");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.data.select:@/*/*/_mumbo_field/=jumbo_value/?node
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+            Node tmp = ExecuteLambda (@"pf.data.select:@/*/*/_mumbo_field/=jumbo_value/?node");
             Assert.AreEqual (0, tmp [0].Count, "wrong value of node after executing lambda object");
         }
 
         [Test]
         public void InsertSelectAndDelete ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.file");
-            Loader.Instance.LoadAssembly ("phosphorus.data");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.data.insert
+            Node tmp = ExecuteLambda (@"pf.data.insert
   _test1
     howdy:world
 pf.data.select:@/*/*/_test1/?node
 pf.data.delete:@/*/*/_test1/?node
-pf.data.select:@/*/*/_test1/?node
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+pf.data.select:@/*/*/_test1/?node");
             Assert.AreEqual (1, tmp [1].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("_test1", tmp [1] [0].Name, "wrong value of node after executing lambda object");
             Assert.AreEqual (null, tmp [1] [0].Value, "wrong value of node after executing lambda object");
@@ -87,21 +70,11 @@ pf.data.select:@/*/*/_test1/?node
         [Test]
         public void SelectSingleName ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.file");
-            Loader.Instance.LoadAssembly ("phosphorus.data");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.data.delete:@/*/*/_testX/?node
+            Node tmp = ExecuteLambda (@"pf.data.delete:@/*/*/_testX/?node
 pf.data.insert
   _testX
     howdy:world
-pf.data.select:@/*/*/_testX/0/?name
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+pf.data.select:@/*/*/_testX/0/?name");
             Assert.AreEqual (1, tmp [2].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual (string.Empty, tmp [2] [0].Name, "wrong value of node after executing lambda object");
             Assert.AreEqual ("howdy", tmp [2] [0].Value, "wrong value of node after executing lambda object");
@@ -110,21 +83,11 @@ pf.data.select:@/*/*/_testX/0/?name
         [Test]
         public void SelectSingleValue ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.file");
-            Loader.Instance.LoadAssembly ("phosphorus.data");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.data.delete:@/*/*/_testX/?node
+            Node tmp = ExecuteLambda (@"pf.data.delete:@/*/*/_testX/?node
 pf.data.insert
   _testX
     howdy:world
-pf.data.select:@/*/*/_testX/0/?value
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+pf.data.select:@/*/*/_testX/0/?value");
             Assert.AreEqual (1, tmp [2].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual (string.Empty, tmp [2] [0].Name, "wrong value of node after executing lambda object");
             Assert.AreEqual ("world", tmp [2] [0].Value, "wrong value of node after executing lambda object");
@@ -133,21 +96,11 @@ pf.data.select:@/*/*/_testX/0/?value
         [Test]
         public void SelectSingleCount ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.file");
-            Loader.Instance.LoadAssembly ("phosphorus.data");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.data.delete:@/*/*/_testX/?node
+            Node tmp = ExecuteLambda (@"pf.data.delete:@/*/*/_testX/?node
 pf.data.insert
   _testX
     howdy:world
-pf.data.select:@/*/*/_testX/0/?count
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+pf.data.select:@/*/*/_testX/0/?count");
             Assert.AreEqual (1, tmp [2].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual (string.Empty, tmp [2] [0].Name, "wrong value of node after executing lambda object");
             Assert.AreEqual (1, tmp [2] [0].Value, "wrong value of node after executing lambda object");
@@ -156,21 +109,11 @@ pf.data.select:@/*/*/_testX/0/?count
         [Test]
         public void SelectSinglePath ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.file");
-            Loader.Instance.LoadAssembly ("phosphorus.data");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.data.delete:@/*/*/_testX/?node
+            Node tmp = ExecuteLambda (@"pf.data.delete:@/*/*/_testX/?node
 pf.data.insert
   _testX
     howdy:world
-pf.data.select:@/*/*/_testX/0/?path
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+pf.data.select:@/*/*/_testX/0/?path");
             Assert.AreEqual (1, tmp [2].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual (string.Empty, tmp [2] [0].Name, "wrong value of node after executing lambda object");
             Assert.IsTrue (tmp [2] [0].Value is Node.DNA, "wrong value of node after executing lambda object");
@@ -179,23 +122,13 @@ pf.data.select:@/*/*/_testX/0/?path
         [Test]
         public void SelectMultipleName ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.file");
-            Loader.Instance.LoadAssembly ("phosphorus.data");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.data.delete:@/*/*/_testX/?node
+            Node tmp = ExecuteLambda (@"pf.data.delete:@/*/*/_testX/?node
 pf.data.insert
   _testX
     howdy1:world1
   _testX
     howdy2:world2
-pf.data.select:@/*/*/_testX/0/?name
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+pf.data.select:@/*/*/_testX/0/?name");
             Assert.AreEqual (2, tmp [2].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual (string.Empty, tmp [2] [0].Name, "wrong value of node after executing lambda object");
             Assert.AreEqual (string.Empty, tmp [2] [1].Name, "wrong value of node after executing lambda object");
@@ -206,23 +139,13 @@ pf.data.select:@/*/*/_testX/0/?name
         [Test]
         public void SelectMultipleValue ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.file");
-            Loader.Instance.LoadAssembly ("phosphorus.data");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.data.delete:@/*/*/_testX/?node
+            Node tmp = ExecuteLambda (@"pf.data.delete:@/*/*/_testX/?node
 pf.data.insert
   _testX
     howdy1:world1
   _testX
     howdy2:world2
-pf.data.select:@/*/*/_testX/0/?value
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+pf.data.select:@/*/*/_testX/0/?value");
             Assert.AreEqual (2, tmp [2].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual (string.Empty, tmp [2] [0].Name, "wrong value of node after executing lambda object");
             Assert.AreEqual (string.Empty, tmp [2] [1].Name, "wrong value of node after executing lambda object");
@@ -233,23 +156,13 @@ pf.data.select:@/*/*/_testX/0/?value
         [Test]
         public void SelectMultiplePath ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.file");
-            Loader.Instance.LoadAssembly ("phosphorus.data");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.data.delete:@/*/*/_testX/?node
+            Node tmp = ExecuteLambda (@"pf.data.delete:@/*/*/_testX/?node
 pf.data.insert
   _testX
     howdy1:world1
   _testX
     howdy2:world2
-pf.data.select:@/*/*/_testX/0/?path
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+pf.data.select:@/*/*/_testX/0/?path");
             Assert.AreEqual (2, tmp [2].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual (string.Empty, tmp [2] [0].Name, "wrong value of node after executing lambda object");
             Assert.AreEqual (string.Empty, tmp [2] [1].Name, "wrong value of node after executing lambda object");
@@ -260,23 +173,13 @@ pf.data.select:@/*/*/_testX/0/?path
         [Test]
         public void SelectMultipleCount ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.file");
-            Loader.Instance.LoadAssembly ("phosphorus.data");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.data.delete:@/*/*/_testX/?node
+            Node tmp = ExecuteLambda (@"pf.data.delete:@/*/*/_testX/?node
 pf.data.insert
   _testX
     howdy1:world1
   _testX
     howdy2:world2
-pf.data.select:@/*/*/_testX/?count
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+pf.data.select:@/*/*/_testX/?count");
             Assert.AreEqual (1, tmp [2].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual (string.Empty, tmp [2] [0].Name, "wrong value of node after executing lambda object");
             Assert.AreEqual (2, tmp [2] [0].Value, "wrong value of node after executing lambda object");
@@ -285,21 +188,11 @@ pf.data.select:@/*/*/_testX/?count
         [Test]
         public void InsertFromExpression ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.file");
-            Loader.Instance.LoadAssembly ("phosphorus.data");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.data.delete:@/*/*/_testX/?node
+            Node tmp = ExecuteLambda (@"pf.data.delete:@/*/*/_testX/?node
 pf.data.insert:@/+/?node
 _testX
   howdy:world
-pf.data.select:@/*/*/_testX/?node
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+pf.data.select:@/*/*/_testX/?node");
             Assert.AreEqual (1, tmp [3].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("_testX", tmp [3] [0].Name, "wrong value of node after executing lambda object");
             Assert.AreEqual (null, tmp [3] [0].Value, "wrong value of node after executing lambda object");
@@ -310,23 +203,13 @@ pf.data.select:@/*/*/_testX/?node
         [Test]
         public void InsertMultipleFromExpression ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.file");
-            Loader.Instance.LoadAssembly ("phosphorus.data");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.data.delete:@/*/*/_testX/?node
+            Node tmp = ExecuteLambda (@"pf.data.delete:@/*/*/_testX/?node
 pf.data.insert:@/+/|/+/+/?node
 _testX
   howdy:world
 _testX
   howdy:world
-pf.data.select:@/*/*/_testX/?node
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+pf.data.select:@/*/*/_testX/?node");
             Assert.AreEqual (2, tmp [4].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("_testX", tmp [4] [0].Name, "wrong value of node after executing lambda object");
             Assert.AreEqual (null, tmp [4] [0].Value, "wrong value of node after executing lambda object");
@@ -341,21 +224,11 @@ pf.data.select:@/*/*/_testX/?node
         [Test]
         public void InsertAndCount ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.file");
-            Loader.Instance.LoadAssembly ("phosphorus.data");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.data.delete:@/*/*/_test2/?node
+            Node tmp = ExecuteLambda (@"pf.data.delete:@/*/*/_test2/?node
 pf.data.insert
   _test2
     howdy:world
-pf.data.select:@/*/*/_test2/?count
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+pf.data.select:@/*/*/_test2/?count");
             Assert.AreEqual (1, tmp [2].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual (1, tmp [2] [0].Value, "wrong value of node after executing lambda object");
         }
@@ -363,14 +236,7 @@ pf.data.select:@/*/*/_test2/?count
         [Test]
         public void InsertSelectAndCountMultipleNodes ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.file");
-            Loader.Instance.LoadAssembly ("phosphorus.data");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.data.delete:@/*/*/_test3/?node
+            Node tmp = ExecuteLambda (@"pf.data.delete:@/*/*/_test3/?node
 pf.data.insert
   _test3
     howdy:world
@@ -379,10 +245,7 @@ pf.data.insert
   _test3
     howdy:world3
 pf.data.select:@/*/*/_test3/?count
-pf.data.select:@/*/*/_test3/?node
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+pf.data.select:@/*/*/_test3/?node");
             Assert.AreEqual (3, tmp [2] [0].Value, "wrong value of node after executing lambda object");
             Assert.AreEqual (3, tmp [3].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("_test3", tmp [3] [0].Name, "wrong value of node after executing lambda object");
@@ -399,14 +262,7 @@ pf.data.select:@/*/*/_test3/?node
         [Test]
         public void InsertAndSelectInnerNodes ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.file");
-            Loader.Instance.LoadAssembly ("phosphorus.data");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.data.delete:@/*/*/_test4/?node
+            Node tmp = ExecuteLambda (@"pf.data.delete:@/*/*/_test4/?node
 pf.data.insert
   _test4
     howdy:world
@@ -416,10 +272,7 @@ pf.data.insert
       x:y
   _test4
     howdy:world3
-pf.data.select:@/*/*/_test4/*/query_field/*/x/=y/././?node
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+pf.data.select:@/*/*/_test4/*/query_field/*/x/=y/././?node");
             Assert.AreEqual (1, tmp [2].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("_test4", tmp [2] [0].Name, "wrong value of node after executing lambda object");
             Assert.AreEqual ("world2", tmp [2] [0] [0].Value, "wrong value of node after executing lambda object");
@@ -430,14 +283,7 @@ pf.data.select:@/*/*/_test4/*/query_field/*/x/=y/././?node
         [Test]
         public void UpdateSingleNode ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.file");
-            Loader.Instance.LoadAssembly ("phosphorus.data");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.data.delete:@/*/*/_test5/?node
+            Node tmp = ExecuteLambda (@"pf.data.delete:@/*/*/_test5/?node
 pf.data.insert
   _test5
     howdy:world
@@ -450,10 +296,7 @@ pf.data.insert
 pf.data.update:@/*/*/_test5/*/query_field/?node
   query_field2
     x:zz
-pf.data.select:@/*/*/_test5/*/query_field2/*/x/=zz/././?node
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+pf.data.select:@/*/*/_test5/*/query_field2/*/x/=zz/././?node");
             Assert.AreEqual (1, tmp [3].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("_test5", tmp [3] [0].Name, "wrong value of node after executing lambda object");
             Assert.AreEqual ("world2", tmp [3] [0] [0].Value, "wrong value of node after executing lambda object");
@@ -464,14 +307,7 @@ pf.data.select:@/*/*/_test5/*/query_field2/*/x/=zz/././?node
         [Test]
         public void UpdateMultipleNodes ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.file");
-            Loader.Instance.LoadAssembly ("phosphorus.data");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.data.delete:@/*/*/_test6/?node
+            Node tmp = ExecuteLambda (@"pf.data.delete:@/*/*/_test6/?node
 pf.data.delete:@/*/*/_test6_update/?node
 pf.data.insert
   _test6
@@ -484,10 +320,7 @@ pf.data.update:@/*/*/_test6/?node
   _test6_update
     howdy:worldZZ
 pf.data.select:@/*/*/_test6_update/?node
-pf.data.select:@/*/*/_test6/?node
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+pf.data.select:@/*/*/_test6/?node");
             Assert.AreEqual (3, tmp [4].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual (0, tmp [5].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("_test6_update", tmp [4] [0].Name, "wrong value of node after executing lambda object");
@@ -499,24 +332,14 @@ pf.data.select:@/*/*/_test6/?node
         [Test]
         public void UpdateFromFormattedExpressionSource ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.file");
-            Loader.Instance.LoadAssembly ("phosphorus.data");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.data.delete:@/*/*/_testX/?node
+            Node tmp = ExecuteLambda (@"pf.data.delete:@/*/*/_testX/?node
 pf.data.insert
   _testX
 pf.data.update:@/*/*/_testX/?value
   :{0}{1}
     :hello
     :world
-pf.data.select:@/*/*/_testX/?node
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+pf.data.select:@/*/*/_testX/?node");
             Assert.AreEqual (1, tmp [3].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("_testX", tmp [3] [0].Name, "wrong value of node after executing lambda object");
             Assert.AreEqual ("helloworld", tmp [3] [0].Value, "wrong value of node after executing lambda object");
@@ -525,14 +348,7 @@ pf.data.select:@/*/*/_testX/?node
         [Test]
         public void UpdateExpression ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.file");
-            Loader.Instance.LoadAssembly ("phosphorus.data");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.data.delete:@/*/*/(/_test7/|/_test7_update/)?node
+            Node tmp = ExecuteLambda (@"pf.data.delete:@/*/*/(/_test7/|/_test7_update/)?node
 pf.data.insert
   _test7
     howdy:world
@@ -541,10 +357,7 @@ pf.data.update:@/*/*/_test7/?node
 _test7_update
   howdy2:world2
 pf.data.select:@/*/*/_test7_update/?node
-pf.data.select:@/*/*/_test7/?node
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+pf.data.select:@/*/*/_test7/?node");
             Assert.AreEqual (1, tmp [4].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual (0, tmp [5].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("_test7_update", tmp [4] [0].Name, "wrong value of node after executing lambda object");
@@ -555,24 +368,14 @@ pf.data.select:@/*/*/_test7/?node
         [Test]
         public void UpdateValueFromValueExpression ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.file");
-            Loader.Instance.LoadAssembly ("phosphorus.data");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.data.delete:@/*/*/_test8/?node
+            Node tmp = ExecuteLambda (@"pf.data.delete:@/*/*/_test8/?node
 pf.data.insert
   _test8
     howdy:world
 pf.data.update:@/*/*/_test8/*/howdy/?value
   :@/./+/?value
 :world2
-pf.data.select:@/*/*/_test8/?node
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+pf.data.select:@/*/*/_test8/?node");
             Assert.AreEqual (1, tmp [4].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("_test8", tmp [4] [0].Name, "wrong value of node after executing lambda object");
             Assert.AreEqual ("world2", tmp [4] [0] [0].Value, "wrong value of node after executing lambda object");
@@ -581,24 +384,14 @@ pf.data.select:@/*/*/_test8/?node
         [Test]
         public void UpdateValueFromNameExpression ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.file");
-            Loader.Instance.LoadAssembly ("phosphorus.data");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.data.delete:@/*/*/_test8/?node
+            Node tmp = ExecuteLambda (@"pf.data.delete:@/*/*/_test8/?node
 pf.data.insert
   _test8
     howdy:world
 pf.data.update:@/*/*/_test8/*/howdy/?value
   :@/./+/?name
 world2
-pf.data.select:@/*/*/_test8/?node
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+pf.data.select:@/*/*/_test8/?node");
             Assert.AreEqual (1, tmp [4].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("_test8", tmp [4] [0].Name, "wrong value of node after executing lambda object");
             Assert.AreEqual ("world2", tmp [4] [0] [0].Value, "wrong value of node after executing lambda object");
@@ -607,24 +400,14 @@ pf.data.select:@/*/*/_test8/?node
         [Test]
         public void UpdateNameFromValueExpression ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.file");
-            Loader.Instance.LoadAssembly ("phosphorus.data");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.data.delete:@/*/*/_test9/?node
+            Node tmp = ExecuteLambda (@"pf.data.delete:@/*/*/_test9/?node
 pf.data.insert
   _test9
     howdy:world
 pf.data.update:@/*/*/_test9/*/howdy/?name
   :@/./+/?value
 :howdy2
-pf.data.select:@/*/*/_test9/?node
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+pf.data.select:@/*/*/_test9/?node");
             Assert.AreEqual (1, tmp [4].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("_test9", tmp [4] [0].Name, "wrong value of node after executing lambda object");
             Assert.AreEqual ("howdy2", tmp [4] [0] [0].Name, "wrong value of node after executing lambda object");
@@ -633,24 +416,14 @@ pf.data.select:@/*/*/_test9/?node
         [Test]
         public void UpdateNameFromNameExpression ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.file");
-            Loader.Instance.LoadAssembly ("phosphorus.data");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.data.delete:@/*/*/_test9/?node
+            Node tmp = ExecuteLambda (@"pf.data.delete:@/*/*/_test9/?node
 pf.data.insert
   _test9
     howdy:world
 pf.data.update:@/*/*/_test9/*/howdy/?name
   :@/./+/?name
 howdy2
-pf.data.select:@/*/*/_test9/?node
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+pf.data.select:@/*/*/_test9/?node");
             Assert.AreEqual (1, tmp [4].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("_test9", tmp [4] [0].Name, "wrong value of node after executing lambda object");
             Assert.AreEqual ("howdy2", tmp [4] [0] [0].Name, "wrong value of node after executing lambda object");
@@ -659,24 +432,14 @@ pf.data.select:@/*/*/_test9/?node
         [Test]
         public void UpdateNodeFromNodeExpression ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.file");
-            Loader.Instance.LoadAssembly ("phosphorus.data");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.data.delete:@/*/*/_test9/?node
+            Node tmp = ExecuteLambda (@"pf.data.delete:@/*/*/_test9/?node
 pf.data.insert
   _test9
     howdy:world
 pf.data.update:@/*/*/_test9/*/howdy/?node
   :@/./+/?node
 howdy2:world2
-pf.data.select:@/*/*/_test9/?node
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+pf.data.select:@/*/*/_test9/?node");
             Assert.AreEqual (1, tmp [4].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("_test9", tmp [4] [0].Name, "wrong value of node after executing lambda object");
             Assert.AreEqual ("howdy2", tmp [4] [0] [0].Name, "wrong value of node after executing lambda object");
@@ -686,23 +449,13 @@ pf.data.select:@/*/*/_test9/?node
         [Test]
         public void UpdateValueFromCountExpression ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.file");
-            Loader.Instance.LoadAssembly ("phosphorus.data");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.data.delete:@/*/*/_test9/?node
+            Node tmp = ExecuteLambda (@"pf.data.delete:@/*/*/_test9/?node
 pf.data.insert
   _test9
     howdy:world
 pf.data.update:@/*/*/_test9/*/howdy/?value
   :@/../*/?count
-pf.data.select:@/*/*/_test9/?node
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+pf.data.select:@/*/*/_test9/?node");
             Assert.AreEqual (1, tmp [3].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("_test9", tmp [3] [0].Name, "wrong value of node after executing lambda object");
             Assert.AreEqual (4, tmp [3] [0] [0].Value, "wrong value of node after executing lambda object");
@@ -711,23 +464,13 @@ pf.data.select:@/*/*/_test9/?node
         [Test]
         public void UpdateNameFromCountExpression ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.file");
-            Loader.Instance.LoadAssembly ("phosphorus.data");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.data.delete:@/*/*/_test9/?node
+            Node tmp = ExecuteLambda (@"pf.data.delete:@/*/*/_test9/?node
 pf.data.insert
   _test9
     howdy:world
 pf.data.update:@/*/*/_test9/*/howdy/?name
   :@/../*/?count
-pf.data.select:@/*/*/_test9/?node
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+pf.data.select:@/*/*/_test9/?node");
             Assert.AreEqual (1, tmp [3].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("_test9", tmp [3] [0].Name, "wrong value of node after executing lambda object");
             Assert.AreEqual ("4", tmp [3] [0] [0].Name, "wrong value of node after executing lambda object");
@@ -736,24 +479,14 @@ pf.data.select:@/*/*/_test9/?node
         [Test]
         public void UpdateValueFromNodeExpression ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.file");
-            Loader.Instance.LoadAssembly ("phosphorus.data");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.data.delete:@/*/*/_test9/?node
+            Node tmp = ExecuteLambda (@"pf.data.delete:@/*/*/_test9/?node
 pf.data.insert
   _test9
     howdy:world
 pf.data.update:@/*/*/_test9/*/howdy/?value
   :@/./+/?node
 _howdy:world
-pf.data.select:@/*/*/_test9/?node
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+pf.data.select:@/*/*/_test9/?node");
             Assert.AreEqual (1, tmp [4].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("_test9", tmp [4] [0].Name, "wrong value of node after executing lambda object");
             Assert.AreEqual ("howdy", tmp [4] [0] [0].Name, "wrong value of node after executing lambda object");
@@ -765,15 +498,7 @@ pf.data.select:@/*/*/_test9/?node
         [Test]
         public void InsertVeryManyValues ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.file");
-            Loader.Instance.LoadAssembly ("phosphorus.data");
-            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.data.delete:@/*/*/_testMany/?node
+            Node tmp = ExecuteLambda (@"pf.data.delete:@/*/*/_testMany/?node
 for-each:@/0/*/**/?node
   pf.data.insert
     _testMany
@@ -816,10 +541,7 @@ for-each:@/0/*/**/?node
       howdy:world
     _testMany
       howdy:world
-pf.data.select:@/*/*/_testMany/?count
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+pf.data.select:@/*/*/_testMany/?count");
             Assert.AreEqual (800, tmp [2] [0].Value, "wrong value of node after executing lambda object");
         }
     }

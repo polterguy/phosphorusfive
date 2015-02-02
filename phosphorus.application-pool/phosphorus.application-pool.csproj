@@ -115,6 +115,10 @@
       <Project>{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}</Project>
       <Name>phosphorus.expressions</Name>
     </ProjectReference>
+    <ProjectReference Include="..\plugins\phosphorus.types\phosphorus.types.csproj">
+      <Project>{5B8D14D0-854E-4143-AE48-C62583F49F49}</Project>
+      <Name>phosphorus.types</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="code\" />

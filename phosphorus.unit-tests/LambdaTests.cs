@@ -11,101 +11,68 @@ using phosphorus.core;
 namespace phosphorus.unittests
 {
     [TestFixture]
-    public class LambdaTests
+    public class LambdaTests : TestBase
     {
-        [Test]
-        public void InvokeEmptyLambda ()
+        public LambdaTests ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
             Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+            _context = Loader.Instance.CreateApplicationContext ();
+        }
+
+        [Test]
+        public void InvokeEmptyLambda ()
+        {
+            ExecuteLambda ("");
         }
         
         [Test]
         public void InvokeSimpleSetLambda ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-_out
+            Node tmp = ExecuteLambda (@"_out
 set:@/-/?value
-  source:howdy";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+  source:howdy");
             Assert.AreEqual ("howdy", tmp [0].Value, "wrong value of node after executing lambda object");
         }
         
         [Test]
         public void InvokeSimpleSetCopyLambda ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-_out
+            Node tmp = ExecuteLambda (@"_out
 set:@/-/?value
-  :howdy";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda.copy", tmp);
+  :howdy");
             Assert.AreNotEqual ("howdy", tmp [0].Value, "wrong value of node after executing lambda object");
         }
         
         [Test]
         public void InvokeSimpleSetImmutableLambda ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-_out
+            Node tmp = ExecuteLambda (@"_out
 set:@/-/?value
-  :howdy";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda.immutable", tmp);
+  :howdy");
             Assert.AreNotEqual ("howdy", tmp [0].Value, "wrong value of node after executing lambda object");
         }
 
         [Test]
         public void InvokeInnerLambda ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-_out
+            Node tmp = ExecuteLambda (@"_out
 lambda
   set:@/./-/?value
-    source:howdy";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+    source:howdy");
             Assert.AreEqual ("howdy", tmp [0].Value, "wrong value of node after executing lambda object");
         }
         
         [Test]
         public void InvokeInnerImmutableLambda ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-_out
+            Node tmp = ExecuteLambda (@"_out
 lambda.immutable
   set:@/./-/?value
     source:howdy
   set:@/+/?value
     source:no-show
-  _no_out";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+  _no_out");
             Assert.AreEqual ("howdy", tmp [0].Value, "wrong value of node after executing lambda object");
             Assert.AreEqual (null, tmp [1] [2].Value, "wrong value of node after executing lambda object");
         }
@@ -113,20 +80,13 @@ lambda.immutable
         [Test]
         public void InvokeInnerCopyLambda ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-_out
+            Node tmp = ExecuteLambda (@"_out
 lambda.copy
   set:@/./-/?value
     :howdy
   set:@/+/?value
     :no-show
-  _no_out";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+  _no_out");
             Assert.AreEqual (null, tmp [0].Value, "wrong value of node after executing lambda object");
             Assert.AreEqual (null, tmp [1] [2].Value, "wrong value of node after executing lambda object");
         }
@@ -134,21 +94,14 @@ lambda.copy
         [Test]
         public void InvokeInnerImmutableExpressionLambda ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-_copy
+            Node tmp = ExecuteLambda (@"_copy
 _exe
   set:@/./-/?value
     source:howdy
   set:@/+/?value
     source:no-show
   _no_out
-lambda.immutable:@/-/?node";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+lambda.immutable:@/-/?node");
             Assert.AreEqual ("howdy", tmp [0].Value, "wrong value of node after executing lambda object");
             Assert.AreEqual (null, tmp [1] [2].Value, "wrong value of node after executing lambda object");
         }
@@ -156,21 +109,14 @@ lambda.immutable:@/-/?node";
         [Test]
         public void InvokeInnerCopyExpressionLambda ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-_copy
+            Node tmp = ExecuteLambda (@"_copy
 _exe
   set:@/./-/?value
     :howdy
   set:@/+/?value
     :no-show
   _no_out
-lambda.copy:@/-/?node";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+lambda.copy:@/-/?node");
             Assert.AreEqual (null, tmp [0].Value, "wrong value of node after executing lambda object");
             Assert.AreEqual (null, tmp [1] [2].Value, "wrong value of node after executing lambda object");
         }
@@ -178,33 +124,21 @@ lambda.copy:@/-/?node";
         [Test]
         public void InvokeInnerTextWithParametersLambda ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-_input
+            Node tmp = ExecuteLambda (@"_input
 set:@/+/*/_input/?value
   source:@/./-/?node
 lambda.copy:@""
 set:@/./*/_input/#/?value
   source:howdy
 ""
-  _input";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+  _input");
             Assert.AreEqual ("howdy", tmp [0].Value, "wrong value of node after executing lambda object");
         }
 
         [Test]
         public void InvokeInnerNodeWithParametersLambda ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-_input
+            Node tmp = ExecuteLambda (@"_input
 set:@/+/*/_input/?value
   source:@/./-/?node
 lambda:node:@""_x
@@ -212,9 +146,7 @@ lambda:node:@""_x
     source:howdy
   set:@/?value
     source:no-val""
-  _input";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+  _input");
             Assert.AreEqual ("howdy", tmp [0].Value, "wrong value of node after executing lambda object");
             Assert.AreEqual ("no-val", tmp [2].Get<Node> () [1].Value, "wrong value of node after executing lambda object");
         }
@@ -222,12 +154,7 @@ lambda:node:@""_x
         [Test]
         public void InvokeInnerNodeCopyWithParametersLambda ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-_input
+            Node tmp = ExecuteLambda (@"_input
 set:@/+/*/_input/?value
   source:@/./-/?node
 lambda.copy:node:@""_x
@@ -235,9 +162,7 @@ lambda.copy:node:@""_x
     source:howdy
   set:@/?value
     source:no-val""
-  _input";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+  _input");
             Assert.AreEqual ("howdy", tmp [0].Value, "wrong value of node after executing lambda object");
             Assert.AreNotEqual ("no-val", tmp [2].Get<Node> () [1].Value, "wrong value of node after executing lambda object");
         }
@@ -245,12 +170,7 @@ lambda.copy:node:@""_x
         [Test]
         public void InvokeInnerNodeImmutableWithParametersLambda ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-_input
+            Node tmp = ExecuteLambda (@"_input
 set:@/+/*/_input/?value
   source:@/./-/?node
 lambda.immutable:node:@""_x
@@ -258,9 +178,7 @@ lambda.immutable:node:@""_x
     source:howdy
   set:@/?value
     source:no-val""
-  _input";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+  _input");
             Assert.AreEqual ("howdy", tmp [0].Value, "wrong value of node after executing lambda object");
             Assert.AreNotEqual ("no-val", tmp [2].Get<Node> () [1].Value, "wrong value of node after executing lambda object");
         }
@@ -268,30 +186,18 @@ lambda.immutable:node:@""_x
         [Test]
         public void InvokeInnerExpressionLambda ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-_out
+            Node tmp = ExecuteLambda (@"_out
 _x
   set:@/./-/?value
     source:howdy
-lambda:@/-/?node";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+lambda:@/-/?node");
             Assert.AreEqual ("howdy", tmp [0].Value, "wrong value of node after executing lambda object");
         }
         
         [Test]
         public void InvokeMultipleExpressionsLambda ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-_out1
+            Node tmp = ExecuteLambda (@"_out1
 _out2
 _x
   set:@/./-/-/?value
@@ -299,9 +205,7 @@ _x
 _x
   set:@/./-/-/?value
     source:world
-lambda:@/../*/_x/?node";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+lambda:@/../*/_x/?node");
             Assert.AreEqual ("howdy", tmp [0].Value, "wrong value of node after executing lambda object");
             Assert.AreEqual ("world", tmp [1].Value, "wrong value of node after executing lambda object");
         }
@@ -309,12 +213,7 @@ lambda:@/../*/_x/?node";
         [Test]
         public void InvokeMultipleExpressionsValueWithArgsLambda ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-_x:node:@""_x
+            Node tmp = ExecuteLambda (@"_x:node:@""_x
   set:@/./*/_arg/#/?value
     source:howdy""
 _x:@""set:@/./*/_arg/#/?value
@@ -324,23 +223,17 @@ _arg
 set:@/+/*/_arg/?value
   source:@/./-/?node
 lambda:@/../*/_x/?value
-  _arg";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+  _arg");
             Assert.AreEqual ("howdy world", tmp [2].Value, "wrong value of node after executing lambda object");
         }
 
         [Test]
         public void PassInReferenceOutputNode ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
             Node tmp = new Node ();
-            tmp.Value = @"
-set:@/+/#/?value
+            tmp.Value = @"set:@/+/#/?value
   source:world";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
+            _context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
 
             // here we pass in a "reference node" that's being used for retrieving output from lambda
             // basically the Value of one of the execution nodes is a node itself, which we can retrieve after execution, since the
@@ -350,7 +243,7 @@ set:@/+/#/?value
             tmp.Add (new Node (string.Empty, new Node ()));
 
             // executing lambda, now with a "reference node" being used for retrieving value(s) from inside the lambda object
-            context.Raise ("lambda.copy", tmp);
+            _context.Raise ("lambda.copy", tmp);
             Assert.AreEqual ("world", tmp [1].Get<Node> ().Value, "wrong value of node after executing lambda object");
             Assert.AreEqual (string.Empty, tmp [1].Get<Node> ().Name, "wrong value of node after executing lambda object");
         }
@@ -359,155 +252,85 @@ set:@/+/#/?value
         [ExpectedException]
         public void SyntaxError1 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-set:syntax-error";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+            ExecuteLambda (@"set:syntax-error");
         }
         
         [Test]
         [ExpectedException]
         public void SyntaxError2 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-_x
+            ExecuteLambda (@"_x
   set:syntax-error
-lambda:@/-/?node";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+lambda:@/-/?node");
         }
         
         [Test]
         [ExpectedException]
         public void SyntaxError3 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-lambda
-  set:syntax-error";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+            ExecuteLambda (@"lambda
+  set:syntax-error");
         }
         
         [Test]
         [ExpectedException]
         public void SyntaxError4 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-lambda.copy
-  set:syntax-error";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+            ExecuteLambda (@"lambda.copy
+  set:syntax-error");
         }
         
         [Test]
         [ExpectedException]
         public void SyntaxError5 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-lambda.immutable
-  set:syntax-error";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+            ExecuteLambda (@"lambda.immutable
+  set:syntax-error");
         }
         
         [Test]
         [ExpectedException]
         public void SyntaxError6 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-lambda.copy:@/+/?node
+            ExecuteLambda (@"lambda.copy:@/+/?node
 _x
-  set:syntax-error";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+  set:syntax-error");
         }
         
         [Test]
         [ExpectedException]
         public void SyntaxError7 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-lambda.immutable:@/+/?node
+            ExecuteLambda (@"lambda.immutable:@/+/?node
 _x
-  set:syntax-error";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+  set:syntax-error");
         }
         
         [Test]
         [ExpectedException]
         public void SyntaxError8 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-lambda:node:""
+            ExecuteLambda (@"lambda:node:""
 _x
-  set:syntax-error""";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+  set:syntax-error""");
         }
         
         [Test]
         [ExpectedException]
         public void SyntaxError9 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-lambda.copy:node:""
+            ExecuteLambda (@"lambda.copy:node:""
 _x
-  set:syntax-error""";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+  set:syntax-error""");
         }
         
         [Test]
         [ExpectedException]
         public void SyntaxError10 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-lambda.immutable:node:""
+            ExecuteLambda (@"lambda.immutable:node:""
 _x
-  set:syntax-error""";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+  set:syntax-error""");
         }
     }
 }

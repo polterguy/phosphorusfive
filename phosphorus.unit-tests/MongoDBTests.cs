@@ -12,43 +12,30 @@ using phosphorus.core;
 namespace phosphorus.unittests
 {
     [TestFixture]
-    public class MongoDBTests
+    public class MongoDBTests : TestBase
     {
-        /*
-         * runs before every unit test, deletes all documents from "unit_tests"
-         */
-        [SetUp]
-        public void SetUp ()
+        public MongoDBTests ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
             Loader.Instance.LoadAssembly ("phosphorus.lambda");
             Loader.Instance.LoadAssembly ("phosphorus.mongodb");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.mongo.delete:unit_tests
-pf.mongo.delete:unit_tests2
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+            _context = Loader.Instance.CreateApplicationContext ();
+        }
+
+        [SetUp]
+        public void SetUp ()
+        {
+            ExecuteLambda (@"pf.mongo.delete:unit_tests
+pf.mongo.delete:unit_tests2");
         }
 
         [Test]
         public void SimpleInsertAndSelect ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.mongodb");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.mongo.insert
+            Node tmp = ExecuteLambda (@"pf.mongo.insert
   unit_tests
     simple_string:howdy world
-pf.mongo.select:unit_tests
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+pf.mongo.select:unit_tests");
             Assert.IsTrue (tmp [0] [0].Value is MongoDB.Bson.BsonObjectId, "wrong value of node after executing lambda object");
             Assert.AreEqual ("result", tmp [1] [0].Name, "wrong value of node after executing lambda object");
             Assert.AreEqual ("unit_tests", tmp [1] [0] [0].Name, "wrong value of node after executing lambda object");
@@ -62,13 +49,7 @@ pf.mongo.select:unit_tests
         [Test]
         public void SimpleInsertAndSelectWithTypes ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.mongodb");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.mongo.insert
+            Node tmp = ExecuteLambda (@"pf.mongo.insert
   unit_tests
     simple_string:howdy world
     simple_integer:int:54
@@ -82,10 +63,7 @@ pf.mongo.insert
     simple_bool:bool:true
     simple_byte:byte:255
     simple_date:date:2015-01-20
-pf.mongo.select:unit_tests
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+pf.mongo.select:unit_tests");
             Assert.IsTrue (tmp [0] [0].Value is MongoDB.Bson.BsonObjectId, "wrong value of node after executing lambda object");
             Assert.AreEqual ("result", tmp [1] [0].Name, "wrong value of node after executing lambda object");
             Assert.AreEqual ("unit_tests", tmp [1] [0] [0].Name, "wrong value of node after executing lambda object");
@@ -122,22 +100,13 @@ pf.mongo.select:unit_tests
         [Test]
         public void InsertMultipleTablesInOneInsertStatement ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.mongodb");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.mongo.insert
+            Node tmp = ExecuteLambda (@"pf.mongo.insert
   unit_tests
     simple_string:howdy world
   unit_tests2
     simple_string2:howdy world2
 pf.mongo.select:unit_tests
-pf.mongo.select:unit_tests2
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+pf.mongo.select:unit_tests2");
             Assert.IsTrue (tmp [0] [0].Value is MongoDB.Bson.BsonObjectId, "wrong value of node after executing lambda object");
             Assert.IsTrue (tmp [0] [1].Value is MongoDB.Bson.BsonObjectId, "wrong value of node after executing lambda object");
             Assert.AreEqual ("result", tmp [1] [0].Name, "wrong value of node after executing lambda object");
@@ -159,23 +128,14 @@ pf.mongo.select:unit_tests2
         [Test]
         public void SelectWithCriteria ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.mongodb");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.mongo.insert
+            Node tmp = ExecuteLambda (@"pf.mongo.insert
   unit_tests
     simple_string:howdy world
   unit_tests
     simple_string:howdy world2
 pf.mongo.select:unit_tests
   where
-    simple_string:howdy world
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+    simple_string:howdy world");
             Assert.AreEqual (1, tmp [1] [1].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("simple_string", tmp [1] [1] [0] [0].Name, "wrong value of node after executing lambda object");
             Assert.AreEqual ("howdy world", tmp [1] [1] [0] [0].Value, "wrong value of node after executing lambda object");
@@ -184,23 +144,14 @@ pf.mongo.select:unit_tests
         [Test]
         public void SelectWithCriteriaInt ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.mongodb");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.mongo.insert
+            Node tmp = ExecuteLambda (@"pf.mongo.insert
   unit_tests
     value:int:5
   unit_tests
     value:int:6
 pf.mongo.select:unit_tests
   where
-    value:int:5
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+    value:int:5");
             Assert.AreEqual (1, tmp [1] [1].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("value", tmp [1] [1] [0] [0].Name, "wrong value of node after executing lambda object");
             Assert.AreEqual (5, tmp [1] [1] [0] [0].Value, "wrong value of node after executing lambda object");
@@ -209,36 +160,21 @@ pf.mongo.select:unit_tests
         [Test]
         public void SelectWithCriteriaNoMatch ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.mongodb");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.mongo.insert
+            Node tmp = ExecuteLambda (@"pf.mongo.insert
   unit_tests
     value:int:5
   unit_tests
     value:int:6
 pf.mongo.select:unit_tests
   where
-    value:int:7
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+    value:int:7");
             Assert.AreEqual (1, tmp [1].Count, "wrong value of node after executing lambda object");
         }
         
         [Test]
         public void SelectWithMultipleCriteria ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.mongodb");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.mongo.insert
+            Node tmp = ExecuteLambda (@"pf.mongo.insert
   unit_tests
     value:int:5
     name:john doe
@@ -248,10 +184,7 @@ pf.mongo.insert
 pf.mongo.select:unit_tests
   where
     value:int:5
-    name:john doe
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+    name:john doe");
             Assert.AreEqual (1, tmp [1] [1].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("value", tmp [1] [1] [0] [0].Name, "wrong value of node after executing lambda object");
             Assert.AreEqual (5, tmp [1] [1] [0] [0].Value, "wrong value of node after executing lambda object");
@@ -262,22 +195,13 @@ pf.mongo.select:unit_tests
         [Test]
         public void InsertWithChildrenNodes ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.mongodb");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.mongo.insert
+            Node tmp = ExecuteLambda (@"pf.mongo.insert
   unit_tests
     name:john doe
     address
       zip:98765
       street:Dunbar Rd.
-pf.mongo.select:unit_tests
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+pf.mongo.select:unit_tests");
             Assert.AreEqual (1, tmp [1] [0].Count, "wrong value of node after executing lambda object");
             Assert.AreEqual ("name", tmp [1] [0] [0] [0].Name, "wrong value of node after executing lambda object");
             Assert.AreEqual ("john doe", tmp [1] [0] [0] [0].Value, "wrong value of node after executing lambda object");
@@ -292,13 +216,7 @@ pf.mongo.select:unit_tests
         [Test]
         public void InsertDeepHierarchyMultipleTypes ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.mongodb");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-pf.mongo.insert
+            ExecuteLambda (@"pf.mongo.insert
   unit_tests
     name:john doe
     title:CEO
@@ -316,10 +234,7 @@ set:@/../**/unit_tests/?value
 if:@/../*/""pf.mongo.insert""/0/?node
   !=:@/../*/""pf.mongo.select""/0/result/*/?node
   lambda
-    _set:faking exception due to expression being parsed late, and only if equality fails
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+    _set:faking exception due to expression being parsed late, and only if equality fails");
         }
     }
 }

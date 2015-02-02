@@ -46,6 +46,12 @@ namespace phosphorus.unittests
         }
 
         [Test]
+        public void LoadAssemblyFromType ()
+        {
+            Loader.Instance.LoadAssembly (typeof (ContextAndLoaderTests));
+        }
+
+        [Test]
         public void CreateApplicationContext ()
         {
             ApplicationContext context = Loader.Instance.CreateApplicationContext ();

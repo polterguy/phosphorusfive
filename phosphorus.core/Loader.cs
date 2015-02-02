@@ -75,6 +75,29 @@ namespace phosphorus.core
         }
         
         /// <summary>
+        /// loads the assembly containing the given type for handling Active Events
+        /// </summary>
+        /// <param name="assembly">assembly to load</param>
+        public void LoadAssembly (Type type)
+        {
+            // checking to see if assembly is already loaded up, to avoid initializing the same assembly twice
+            Assembly assembly = type.Assembly;
+            if (_assemblies.Exists (
+                delegate(Assembly idx) {
+                return idx == assembly;
+            }))
+                return;
+
+            // finding the assembly in our current AppDomain, for then to initialize it
+            foreach (var idxAsm in AppDomain.CurrentDomain.GetAssemblies ()) {
+                if (idxAsm == assembly) {
+                    InitializeAssembly (idxAsm);
+                    _assemblies.Add (idxAsm);
+                }
+            }
+        }
+
+        /// <summary>
         /// loads an assembly for handling Active Events using the current directory as the directory
         /// for the assembly to load
         /// </summary>

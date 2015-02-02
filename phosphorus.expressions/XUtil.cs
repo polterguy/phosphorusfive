@@ -8,7 +8,6 @@ using System;
 using System.Globalization;
 using System.Collections.Generic;
 using phosphorus.core;
-using phosphorus.lambda.iterators;
 
 namespace phosphorus.lambda
 {
@@ -48,20 +47,22 @@ namespace phosphorus.lambda
         /// <param name="node">node to format</param>
         public static object FormatNode (Node node)
         {
-            List<Node> formatingValues = new List<Node> (node.FindAll (string.Empty));
-            if (formatingValues.Count > 0) {
+            if (node.Value is string) {
 
-                // this is a formatted node
-                List<string> childrenValues = new List<string> ();
-                foreach (Node idxNode in formatingValues) {
-                    object value = FormatNode (idxNode);
-                    if (IsExpression (value))
-                        value = Expression.Create (value as string).Evaluate (idxNode).GetValue (0, string.Empty);
-                    childrenValues.Add (value as string);
+                // we only try to format node's whos value is of type "string"
+                List<Node> formatingValues = new List<Node> (node.FindAll (string.Empty));
+                if (formatingValues.Count > 0) {
+
+                    // this is a formatted node
+                    List<string> childrenValues = new List<string> ();
+                    foreach (Node idxNode in formatingValues) {
+                        string value = Single<string> (idxNode);
+                        childrenValues.Add (value);
+                    }
+
+                    // returning node's value after being formatted according to its children nodes
+                    return string.Format (CultureInfo.InvariantCulture, node.Get<string> (), childrenValues.ToArray ());
                 }
-
-                // returning node's value after being formatted according to its children nodes
-                return string.Format (CultureInfo.InvariantCulture, node.Get<string> (), childrenValues.ToArray ());
             }
 
             // not a formatted node
@@ -96,7 +97,7 @@ namespace phosphorus.lambda
                 }
             } else {
                 // short hand helper for converting type correctly
-                callback (new Node (string.Empty, nodeValue).Get<T> ());
+                callback (Utilities.Convert<T> (nodeValue));
             }
         }
 
@@ -138,7 +139,7 @@ namespace phosphorus.lambda
                     throw new ArgumentException ("Single expected single value of expression, but expression returned multiple results");
                 return match.GetValue<T> (0);
             } else {
-                return new Node (string.Empty, nodeValue).Get<T> (); // short hand helper for converting type correctly
+                return Utilities.Convert <T> (nodeValue);
             }
         }
 

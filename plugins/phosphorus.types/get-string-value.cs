@@ -1,0 +1,86 @@
+
+/*
+ * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
+ * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
+ */
+
+using System;
+using System.Globalization;
+using phosphorus.core;
+
+namespace phosphorus.hyperlisp
+{
+    /// <summary>
+    /// helper class for converting from object value to string representation of object
+    /// </summary>
+    public static class getStringValue
+    {
+        /*
+         * retrieving value in string format Active Events. all types that support automatic conversion
+         * from their object representation to a string, do not need their own event handlers, since the
+         * default logic is to use "Convert.ChangeType". hence you only need to implement Active Event converters
+         * for types that do not implement IConvertible, or whos default implementation of IConvertible is
+         * not sufficient for creating a [*sane*] string representation of your object. examples are DateTime and 
+         * bool, since it creates a non-ISO date string representation by default, and Boolean, since it creates "True" and
+         * "False", instead of "true" and "false" - [capital letters are avoided in hyperlisp, if we can]
+         * 
+         * the name of all of these Active Events is "pf.hyperlist.get-string-value." + the fully qualified name of your type,
+         * or the return value of "typeof(YourType).FullName"
+         */
+
+        /// <summary>
+        /// returns Node as string value
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">parameters</param>
+        [ActiveEvent (Name = "pf.hyperlist.get-string-value.phosphorus.core.Node")]
+        private static void pf_hyperlist_get_string_value_phosphorus_core_Node (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = Object2String.ToString (e.Args.Get<Node> ());
+        }
+
+        /// <summary>
+        /// returns date's value in ISO string representation format, meaning date in "yyyy.MM.ddTHH:mm:ss" format
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">parameters</param>
+        [ActiveEvent (Name = "pf.hyperlist.get-string-value.System.DateTime")]
+        private static void pf_hyperlist_get_string_value_System_DateTime (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = Object2String.ToString (e.Args.Get<DateTime> ());
+        }
+        
+        /// <summary>
+        /// returns string representation of TimeSpan object
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">parameters</param>
+        [ActiveEvent (Name = "pf.hyperlist.get-string-value.System.TimeSpan")]
+        private static void pf_hyperlist_get_string_value_System_TimeSpan (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = Object2String.ToString (e.Args.Get<TimeSpan> ());
+        }
+        
+        /// <summary>
+        /// returns "true" or "false" depending upon whether or not the given bool value is true or not
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">parameters</param>
+        [ActiveEvent (Name = "pf.hyperlist.get-string-value.System.Boolean")]
+        private static void pf_hyperlist_get_string_value_System_Boolean (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = Object2String.ToString (e.Args.Get<bool> ());
+        }
+
+        /// <summary>
+        /// returns base64 string from byte[]
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">parameters</param>
+        [ActiveEvent (Name = "pf.hyperlist.get-string-value.System.Byte[]")]
+        private static void pf_hyperlist_get_string_value_System_ByteBlob (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = Object2String.ToString (e.Args.Get<byte[]> ());
+        }
+    }
+}

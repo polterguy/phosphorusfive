@@ -17,6 +17,30 @@ namespace phosphorus.core
     public static class Utilities
     {
         /// <summary>
+        /// callback for converting between types
+        /// </summary>
+        public delegate object ConvertCallback (object value, Type convertTo);
+
+        /*
+         * static ctor to initialize list of converters
+         */
+        static Utilities ()
+        {
+            Converters = new List<ConvertCallback> ();
+        }
+
+        /// <summary>
+        /// list of conversion callbacks. to allow conversion between your types, and string representations,
+        /// create your own ConvertCallback, and add it to this list of converters during [pf.core.application-start].
+        /// if you can convert, then return the object converted, otherwise return null in your converter
+        /// </summary>
+        /// <value>The converters.</value>
+        public static List<ConvertCallback> Converters {
+            get;
+            private set;
+        }
+
+        /// <summary>
         /// converts the given "value" to type T, returning "defaultValue" if no conversion is possible
         /// </summary>
         /// <param name="value">value to convert</param>
@@ -24,11 +48,22 @@ namespace phosphorus.core
         /// <typeparam name="T">the type you wish to convert "value" to</typeparam>
         public static T Convert <T> (object value, T defaultValue = default (T))
         {
+            // no possible conversion exists
             if (value == null)
                 return defaultValue;
 
+            // checking to see if conversion is even necessary
             if (value is T)
                 return (T)value;
+
+            // trying installed converters
+            foreach (var idxCallback in Converters) {
+                var idxValue = idxCallback (value, typeof(T));
+                if (idxValue != null)
+                    return (T)idxValue; // success!
+            }
+
+            // checking if type is IConvertible
             if (value is IConvertible)
                 return (T)Convert.ChangeType (value, typeof(T), System.Globalization.CultureInfo.InvariantCulture);
 

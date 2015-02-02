@@ -51,7 +51,6 @@
     <Compile Include="keywords\while.cs" />
     <Compile Include="keywords\events.cs" />
     <Compile Include="keywords\helpers\Conditions.cs" />
-    <Compile Include="active-events.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

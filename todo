@@ -43,4 +43,10 @@
 
 * create support for "relative expressions sources" in [add] and [set], allowing the source to be "relative" to the destination
 
+* store timezone (GTM+x) in DateTime when serializing and de-serializing from Hyperlisp
+
+* Active Event to zip many CSS/JavaScript files back to client as one, relying on [pf.web.echo]
+
+
+
 

@@ -11,87 +11,61 @@ using phosphorus.core;
 namespace phosphorus.unittests
 {
     [TestFixture]
-    public class WhileTests
+    public class WhileTests : TestBase
     {
-        [Test]
-        public void WhileFalseNoContent ()
+        public WhileTests ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
             Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-while:@/-/?node";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+            _context = Loader.Instance.CreateApplicationContext ();
+        }
+
+        [Test]
+        public void WhileFalseNoContent ()
+        {
+            ExecuteLambda (@"while:@/-/?node");
         }
 
         [Test]
         public void WhileFalseVerifyNoExecute ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-_x
+            Node tmp = ExecuteLambda (@"_x
 while:@/-/*/?node
   set:@/../_x/?value
-    source:y";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+    source:y");
             Assert.AreNotEqual ("y", tmp [0].Value, "wrong value of node after executing lambda object");
         }
         
         [Test]
         public void WhileTrueVerifyExecute ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-_x
+            Node tmp = ExecuteLambda (@"_x
 while:!
   :@/./-/?value
   lambda
     set:@/../*/_x/?value
-      source:y";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+      source:y");
             Assert.AreEqual ("y", tmp [0].Value, "wrong value of node after executing lambda object");
         }
         
         [Test]
         public void WhileTrueAndTrueVerifyExecute ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-_x
+            Node tmp = ExecuteLambda (@"_x
 while:!
   :@/./-/?value
   and:!
     :@/../*/_y/?value
   lambda
     set:@/../*/_x/?value
-      source:y";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+      source:y");
             Assert.AreEqual ("y", tmp [0].Value, "wrong value of node after executing lambda object");
         }
         
         [Test]
         public void WhileTrueOrTrueVerifyExecuteTwice ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-_x
+            Node tmp = ExecuteLambda (@"_x
 while:!
   :@/./-/?value
   or:!
@@ -107,31 +81,20 @@ while:!
       set:@/../*/_y/?value
   lambda
     set:@/../*/_x/?value
-      source:y
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+      source:y");
             Assert.AreEqual ("y", tmp [0].Value, "wrong value of node after executing lambda object");
         }
         
         [Test]
         public void WhileNodesCountExist ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-_x
+            Node tmp = ExecuteLambda (@"_x
   :a
   :b
   :c
 while:@/../*/_x/*//?count
   set:@/../*/_x/*//[,1]/?name
-    source:_y
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+    source:_y");
             Assert.AreEqual ("_y", tmp [0] [0].Name, "wrong value of node after executing lambda object");
             Assert.AreEqual ("_y", tmp [0] [1].Name, "wrong value of node after executing lambda object");
             Assert.AreEqual ("_y", tmp [0] [2].Name, "wrong value of node after executing lambda object");
@@ -140,86 +103,54 @@ while:@/../*/_x/*//?count
         [Test]
         public void WhileNodesExist ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-_x
+            Node tmp = ExecuteLambda (@"_x
   :a
   :b
   :c
 while:@/../*/_x/*/?node
-  set:@/../*/_x/0/?node
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+  set:@/../*/_x/0/?node");
             Assert.AreEqual (0, tmp [0].Count, "wrong value of node after executing lambda object");
         }
         
         [Test]
         public void WhileNodesCountMoreThan1 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-_x
+            Node tmp = ExecuteLambda (@"_x
   :a
   :b
   :c
 while:@/../*/_x/*/?count
   >:int:1
   lambda
-    set:@/../*/_x/0/?node
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+    set:@/../*/_x/0/?node");
             Assert.AreEqual (1, tmp [0].Count, "wrong value of node after executing lambda object");
         }
         
         [Test]
         public void WhileNodesCountMoreEqualsString3 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-_x
+            Node tmp = ExecuteLambda (@"_x
   :a
   :b
   :c
 while:@/../_x/*/?count
   =:3
   lambda
-    set:@/../_x/0/?node
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+    set:@/../_x/0/?node");
             Assert.AreEqual (3, tmp [0].Count, "wrong value of node after executing lambda object");
         }
         
         [Test]
         public void WhileNodesCountMoreEqualsInt3 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
-            tmp.Value = @"
-_x
+            Node tmp = ExecuteLambda (@"_x
   :a
   :b
   :c
 while:@/../*/_x/*/?count
   =:int:3
   lambda
-    set:@/../*/_x/0/?node
-";
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            context.Raise ("lambda", tmp);
+    set:@/../*/_x/0/?node");
             Assert.AreEqual (2, tmp [0].Count, "wrong value of node after executing lambda object");
         }
     }

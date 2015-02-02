@@ -52,7 +52,8 @@ namespace phosphorus.lambda
         internal Match (IteratorGroup group, string type)
         {
             _nodes = new List<Node> (group.Evaluate);
-            TypeOfMatch = (MatchType)Enum.Parse (typeof(MatchType), type.Substring (0,1).ToUpper () + type.Substring (1));
+            type = type.Substring (0, 1).ToUpper () + type.Substring (1);
+            TypeOfMatch = (MatchType)Enum.Parse (typeof(MatchType), type);
         }
 
         /// <summary>

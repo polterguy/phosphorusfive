@@ -5,16 +5,16 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{C02D30A6-7DA2-4045-8644-9710AB40B629}</ProjectGuid>
+    <ProjectGuid>{5B8D14D0-854E-4143-AE48-C62583F49F49}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>phosphorus.hyperlisp</RootNamespace>
-    <AssemblyName>phosphorus.hyperlisp</AssemblyName>
+    <RootNamespace>phosphorus.types</RootNamespace>
+    <AssemblyName>phosphorus.types</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin</OutputPath>
+    <OutputPath>bin\Debug</OutputPath>
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -23,7 +23,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin</OutputPath>
+    <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -42,11 +42,11 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="hyperlisp.cs" />
-    <Compile Include="helpers\HyperlispBuilder.cs" />
-    <Compile Include="helpers\NodeBuilder.cs" />
-    <Compile Include="helpers\Token.cs" />
-    <Compile Include="helpers\Tokenizer.cs" />
+    <Compile Include="get-type-name.cs" />
+    <Compile Include="get-string-value.cs" />
+    <Compile Include="get-object-value.cs" />
+    <Compile Include="application-startup.cs" />
+    <Compile Include="Object2String.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -54,12 +54,5 @@
       <Project>{C783FEDB-C973-4F38-8EBB-55A0163612F5}</Project>
       <Name>phosphorus.core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\phosphorus.expressions\phosphorus.expressions.csproj">
-      <Project>{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}</Project>
-      <Name>phosphorus.expressions</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="helpers\" />
   </ItemGroup>
 </Project>
