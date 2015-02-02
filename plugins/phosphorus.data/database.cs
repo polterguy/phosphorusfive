@@ -112,7 +112,7 @@ namespace phosphorus.data
             Initialize (context);
 
             // verifying syntax of statement
-            if (e.Args.Count == 0 && !Expression.IsExpression (e.Args.Value))
+            if (e.Args.Count == 0 && !XUtil.IsExpression (e.Args.Value))
                 throw new ArgumentException ("[pf.data.insert] requires at least one child node as its argument, or a source expression as its value");
 
             // looping through all nodes given as children and saving them to database
@@ -190,7 +190,7 @@ namespace phosphorus.data
          */
         private static IEnumerable<Node> GetInsertSource (Node node)
         {
-            if (Expression.IsExpression (node.Value)) {
+            if (XUtil.IsExpression (node.Value)) {
                 var match = Expression.Create (node.Get<string> ()).Evaluate (node);
                 if (match.TypeOfMatch != Match.MatchType.Node)
                     throw new ArgumentException ("[pf.data.insert] can only take 'node' expressions as source expressions");
@@ -248,16 +248,16 @@ namespace phosphorus.data
             // finding source, destination is expression in value of e.args, by default source is first child of e.Args,
             // but source can also be an expression, pointing to a position in the execution tree
             Node sourceNode = node [0];
-            if (sourceNode.Name == string.Empty && !Expression.IsExpression (sourceNode.Value)) {
+            if (sourceNode.Name == string.Empty && !XUtil.IsExpression (sourceNode.Value)) {
 
                 // checking to see if it's a formatting expression
                 if (sourceNode.Count > 0)
-                    return Expression.FormatNode (sourceNode);
+                    return XUtil.FormatNode (sourceNode);
                 return sourceNode.Value;
             } else if (sourceNode.Name == string.Empty) {
 
                 // assigning the result of an expression here
-                Match sourceMatch = Expression.Create (Expression.FormatNode (sourceNode)).Evaluate (sourceNode);
+                Match sourceMatch = Expression.Create (XUtil.FormatNode (sourceNode) as string).Evaluate (sourceNode);
 
                 // returning match according to type
                 if (sourceMatch.TypeOfMatch == Match.MatchType.Count) {

@@ -41,3 +41,6 @@
 
 * remove Event.cs and Override.cs from phosphorus.lambda/helpers directory when done refactoring [event] statement
 
+* create support for "relative expressions sources" in [add] and [set], allowing the source to be "relative" to the destination
+
+

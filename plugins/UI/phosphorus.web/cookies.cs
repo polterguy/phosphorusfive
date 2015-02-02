@@ -26,7 +26,7 @@ namespace phosphorus.web
         [ActiveEvent (Name = "pf.web.cookie.set")]
         private static void pf_web_cookie_set (ApplicationContext context, ActiveEventArgs e)
         {
-            Expression.Iterate<string> (e.Args, false, 
+            XUtil.Iterate<string> (e.Args, 
             delegate (string idx) {
 
                 // creating cookie
@@ -53,7 +53,7 @@ namespace phosphorus.web
         [ActiveEvent (Name = "pf.web.cookie.get")]
         private static void pf_web_cookie_get (ApplicationContext context, ActiveEventArgs e)
         {
-            Expression.Iterate<string> (e.Args, false, 
+            XUtil.Iterate<string> (e.Args, 
             delegate (string idx) {
 
                 // checking to see if this cookie exists
@@ -65,7 +65,7 @@ namespace phosphorus.web
                     Node convertNode = new Node (string.Empty, cookieValue);
                     context.Raise ("code2lambda", convertNode);
 
-                    if (Expression.IsExpression (e.Args.Value)) {
+                    if (XUtil.IsExpression (e.Args.Value)) {
 
                         // adding key node, and values beneath key node
                         e.Args.Add (new Node (idx));

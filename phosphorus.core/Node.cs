@@ -359,36 +359,9 @@ namespace phosphorus.core
         /// returns the value of this instance as typeof(T). converts to T if necessary
         /// </summary>
         /// <typeparam name="T">type to return</typeparam>
-        public T Get<T> ()
+        public T Get<T> (T defaultValue = default (T))
         {
-            if (Value == null)
-                return default (T);
-
-            if (Value is T)
-                return (T)Value;
-            if (Value is IConvertible)
-                return (T)Convert.ChangeType (Value, typeof(T), System.Globalization.CultureInfo.InvariantCulture);
-
-            // stuff like for instance Guids don't implement IConvertible, but still return sane values if we
-            // first do ToString on them, for then to cast them to object, for then to cast them to T, if the caller
-            // is requesting to have them returned as string
-            return (T)(object)Value.ToString ();
-        }
-
-        /// <summary>
-        /// returns the value of this instance as typeof(T). converts to T if necessary. if value is null, then defaultValue is returned instead
-        /// </summary>
-        /// <param name="defaultValue">default value to return if no value exist</param>
-        /// <typeparam name="T">type to return</typeparam>
-        public T Get<T> (T defaultValue)
-        {
-            if (Value == null)
-                return defaultValue;
-
-            if (typeof(T) == Value.GetType ())
-                return (T)Value;
-
-            return (T)Convert.ChangeType (Value, typeof(T), System.Globalization.CultureInfo.InvariantCulture);
+            return Utilities.Convert <T> (Value, defaultValue);
         }
 
         /// <summary>

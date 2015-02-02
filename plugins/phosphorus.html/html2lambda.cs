@@ -28,7 +28,7 @@ namespace phosphorus.html
             // making sure "form" element conforms to relational structure
             HtmlNode.ElementsFlags.Remove ("form");
 
-            Expression.Iterate<string> (e.Args, true, 
+            XUtil.Iterate<string> (e.Args, 
             delegate (string idx) {
                 HtmlDocument doc = new HtmlDocument ();
                 doc.LoadHtml (idx);

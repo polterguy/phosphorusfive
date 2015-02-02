@@ -27,7 +27,7 @@ namespace phosphorus.lambda
             object source = GetSource (e.Args);
 
             // iterating through each destination
-            Expression.IterateNodes (e.Args, true, 
+            XUtil.IterateNodes (e.Args, 
             delegate (Node idxDestination, Match.MatchType destinationType) {
                 switch (destinationType) {
                 case Match.MatchType.Name:
@@ -65,7 +65,7 @@ namespace phosphorus.lambda
                 if (sourceNodes [0].Value != null) {
 
                     // source is an expression or a constant
-                    retVal = Expression.Single <object> (sourceNodes [0], true);
+                    retVal = XUtil.Single <object> (sourceNodes [0]);
                 } else if (sourceNodes [0].Count > 0) {
 
                     // source is wrapping another node

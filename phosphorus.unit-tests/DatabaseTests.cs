@@ -14,10 +14,22 @@ namespace phosphorus.unittests
     [TestFixture]
     public class DatabaseTests
     {
+        /*
+         * runs before every unit test, deletes all documents from "unit_tests"
+         */
         [SetUp]
         public void SetUp ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.lambda");
+            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            Node tmp = new Node ();
+            tmp.Value = @"
+pf.data.delete:@/*/*/?node
+";
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
+            context.Raise ("lambda", tmp);
         }
 
         [ActiveEvent (Name = "pf.core.application-folder")]

@@ -30,7 +30,7 @@ namespace phosphorus.lambda
             var source = new List<Node> (GetSource (e.Args));
 
             // looping through every destination node, adding a copy of every source node, to its children collection
-            Expression.Iterate<Node> (e.Args, true, 
+            XUtil.Iterate<Node> (e.Args, 
             delegate (Node idxDestination) {
                 foreach (Node idxSource in source) {
                     idxDestination.Add (idxSource.Clone());
@@ -51,11 +51,11 @@ namespace phosphorus.lambda
             if (sourceNodes [0] != node.LastChild)
                 throw new ArgumentException ("[source] must be the last child of [add] statement");
 
-            if (Expression.IsExpression (sourceNodes [0].Value)) {
+            if (XUtil.IsExpression (sourceNodes [0].Value)) {
 
                 // source is an expression
                 List<Node> retVal = new List<Node> ();
-                Expression.Iterate<Node> (sourceNodes [0], true, 
+                XUtil.Iterate<Node> (sourceNodes [0], 
                 delegate (Node idxDestination) {
                     retVal.Add (idxDestination.Clone ()); // cloning in case source and destination overlaps
                 });

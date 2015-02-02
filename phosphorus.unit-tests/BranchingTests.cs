@@ -37,7 +37,7 @@ if:@/-/?node";
 if:@/-/?node
 else
   set:@/./+/?value
-    value:x
+    source:x
 _val";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -93,7 +93,7 @@ _val";
 if:@/-/?node
 else-if:@/?name
   set:@/./+/?value
-    value:x
+    source:x
 _val";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -111,7 +111,7 @@ _val";
 if:@/-/?node
 else
   set:@/./+/?value
-    value:x
+    source:x
 _val";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -130,7 +130,7 @@ _x
 if:@/-/?node
   if:@/?name
     set:@/../*/_x/?value
-      value:x
+      source:x
 ";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -149,7 +149,7 @@ _x
 if:@/-/?node
 if:@/?name
   set:@/../*/_x/?value
-    value:x
+    source:x
 ";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -169,7 +169,7 @@ if:@/-/?value
   =:x
   lambda
     set:@/../*/_x/?value
-      value:y
+      source:y
 ";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -189,7 +189,7 @@ if:@/-/?value
   !=:z
   lambda
     set:@/../*/_x/?value
-      value:y
+      source:y
 ";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -209,7 +209,7 @@ if:@/-/?value
   >:a
   lambda
     set:@/../*/_x/?value
-      value:y
+      source:y
 ";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -229,7 +229,7 @@ if:@/-/?value
   <:b
   lambda
     set:@/../*/_x/?value
-      value:y
+      source:y
 ";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -249,7 +249,7 @@ if:@/-/?value
   >=:a
   lambda
     set:@/../*/_x/?value
-      value:y
+      source:y
 ";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -269,7 +269,7 @@ if:@/-/?value
   <=:a
   lambda
     set:@/../*/_x/?value
-      value:y
+      source:y
 ";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -289,7 +289,7 @@ if:@/-/?value
   =:int:5
   lambda
     set:@/../*/_x/?value
-      value:y
+      source:y
 ";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -331,7 +331,7 @@ if:@/-/?value
     =:5
   lambda
     set:@/../*/_x/?value
-      value:y
+      source:y
 ";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -375,7 +375,7 @@ if:@/-/?value
     =:_x
   lambda
     set:@/../*/_x/?value
-      value:y
+      source:y
 ";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -445,7 +445,7 @@ if:@/-/?value
     =:_x
   lambda
     set:@/../*/_x/?value
-      value:y
+      source:y
 ";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -475,7 +475,7 @@ if:@/-/?value
             =:5
   lambda
     set:@/../*/_x/?value
-      value:y
+      source:y
 ";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -505,12 +505,12 @@ if:@/-/?value
             =:5
   lambda
     set:@/../*/_x/?value
-      value:y
+      source:y
 else-if:@/-2/?value
   =:6
   lambda
     set:@/../*/_x/?value
-      value:q
+      source:q
 ";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -535,7 +535,7 @@ if:@/-2/?node
   =:@/./-1/?node
   lambda
     set:@/../*/_x/?value
-      value:y
+      source:y
 ";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -582,7 +582,7 @@ if:@/-1/?path
   =:@/./-1/?path
   lambda
     set:@/../*/_x/?value
-      value:y
+      source:y
 ";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -622,7 +622,7 @@ if:@/-/?path
   <:@/./?path
   lambda
     set:@/../*/_x/?value
-      value:y
+      source:y
 ";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -667,7 +667,7 @@ if:@/-2/**/?count
   =:@/./-1/**/?count
   lambda
     set:@/../*/_x/?value
-      value:y
+      source:y
 ";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -713,7 +713,7 @@ if:@/-/?value
   <:int:6
   lambda
     set:@/../*/_x/?value
-      value:y
+      source:y
 ";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -733,7 +733,7 @@ if:@/-/?value
   >:int:4
   lambda
     set:@/../*/_x/?value
-      value:y
+      source:y
 ";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -753,10 +753,10 @@ if:@/-/?value
   =:int:5
   lambda
     set:@/../*/_x/?value
-      value:y
+      source:y
   lambda
     set:@/../*/_x/?name
-      value:_y
+      source:_y
 ";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -778,7 +778,7 @@ if:@/-/?value
   lambda:@/../*/_exe/?node
 _exe
   set:@/../*/_x/?value
-    value:y
+    source:y
 ";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);

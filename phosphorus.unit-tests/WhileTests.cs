@@ -37,7 +37,7 @@ while:@/-/?node";
 _x
 while:@/-/*/?node
   set:@/../_x/?value
-    :y";
+    source:y";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreNotEqual ("y", tmp [0].Value, "wrong value of node after executing lambda object");
@@ -56,7 +56,7 @@ while:!
   :@/./-/?value
   lambda
     set:@/../*/_x/?value
-      :y";
+      source:y";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("y", tmp [0].Value, "wrong value of node after executing lambda object");
@@ -77,7 +77,7 @@ while:!
     :@/../*/_y/?value
   lambda
     set:@/../*/_x/?value
-      :y";
+      source:y";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
             Assert.AreEqual ("y", tmp [0].Value, "wrong value of node after executing lambda object");
@@ -101,12 +101,13 @@ while:!
       :@/../*/_x/?value
       lambda
         add:@/../?node
-          _y:val
+          source
+            _y:val
     else
       set:@/../*/_y/?value
   lambda
     set:@/../*/_x/?value
-      :y
+      source:y
 ";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);
@@ -127,7 +128,7 @@ _x
   :c
 while:@/../*/_x/*//?count
   set:@/../*/_x/*//[,1]/?name
-    :_y
+    source:_y
 ";
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             context.Raise ("lambda", tmp);

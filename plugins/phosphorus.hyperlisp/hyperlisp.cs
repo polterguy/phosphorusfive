@@ -30,7 +30,7 @@ namespace phosphorus.hyperlisp
         private static void pf_hyperlisp_hyperlisp2lambda (ApplicationContext context, ActiveEventArgs e)
         {
             StringBuilder builder = new StringBuilder ();
-            Expression.Iterate<string> (e.Args, true, 
+            XUtil.Iterate<string> (e.Args, 
             delegate (string idx) {
                 builder.Append (idx + "\n");
             });
@@ -47,9 +47,9 @@ namespace phosphorus.hyperlisp
         [ActiveEvent (Name = "pf.hyperlisp.lambda2hyperlisp")]
         private static void pf_code_lambda2hyperlisp (ApplicationContext context, ActiveEventArgs e)
         {
-            if (Expression.IsExpression (e.Args.Value)) {
+            if (XUtil.IsExpression (e.Args.Value)) {
                 List<Node> nodeList = new List<Node> ();
-                Expression.Iterate<Node> (e.Args, true, 
+                XUtil.Iterate<Node> (e.Args, 
                 delegate (Node idx) {
                     nodeList.Add (idx);
                 });

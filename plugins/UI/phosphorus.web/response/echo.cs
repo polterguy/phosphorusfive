@@ -47,6 +47,7 @@ namespace phosphorus.web
         {
             // if [pf.web.echo] is invoked before, we reuse the previous filter
             if (!(HttpContext.Current.Response.Filter is EchoFilter)) {
+
                 // not invoked before, creating new filter, discarding the old
                 HttpContext.Current.Response.Filter = new EchoFilter ();
             }
@@ -54,7 +55,7 @@ namespace phosphorus.web
             // retrieving a reference to our EchFilter
             EchoFilter echoFilter = HttpContext.Current.Response.Filter as EchoFilter;
 
-            Expression.Iterate<string> (e.Args, true, 
+            XUtil.Iterate<string> (e.Args, 
             delegate (string idx) {
                 echoFilter.Append (idx);
             });

@@ -27,15 +27,15 @@ namespace phosphorus.web
             if (e.Args.Count == 0) {
 
                 // "remove headers" invocation, looping through all headers user wish to remove
-                Expression.Iterate<string> (e.Args, false, 
+                XUtil.Iterate<string> (e.Args, 
                 delegate (string idx) {
                     HttpContext.Current.Response.Headers.Remove (idx);
                 });
             } else {
 
                 // adding header(s) invocation
-                string value = Expression.Single (e.Args.LastChild, true, "; ");
-                Expression.Iterate<string> (e.Args, false, 
+                string value = XUtil.Single (e.Args.LastChild, "; ");
+                XUtil.Iterate<string> (e.Args, 
                 delegate (string idx) {
                     HttpContext.Current.Response.AddHeader (idx, value);
                 });

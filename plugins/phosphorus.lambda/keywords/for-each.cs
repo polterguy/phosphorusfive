@@ -23,7 +23,7 @@ namespace phosphorus.lambda
         [ActiveEvent (Name = "for-each")]
         private static void lambda_for_each (ApplicationContext context, ActiveEventArgs e)
         {
-            Expression.Iterate<Node> (e.Args, false, 
+            XUtil.Iterate<Node> (e.Args, 
             delegate (Node idxSource) {
                 if (idxSource == null)
                     throw new ArgumentException ("source expression for [for-each] returned value that was not of type 'node'");

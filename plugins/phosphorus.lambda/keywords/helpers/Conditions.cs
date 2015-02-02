@@ -183,7 +183,7 @@ namespace phosphorus.lambda
          */
         private List<Node> GetNodeList (Node currentStatement)
         {
-            if (Expression.IsExpression (currentStatement.Value)) {
+            if (XUtil.IsExpression (currentStatement.Value)) {
                 List<Node> retVal = new List<Node> ();
                 var match = Expression.Create (currentStatement.Get<string> ()).Evaluate (currentStatement);
                 if (match.TypeOfMatch == Match.MatchType.Count) {

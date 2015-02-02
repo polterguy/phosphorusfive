@@ -30,7 +30,7 @@ namespace phosphorus.file
         private static void pf_file_create_folder (ApplicationContext context, ActiveEventArgs e)
         {
             string rootFolder = common.GetRootFolder (context);
-            Expression.Iterate<string> (e.Args, true, 
+            XUtil.Iterate<string> (e.Args, 
             delegate (string idx) {
                 if (!Directory.Exists (rootFolder + idx)) {
                     Directory.CreateDirectory (rootFolder + idx);
@@ -53,7 +53,7 @@ namespace phosphorus.file
         private static void pf_file_remove_folder (ApplicationContext context, ActiveEventArgs e)
         {
             string rootFolder = common.GetRootFolder (context);
-            Expression.Iterate<string> (e.Args, true, 
+            XUtil.Iterate<string> (e.Args, 
             delegate (string idx) {
                 if (Directory.Exists (rootFolder + idx)) {
                     Directory.Delete (rootFolder + idx, true);
@@ -76,7 +76,7 @@ namespace phosphorus.file
         private static void pf_file_folder_exists (ApplicationContext context, ActiveEventArgs e)
         {
             string rootFolder = common.GetRootFolder (context);
-            Expression.Iterate<string> (e.Args, true, 
+            XUtil.Iterate<string> (e.Args, 
             delegate (string idx) {
                 e.Args.Add (new Node (idx, Directory.Exists (rootFolder + idx)));
             });
@@ -91,7 +91,7 @@ namespace phosphorus.file
         private static void pf_file_list_files (ApplicationContext context, ActiveEventArgs e)
         {
             string rootFolder = common.GetRootFolder (context);
-            Expression.Iterate<string> (e.Args, true, 
+            XUtil.Iterate<string> (e.Args, 
             delegate (string idx) {
 
                 // iterating all files in current directory, and returning as nodes beneath args given
@@ -110,7 +110,7 @@ namespace phosphorus.file
         private static void pf_file_list_folders (ApplicationContext context, ActiveEventArgs e)
         {
             string rootFolder = common.GetRootFolder (context);
-            Expression.Iterate<string> (e.Args, true, 
+            XUtil.Iterate<string> (e.Args, 
             delegate (string idx) {
 
                 // iterating all folders in current directory, and returning as nodes beneath args given

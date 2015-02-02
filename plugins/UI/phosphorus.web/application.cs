@@ -25,7 +25,7 @@ namespace phosphorus.web
         [ActiveEvent (Name = "pf.web.application.set")]
         private static void pf_web_application_set (ApplicationContext context, ActiveEventArgs e)
         {
-            Expression.Iterate<string> (e.Args, false, 
+            XUtil.Iterate<string> (e.Args,
             delegate (string idx) {
                 if (e.Args.Count > 0)
                     HttpContext.Current.Application [idx] = e.Args.Clone ();
@@ -42,11 +42,11 @@ namespace phosphorus.web
         [ActiveEvent (Name = "pf.web.application.get")]
         private static void pf_web_application_get (ApplicationContext context, ActiveEventArgs e)
         {
-            Expression.Iterate<string> (e.Args, false, 
+            XUtil.Iterate<string> (e.Args, 
             delegate (string idx) {
                 Node tmp = HttpContext.Current.Application [idx] as Node;
                 if (tmp != null) {
-                    if (Expression.IsExpression (e.Args.Value)) {
+                    if (XUtil.IsExpression (e.Args.Value)) {
 
                         // adding key node, and values beneath key node
                         e.Args.Add (new Node (idx));

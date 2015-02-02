@@ -114,7 +114,7 @@ namespace phosphorus.mongodb
         {
             // if node's value is not an expression, we assume the nodes the user wants to insert
             // are the children nodes of the given node
-            if (!Expression.IsExpression (node.Value)) {
+            if (!XUtil.IsExpression (node.Value)) {
                 if (node.Count == 0)
                     throw new ArgumentException ("not data given to [pf.mongo.xxx] Active Event when data was expected");
                 foreach (Node idx in node.Children) {
@@ -127,7 +127,7 @@ namespace phosphorus.mongodb
             // in addition to static expressions
             string expression = node.Get<string> ();
             if (node.Count > 0)
-                expression = Expression.FormatNode (node);
+                expression = XUtil.FormatNode (node) as string;
             var match = Expression.Create (expression).Evaluate (node);
             if (match.Count == 0)
                 throw new ArgumentException ("expression expected to return 'node' in [pf.mongo.xxx] returned nothing");

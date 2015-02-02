@@ -141,7 +141,7 @@ namespace phosphorus.five.applicationpool
         {
             // first retrieving all events
             List<Node> evts = null;
-            if (eventNode.Value != null && Expression.IsExpression (eventNode.Value)) {
+            if (eventNode.Value != null && XUtil.IsExpression (eventNode.Value)) {
                 evts = new List<Node> ();
                 var match = Expression.Create (eventNode.Get<string> ()).Evaluate (eventNode);
                 for (int idxNo = 0; idxNo < match.Count; idxNo ++) {
@@ -285,7 +285,7 @@ namespace phosphorus.five.applicationpool
         private void pf_web_include_javascript (ApplicationContext context, ActiveEventArgs e)
         {
             string js = e.Args.Get<string> ();
-            if (Expression.IsExpression (js)) {
+            if (XUtil.IsExpression (js)) {
                 var match = Expression.Create (js).Evaluate (e.Args);
                 if (match.TypeOfMatch != Match.MatchType.Value)
                     throw new ArgumentException ("[pf.web.include-javascript] can only take expressions of type 'value'");
@@ -296,7 +296,7 @@ namespace phosphorus.five.applicationpool
                 }
                 js = builder.ToString ();
             } else if (e.Args.Count > 0) {
-                js = Expression.FormatNode (e.Args);
+                js = XUtil.FormatNode (e.Args) as string;
             }
             Manager.SendJavaScriptToClient (js);
         }
@@ -313,7 +313,7 @@ namespace phosphorus.five.applicationpool
         {
             string key = e.Args.Get<string> ();
             string str = e.Args [0].Get<string> ();
-            if (Expression.IsExpression (str)) {
+            if (XUtil.IsExpression (str)) {
                 var match = Expression.Create (str).Evaluate (e.Args [0]);
                 if (match.TypeOfMatch != Match.MatchType.Value)
                     throw new ArgumentException ("cannot use anything but a 'value' expression in [pf.web.return-value]");
@@ -323,7 +323,7 @@ namespace phosphorus.five.applicationpool
                 }
                 str = builder.ToString ();
             } else if (e.Args [0].Count > 0) {
-                str = Expression.FormatNode (e.Args [0]);
+                str = XUtil.FormatNode (e.Args [0]) as string;
             }
             Manager.SendObject (key, str);
         }

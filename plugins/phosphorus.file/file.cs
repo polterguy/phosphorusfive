@@ -28,7 +28,7 @@ namespace phosphorus.file
         private static void pf_file_load (ApplicationContext context, ActiveEventArgs e)
         {
             string rootFolder = common.GetRootFolder (context);
-            Expression.Iterate<string> (e.Args, true, 
+            XUtil.Iterate<string> (e.Args, 
             delegate (string idx) {
                 if (idx.StartsWith ("http://") || idx.StartsWith ("https://")) {
 
@@ -66,7 +66,7 @@ namespace phosphorus.file
         private static void pf_file_save (ApplicationContext context, ActiveEventArgs e)
         {
             string rootFolder = common.GetRootFolder (context);
-            Expression.Iterate<string> (e.Args, true, 
+            XUtil.Iterate<string> (e.Args, 
             delegate (string idx) {
                 using (TextWriter writer = File.CreateText (rootFolder + idx)) {
                     writer.Write (e.Args.LastChild.Get<string> ());
@@ -86,7 +86,7 @@ namespace phosphorus.file
         private static void pf_file_remove (ApplicationContext context, ActiveEventArgs e)
         {
             string rootFolder = common.GetRootFolder (context);
-            Expression.Iterate<string> (e.Args, true, 
+            XUtil.Iterate<string> (e.Args, 
             delegate (string idx) {
                 if (File.Exists (rootFolder + idx)) {
                     File.Delete (rootFolder + idx);
@@ -106,7 +106,7 @@ namespace phosphorus.file
         private static void pf_file_exists (ApplicationContext context, ActiveEventArgs e)
         {
             string rootFolder = common.GetRootFolder (context);
-            Expression.Iterate<string> (e.Args, true, 
+            XUtil.Iterate<string> (e.Args, 
             delegate (string idx) {
                 e.Args.Add (new Node (idx, File.Exists (rootFolder + idx)));
             });

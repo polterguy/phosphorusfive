@@ -63,7 +63,7 @@ namespace phosphorus.lambda
          */
         private static void ExecuteLambdaValue (ApplicationContext context, Node args, LambdaType type)
         {
-            Expression.Iterate<object> (args, false, 
+            XUtil.Iterate<object> (args, 
             delegate (object idxSource) {
                 if (idxSource is Node) {
                     ExecuteBlock (context, idxSource as Node, args.Children, type);
@@ -101,7 +101,7 @@ namespace phosphorus.lambda
             while (idxExe != null) {
 
                 // we don't execute nodes that start with an underscore "_" since these are considered "data segments"
-                if (!idxExe.Name.StartsWith ("_")) {
+                if (!idxExe.Name.StartsWith ("_") && idxExe.Name != string.Empty) {
                     context.Raise (idxExe.Name, idxExe);
                 }
                 idxExe = idxExe.NextSibling;

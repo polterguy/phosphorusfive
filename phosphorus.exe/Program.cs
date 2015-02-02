@@ -26,7 +26,7 @@ namespace phosphorus.exe
         [ActiveEvent (Name = "pf.console.output")]
         private static void console_write_line (ApplicationContext context, ActiveEventArgs e)
         {
-            string value = Expression.FormatNode (e.Args);
+            string value = XUtil.FormatNode (e.Args) as string;
             Console.WriteLine (value ?? "");
         }
 
@@ -38,7 +38,7 @@ namespace phosphorus.exe
         [ActiveEvent (Name = "pf.console.write")]
         private static void console_write (ApplicationContext context, ActiveEventArgs e)
         {
-            string value = Expression.FormatNode (e.Args);
+            string value = XUtil.FormatNode (e.Args) as string;
             if (value != null)
                 Console.Write (value);
         }

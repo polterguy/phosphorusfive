@@ -24,7 +24,7 @@ namespace phosphorus.web
         [ActiveEvent (Name = "pf.web.session.set")]
         private static void pf_web_session_set (ApplicationContext context, ActiveEventArgs e)
         {
-            Expression.Iterate<string> (e.Args, false, 
+            XUtil.Iterate<string> (e.Args, 
             delegate (string idx) {
                 if (e.Args.Count > 0)
                     HttpContext.Current.Session [idx] = e.Args.Clone ();
@@ -41,11 +41,11 @@ namespace phosphorus.web
         [ActiveEvent (Name = "pf.web.session.get")]
         private static void pf_web_session_get (ApplicationContext context, ActiveEventArgs e)
         {
-            Expression.Iterate<string> (e.Args, false, 
+            XUtil.Iterate<string> (e.Args, 
             delegate (string idx) {
                 Node tmp = HttpContext.Current.Session [idx] as Node;
                 if (tmp != null) {
-                    if (Expression.IsExpression (e.Args.Value)) {
+                    if (XUtil.IsExpression (e.Args.Value)) {
 
                         // adding key node, and values beneath key node
                         e.Args.Add (new Node (idx));

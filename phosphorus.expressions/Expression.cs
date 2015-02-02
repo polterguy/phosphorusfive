@@ -30,251 +30,8 @@ namespace phosphorus.lambda
         }
 
         /// <summary>
-        /// determines if object is an expression or not
-        /// </summary>
-        /// <returns><c>true</c> if object is an expression; otherwise, <c>false</c></returns>
-        /// <param name="value">object to check</param>
-        public static bool IsExpression (object value)
-        {
-            if (value == null)
-                return false;
-            return IsExpression (value as string);
-        }
-
-        /// <summary>
-        /// determines if object is an expression or not
-        /// </summary>
-        /// <returns><c>true</c> if object is an expression; otherwise, <c>false</c></returns>
-        /// <param name="strValue">string to check</param>
-        public static bool IsExpression (string strValue)
-        {
-            return strValue != null && 
-                strValue.StartsWith ("@") && 
-                strValue.Length > 1;
-        }
-
-        /// <summary>
-        /// returns formatted node according to children nodes
-        /// </summary>
-        /// <returns>the formatted string expression</returns>
-        /// <param name="node">node to format</param>
-        public static string FormatNode (Node node)
-        {
-            string retVal = null;
-            if (node.Count > 0) {
-                List<string> childrenValues = new List<string> ();
-                foreach (Node idxNode in node.Children) {
-                    string value = idxNode.Count == 0 ? 
-                        idxNode.Get<string> () : // simple value
-                        FormatNode (idxNode); // recursive formatting string literal
-                    if (IsExpression (value))
-                        value = new Expression (value).Evaluate (idxNode).GetValue (0, string.Empty);
-                    childrenValues.Add (value);
-                }
-                retVal = string.Format (CultureInfo.InvariantCulture, node.Get<string> (), childrenValues.ToArray ());
-            } else {
-                retVal = node.Get<string> ();
-            }
-            return retVal;
-        }
-
-        /// <summary>
-        /// iterator callback for iterating node expressions
-        /// </summary>
-        public delegate void IteratorCallbackVoid<T> (T idx);
-
-        /// <summary>
-        /// iterator callback for iterating node expressions
-        /// </summary>
-        public delegate void IteratorCallbackNode (Node idx, Match.MatchType type);
-
-        /// <summary>
-        /// iterates a value of a node, which might be either a constant, or an expression, and
-        /// invokes callback for each value in constant or expression result
-        /// </summary>
-        /// <param name="node">node that contains constant or expression as value</param>
-        /// <param name="formatExpression">if set to <c>true</c> will format expressions</param>
-        /// <param name="callback">code to invoke once for each result</param>
-        /// <typeparam name="T">the type of object 'value' is</typeparam>
-        public static void Iterate<T> (Node node, bool formatExpression, IteratorCallbackVoid<T> callback)
-        {
-            object nodeValue = null;
-            List<Node> formatters = new List<Node> (node.FindAll (""));
-            if (formatExpression && formatters.Count > 0) {
-                nodeValue = FormatNode (node);
-            } else {
-                nodeValue = node.Value;
-            }
-            if (IsExpression (nodeValue)) {
-                var match = Create (nodeValue as string).Evaluate (node);
-                for (int idxNo = 0; idxNo < match.Count; idxNo++) {
-                    callback (match.GetValue<T> (idxNo));
-                }
-            } else {
-                if (!formatExpression || node.Count == 0) {
-
-                    // short hand helper for converting type correctly
-                    callback (node.Get<T> ());
-                } else {
-                    callback (nodeValue == null ? default (T) : (T)nodeValue);
-                }
-            }
-        }
-
-        /// <summary>
-        /// iterates a value of a node, which might be either a constant, or an expression, and
-        /// invokes callback for each value in constant or expression result
-        /// </summary>
-        /// <param name="node">node that contains constant or expression as value</param>
-        /// <param name="formatExpression">if set to <c>true</c> will format expressions</param>
-        /// <param name="callback">code to invoke once for each result</param>
-        /// <typeparam name="T">the type of object 'value' is</typeparam>
-        public static void IterateNodes (Node node, bool formatExpression, IteratorCallbackNode callback)
-        {
-            object nodeValue = null;
-            List<Node> formatters = new List<Node> (node.FindAll (""));
-            if (formatExpression && formatters.Count > 0) {
-                nodeValue = FormatNode (node);
-            } else {
-                nodeValue = node.Value;
-            }
-            if (IsExpression (nodeValue)) {
-                var match = Create (nodeValue as string).Evaluate (node);
-                foreach (Node idx in match.Matches) {
-                    callback (idx, match.TypeOfMatch);
-                }
-            } else {
-                throw new ArgumentException ("IterateNodes expected an expression, but was not given one");
-            }
-        }
-
-        /// <summary>
-        /// clones all nodes in expression of node's value, if no expression exists,
-        /// all children nodes of node are cloned and returned
-        /// </summary>
-        /// <param name="node">Node.</param>
-        /// <param name="formatExpression">If set to <c>true</c> format expression.</param>
-        public static IEnumerable<Node> Clone (Node node, bool formatExpression)
-        {
-            List<Node> retVal = null;
-            if (IsExpression (node.Value)) {
-                retVal = new List<Node> ();
-                Iterate<Node> (node, formatExpression,
-                delegate (Node idx) {
-                    retVal.Add (idx.Clone ());
-                });
-            } else {
-                retVal = new List<Node> (node.Children);
-            }
-            foreach (Node idx in retVal) {
-                yield return idx.Clone ();
-            }
-        }
-
-        /// <summary>
-        /// returns a single value of type T from expression in node's value given
-        /// </summary>
-        /// <param name="node">node containing expression, being current node for expression</param>
-        /// <param name="formatExpression">if set to <c>true</c> will format expression</param>
-        /// <typeparam name="T">the 1st type parameter</typeparam>
-        public static T Single<T> (Node node, bool formatExpression)
-        {
-            object nodeValue = null;
-            if (formatExpression && node.Count > 0) {
-                nodeValue = FormatNode (node);
-            } else {
-                nodeValue = node.Value;
-            }
-            if (IsExpression (nodeValue)) {
-                var match = Create (nodeValue as string).Evaluate (node);
-                if (match.TypeOfMatch == Match.MatchType.Count)
-                    return (T)(object)match.Count;
-                if (match.Count > 1)
-                    throw new ArgumentException ("Single expected single value of expression, but expression returned multiple results");
-                return match.GetValue<T> (0);
-            } else {
-                if (!formatExpression || node.Count == 0)
-                    return node.Get<T> (); // short hand helper for converting type correctly
-                return nodeValue == null ? default (T) : (T)nodeValue;
-            }
-        }
-
-        /// <summary>
-        /// returns a single string value from expression in node's value given by concatenating results
-        /// if expression results to multiple results
-        /// </summary>
-        /// <param name="node">node containing expression, being current node for expression</param>
-        /// <param name="formatExpression">if set to <c>true</c> will format expression</param>
-        /// <param name="spacingString">string to put between all results before returning value to caller</param>
-        public static string Single (Node node, bool formatExpression, string spacingString = "")
-        {
-            string nodeValue = null;
-            if (formatExpression && node.Count > 0) {
-                nodeValue = FormatNode (node);
-            } else {
-                nodeValue = node.Get<string> ();
-            }
-            if (IsExpression (nodeValue)) {
-                var match = Create (nodeValue).Evaluate (node);
-                if (match.IsSingleLiteral)
-                    return match.GetValue<string> (0);
-                string retVal = "";
-                bool first = true;
-                for (int idxNo = 0; idxNo < match.Count; idxNo++) {
-                    if (first) {
-                        first = false;
-                    } else {
-                        retVal += spacingString;
-                    }
-                    retVal += match.GetValue (idxNo).ToString ();
-                }
-                return retVal;
-            } else {
-                if (nodeValue.StartsWith ("\\"))
-                    nodeValue = nodeValue.Substring (1); // supporting escaped expressions
-                return nodeValue;
-            }
-        }
-
-        /// <summary>
-        /// returns a single string value from expression in node's value given by concatenating results
-        /// if expression results to multiple results
-        /// </summary>
-        /// <param name="node">node containing expression, being current node for expression</param>
-        /// <param name="formatExpression">if set to <c>true</c> will format expression</param>
-        /// <param name="spacingString">string to put between all results before returning value to caller</param>
-        public static string SingleNameValuePair (Node node, bool formatExpression, string spacingString = "", string inbetweenPairString = "")
-        {
-            string nodeValue = null;
-            if (formatExpression && node.Count > 0) {
-                nodeValue = FormatNode (node);
-            } else {
-                nodeValue = node.Get<string> ();
-            }
-            if (IsExpression (nodeValue)) {
-                var match = Create (nodeValue).Evaluate (node);
-                if (match.IsSingleLiteral)
-                    return match [0].Name + spacingString + match.GetValue<string> (0);
-                string retVal = "";
-                bool first = true;
-                for (int idxNo = 0; idxNo < match.Count; idxNo++) {
-                    if (first) {
-                        first = false;
-                    } else {
-                        retVal += spacingString;
-                    }
-                    retVal += match [idxNo].Name + inbetweenPairString + match.GetValue (idxNo).ToString ();
-                }
-                return retVal;
-            } else {
-                if (nodeValue.StartsWith ("\\"))
-                    nodeValue = nodeValue.Substring (1); // supporting escaped expressions
-                return nodeValue;
-            }
-        }
-
-        /// <summary>
-        /// evaluates expression for given <see cref="phosphorus.core.Node"/>  and returns <see cref="phosphorus.execute.Expression.Match"/>
+        /// evaluates expression for given <see cref="phosphorus.core.Node"/>  and returns 
+        /// <see cref="phosphorus.execute.Expression.Match"/>
         /// </summary>
         public Match Evaluate (Node node)
         {
@@ -305,7 +62,7 @@ namespace phosphorus.lambda
          */
         private Expression (string expression)
         {
-            if (!IsExpression (expression))
+            if (!XUtil.IsExpression (expression))
                 throw new ArgumentException (string.Format ("'{0}' is not a valid expression", expression));
             _expression = expression;
         }
@@ -638,7 +395,7 @@ namespace phosphorus.lambda
                         "' probably missing a slash '/' before token; '" + 
                         token + "'");
                 }
-                if (IsNumber (token)) {
+                if (Utilities.IsNumber (token)) {
                     current.AddIterator (new IteratorNumbered (int.Parse (token)));
                     return current;
                 } else {
@@ -652,7 +409,7 @@ namespace phosphorus.lambda
          */
         private IteratorGroup FindMatchSiblingIntegerToken (IteratorGroup current, string token, string previousToken)
         {
-            if (!IsNumber (token)) {
+            if (!Utilities.IsNumber (token)) {
                 throw new ArgumentException ("a sibling operator must have an integer number as its next token, syntax error close to; '" + 
                     token + "' in expression; '" + _expression + "'");
             }
@@ -665,7 +422,7 @@ namespace phosphorus.lambda
          */
         private IteratorGroup FindMatchRangeBeginToken (IteratorGroup current, string token)
         {
-            if (!IsNumber (token)) {
+            if (!Utilities.IsNumber (token)) {
                 throw new ArgumentException ("start of range was not a number, syntax error at; '" + 
                     token + 
                     "' in expression; '" + 
@@ -680,7 +437,7 @@ namespace phosphorus.lambda
          */
         private IteratorGroup FindMatchRangeEndToken (IteratorGroup current, string token)
         {
-            if (!IsNumber (token)) {
+            if (!Utilities.IsNumber (token)) {
                 throw new ArgumentException ("end of range was not a number, syntax error at; '" + 
                     token + 
                     "' in expression; '" + 
@@ -695,7 +452,7 @@ namespace phosphorus.lambda
          */
         private IteratorGroup FindMatchModuloIntegerToken (IteratorGroup current, string token)
         {
-            if (!IsNumber (token)) {
+            if (!Utilities.IsNumber (token)) {
                 throw new ArgumentException ("modulo was not a number, syntax error at; '" + 
                     token + 
                     "' in expression; '" + 
@@ -726,18 +483,6 @@ namespace phosphorus.lambda
                 current.AddIterator (new IteratorNamed (token));
             }
             return current;
-        }
-
-        /*
-         * returns true if string can be converted to an integer
-         */
-        private bool IsNumber (string token)
-        {
-            foreach (char idx in token) {
-                if ("0123456789".IndexOf (idx) == -1)
-                    return false;
-            }
-            return token.Length > 0;
         }
     }
 }

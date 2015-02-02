@@ -17,6 +17,42 @@ namespace phosphorus.core
     public static class Utilities
     {
         /// <summary>
+        /// converts the given "value" to type T, returning "defaultValue" if no conversion is possible
+        /// </summary>
+        /// <param name="value">value to convert</param>
+        /// <param name="defaultValue">default value to return</param>
+        /// <typeparam name="T">the type you wish to convert "value" to</typeparam>
+        public static T Convert <T> (object value, T defaultValue = default (T))
+        {
+            if (value == null)
+                return defaultValue;
+
+            if (value is T)
+                return (T)value;
+            if (value is IConvertible)
+                return (T)Convert.ChangeType (value, typeof(T), System.Globalization.CultureInfo.InvariantCulture);
+
+            // stuff like for instance Guids don't implement IConvertible, but still return sane values if we
+            // first do ToString on them, for then to cast them to object, for then to cast them to T, if the caller
+            // is requesting to have them returned as string
+            return (T)(object)value.ToString ();
+        }
+        
+        /// <summary>
+        /// returns true if string can be converted to an integer
+        /// </summary>
+        /// <returns><c>true</c> if this instance is a number; otherwise, <c>false</c></returns>
+        /// <param name="value">string to check</param>
+        public static bool IsNumber (string value)
+        {
+            foreach (char idx in value) {
+                if ("0123456789".IndexOf (idx) == -1)
+                    return false;
+            }
+            return value.Length > 0;
+        }
+
+        /// <summary>
         /// reads a single line string literal token from text reader
         /// </summary>
         /// <returns>the single line string literal</returns>

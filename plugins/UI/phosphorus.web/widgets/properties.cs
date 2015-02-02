@@ -29,7 +29,7 @@ namespace phosphorus.web
         private static void pf_web_widgets_get_property (ApplicationContext context, ActiveEventArgs e)
         {
             var origNodeList = new List<Node> (e.Args.Children);
-            Expression.Iterate<string> (e.Args, true, 
+            XUtil.Iterate<string> (e.Args, 
             delegate (string idx) {
                 Widget widget = FindWidget (context, idx);
                 foreach (Node nameNode in origNodeList) {
@@ -38,7 +38,7 @@ namespace phosphorus.web
                             Widget idxWidget = idxCtrl as Widget;
                             if (idxWidget != null) {
                                 if (idxWidget.HasAttribute ("selected")) {
-                                    if (Expression.IsExpression (e.Args.Value)) {
+                                    if (XUtil.IsExpression (e.Args.Value)) {
                                         e.Args.FindOrCreate (nameNode.Name).Value = idxWidget ["value"];
                                     } else {
                                         nameNode.Value = idxWidget ["value"];
@@ -50,7 +50,7 @@ namespace phosphorus.web
                     } else {
                         switch (nameNode.Name) {
                         case "element":
-                            if (Expression.IsExpression (e.Args.Value)) {
+                            if (XUtil.IsExpression (e.Args.Value)) {
                                 e.Args.FindOrCreate (nameNode.Name).Value = widget.ElementType;
                             } else {
                                 nameNode.Value = widget.ElementType;
@@ -58,7 +58,7 @@ namespace phosphorus.web
                             break;
                         default:
                             if (!string.IsNullOrEmpty (nameNode.Name)) {
-                                if (Expression.IsExpression (e.Args.Value)) {
+                                if (XUtil.IsExpression (e.Args.Value)) {
                                     e.Args.FindOrCreate (widget.ID).Add (nameNode.Name).LastChild.Value = widget [nameNode.Name];
                                 } else {
                                     nameNode.Value = widget [nameNode.Name];
@@ -82,23 +82,23 @@ namespace phosphorus.web
         [ActiveEvent (Name = "pf.web.widgets.set-property")]
         private static void pf_web_widgets_set_property (ApplicationContext context, ActiveEventArgs e)
         {
-            Expression.Iterate<string> (e.Args, true, 
+            XUtil.Iterate<string> (e.Args, 
             delegate (string idx) {
                 Widget widget = FindWidget (context, idx);
                 foreach (Node valueNode in e.Args.Children) {
                     string propertyValue;
                     switch (valueNode.Name) {
                     case "element":
-                        propertyValue = Expression.Single (valueNode, true);
+                        propertyValue = XUtil.Single (valueNode);
                         widget.ElementType = propertyValue;
                         break;
                     default:
                         if (valueNode.Name == "class")
-                            propertyValue = Expression.Single (valueNode, true, " ");
+                            propertyValue = XUtil.Single (valueNode, " ");
                         else if (valueNode.Name == "style")
-                            propertyValue = Expression.SingleNameValuePair (valueNode, true, ";", ":");
+                            propertyValue = XUtil.SingleNameValuePair (valueNode, ";", ":");
                         else
-                            propertyValue = Expression.Single (valueNode, true);
+                            propertyValue = XUtil.Single (valueNode);
                         widget [valueNode.Name] = propertyValue;
                         break;
                     }
@@ -117,7 +117,7 @@ namespace phosphorus.web
         [ActiveEvent (Name = "pf.web.widgets.remove-property")]
         private static void pf_web_widgets_remove_property (ApplicationContext context, ActiveEventArgs e)
         {
-            Expression.Iterate<string> (e.Args, true, 
+            XUtil.Iterate<string> (e.Args,
             delegate (string idx) {
                 Widget widget = FindWidget (context, idx);
                 foreach (Node nameNode in e.Args.Children) {

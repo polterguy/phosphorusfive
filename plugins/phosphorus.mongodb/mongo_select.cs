@@ -33,13 +33,13 @@ namespace phosphorus.mongodb
             if (string.IsNullOrEmpty (table)) // no table name given
                 throw new ArgumentException ("[pf.mongo.select] needs the table name as the value of its node, either through an expression, or a constant");
 
-            if (Expression.IsExpression (table)) {
+            if (XUtil.IsExpression (table)) {
 
                 // table name is given as an expression
                 var match = Expression.Create (table).Evaluate (e.Args);
                 table = match.GetValue (0) as string;
-                if (!match.IsSingleLiteral || string.IsNullOrEmpty (table))
-                    throw new ArgumentException ("if [pf.mongo.select] is given an expression, the expression needs to return only one value that can be converted into a string somehow");
+                //if (!match.IsSingleLiteral || string.IsNullOrEmpty (table))
+                //    throw new ArgumentException ("if [pf.mongo.select] is given an expression, the expression needs to return only one value that can be converted into a string somehow");
             }
 
             // getting collection according to "table name"
