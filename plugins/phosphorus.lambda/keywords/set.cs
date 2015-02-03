@@ -24,17 +24,13 @@ namespace phosphorus.lambda
         private static void lambda_set (ApplicationContext context, ActiveEventArgs e)
         {
             // finding source
-            bool relativeSource;
-            object source = GetSource (e.Args, out relativeSource);
-
-            if (relativeSource) {
-
-                // source is relative to destination
-                SetRelativeSource (e.Args, source as string);
-            } else {
-
-                // source is static, meaning either a constant, or an expression not relative to source
+            if (e.Args.Count > 0 && e.Args.LastChild.Name == "source") {
+                object source = GetStaticSource (e.Args);
                 SetStaticSource (e.Args, source);
+            } else if (e.Args.Count > 0 && e.Args.LastChild.Name == "rel-source") {
+                SetRelativeSource (e.Args);
+            } else {
+                SetStaticSource (e.Args, null);
             }
         }
 
@@ -68,14 +64,16 @@ namespace phosphorus.lambda
         /*
          * source is relative
          */
-        private static void SetRelativeSource (Node node, string sourceExpression)
+        private static void SetRelativeSource (Node node)
         {
             // iterating through each destination
             XUtil.IterateNodes (node, 
             delegate (Node idxDestination, Match.MatchType destinationType) {
 
-                // getting source relative to destination
+                // getting source relative to destination, fetching relative source
+                string sourceExpression = XUtil.FormatNode (node.LastChild, idxDestination) as string;
                 object source = XUtil.Single <object> (idxDestination, sourceExpression);
+
                 switch (destinationType) {
                 case Match.MatchType.Name:
                     idxDestination.Name = (source ?? "").ToString ();
@@ -96,20 +94,17 @@ namespace phosphorus.lambda
         }
 
         /*
-         * returns source value from [set] statement back to caller
+         * returns static [source] value from [set] statement back to caller
          */
-        private static object GetSource (Node node, out bool isRelative)
+        private static object GetStaticSource (Node node)
         {
-            isRelative = false;
             object retVal = null;
             var sourceNodes = new List<Node> (node.FindAll ("source"));
             if (sourceNodes.Count > 1)
                 throw new ArgumentException ("[set] can only handle one [source]");
 
-            // checking for static source, wwhich might be a constant or an expression
-            if (sourceNodes.Count > 0) {
-                if (sourceNodes [0] != node.LastChild)
-                    throw new ArgumentException ("[source] must be last child of [set] statement");
+            // checking for static source, which might be a constant, or an expression
+            if (sourceNodes.Count == 1) {
 
                 if (sourceNodes [0].Value != null) {
 
@@ -117,33 +112,13 @@ namespace phosphorus.lambda
                     retVal = XUtil.Single <object> (sourceNodes [0]);
 
                     // checking to see if source is "escaped"
-                    if (retVal is string && ((string)retVal).StartsWith ("\\"))
-                        retVal = ((string)retVal).Substring (1);
+                    string strRetVal = retVal as string;
+                    if (strRetVal != null && strRetVal.StartsWith ("\\"))
+                        retVal = strRetVal.Substring (1);
                 } else if (sourceNodes [0].Count > 0) {
 
                     // source is wrapping another node
                     retVal = sourceNodes [0].FirstChild;
-                }
-            } else {
-
-                // checking for "relative source"
-                sourceNodes = new List<Node> (node.FindAll ("rel-source"));
-                if (sourceNodes.Count > 1)
-                    throw new ArgumentException ("[set] can only handle one [rel-source]");
-                if (sourceNodes.Count > 0) {
-                    if (sourceNodes [0] != node.LastChild)
-                        throw new ArgumentException ("[rel-source] must be last child of [set] statement");
-
-                    if (XUtil.IsExpression (sourceNodes [0].Value)) {
-
-                        // relative source exists, and is an expression
-                        retVal = XUtil.FormatNode (sourceNodes [0]);
-                        isRelative = true;
-                    } else {
-
-                        // relative source can only be an expression
-                        throw new ArgumentException ("[rel-source] in [set] can only be an expression");
-                    }
                 }
             }
             return retVal;

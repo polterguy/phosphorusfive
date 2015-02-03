@@ -242,6 +242,26 @@ add:@/-/1/?node
         }
 
         [Test]
+        public void RelativeSourceRelativeFormattedSourceExpression ()
+        {
+            Node tmp = ExecuteLambda (@"_out
+  _source
+    foo:bar
+  _destination
+  _format:.
+  _r:r
+add:@/-/1/?node
+  rel-source:@/{0}/0/*/?node
+    :@/./*/{0}/?value
+      :_fo{0}mat
+        :@/./*/_r/?value");
+            Assert.AreEqual (1, tmp [0] [1].Count, "wrong value of node after executing lambda object");
+            Assert.AreEqual (0, tmp [0] [1] [0].Count, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("foo", tmp [0] [1] [0].Name, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("bar", tmp [0] [1] [0].Value, "wrong value of node after executing lambda object");
+        }
+
+        [Test]
         [ExpectedException]
         public void SyntaxError1 ()
         {

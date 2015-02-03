@@ -350,12 +350,93 @@ set:@/{0}/*/_out/?value
         }
 
         [Test]
+        public void RelativeSourceExpressionRelativeFormattedSource ()
+        {
+            Node tmp = ExecuteLambda (@"_out
+  _value:success
+  _u:u
+set:@/../*/_out/?value
+  rel-source:@/*/{0}/?value
+    :@/../*/_o{0}t/0/?name
+      :@/*/_u/?value");
+            Assert.AreEqual ("success", tmp [0].Value, "wrong value of node after executing lambda object");
+        }
+
+        [Test]
         public void SourceIsEscapedExpression ()
         {
             Node tmp = ExecuteLambda (@"_out
 set:@/-/?value
   source:\@/../?value");
             Assert.AreEqual ("@/../?value", tmp [0].Value, "wrong value of node after executing lambda object");
+        }
+        
+        [Test]
+        public void SourceExpressionReturnsMultipleValues ()
+        {
+            Node tmp = ExecuteLambda (@"_out
+set:@/-/?value
+  source:@/./+/|/./+/+/?value
+_x1:f
+_x2:g");
+            Assert.AreEqual ("fg", tmp [0].Value, "wrong value of node after executing lambda object");
+        }
+        
+        [Test]
+        public void SourceExpressionReturnsMultipleIntegerValues ()
+        {
+            Node tmp = ExecuteLambda (@"_out
+set:@/-/?value
+  source:@/./+/|/./+/+/?value
+_x1:int:5
+_x2:int:6");
+            Assert.AreEqual ("56", tmp [0].Value, "wrong value of node after executing lambda object");
+        }
+
+        [Test]
+        public void RelativeSourceExpressionReturnsMultipleValues ()
+        {
+            Node tmp = ExecuteLambda (@"_out
+  _1:x
+  _2:y
+set:@/-/?value
+  rel-source:@/*/?value");
+            Assert.AreEqual ("xy", tmp [0].Value, "wrong value of node after executing lambda object");
+        }
+        
+        [Test]
+        public void RelativeSourceExpressionReturnsMultipleIntegerValues ()
+        {
+            Node tmp = ExecuteLambda (@"_out
+  _1:int:5
+  _2:int:6
+set:@/-/?value
+  rel-source:@/*/?value");
+            Assert.AreEqual ("56", tmp [0].Value, "wrong value of node after executing lambda object");
+        }
+
+        [Test]
+        public void FormattedRelativeSourceExpressionReturnsMultipleValues ()
+        {
+            Node tmp = ExecuteLambda (@"_out
+  _1:int:5
+  _2:int:6
+  _3:int:7
+set:@/-/?value
+  rel-source:@/*/({0})/?value
+    :/_1/|/_2/");
+            Assert.AreEqual ("56", tmp [0].Value, "wrong value of node after executing lambda object");
+        }
+
+        [Test]
+        public void SourceExpressionReturnsMultipleValuesSetName ()
+        {
+            Node tmp = ExecuteLambda (@"_out1
+set:@/-/?name
+  source:@/./+/|/./+/+/?value
+_x1:f
+_x2:g");
+            Assert.AreEqual ("fg", tmp [0].Name, "wrong value of node after executing lambda object");
         }
 
         [Test]
@@ -384,32 +465,10 @@ set:@/-/?path");
             ExecuteLambda (@"_out1
 set:@/-/?count");
         }
-        
-        [Test]
-        [ExpectedException]
-        public void SyntaxError4 ()
-        {
-            ExecuteLambda (@"_out1
-set:@/-/?value
-  source:@/./+/|/./+/+/?value
-_x1:f
-_x2:g");
-        }
 
         [Test]
         [ExpectedException]
-        public void SyntaxError5 ()
-        {
-            ExecuteLambda (@"_out1
-set:@/-/?name
-  source:@/./+/|/./+/+/?value
-_x1:f
-_x2:g");
-        }
-        
-        [Test]
-        [ExpectedException]
-        public void SyntaxError6 ()
+        public void SyntaxError4 ()
         {
             ExecuteLambda (@"_out1
 set:@/-/?node
@@ -420,7 +479,7 @@ _x2:g");
         
         [Test]
         [ExpectedException]
-        public void SyntaxError7 ()
+        public void SyntaxError5 ()
         {
             ExecuteLambda (@"_out1
 set:@/-/?value

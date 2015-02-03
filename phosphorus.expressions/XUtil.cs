@@ -70,6 +70,39 @@ namespace phosphorus.lambda
         }
 
         /// <summary>
+        /// returns formatted string according to given node
+        /// </summary>
+        /// <returns>the formatted string expression</returns>
+        /// <param name="formattingNode">the node containing the formatting expression</param>
+        /// <param name="dataSourceNode">the node to use for iterating any expressions within the formatting node</param>
+        public static object FormatNode (Node formattingNode, Node dataSourceNode)
+        {
+            // we only try to format node's whos value is of type "string"
+            List<Node> formatingValues = new List<Node> (formattingNode.FindAll (string.Empty));
+            if (formatingValues.Count > 0) {
+
+                // this is a formatted node
+                List<string> childrenValues = new List<string> ();
+                foreach (Node idxNode in formatingValues) {
+                    string value = idxNode.Get<string> ();
+                    if (idxNode.Count > 0) {
+                        value = Utilities.Convert <string> (FormatNode (idxNode, dataSourceNode));
+                    }
+                    if (IsExpression (value)) {
+                        value = Single<string> (dataSourceNode, value as string);
+                    }
+                    childrenValues.Add (value);
+                }
+
+                // returning node's value after being formatted according to its children nodes
+                return string.Format (CultureInfo.InvariantCulture, formattingNode.Get<string> (), childrenValues.ToArray ());
+            }
+
+            // not a formatted node
+            return formattingNode.Value;
+        }
+
+        /// <summary>
         /// iterator callback for iterating node expressions
         /// </summary>
         public delegate void IteratorCallbackVoid<T> (T idx);
@@ -148,11 +181,18 @@ namespace phosphorus.lambda
                 var match = Expression.Create (nodeValue as string).Evaluate (node);
                 if (match.TypeOfMatch == Match.MatchType.Count)
                     return (T)(object)match.Count;
-                if (match.Count > 1)
-                    throw new ArgumentException ("Single expected single value of expression, but expression returned multiple results");
+                if (match.Count > 1) {
+                    string retVal = null;
+                    for (int idxNo = 0; idxNo < match.Count; idxNo++) {
+                        retVal += match.GetValue<string> (idxNo);
+                    }
+                    return Utilities.Convert<T> (retVal);
+                }
+                if (match.Count == 0)
+                    return default (T);
                 return match.GetValue<T> (0);
             } else {
-                return Utilities.Convert <T> (nodeValue);
+                return Utilities.Convert<T> (nodeValue);
             }
         }
 
@@ -166,8 +206,13 @@ namespace phosphorus.lambda
             var match = Expression.Create (expression).Evaluate (node);
             if (match.TypeOfMatch == Match.MatchType.Count)
                 return (T)(object)match.Count;
-            if (match.Count > 1)
-                throw new ArgumentException ("Single expected single value of expression, but expression returned multiple results");
+            if (match.Count > 1) {
+                string retVal = null;
+                for (int idxNo = 0; idxNo < match.Count; idxNo++) {
+                    retVal += match.GetValue<string> (idxNo);
+                }
+                return Utilities.Convert<T> (retVal);
+            }
             if (match.Count == 0)
                 return default (T);
             return match.GetValue<T> (0);

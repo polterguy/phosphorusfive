@@ -41,9 +41,9 @@ namespace phosphorus.lambda
             } else if (e.Args.LastChild.Name == "rel-source" && XUtil.IsExpression (e.Args.LastChild.Value)) {
 
                 // "relative source", postponing fetching nodes until inside of iterator
-                string sourceExpression = XUtil.FormatNode (e.Args.LastChild) as string;
                 XUtil.Iterate<Node> (e.Args, 
                 delegate (Node idxDestination) {
+                    string sourceExpression = XUtil.FormatNode (e.Args.LastChild, idxDestination) as string;
                     XUtil.Iterate<Node> (idxDestination, sourceExpression,
                     delegate (Node idxSource) {
                         idxDestination.Add (idxSource.Clone ());
