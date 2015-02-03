@@ -304,6 +304,59 @@ set:@/../*/{0}/?value
   source:y");
             Assert.AreEqual ("y", tmp [0].Value, "wrong value of node after executing lambda object");
         }
+        
+        [Test]
+        public void RelativeSource ()
+        {
+            Node tmp = ExecuteLambda (@"_out
+  _value:success
+set:@/../*/_out/?value
+  rel-source:@/*/_value/?value");
+            Assert.AreEqual ("success", tmp [0].Value, "wrong value of node after executing lambda object");
+        }
+        
+        [Test]
+        public void RelativeFormattedSource ()
+        {
+            Node tmp = ExecuteLambda (@"_out
+  _value:success
+set:@/../*/_out/?value
+  rel-source:@/*/{0}/?value
+    :_value");
+            Assert.AreEqual ("success", tmp [0].Value, "wrong value of node after executing lambda object");
+        }
+
+        [Test]
+        public void RelativeFormattedSourceExpression ()
+        {
+            Node tmp = ExecuteLambda (@"_out
+  _value:success
+set:@/../*/_out/?value
+  rel-source:@/*/{0}/?value
+    :@/../*/_out/0/?name");
+            Assert.AreEqual ("success", tmp [0].Value, "wrong value of node after executing lambda object");
+        }
+
+        [Test]
+        public void RelativeFormattedSourceExpressionAndFormattedDestination ()
+        {
+            Node tmp = ExecuteLambda (@"_out
+  _value:success
+set:@/{0}/*/_out/?value
+  :..
+  rel-source:@/*/{0}/?value
+    :@/../*/_out/0/?name");
+            Assert.AreEqual ("success", tmp [0].Value, "wrong value of node after executing lambda object");
+        }
+
+        [Test]
+        public void SourceIsEscapedExpression ()
+        {
+            Node tmp = ExecuteLambda (@"_out
+set:@/-/?value
+  source:\@/../?value");
+            Assert.AreEqual ("@/../?value", tmp [0].Value, "wrong value of node after executing lambda object");
+        }
 
         [Test]
         [ExpectedException]

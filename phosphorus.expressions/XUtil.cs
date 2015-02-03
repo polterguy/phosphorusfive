@@ -84,7 +84,6 @@ namespace phosphorus.lambda
         /// invokes callback for each value in constant or expression result
         /// </summary>
         /// <param name="node">node that contains constant or expression as value</param>
-        /// <param name="formatExpression">if set to <c>true</c> will format expressions</param>
         /// <param name="callback">code to invoke once for each result</param>
         /// <typeparam name="T">the type of object 'value' is</typeparam>
         public static void Iterate<T> (Node node, IteratorCallbackVoid<T> callback)
@@ -106,7 +105,6 @@ namespace phosphorus.lambda
         /// invokes callback for each value in constant or expression result
         /// </summary>
         /// <param name="node">node that contains constant or expression as value</param>
-        /// <param name="formatExpression">if set to <c>true</c> will format expressions</param>
         /// <param name="callback">code to invoke once for each result</param>
         /// <typeparam name="T">the type of object 'value' is</typeparam>
         public static void IterateNodes (Node node, IteratorCallbackNode callback)
@@ -126,7 +124,6 @@ namespace phosphorus.lambda
         /// returns a single value of type T from expression in node's value given
         /// </summary>
         /// <param name="node">node containing expression, being current node for expression</param>
-        /// <param name="formatExpression">if set to <c>true</c> will format expression</param>
         /// <typeparam name="T">the 1st type parameter</typeparam>
         public static T Single<T> (Node node)
         {
@@ -141,6 +138,21 @@ namespace phosphorus.lambda
             } else {
                 return Utilities.Convert <T> (nodeValue);
             }
+        }
+
+        /// <summary>
+        /// returns a single value of type T from expression given
+        /// </summary>
+        /// <param name="node">node containing expression, being current node for expression</param>
+        /// <typeparam name="T">the 1st type parameter</typeparam>
+        public static T Single<T> (Node node, string expression)
+        {
+            var match = Expression.Create (expression).Evaluate (node);
+            if (match.TypeOfMatch == Match.MatchType.Count)
+                return (T)(object)match.Count;
+            if (match.Count > 1)
+                throw new ArgumentException ("Single expected single value of expression, but expression returned multiple results");
+            return match.GetValue<T> (0);
         }
 
         /// <summary>
