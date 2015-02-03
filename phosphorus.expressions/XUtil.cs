@@ -106,6 +106,22 @@ namespace phosphorus.lambda
         /// </summary>
         /// <param name="node">node that contains constant or expression as value</param>
         /// <param name="callback">code to invoke once for each result</param>
+        /// <param name="expression">expression to use to iterate nodes</param>
+        /// <typeparam name="T">the type of object 'value' is</typeparam>
+        public static void Iterate<T> (Node node, string expression, IteratorCallbackVoid<T> callback)
+        {
+            var match = Expression.Create (expression).Evaluate (node);
+            for (int idxNo = 0; idxNo < match.Count; idxNo++) {
+                callback (match.GetValue<T> (idxNo));
+            }
+        }
+
+        /// <summary>
+        /// iterates a value of a node, which might be either a constant, or an expression, and
+        /// invokes callback for each value in constant or expression result
+        /// </summary>
+        /// <param name="node">node that contains constant or expression as value</param>
+        /// <param name="callback">code to invoke once for each result</param>
         /// <typeparam name="T">the type of object 'value' is</typeparam>
         public static void IterateNodes (Node node, IteratorCallbackNode callback)
         {
@@ -152,6 +168,8 @@ namespace phosphorus.lambda
                 return (T)(object)match.Count;
             if (match.Count > 1)
                 throw new ArgumentException ("Single expected single value of expression, but expression returned multiple results");
+            if (match.Count == 0)
+                return default (T);
             return match.GetValue<T> (0);
         }
 

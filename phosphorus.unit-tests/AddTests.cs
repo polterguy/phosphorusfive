@@ -190,6 +190,56 @@ _x2:y2");
             Assert.AreEqual ("y2", tmp [2] [1].Value, "wrong value of node after executing lambda object");
             Assert.AreEqual (0, tmp [2] [1].Count, "wrong value of node after executing lambda object");
         }
+        
+        [Test]
+        public void RelativeSource ()
+        {
+            Node tmp = ExecuteLambda (@"_out
+  _source
+    foo:bar
+  _destination
+add:@/-/1/?node
+  rel-source:@/./0/*/?node");
+            Assert.AreEqual (1, tmp [0] [1].Count, "wrong value of node after executing lambda object");
+            Assert.AreEqual (0, tmp [0] [1] [0].Count, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("foo", tmp [0] [1] [0].Name, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("bar", tmp [0] [1] [0].Value, "wrong value of node after executing lambda object");
+        }
+        
+        [Test]
+        public void RelativeSourceMultipleNodes ()
+        {
+            Node tmp = ExecuteLambda (@"_out
+  _source
+    foo1:bar1
+    foo2:bar2
+  _destination
+add:@/-/1/?node
+  rel-source:@/./0/*/?node");
+            Assert.AreEqual (2, tmp [0] [1].Count, "wrong value of node after executing lambda object");
+            Assert.AreEqual (0, tmp [0] [1] [0].Count, "wrong value of node after executing lambda object");
+            Assert.AreEqual (0, tmp [0] [1] [1].Count, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("foo1", tmp [0] [1] [0].Name, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("bar1", tmp [0] [1] [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("foo2", tmp [0] [1] [1].Name, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("bar2", tmp [0] [1] [1].Value, "wrong value of node after executing lambda object");
+        }
+        
+        [Test]
+        public void RelativeSourceFormattedSourceExpression ()
+        {
+            Node tmp = ExecuteLambda (@"_out
+  _source
+    foo:bar
+  _destination
+add:@/-/1/?node
+  rel-source:@/{0}/0/*/?node
+    :.");
+            Assert.AreEqual (1, tmp [0] [1].Count, "wrong value of node after executing lambda object");
+            Assert.AreEqual (0, tmp [0] [1] [0].Count, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("foo", tmp [0] [1] [0].Name, "wrong value of node after executing lambda object");
+            Assert.AreEqual ("bar", tmp [0] [1] [0].Value, "wrong value of node after executing lambda object");
+        }
 
         [Test]
         [ExpectedException]

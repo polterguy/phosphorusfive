@@ -26,16 +26,34 @@ namespace phosphorus.lambda
             if (e.Args.Count == 0)
                 throw new ArgumentException ("[add] needs a [source]");
 
-            // fetching source nodes
-            var source = new List<Node> (GetSource (e.Args));
+            if (e.Args.LastChild.Name == "source") {
 
-            // looping through every destination node, adding a copy of every source node, to its children collection
-            XUtil.Iterate<Node> (e.Args, 
-            delegate (Node idxDestination) {
-                foreach (Node idxSource in source) {
-                    idxDestination.Add (idxSource.Clone());
-                }
-            });
+                // "static" source, fetching source nodes first
+                var source = new List<Node> (GetSource (e.Args));
+
+                // looping through every destination node, adding a copy of every source node, to its children collection
+                XUtil.Iterate<Node> (e.Args, 
+                delegate (Node idxDestination) {
+                    foreach (Node idxSource in source) {
+                        idxDestination.Add (idxSource.Clone ());
+                    }
+                });
+            } else if (e.Args.LastChild.Name == "rel-source" && XUtil.IsExpression (e.Args.LastChild.Value)) {
+
+                // "relative source", postponing fetching nodes until inside of iterator
+                string sourceExpression = XUtil.FormatNode (e.Args.LastChild) as string;
+                XUtil.Iterate<Node> (e.Args, 
+                delegate (Node idxDestination) {
+                    XUtil.Iterate<Node> (idxDestination, sourceExpression,
+                    delegate (Node idxSource) {
+                        idxDestination.Add (idxSource.Clone ());
+                    });
+                });
+            } else {
+            
+                // syntax error
+                throw new ArgumentException ("neither a valid [source] nor a valid [rel-source] was given to [add]");
+            }
         }
 
         /*
@@ -60,14 +78,14 @@ namespace phosphorus.lambda
                     retVal.Add (idxDestination.Clone ()); // cloning in case source and destination overlaps
                 });
                 return retVal;
-            } else if (sourceNodes [0].Value != null) {
-
-                // source node's value is not empty, still not an expression, which is a bug
-                throw new ArgumentException ("[source] node contained a value which was not an expression");
-            } else {
+            } else if (sourceNodes [0].Value == null) {
 
                 // source is a bunch of static children
                 return sourceNodes [0].Children;
+            } else {
+
+                // source node's value is not empty, still not an expression, which is a bug
+                throw new ArgumentException ("[source] node contained a value which was not an expression");
             }
         }
     }
