@@ -16,6 +16,7 @@ namespace phosphorus.unittests
         public ForEachTests ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.types");
             Loader.Instance.LoadAssembly ("phosphorus.lambda");
             _context = Loader.Instance.CreateApplicationContext ();
         }

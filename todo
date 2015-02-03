@@ -20,34 +20,18 @@
 * create "plugin" support for "for-each", "set", "add" etc, to allow iterating for instance Widgets, and change their properties
   directly to create less verbose code
 
-* verifies properties of widgets can be changed immediately after [pf.web.create-widget] without resorting to [oninitialload]
+* verify properties of widgets can be changed immediately after [pf.web.create-widget] without resorting to [oninitialload]
 
 * clean up [pf.html.html2lambda] to allow creating pf.lambda code in HTML
-
-* change names of [pf.web.widgets.set-property] and sibling methods to conform to [pf.web.session.set], such that set-property
-  becomes [pf.web.widgets.property.set] instead, etc ...
 
 * [flatten] keyword in pf.lambda, to create a string representation of a list of nodes, with "spacingString" and "inbetweenPairString" support
 
 * [split] keyword in pf.lambda, to create node representation of a string, splitting into name/value pair according to "spacingString"
   and "inbetweenPairString"
 
-* try to give support for destination expression in for instance [add] to have formatting expressions, and add support for
-  "named" formatting values, in addition to "numbered" formatting values, such as {foo} and {bar}, in addition to {0} and {1}
-
-* move entire expression engine into its own project
-
-* refactor [set] statement to use Expression.Iterator, or similar techniques
-
-* remove Event.cs and Override.cs from phosphorus.lambda/helpers directory when done refactoring [event] statement
-
-* create support for "relative expressions sources" in [add] and [set], allowing the source to be "relative" to the destination
-
 * store timezone (GTM+x) in DateTime when serializing and de-serializing from Hyperlisp
 
 * Active Event to zip many CSS/JavaScript files back to client as one, relying on [pf.web.echo]
-
-* "reference expressions", expressions leading to expressions
 
 
 

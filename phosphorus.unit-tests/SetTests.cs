@@ -16,6 +16,7 @@ namespace phosphorus.unittests
         public SetTests ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.types");
             Loader.Instance.LoadAssembly ("phosphorus.lambda");
             _context = Loader.Instance.CreateApplicationContext ();
         }
@@ -416,7 +417,7 @@ set:@/-/?value
         }
 
         [Test]
-        public void FormattedRelativeSourceExpressionReturnsMultipleValues ()
+        public void RecursivelyFormattedRelativeSourceExpressionReturnsMultipleIntegerValues ()
         {
             Node tmp = ExecuteLambda (@"_out
   _1:int:5
@@ -424,8 +425,9 @@ set:@/-/?value
   _3:int:7
 set:@/-/?value
   rel-source:@/*/({0})/?value
-    :/_1/|/_2/");
-            Assert.AreEqual ("56", tmp [0].Value, "wrong value of node after executing lambda object");
+    :/{0}/|/_1/
+      :@/2/?name");
+            Assert.AreEqual ("75", tmp [0].Value, "wrong value of node after executing lambda object");
         }
 
         [Test]
@@ -437,6 +439,20 @@ set:@/-/?name
 _x1:f
 _x2:g");
             Assert.AreEqual ("fg", tmp [0].Name, "wrong value of node after executing lambda object");
+        }
+        
+        [Test]
+        public void FlattenNodes ()
+        {
+            Node tmp = ExecuteLambda (@"_out1
+  _1:a
+  _2:b
+  _3:c
+_x:,
+_x2:,
+set:@/-3/?value
+  rel-source:@/*/(/_1/|/../*/_x/|/_2/|/../*/_x2/|/_3/)?value");
+            Assert.AreEqual ("a,b,c", tmp [0].Value, "wrong value of node after executing lambda object");
         }
 
         [Test]

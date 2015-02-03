@@ -17,6 +17,7 @@ namespace phosphorus.unittests
         public MongoDBTests ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            Loader.Instance.LoadAssembly ("phosphorus.types");
             Loader.Instance.LoadAssembly ("phosphorus.lambda");
             Loader.Instance.LoadAssembly ("phosphorus.mongodb");
             _context = Loader.Instance.CreateApplicationContext ();

@@ -25,8 +25,8 @@ namespace phosphorus.web
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.widgets.get-property")]
-        private static void pf_web_widgets_get_property (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.widgets.property.get")]
+        private static void pf_web_widgets_property_get (ApplicationContext context, ActiveEventArgs e)
         {
             var origNodeList = new List<Node> (e.Args.Children);
             XUtil.Iterate<string> (e.Args, 
@@ -79,8 +79,8 @@ namespace phosphorus.web
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.widgets.set-property")]
-        private static void pf_web_widgets_set_property (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.widgets.property.set")]
+        private static void pf_web_widgets_property_set (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.Iterate<string> (e.Args, 
             delegate (string idx) {
@@ -114,8 +114,8 @@ namespace phosphorus.web
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.widgets.remove-property")]
-        private static void pf_web_widgets_remove_property (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.widgets.property.remove")]
+        private static void pf_web_widgets_property_remove (ApplicationContext context, ActiveEventArgs e)
         {
             XUtil.Iterate<string> (e.Args,
             delegate (string idx) {

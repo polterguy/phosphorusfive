@@ -544,14 +544,16 @@ _tmp3:x2";
             _context.Raise ("pf.core.application-start");
             Node tmp = new Node ();
             tmp.Value = @"_tmp:{0}{1}{2}{3}{4}
-  :x
+  :x{0}
+    :y{0}
+      :int:5
   :int:5
   :date:""2012-11-23T22:59:57""
   :path:0-2
   :node:""_x:y""";
             _context.Raise ("code2lambda", tmp);
             object result = XUtil.FormatNode (tmp [0]);
-            Assert.AreEqual ("x5" + new DateTime (2012, 11, 23, 22, 59, 57).ToString ("yyyy-MM-ddTHH:mm:ss") + "0-2" + "_x:y", result, "wrong result in assert");
+            Assert.AreEqual ("xy55" + new DateTime (2012, 11, 23, 22, 59, 57).ToString ("yyyy-MM-ddTHH:mm:ss") + "0-2" + "_x:y", result, "wrong result in assert");
         }
         
         [Test]
