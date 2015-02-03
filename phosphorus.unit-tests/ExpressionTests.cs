@@ -12,10 +12,8 @@ using phosphorus.lambda;
 namespace phosphorus.unittests
 {
     [TestFixture]
-    public class ExpressionTests
+    public class ExpressionTests : TestBase
     {
-        private ApplicationContext _context;
-
         public ExpressionTests ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
@@ -291,7 +289,7 @@ _tmp1:x2";
         }
 
         [Test]
-        public void ReferenceExpression ()
+        public void ReferenceNode ()
         {
             Node tmp = new Node ();
             tmp.Value = @"_tmp1:x
@@ -554,6 +552,110 @@ _tmp3:x2";
             _context.Raise ("code2lambda", tmp);
             object result = XUtil.FormatNode (tmp [0]);
             Assert.AreEqual ("x5" + new DateTime (2012, 11, 23, 22, 59, 57).ToString ("yyyy-MM-ddTHH:mm:ss") + "0-2" + "_x:y", result, "wrong result in assert");
+        }
+        
+        [Test]
+        public void ReferenceExpression ()
+        {
+            Node tmp = ExecuteLambda (@"_data:success
+_exp:@/-/?value
+set:@/+/?value
+  source:@@/./-/?value
+_result");
+            Assert.AreEqual ("success", tmp [3].Value, "wrong result in assert");
+        }
+        
+        [Test]
+        public void ReferencedReferenceExpression ()
+        {
+            Node tmp = ExecuteLambda (@"_data:success
+_exp1:@/-/?value
+_exp2:@@/-/?value
+set:@/+/?value
+  source:@@/./-/?value
+_result");
+            Assert.AreEqual ("success", tmp [4].Value, "wrong result in assert");
+        }
+        
+        [Test]
+        public void ReferenceExpressionReturningMultipleInnerExpressions ()
+        {
+            Node tmp = ExecuteLambda (@"_exp1:@/../*/_result1/?value
+_exp1:@/../*/_result2/?value
+set:@@/../*/_exp1/?value
+  source:success
+_result1
+_result2");
+            Assert.AreEqual ("success", tmp [3].Value, "wrong result in assert");
+            Assert.AreEqual ("success", tmp [4].Value, "wrong result in assert");
+        }
+        
+        [Test]
+        public void FormatedReferenceExpression ()
+        {
+            Node tmp = ExecuteLambda (@"
+_source:_exp
+_exp:@/../*/_result/?value
+set:@@/../*/{0}/?value
+  :@/../*/_source/?value
+  source:success
+_result");
+            Assert.AreEqual ("success", tmp [3].Value, "wrong result in assert");
+        }
+        
+        [Test]
+        public void ReferencedReferenceExpressionReturningDifferentType ()
+        {
+            Node tmp = ExecuteLambda (@"_data:_success
+_exp1:@/-/?value
+set:@/+/?name
+  source:@@/./-/?value
+_result");
+            Assert.AreEqual ("_success", tmp [3].Name, "wrong result in assert");
+        }
+        
+        [Test]
+        [ExpectedException]
+        public void SyntaxError1 ()
+        {
+            ExecuteLambda (@"_exp1:@/-/?value
+_exp1:@/-/?name
+set:@/+/?name
+  source:@@/../*/_exp1/?value
+_result");
+        }
+        
+        [Test]
+        [ExpectedException]
+        public void SyntaxError2 ()
+        {
+            ExecuteLambda (@"_exp1:@/-/?value
+_exp1:@/-/?value
+set:@/+/?name
+  source:@@@/../*/_exp1/?value
+_result");
+        }
+        
+        [Test]
+        [ExpectedException]
+        public void SyntaxError3 ()
+        {
+            ExecuteLambda (@"_exp1:/-/?value
+_exp1:@/-/?value
+set:@/+/?name
+  source:@@/../*/_exp1/?value
+_result");
+        }
+        
+        [Test]
+        [ExpectedException]
+        public void SyntaxError4 ()
+        {
+            ExecuteLambda (@"_exp1:@/-/?value
+_exp1:@/-/?value
+set:@/+/?value
+  source:@@/../*/_exp1/?name
+_result");
         }
     }
 }

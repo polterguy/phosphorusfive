@@ -388,6 +388,8 @@ namespace phosphorus.lambda
                 return FindMatchRangeEndToken (current, token);
             } else if (previousToken == "%") {
                 return FindMatchModuloIntegerToken (current, token);
+            } else if (token == "@" && previousToken == null) {
+                return FindMatchReferenceExpressionToken (current, token);
             } else {
                 if (previousToken != "/") {
                     throw new ArgumentException ("syntax error in expression; '" + 
@@ -402,6 +404,18 @@ namespace phosphorus.lambda
                     return FindMatchNamedToken (current, token);
                 }
             }
+        }
+
+        /*
+         * handles "reference" expressions
+         */
+        private IteratorGroup FindMatchReferenceExpressionToken (IteratorGroup current, string token)
+        {
+            if (current.Reference) {
+                throw new ArgumentException ("you cannot set the reference expression flag twice");
+            }
+            current.Reference = true;
+            return current;
         }
         
         /*

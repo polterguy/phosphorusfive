@@ -63,6 +63,19 @@ namespace phosphorus.lambda.iterators
                 return _logicals [_logicals.Count - 1].Iterator;
             }
         }
+        
+        /// <summary>
+        /// returns true if this is a "reference expression"
+        /// </summary>
+        /// <value>true if this is a reference expression</value>
+        public override bool Reference {
+            get {
+                return _groupRoot.Reference;
+            }
+            set {
+                _groupRoot.Reference = value;
+            }
+        }
 
         /// <summary>
         /// adds a <see cref="phosphorus.execute.iterators.Logical"/> to the list of logicals in the group for performing

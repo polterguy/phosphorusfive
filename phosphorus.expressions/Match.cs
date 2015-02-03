@@ -54,6 +54,11 @@ namespace phosphorus.lambda
             _nodes = new List<Node> (group.Evaluate);
             type = type.Substring (0, 1).ToUpper () + type.Substring (1);
             TypeOfMatch = (MatchType)Enum.Parse (typeof(MatchType), type);
+            if (group.Reference) {
+
+                // this is a reference expression, making sure we evaluate the referenced expression(s)
+                EvaluateReferenceExpression ();
+            }
         }
 
         /// <summary>
@@ -131,6 +136,39 @@ namespace phosphorus.lambda
             if (index >= _nodes.Count || index < 0)
                 throw new ArgumentException ("index not within range of match");
             return _nodes [index];
+        }
+        
+        /*
+         * evaluates a reference expression
+         */
+        private void EvaluateReferenceExpression ()
+        {
+            if (TypeOfMatch != MatchType.Value)
+                throw new ArgumentException ("reference expressions can only point to 'value' of other nodes");
+
+            // looping through referenced expressions, yielding result from these referenced expression(s)
+            List<Node> newNodes = new List<Node> ();
+            MatchType? idxType = new MatchType? ();
+
+            // looping through each match from reference expression
+            foreach (Node idx in _nodes) {
+
+                // evaluating reference expressions
+                var match = Expression.Create (idx.Get<string> ()).Evaluate (idx);
+
+                // making sure all referenced expressions have the same type
+                if (!idxType.HasValue)
+                    idxType = match.TypeOfMatch;
+                else if (idxType.Value != match.TypeOfMatch)
+                    throw new ArgumentException ("a reference expression referenced two different expressions of different type");
+
+                // adding result from current referenced expression
+                newNodes.AddRange (match.Matches);
+            }
+
+            // updating the value and type of current match to result(s) from referenced expression(s)
+            TypeOfMatch = idxType.Value;
+            _nodes = newNodes;
         }
     }
 }

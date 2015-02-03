@@ -10,7 +10,6 @@ using phosphorus.core;
 
 namespace phosphorus.unittests
 {
-    [TestFixture]
     public class TestBase
     {
         protected ApplicationContext _context;

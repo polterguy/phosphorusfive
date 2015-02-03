@@ -41,5 +41,14 @@ namespace phosphorus.lambda.iterators
         public abstract IEnumerable<Node> Evaluate {
             get;
         }
+
+        /// <summary>
+        /// returns true if this is a "reference expression"
+        /// </summary>
+        /// <value>true if this is a reference expression</value>
+        public virtual bool Reference {
+            get;
+            set;
+        }
     }
 }
