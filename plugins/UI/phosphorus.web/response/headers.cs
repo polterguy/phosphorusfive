@@ -7,7 +7,7 @@
 using System;
 using System.Web;
 using phosphorus.core;
-using phosphorus.lambda;
+using phosphorus.expressions;
 
 namespace phosphorus.web
 {
@@ -27,15 +27,15 @@ namespace phosphorus.web
             if (e.Args.Count == 0) {
 
                 // "remove headers" invocation, looping through all headers user wish to remove
-                XUtil.Iterate<string> (e.Args, 
+                XUtil.Iterate<string> (e.Args, context, 
                 delegate (string idx) {
                     HttpContext.Current.Response.Headers.Remove (idx);
                 });
             } else {
 
                 // adding header(s) invocation
-                string value = XUtil.Single (e.Args.LastChild, "; ");
-                XUtil.Iterate<string> (e.Args, 
+                string value = e.Args.LastChild.Get<string> (context);
+                XUtil.Iterate<string> (e.Args, context, 
                 delegate (string idx) {
                     HttpContext.Current.Response.AddHeader (idx, value);
                 });

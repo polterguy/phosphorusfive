@@ -68,6 +68,9 @@ namespace phosphorus.core
             /// <param name="value">value to check</param>
             public static bool IsPath (string dna)
             {
+                if (dna == null)
+                    return false;
+
                 foreach (char idx in dna) {
                     if ("0123456789-".IndexOf (idx) == -1)
                         return false;
@@ -292,6 +295,11 @@ namespace phosphorus.core
         private string _name;
 
         /// <summary>
+        /// delegate for iterating children nodes
+        /// </summary>
+        public delegate T NodeIterator<T> (Node node);
+
+        /// <summary>
         /// initializes a new instance of the <see cref="phosphorus.core.Node"/> class
         /// </summary>
         public Node ()
@@ -319,6 +327,18 @@ namespace phosphorus.core
             : this (name)
         {
             Value = value;
+        }
+
+        /// <summary>
+        /// initializes a new instance of the <see cref="phosphorus.core.Node"/> class
+        /// </summary>
+        /// <param name="name">name of node</param>
+        /// <param name="value">value of node</param>
+        /// <param name="children">initial children for node</param>
+        public Node (string name, object value, IEnumerable<Node> children)
+            : this (name, value)
+        {
+            _children = new List<Node> (children);
         }
 
         /// <summary>
@@ -359,9 +379,9 @@ namespace phosphorus.core
         /// returns the value of this instance as typeof(T). converts to T if necessary
         /// </summary>
         /// <typeparam name="T">type to return</typeparam>
-        public T Get<T> (T defaultValue = default (T))
+        public T Get<T> (ApplicationContext context, T defaultValue = default (T))
         {
-            return Utilities.Convert <T> (Value, defaultValue);
+            return Utilities.Convert <T> (Value, context, defaultValue);
         }
 
         /// <summary>
@@ -381,7 +401,7 @@ namespace phosphorus.core
         public IEnumerable<Node> UntieChildren ()
         {
             while (_children.Count > 0) {
-                yield return _children [0].Untie ();
+                yield return _children [0].UnTie ();
             }
         }
 
@@ -396,6 +416,16 @@ namespace phosphorus.core
         }
 
         /// <summary>
+        /// returns the parent of node
+        /// </summary>
+        /// <value>parent node</value>
+        public Node Parent {
+            get {
+                return _parent;
+            }
+        }
+
+        /// <summary>
         /// returns the first child of the node
         /// </summary>
         /// <value>the first child</value>
@@ -404,16 +434,6 @@ namespace phosphorus.core
                 if (_children.Count > 0)
                     return _children [0];
                 return null;
-            }
-        }
-
-        /// <summary>
-        /// returns the parent of node
-        /// </summary>
-        /// <value>parent node</value>
-        public Node Parent {
-            get {
-                return _parent;
             }
         }
 
@@ -521,7 +541,7 @@ namespace phosphorus.core
         /// <summary>
         /// unties the node from its parent
         /// </summary>
-        public Node Untie ()
+        public Node UnTie ()
         {
             _parent._children.Remove (this);
             _parent = null;
@@ -534,12 +554,14 @@ namespace phosphorus.core
         /// <param name="node">node to replace current node with</param>
         public Node Replace (Node node)
         {
-            if (node == null)
+            if (node == null) {
                 throw new ArgumentException ("cannot replace a node with null");
-            node._parent = this._parent;
-            this._parent._children [this._parent._children.IndexOf (this)] = node;
-            this._parent = null;
-            return this;
+            } else {
+                node._parent = this._parent;
+                this._parent._children [this._parent._children.IndexOf (this)] = node;
+                this._parent = null;
+                return node;
+            }
         }
 
         /// <summary>
@@ -562,12 +584,33 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// finds the specified match according to the given predicate
+        /// finds the node matching the given DNA
+        /// </summary>
+        /// <returns>the node, if found, otherwise null</returns>
+        /// <param name="dna">the DNA or Path of the node to return</param>
+        public Node FindDNA (string dna)
+        {
+            if (string.IsNullOrEmpty (dna))
+                return null;
+            return Find (new DNA (dna));
+        }
+
+        /// <summary>
+        /// finds the first matching node according to the given predicate
         /// </summary>
         /// <param name="match">node matching the given predicate, or null if none</param>
-        public Node Find (Predicate<Node> match)
+        public Node Find (Predicate<Node> functor)
         {
-            return _children.Find (match);
+            return _children.Find (functor);
+        }
+
+        /// <summary>
+        /// finds all nodes according to the given predicate
+        /// </summary>
+        /// <param name="match">node matching the given predicate</param>
+        public IEnumerable<Node> FindAll (Predicate<Node> functor)
+        {
+            return _children.FindAll (functor);
         }
 
         /// <summary>
@@ -576,9 +619,9 @@ namespace phosphorus.core
         /// <param name="name">name of node to return</param>
         public Node Find (string name)
         {
-            return _children.Find (
-            delegate (Node idx) {
-                return idx.Name == name;
+            return Find (
+                delegate (Node idx) {
+                    return idx.Name == name;
             });
         }
 
@@ -588,9 +631,45 @@ namespace phosphorus.core
         /// <param name="name">name of node to return</param>
         public IEnumerable<Node> FindAll (string name)
         {
+            return FindAll (
+                delegate (Node idx) {
+                    return idx.Name == name;
+            });
+        }
+
+        /// <summary>
+        /// returns all values of children nodes as type T
+        /// </summary>
+        /// <returns>the children values</returns>
+        /// <typeparam name="T">the type you wish to convert values to</typeparam>
+        public IEnumerable<T> GetChildrenValues<T> (
+            ApplicationContext context, 
+            Predicate<Node> functor = null)
+        {
+            if (functor == null) {
+                foreach (Node idx in _children) {
+                    yield return idx.Get<T> (context);
+                }
+            } else {
+                foreach (Node idx in _children) {
+                    if (functor (idx))
+                        yield return idx.Get<T> (context);
+                }
+            }
+        }
+
+        /// <summary>
+        /// iterates every single node, invoking the given functor, and if functor does not return
+        /// default (T), it will yield that T value as a result back to caller
+        /// </summary>
+        /// <param name="functor">match delegate</param>
+        /// <typeparam name="T">type of object you wish to construct from node iterator</typeparam>
+        public IEnumerable<T> ConvertChildren<T> (NodeIterator<T> functor)
+        {
             foreach (Node idx in _children) {
-                if (idx.Name == name)
-                    yield return idx;
+                T retVal = functor (idx);
+                if (retVal != null && !retVal.Equals (default (T)))
+                    yield return retVal;
             }
         }
 
@@ -603,7 +682,7 @@ namespace phosphorus.core
         {
             Node retVal = _children.Find (
                 delegate (Node idx) {
-                return idx.Name == name;
+                    return idx.Name == name;
             });
             if (retVal != null)
                 return retVal;
@@ -611,33 +690,73 @@ namespace phosphorus.core
         }
 
         /// <summary>
+        /// finds the first node having the given name and value, if no matching node exists,
+        /// then a new node with the given name and value will be created and returned to caller
+        /// </summary>
+        /// <param name="name">name of node to return</param>
+        /// <param name="value">value of node to return</param>
+        public Node FindOrCreate (string name, object value)
+        {
+            Node retVal = _children.Find (
+                delegate (Node idx) {
+                    return idx.Name == name && 
+                        ((value == null && idx.Value == null) || (value != null && value.Equals (idx.Value)));
+            });
+            if (retVal != null)
+                return retVal;
+            return Add (new Node (name, value)).LastChild;
+        }
+
+        /// <summary>
         /// finds the first node having the given name
         /// </summary>
         /// <param name="name">name of node to return</param>
-        public T GetChildValue<T> (string name, T defaultValue = default (T))
+        public T GetChildValue<T> (string name, ApplicationContext context, T defaultValue = default (T))
         {
             Node child = _children.Find (
             delegate (Node idx) {
                 return idx.Name == name;
             });
-            return child == null ? defaultValue : child.Get<T> (defaultValue);
+            return child == null ? defaultValue : child.Get<T> (context, defaultValue);
+        }
+
+        public Node Remove (Node node)
+        {
+            if (!_children.Remove (node))
+                throw new ArgumentException ("node doesn't belong to collection");
+            return this;
+        }
+
+        /// <summary>
+        /// removes the node at the specified index
+        /// </summary>
+        /// <param name="index">where node to remove recides in the children collection</param>
+        public Node RemoveAt (int index)
+        {
+            _children [index].UnTie ();
+            return this;
+        }
+
+        /// <summary>
+        /// removes all children nodes matching given predicate
+        /// </summary>
+        /// <param name="functor">predicate</param>
+        public Node RemoveAll (Predicate<Node> functor)
+        {
+            _children.RemoveAll (functor);
+            return this;
         }
 
         /// <summary>
         /// removes all nodes with given name
         /// </summary>
         /// <param name="name">name of nodes to remove</param>
-        public Node Remove (string name)
+        public Node RemoveAll (string name)
         {
-            List<Node> toRemove = new List<Node> ();
-            foreach (Node idx in _children) {
-                if (idx.Name == name)
-                    toRemove.Add (idx);
-            }
-            foreach (Node idx in toRemove) {
-                idx.Untie ();
-            }
-            return this;
+            return RemoveAll (
+                delegate (Node idx) {
+                    return idx.Name == name;
+            });
         }
 
         /// <summary>
@@ -647,6 +766,18 @@ namespace phosphorus.core
         public Node Sort (Comparison<Node> comparison)
         {
             _children.Sort (comparison);
+            return this;
+        }
+
+        /// <summary>
+        /// sorts the children of the node by name
+        /// </summary>
+        public Node Sort ()
+        {
+            _children.Sort (
+                delegate (Node lhs, Node rhs) {
+                    return lhs.Name.CompareTo (rhs.Name);
+            });
             return this;
         }
 
@@ -667,20 +798,28 @@ namespace phosphorus.core
         /// <param name="name">name of node to add</param>
         public Node Add (string name)
         {
-            Node node = new Node (name);
-            node._parent = this;
-            _children.Add (node);
-            return this;
+            return Add (new Node (name));
         }
 
         /// <summary>
-        /// removes the node at the specified index
+        /// adds a child node to its children collection with given name and value
         /// </summary>
-        /// <param name="index">where node to remove recides in the children collection</param>
-        public Node RemoveAt (int index)
+        /// <param name="name">name of node to add</param>
+        /// <param name="value">value of node to add</param>
+        public Node Add (string name, object value)
         {
-            _children [index].Untie ();
-            return this;
+            return Add (new Node (name, value));
+        }
+
+        /// <summary>
+        /// adds a child node to its children collection with given name, value and children
+        /// </summary>
+        /// <param name="name">name of node to add</param>
+        /// <param name="value">value of node to add</param>
+        /// <param name="children">initial child collection of node</param>
+        public Node Add (string name, object value, IEnumerable<Node> nodes)
+        {
+            return Add (new Node (name, value, nodes));
         }
 
         /// <summary>
@@ -803,9 +942,21 @@ namespace phosphorus.core
                 return _children [index];
             }
             set {
-                _children [index]._parent = null;
-                value._parent = this;
-                _children [index] = value;
+                this [index].Replace (value);
+            }
+        }
+
+        /// <summary>
+        /// gets or sets the first node in the children collection matching the given name
+        /// </summary>
+        /// <param name="name">name of node to retrieve or set</param>
+        public Node this [string name]
+        {
+            get {
+                return Find (name);
+            }
+            set {
+                Find (name).Replace (value);
             }
         }
     }

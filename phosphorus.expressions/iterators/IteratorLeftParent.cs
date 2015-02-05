@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using phosphorus.core;
 
-namespace phosphorus.lambda.iterators
+namespace phosphorus.expressions.iterators
 {
     /// <summary>
     /// "stop iterator" which is useful for using as "root iterators" of children <see cref="phosphorus.execute.iterators.IteratorGroup"/>

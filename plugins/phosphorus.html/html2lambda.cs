@@ -8,7 +8,7 @@ using System;
 using System.IO;
 using HtmlAgilityPack;
 using phosphorus.core;
-using phosphorus.lambda;
+using phosphorus.expressions;
 
 namespace phosphorus.html
 {
@@ -28,7 +28,7 @@ namespace phosphorus.html
             // making sure "form" element conforms to relational structure
             HtmlNode.ElementsFlags.Remove ("form");
 
-            XUtil.Iterate<string> (e.Args, 
+            XUtil.Iterate<string> (e.Args, context,
             delegate (string idx) {
                 HtmlDocument doc = new HtmlDocument ();
                 doc.LoadHtml (idx);

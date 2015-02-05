@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using phosphorus.core;
-using phosphorus.lambda;
+using phosphorus.expressions;
 
 namespace phosphorus.mongodb
 {
@@ -31,7 +31,7 @@ namespace phosphorus.mongodb
         private static void pf_mongo_insert (ApplicationContext context, ActiveEventArgs e)
         {
             // retrieving nodes to actually insert
-            IEnumerable<Node> list = GetInsertNodes (e.Args);
+            IEnumerable<Node> list = GetInsertNodes (e.Args, context);
 
             // inserting nodes
             var db = common.DataBase;
@@ -110,7 +110,7 @@ namespace phosphorus.mongodb
         /*
          * returns the nodes to insert for an insert operation
          */
-        private static IEnumerable<Node> GetInsertNodes (Node node)
+        private static IEnumerable<Node> GetInsertNodes (Node node, ApplicationContext context)
         {
             // if node's value is not an expression, we assume the nodes the user wants to insert
             // are the children nodes of the given node
@@ -125,21 +125,21 @@ namespace phosphorus.mongodb
 
             // here we have an expression, returning the results of the expression, supporting "formatting expressions",
             // in addition to static expressions
-            string expression = node.Get<string> ();
+            string expression = node.Get<string> (context);
             if (node.Count > 0)
-                expression = XUtil.FormatNode (node) as string;
-            var match = Expression.Create (expression).Evaluate (node);
+                expression = XUtil.FormatNode (node, node, context) as string;
+            var match = Expression.Create (expression).Evaluate (node, context);
             if (match.Count == 0)
                 throw new ArgumentException ("expression expected to return 'node' in [pf.mongo.xxx] returned nothing");
-            if (match.TypeOfMatch == Match.MatchType.Node) {
-                foreach (Node idx in match.Matches) {
-                    yield return idx;
+            if (match.TypeOfMatch == Match.MatchType.node) {
+                foreach (var idx in match) {
+                    yield return idx.Node;
                 }
                 yield break;
             }
 
             for (int idxNo = 0; idxNo < match.Count; idxNo++) {
-                var retVal = match.GetValue (idxNo) as Node;
+                var retVal = match [idxNo].Value as Node;
                 if (retVal == null)
                     throw new ArgumentException ("expression for [pf.mongo.xxx] that was expected to return a 'node' value, didn't");
                 yield return retVal;

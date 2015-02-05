@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using phosphorus.core;
 
-namespace phosphorus.lambda.iterators
+namespace phosphorus.expressions.iterators
 {
     /// <summary>
     /// returns all parent <see cref="phosphorus.core.Node"/>s of previous iterator result

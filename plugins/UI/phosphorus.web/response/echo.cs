@@ -9,7 +9,7 @@ using System.IO;
 using System.Web;
 using System.Text;
 using phosphorus.core;
-using phosphorus.lambda;
+using phosphorus.expressions;
 
 namespace phosphorus.web
 {
@@ -55,7 +55,7 @@ namespace phosphorus.web
             // retrieving a reference to our EchFilter
             EchoFilter echoFilter = HttpContext.Current.Response.Filter as EchoFilter;
 
-            XUtil.Iterate<string> (e.Args, 
+            XUtil.Iterate<string> (e.Args, context, 
             delegate (string idx) {
                 echoFilter.Append (idx);
             });

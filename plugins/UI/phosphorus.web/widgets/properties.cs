@@ -7,7 +7,7 @@
 using System;
 using System.Collections.Generic;
 using phosphorus.core;
-using phosphorus.lambda;
+using phosphorus.expressions;
 using phosphorus.ajax.widgets;
 
 namespace phosphorus.web
@@ -29,7 +29,7 @@ namespace phosphorus.web
         private static void pf_web_widgets_property_get (ApplicationContext context, ActiveEventArgs e)
         {
             var origNodeList = new List<Node> (e.Args.Children);
-            XUtil.Iterate<string> (e.Args, 
+            XUtil.Iterate<string> (e.Args, context, 
             delegate (string idx) {
                 Widget widget = FindWidget (context, idx);
                 foreach (Node nameNode in origNodeList) {
@@ -82,23 +82,18 @@ namespace phosphorus.web
         [ActiveEvent (Name = "pf.web.widgets.property.set")]
         private static void pf_web_widgets_property_set (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.Iterate<string> (e.Args, 
+            XUtil.Iterate<string> (e.Args, context, 
             delegate (string idx) {
                 Widget widget = FindWidget (context, idx);
                 foreach (Node valueNode in e.Args.Children) {
                     string propertyValue;
                     switch (valueNode.Name) {
                     case "element":
-                        propertyValue = XUtil.Single (valueNode);
+                        propertyValue = valueNode.Get<string> (context);
                         widget.ElementType = propertyValue;
                         break;
                     default:
-                        if (valueNode.Name == "class")
-                            propertyValue = XUtil.Single (valueNode, " ");
-                        else if (valueNode.Name == "style")
-                            propertyValue = XUtil.SingleNameValuePair (valueNode, ";", ":");
-                        else
-                            propertyValue = XUtil.Single (valueNode);
+                        propertyValue = valueNode.Get<string> (context);
                         widget [valueNode.Name] = propertyValue;
                         break;
                     }
@@ -117,7 +112,7 @@ namespace phosphorus.web
         [ActiveEvent (Name = "pf.web.widgets.property.remove")]
         private static void pf_web_widgets_property_remove (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.Iterate<string> (e.Args,
+            XUtil.Iterate<string> (e.Args, context, 
             delegate (string idx) {
                 Widget widget = FindWidget (context, idx);
                 foreach (Node nameNode in e.Args.Children) {
@@ -133,7 +128,7 @@ namespace phosphorus.web
         {
             Node findCtrl = new Node (string.Empty, widgetId);
             context.Raise ("_pf.web.find-control", findCtrl);
-            return findCtrl [0].Get<Widget> ();
+            return findCtrl [0].Get<Widget> (context);
         }
     }
 }

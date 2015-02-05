@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using phosphorus.core;
-using phosphorus.lambda;
+using phosphorus.expressions;
 
 namespace phosphorus.mongodb
 {
@@ -29,15 +29,15 @@ namespace phosphorus.mongodb
         [ActiveEvent (Name = "pf.mongo.update")]
         private static void pf_mongo_update (ApplicationContext context, ActiveEventArgs e)
         {
-            string table = e.Args.Get<string> ();
+            string table = e.Args.Get<string> (context);
             if (string.IsNullOrEmpty (table)) // no table name given
                 throw new ArgumentException ("[pf.mongo.update] needs the table name as the value of its node, either through an expression or a constant");
 
             if (XUtil.IsExpression (table)) {
 
                 // table name is given as an expression
-                var match = Expression.Create (table).Evaluate (e.Args);
-                table = match.GetValue (0) as string;
+                var match = Expression.Create (table).Evaluate (e.Args, context);
+                table = match [0].Value as string;
                 //if (!match.IsSingleLiteral || string.IsNullOrEmpty (table))
                 //    throw new ArgumentException ("if [pf.mongo.update] is given an expression, the expression needs to return only one value that can be converted into a string somehow");
             }

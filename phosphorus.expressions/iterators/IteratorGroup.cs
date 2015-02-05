@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using phosphorus.core;
 
-namespace phosphorus.lambda.iterators
+namespace phosphorus.expressions.iterators
 {
     /// <summary>
     /// special iterator for grouping iterators.  an IteratorGroup will either iterate on the result of its
@@ -63,17 +63,18 @@ namespace phosphorus.lambda.iterators
                 return _logicals [_logicals.Count - 1].Iterator;
             }
         }
-        
+
+        // TODO: Rename to "IsReference"
         /// <summary>
         /// returns true if this is a "reference expression"
         /// </summary>
         /// <value>true if this is a reference expression</value>
-        public override bool Reference {
+        public override bool IsReference {
             get {
-                return _groupRoot.Reference;
+                return _groupRoot.IsReference;
             }
             set {
-                _groupRoot.Reference = value;
+                _groupRoot.IsReference = value;
             }
         }
 

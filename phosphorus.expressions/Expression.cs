@@ -8,9 +8,9 @@ using System;
 using System.Globalization;
 using System.Collections.Generic;
 using phosphorus.core;
-using phosphorus.lambda.iterators;
+using phosphorus.expressions.iterators;
 
-namespace phosphorus.lambda
+namespace phosphorus.expressions
 {
     /// <summary>
     /// expression class, for retrieving and changing values in node trees according to
@@ -19,6 +19,16 @@ namespace phosphorus.lambda
     public class Expression
     {
         private string _expression;
+
+        /*
+         * private ctor, to make sure we can extend creation logic in the future
+         */
+        private Expression (string expression)
+        {
+            if (!XUtil.IsExpression (expression))
+                throw new ArgumentException (string.Format ("'{0}' is not a valid expression", expression));
+            _expression = expression;
+        }
 
         /// <summary>
         /// initializes a new instance of the <see cref="phosphorus.execute.Expression"/> class
@@ -33,44 +43,72 @@ namespace phosphorus.lambda
         /// evaluates expression for given <see cref="phosphorus.core.Node"/>  and returns 
         /// <see cref="phosphorus.execute.Expression.Match"/>
         /// </summary>
-        public Match Evaluate (Node node)
+        public Match Evaluate (Node node, ApplicationContext context)
         {
+            // creating our "root group iterator"
             IteratorGroup current = new IteratorGroup (node);
             string typeOfExpression = null, previousToken = null;
+
+            // Tokenizer uses StringReader to tokenize, making sure tokenizer is disposed when finished
             using (Tokenizer tokenizer = new Tokenizer (_expression)) {
+
+                // looping through every token in espression, building up our Iterator tree hierarchy
                 foreach (string idxToken in tokenizer.Tokens) {
                     if (previousToken == "?") {
+
+                        // this is our last token, storing it as "expression type", before ending iteration
                         typeOfExpression = idxToken;
                         break;
                     } else {
-                        current = FindMatches (current, idxToken, previousToken);
+
+                        // building expression tree
+                        current = FindMatches (current, idxToken, previousToken, context);
                     }
+
+                    // storing previous token, since some iterators are dependent upon knowing it
                     previousToken = idxToken;
                 }
             }
 
+            // creating a Match object, and returning to caller
+            return CreateMatchFromIterator (current, typeOfExpression, context);
+        }
+
+        /*
+         * create a Match object from an Iterator group
+         */
+        private Match CreateMatchFromIterator (IteratorGroup group, string type, ApplicationContext context)
+        {
             // checking to see if we have open groups, which is a bug
-            if (current.ParentGroup != null)
+            if (group.ParentGroup != null)
                 throw new ArgumentException ("unclosed group while evaluating; " + _expression);
 
-            // returning match object
-            return new Match (current, typeOfExpression);
+            // parsing type of match
+            Match.MatchType matchType = (Match.MatchType)Enum.Parse (typeof(Match.MatchType), type);
+
+            // checking if expression is a reference expression, 
+            // at which point we'll have to evaluate all referenced expressions
+            if (group.IsReference) {
+
+                // expression is a "reference expression", 
+                // meaning we'll have to evaluate all referenced expressions
+                var match = new Match (group.Evaluate, matchType, context);
+                return EvaluateReferenceExpression (match, context);
+            } else {
+
+                // returning simple match object
+                return new Match (group.Evaluate, matchType, context);
+            }
         }
         
         /*
-         * private ctor, to make sure we can in future versions do lokkup against cache, for instance
-         */
-        private Expression (string expression)
-        {
-            if (!XUtil.IsExpression (expression))
-                throw new ArgumentException (string.Format ("'{0}' is not a valid expression", expression));
-            _expression = expression;
-        }
-
-        /*
          * return matches according to token
          */
-        private IteratorGroup FindMatches (IteratorGroup current, string token, string previousToken)
+        private IteratorGroup FindMatches (
+            IteratorGroup current, 
+            string token, 
+            string previousToken,
+            ApplicationContext context)
         {
             switch (token) {
             case "?":
@@ -118,8 +156,10 @@ namespace phosphorus.lambda
                 return FindMatchShiftLeftToken (current, previousToken);
             case ">":
                 return FindMatchShiftRightToken (current, previousToken);
+            case "@":
+                return FindMatchReferenceExpressionToken (current, token);
             default:
-                return FindMatchDefaultToken (current, token, previousToken);
+                return FindMatchDefaultToken (current, token, previousToken, context);
             }
         }
         
@@ -367,7 +407,11 @@ namespace phosphorus.lambda
         /*
          * handles all other tokens, such as "named tokens" and "valued tokens"
          */
-        private IteratorGroup FindMatchDefaultToken (IteratorGroup current, string token, string previousToken)
+        private IteratorGroup FindMatchDefaultToken (
+            IteratorGroup current, 
+            string token, 
+            string previousToken,
+            ApplicationContext context)
         {
             if (previousToken == "=") {
                 ((IteratorValued)current.LastIterator).Value = token;
@@ -375,10 +419,12 @@ namespace phosphorus.lambda
             } else if (previousToken == ":") {
                 if (!(current.LastIterator is IteratorValued))
                     throw new ArgumentException ("syntax error in expression, ':' found at unexpected position");
-                if (string.IsNullOrEmpty (((IteratorValued)current.LastIterator).Type))
+                if (string.IsNullOrEmpty (((IteratorValued)current.LastIterator).Type)) {
                     ((IteratorValued)current.LastIterator).Type = token;
-                else
+                    ((IteratorValued)current.LastIterator).Context = context;
+                } else {
                     ((IteratorValued)current.LastIterator).Value = token;
+                }
                 return current;
             } else if (previousToken == "+" || previousToken == "-") {
                 return FindMatchSiblingIntegerToken (current, token, previousToken);
@@ -388,8 +434,6 @@ namespace phosphorus.lambda
                 return FindMatchRangeEndToken (current, token);
             } else if (previousToken == "%") {
                 return FindMatchModuloIntegerToken (current, token);
-            } else if (token == "@" && previousToken == null) {
-                return FindMatchReferenceExpressionToken (current, token);
             } else {
                 if (previousToken != "/") {
                     throw new ArgumentException ("syntax error in expression; '" + 
@@ -411,10 +455,10 @@ namespace phosphorus.lambda
          */
         private IteratorGroup FindMatchReferenceExpressionToken (IteratorGroup current, string token)
         {
-            if (current.Reference) {
+            if (current.IsReference) {
                 throw new ArgumentException ("you cannot set the reference expression flag twice");
             }
-            current.Reference = true;
+            current.IsReference = true;
             return current;
         }
         
@@ -497,6 +541,38 @@ namespace phosphorus.lambda
                 current.AddIterator (new IteratorNamed (token));
             }
             return current;
+        }
+        
+        /*
+         * evaluates a reference expression
+         */
+        private Match EvaluateReferenceExpression (Match match, ApplicationContext context)
+        {
+            // looping through referenced expressions, yielding result from these referenced expression(s)
+            List<Node> newNodes = new List<Node> ();
+            Match.MatchType? matchType = new Match.MatchType? ();
+
+            // looping through each match from reference expression
+            foreach (var idxMatch in match) {
+
+                // evaluating reference expressions
+                var innerMatch = Expression.Create (
+                    Utilities.Convert<string> (idxMatch.Value, context))
+                    .Evaluate (idxMatch.Node, context);
+
+                // making sure all referenced expressions have the same type
+                if (!matchType.HasValue)
+                    matchType = innerMatch.TypeOfMatch;
+                else if (matchType.Value != innerMatch.TypeOfMatch)
+                    throw new ArgumentException ("a reference expression referenced two different types of expressions");
+
+                // adding result from current referenced expression
+                foreach (var idx in innerMatch) {
+                    newNodes.Add (idx.Node);
+                }
+            }
+
+            return new Match (newNodes, matchType.Value, context);
         }
     }
 }

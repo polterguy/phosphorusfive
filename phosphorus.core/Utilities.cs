@@ -17,36 +17,16 @@ namespace phosphorus.core
     public static class Utilities
     {
         /// <summary>
-        /// callback for converting between types
-        /// </summary>
-        public delegate object ConvertCallback (object value, Type convertTo);
-
-        /*
-         * static ctor to initialize list of converters
-         */
-        static Utilities ()
-        {
-            Converters = new List<ConvertCallback> ();
-        }
-
-        /// <summary>
-        /// list of conversion callbacks. to allow conversion between your types, and string representations,
-        /// create your own ConvertCallback, and add it to this list of converters during [pf.core.application-start].
-        /// if you can convert, then return the object converted, otherwise return null in your converter
-        /// </summary>
-        /// <value>The converters.</value>
-        public static List<ConvertCallback> Converters {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// converts the given "value" to type T, returning "defaultValue" if no conversion is possible
+        /// converts the given value to type T
         /// </summary>
         /// <param name="value">value to convert</param>
-        /// <param name="defaultValue">default value to return</param>
-        /// <typeparam name="T">the type you wish to convert "value" to</typeparam>
-        public static T Convert <T> (object value, T defaultValue = default (T))
+        /// <param name="context">application context</param>
+        /// <param name="defaultValue">default value to return if no conversion is possible</param>
+        /// <typeparam name="T">type to convert value to</typeparam>
+        public static T Convert <T> (
+            object value, 
+            ApplicationContext context, 
+            T defaultValue = default (T))
         {
             // no possible conversion exists
             if (value == null)
@@ -56,23 +36,29 @@ namespace phosphorus.core
             if (value is T)
                 return (T)value;
 
-            // trying installed converters
-            foreach (var idxCallback in Converters) {
-                var idxValue = idxCallback (value, typeof(T));
-                if (idxValue != null)
-                    return (T)idxValue; // success!
+            // trying installed converters from ApplicationContext
+            if (typeof(T) == typeof(string)) {
+                var retVal = Convert2String (value, context);
+                if (retVal != null)
+                    return (T)(object)retVal;
+            } else if (value.GetType () == typeof(string)) {
+                var retVal = Convert2Object<T> (value as string, context);
+                if (retVal != null && !retVal.Equals (default (T)))
+                    return retVal;
             }
 
             // checking if type is IConvertible
             if (value is IConvertible)
                 return (T)Convert.ChangeType (value, typeof(T), System.Globalization.CultureInfo.InvariantCulture);
 
-            // stuff like for instance Guids don't implement IConvertible, but still return sane values if we
-            // first do ToString on them, for then to cast them to object, for then to cast them to T, if the caller
+            // stuff like for instance Guids don't implement IConvertible, but still return sane values, if we
+            // first do ToString on them, for then to cast them to object, for then to cast object to T, if the caller
             // is requesting to have them returned as string
-            return (T)(object)value.ToString ();
+            if (typeof(T) == typeof(string))
+                return (T)(object)value.ToString ();
+            return defaultValue;
         }
-        
+
         /// <summary>
         /// returns true if string can be converted to an integer
         /// </summary>
@@ -197,6 +183,28 @@ namespace phosphorus.core
             }
             int hexNumber = Convert.ToInt32 (hexNumberString, 16);
             return new string ((char)hexNumber, 1);
+        }
+        
+        /*
+         * converts value to string using conversion Active Events
+         */
+        private static string Convert2String (object value, ApplicationContext context)
+        {
+            return context.Raise (
+                "pf.hyperlist.get-string-value." + 
+                value.GetType ().FullName, new Node (string.Empty, value)).Get<string> (context);
+        }
+
+        /*
+         * converts string to object using conversion Active Events
+         */
+        private static T Convert2Object<T> (string value, ApplicationContext context)
+        {
+            var typeName = context.Raise (
+                "pf.hyperlist.get-type-name." + typeof(T).FullName).Get<string> (context);
+            return context.Raise (
+                "pf.hyperlist.get-object-value." + 
+                typeName, new Node (string.Empty, value)).Get<T> (context);
         }
     }
 }

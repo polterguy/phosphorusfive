@@ -7,7 +7,7 @@
 using System;
 using System.Web;
 using phosphorus.core;
-using phosphorus.lambda;
+using phosphorus.expressions;
 
 namespace phosphorus.web
 {
@@ -26,7 +26,7 @@ namespace phosphorus.web
         [ActiveEvent (Name = "pf.web.cookie.set")]
         private static void pf_web_cookie_set (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.Iterate<string> (e.Args, 
+            XUtil.Iterate<string> (e.Args, context, 
             delegate (string idx) {
 
                 // creating cookie
@@ -53,7 +53,7 @@ namespace phosphorus.web
         [ActiveEvent (Name = "pf.web.cookie.get")]
         private static void pf_web_cookie_get (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.Iterate<string> (e.Args, 
+            XUtil.Iterate<string> (e.Args, context, 
             delegate (string idx) {
 
                 // checking to see if this cookie exists
@@ -91,17 +91,17 @@ namespace phosphorus.web
 
                 // converting value to Hyperlisp, and URL encoding it for our cookie
                 // but removing "property nodes" such as [duration] before converting
-                Node convert = node.Clone ().Remove ("duration").Remove ("http-only");
+                Node convert = node.Clone ().RemoveAll ("duration").RemoveAll ("http-only");
 
                 // in case there is no actual value, but only [duration] and other "property nodes"
                 if (convert.Count > 0) {
 
                     // this node structure actually have values to be stored in cookie
                     context.Raise ("lambda2code", convert);
-                    string value = HttpUtility.UrlEncode (convert.Get<string> ());
+                    string value = HttpUtility.UrlEncode (convert.Get<string> (context));
 
                     // finding duration, defaulting to 365 if none
-                    int duration = node.GetChildValue ("duration", 365);
+                    int duration = node.GetChildValue ("duration", context, 365);
 
                     // creating cookie to send back to caller
                     retVal = new HttpCookie (name, value);
@@ -109,7 +109,7 @@ namespace phosphorus.web
 
                     // making sure cookie is "secured" before we send it back to client, unless
                     // caller explicitly tells us he or she does not want it secured
-                    retVal.HttpOnly = node.GetChildValue ("http-only", true);
+                    retVal.HttpOnly = node.GetChildValue ("http-only", context, true);
                 }
             }
 

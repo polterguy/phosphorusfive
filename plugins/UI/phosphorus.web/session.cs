@@ -7,7 +7,7 @@
 using System;
 using System.Web;
 using phosphorus.core;
-using phosphorus.lambda;
+using phosphorus.expressions;
 
 namespace phosphorus.web
 {
@@ -24,7 +24,7 @@ namespace phosphorus.web
         [ActiveEvent (Name = "pf.web.session.set")]
         private static void pf_web_session_set (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.Iterate<string> (e.Args, 
+            XUtil.Iterate<string> (e.Args, context,  
             delegate (string idx) {
                 if (e.Args.Count > 0)
                     HttpContext.Current.Session [idx] = e.Args.Clone ();
@@ -41,7 +41,7 @@ namespace phosphorus.web
         [ActiveEvent (Name = "pf.web.session.get")]
         private static void pf_web_session_get (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.Iterate<string> (e.Args, 
+            XUtil.Iterate<string> (e.Args, context, 
             delegate (string idx) {
                 Node tmp = HttpContext.Current.Session [idx] as Node;
                 if (tmp != null) {

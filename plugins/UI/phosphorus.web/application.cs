@@ -7,7 +7,7 @@
 using System;
 using System.Web;
 using phosphorus.core;
-using phosphorus.lambda;
+using phosphorus.expressions;
 
 namespace phosphorus.web
 {
@@ -25,7 +25,7 @@ namespace phosphorus.web
         [ActiveEvent (Name = "pf.web.application.set")]
         private static void pf_web_application_set (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.Iterate<string> (e.Args,
+            XUtil.Iterate<string> (e.Args, context, 
             delegate (string idx) {
                 if (e.Args.Count > 0)
                     HttpContext.Current.Application [idx] = e.Args.Clone ();
@@ -42,7 +42,7 @@ namespace phosphorus.web
         [ActiveEvent (Name = "pf.web.application.get")]
         private static void pf_web_application_get (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.Iterate<string> (e.Args, 
+            XUtil.Iterate<string> (e.Args, context, 
             delegate (string idx) {
                 Node tmp = HttpContext.Current.Application [idx] as Node;
                 if (tmp != null) {

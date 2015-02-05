@@ -74,11 +74,15 @@ namespace phosphorus.web
             Container parent = node.Find (
                 delegate (Node idx) {
                     return idx.Name == "__parent";
-            }).Get<Container> ();
-            T widget = parent.CreatePersistentControl<T> (node.Get<string> (), -1, delegate (object sender, EventArgs e) {
+            }).Get<Container> (context);
 
-                // hooks up "oninitialload" event, if we're supposed to
-                CreateLoadingEvents (context, node, sender as Widget);
+            T widget = parent.CreatePersistentControl<T> (
+                node.Get<string> (context), 
+                -1, 
+                delegate (object sender, EventArgs e) {
+
+                    // hooks up "oninitialload" event, if we're supposed to
+                    CreateLoadingEvents (context, node, sender as Widget);
             });
 
             // in case no ID was given, we "return" it to creator as value of current node
@@ -126,20 +130,20 @@ namespace phosphorus.web
             foreach (Node idxArg in args.Children) {
                 switch (idxArg.Name) {
                 case "has-id":
-                    if (!idxArg.Get<bool> ())
+                    if (!idxArg.Get<bool> (context))
                         widget.NoIDAttribute = true;
                     break;
                 case "render-type":
-                    SetRenderType (widget, idxArg.Get<string> ());
+                    SetRenderType (widget, idxArg.Get<string> (context));
                     break;
                 case "element":
-                    SetElementType (widget, idxArg.Get<string> ());
+                    SetElementType (widget, idxArg.Get<string> (context));
                     break;
                 case "controls":
                     CreateChildWidgets (context, widget, idxArg);
                     break;
                 case "checked":
-                    if (idxArg.Value == null || idxArg.Get<bool> ())
+                    if (idxArg.Value == null || idxArg.Get<bool> (context))
                         widget ["checked"] = null;
                     break;
                 case "parent":
@@ -225,7 +229,7 @@ namespace phosphorus.web
                 if (node.Name != "oninitialload")
                     CreateEventHandler (context, widget, node);
             } else if (!node.Name.StartsWith ("_")) {
-                widget [node.Name] = node.Get<string> ();
+                widget [node.Name] = node.Get<string> (context);
             }
         }
 
@@ -237,7 +241,7 @@ namespace phosphorus.web
             if (node.Value != null) {
 
                 // javascript code to be executed
-                widget [node.Name] = node.Get<string> ();
+                widget [node.Name] = node.Get<string> (context);
             } else {
 
                 // creating our pf.lambda object, and invoking our [_pf.web.add-widget-event] Active Event to map the

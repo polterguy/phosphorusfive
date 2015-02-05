@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using phosphorus.core;
 
-namespace phosphorus.lambda.iterators
+namespace phosphorus.expressions.iterators
 {
     /// <summary>
     /// iterator class, wraps one iterator for hyperlisp expressions.  iterators are put in chain, encapsulated within a
@@ -46,7 +46,7 @@ namespace phosphorus.lambda.iterators
         /// returns true if this is a "reference expression"
         /// </summary>
         /// <value>true if this is a reference expression</value>
-        public virtual bool Reference {
+        public virtual bool IsReference {
             get;
             set;
         }

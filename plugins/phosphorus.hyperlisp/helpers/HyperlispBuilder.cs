@@ -38,7 +38,7 @@ namespace phosphorus.hyperlisp
             get {
                 StringBuilder builder = new StringBuilder ();
                 Nodes2Hyperlisp (builder, _nodes, 0);
-                return builder.ToString ().TrimEnd ('\r', '\n');
+                return builder.ToString ().TrimEnd ();
             }
         }
 
@@ -86,18 +86,11 @@ namespace phosphorus.hyperlisp
             if (type == typeof(string))
                 return; // string is "default" type information
 
-            string activeEventName = "pf.hyperlist.get-type-name." + node.Value.GetType ();
-            Node typeNode = new Node ();
-            _context.Raise (activeEventName, typeNode);
-            if (typeNode.Value == null) {
-                throw new ArgumentException ("cannot convert type; '" + 
-                    type.FullName + 
-                    "' to hyperlisp since no converter exist. make sure you create an Active Event called; '" +
-                    "pf.hyperlisp.get-type-name." + node.Value.GetType () + 
-                    "' that returns the hyperlisp typename for your type, such as 'int', 'decimal', 'node', etc");
-            } else {
-                builder.Append (string.Format (":{0}", typeNode.Get<string> ()));
-            }
+            builder.Append (
+                string.Format (":{0}", 
+                    _context.Raise (
+                        "pf.hyperlist.get-type-name." + node.Value.GetType (), 
+                        new Node ()).Get<string> (_context)));
         }
         
         /*
@@ -108,20 +101,7 @@ namespace phosphorus.hyperlisp
             if (node.Value == null)
                 return; // nothing to append here
 
-            Type type = node.Value.GetType ();
-            string value = null;
-            if (type == typeof(string)) {
-                value = node.Value as string;
-            } else {
-                // notice that this will yield a "null invocation" for all native types that supports automatic conversion 
-                // through IConvertible, unless a type converter Active Event is explicitly given. this means that the Get<string> () 
-                // invocation after the null Active Event invocation will do its magic automatically, hence we don't need
-                // type converters for anything that automatically supports conversion to string natively, in a *sane* way
-                string activeEventName = "pf.hyperlist.get-string-value." + node.Value.GetType ();
-                Node valueNode = new Node (string.Empty, node.Value);
-                _context.Raise (activeEventName, valueNode);
-                value = valueNode.Get<string> ();
-            }
+            string value = node.Get<string> (_context);
             if (value.Contains ("\n")) {
                 builder.Append (string.Format (@":@""{0}""", value.Replace (@"""", @"""""")));
             } else if (value.Contains (":") || value.Trim () != value) {

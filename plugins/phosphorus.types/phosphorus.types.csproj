@@ -45,8 +45,6 @@
     <Compile Include="get-type-name.cs" />
     <Compile Include="get-string-value.cs" />
     <Compile Include="get-object-value.cs" />
-    <Compile Include="application-startup.cs" />
-    <Compile Include="Object2String.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

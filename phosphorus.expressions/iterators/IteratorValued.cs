@@ -9,19 +9,16 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using phosphorus.core;
 
-namespace phosphorus.lambda.iterators
+namespace phosphorus.expressions.iterators
 {
     /// <summary>
     /// returns all <see cref="phosphorus.core.Node"/>s from previous iterated result with a specified string value
     /// </summary>
     public class IteratorValued : Iterator
     {
-        private string _value;
-        private string _type;
-
         public IteratorValued ()
         {
-            _value = string.Empty;
+            Value = string.Empty;
         }
 
         /// <summary>
@@ -29,12 +26,8 @@ namespace phosphorus.lambda.iterators
         /// </summary>
         /// <value>the value</value>
         public string Value {
-            get {
-                return _value;
-            }
-            set {
-                _value = value;
-            }
+            get;
+            set;
         }
 
         /// <summary>
@@ -42,22 +35,26 @@ namespace phosphorus.lambda.iterators
         /// </summary>
         /// <value>the type</value>
         public string Type {
-            get {
-                return _type;
-            }
-            set {
-                _type = value;
-            }
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// gets or sets the calling context for iterator
+        /// </summary>
+        /// <value>The context.</value>
+        public ApplicationContext Context {
+            get;
+            set;
         }
 
         public override IEnumerable<Node> Evaluate {
             get {
-                string value = _value;
+                string value = Value;
                 if (!string.IsNullOrEmpty (Type)) {
                     if (value.StartsWith ("\\"))
                         value = value.Substring (1);
-                    ApplicationContext ctx = Loader.Instance.CreateApplicationContext ();
-                    object objValue = ctx.Raise ("pf.hyperlist.get-object-value." + Type, new Node (string.Empty, value)).Value;
+                    object objValue = Context.Raise ("pf.hyperlist.get-object-value." + Type, new Node (string.Empty, value)).Value;
                     foreach (Node idxCurrent in Left.Evaluate) {
                         if (objValue.Equals (idxCurrent.Value))
                             yield return idxCurrent;
@@ -91,7 +88,7 @@ namespace phosphorus.lambda.iterators
                         Dictionary<string, bool> dict = new Dictionary<string, bool> ();
                         foreach (Node idxCurrent in Left.Evaluate) {
                             if (idxCurrent.Value != null) {
-                                string valueOfNode = idxCurrent.Get<string>();
+                                string valueOfNode = idxCurrent.Value as string;
                                 if (regex.IsMatch (valueOfNode) && !dict.ContainsKey (valueOfNode)) {
                                     dict [valueOfNode] = true;
                                     yield return idxCurrent;
@@ -101,7 +98,7 @@ namespace phosphorus.lambda.iterators
                     } else {
                         foreach (Node idxCurrent in Left.Evaluate) {
                             if (idxCurrent.Value != null) {
-                                if (regex.IsMatch (idxCurrent.Get<string> ()))
+                                if (regex.IsMatch (idxCurrent.Value as string))
                                     yield return idxCurrent;
                             }
                         }

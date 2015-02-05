@@ -128,7 +128,7 @@ namespace phosphorus.hyperlisp
 
                 // previous token was actually type information, while this token is actual string representation of value
                 // doing our conversion
-                node.Value = ConvertStringValue (token.Value, node.Get<string> ());
+                node.Value = ConvertStringValue (token.Value, node.Get<string> (_context));
             }
         }
 

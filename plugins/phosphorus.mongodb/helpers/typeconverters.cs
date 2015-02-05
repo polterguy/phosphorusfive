@@ -26,7 +26,7 @@ namespace phosphorus.mongodb
         [ActiveEvent (Name = "pf.hyperlist.get-object-value.objectid")]
         private static void pf_hyperlist_get_object_value_objectid (ApplicationContext context, ActiveEventArgs e)
         {
-            string strValue = e.Args.Get<string> ();
+            string strValue = e.Args.Get<string> (context);
             e.Args.Value = ObjectId.Parse (strValue);
         }
 

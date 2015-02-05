@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using phosphorus.core;
+using phosphorus.expressions;
 
 namespace phosphorus.lambda
 {
@@ -23,105 +24,75 @@ namespace phosphorus.lambda
         [ActiveEvent (Name = "set")]
         private static void lambda_set (ApplicationContext context, ActiveEventArgs e)
         {
-            // finding source
-            if (e.Args.Count > 0 && e.Args.LastChild.Name == "source") {
-                object source = GetStaticSource (e.Args);
-                SetStaticSource (e.Args, source);
-            } else if (e.Args.Count > 0 && e.Args.LastChild.Name == "rel-source") {
-                SetRelativeSource (e.Args);
+            // figuring out destination expression
+            string destinationExpression = null;
+            if (XUtil.IsFormatted (e.Args))
+                destinationExpression = XUtil.FormatNode (e.Args, context);
+            else
+                destinationExpression = e.Args.Get<string> (context);
+
+            // figuring out source, and executing the corresponding logic
+            if (e.Args.LastChild.Name == "source") {
+
+                // static source, not a node, might be an expression
+                SetStaticSource (destinationExpression, e.Args, context);
+            } else if (e.Args.LastChild.Name == "rel-source") {
+
+                // relative source, source must be an expression
+                SetRelativeSource (destinationExpression, e.Args, context);
             } else {
-                SetStaticSource (e.Args, null);
+
+                // no source, setting all destinations to null
+                SetNull (destinationExpression, e.Args, context);
             }
         }
 
         /*
-         * source is static
+         * sets all destinations to static value where value is string or expression
          */
-        private static void SetStaticSource (Node node, object source)
+        private static void SetStaticSource (string destinationExpression, Node node, ApplicationContext context)
         {
-            // iterating through each destination
-            XUtil.IterateNodes (node, 
-            delegate (Node idxDestination, Match.MatchType destinationType) {
-                switch (destinationType) {
-                case Match.MatchType.Name:
-                    idxDestination.Name = (source ?? "").ToString ();
-                    break;
-                case Match.MatchType.Value:
-                    idxDestination.Value = source;
-                    break;
-                case Match.MatchType.Node:
-                    if (source == null)
-                        idxDestination.Untie ();
-                    else
-                        idxDestination.Replace ((source as Node).Clone ());
-                    break;
-                default:
-                    throw new ArgumentException ("cannot set anything but 'name', value' or 'node' in [set]");
-                }
-            });
-        }
-        
-        /*
-         * source is relative
-         */
-        private static void SetRelativeSource (Node node)
-        {
-            // iterating through each destination
-            XUtil.IterateNodes (node, 
-            delegate (Node idxDestination, Match.MatchType destinationType) {
+            // figuring out source
+            object source = null;
+            if (node.LastChild.Value != null)
+                XUtil.Single<object> (node.LastChild, context);
+            else
+                source = node.LastChild.FirstChild;
 
-                // getting source relative to destination, fetching relative source
-                string sourceExpression = XUtil.FormatNode (node.LastChild, idxDestination) as string;
-                object source = XUtil.Single <object> (idxDestination, sourceExpression);
-
-                switch (destinationType) {
-                case Match.MatchType.Name:
-                    idxDestination.Name = (source ?? "").ToString ();
-                    break;
-                case Match.MatchType.Value:
-                    idxDestination.Value = source;
-                    break;
-                case Match.MatchType.Node:
-                    if (source == null)
-                        idxDestination.Untie ();
-                    else
-                        idxDestination.Replace ((source as Node).Clone ());
-                    break;
-                default:
-                    throw new ArgumentException ("cannot set anything but 'name', value' or 'node' in [set]");
-                }
+            // iterating through all destinations
+            XUtil.Iterate (destinationExpression, node, context, 
+            delegate (Match.MatchEntity idxDestination) {
+                idxDestination.Value = source;
             });
         }
 
         /*
-         * returns static [source] value from [set] statement back to caller
+         * sets all destination nodes relative to themselves
          */
-        private static object GetStaticSource (Node node)
+        private static void SetRelativeSource (string destinationExpression, Node node, ApplicationContext context)
         {
-            object retVal = null;
-            var sourceNodes = new List<Node> (node.FindAll ("source"));
-            if (sourceNodes.Count > 1)
-                throw new ArgumentException ("[set] can only handle one [source]");
+            // finding source expression before iteration start, in case iteration changes source node
+            var sourceExpression = node.LastChild.Get<string> (context);
 
-            // checking for static source, which might be a constant, or an expression
-            if (sourceNodes.Count == 1) {
+            // iterating through all destinations, figuring out source relative to each destinations
+            XUtil.Iterate (destinationExpression, node, context, 
+            delegate (Match.MatchEntity idxDestination) {
 
-                if (sourceNodes [0].Value != null) {
+                // figuring out source relative to destination, for then to update destination
+                var source = XUtil.Single<object> (sourceExpression, idxDestination.Node, context);
+                idxDestination.Value = source;
+            });
+        }
 
-                    // source is an expression or a constant
-                    retVal = XUtil.Single <object> (sourceNodes [0]);
-
-                    // checking to see if source is "escaped"
-                    string strRetVal = retVal as string;
-                    if (strRetVal != null && strRetVal.StartsWith ("\\"))
-                        retVal = strRetVal.Substring (1);
-                } else if (sourceNodes [0].Count > 0) {
-
-                    // source is wrapping another node
-                    retVal = sourceNodes [0].FirstChild;
-                }
-            }
-            return retVal;
+        /*
+         * sets all destinations to null
+         */
+        private static void SetNull (string destinationExpression, Node node, ApplicationContext context)
+        {
+            XUtil.Iterate (destinationExpression, node, context, 
+            delegate (Match.MatchEntity idxDestination) {
+                idxDestination.Value = null;
+            });
         }
     }
 }

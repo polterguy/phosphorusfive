@@ -10,7 +10,7 @@ using System.Text;
 using System.Collections.Generic;
 using phosphorus.core;
 
-namespace phosphorus.lambda
+namespace phosphorus.expressions
 {
     /// <summary>
     /// tokenizer for expressions

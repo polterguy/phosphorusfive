@@ -66,6 +66,7 @@
     <Compile Include="iterators\IteratorSibling.cs" />
     <Compile Include="iterators\IteratorValued.cs" />
     <Compile Include="XUtil.cs" />
+    <Compile Include="MatchEntity.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

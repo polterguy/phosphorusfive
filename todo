@@ -12,7 +12,7 @@
 * modify readme to have fully functioning complete example of Default.aspx page, with complete codebehind, and complete .aspx markup
 
 * create support for "array" pf.lambda type, which allows to be used as an expression for Expression.Iterate, such that
-  users may submit a static array of values to stuff such as "for-each", "set", "session.set", etc
+  users may submit a static array of values to stuff such as "for-each", "pf.web.session.set", etc
 
 * entirely modify the way [event] works, and unroll the entire event pf.lambda code, inline into code, upon invocation, to
   support events that modifies the code tree outside of themselves
@@ -24,14 +24,22 @@
 
 * clean up [pf.html.html2lambda] to allow creating pf.lambda code in HTML
 
-* [flatten] keyword in pf.lambda, to create a string representation of a list of nodes, with "spacingString" and "inbetweenPairString" support
+* [flatten] keyword in pf.lambda, to create a string representation of a list of nodes, with optional "separator string"
+  between node values/names, possibly as a "formatting expression" defined e.g. like this; "{name}:{value};" to allow for both
+  name of node and value of node to become part of string representation
 
-* [split] keyword in pf.lambda, to create node representation of a string, splitting into name/value pair according to "spacingString"
-  and "inbetweenPairString"
+* [split] keyword in pf.lambda, to create node list representation of a string, according to some "split character", and optionally a
+  "name split character" to allow for both name and value of node to be set according to the original string, in addition to optionally
+  also "type information"
 
 * store timezone (GTM+x) in DateTime when serializing and de-serializing from Hyperlisp
 
 * Active Event to zip many CSS/JavaScript files back to client as one, relying on [pf.web.echo]
+
+* create support for "style" property setters/getters in widgets through pf.lambda optionally can take a list of style names/values, instead
+  of like it is now where it's "just a string"
+
+* [lambda.single] to execute specified node in tree
 
 
 

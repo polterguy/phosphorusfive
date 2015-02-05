@@ -8,7 +8,7 @@ using System;
 using System.Configuration;
 using System.Collections.Generic;
 using phosphorus.core;
-using phosphorus.lambda;
+using phosphorus.expressions;
 
 namespace phosphorus.data
 {
@@ -38,24 +38,24 @@ namespace phosphorus.data
             Initialize (context);
 
             // returning all matches as children nodes of [pf.data.load]
-            var expression = Expression.Create (e.Args.Get<string> ());
-            var match = expression.Evaluate (_database);
-            if (match.TypeOfMatch == Match.MatchType.Count) {
+            var expression = Expression.Create (e.Args.Get<string> (context));
+            var match = expression.Evaluate (_database, context);
+            if (match.TypeOfMatch == Match.MatchType.count) {
 
                 // returning count of expression
                 e.Args.Add (new Node (string.Empty, match.Count));
             }
-            else if (match.TypeOfMatch != Match.MatchType.Node) {
+            else if (match.TypeOfMatch != Match.MatchType.node) {
 
                 // returning 'value', 'name' or 'path' of expression as children values of [pf.data.select] node
                 for (int idxNo = 0; idxNo < match.Count; idxNo++) {
-                    e.Args.Add (new Node (string.Empty, match.GetValue (idxNo)));
+                    e.Args.Add (new Node (string.Empty, match [idxNo].Value));
                 }
             } else {
 
                 // appending all matches as children nodes of [pf.data.select]
-                foreach (Node idx in match.Matches) {
-                    e.Args.Add (idx.Clone ());
+                foreach (var idx in match) {
+                    e.Args.Add (idx.Node.Clone ());
                 }
             }
         }
@@ -76,24 +76,24 @@ namespace phosphorus.data
             Initialize (context);
 
             // finding source to update destination with, which might be a collection of nodes, or an expression
-            object sourceValue = GetUpdateSourceValue (e.Args);
+            object sourceValue = GetUpdateSourceValue (e.Args, context);
 
             // updating all nodes from database matching expression given as value of [pf.data.update]
-            var match = Expression.Create (e.Args.Get<string> ()).Evaluate (_database);
+            var match = Expression.Create (e.Args.Get<string> (context)).Evaluate (_database, context);
 
             // looping through database matches and updating nodes while storing which files have been changed
             List<Node> changed = new List<Node> ();
-            foreach (Node idxDest in match.Matches) {
+            foreach (var idxDest in match) {
 
                 // verifying user is not updating actual file nodes in database, which is a logical error
-                if (idxDest.Path.Count < 2)
+                if (idxDest.Node.Path.Count < 2)
                     throw new ArgumentException ("you cannot update actual file nodes in database with [pf.data.update]");
                 
                 // figuring out which file Node updated belongs to, and storing in changed list
-                AddNodeToChanges (idxDest, changed);
+                AddNodeToChanges (idxDest.Node, changed);
 
                 // updating value in database
-                UpdateMatchDestination (idxDest, match, sourceValue);
+                UpdateMatchDestination (idxDest.Node, match, sourceValue);
             }
 
             // saving all affected files
@@ -117,7 +117,7 @@ namespace phosphorus.data
 
             // looping through all nodes given as children and saving them to database
             List<Node> changed = new List<Node> ();
-            foreach (Node idx in GetInsertSource (e.Args)) {
+            foreach (Node idx in GetInsertSource (e.Args, context)) {
 
                 // finding next available database file node
                 Node fileNode = GetAvailableFileNode (context);
@@ -151,17 +151,17 @@ namespace phosphorus.data
                 throw new ArgumentException ("[pf.data.delete] does not take any arguments");
 
             // finding all nodes to remove
-            var match = Expression.Create (e.Args.Get<string> ()).Evaluate (_database);
+            var match = Expression.Create (e.Args.Get<string> (context)).Evaluate (_database, context);
 
             // looping through database matches and removing nodes while storing which files have been changed
             List<Node> changed = new List<Node> ();
-            foreach (Node idxDest in match.Matches) {
+            foreach (var idxDest in match) {
 
                 // figuring out which file Node updated belongs to, and storing in changed list
-                AddNodeToChanges (idxDest, changed);
+                AddNodeToChanges (idxDest.Node, changed);
 
                 // replacing node in database
-                idxDest.Untie ();
+                idxDest.Node.UnTie ();
             }
 
             // saving all affected files
@@ -170,7 +170,7 @@ namespace phosphorus.data
 
                 // checking to see if database node is empty, and if so, removing it from database nodes
                 if (idxNode.Count == 0)
-                    idxNode.Untie ();
+                    idxNode.UnTie ();
             }
         }
         
@@ -188,13 +188,17 @@ namespace phosphorus.data
         /*
          * returns the source for which node(s) to insert into the database
          */
-        private static IEnumerable<Node> GetInsertSource (Node node)
+        private static IEnumerable<Node> GetInsertSource (Node node, ApplicationContext context)
         {
             if (XUtil.IsExpression (node.Value)) {
-                var match = Expression.Create (node.Get<string> ()).Evaluate (node);
-                if (match.TypeOfMatch != Match.MatchType.Node)
+                var match = Expression.Create (node.Get<string> (context)).Evaluate (node, context);
+                if (match.TypeOfMatch != Match.MatchType.node)
                     throw new ArgumentException ("[pf.data.insert] can only take 'node' expressions as source expressions");
-                return match.Matches;
+                List<Node> retVal = new List<Node> ();
+                foreach (var idx in match) {
+                    retVal.Add (idx.Node);
+                }
+                return retVal;
             } else {
                 return node.Children;
             }
@@ -206,17 +210,17 @@ namespace phosphorus.data
         private static void UpdateMatchDestination (Node idxDest, Match match, object sourceValue)
         {
             switch (match.TypeOfMatch) {
-            case Match.MatchType.Name:
+            case Match.MatchType.name:
                 if (sourceValue is Node)
                     throw new ArgumentException ("cannot update name to become a node");
                 idxDest.Name = (sourceValue ?? "").ToString ();
                 break;
-            case Match.MatchType.Node:
+            case Match.MatchType.node:
                 if (!(sourceValue is Node))
                     throw new ArgumentException ("you can only update node to become another node");
                 idxDest.Replace ((sourceValue as Node).Clone ());
                 break;
-            case Match.MatchType.Value:
+            case Match.MatchType.value:
                 idxDest.Value = sourceValue;
                 break;
             default:
@@ -239,7 +243,7 @@ namespace phosphorus.data
         /*
          * returns the source node for an update operation
          */
-        private static object GetUpdateSourceValue (Node node)
+        private static object GetUpdateSourceValue (Node node, ApplicationContext context)
         {
             // verifying syntax of statement
             if (node.Count != 1)
@@ -252,22 +256,22 @@ namespace phosphorus.data
 
                 // checking to see if it's a formatting expression
                 if (sourceNode.Count > 0)
-                    return XUtil.FormatNode (sourceNode);
+                    return XUtil.FormatNode (sourceNode, sourceNode, context);
                 return sourceNode.Value;
             } else if (sourceNode.Name == string.Empty) {
 
                 // assigning the result of an expression here
-                Match sourceMatch = Expression.Create (XUtil.FormatNode (sourceNode) as string).Evaluate (sourceNode);
+                Match sourceMatch = Expression.Create (XUtil.FormatNode (sourceNode, sourceNode, context) as string).Evaluate (sourceNode, context);
 
                 // returning match according to type
-                if (sourceMatch.TypeOfMatch == Match.MatchType.Count) {
+                if (sourceMatch.TypeOfMatch == Match.MatchType.count) {
 
                     // source was a count expression
                     return sourceMatch.Count;
                 } else if (sourceMatch.Count == 1) {
 
                     // destination is an expression with only one result
-                    return sourceMatch.GetValue (0);
+                    return sourceMatch [0].Value;
                 } else {
                     throw new ArgumentException ("[pf.data.update] needs a source expression yielding 1 node match as its result, unless it's a 'count' expression");
                 }
@@ -302,7 +306,7 @@ namespace phosphorus.data
                 // checking to see if database directory exist
                 Node dbPath = new Node (string.Empty, _dbPath);
                 context.Raise ("pf.file.folder-exists", dbPath);
-                if (!dbPath [0].Get<bool> ()) {
+                if (!dbPath [0].Get<bool> (context)) {
                     context.Raise ("pf.file.create-folder", dbPath);
                 }
 
@@ -345,8 +349,8 @@ namespace phosphorus.data
             dbFoldersNode.Sort (
                 delegate (Node left, Node right)
                 {
-                    int leftInt = int.Parse (left.Get<string> ().Replace (_dbPath, "").Substring (2));
-                    int rightInt = int.Parse (right.Get<string> ().Replace (_dbPath, "").Substring (2));
+                    int leftInt = int.Parse (left.Get<string> (context).Replace (_dbPath, "").Substring (2));
+                    int rightInt = int.Parse (right.Get<string> (context).Replace (_dbPath, "").Substring (2));
                     return leftInt.CompareTo (rightInt);
             });
 
@@ -365,8 +369,8 @@ namespace phosphorus.data
             dbFoldersNode.Sort (
                 delegate (Node left, Node right)
                 {
-                    int leftInt = int.Parse (left.Get<string> ().Replace (directory, "").Substring (3).Replace (".hl", ""));
-                    int rightInt = int.Parse (right.Get<string> ().Replace (directory, "").Substring (3).Replace (".hl", ""));
+                    int leftInt = int.Parse (left.Get<string> (context).Replace (directory, "").Substring (3).Replace (".hl", ""));
+                    int rightInt = int.Parse (right.Get<string> (context).Replace (directory, "").Substring (3).Replace (".hl", ""));
                     return leftInt.CompareTo (rightInt);
             });
 
@@ -385,7 +389,7 @@ namespace phosphorus.data
                 context.Raise ("pf.file.remove", new Node (string.Empty, fileNode.Value));
 
                 // checking to see if we should remove folder entirely
-                Node folderNode = new Node (string.Empty, fileNode.Get<string> ().Substring (0, fileNode.Get<string> ().LastIndexOf ("/")));
+                Node folderNode = new Node (string.Empty, fileNode.Get<string> (context).Substring (0, fileNode.Get<string> (context).LastIndexOf ("/")));
                 context.Raise ("pf.file.list-files", folderNode);
                 if (folderNode.Count == 0) {
                     context.Raise ("pf.file.remove-folder", folderNode);

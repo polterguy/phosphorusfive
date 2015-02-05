@@ -36,7 +36,9 @@ namespace phosphorus.hyperlisp
         [ActiveEvent (Name = "pf.hyperlist.get-string-value.phosphorus.core.Node")]
         private static void pf_hyperlist_get_string_value_phosphorus_core_Node (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = Object2String.ToString (e.Args.Get<Node> ());
+            Node tmp = new Node ("", e.Args);
+            context.Raise ("lambda2code", tmp);
+            e.Args.Value = tmp.Get<string> (context);
         }
 
         /// <summary>
@@ -47,7 +49,13 @@ namespace phosphorus.hyperlisp
         [ActiveEvent (Name = "pf.hyperlist.get-string-value.System.DateTime")]
         private static void pf_hyperlist_get_string_value_System_DateTime (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = Object2String.ToString (e.Args.Get<DateTime> ());
+            DateTime value = e.Args.Get<DateTime> (context);
+            if (value.Hour == 0 && value.Minute == 0 && value.Second == 0 && value.Millisecond == 0)
+                e.Args.Value = value.ToString ("yyyy-MM-dd", CultureInfo.InvariantCulture);
+            else if (value.Millisecond == 0)
+                e.Args.Value = value.ToString ("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+            else
+                e.Args.Value = value.ToString ("yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture);
         }
         
         /// <summary>
@@ -58,7 +66,7 @@ namespace phosphorus.hyperlisp
         [ActiveEvent (Name = "pf.hyperlist.get-string-value.System.TimeSpan")]
         private static void pf_hyperlist_get_string_value_System_TimeSpan (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = Object2String.ToString (e.Args.Get<TimeSpan> ());
+            e.Args.Value = e.Args.Get<TimeSpan> (context).ToString ("c", CultureInfo.InvariantCulture);
         }
         
         /// <summary>
@@ -69,7 +77,7 @@ namespace phosphorus.hyperlisp
         [ActiveEvent (Name = "pf.hyperlist.get-string-value.System.Boolean")]
         private static void pf_hyperlist_get_string_value_System_Boolean (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = Object2String.ToString (e.Args.Get<bool> ());
+            e.Args.Value = e.Args.Get<bool> (context).ToString ().ToLower ();
         }
 
         /// <summary>
@@ -80,7 +88,7 @@ namespace phosphorus.hyperlisp
         [ActiveEvent (Name = "pf.hyperlist.get-string-value.System.Byte[]")]
         private static void pf_hyperlist_get_string_value_System_ByteBlob (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = Object2String.ToString (e.Args.Get<byte[]> ());
+            e.Args.Value = Convert.ToBase64String (e.Args.Get<byte[]> (context));
         }
     }
 }

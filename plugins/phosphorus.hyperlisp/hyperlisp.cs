@@ -10,7 +10,7 @@ using System.Text;
 using System.Globalization;
 using System.Collections.Generic;
 using phosphorus.core;
-using phosphorus.lambda;
+using phosphorus.expressions;
 
 namespace phosphorus.hyperlisp
 {
@@ -30,11 +30,11 @@ namespace phosphorus.hyperlisp
         private static void pf_hyperlisp_hyperlisp2lambda (ApplicationContext context, ActiveEventArgs e)
         {
             StringBuilder builder = new StringBuilder ();
-            XUtil.Iterate<string> (e.Args, 
+            XUtil.Iterate<string> (e.Args, context,
             delegate (string idx) {
-                builder.Append (idx + "\n");
+                builder.Append (idx + "\r\n");
             });
-            e.Args.AddRange (new NodeBuilder (context, builder.ToString ()).Nodes);
+            e.Args.AddRange (new NodeBuilder (context, builder.ToString ().TrimEnd ('\r', '\n', ' ')).Nodes);
         }
 
         /// <summary>
@@ -49,13 +49,13 @@ namespace phosphorus.hyperlisp
         {
             if (XUtil.IsExpression (e.Args.Value)) {
                 List<Node> nodeList = new List<Node> ();
-                XUtil.Iterate<Node> (e.Args, 
+                XUtil.Iterate<Node> (e.Args, context,
                 delegate (Node idx) {
                     nodeList.Add (idx);
                 });
                 e.Args.Value = new HyperlispBuilder (context, nodeList).Hyperlisp;
             } else if (e.Args.Value is Node) {
-                e.Args.Value = new HyperlispBuilder (context, new Node [] { e.Args.Get<Node> () }).Hyperlisp;
+                e.Args.Value = new HyperlispBuilder (context, new Node [] { e.Args.Get<Node> (context) }).Hyperlisp;
             } else {
                 e.Args.Value = new HyperlispBuilder (context, e.Args.Children).Hyperlisp;
             }

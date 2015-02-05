@@ -7,7 +7,7 @@
 using System;
 using System.Reflection;
 using phosphorus.core;
-using phosphorus.lambda;
+using phosphorus.expressions;
 
 namespace phosphorus.file
 {
@@ -22,7 +22,7 @@ namespace phosphorus.file
             if (_rootFolder == null) {
                 Node rootNode = new Node ();
                 context.Raise ("pf.core.application-folder", rootNode);
-                _rootFolder = rootNode.Get<string> ();
+                _rootFolder = rootNode.Get<string> (context);
                 if (string.IsNullOrEmpty (_rootFolder)) {
                     _rootFolder = Assembly.GetEntryAssembly ().Location;
                     _rootFolder = _rootFolder.Substring (0, _rootFolder.LastIndexOf ("/") + 1);
