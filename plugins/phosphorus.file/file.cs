@@ -69,7 +69,7 @@ namespace phosphorus.file
             XUtil.Iterate<string> (e.Args, context,
             delegate (string idx) {
                 using (TextWriter writer = File.CreateText (rootFolder + idx)) {
-                    writer.Write (e.Args.LastChild.Get<string> (context));
+                    writer.Write (XUtil.Single<string> (e.Args.LastChild, context));
                 }
             });
         }
