@@ -330,7 +330,7 @@ namespace phosphorus.data
 
             // converting file to Node
             Node convertNode = new Node (string.Empty, loadFileNode [0].Value);
-            context.Raise ("code2lambda", convertNode);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", convertNode);
 
             // returning Node with node value being path, and content being children
             Node retVal = new Node (string.Empty, path);
@@ -401,7 +401,7 @@ namespace phosphorus.data
                 foreach (Node idx in fileNode.Children) {
                     convertNode.Add (idx.Clone ());
                 }
-                context.Raise ("lambda2code", convertNode);
+                context.Raise ("pf.hyperlisp.lambda2code", convertNode);
 
                 // saves code
                 Node saveNode = new Node (string.Empty, fileNode.Value);

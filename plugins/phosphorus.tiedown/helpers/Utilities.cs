@@ -29,7 +29,7 @@ namespace phosphorus.tiedown
 
             // converting file to lambda tree
             Node fileToNodes = new Node (string.Empty, loadFileNode [0].Get<string> (context));
-            context.Raise ("code2lambda", fileToNodes);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", fileToNodes);
 
             // appending args into lambda tree
             if (args != null) {

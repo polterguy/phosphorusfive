@@ -140,7 +140,7 @@ namespace phosphorus.lambda
 
             // first transforming code into nodes
             Node exe = new Node ("root", code);
-            context.Raise ("code2lambda", exe);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", exe);
 
             // then executing nodes created from "code" parameter
             ExecuteBlock (context, exe, args, LambdaType.Normal);

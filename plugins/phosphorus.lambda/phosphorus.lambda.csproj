@@ -45,7 +45,6 @@
     <Compile Include="keywords\set.cs" />
     <Compile Include="keywords\add.cs" />
     <Compile Include="keywords\for-each.cs" />
-    <Compile Include="code.cs" />
     <Compile Include="lambda.cs" />
     <Compile Include="keywords\branching.cs" />
     <Compile Include="keywords\while.cs" />

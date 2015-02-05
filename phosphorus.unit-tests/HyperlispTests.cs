@@ -312,7 +312,7 @@ jumbo-type"":@""value
             Node tmp = ExecuteLambda (@"_data:@""_foo
   tmp1
   tmp2:howdy world""
-code2lambda:@/-/?value");
+pf.hyperlisp.hyperlisp2lambda:@/-/?value");
             Assert.AreEqual ("_foo", tmp [1][0].Name, "wrong value of node after parsing of hyperlisp");
             Assert.AreEqual (1, tmp [1].Count, "wrong value of node after parsing of hyperlisp");
             Assert.AreEqual (2, tmp [1][0].Count, "wrong value of node after parsing of hyperlisp");
@@ -330,7 +330,7 @@ code2lambda:@/-/?value");
 _data:@""_foo2
   tmp12
   tmp22:howdy world2""
-code2lambda:@/../*/_data/?value");
+pf.hyperlisp.hyperlisp2lambda:@/../*/_data/?value");
             Assert.AreEqual (2, tmp [2].Count, "wrong value of node after parsing of hyperlisp");
             Assert.AreEqual (2, tmp [2][0].Count, "wrong value of node after parsing of hyperlisp");
             Assert.AreEqual (2, tmp [2][1].Count, "wrong value of node after parsing of hyperlisp");

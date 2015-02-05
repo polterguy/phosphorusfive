@@ -63,7 +63,7 @@ namespace phosphorus.web
                     // URL decoding cookie value, before converting to pf.lambda
                     string cookieValue = HttpUtility.UrlDecode (cookie.Value);
                     Node convertNode = new Node (string.Empty, cookieValue);
-                    context.Raise ("code2lambda", convertNode);
+                    context.Raise ("pf.hyperlisp.hyperlisp2lambda", convertNode);
 
                     if (XUtil.IsExpression (e.Args.Value)) {
 
@@ -97,7 +97,7 @@ namespace phosphorus.web
                 if (convert.Count > 0) {
 
                     // this node structure actually have values to be stored in cookie
-                    context.Raise ("lambda2code", convert);
+                    context.Raise ("pf.hyperlisp.lambda2code", convert);
                     string value = HttpUtility.UrlEncode (convert.Get<string> (context));
 
                     // finding duration, defaulting to 365 if none

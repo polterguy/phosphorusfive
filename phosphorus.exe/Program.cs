@@ -75,7 +75,7 @@ namespace phosphorus.exe
                 context.Raise ("pf.core.application-start", new Node ());
 
                 // loads and convert file to lambda nodes
-                Node convertExeFile = context.Raise ("code2lambda", new Node (string.Empty, 
+                Node convertExeFile = context.Raise ("pf.hyperlisp.hyperlisp2lambda", new Node (string.Empty, 
                     context.Raise ("pf.file.load", new Node (string.Empty, exeNode.Value)) [0].Get<string> ()));
 
                 // appending nodes from lambda file into execution objects, and execute lambda file given through command-line arguments
