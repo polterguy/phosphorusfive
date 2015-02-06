@@ -19,7 +19,7 @@ namespace phosphorus.unittests
     public class Expressions : TestBase
     {
         public Expressions ()
-            : base ()
+            : base ("phosphorus.types", "phosphorus.hyperlisp")
         { }
 
         /// <summary>
@@ -237,6 +237,34 @@ namespace phosphorus.unittests
         }
 
         /// <summary>
+        /// verifies Single from XUtil works correctly
+        /// </summary>
+        [Test]
+        public void Single8 ()
+        {
+            Node node = new Node ("root")
+                .Add ("1")
+                .Add ("2")
+                .Add ("3");
+            int value = XUtil.Single<int> ("@/*/?name", node, _context);
+            Assert.AreEqual (123, value);
+        }
+
+        /// <summary>
+        /// verifies Single from XUtil works correctly
+        /// </summary>
+        [Test]
+        public void Single9 ()
+        {
+            Node node = new Node ("root")
+                .Add ("", 1)
+                .Add ("", 2)
+                .Add ("", 3);
+            int value = XUtil.Single<int> ("@/*/?value", node, _context);
+            Assert.AreEqual (123, value);
+        }
+
+        /// <summary>
         /// verifies Iterate from XUtil works correctly
         /// </summary>
         [Test]
@@ -303,6 +331,24 @@ namespace phosphorus.unittests
                 value += idx;
             });
             Assert.AreEqual ("success", value);
+        }
+        
+        /// <summary>
+        /// verifies Iterate from XUtil works correctly
+        /// </summary>
+        [Test]
+        public void Iterate5 ()
+        {
+            Node node = new Node ("root")
+                .Add ("", 1)
+                .Add ("", 2)
+                .Add ("", 3);
+            string value = null;
+            XUtil.Iterate<string> ("@/*/?value", node, _context, 
+            delegate (string idx) {
+                value += idx;
+            });
+            Assert.AreEqual ("123", value);
         }
 
         /// <summary>
@@ -476,8 +522,8 @@ namespace phosphorus.unittests
         public void ReferenceExpression ()
         {
             Node node = new Node ("root")
-                .Add ("error")
-                .Add ("error", new Node ("_value", "success"));
+                .Add ("_1")
+                .Add ("_2", new Node ("_value", "success"));
             string value = XUtil.Single<string> ("@/1/#/?value", node, _context);
             Assert.AreEqual ("success", value);
         }
@@ -662,7 +708,7 @@ namespace phosphorus.unittests
         /// verifies creating expressions referencing other expressions works correctly
         /// </summary>
         [Test]
-        public void ReferencedExpression ()
+        public void ReferencedExpression1 ()
         {
             Node node = new Node ("root")
                 .Add ("error", "@/+/?name")
@@ -670,13 +716,37 @@ namespace phosphorus.unittests
                 .Add ("error");
             string value = XUtil.Single<string> ("@@/0/?value", node, _context);
             Assert.AreEqual ("success", value);
-
-            node = new Node ("root")
-                .Add ("error", "@@/+2/?name")
+        }
+        
+        /// <summary>
+        /// verifies creating expressions referencing other expressions recursively works correctly
+        /// </summary>
+        [Test]
+        public void ReferencedExpression2 ()
+        {
+            Node node = new Node ("root")
+                .Add ("error", "@@/+2/?value")
                 .Add ("success")
-                .Add ("@/-/?name");
-            value = XUtil.Single<string> ("@@/0/?value", node, _context);
+                .Add ("exp", "@/-/?name");
+            string value = XUtil.Single<string> ("@@/0/?value", node, _context);
             Assert.AreEqual ("success", value);
+        }
+
+        [Test]
+        public void Convert1 ()
+        {
+            Node node = new Node ("root")
+                .Add ("foo", 5);
+            string value = Utilities.Convert<string> (node, _context);
+            Assert.AreEqual ("root\r\n  foo:int:5", value);
+        }
+        
+        [Test]
+        public void Convert2 ()
+        {
+            DateTime date = new DateTime (2015, 01, 22, 23, 59, 59);
+            string value = Utilities.Convert<string> (date, _context);
+            Assert.AreEqual ("2015-01-22T23:59:59", value);
         }
     }
 }

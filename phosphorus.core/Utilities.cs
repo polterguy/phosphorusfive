@@ -192,16 +192,18 @@ namespace phosphorus.core
         {
             return context.Raise (
                 "pf.hyperlist.get-string-value." + 
-                value.GetType ().FullName, new Node (string.Empty, value)).Get<string> (context);
+                value.GetType ().FullName, new Node (string.Empty, value)).Value as string;
         }
 
         /*
          * converts string to object using conversion Active Events
          */
-        private static T Convert2Object<T> (string value, ApplicationContext context)
+        private static T Convert2Object<T> (string value, ApplicationContext context, T defaultValue = default (T))
         {
             var typeName = context.Raise (
                 "pf.hyperlist.get-type-name." + typeof(T).FullName).Get<string> (context);
+            if (typeName == null)
+                return defaultValue;
             return context.Raise (
                 "pf.hyperlist.get-object-value." + 
                 typeName, new Node (string.Empty, value)).Get<T> (context);

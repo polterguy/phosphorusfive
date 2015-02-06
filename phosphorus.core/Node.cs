@@ -959,5 +959,24 @@ namespace phosphorus.core
                 Find (name).Replace (value);
             }
         }
+
+        /// <summary>
+        /// returns a <see cref="System.String"/> that represents the current <see cref="phosphorus.core.Node"/>
+        /// </summary>
+        /// <returns>a <see cref="System.String"/> that represents the current <see cref="phosphorus.core.Node"/></returns>
+        public override string ToString ()
+        {
+            string retVal = "";
+            if (!string.IsNullOrEmpty (Name))
+                retVal += "Name=" + Name;
+            if (Value != null)
+                retVal += ", Value=" + Value.ToString ();
+            if (Count > 0)
+                retVal += ", Count=" + Count.ToString ();
+            if (Path.Count > 0)
+                retVal += ", Path=" + Path.ToString ();
+            retVal = retVal.Trim (',', ' ');
+            return retVal;
+        }
     }
 }

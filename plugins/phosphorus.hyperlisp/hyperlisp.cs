@@ -55,7 +55,7 @@ namespace phosphorus.hyperlisp
                 });
                 e.Args.Value = new HyperlispBuilder (context, nodeList).Hyperlisp;
             } else if (e.Args.Value is Node) {
-                e.Args.Value = new HyperlispBuilder (context, new Node [] { e.Args.Get<Node> (context) }).Hyperlisp;
+                e.Args.Value = new HyperlispBuilder (context, new Node [] { e.Args.Value as Node }).Hyperlisp;
             } else {
                 e.Args.Value = new HyperlispBuilder (context, e.Args.Children).Hyperlisp;
             }

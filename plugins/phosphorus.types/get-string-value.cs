@@ -36,9 +36,9 @@ namespace phosphorus.hyperlisp
         [ActiveEvent (Name = "pf.hyperlist.get-string-value.phosphorus.core.Node")]
         private static void pf_hyperlist_get_string_value_phosphorus_core_Node (ApplicationContext context, ActiveEventArgs e)
         {
-            Node tmp = new Node ("", e.Args);
-            context.Raise ("pf.hyperlisp.lambda2code", tmp);
-            e.Args.Value = tmp.Get<string> (context);
+            Node tmp = new Node ("", e.Args.Value);
+            context.Raise ("pf.hyperlisp.lambda2hyperlisp", tmp);
+            e.Args.Value = tmp.Value;
         }
 
         /// <summary>
