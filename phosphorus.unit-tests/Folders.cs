@@ -29,7 +29,7 @@ namespace phosphorus.unittests
         {
             // deleting folder if it already exists
             if (Directory.Exists (GetBasePath () + "test1")) {
-                Directory.Delete (GetBasePath () + "test1");
+                Directory.Delete (GetBasePath () + "test1", true);
             }
 
             // creating folder using "phosphorus.file"
@@ -50,10 +50,10 @@ namespace phosphorus.unittests
         {
             // deleting folder if it already exists
             if (Directory.Exists (GetBasePath () + "test1")) {
-                Directory.Delete (GetBasePath () + "test1");
+                Directory.Delete (GetBasePath () + "test1", true);
             }
             if (Directory.Exists (GetBasePath () + "test2")) {
-                Directory.Delete (GetBasePath () + "test2");
+                Directory.Delete (GetBasePath () + "test2", true);
             }
 
             // creating folder using "phosphorus.file"
@@ -79,10 +79,10 @@ namespace phosphorus.unittests
         {
             // deleting folder if it already exists
             if (Directory.Exists (GetBasePath () + "test1")) {
-                Directory.Delete (GetBasePath () + "test1");
+                Directory.Delete (GetBasePath () + "test1", true);
             }
             if (Directory.Exists (GetBasePath () + "test2")) {
-                Directory.Delete (GetBasePath () + "test2");
+                Directory.Delete (GetBasePath () + "test2", true);
             }
             
             // creating folder using "phosphorus.file"
@@ -109,10 +109,10 @@ namespace phosphorus.unittests
         {
             // deleting folder if it already exists
             if (Directory.Exists (GetBasePath () + "test1")) {
-                Directory.Delete (GetBasePath () + "test1");
+                Directory.Delete (GetBasePath () + "test1", true);
             }
             if (Directory.Exists (GetBasePath () + "test2")) {
-                Directory.Delete (GetBasePath () + "test2");
+                Directory.Delete (GetBasePath () + "test2", true);
             }
 
             // making sure one of our folders exists from before, to verify create returns false for this bugger
@@ -225,7 +225,7 @@ namespace phosphorus.unittests
                 Directory.CreateDirectory (GetBasePath () + "test2");
             }
             if (Directory.Exists (GetBasePath () + "test3")) {
-                Directory.Delete (GetBasePath () + "test3");
+                Directory.Delete (GetBasePath () + "test3", true);
             }
 
             // checking to see if folder exists using "phosphorus.file"
@@ -242,6 +242,139 @@ namespace phosphorus.unittests
             Assert.AreEqual (true, node [4].Value);
             Assert.AreEqual ("test3", node [5].Name);
             Assert.AreEqual (false, node [5].Value); // this bugger doesn't exist
+        }
+        
+        /// <summary>
+        /// verifies [pf.folder.exists] works correctly
+        /// </summary>
+        [Test]
+        public void ListFiles ()
+        {
+            // creating folder if it doesn't already exists
+            if (!Directory.Exists (GetBasePath () + "test1")) {
+                Directory.CreateDirectory (GetBasePath () + "test1");
+            }
+
+            // creating files within folder
+            Node node = new Node (string.Empty, "@/*/!/*/source/?name")
+                .Add ("test1/test1.txt")
+                .Add ("test1/test2.txt")
+                .Add ("test1/test3.txt")
+                .Add ("source", "success");
+            _context.Raise ("pf.file.save", node);
+
+            // listing files within folder
+            node = new Node (string.Empty, "test1");
+            _context.Raise ("pf.folder.list-files", node);
+
+            // verifying list-files returned true as it should
+            Assert.AreEqual ("test1/test1.txt", node [0].Value);
+            Assert.AreEqual ("test1/test2.txt", node [1].Value);
+            Assert.AreEqual ("test1/test3.txt", node [2].Value);
+        }
+        
+        /// <summary>
+        /// verifies [pf.folder.exists] works correctly
+        /// </summary>
+        [Test]
+        public void ListFilesExpression1 ()
+        {
+            // deleting and re-creating folders to make sure they're empty and don't contain "garbage"
+            if (Directory.Exists (GetBasePath () + "test1")) {
+                Directory.Delete (GetBasePath () + "test1", true);
+            }
+            Directory.CreateDirectory (GetBasePath () + "test1");
+            if (Directory.Exists (GetBasePath () + "test2")) {
+                Directory.Delete (GetBasePath () + "test2", true);
+            }
+            Directory.CreateDirectory (GetBasePath () + "test2");
+
+            // creating files within folder
+            Node node = new Node (string.Empty, "@/*/!/*/source/?name")
+                .Add ("test1/test1.txt")
+                .Add ("test2/test2.txt")
+                .Add ("test1/test3.txt")
+                .Add ("source", "success");
+            _context.Raise ("pf.file.save", node);
+
+            // listing files within folder
+            node = new Node (string.Empty, "@/*/?name")
+                .Add ("test1")
+                .Add ("test2");
+            _context.Raise ("pf.folder.list-files", node);
+
+            // verifying list-files returned true as it should
+            Assert.AreEqual ("test1/test1.txt", node [2].Value);
+            Assert.AreEqual ("test1/test3.txt", node [3].Value);
+            Assert.AreEqual ("test2/test2.txt", node [4].Value);
+        }
+        
+        /// <summary>
+        /// verifies [pf.folder.exists] works correctly
+        /// </summary>
+        [Test]
+        public void ListFilesExpression2 ()
+        {
+            // deleting and re-creating folders to make sure they're empty and don't contain "garbage"
+            if (Directory.Exists (GetBasePath () + "test1")) {
+                Directory.Delete (GetBasePath () + "test1", true);
+            }
+            Directory.CreateDirectory (GetBasePath () + "test1");
+            if (Directory.Exists (GetBasePath () + "test2")) {
+                Directory.Delete (GetBasePath () + "test2", true);
+            }
+            Directory.CreateDirectory (GetBasePath () + "test2");
+
+            // creating files within folder
+            Node node = new Node (string.Empty, "@/*/!/*/source/?name")
+                .Add ("test1/test1.txt")
+                .Add ("test2/test2.txt")
+                .Add ("test1/test3.txt")
+                .Add ("source", "success");
+            _context.Raise ("pf.file.save", node);
+
+            // listing files within folder
+            node = new Node (string.Empty, "@/*/!/*//?{0}")
+                .Add (string.Empty, "name")
+                .Add ("test1")
+                .Add ("test2");
+            _context.Raise ("pf.folder.list-files", node);
+
+            // verifying list-files returned true as it should
+            Assert.AreEqual ("test1/test1.txt", node [3].Value);
+            Assert.AreEqual ("test1/test3.txt", node [4].Value);
+            Assert.AreEqual ("test2/test2.txt", node [5].Value);
+        }
+        
+        /// <summary>
+        /// verifies [pf.folder.exists] works correctly
+        /// </summary>
+        [Test]
+        public void ListFilesExpression3 ()
+        {
+            // deleting and re-creating folders to make sure they're empty and don't contain "garbage"
+            if (Directory.Exists (GetBasePath () + "test1")) {
+                Directory.Delete (GetBasePath () + "test1", true);
+            }
+            Directory.CreateDirectory (GetBasePath () + "test1");
+
+            // creating files within folder
+            Node node = new Node (string.Empty, "@/*/!/*/source/?name")
+                .Add ("test1/test1.txt")
+                .Add ("test1/test2.txt")
+                .Add ("test1/test3.txt")
+                .Add ("source", "success");
+            _context.Raise ("pf.file.save", node);
+
+            // listing files within folder
+            node = new Node (string.Empty, "te{0}")
+                .Add (string.Empty, "st1");
+            _context.Raise ("pf.folder.list-files", node);
+
+            // verifying list-files returned true as it should
+            Assert.AreEqual ("test1/test1.txt", node [1].Value);
+            Assert.AreEqual ("test1/test2.txt", node [2].Value);
+            Assert.AreEqual ("test1/test3.txt", node [3].Value);
         }
     }
 }

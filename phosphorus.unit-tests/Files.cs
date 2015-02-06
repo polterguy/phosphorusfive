@@ -22,6 +22,102 @@ namespace phosphorus.unittests
         { }
 
         /// <summary>
+        /// verifies [pf.file.exists] works correctly
+        /// </summary>
+        [Test]
+        public void Exists ()
+        {
+            // creating file using phosphorus.file
+            Node node = new Node (string.Empty, "test1.txt")
+                .Add ("source", "this is a test");
+            _context.Raise ("pf.file.save", node);
+
+            // checking to see if file exists
+            node = new Node (string.Empty, "test1.txt");
+            _context.Raise ("pf.file.exists", node);
+
+            // verifying [pf.file.exists] returned valid values
+            Assert.AreEqual ("test1.txt", node [0].Name);
+            Assert.AreEqual (true, node [0].Value);
+        }
+        
+        /// <summary>
+        /// verifies [pf.file.exists] works correctly
+        /// </summary>
+        [Test]
+        public void ExistsExpression1 ()
+        {
+            // creating files using phosphorus.file
+            Node node = new Node (string.Empty, "test1.txt")
+                .Add ("source", "this is a test");
+            _context.Raise ("pf.file.save", node);
+            node = new Node (string.Empty, "test1.txt")
+                .Add ("source", "this is a test");
+            _context.Raise ("pf.file.save", node);
+
+            // checking to see if files exists
+            node = new Node (string.Empty, "@/*/?name")
+                .Add ("test1.txt")
+                .Add ("test2.txt");
+            _context.Raise ("pf.file.exists", node);
+
+            // verifying [pf.file.exists] returned valid values
+            Assert.AreEqual ("test1.txt", node [2].Name);
+            Assert.AreEqual (true, node [2].Value);
+            Assert.AreEqual ("test2.txt", node [3].Name);
+            Assert.AreEqual (true, node [3].Value);
+        }
+        
+        /// <summary>
+        /// verifies [pf.file.exists] works correctly
+        /// </summary>
+        [Test]
+        public void ExistsExpression2 ()
+        {
+            // creating files using phosphorus.file
+            Node node = new Node (string.Empty, "test1.txt")
+                .Add ("source", "this is a test");
+            _context.Raise ("pf.file.save", node);
+            node = new Node (string.Empty, "test1.txt")
+                .Add ("source", "this is a test");
+            _context.Raise ("pf.file.save", node);
+
+            // checking to see if files exists
+            node = new Node (string.Empty, "@/*/!/0/?{0}")
+                .Add (string.Empty, "name")
+                .Add ("test1.txt")
+                .Add ("test2.txt");
+            _context.Raise ("pf.file.exists", node);
+
+            // verifying [pf.file.exists] returned valid values
+            Assert.AreEqual ("test1.txt", node [3].Name);
+            Assert.AreEqual (true, node [3].Value);
+            Assert.AreEqual ("test2.txt", node [4].Name);
+            Assert.AreEqual (true, node [4].Value);
+        }
+        
+        /// <summary>
+        /// verifies [pf.file.exists] works correctly
+        /// </summary>
+        [Test]
+        public void ExistsExpression3 ()
+        {
+            // creating files using phosphorus.file
+            Node node = new Node (string.Empty, "test1.txt")
+                .Add ("source", "this is a test");
+            _context.Raise ("pf.file.save", node);
+
+            // checking to see if files exists
+            node = new Node (string.Empty, "te{0}.txt")
+                .Add (string.Empty, "st1");
+            _context.Raise ("pf.file.exists", node);
+
+            // verifying [pf.file.exists] returned valid values
+            Assert.AreEqual ("test1.txt", node [1].Name);
+            Assert.AreEqual (true, node [1].Value);
+        }
+
+        /// <summary>
         /// verifies [pf.file.remove] works correctly
         /// </summary>
         [Test]
@@ -37,7 +133,7 @@ namespace phosphorus.unittests
             _context.Raise ("pf.file.remove", node);
 
             // verifying removal of file was done correctly
-            Assert.AreEqual (false, File.Exists (GetBasePath () + "test1.txt"), "file existed");
+            Assert.AreEqual (false, File.Exists (GetBasePath () + "test1.txt"));
         }
         
         /// <summary>
@@ -62,8 +158,8 @@ namespace phosphorus.unittests
             _context.Raise ("pf.file.remove", node);
 
             // verifying removal of files was done correctly
-            Assert.AreEqual (false, File.Exists (GetBasePath () + "test1.txt"), "file existed");
-            Assert.AreEqual (false, File.Exists (GetBasePath () + "test2.txt"), "file existed");
+            Assert.AreEqual (false, File.Exists (GetBasePath () + "test1.txt"));
+            Assert.AreEqual (false, File.Exists (GetBasePath () + "test2.txt"));
         }
 
         /// <summary>
@@ -83,14 +179,34 @@ namespace phosphorus.unittests
 
             // removing files using phosphorus.five
             node = new Node (string.Empty, "@/1/|{0}?name")
-                .Add ("", "/2/")
+                .Add (string.Empty, "/2/")
                 .Add ("test1.txt")
                 .Add ("test2.txt");
             _context.Raise ("pf.file.remove", node);
 
             // verifying removal of files was done correctly
-            Assert.AreEqual (false, File.Exists (GetBasePath () + "test1.txt"), "file existed");
-            Assert.AreEqual (false, File.Exists (GetBasePath () + "test2.txt"), "file existed");
+            Assert.AreEqual (false, File.Exists (GetBasePath () + "test1.txt"));
+            Assert.AreEqual (false, File.Exists (GetBasePath () + "test2.txt"));
+        }
+        
+        /// <summary>
+        /// verifies [pf.file.remove] works correctly when given an expression
+        /// </summary>
+        [Test]
+        public void RemoveExpression3 ()
+        {
+            // creating files using phosphorus.file
+            Node node = new Node (string.Empty, "test1.txt")
+                .Add ("source", "this is a test");
+            _context.Raise ("pf.file.save", node);
+
+            // removing files using phosphorus.five
+            node = new Node (string.Empty, "te{0}")
+                .Add (string.Empty, "st1.txt");
+            _context.Raise ("pf.file.remove", node);
+
+            // verifying removal of files was done correctly
+            Assert.AreEqual (false, File.Exists (GetBasePath () + "test1.txt"));
         }
 
         /// <summary>
@@ -110,7 +226,7 @@ namespace phosphorus.unittests
             _context.Raise ("pf.file.save", node);
 
             // verifying creation of file was done correctly
-            Assert.AreEqual (true, File.Exists (GetBasePath () + "test1.txt"), "file didn't exist");
+            Assert.AreEqual (true, File.Exists (GetBasePath () + "test1.txt"));
             using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
                 Assert.AreEqual ("this is a test", reader.ReadToEnd ());
             }
@@ -120,7 +236,7 @@ namespace phosphorus.unittests
         /// verifies [pf.file.save] works correctly when given an expression
         /// </summary>
         [Test]
-        public void SaveExpression1 ()
+        public void SaveExpression01 ()
         {
             // deleting file if it already exists
             if (File.Exists (GetBasePath () + "test1.txt")) {
@@ -138,11 +254,11 @@ namespace phosphorus.unittests
             _context.Raise ("pf.file.save", node);
 
             // verifying creation of file was done correctly
-            Assert.AreEqual (true, File.Exists (GetBasePath () + "test1.txt"), "file didn't exist");
+            Assert.AreEqual (true, File.Exists (GetBasePath () + "test1.txt"));
             using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
                 Assert.AreEqual ("this is a test", reader.ReadToEnd ());
             }
-            Assert.AreEqual (true, File.Exists (GetBasePath () + "test2.txt"), "file didn't exist");
+            Assert.AreEqual (true, File.Exists (GetBasePath () + "test2.txt"));
             using (TextReader reader = File.OpenText (GetBasePath () + "test2.txt")) {
                 Assert.AreEqual ("this is a test", reader.ReadToEnd ());
             }
@@ -152,7 +268,64 @@ namespace phosphorus.unittests
         /// verifies [pf.file.save] works correctly when given an expression
         /// </summary>
         [Test]
-        public void SaveExpression2 ()
+        public void SaveExpression02 ()
+        {
+            // deleting file if it already exists
+            if (File.Exists (GetBasePath () + "test1.txt")) {
+                File.Delete (GetBasePath () + "test1.txt");
+            }
+            if (File.Exists (GetBasePath () + "test2.txt")) {
+                File.Delete (GetBasePath () + "test2.txt");
+            }
+
+            // creating file using phosphorus.file
+            Node node = new Node (string.Empty, "@/1/|/2/?{0}")
+                .Add (string.Empty, "name")
+                .Add ("test1.txt")
+                .Add ("test2.txt")
+                .Add ("source", "this is a test");
+            _context.Raise ("pf.file.save", node);
+
+            // verifying creation of file was done correctly
+            Assert.AreEqual (true, File.Exists (GetBasePath () + "test1.txt"));
+            using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
+                Assert.AreEqual ("this is a test", reader.ReadToEnd ());
+            }
+            Assert.AreEqual (true, File.Exists (GetBasePath () + "test2.txt"));
+            using (TextReader reader = File.OpenText (GetBasePath () + "test2.txt")) {
+                Assert.AreEqual ("this is a test", reader.ReadToEnd ());
+            }
+        }
+        
+        /// <summary>
+        /// verifies [pf.file.save] works correctly when given an expression
+        /// </summary>
+        [Test]
+        public void SaveExpression03 ()
+        {
+            // deleting file if it already exists
+            if (File.Exists (GetBasePath () + "test1.txt")) {
+                File.Delete (GetBasePath () + "test1.txt");
+            }
+
+            // creating file using phosphorus.file
+            Node node = new Node (string.Empty, "te{0}")
+                .Add (string.Empty, "st1.txt")
+                .Add ("source", "this is a test");
+            _context.Raise ("pf.file.save", node);
+
+            // verifying creation of file was done correctly
+            Assert.AreEqual (true, File.Exists (GetBasePath () + "test1.txt"));
+            using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
+                Assert.AreEqual ("this is a test", reader.ReadToEnd ());
+            }
+        }
+
+        /// <summary>
+        /// verifies [pf.file.save] works correctly when given an expression
+        /// </summary>
+        [Test]
+        public void SaveExpression04 ()
         {
             // deleting file if it already exists
             if (File.Exists (GetBasePath () + "test1.txt")) {
@@ -161,14 +334,14 @@ namespace phosphorus.unittests
 
             // creating file using phosphorus.file
             Node node = new Node (string.Empty, "test1.txt")
-                .Add ("hello world")
+                .Add ("success")
                 .Add ("source", "@/-/?name");
             _context.Raise ("pf.file.save", node);
 
             // verifying creation of file was done correctly
-            Assert.AreEqual (true, File.Exists (GetBasePath () + "test1.txt"), "file didn't exist");
+            Assert.AreEqual (true, File.Exists (GetBasePath () + "test1.txt"));
             using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
-                Assert.AreEqual ("hello world", reader.ReadToEnd ());
+                Assert.AreEqual ("success", reader.ReadToEnd ());
             }
         }
         
@@ -176,7 +349,7 @@ namespace phosphorus.unittests
         /// verifies [pf.file.save] works correctly when given an expression
         /// </summary>
         [Test]
-        public void SaveExpression3 ()
+        public void SaveExpression05 ()
         {
             // deleting file if it already exists
             if (File.Exists (GetBasePath () + "test1.txt")) {
@@ -185,15 +358,15 @@ namespace phosphorus.unittests
 
             // creating file using phosphorus.file
             Node node = new Node (string.Empty, "test1.txt")
-                .Add ("hello")
-                .Add (" world 2.0")
+                .Add ("succ")
+                .Add ("ess")
                 .Add ("source", "@/-2/|/-1/?name");
             _context.Raise ("pf.file.save", node);
 
             // verifying creation of file was done correctly
-            Assert.AreEqual (true, File.Exists (GetBasePath () + "test1.txt"), "file didn't exist");
+            Assert.AreEqual (true, File.Exists (GetBasePath () + "test1.txt"));
             using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
-                Assert.AreEqual ("hello world 2.0", reader.ReadToEnd ());
+                Assert.AreEqual ("success", reader.ReadToEnd ());
             }
         }
         
@@ -201,7 +374,7 @@ namespace phosphorus.unittests
         /// verifies [pf.file.save] works correctly when given an expression
         /// </summary>
         [Test]
-        public void SaveExpression4 ()
+        public void SaveExpression06 ()
         {
             // deleting file if it already exists
             if (File.Exists (GetBasePath () + "test1.txt")) {
@@ -210,15 +383,15 @@ namespace phosphorus.unittests
 
             // creating file using phosphorus.file
             Node node = new Node (string.Empty, "te{0}1.txt")
-                .Add ("", "st")
-                .Add ("hello world 2.0")
+                .Add (string.Empty, "st")
+                .Add ("success")
                 .Add ("source", "@/-/?name");
             _context.Raise ("pf.file.save", node);
 
             // verifying creation of file was done correctly
-            Assert.AreEqual (true, File.Exists (GetBasePath () + "test1.txt"), "file didn't exist");
+            Assert.AreEqual (true, File.Exists (GetBasePath () + "test1.txt"));
             using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
-                Assert.AreEqual ("hello world 2.0", reader.ReadToEnd ());
+                Assert.AreEqual ("success", reader.ReadToEnd ());
             }
         }
         
@@ -226,7 +399,7 @@ namespace phosphorus.unittests
         /// verifies [pf.file.save] works correctly when given an expression
         /// </summary>
         [Test]
-        public void SaveExpression5 ()
+        public void SaveExpression07 ()
         {
             // deleting file if it already exists
             if (File.Exists (GetBasePath () + "test1.txt")) {
@@ -237,11 +410,11 @@ namespace phosphorus.unittests
             Node node = new Node (string.Empty, "test1.txt")
                 .Add ("success")
                 .Add ("source", "@/{0}/?name").LastChild
-                    .Add ("", "-").Root;
+                    .Add (string.Empty, "-").Root;
             _context.Raise ("pf.file.save", node);
 
             // verifying creation of file was done correctly
-            Assert.AreEqual (true, File.Exists (GetBasePath () + "test1.txt"), "file didn't exist");
+            Assert.AreEqual (true, File.Exists (GetBasePath () + "test1.txt"));
             using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
                 Assert.AreEqual ("success", reader.ReadToEnd ());
             }
@@ -251,7 +424,7 @@ namespace phosphorus.unittests
         /// verifies [pf.file.save] works correctly when given a relative source
         /// </summary>
         [Test]
-        public void SaveExpression6 ()
+        public void SaveExpression08 ()
         {
             // deleting file if it already exists
             if (File.Exists (GetBasePath () + "test1.txt")) {
@@ -271,11 +444,11 @@ namespace phosphorus.unittests
             _context.Raise ("pf.file.save", node);
 
             // verifying creation of files was done correctly
-            Assert.AreEqual (true, File.Exists (GetBasePath () + "test1.txt"), "file didn't exist");
+            Assert.AreEqual (true, File.Exists (GetBasePath () + "test1.txt"));
             using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
                 Assert.AreEqual ("success1", reader.ReadToEnd ());
             }
-            Assert.AreEqual (true, File.Exists (GetBasePath () + "test2.txt"), "file didn't exist");
+            Assert.AreEqual (true, File.Exists (GetBasePath () + "test2.txt"));
             using (TextReader reader = File.OpenText (GetBasePath () + "test2.txt")) {
                 Assert.AreEqual ("success2", reader.ReadToEnd ());
             }
@@ -285,7 +458,7 @@ namespace phosphorus.unittests
         /// verifies [pf.file.save] works correctly when given a relative source
         /// </summary>
         [Test]
-        public void SaveExpression7 ()
+        public void SaveExpression09 ()
         {
             // deleting file if it already exists
             if (File.Exists (GetBasePath () + "test1.txt")) {
@@ -302,15 +475,15 @@ namespace phosphorus.unittests
                 .Add ("test2.txt").LastChild
                     .Add ("success2").Parent
                 .Add ("rel-source", "@/0/?{0}").LastChild
-                    .Add ("", "name").Parent;
+                    .Add (string.Empty, "name").Parent;
             _context.Raise ("pf.file.save", node);
 
             // verifying creation of files was done correctly
-            Assert.AreEqual (true, File.Exists (GetBasePath () + "test1.txt"), "file didn't exist");
+            Assert.AreEqual (true, File.Exists (GetBasePath () + "test1.txt"));
             using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
                 Assert.AreEqual ("success1", reader.ReadToEnd ());
             }
-            Assert.AreEqual (true, File.Exists (GetBasePath () + "test2.txt"), "file didn't exist");
+            Assert.AreEqual (true, File.Exists (GetBasePath () + "test2.txt"));
             using (TextReader reader = File.OpenText (GetBasePath () + "test2.txt")) {
                 Assert.AreEqual ("success2", reader.ReadToEnd ());
             }
@@ -320,7 +493,7 @@ namespace phosphorus.unittests
         /// verifies [pf.file.save] works correctly when given a relative source
         /// </summary>
         [Test]
-        public void SaveExpression8 ()
+        public void SaveExpression10 ()
         {
             // deleting file if it already exists
             if (File.Exists (GetBasePath () + "test1.txt")) {
@@ -337,15 +510,15 @@ namespace phosphorus.unittests
                 .Add ("test2.txt").LastChild
                     .Add ("success2", "name").Parent
                 .Add ("rel-source", "@/0/?{0}").LastChild
-                    .Add ("", "@/0/?value").Root;
+                    .Add (string.Empty, "@/0/?value").Root;
             _context.Raise ("pf.file.save", node);
 
             // verifying creation of files was done correctly
-            Assert.AreEqual (true, File.Exists (GetBasePath () + "test1.txt"), "file didn't exist");
+            Assert.AreEqual (true, File.Exists (GetBasePath () + "test1.txt"));
             using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
                 Assert.AreEqual ("success1", reader.ReadToEnd ());
             }
-            Assert.AreEqual (true, File.Exists (GetBasePath () + "test2.txt"), "file didn't exist");
+            Assert.AreEqual (true, File.Exists (GetBasePath () + "test2.txt"));
             using (TextReader reader = File.OpenText (GetBasePath () + "test2.txt")) {
                 Assert.AreEqual ("success2", reader.ReadToEnd ());
             }
@@ -372,7 +545,7 @@ namespace phosphorus.unittests
             _context.Raise ("pf.file.save", node);
 
             // verifying creation of file was done correctly
-            Assert.AreEqual (true, File.Exists (GetBasePath () + "test1.txt"), "file didn't exist");
+            Assert.AreEqual (true, File.Exists (GetBasePath () + "test1.txt"));
             using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
                 Assert.AreEqual ("this is a test", reader.ReadToEnd ());
             }
@@ -456,7 +629,7 @@ namespace phosphorus.unittests
 
             // loading file using phosphorus.five
             node = new Node (string.Empty, "te{0}1.txt")
-                .Add ("", "st");
+                .Add (string.Empty, "st");
             _context.Raise ("pf.file.load", node);
 
             Assert.AreEqual ("success", node.LastChild.Value);
@@ -481,7 +654,7 @@ namespace phosphorus.unittests
 
             // loading file using phosphorus.five
             node = new Node (string.Empty, "@/{0}/?name")
-                .Add ("", "1")
+                .Add (string.Empty, "1")
                 .Add ("test1.txt");
             _context.Raise ("pf.file.load", node);
 
