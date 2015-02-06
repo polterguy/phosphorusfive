@@ -376,5 +376,111 @@ namespace phosphorus.unittests
             Assert.AreEqual ("test1/test2.txt", node [2].Value);
             Assert.AreEqual ("test1/test3.txt", node [3].Value);
         }
+        
+        /// <summary>
+        /// verifies [pf.folder.list-folders] works correctly
+        /// </summary>
+        [Test]
+        public void ListFolders ()
+        {
+            // deleting and re-creating folders to make sure they're empty and don't contain "garbage"
+            if (Directory.Exists (GetBasePath () + "test1")) {
+                Directory.Delete (GetBasePath () + "test1", true);
+            }
+            Directory.CreateDirectory (GetBasePath () + "test1");
+            Directory.CreateDirectory (GetBasePath () + "test1/xxx");
+            Directory.CreateDirectory (GetBasePath () + "test1/yyy");
+
+            // listing folders within folder
+            Node node = new Node (string.Empty, "test1");
+            _context.Raise ("pf.folder.list-folders", node);
+
+            // verifying list-files returned true as it should
+            Assert.AreEqual ("test1/xxx", node [0].Value);
+            Assert.AreEqual ("test1/yyy", node [1].Value);
+        }
+        
+        /// <summary>
+        /// verifies [pf.folder.list-folders] works correctly
+        /// </summary>
+        [Test]
+        public void ListFoldersExpression1 ()
+        {
+            // deleting and re-creating folders to make sure they're empty and don't contain "garbage"
+            if (Directory.Exists (GetBasePath () + "test1")) {
+                Directory.Delete (GetBasePath () + "test1", true);
+            }
+            if (Directory.Exists (GetBasePath () + "test2")) {
+                Directory.Delete (GetBasePath () + "test2", true);
+            }
+            Directory.CreateDirectory (GetBasePath () + "test1");
+            Directory.CreateDirectory (GetBasePath () + "test2");
+            Directory.CreateDirectory (GetBasePath () + "test1/xxx");
+            Directory.CreateDirectory (GetBasePath () + "test2/yyy");
+
+            // listing folders within folder
+            Node node = new Node (string.Empty, "@/*/?name")
+                .Add ("test1")
+                .Add ("test2");
+            _context.Raise ("pf.folder.list-folders", node);
+
+            // verifying list-files returned true as it should
+            Assert.AreEqual ("test1/xxx", node [2].Value);
+            Assert.AreEqual ("test2/yyy", node [3].Value);
+        }
+        
+        /// <summary>
+        /// verifies [pf.folder.list-folders] works correctly
+        /// </summary>
+        [Test]
+        public void ListFoldersExpression2 ()
+        {
+            // deleting and re-creating folders to make sure they're empty and don't contain "garbage"
+            if (Directory.Exists (GetBasePath () + "test1")) {
+                Directory.Delete (GetBasePath () + "test1", true);
+            }
+            if (Directory.Exists (GetBasePath () + "test2")) {
+                Directory.Delete (GetBasePath () + "test2", true);
+            }
+            Directory.CreateDirectory (GetBasePath () + "test1");
+            Directory.CreateDirectory (GetBasePath () + "test2");
+            Directory.CreateDirectory (GetBasePath () + "test1/xxx");
+            Directory.CreateDirectory (GetBasePath () + "test2/yyy");
+
+            // listing folders within folder
+            Node node = new Node (string.Empty, "@{0}?name")
+                .Add (string.Empty, "/*/!/*//")
+                .Add ("test1")
+                .Add ("test2");
+            _context.Raise ("pf.folder.list-folders", node);
+
+            // verifying list-files returned true as it should
+            Assert.AreEqual ("test1/xxx", node [3].Value);
+            Assert.AreEqual ("test2/yyy", node [4].Value);
+        }
+        
+        /// <summary>
+        /// verifies [pf.folder.list-folders] works correctly
+        /// </summary>
+        [Test]
+        public void ListFoldersExpression3 ()
+        {
+            // deleting and re-creating folders to make sure they're empty and don't contain "garbage"
+            if (Directory.Exists (GetBasePath () + "test1")) {
+                Directory.Delete (GetBasePath () + "test1", true);
+            }
+            Directory.CreateDirectory (GetBasePath () + "test1");
+            Directory.CreateDirectory (GetBasePath () + "test1/xxx");
+            Directory.CreateDirectory (GetBasePath () + "test1/yyy");
+
+            // listing folders within folder
+            Node node = new Node (string.Empty, "te{0}")
+                .Add (string.Empty, "st1");
+            _context.Raise ("pf.folder.list-folders", node);
+
+            // verifying list-files returned true as it should
+            Assert.AreEqual ("test1/xxx", node [1].Value);
+            Assert.AreEqual ("test1/yyy", node [2].Value);
+        }
     }
 }
