@@ -56,6 +56,17 @@ namespace phosphorus.expressions
             // and a value which is of type string
             return node.Value is string && node.FindAll (string.Empty).GetEnumerator ().MoveNext ();
         }
+        
+        /// <summary>
+        /// formats given node and returns formatted node value as string
+        /// </summary>
+        /// <returns>formatter string</returns>
+        /// <param name="node">node containing formatting expression</param>
+        /// <param name="context">application context</param>
+        public static string FormatNode (Node node, ApplicationContext context)
+        {
+            return FormatNode (node, node, context);
+        }
 
         /// <summary>
         /// formats given node and returns formatted node value as string
@@ -92,14 +103,38 @@ namespace phosphorus.expressions
         }
 
         /// <summary>
-        /// formats given node and returns formatted node value as string
+        /// returns a single value from the given node. if node has an expression as its value, it
+        /// will iterate the results of that expression, concatenating the results back to one value, before
+        /// converting to T. if node contains anything but an expression, it will return that object as type T
+        /// back to caller
         /// </summary>
-        /// <returns>formatter string</returns>
-        /// <param name="node">node containing formatting expression</param>
+        /// <param name="node">node</param>
         /// <param name="context">application context</param>
-        public static string FormatNode (Node node, ApplicationContext context)
+        /// <typeparam name="T">type you wish to convert result to</typeparam>
+        public static T Single<T> (Node node, ApplicationContext context)
         {
-            return FormatNode (node, node, context);
+            return Single<T> (node, node, context);
+        }
+        
+        /// <summary>
+        /// returns a single value from the given node. if node has an expression as its value, it
+        /// will iterate the results of that expression, concatenating the results back to one value, before
+        /// converting to T. if node contains anything but an expression, it will return that object as type T
+        /// back to caller. data source node is used as source for any formatting expressions inside of node
+        /// </summary>
+        /// <param name="node">node</param>
+        /// <param name="dataSource">node to use as source for any formatting expressions inside of node</param>
+        /// <param name="context">application context</param>
+        /// <typeparam name="T">type you wish to convert result to</typeparam>
+        public static T Single<T> (Node node, Node dataSource, ApplicationContext context)
+        {
+            if (IsExpression (node.Value)) {
+                string exp = IsFormatted (node) ? FormatNode (node, dataSource, context) : node.Get<string> (context);
+                return Single<T> (exp, dataSource, context);
+            } else {
+                object value = IsFormatted (node) ? FormatNode (node, dataSource, context) : node.Value;
+                return Utilities.Convert<T> (value, context);
+            }
         }
 
         /// <summary>
@@ -133,42 +168,44 @@ namespace phosphorus.expressions
         }
 
         /// <summary>
-        /// returns a single value from the given node. if node has an expression as its value, it
-        /// will iterate the results of that expression, concatenating the results back to one value, before
-        /// converting to T. if node contains anything but an expression, it will return that object as type T
-        /// back to caller
+        /// will iterate node's value expression result, if node's value is an expression,
+        /// otherwise it will invoke your callback once for the value of node, converted
+        /// to type T
         /// </summary>
-        /// <param name="node">node</param>
+        /// <param name="node">node to use</param>
         /// <param name="context">application context</param>
-        /// <typeparam name="T">type you wish to convert result to</typeparam>
-        public static T Single<T> (Node node, ApplicationContext context)
+        /// <param name="functor">delegate to invoke for the converted result</param>
+        /// <typeparam name="T">type to convert results to</typeparam>
+        public static void Iterate<T> (
+            Node node,
+            ApplicationContext context,
+            IteratorCallback<T> functor)
         {
-            if (IsExpression (node.Value))
-                return Single<T> (node.Value as string, node, context);
-            else
-                return Utilities.Convert<T> (node.Value, context);
+            Iterate<T> (node, node, context, functor);
         }
         
         /// <summary>
-        /// iterates through given expression, with given node as datasource, and invokes functor
-        /// for every single match, passing in a MatchEntity, wrapping the match item
+        /// will iterate node's value expression result, if node's value is an expression,
+        /// otherwise it will invoke your callback once for the value of node, converted
+        /// to type T
         /// </summary>
-        /// <param name="expression">expression</param>
-        /// <param name="dataSource">data source node to use for expression</param>
+        /// <param name="node">node to use as source of expression</param>
+        /// <param name="node">node to use as data source for formatting values and where to execute the expression</param>
         /// <param name="context">application context</param>
-        /// <param name="functor">delegate invoked once for every single match</param>
-        public static void Iterate (
-            string expression,
+        /// <param name="functor">delegate to invoke for the converted result</param>
+        /// <typeparam name="T">type to convert results to</typeparam>
+        public static void Iterate<T> (
+            Node node,
             Node dataSource,
             ApplicationContext context,
-            IteratorCallback<MatchEntity> functor)
+            IteratorCallback<T> functor)
         {
-            if (!IsExpression (expression))
-                throw new ArgumentException ("Iterate was not given a valid expression");
-
-            var match = Expression.Create (expression).Evaluate (dataSource, context);
-            foreach (var idxMatch in match) {
-                functor (idxMatch);
+            if (IsExpression (node.Value)) {
+                string exp = IsFormatted (node) ? FormatNode (node, dataSource, context) : node.Get<string> (context);
+                Iterate<T> (exp, dataSource, context, functor);
+            } else {
+                object value = IsFormatted (node) ? FormatNode (node, dataSource, context) : node.Value;
+                functor (Utilities.Convert<T> (value, context));
             }
         }
 
@@ -196,25 +233,60 @@ namespace phosphorus.expressions
                 functor (Utilities.Convert<T> (idxMatch.Value, context));
             }
         }
-        
+
         /// <summary>
-        /// will iterate node's value expression result, if node's value is an expression,
-        /// otherwise it will invoke your callback once for the value of node, converted
-        /// to type T
+        /// iterates through expression in node's value, with given node as datasource, and invokes functor
+        /// for every single match, passing in a MatchEntity, wrapping the match item
         /// </summary>
-        /// <param name="node">node to use</param>
+        /// <param name="node">node to use for expression and datasource</param>
         /// <param name="context">application context</param>
-        /// <param name="functor">delegate to invoke for the converted result</param>
-        /// <typeparam name="T">type to convert results to</typeparam>
-        public static void Iterate<T> (
+        /// <param name="functor">delegate invoked once for every single match</param>
+        public static void Iterate (
             Node node,
             ApplicationContext context,
-            IteratorCallback<T> functor)
+            IteratorCallback<MatchEntity> functor)
         {
-            if (IsExpression (node.Value)) {
-                Iterate<T> (node.Get<string> (context), node, context, functor);
-            } else {
-                functor (Utilities.Convert<T> (node.Value, context));
+            Iterate (node, node, context, functor);
+        }
+        
+        /// <summary>
+        /// iterates through expression in node's value, with dataSource as data source, and invokes functor
+        /// for every single match, passing in a MatchEntity, wrapping the match item
+        /// </summary>
+        /// <param name="node">node to use for expression</param>
+        /// <param name="dataSource">node to use as datasource</param>
+        /// <param name="context">application context</param>
+        /// <param name="functor">delegate invoked once for every single match</param>
+        public static void Iterate (
+            Node node,
+            Node dataSource,
+            ApplicationContext context,
+            IteratorCallback<MatchEntity> functor)
+        {
+            string exp = IsFormatted (node) ? FormatNode (node, dataSource, context) : node.Get<string> (context);
+            Iterate (exp, dataSource, context, functor);
+        }
+
+        /// <summary>
+        /// iterates through given expression, with given node as datasource, and invokes functor
+        /// for every single match, passing in a MatchEntity, wrapping the match item
+        /// </summary>
+        /// <param name="expression">expression</param>
+        /// <param name="dataSource">data source node to use for expression</param>
+        /// <param name="context">application context</param>
+        /// <param name="functor">delegate invoked once for every single match</param>
+        public static void Iterate (
+            string expression,
+            Node dataSource,
+            ApplicationContext context,
+            IteratorCallback<MatchEntity> functor)
+        {
+            if (!IsExpression (expression))
+                throw new ArgumentException ("Iterate was not given a valid expression");
+
+            var match = Expression.Create (expression).Evaluate (dataSource, context);
+            foreach (var idxMatch in match) {
+                functor (idxMatch);
             }
         }
 

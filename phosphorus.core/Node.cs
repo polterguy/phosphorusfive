@@ -31,7 +31,7 @@ namespace phosphorus.core
             public DNA (string value)
             {
                 _value = new List<int> ();
-                foreach (string idxInt in value.Split (new char[] { '-' })) {
+                foreach (string idxInt in value.Split (new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries)) {
                     _value.Add (int.Parse (idxInt));
                 }
             }

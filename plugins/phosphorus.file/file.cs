@@ -32,11 +32,13 @@ namespace phosphorus.file
             delegate (string idx) {
                 if (idx.StartsWith ("http://") || idx.StartsWith ("https://")) {
 
+                    // setting up some global settings
+                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3;
+                    ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
                     // HTTP web request, making sure settings are correct before we download file
                     HttpWebRequest request = WebRequest.Create (idx) as HttpWebRequest;
                     request.AllowAutoRedirect = true;
-                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3;
-                    ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
                     HttpWebResponse response = (HttpWebResponse)request.GetResponse ();
                     Encoding encoding = Encoding.GetEncoding (response.CharacterSet);
                     using (Stream stream = response.GetResponseStream ()) {
@@ -66,12 +68,31 @@ namespace phosphorus.file
         private static void pf_file_save (ApplicationContext context, ActiveEventArgs e)
         {
             string rootFolder = common.GetRootFolder (context);
-            XUtil.Iterate<string> (e.Args, context,
-            delegate (string idx) {
-                using (TextWriter writer = File.CreateText (rootFolder + idx)) {
-                    writer.Write (XUtil.Single<string> (e.Args.LastChild, context));
-                }
-            });
+            if (e.Args.LastChild.Name == "source") {
+
+                // static source
+                string source = XUtil.Single<string> (e.Args.LastChild, context);
+                XUtil.Iterate<string> (e.Args, context,
+                delegate (string idx) {
+                    using (TextWriter writer = File.CreateText (rootFolder + idx)) {
+                        writer.Write (source);
+                    }
+                });
+            } else if (e.Args.LastChild.Name == "rel-source") {
+
+                // relative source, postponing figuring out source until inside of iterator
+                XUtil.Iterate (e.Args.Get<string> (context), e.Args, context,
+                delegate (MatchEntity idx) {
+                    using (TextWriter writer = File.CreateText (rootFolder + idx.Value)) {
+
+                        // figuring out what to store inside of file
+                        string source = XUtil.Single<string> (e.Args.LastChild, idx.Node, context);
+                        writer.Write (source);
+                    }
+                });
+            } else {
+                throw new ArgumentException ("no [source] given to [pf.file.save]");
+            }
         }
 
         /// <summary>

@@ -61,7 +61,7 @@ namespace phosphorus.lambda
 
             // iterating through all destinations
             XUtil.Iterate (destinationExpression, node, context, 
-            delegate (Match.MatchEntity idxDestination) {
+            delegate (MatchEntity idxDestination) {
                 idxDestination.Value = source;
             });
         }
@@ -76,7 +76,7 @@ namespace phosphorus.lambda
 
             // iterating through all destinations, figuring out source relative to each destinations
             XUtil.Iterate (destinationExpression, node, context, 
-            delegate (Match.MatchEntity idxDestination) {
+            delegate (MatchEntity idxDestination) {
 
                 // figuring out source relative to destination, for then to update destination
                 var source = XUtil.Single<object> (sourceExpression, idxDestination.Node, context);

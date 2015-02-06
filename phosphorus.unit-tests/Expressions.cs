@@ -11,16 +11,21 @@ using phosphorus.expressions;
 
 namespace phosphorus.unittests
 {
+    /// <summary>
+    /// expressions unit tests, tests all sorts of different expressions
+    /// and verify they work as expected
+    /// </summary>
     [TestFixture]
-    public class Expressions
+    public class Expressions : TestBase
     {
-        private ApplicationContext _context;
-
         public Expressions ()
-        {
-            _context = Loader.Instance.CreateApplicationContext ();
-        }
+            : base ()
+        { }
 
+        /// <summary>
+        /// verifies that expressions are defined as such correctly
+        /// </summary>
+        /// <returns><c>true</c> if this instance is expression; otherwise, <c>false</c>.</returns>
         [Test]
         public void IsExpression ()
         {
@@ -30,61 +35,70 @@ namespace phosphorus.unittests
             Assert.AreEqual (true, isExp);
         }
 
+        /// <summary>
+        /// verifies a simple 'value' expression works correctly
+        /// </summary>
         [Test]
         public void ValueExpression ()
         {
-            Node node = new Node ("root")
-                .Add ("x", "success")
-                .Add ("y");
-            var match = Expression.Create ("@/*/x/?value").Evaluate (node, _context);
+            Node node = new Node ("root", "success");
+            var match = Expression.Create ("@?value").Evaluate (node, _context);
             Assert.AreEqual (1, match.Count);
             Assert.AreEqual ("success", match [0].Value);
         }
 
+        /// <summary>
+        /// verifies a simple 'name' expression works correctly
+        /// </summary>
         [Test]
         public void NameExpression ()
         {
-            Node node = new Node ("root")
-                .Add ("success")
-                .Add ("y");
-            var match = Expression.Create ("@/0/?name").Evaluate (node, _context);
+            Node node = new Node ("success");
+            var match = Expression.Create ("@?name").Evaluate (node, _context);
             Assert.AreEqual (match.Count, 1);
             Assert.AreEqual ("success", match [0].Value);
         }
-        
+
+        /// <summary>
+        /// verifies a simple 'count' expression works correctly
+        /// </summary>
         [Test]
         public void CountExpression ()
         {
-            Node node = new Node ("root")
-                .Add ("x")
-                .Add ("y");
-            var match = Expression.Create ("@/*/?count").Evaluate (node, _context);
-            Assert.AreEqual (2, match.Count);
+            Node node = new Node ("root");
+            var match = Expression.Create ("@?count").Evaluate (node, _context);
+            Assert.AreEqual (1, match.Count);
             Assert.AreEqual (Match.MatchType.count, match.TypeOfMatch);
         }
 
+        /// <summary>
+        /// verifies a simple 'path' expression works correctly
+        /// </summary>
         [Test]
         public void PathExpression ()
         {
-            Node node = new Node ("root")
-                .Add ("success")
-                .Add ("y");
-            var match = Expression.Create ("@/0/?path").Evaluate (node, _context);
+            Node node = new Node ("root");
+            var match = Expression.Create ("@?path").Evaluate (node, _context);
             Assert.AreEqual (1, match.Count);
-            Assert.AreEqual (new Node.DNA ("0"), match [0].Value);
+            Assert.AreEqual (new Node.DNA (""), match [0].Value);
         }
-        
+
+        /// <summary>
+        /// verifies a simple 'node' expression works correctly
+        /// </summary>
         [Test]
         public void NodeExpression ()
         {
-            Node node = new Node ("root")
-                .Add ("success")
-                .Add ("y");
-            var match = Expression.Create ("@/0/?node").Evaluate (node, _context);
+            Node node = new Node ("root");
+            var match = Expression.Create ("@?node").Evaluate (node, _context);
             Assert.AreEqual (1, match.Count);
-            Assert.AreEqual (node [0], match [0].Value);
+            Assert.AreEqual (node, match [0].Value);
         }
-        
+
+        /// <summary>
+        /// verifies IsFormatted from XUtil works corectly
+        /// </summary>
+        /// <returns><c>true</c> if this instance is formatted; otherwise, <c>false</c>.</returns>
         [Test]
         public void IsFormatted ()
         {
@@ -92,56 +106,141 @@ namespace phosphorus.unittests
                 .Add ("", "su")
                 .Add ("x", "error")
                 .Add ("", "ccess");
-            bool value = XUtil.IsFormatted (node);
-            Assert.AreEqual (true, value);
+            Assert.AreEqual (true, XUtil.IsFormatted (node));
 
             node = new Node ("root", "{0}{1}")
                 .Add ("x")
                 .Add ("y", "error")
                 .Add ("z");
-            value = XUtil.IsFormatted (node);
-            Assert.AreEqual (false, value);
+            Assert.AreEqual (false, XUtil.IsFormatted (node));
         }
-        
+
+        /// <summary>
+        /// verifies formatting a node using XUtil works correctly
+        /// </summary>
         [Test]
-        public void Format()
+        public void Format1 ()
         {
             Node node = new Node ("root", "{0}{1}")
                 .Add ("", "su")
                 .Add ("x", "error")
                 .Add ("", "ccess");
-            string value = XUtil.FormatNode (node, node, _context);
+            string value = XUtil.FormatNode (node, _context);
             Assert.AreEqual ("success", value);
         }
-        
+
+        /// <summary>
+        /// verifies formatting a node with an explicit data source node using XUtil works correctly
+        /// </summary>
         [Test]
-        public void FormatWithDataSource ()
+        public void Format2 ()
         {
-            Node node = new Node ("root", "{0}{1}")
+            Node node = new Node ("root", "{0}cc{1}")
                 .Add ("", "@/*/_first/?value")
                 .Add ("", "@/*/_second/?value")
                 .Add ("_source").LastChild
                     .Add ("_first", "su")
                     .Add ("x", "error")
-                    .Add ("_second", "ccess").Root;
+                    .Add ("_second", "ess").Root;
 
             // notice that data source node and formatting nodes are different here ...
             string value = XUtil.FormatNode (node, node [2], _context);
             Assert.AreEqual ("success", value);
         }
 
+        /// <summary>
+        /// verifies Single from XUtil works correctly
+        /// </summary>
         [Test]
-        public void Single ()
+        public void Single1 ()
         {
             Node node = new Node ("root")
                 .Add ("", "su")
-                .Add ("", "ccess");
+                .Add ("", "cc")
+                .Add ("", "ess");
             string value = XUtil.Single<string> ("@/*/?value", node, _context);
             Assert.AreEqual ("success", value);
         }
-        
+
+        /// <summary>
+        /// verifies Single from XUtil works correctly
+        /// </summary>
         [Test]
-        public void Iterate ()
+        public void Single2 ()
+        {
+            Node node = new Node ("root", "@/*/?value")
+                .Add ("", "su")
+                .Add ("", "cc")
+                .Add ("", "ess");
+            string value = XUtil.Single<string> (node, _context);
+            Assert.AreEqual ("success", value);
+        }
+
+        /// <summary>
+        /// verifies Single from XUtil works correctly
+        /// </summary>
+        [Test]
+        public void Single3 ()
+        {
+            Node node = new Node ("root", "success");
+            string value = XUtil.Single<string> (node, _context);
+            Assert.AreEqual ("success", value);
+        }
+
+        /// <summary>
+        /// verifies Single from XUtil works correctly
+        /// </summary>
+        [Test]
+        public void Single4 ()
+        {
+            Node node = new Node ("root", "{0}")
+                .Add ("", "@/0/?name").LastChild
+                    .Add ("success").Root;
+            string value = XUtil.Single<string> (node, node [0], _context);
+            Assert.AreEqual ("success", value);
+        }
+
+        /// <summary>
+        /// verifies Single from XUtil works correctly
+        /// </summary>
+        [Test]
+        public void Single5 ()
+        {
+            Node node = new Node ("root", "{0}")
+                .Add ("", "success");
+            string value = XUtil.Single<string> (node, node [0], _context);
+            Assert.AreEqual ("success", value);
+        }
+
+        /// <summary>
+        /// verifies Single from XUtil works correctly
+        /// </summary>
+        [Test]
+        public void Single6 ()
+        {
+            Node node = new Node ("root", "{0}")
+                .Add ("", "success");
+            string value = XUtil.Single<string> (node, _context);
+            Assert.AreEqual ("success", value);
+        }
+
+        /// <summary>
+        /// verifies Single from XUtil works correctly
+        /// </summary>
+        [Test]
+        public void Single7 ()
+        {
+            Node node = new Node ("root", "success")
+                .Add ("", "error");
+            string value = XUtil.Single<string> (node, node [0], _context);
+            Assert.AreEqual ("success", value);
+        }
+
+        /// <summary>
+        /// verifies Iterate from XUtil works correctly
+        /// </summary>
+        [Test]
+        public void Iterate1 ()
         {
             Node node = new Node ("root")
                 .Add ("", "su")
@@ -155,6 +254,60 @@ namespace phosphorus.unittests
             Assert.AreEqual ("success", value);
         }
 
+        /// <summary>
+        /// verifies Iterate from XUtil works correctly
+        /// </summary>
+        [Test]
+        public void Iterate2 ()
+        {
+            Node node = new Node ("root", "@/*/?value")
+                .Add ("", "su")
+                .Add ("", "cc")
+                .Add ("", "ess");
+            string value = null;
+            XUtil.Iterate<string> (node, _context, 
+            delegate (string idx) {
+                value += idx;
+            });
+            Assert.AreEqual ("success", value);
+        }
+
+        /// <summary>
+        /// verifies Iterate from XUtil works correctly
+        /// </summary>
+        [Test]
+        public void Iterate3 ()
+        {
+            Node node = new Node ("root", "success")
+                .Add ("", "error");
+            string value = null;
+            XUtil.Iterate<string> (node, _context, 
+            delegate (string idx) {
+                value += idx;
+            });
+            Assert.AreEqual ("success", value);
+        }
+
+        /// <summary>
+        /// verifies Iterate from XUtil works correctly
+        /// </summary>
+        [Test]
+        public void Iterate4 ()
+        {
+            Node node = new Node ("root", "@{0}/?value")
+                .Add ("", "@/0/?name").LastChild
+                    .Add ("/0", "success").Root;
+            string value = null;
+            XUtil.Iterate<string> (node, node [0], _context, 
+            delegate (string idx) {
+                value += idx;
+            });
+            Assert.AreEqual ("success", value);
+        }
+
+        /// <summary>
+        /// verifies root expressions works correctly
+        /// </summary>
         [Test]
         public void RootExpression()
         {
@@ -164,6 +317,9 @@ namespace phosphorus.unittests
             Assert.AreEqual ("success", value);
         }
         
+        /// <summary>
+        /// verifies children retrieval expressions works correctly
+        /// </summary>
         [Test]
         public void ChildrenExpression()
         {
@@ -174,6 +330,9 @@ namespace phosphorus.unittests
             Assert.AreEqual ("success", value);
         }
         
+        /// <summary>
+        /// verifies descendants retrieval expressions works correctly
+        /// </summary>
         [Test]
         public void DescendantsExpression()
         {
@@ -186,6 +345,9 @@ namespace phosphorus.unittests
             Assert.AreEqual ("success", value);
         }
         
+        /// <summary>
+        /// verifies retrieve ancestor expressions works correctly
+        /// </summary>
         [Test]
         public void AncestorExpression()
         {
@@ -200,6 +362,9 @@ namespace phosphorus.unittests
             Assert.AreEqual ("success", value);
         }
         
+        /// <summary>
+        /// verifies retrieve sibling expressions works correctly
+        /// </summary>
         [Test]
         public void SiblingExpressions()
         {
@@ -230,6 +395,9 @@ namespace phosphorus.unittests
             Assert.AreEqual ("success", value);
         }
         
+        /// <summary>
+        /// verifies named expressions works correctly
+        /// </summary>
         [Test]
         public void NameEqualsExpression ()
         {
@@ -240,6 +408,9 @@ namespace phosphorus.unittests
             Assert.AreEqual ("success", value);
         }
         
+        /// <summary>
+        /// verifies valued expressions works correctly
+        /// </summary>
         [Test]
         public void ValueEqualsExpression ()
         {
@@ -250,6 +421,9 @@ namespace phosphorus.unittests
             Assert.AreEqual ("success", value);
         }
         
+        /// <summary>
+        /// verifies numbered child expressions works correctly
+        /// </summary>
         [Test]
         public void NumberedExpression ()
         {
@@ -260,6 +434,9 @@ namespace phosphorus.unittests
             Assert.AreEqual ("success", value);
         }
         
+        /// <summary>
+        /// verifies range expressions works correctly
+        /// </summary>
         [Test]
         public void RangeExpression ()
         {
@@ -292,6 +469,9 @@ namespace phosphorus.unittests
             Assert.AreEqual ("success", value);
         }
         
+        /// <summary>
+        /// verifies retrieve reference node expressions works correctly
+        /// </summary>
         [Test]
         public void ReferenceExpression ()
         {
@@ -302,6 +482,9 @@ namespace phosphorus.unittests
             Assert.AreEqual ("success", value);
         }
         
+        /// <summary>
+        /// verifies retrieve parent expressions works correctly
+        /// </summary>
         [Test]
         public void ParentExpression ()
         {
@@ -312,6 +495,9 @@ namespace phosphorus.unittests
             Assert.AreEqual ("success", value);
         }
         
+        /// <summary>
+        /// verifies named regex expressions works correctly
+        /// </summary>
         [Test]
         public void NamedRegexExpression ()
         {
@@ -322,6 +508,9 @@ namespace phosphorus.unittests
             Assert.AreEqual ("success", value);
         }
         
+        /// <summary>
+        /// verifies valued regex expressions works correctly
+        /// </summary>
         [Test]
         public void ValuedRegexExpression ()
         {
@@ -332,6 +521,9 @@ namespace phosphorus.unittests
             Assert.AreEqual ("success", value);
         }
         
+        /// <summary>
+        /// verifies modulo expressions works correctly
+        /// </summary>
         [Test]
         public void ModuloExpression ()
         {
@@ -343,6 +535,9 @@ namespace phosphorus.unittests
             Assert.AreEqual ("success", value);
         }
         
+        /// <summary>
+        /// verifies left shift expressions works correctly
+        /// </summary>
         [Test]
         public void LeftShiftExpression ()
         {
@@ -354,6 +549,9 @@ namespace phosphorus.unittests
             Assert.AreEqual ("success", value);
         }
         
+        /// <summary>
+        /// verifies right shift expressions works correctly
+        /// </summary>
         [Test]
         public void RightShiftExpression ()
         {
@@ -364,6 +562,9 @@ namespace phosphorus.unittests
             Assert.AreEqual ("success", value);
         }
         
+        /// <summary>
+        /// verifies logical or expressions works correctly
+        /// </summary>
         [Test]
         public void OrExpression ()
         {
@@ -374,6 +575,9 @@ namespace phosphorus.unittests
             Assert.AreEqual ("success", value);
         }
         
+        /// <summary>
+        /// verifies logical and expressions works correctly
+        /// </summary>
         [Test]
         public void AndExpression ()
         {
@@ -384,6 +588,9 @@ namespace phosphorus.unittests
             Assert.AreEqual ("success", value);
         }
         
+        /// <summary>
+        /// verifies logical xor expressions works correctly
+        /// </summary>
         [Test]
         public void XorExpression ()
         {
@@ -395,6 +602,9 @@ namespace phosphorus.unittests
             Assert.AreEqual ("success", value);
         }
         
+        /// <summary>
+        /// verifies logical not expressions works correctly
+        /// </summary>
         [Test]
         public void NotExpression ()
         {
@@ -406,6 +616,9 @@ namespace phosphorus.unittests
             Assert.AreEqual ("success", value);
         }
         
+        /// <summary>
+        /// verifies expressions handles precedence correctly
+        /// </summary>
         [Test]
         public void PrecedenceExpression ()
         {
@@ -417,6 +630,9 @@ namespace phosphorus.unittests
             Assert.AreEqual ("success", value);
         }
         
+        /// <summary>
+        /// verifies expressions handles orders of logical components correctly
+        /// </summary>
         [Test]
         public void OrderedExpression ()
         {
@@ -428,6 +644,9 @@ namespace phosphorus.unittests
             Assert.AreEqual ("success", value);
         }
         
+        /// <summary>
+        /// verifies it is possible to create a multiline expression
+        /// </summary>
         [Test]
         public void MultilineExpression ()
         {
@@ -439,6 +658,9 @@ namespace phosphorus.unittests
             Assert.AreEqual ("success", value);
         }
         
+        /// <summary>
+        /// verifies creating expressions referencing other expressions works correctly
+        /// </summary>
         [Test]
         public void ReferencedExpression ()
         {

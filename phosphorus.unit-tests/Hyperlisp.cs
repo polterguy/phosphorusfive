@@ -10,18 +10,19 @@ using phosphorus.core;
 
 namespace phosphorus.unittests
 {
+    /// <summary>
+    /// unit tests for tesing Hyperlisp parser
+    /// </summary>
     [TestFixture]
-    public class Hyperlisp
+    public class Hyperlisp : TestBase
     {
-        private ApplicationContext _context;
-
         public Hyperlisp ()
-        {
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.types");
-            _context = Loader.Instance.CreateApplicationContext ();
-        }
+            : base ("phosphorus.hyperlisp", "phosphorus.types")
+        { }
 
+        /// <summary>
+        /// parses simple name/value Hyperlisp
+        /// </summary>
         [Test]
         public void ParseHyperlisp1 ()
         {
@@ -31,6 +32,9 @@ namespace phosphorus.unittests
             Assert.AreEqual ("y", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
         }
 
+        /// <summary>
+        /// parses name/value Hyperlisp with lots of spacing in front and at end
+        /// </summary>
         [Test]
         public void ParseHyperlisp2 ()
         {
@@ -45,6 +49,9 @@ x:y
             Assert.AreEqual ("y", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
         }
 
+        /// <summary>
+        /// parses Hyperlisp where there's no name but only value
+        /// </summary>
         [Test]
         public void ParseHyperlisp3 ()
         {
@@ -54,6 +61,9 @@ x:y
             Assert.AreEqual ("y", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
         }
         
+        /// <summary>
+        /// parses Hyperlisp where there's no name but only value prepended by some spacing
+        /// </summary>
         [Test]
         public void ParseHyperlisp4 ()
         {
@@ -65,6 +75,9 @@ x:y
             Assert.AreEqual ("y", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
         }
 
+        /// <summary>
+        /// parses Hyperlisp where value is a string literal
+        /// </summary>
         [Test]
         public void ParseHyperlisp5 ()
         {
@@ -74,6 +87,9 @@ x:y
             Assert.AreEqual ("y", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
         }
 
+        /// <summary>
+        /// parses Hyperlisp where value is a string literal containing CR/LF
+        /// </summary>
         [Test]
         public void ParseHyperlisp6 ()
         {
@@ -83,6 +99,9 @@ x:y
             Assert.AreEqual ("\r\ny\\\r\n\"", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
         }
 
+        /// <summary>
+        /// parses Hyperlisp where value is a multiline string literal
+        /// </summary>
         [Test]
         public void ParseHyperlisp7 ()
         {
@@ -92,6 +111,10 @@ x:y
             Assert.AreEqual ("y", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
         }
 
+        /// <summary>
+        /// parses Hyperlisp where value is a multilinbe string literal containing CR/LF, CR and
+        /// so on in different configurations
+        /// </summary>
         [Test]
         public void ParseHyperlisp8 ()
         {
@@ -102,6 +125,9 @@ jumbo""""howdy\r\n{0}""", "\n");
             Assert.AreEqual ("mumbo\r\njumbo\"howdy\\r\\n\r\n", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
         }
 
+        /// <summary>
+        /// parses Hyperlisp where value is an empty string literal
+        /// </summary>
         [Test]
         public void ParseHyperlisp9 ()
         {
@@ -111,6 +137,9 @@ jumbo""""howdy\r\n{0}""", "\n");
             Assert.AreEqual ("", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
         }
 
+        /// <summary>
+        /// parses Hyperlisp where value is an empty multiline string literal
+        /// </summary>
         [Test]
         public void ParseHyperlisp10 ()
         {
@@ -120,6 +149,9 @@ jumbo""""howdy\r\n{0}""", "\n");
             Assert.AreEqual ("", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
         }
 
+        /// <summary>
+        /// parses Hyperlisp containing a lot of different types
+        /// </summary>
         [Test]
         public void ParseHyperlisp11 ()
         {
@@ -175,6 +207,9 @@ _time:time:""15.23:57:53.567""";
             Assert.AreEqual (new TimeSpan (15, 23, 57, 53, 567), tmp [21].Value, "wrong value of node after parsing of hyperlisp");
         }
         
+        /// <summary>
+        /// parses Hyperlisp where value is a blob (byte[])
+        /// </summary>
         [Test]
         public void ParseHyperlisp12 ()
         {
@@ -186,93 +221,10 @@ _time:time:""15.23:57:53.567""";
             _context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             Assert.AreEqual (new byte [] { 134, 254, 12 }, tmp [0].Value, "wrong value of node after parsing of hyperlisp");
         }
-
-        [Test]
-        [ExpectedException]
-        public void SyntaxError1 ()
-        {
-            Node tmp = new Node (string.Empty, " x:y"); // one space before token
-            _context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-        }
         
-        [Test]
-        [ExpectedException]
-        public void SyntaxError2 ()
-        {
-            Node tmp = new Node (string.Empty, @"x:y
- z:q"); // only one space when opening children collection
-            _context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-        }
-        
-        [Test]
-        [ExpectedException]
-        public void SyntaxError3 ()
-        {
-            Node tmp = new Node (string.Empty, @"x:y
-   z:q"); // three spaces when opening children collection
-            _context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-        }
-
-        [Test]
-        [ExpectedException]
-        public void SyntaxError4 ()
-        {
-            Node tmp = new Node (string.Empty, "z:\"howdy"); // open string literal
-            _context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-        }
-        
-        [Test]
-        [ExpectedException]
-        public void SyntaxError5 ()
-        {
-            Node tmp = new Node (string.Empty, @"z:"""); // empty and open string literal
-            _context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-        }
-        
-        [Test]
-        [ExpectedException]
-        public void SyntaxError6 ()
-        {
-            Node tmp = new Node (string.Empty, @"z:@"""); // empty and open multiline string literal
-            _context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-        }
-        
-        [Test]
-        [ExpectedException]
-        public void SyntaxError7 ()
-        {
-            Node tmp = new Node (string.Empty, @"z:@""howdy"); // open multiline string literal
-            _context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-        }
-        
-        [Test]
-        [ExpectedException]
-        public void SyntaxError8 ()
-        {
-            Node tmp = new Node (string.Empty, @"z:@""howdy
-qwertyuiop
-                    "); // open multiline string literal
-            _context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-        }
-        
-        [Test]
-        [ExpectedException]
-        public void SyntaxError9 ()
-        {
-            Node tmp = new Node (string.Empty, @"z:node:@""howdy:x
- f:g"""); // syntax error in hyperlisp node content, only one space while opening child collection of "howdy" node
-            _context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-        }
-        
-        [Test]
-        [ExpectedException]
-        public void SyntaxError10 ()
-        {
-            Node tmp = new Node (string.Empty, @"z:node:@""howdy:x
-f:g"""); // logical error in hyperlisp node content, multiple "root" nodes
-            _context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-        }
-
+        /// <summary>
+        /// parses Hyperlisp containing one empty comment and no nodes
+        /// </summary>
         [Test]
         public void ParseComment1 ()
         {
@@ -281,6 +233,9 @@ f:g"""); // logical error in hyperlisp node content, multiple "root" nodes
             Assert.AreEqual (0, tmp.Count, "wrong value of node after parsing of hyperlisp");
         }
 
+        /// <summary>
+        /// parses Hyperlisp containing one comment and no nodes
+        /// </summary>
         [Test]
         public void ParseComment2 ()
         {
@@ -289,6 +244,9 @@ f:g"""); // logical error in hyperlisp node content, multiple "root" nodes
             Assert.AreEqual (0, tmp.Count, "wrong value of node after parsing of hyperlisp");
         }
 
+        /// <summary>
+        /// parses Hyperlisp containing one empty multi line comment and no nodes
+        /// </summary>
         [Test]
         public void ParseComment3 ()
         {
@@ -297,6 +255,9 @@ f:g"""); // logical error in hyperlisp node content, multiple "root" nodes
             Assert.AreEqual (0, tmp.Count, "wrong value of node after parsing of hyperlisp");
         }
 
+        /// <summary>
+        /// parses Hyperlisp containing one multi line comment and no nodes
+        /// </summary>
         [Test]
         public void ParseComment4 ()
         {
@@ -305,6 +266,9 @@ f:g"""); // logical error in hyperlisp node content, multiple "root" nodes
             Assert.AreEqual (0, tmp.Count, "wrong value of node after parsing of hyperlisp");
         }
 
+        /// <summary>
+        /// parses Hyperlisp containing one multi line comment with multiple lines and no nodes
+        /// </summary>
         [Test]
         public void ParseComment5 ()
         {
@@ -316,6 +280,9 @@ comment
             Assert.AreEqual (0, tmp.Count, "wrong value of node after parsing of hyperlisp");
         }
 
+        /// <summary>
+        /// parses Hyperlisp containing several different types of comments and some nodes
+        /// </summary>
         [Test]
         public void ParseComment6 ()
         {
@@ -325,6 +292,122 @@ jo:dude
 hello");
             _context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             Assert.AreEqual (2, tmp.Count, "wrong value of node after parsing of hyperlisp");
+        }
+
+        /// <summary>
+        /// parses Hyperlisp where there is one space too much in front of name
+        /// </summary>
+        [Test]
+        [ExpectedException]
+        public void SyntaxError1 ()
+        {
+            Node tmp = new Node (string.Empty, " x:y"); // one space before token
+            _context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
+        }
+        
+        /// <summary>
+        /// parses Hyperlisp where there is one space too much in front of name
+        /// </summary>
+        [Test]
+        [ExpectedException]
+        public void SyntaxError2 ()
+        {
+            Node tmp = new Node (string.Empty, @"x:y
+ z:q"); // only one space when opening children collection
+            _context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
+        }
+        
+        /// <summary>
+        /// parses Hyperlisp where there is three spaces too much in front of name
+        /// </summary>
+        [Test]
+        [ExpectedException]
+        public void SyntaxError3 ()
+        {
+            Node tmp = new Node (string.Empty, @"x:y
+   z:q"); // three spaces when opening children collection
+            _context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
+        }
+
+        /// <summary>
+        /// parses Hyperlisp where there is an open string literal
+        /// </summary>
+        [Test]
+        [ExpectedException]
+        public void SyntaxError4 ()
+        {
+            Node tmp = new Node (string.Empty, "z:\"howdy"); // open string literal
+            _context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
+        }
+        
+        /// <summary>
+        /// parses Hyperlisp where there is an empty open string literal
+        /// </summary>
+        [Test]
+        [ExpectedException]
+        public void SyntaxError5 ()
+        {
+            Node tmp = new Node (string.Empty, @"z:"""); // empty and open string literal
+            _context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
+        }
+        
+        /// <summary>
+        /// parses Hyperlisp where there is an empty open multiline string literal
+        /// </summary>
+        [Test]
+        [ExpectedException]
+        public void SyntaxError6 ()
+        {
+            Node tmp = new Node (string.Empty, @"z:@"""); // empty and open multiline string literal
+            _context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
+        }
+        
+        /// <summary>
+        /// parses Hyperlisp where there is an open multiline string literal
+        /// </summary>
+        [Test]
+        [ExpectedException]
+        public void SyntaxError7 ()
+        {
+            Node tmp = new Node (string.Empty, @"z:@""howdy"); // open multiline string literal
+            _context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
+        }
+        
+        /// <summary>
+        /// parses Hyperlisp where there is an open multiline string literal on multiple lines
+        /// </summary>
+        [Test]
+        [ExpectedException]
+        public void SyntaxError8 ()
+        {
+            Node tmp = new Node (string.Empty, @"z:@""howdy
+qwertyuiop
+                    "); // open multiline string literal
+            _context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
+        }
+        
+        /// <summary>
+        /// parses Hyperlisp where there is a space too much in reference node value
+        /// </summary>
+        [Test]
+        [ExpectedException]
+        public void SyntaxError9 ()
+        {
+            Node tmp = new Node (string.Empty, @"z:node:@""howdy:x
+ f:g"""); // syntax error in hyperlisp node content, only one space while opening child collection of "howdy" node
+            _context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
+        }
+        
+        /// <summary>
+        /// parses Hyperlisp where there are two root nodes in value of node being reference node
+        /// </summary>
+        [Test]
+        [ExpectedException]
+        public void SyntaxError10 ()
+        {
+            Node tmp = new Node (string.Empty, @"z:node:@""howdy:x
+f:g"""); // logical error in hyperlisp node content, multiple "root" nodes
+            _context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
         }
     }
 }
