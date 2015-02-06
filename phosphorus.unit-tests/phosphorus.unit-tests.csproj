@@ -71,6 +71,7 @@
     <Compile Include="Hyperlisp.cs" />
     <Compile Include="Files.cs" />
     <Compile Include="TestBase.cs" />
+    <Compile Include="Folders.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

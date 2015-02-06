@@ -732,6 +732,9 @@ namespace phosphorus.unittests
             Assert.AreEqual ("success", value);
         }
 
+        /// <summary>
+        /// converts a Node to its string representation
+        /// </summary>
         [Test]
         public void Convert1 ()
         {
@@ -740,13 +743,36 @@ namespace phosphorus.unittests
             string value = Utilities.Convert<string> (node, _context);
             Assert.AreEqual ("root\r\n  foo:int:5", value);
         }
-        
+
+        /// <summary>
+        /// converts a DateTime to its Hyperlisp string representation
+        /// </summary>
         [Test]
         public void Convert2 ()
         {
             DateTime date = new DateTime (2015, 01, 22, 23, 59, 59);
             string value = Utilities.Convert<string> (date, _context);
             Assert.AreEqual ("2015-01-22T23:59:59", value);
+        }
+
+        /// <summary>
+        /// converts a Node without "phosphorus.types" loaded into the ApplicationContext
+        /// </summary>
+        [Test]
+        public void Convert3 ()
+        {
+            Loader.Instance.UnloadAssembly ("phosphorus.types");
+            _context = Loader.Instance.CreateApplicationContext ();
+            try {
+                Node node = new Node ("root")
+                    .Add ("foo", 5);
+                string value = Utilities.Convert<string> (node, _context);
+                Assert.AreEqual ("Name=root, Count=1", value);
+            }
+            finally {
+                Loader.Instance.LoadAssembly ("phosphorus.types");
+                _context = Loader.Instance.CreateApplicationContext ();
+            }
         }
     }
 }
