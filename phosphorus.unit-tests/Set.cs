@@ -520,7 +520,7 @@ namespace phosphorus.unittests
         
         /// <summary>
         /// verifies [set] works when destination is node,
-        /// and source is relative expression
+        /// and source is relative expression, where source is child of destination
         /// </summary>
         [Test]
         public void Set28 ()
@@ -536,8 +536,10 @@ namespace phosphorus.unittests
             _context.Raise ("set", node [1]);
 
             // verifying [set] works as it should
+            Assert.AreEqual (0, node [0] [0].Count);
             Assert.AreEqual ("_1", node [0] [0].Name);
             Assert.AreEqual ("success1", node [0] [0].Value);
+            Assert.AreEqual (0, node [0] [1].Count);
             Assert.AreEqual ("_2", node [0] [1].Name);
             Assert.AreEqual ("success2", node [0] [1].Value);
         }
@@ -586,7 +588,8 @@ namespace phosphorus.unittests
                     .Add(string.Empty, "-")
                     .Add ("rel-source", "@/{0}/{1}/?node").LastChild
                         .Add(string.Empty, "*")
-                        .Add(string.Empty, "@?name").Root;
+                        .Add(string.Empty, "@?{0}").LastChild
+                            .Add(string.Empty, "name").Root; // recursive formatting expression
             _context.Raise ("set", node [1]);
 
             // verifying [set] works as it should
@@ -594,6 +597,111 @@ namespace phosphorus.unittests
             Assert.AreEqual ("success1", node [0] [0].Value);
             Assert.AreEqual ("success2", node [0] [1].Value);
         }
-        // TODO: [rel-source], and syntax error unit tests
+        
+        /// <summary>
+        /// verifies [set] works when destination is node,
+        /// and source is relative expression, where source is parent of destination
+        /// </summary>
+        [Test]
+        public void Set32 ()
+        {
+            Node node = new Node ()
+                .Add ("_data").LastChild
+                    .Add("success1").LastChild
+                        .Add("success11").Parent
+                    .Add("success2").LastChild
+                        .Add("success21").Parent.Parent
+                .Add ("set", "@/-/*/*/?node").LastChild
+                    .Add ("rel-source", "@/./?node").Root;
+            _context.Raise ("set", node [1]);
+
+            // verifying [set] works as it should
+            Assert.AreEqual ("success1", node [0] [0].Name);
+            Assert.AreEqual ("success1", node [0] [0] [0].Name);
+            Assert.AreEqual ("success11", node [0] [0] [0] [0].Name);
+            Assert.AreEqual ("success2", node [0] [1].Name);
+            Assert.AreEqual ("success2", node [0] [1] [0].Name);
+            Assert.AreEqual ("success21", node [0] [1] [0] [0].Name);
+        }
+        
+        /// <summary>
+        /// verifies [set] works when destination is node,
+        /// and source is relative expression, leading to a string, which should
+        /// be converted into a node
+        /// </summary>
+        [Test]
+        public void Set33 ()
+        {
+            // since we're converting from string to node, we'll need these buggers
+            Loader.Instance.LoadAssembly ("phosphorus.types");
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            _context = Loader.Instance.CreateApplicationContext ();
+
+            try {
+                Node node = new Node ()
+                    .Add ("_data").LastChild
+                        .Add("success1").LastChild
+                            .Add("_val1:success1").Parent
+                        .Add("success2").LastChild
+                            .Add("_val2:success2").Parent.Parent
+                    .Add ("set", "@/-/*/?node").LastChild
+                        .Add ("rel-source", "@/0/?name").Root;
+                _context.Raise ("set", node [1]);
+
+                // verifying [set] works as it should
+                Assert.AreEqual (2, node [0].Count);
+                Assert.AreEqual (0, node [0] [0].Count);
+                Assert.AreEqual ("_val1", node [0] [0].Name);
+                Assert.AreEqual ("success1", node [0] [0].Value);
+                Assert.AreEqual (0, node [0] [1].Count);
+                Assert.AreEqual ("_val2", node [0] [1].Name);
+                Assert.AreEqual ("success2", node [0] [1].Value);
+            } finally {
+
+                // making sure we "unload" our extra assemblies here
+                Loader.Instance.UnloadAssembly ("phosphorus.types");
+                Loader.Instance.UnloadAssembly ("phosphorus.hyperlisp");
+                _context = Loader.Instance.CreateApplicationContext ();
+            }
+        }
+        
+        /// <summary>
+        /// verifies [set] works when destination is name,
+        /// and source is relative expression, leading to a node, which should
+        /// be converted into a string
+        /// </summary>
+        [Test]
+        public void Set34 ()
+        {
+            // since we're converting from node to string, we'll need these buggers
+            Loader.Instance.LoadAssembly ("phosphorus.types");
+            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
+            _context = Loader.Instance.CreateApplicationContext ();
+
+            try {
+                Node node = new Node ()
+                    .Add ("_data").LastChild
+                        .Add("success1").LastChild
+                            .Add("foo1", 5).Parent
+                        .Add("success2").LastChild
+                            .Add("foo2").Parent.Parent
+                    .Add ("set", "@/-/*/?name").LastChild
+                        .Add ("rel-source", "@?node").Root;
+                _context.Raise ("set", node [1]);
+
+                // verifying [set] works as it should
+                Assert.AreEqual (2, node [0].Count);
+                Assert.AreEqual (1, node [0] [0].Count); // making sure source is still around
+                Assert.AreEqual ("success1\r\n  foo1:int:5", node [0] [0].Name);
+                Assert.AreEqual (1, node [0] [1].Count); // making sure source is still around
+                Assert.AreEqual ("success2\r\n  foo2", node [0] [1].Name);
+            } finally {
+
+                // making sure we "unload" our extra assemblies here
+                Loader.Instance.UnloadAssembly ("phosphorus.types");
+                Loader.Instance.UnloadAssembly ("phosphorus.hyperlisp");
+                _context = Loader.Instance.CreateApplicationContext ();
+            }
+        }
     }
 }

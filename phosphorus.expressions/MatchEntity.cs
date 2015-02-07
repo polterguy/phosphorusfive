@@ -75,7 +75,7 @@ namespace phosphorus.expressions
                     if (value == null)
                         Node.UnTie ();
                     else
-                        Node.Replace (Utilities.Convert<Node> (value, _match.Context));
+                        Node.Replace (Utilities.Convert<Node> (value, _match.Context).Clone ());
                     break;
                 default:
                     throw new ArgumentException ("cannot get indexed value from match of type 'count'");

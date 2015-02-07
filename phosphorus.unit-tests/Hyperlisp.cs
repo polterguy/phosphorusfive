@@ -299,7 +299,7 @@ hello");
         /// </summary>
         [Test]
         [ExpectedException]
-        public void SyntaxError1 ()
+        public void SyntaxError01 ()
         {
             Node tmp = new Node (string.Empty, " x:y"); // one space before token
             _context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
@@ -310,7 +310,7 @@ hello");
         /// </summary>
         [Test]
         [ExpectedException]
-        public void SyntaxError2 ()
+        public void SyntaxError02 ()
         {
             Node tmp = new Node (string.Empty, @"x:y
  z:q"); // only one space when opening children collection
@@ -322,7 +322,7 @@ hello");
         /// </summary>
         [Test]
         [ExpectedException]
-        public void SyntaxError3 ()
+        public void SyntaxError03 ()
         {
             Node tmp = new Node (string.Empty, @"x:y
    z:q"); // three spaces when opening children collection
@@ -334,7 +334,7 @@ hello");
         /// </summary>
         [Test]
         [ExpectedException]
-        public void SyntaxError4 ()
+        public void SyntaxError04 ()
         {
             Node tmp = new Node (string.Empty, "z:\"howdy"); // open string literal
             _context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
@@ -345,7 +345,7 @@ hello");
         /// </summary>
         [Test]
         [ExpectedException]
-        public void SyntaxError5 ()
+        public void SyntaxError05 ()
         {
             Node tmp = new Node (string.Empty, @"z:"""); // empty and open string literal
             _context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
@@ -356,7 +356,7 @@ hello");
         /// </summary>
         [Test]
         [ExpectedException]
-        public void SyntaxError6 ()
+        public void SyntaxError06 ()
         {
             Node tmp = new Node (string.Empty, @"z:@"""); // empty and open multiline string literal
             _context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
@@ -367,7 +367,7 @@ hello");
         /// </summary>
         [Test]
         [ExpectedException]
-        public void SyntaxError7 ()
+        public void SyntaxError07 ()
         {
             Node tmp = new Node (string.Empty, @"z:@""howdy"); // open multiline string literal
             _context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
@@ -378,7 +378,7 @@ hello");
         /// </summary>
         [Test]
         [ExpectedException]
-        public void SyntaxError8 ()
+        public void SyntaxError08 ()
         {
             Node tmp = new Node (string.Empty, @"z:@""howdy
 qwertyuiop
@@ -391,7 +391,7 @@ qwertyuiop
         /// </summary>
         [Test]
         [ExpectedException]
-        public void SyntaxError9 ()
+        public void SyntaxError09 ()
         {
             Node tmp = new Node (string.Empty, @"z:node:@""howdy:x
  f:g"""); // syntax error in hyperlisp node content, only one space while opening child collection of "howdy" node
