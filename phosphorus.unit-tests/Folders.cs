@@ -482,5 +482,133 @@ namespace phosphorus.unittests
             Assert.AreEqual ("test1/xxx", node [1].Value);
             Assert.AreEqual ("test1/yyy", node [2].Value);
         }
+
+        /// <summary>
+        /// verifies [pf.folder.remove] works as it should
+        /// </summary>
+        [Test]
+        public void Remove1 ()
+        {
+            // creating directory to remove
+            if (!Directory.Exists (GetBasePath () + "test1")) {
+                Directory.CreateDirectory (GetBasePath () + "test1");
+            }
+
+            // removing directory using "phosphorus.file"
+            Node node = new Node (string.Empty, "test1");
+            _context.Raise ("pf.folder.remove", node);
+
+            // verifying remove works as it should
+            Assert.AreEqual (false, Directory.Exists (GetBasePath () + "test1"));
+            Assert.AreEqual (true, node [0].Value);
+            Assert.AreEqual ("test1", node [0].Name);
+        }
+
+        /// <summary>
+        /// verifies [pf.folder.remove] works as it should
+        /// </summary>
+        [Test]
+        public void Remove2 ()
+        {
+            // creating directory to remove
+            if (!Directory.Exists (GetBasePath () + "test1")) {
+                Directory.CreateDirectory (GetBasePath () + "test1");
+
+                // creating a file within directory, to verify remove removes recursively
+                Node createFile = new Node (string.Empty, "test1/test1.txt")
+                    .Add ("source", "this is a test");
+                _context.Raise ("pf.file.save", createFile);
+            }
+
+            // removing directory using "phosphorus.file"
+            Node node = new Node (string.Empty, "test1");
+            _context.Raise ("pf.folder.remove", node);
+
+            // verifying remove works as it should
+            Assert.AreEqual (false, Directory.Exists (GetBasePath () + "test1"));
+            Assert.AreEqual (true, node [0].Value);
+            Assert.AreEqual ("test1", node [0].Name);
+        }
+        
+        /// <summary>
+        /// verifies [pf.folder.remove] works as it should
+        /// </summary>
+        [Test]
+        public void RemoveExpression1 ()
+        {
+            // creating directories to remove
+            if (!Directory.Exists (GetBasePath () + "test1")) {
+                Directory.CreateDirectory (GetBasePath () + "test1");
+            }
+            if (!Directory.Exists (GetBasePath () + "test2")) {
+                Directory.CreateDirectory (GetBasePath () + "test2");
+            }
+
+            // removing directory using "phosphorus.file"
+            Node node = new Node (string.Empty, "@/*/?name")
+                .Add ("test1")
+                .Add ("test2");
+            _context.Raise ("pf.folder.remove", node);
+
+            // verifying remove works as it should
+            Assert.AreEqual (false, Directory.Exists (GetBasePath () + "test1"));
+            Assert.AreEqual (false, Directory.Exists (GetBasePath () + "test2"));
+            Assert.AreEqual (true, node [2].Value);
+            Assert.AreEqual ("test1", node [2].Name);
+            Assert.AreEqual (true, node [3].Value);
+            Assert.AreEqual ("test2", node [3].Name);
+        }
+        
+        /// <summary>
+        /// verifies [pf.folder.remove] works as it should
+        /// </summary>
+        [Test]
+        public void RemoveExpression2 ()
+        {
+            // creating directories to remove
+            if (!Directory.Exists (GetBasePath () + "test1")) {
+                Directory.CreateDirectory (GetBasePath () + "test1");
+            }
+            if (!Directory.Exists (GetBasePath () + "test2")) {
+                Directory.CreateDirectory (GetBasePath () + "test2");
+            }
+
+            // removing directory using "phosphorus.file"
+            Node node = new Node (string.Empty, "@/*/!/*//?{0}")
+                .Add (string.Empty, "name")
+                .Add ("test1")
+                .Add ("test2");
+            _context.Raise ("pf.folder.remove", node);
+
+            // verifying remove works as it should
+            Assert.AreEqual (false, Directory.Exists (GetBasePath () + "test1"));
+            Assert.AreEqual (false, Directory.Exists (GetBasePath () + "test2"));
+            Assert.AreEqual (true, node [3].Value);
+            Assert.AreEqual ("test1", node [3].Name);
+            Assert.AreEqual (true, node [4].Value);
+            Assert.AreEqual ("test2", node [4].Name);
+        }
+        
+        /// <summary>
+        /// verifies [pf.folder.remove] works as it should
+        /// </summary>
+        [Test]
+        public void RemoveExpression3 ()
+        {
+            // creating directories to remove
+            if (!Directory.Exists (GetBasePath () + "test1")) {
+                Directory.CreateDirectory (GetBasePath () + "test1");
+            }
+
+            // removing directory using "phosphorus.file"
+            Node node = new Node (string.Empty, "te{0}")
+                .Add (string.Empty, "st1");
+            _context.Raise ("pf.folder.remove", node);
+
+            // verifying remove works as it should
+            Assert.AreEqual (false, Directory.Exists (GetBasePath () + "test1"));
+            Assert.AreEqual (true, node [1].Value);
+            Assert.AreEqual ("test1", node [1].Name);
+        }
     }
 }
