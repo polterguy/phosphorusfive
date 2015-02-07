@@ -7,7 +7,7 @@
 using System;
 using System.Reflection;
 using phosphorus.core;
-using phosphorus.lambda;
+using phosphorus.expressions;
 
 namespace phosphorus.exe
 {
@@ -26,7 +26,7 @@ namespace phosphorus.exe
         [ActiveEvent (Name = "pf.console.output")]
         private static void console_write_line (ApplicationContext context, ActiveEventArgs e)
         {
-            string value = XUtil.FormatNode (e.Args) as string;
+            string value = XUtil.FormatNode (e.Args, context) as string;
             Console.WriteLine (value ?? "");
         }
 
@@ -38,7 +38,7 @@ namespace phosphorus.exe
         [ActiveEvent (Name = "pf.console.write")]
         private static void console_write (ApplicationContext context, ActiveEventArgs e)
         {
-            string value = XUtil.FormatNode (e.Args) as string;
+            string value = XUtil.FormatNode (e.Args, context) as string;
             if (value != null)
                 Console.Write (value);
         }
@@ -76,7 +76,7 @@ namespace phosphorus.exe
 
                 // loads and convert file to lambda nodes
                 Node convertExeFile = context.Raise ("pf.hyperlisp.hyperlisp2lambda", new Node (string.Empty, 
-                    context.Raise ("pf.file.load", new Node (string.Empty, exeNode.Value)) [0].Get<string> ()));
+                    context.Raise ("pf.file.load", new Node (string.Empty, exeNode.Value)) [0].Get<string> (context)));
 
                 // appending nodes from lambda file into execution objects, and execute lambda file given through command-line arguments
                 exeNode.AddRange (convertExeFile.Children);

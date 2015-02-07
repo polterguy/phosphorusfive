@@ -18,6 +18,9 @@ namespace phosphorus.file
     /// </summary>
     public static class file_load
     {
+        /*
+         * static ctor to make sure we allow any SSL certificates when downloading files from web
+         */
         static file_load ()
         {
             // setting up some global settings

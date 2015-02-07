@@ -290,6 +290,92 @@ namespace phosphorus.expressions
             }
         }
 
+        /// <summary>
+        /// returns content of node as list of T
+        /// </summary>
+        /// <param name="node">node either containing an expression or a list of children nodes</param>
+        /// <param name="context">application context</param>
+        /// <typeparam name="T">type of object you wish to retrieve</typeparam>
+        public static IEnumerable<T> Content<T> (Node node, ApplicationContext context)
+        {
+            return Content<T> (node, node, context);
+        }
+
+        /// <summary>
+        /// returns content of node as list of T
+        /// </summary>
+        /// <param name="node">node either containing an expression or a list of children nodes</param>
+        /// <param name="dataSource">node being dataSource</param>
+        /// <param name="context">application context</param>
+        /// <typeparam name="T">type of object you wish to retrieve</typeparam>
+        public static IEnumerable<T> Content<T> (Node node, Node dataSource, ApplicationContext context)
+        {
+            if (IsExpression (node.Value)) {
+                string exp = IsFormatted (node) ? FormatNode (node, dataSource, context) : node.Get<string> (context);
+                foreach (var idx in Content<T> (exp, dataSource, context)) {
+                    yield return idx;
+                }
+            } else if (typeof(T) == typeof(Node)) {
+                foreach (Node idx in node.Children) {
+                    yield return Utilities.Convert<T> (idx, context);
+                }
+            } else {
+                foreach (Node idx in node.Children) {
+                    yield return idx.Get<T> (context);
+                }
+            }
+        }
+
+        public static IEnumerable<T> Content<T> (string expression, Node dataSource, ApplicationContext context)
+        {
+            if (!IsExpression (expression))
+                throw new ArgumentException ("Content was not given a valid expression");
+
+            var match = Expression.Create (expression).Evaluate (dataSource, context);
+            foreach (var idx in match) {
+                yield return Utilities.Convert<T> (idx.Value, context);
+            }
+        }
+
+        /// <summary>
+        /// returns all matches from expression in node
+        /// </summary>
+        /// <param name="node">node being both expression node and data source node</param>
+        /// <param name="context">application context</param>
+        public static IEnumerable<MatchEntity> Matches (Node node, ApplicationContext context)
+        {
+            return Matches (node, node, context);
+        }
+
+        /// <summary>
+        /// returns all matches from expression in node
+        /// </summary>
+        /// <param name="node">node being expression node</param>
+        /// <param name="dataSource">node being data source node</param>
+        /// <param name="context">application context</param>
+        public static IEnumerable<MatchEntity> Matches (Node node, Node dataSource, ApplicationContext context)
+        {
+            string exp = IsFormatted (node) ? FormatNode (node, dataSource, context) : node.Get<string> (context);
+            return Matches (exp, dataSource, context);
+        }
+
+        /// <summary>
+        /// returns all matches from given expression
+        /// </summary>
+        /// <param name="expression">expression</param>
+        /// <param name="dataSource">node being data source node</param>
+        /// <param name="context">application context</param>
+        public static IEnumerable<MatchEntity> Matches (string expression, Node dataSource, ApplicationContext context)
+        {
+            if (!IsExpression (expression))
+                throw new ArgumentException ("Matches was not given a valid expression");
+
+            var match = Expression.Create (expression).Evaluate (dataSource, context);
+            foreach (var idx in match) {
+                yield return idx;
+            }
+        }
+
         /*
          * helper method to recursively format node's value
          */

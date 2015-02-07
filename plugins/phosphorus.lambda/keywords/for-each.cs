@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using phosphorus.core;
+using phosphorus.expressions;
 
 namespace phosphorus.lambda
 {
@@ -23,14 +24,14 @@ namespace phosphorus.lambda
         [ActiveEvent (Name = "for-each")]
         private static void lambda_for_each (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.Iterate<Node> (e.Args, 
+            XUtil.Iterate<Node> (e.Args, context,
             delegate (Node idxSource) {
                 if (idxSource == null)
                     throw new ArgumentException ("source expression for [for-each] returned value that was not of type 'node'");
                 Node dp = new Node ("__dp", idxSource);
                 e.Args.Insert (0, dp);
                 context.Raise ("lambda.immutable", e.Args);
-                e.Args [0].Untie ();
+                e.Args [0].UnTie ();
             });
         }
     }

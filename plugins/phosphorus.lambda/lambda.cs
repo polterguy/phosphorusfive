@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using phosphorus.core;
+using phosphorus.expressions;
 
 namespace phosphorus.lambda
 {
@@ -63,7 +64,7 @@ namespace phosphorus.lambda
          */
         private static void ExecuteLambdaValue (ApplicationContext context, Node args, LambdaType type)
         {
-            XUtil.Iterate<object> (args, 
+            XUtil.Iterate<object> (args, context, 
             delegate (object idxSource) {
                 if (idxSource is Node) {
                     ExecuteBlock (context, idxSource as Node, args.Children, type);

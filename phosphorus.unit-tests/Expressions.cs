@@ -654,12 +654,29 @@ namespace phosphorus.unittests
         [Test]
         public void NotExpression ()
         {
+            // verifying simple not works
             Node node = new Node ("root")
                 .Add ("succ")
                 .Add ("ess")
                 .Add ("error");
             string value = XUtil.Single<string> ("@/*/!/2/?name", node, _context);
             Assert.AreEqual ("success", value);
+
+            // verifying grouped not works
+            node = new Node ("root")
+                .Add ("succ")
+                .Add ("ess")
+                .Add ("error");
+            value = XUtil.Single<string> ("@/*/(!/error/)?name", node, _context);
+            Assert.AreEqual ("success", value);
+            
+            // verifying logical is using last "root"
+            node = new Node ("root")
+                .Add ("succ")
+                .Add ("ess")
+                .Add ("error");
+            value = XUtil.Single<string> ("@/*/!/error/?name", node, _context);
+            Assert.AreEqual ("successerror", value); // this one is not supposed to return "success"
         }
         
         /// <summary>

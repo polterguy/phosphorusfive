@@ -8,6 +8,7 @@ using System;
 using System.Reflection;
 using System.Collections.Generic;
 using phosphorus.core;
+using phosphorus.expressions;
 
 namespace phosphorus.lambda
 {
@@ -141,16 +142,16 @@ namespace phosphorus.lambda
          */
         private bool Exist (Node currentStatement)
         {
-            var match = Expression.Create (currentStatement.Get<string> ()).Evaluate (currentStatement);
-            if (match.TypeOfMatch == Match.MatchType.Count || match.TypeOfMatch == Match.MatchType.Path || match.TypeOfMatch == Match.MatchType.Node)
+            var match = Expression.Create (currentStatement.Get<string> (null)).Evaluate (currentStatement, null);
+            if (match.TypeOfMatch == Match.MatchType.count || match.TypeOfMatch == Match.MatchType.path || match.TypeOfMatch == Match.MatchType.node)
                 return match.Count > 0;
-            foreach (var idx in match.Matches) {
+            foreach (var idx in match) {
                 switch (match.TypeOfMatch) {
-                case Match.MatchType.Name:
-                    if (idx.Name == string.Empty)
+                case Match.MatchType.name:
+                    if ((idx.Value as Node).Name == string.Empty)
                         return false;
                     break;
-                case Match.MatchType.Value:
+                case Match.MatchType.value:
                     if (idx.Value == null)
                         return false;
                     break;
@@ -185,12 +186,12 @@ namespace phosphorus.lambda
         {
             if (XUtil.IsExpression (currentStatement.Value)) {
                 List<Node> retVal = new List<Node> ();
-                var match = Expression.Create (currentStatement.Get<string> ()).Evaluate (currentStatement);
-                if (match.TypeOfMatch == Match.MatchType.Count) {
+                var match = Expression.Create (currentStatement.Get<string> (null)).Evaluate (currentStatement, null);
+                if (match.TypeOfMatch == Match.MatchType.count) {
                     retVal.Add (new Node (string.Empty, match.Count));
                 } else {
                     for (int idxSource = 0; idxSource < match.Count; idxSource ++) {
-                        retVal.Add (new Node (string.Empty, match.GetValue (idxSource)));
+                        retVal.Add (new Node (string.Empty, match [idxSource]));
                     }
                 }
                 return retVal;
@@ -283,7 +284,7 @@ namespace phosphorus.lambda
             case "<=":
                 return Operator.LessThanEquals;
             default:
-                if ("!" == currentStatement.Get<string> ())
+                if ("!" == currentStatement.Get<string> (null))
                     return Operator.Not;
                 return Operator.Exist;
             }

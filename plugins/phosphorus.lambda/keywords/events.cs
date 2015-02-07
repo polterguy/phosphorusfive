@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using phosphorus.core;
+using phosphorus.expressions;
 
 namespace phosphorus.lambda
 {
@@ -31,7 +32,7 @@ namespace phosphorus.lambda
         private static void lambda_event (ApplicationContext context, ActiveEventArgs e)
         {
             // retrieving [name]
-            string name = XUtil.Single<string> (e.Args);
+            string name = XUtil.Single<string> (e.Args, context);
             if (string.IsNullOrEmpty (name))
                 throw new ArgumentException ("no event name given to [event] statement");
 
@@ -40,7 +41,7 @@ namespace phosphorus.lambda
             if (overrides != null) {
 
                 // adding all overrides from [overrides] node, first "main override"
-                string mainBaseEvent = XUtil.Single<string> (overrides);
+                string mainBaseEvent = XUtil.Single<string> (overrides, context);
 
                 // making sure our override dictionary contains the key for the current Active Event name
                 if (!string.IsNullOrEmpty (mainBaseEvent) && !_overrides.ContainsKey (mainBaseEvent)) {
@@ -53,7 +54,7 @@ namespace phosphorus.lambda
 
                 // then all "children" overrides
                 foreach (Node idxBaseNode in overrides.Children) {
-                    string idxBaseName = XUtil.Single<string> (idxBaseNode);
+                    string idxBaseName = XUtil.Single<string> (idxBaseNode, context);
                     if (!_overrides.ContainsKey (idxBaseName))
                         _overrides [idxBaseName] = new List<string> ();
                     _overrides [idxBaseName].Add (name);
@@ -64,7 +65,7 @@ namespace phosphorus.lambda
             // creating event, but removing [overrides] node, if it exists
             if (!_events.ContainsKey (name))
                 _events [name] = new Node ();
-            _events [name].AddRange (e.Args.Clone ().Remove ("overrides").Children);
+            _events [name].AddRange (e.Args.Clone ().RemoveAll ("overrides").Children);
         }
 
         /// <summary>
@@ -76,7 +77,7 @@ namespace phosphorus.lambda
         private static void lambda_delete_event (ApplicationContext context, ActiveEventArgs e)
         {
             // retrieving [name] of event to delete
-            string name = XUtil.Single<string> (e.Args);
+            string name = XUtil.Single<string> (e.Args, context);
             if (string.IsNullOrEmpty (name))
                 throw new ArgumentException ("no event name given to [delete-event]");
 
@@ -103,7 +104,7 @@ namespace phosphorus.lambda
             }
 
             // retrieving base Active Event name
-            string activeEventName = current [0] [0].Get<string> ();
+            string activeEventName = current [0] [0].Get<string> (context);
 
             // invoking base event
             if (_events.ContainsKey (activeEventName)) {
@@ -112,7 +113,7 @@ namespace phosphorus.lambda
                 // of args passed into "this invocation", but only if base has additional base events
                 if (current [0].Count > 1) {
                     e.Args.Insert (0, current [0].Clone ());
-                    e.Args [0] [0].Untie ();
+                    e.Args [0] [0].UnTie ();
                 }
 
                 // invoking event
@@ -121,7 +122,7 @@ namespace phosphorus.lambda
                 
                 // cleaning up "base list" after execution of base, but only if there is any "base events" for current base
                 if (e.Args.Count > 0 && e.Args [0].Name == "__base")
-                    e.Args [0].Untie ();
+                    e.Args [0].UnTie ();
             } else {
 
                 // leaving it up to core to figure out base events
@@ -139,7 +140,7 @@ namespace phosphorus.lambda
         private static void lambda_override (ApplicationContext context, ActiveEventArgs e)
         {
             // retrieving base event
-            string mainBaseEvt = XUtil.Single<string> (e.Args);
+            string mainBaseEvt = XUtil.Single<string> (e.Args, context);
             if (string.IsNullOrEmpty (mainBaseEvt))
                 return;
 
@@ -150,7 +151,7 @@ namespace phosphorus.lambda
 
             // adding up every override
             foreach (Node idx in e.Args.Children) {
-                string overrideIdx = XUtil.Single<string> (idx);
+                string overrideIdx = XUtil.Single<string> (idx, context);
                 _overrides [mainBaseEvt].Add (overrideIdx);
                 context.Override (mainBaseEvt, overrideIdx);
             }
@@ -165,11 +166,11 @@ namespace phosphorus.lambda
         private static void lambda_delete_override (ApplicationContext context, ActiveEventArgs e)
         {
             // retrieving base event
-            string baseEvent = XUtil.Single<string> (e.Args);
+            string baseEvent = XUtil.Single<string> (e.Args, context);
 
             // looping through all children as overrides
             foreach (Node idxOverrideNode in e.Args.Children) {
-                string idxOverrideName = XUtil.Single<string> (idxOverrideNode);
+                string idxOverrideName = XUtil.Single<string> (idxOverrideNode, context);
                 _overrides [baseEvent].Remove (idxOverrideName);
                 context.RemoveOverride (baseEvent, idxOverrideName);
             }
@@ -217,7 +218,7 @@ namespace phosphorus.lambda
                     context.Raise ("lambda", e.Args);
 
                     // removing "base event" arguments
-                    e.Args [0].Untie ();
+                    e.Args [0].UnTie ();
                 } else {
 
                     // no reason to massage this bugger

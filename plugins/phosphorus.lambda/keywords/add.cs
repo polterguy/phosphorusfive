@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using phosphorus.core;
+using phosphorus.expressions;
 
 namespace phosphorus.lambda
 {
@@ -24,69 +25,61 @@ namespace phosphorus.lambda
         private static void lambda_add (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Count == 0)
-                throw new ArgumentException ("[add] needs a [source]");
+                throw new ArgumentException ("[add] needs a valid [source] or [rel-source]");
 
             if (e.Args.LastChild.Name == "source") {
 
-                // "static" source, fetching source nodes first
-                var source = new List<Node> (GetSource (e.Args));
-
-                // looping through every destination node, adding a copy of every source node, to its children collection
-                XUtil.Iterate<Node> (e.Args, 
-                delegate (Node idxDestination) {
-                    foreach (Node idxSource in source) {
-                        idxDestination.Add (idxSource.Clone ());
-                    }
-                });
+                // static source
+                AddStaticSource (e.Args, context);
             } else if (e.Args.LastChild.Name == "rel-source" && XUtil.IsExpression (e.Args.LastChild.Value)) {
 
-                // "relative source", postponing fetching nodes until inside of iterator
-                XUtil.Iterate<Node> (e.Args, 
-                delegate (Node idxDestination) {
-                    string sourceExpression = XUtil.FormatNode (e.Args.LastChild, idxDestination) as string;
-                    XUtil.Iterate<Node> (idxDestination, sourceExpression,
-                    delegate (Node idxSource) {
-                        idxDestination.Add (idxSource.Clone ());
-                    });
-                });
+                // relative source
+                AddRelativeSource (e.Args, context);
             } else {
             
                 // syntax error
-                throw new ArgumentException ("neither a valid [source] nor a valid [rel-source] was given to [add]");
+                throw new ArgumentException ("[add] needs a valid [source] or [rel-source]");
             }
         }
 
         /*
-         * returns source back to caller
+         * source is static
          */
-        private static IEnumerable<Node> GetSource (Node node)
+        private static void AddStaticSource (Node node, ApplicationContext context)
         {
-            var sourceNodes = new List<Node> (node.FindAll ("source"));
-
-            // verifying syntax
-            if (sourceNodes.Count > 1)
-                throw new ArgumentException ("[add] can only handle one [source]");
-            if (sourceNodes [0] != node.LastChild)
-                throw new ArgumentException ("[source] must be the last child of [add] statement");
-
-            if (XUtil.IsExpression (sourceNodes [0].Value)) {
-
-                // source is an expression
-                List<Node> retVal = new List<Node> ();
-                XUtil.Iterate<Node> (sourceNodes [0], 
-                delegate (Node idxDestination) {
-                    retVal.Add (idxDestination.Clone ()); // cloning in case source and destination overlaps
-                });
-                return retVal;
-            } else if (sourceNodes [0].Value == null) {
-
-                // source is a bunch of static children
-                return sourceNodes [0].Children;
-            } else {
-
-                // source node's value is not empty, still not an expression, which is a bug
-                throw new ArgumentException ("[source] node contained a value which was not an expression");
+            // retrieving source before we start iterating destination,
+            // in case destination and source overlaps
+            List<Node> sourceNodes = new List<Node> ();
+            foreach (var idx in XUtil.Content<Node> (node.LastChild, context)) {
+                sourceNodes.Add (idx.Clone ());
             }
+
+            // looping through every destination node
+            bool isFirst = true; // since source is already cloned, we avoid cloning the first run
+            XUtil.Iterate<Node> (node, context,
+            delegate (Node idxDestination) {
+                if (isFirst) {
+                    idxDestination.AddRange (sourceNodes);
+                    isFirst = false;
+                } else {
+                    foreach (Node idxSource in sourceNodes) {
+                        idxDestination.Add (idxSource.Clone ());
+                    }
+                }
+            });
+        }
+
+        /*
+         * relative source
+         */
+        private static void AddRelativeSource (Node node, ApplicationContext context)
+        {
+            XUtil.Iterate<Node> (node, context, 
+            delegate (Node idxDestination) {
+                foreach (var idxSource in XUtil.Content<Node> (node.LastChild, idxDestination, context)) {
+                    idxDestination.Add (idxSource.Clone ());
+                }
+            });
         }
     }
 }
