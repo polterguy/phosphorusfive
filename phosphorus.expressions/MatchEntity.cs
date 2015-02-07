@@ -66,7 +66,7 @@ namespace phosphorus.expressions
             set {
                 switch (TypeOfMatch) {
                 case Match.MatchType.name:
-                    Node.Name = (value ?? "").ToString ();
+                    Node.Name = Utilities.Convert<string> (value, _match.Context, string.Empty);
                     break;
                 case Match.MatchType.value:
                     Node.Value = value;

@@ -158,6 +158,10 @@ namespace phosphorus.expressions
             if (match.TypeOfMatch == Match.MatchType.count)
                 return Utilities.Convert<T> (match.Count, context);
 
+            // checking if this is a single object match, at which case we don't iterate converting to string
+            if (match.Count == 1)
+                return Utilities.Convert<T> (match [0].Value, context);
+
             // looping through each match result, concatenating all values,
             // before converting to requested type, and returning result back to caller
             string retVal = null;

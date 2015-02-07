@@ -25,11 +25,11 @@ namespace phosphorus.lambda
         private static void lambda_set (ApplicationContext context, ActiveEventArgs e)
         {
             // figuring out source, and executing the corresponding logic
-            if (e.Args.LastChild.Name == "source") {
+            if (e.Args.Count > 0 && e.Args.LastChild.Name == "source") {
 
                 // static source, not a node, might be an expression
                 SetStaticSource (e.Args, context);
-            } else if (e.Args.LastChild.Name == "rel-source") {
+            } else if (e.Args.Count > 0 && e.Args.LastChild.Name == "rel-source") {
 
                 // relative source, source must be an expression
                 SetRelativeSource (e.Args, context);
@@ -53,11 +53,19 @@ namespace phosphorus.lambda
                 source = XUtil.Single<object> (node.LastChild, context);
             } else {
 
-                // source is a node, making sure there's only one
-                if (node.LastChild.Count != 1)
-                    throw new ArgumentException ("[set] must have one, and only one, constant source node");
+                if (node.LastChild.Count == 1) {
 
-                source = node.LastChild.FirstChild;
+                    // source is a node
+                    source = node.LastChild.FirstChild;
+                } else if (node.LastChild.Count == 0) {
+
+                    // source is null
+                    source = null;
+                } else {
+
+                    // more than one source
+                    throw new ArgumentException ("[set] requires that you give it only one source");
+                }
             }
 
             // iterating through all destinations, updating with source
