@@ -42,7 +42,7 @@ namespace phosphorus.expressions
         {
             return value != null && 
                 value.StartsWith ("@") && 
-                value.Length > 5; // "@?node" is the shortest possible expression, and has 6 characters
+                value.Length >= 4; // "@{0}" is the shortest possible expression, and has 4 characters
         }
 
         /// <summary>

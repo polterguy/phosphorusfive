@@ -477,6 +477,123 @@ namespace phosphorus.unittests
             // verifying [set] works as it should
             Assert.IsNull (node [0].Value);
         }
+        
+        /// <summary>
+        /// verifies [set] works when destination is name,
+        /// and source is relative expression
+        /// </summary>
+        [Test]
+        public void Set26 ()
+        {
+            Node node = new Node ()
+                .Add ("_data").LastChild
+                    .Add("_1", "success1")
+                    .Add("_2", "success2").Parent
+                .Add ("set", "@/-/*/?name").LastChild
+                    .Add ("rel-source", "@?value").Root;
+            _context.Raise ("set", node [1]);
+
+            // verifying [set] works as it should
+            Assert.AreEqual ("success1", node [0] [0].Name);
+            Assert.AreEqual ("success2", node [0] [1].Name);
+        }
+        
+        /// <summary>
+        /// verifies [set] works when destination is value,
+        /// and source is relative expression
+        /// </summary>
+        [Test]
+        public void Set27 ()
+        {
+            Node node = new Node ()
+                .Add ("_data").LastChild
+                    .Add("success1")
+                    .Add("success2").Parent
+                .Add ("set", "@/-/*/?value").LastChild
+                    .Add ("rel-source", "@?name").Root;
+            _context.Raise ("set", node [1]);
+
+            // verifying [set] works as it should
+            Assert.AreEqual ("success1", node [0] [0].Value);
+            Assert.AreEqual ("success2", node [0] [1].Value);
+        }
+        
+        /// <summary>
+        /// verifies [set] works when destination is node,
+        /// and source is relative expression
+        /// </summary>
+        [Test]
+        public void Set28 ()
+        {
+            Node node = new Node ()
+                .Add ("_data").LastChild
+                    .Add(string.Empty).LastChild
+                        .Add("_1", "success1").Parent
+                    .Add(string.Empty).LastChild
+                        .Add("_2", "success2").Parent.Parent
+                .Add ("set", "@/-/*/?node").LastChild
+                    .Add ("rel-source", "@/0/?node").Root;
+            _context.Raise ("set", node [1]);
+
+            // verifying [set] works as it should
+            Assert.AreEqual ("_1", node [0] [0].Name);
+            Assert.AreEqual ("success1", node [0] [0].Value);
+            Assert.AreEqual ("_2", node [0] [1].Name);
+            Assert.AreEqual ("success2", node [0] [1].Value);
+        }
+        
+        /// <summary>
+        /// verifies [set] works when destination is node,
+        /// and source is relative formatted expression
+        /// </summary>
+        [Test]
+        public void Set29 ()
+        {
+            Node node = new Node ()
+                .Add ("_data").LastChild
+                    .Add("_1").LastChild
+                        .Add("_1", "success1").Parent
+                    .Add("_2").LastChild
+                        .Add("_2", "success2").Parent.Parent
+                .Add ("set", "@/-/*/?node").LastChild
+                    .Add ("rel-source", "@/{0}/{1}/?node").LastChild
+                        .Add(string.Empty, "*")
+                        .Add(string.Empty, "@?name").Root;
+            _context.Raise ("set", node [1]);
+
+            // verifying [set] works as it should
+            Assert.AreEqual ("success1", node [0] [0].Value);
+            Assert.AreEqual ("success2", node [0] [1].Value);
+        }
+        
+        /// <summary>
+        /// verifies [set] works when destination is formatted node expression,
+        /// and source is relative formatted expression, and one of sources yields
+        /// no result
+        /// </summary>
+        [Test]
+        public void Set31 ()
+        {
+            Node node = new Node ()
+                .Add ("_data").LastChild
+                    .Add("_1").LastChild
+                        .Add("_1", "success1").Parent
+                    .Add("_2").LastChild
+                        .Add("_2", "success2").Parent
+                    .Add("_3").LastChild
+                        .Add("_ERROR2").Parent.Parent // intentionally returns "null" to verify [_3] is deleted
+                .Add ("set", "@/{0}/*/?node").LastChild
+                    .Add(string.Empty, "-")
+                    .Add ("rel-source", "@/{0}/{1}/?node").LastChild
+                        .Add(string.Empty, "*")
+                        .Add(string.Empty, "@?name").Root;
+            _context.Raise ("set", node [1]);
+
+            // verifying [set] works as it should
+            Assert.AreEqual (2, node [0].Count);
+            Assert.AreEqual ("success1", node [0] [0].Value);
+            Assert.AreEqual ("success2", node [0] [1].Value);
+        }
         // TODO: [rel-source], and syntax error unit tests
     }
 }
