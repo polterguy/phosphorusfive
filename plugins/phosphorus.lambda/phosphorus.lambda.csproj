@@ -43,13 +43,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="keywords\set.cs" />
-    <Compile Include="keywords\add.cs" />
     <Compile Include="keywords\for-each.cs" />
     <Compile Include="lambda.cs" />
     <Compile Include="keywords\branching.cs" />
     <Compile Include="keywords\while.cs" />
     <Compile Include="keywords\events.cs" />
     <Compile Include="keywords\helpers\Conditions.cs" />
+    <Compile Include="keywords\append.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

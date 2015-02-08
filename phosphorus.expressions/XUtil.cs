@@ -139,7 +139,7 @@ namespace phosphorus.expressions
             string multipleRetVal = null;
             foreach (var idx in Iterate<T> (node, dataSource, context)) {
 
-                // hack to make sure we never convert object unless necessary
+                // hack to make sure we never convert object to string unless necessary
                 if (singleRetVal == null) {
                     singleRetVal = idx;
                 } else {
@@ -180,7 +180,7 @@ namespace phosphorus.expressions
             string multipleRetVal = null;
             foreach (var idx in Iterate<T> (expression, dataSource, context)) {
 
-                // hack to make sure we never convert object unless necessary
+                // hack to make sure we never convert object to string unless necessary
                 if (singleRetVal == null) {
                     singleRetVal = idx;
                 } else {
@@ -267,7 +267,7 @@ namespace phosphorus.expressions
         public static IEnumerable<T> Iterate<T> (string expression, Node dataSource, ApplicationContext context)
         {
             if (!IsExpression (expression))
-                throw new ArgumentException ("ToList was not given a valid expression");
+                throw new ArgumentException ("Iterate was not given a valid expression");
 
             var match = Expression.Create (expression).Evaluate (dataSource, context);
             if (match.TypeOfMatch == Match.MatchType.count) {
@@ -313,7 +313,7 @@ namespace phosphorus.expressions
         public static IEnumerable<MatchEntity> Iterate (string expression, Node dataSource, ApplicationContext context)
         {
             if (!IsExpression (expression))
-                throw new ArgumentException ("Matches was not given a valid expression");
+                throw new ArgumentException ("Iterate was not given a valid expression");
 
             var match = Expression.Create (expression).Evaluate (dataSource, context);
             foreach (var idx in match) {

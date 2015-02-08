@@ -152,7 +152,18 @@ namespace phosphorus.unittests
         /// verifies Single from XUtil works correctly
         /// </summary>
         [Test]
-        public void Single1 ()
+        public void Single01 ()
+        {
+            Node node = new Node ("root", "success");
+            string value = XUtil.Single<string> (node, _context);
+            Assert.AreEqual ("success", value);
+        }
+
+        /// <summary>
+        /// verifies Single from XUtil works correctly
+        /// </summary>
+        [Test]
+        public void Single02 ()
         {
             Node node = new Node ("root")
                 .Add ("", "su")
@@ -166,7 +177,7 @@ namespace phosphorus.unittests
         /// verifies Single from XUtil works correctly
         /// </summary>
         [Test]
-        public void Single2 ()
+        public void Single03 ()
         {
             Node node = new Node ("root", "@/*/?value")
                 .Add ("", "su")
@@ -180,9 +191,10 @@ namespace phosphorus.unittests
         /// verifies Single from XUtil works correctly
         /// </summary>
         [Test]
-        public void Single3 ()
+        public void Single04 ()
         {
-            Node node = new Node ("root", "success");
+            Node node = new Node ("root", "{0}")
+                .Add ("", "success");
             string value = XUtil.Single<string> (node, _context);
             Assert.AreEqual ("success", value);
         }
@@ -191,7 +203,20 @@ namespace phosphorus.unittests
         /// verifies Single from XUtil works correctly
         /// </summary>
         [Test]
-        public void Single4 ()
+        public void Single05 ()
+        {
+            Node node = new Node ("root", "{0}")
+                .Add ("", "@/0/0/?name").LastChild
+                    .Add ("success").Root;
+            string value = XUtil.Single<string> (node, _context);
+            Assert.AreEqual ("success", value);
+        }
+
+        /// <summary>
+        /// verifies Single from XUtil works correctly
+        /// </summary>
+        [Test]
+        public void Single06 ()
         {
             Node node = new Node ("root", "{0}")
                 .Add ("", "@/0/?name").LastChild
@@ -204,34 +229,12 @@ namespace phosphorus.unittests
         /// verifies Single from XUtil works correctly
         /// </summary>
         [Test]
-        public void Single5 ()
-        {
-            Node node = new Node ("root", "{0}")
-                .Add ("", "success");
-            string value = XUtil.Single<string> (node, node [0], _context);
-            Assert.AreEqual ("success", value);
-        }
-
-        /// <summary>
-        /// verifies Single from XUtil works correctly
-        /// </summary>
-        [Test]
-        public void Single6 ()
-        {
-            Node node = new Node ("root", "{0}")
-                .Add ("", "success");
-            string value = XUtil.Single<string> (node, _context);
-            Assert.AreEqual ("success", value);
-        }
-
-        /// <summary>
-        /// verifies Single from XUtil works correctly
-        /// </summary>
-        [Test]
-        public void Single7 ()
+        public void Single07 ()
         {
             Node node = new Node ("root", "success")
                 .Add ("", "error");
+
+            // making sure first node is used for finding single value
             string value = XUtil.Single<string> (node, node [0], _context);
             Assert.AreEqual ("success", value);
         }
@@ -240,7 +243,7 @@ namespace phosphorus.unittests
         /// verifies Single from XUtil works correctly
         /// </summary>
         [Test]
-        public void Single8 ()
+        public void Single08 ()
         {
             Node node = new Node ("root")
                 .Add ("1")
@@ -254,7 +257,7 @@ namespace phosphorus.unittests
         /// verifies Single from XUtil works correctly
         /// </summary>
         [Test]
-        public void Single9 ()
+        public void Single09 ()
         {
             Node node = new Node ("root")
                 .Add ("", 1)
@@ -268,7 +271,7 @@ namespace phosphorus.unittests
         /// verifies Iterate from XUtil works correctly
         /// </summary>
         [Test]
-        public void Iterate1 ()
+        public void Iterate01 ()
         {
             Node node = new Node ("root")
                 .Add ("", "su")
@@ -285,7 +288,7 @@ namespace phosphorus.unittests
         /// verifies Iterate from XUtil works correctly
         /// </summary>
         [Test]
-        public void Iterate2 ()
+        public void Iterate02 ()
         {
             Node node = new Node ("root", "@/*/?value")
                 .Add ("", "su")
@@ -302,12 +305,14 @@ namespace phosphorus.unittests
         /// verifies Iterate from XUtil works correctly
         /// </summary>
         [Test]
-        public void Iterate3 ()
+        public void Iterate03 ()
         {
             Node node = new Node ("root", "success")
                 .Add ("", "error");
             string value = null;
-            foreach (var idx in XUtil.Iterate<string> (node, _context)) {
+
+            // making sure first node is used for evaluating iteration
+            foreach (var idx in XUtil.Iterate<string> (node, node [0], _context)) {
                 value += idx;
             }
             Assert.AreEqual ("success", value);
@@ -317,12 +322,14 @@ namespace phosphorus.unittests
         /// verifies Iterate from XUtil works correctly
         /// </summary>
         [Test]
-        public void Iterate4 ()
+        public void Iterate04 ()
         {
             Node node = new Node ("root", "@{0}/?value")
                 .Add ("", "@/0/?name").LastChild
                     .Add ("/0", "success").Root;
             string value = null;
+
+            // making sure second node is used as data source
             foreach (var idx in XUtil.Iterate<string> (node, node [0], _context)) {
                 value += idx;
             }
@@ -333,7 +340,25 @@ namespace phosphorus.unittests
         /// verifies Iterate from XUtil works correctly
         /// </summary>
         [Test]
-        public void Iterate5 ()
+        public void Iterate05 ()
+        {
+            Node node = new Node ("root", "@{0}/?value")
+                .Add ("", "@/0/0/?name").LastChild
+                    .Add ("/0/0", "success").Root;
+            string value = null;
+
+            // making sure first node is used as data source
+            foreach (var idx in XUtil.Iterate<string> (node, _context)) {
+                value += idx;
+            }
+            Assert.AreEqual ("success", value);
+        }
+
+        /// <summary>
+        /// verifies Iterate from XUtil works correctly
+        /// </summary>
+        [Test]
+        public void Iterate06 ()
         {
             Node node = new Node ("root")
                 .Add ("", 1)
@@ -344,6 +369,90 @@ namespace phosphorus.unittests
                 value += idx;
             }
             Assert.AreEqual ("123", value);
+        }
+
+        /// <summary>
+        /// verifies Iterate from XUtil works correctly
+        /// </summary>
+        [Test]
+        public void Iterate07 ()
+        {
+            Node node = new Node ("root")
+                .Add ("", 1)
+                .Add ("", 2)
+                .Add ("", 3);
+            int value = 0;
+            foreach (var idx in XUtil.Iterate ("@/*/?value", node, _context)) {
+                value += Utilities.Convert<int> (idx.Value, _context);
+            }
+            Assert.AreEqual (6, value);
+        }
+        
+        /// <summary>
+        /// verifies Iterate from XUtil works correctly
+        /// </summary>
+        [Test]
+        public void Iterate08 ()
+        {
+            Node node = new Node ("root")
+                .Add ("", 1)
+                .Add ("", 2)
+                .Add ("", 3);
+            int value = 0;
+            foreach (var idx in XUtil.Iterate<int> (node, _context)) {
+                value += idx;
+            }
+            Assert.AreEqual (6, value);
+        }
+        
+        /// <summary>
+        /// verifies Iterate from XUtil works correctly
+        /// </summary>
+        [Test]
+        public void Iterate09 ()
+        {
+            Node node = new Node ("root")
+                .Add ("", 1)
+                .Add ("", 2)
+                .Add ("", 3);
+            int value = 0;
+            foreach (var idx in XUtil.Iterate<Node> (node, _context)) {
+                value += idx.Get<int> (_context);
+            }
+            Assert.AreEqual (6, value);
+        }
+        
+        /// <summary>
+        /// verifies Iterate from XUtil works correctly
+        /// </summary>
+        [Test]
+        public void Iterate10 ()
+        {
+            Node node = new Node ("root", "succ{0}")
+                .Add (string.Empty, "ess");
+            string value = "";
+            foreach (var idx in XUtil.Iterate<string> (node, _context)) {
+                value += idx;
+            }
+            Assert.AreEqual ("success", value);
+        }
+        
+        /// <summary>
+        /// verifies Iterate from XUtil works correctly
+        /// </summary>
+        [Test]
+        public void Iterate11 ()
+        {
+            Node node = new Node ("root", "succ{0}")
+                .Add (string.Empty, "ess:int:5");
+            string value = "";
+
+            // string should be converted into a Node
+            foreach (var idx in XUtil.Iterate<Node> (node, _context)) {
+                value += Utilities.Convert<string> (idx, _context);
+                Assert.AreEqual (5, idx.Value);
+            }
+            Assert.AreEqual ("success:int:5", value);
         }
 
         /// <summary>
