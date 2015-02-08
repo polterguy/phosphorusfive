@@ -206,7 +206,7 @@ namespace phosphorus.unittests
         public void Single05 ()
         {
             Node node = new Node ("root", "{0}")
-                .Add ("", "@/0/0/?name").LastChild
+                .Add ("", "@/0/?name").LastChild
                     .Add ("success").Root;
             string value = XUtil.Single<string> (node, _context);
             Assert.AreEqual ("success", value);
@@ -343,7 +343,7 @@ namespace phosphorus.unittests
         public void Iterate05 ()
         {
             Node node = new Node ("root", "@{0}/?value")
-                .Add ("", "@/0/0/?name").LastChild
+                .Add ("", "@/0/?name").LastChild
                     .Add ("/0/0", "success").Root;
             string value = null;
 
@@ -565,12 +565,47 @@ namespace phosphorus.unittests
         public void ValueEqualsExpression ()
         {
             Node node = new Node ("root")
-                .Add ("success", "query")
-                .Add ("error");
+                .Add ("success", "query");
             string value = XUtil.Single<string> ("@/*/=query/?name", node, _context);
             Assert.AreEqual ("success", value);
         }
         
+        /// <summary>
+        /// verifies valued expressions works correctly with types
+        /// </summary>
+        [Test]
+        public void ValueTypeExpression1 ()
+        {
+            Node node = new Node ("root")
+                .Add ("success", 5);
+            string value = XUtil.Single<string> ("@/*/=:int:5/?name", node, _context);
+            Assert.AreEqual ("success", value);
+        }
+
+        /// <summary>
+        /// verifies valued expressions works correctly with types
+        /// </summary>
+        [Test]
+        public void ValueTypeExpression2 ()
+        {
+            Node node = new Node ("root")
+                .Add ("error", "5");
+            string value = XUtil.Single<string> ("@/*/=:int:5/?name", node, _context);
+            Assert.IsNull (value);
+        }
+
+        /// <summary>
+        /// verifies valued expressions works correctly with types
+        /// </summary>
+        [Test]
+        public void ValueTypeExpression3 ()
+        {
+            Node node = new Node ("root")
+                .Add ("error", 5);
+            string value = XUtil.Single<string> ("@/*/=5/?name", node, _context);
+            Assert.IsNull (value);
+        }
+
         /// <summary>
         /// verifies numbered child expressions works correctly
         /// </summary>

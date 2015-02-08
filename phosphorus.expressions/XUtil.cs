@@ -87,7 +87,7 @@ namespace phosphorus.expressions
                 if (idx.Name == string.Empty) {
 
                     // recursively format and evaluate expressions of children nodes
-                    return FormatNodeRecursively (idx, dataSource, context);
+                    return FormatNodeRecursively (idx, dataSource == node ? idx : dataSource, context) ?? "";
                 } else {
 
                     // this is not a part of the formatting values for our formating expression

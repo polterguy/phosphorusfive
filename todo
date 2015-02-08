@@ -45,8 +45,6 @@
 
 * "math" Active Events, taking expressions, evaluating these, and [add], [subtract], [multiply] and [divide]'ing these
 
-* change name of [add] Active Event to [append] to use "add" for "math functions"
-
 * create [insert] active event that allows inserting nodes at a specific position in tree
 
 * Exception hierarchy

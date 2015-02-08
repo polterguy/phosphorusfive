@@ -78,6 +78,7 @@
     <Compile Include="Folders.cs" />
     <Compile Include="Set.cs" />
     <Compile Include="Append.cs" />
+    <Compile Include="ForEach.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

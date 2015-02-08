@@ -57,13 +57,20 @@ namespace phosphorus.lambda
 
             // looping through every destination node
             bool isFirst = true; // since source is already cloned, we avoid cloning the first run
-            foreach (var idxDestination in XUtil.Iterate<Node> (node, context)) {
+            foreach (var idxDestination in XUtil.Iterate (node, context)) {
+
+                // verifying destination actually is a node
+                Node curDest = idxDestination.Value as Node;
+                if (curDest == null)
+                    throw new ArgumentException ("cannot [append] into something that's not a node");
+
+                // minor optimization trick, since source already is cloned upon first run
                 if (isFirst) {
-                    idxDestination.AddRange (sourceNodes);
+                    curDest.AddRange (sourceNodes);
                     isFirst = false;
                 } else {
                     foreach (Node idxSource in sourceNodes) {
-                        idxDestination.Add (idxSource.Clone ());
+                        curDest.Add (idxSource.Clone ());
                     }
                 }
             }
@@ -74,9 +81,15 @@ namespace phosphorus.lambda
          */
         private static void AppendRelativeSource (Node node, ApplicationContext context)
         {
-            foreach (var idxDestination in XUtil.Iterate<Node> (node, context)) {
-                foreach (var idxSource in XUtil.Iterate<Node> (node.LastChild, idxDestination, context)) {
-                    idxDestination.Add (idxSource.Clone ());
+            foreach (var idxDestination in XUtil.Iterate (node, context)) {
+                
+                // verifying destination actually is a node
+                Node curDest = idxDestination.Value as Node;
+                if (curDest == null)
+                    throw new ArgumentException ("cannot [append] into something that's not a node");
+
+                foreach (var idxSource in XUtil.Iterate<Node> (node.LastChild, curDest, context)) {
+                    curDest.Add (idxSource.Clone ());
                 }
             }
         }

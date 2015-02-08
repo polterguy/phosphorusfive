@@ -5,7 +5,6 @@
  */
 
 using System;
-using System.IO;
 using NUnit.Framework;
 using phosphorus.core;
 
@@ -31,13 +30,16 @@ namespace phosphorus.unittests
                 .Add ("_data")
                 .Add ("append", "@/-/?node").LastChild
                     .Add ("source").LastChild
-                        .Add ("foo", "success").Root;
+                        .Add ("foo1", "success1")
+                        .Add ("foo2", "success2").Root;
             _context.Raise ("append", node [1]);
             
             // verifying [append] works as it should
-            Assert.AreEqual (1, node [0].Count);
-            Assert.AreEqual ("foo", node [0] [0].Name);
-            Assert.AreEqual ("success", node [0] [0].Value);
+            Assert.AreEqual (2, node [0].Count);
+            Assert.AreEqual ("foo1", node [0] [0].Name);
+            Assert.AreEqual ("success1", node [0] [0].Value);
+            Assert.AreEqual ("foo2", node [0] [1].Name);
+            Assert.AreEqual ("success2", node [0] [1].Value);
         }
         
         /// <summary>
@@ -280,6 +282,107 @@ namespace phosphorus.unittests
             Assert.AreEqual (0, node [1] [0].Count);
             Assert.AreEqual ("_source2", node [1] [0].Name);
         }
-        // rel-source for [add]
+        
+        /// <summary>
+        /// appends a a static source, where source is expression of type 'value',
+        /// where value is a reference node
+        /// </summary>
+        [Test]
+        public void Append13 ()
+        {
+            Node node = new Node ()
+                .Add ("_source", new Node ("success", 5))
+                .Add ("_destination")
+                .Add ("append", "@/-/?node").LastChild
+                    .Add ("source", "@/./-2/?value").Root;
+            _context.Raise ("append", node [2]);
+
+            // verifying [append] works as it should
+            Assert.AreEqual (1, node [1].Count);
+            Assert.AreEqual ("success", node [1] [0].Name);
+            Assert.AreEqual (5, node [1] [0].Value);
+        }
+        
+        /// <summary>
+        /// appends a a static source, where destination is expression of type 'value',
+        /// where value is a reference node
+        /// </summary>
+        [Test]
+        public void Append14 ()
+        {
+            Node node = new Node ()
+                .Add ("_destination-parent", new Node ("_destination"))
+                .Add ("success", 5)
+                .Add ("append", "@/-2/?value").LastChild
+                    .Add ("source", "@/./-/?node").Root;
+            _context.Raise ("append", node [2]);
+
+            // verifying [append] works as it should
+            Assert.AreEqual (1, node [0].Get<Node> (_context).Count);
+            Assert.AreEqual ("success", node [0].Get<Node> (_context)[0].Name);
+            Assert.AreEqual (5, node [0].Get<Node> (_context)[0].Value);
+        }
+        
+        /// <summary>
+        /// appends a a static source, where source has no values
+        /// where value is a reference node
+        /// </summary>
+        [Test]
+        public void Append15 ()
+        {
+            Node node = new Node ()
+                .Add ("_destination")
+                .Add ("append", "@/-/?node").LastChild
+                    .Add ("source", "@/mumbo/?node").Root;
+            _context.Raise ("append", node [1]);
+
+            // verifying [append] works as it should
+            Assert.AreEqual (0, node [0].Count);
+        }
+
+        /// <summary>
+        /// tries to append into 'value' destination, where value is not a Node
+        /// </summary>
+        [Test]
+        [ExpectedException]
+        public void SyntaxError1 ()
+        {
+            Node node = new Node ()
+                .Add ("_destination", "foo")
+                .Add ("error")
+                .Add ("append", "@/-2/?value").LastChild
+                    .Add ("source", "@/./-/?node").Root;
+            _context.Raise ("append", node [2]);
+        }
+
+        /// <summary>
+        /// tries to append into 'value' destination, where value is not a Node with a relative source
+        /// </summary>
+        [Test]
+        [ExpectedException]
+        public void SyntaxError2 ()
+        {
+            Node node = new Node ()
+                .Add ("_destination", "foo")
+                .Add ("error")
+                .Add ("append", "@/-2/?value").LastChild
+                    .Add ("rel-source", "@/../*/error/?node").Root;
+            _context.Raise ("append", node [2]);
+        }
+        
+        /// <summary>
+        /// tries to append into 'value' destination, where value is null, with a relative source
+        /// </summary>
+        [Test]
+        [ExpectedException]
+        public void SyntaxError3 ()
+        {
+            Node node = new Node ()
+                .Add ("_destination")
+                .Add ("error")
+                .Add ("append", "@/-2/?value").LastChild
+                    .Add ("rel-source", "@/../*/error/?node").Root;
+            _context.Raise ("append", node [2]);
+        }
     }
 }
