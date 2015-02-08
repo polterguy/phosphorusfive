@@ -96,7 +96,22 @@ namespace phosphorus.unittests
                 .Add ("for-each", "@/-/?node").LastChild
                     .Add ("set", "@?node").Root;
             _context.Raise ("for-each", node [1]);
-            Assert.AreEqual (1, node [1].Count);
+            Assert.AreEqual ("@?node", node [1] [0].Value);
+        }
+        
+        /// <summary>
+        /// verifies that [for-each] is not immutable, if overridden with lambda child
+        /// </summary>
+        [Test]
+        public void ForEach5 ()
+        {
+            Node node = new Node ()
+                .Add ("_data")
+                .Add ("for-each", "@/-/?node").LastChild
+                    .Add ("lambda").LastChild
+                        .Add ("set", "@?node").Root;
+            _context.Raise ("for-each", node [1]);
+            Assert.AreEqual (0, node [1] [0].Count);
         }
     }
 }

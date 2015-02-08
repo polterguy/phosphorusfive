@@ -25,7 +25,7 @@ namespace phosphorus.lambda
         [ActiveEvent (Name = "if")]
         private static void lambda_if (ApplicationContext context, ActiveEventArgs e)
         {
-            var condition = new Conditions (e.Args);
+            var condition = new Conditions (e.Args, context);
             if (condition.Evaluate ()) {
                 foreach (Node idxExe in condition.ExecutionLambdas) {
                     context.Raise (idxExe.Name, idxExe);
@@ -60,7 +60,7 @@ namespace phosphorus.lambda
                     e.Args.Parent.RemoveAt (0);
                 }
             } else {
-                var condition = new Conditions (e.Args);
+                var condition = new Conditions (e.Args, context);
                 if (condition.Evaluate ()) {
                     foreach (Node idxExe in condition.ExecutionLambdas) {
                         context.Raise (idxExe.Name, idxExe);
@@ -95,7 +95,7 @@ namespace phosphorus.lambda
                     e.Args.Parent.RemoveAt (0);
                 }
             } else {
-                var condition = new Conditions (e.Args); // easy way to access all lambda objects beneath "else"
+                var condition = new Conditions (e.Args, context); // easy way to access all lambda objects beneath "else"
                 foreach (Node idxExe in condition.ExecutionLambdas) {
                     context.Raise (idxExe.Name, idxExe);
                 }

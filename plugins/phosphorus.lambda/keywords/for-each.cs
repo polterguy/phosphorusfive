@@ -29,7 +29,22 @@ namespace phosphorus.lambda
             foreach (var idxSource in XUtil.Iterate (e.Args, context)) {
                 Node dp = new Node ("__dp", idxSource.Value);
                 e.Args.Insert (0, dp);
-                context.Raise ("lambda.immutable", e.Args);
+
+                // checking to see if there are any [lambda.xxx] children beneath [for-each]
+                // at which case we execute these nodes
+                bool executed = false;
+                foreach (var idxExe in e.Args.FindAll (
+                    delegate (Node idxChild) {
+                        return idxChild.Name.StartsWith ("lambda");
+                    })) {
+                    executed = true;
+                    context.Raise (idxExe.Name, idxExe);
+                }
+
+                // if there were no [lambda.xxx] children, we default to executing everything
+                // inside of [for-each] as immutable
+                if (!executed)
+                    context.Raise ("lambda.immutable", e.Args);
                 e.Args [0].UnTie ();
             }
         }

@@ -13,7 +13,7 @@ using phosphorus.expressions;
 namespace phosphorus.lambda
 {
     /// <summary>
-    /// class wrapping any statement that somehow yields a condition, such as "pf.if" and "pf.while"
+    /// class wrapping any statement, that somehow yields a condition, such as "pf.if", and "pf.while"
     /// </summary>
     public class Conditions
     {
@@ -53,33 +53,44 @@ namespace phosphorus.lambda
             LessThanEquals,
 
             /// <summary>
-            /// not, meaning "does not exist". checks if an expression returns anything, and if it does, Not evaluates to false.
-            /// opposite of Exist, token '!', but token is in "front" of epxression or constant, meaning it changes position
-            /// with the expression or constant you wish to "not"
+            /// not, meaning "does not exist". checks if an expression returns anything,
+            /// and if it does, Not evaluates to false. opposite of Exist, token '!',
+            /// but token is in "front" of epxression or constant, meaning it changes position
+            /// with the expression or constant you wish to "not evaluate"
             /// </summary>
             Not,
 
             /// <summary>
-            /// exist, meaning "do exist". checks if an expression returns anything, and if it does, Exist evaluates to true.
-            /// opposite of "Not". has no token, but is the default logical operator being used if no operator is given
-            /// opposite of Not
+            /// checks if an expression returns anything, and if it does, Exist evaluates to true.
+            /// opposite of "Not". has no token, but is the default logical operator being used,
+            /// if no operator is given
             /// </summary>
             Exist
         }
 
+        // root node for our condition object
         private Node _statementNode;
+
+        // application context needed to create expressions, in case expressions have typed values
+        private ApplicationContext _context;
+
+        // for simple exist statements, there's no need for a [lambda] execution object since everything
+        // inside of condition object automatically becomes a "lambda"
         private bool _isSimpleExist;
+        private bool _hasEvaluated;
 
         /// <summary>
         /// initializes a new instance of the <see cref="phosphorus.execute.Condition"/> class
         /// </summary>
         /// <param name="statementNode">the node of the conditional statement</param>
-        public Conditions (Node statementNode)
+        /// <param name="context">application context</param>
+        public Conditions (Node statementNode, ApplicationContext context)
         {
             if (statementNode == null)
-                throw new ArgumentException ("you must submit a node to Condition for it to be able to evaluate a statement, statementNode was null");
+                throw new ArgumentException ("you must submit a node to Condition, for it to be able to evaluate");
             _statementNode = statementNode;
-            _isSimpleExist = true;
+            _isSimpleExist = false;
+            _context = context;
         }
 
         /// <summary>
@@ -87,7 +98,7 @@ namespace phosphorus.lambda
         /// </summary>
         public bool Evaluate ()
         {
-            _isSimpleExist = false;
+            _hasEvaluated = true;
             return EvaluateStatement (_statementNode);
         }
 
@@ -99,9 +110,30 @@ namespace phosphorus.lambda
         {
             get {
                 foreach (Node idxChild in _statementNode.Children) {
-                    if (_isSimpleExist || idxChild.Name.StartsWith ("lambda"))
+                    if (idxChild.Name.StartsWith ("lambda"))
                         yield return idxChild;
                 }
+            }
+        }
+
+        /// <summary>
+        /// returns true if this is a simple "exists" Condition, meaning it has only one expression or constant
+        /// being evaluated, and nothing to evaluate it against, and no children nodes of type [lambda.xxx]
+        /// </summary>
+        /// <value><c>true</c> if this instance is simple exist; otherwise, <c>false</c></value>
+        public bool IsSimpleExist {
+            get {
+                if (!_hasEvaluated)
+                    throw new ArgumentException ("you cannot check if Condition is a simple exist, until Condition has been evaluated");
+
+                // if statement node only contains left-hand-side, and there are no [lambda.xxx] objects beneath
+                // condition node, then this is a "simple exist" Condition, and consumers of this class might
+                // choose to execute "everything" beneath statement node, instead of relying upon [lambda.xxx] children
+                // to exist
+                return _isSimpleExist && _statementNode.FindAll (
+                delegate (Node idx) {
+                    return idx.Name.StartsWith ("lambda");
+                }).GetEnumerator ().MoveNext () == false;
             }
         }
 
@@ -114,12 +146,12 @@ namespace phosphorus.lambda
             switch (oper) {
             case Operator.Exist:
                 if (currentStatement == _statementNode && 
-                    FindNextCondition (currentStatement.FirstChild, "or") == null && 
-                    FindNextCondition (currentStatement.FirstChild, "and") == null)
+                    FindNextCondition (currentStatement.FirstChildNotOf (string.Empty), "or") == null && 
+                    FindNextCondition (currentStatement.FirstChildNotOf (string.Empty), "and") == null)
                     _isSimpleExist = true;
                 return (Exist (currentStatement) && EvaluateRelatedAnd (currentStatement)) || EvaluateRelatedOr (currentStatement);
             case Operator.Not:
-                return (!Exist (currentStatement.FirstChild) && EvaluateRelatedAnd (currentStatement)) || EvaluateRelatedOr (currentStatement);
+                return (!Exist (currentStatement.FirstChildNotOf (string.Empty)) && EvaluateRelatedAnd (currentStatement)) || EvaluateRelatedOr (currentStatement);
             case Operator.Equals:
                 return (Compare (currentStatement) == 0 && EvaluateRelatedAnd (currentStatement)) || EvaluateRelatedOr (currentStatement);
             case Operator.NotEquals:
@@ -142,13 +174,30 @@ namespace phosphorus.lambda
          */
         private bool Exist (Node currentStatement)
         {
-            var match = Expression.Create (currentStatement.Get<string> (null)).Evaluate (currentStatement, null);
-            if (match.TypeOfMatch == Match.MatchType.count || match.TypeOfMatch == Match.MatchType.path || match.TypeOfMatch == Match.MatchType.node)
+            if (!XUtil.IsExpression (currentStatement.Value))
+                return currentStatement.Value != null; // constant in value of node always evaluates to true!
+
+            // making sure we format expression if necessary
+            string exp = null;
+            if (XUtil.IsFormatted (currentStatement))
+                exp = XUtil.FormatNode (currentStatement, _context);
+            else
+                exp = currentStatement.Get<string> (_context);
+
+            // creating a Match object
+            var match = Expression.Create (exp).Evaluate (currentStatement, _context);
+
+            // easy versions
+            if (match.TypeOfMatch == Match.MatchType.count || 
+                match.TypeOfMatch == Match.MatchType.path || 
+                match.TypeOfMatch == Match.MatchType.node)
                 return match.Count > 0;
+
+            // slightly harder versions
             foreach (var idx in match) {
                 switch (match.TypeOfMatch) {
                 case Match.MatchType.name:
-                    if ((idx.Value as Node).Name == string.Empty)
+                    if (string.Empty == idx.Value as string)
                         return false;
                     break;
                 case Match.MatchType.value:
@@ -156,6 +205,10 @@ namespace phosphorus.lambda
                         return false;
                     break;
                 }
+                // neither of above checks evaluated to true, hence statement is true,
+                // regardless of what other nodes contains, or don't contain, as long as there
+                // are more than 0 nodes in result
+                break;
             }
             return match.Count > 0;
         }
@@ -166,7 +219,7 @@ namespace phosphorus.lambda
         private int Compare (Node currentStatement)
         {
             var lhs = GetNodeList (currentStatement);
-            var rhs = GetNodeList (currentStatement.FirstChild);
+            var rhs = GetNodeList (currentStatement.FirstChildNotOf (string.Empty));
             if (lhs.Count < rhs.Count)
                 return -1;
             if (lhs.Count > rhs.Count)
@@ -184,21 +237,11 @@ namespace phosphorus.lambda
          */
         private List<Node> GetNodeList (Node currentStatement)
         {
-            if (XUtil.IsExpression (currentStatement.Value)) {
-                List<Node> retVal = new List<Node> ();
-                var match = Expression.Create (currentStatement.Get<string> (null)).Evaluate (currentStatement, null);
-                if (match.TypeOfMatch == Match.MatchType.count) {
-                    retVal.Add (new Node (string.Empty, match.Count));
-                } else {
-                    for (int idxSource = 0; idxSource < match.Count; idxSource ++) {
-                        retVal.Add (new Node (string.Empty, match [idxSource]));
-                    }
-                }
-                return retVal;
+            List<Node> retVal = new List<Node> ();
+            foreach (var idx in XUtil.Iterate<object> (currentStatement, _context)) {
+                retVal.Add (new Node (string.Empty, idx));
             }
-            if (currentStatement.Value == null)
-                return new List<Node> (currentStatement.Children);
-            return new List<Node> (new Node[] { new Node (string.Empty, currentStatement.Value) });
+            return retVal;
         }
 
         /*
@@ -206,7 +249,7 @@ namespace phosphorus.lambda
          */
         private bool EvaluateRelatedAnd (Node currentStatement)
         {
-            Node nextChild = FindNextCondition (currentStatement.FirstChild, "and");
+            Node nextChild = FindNextCondition (currentStatement.FirstChildNotOf (string.Empty), "and");
             if (nextChild != null) {
                 if (!EvaluateStatement (nextChild))
                     return false;
@@ -226,7 +269,7 @@ namespace phosphorus.lambda
          */
         private bool EvaluateRelatedOr (Node currentStatement)
         {
-            Node nextChild = FindNextCondition (currentStatement.FirstChild, "or");
+            Node nextChild = FindNextCondition (currentStatement.FirstChildNotOf (string.Empty), "or");
             if (nextChild != null) {
                 if (EvaluateStatement (nextChild))
                     return true;
@@ -268,9 +311,9 @@ namespace phosphorus.lambda
          */
         private Operator GetOperator (Node currentStatement)
         {
-            if (currentStatement.Count == 0)
+            if (currentStatement.FirstChildNotOf (string.Empty) == null)
                 return Operator.Exist;
-            switch (currentStatement.FirstChild.Name) {
+            switch (currentStatement.FirstChildNotOf (string.Empty).Name) {
             case "=":
                 return Operator.Equals;
             case "!=":
@@ -284,7 +327,7 @@ namespace phosphorus.lambda
             case "<=":
                 return Operator.LessThanEquals;
             default:
-                if ("!" == currentStatement.Get<string> (null))
+                if ("!" == currentStatement.Get<string> (_context))
                     return Operator.Not;
                 return Operator.Exist;
             }

@@ -23,10 +23,21 @@ namespace phosphorus.lambda
         [ActiveEvent (Name = "while")]
         private static void lambda_while (ApplicationContext context, ActiveEventArgs e)
         {
-            var condition = new Conditions (e.Args);
+            var condition = new Conditions (e.Args, context);
             while (condition.Evaluate ()) {
-                foreach (Node idxExe in condition.ExecutionLambdas) {
-                    context.Raise (idxExe.Name, idxExe);
+
+                // if you are only checking for a value's existence, you don't need to supply a [lambda] object
+                // beneath [while]. if you do not, [while] will execute as [lambda.immutable]
+                if (condition.IsSimpleExist) {
+
+                    // code tree does not contain any [lambda] objects beneath [while]
+                    context.Raise ("lambda.immutable", e.Args);
+                } else {
+
+                    // code tree contains [lambda.xxx] objects beneath [while]
+                    foreach (Node idxExe in condition.ExecutionLambdas) {
+                        context.Raise (idxExe.Name, idxExe);
+                    }
                 }
             }
         }

@@ -438,6 +438,19 @@ namespace phosphorus.core
         }
 
         /// <summary>
+        /// returns the first child of the node not having the given name
+        /// </summary>
+        /// <value>the first child</value>
+        public Node FirstChildNotOf (string name)
+        {
+            foreach (Node idx in _children) {
+                if (idx.Name != name)
+                    return idx;
+            }
+            return null;
+        }
+
+        /// <summary>
         /// returns the last child of the node
         /// </summary>
         /// <value>the last child</value>
@@ -928,7 +941,7 @@ namespace phosphorus.core
             }
             IComparable thisValue = value as IComparable;
             if (thisValue == null)
-                throw new ArgumentException ("cannot compare two objects of type; '" + value.GetType () + "'");
+                throw new ArgumentException ("cannot compare objects of type; '" + value.GetType () + "'");
             return thisValue.CompareTo (rhsValue);
         }
 

@@ -79,6 +79,7 @@
     <Compile Include="Set.cs" />
     <Compile Include="Append.cs" />
     <Compile Include="ForEach.cs" />
+    <Compile Include="While.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
