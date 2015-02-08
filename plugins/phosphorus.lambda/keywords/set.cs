@@ -50,7 +50,7 @@ namespace phosphorus.lambda
             if (node.LastChild.Value != null) {
 
                 // source is either constant value or an expression
-                source = XUtil.Single<object> (node.LastChild, context);
+                source = XUtil.Single<object> (node.LastChild, context, null);
             } else {
 
                 if (node.LastChild.Count == 1) {
@@ -69,10 +69,9 @@ namespace phosphorus.lambda
             }
 
             // iterating through all destinations, updating with source
-            XUtil.Iterate (node, context, 
-            delegate (MatchEntity idxDestination) {
+            foreach (var idxDestination in XUtil.Iterate (node, context)) {
                 idxDestination.Value = source;
-            });
+            }
         }
 
         /*
@@ -84,12 +83,11 @@ namespace phosphorus.lambda
                 throw new ArgumentException ("a [rel-source] must be an expression");
 
             // iterating through all destinations, figuring out source relative to each destinations
-            XUtil.Iterate (node, context, 
-            delegate (MatchEntity idxDestination) {
+            foreach (var idxDestination in XUtil.Iterate (node, context)) {
 
                 // source is relative to destination
-                idxDestination.Value = XUtil.Single<object> (node.LastChild, idxDestination.Node, context);
-            });
+                idxDestination.Value = XUtil.Single<object> (node.LastChild, idxDestination.Node, context, null);
+            }
         }
 
         /*
@@ -98,10 +96,9 @@ namespace phosphorus.lambda
         private static void SetNull (Node node, ApplicationContext context)
         {
             // iterating through all destinations, setting them to null
-            XUtil.Iterate (node, context, 
-            delegate (MatchEntity idxDestination) {
+            foreach (var idxDestination in XUtil.Iterate (node, context)) {
                 idxDestination.Value = null;
-            });
+            }
         }
     }
 }

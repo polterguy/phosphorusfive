@@ -29,8 +29,7 @@ namespace phosphorus.web
         private static void pf_web_widgets_property_get (ApplicationContext context, ActiveEventArgs e)
         {
             var origNodeList = new List<Node> (e.Args.Children);
-            XUtil.Iterate<string> (e.Args, context, 
-            delegate (string idx) {
+            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
                 Widget widget = FindWidget (context, idx);
                 foreach (Node nameNode in origNodeList) {
                     if (widget.ElementType == "select" && nameNode.Name == "value") {
@@ -68,7 +67,7 @@ namespace phosphorus.web
                         }
                     }
                 }
-            });
+            }
         }
 
         /// <summary>
@@ -82,8 +81,7 @@ namespace phosphorus.web
         [ActiveEvent (Name = "pf.web.widgets.property.set")]
         private static void pf_web_widgets_property_set (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.Iterate<string> (e.Args, context, 
-            delegate (string idx) {
+            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
                 Widget widget = FindWidget (context, idx);
                 foreach (Node valueNode in e.Args.Children) {
                     string propertyValue;
@@ -98,7 +96,7 @@ namespace phosphorus.web
                         break;
                     }
                 }
-            });
+            }
         }
 
         /// <summary>
@@ -112,13 +110,12 @@ namespace phosphorus.web
         [ActiveEvent (Name = "pf.web.widgets.property.remove")]
         private static void pf_web_widgets_property_remove (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.Iterate<string> (e.Args, context, 
-            delegate (string idx) {
+            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
                 Widget widget = FindWidget (context, idx);
                 foreach (Node nameNode in e.Args.Children) {
                     widget.RemoveAttribute (nameNode.Name);
                 }
-            });
+            }
         }
 
         /*

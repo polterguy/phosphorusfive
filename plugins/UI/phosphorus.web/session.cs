@@ -24,13 +24,12 @@ namespace phosphorus.web
         [ActiveEvent (Name = "pf.web.session.set")]
         private static void pf_web_session_set (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.Iterate<string> (e.Args, context,  
-            delegate (string idx) {
+            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
                 if (e.Args.Count > 0)
                     HttpContext.Current.Session [idx] = e.Args.Clone ();
                 else
                     HttpContext.Current.Session.Remove (idx);
-            });
+            }
         }
 
         /// <summary>
@@ -41,8 +40,7 @@ namespace phosphorus.web
         [ActiveEvent (Name = "pf.web.session.get")]
         private static void pf_web_session_get (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.Iterate<string> (e.Args, context, 
-            delegate (string idx) {
+            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
                 Node tmp = HttpContext.Current.Session [idx] as Node;
                 if (tmp != null) {
                     if (XUtil.IsExpression (e.Args.Value)) {
@@ -56,7 +54,7 @@ namespace phosphorus.web
                         e.Args.AddRange ((tmp as Node).Clone ().Children);
                     }
                 }
-            });
+            }
         }
     }
 }

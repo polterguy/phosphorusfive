@@ -17,11 +17,6 @@ namespace phosphorus.expressions
     public static class XUtil
     {
         /// <summary>
-        /// delegate used when iterating expressions
-        /// </summary>
-        public delegate void IteratorCallback<T> (T idx);
-
-        /// <summary>
         /// returns true if value is an expression
         /// </summary>
         /// <returns><c>true</c> if value is an expression; otherwise, <c>false</c></returns>
@@ -56,12 +51,13 @@ namespace phosphorus.expressions
             // and a value which is of type string
             return node.Value is string && node.FindAll (string.Empty).GetEnumerator ().MoveNext ();
         }
-        
+
         /// <summary>
-        /// formats given node and returns formatted node value as string
+        /// formats the node's value as a string.Format expression, using each child node
+        /// with a string.Empty name as indexed formatting parameters
         /// </summary>
-        /// <returns>formatter string</returns>
-        /// <param name="node">node containing formatting expression</param>
+        /// <returns>formatted string</returns>
+        /// <param name="node">node containing formatting expression and formatting children nodes</param>
         /// <param name="context">application context</param>
         public static string FormatNode (Node node, ApplicationContext context)
         {
@@ -69,11 +65,13 @@ namespace phosphorus.expressions
         }
 
         /// <summary>
-        /// formats given node and returns formatted node value as string
+        /// formats the node's value as a string.Format expression, using each child node
+        /// with a string.Empty name as indexed formatting parameters, using dataSource node
+        /// as the root node for any expressions within node's formatting children values
         /// </summary>
-        /// <returns>the formatted value of node</returns>
-        /// <param name="node">node to format</param>
-        /// <param name="dataSource">data source to use as root for expressions within formatting values</param>
+        /// <returns>formatted string</returns>
+        /// <param name="node">node containing formatting expression and formatting children nodes</param>
+        /// <param name="dataSource">node to use as dataSource for any expressions within formatting parameters</param>
         /// <param name="context">application context</param>
         public static string FormatNode (Node node, Node dataSource, ApplicationContext context)
         {
@@ -103,264 +101,207 @@ namespace phosphorus.expressions
         }
 
         /// <summary>
-        /// returns a single value from the given node. if node has an expression as its value, it
-        /// will iterate the results of that expression, concatenating the results back to one value, before
-        /// converting to T. if node contains anything but an expression, it will return that object as type T
-        /// back to caller
+        /// returns a single value of type T from the constant or expression in node's value. if node's value
+        /// is an expression, then expression will be evaluated, and result of expression converted to T. if
+        /// expression yields multiple results, then the results will be concatenated into a string, in order
+        /// evaluated, before string is converted to T and returned. if expression returns one result, or
+        /// node's value is a constant, then no conversion will be performed, unless necessary due to different
+        /// types in expression's result or constant. if node contains formatting children, these will be
+        /// evaluated as a formatting expression before expression is created, or constant is returned
         /// </summary>
-        /// <param name="node">node</param>
+        /// <param name="node">node who's value will be evaluated</param>
         /// <param name="context">application context</param>
-        /// <typeparam name="T">type you wish to convert result to</typeparam>
-        public static T Single<T> (Node node, ApplicationContext context)
+        /// <param name="defaultValue">default value to return if expression or constant yields null</param>
+        /// <typeparam name="T">type of object to return</typeparam>
+        public static T Single<T> (Node node, ApplicationContext context, T defaultValue = default (T))
         {
-            return Single<T> (node, node, context);
+            return Single<T> (node, node, context, defaultValue);
         }
-        
+
         /// <summary>
-        /// returns a single value from the given node. if node has an expression as its value, it
-        /// will iterate the results of that expression, concatenating the results back to one value, before
-        /// converting to T. if node contains anything but an expression, it will return that object as type T
-        /// back to caller. data source node is used as source for any formatting expressions inside of node
+        /// returns a single value of type T from the constant or expression in node's value. if node's value
+        /// is an expression, then expression will be evaluated, and result of expression converted to T. if
+        /// expression yields multiple results, then the results will be concatenated into a string, in order
+        /// evaluated, before string is converted to T and returned. if expression returns one result, or
+        /// node's value is a constant, then no conversion will be performed, unless necessary due to different
+        /// types in expression's result or constant. if node contains formatting children, these will be
+        /// evaluated as a formatting expression before expression is created, or constant is returned
         /// </summary>
-        /// <param name="node">node</param>
-        /// <param name="dataSource">node to use as source for any formatting expressions inside of node</param>
+        /// <param name="node">node who's value will be evaluated</param>
+        /// <param name="dataSource">node that will be used as data source for any expressions within formatting
+        /// paramaters of node's value</param>
         /// <param name="context">application context</param>
-        /// <typeparam name="T">type you wish to convert result to</typeparam>
-        public static T Single<T> (Node node, Node dataSource, ApplicationContext context)
+        /// <param name="defaultValue">default value to return if expression or constant yields null</param>
+        /// <typeparam name="T">type of object to return</typeparam>
+        public static T Single<T> (Node node, Node dataSource, ApplicationContext context, T defaultValue = default (T))
         {
-            if (IsExpression (node.Value)) {
-                string exp = IsFormatted (node) ? FormatNode (node, dataSource, context) : node.Get<string> (context);
-                return Single<T> (exp, dataSource, context);
-            } else {
-                object value = IsFormatted (node) ? FormatNode (node, dataSource, context) : node.Value;
-                return Utilities.Convert<T> (value, context);
+            object singleRetVal = null;
+            string multipleRetVal = null;
+            foreach (var idx in Iterate<T> (node, dataSource, context)) {
+
+                // hack to make sure we never convert object unless necessary
+                if (singleRetVal == null) {
+                    singleRetVal = idx;
+                } else {
+                    if (multipleRetVal == null)
+                        multipleRetVal = Utilities.Convert<string> (singleRetVal, context);
+                    multipleRetVal += Utilities.Convert<string> (idx, context);
+                }
             }
+
+            // making sure we never convert results unless necessary
+            if (multipleRetVal == null)
+                return Utilities.Convert<T> (singleRetVal, context, defaultValue);
+
+            // there were multiple return values, hence we'll need to use conversion
+            return Utilities.Convert<T> (multipleRetVal, context, defaultValue);
         }
 
         /// <summary>
-        /// returns a single value of type T according to the given expression. if expression yields
-        /// multiple results, the values from each result will be concatenated as string before attempting to
-        /// convert the value to type T
+        /// returns a single value of type T from the result of the expression given. if
+        /// expression yields multiple results, then the results will be concatenated into a string, in order
+        /// evaluated, before string is converted to T and returned. if expression returns one result, or
+        /// node's value is a constant, then no conversion will be performed, unless necessary due to different
+        /// types in expression's result or constant. if node contains formatting children, these will be
+        /// evaluated as a formatting expression before expression is created, or constant is returned
         /// </summary>
-        /// <param name="expression">expression</param>
-        /// <param name="dataSource">root node for expression</param>
+        /// <param name="expression">expression to evaluate</param>
+        /// <param name="dataSource">node to use as start node for expression</param>
         /// <param name="context">application context</param>
-        /// <typeparam name="T">type to return result of expression as</typeparam>
-        public static T Single<T> (string expression, Node dataSource, ApplicationContext context)
-        {
-            if (!IsExpression (expression))
-                throw new ArgumentException ("Single was not given a valid expression");
-
-            // evaluating expression
-            var match = Expression.Create (expression).Evaluate (dataSource, context);
-
-            // returning simple count, if expression is of type count
-            if (match.TypeOfMatch == Match.MatchType.count)
-                return Utilities.Convert<T> (match.Count, context);
-
-            // checking if this is a single object match, at which case we don't iterate converting to string
-            if (match.Count == 1)
-                return Utilities.Convert<T> (match [0].Value, context);
-
-            // looping through each match result, concatenating all values,
-            // before converting to requested type, and returning result back to caller
-            string retVal = null;
-            foreach (var idxMatch in match) {
-                retVal += Utilities.Convert<string> (idxMatch.Value, context);
-            }
-            return Utilities.Convert<T> (retVal, context);
-        }
-
-        /// <summary>
-        /// will iterate node's value expression result, if node's value is an expression,
-        /// otherwise it will invoke your callback once for the value of node, converted
-        /// to type T
-        /// </summary>
-        /// <param name="node">node to use</param>
-        /// <param name="context">application context</param>
-        /// <param name="functor">delegate to invoke for the converted result</param>
-        /// <typeparam name="T">type to convert results to</typeparam>
-        public static void Iterate<T> (
-            Node node,
-            ApplicationContext context,
-            IteratorCallback<T> functor)
-        {
-            Iterate<T> (node, node, context, functor);
-        }
-        
-        /// <summary>
-        /// will iterate node's value expression result, if node's value is an expression,
-        /// otherwise it will invoke your callback once for the value of node, converted
-        /// to type T
-        /// </summary>
-        /// <param name="node">node to use as source of expression</param>
-        /// <param name="node">node to use as data source for formatting values and where to execute the expression</param>
-        /// <param name="context">application context</param>
-        /// <param name="functor">delegate to invoke for the converted result</param>
-        /// <typeparam name="T">type to convert results to</typeparam>
-        public static void Iterate<T> (
-            Node node,
-            Node dataSource,
-            ApplicationContext context,
-            IteratorCallback<T> functor)
-        {
-            if (IsExpression (node.Value)) {
-                string exp = IsFormatted (node) ? FormatNode (node, dataSource, context) : node.Get<string> (context);
-                Iterate<T> (exp, dataSource, context, functor);
-            } else {
-                object value = IsFormatted (node) ? FormatNode (node, dataSource, context) : node.Value;
-                functor (Utilities.Convert<T> (value, context));
-            }
-        }
-
-        /// <summary>
-        /// iterates the given expression with the given datasource as root node for expression and
-        /// invokes your delegate once for each result in the expression, converting the expression's
-        /// value to type T
-        /// </summary>
-        /// <param name="expression">expression</param>
-        /// <param name="dataSource">root node for expression</param>
-        /// <param name="context">application context</param>
-        /// <param name="functor">delegate to invoke for your expression result</param>
-        /// <typeparam name="T">type to convert expression's result to</typeparam>
-        public static void Iterate<T> (
+        /// <param name="defaultValue">default value to return if expression or constant yields null</param>
+        /// <typeparam name="T">type of object to return</typeparam>
+        public static T Single<T> (
             string expression, 
             Node dataSource, 
             ApplicationContext context, 
-            IteratorCallback<T> functor)
+            T defaultValue = default (T))
         {
-            if (!IsExpression (expression))
-                throw new ArgumentException ("Iterate was not given a valid expression");
+            object singleRetVal = null;
+            string multipleRetVal = null;
+            foreach (var idx in Iterate<T> (expression, dataSource, context)) {
 
-            var match = Expression.Create (expression).Evaluate (dataSource, context);
-            foreach (var idxMatch in match) {
-                functor (Utilities.Convert<T> (idxMatch.Value, context));
+                // hack to make sure we never convert object unless necessary
+                if (singleRetVal == null) {
+                    singleRetVal = idx;
+                } else {
+                    if (multipleRetVal == null)
+                        multipleRetVal = Utilities.Convert<string> (singleRetVal, context);
+                    multipleRetVal += Utilities.Convert<string> (idx, context);
+                }
             }
+
+            // making sure we never convert results unless necessary
+            if (multipleRetVal == null)
+                return Utilities.Convert<T> (singleRetVal, context, defaultValue);
+
+            // there were multiple return values, hence we'll need to use conversion
+            return Utilities.Convert<T> (multipleRetVal, context, defaultValue);
         }
 
         /// <summary>
-        /// iterates through expression in node's value, with given node as datasource, and invokes functor
-        /// for every single match, passing in a MatchEntity, wrapping the match item
+        /// iterates the given node's value, which might be either an expression or a constant. if node's
+        /// value is a constant, then this constant will be converted if necessary to T before returned. if
+        /// node's value is an expression, then this expression will be evaluated, and all results converted
+        /// to T before returned to caller. node's value can contain formatting parameters, which will be
+        /// evaluated if existing. if node contains formatting parameters, these will be evaluated before
+        /// expression is evaluated
         /// </summary>
-        /// <param name="node">node to use for expression and datasource</param>
-        /// <param name="context">application context</param>
-        /// <param name="functor">delegate invoked once for every single match</param>
-        public static void Iterate (
-            Node node,
-            ApplicationContext context,
-            IteratorCallback<MatchEntity> functor)
-        {
-            Iterate (node, node, context, functor);
-        }
-        
-        /// <summary>
-        /// iterates through expression in node's value, with dataSource as data source, and invokes functor
-        /// for every single match, passing in a MatchEntity, wrapping the match item
-        /// </summary>
-        /// <param name="node">node to use for expression</param>
-        /// <param name="dataSource">node to use as datasource</param>
-        /// <param name="context">application context</param>
-        /// <param name="functor">delegate invoked once for every single match</param>
-        public static void Iterate (
-            Node node,
-            Node dataSource,
-            ApplicationContext context,
-            IteratorCallback<MatchEntity> functor)
-        {
-            string exp = IsFormatted (node) ? FormatNode (node, dataSource, context) : node.Get<string> (context);
-            Iterate (exp, dataSource, context, functor);
-        }
-
-        /// <summary>
-        /// iterates through given expression, with given node as datasource, and invokes functor
-        /// for every single match, passing in a MatchEntity, wrapping the match item
-        /// </summary>
-        /// <param name="expression">expression</param>
-        /// <param name="dataSource">data source node to use for expression</param>
-        /// <param name="context">application context</param>
-        /// <param name="functor">delegate invoked once for every single match</param>
-        public static void Iterate (
-            string expression,
-            Node dataSource,
-            ApplicationContext context,
-            IteratorCallback<MatchEntity> functor)
-        {
-            if (!IsExpression (expression))
-                throw new ArgumentException ("Iterate was not given a valid expression");
-
-            var match = Expression.Create (expression).Evaluate (dataSource, context);
-            foreach (var idxMatch in match) {
-                functor (idxMatch);
-            }
-        }
-
-        /// <summary>
-        /// returns content of node as list of T
-        /// </summary>
-        /// <param name="node">node either containing an expression or a list of children nodes</param>
+        /// <param name="node">node who's value will be evaluated</param>
         /// <param name="context">application context</param>
         /// <typeparam name="T">type of object you wish to retrieve</typeparam>
-        public static IEnumerable<T> Content<T> (Node node, ApplicationContext context)
+        public static IEnumerable<T> Iterate<T> (Node node, ApplicationContext context)
         {
-            return Content<T> (node, node, context);
+            return Iterate<T> (node, node, context);
         }
 
         /// <summary>
-        /// returns content of node as list of T
+        /// iterates the given node's value, which might be either an expression or a constant. if node's
+        /// value is a constant, then this constant will be converted if necessary to T before returned. if
+        /// node's value is an expression, then this expression will be evaluated, and all results converted
+        /// to T before returned to caller. node's value can contain formatting parameters, which will be
+        /// evaluated if existing. if node contains formatting parameters, these will be evaluated before
+        /// expression is evaluated
         /// </summary>
-        /// <param name="node">node either containing an expression or a list of children nodes</param>
-        /// <param name="dataSource">node being dataSource</param>
+        /// <param name="node">node who's value will be evaluated</param>
+        /// <param name="dataSource">node to use as start node for any expressions within formatting parameters</param>
         /// <param name="context">application context</param>
         /// <typeparam name="T">type of object you wish to retrieve</typeparam>
-        public static IEnumerable<T> Content<T> (Node node, Node dataSource, ApplicationContext context)
+        public static IEnumerable<T> Iterate<T> (Node node, Node dataSource, ApplicationContext context)
         {
             if (IsExpression (node.Value)) {
+
+                // node's value is expression, iterating expression result, yielding back to caller
                 string exp = IsFormatted (node) ? FormatNode (node, dataSource, context) : node.Get<string> (context);
-                foreach (var idx in Content<T> (exp, dataSource, context)) {
+                foreach (var idx in Iterate<T> (exp, dataSource, context)) {
                     yield return idx;
                 }
+            } else if (node.Value != null) {
+
+                // node's value is not null, converting value to type requests, and yielding back to caller
+                object value = IsFormatted (node) ? FormatNode (node, dataSource, context) : node.Value;
+                yield return Utilities.Convert<T> (value, context);
             } else if (typeof(T) == typeof(Node)) {
+
+                // node's value is null, caller requests nodes, iterating through children, yielding back to caller
                 foreach (Node idx in node.Children) {
                     yield return Utilities.Convert<T> (idx, context);
                 }
             } else {
+
+                // node's value is null, caller requests anything but node, iterating childre, yielding
+                // values converted to type back to caller
                 foreach (Node idx in node.Children) {
                     yield return idx.Get<T> (context);
                 }
             }
         }
 
-        public static IEnumerable<T> Content<T> (string expression, Node dataSource, ApplicationContext context)
+        /// <summary>
+        /// iterates the given expression on the given dataSource node and converts each result from expression to
+        /// type T before returning back to caller
+        /// </summary>
+        /// <param name="expression">expression to run on dataSource</param>
+        /// <param name="dataSource">node to use as start node for any expressions within formatting parameters</param>
+        /// <param name="context">application context</param>
+        /// <typeparam name="T">type of object you wish to retrieve</typeparam>
+        public static IEnumerable<T> Iterate<T> (string expression, Node dataSource, ApplicationContext context)
         {
             if (!IsExpression (expression))
-                throw new ArgumentException ("Content was not given a valid expression");
+                throw new ArgumentException ("ToList was not given a valid expression");
 
             var match = Expression.Create (expression).Evaluate (dataSource, context);
-            foreach (var idx in match) {
-                yield return Utilities.Convert<T> (idx.Value, context);
+            if (match.TypeOfMatch == Match.MatchType.count) {
+                yield return Utilities.Convert<T> (match.Count, context);
+            } else {
+                foreach (var idx in match) {
+                    yield return Utilities.Convert<T> (idx.Value, context);
+                }
             }
         }
 
         /// <summary>
-        /// returns all matches from expression in node
+        /// returns all matches from expression in node. node may contain formatting parameters which will
+        /// be evaluated before expression 
         /// </summary>
         /// <param name="node">node being both expression node and data source node</param>
         /// <param name="context">application context</param>
-        public static IEnumerable<MatchEntity> Matches (Node node, ApplicationContext context)
+        public static IEnumerable<MatchEntity> Iterate (Node node, ApplicationContext context)
         {
-            return Matches (node, node, context);
+            return Iterate (node, node, context);
         }
 
         /// <summary>
-        /// returns all matches from expression in node
+        /// returns all matches from expression in node. node may contain formatting parameters which will
+        /// be evaluated before expression using dataSource as start node for any expressions within formatting
+        /// parameters
         /// </summary>
         /// <param name="node">node being expression node</param>
         /// <param name="dataSource">node being data source node</param>
         /// <param name="context">application context</param>
-        public static IEnumerable<MatchEntity> Matches (Node node, Node dataSource, ApplicationContext context)
+        public static IEnumerable<MatchEntity> Iterate (Node node, Node dataSource, ApplicationContext context)
         {
             string exp = IsFormatted (node) ? FormatNode (node, dataSource, context) : node.Get<string> (context);
-            return Matches (exp, dataSource, context);
+            return Iterate (exp, dataSource, context);
         }
 
         /// <summary>
@@ -369,7 +310,7 @@ namespace phosphorus.expressions
         /// <param name="expression">expression</param>
         /// <param name="dataSource">node being data source node</param>
         /// <param name="context">application context</param>
-        public static IEnumerable<MatchEntity> Matches (string expression, Node dataSource, ApplicationContext context)
+        public static IEnumerable<MatchEntity> Iterate (string expression, Node dataSource, ApplicationContext context)
         {
             if (!IsExpression (expression))
                 throw new ArgumentException ("Matches was not given a valid expression");

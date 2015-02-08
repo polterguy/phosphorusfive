@@ -24,15 +24,12 @@ namespace phosphorus.lambda
         [ActiveEvent (Name = "for-each")]
         private static void lambda_for_each (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.Iterate<Node> (e.Args, context,
-            delegate (Node idxSource) {
-                if (idxSource == null)
-                    throw new ArgumentException ("source expression for [for-each] returned value that was not of type 'node'");
+            foreach (var idxSource in XUtil.Iterate<Node> (e.Args, context)) {
                 Node dp = new Node ("__dp", idxSource);
                 e.Args.Insert (0, dp);
                 context.Raise ("lambda.immutable", e.Args);
                 e.Args [0].UnTie ();
-            });
+            }
         }
     }
 }

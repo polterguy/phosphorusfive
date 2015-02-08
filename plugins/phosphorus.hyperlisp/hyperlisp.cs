@@ -30,10 +30,9 @@ namespace phosphorus.hyperlisp
         private static void pf_hyperlisp_hyperlisp2lambda (ApplicationContext context, ActiveEventArgs e)
         {
             StringBuilder builder = new StringBuilder ();
-            XUtil.Iterate<string> (e.Args, context,
-            delegate (string idx) {
+            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
                 builder.Append (idx + "\r\n");
-            });
+            }
             e.Args.AddRange (new NodeBuilder (context, builder.ToString ().TrimEnd ('\r', '\n', ' ')).Nodes);
         }
 
@@ -49,10 +48,9 @@ namespace phosphorus.hyperlisp
         {
             if (XUtil.IsExpression (e.Args.Value)) {
                 List<Node> nodeList = new List<Node> ();
-                XUtil.Iterate<Node> (e.Args, context,
-                delegate (Node idx) {
+                foreach (var idx in XUtil.Iterate<Node> (e.Args, context)) {
                     nodeList.Add (idx);
-                });
+                }
                 e.Args.Value = new HyperlispBuilder (context, nodeList).Hyperlisp;
             } else if (e.Args.Value is Node) {
                 e.Args.Value = new HyperlispBuilder (context, new Node [] { e.Args.Value as Node }).Hyperlisp;

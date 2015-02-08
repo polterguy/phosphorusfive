@@ -33,12 +33,11 @@ namespace phosphorus.file
             string rootFolder = common.GetRootFolder (context);
 
             // iterating through each folder the caller requests knowledge about
-            XUtil.Iterate<string> (e.Args, context,
-            delegate (string idx) {
+            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
 
                 // appending whether or not the folder exists back to caller
                 e.Args.Add (new Node (idx, Directory.Exists (rootFolder + idx)));
-            });
+            }
         }
     }
 }

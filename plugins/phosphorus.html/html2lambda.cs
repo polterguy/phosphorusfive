@@ -28,13 +28,12 @@ namespace phosphorus.html
             // making sure "form" element conforms to relational structure
             HtmlNode.ElementsFlags.Remove ("form");
 
-            XUtil.Iterate<string> (e.Args, context,
-            delegate (string idx) {
+            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
                 HtmlDocument doc = new HtmlDocument ();
                 doc.LoadHtml (idx);
                 e.Args.Add (new Node ());
                 ParseHtmlDocument (e.Args.LastChild, doc.DocumentNode);
-            });
+            }
         }
 
         /*

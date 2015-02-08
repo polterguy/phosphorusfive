@@ -69,13 +69,13 @@ namespace phosphorus.expressions
                     Node.Name = Utilities.Convert<string> (value, _match.Context, string.Empty);
                     break;
                 case Match.MatchType.value:
-                    Node.Value = value;
+                    Node.Value = value; // ps, not cloned!
                     break;
                 case Match.MatchType.node:
                     if (value == null)
                         Node.UnTie ();
                     else
-                        Node.Replace (Utilities.Convert<Node> (value, _match.Context).Clone ());
+                        Node.Replace (Utilities.Convert<Node> (value, _match.Context).Clone ()); // ps, cloned!
                     break;
                 default:
                     throw new ArgumentException ("cannot get indexed value from match of type 'count'");

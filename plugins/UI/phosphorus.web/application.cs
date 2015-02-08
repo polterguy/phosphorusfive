@@ -25,13 +25,12 @@ namespace phosphorus.web
         [ActiveEvent (Name = "pf.web.application.set")]
         private static void pf_web_application_set (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.Iterate<string> (e.Args, context, 
-            delegate (string idx) {
+            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
                 if (e.Args.Count > 0)
                     HttpContext.Current.Application [idx] = e.Args.Clone ();
                 else
                     HttpContext.Current.Application.Remove (idx);
-            });
+            }
         }
 
         /// <summary>
@@ -42,8 +41,7 @@ namespace phosphorus.web
         [ActiveEvent (Name = "pf.web.application.get")]
         private static void pf_web_application_get (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.Iterate<string> (e.Args, context, 
-            delegate (string idx) {
+            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
                 Node tmp = HttpContext.Current.Application [idx] as Node;
                 if (tmp != null) {
                     if (XUtil.IsExpression (e.Args.Value)) {
@@ -57,7 +55,7 @@ namespace phosphorus.web
                         e.Args.AddRange ((tmp as Node).Clone ().Children);
                     }
                 }
-            });
+            }
         }
     }
 }

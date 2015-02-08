@@ -55,10 +55,9 @@ namespace phosphorus.web
             // retrieving a reference to our EchFilter
             EchoFilter echoFilter = HttpContext.Current.Response.Filter as EchoFilter;
 
-            XUtil.Iterate<string> (e.Args, context, 
-            delegate (string idx) {
+            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
                 echoFilter.Append (idx);
-            });
+            }
         }
     }
 }

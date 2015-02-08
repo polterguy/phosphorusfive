@@ -64,14 +64,13 @@ namespace phosphorus.lambda
          */
         private static void ExecuteLambdaValue (ApplicationContext context, Node args, LambdaType type)
         {
-            XUtil.Iterate<object> (args, context, 
-            delegate (object idxSource) {
+            foreach (var idxSource in XUtil.Iterate<object> (args, context)) {
                 if (idxSource is Node) {
                     ExecuteBlock (context, idxSource as Node, args.Children, type);
                 } else {
                     ExecuteLambdaText (context, (idxSource ?? "").ToString (), args.Children);
                 }
-            });
+            }
         }
 
         /*

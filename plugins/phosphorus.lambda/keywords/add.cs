@@ -50,14 +50,13 @@ namespace phosphorus.lambda
             // retrieving source before we start iterating destination,
             // in case destination and source overlaps
             List<Node> sourceNodes = new List<Node> ();
-            foreach (var idx in XUtil.Content<Node> (node.LastChild, context)) {
+            foreach (var idx in XUtil.Iterate<Node> (node.LastChild, context)) {
                 sourceNodes.Add (idx.Clone ());
             }
 
             // looping through every destination node
             bool isFirst = true; // since source is already cloned, we avoid cloning the first run
-            XUtil.Iterate<Node> (node, context,
-            delegate (Node idxDestination) {
+            foreach (var idxDestination in XUtil.Iterate<Node> (node, context)) {
                 if (isFirst) {
                     idxDestination.AddRange (sourceNodes);
                     isFirst = false;
@@ -66,7 +65,7 @@ namespace phosphorus.lambda
                         idxDestination.Add (idxSource.Clone ());
                     }
                 }
-            });
+            }
         }
 
         /*
@@ -74,12 +73,11 @@ namespace phosphorus.lambda
          */
         private static void AddRelativeSource (Node node, ApplicationContext context)
         {
-            XUtil.Iterate<Node> (node, context, 
-            delegate (Node idxDestination) {
-                foreach (var idxSource in XUtil.Content<Node> (node.LastChild, idxDestination, context)) {
+            foreach (var idxDestination in XUtil.Iterate<Node> (node, context)) {
+                foreach (var idxSource in XUtil.Iterate<Node> (node.LastChild, idxDestination, context)) {
                     idxDestination.Add (idxSource.Clone ());
                 }
-            });
+            }
         }
     }
 }

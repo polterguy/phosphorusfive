@@ -33,8 +33,7 @@ namespace phosphorus.file
             string rootFolder = common.GetRootFolder (context);
 
             // iterating through each path given
-            XUtil.Iterate<string> (e.Args, context,
-            delegate (string idx) {
+            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
                 if (File.Exists (rootFolder + idx)) {
 
                     // file exists, removing file and signaling caller
@@ -45,7 +44,7 @@ namespace phosphorus.file
                     // file does not exist, signaling caller
                     e.Args.Add (new Node (idx, false));
                 }
-            });
+            }
         }
     }
 }

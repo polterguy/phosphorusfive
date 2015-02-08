@@ -54,12 +54,11 @@ namespace phosphorus.file
             string source = XUtil.Single<string> (sourceNode, context);
 
             // iterating through each path given
-            XUtil.Iterate<string> (destinationNode, context,
-            delegate (string idx) {
+            foreach (var idx in XUtil.Iterate<string> (destinationNode, context)) {
                 using (TextWriter writer = File.CreateText (rootFolder + idx)) {
                     writer.Write (source);
                 }
-            });
+            }
         }
 
         /*
@@ -71,15 +70,14 @@ namespace phosphorus.file
             string rootFolder = common.GetRootFolder (context);
 
             // iterating over each destination
-            XUtil.Iterate (destinationNode.Get<string> (context), destinationNode, context,
-            delegate (MatchEntity idx) {
+            foreach (var idx in XUtil.Iterate (destinationNode.Get<string> (context), destinationNode, context)) {
                 using (TextWriter writer = File.CreateText (rootFolder + idx.Value)) {
 
                     // finding source relative to destination
                     string source = XUtil.Single<string> (destinationNode.LastChild, idx.Node, context);
                     writer.Write (source);
                 }
-            });
+            }
         }
     }
 }

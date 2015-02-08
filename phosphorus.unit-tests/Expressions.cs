@@ -275,10 +275,9 @@ namespace phosphorus.unittests
                 .Add ("", "cc")
                 .Add ("", "ess");
             string value = null;
-            XUtil.Iterate<string> ("@/*/?value", node, _context, 
-            delegate (string idx) {
+            foreach (var idx in XUtil.Iterate<string> ("@/*/?value", node, _context)) {
                 value += idx;
-            });
+            }
             Assert.AreEqual ("success", value);
         }
 
@@ -293,10 +292,9 @@ namespace phosphorus.unittests
                 .Add ("", "cc")
                 .Add ("", "ess");
             string value = null;
-            XUtil.Iterate<string> (node, _context, 
-            delegate (string idx) {
+            foreach (var idx in XUtil.Iterate<string> (node, _context)) {
                 value += idx;
-            });
+            }
             Assert.AreEqual ("success", value);
         }
 
@@ -309,10 +307,9 @@ namespace phosphorus.unittests
             Node node = new Node ("root", "success")
                 .Add ("", "error");
             string value = null;
-            XUtil.Iterate<string> (node, _context, 
-            delegate (string idx) {
+            foreach (var idx in XUtil.Iterate<string> (node, _context)) {
                 value += idx;
-            });
+            }
             Assert.AreEqual ("success", value);
         }
 
@@ -326,10 +323,9 @@ namespace phosphorus.unittests
                 .Add ("", "@/0/?name").LastChild
                     .Add ("/0", "success").Root;
             string value = null;
-            XUtil.Iterate<string> (node, node [0], _context, 
-            delegate (string idx) {
+            foreach (var idx in XUtil.Iterate<string> (node, node [0], _context)) {
                 value += idx;
-            });
+            }
             Assert.AreEqual ("success", value);
         }
         
@@ -344,10 +340,9 @@ namespace phosphorus.unittests
                 .Add ("", 2)
                 .Add ("", 3);
             string value = null;
-            XUtil.Iterate<string> ("@/*/?value", node, _context, 
-            delegate (string idx) {
+            foreach (var idx in XUtil.Iterate<string> ("@/*/?value", node, _context)) {
                 value += idx;
-            });
+            }
             Assert.AreEqual ("123", value);
         }
 
@@ -790,6 +785,23 @@ namespace phosphorus.unittests
                 Loader.Instance.LoadAssembly ("phosphorus.types");
                 _context = Loader.Instance.CreateApplicationContext ();
             }
+        }
+        
+        /// <summary>
+        /// verifies escaped iterators works
+        /// </summary>
+        [Test]
+        public void EscapedIterators ()
+        {
+            Node node = new Node ("_data")
+                .Add ("*").LastChild
+                    .Add ("..").LastChild
+                        .Add (".").LastChild
+                            .Add ("/").LastChild
+                                .Add ("\\").LastChild
+                                    .Add ("success").Root;
+            string value = XUtil.Single<string> ("@/*/\\*/*/\\../*/\\./*/\"\\\\/\"/*/\\\\/*/?name", node, _context);
+            Assert.AreEqual ("success", value);
         }
     }
 }

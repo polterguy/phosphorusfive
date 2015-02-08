@@ -30,12 +30,11 @@ namespace phosphorus.file
             string rootFolder = common.GetRootFolder (context);
 
             // iterating through each filepath given
-            XUtil.Iterate<string> (e.Args, context,
-            delegate (string idx) {
+            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
 
                 // letting caller know whether or not this file exists
                 e.Args.Add (new Node (idx, File.Exists (rootFolder + idx)));
-            });
+            }
         }
     }
 }

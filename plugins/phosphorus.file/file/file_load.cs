@@ -37,8 +37,7 @@ namespace phosphorus.file
         [ActiveEvent (Name = "pf.file.load")]
         private static void pf_file_load (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.Iterate<string> (e.Args, context,
-            delegate (string idx) {
+            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
                 if (idx.StartsWith ("http://") || idx.StartsWith ("https://")) {
 
                     // load file as HttpWebRequest
@@ -48,7 +47,7 @@ namespace phosphorus.file
                     // local file
                     LoadFileLocally (e.Args, idx, context);
                 }
-            });
+            }
         }
 
         /*

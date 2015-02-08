@@ -30,14 +30,13 @@ namespace phosphorus.file
             string rootFolder = common.GetRootFolder (context);
 
             // iterating through each folder passed in by caller
-            XUtil.Iterate<string> (e.Args, context,
-            delegate (string idx) {
+            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
 
                 // iterating all folders in current directory, and returning as nodes beneath args given
                 foreach (var idxFolder in Directory.GetDirectories (rootFolder + idx)) {
                     e.Args.Add (new Node (string.Empty, idxFolder.Replace (rootFolder, "")));
                 }
-            });
+            }
         }
     }
 }

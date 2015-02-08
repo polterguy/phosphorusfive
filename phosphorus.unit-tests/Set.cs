@@ -682,19 +682,23 @@ namespace phosphorus.unittests
                 Node node = new Node ()
                     .Add ("_data").LastChild
                         .Add("success1").LastChild
-                            .Add("foo1", 5).Parent
+                            .Add("foo1", 5).Parent // making sure types works
                         .Add("success2").LastChild
-                            .Add("foo2").Parent.Parent
+                            .Add("foo2", new Node ("bar2", "x")).Parent // making sure recursive nodes works
+                        .Add("success3").LastChild
+                            .Add("foo3", "test1\r\ntest2").Parent.Parent // making sure CR/LF works
                     .Add ("set", "@/-/*/?name").LastChild
                         .Add ("rel-source", "@?node").Root;
                 _context.Raise ("set", node [1]);
 
                 // verifying [set] works as it should
-                Assert.AreEqual (2, node [0].Count);
+                Assert.AreEqual (3, node [0].Count);
                 Assert.AreEqual (1, node [0] [0].Count); // making sure source is still around
                 Assert.AreEqual ("success1\r\n  foo1:int:5", node [0] [0].Name);
                 Assert.AreEqual (1, node [0] [1].Count); // making sure source is still around
-                Assert.AreEqual ("success2\r\n  foo2", node [0] [1].Name);
+                Assert.AreEqual ("success2\r\n  foo2:node:\"bar2:x\"", node [0] [1].Name);
+                Assert.AreEqual (1, node [0] [2].Count); // making sure source is still around
+                Assert.AreEqual ("success3\r\n  foo3:@\"test1\r\ntest2\"", node [0] [2].Name);
             } finally {
 
                 // making sure we "unload" our extra assemblies here
@@ -702,6 +706,26 @@ namespace phosphorus.unittests
                 Loader.Instance.UnloadAssembly ("phosphorus.hyperlisp");
                 _context = Loader.Instance.CreateApplicationContext ();
             }
+        }
+        
+        /// <summary>
+        /// verifies [set] works when there are more than one destination
+        /// </summary>
+        [Test]
+        public void Set35 ()
+        {
+            Node node = new Node ()
+                .Add ("_data").LastChild
+                    .Add ("_1")
+                    .Add ("_2").Parent
+                .Add ("set", "@/-/**/?value").LastChild
+                    .Add ("source", "success").Root;
+            _context.Raise ("set", node [1]);
+
+            // verifying [set] works as it should
+            Assert.AreEqual ("success", node [0].Value);
+            Assert.AreEqual ("success", node [0] [0].Value);
+            Assert.AreEqual ("success", node [0] [1].Value);
         }
     }
 }

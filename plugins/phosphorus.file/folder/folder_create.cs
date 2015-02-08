@@ -33,8 +33,7 @@ namespace phosphorus.file
             string rootFolder = common.GetRootFolder (context);
 
             // iterating through each folder caller wants to create
-            XUtil.Iterate<string> (e.Args, context,
-            delegate (string idx) {
+            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
                 if (Directory.Exists (rootFolder + idx)) {
 
                     // folder already exists, returning that fact back to caller
@@ -45,7 +44,7 @@ namespace phosphorus.file
                     Directory.CreateDirectory (rootFolder + idx);
                     e.Args.Add (new Node (idx, true));
                 }
-            });
+            }
         }
     }
 }

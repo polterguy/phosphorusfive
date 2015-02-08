@@ -26,8 +26,7 @@ namespace phosphorus.web
         [ActiveEvent (Name = "pf.web.cookie.set")]
         private static void pf_web_cookie_set (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.Iterate<string> (e.Args, context, 
-            delegate (string idx) {
+            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
 
                 // creating cookie
                 HttpCookie cookie = CreateCookieFromNode (context, idx, e.Args);
@@ -40,7 +39,7 @@ namespace phosphorus.web
                     // removing cookie
                     HttpContext.Current.Response.Cookies [idx].Expires = DateTime.Now.Date.AddDays (-1);
                 }
-            });
+            }
         }
 
         /// <summary>
@@ -53,8 +52,7 @@ namespace phosphorus.web
         [ActiveEvent (Name = "pf.web.cookie.get")]
         private static void pf_web_cookie_get (ApplicationContext context, ActiveEventArgs e)
         {
-            XUtil.Iterate<string> (e.Args, context, 
-            delegate (string idx) {
+            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
 
                 // checking to see if this cookie exists
                 HttpCookie cookie = HttpContext.Current.Request.Cookies.Get (idx);
@@ -76,7 +74,7 @@ namespace phosphorus.web
                         e.Args.AddRange ((convertNode as Node).Clone ().Children);
                     }
                 }
-            });
+            }
         }
 
         /*
