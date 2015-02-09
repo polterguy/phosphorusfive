@@ -49,4 +49,10 @@
 
 * Exception hierarchy
 
+* reference nodes in Hyperlisp, where value is an expression, leading to a node
+
+* rename "phosphorus.types" to "phosphorus.hyperlisp.types", maybe ...??
+
+
+
 

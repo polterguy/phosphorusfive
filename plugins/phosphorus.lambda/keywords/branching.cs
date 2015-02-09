@@ -27,12 +27,25 @@ namespace phosphorus.lambda
         {
             var condition = new Conditions (e.Args, context);
             if (condition.Evaluate ()) {
-                foreach (Node idxExe in condition.ExecutionLambdas) {
-                    context.Raise (idxExe.Name, idxExe);
+
+                // if you are only checking for a value's existence, you don't need to supply a [lambda] object
+                // beneath [while]. if you do not, [while] will execute as [lambda.immutable]
+                if (condition.IsSimpleExist) {
+                    
+                    // code tree does not contain any [lambda] objects beneath [if]
+                    context.Raise ("lambda", e.Args);
+                } else {
+                    
+                    // code tree contains [lambda.xxx] objects beneath [while]
+                    foreach (Node idxExe in condition.ExecutionLambdas) {
+                        context.Raise (idxExe.Name, idxExe);
+                    }
                 }
+
+                // making sure we "signal" to any [else-if] and/or [else] that statement evaluated to true
                 Node next = e.Args.NextSibling;
                 if (next != null && (next.Name == "else-if" || next.Name == "else")) {
-                    e.Args.Parent.Insert (0, new Node ("__pf_evaluated"));
+                    e.Args.Parent.Insert (0, new Node ("__pf_evaluated")); // "signal node" inserted
                 }
             }
         }
@@ -46,15 +59,16 @@ namespace phosphorus.lambda
         [ActiveEvent (Name = "else-if")]
         private static void lambda_else_if (ApplicationContext context, ActiveEventArgs e)
         {
-            if (e.Args.Count == 0)
-                throw new ArgumentException ("syntax error in [else-if]. [else-if] needs at the very least a [lambda] child to execute if statement yields true");
-
+            // syntax checking statement
             Node previous = e.Args.PreviousSibling;
             if (previous == null || (previous.Name != "if" && previous.Name != "else-if"))
                 throw new ArgumentException ("you cannot have a [else-if] statement without a matching [if] or [else-if] as its previous sibling");
 
             // checking to see if previous "if" or "else-if" has already evaluated to true
             if (e.Args.Parent [0].Name == "__pf_evaluated") {
+
+                // previous [if] or [else-if] in chain has already evaluated to true
+                // hence, we don't even evaluate or execute this instance
                 Node next = e.Args.NextSibling;
                 if (next == null || (next.Name != "else-if" && next.Name != "else")) {
                     e.Args.Parent.RemoveAt (0);
@@ -62,9 +76,22 @@ namespace phosphorus.lambda
             } else {
                 var condition = new Conditions (e.Args, context);
                 if (condition.Evaluate ()) {
-                    foreach (Node idxExe in condition.ExecutionLambdas) {
-                        context.Raise (idxExe.Name, idxExe);
+
+                    // if you are only checking for a value's existence, you don't need to supply a [lambda] object
+                    // beneath [while]. if you do not, [while] will execute as [lambda.immutable]
+                    if (condition.IsSimpleExist) {
+
+                        // code tree does not contain any [lambda] objects beneath [if]
+                        context.Raise ("lambda", e.Args);
+                    } else {
+
+                        // code tree contains [lambda.xxx] objects beneath [while]
+                        foreach (Node idxExe in condition.ExecutionLambdas) {
+                            context.Raise (idxExe.Name, idxExe);
+                        }
                     }
+
+                    // making sure we "signal" to any [else-if] and/or [else] that statement evaluated to true
                     Node next = e.Args.NextSibling;
                     if (next != null && (next.Name == "else-if" || next.Name == "else")) {
                         e.Args.Parent.Insert (0, new Node ("__pf_evaluated", true));
@@ -81,24 +108,23 @@ namespace phosphorus.lambda
         [ActiveEvent (Name = "else")]
         private static void lambda_else (ApplicationContext context, ActiveEventArgs e)
         {
-            if (e.Args.Count == 0)
-                throw new ArgumentException ("syntax error in [else]. [else] needs at the very least a [lambda] child to execute if statement yields true");
-
+            // syntax checking statement
             Node previous = e.Args.PreviousSibling;
-            if (previous == null || (previous.Name != "pf.if" && previous.Name != "if" && previous.Name != "pf.else-if" && previous.Name != "else-if"))
+            if (previous == null || (previous.Name != "if" && previous.Name != "else-if"))
                 throw new ArgumentException ("you cannot have a [else] without a matching [if] or [else-if] as its previous sibling");
 
             // checking to see if previous "if" or "else-if" has already evaluated to true
             if (e.Args.Parent [0].Name == "__pf_evaluated") {
-                Node next = e.Args.NextSibling;
-                if (next == null || (next.Name != "else-if" && next.Name != "else")) {
-                    e.Args.Parent.RemoveAt (0);
-                }
+
+                // previous [if] or [else-if] in chain has already evaluated to true
+                // hence, we don't execute this instance, however since this is [else], being
+                // last statement in branching chain, we'll have to remove "signal node", if it exists
+                e.Args.Parent.RemoveAt (0);
             } else {
-                var condition = new Conditions (e.Args, context); // easy way to access all lambda objects beneath "else"
-                foreach (Node idxExe in condition.ExecutionLambdas) {
-                    context.Raise (idxExe.Name, idxExe);
-                }
+
+                // since [else] does not have any conditions, we simply execute its children, unless previous
+                // branching statements have evaluated to true
+                context.Raise ("lambda", e.Args);
             }
         }
     }

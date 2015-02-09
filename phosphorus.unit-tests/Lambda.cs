@@ -24,11 +24,11 @@ namespace phosphorus.unittests
         /// verifies that [lambda] is mutable
         /// </summary>
         [Test]
-        public void Lambda1 ()
+        public void Lambda01 ()
         {
             Node result = ExecuteLambda (@"_data
 set:@/-/?value
-  source:success", "lambda");
+  source:success");
             Assert.AreEqual ("success", result [0].Value);
         }
         
@@ -36,7 +36,7 @@ set:@/-/?value
         /// verifies that [lambda.immutable] is not mutable
         /// </summary>
         [Test]
-        public void Lambda2 ()
+        public void Lambda02 ()
         {
             Node result = ExecuteLambda (@"_data:success
 set:@/-/?value
@@ -48,7 +48,7 @@ set:@/-/?value
         /// verifies that [lambda.copy] is not mutable
         /// </summary>
         [Test]
-        public void Lambda3 ()
+        public void Lambda03 ()
         {
             Node result = ExecuteLambda (@"_data:success
 set:@/-/?value
@@ -60,12 +60,12 @@ set:@/-/?value
         /// verifies that [lambda.copy] does not have access to nodes outside if itself
         /// </summary>
         [Test]
-        public void Lambda4 ()
+        public void Lambda04 ()
         {
             Node result = ExecuteLambda (@"_data:success
 lambda.copy
   set:@/../*/_data/?value
-    source:error", "lambda");
+    source:error");
             Assert.AreEqual ("success", result [0].Value);
         }
         
@@ -73,13 +73,85 @@ lambda.copy
         /// verifies that [lambda.immutable] has access to nodes outside if itself
         /// </summary>
         [Test]
-        public void Lambda5 ()
+        public void Lambda05 ()
         {
             Node result = ExecuteLambda (@"_data:error
 lambda.immutable
   set:@/../*/_data/?value
-    source:success", "lambda");
+    source:success");
             Assert.AreEqual ("success", result [0].Value);
+        }
+        
+        /// <summary>
+        /// verifies that [lambda] can invoke lambda objects through expressions leading to nodes
+        /// </summary>
+        [Test]
+        public void Lambda06 ()
+        {
+            Node result = ExecuteLambda (@"_exe
+  set:@/./?value
+    source:success
+lambda:@/-/?node");
+            Assert.AreEqual ("success", result [0].Value);
+        }
+        
+        /// <summary>
+        /// verifies that [lambda] can invoke reference nodes
+        /// </summary>
+        [Test]
+        public void Lambda07 ()
+        {
+            Node result = ExecuteLambda (@"_exe:node:@""_exe
+  set:@/./?value
+    source:success""
+lambda:@/-/?value");
+            Assert.AreEqual ("success", result [0].Get<Node> (_context).Value);
+        }
+        
+        /// <summary>
+        /// verifies that [lambda] can pass in arguments when executing results of expressions
+        /// </summary>
+        [Test]
+        public void Lambda08 ()
+        {
+            Node result = ExecuteLambda (@"_exe
+  set:@/./?value
+    source:@/././*/_result/?value
+lambda:@/-/?node
+  _result:success");
+            Assert.AreEqual ("success", result [0].Value);
+        }
+        
+        /// <summary>
+        /// verifies that [lambda] can invoke text objects
+        /// </summary>
+        [Test]
+        public void Lambda09 ()
+        {
+            Node result = ExecuteLambda (@"_exe:@""_exe
+  set:@/../*/_result/#/?value
+    source:success""
+lambda:@/-/?value
+  _result:node:_result"); // passing in reference node, to be able to retrieve values from lambda invocation
+            Assert.AreEqual ("success", result [1] [0].Get<Node> (_context).Value);
+        }
+        
+        /// <summary>
+        /// verifies that [lambda] can execute expression yielding multiple results
+        /// </summary>
+        [Test]
+        public void Lambda10 ()
+        {
+            Node result = ExecuteLambda (@"_exe1
+  set:@/../?value
+    source:succ
+_exe1
+  set:@/../?value
+    source:{0}{1}
+      :@/../?value
+      :ess
+lambda:@/-2/|/-1/?node");
+            Assert.AreEqual ("success", result.Value);
         }
     }
 }

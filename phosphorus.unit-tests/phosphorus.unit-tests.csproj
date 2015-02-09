@@ -81,6 +81,7 @@
     <Compile Include="ForEach.cs" />
     <Compile Include="While.cs" />
     <Compile Include="Lambda.cs" />
+    <Compile Include="Branching.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
