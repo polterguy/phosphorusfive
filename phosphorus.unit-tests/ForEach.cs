@@ -86,7 +86,7 @@ namespace phosphorus.unittests
         }
         
         /// <summary>
-        /// verifies that [for-each] is immutable
+        /// verifies that [for-each] is immutable by default
         /// </summary>
         [Test]
         public void ForEach4 ()

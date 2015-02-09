@@ -103,7 +103,8 @@ namespace phosphorus.lambda
         }
 
         /// <summary>
-        /// returns all execution lambda objects beneath the statement to execute if statement evaluates to true
+        /// returns all execution lambda objects beneath the statement
+        /// to execute if statement evaluates to true
         /// </summary>
         /// <value>The execution lambdas.</value>
         public IEnumerable<Node> ExecutionLambdas

@@ -80,6 +80,7 @@
     <Compile Include="Append.cs" />
     <Compile Include="ForEach.cs" />
     <Compile Include="While.cs" />
+    <Compile Include="Lambda.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

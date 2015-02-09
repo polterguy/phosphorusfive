@@ -37,12 +37,12 @@ namespace phosphorus.unittests
         /// </summary>
         /// <returns>pf.lambda result nodes</returns>
         /// <param name="hyperlisp">Hyperlisp you wish to execute</param>
-        protected Node ExecuteLambda (string hyperlisp)
+        protected Node ExecuteLambda (string hyperlisp, string lambdaActiveEvent = "lambda")
         {
             Node node = new Node ();
             node.Value = hyperlisp;
             _context.Raise ("pf.hyperlisp.hyperlisp2lambda", node);
-            return _context.Raise ("lambda", node);
+            return _context.Raise (lambdaActiveEvent, node);
         }
 
         /// <summary>

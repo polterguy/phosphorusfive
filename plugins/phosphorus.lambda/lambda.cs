@@ -50,26 +50,14 @@ namespace phosphorus.lambda
         {
             if (e.Args.Name.StartsWith ("lambda") && e.Args.Value != null) {
 
-                // executing expression or string value with code
-                ExecuteLambdaValue (context, e.Args, GetLambdaType (e));
+                // executing a value object, converting to node before we pass into execution method
+                foreach (var idxSource in XUtil.Iterate<Node> (e.Args, context)) {
+                    ExecuteBlock (context, idxSource, e.Args.Children, GetLambdaType (e));
+                }
             } else {
-                
+
                 // executing current scope
                 ExecuteBlock (context, e.Args, new Node [] {}, GetLambdaType (e));
-            }
-        }
-
-        /*
-         * executes a "lambda execution" block
-         */
-        private static void ExecuteLambdaValue (ApplicationContext context, Node args, LambdaType type)
-        {
-            foreach (var idxSource in XUtil.Iterate<object> (args, context)) {
-                if (idxSource is Node) {
-                    ExecuteBlock (context, idxSource as Node, args.Children, type);
-                } else {
-                    ExecuteLambdaText (context, (idxSource ?? "").ToString (), args.Children);
-                }
             }
         }
 
@@ -91,7 +79,7 @@ namespace phosphorus.lambda
                 }
             }
 
-            // passing in arguments
+            // passing in arguments, if there are any
             foreach (Node idx in args) {
                 exe.Add (idx.Clone ());
             }
@@ -128,22 +116,6 @@ namespace phosphorus.lambda
                 return LambdaType.Immutable;
             }
             throw new ArgumentException ("unknown type of lambda execution; '" + e.Name + "'");
-        }
-
-        /*
-         * executes a piece of text
-         */
-        private static void ExecuteLambdaText (ApplicationContext context, string code, IEnumerable<Node> args)
-        {
-            if (string.IsNullOrEmpty (code))
-                return; // nothing to execute here
-
-            // first transforming code into nodes
-            Node exe = new Node ("root", code);
-            context.Raise ("pf.hyperlisp.hyperlisp2lambda", exe);
-
-            // then executing nodes created from "code" parameter
-            ExecuteBlock (context, exe, args, LambdaType.Normal);
         }
     }
 }
