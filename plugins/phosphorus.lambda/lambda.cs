@@ -16,49 +16,91 @@ namespace phosphorus.lambda
     /// </summary>
     public static class pfLambda
     {
-        /*
-         * type of lambda statement
-         */
-        private enum LambdaType
-        {
-            // execution of lambda has access to the entire tree
-            Normal,
-
-            // execution is done on a copy of the nodes executed, and not the original nodes, meaning the execution will
-            // not have access to nodes outside of the [lambda] statement itself, unless passed in as reference nodes
-            Copy,
-
-            // execution is done immutable, such that the executed nodes will be set back to their original state after the
-            // execution. execution still has access to the entire tree, but no changes done inside the [lambda] itself, will
-            // exist after the execution of the lambda is done
-            Immutable
-        }
-
         /// <summary>
-        /// main execution Active Event entry point for executing nodes as execution tree. [lambda] simply executes the given
-        /// block or expression. [copy.lambda] creates a copy of the block or expression before executing the copy, which means
-        /// it does not have access to any nodes outside of its own scope. [immutable.lambda] will allow the block or expression
-        /// execute to have access to the entire tree, but will create a copy of the nodes executed, and after execution it will
-        /// set the entire execution block or expression back to its original state
+        /// executes given block, or result of expression, as a block of statements to be executed
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "lambda")]
-        [ActiveEvent (Name = "lambda.copy")]
-        [ActiveEvent (Name = "lambda.immutable")]
         private static void lambda (ApplicationContext context, ActiveEventArgs e)
         {
-            if (e.Args.Name.StartsWith ("lambda") && e.Args.Value != null) {
+            if (e.Args.Name == "lambda" && e.Args.Value != null) {
 
                 // executing a value object, converting to node, before we pass into execution method,
                 // making sure we pass in children of [lambda] as "arguments" or "parameters" to [lambda] statement
                 foreach (var idxSource in XUtil.Iterate<Node> (e.Args, context)) {
-                    ExecuteBlock (context, idxSource, e.Args.Children, GetLambdaType (e));
+                    ExecuteBlockNormal (context, idxSource, e.Args.Children);
                 }
             } else {
 
                 // executing current scope
-                ExecuteBlock (context, e.Args, new Node [] {}, GetLambdaType (e));
+                ExecuteBlockNormal (context, e.Args, new Node [] { });
+            }
+        }
+
+        /// <summary>
+        /// executes given block, or result of expression, as a block of statements to be executed, setting
+        /// the the execution block node's back to what they were originally afterwards
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "lambda.immutable")]
+        private static void lambda_immutable (ApplicationContext context, ActiveEventArgs e)
+        {
+            if (e.Args.Name == "lambda.immutable" && e.Args.Value != null) {
+
+                // executing a value object, converting to node, before we pass into execution method,
+                // making sure we pass in children of [lambda] as "arguments" or "parameters" to [lambda] statement
+                foreach (var idxSource in XUtil.Iterate<Node> (e.Args, context)) {
+                    ExecuteBlockImmutable (context, idxSource, e.Args.Children);
+                }
+            } else {
+
+                // executing current scope
+                ExecuteBlockImmutable (context, e.Args, new Node [] { });
+            }
+        }
+        
+        /// <summary>
+        /// executes given block, or result of expression, as a block of statements to be executed, such
+        /// that the block executed is a deep copy of the execution block given to execute, such that
+        /// execution does not in any ways have access to nodes from the tree outside of itself, unless nodes are
+        /// passed in by reference
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "lambda.copy")]
+        private static void lambda_copy (ApplicationContext context, ActiveEventArgs e)
+        {
+            if (e.Args.Name == "lambda.copy" && e.Args.Value != null) {
+
+                // executing a value object, converting to node, before we pass into execution method,
+                // making sure we pass in children of [lambda] as "arguments" or "parameters" to [lambda] statement
+                foreach (var idxSource in XUtil.Iterate<Node> (e.Args, context)) {
+                    ExecuteBlockCopy (context, idxSource, e.Args.Children);
+                }
+            } else {
+
+                // executing current scope
+                ExecuteBlockCopy (context, e.Args, new Node [] { });
+            }
+        }
+        
+        /// <summary>
+        /// executes a single pf.lambda statement
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "lambda.single")]
+        private static void lambda_single (ApplicationContext context, ActiveEventArgs e)
+        {
+            if (string.IsNullOrEmpty (e.Args.Get<string> (context)))
+                throw new ArgumentException ("nothing was given to [lambda.single] for execution");
+
+            // executing a value object, converting to node, before we pass into execution method,
+            // making sure we pass in children of [lambda] as "arguments" or "parameters" to [lambda] statement
+            foreach (var idxSource in XUtil.Iterate<Node> (e.Args, context)) {
+                ExecuteStatement (idxSource, context, true);
             }
         }
 
@@ -66,14 +108,34 @@ namespace phosphorus.lambda
          * executes a block of nodes, this is where the actual execution happens
          * this is the "heart beat" method of the "pf.lambda" execution engine
          */
-        private static void ExecuteBlock (ApplicationContext context, Node exe, IEnumerable<Node> args, LambdaType type)
+        private static void ExecuteBlockNormal (ApplicationContext context, Node exe, IEnumerable<Node> args)
         {
-            // making sure lambda is executed on copy of execution nodes, if we should,
-            // without access to nodes outside of its own scope
-            exe = type == LambdaType.Copy ? exe.Clone () : exe;
+            // passing in arguments, if there are any
+            foreach (Node idx in args) {
+                exe.Add (idx.Clone ());
+            }
 
-            // storing original execution nodes, but only if lambda type is [lambda.immutable]
-            List<Node> oldNodes = type == LambdaType.Immutable ? GetOriginalNodeList (exe, type) : null;
+            // iterating through all nodes in execution scope, and raising these as Active Events
+            Node idxExe = exe.FirstChild;
+            while (idxExe != null) {
+
+                // executing current statement and retrieving next execution statement
+                idxExe = ExecuteStatement (idxExe, context);
+            }
+        }
+        
+        /*
+         * executes a block of nodes, this is where the actual execution happens
+         * this is the "heart beat" method of the "pf.lambda" execution engine
+         */
+        private static void ExecuteBlockImmutable (ApplicationContext context, Node exe, IEnumerable<Node> args)
+        {
+            // storing original execution nodes, such that we can set back execution
+            // block to what it originally was
+            List<Node> oldNodes = new List<Node> ();
+            foreach (Node idx in exe.Children) {
+                oldNodes.Add (idx.Clone ());
+            }
 
             // passing in arguments, if there are any
             foreach (Node idx in args) {
@@ -85,27 +147,49 @@ namespace phosphorus.lambda
             while (idxExe != null) {
 
                 // executing current statement and retrieving next execution statement
-                idxExe = ExecuteCurrentStatement (idxExe, context);
+                idxExe = ExecuteStatement (idxExe, context);
             }
 
-            // making sure we reset original nodes, if execution type was "Immutable"
-            if (type == LambdaType.Immutable) {
-                exe.Clear ();
-                exe.AddRange (oldNodes);
+            // making sure we set back execution block to original nodes
+            exe.Clear ();
+            exe.AddRange (oldNodes);
+        }
+        
+        /*
+         * executes a block of nodes, this is where the actual execution happens
+         * this is the "heart beat" method of the "pf.lambda" execution engine
+         */
+        private static void ExecuteBlockCopy (ApplicationContext context, Node exe, IEnumerable<Node> args)
+        {
+            // making sure lambda is executed on copy of execution nodes, if we should,
+            // without access to nodes outside of its own scope
+            exe = exe.Clone ();
+
+            // passing in arguments, if there are any
+            foreach (Node idx in args) {
+                exe.Add (idx.Clone ());
+            }
+
+            // iterating through all nodes in execution scope, and raising these as Active Events
+            Node idxExe = exe.FirstChild;
+            while (idxExe != null) {
+
+                // executing current statement and retrieving next execution statement
+                idxExe = ExecuteStatement (idxExe, context);
             }
         }
 
         /*
          * executes one execution statement
          */
-        private static Node ExecuteCurrentStatement (Node exe, ApplicationContext context)
+        private static Node ExecuteStatement (Node exe, ApplicationContext context, bool force = false)
         {
             // storing "next execution node" as fallback, to support "delete this node" pattern
             Node nextFallback = exe.NextSibling;
 
             // we don't execute nodes that start with an underscore "_" since these are considered "data segments"
             // also we don't execute nodes with no name, since these interfers with "null Active Event handlers"
-            if (!exe.Name.StartsWith ("_") && exe.Name != string.Empty) {
+            if (force || (!exe.Name.StartsWith ("_") && exe.Name != string.Empty)) {
                 context.Raise (exe.Name, exe);
             }
 
@@ -115,37 +199,6 @@ namespace phosphorus.lambda
             // we return null back to caller
             return exe.NextSibling ?? (nextFallback != null && nextFallback.Parent != null && 
                                        nextFallback.Parent == exe.Parent ? nextFallback : null);
-        }
-
-        /*
-         * stores original execution nodes, if execution type equals "Immutable"
-         */
-        private static List<Node> GetOriginalNodeList (Node exe, LambdaType type)
-        {
-            // returning "original execution nodes" to caller
-            List<Node> oldNodes = new List<Node> ();
-
-            // returning a list of original nodes cloned back to caller, to support [lambda.immutable]
-            foreach (Node idx in exe.Children) {
-                oldNodes.Add (idx.Clone ());
-            }
-            return oldNodes;
-        }
-
-        /*
-         * returns the type of [lambda] statement, Normal, Copy or Immutable
-         */
-        private static LambdaType GetLambdaType (ActiveEventArgs e)
-        {
-            switch (e.Name) {
-            case "lambda":
-                return LambdaType.Normal;
-            case "lambda.copy":
-                return LambdaType.Copy;
-            case "lambda.immutable":
-                return LambdaType.Immutable;
-            }
-            throw new ArgumentException ("unknown type of lambda execution; '" + e.Name + "'");
         }
     }
 }

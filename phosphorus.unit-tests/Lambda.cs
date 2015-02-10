@@ -153,5 +153,59 @@ _exe1
 lambda:@/-2/|/-1/?node");
             Assert.AreEqual ("success", result.Value);
         }
+        
+        /// <summary>
+        /// verifies that [lambda.single] can execute one single node
+        /// </summary>
+        [Test]
+        public void Lambda11 ()
+        {
+            Node result = ExecuteLambda (@"_exe1
+  set:@/../?value
+    source:success
+lambda.single:@/-/0/?node");
+            Assert.AreEqual ("success", result.Value);
+        }
+        
+        /// <summary>
+        /// verifies that [lambda.single] can execute single nodes when given an
+        /// expression that returns multiple results
+        /// </summary>
+        [Test]
+        public void Lambda12 ()
+        {
+            Node result = ExecuteLambda (@"_exe1
+  set:@/../?value
+    source:succ
+_exe1
+  set:@/../?value
+    source:{0}{1}
+      :@/../?value
+      :ess
+lambda.single:@/-2/*/|/-1/*/?node");
+            Assert.AreEqual ("success", result.Value);
+        }
+        
+        /// <summary>
+        /// verifies that [lambda.single] can execute single nodes when given an
+        /// expression that returns multiple results, where some nodes are NOT'ed away
+        /// </summary>
+        [Test]
+        public void Lambda13 ()
+        {
+            Node result = ExecuteLambda (@"_exe1
+  set:@/../?value
+    source:succ
+_exe1:error
+  set:@/../?value
+    source:error
+_exe1
+  set:@/../?value
+    source:{0}{1}
+      :@/../?value
+      :ess
+lambda.single:@/../*/(/_exe1/!/=error/)/*/?node");
+            Assert.AreEqual ("success", result.Value);
+        }
     }
 }
