@@ -152,7 +152,7 @@ namespace phosphorus.lambda
                     _isSimpleExist = true;
                 return (Exist (currentStatement) && EvaluateRelatedAnd (currentStatement)) || EvaluateRelatedOr (currentStatement);
             case Operator.Not:
-                return (!Exist (currentStatement.FirstChildNotOf (string.Empty)) && EvaluateRelatedAnd (currentStatement)) || EvaluateRelatedOr (currentStatement);
+                return (!Exist (currentStatement.FirstChild) && EvaluateRelatedAnd (currentStatement)) || EvaluateRelatedOr (currentStatement);
             case Operator.Equals:
                 return (Compare (currentStatement) == 0 && EvaluateRelatedAnd (currentStatement)) || EvaluateRelatedOr (currentStatement);
             case Operator.NotEquals:

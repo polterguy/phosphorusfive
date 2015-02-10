@@ -457,5 +457,260 @@ if:{0}o
       source:success");
             Assert.AreEqual ("success", result [0].Value);
         }
+        
+        /// <summary>
+        /// verifies [if] works when comparing two expressions with formatting expressions
+        /// </summary>
+        [Test]
+        public void If25 ()
+        {
+            Node result = ExecuteLambda (@"_result:error
+if:@/../{0}/?value
+  :0
+  =:@/../{0}/?value
+    :*/{0}
+      :@/../0/?name
+  lambda
+    set:@/../*/_result/?value
+      source:success");
+            Assert.AreEqual ("success", result [0].Value);
+        }
+        
+        /// <summary>
+        /// verifies [if] works when comparing two integers with >= and comparison should yield true
+        /// </summary>
+        [Test]
+        public void If26 ()
+        {
+            Node result = ExecuteLambda (@"_result:error
+if:int:5
+  >=:int:4
+  lambda
+    set:@/../*/_result/?value
+      source:success");
+            Assert.AreEqual ("success", result [0].Value);
+        }
+        
+        /// <summary>
+        /// verifies [if] works when comparing two integers with >= and comparison should yield false
+        /// </summary>
+        [Test]
+        public void If27 ()
+        {
+            Node result = ExecuteLambda (@"_result:success
+if:int:4
+  >=:int:5
+  lambda
+    set:@/../*/_result/?value
+      source:error");
+            Assert.AreEqual ("success", result [0].Value);
+        }
+        
+        /// <summary>
+        /// verifies [if] works when comparing two strings with >= and comparison should yield true
+        /// </summary>
+        [Test]
+        public void If28 ()
+        {
+            Node result = ExecuteLambda (@"_result:error
+if:b
+  >=:a
+  lambda
+    set:@/../*/_result/?value
+      source:success");
+            Assert.AreEqual ("success", result [0].Value);
+        }
+        
+        /// <summary>
+        /// verifies [if] works when comparing two strings with >= and comparison should yield false
+        /// </summary>
+        [Test]
+        public void If29 ()
+        {
+            Node result = ExecuteLambda (@"_result:success
+if:a
+  >=:b
+  lambda
+    set:@/../*/_result/?value
+      source:error");
+            Assert.AreEqual ("success", result [0].Value);
+        }
+        
+        /// <summary>
+        /// verifies [if] works when comparing two strings with <= and comparison should yield true
+        /// </summary>
+        [Test]
+        public void If30 ()
+        {
+            Node result = ExecuteLambda (@"_result:error
+if:a
+  <=:b
+  lambda
+    set:@/../*/_result/?value
+      source:success");
+            Assert.AreEqual ("success", result [0].Value);
+        }
+        
+        /// <summary>
+        /// verifies [if] works when comparing two strings with <= and comparison should yield false
+        /// </summary>
+        [Test]
+        public void If31 ()
+        {
+            Node result = ExecuteLambda (@"_result:success
+if:b
+  <=:a
+  lambda
+    set:@/../*/_result/?value
+      source:error");
+            Assert.AreEqual ("success", result [0].Value);
+        }
+        
+        /// <summary>
+        /// verifies [if] works when comparing two strings with != and comparison should yield true
+        /// </summary>
+        [Test]
+        public void If32 ()
+        {
+            Node result = ExecuteLambda (@"_result:error
+if:abba
+  !=:abca
+  lambda
+    set:@/../*/_result/?value
+      source:success");
+            Assert.AreEqual ("success", result [0].Value);
+        }
+        
+        /// <summary>
+        /// verifies [if] works when comparing two strings with != and comparison should yield false
+        /// </summary>
+        [Test]
+        public void If33 ()
+        {
+            Node result = ExecuteLambda (@"_result:success
+if:abba
+  !=:abba
+  lambda
+    set:@/../*/_result/?value
+      source:error");
+            Assert.AreEqual ("success", result [0].Value);
+        }
+        
+        /// <summary>
+        /// verifies [if] works when comparing two strings with > and comparison should yield true
+        /// </summary>
+        [Test]
+        public void If34 ()
+        {
+            Node result = ExecuteLambda (@"_result:error
+if:b
+  >:abba
+  lambda
+    set:@/../*/_result/?value
+      source:success");
+            Assert.AreEqual ("success", result [0].Value);
+        }
+        
+        /// <summary>
+        /// verifies [if] works when comparing two strings with < and comparison should yield true
+        /// </summary>
+        [Test]
+        public void If35 ()
+        {
+            Node result = ExecuteLambda (@"_result:error
+if:abba
+  <:bce
+  lambda
+    set:@/../*/_result/?value
+      source:success");
+            Assert.AreEqual ("success", result [0].Value);
+        }
+        
+        /// <summary>
+        /// verifies [if] works when the operator is ! (NOT) and statement should yield true
+        /// </summary>
+        [Test]
+        public void If36 ()
+        {
+            Node result = ExecuteLambda (@"_result:error
+if:!
+  :@/../*/foo/?node
+  lambda
+    set:@/../*/_result/?value
+      source:success");
+            Assert.AreEqual ("success", result [0].Value);
+        }
+        
+        /// <summary>
+        /// verifies [if] works when the operator is ! (NOT) and statement should yield false
+        /// </summary>
+        [Test]
+        public void If37 ()
+        {
+            Node result = ExecuteLambda (@"_result:success
+if:!
+  :@/../*/_result/?node
+  lambda
+    set:@/../*/_result/?value
+      source:error");
+            Assert.AreEqual ("success", result [0].Value);
+        }
+        
+        /// <summary>
+        /// verifies [else] kicks in when [if] evaluates to false
+        /// </summary>
+        [Test]
+        public void If38 ()
+        {
+            Node result = ExecuteLambda (@"_result
+if:!
+  :@/../*/_result/?node
+  lambda
+    set:@/../*/_result/?value
+      source:error
+else
+  set:@/../*/_result/?value
+    source:success");
+            Assert.AreEqual ("success", result [0].Value);
+        }
+        
+        /// <summary>
+        /// verifies [else-if] kicks in when [if] evaluates to false
+        /// </summary>
+        [Test]
+        public void If39 ()
+        {
+            Node result = ExecuteLambda (@"_result
+if:!
+  :@/../*/_result/?node
+  lambda
+    set:@/../*/_result/?value
+      source:error
+else-if:@/../*/_result/?node
+  set:@/../*/_result/?value
+    source:success");
+            Assert.AreEqual ("success", result [0].Value);
+        }
+        
+        /// <summary>
+        /// verifies [else] kicks in when [if] and [else-if] evaluates to false
+        /// </summary>
+        [Test]
+        public void If40 ()
+        {
+            Node result = ExecuteLambda (@"_result
+if:!
+  :@/../*/_result/?node
+  lambda
+    set:@/../*/_result/?value
+      source:error
+else-if:@/../*/_resultXX/?node
+  set:@/../*/_result/?value
+    source:error
+else
+  set:@/../*/_result/?value
+    source:success");
+            Assert.AreEqual ("success", result [0].Value);
+        }
     }
 }

@@ -50,7 +50,8 @@ namespace phosphorus.lambda
         {
             if (e.Args.Name.StartsWith ("lambda") && e.Args.Value != null) {
 
-                // executing a value object, converting to node before we pass into execution method
+                // executing a value object, converting to node, before we pass into execution method,
+                // making sure we pass in children of [lambda] as "arguments" or "parameters" to [lambda] statement
                 foreach (var idxSource in XUtil.Iterate<Node> (e.Args, context)) {
                     ExecuteBlock (context, idxSource, e.Args.Children, GetLambdaType (e));
                 }
@@ -67,17 +68,12 @@ namespace phosphorus.lambda
          */
         private static void ExecuteBlock (ApplicationContext context, Node exe, IEnumerable<Node> args, LambdaType type)
         {
-            // making sure lambda is executed on copy of execution nodes, if we should, without access to nodes outside of its own scope
-            // (besides from parameters passed into it by reference though of course)
+            // making sure lambda is executed on copy of execution nodes, if we should,
+            // without access to nodes outside of its own scope
             exe = type == LambdaType.Copy ? exe.Clone () : exe;
 
-            // storing "old nodes" to allow [lambda] to execute immutably, but only if type == Immutable
-            List<Node> oldNodes = new List<Node> ();
-            if (type == LambdaType.Immutable) {
-                foreach (Node idx in exe.Children) {
-                    oldNodes.Add (idx.Clone ());
-                }
-            }
+            // storing original execution nodes, but only if lambda type is [lambda.immutable]
+            List<Node> oldNodes = type == LambdaType.Immutable ? GetOriginalNodeList (exe, type) : null;
 
             // passing in arguments, if there are any
             foreach (Node idx in args) {
@@ -88,11 +84,8 @@ namespace phosphorus.lambda
             Node idxExe = exe.FirstChild;
             while (idxExe != null) {
 
-                // we don't execute nodes that start with an underscore "_" since these are considered "data segments"
-                if (!idxExe.Name.StartsWith ("_") && idxExe.Name != string.Empty) {
-                    context.Raise (idxExe.Name, idxExe);
-                }
-                idxExe = idxExe.NextSibling;
+                // executing current statement and retrieving next execution statement
+                idxExe = ExecuteCurrentStatement (idxExe, context);
             }
 
             // making sure we reset original nodes, if execution type was "Immutable"
@@ -100,6 +93,43 @@ namespace phosphorus.lambda
                 exe.Clear ();
                 exe.AddRange (oldNodes);
             }
+        }
+
+        /*
+         * executes one execution statement
+         */
+        private static Node ExecuteCurrentStatement (Node exe, ApplicationContext context)
+        {
+            // storing "next execution node" as fallback, to support "delete this node" pattern
+            Node nextFallback = exe.NextSibling;
+
+            // we don't execute nodes that start with an underscore "_" since these are considered "data segments"
+            // also we don't execute nodes with no name, since these interfers with "null Active Event handlers"
+            if (!exe.Name.StartsWith ("_") && exe.Name != string.Empty) {
+                context.Raise (exe.Name, exe);
+            }
+
+            // prioritizing "NextSibling", in case this node created new nodes, while having
+            // nextFallback as "fallback node", in case current execution node removed current execution node,
+            // but if "current execution node" untied nextFallback, in addition to "NextSibling",
+            // we return null back to caller
+            return exe.NextSibling ?? (nextFallback != null && nextFallback.Parent != null && 
+                                       nextFallback.Parent == exe.Parent ? nextFallback : null);
+        }
+
+        /*
+         * stores original execution nodes, if execution type equals "Immutable"
+         */
+        private static List<Node> GetOriginalNodeList (Node exe, LambdaType type)
+        {
+            // returning "original execution nodes" to caller
+            List<Node> oldNodes = new List<Node> ();
+
+            // returning a list of original nodes cloned back to caller, to support [lambda.immutable]
+            foreach (Node idx in exe.Children) {
+                oldNodes.Add (idx.Clone ());
+            }
+            return oldNodes;
         }
 
         /*
