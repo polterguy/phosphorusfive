@@ -82,6 +82,7 @@
     <Compile Include="While.cs" />
     <Compile Include="Lambda.cs" />
     <Compile Include="Branching.cs" />
+    <Compile Include="Core.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

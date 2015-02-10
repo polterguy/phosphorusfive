@@ -207,5 +207,18 @@ _exe1
 lambda.single:@/../*/(/_exe1/!/=error/)/*/?node");
             Assert.AreEqual ("success", result.Value);
         }
+        
+        /// <summary>
+        /// verifies that [lambda.single] will not execute anything when given a block of code
+        /// </summary>
+        [Test]
+        public void Lambda14 ()
+        {
+            Node result = ExecuteLambda (@"_exe1:success
+  set:@/./?value
+    source:error
+lambda.single:@/-/?node");
+            Assert.AreEqual ("success", result [0].Value);
+        }
     }
 }

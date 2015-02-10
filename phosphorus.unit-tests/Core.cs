@@ -11,48 +11,70 @@ using phosphorus.core;
 namespace phosphorus.unittests
 {
     [TestFixture]
-    public class ContextAndLoaderTests
+    public class Core
     {
+        /// <summary>
+        /// verifies loading an assembly works
+        /// </summary>
         [Test]
-        public void LoadAssembly ()
+        public void LoadAssembly1 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.lambda");
         }
 
+        /// <summary>
+        /// verifies loading an assembly with extension works
+        /// </summary>
         [Test]
-        public void LoadAssemblyWithExtension ()
+        public void LoadAssembly2 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.lambda.dll");
         }
 
+        /// <summary>
+        /// verifying loading the same assembly twice works
+        /// </summary>
         [Test]
-        public void LoadAssemblyTwice ()
+        public void LoadAssembly3 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.lambda");
             Loader.Instance.LoadAssembly ("phosphorus.lambda");
+
         }
-        
+
+        /// <summary>
+        /// verifying loading two asssemblies works
+        /// </summary>
         [Test]
-        public void LoadTwoAssemblies ()
+        public void LoadAssembly4 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.lambda");
             Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
         }
-        
+
+        /// <summary>
+        /// verifying loading the currently executing assembly works
+        /// </summary>
         [Test]
-        public void LoadExecutingAssembly ()
+        public void LoadAssembly5 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
         }
 
+        /// <summary>
+        /// verifyi loading an assembly by type works
+        /// </summary>
         [Test]
-        public void LoadAssemblyFromType ()
+        public void LoadAssembly6 ()
         {
-            Loader.Instance.LoadAssembly (typeof (ContextAndLoaderTests));
+            Loader.Instance.LoadAssembly (typeof (Core));
         }
 
+        /// <summary>
+        /// verify creating an application context works
+        /// </summary>
         [Test]
-        public void CreateApplicationContext ()
+        public void ApplicationContext1 ()
         {
             ApplicationContext context = Loader.Instance.CreateApplicationContext ();
             Assert.IsNotNull (context);
@@ -63,9 +85,12 @@ namespace phosphorus.unittests
         {
             e.Args.Value = "success";
         }
-        
+
+        /// <summary>
+        /// verifying raising an Active Event with a single static event handler works
+        /// </summary>
         [Test]
-        public void RaiseActiveEventInCurrentAssembly ()
+        public void ApplicationContext2 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             ApplicationContext context = Loader.Instance.CreateApplicationContext ();
@@ -86,8 +111,11 @@ namespace phosphorus.unittests
             e.Args.Value += "success";
         }
 
+        /// <summary>
+        /// verifying raising an Active Event with two static event handlers works
+        /// </summary>
         [Test]
-        public void RaiseActiveEventWithTwoHandlers ()
+        public void ApplicationContext3 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             ApplicationContext context = Loader.Instance.CreateApplicationContext ();
@@ -102,8 +130,11 @@ namespace phosphorus.unittests
             e.Args.Value = "success";
         }
 
+        /// <summary>
+        /// verifying raising an Active Event with a single instance event handler works
+        /// </summary>
         [Test]
-        public void RaiseInstanceActiveEvent ()
+        public void ApplicationContext4 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             ApplicationContext context = Loader.Instance.CreateApplicationContext ();
@@ -125,8 +156,11 @@ namespace phosphorus.unittests
             e.Args.Value += "success";
         }
 
+        /// <summary>
+        /// verifying raising an Active Event with two instance event handlers works
+        /// </summary>
         [Test]
-        public void RaiseInstanceActiveEventWithTwoListeners ()
+        public void ApplicationContext5 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             ApplicationContext context = Loader.Instance.CreateApplicationContext ();
@@ -148,8 +182,12 @@ namespace phosphorus.unittests
             e.Args.Value += "success";
         }
 
+        /// <summary>
+        /// verifying raising an Active Event with one static event handler, and another instance event handler,
+        /// for the same Active Event works
+        /// </summary>
         [Test]
-        public void RaiseActiveEventWithBothStaticAndInstanceListener ()
+        public void ApplicationContext6 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             ApplicationContext context = Loader.Instance.CreateApplicationContext ();
@@ -165,14 +203,22 @@ namespace phosphorus.unittests
             e.Args.Value += "success";
         }
 
+        /// <summary>
+        /// verifying that when discarding an Application Context and creating a new, no "garbage" from previous
+        /// context passes into new context
+        /// </summary>
         [Test]
-        public void CreateContextRegisterInstanceDiscardAndReCreateContext ()
+        public void ApplicationContext7 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             ApplicationContext context = Loader.Instance.CreateApplicationContext ();
             context.RegisterListeningObject (this);
+
+            // intentionally throwing away previous context
             context = Loader.Instance.CreateApplicationContext ();
             context.RegisterListeningObject (this);
+
+            // raising Active Event on new context, making sure our event handler is only invoked once
             Node tmp = new Node (string.Empty, string.Empty);
             context.Raise ("foo6", tmp);
             Assert.AreEqual ("success", tmp.Value, "context contained previously registered instance listener");
@@ -184,8 +230,12 @@ namespace phosphorus.unittests
             e.Args.Value += "success";
         }
 
+        /// <summary>
+        /// verifying that registering the same object as listener twice in application context
+        /// does not have effect
+        /// </summary>
         [Test]
-        public void RegisterListenerObjectTwice ()
+        public void ApplicationContext8 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             ApplicationContext context = Loader.Instance.CreateApplicationContext ();
@@ -203,7 +253,7 @@ namespace phosphorus.unittests
         }
 
         [Test]
-        public void UnregisterListeningObject ()
+        public void ApplicationContext9 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             ApplicationContext context = Loader.Instance.CreateApplicationContext ();
@@ -227,7 +277,7 @@ namespace phosphorus.unittests
         }
 
         [Test]
-        public void UnregisterListeningObjectVerifyStaticHandlerStillExecutes ()
+        public void ApplicationContext10 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             ApplicationContext context = Loader.Instance.CreateApplicationContext ();
@@ -245,7 +295,7 @@ namespace phosphorus.unittests
         }
 
         [Test]
-        public void UnloadAssemblyVerifyStaticEventHandlerIsNotInvoked ()
+        public void ApplicationContext11 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             Loader.Instance.UnloadAssembly ("phosphorus.unit-tests");
@@ -262,7 +312,7 @@ namespace phosphorus.unittests
         }
 
         [Test]
-        public void UnloadAssemblyVerifyInstanceEventHandlerIsNotInvoked ()
+        public void ApplicationContext12 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             ApplicationContext context = Loader.Instance.CreateApplicationContext ();
@@ -295,7 +345,7 @@ namespace phosphorus.unittests
         }
 
         [Test]
-        public void InvokeOverriddenStaticActiveEvent ()
+        public void ApplicationContext13 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
@@ -317,7 +367,7 @@ namespace phosphorus.unittests
         }
 
         [Test]
-        public void InvokeOverriddenInstanceActiveEvent ()
+        public void ApplicationContext14 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
@@ -340,7 +390,7 @@ namespace phosphorus.unittests
         }
 
         [Test]
-        public void InvokeOverriddenStaticActiveEventWithInstanceActiveEvent ()
+        public void ApplicationContext15 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
@@ -372,7 +422,7 @@ namespace phosphorus.unittests
         }
 
         [Test]
-        public void InvokeStaticOverriddenNonExistingActiveEvent ()
+        public void ApplicationContext16 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
@@ -388,7 +438,7 @@ namespace phosphorus.unittests
         }
 
         [Test]
-        public void InvokeInstanceOverriddenNonExistingActiveEvent ()
+        public void ApplicationContext17 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
@@ -417,13 +467,13 @@ namespace phosphorus.unittests
         }
 
         [Test]
-        public void InvokeStaticMultipleOverriddenActiveEvent ()
+        public void ApplicationContext18 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
             Node node = new Node ();
             context.Raise ("foo22", node);
-            Assert.IsTrue (node.Get<string> () == "success1success2" || node.Get<string> () == "success2success1", "active event wasn't correctly overridden");
+            Assert.IsTrue (node.Get<string> (context) == "success1success2" || node.Get<string> (context) == "success2success1", "active event wasn't correctly overridden");
         }
         
         [ActiveEvent (Name = "foo24")]
@@ -448,7 +498,7 @@ namespace phosphorus.unittests
         }
 
         [Test]
-        public void InvokeInstanceMultipleOverriddenActiveEvent ()
+        public void ApplicationContext19 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
@@ -469,7 +519,7 @@ namespace phosphorus.unittests
             context.RegisterListeningObject (tmp);
             node = new Node ();
             context.Raise ("foo24", node);
-            Assert.IsTrue (node.Get<string> () == "success1success2" || node.Get<string> () == "success2success1", "active event wasn't correctly overridden");
+            Assert.IsTrue (node.Get<string> (context) == "success1success2" || node.Get<string> (context) == "success2success1", "active event wasn't correctly overridden");
 
             // then re-raising with foo25 instance removed as listener
             context.UnregisterListeningObject (tmp);
@@ -503,7 +553,7 @@ namespace phosphorus.unittests
         }
 
         [Test]
-        public void InvokeMixedMultipleOverriddenActiveEvent ()
+        public void ApplicationContext20 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
@@ -539,7 +589,7 @@ namespace phosphorus.unittests
         }
 
         [Test]
-        public void InvokeOverriddenByCodeActiveEvent ()
+        public void ApplicationContext21 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
@@ -563,7 +613,7 @@ namespace phosphorus.unittests
         }
         
         [Test]
-        public void InvokeOverriddenByCodeActiveEventDiscardAppContext ()
+        public void ApplicationContext22 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
@@ -601,7 +651,7 @@ namespace phosphorus.unittests
         }
 
         [Test]
-        public void InvokeOverriddenInstanceActiveEventByCode ()
+        public void ApplicationContext23 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
@@ -638,7 +688,7 @@ namespace phosphorus.unittests
         }
 
         [Test]
-        public void InvokeOverriddenMixedInstanceActiveEventByCode ()
+        public void ApplicationContext24 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
@@ -686,7 +736,7 @@ namespace phosphorus.unittests
         }
 
         [Test]
-        public void InvokeOverriddenActiveEventDirectly ()
+        public void ApplicationContext25 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
@@ -716,7 +766,7 @@ namespace phosphorus.unittests
         }
 
         [Test]
-        public void InvokeActiveEventOverriddenMultipleTimes ()
+        public void ApplicationContext26 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
@@ -746,7 +796,7 @@ namespace phosphorus.unittests
         }
 
         [Test]
-        public void InvokeMixedActiveEventBaseOverriddenMultipleTimes ()
+        public void ApplicationContext27 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
@@ -786,7 +836,7 @@ namespace phosphorus.unittests
             context.Override ("foo39", "foo41");
             node = new Node ();
             context.Raise ("foo39", node);
-            Assert.IsTrue (node.Get<string> () == "successsuccess2" || node.Get<string> () == "success2success", "active event wasn't correctly overridden");
+            Assert.IsTrue (node.Get<string> (context) == "successsuccess2" || node.Get<string> (context) == "success2success", "active event wasn't correctly overridden");
         }
         
         [ActiveEvent (Name = "foo42")]
@@ -803,7 +853,7 @@ namespace phosphorus.unittests
         }
 
         [Test]
-        public void InvokeStaticOverriddenActiveEventCallBaseFirst ()
+        public void ApplicationContext28 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
@@ -830,7 +880,7 @@ namespace phosphorus.unittests
         }
 
         [Test]
-        public void InvokeStaticOverriddenActiveEventCallBaseAfter ()
+        public void ApplicationContext29 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
@@ -865,7 +915,7 @@ namespace phosphorus.unittests
         }
 
         [Test]
-        public void InvokeStaticActiveEventOverridingTwoEvents ()
+        public void ApplicationContext30 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
@@ -919,7 +969,7 @@ namespace phosphorus.unittests
         }
 
         [Test]
-        public void InvokeEventOverriddenMultipleTimesThenOverridesOverriddenByOne ()
+        public void ApplicationContext31 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
@@ -927,8 +977,8 @@ namespace phosphorus.unittests
             // raising first Active Event
             Node node = new Node ();
             context.Raise ("foo50", node);
-            Assert.IsTrue (node.Get<string> () == "failure1failure2successfailure1failure3success" || 
-                           node.Get<string> () == "failure1failure3successfailure1failure2success", "active event wasn't correctly overridden");
+            Assert.IsTrue (node.Get<string> (context) == "failure1failure2successfailure1failure3success" || 
+                           node.Get<string> (context) == "failure1failure3successfailure1failure2success", "active event wasn't correctly overridden");
         }
         
         [ActiveEvent (Name = "foo54")]
@@ -939,7 +989,7 @@ namespace phosphorus.unittests
         }
 
         [Test]
-        public void RaiseActiveEventWithSameAttributeTwice ()
+        public void ApplicationContext32 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             ApplicationContext context = Loader.Instance.CreateApplicationContext ();
