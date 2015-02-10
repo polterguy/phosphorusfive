@@ -42,6 +42,7 @@ namespace phosphorus.unittests
             Node node = new Node ();
             node.Value = hyperlisp;
             _context.Raise ("pf.hyperlisp.hyperlisp2lambda", node);
+            node.Value = null;
             return _context.Raise (lambdaActiveEvent, node);
         }
 

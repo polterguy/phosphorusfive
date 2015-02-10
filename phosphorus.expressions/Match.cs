@@ -107,8 +107,6 @@ namespace phosphorus.expressions
         /// <returns>the enumerator</returns>
         public IEnumerator<MatchEntity> GetEnumerator ()
         {
-            if (TypeOfMatch == MatchType.count)
-                throw new ArgumentException ("you cannot retrieve match entities for a 'count' expression");
             return _matchEntities.GetEnumerator ();
         }
 
@@ -117,8 +115,6 @@ namespace phosphorus.expressions
          */
         IEnumerator IEnumerable.GetEnumerator ()
         {
-            if (TypeOfMatch == MatchType.count)
-                throw new ArgumentException ("you cannot retrieve match entities for a 'count' expression");
             return _matchEntities.GetEnumerator ();
         }
 

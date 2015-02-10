@@ -219,30 +219,10 @@ namespace phosphorus.lambda
          */
         private int Compare (Node currentStatement)
         {
-            var lhs = GetNodeList (currentStatement);
-            var rhs = GetNodeList (currentStatement.FirstChildNotOf (string.Empty));
-            if (lhs.Count < rhs.Count)
-                return -1;
-            if (lhs.Count > rhs.Count)
-                return 1;
-            for (int idxNo = 0; idxNo < lhs.Count; idxNo++) {
-                int idxCompare = lhs [idxNo].CompareTo (rhs [idxNo]);
-                if (idxCompare != 0)
-                    return idxCompare;
-            }
-            return 0;
-        }
-
-        /*
-         * creates a node list out of the value of the given node
-         */
-        private List<Node> GetNodeList (Node currentStatement)
-        {
-            List<Node> retVal = new List<Node> ();
-            foreach (var idx in XUtil.Iterate<object> (currentStatement, _context)) {
-                retVal.Add (new Node (string.Empty, idx));
-            }
-            return retVal;
+            // constructing nodes for simplicity, since Node implements IComparable, which does our heavy lifting
+            var lhs = new Node (string.Empty, XUtil.Single<object> (currentStatement, _context));
+            var rhs = new Node (string.Empty, XUtil.Single<object> (currentStatement.FirstChildNotOf (string.Empty), _context));
+            return lhs.CompareTo (rhs);
         }
 
         /*

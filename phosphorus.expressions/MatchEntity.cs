@@ -45,6 +45,16 @@ namespace phosphorus.expressions
         }
         
         /// <summary>
+        /// returns match object
+        /// </summary>
+        /// <value>type of match</value>
+        public Match Match {
+            get {
+                return _match;
+            }
+        }
+
+        /// <summary>
         /// retrieves or sets the value for the entity
         /// </summary>
         /// <returns>the value of the match</returns>
