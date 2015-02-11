@@ -172,7 +172,6 @@ namespace phosphorus.data
         }
 
         /// <summary>
-        /// inserts new nodes to database
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
@@ -183,16 +182,20 @@ namespace phosphorus.data
             Initialize (context);
 
             // verifying syntax of statement
-            if (e.Args.Count == 0 && !XUtil.IsExpression (e.Args.Value))
-                throw new ArgumentException ("[pf.data.insert] requires at least one child node as its argument, or a source expression as its value");
+            if (e.Args.Count == 0 && string.IsNullOrEmpty (e.Args.Value as string))
+                throw new ArgumentException ("[pf.data.insert] requires at least one child node, or a source expression");
 
             // looping through all nodes given as children and saving them to database
             List<Node> changed = new List<Node> ();
-            foreach (Node idx in GetInsertSource (e.Args, context)) {
+            foreach (Node idx in XUtil.Iterate<Node> (e.Args, context)) {
+
+                // making sure insert node gets an ID, unless one is explicitly given
+                if (idx.Value == null)
+                    idx.Value = Guid.NewGuid ();
 
                 // finding next available database file node
                 Node fileNode = GetAvailableFileNode (context);
-                
+
                 // figuring out which file Node updated belongs to, and storing in changed list
                 if (!changed.Contains (fileNode))
                     changed.Add (fileNode);
@@ -254,25 +257,6 @@ namespace phosphorus.data
         private static void pf_data_new_guid (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = Guid.NewGuid ();
-        }
-
-        /*
-         * returns the source for which node(s) to insert into the database
-         */
-        private static IEnumerable<Node> GetInsertSource (Node node, ApplicationContext context)
-        {
-            if (XUtil.IsExpression (node.Value)) {
-                var match = Expression.Create (node.Get<string> (context)).Evaluate (node, context);
-                if (match.TypeOfMatch != Match.MatchType.node)
-                    throw new ArgumentException ("[pf.data.insert] can only take 'node' expressions as source expressions");
-                List<Node> retVal = new List<Node> ();
-                foreach (var idx in match) {
-                    retVal.Add (idx.Node);
-                }
-                return retVal;
-            } else {
-                return node.Children;
-            }
         }
 
         /*
