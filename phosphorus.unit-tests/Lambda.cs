@@ -220,5 +220,36 @@ lambda.single:@/../*/(/_exe1/!/=error/)/*/?node");
 lambda.single:@/-/?node");
             Assert.AreEqual ("success", result [0].Value);
         }
+
+        /// <summary>
+        /// verifies that [lambda] can do the "delete this" pattern, without messing
+        /// up the execution pointer, making it skip an active event
+        /// </summary>
+        [Test]
+        public void Lambda15 ()
+        {
+            Node result = ExecuteLambda (@"_exe1
+  set:@/./?node
+lambda:@/-/?node
+set:@/../?value
+  source:success");
+            Assert.AreEqual ("success", result.Value);
+        }
+        
+        /// <summary>
+        /// verifies that [lambda] can create a new node, just beneath the currently executed node,
+        /// without making the engine "skip" a node
+        /// </summary>
+        [Test]
+        public void Lambda16 ()
+        {
+            Node result = ExecuteLambda (@"_exe1
+  append:@/../?node
+    source
+      set:@/../?value
+        source:success
+lambda:@/-/?node");
+            Assert.AreEqual ("success", result.Value);
+        }
     }
 }

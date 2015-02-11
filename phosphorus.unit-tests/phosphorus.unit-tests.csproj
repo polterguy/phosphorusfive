@@ -69,6 +69,10 @@
       <Project>{8EB5FDEA-D073-4147-AE65-376A01B463DF}</Project>
       <Name>phosphorus.lambda</Name>
     </ProjectReference>
+    <ProjectReference Include="..\plugins\phosphorus.data\phosphorus.data.csproj">
+      <Project>{CA83A3ED-BD5D-4557-AA1B-A7C04ABD4D4F}</Project>
+      <Name>phosphorus.data</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Expressions.cs" />
@@ -83,6 +87,7 @@
     <Compile Include="Lambda.cs" />
     <Compile Include="Branching.cs" />
     <Compile Include="Core.cs" />
+    <Compile Include="Database.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

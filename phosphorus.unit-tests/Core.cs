@@ -231,8 +231,8 @@ namespace phosphorus.unittests
         }
 
         /// <summary>
-        /// verifying that registering the same object as listener twice in application context
-        /// does not have effect
+        /// verifying that registering the same object as instance listener twice
+        /// in application context does not have any effect
         /// </summary>
         [Test]
         public void ApplicationContext8 ()
@@ -252,12 +252,17 @@ namespace phosphorus.unittests
             e.Args.Value += "success";
         }
 
+        /// <summary>
+        /// verifying that unregistering in instance listener, removes the event handler
+        /// </summary>
         [Test]
         public void ApplicationContext9 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             ApplicationContext context = Loader.Instance.CreateApplicationContext ();
             context.RegisterListeningObject (this);
+
+            // unregistering instance listener before we raise event
             context.UnregisterListeningObject (this);
             Node tmp = new Node (string.Empty, string.Empty);
             context.Raise ("foo8", tmp);
@@ -276,6 +281,9 @@ namespace phosphorus.unittests
             e.Args.Value += "success";
         }
 
+        /// <summary>
+        /// verifying that unregistering an instance listener, still kicks in a static listener
+        /// </summary>
         [Test]
         public void ApplicationContext10 ()
         {
@@ -294,6 +302,10 @@ namespace phosphorus.unittests
             e.Args.Value += "success";
         }
 
+        /// <summary>
+        /// verifying that unloading a dll, before creating application context, removes the static
+        /// listener from the dll
+        /// </summary>
         [Test]
         public void ApplicationContext11 ()
         {
@@ -311,12 +323,17 @@ namespace phosphorus.unittests
             e.Args.Value += "success";
         }
 
+        /// <summary>
+        /// verifying unloading a dll and then re-create application context, removes instance listener
+        /// </summary>
         [Test]
         public void ApplicationContext12 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             ApplicationContext context = Loader.Instance.CreateApplicationContext ();
             context.RegisterListeningObject (this);
+
+            // intentionally unloading assembly, before re-creating context
             Loader.Instance.UnloadAssembly ("phosphorus.unit-tests");
             context = Loader.Instance.CreateApplicationContext ();
             Node tmp = new Node (string.Empty, string.Empty);
@@ -324,6 +341,9 @@ namespace phosphorus.unittests
             Assert.AreEqual (string.Empty, tmp.Value, "assembly didn't unload correctly");
         }
         
+        /// <summary>
+        /// verifying that invoking a non-existing Active Event does not trigger any errors
+        /// </summary>
         [Test]
         public void InvokeNullEventHandler ()
         {
@@ -344,6 +364,10 @@ namespace phosphorus.unittests
             e.Args.Value += "success";
         }
 
+        /// <summary>
+        /// verifying that overriding a static active event with another static event does not
+        /// trigger the original handler
+        /// </summary>
         [Test]
         public void ApplicationContext13 ()
         {
@@ -366,6 +390,10 @@ namespace phosphorus.unittests
             e.Args.Value += "success";
         }
 
+        /// <summary>
+        /// verifying that overriding an instance listener active event with
+        /// another instance listener active event does not trigger the original handler
+        /// </summary>
         [Test]
         public void ApplicationContext14 ()
         {
@@ -389,6 +417,10 @@ namespace phosphorus.unittests
             e.Args.Value += "success";
         }
 
+        /// <summary>
+        /// verifying that overriding a static listener active event with
+        /// an instance listener active event does not trigger the original handler
+        /// </summary>
         [Test]
         public void ApplicationContext15 ()
         {

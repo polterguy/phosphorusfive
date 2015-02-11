@@ -726,5 +726,25 @@ namespace phosphorus.unittests
             Assert.AreEqual ("success", node [0] [0].Value);
             Assert.AreEqual ("success", node [0] [1].Value);
         }
+        
+        /// <summary>
+        /// verifies [set] works when [rel-source] is a formatting expression
+        /// </summary>
+        [Test]
+        public void Set36 ()
+        {
+            Node node = new Node ()
+                .Add ("_data").LastChild
+                    .Add ("_1")
+                    .Add ("_2").Parent
+                .Add ("set", "@/-/*/?value").LastChild
+                    .Add ("rel-source", "{0}").LastChild
+                        .Add ("", "@?name").Root;
+            _context.Raise ("set", node [1]);
+
+            // verifying [set] works as it should
+            Assert.AreEqual ("_1", node [0] [0].Value);
+            Assert.AreEqual ("_2", node [0] [1].Value);
+        }
     }
 }

@@ -79,9 +79,6 @@ namespace phosphorus.lambda
          */
         private static void SetRelativeSource (Node node, ApplicationContext context)
         {
-            if (!XUtil.IsExpression (node.LastChild.Value))
-                throw new ArgumentException ("a [rel-source] must be an expression");
-
             // iterating through all destinations, figuring out source relative to each destinations
             foreach (var idxDestination in XUtil.Iterate (node, context)) {
 

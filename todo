@@ -55,6 +55,14 @@
 
 * make it possible to convert results of expressions by appending ".type" such as for instance "@/foo/?value.int"
 
+* unit tests for [lambda] "delete this" pattern and "append after this" pattern
+
+* finish up comments on Unit Tests, class "Core" for instance
+
+* remove SetNull in [set], since it overlaps SetStatic
+
+* unit tests for [rel-source] in [pf.data.update]
+
 
 
 
