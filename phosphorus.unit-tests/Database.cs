@@ -73,12 +73,12 @@ namespace phosphorus.unittests
 pf.data.select:@/*/*/_test1/?node
 pf.data.delete:@/*/*/_test1/?node
 pf.data.select:@/*/*/_test1/?node");
-            Assert.AreEqual (1, tmp [1].Count, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("_test1", tmp [1] [0].Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual (typeof (Guid), tmp [1] [0].Value.GetType (), "wrong value of node after executing lambda object");
-            Assert.AreEqual ("howdy", tmp [1] [0] [0].Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("world", tmp [1] [0] [0].Value, "wrong value of node after executing lambda object");
-            Assert.AreEqual (0, tmp [3].Count, "wrong value of node after executing lambda object");
+            Assert.AreEqual (1, tmp [1].Count);
+            Assert.AreEqual ("_test1", tmp [1] [0].Name);
+            Assert.AreEqual (typeof (Guid), tmp [1] [0].Value.GetType ());
+            Assert.AreEqual ("howdy", tmp [1] [0] [0].Name);
+            Assert.AreEqual ("world", tmp [1] [0] [0].Value);
+            Assert.AreEqual (0, tmp [3].Count);
         }
 
         /// <summary>
@@ -91,9 +91,9 @@ pf.data.select:@/*/*/_test1/?node");
   _testX
     howdy:world
 pf.data.select:@/*/*/_testX/0/?name");
-            Assert.AreEqual (1, tmp [1].Count, "wrong value of node after executing lambda object");
-            Assert.AreEqual (string.Empty, tmp [1] [0].Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("howdy", tmp [1] [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual (1, tmp [1].Count);
+            Assert.AreEqual (string.Empty, tmp [1] [0].Name);
+            Assert.AreEqual ("howdy", tmp [1] [0].Value);
         }
 
         /// <summary>
@@ -106,9 +106,9 @@ pf.data.select:@/*/*/_testX/0/?name");
   _testX
     howdy:world
 pf.data.select:@/*/*/_testX/0/?value");
-            Assert.AreEqual (1, tmp [1].Count, "wrong value of node after executing lambda object");
-            Assert.AreEqual (string.Empty, tmp [1] [0].Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("world", tmp [1] [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual (1, tmp [1].Count);
+            Assert.AreEqual (string.Empty, tmp [1] [0].Name);
+            Assert.AreEqual ("world", tmp [1] [0].Value);
         }
 
         /// <summary>
@@ -121,9 +121,9 @@ pf.data.select:@/*/*/_testX/0/?value");
   _testX
     howdy:world
 pf.data.select:@/*/*/_testX/0/?count");
-            Assert.AreEqual (1, tmp [1].Count, "wrong value of node after executing lambda object");
-            Assert.AreEqual (string.Empty, tmp [1] [0].Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual (1, tmp [1] [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual (1, tmp [1].Count);
+            Assert.AreEqual (string.Empty, tmp [1] [0].Name);
+            Assert.AreEqual (1, tmp [1] [0].Value);
         }
 
         /// <summary>
@@ -136,9 +136,9 @@ pf.data.select:@/*/*/_testX/0/?count");
   _testX
     howdy:world
 pf.data.select:@/*/*/_testX/0/?path");
-            Assert.AreEqual (1, tmp [1].Count, "wrong value of node after executing lambda object");
-            Assert.AreEqual (string.Empty, tmp [1] [0].Name, "wrong value of node after executing lambda object");
-            Assert.IsTrue (tmp [1] [0].Value is Node.DNA, "wrong value of node after executing lambda object");
+            Assert.AreEqual (1, tmp [1].Count);
+            Assert.AreEqual (string.Empty, tmp [1] [0].Name);
+            Assert.IsTrue (tmp [1] [0].Value is Node.DNA);
         }
 
         /// <summary>
@@ -154,11 +154,11 @@ pf.data.select:@/*/*/_testX/0/?path");
   _testX
     howdy2:world2
 pf.data.select:@/*/*/_testX/0/?name");
-            Assert.AreEqual (2, tmp [1].Count, "wrong value of node after executing lambda object");
-            Assert.AreEqual (string.Empty, tmp [1] [0].Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("howdy1", tmp [1] [0].Value, "wrong value of node after executing lambda object");
-            Assert.AreEqual (string.Empty, tmp [1] [1].Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("howdy2", tmp [1] [1].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual (2, tmp [1].Count);
+            Assert.AreEqual (string.Empty, tmp [1] [0].Name);
+            Assert.AreEqual ("howdy1", tmp [1] [0].Value);
+            Assert.AreEqual (string.Empty, tmp [1] [1].Name);
+            Assert.AreEqual ("howdy2", tmp [1] [1].Value);
         }
 
         /// <summary>
@@ -174,11 +174,11 @@ pf.data.select:@/*/*/_testX/0/?name");
   _testX
     howdy2:world2
 pf.data.select:@/*/*/_testX/0/?value");
-            Assert.AreEqual (2, tmp [1].Count, "wrong value of node after executing lambda object");
-            Assert.AreEqual (string.Empty, tmp [1] [0].Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("world1", tmp [1] [0].Value, "wrong value of node after executing lambda object");
-            Assert.AreEqual (string.Empty, tmp [1] [1].Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("world2", tmp [1] [1].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual (2, tmp [1].Count);
+            Assert.AreEqual (string.Empty, tmp [1] [0].Name);
+            Assert.AreEqual ("world1", tmp [1] [0].Value);
+            Assert.AreEqual (string.Empty, tmp [1] [1].Name);
+            Assert.AreEqual ("world2", tmp [1] [1].Value);
         }
 
         /// <summary>
@@ -194,11 +194,11 @@ pf.data.select:@/*/*/_testX/0/?value");
   _testX
     howdy2:world2
 pf.data.select:@/*/*/_testX/0/?path");
-            Assert.AreEqual (2, tmp [1].Count, "wrong value of node after executing lambda object");
-            Assert.AreEqual (string.Empty, tmp [1] [0].Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual (string.Empty, tmp [1] [1].Name, "wrong value of node after executing lambda object");
-            Assert.IsTrue (tmp [1] [0].Value is Node.DNA, "wrong value of node after executing lambda object");
-            Assert.IsTrue (tmp [1] [1].Value is Node.DNA, "wrong value of node after executing lambda object");
+            Assert.AreEqual (2, tmp [1].Count);
+            Assert.AreEqual (string.Empty, tmp [1] [0].Name);
+            Assert.AreEqual (string.Empty, tmp [1] [1].Name);
+            Assert.IsTrue (tmp [1] [0].Value is Node.DNA);
+            Assert.IsTrue (tmp [1] [1].Value is Node.DNA);
         }
 
         /// <summary>
@@ -214,9 +214,9 @@ pf.data.select:@/*/*/_testX/0/?path");
   _testX
     howdy2:world2
 pf.data.select:@/*/*/_testX/?count");
-            Assert.AreEqual (1, tmp [1].Count, "wrong value of node after executing lambda object");
-            Assert.AreEqual (string.Empty, tmp [1] [0].Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual (2, tmp [1] [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual (1, tmp [1].Count);
+            Assert.AreEqual (string.Empty, tmp [1] [0].Name);
+            Assert.AreEqual (2, tmp [1] [0].Value);
         }
         
         /// <summary>
@@ -236,11 +236,11 @@ pf.data.select:@/*/*/_testX/?count");
   _test4
     howdy:world3
 pf.data.select:@/*/*/_test4/*/query_field/*/x/=y/././?node");
-            Assert.AreEqual (1, tmp [1].Count, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("_test4", tmp [1] [0].Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("world2", tmp [1] [0] [0].Value, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("x", tmp [1] [0] [1] [0].Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("y", tmp [1] [0] [1] [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual (1, tmp [1].Count);
+            Assert.AreEqual ("_test4", tmp [1] [0].Name);
+            Assert.AreEqual ("world2", tmp [1] [0] [0].Value);
+            Assert.AreEqual ("x", tmp [1] [0] [1] [0].Name);
+            Assert.AreEqual ("y", tmp [1] [0] [1] [0].Value);
         }
 
         /// <summary>
@@ -253,11 +253,11 @@ pf.data.select:@/*/*/_test4/*/query_field/*/x/=y/././?node");
 _testX
   howdy:world
 pf.data.select:@/*/*/_testX/?node");
-            Assert.AreEqual (1, tmp [2].Count, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("_testX", tmp [2] [0].Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual (typeof (Guid), tmp [2] [0].Value.GetType (), "wrong value of node after executing lambda object");
-            Assert.AreEqual ("howdy", tmp [2] [0] [0].Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("world", tmp [2] [0] [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual (1, tmp [2].Count);
+            Assert.AreEqual ("_testX", tmp [2] [0].Name);
+            Assert.AreEqual (typeof (Guid), tmp [2] [0].Value.GetType ());
+            Assert.AreEqual ("howdy", tmp [2] [0] [0].Name);
+            Assert.AreEqual ("world", tmp [2] [0] [0].Value);
         }
 
         /// <summary>
@@ -272,15 +272,15 @@ _testX
 _testX
   howdy:world
 pf.data.select:@/*/*/_testX/?node");
-            Assert.AreEqual (2, tmp [3].Count, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("_testX", tmp [3] [0].Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual (typeof (Guid), tmp [3] [0].Value.GetType (), "wrong value of node after executing lambda object");
-            Assert.AreEqual ("howdy", tmp [3] [0] [0].Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("world", tmp [3] [0] [0].Value, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("_testX", tmp [3] [1].Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual (typeof (Guid), tmp [3] [1].Value.GetType (), "wrong value of node after executing lambda object");
-            Assert.AreEqual ("howdy", tmp [3] [1] [0].Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("world", tmp [3] [1] [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual (2, tmp [3].Count);
+            Assert.AreEqual ("_testX", tmp [3] [0].Name);
+            Assert.AreEqual (typeof (Guid), tmp [3] [0].Value.GetType ());
+            Assert.AreEqual ("howdy", tmp [3] [0] [0].Name);
+            Assert.AreEqual ("world", tmp [3] [0] [0].Value);
+            Assert.AreEqual ("_testX", tmp [3] [1].Name);
+            Assert.AreEqual (typeof (Guid), tmp [3] [1].Value.GetType ());
+            Assert.AreEqual ("howdy", tmp [3] [1] [0].Name);
+            Assert.AreEqual ("world", tmp [3] [1] [0].Value);
         }
         
         /// <summary>
@@ -293,11 +293,11 @@ pf.data.select:@/*/*/_testX/?node");
             Node tmp = ExecuteLambda (@"pf.data.insert:@""_testX
   howdy:world""
 pf.data.select:@/*/*/_testX/?node");
-            Assert.AreEqual (1, tmp [1].Count, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("_testX", tmp [1] [0].Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual (typeof (Guid), tmp [1] [0].Value.GetType (), "wrong value of node after executing lambda object");
-            Assert.AreEqual ("howdy", tmp [1] [0] [0].Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("world", tmp [1] [0] [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual (1, tmp [1].Count);
+            Assert.AreEqual ("_testX", tmp [1] [0].Name);
+            Assert.AreEqual (typeof (Guid), tmp [1] [0].Value.GetType ());
+            Assert.AreEqual ("howdy", tmp [1] [0] [0].Name);
+            Assert.AreEqual ("world", tmp [1] [0] [0].Value);
         }
 
         /// <summary>
@@ -321,11 +321,11 @@ pf.data.update:@/*/*/_test5/*/query_field/?node
     query_field2
       x:zz
 pf.data.select:@/*/*/_test5/*/query_field2/*/x/=zz/././?node");
-            Assert.AreEqual (1, tmp [2].Count, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("_test5", tmp [2] [0].Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("world2", tmp [2] [0] [0].Value, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("x", tmp [2] [0] [1] [0].Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("zz", tmp [2] [0] [1] [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual (1, tmp [2].Count);
+            Assert.AreEqual ("_test5", tmp [2] [0].Name);
+            Assert.AreEqual ("world2", tmp [2] [0] [0].Value);
+            Assert.AreEqual ("x", tmp [2] [0] [1] [0].Name);
+            Assert.AreEqual ("zz", tmp [2] [0] [1] [0].Value);
         }
 
         /// <summary>
@@ -348,12 +348,12 @@ pf.data.update:@/*/*/_test6/?node
       howdy:worldZZ
 pf.data.select:@/*/*/_test6_update/?node
 pf.data.select:@/*/*/_test6/?node");
-            Assert.AreEqual (3, tmp [2].Count, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("_test6_update", tmp [2] [0].Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("worldZZ", tmp [2] [0] [0].Value, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("worldZZ", tmp [2] [1] [0].Value, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("worldZZ", tmp [2] [2] [0].Value, "wrong value of node after executing lambda object");
-            Assert.AreEqual (0, tmp [3].Count, "wrong value of node after executing lambda object");
+            Assert.AreEqual (3, tmp [2].Count);
+            Assert.AreEqual ("_test6_update", tmp [2] [0].Name);
+            Assert.AreEqual ("worldZZ", tmp [2] [0] [0].Value);
+            Assert.AreEqual ("worldZZ", tmp [2] [1] [0].Value);
+            Assert.AreEqual ("worldZZ", tmp [2] [2] [0].Value);
+            Assert.AreEqual (0, tmp [3].Count);
         }
 
         /// <summary>
@@ -370,9 +370,9 @@ pf.data.update:@/*/*/_testX/?value
     :hello
     :world
 pf.data.select:@/*/*/_testX/?node");
-            Assert.AreEqual (1, tmp [2].Count, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("_testX", tmp [2] [0].Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("helloworld", tmp [2] [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual (1, tmp [2].Count);
+            Assert.AreEqual ("_testX", tmp [2] [0].Name);
+            Assert.AreEqual ("helloworld", tmp [2] [0].Value);
         }
 
         /// <summary>
@@ -391,11 +391,11 @@ _test7_update
   howdy2:world2
 pf.data.select:@/*/*/_test7_update/?node
 pf.data.select:@/*/*/_test7/?node");
-            Assert.AreEqual (1, tmp [3].Count, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("_test7_update", tmp [3] [0].Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("howdy2", tmp [3] [0] [0].Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("world2", tmp [3] [0] [0].Value, "wrong value of node after executing lambda object");
-            Assert.AreEqual (0, tmp [4].Count, "wrong value of node after executing lambda object");
+            Assert.AreEqual (1, tmp [3].Count);
+            Assert.AreEqual ("_test7_update", tmp [3] [0].Name);
+            Assert.AreEqual ("howdy2", tmp [3] [0] [0].Name);
+            Assert.AreEqual ("world2", tmp [3] [0] [0].Value);
+            Assert.AreEqual (0, tmp [4].Count);
         }
 
         /// <summary>
@@ -412,12 +412,12 @@ pf.data.update:@/*/*/_test9/*/howdy/?value
   source:@/./+/?node
 _howdy:world
 pf.data.select:@/*/*/_test9/?node");
-            Assert.AreEqual (1, tmp [3].Count, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("_test9", tmp [3] [0].Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("howdy", tmp [3] [0] [0].Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("_howdy", tmp [3] [0] [0].Get<Node> (_context).Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("world", tmp [3] [0] [0].Get<Node> (_context).Value, "wrong value of node after executing lambda object");
-            Assert.AreEqual (0, tmp [3] [0] [0].Get<Node> (_context).Count, "wrong value of node after executing lambda object");
+            Assert.AreEqual (1, tmp [3].Count);
+            Assert.AreEqual ("_test9", tmp [3] [0].Name);
+            Assert.AreEqual ("howdy", tmp [3] [0] [0].Name);
+            Assert.AreEqual ("_howdy", tmp [3] [0] [0].Get<Node> (_context).Name);
+            Assert.AreEqual ("world", tmp [3] [0] [0].Get<Node> (_context).Value);
+            Assert.AreEqual (0, tmp [3] [0] [0].Get<Node> (_context).Count);
         }
         
         /// <summary>
@@ -433,10 +433,10 @@ pf.data.select:@/*/*/_test9/?node");
 pf.data.update:@/*/*/_test9/*/howdy/?value
   rel-source:@/./?name
 pf.data.select:@/*/*/_test9/?node");
-            Assert.AreEqual (1, tmp [2].Count, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("_test9", tmp [2] [0].Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("howdy", tmp [2] [0] [0].Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("_test9", tmp [2] [0] [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual (1, tmp [2].Count);
+            Assert.AreEqual ("_test9", tmp [2] [0].Name);
+            Assert.AreEqual ("howdy", tmp [2] [0] [0].Name);
+            Assert.AreEqual ("_test9", tmp [2] [0] [0].Value);
         }
         
         /// <summary>
@@ -454,10 +454,33 @@ pf.data.update:@/*/*/_test9/*/howdy/?value
     :@/./?name
     :@?value
 pf.data.select:@/*/*/_test9/?node");
-            Assert.AreEqual (1, tmp [2].Count, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("_test9", tmp [2] [0].Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("howdy", tmp [2] [0] [0].Name, "wrong value of node after executing lambda object");
-            Assert.AreEqual ("_test9world", tmp [2] [0] [0].Value, "wrong value of node after executing lambda object");
+            Assert.AreEqual (1, tmp [2].Count);
+            Assert.AreEqual ("_test9", tmp [2] [0].Name);
+            Assert.AreEqual ("howdy", tmp [2] [0] [0].Name);
+            Assert.AreEqual ("_test9world", tmp [2] [0] [0].Value);
+        }
+        
+        /// <summary>
+        /// inserts an item into database, for them to update 'value' using [rel-source], where [rel-source]
+        /// points to multiple node's values
+        /// </summary>
+        [Test]
+        public void Update08 ()
+        {
+            Node tmp = ExecuteLambda (@"pf.data.insert
+  _test9
+    _1:""howdy ""
+    _2:world
+    _dest
+pf.data.update:@/*/*/_test9/*/_dest/?value
+  rel-source:@/./*/(/_1/|/_2/)?value
+pf.data.select:@/*/*/_test9/?node");
+            Assert.AreEqual (1, tmp [2].Count);
+            Assert.AreEqual ("_test9", tmp [2] [0].Name);
+            Assert.AreEqual ("howdy ", tmp [2] [0] [0].Value);
+            Assert.AreEqual ("world", tmp [2] [0] [1].Value);
+            Assert.AreEqual ("_dest", tmp [2] [0] [2].Name);
+            Assert.AreEqual ("howdy world", tmp [2] [0] [2].Value);
         }
     }
 }

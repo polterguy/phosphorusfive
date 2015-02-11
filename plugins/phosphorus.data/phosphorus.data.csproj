@@ -43,7 +43,11 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="database.cs" />
+    <Compile Include="data_common.cs" />
+    <Compile Include="data_select.cs" />
+    <Compile Include="data_update.cs" />
+    <Compile Include="data_insert.cs" />
+    <Compile Include="data_delete.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
