@@ -31,10 +31,10 @@ namespace phosphorus.data
                 throw new ArgumentException ("[pf.data.select] requires an expression to select items from database");
 
             // making sure database is initialized
-            data_common.Initialize (context);
+            Common.Initialize (context);
 
             // iterating through each result from database node tree
-            foreach (var idxMatch in XUtil.Iterate (e.Args, data_common.Database, context)) {
+            foreach (var idxMatch in XUtil.Iterate (e.Args, Common.Database, context)) {
 
                 // aborting iteration early if it is a 'count' expression
                 if (idxMatch.TypeOfMatch == Match.MatchType.count) {

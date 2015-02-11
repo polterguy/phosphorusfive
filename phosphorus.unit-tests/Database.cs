@@ -299,6 +299,21 @@ pf.data.select:@/*/*/_testX/?node");
             Assert.AreEqual ("howdy", tmp [1] [0] [0].Name);
             Assert.AreEqual ("world", tmp [1] [0] [0].Value);
         }
+        
+        /// <summary>
+        /// inserts an item into the database which is nothing but a "simple value" type of item
+        /// from string to Node
+        /// </summary>
+        [Test]
+        public void Insert04 ()
+        {
+            Node tmp = ExecuteLambda (@"pf.data.insert
+  foo:bar
+pf.data.select:@/*/*/foo/?value");
+            Assert.AreEqual (1, tmp [1].Count);
+            Assert.AreEqual (string.Empty, tmp [1] [0].Name);
+            Assert.AreEqual ("bar", tmp [1] [0].Value);
+        }
 
         /// <summary>
         /// inserts a couple of items into database, for then to perform a 'deep' update, making
@@ -481,6 +496,144 @@ pf.data.select:@/*/*/_test9/?node");
             Assert.AreEqual ("world", tmp [2] [0] [1].Value);
             Assert.AreEqual ("_dest", tmp [2] [0] [2].Name);
             Assert.AreEqual ("howdy world", tmp [2] [0] [2].Value);
+        }
+        
+        /// <summary>
+        /// inserts an item into database, for them to update item, making sure the item keep its original ID
+        /// </summary>
+        [Test]
+        public void Update09 ()
+        {
+            Node tmp = ExecuteLambda (@"pf.data.insert
+  howdy
+pf.data.update:@/*/*/howdy/?node
+  source
+    howdy2
+pf.data.select:@/*/*/howdy2/?node");
+            Assert.AreEqual (typeof (Guid), tmp [0] [0].Value.GetType ());
+            Assert.AreEqual (tmp [0] [0].Value, tmp [2] [0].Value);
+        }
+        
+        /// <summary>
+        /// inserts an item into database, for them to update item, making sure the item gets a new ID when one
+        /// is explicitly given
+        /// </summary>
+        [Test]
+        public void Update10 ()
+        {
+            Node tmp = ExecuteLambda (@"pf.data.insert
+  howdy
+pf.data.update:@/*/*/howdy/?node
+  source
+    howdy2:foo
+pf.data.select:@/*/*/howdy2/?node");
+            Assert.AreEqual (typeof (Guid), tmp [0] [0].Value.GetType ());
+            Assert.AreEqual ("foo", tmp [2] [0].Value);
+        }
+
+        /// <summary>
+        /// tries to insert two items into database with the same ID
+        /// </summary>
+        [Test]
+        [ExpectedException]
+        public void SyntaxError01 ()
+        {
+            ExecuteLambda (@"pf.data.insert
+  _test9:foo
+  _test9:foo");
+        }
+        
+        /// <summary>
+        /// tries to insert two items into database with the same ID in two different batches
+        /// </summary>
+        [Test]
+        [ExpectedException]
+        public void SyntaxError02 ()
+        {
+            ExecuteLambda (@"pf.data.insert
+  _test:bar1");
+            ExecuteLambda (@"pf.data.insert
+  _test:bar1");
+        }
+        
+        /// <summary>
+        /// tries to insert two items into database with the same ID in two different batches
+        /// </summary>
+        [Test]
+        [ExpectedException]
+        public void SyntaxError03 ()
+        {
+            ExecuteLambda (@"pf.data.insert
+  :bar1");
+        }
+        
+        /// <summary>
+        /// tries to insert two items into database with the same ID in two different batches
+        /// </summary>
+        [Test]
+        [ExpectedException]
+        public void SyntaxError04 ()
+        {
+            ExecuteLambda (@"pf.data.insert
+  foo:bar1");
+            ExecuteLambda (@"pf.data.update:@/*/*/foo/?node
+  source
+    :bar1");
+        }
+        
+        /// <summary>
+        /// tries to update an item in database to have same ID as another item
+        /// </summary>
+        [Test]
+        [ExpectedException]
+        public void SyntaxError05 ()
+        {
+            ExecuteLambda (@"pf.data.insert
+  foo1:bar1
+  foo2:bar2");
+            ExecuteLambda (@"pf.data.update:@/*/*/foo2/?node
+  source
+    foo2:bar1");
+        }
+        
+        /// <summary>
+        /// tries to update an item in database to have empty name
+        /// </summary>
+        [Test]
+        [ExpectedException]
+        public void SyntaxError06 ()
+        {
+            ExecuteLambda (@"pf.data.insert
+  foo1:bar1");
+            ExecuteLambda (@"pf.data.update:@/*/*/foo1/?name
+  source:");
+        }
+        
+        /// <summary>
+        /// tries to update an item in database to have non-unique ID
+        /// </summary>
+        [Test]
+        [ExpectedException]
+        public void SyntaxError07 ()
+        {
+            ExecuteLambda (@"pf.data.insert
+  foo1:bar1
+  foo2:bar2");
+            ExecuteLambda (@"pf.data.update:@/*/*/foo1/?value
+  source:bar2");
+        }
+        
+        /// <summary>
+        /// tries to update an item without submitting a [source] or [rel-source]
+        /// </summary>
+        [Test]
+        [ExpectedException]
+        public void SyntaxError08 ()
+        {
+            ExecuteLambda (@"pf.data.insert
+  foo1:bar1");
+            ExecuteLambda (@"pf.data.update:@/*/*/foo1/?value
+  bar2");
         }
     }
 }

@@ -27,7 +27,7 @@ namespace phosphorus.data
         private static void pf_data_delete (ApplicationContext context, ActiveEventArgs e)
         {
             // making sure database is initialized
-            data_common.Initialize (context);
+            Common.Initialize (context);
             
             // verifying syntax of statement
             if (e.Args.Count != 0)
@@ -35,17 +35,17 @@ namespace phosphorus.data
 
             // looping through database matches and removing nodes while storing which files have been changed
             List<Node> changed = new List<Node> ();
-            foreach (var idxDest in XUtil.Iterate (e.Args.Get<string> (context), data_common.Database, context)) {
+            foreach (var idxDest in XUtil.Iterate (e.Args.Get<string> (context), Common.Database, context)) {
 
                 // figuring out which file Node updated belongs to, and storing in changed list
-                data_common.AddNodeToChanges (idxDest.Node, changed);
+                Common.AddNodeToChanges (idxDest.Node, changed);
 
                 // replacing node in database
                 idxDest.Node.UnTie ();
             }
 
             // saving all affected files
-            data_common.SaveAffectedFiles (context, changed);
+            Common.SaveAffectedFiles (context, changed);
         }
     }
 }

@@ -15,7 +15,7 @@ namespace phosphorus.data
     /// <summary>
     /// helper class for common operations and methods needed in the [pf.data.xxx] namespace
     /// </summary>
-    public static class data_common
+    public static class Common
     {
         // contains the path to the database folder, where all the pf.lambda files are stored
         private static string _dbPath;
@@ -67,11 +67,16 @@ namespace phosphorus.data
          */
         public static void AddNodeToChanges (Node idxDest, List<Node> changed)
         {
+            // finding "file node"
             Node dnaFile = idxDest;
-            while (dnaFile.Path.Count > 1)
+            while (dnaFile.Path.Count > 1) {
                 dnaFile = dnaFile.Parent;
-            if (!changed.Contains (dnaFile))
+            }
+
+            // making sure changed list of items contains "file node"
+            if (!changed.Contains (dnaFile)) {
                 changed.Add (dnaFile);
+            }
         }
 
         /*
