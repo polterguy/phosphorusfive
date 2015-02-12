@@ -8,7 +8,7 @@ using System;
 using NUnit.Framework;
 using phosphorus.core;
 
-namespace phosphorus.unittests
+namespace phosphorus.unittests.lambda
 {
     /// <summary>
     /// unit tests for testing the [for-each] lambda keyword

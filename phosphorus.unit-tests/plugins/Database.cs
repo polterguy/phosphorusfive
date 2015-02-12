@@ -9,7 +9,7 @@ using System.Reflection;
 using NUnit.Framework;
 using phosphorus.core;
 
-namespace phosphorus.unittests
+namespace phosphorus.unittests.plugins
 {
     /// <summary>
     /// [pf.data.xxx] unit tests

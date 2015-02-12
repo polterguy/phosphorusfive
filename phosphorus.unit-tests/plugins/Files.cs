@@ -9,7 +9,7 @@ using System.IO;
 using NUnit.Framework;
 using phosphorus.core;
 
-namespace phosphorus.unittests
+namespace phosphorus.unittests.plugins
 {
     /// <summary>
     /// unit tests for testing the [pf.file.xxx] namespace
