@@ -63,6 +63,12 @@
 
 * unit tests for [rel-source] in [pf.data.update]
 
+* verify thread safety when dynamically creating Active Events. when events created with [event] contains nodes, that are
+  manipulated inside event, as mutable objects, then this is not thread safe, possibly fix through [lock] keyword
+
+* [context-event], the ability to create dynamic Active Events only for the current executing context (thread)
+
+
 
 
 

@@ -26,26 +26,30 @@ namespace phosphorus.data
         [ActiveEvent (Name = "pf.data.delete")]
         private static void pf_data_delete (ApplicationContext context, ActiveEventArgs e)
         {
-            // making sure database is initialized
-            Common.Initialize (context);
+            // acquiring lock on database
+            lock (Common.Lock) {
+
+                // making sure database is initialized
+                Common.Initialize (context);
             
-            // verifying syntax of statement
-            if (e.Args.Count != 0)
-                throw new ArgumentException ("[pf.data.delete] does not take any arguments");
+                // verifying syntax of statement
+                if (e.Args.Count != 0)
+                    throw new ArgumentException ("[pf.data.delete] does not take any arguments");
 
-            // looping through database matches and removing nodes while storing which files have been changed
-            List<Node> changed = new List<Node> ();
-            foreach (var idxDest in XUtil.Iterate (e.Args.Get<string> (context), Common.Database, context)) {
+                // looping through database matches and removing nodes while storing which files have been changed
+                List<Node> changed = new List<Node> ();
+                foreach (var idxDest in XUtil.Iterate (e.Args.Get<string> (context), Common.Database, context)) {
 
-                // figuring out which file Node updated belongs to, and storing in changed list
-                Common.AddNodeToChanges (idxDest.Node, changed);
+                    // figuring out which file Node updated belongs to, and storing in changed list
+                    Common.AddNodeToChanges (idxDest.Node, changed);
 
-                // replacing node in database
-                idxDest.Node.UnTie ();
+                    // replacing node in database
+                    idxDest.Node.UnTie ();
+                }
+
+                // saving all affected files
+                Common.SaveAffectedFiles (context, changed);
             }
-
-            // saving all affected files
-            Common.SaveAffectedFiles (context, changed);
         }
     }
 }

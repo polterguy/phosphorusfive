@@ -17,6 +17,7 @@ namespace phosphorus.data
     /// </summary>
     public static class data_insert
     {
+        // TODO: refactor, too long
         /// <summary>
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
@@ -24,46 +25,59 @@ namespace phosphorus.data
         [ActiveEvent (Name = "pf.data.insert")]
         private static void pf_data_insert (ApplicationContext context, ActiveEventArgs e)
         {
-            // making sure database is initialized
-            Common.Initialize (context);
+            // acquiring lock on database
+            lock (Common.Lock) {
 
-            // verifying syntax of statement
-            if (e.Args.Count == 0 && string.IsNullOrEmpty (e.Args.Value as string))
-                throw new ArgumentException ("[pf.data.insert] requires at least one child node, or a source expression, or source value");
+                // making sure database is initialized
+                Common.Initialize (context);
 
-            // looping through all nodes given as children and saving them to database
-            List<Node> changed = new List<Node> ();
-            foreach (Node idx in XUtil.Iterate<Node> (e.Args, context)) {
+                // verifying syntax of statement
+                if (e.Args.Count == 0 && string.IsNullOrEmpty (e.Args.Value as string))
+                    throw new ArgumentException ("[pf.data.insert] requires at least one child node, or a source expression, or source value");
 
-                // making sure it is impossible to imsert items wwithout name into database
-                if (string.IsNullOrEmpty (idx.Name))
-                    throw new ArgumentException ("[pf.data.insert] requires that each item you insert has a name");
+                // looping through all nodes given as children and saving them to database
+                List<Node> changed = new List<Node> ();
+                foreach (Node idx in XUtil.Iterate<Node> (e.Args, context)) {
 
-                // making sure insert node gets an ID, unless one is explicitly given
-                if (idx.Value == null) {
-                    idx.Value = Guid.NewGuid ();
-                } else {
-                    if (XUtil.Iterate (
-                        string.Format (@"@/*/*/=""{0}""/?node", idx.Value), 
-                            Common.Database, 
-                            context).GetEnumerator ().MoveNext ()) {
-                        throw new ArgumentException ("ID exists from before in database");
-                    }
+                    // syntax checking insert node
+                    SyntaxCheckInsertNode (idx, context);
+
+                    // finding next available database file node
+                    Node fileNode = Common.GetAvailableFileNode (context);
+
+                    // figuring out which file Node updated belongs to, and storing in changed list
+                    if (!changed.Contains (fileNode))
+                        changed.Add (fileNode);
+
+                    // actually appending node into database
+                    fileNode.Add (idx.Clone ());
                 }
-
-                // finding next available database file node
-                Node fileNode = Common.GetAvailableFileNode (context);
-
-                // figuring out which file Node updated belongs to, and storing in changed list
-                if (!changed.Contains (fileNode))
-                    changed.Add (fileNode);
-
-                // actually appending node into database
-                fileNode.Add (idx.Clone ());
-            }
             
-            // saving all affected files
-            Common.SaveAffectedFiles (context, changed);
+                // saving all affected files
+                Common.SaveAffectedFiles (context, changed);
+            }
+        }
+
+        /*
+         * syntax checks node before insertion is allowed
+         */
+        private static void SyntaxCheckInsertNode (Node node, ApplicationContext context)
+        {
+            // making sure it is impossible to insert items without a name into database
+            if (string.IsNullOrEmpty (node.Name))
+                throw new ArgumentException ("[pf.data.insert] requires that each item you insert has a name");
+
+            // making sure insert node gets an ID, unless one is explicitly given
+            if (node.Value == null) {
+                node.Value = Guid.NewGuid ();
+            } else {
+                if (XUtil.Iterate (
+                    string.Format (@"@/*/*/=""{0}""/?node", node.Value), 
+                    Common.Database, 
+                    context).GetEnumerator ().MoveNext ()) {
+                    throw new ArgumentException ("ID exists from before in database");
+                }
+            }
         }
     }
 }

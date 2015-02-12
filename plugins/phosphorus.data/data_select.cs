@@ -26,34 +26,38 @@ namespace phosphorus.data
         [ActiveEvent (Name = "pf.data.select")]
         private static void pf_data_select (ApplicationContext context, ActiveEventArgs e)
         {
-            // verifying syntax
-            if (!XUtil.IsExpression (e.Args.Value))
-                throw new ArgumentException ("[pf.data.select] requires an expression to select items from database");
+            // acquiring lock on database
+            lock (Common.Lock) {
 
-            // making sure database is initialized
-            Common.Initialize (context);
+                // verifying syntax
+                if (!XUtil.IsExpression (e.Args.Value))
+                    throw new ArgumentException ("[pf.data.select] requires an expression to select items from database");
 
-            // iterating through each result from database node tree
-            foreach (var idxMatch in XUtil.Iterate (e.Args, Common.Database, context)) {
+                // making sure database is initialized
+                Common.Initialize (context);
 
-                // aborting iteration early if it is a 'count' expression
-                if (idxMatch.TypeOfMatch == Match.MatchType.count) {
-                    e.Args.Add (new Node (string.Empty, idxMatch.Match.Count));
-                    return;
-                }
+                // iterating through each result from database node tree
+                foreach (var idxMatch in XUtil.Iterate (e.Args, Common.Database, context)) {
 
-                // dependent upon type of expression, we either return a bunch of nodes, flat, with
-                // name being string.Empty, and value being matched value, or we append node itself back
-                // to caller. this allows us to select using expressions which are not of type 'node'
-                if (idxMatch.TypeOfMatch != Match.MatchType.node) {
+                    // aborting iteration early if it is a 'count' expression
+                    if (idxMatch.TypeOfMatch == Match.MatchType.count) {
+                        e.Args.Add (new Node (string.Empty, idxMatch.Match.Count));
+                        return;
+                    }
 
-                    // returning 'value', 'name' or 'path' of expression as children nodes of argument node
-                    // having name of returned node being string.Empty and value being result of expression
-                    e.Args.Add (new Node (string.Empty, idxMatch.Value));
-                } else {
+                    // dependent upon type of expression, we either return a bunch of nodes, flat, with
+                    // name being string.Empty, and value being matched value, or we append node itself back
+                    // to caller. this allows us to select using expressions which are not of type 'node'
+                    if (idxMatch.TypeOfMatch != Match.MatchType.node) {
 
-                    // returning node itself, after cloning
-                    e.Args.Add (idxMatch.Node.Clone ());
+                        // returning 'value', 'name' or 'path' of expression as children nodes of argument node
+                        // having name of returned node being string.Empty and value being result of expression
+                        e.Args.Add (new Node (string.Empty, idxMatch.Value));
+                    } else {
+
+                        // returning node itself, after cloning
+                        e.Args.Add (idxMatch.Node.Clone ());
+                    }
                 }
             }
         }

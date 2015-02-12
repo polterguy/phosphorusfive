@@ -17,18 +17,13 @@ namespace phosphorus.lambda
     public static class pfEvent
     {
         /// <summary>
-        /// creates an active event with the given name, where body is taken from children [lambda.xxx] nodes
+        /// creates zero or more active events with the given name, where body is taken from children [lambda.xxx] nodes
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "event")]
         private static void lambda_event (ApplicationContext context, ActiveEventArgs e)
         {
-            // retrieving name
-            string name = XUtil.Single<string> (e.Args, context);
-            if (string.IsNullOrEmpty (name))
-                throw new ArgumentException ("no event name given to [event] statement");
-
             // making sure there's at least one actual [lambda] object within Active Event creation statement
             List<Node> lambdas = new List<Node> (e.Args.FindAll (
                 delegate (Node idx) {
@@ -37,8 +32,12 @@ namespace phosphorus.lambda
             if (lambdas.Count == 0)
                 throw new ArgumentException ("[event] requires at least one [lambda.xxx] child");
 
-            // creating event
-            events_common.CreateEvent (name, lambdas);
+            // iterating through each name for new Active Event(s)
+            foreach (var idxName in XUtil.Iterate<string> (e.Args, context)) {
+
+                // creating event
+                events_common.CreateEvent (idxName, lambdas);
+            }
         }
     }
 }

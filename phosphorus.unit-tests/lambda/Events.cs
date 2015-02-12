@@ -14,7 +14,7 @@ namespace phosphorus.unittests.lambda
     public class Events : TestBase
     {
         public Events ()
-            : base ("phosphorus.hyperlisp", "phosphorus.lambda")
+            : base ("phosphorus.hyperlisp", "phosphorus.lambda", "phosphorus.types", "phosphorus.unit-tests")
         { }
 
         /// <summary>
@@ -195,6 +195,68 @@ test.foo11
   _out:success");
             Assert.AreEqual ("success", node [3] [0].Value);
             Assert.AreEqual ("success", node [4] [0].Value);
+        }
+        
+        /// <summary>
+        /// creates two events with one [event] statement
+        /// </summary>
+        [Test]
+        public void Events11 ()
+        {
+            Node node = ExecuteLambda (@"_evts
+  test.foo12
+  test.foo13
+event:@/-/*/?name
+  lambda
+    set:@/././*/_out/?value
+      source:success
+test.foo12
+  _out
+test.foo13
+  _out");
+            Assert.AreEqual ("success", node [2] [0].Value);
+            Assert.AreEqual ("success", node [3] [0].Value);
+        }
+
+        [ActiveEvent (Name = "test.hardcoded")]
+        private static void test_hardcoded (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value += "ess";
+        }
+        
+        /// <summary>
+        /// creates an Active Event that already exists as a C# Active Event, verifying both are called,
+        /// and that "dynamically created" event is invoked first
+        /// </summary>
+        [Test]
+        public void Events12 ()
+        {
+            Node node = ExecuteLambda (@"event:test.hardcoded
+  lambda
+    set:@/././?value
+      source:succ
+test.hardcoded");
+            Assert.AreEqual ("success", node [1].Value);
+        }
+        
+        /// <summary>
+        /// creates an event that contains "persistent data" in a mutable data node, making sure
+        /// dynamically created Active Events can contain "mutable data segments"
+        /// </summary>
+        [Test]
+        public void Events13 ()
+        {
+            Node node = ExecuteLambda (@"event:test.foo14
+  lambda
+    set:@/././?value
+      source:@/./+/#/?name
+    _foo:node:
+    set:@/-/#/?name
+      source:success
+test.foo14
+test.foo14");
+            Assert.AreEqual ("", node [1].Value);
+            Assert.AreEqual ("success", node [2].Value);
         }
 
 

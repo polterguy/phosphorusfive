@@ -23,12 +23,28 @@ namespace phosphorus.data
         // actual database content
         private static Node _database;
 
+        // used for locking access to database operations to create thread safe solutions
+        private static object _lock;
+
+        static Common ()
+        {
+            _lock = new object ();
+        }
+
         /// <summary>
         /// returns the node containing the actual data in the database
         /// </summary>
         /// <value>database tree</value>
         public static Node Database {
             get { return _database; }
+        }
+
+        /// <summary>
+        /// used to lock database access
+        /// </summary>
+        /// <value>lock object</value>
+        public static object Lock {
+            get { return _lock; }
         }
 
         /// <summary>

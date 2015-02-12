@@ -28,22 +28,26 @@ namespace phosphorus.data
         [ActiveEvent (Name = "pf.data.update")]
         private static void pf_data_update (ApplicationContext context, ActiveEventArgs e)
         {
-            // making sure database is initialized
-            Common.Initialize (context);
+            // acquiring lock on database
+            lock (Common.Lock) {
 
-            // figuring out source, and executing the corresponding logic
-            if (e.Args.Count > 0 && e.Args.LastChild.Name == "rel-source") {
+                // making sure database is initialized
+                Common.Initialize (context);
 
-                // static source, not a node, might be an expression
-                UpdateRelativeSource (e.Args, context);
-            } else if (e.Args.Count > 0 && e.Args.LastChild.Name == "source") {
+                // figuring out source, and executing the corresponding logic
+                if (e.Args.Count > 0 && e.Args.LastChild.Name == "rel-source") {
 
-                // relative source, source must be an expression
-                UpdateStaticSource (e.Args, context);
-            } else {
+                    // static source, not a node, might be an expression
+                    UpdateRelativeSource (e.Args, context);
+                } else if (e.Args.Count > 0 && e.Args.LastChild.Name == "source") {
 
-                // syntax error
-                throw new ArgumentException ("no [source] or [rel-source] was given to [pf.data.update]");
+                    // relative source, source must be an expression
+                    UpdateStaticSource (e.Args, context);
+                } else {
+
+                    // syntax error
+                    throw new ArgumentException ("no [source] or [rel-source] was given to [pf.data.update]");
+                }
             }
         }
         
