@@ -88,6 +88,7 @@
     <Compile Include="plugins\Folders.cs" />
     <Compile Include="plugins\Hyperlisp.cs" />
     <Compile Include="plugins\Database.cs" />
+    <Compile Include="lambda\Events.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

@@ -18,7 +18,8 @@ namespace phosphorus.expressions.iterators
         public override IEnumerable<Node> Evaluate {
             get {
                 foreach (Node idxCurrent in Left.Evaluate) {
-                    yield return idxCurrent.Parent;
+                    if (idxCurrent.Parent != null)
+                        yield return idxCurrent.Parent;
                 }
             }
         }
