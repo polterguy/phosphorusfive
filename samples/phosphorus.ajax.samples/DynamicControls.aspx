@@ -2,7 +2,6 @@
 <%@ Page 
     Language="C#" 
     Inherits="phosphorus.five.samples.DynamicControls"
-    StoreViewStateInSession="true"
     Codebehind="DynamicControls.aspx.cs" %>
 
 <!DOCTYPE html>
@@ -112,7 +111,7 @@
                     the <em>"AjaxPage"</em> helper class
 
                 <p>
-                    onwards to the <a href="ActiveEvents.aspx">active events example</a>
+                    back to <a href="Default.aspx">landing page</a>
             </div>
         </form>
     </body>

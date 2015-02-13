@@ -84,5 +84,7 @@
 
 * restructure file system, creating "tests" folder and "samples" folder
 
+* refactor JS in pf.ajax such that each "custom attribute setter" has their own methods, and the default one relies upon
+  the default attribute setter logic
 
 

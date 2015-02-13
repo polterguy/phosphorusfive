@@ -7,7 +7,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-    	<title>phosphorus five examples</title>
+    	<title>phosphorus ajax examples</title>
         <link rel="stylesheet" type="text/css" href="media/main.css">
         <meta charset="utf-8">
     </head>
@@ -15,10 +15,14 @@
         <form id="form1" runat="server" autocomplete="off">
             <div class="container">
 
-                <h1>phosphorus five examples</h1>
+                <h1>phosphorus ajax examples</h1>
 
                 <p>
-                    the examples for phosphorus, can either be read sequentially, as a book, or you can use them as a reference guide
+                    these are the examples for phosphorus.ajax, for those who wants to directly consume the ajax library in phosphorus,
+                    using traditional development in C#, using ASP.NET and web forms.&nbsp;&nbsp;the examples for phosphorus.ajax, can 
+                    either be read sequentially, as a book, or you can use them as a reference guide.&nbsp;&nbsp;however, phosphorus.ajax
+                    contains only three widgets, and less than 5KB of JavaScript, so teaching yourself pf.ajax, should easily be done in
+                    minutes
 
                 <h2>hello world</h2>
 
@@ -28,13 +32,14 @@
                         id="hello"
                         ElementType="strong"
                         RenderType="Default"
-                        onclick="hello_onclick">click me</pf:Literal>
+                        onclick="hello_onclick">click me for hello world</pf:Literal>
 
                 <p>
                     you can change the element rendered through the <em>"ElementType"</em> property, and the rendering type through
                     <em>"RenderType"</em>.&nbsp;&nbsp;you can set any event handler or attribute you wish, by adding them directly
                     in markup, or using the index operator overload in your codebehind.&nbsp;&nbsp;for security reasons, all event handlers
-                    must be marked with the <em>"WebMethod"</em> attribute.&nbsp;&nbsp;only changes will be returned from the server
+                    must be marked with the <em>"WebMethod"</em> attribute.&nbsp;&nbsp;please notice, using your browser, how only changes
+                    are returned from the server
 
                 <ul>
                     <li><a href="Literal.aspx">literal example</a>
@@ -42,11 +47,10 @@
                     <li><a href="Void.aspx">void example</a>
                     <li><a href="JavaScript.aspx">javascript example</a>
                     <li><a href="DynamicControls.aspx">dynamic controls example</a>
-                    <li><a href="ActiveEvents.aspx">active events example</a>
                 </ul>
 
                 <p>
-                    <a href="UnitTests.aspx">unit tests</a>
+                    <a href="UnitTests.aspx">ajax unit tests page</a>
 
                 <hr>
 

@@ -17,11 +17,11 @@ namespace phosphorus.five.samples
         [WebMethod]
         protected void hello_onclick (pf.Literal sender, EventArgs e)
         {
-            if (sender.innerValue == "click me") {
-                sender.innerValue = "hello world";
+            if (sender.innerValue == "click me for hello world") {
+                sender.innerValue = "click me again, while inspecting the HTTP request using your browser";
                 sender ["class"] = "change-is-the-only-constant";
             } else {
-                sender.innerValue = "click me";
+                sender.innerValue = "click me for hello world";
                 sender.RemoveAttribute ("class");
             }
         }
