@@ -114,6 +114,10 @@
       <Project>{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}</Project>
       <Name>phosphorus.expressions</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\plugins\phosphorus.meta\phosphorus.meta.csproj">
+      <Project>{A4DAD930-CFCA-49EA-B69B-E2C7AA74DA10}</Project>
+      <Name>phosphorus.meta</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="code\" />
