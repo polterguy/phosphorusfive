@@ -19,6 +19,9 @@ namespace phosphorus.lambda
         // contains our list of dynamically created Active Events
         private static Dictionary<string, Node> _events = new Dictionary<string, Node> ();
 
+        // used to remember the overrides across Application Context instances
+        private static Dictionary<string, List<string>> _overrides = new Dictionary<string, List<string>> ();
+
         // used to create lock when creating, deleting and consuming events
         private static object _lock;
 
@@ -65,6 +68,40 @@ namespace phosphorus.lambda
             }
         }
 
+        /// <summary>
+        /// creates an override from baseEvent to superEvent
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="baseEvent">event to override</param>
+        /// <param name="superEvent">event supposed to override baseEvent</param>
+        public static void CreateOverride (ApplicationContext context, string baseEvent, string superEvent)
+        {
+            lock (_lock) {
+
+                // making sure we can remember override across context objects
+                if (!_overrides.ContainsKey (baseEvent))
+                    _overrides [baseEvent] = new List<string> ();
+                _overrides [baseEvent].Add (superEvent);
+
+                // making sure core actually creates our override for current context
+                context.Override (baseEvent, superEvent);
+            }
+        }
+
+        /*
+         * responsible for re-mapping our overrides when Application Context is initialized
+         */
+        [ActiveEvent (Name = "pf.core.initialize-application-context")]
+        private static void pf_core_initialize_application_context (ApplicationContext context, ActiveEventArgs e)
+        {
+            // looping through each override previously created, making sure they're re-mapped
+            foreach (var idxBase in _overrides.Keys) {
+                foreach (var idxSuper in _overrides [idxBase]) {
+                    context.Override (idxBase, idxSuper);
+                }
+            }
+        }
+
         /*
          * responsible for executing all dynamically created Active Events or lambda objects
          */
@@ -91,7 +128,7 @@ namespace phosphorus.lambda
                     }
                 }
 
-                // in case event was deleted efter first check, but before nodes were appended
+                // in case event was deleted efter first check, but before nodes were appended, we double check here ...
                 if (shouldRaise)
                     context.Raise ("lambda", e.Args);
             }

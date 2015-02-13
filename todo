@@ -68,6 +68,17 @@
 
 * [context-event], the ability to create dynamic Active Events only for the current executing context (thread)
 
+* [lock] keyword, allowing for locking through Iterate, recursively calling "lock" method, to allow locking multiple strings
+  at the same time, implemented using a static Dictionary in "lock" class, using "_global_lock" to ensure lookups and creations
+  into Dictionary is "thread safe". potentially consuming this logic in [pf.data.xxx] and [event] keywords, to allow for locking
+  these buggers from being accessed ...?
+
+* [lambda.fork] which creates a new thread, passing in the Cloned node from [lambda.fork] (potentially entire tree, think 
+  about this one), for then to invoke [lambda] keyword, to allow for spawning threads of pf.lambda execution objects
+
+* [override] keyword and [delete-override]
+
+* research e-commerce system for friend ...
 
 
 
