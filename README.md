@@ -256,6 +256,14 @@ for-each:@/./_x/*/?node
     :@/././__dp/#/?value
 ```
 
+## building your own release
+
+on Linux, building a release is easy, you simply choose "Release-Linux" as your project
+configuration, rebuild your solution, for then to choose "Tools/Deploy to Web" by 
+right-clicking "phosphorus.application-pool". though to create a release, you must
+make sure you have "uglifyjs" installed on your system, since the Linux Release
+configuration of phosphorus.ajax depends upon uglifyjs to minify its JavaScript
+
 for more information about phosphorus.five, check out its author's blog at;
 http://magixilluminate.com/category/phosphorus/
 
