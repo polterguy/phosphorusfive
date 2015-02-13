@@ -71,49 +71,49 @@
       <Project>{11644924-3367-4812-BE60-7DA41FC9E4AE}</Project>
       <Name>phosphorus.ajax</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\plugins\phosphorus.file\phosphorus.file.csproj">
+      <Project>{89C744BE-B583-4C6D-84B9-941E0C7CEBF4}</Project>
+      <Name>phosphorus.file</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\phosphorus.hyperlisp\phosphorus.hyperlisp.csproj">
+      <Project>{C02D30A6-7DA2-4045-8644-9710AB40B629}</Project>
+      <Name>phosphorus.hyperlisp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\phosphorus.lambda\phosphorus.lambda.csproj">
+      <Project>{8EB5FDEA-D073-4147-AE65-376A01B463DF}</Project>
+      <Name>phosphorus.lambda</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\phosphorus.data\phosphorus.data.csproj">
+      <Project>{CA83A3ED-BD5D-4557-AA1B-A7C04ABD4D4F}</Project>
+      <Name>phosphorus.data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\UI\phosphorus.web\phosphorus.web.csproj">
+      <Project>{0F68BFA7-1CF7-4737-9058-CED4A9ED3427}</Project>
+      <Name>phosphorus.web</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\phosphorus.mongodb\phosphorus.mongodb.csproj">
+      <Project>{CB706162-9ED3-4CAB-863C-B8F960EC5AC6}</Project>
+      <Name>phosphorus.mongodb</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\phosphorus.crypto\phosphorus.crypto.csproj">
+      <Project>{46D8DEF8-01ED-4058-B2D5-689890865494}</Project>
+      <Name>phosphorus.crypto</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\phosphorus.html\phosphorus.html.csproj">
+      <Project>{68EE106A-06BF-431B-9671-DF328666E03E}</Project>
+      <Name>phosphorus.html</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\phosphorus.types\phosphorus.types.csproj">
+      <Project>{5B8D14D0-854E-4143-AE48-C62583F49F49}</Project>
+      <Name>phosphorus.types</Name>
+    </ProjectReference>
     <ProjectReference Include="..\phosphorus.core\phosphorus.core.csproj">
       <Project>{C783FEDB-C973-4F38-8EBB-55A0163612F5}</Project>
       <Name>phosphorus.core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\plugins\phosphorus.file\phosphorus.file.csproj">
-      <Project>{89C744BE-B583-4C6D-84B9-941E0C7CEBF4}</Project>
-      <Name>phosphorus.file</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\plugins\phosphorus.hyperlisp\phosphorus.hyperlisp.csproj">
-      <Project>{C02D30A6-7DA2-4045-8644-9710AB40B629}</Project>
-      <Name>phosphorus.hyperlisp</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\plugins\phosphorus.lambda\phosphorus.lambda.csproj">
-      <Project>{8EB5FDEA-D073-4147-AE65-376A01B463DF}</Project>
-      <Name>phosphorus.lambda</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\plugins\phosphorus.data\phosphorus.data.csproj">
-      <Project>{CA83A3ED-BD5D-4557-AA1B-A7C04ABD4D4F}</Project>
-      <Name>phosphorus.data</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\plugins\UI\phosphorus.web\phosphorus.web.csproj">
-      <Project>{0F68BFA7-1CF7-4737-9058-CED4A9ED3427}</Project>
-      <Name>phosphorus.web</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\plugins\phosphorus.mongodb\phosphorus.mongodb.csproj">
-      <Project>{CB706162-9ED3-4CAB-863C-B8F960EC5AC6}</Project>
-      <Name>phosphorus.mongodb</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\plugins\phosphorus.crypto\phosphorus.crypto.csproj">
-      <Project>{46D8DEF8-01ED-4058-B2D5-689890865494}</Project>
-      <Name>phosphorus.crypto</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\plugins\phosphorus.html\phosphorus.html.csproj">
-      <Project>{68EE106A-06BF-431B-9671-DF328666E03E}</Project>
-      <Name>phosphorus.html</Name>
-    </ProjectReference>
     <ProjectReference Include="..\phosphorus.expressions\phosphorus.expressions.csproj">
       <Project>{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}</Project>
       <Name>phosphorus.expressions</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\plugins\phosphorus.types\phosphorus.types.csproj">
-      <Project>{5B8D14D0-854E-4143-AE48-C62583F49F49}</Project>
-      <Name>phosphorus.types</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

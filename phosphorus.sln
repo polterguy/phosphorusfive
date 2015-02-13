@@ -1,20 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.ajax", "phosphorus.ajax\phosphorus.ajax.csproj", "{11644924-3367-4812-BE60-7DA41FC9E4AE}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.samples", "phosphorus.samples\phosphorus.samples.csproj", "{344B4C0F-683B-4B29-B559-D31170EA6B96}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{8FAEDF6F-8F53-441B-ACE1-5E8330F8CE00}"
 	ProjectSection(SolutionItems) = preProject
 		LICENSE = LICENSE
 		README.md = README.md
 		todo = todo
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.core", "phosphorus.core\phosphorus.core.csproj", "{C783FEDB-C973-4F38-8EBB-55A0163612F5}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.application-pool", "phosphorus.application-pool\phosphorus.application-pool.csproj", "{B6F3798D-ADBE-4033-A2CD-E01F3B2BF16A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plugins", "plugins", "{4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}"
 EndProject
@@ -40,11 +32,21 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.types", "plugins
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.meta", "plugins\phosphorus.meta\phosphorus.meta.csproj", "{A4DAD930-CFCA-49EA-B69B-E2C7AA74DA10}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.unit-tests", "phosphorus.unit-tests\phosphorus.unit-tests.csproj", "{D709ED7D-C599-4703-B192-613F0EFF7D97}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "core", "core", "{65EAD177-7108-4766-9B7D-5C20378DD4BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.exe", "phosphorus.exe\phosphorus.exe.csproj", "{6C5F05C3-5480-42D0-8FA3-00B8749EAC5C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.ajax", "core\phosphorus.ajax\phosphorus.ajax.csproj", "{11644924-3367-4812-BE60-7DA41FC9E4AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.expressions", "phosphorus.expressions\phosphorus.expressions.csproj", "{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.application-pool", "core\phosphorus.application-pool\phosphorus.application-pool.csproj", "{B6F3798D-ADBE-4033-A2CD-E01F3B2BF16A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.core", "core\phosphorus.core\phosphorus.core.csproj", "{C783FEDB-C973-4F38-8EBB-55A0163612F5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.exe", "core\phosphorus.exe\phosphorus.exe.csproj", "{6C5F05C3-5480-42D0-8FA3-00B8749EAC5C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.samples", "core\phosphorus.samples\phosphorus.samples.csproj", "{344B4C0F-683B-4B29-B559-D31170EA6B96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.unit-tests", "core\phosphorus.unit-tests\phosphorus.unit-tests.csproj", "{D709ED7D-C599-4703-B192-613F0EFF7D97}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.expressions", "core\phosphorus.expressions\phosphorus.expressions.csproj", "{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -168,9 +170,16 @@ Global
 		{5B8D14D0-854E-4143-AE48-C62583F49F49} = {4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}
 		{A4DAD930-CFCA-49EA-B69B-E2C7AA74DA10} = {4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}
 		{0F68BFA7-1CF7-4737-9058-CED4A9ED3427} = {C01D7EA5-9FE8-46D4-8382-4ADD06D9E3D0}
+		{11644924-3367-4812-BE60-7DA41FC9E4AE} = {65EAD177-7108-4766-9B7D-5C20378DD4BE}
+		{B6F3798D-ADBE-4033-A2CD-E01F3B2BF16A} = {65EAD177-7108-4766-9B7D-5C20378DD4BE}
+		{C783FEDB-C973-4F38-8EBB-55A0163612F5} = {65EAD177-7108-4766-9B7D-5C20378DD4BE}
+		{6C5F05C3-5480-42D0-8FA3-00B8749EAC5C} = {65EAD177-7108-4766-9B7D-5C20378DD4BE}
+		{344B4C0F-683B-4B29-B559-D31170EA6B96} = {65EAD177-7108-4766-9B7D-5C20378DD4BE}
+		{D709ED7D-C599-4703-B192-613F0EFF7D97} = {65EAD177-7108-4766-9B7D-5C20378DD4BE}
+		{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C} = {65EAD177-7108-4766-9B7D-5C20378DD4BE}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = phosphorus.application-pool\phosphorus.application-pool.csproj
+		StartupItem = core\phosphorus.application-pool\phosphorus.application-pool.csproj
 		Policies = $0
 		$0.DotNetNamingPolicy = $1
 		$1.DirectoryNamespaceAssociation = None

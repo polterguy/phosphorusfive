@@ -53,20 +53,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\..\..\phosphorus.ajax\phosphorus.ajax.csproj">
-      <Project>{11644924-3367-4812-BE60-7DA41FC9E4AE}</Project>
-      <Name>phosphorus.ajax</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\phosphorus.core\phosphorus.core.csproj">
-      <Project>{C783FEDB-C973-4F38-8EBB-55A0163612F5}</Project>
-      <Name>phosphorus.core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\phosphorus.expressions\phosphorus.expressions.csproj">
-      <Project>{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}</Project>
-      <Name>phosphorus.expressions</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="widgets\" />
     <Folder Include="response\" />
   </ItemGroup>
@@ -81,4 +67,18 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\core\phosphorus.core\phosphorus.core.csproj">
+      <Project>{C783FEDB-C973-4F38-8EBB-55A0163612F5}</Project>
+      <Name>phosphorus.core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\core\phosphorus.expressions\phosphorus.expressions.csproj">
+      <Project>{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}</Project>
+      <Name>phosphorus.expressions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\core\phosphorus.ajax\phosphorus.ajax.csproj">
+      <Project>{11644924-3367-4812-BE60-7DA41FC9E4AE}</Project>
+      <Name>phosphorus.ajax</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>
