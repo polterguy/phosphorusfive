@@ -97,6 +97,9 @@ test.foo4
   lambda
     set:@/././*/_out/?value
       source:success");
+
+            // creating new Application Context
+            _context = Loader.Instance.CreateApplicationContext ();
             Node node = ExecuteLambda (@"test.foo5
   _out");
             Assert.AreEqual ("success", node [0] [0].Value);
@@ -149,7 +152,7 @@ test.foo6
   lambda
     set:@/././*/_out/?value
       source:error
-delete-event:test.foo8
+remove-event:test.foo8
 test.foo8
   _out:success");
             Assert.AreEqual ("success", node [2] [0].Value);
@@ -166,7 +169,7 @@ test.foo8
   lambda
     set:@/././*/_out/?value
       source:error
-delete-event:test.{0}
+remove-event:test.{0}
   :foo9
 test.foo9
   _out:success");
@@ -188,7 +191,7 @@ event:test.foo11
   lambda
     set:@/././*/_out/?value
       source:error
-delete-event:@/../*/""/test/""/?name
+remove-event:@/../*/""/test/""/?name
 test.foo10
   _out:success
 test.foo11
@@ -264,7 +267,7 @@ test.foo14");
         /// and not the original event
         /// </summary>
         [Test]
-        public void Events14 ()
+        public void Override01 ()
         {
             Node node = ExecuteLambda (@"event:test.foo15
   lambda
@@ -277,7 +280,7 @@ event:test.foo16
         :@/../?value
         :success
 override:test.foo15
-  with:test.foo16
+  super:test.foo16
 test.foo15");
             Assert.AreEqual ("success", node.Value);
         }
@@ -287,7 +290,7 @@ test.foo15");
         /// making sure the overridden event is invoked, and not the original event
         /// </summary>
         [Test]
-        public void Events15 ()
+        public void Override02 ()
         {
             ExecuteLambda (@"event:test.foo17
   lambda
@@ -300,11 +303,180 @@ event:test.foo18
         :@/../?value
         :success
 override:test.foo17
-  with:test.foo18");
+  super:test.foo18");
 
             // creating new application context, to make sure override is re-mapped on consecutive context objects
             _context = Loader.Instance.CreateApplicationContext ();
             Node node = ExecuteLambda (@"test.foo17");
+            Assert.AreEqual ("success", node.Value);
+        }
+        
+        /// <summary>
+        /// creates an event that is overridden twice, making sure the overridden
+        /// events are invoked, and not the original event
+        /// </summary>
+        [Test]
+        public void Override03 ()
+        {
+            Node node = ExecuteLambda (@"event:test.foo19
+  lambda
+    set:@/../?value
+      source:error
+event:test.foo20
+  lambda
+    set:@/../?value
+      source:{0}{1}
+        :@/../?value
+        :succ
+event:test.foo21
+  lambda
+    set:@/../?value
+      source:{0}{1}
+        :@/../?value
+        :ess
+override:test.foo19
+  super:test.foo20
+override:test.foo19
+  super:test.foo21
+test.foo19");
+            Assert.AreEqual ("success", node.Value);
+        }
+        
+        /// <summary>
+        /// creates an event that is overridden twice, using expressions, making sure the overridden
+        /// events are invoked, and not the original event
+        /// </summary>
+        [Test]
+        public void Override04 ()
+        {
+            Node node = ExecuteLambda (@"event:test.foo22
+  lambda
+    set:@/../?value
+      source:error
+event:test.foo23
+  lambda
+    set:@/../?value
+      source:{0}{1}
+        :@/../?value
+        :succ
+event:test.foo24
+  lambda
+    set:@/../?value
+      source:{0}{1}
+        :@/../?value
+        :ess
+override:test.foo22
+  super:@/../*/(/=test.foo23/|/=test.foo24/)/?value
+test.foo22");
+            Assert.AreEqual ("success", node.Value);
+        }
+        
+        /// <summary>
+        /// creates two events that are both overridden, making sure the overridden
+        /// events are invoked, and not the original event
+        /// </summary>
+        [Test]
+        public void Override05 ()
+        {
+            Node node = ExecuteLambda (@"event:test.foo25
+  lambda
+    set:@/../?value
+      source:error
+event:test.foo26
+  lambda
+    set:@/../?value
+      source:error
+event:test.foo27
+  lambda
+    set:@/../?value
+      source:{0}{1}
+        :@/../?value
+        :success
+override:test.foo25
+  super:test.foo27
+override:test.foo26
+  super:test.foo27
+test.foo25
+test.foo26
+");
+            Assert.AreEqual ("successsuccess", node.Value);
+        }
+        
+        /// <summary>
+        /// creates two events that are both overridden towards same super, with expressions,
+        /// making sure the overridden events are invoked, and not the original event
+        /// </summary>
+        [Test]
+        public void Override06 ()
+        {
+            Node node = ExecuteLambda (@"event:test.foo28
+  lambda
+    set:@/../?value
+      source:error
+event:test.foo29
+  lambda
+    set:@/../?value
+      source:error
+event:test.foo30
+  lambda
+    set:@/../?value
+      source:{0}{1}
+        :@/../?value
+        :success
+override:@/../*/(/=test.foo28/|/=test.foo29/)?value
+  super:test.foo30
+test.foo28
+test.foo29
+");
+            Assert.AreEqual ("successsuccess", node.Value);
+        }
+
+        /// <summary>
+        /// creates two events, and overrides one with the other, for then to delete the override,
+        /// making sure the original event is invoked
+        /// </summary>
+        [Test]
+        public void Override07 ()
+        {
+            Node node = ExecuteLambda (@"event:test.foo31
+  lambda
+    set:@/../?value
+      source:{0}{1}
+        :@/../?value
+        :success
+event:test.foo32
+  lambda
+    set:@/../?value
+      source:error
+override:test.foo31
+  super:test.foo32
+remove-override:test.foo31
+  super:test.foo32
+test.foo31");
+            Assert.AreEqual ("success", node.Value);
+        }
+        
+        /// <summary>
+        /// creates one active event, which it overrides, for then to use [lambda.invoke] to directly invoke
+        /// base event, making sure override is not invoked
+        /// </summary>
+        [Test]
+        public void Override08 ()
+        {
+            Node node = ExecuteLambda (@"event:test.foo33
+  lambda
+    set:@/../?value
+      source:{0}{1}
+        :@/../?value
+        :success
+event:test.foo34
+  lambda
+    set:@/../?value
+      source:error
+override:test.foo33
+  super:test.foo34
+lambda.invoke
+  test.foo33");
             Assert.AreEqual ("success", node.Value);
         }
     }

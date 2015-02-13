@@ -26,10 +26,10 @@ namespace phosphorus.lambda
             // syntax checking
             List<Node> overrideNodes = new List<Node> (e.Args.FindAll (
             delegate (Node idx) {
-                return idx.Name == "with";
+                return idx.Name == "super";
             }));
             if (overrideNodes.Count != 1)
-                throw new ArgumentException ("[override] requires one [with] parameter");
+                throw new ArgumentException ("[override] requires one [super] parameter");
 
             // retrieving all overrides
             List<string> overrides = new List<string> (XUtil.Iterate<string> (overrideNodes [0], context));

@@ -22,7 +22,7 @@ namespace phosphorus.five.applicationpool
         /*
          * loads up all plugins assemblies and raises the [pf.core.application-start] Active Event
          */
-        protected void Application_Start(Object sender, EventArgs e)
+        protected void Application_Start (Object sender, EventArgs e)
         {
             // sotring application base path for later usage
             _applicationBasePath = Server.MapPath ("~");
@@ -39,12 +39,38 @@ namespace phosphorus.five.applicationpool
             // then raising the application start active event
             ApplicationContext context = Loader.Instance.CreateApplicationContext ();
             context.Raise ("pf.core.application-start", null);
+
+            // for then to execute our "startup file", if there exists any
+            if (!string.IsNullOrEmpty (ConfigurationManager.AppSettings ["application-startup-file"])) {
+
+                // there is an application-startup-file declared in app.config file, executing it as pf.lambda file
+                string appStartFilePath = ConfigurationManager.AppSettings ["application-startup-file"];
+                ExecuteLambdaFile (context, appStartFilePath);
+            }
         }
 
         /*
-         * handled to create support for "beautiful URLs", to rewrite path, to support non-existing pages, through pf.lambda
+         * executes a lambda file
          */
-        protected void Application_BeginRequest(object sender, EventArgs e)
+        private static void ExecuteLambdaFile (ApplicationContext context, string filePath)
+        {
+            // loading file
+            Node loadFileNode = new Node (string.Empty, filePath);
+            context.Raise ("pf.file.load", loadFileNode);
+
+            // TODO: use Utilities.Convert later when code is stable
+            // converting file to lambda tree
+            Node fileToNodes = new Node (string.Empty, loadFileNode [0].Get<string> (context));
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", fileToNodes);
+
+            // raising file as pf.lambda object
+            context.Raise ("lambda", fileToNodes);
+        }
+
+        /*
+         * handled to create support for "beautiful URLs", to rewrite path, to support virtual pages, through pf.lambda
+         */
+        protected void Application_BeginRequest (object sender, EventArgs e)
         {
             // rewriting path such that "x.com/somefolder/somefile" becomes "x.com?file=somefolder/somefile"
             string localPath = HttpContext.Current.Request.Url.LocalPath;

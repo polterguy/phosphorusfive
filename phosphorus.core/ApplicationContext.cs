@@ -224,6 +224,21 @@ namespace phosphorus.core
         }
 
         /// <summary>
+        /// raises the specified Active Event directly with the given arguments. will not traverse the "inheritance chain", or
+        /// the overridden Active Events
+        /// </summary>
+        /// <param name="name">name of Active Event to raise</param>
+        /// <param name="args">arguments to pass into the Active Event</param>
+        public Node RaiseDirectly (string name, Node args = null)
+        {
+            if (args == null)
+                args = new Node ();
+            ActiveEventArgs e = new ActiveEventArgs (name, args);
+            RaiseDirectly (e);
+            return e.Args;
+        }
+
+        /// <summary>
         /// raises the specified Active Event with the given arguments, directly, without trying to figure
         /// out any derived Active Events. Useful for invoking "base Active Events" from Active Events you
         /// know are overridden

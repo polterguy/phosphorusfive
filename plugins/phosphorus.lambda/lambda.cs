@@ -39,6 +39,30 @@ namespace phosphorus.lambda
         }
 
         /// <summary>
+        /// executes given block, or result of expression, as a block of statements to be executed,
+        /// without considering inheritance chain. this only applies to first level children of [lambda.invoke],
+        /// and not for descendants of children nodes, or children of nodes resulting from expression given
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "lambda.invoke")]
+        private static void lambda_invoke (ApplicationContext context, ActiveEventArgs e)
+        {
+            if (e.Args.Name == "lambda.invoke" && e.Args.Value != null) {
+
+                // executing a value object, converting to node, before we pass into execution method,
+                // making sure we pass in children of [lambda] as "arguments" or "parameters" to [lambda] statement
+                foreach (var idxSource in XUtil.Iterate<Node> (e.Args, context)) {
+                    ExecuteBlockNormal (context, idxSource, e.Args.Children, true);
+                }
+            } else {
+
+                // executing current scope
+                ExecuteBlockNormal (context, e.Args, new Node [] { }, true);
+            }
+        }
+
+        /// <summary>
         /// executes given block, or result of expression, as a block of statements to be executed, setting
         /// the the execution block node's back to what they were originally afterwards
         /// </summary>
@@ -108,7 +132,7 @@ namespace phosphorus.lambda
          * executes a block of nodes, this is where the actual execution happens
          * this is the "heart beat" method of the "pf.lambda" execution engine
          */
-        private static void ExecuteBlockNormal (ApplicationContext context, Node exe, IEnumerable<Node> args)
+        private static void ExecuteBlockNormal (ApplicationContext context, Node exe, IEnumerable<Node> args, bool directly = false)
         {
             // passing in arguments, if there are any
             foreach (Node idx in args) {
@@ -120,7 +144,7 @@ namespace phosphorus.lambda
             while (idxExe != null) {
 
                 // executing current statement and retrieving next execution statement
-                idxExe = ExecuteStatement (idxExe, context);
+                idxExe = ExecuteStatement (idxExe, context, false, directly);
             }
         }
         
@@ -182,7 +206,7 @@ namespace phosphorus.lambda
         /*
          * executes one execution statement
          */
-        private static Node ExecuteStatement (Node exe, ApplicationContext context, bool force = false)
+        private static Node ExecuteStatement (Node exe, ApplicationContext context, bool force = false, bool directly = false)
         {
             // storing "next execution node" as fallback, to support "delete this node" pattern
             Node nextFallback = exe.NextSibling;
@@ -190,7 +214,15 @@ namespace phosphorus.lambda
             // we don't execute nodes that start with an underscore "_" since these are considered "data segments"
             // also we don't execute nodes with no name, since these interfers with "null Active Event handlers"
             if (force || (!exe.Name.StartsWith ("_") && exe.Name != string.Empty)) {
-                context.Raise (exe.Name, exe);
+                if (directly) {
+
+                    // raising the given Active Event directly, not considering inheritance chain
+                    context.RaiseDirectly (exe.Name, exe);
+                } else {
+
+                    // raising the given Active Event normally, taking inheritance chain into account
+                    context.Raise (exe.Name, exe);
+                }
             }
 
             // prioritizing "NextSibling", in case this node created new nodes, while having

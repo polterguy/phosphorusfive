@@ -51,8 +51,9 @@
     <Compile Include="keywords\append.cs" />
     <Compile Include="events\events_common.cs" />
     <Compile Include="events\event.cs" />
-    <Compile Include="events\delete_event.cs" />
     <Compile Include="events\override.cs" />
+    <Compile Include="events\remove_override.cs" />
+    <Compile Include="events\remove_event.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

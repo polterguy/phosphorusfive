@@ -12,23 +12,23 @@ using phosphorus.expressions;
 namespace phosphorus.lambda
 {
     /// <summary>
-    /// class wrapping [delete-event] keyword
+    /// class wrapping [remove-event] keyword
     /// </summary>
     public static class delete_event
     {
         /// <summary>
-        /// deletes one or more dynamically created Active Events
+        /// removes zero or more dynamically created Active Events
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "delete-event")]
-        private static void lambda_delete_event (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "remove-event")]
+        private static void lambda_remove_event (ApplicationContext context, ActiveEventArgs e)
         {
             // iterating through all events to delete
             foreach (var idxName in XUtil.Iterate<string> (e.Args, context)) {
 
                 // deleting event
-                events_common.DeleteEvent (idxName);
+                events_common.RemoveEvent (idxName);
             }
         }
     }

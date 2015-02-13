@@ -14,9 +14,6 @@
 * create support for "array" pf.lambda type, which allows to be used as an expression for Expression.Iterate, such that
   users may submit a static array of values to stuff such as "for-each", "pf.web.session.set", etc
 
-* entirely modify the way [event] works, and unroll the entire event pf.lambda code, inline into code, upon invocation, to
-  support events that modifies the code tree outside of themselves
-
 * create "plugin" support for "for-each", "set", "add" etc, to allow iterating for instance Widgets, and change their properties
   directly to create less verbose code
 
@@ -39,8 +36,6 @@
 * create support for "style" property setters/getters in widgets through pf.lambda optionally can take a list of style names/values, instead
   of like it is now where it's "just a string"
 
-* [lambda.single] to execute specified node in tree
-
 * entirely remove project "phosphorus.tiedown"
 
 * "math" Active Events, taking expressions, evaluating these, and [add], [subtract], [multiply] and [divide]'ing these
@@ -49,24 +44,19 @@
 
 * Exception hierarchy
 
-* reference nodes in Hyperlisp, where value is an expression, leading to a node
+* reference nodes in Hyperlisp, where value is an expression, leading to a node, such that values of nodes, can reference
+  another node in Hyperlisp as an expression, allowing for "late binding" after Nodes are created, maybe ...?
 
 * rename "phosphorus.types" to "phosphorus.hyperlisp.types", maybe ...??
 
 * make it possible to convert results of expressions by appending ".type" such as for instance "@/foo/?value.int"
 
-* unit tests for [lambda] "delete this" pattern and "append after this" pattern
-
 * finish up comments on Unit Tests, class "Core" for instance
 
 * remove SetNull in [set], since it overlaps SetStatic
 
-* unit tests for [rel-source] in [pf.data.update]
-
 * verify thread safety when dynamically creating Active Events. when events created with [event] contains nodes, that are
   manipulated inside event, as mutable objects, then this is not thread safe, possibly fix through [lock] keyword
-
-* [context-event], the ability to create dynamic Active Events only for the current executing context (thread)
 
 * [lock] keyword, allowing for locking through Iterate, recursively calling "lock" method, to allow locking multiple strings
   at the same time, implemented using a static Dictionary in "lock" class, using "_global_lock" to ensure lookups and creations
@@ -76,7 +66,19 @@
 * [lambda.fork] which creates a new thread, passing in the Cloned node from [lambda.fork] (potentially entire tree, think 
   about this one), for then to invoke [lambda] keyword, to allow for spawning threads of pf.lambda execution objects
 
-* [override] keyword and [delete-override]
+* [remove-override] keyword
+
+* rename [delete-event] to [remove-event]
+
+* make all [event] keywords have consistent parameter names such as [super] instead of [with], etc ...
+
+* [context-event] and [context-override] keywords, with associated [context-delete-event] and [context-delete-override] keywords
+
+* [invoke] keyword, or something, to allow for directly invoking Active Events, without considering any overrides, to
+  make it possible to invoke "base events"
+
+* create consistency between all Active events using only ONE of "remove" or "delete". [pf.data.delete] might possibly be [remove]
+  instead, the same with [pf.folder.remove], [pf.file.remove], etc ...
 
 * research e-commerce system for friend ...
 
