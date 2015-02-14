@@ -251,5 +251,19 @@ set:@/../?value
 lambda:@/-/?node");
             Assert.AreEqual ("success", result.Value);
         }
+        
+        /// <summary>
+        /// verifies that [lambda] can execute a string that contains multiple root nodes
+        /// </summary>
+        [Test]
+        public void Lambda17 ()
+        {
+            Node result = ExecuteLambda (@"_exe:@""set:@/../*/_result/#/?value
+  source:success
+foo""
+lambda:@/-/?value
+  _result:node:_result"); // passing in reference node, to be able to retrieve values from lambda invocation
+            Assert.AreEqual ("success", result [1] [0].Get<Node> (_context).Value);
+        }
     }
 }

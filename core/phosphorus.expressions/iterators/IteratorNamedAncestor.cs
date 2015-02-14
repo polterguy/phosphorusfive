@@ -26,14 +26,12 @@ namespace phosphorus.expressions.iterators
             get {
                 foreach (Node idxCurrent in Left.Evaluate) {
                     Node idxAncestor = idxCurrent.Parent;
-                    while (true) {
+                    while (idxAncestor != null) {
                         if (idxAncestor.Name == _name) {
                             yield return idxAncestor;
                             break;
                         }
                         idxAncestor = idxAncestor.Parent;
-                        if (idxAncestor == null)
-                            break;
                     }
                 }
             }

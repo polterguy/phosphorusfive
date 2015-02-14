@@ -397,17 +397,5 @@ qwertyuiop
  f:g"""); // syntax error in hyperlisp node content, only one space while opening child collection of "howdy" node
             _context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
         }
-        
-        /// <summary>
-        /// parses Hyperlisp where there are two root nodes in value of node being reference node
-        /// </summary>
-        [Test]
-        [ExpectedException]
-        public void SyntaxError10 ()
-        {
-            Node tmp = new Node (string.Empty, @"z:node:@""howdy:x
-f:g"""); // logical error in hyperlisp node content, multiple "root" nodes
-            _context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-        }
     }
 }

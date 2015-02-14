@@ -72,6 +72,16 @@ namespace phosphorus.expressions
             }
         }
 
+        /*
+         * internal ctor, to make sure only Expression class can instantiate instances of Match class
+         */
+        internal Match (MatchType type, ApplicationContext context)
+        {
+            _matchEntities = new List<MatchEntity> ();
+            TypeOfMatch = type;
+            _context = context;
+        }
+
         /// <summary>
         /// return number of nodes in match
         /// </summary>
@@ -125,6 +135,13 @@ namespace phosphorus.expressions
             get {
                 return _context;
             }
+        }
+
+        /*
+         * used by expressions to build Match object
+         */
+        internal List<MatchEntity> Entities {
+            get { return _matchEntities; }
         }
     }
 }

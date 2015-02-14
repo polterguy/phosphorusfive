@@ -1,3 +1,4 @@
+
 /* based upon Blueprint CSS Framework 1.0 - copyright and license info - http://www.blueprintcss.org */
 
 html {
@@ -63,6 +64,7 @@ a img { border: none; }
 .container {
   width: 950px;
   margin: 0 auto;
+  position:relative;
 }
 
 /* Use this class on any .span / container to see the grid. */
@@ -514,4 +516,3 @@ caption     { background: #eee; }
 .last      { margin-right:0; padding-right:0; }
 .top       { margin-top:0; padding-top:0; }
 .bottom    { margin-bottom:0; padding-bottom:0; }
-

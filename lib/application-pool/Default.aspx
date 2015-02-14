@@ -1,4 +1,6 @@
+
 <%@ Page 
+    Title="phosphorus five application pool"
     Language="C#" 
     Inherits="phosphorus.five.applicationpool.Default"
     ValidateRequest="false"
@@ -6,10 +8,8 @@
 
 <!DOCTYPE html>
 <html>
-    <head>
-    	<title>phosphorus five application pool</title>
+    <head runat="server">
         <meta charset="utf-8">
-        <link rel="stylesheet" type="text/css" href="/media/css/main.css">
     </head>
     <body>
         <form id="form1" runat="server" autocomplete="off">

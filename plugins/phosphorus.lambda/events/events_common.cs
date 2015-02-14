@@ -176,8 +176,9 @@ namespace phosphorus.lambda
 
                             // appending lambda nodes into current Active Event node, and storing lambda such that we can
                             // later remove it from current node
-                            e.Args.Add (idxLambda);
-                            lambdas.Add (idxLambda);
+                            Node tmp = idxLambda.Clone ();
+                            e.Args.Add (tmp);
+                            lambdas.Add (tmp);
                         }
                     }
                 }

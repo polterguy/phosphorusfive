@@ -18,11 +18,19 @@ namespace phosphorus.expressions
     public class MatchEntity
     {
         private Match _match;
+        private Match.MatchType? _type;
 
         internal MatchEntity (Node node, Match match)
         {
             Node = node;
             _match = match;
+        }
+
+        internal MatchEntity (Node node, Match match, Match.MatchType type)
+        {
+            Node = node;
+            _match = match;
+            _type = type;
         }
 
         /// <summary>
@@ -40,7 +48,12 @@ namespace phosphorus.expressions
         /// <value>type of match</value>
         public Match.MatchType TypeOfMatch {
             get {
-                return _match.TypeOfMatch;
+                if (!_type.HasValue)
+                    return _match.TypeOfMatch;
+                return _type.Value;
+            }
+            set {
+                _type = value;
             }
         }
         

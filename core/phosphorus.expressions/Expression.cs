@@ -549,30 +549,30 @@ namespace phosphorus.expressions
         private Match EvaluateReferenceExpression (Match match, ApplicationContext context)
         {
             // looping through referenced expressions, yielding result from these referenced expression(s)
-            List<Node> newNodes = new List<Node> ();
-            Match.MatchType? matchType = new Match.MatchType? ();
+            Match retVal = new Match (match.TypeOfMatch, context);
 
             // looping through each match from reference expression
             foreach (var idxMatch in match) {
 
-                // evaluating reference expressions
-                var innerMatch = Expression.Create (
-                    Utilities.Convert<string> (idxMatch.Value, context))
-                    .Evaluate (idxMatch.Node, context);
+                // evaluating referenced expressions, but only if they actually contain expressions
+                if (!XUtil.IsExpression (idxMatch.Value)) {
 
-                // making sure all referenced expressions have the same type
-                if (!matchType.HasValue)
-                    matchType = innerMatch.TypeOfMatch;
-                else if (matchType.Value != innerMatch.TypeOfMatch)
-                    throw new ArgumentException ("a reference expression referenced two different types of expressions");
+                    // current MatchEntity is not an expression, adding entity as it is
+                    retVal.Entities.Add (idxMatch);
+                } else {
 
-                // adding result from current referenced expression
-                foreach (var idx in innerMatch) {
-                    newNodes.Add (idx.Node);
+                    // current MatchEntity contains an expression as its value, evaluating expression, and
+                    // adding result of expression
+                    var innerMatch = Expression.Create (
+                        Utilities.Convert<string> (idxMatch.Value, context)).Evaluate (idxMatch.Node, context);
+                    foreach (var idxInner in innerMatch) {
+                        retVal.Entities.Add (idxInner);
+                    }
                 }
             }
 
-            return new Match (newNodes, matchType.Value, context);
+            // returning new Match, created by evaluating given "match" parameter
+            return retVal;
         }
     }
 }

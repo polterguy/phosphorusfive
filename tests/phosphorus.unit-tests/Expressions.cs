@@ -19,7 +19,7 @@ namespace phosphorus.unittests
     public class Expressions : TestBase
     {
         public Expressions ()
-            : base ("phosphorus.types", "phosphorus.hyperlisp")
+            : base ("phosphorus.types", "phosphorus.hyperlisp", "phosphorus.lambda")
         { }
 
         /// <summary>
@@ -886,6 +886,22 @@ namespace phosphorus.unittests
                 .Add ("exp", "@/-/?name");
             string value = XUtil.Single<string> ("@@/0/?value", node, _context);
             Assert.AreEqual ("success", value);
+        }
+
+        /// <summary>
+        /// verifies creating expressions referencing other expressions and constants
+        /// intermingled with each other works correctly
+        /// </summary>
+        [Test]
+        public void ReferencedExpression3 ()
+        {
+            Node node = ExecuteLambda (@"_data
+  _1:su
+  cc:@?name
+  _3:ess
+set:@/../?value
+  source:@@/../*/_data/*/?value");
+            Assert.AreEqual ("success", node.Value);
         }
 
         /// <summary>

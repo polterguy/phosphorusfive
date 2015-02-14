@@ -339,6 +339,9 @@ namespace phosphorus.core
             : this (name, value)
         {
             _children = new List<Node> (children);
+            foreach (var idx in children) {
+                idx._parent = this;
+            }
         }
 
         /// <summary>
@@ -800,6 +803,8 @@ namespace phosphorus.core
         /// <param name="node">node to add</param>
         public Node Add (Node node)
         {
+            if (node._parent != null)
+                node._parent.Remove (node);
             node._parent = this;
             _children.Add (node);
             return this;
@@ -853,7 +858,7 @@ namespace phosphorus.core
         /// <param name="nodes">nodes to add</param>
         public Node AddRange (IEnumerable<Node> nodes)
         {
-            foreach (Node idxNode in nodes) {
+            foreach (Node idxNode in new List<Node> (nodes)) {
                 Add (idxNode);
             }
             return this;

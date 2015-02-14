@@ -36,12 +36,17 @@ namespace phosphorus.hyperlisp
             string code = e.Args.Get<string> (context);
             Node tmp = new Node (string.Empty, code);
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            if (tmp.Count == 1)
+            if (tmp.Count == 1) {
+
+                // if there's only one node, we return that as result
                 e.Args.Value = tmp [0].Clone ();
-            else if (tmp.Count > 1)
-                throw new ArgumentException ("cannot use a node with multiple root nodes as a value of another node");
-            else
+            } else if (tmp.Count > 1) {
+
+                // if there's multiple nodes, we return thos nodes appended into a "root node"
+                e.Args.Value = new Node (string.Empty, null, tmp.Children);
+            } else {
                 e.Args.Value = null;
+            }
         }
         
         /// <summary>
