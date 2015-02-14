@@ -649,12 +649,14 @@ namespace phosphorus.unittests.lambda
 
                 // verifying [set] works as it should
                 Assert.AreEqual (2, node [0].Count);
-                Assert.AreEqual (0, node [0] [0].Count);
-                Assert.AreEqual ("_val1", node [0] [0].Name);
-                Assert.AreEqual ("success1", node [0] [0].Value);
-                Assert.AreEqual (0, node [0] [1].Count);
-                Assert.AreEqual ("_val2", node [0] [1].Name);
-                Assert.AreEqual ("success2", node [0] [1].Value);
+                Assert.AreEqual (1, node [0] [0].Count);
+                Assert.AreEqual (0, node [0] [0] [0].Count);
+                Assert.AreEqual ("_val1", node [0] [0] [0].Name);
+                Assert.AreEqual ("success1", node [0] [0] [0].Value);
+                Assert.AreEqual (1, node [0] [1].Count);
+                Assert.AreEqual (0, node [0] [1] [0].Count);
+                Assert.AreEqual ("_val2", node [0] [1] [0].Name);
+                Assert.AreEqual ("success2", node [0] [1] [0].Value);
             } finally {
 
                 // making sure we "unload" our extra assemblies here

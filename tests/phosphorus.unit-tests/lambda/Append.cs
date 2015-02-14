@@ -124,8 +124,9 @@ namespace phosphorus.unittests.lambda
 
             // verifying [append] works as it should
             Assert.AreEqual (1, node [0].Count);
-            Assert.AreEqual ("success-name", node [0] [0].Name);
-            Assert.AreEqual ("success-value", node [0] [0].Value);
+            Assert.AreEqual (1, node [0] [0].Count);
+            Assert.AreEqual ("success-name", node [0] [0] [0].Name);
+            Assert.AreEqual ("success-value", node [0] [0] [0].Value);
         }
         
         /// <summary>

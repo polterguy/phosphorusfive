@@ -121,16 +121,15 @@ lambda:@/-/?node
   _result:success");
             Assert.AreEqual ("success", result [0].Value);
         }
-        
+
         /// <summary>
         /// verifies that [lambda] can invoke text objects
         /// </summary>
         [Test]
         public void Lambda09 ()
         {
-            Node result = ExecuteLambda (@"_exe:@""_exe
-  set:@/../*/_result/#/?value
-    source:success""
+            Node result = ExecuteLambda (@"_exe:@""set:@/../*/_result/#/?value
+  source:success""
 lambda:@/-/?value
   _result:node:_result"); // passing in reference node, to be able to retrieve values from lambda invocation
             Assert.AreEqual ("success", result [1] [0].Get<Node> (_context).Value);
@@ -253,17 +252,15 @@ lambda:@/-/?node");
         }
         
         /// <summary>
-        /// verifies that [lambda] can execute a string that contains multiple root nodes
+        /// verifies that [lambda] can invoke text objects as values
         /// </summary>
         [Test]
         public void Lambda17 ()
         {
-            Node result = ExecuteLambda (@"_exe:@""set:@/../*/_result/#/?value
-  source:success
-foo""
-lambda:@/-/?value
+            Node result = ExecuteLambda (@"lambda:@""set:@/../*/_result/#/?value
+  source:success""
   _result:node:_result"); // passing in reference node, to be able to retrieve values from lambda invocation
-            Assert.AreEqual ("success", result [1] [0].Get<Node> (_context).Value);
+            Assert.AreEqual ("success", result [0] [0].Get<Node> (_context).Value);
         }
     }
 }

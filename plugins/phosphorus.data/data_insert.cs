@@ -17,7 +17,6 @@ namespace phosphorus.data
     /// </summary>
     public static class data_insert
     {
-        // TODO: refactor, too long
         /// <summary>
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
@@ -32,30 +31,37 @@ namespace phosphorus.data
                 Common.Initialize (context);
 
                 // verifying syntax of statement
-                if (e.Args.Count == 0 && string.IsNullOrEmpty (e.Args.Value as string))
+                if (e.Args.Count == 0 && e.Args.Value == null)
                     throw new ArgumentException ("[pf.data.insert] requires at least one child node, or a source expression, or source value");
 
                 // looping through all nodes given as children and saving them to database
                 List<Node> changed = new List<Node> ();
                 foreach (Node idx in XUtil.Iterate<Node> (e.Args, context)) {
-
-                    // syntax checking insert node
-                    SyntaxCheckInsertNode (idx, context);
-
-                    // finding next available database file node
-                    Node fileNode = Common.GetAvailableFileNode (context);
-
-                    // figuring out which file Node updated belongs to, and storing in changed list
-                    if (!changed.Contains (fileNode))
-                        changed.Add (fileNode);
-
-                    // actually appending node into database
-                    fileNode.Add (idx.Clone ());
+                    InsertNode (idx, context, changed);
                 }
             
                 // saving all affected files
                 Common.SaveAffectedFiles (context, changed);
             }
+        }
+
+        /*
+         * inserts one node into database
+         */
+        private static void InsertNode (Node node, ApplicationContext context, List<Node> changed)
+        {
+            // syntax checking insert node
+            SyntaxCheckInsertNode (node, context);
+
+            // finding next available database file node
+            Node fileNode = Common.GetAvailableFileNode (context);
+
+            // figuring out which file Node updated belongs to, and storing in changed list
+            if (!changed.Contains (fileNode))
+                changed.Add (fileNode);
+
+            // actually appending node into database
+            fileNode.Add (node.Clone ());
         }
 
         /*

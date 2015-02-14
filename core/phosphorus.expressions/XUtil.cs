@@ -225,8 +225,14 @@ namespace phosphorus.expressions
         /// <param name="node">node who's value will be evaluated</param>
         /// <param name="dataSource">node to use as start node for any expressions within formatting parameters</param>
         /// <param name="context">application context</param>
+        /// <param name="retrieveInner">if true, will retrieve inner nodes of type is Node and node's value is a string,
+        /// converted into nodes</param>
         /// <typeparam name="T">type of object you wish to retrieve</typeparam>
-        public static IEnumerable<T> Iterate<T> (Node node, Node dataSource, ApplicationContext context)
+        public static IEnumerable<T> Iterate<T> (
+            Node node, 
+            Node dataSource, 
+            ApplicationContext context, 
+            bool retrieveInner = true)
         {
             if (IsExpression (node.Value)) {
 
@@ -239,7 +245,16 @@ namespace phosphorus.expressions
 
                 // node's value is not null, converting value to type requests, and yielding back to caller
                 object value = IsFormatted (node) ? FormatNode (node, dataSource, context) : node.Value;
-                yield return Utilities.Convert<T> (value, context);
+                if (retrieveInner && node.Value is string && typeof(T) == typeof(Node)) {
+
+                    // nodes was created from a string representation, making sure we return inner nodes, to
+                    // eliminate root node created automatically for us in conversion
+                    foreach (Node idxInner in Utilities.Convert<Node> (value, context).Children) {
+                        yield return Utilities.Convert<T> (idxInner, context);
+                    }
+                } else {
+                    yield return Utilities.Convert<T> (value, context);
+                }
             } else if (typeof(T) == typeof(Node)) {
 
                 // node's value is null, caller requests nodes, iterating through children, yielding back to caller
@@ -248,8 +263,8 @@ namespace phosphorus.expressions
                 }
             } else {
 
-                // node's value is null, caller requests anything but node, iterating childre, yielding
-                // values converted to type back to caller
+                // node's value is null, caller requests anything but node, iterating children, yielding
+                // values of children, converted to type back to caller
                 foreach (Node idx in node.Children) {
                     yield return idx.Get<T> (context);
                 }

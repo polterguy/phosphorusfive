@@ -290,7 +290,7 @@ pf.data.select:@/*/*/_testX/?node");
         [Test]
         public void Insert03 ()
         {
-            Node tmp = ExecuteLambda (@"pf.data.insert:@""_testX
+            Node tmp = ExecuteLambda (@"pf.data.insert:node:@""_testX
   howdy:world""
 pf.data.select:@/*/*/_testX/?node");
             Assert.AreEqual (1, tmp [1].Count);
@@ -301,11 +301,30 @@ pf.data.select:@/*/*/_testX/?node");
         }
         
         /// <summary>
+        /// inserts two items into database, where items are "strings", making sure insert can corectly convert
+        /// from string to Node(s)
+        /// </summary>
+        [Test]
+        public void Insert04 ()
+        {
+            Node tmp = ExecuteLambda (@"pf.data.insert:@""_testX
+  howdy:world
+_testX
+  howdy:world""
+pf.data.select:@/*/*/_testX/?node");
+            Assert.AreEqual (2, tmp [1].Count);
+            Assert.AreEqual ("_testX", tmp [1] [0].Name);
+            Assert.AreEqual (typeof (Guid), tmp [1] [0].Value.GetType ());
+            Assert.AreEqual ("howdy", tmp [1] [0] [0].Name);
+            Assert.AreEqual ("world", tmp [1] [0] [0].Value);
+        }
+
+        /// <summary>
         /// inserts an item into the database which is nothing but a "simple value" type of item
         /// from string to Node
         /// </summary>
         [Test]
-        public void Insert04 ()
+        public void Insert05 ()
         {
             Node tmp = ExecuteLambda (@"pf.data.insert
   foo:bar

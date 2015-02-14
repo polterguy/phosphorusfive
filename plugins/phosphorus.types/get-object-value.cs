@@ -6,6 +6,7 @@
 
 using System;
 using System.Globalization;
+using System.Collections.Generic;
 using phosphorus.core;
 
 namespace phosphorus.hyperlisp
@@ -36,19 +37,37 @@ namespace phosphorus.hyperlisp
             string code = e.Args.Get<string> (context);
             Node tmp = new Node (string.Empty, code);
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
-            if (tmp.Count == 1) {
+            if (tmp.Count > 0) {
 
                 // if there's only one node, we return that as result
-                e.Args.Value = tmp [0].Clone ();
-            } else if (tmp.Count > 1) {
-
-                // if there's multiple nodes, we return thos nodes appended into a "root node"
                 e.Args.Value = new Node (string.Empty, null, tmp.Children);
             } else {
                 e.Args.Value = null;
             }
         }
-        
+
+        /// <summary>
+        /// returns a Node created from its string representation
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">parameters</param>
+        [ActiveEvent (Name = "pf.hyperlist.get-object-value.abs.node")]
+        private static void pf_hyperlist_get_object_value_abs_node (ApplicationContext context, ActiveEventArgs e)
+        {
+            string code = e.Args.Get<string> (context);
+            Node tmp = new Node (string.Empty, code);
+            context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
+            if (tmp.Count == 1) {
+
+                // if there's only one node, we return that as result
+                e.Args.Value = tmp [0].Clone ();
+            } else if (tmp.Count > 1) {
+                throw new ArgumentException ("cannot convert string to 'abs' Node, since it would create more than on resulting root node");
+            } else {
+                e.Args.Value = null;
+            }
+        }
+
         /// <summary>
         /// returns a DNA created from its string representation
         /// </summary>

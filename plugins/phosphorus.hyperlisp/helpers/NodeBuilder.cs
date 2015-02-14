@@ -146,7 +146,7 @@ namespace phosphorus.hyperlisp
                 return value; // string is default type
 
             // converting our string to the actual object, and returning back to caller
-            return _context.Raise ("pf.hyperlist.get-object-value." + typeInfo, new Node (string.Empty, value)).Value;
+            return _context.Raise ("pf.hyperlist.get-object-value." + (typeInfo == "node" ? "abs." : "") + typeInfo, new Node (string.Empty, value)).Value;
         }
     }
 }
