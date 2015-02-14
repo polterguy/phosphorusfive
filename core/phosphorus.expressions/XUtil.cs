@@ -248,16 +248,17 @@ namespace phosphorus.expressions
                 if (retrieveInner && node.Value is string && typeof(T) == typeof(Node)) {
 
                     // nodes was created from a string representation, making sure we return inner nodes, to
-                    // eliminate root node created automatically for us in conversion
+                    // eliminate root node created automatically for us during conversion
                     foreach (Node idxInner in Utilities.Convert<Node> (value, context).Children) {
-                        yield return Utilities.Convert<T> (idxInner, context);
+                        yield return Utilities.Convert<T> (idxInner.Clone (), context);
                     }
                 } else {
                     yield return Utilities.Convert<T> (value, context);
                 }
             } else if (typeof(T) == typeof(Node)) {
 
-                // node's value is null, caller requests nodes, iterating through children, yielding back to caller
+                // node's value is null, caller requests nodes, 
+                // iterating through children, yielding children back to caller
                 foreach (Node idx in node.Children) {
                     yield return Utilities.Convert<T> (idx, context);
                 }

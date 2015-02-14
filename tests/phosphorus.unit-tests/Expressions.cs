@@ -903,6 +903,30 @@ set:@/../?value
   source:@@/../*/_data/*/?value");
             Assert.AreEqual ("success", node.Value);
         }
+        
+        /// <summary>
+        /// verifies creating expressions converting the result from string to integer works
+        /// </summary>
+        [Test]
+        public void ConvertExpression1 ()
+        {
+            Node node = ExecuteLambda (@"_data:567
+set:@/../?value
+  source:@/../*/_data/?value.int");
+            Assert.AreEqual (567, node.Value);
+        }
+        
+        /// <summary>
+        /// verifies creating expressions converting the result from integer to string works
+        /// </summary>
+        [Test]
+        public void ConvertExpression2 ()
+        {
+            Node node = ExecuteLambda (@"_data:int:567
+set:@/../?value
+  source:@/../*/_data/?value.string");
+            Assert.AreEqual ("567", node.Value);
+        }
 
         /// <summary>
         /// converts a Node to its string representation

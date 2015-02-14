@@ -73,18 +73,31 @@ namespace phosphorus.expressions
         /// <returns>the value of the match</returns>
         public object Value {
             get {
+                object retVal = null;
                 switch (TypeOfMatch) {
                 case Match.MatchType.name:
-                    return Node.Name;
+                    retVal = Node.Name;
+                    break;
                 case Match.MatchType.value:
-                    return Node.Value;
+                    retVal = Node.Value;
+                    break;
                 case Match.MatchType.path:
-                    return Node.Path;
+                    retVal = Node.Path;
+                    break;
                 case Match.MatchType.node:
-                    return Node;
+                    retVal = Node;
+                    break;
                 default:
                     throw new ArgumentException ("cannot get entity value from match of type 'count'");
                 }
+                if (retVal != null && !string.IsNullOrEmpty (_match.Convert)) {
+                    if (_match.Convert == "string") {
+                        retVal = Utilities.Convert<string> (retVal, _match.Context);
+                    } else {
+                        retVal = _match.Context.Raise ("pf.hyperlist.get-object-value." + _match.Convert, new Node (string.Empty, retVal)).Value;
+                    }
+                }
+                return retVal;
             }
             set {
                 switch (TypeOfMatch) {

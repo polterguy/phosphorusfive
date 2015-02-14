@@ -84,6 +84,11 @@ namespace phosphorus.expressions
                 throw new ArgumentException ("unclosed group while evaluating; " + _expression);
 
             // parsing type of match
+            string convert = null;
+            if (type.Contains (".")) {
+                convert = type.Substring (type.IndexOf ('.') + 1);
+                type = type.Substring (0, type.IndexOf ('.'));
+            }
             Match.MatchType matchType = (Match.MatchType)Enum.Parse (typeof(Match.MatchType), type);
 
             // checking if expression is a reference expression, 
@@ -92,12 +97,12 @@ namespace phosphorus.expressions
 
                 // expression is a "reference expression", 
                 // meaning we'll have to evaluate all referenced expressions
-                var match = new Match (group.Evaluate, matchType, context);
-                return EvaluateReferenceExpression (match, context);
+                var match = new Match (group.Evaluate, matchType, context, convert);
+                return EvaluateReferenceExpression (match, context, convert);
             } else {
 
                 // returning simple match object
-                return new Match (group.Evaluate, matchType, context);
+                return new Match (group.Evaluate, matchType, context, convert);
             }
         }
         
@@ -546,10 +551,10 @@ namespace phosphorus.expressions
         /*
          * evaluates a reference expression
          */
-        private Match EvaluateReferenceExpression (Match match, ApplicationContext context)
+        private Match EvaluateReferenceExpression (Match match, ApplicationContext context, string convert)
         {
             // looping through referenced expressions, yielding result from these referenced expression(s)
-            Match retVal = new Match (match.TypeOfMatch, context);
+            Match retVal = new Match (match.TypeOfMatch, context, convert);
 
             // looping through each match from reference expression
             foreach (var idxMatch in match) {

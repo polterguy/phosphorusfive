@@ -59,14 +59,17 @@ namespace phosphorus.expressions
          */
         private ApplicationContext _context;
 
+        private string _convert;
+
         /*
          * internal ctor, to make sure only Expression class can instantiate instances of Match class
          */
-        internal Match (IEnumerable<Node> nodes, MatchType type, ApplicationContext context)
+        internal Match (IEnumerable<Node> nodes, MatchType type, ApplicationContext context, string convert)
         {
             TypeOfMatch = type;
             _matchEntities = new List<MatchEntity> ();
             _context = context;
+            _convert = convert;
             foreach (var idx in nodes) {
                 _matchEntities.Add (new MatchEntity (idx, this));
             }
@@ -75,9 +78,10 @@ namespace phosphorus.expressions
         /*
          * internal ctor, to make sure only Expression class can instantiate instances of Match class
          */
-        internal Match (MatchType type, ApplicationContext context)
+        internal Match (MatchType type, ApplicationContext context, string convert)
         {
             _matchEntities = new List<MatchEntity> ();
+            _convert = convert;
             TypeOfMatch = type;
             _context = context;
         }
@@ -102,6 +106,14 @@ namespace phosphorus.expressions
         }
 
         /// <summary>
+        /// type to convert values retrieved from match
+        /// </summary>
+        /// <value>The convert.</value>
+        public string Convert {
+            get { return _convert; }
+        }
+
+        /// <summary>
         /// returns the MatchEntity at the index position
         /// </summary>
         /// <param name="index">Index.</param>
@@ -110,7 +122,7 @@ namespace phosphorus.expressions
                 return _matchEntities [index];
             }
         }
-        
+
         /// <summary>
         /// gets the enumerator for MatchEntity objects
         /// </summary>
