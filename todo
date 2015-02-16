@@ -94,4 +94,5 @@
 
 * investigate [pf.data.update] to see if it's even necessary
 
+* create unit tests for [set] where source and destination overlaps
 

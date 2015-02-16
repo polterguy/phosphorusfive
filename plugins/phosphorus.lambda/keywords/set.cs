@@ -51,12 +51,14 @@ namespace phosphorus.lambda
 
                 // source is either constant value or an expression
                 source = XUtil.Single<object> (node.LastChild, context, null);
+                if (source is Node)
+                    source = (source as Node).Clone ();
             } else {
 
                 if (node.LastChild.Count == 1) {
 
                     // source is a node
-                    source = node.LastChild.FirstChild;
+                    source = node.LastChild.FirstChild.Clone ();
                 } else if (node.LastChild.Count == 0) {
 
                     // source is null
