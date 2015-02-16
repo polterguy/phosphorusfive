@@ -68,6 +68,10 @@ namespace phosphorus.lambda
                 }
             }
 
+            // making sure we support "escaped expressions"
+            if (source is string && (source as string).StartsWith ("\\"))
+                source = (source as string).Substring (1);
+
             // iterating through all destinations, updating with source
             foreach (var idxDestination in XUtil.Iterate (node, context)) {
                 idxDestination.Value = source;

@@ -52,7 +52,17 @@ namespace phosphorus.lambda
             // in case destination and source overlaps
             List<Node> sourceNodes = new List<Node> ();
             foreach (var idx in XUtil.Iterate<Node> (node.LastChild, context)) {
-                sourceNodes.Add (idx.Clone ());
+                if (node.LastChild.Value is string && (!XUtil.IsExpression (node.LastChild.Value) || 
+                                                       XUtil.ExpressionType (node.LastChild, context) != Match.MatchType.node )) {
+
+                    // source is a string, but not an expression, making sure we add children of converted
+                    // string, since conversion routine creates a root node wrapping actual nodes in string
+                    foreach (var idxInner in idx.Children) {
+                        sourceNodes.Add (idxInner.Clone ());
+                    }
+                } else {
+                    sourceNodes.Add (idx.Clone ());
+                }
             }
 
             // looping through every destination node

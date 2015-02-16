@@ -41,6 +41,25 @@ namespace phosphorus.expressions
         }
 
         /// <summary>
+        /// returns type of expression
+        /// </summary>
+        /// <returns>type of expression</returns>
+        /// <param name="expressionNode">node containing expression to check, will be formatted if necessary</param>
+        /// <param name="context">application context</param>
+        public static Match.MatchType ExpressionType (Node expressionNode, ApplicationContext context)
+        {
+            // checking if we're actually given an expression
+            if (!IsExpression (expressionNode.Value))
+                throw new ArgumentException ("ExpressionType must be given an actual expression");
+
+            string exp = IsFormatted (expressionNode) ? FormatNode (expressionNode, context) : expressionNode.Get<string> (context);
+            string type = exp.Substring (exp.LastIndexOf ('?') + 1);
+            if (type.Contains ("."))
+                type = type.Substring (0, type.IndexOf ('.'));
+            return (Match.MatchType)Enum.Parse (typeof(Match.MatchType), type);
+        }
+
+        /// <summary>
         /// returns true if given node contains formatting parameters
         /// </summary>
         /// <returns><c>true</c> if node contains formatting parameters; otherwise, <c>false</c></returns>
@@ -231,8 +250,7 @@ namespace phosphorus.expressions
         public static IEnumerable<T> Iterate<T> (
             Node node, 
             Node dataSource, 
-            ApplicationContext context, 
-            bool retrieveInner = true)
+            ApplicationContext context)
         {
             if (IsExpression (node.Value)) {
 
@@ -245,16 +263,7 @@ namespace phosphorus.expressions
 
                 // node's value is not null, converting value to type requests, and yielding back to caller
                 object value = IsFormatted (node) ? FormatNode (node, dataSource, context) : node.Value;
-                if (retrieveInner && node.Value is string && typeof(T) == typeof(Node)) {
-
-                    // nodes was created from a string representation, making sure we return inner nodes, to
-                    // eliminate root node created automatically for us during conversion
-                    foreach (Node idxInner in Utilities.Convert<Node> (value, context).Children) {
-                        yield return Utilities.Convert<T> (idxInner.Clone (), context);
-                    }
-                } else {
-                    yield return Utilities.Convert<T> (value, context);
-                }
+                yield return Utilities.Convert<T> (value, context);
             } else if (typeof(T) == typeof(Node)) {
 
                 // node's value is null, caller requests nodes, 
@@ -317,6 +326,20 @@ namespace phosphorus.expressions
         public static IEnumerable<MatchEntity> Iterate (Node node, Node dataSource, ApplicationContext context)
         {
             string exp = IsFormatted (node) ? FormatNode (node, dataSource, context) : node.Get<string> (context);
+            return Iterate (exp, dataSource, context);
+        }
+
+        /// <summary>
+        /// returns all matches from expression in node. node may contain formatting parameters which will
+        /// be evaluated before expression using dataSource as start node for any expressions within formatting
+        /// parameters
+        /// </summary>
+        /// <param name="node">node being expression node</param>
+        /// <param name="dataSource">node being data source node</param>
+        /// <param name="context">application context</param>
+        public static IEnumerable<MatchEntity> Iterate (Node node, Node dataSource, Node formattingSource, ApplicationContext context)
+        {
+            string exp = IsFormatted (node) ? FormatNode (node, formattingSource, context) : node.Get<string> (context);
             return Iterate (exp, dataSource, context);
         }
 

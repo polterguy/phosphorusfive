@@ -17,7 +17,7 @@ namespace phosphorus.unittests.lambda
     public class Set : TestBase
     {
         public Set ()
-            : base ("phosphorus.lambda")
+            : base ("phosphorus.lambda", "phosphorus.hyperlisp", "phosphorus.types")
         { }
 
         /// <summary>
@@ -434,30 +434,16 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Set24 ()
         {
-            // since we're dependent upon Node to string conversion here, we'll need
-            // a couple of additional assemblies
-            Loader.Instance.LoadAssembly ("phosphorus.types");
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            _context = Loader.Instance.CreateApplicationContext ();
+            Node node = new Node ()
+                .Add ("_data").LastChild
+                    .Add ("succ")
+                    .Add ("ess").Parent
+                .Add ("set", "@/-/?name").LastChild
+                    .Add ("source", "@/./-/?node").Root;
+            _context.Raise ("set", node [1]);
 
-            try {
-                Node node = new Node ()
-                    .Add ("_data").LastChild
-                        .Add ("succ")
-                        .Add ("ess").Parent
-                    .Add ("set", "@/-/?name").LastChild
-                        .Add ("source", "@/./-/?node").Root;
-                _context.Raise ("set", node [1]);
-
-                // verifying [set] works as it should
-                Assert.AreEqual ("_data\r\n  succ\r\n  ess", node [0].Name);
-            } finally {
-
-                // making sure we "unload" our extra assemblies here
-                Loader.Instance.UnloadAssembly ("phosphorus.types");
-                Loader.Instance.UnloadAssembly ("phosphorus.hyperlisp");
-                _context = Loader.Instance.CreateApplicationContext ();
-            }
+            // verifying [set] works as it should
+            Assert.AreEqual ("_data\r\n  succ\r\n  ess", node [0].Name);
         }
         
         /// <summary>
@@ -631,39 +617,24 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Set33 ()
         {
-            // since we're converting from string to node, we'll need these buggers
-            Loader.Instance.LoadAssembly ("phosphorus.types");
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            _context = Loader.Instance.CreateApplicationContext ();
+            Node node = new Node ()
+                .Add ("_data").LastChild
+                    .Add("success1").LastChild
+                        .Add("_val1:success1").Parent
+                    .Add("success2").LastChild
+                        .Add("_val2:success2").Parent.Parent
+                .Add ("set", "@/-/*/?node").LastChild
+                    .Add ("rel-source", "@/0/?name").Root;
+            _context.Raise ("set", node [1]);
 
-            try {
-                Node node = new Node ()
-                    .Add ("_data").LastChild
-                        .Add("success1").LastChild
-                            .Add("_val1:success1").Parent
-                        .Add("success2").LastChild
-                            .Add("_val2:success2").Parent.Parent
-                    .Add ("set", "@/-/*/?node").LastChild
-                        .Add ("rel-source", "@/0/?name").Root;
-                _context.Raise ("set", node [1]);
-
-                // verifying [set] works as it should
-                Assert.AreEqual (2, node [0].Count);
-                Assert.AreEqual (1, node [0] [0].Count);
-                Assert.AreEqual (0, node [0] [0] [0].Count);
-                Assert.AreEqual ("_val1", node [0] [0] [0].Name);
-                Assert.AreEqual ("success1", node [0] [0] [0].Value);
-                Assert.AreEqual (1, node [0] [1].Count);
-                Assert.AreEqual (0, node [0] [1] [0].Count);
-                Assert.AreEqual ("_val2", node [0] [1] [0].Name);
-                Assert.AreEqual ("success2", node [0] [1] [0].Value);
-            } finally {
-
-                // making sure we "unload" our extra assemblies here
-                Loader.Instance.UnloadAssembly ("phosphorus.types");
-                Loader.Instance.UnloadAssembly ("phosphorus.hyperlisp");
-                _context = Loader.Instance.CreateApplicationContext ();
-            }
+            // verifying [set] works as it should
+            Assert.AreEqual (2, node [0].Count);
+            Assert.AreEqual (0, node [0] [0].Count);
+            Assert.AreEqual ("_val1", node [0] [0].Name);
+            Assert.AreEqual ("success1", node [0] [0].Value);
+            Assert.AreEqual (0, node [0] [1].Count);
+            Assert.AreEqual ("_val2", node [0] [1].Name);
+            Assert.AreEqual ("success2", node [0] [1].Value);
         }
         
         /// <summary>
@@ -674,39 +645,26 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Set34 ()
         {
-            // since we're converting from node to string, we'll need these buggers
-            Loader.Instance.LoadAssembly ("phosphorus.types");
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            _context = Loader.Instance.CreateApplicationContext ();
+            Node node = new Node ()
+                .Add ("_data").LastChild
+                    .Add("success1").LastChild
+                        .Add("foo1", 5).Parent // making sure types works
+                    .Add("success2").LastChild
+                        .Add("foo2", new Node ("bar2", "x")).Parent // making sure recursive nodes works
+                    .Add("success3").LastChild
+                        .Add("foo3", "test1\r\ntest2").Parent.Parent // making sure CR/LF works
+                .Add ("set", "@/-/*/?name").LastChild
+                    .Add ("rel-source", "@?node").Root;
+            _context.Raise ("set", node [1]);
 
-            try {
-                Node node = new Node ()
-                    .Add ("_data").LastChild
-                        .Add("success1").LastChild
-                            .Add("foo1", 5).Parent // making sure types works
-                        .Add("success2").LastChild
-                            .Add("foo2", new Node ("bar2", "x")).Parent // making sure recursive nodes works
-                        .Add("success3").LastChild
-                            .Add("foo3", "test1\r\ntest2").Parent.Parent // making sure CR/LF works
-                    .Add ("set", "@/-/*/?name").LastChild
-                        .Add ("rel-source", "@?node").Root;
-                _context.Raise ("set", node [1]);
-
-                // verifying [set] works as it should
-                Assert.AreEqual (3, node [0].Count);
-                Assert.AreEqual (1, node [0] [0].Count); // making sure source is still around
-                Assert.AreEqual ("success1\r\n  foo1:int:5", node [0] [0].Name);
-                Assert.AreEqual (1, node [0] [1].Count); // making sure source is still around
-                Assert.AreEqual ("success2\r\n  foo2:node:\"bar2:x\"", node [0] [1].Name);
-                Assert.AreEqual (1, node [0] [2].Count); // making sure source is still around
-                Assert.AreEqual ("success3\r\n  foo3:@\"test1\r\ntest2\"", node [0] [2].Name);
-            } finally {
-
-                // making sure we "unload" our extra assemblies here
-                Loader.Instance.UnloadAssembly ("phosphorus.types");
-                Loader.Instance.UnloadAssembly ("phosphorus.hyperlisp");
-                _context = Loader.Instance.CreateApplicationContext ();
-            }
+            // verifying [set] works as it should
+            Assert.AreEqual (3, node [0].Count);
+            Assert.AreEqual (1, node [0] [0].Count); // making sure source is still around
+            Assert.AreEqual ("success1\r\n  foo1:int:5", node [0] [0].Name);
+            Assert.AreEqual (1, node [0] [1].Count); // making sure source is still around
+            Assert.AreEqual ("success2\r\n  foo2:node:\"bar2:x\"", node [0] [1].Name);
+            Assert.AreEqual (1, node [0] [2].Count); // making sure source is still around
+            Assert.AreEqual ("success3\r\n  foo3:@\"test1\r\ntest2\"", node [0] [2].Name);
         }
         
         /// <summary>
@@ -747,6 +705,17 @@ namespace phosphorus.unittests.lambda
             // verifying [set] works as it should
             Assert.AreEqual ("_1", node [0] [0].Value);
             Assert.AreEqual ("_2", node [0] [1].Value);
+        }
+
+        [Test]
+        public void Set37 ()
+        {
+            Node node = ExecuteLambda (@"_result
+set:@/-/?node
+  source:@""success-name:success-value""");
+            Assert.AreEqual (0, node [0].Count);
+            Assert.AreEqual ("success-name", node [0].Name);
+            Assert.AreEqual ("success-value", node [0].Value);
         }
     }
 }

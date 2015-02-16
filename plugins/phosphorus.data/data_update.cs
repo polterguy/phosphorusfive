@@ -66,9 +66,6 @@ namespace phosphorus.data
                 // retrieving source relative to destination
                 object source = XUtil.Single<object> (node.LastChild, idxDestination.Node, context, null);
 
-                // making sure update creates a valid updated node structure
-                SyntaxCheckUpdate (idxDestination, ref source, context);
-
                 // source is relative to destination
                 idxDestination.Value = source;
             }
@@ -87,96 +84,17 @@ namespace phosphorus.data
 
             // iterating through all destinations, updating with source
             List<Node> changed = new List<Node> ();
-            foreach (var idxDestination in XUtil.Iterate (node, Common.Database, context)) {
+            foreach (var idxDestination in XUtil.Iterate (node, Common.Database, node, context)) {
                 
                 // figuring out which file Node updated belongs to, and storing in changed list
                 Common.AddNodeToChanges (idxDestination.Node, changed);
                 
-                // making sure update creates a valid updated node structure
-                SyntaxCheckUpdate (idxDestination, ref source, context);
-
                 // doing actual update
                 idxDestination.Value = source;
             }
 
             // saving all affected files
             Common.SaveAffectedFiles (context, changed);
-        }
-
-        /*
-         * verifies node marked for an update operation is a legal valid node
-         */
-        private static void SyntaxCheckUpdate (MatchEntity entity, ref object source, ApplicationContext context)
-        {
-            // we only really syntax check level 2 nodes, or "root data nodes" in database
-            if (entity.Node.Path.Count == 2) {
-
-                // this is a "level 2" update, and needs to be checked for integrity, making sure it
-                // doesn't invalidate 'type' or ID of object
-                if (entity.TypeOfMatch == Match.MatchType.node) {
-
-                    // syntax checking, and potentially creating a new ID for a 'node' update
-                    SyntaxCheckNodeUpdate (entity.Node, ref source, context);
-
-                } else if (entity.TypeOfMatch == Match.MatchType.name) {
-
-                    // converting source to string, to verify name is not empty or null
-                    string nName = Utilities.Convert<string> (source, context);
-                    if (string.IsNullOrEmpty (nName))
-                        throw new ArgumentException ("[pf.data.update] cannot leave root data object node with an empty name");
-                } else if (entity.TypeOfMatch == Match.MatchType.value) {
-
-                    // syntax checking a 'value' update
-                    SyntaxCheckValueUpdate (entity.Node, ref source, context);
-                }
-            }
-        }
-        
-        /*
-         * syntax checks a 'node' update
-         */
-        private static void SyntaxCheckNodeUpdate (Node node, ref object source, ApplicationContext context)
-        {
-            // converting source to node, to syntax check and make sure new node is a valid node for database
-            Node nNode = Utilities.Convert<Node> (source, context);
-
-            // making sure all "root data object nodes" in database has a name
-            if (string.IsNullOrEmpty (nNode.Name))
-                throw new ArgumentException ("[pf.data.update] cannot leave root object node with an empty name");
-
-            // making sure all "root data object nodes" in database has a unique ID
-            // but only if an ID is explicitly given, since otherwise engine will automatically assign
-            // a unique Guid to node
-            if (nNode.Value == null)
-                nNode.Value = node.Value; // keeping old ID
-            else if (XUtil.Iterate (
-                string.Format (
-                    @"@/*/*/=""{0}""/?node", 
-                    nNode.Value), Common.Database, context).GetEnumerator ().MoveNext ())
-                throw new ArgumentException ("[pf.data.update] requires that all nodes in database has a unique ID");
-        }
-
-        /*
-         * syntax checks a 'value' update
-         */
-        private static void SyntaxCheckValueUpdate (Node node, ref object source, ApplicationContext context)
-        {
-            // checking to see if we should keep our old ID or not
-            if (source == null) {
-
-                // keeping old id
-                source = node.Value;
-            } else {
-
-                // converting source to string, to verify ID is unique, if an ID is given
-                string nID = Utilities.Convert<string> (source, context);
-                if (nID != null && 
-                    XUtil.Iterate (
-                    string.Format (
-                        @"@/*/*/=""{0}""/?node", 
-                        nID), Common.Database, context).GetEnumerator ().MoveNext ())
-                    throw new ArgumentException ("[pf.data.update] requires that all nodes in database has a unique ID");
-            }
         }
 
         /*

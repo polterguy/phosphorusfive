@@ -130,7 +130,7 @@ namespace phosphorus.data
                 foreach (Node idx in fileNode.Children) {
                     convertNode.Add (idx.Clone ());
                 }
-                context.Raise ("pf.hyperlisp.lambda2code", convertNode);
+                context.Raise ("pf.hyperlisp.lambda2hyperlisp", convertNode);
 
                 // saves code
                 Node saveNode = new Node (string.Empty, fileNode.Value);

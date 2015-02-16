@@ -83,9 +83,9 @@ namespace phosphorus.five.applicationpool
          */
         private void Page_LoadInitialLoading (object sender, EventArgs e)
         {
-            // raising our [pf.core.load-ui] Active Event, creating the node to pass in first
+            // raising our [pf.web.load-ui] Active Event, creating the node to pass in first
             // where the [_form] node becomes the name of thr form requested
-            Node args = new Node ();
+            Node args = new Node ("pf.web.load-ui");
             args.Add (new Node ("_form", HttpContext.Current.Items ["__pf_original_url"] as string));
 
             // making sure we pass in any HTTP GET parameters
@@ -99,7 +99,7 @@ namespace phosphorus.five.applicationpool
             }
 
             // invoking the Active Event that actually loads our UI, now with a [_file] node, and possibly an [_args] node
-            _context.Raise ("pf.core.load-ui", args);
+            _context.Raise ("pf.web.load-ui", args);
         }
 
         /// <summary>
@@ -319,7 +319,7 @@ namespace phosphorus.five.applicationpool
                     throw new ArgumentException ("cannot use anything but a 'value' expression in [pf.web.return-value]");
                 StringBuilder builder = new StringBuilder ();
                 foreach (var idx in match) {
-                    builder.Append ((idx.Value as Node).Get<string> (context));
+                    builder.Append (phosphorus.core.Utilities.Convert<string> (idx.Value, context));
                 }
                 str = builder.ToString ();
             } else if (e.Args [0].Count > 0) {

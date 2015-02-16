@@ -27,7 +27,7 @@ event:pf.create-additional-hello
  * sink invoked from main framework, creates a widget that
  * once clicked creates another widget
  */
-event:pf.core.load-ui
+event:pf.web.load-ui
   lambda
     pf.web.add-stylesheet-file:/media/css/main.css
     pf.web.create-widget:main

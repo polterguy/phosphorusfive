@@ -32,13 +32,9 @@ namespace phosphorus.data
                 // making sure database is initialized
                 Common.Initialize (context);
             
-                // verifying syntax of statement
-                if (e.Args.Count != 0)
-                    throw new ArgumentException ("[pf.data.delete] does not take any arguments");
-
                 // looping through database matches and removing nodes while storing which files have been changed
                 List<Node> changed = new List<Node> ();
-                foreach (var idxDest in XUtil.Iterate (e.Args.Get<string> (context), Common.Database, context)) {
+                foreach (var idxDest in XUtil.Iterate (e.Args, Common.Database, e.Args, context)) {
 
                     // figuring out which file Node updated belongs to, and storing in changed list
                     Common.AddNodeToChanges (idxDest.Node, changed);

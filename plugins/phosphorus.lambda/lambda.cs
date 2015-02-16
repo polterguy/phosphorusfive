@@ -28,7 +28,7 @@ namespace phosphorus.lambda
 
                 // executing a value object, converting to node, before we pass into execution method,
                 // making sure we pass in children of [lambda] as "arguments" or "parameters" to [lambda] statement
-                foreach (var idxSource in XUtil.Iterate<Node> (e.Args, e.Args, context, false)) {
+                foreach (var idxSource in XUtil.Iterate<Node> (e.Args, context)) {
                     ExecuteBlockNormal (context, idxSource, e.Args.Children);
                 }
             } else {
@@ -52,7 +52,7 @@ namespace phosphorus.lambda
 
                 // executing a value object, converting to node, before we pass into execution method,
                 // making sure we pass in children of [lambda] as "arguments" or "parameters" to [lambda] statement
-                foreach (var idxSource in XUtil.Iterate<Node> (e.Args, e.Args, context, false)) {
+                foreach (var idxSource in XUtil.Iterate<Node> (e.Args, context)) {
                     ExecuteBlockNormal (context, idxSource, e.Args.Children, true);
                 }
             } else {
@@ -75,7 +75,7 @@ namespace phosphorus.lambda
 
                 // executing a value object, converting to node, before we pass into execution method,
                 // making sure we pass in children of [lambda] as "arguments" or "parameters" to [lambda] statement
-                foreach (var idxSource in XUtil.Iterate<Node> (e.Args, e.Args, context, false)) {
+                foreach (var idxSource in XUtil.Iterate<Node> (e.Args, context)) {
                     ExecuteBlockImmutable (context, idxSource, e.Args.Children);
                 }
             } else {
@@ -100,7 +100,7 @@ namespace phosphorus.lambda
 
                 // executing a value object, converting to node, before we pass into execution method,
                 // making sure we pass in children of [lambda] as "arguments" or "parameters" to [lambda] statement
-                foreach (var idxSource in XUtil.Iterate<Node> (e.Args, e.Args, context, false)) {
+                foreach (var idxSource in XUtil.Iterate<Node> (e.Args, context)) {
                     ExecuteBlockCopy (context, idxSource, e.Args.Children);
                 }
             } else {

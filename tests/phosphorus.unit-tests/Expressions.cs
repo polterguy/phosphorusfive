@@ -449,8 +449,8 @@ namespace phosphorus.unittests
 
             // string should be converted into a Node
             foreach (var idx in XUtil.Iterate<Node> (node, _context)) {
-                value += Utilities.Convert<string> (idx, _context);
-                Assert.AreEqual (5, idx.Value);
+                value += Utilities.Convert<string> (idx [0], _context);
+                Assert.AreEqual (5, idx [0].Value);
             }
             Assert.AreEqual ("success:int:5", value);
         }

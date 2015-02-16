@@ -171,7 +171,7 @@ namespace phosphorus.lambda
                         // looping through all [lambda.xxx] objects in current event, concatenating these into
                         // event invocation statement, storing a reference to each lambda object,
                         // before we release lock, and execute event invocation node
-                        Node idxLambdaParent = _events [e.Name].Clone ();
+                        Node idxLambdaParent = _events [e.Name];
                         foreach (Node idxLambda in idxLambdaParent.Children) {
 
                             // appending lambda nodes into current Active Event node, and storing lambda such that we can

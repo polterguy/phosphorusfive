@@ -242,6 +242,40 @@ pf.data.select:@/*/*/_test4/*/query_field/*/x/=y/././?node");
             Assert.AreEqual ("x", tmp [1] [0] [1] [0].Name);
             Assert.AreEqual ("y", tmp [1] [0] [1] [0].Value);
         }
+        
+        /// <summary>
+        /// inserts one node, for then to select the node, using a formatting expression, containing
+        /// an expression as one of its formatting parameters
+        /// </summary>
+        [Test]
+        public void Select12 ()
+        {
+            Node tmp = ExecuteLambda (@"pf.data.insert
+  _test4
+    howdy:world
+pf.data.select:@/*/*/{0}/?node
+  :@/../0/0/?name");
+            Assert.AreEqual (2, tmp [1].Count);
+            Assert.AreEqual ("_test4", tmp [1] [1].Name);
+            Assert.AreEqual ("howdy", tmp [1] [1] [0].Name);
+            Assert.AreEqual ("world", tmp [1] [1] [0].Value);
+        }
+        
+        /// <summary>
+        /// inserts one node, for then to delete the node, using a formatting expression, 
+        /// where one of the formatting parameters are an expression in itself
+        /// </summary>
+        [Test]
+        public void Delete01 ()
+        {
+            Node tmp = ExecuteLambda (@"pf.data.insert
+  _test4
+    howdy:world
+pf.data.delete:@/*/*/{0}/?node
+  :@/../0/0/?name
+pf.data.select:@/*/*/_test4/?node");
+            Assert.AreEqual (0, tmp [2].Count);
+        }
 
         /// <summary>
         /// inserts from an expression source, making sure insert can handle expressions

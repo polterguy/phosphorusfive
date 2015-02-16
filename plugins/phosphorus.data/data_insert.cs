@@ -36,8 +36,17 @@ namespace phosphorus.data
 
                 // looping through all nodes given as children and saving them to database
                 List<Node> changed = new List<Node> ();
-                foreach (Node idx in XUtil.Iterate<Node> (e.Args, context)) {
-                    InsertNode (idx, context, changed);
+                foreach (var idx in XUtil.Iterate<Node> (e.Args, context)) {
+                    if (e.Args.Value is string && !XUtil.IsExpression (e.Args.Value)) {
+                        
+                        // source is a string, but not an expression, making sure we add children of converted
+                        // string, since conversion routine creates a root node wrapping actual nodes in string
+                        foreach (var idxInner in idx.Children) {
+                            InsertNode (idxInner, context, changed);
+                        }
+                    } else {
+                        InsertNode (idx, context, changed);
+                    }
                 }
             
                 // saving all affected files
@@ -77,8 +86,9 @@ namespace phosphorus.data
             if (node.Value == null) {
                 node.Value = Guid.NewGuid ();
             } else {
+                string tmpId = node.Get<string> (context);
                 if (XUtil.Iterate (
-                    string.Format (@"@/*/*/=""{0}""/?node", node.Value), 
+                    string.Format (@"@/*/*/=""{0}""/?node", (tmpId.StartsWith ("/") ? "\\\\" + tmpId : tmpId)), 
                     Common.Database, 
                     context).GetEnumerator ().MoveNext ()) {
                     throw new ArgumentException ("ID exists from before in database");

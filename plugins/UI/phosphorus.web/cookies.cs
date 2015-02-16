@@ -95,7 +95,7 @@ namespace phosphorus.web
                 if (convert.Count > 0) {
 
                     // this node structure actually have values to be stored in cookie
-                    context.Raise ("pf.hyperlisp.lambda2code", convert);
+                    context.Raise ("pf.hyperlisp.lambda2hyperlisp", convert);
                     string value = HttpUtility.UrlEncode (convert.Get<string> (context));
 
                     // finding duration, defaulting to 365 if none

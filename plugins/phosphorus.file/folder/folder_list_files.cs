@@ -34,7 +34,8 @@ namespace phosphorus.file
 
                 // iterating all files in current directory, and returning as nodes beneath args given
                 foreach (var idxFile in Directory.GetFiles (rootFolder + idx)) {
-                    e.Args.Add (new Node (string.Empty, idxFile.Replace (rootFolder, "")));
+                    if (!idxFile.EndsWith ("~"))
+                        e.Args.Add (new Node (string.Empty, idxFile.Replace (rootFolder, "")));
                 }
             }
         }

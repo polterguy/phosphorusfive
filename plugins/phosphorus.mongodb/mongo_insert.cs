@@ -87,7 +87,7 @@ namespace phosphorus.mongodb
             if (node.Value != null) {
                 if (node.Value is Node) {
                     Node convert = new Node (string.Empty, node.Value);
-                    context.Raise ("pf.hyperlisp.lambda2code", convert);
+                    context.Raise ("pf.hyperlisp.lambda2hyperlisp", convert);
                     retVal.Add ("value", BsonValue.Create (convert.Value));
                 } else {
                     retVal.Add ("value", BsonValue.Create (node.Value));

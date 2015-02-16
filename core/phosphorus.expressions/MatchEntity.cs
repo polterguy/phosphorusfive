@@ -108,10 +108,19 @@ namespace phosphorus.expressions
                     Node.Value = value; // ps, not cloned!
                     break;
                 case Match.MatchType.node:
-                    if (value == null)
+                    if (value == null) {
                         Node.UnTie ();
-                    else
-                        Node.Replace (Utilities.Convert<Node> (value, _match.Context).Clone ()); // ps, cloned!
+                    } else {
+                        Node tmp = Utilities.Convert<Node> (value, _match.Context);
+                        if (value is string) {
+                            // Node was created from a conversion from string, making sure that we discard
+                            // the automatically created "root node" in object
+                            if (tmp.Count != 1)
+                                throw new ArgumentException ("tried to convert a string that would create multiple nodes to one node");
+                            tmp = tmp [0];
+                        }
+                        Node.Replace (tmp.Clone ()); // ps, cloned!
+                    }
                     break;
                 default:
                     throw new ArgumentException ("cannot get indexed value from match of type 'count'");
