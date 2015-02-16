@@ -44,26 +44,62 @@ namespace phosphorus.lambda
         }
 
         /*
+         * retrieves source nodes for "static" update
+         */
+        private static List<Node> GetSourceNodes (Node node, ApplicationContext context)
+        {
+            List<Node> sourceNodes = new List<Node> ();
+            if (XUtil.IsExpression (node.LastChild.Value)) {
+                foreach (var idx in XUtil.Iterate (node.LastChild, context)) {
+                    if (idx.TypeOfMatch != Match.MatchType.node && !(idx.Value is Node)) {
+
+                        // [source] is an expression leading to something that's not a node, this
+                        // will trigger conversion from string to node, adding a "root node" during
+                        // conversion. making sure we remove this node, when appending source nodes
+                        foreach (var idxInner in Utilities.Convert<Node> (idx.Value, context).Children) {
+                            sourceNodes.Add (idxInner.Clone ());
+                        }
+                    } else {
+
+                        // [source] is an expression, leading to something that's already a node somehow
+                        sourceNodes.Add (Utilities.Convert<Node> (idx.Value, context).Clone ());
+                    }
+                }
+            } else if (node.LastChild.Value is Node) {
+
+                // value of [source] is a node, adding this node
+                foreach (var idx in XUtil.Iterate<Node> (node.LastChild, context)) {
+                    sourceNodes.Add (idx.Clone ());
+                }
+            } else if (node.LastChild.Value == null) {
+
+                // [source] has no value, neither static string values, nor expressions
+                // adding all children of [source]
+                foreach (var idx in node.LastChild.Children) {
+                    sourceNodes.Add (idx.Clone ());
+                }
+            } else {
+
+                // [source] is not an expression, but has a string value. this will trigger a conversion
+                // from string to node, creating a "root node" during conversion. skipping this "root" node,
+                // and only adding children of that auto-generated root node
+                foreach (var idx in XUtil.Iterate<Node> (node.LastChild, context)) {
+                    foreach (var idxInner in idx.Children) {
+                        sourceNodes.Add (idxInner.Clone ());
+                    }
+                }
+            }
+            return sourceNodes;
+        }
+
+        /*
          * source is static
          */
         private static void AppendStaticSource (Node node, ApplicationContext context)
         {
             // retrieving source before we start iterating destination,
             // in case destination and source overlaps
-            List<Node> sourceNodes = new List<Node> ();
-            foreach (var idx in XUtil.Iterate<Node> (node.LastChild, context)) {
-                if (node.LastChild.Value is string && (!XUtil.IsExpression (node.LastChild.Value) || 
-                                                       XUtil.ExpressionType (node.LastChild, context) != Match.MatchType.node )) {
-
-                    // source is a string, but not an expression, making sure we add children of converted
-                    // string, since conversion routine creates a root node wrapping actual nodes in string
-                    foreach (var idxInner in idx.Children) {
-                        sourceNodes.Add (idxInner.Clone ());
-                    }
-                } else {
-                    sourceNodes.Add (idx.Clone ());
-                }
-            }
+            List<Node> sourceNodes = GetSourceNodes (node, context);
 
             // looping through every destination node
             bool isFirst = true; // since source is already cloned, we avoid cloning the first run

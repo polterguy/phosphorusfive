@@ -552,27 +552,11 @@ pf.data.select:@/*/*/_test9/?node");
         }
         
         /// <summary>
-        /// inserts an item into database, for them to update item, making sure the item keep its original ID
-        /// </summary>
-        [Test]
-        public void Update09 ()
-        {
-            Node tmp = ExecuteLambda (@"pf.data.insert
-  howdy
-pf.data.update:@/*/*/howdy/?node
-  source
-    howdy2
-pf.data.select:@/*/*/howdy2/?node");
-            Assert.AreEqual (typeof (Guid), tmp [0] [0].Value.GetType ());
-            Assert.AreEqual (tmp [0] [0].Value, tmp [2] [0].Value);
-        }
-        
-        /// <summary>
         /// inserts an item into database, for them to update item, making sure the item gets a new ID when one
         /// is explicitly given
         /// </summary>
         [Test]
-        public void Update10 ()
+        public void Update09 ()
         {
             Node tmp = ExecuteLambda (@"pf.data.insert
   howdy
@@ -621,67 +605,11 @@ pf.data.select:@/*/*/howdy2/?node");
         }
         
         /// <summary>
-        /// tries to insert two items into database with the same ID in two different batches
-        /// </summary>
-        [Test]
-        [ExpectedException]
-        public void SyntaxError04 ()
-        {
-            ExecuteLambda (@"pf.data.insert
-  foo:bar1");
-            ExecuteLambda (@"pf.data.update:@/*/*/foo/?node
-  source
-    :bar1");
-        }
-        
-        /// <summary>
-        /// tries to update an item in database to have same ID as another item
-        /// </summary>
-        [Test]
-        [ExpectedException]
-        public void SyntaxError05 ()
-        {
-            ExecuteLambda (@"pf.data.insert
-  foo1:bar1
-  foo2:bar2");
-            ExecuteLambda (@"pf.data.update:@/*/*/foo2/?node
-  source
-    foo2:bar1");
-        }
-        
-        /// <summary>
-        /// tries to update an item in database to have empty name
-        /// </summary>
-        [Test]
-        [ExpectedException]
-        public void SyntaxError06 ()
-        {
-            ExecuteLambda (@"pf.data.insert
-  foo1:bar1");
-            ExecuteLambda (@"pf.data.update:@/*/*/foo1/?name
-  source:");
-        }
-        
-        /// <summary>
-        /// tries to update an item in database to have non-unique ID
-        /// </summary>
-        [Test]
-        [ExpectedException]
-        public void SyntaxError07 ()
-        {
-            ExecuteLambda (@"pf.data.insert
-  foo1:bar1
-  foo2:bar2");
-            ExecuteLambda (@"pf.data.update:@/*/*/foo1/?value
-  source:bar2");
-        }
-        
-        /// <summary>
         /// tries to update an item without submitting a [source] or [rel-source]
         /// </summary>
         [Test]
         [ExpectedException]
-        public void SyntaxError08 ()
+        public void SyntaxError04 ()
         {
             ExecuteLambda (@"pf.data.insert
   foo1:bar1");

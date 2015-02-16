@@ -33,7 +33,7 @@ namespace phosphorus.unittests.lambda
                         .Add ("foo1", "success1")
                         .Add ("foo2", "success2").Root;
             _context.Raise ("append", node [1]);
-            
+
             // verifying [append] works as it should
             Assert.AreEqual (2, node [0].Count);
             Assert.AreEqual ("foo1", node [0] [0].Name);
@@ -124,9 +124,8 @@ namespace phosphorus.unittests.lambda
 
             // verifying [append] works as it should
             Assert.AreEqual (1, node [0].Count);
-            Assert.AreEqual (1, node [0] [0].Count);
-            Assert.AreEqual ("success-name", node [0] [0] [0].Name);
-            Assert.AreEqual ("success-value", node [0] [0] [0].Value);
+            Assert.AreEqual ("success-name", node [0] [0].Name);
+            Assert.AreEqual ("success-value", node [0] [0].Value);
         }
         
         /// <summary>
@@ -339,6 +338,26 @@ namespace phosphorus.unittests.lambda
 
             // verifying [append] works as it should
             Assert.AreEqual (0, node [0].Count);
+        }
+        
+        /// <summary>
+        /// appends a a static source, where source has no values
+        /// where value is a reference node
+        /// </summary>
+        [Test]
+        public void Append16 ()
+        {
+            Node node = ExecuteLambda (@"_data
+  foo:bar
+_exp:@/-/?node
+append:@/+/?node
+  source:@@/./-/?value
+_out");
+            // verifying [append] works as it should
+            Assert.AreEqual (1, node [3].Count);
+            Assert.AreEqual ("_data", node [3] [0].Name);
+            Assert.AreEqual ("foo", node [3] [0] [0].Name);
+            Assert.AreEqual ("bar", node [3] [0] [0].Value);
         }
 
         /// <summary>
