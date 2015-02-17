@@ -191,3 +191,4 @@ phosphorus.userprefs
 #ignoring "system42" folder
 system42
 wikipublish
+core/phosphorus.application-pool/database/*
