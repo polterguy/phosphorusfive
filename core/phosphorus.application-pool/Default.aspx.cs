@@ -103,7 +103,7 @@ namespace phosphorus.five.applicationpool
         }
 
         /// <summary>
-        /// creates a web form specified through its children nodes
+        /// creates a web widget (form) specified through its children nodes
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
@@ -132,33 +132,12 @@ namespace phosphorus.five.applicationpool
             }
         }
 
-        /// <summary>
-        /// creates events for widget form
-        /// </summary>
-        /// <param name="widget">widget to which events belongs to</param>
-        /// <param name="eventNode">node containing all events for widget</param>
+        /*
+         * creates events for web widget created through [pf.web.create-widget]
+         */
         private void CreateWidgetEvents (Control widget, Node eventNode, ApplicationContext context)
         {
-            // first retrieving all events
-            List<Node> evts = null;
-            if (eventNode.Value != null && XUtil.IsExpression (eventNode.Value)) {
-                evts = new List<Node> ();
-                var match = Expression.Create (eventNode.Get<string> (context)).Evaluate (eventNode, context);
-                for (int idxNo = 0; idxNo < match.Count; idxNo ++) {
-                    Node curEvtNode = match [idxNo].Value as Node;
-                    if (curEvtNode == null) {
-                        throw new ArgumentException ("expression for creating events for widget yielded a result that was not of 'node' type");
-                    }
-                    evts.Add (curEvtNode);
-                }
-            } else {
-                evts = new List<Node> (eventNode.Children);
-            }
-
-            // then looping through all Active Event nodes, and adding them up as callback sinks for the specified Active Event,
-            // with the "name" of the Active Event being the Dictionary Key, and the contents being a Tuple with the ID of the widget
-            // being the first item, and a cloned version of the node defining the Active Event callback being the second item
-            foreach (Node idxEvt in evts) {
+            foreach (var idxEvt in XUtil.IterateChildren (eventNode, context)) {
                 if (!PageEvents.ContainsKey (idxEvt.Name)) {
                     PageEvents [idxEvt.Name] = new List<Tuple<string, Node>> ();
                 }
@@ -179,7 +158,7 @@ namespace phosphorus.five.applicationpool
 
                 // this Active Event is handled by one of the widgets on this page object
                 // making sure we raise it passing in the arguments passed in to the Active Event cloned
-                foreach (Tuple<string, Node> idxEvt in PageEvents [e.Name]) {
+                foreach (var idxEvt in PageEvents [e.Name]) {
                     Node exeCopy = idxEvt.Item2.Clone ();
                     exeCopy.Value = e.Args.Value;
                     foreach (Node idxArg in e.Args.Children) {
@@ -198,17 +177,22 @@ namespace phosphorus.five.applicationpool
         [ActiveEvent (Name = "pf.web.clear-widget")]
         private void pf_web_clear_widget (ApplicationContext context, ActiveEventArgs e)
         {
-            Container ctrl = FindControl<Container> (e.Args.Get<string> (context), Page);
+            // loping through all control ID's given
+            foreach (var idxCtrlId in XUtil.Iterate<string> (e.Args, context)) {
 
-            // removing all Active Event handlers and all Ajax Event handlers for widget
-            foreach (Control idx in ctrl.Controls) {
-                RemoveActiveEvents (idx);
-                RemoveEvents (idx);
+                // finding widget with given ID
+                Container ctrl = FindControl<Container> (idxCtrlId, Page);
+
+                // removing all Active Event handlers and all Ajax Event handlers for widget
+                foreach (Control idx in ctrl.Controls) {
+                    RemoveActiveEvents (idx);
+                    RemoveEvents (idx);
+                }
+
+                // clearing child controls, and re-rendering widget
+                ctrl.Controls.Clear ();
+                ctrl.ReRenderChildren ();
             }
-
-            // clearing child controls, and re-rendering widget
-            ctrl.Controls.Clear ();
-            ctrl.ReRenderChildren ();
         }
 
         /// <summary>
@@ -219,18 +203,22 @@ namespace phosphorus.five.applicationpool
         [ActiveEvent (Name = "pf.web.remove-widget")]
         private void pf_web_remove_widget (ApplicationContext context, ActiveEventArgs e)
         {
-            // finding widget to remove
-            Widget widget = FindControl<Widget> (e.Args.Get<string> (context), Page);
+            // loping through all control ID's given
+            foreach (var idxCtrlId in XUtil.Iterate<string> (e.Args, context)) {
 
-            // removing all Ajax event handlers for widget
-            RemoveEvents (widget);
+                // finding widget with given ID
+                Widget widget = FindControl<Widget> (idxCtrlId, Page);
 
-            // removing all Active Event handlers for widget
-            RemoveActiveEvents (widget);
+                // removing all Ajax event handlers for widget
+                RemoveEvents (widget);
 
-            // actually removing widget from Page control collection, and persisting our change
-            Container parent = widget.Parent as Container;
-            parent.RemoveControlPersistent (widget);
+                // removing all Active Event handlers for widget
+                RemoveActiveEvents (widget);
+
+                // actually removing widget from Page control collection, and persisting our change
+                Container parent = widget.Parent as Container;
+                parent.RemoveControlPersistent (widget);
+            }
         }
 
         /*
@@ -284,20 +272,7 @@ namespace phosphorus.five.applicationpool
         [ActiveEvent (Name = "pf.web.include-javascript")]
         private void pf_web_include_javascript (ApplicationContext context, ActiveEventArgs e)
         {
-            string js = e.Args.Get<string> (context);
-            if (XUtil.IsExpression (js)) {
-                var match = Expression.Create (js).Evaluate (e.Args, context);
-                if (match.TypeOfMatch != Match.MatchType.value)
-                    throw new ArgumentException ("[pf.web.include-javascript] can only take expressions of type 'value'");
-
-                StringBuilder builder = new StringBuilder ();
-                foreach (var idx in match) {
-                    builder.Append ((idx.Value as Node).Value);
-                }
-                js = builder.ToString ();
-            } else if (e.Args.Count > 0) {
-                js = XUtil.FormatNode (e.Args, context) as string;
-            }
+            string js = XUtil.Single<string> (e.Args, context);
             Manager.SendJavaScriptToClient (js);
         }
         
@@ -311,20 +286,8 @@ namespace phosphorus.five.applicationpool
         [ActiveEvent (Name = "pf.web.return-value")]
         private void pf_web_return_value (ApplicationContext context, ActiveEventArgs e)
         {
-            string key = e.Args.Get<string> (context);
-            string str = e.Args [0].Get<string> (context);
-            if (XUtil.IsExpression (str)) {
-                var match = Expression.Create (str).Evaluate (e.Args [0], context);
-                if (match.TypeOfMatch != Match.MatchType.value)
-                    throw new ArgumentException ("cannot use anything but a 'value' expression in [pf.web.return-value]");
-                StringBuilder builder = new StringBuilder ();
-                foreach (var idx in match) {
-                    builder.Append (phosphorus.core.Utilities.Convert<string> (idx.Value, context));
-                }
-                str = builder.ToString ();
-            } else if (e.Args [0].Count > 0) {
-                str = XUtil.FormatNode (e.Args [0], context) as string;
-            }
+            string key = XUtil.Single<string> (e.Args, context);
+            string str = XUtil.Single<string> (e.Args.LastChild, context);
             Manager.SendObject (key, str);
         }
 
@@ -376,7 +339,6 @@ namespace phosphorus.five.applicationpool
             e.Args.Insert (0, new Node (string.Empty, FindControl<Control> (e.Args.Get<string> (context), parentCtrl)));
         }
 
-        // TODO: create support for expressions in these active events
         /// <summary>
         /// includes a JavaScript file on the client side
         /// </summary>
@@ -385,8 +347,9 @@ namespace phosphorus.five.applicationpool
         [ActiveEvent (Name = "pf.web.add-javascript-file")]
         private void pf_web_add_javascript_file (ApplicationContext context, ActiveEventArgs e)
         {
-            string file = e.Args.Get<string> (context);
-            RegisterJavaScriptFile (file);
+            foreach (var idxFile in XUtil.Iterate<string> (e.Args, context)) {
+                RegisterJavaScriptFile (idxFile);
+            }
         }
 
         /// <summary>
@@ -397,8 +360,9 @@ namespace phosphorus.five.applicationpool
         [ActiveEvent (Name = "pf.web.add-stylesheet-file")]
         private void pf_web_add_stylesheet_file (ApplicationContext context, ActiveEventArgs e)
         {
-            string file = e.Args.Get<string> (context);
-            RegisterStylesheetFile (file);
+            foreach (var idxFile in XUtil.Iterate<string> (e.Args, context)) {
+                RegisterStylesheetFile (idxFile);
+            }
         }
 
         /// <summary>
@@ -409,8 +373,7 @@ namespace phosphorus.five.applicationpool
         [ActiveEvent (Name = "pf.web.set-title")]
         private void pf_web_set_title (ApplicationContext context, ActiveEventArgs e)
         {
-            string title = e.Args.Get<string> (context);
-            Title = title;
+            Title = XUtil.Single<string> (e.Args, context);
         }
 
         /*

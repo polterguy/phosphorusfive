@@ -305,6 +305,47 @@ namespace phosphorus.expressions
         }
 
         /// <summary>
+        /// retrieves a list of nodes from the given node somehow
+        /// </summary>
+        /// <returns>a list of nodes</returns>
+        /// <param name="node">node containing either an expression leading to your node list, or a list of children</param>
+        /// <param name="context">application context</param>
+        public static IEnumerable<Node> IterateChildren (Node node, ApplicationContext context)
+        {
+            if (node.Value == null) {
+
+                // returning children of given node
+                foreach (Node idxChild in node.Children) {
+                    yield return idxChild;
+                }
+            } else if (IsExpression (node.Value)) {
+
+                // node's value is expression, depending upon type of expression, we either return nodes directly,
+                // or children of match converted to node
+                foreach (var idxMatch in Iterate (node, context)) {
+                    if (idxMatch.TypeOfMatch == Match.MatchType.node) {
+
+                        // node match, returning node directly
+                        yield return Utilities.Convert<Node> (idxMatch.Value, context);
+                    } else {
+
+                        // not a node match, converting match to node, and returning children of that node
+                        foreach (Node innerNode in Utilities.Convert<Node> (idxMatch.Value, context).Children) {
+                            yield return innerNode;
+                        }
+                    }
+                }
+            } else {
+
+                // value of node is either a node itself, or a string that'll be converted to a node,
+                // we return children of value, converting if necessary
+                foreach (Node innerNode in Utilities.Convert<Node> (node.Value, context).Children) {
+                    yield return innerNode;
+                }
+            }
+        }
+
+        /// <summary>
         /// returns all matches from expression in node. node may contain formatting parameters which will
         /// be evaluated before expression 
         /// </summary>
