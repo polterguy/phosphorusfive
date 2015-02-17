@@ -717,5 +717,19 @@ set:@/-/?node
             Assert.AreEqual ("success-name", node [0].Name);
             Assert.AreEqual ("success-value", node [0].Value);
         }
+
+        /// <summary>
+        /// verifies that overlapping [source] and destination expressions works
+        /// </summary>
+        [Test]
+        public void Set38 ()
+        {
+            Node node = ExecuteLambda (@"_result:success
+set:@/-/?value
+  source:@/./-/?node");
+            Assert.AreEqual (0, node [0].Count);
+            Assert.AreEqual ("_result", node [0].Get<Node> (_context).Name);
+            Assert.AreEqual ("success", node [0].Get<Node> (_context).Value);
+        }
     }
 }
