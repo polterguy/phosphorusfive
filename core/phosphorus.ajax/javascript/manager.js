@@ -133,6 +133,90 @@
 
 
     /*
+     * these functions are JSON handlers for changing attributes given from server as JSON
+     */
+    Tag: function (value) {
+      var oldHtml = this.el.outerHTML;
+      var nHtml = '<' + value + oldHtml.substring(this.el.tagName.length + 1);
+      nHtml = nHtml.substring(0, nHtml.length - (this.el.tagName.length + 1));
+      nHtml += value + '>';
+      var id = this.el.id;
+      this.el.outerHTML = nHtml;
+      this.el = pf.$(id).el; // updating element, since previous element is now gone
+    },
+
+
+    outerHTML: function (value) {
+      var id = this.el.id;
+      this.el.outerHTML = pf._getChange(this.el.outerHTML, value);
+      this.el = pf.$(id).el; // updating element, since previous element is now gone
+    },
+
+
+    innerValue: function (value) {
+      if (this.el.tagName == 'TEXTAREA') {
+        this.el.value = pf._getChange(this.el.value, value);
+      } else {
+        this.el.innerHTML = pf._getChange(this.el.innerHTML, value);
+      }
+    },
+
+
+    class: function (value) {
+      this.el.className = pf._getChange(this.el.className, value);
+    },
+
+
+    value: function (value) {
+      this.el.value = pf._getChange(this.el.value, value);
+    },
+
+
+    style: function (value) {
+      this.el.style.cssText = pf._getChange(this.el.style.cssText, value);
+    },
+
+
+    /*
+     * these next functions are handlers for deleting attributes
+     */
+    __pf_del: function (value) {
+      for (var idx = 0; idx < value.length; idx++) {
+        var atr = value[idx];
+        if (this['__pf_del_' + atr]) {
+          this['__pf_del_' + atr] ();
+        } else {
+          this.el.removeAttribute(atr);
+        }
+      }
+    },
+
+
+    __pf_del_innerValue: function () {
+        if (this.el.tagName == 'TEXTAREA') {
+          this.el.value = '';
+        } else {
+          this.el.innerHTML = '';
+        }
+    },
+
+
+    __pf_del_class: function () {
+      this.el.className = '';
+    },
+
+
+    __pf_del_value: function () {
+      this.el.value = '';
+    },
+
+
+    __pf_del_style: function () {
+      this.el.style.cssText = '';
+    },
+
+
+    /*
      * sets the 'key' property/attribute on dom element with 'value'
      *
      * will update one dom element's attribute/property according to 
@@ -142,79 +226,28 @@
      * javascript to update dom elements according to the return value 
      * from the server after an ajax http request
      */
-    _set: function(key, value) {
+    _set: function (key, value) {
 
-      // special handlers for some of our attributes
-      switch(key) {
-        case '__pf_del':
-          for (var idx = 0; idx < value.length; idx++) {
-            var atr = value[idx];
-            switch (atr) {
-              case 'innerValue':
-                if (this.el.tagName == 'TEXTAREA') {
-                  this.el.value = '';
-                } else {
-                  this.el.innerHTML = '';
-                }
-                break;
-              case 'class':
-                this.el.className = '';
-                break;
-              case 'value':
-                this.el.value = '';
-                break;
-              case 'style':
-                this.el.style.cssText = '';
-                break;
-              default:
-                this.el.removeAttribute(atr);
-                break;
-            }
-          }
-          break;
-        case 'Tag':
-          var oldHtml = this.el.outerHTML;
-          var nHtml = '<' + value + oldHtml.substring(this.el.tagName.length + 1);
-          nHtml = nHtml.substring(0, nHtml.length - (this.el.tagName.length + 1));
-          nHtml += value + '>';
-          var id = this.el.id;
-          this.el.outerHTML = nHtml;
-          this.el = pf.$(id).el; // updating element since previous element is now gone
-          break;
-        case 'outerHTML':
-          var id = this.el.id;
-          this.el.outerHTML = pf._getChange(this.el.outerHTML, value);
-          this.el = pf.$(id).el; // updating element since previous element is now gone
-          break;
-        case 'innerValue':
-          if (this.el.tagName == 'TEXTAREA') {
-            this.el.value = pf._getChange(this.el.value, value);
-          } else {
-            this.el.innerHTML = pf._getChange(this.el.innerHTML, value);
-          }
-          break;
-        case 'class':
-          this.el.className = pf._getChange(this.el.className, value);
-          break;
-        case 'value':
-          this.el.value = pf._getChange(this.el.value, value);
-          break;
-        case "style":
-          this.el.style.cssText = pf._getChange(this.el.style.cssText, value);
-          break;
-        default:
-          if (key.indexOf('__pf_add_') != -1 ) {
-            // inserting html child widget
-            var pos = parseInt(key.substring(9), 10);
-            var fragment = document.createDocumentFragment();
-            var tmpEl = document.createElement('div');
-            tmpEl.innerHTML = value;
-            fragment.appendChild(tmpEl.firstChild);
-            this.el.insertBefore(fragment, this.el.children[pos]);
-          } else {
-            this.el.setAttribute(key, pf._getChange(this.el[key], value));
-          }
-          break;
+      // first checking special cases
+      if (this[key]) {
+
+        // this is a special case
+        this[key](value);
+      } else {
+        if (key.indexOf('__pf_add_') != -1 ) {
+
+          // inserting html child widget
+          var pos = parseInt(key.substring(9), 10);
+          var fragment = document.createDocumentFragment();
+          var tmpEl = document.createElement('div');
+          tmpEl.innerHTML = value;
+          fragment.appendChild(tmpEl.firstChild);
+          this.el.insertBefore(fragment, this.el.children[pos]);
+        } else {
+
+          // default logic, simply setting attribute, with no fuzz
+          this.el.setAttribute(key, pf._getChange(this.el[key], value));
+        }
       }
     },
 

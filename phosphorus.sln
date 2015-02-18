@@ -183,7 +183,7 @@ Global
 		{344B4C0F-683B-4B29-B559-D31170EA6B96} = {D324EDB9-E389-4183-B7E9-B4C4D281C238}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = core\phosphorus.application-pool\phosphorus.application-pool.csproj
+		StartupItem = samples\phosphorus.ajax.samples\phosphorus.ajax.samples.csproj
 		Policies = $0
 		$0.DotNetNamingPolicy = $1
 		$1.DirectoryNamespaceAssociation = None

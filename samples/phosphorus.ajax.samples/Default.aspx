@@ -83,10 +83,10 @@
                 <p>
                     <em>"with phosphorus, you can build for the aeons"</em>
 
-                <h3>flexible</h3>
+                <h3>agile</h3>
 
                 <p>
-                    phosphorus allows you to override what you need to override, and leave the rest as it should be
+                    phosphorus is agile, and allows you to change anything you need to change, and leave the rest as it should be
 
                 <p>
                     <em>"with phosphorus, you are the boss"</em>

@@ -17,7 +17,8 @@ namespace phosphorus.lambda
     public static class pfEvent
     {
         /// <summary>
-        /// creates zero or more active events with the given name, where body is taken from children [lambda.xxx] nodes
+        /// creates zero or more active events with the given name, where body is taken from
+        /// all [lambda.xxx] children nodes
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>

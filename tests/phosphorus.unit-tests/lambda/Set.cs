@@ -266,54 +266,6 @@ namespace phosphorus.unittests.lambda
         }
         
         /// <summary>
-        /// verifies [set] works when destination is value and source is null
-        /// </summary>
-        [Test]
-        public void Set15 ()
-        {
-            Node node = new Node ()
-                .Add ("_data", "error")
-                .Add ("set", "@/-/?value").LastChild
-                    .Add ("source").Root;
-            _context.Raise ("set", node [1]);
-
-            // verifying [set] works as it should
-            Assert.IsNull (node [0].Value);
-        }
-        
-        /// <summary>
-        /// verifies [set] works when destination is name and source is null
-        /// </summary>
-        [Test]
-        public void Set16 ()
-        {
-            Node node = new Node ()
-                .Add ("error")
-                .Add ("set", "@/-/?name").LastChild
-                    .Add ("source").Root;
-            _context.Raise ("set", node [1]);
-
-            // verifying [set] works as it should
-            Assert.AreEqual (string.Empty, node [0].Name);
-        }
-
-        /// <summary>
-        /// verifies [set] works when destination is node and source is null
-        /// </summary>
-        [Test]
-        public void Set17 ()
-        {
-            Node node = new Node ()
-                .Add ("error")
-                .Add ("set", "@/-/?node").LastChild
-                    .Add ("source").Root;
-            _context.Raise ("set", node [1]);
-
-            // verifying [set] works as it should
-            Assert.AreEqual (1, node.Count);
-        }
-        
-        /// <summary>
         /// verifies [set] works when destination is value and source is 'count' expression
         /// </summary>
         [Test]

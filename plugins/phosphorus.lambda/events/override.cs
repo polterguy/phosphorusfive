@@ -17,6 +17,7 @@ namespace phosphorus.lambda
     public static class pfOverride
     {
         /// <summary>
+        /// overrides zero or more events, with all given [super] parameters
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>

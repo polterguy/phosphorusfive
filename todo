@@ -36,24 +36,16 @@
 * create support for "style" property setters/getters in widgets through pf.lambda optionally can take a list of style names/values, instead
   of like it is now where it's "just a string"
 
-* entirely remove project "phosphorus.tiedown"
-
 * "math" Active Events, taking expressions, evaluating these, and [add], [subtract], [multiply] and [divide]'ing these
 
-* create [insert] active event that allows inserting nodes at a specific position in tree
+* create [insert] keyword that allows inserting nodes at a specific position in tree
 
 * Exception hierarchy
 
 * reference nodes in Hyperlisp, where value is an expression, leading to a node, such that values of nodes, can reference
   another node in Hyperlisp as an expression, allowing for "late binding" after Nodes are created, maybe ...?
 
-* rename "phosphorus.types" to "phosphorus.hyperlisp.types", maybe ...??
-
-* make it possible to convert results of expressions by appending ".type" such as for instance "@/foo/?value.int"
-
 * finish up comments on Unit Tests, class "Core" for instance
-
-* remove SetNull in [set], since it overlaps SetStatic
 
 * verify thread safety when dynamically creating Active Events. when events created with [event] contains nodes, that are
   manipulated inside event, as mutable objects, then this is not thread safe, possibly fix through [lock] keyword
@@ -66,32 +58,12 @@
 * [lambda.fork] which creates a new thread, passing in the Cloned node from [lambda.fork] (potentially entire tree, think 
   about this one), for then to invoke [lambda] keyword, to allow for spawning threads of pf.lambda execution objects
 
-* [remove-override] keyword
-
-* rename [delete-event] to [remove-event]
-
-* make all [event] keywords have consistent parameter names such as [super] instead of [with], etc ...
-
 * [context-event] and [context-override] keywords, with associated [context-delete-event] and [context-delete-override] keywords
-
-* [invoke] keyword, or something, to allow for directly invoking Active Events, without considering any overrides, to
-  make it possible to invoke "base events"
 
 * create consistency between all Active events using only ONE of "remove" or "delete". [pf.data.delete] might possibly be [remove]
   instead, the same with [pf.folder.remove], [pf.file.remove], etc ...
 
-* research e-commerce system for friend ...
-
-* restructure file system, creating "tests" folder and "samples" folder
-
-* refactor JS in pf.ajax such that each "custom attribute setter" has their own methods, and the default one relies upon
-  the default attribute setter logic
-
-* allow for [lambda.xxx] to execute a string with multiple root nodes somehow
-
-* fix referenced-expressions, such that they can mix in expression results, with constant results, and possibly also different types of
-  matches
-
 * investigate [pf.data.update] to see if it's even necessary
 
+* unit tests for XUtil.IterateNode
 
