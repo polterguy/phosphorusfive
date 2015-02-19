@@ -94,7 +94,7 @@ namespace phosphorus.lambda
                     } else {
 
                         // more than one source
-                        throw new ArgumentException ("[set] requires that you give it one [source], or ommit the [source] node all together");
+                        throw new LambdaException ("[set] requires that you give it one [source], or ommit the [source] entirely", node, context);
                     }
                 }
             }

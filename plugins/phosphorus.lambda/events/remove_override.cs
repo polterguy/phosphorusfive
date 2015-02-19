@@ -30,7 +30,7 @@ namespace phosphorus.lambda
                     return idxNode.Name == "super";
             }));
             if (supers.Count != 1)
-                throw new ArgumentException ("[remove-override] requires one [super] parameter");
+                throw new LambdaException ("[remove-override] requires exactly one [super] parameter", e.Args, context);
             List<string> superEvents = new List<string> (XUtil.Iterate<string> (supers [0], context));
 
             // iterating through all base overrides to delete

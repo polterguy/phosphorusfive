@@ -31,7 +31,7 @@ namespace phosphorus.lambda
                     return idx.Name.StartsWith ("lambda");
             }));
             if (lambdas.Count == 0)
-                throw new ArgumentException ("[event] requires at least one [lambda.xxx] child");
+                throw new LambdaException ("[event] requires at least one [lambda.xxx] child", e.Args, context);
 
             // iterating through each name for new Active Event(s)
             foreach (var idxName in XUtil.Iterate<string> (e.Args, context)) {

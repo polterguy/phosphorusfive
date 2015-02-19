@@ -87,7 +87,7 @@ namespace phosphorus.lambda
         public Conditions (Node statementNode, ApplicationContext context)
         {
             if (statementNode == null)
-                throw new ArgumentException ("you must submit a node to Condition, for it to be able to evaluate");
+                throw new ApplicationException ("you must submit a node to Condition, for it to be able to evaluate");
             _statementNode = statementNode;
             _isSimpleExist = false;
             _context = context;

@@ -26,21 +26,6 @@ namespace phosphorus.expressions.iterators
             _offset = offset;
         }
 
-        /// <summary>
-        /// gets or sets the offset value
-        /// </summary>
-        /// <value>the offset</value>
-        public int Offset {
-            get {
-                return _offset;
-            }
-            set {
-                if (value == 0)
-                    throw new ArgumentException ("zero is not a valid offset value for sibling iterator");
-                _offset = value;
-            }
-        }
-
         public override IEnumerable<Node> Evaluate {
             get {
                 foreach (Node idxCurrent in Left.Evaluate) {

@@ -569,36 +569,11 @@ pf.data.select:@/*/*/howdy2/?node");
         }
 
         /// <summary>
-        /// tries to insert two items into database with the same ID
+        /// tries to insert one item into database with no name
         /// </summary>
         [Test]
         [ExpectedException]
         public void SyntaxError01 ()
-        {
-            ExecuteLambda (@"pf.data.insert
-  _test9:foo
-  _test9:foo");
-        }
-        
-        /// <summary>
-        /// tries to insert two items into database with the same ID in two different batches
-        /// </summary>
-        [Test]
-        [ExpectedException]
-        public void SyntaxError02 ()
-        {
-            ExecuteLambda (@"pf.data.insert
-  _test:bar1");
-            ExecuteLambda (@"pf.data.insert
-  _test:bar1");
-        }
-        
-        /// <summary>
-        /// tries to insert two items into database with the same ID in two different batches
-        /// </summary>
-        [Test]
-        [ExpectedException]
-        public void SyntaxError03 ()
         {
             ExecuteLambda (@"pf.data.insert
   :bar1");
@@ -609,7 +584,7 @@ pf.data.select:@/*/*/howdy2/?node");
         /// </summary>
         [Test]
         [ExpectedException]
-        public void SyntaxError04 ()
+        public void SyntaxError02 ()
         {
             ExecuteLambda (@"pf.data.insert
   foo1:bar1");

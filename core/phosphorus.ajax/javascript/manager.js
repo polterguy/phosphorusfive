@@ -394,7 +394,7 @@
         onsuccess: function(/*serverReturn, evt*/){},
 
         // invoked if an error occurs during http request, with status code, status text, server response and event name
-        onerror: function(/*statusCode, statusText, responseHtml, evt*/){}
+        onerror: this.onerror
 
       }, options);
 
@@ -408,6 +408,42 @@
       // processing chain, but only if there's exactly one request in chain, since otherwise chain 
       // will continue by itself until whole chain is empty
       if (pf._chain.length == 1) { pf._next(); }
+    },
+
+
+    /*
+     * default error handler, shows the 'blue (yellow on windows) screen of death', in a modal window
+     */
+    onerror: function (statusCode, statusText, responseHtml, evt) {
+      var previousActive = document.activeElement;
+      var tmpEl = document.createElement('div');
+      tmpEl.id = '__pf_error';
+      tmpEl.style.cssText = 'position:fixed;top:0;left:0;background-color:rgba(0,0,0,.7);height:100%;width:100%;z-index:10000;';
+      tmpEl.innerHTML = responseHtml;
+      for (var idx = 0; idx < tmpEl.children.length; idx++) {
+        if (tmpEl.children[idx].tagName == 'DIV') {
+          tmpEl.children[idx].style.cssText = 'width:80%;left:10%;position:absolute;top:8%;';
+          break;
+        }
+      }
+      var btn = document.createElement('button');
+      btn.innerHTML = 'close';
+      btn.style.cssText = 'position:absolute;top:5px;right:5px;z-index:10001;display:block;width:100px;height:36px;font-size:18px;';
+      btn.onclick = function () {
+        var el = pf.$('__pf_error').el;
+        el.parentNode.removeChild(el);
+      };
+      btn.onkeyup = function (e) {
+        if (e.keyCode == 27) {
+          var el = pf.$('__pf_error').el;
+          el.parentNode.removeChild(el);
+          previousActive.focus();
+        }
+      };
+      tmpEl.appendChild (btn);
+      var body = document.getElementsByTagName ('body')[0];
+      body.appendChild (tmpEl);
+      btn.focus ();
     },
 
 

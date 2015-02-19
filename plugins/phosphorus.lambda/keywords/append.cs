@@ -26,7 +26,7 @@ namespace phosphorus.lambda
         private static void lambda_append (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Count == 0)
-                throw new ArgumentException ("[append] needs a valid [source] or [rel-source]");
+                throw new LambdaException ("[append] needs a valid [source] or [rel-source]", e.Args, context);
 
             if (e.Args.LastChild.Name == "source") {
 
@@ -39,7 +39,7 @@ namespace phosphorus.lambda
             } else {
             
                 // syntax error
-                throw new ArgumentException ("[append] needs a valid [source] or [rel-source]");
+                throw new LambdaException ("[append] needs a valid [source] or [rel-source]", e.Args, context);
             }
         }
 
@@ -56,13 +56,18 @@ namespace phosphorus.lambda
                         // [source] is an expression leading to something that's not a node, this
                         // will trigger conversion from string to node, adding a "root node" during
                         // conversion. making sure we remove this node, when appending source nodes
-                        foreach (var idxInner in Utilities.Convert<Node> (idx.Value, context).Children) {
-                            sourceNodes.Add (idxInner.Clone ());
+                        var currentNode = Utilities.Convert<Node> (idx.Value, context);
+                        if (currentNode != null) {
+                            foreach (var idxInner in currentNode.Children) {
+                                sourceNodes.Add (idxInner.Clone ());
+                            }
                         }
                     } else {
 
                         // [source] is an expression, leading to something that's already a node somehow
-                        sourceNodes.Add (Utilities.Convert<Node> (idx.Value, context).Clone ());
+                        var currentNode = Utilities.Convert<Node> (idx.Value, context);
+                        if (currentNode != null)
+                            sourceNodes.Add (currentNode.Clone ());
                     }
                 }
             } else if (node.LastChild.Value is Node) {
@@ -108,7 +113,7 @@ namespace phosphorus.lambda
                 // verifying destination actually is a node
                 Node curDest = idxDestination.Value as Node;
                 if (curDest == null)
-                    throw new ArgumentException ("cannot [append] into something that's not a node");
+                    throw new LambdaException ("cannot [append] into something that's not a node", node, context);
 
                 // minor optimization trick, since source already is cloned upon first run
                 if (isFirst) {
@@ -132,7 +137,7 @@ namespace phosphorus.lambda
                 // verifying destination actually is a node
                 Node curDest = idxDestination.Value as Node;
                 if (curDest == null)
-                    throw new ArgumentException ("cannot [append] into something that's not a node");
+                    throw new LambdaException ("cannot [append] into something that's not a node", node, context);
 
                 foreach (var idxSource in XUtil.Iterate<Node> (node.LastChild, curDest, context)) {
                     curDest.Add (idxSource.Clone ());

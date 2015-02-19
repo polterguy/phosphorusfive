@@ -11,7 +11,7 @@ using phosphorus.core;
 namespace phosphorus.expressions.iterators
 {
     /// <summary>
-    /// returns all nodes with the specified name of the previous iterator
+    /// returns all nodes with the specified name from the previous iterator
     /// </summary>
     public class IteratorNamed : Iterator
     {
@@ -23,9 +23,6 @@ namespace phosphorus.expressions.iterators
         /// <param name="name">name to match</param>
         public IteratorNamed (string name)
         {
-            // to support iterators who's value starts with "/" or ".." to escape out of Regex and named ancestor iterators
-            if (name.StartsWith ("\\"))
-                name = name.Substring (1);
             _name = name;
         }
 

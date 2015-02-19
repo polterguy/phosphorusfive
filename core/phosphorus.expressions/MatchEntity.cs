@@ -88,7 +88,7 @@ namespace phosphorus.expressions
                     retVal = Node;
                     break;
                 default:
-                    throw new ArgumentException ("cannot get entity value from match of type 'count'");
+                    throw new ApplicationException ("cannot get entity value from match of type 'count'");
                 }
                 if (retVal != null && !string.IsNullOrEmpty (_match.Convert)) {
                     if (_match.Convert == "string") {
@@ -116,14 +116,14 @@ namespace phosphorus.expressions
                             // Node was created from a conversion from string, making sure that we discard
                             // the automatically created "root node" in object
                             if (tmp.Count != 1)
-                                throw new ArgumentException ("tried to convert a string that would create multiple nodes to one node");
+                                throw new ApplicationException ("tried to convert a string that would create multiple nodes to one node");
                             tmp = tmp [0];
                         }
                         Node.Replace (tmp.Clone ()); // ps, cloned!
                     }
                     break;
                 default:
-                    throw new ArgumentException ("cannot get indexed value from match of type 'count'");
+                    throw new ApplicationException ("cannot set indexed value from match of type 'count' or 'path'");
                 }
             }
         }

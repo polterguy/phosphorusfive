@@ -12,50 +12,39 @@ using phosphorus.core;
 namespace phosphorus.expressions.iterators
 {
     /// <summary>
-    /// returns all nodes with the specified name of the previous iterator
+    /// returns all nodes who's names matches the specified regular expression
     /// </summary>
-    public class IteratorNamedRegex : Iterator
+    public class IteratorNamedRegex : IteratorRegex
     {
         private string _regex;
         private string _options;
+        
+        // kept around to be able to create sane exceptions
+        private string _expression;
+        private Node _node;
+        private ApplicationContext _context;
 
         /// <summary>
         /// initializes a new instance of the <see cref="phosphorus.execute.iterators.IteratorNamed"/> class
         /// </summary>
-        /// <param name="name">name to match</param>
-        public IteratorNamedRegex (string regex)
+        /// <param name="regex">regular expression</param>
+        public IteratorNamedRegex (string regex, string expression, Node node, ApplicationContext context)
         {
             _regex = regex.Substring (1, regex.LastIndexOf ("/") - 1);
             _options = regex.Substring (regex.LastIndexOf ("/") + 1);
+            _expression = expression;
+            _node = node;
+            _context = context;
         }
 
         public override IEnumerable<Node> Evaluate {
             get {
                 bool distinct = _options.IndexOf ('d') > -1;
-                RegexOptions options = RegexOptions.None;
-                if (_options.IndexOf ('i') > -1)
-                    options |= RegexOptions.IgnoreCase;
-                if (_options.IndexOf ('g') > -1)
-                    options |= RegexOptions.CultureInvariant;
-                if (_options.IndexOf ('m') > -1)
-                    options |= RegexOptions.Multiline;
-                if (_options.IndexOf ('c') > -1)
-                    options |= RegexOptions.Compiled;
-                if (_options.IndexOf ('e') > -1)
-                    options |= RegexOptions.ECMAScript;
-                if (_options.IndexOf ('w') > -1)
-                    options |= RegexOptions.IgnorePatternWhitespace;
-                if (_options.IndexOf ('r') > -1)
-                    options |= RegexOptions.RightToLeft;
-                if (_options.IndexOf ('l') > -1)
-                    options |= RegexOptions.RightToLeft;
-                if (_options.IndexOf ('s') > -1)
-                    options |= RegexOptions.Singleline;
-                Regex regex = new Regex (_regex, options);
+                Regex regex = new Regex (_regex, GetOptions (_options, _expression, _node, _context));
                 if (distinct) {
                     Dictionary<string, bool> dict = new Dictionary<string, bool> ();
                     foreach (Node idxCurrent in Left.Evaluate) {
-                        if (regex.IsMatch (idxCurrent.Name) && !dict.ContainsKey (idxCurrent.Name)) {
+                        if (!dict.ContainsKey (idxCurrent.Name) && regex.IsMatch (idxCurrent.Name)) {
                             dict [idxCurrent.Name] = true;
                             yield return idxCurrent;
                         }

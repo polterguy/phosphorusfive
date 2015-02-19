@@ -37,7 +37,10 @@ namespace phosphorus.expressions
         {
             return value != null && 
                 value.StartsWith ("@") && 
-                value.Length >= 4; // "@{0}" is the shortest possible expression, and has 4 characters
+                value.Length >= 4 && // "@{0}" is the shortest possible expression, and has 4 characters
+                // an expression must have an iterator, referenced expression, string formatter, 
+                // or a type declaration as its second character
+                (value [1] == '?' || value [1] == '/' || value [1] == '{' || value [1] == '@');
         }
 
         /// <summary>
@@ -50,13 +53,35 @@ namespace phosphorus.expressions
         {
             // checking if we're actually given an expression
             if (!IsExpression (expressionNode.Value))
-                throw new ArgumentException ("ExpressionType must be given an actual expression");
+                throw new ExpressionException (
+                    expressionNode.Value as string,
+                    "ExpressionType must be given an actual expression",
+                    expressionNode,
+                    context);
 
             string exp = IsFormatted (expressionNode) ? FormatNode (expressionNode, context) : expressionNode.Get<string> (context);
             string type = exp.Substring (exp.LastIndexOf ('?') + 1);
             if (type.Contains ("."))
                 type = type.Substring (0, type.IndexOf ('.'));
-            return (Match.MatchType)Enum.Parse (typeof(Match.MatchType), type);
+
+            // some additional code, to be able to provide intelligent errors back to caller, if something goes wrong ...
+            Match.MatchType matchType;
+            switch (type) {
+            case "node":
+            case "value":
+            case "count":
+            case "name":
+            case "path":
+                matchType = (Match.MatchType)Enum.Parse (typeof(Match.MatchType), type);
+                break;
+            default:
+                throw new ExpressionException (
+                    exp, 
+                    string.Format ("'{0}' is an unknown type declaration for your expression", type),
+                    expressionNode,
+                    context);
+            }
+            return matchType;
         }
 
         /// <summary>
@@ -96,7 +121,11 @@ namespace phosphorus.expressions
         {
             // making sure node contains formatting values
             if (!IsFormatted (node))
-                throw new ArgumentException ("cannot format node, no formatting nodes exists, or node's value is not a string");
+                throw new ExpressionException (
+                    (node.Value ?? "").ToString (), 
+                    "Cannot format node, no formatting nodes exists, or node's value is not a string",
+                    node,
+                    context);
 
             // retrieving all "formatting values"
             List<string> childrenValues = new List<string> (node.ConvertChildren<string> (
@@ -292,7 +321,7 @@ namespace phosphorus.expressions
         public static IEnumerable<T> Iterate<T> (string expression, Node dataSource, ApplicationContext context)
         {
             if (!IsExpression (expression))
-                throw new ArgumentException ("Iterate was not given a valid expression");
+                throw new ExpressionException (expression, dataSource, context);
 
             var match = Expression.Create (expression).Evaluate (dataSource, context);
             if (match.TypeOfMatch == Match.MatchType.count) {
@@ -393,7 +422,7 @@ namespace phosphorus.expressions
         public static IEnumerable<MatchEntity> Iterate (string expression, Node dataSource, ApplicationContext context)
         {
             if (!IsExpression (expression))
-                throw new ArgumentException ("Iterate was not given a valid expression");
+                throw new ExpressionException (expression, dataSource, context);
 
             var match = Expression.Create (expression).Evaluate (dataSource, context);
             foreach (var idx in match) {

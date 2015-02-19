@@ -119,7 +119,7 @@ namespace phosphorus.lambda
         private static void lambda_single (ApplicationContext context, ActiveEventArgs e)
         {
             if (string.IsNullOrEmpty (e.Args.Get<string> (context)))
-                throw new ArgumentException ("nothing was given to [lambda.single] for execution");
+                throw new LambdaException ("nothing was given to [lambda.single] for execution", e.Args, context);
 
             // executing a value object, converting to node, before we pass into execution method,
             // making sure we pass in children of [lambda] as "arguments" or "parameters" to [lambda] statement

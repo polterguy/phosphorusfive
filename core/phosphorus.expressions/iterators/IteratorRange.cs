@@ -22,38 +22,10 @@ namespace phosphorus.expressions.iterators
         /// initializes a new instance of the <see cref="phosphorus.execute.iterators.IteratorRange"/> class
         /// </summary>
         /// <param name="start">start position</param>
-        public IteratorRange (int start)
+        public IteratorRange (int start, int end)
         {
             _start = start;
-            _end = _start + 1;
-        }
-
-        /// <summary>
-        /// gets or sets the start of the range to extract
-        /// </summary>
-        /// <value>start position</value>
-        public int Start {
-            get {
-                return _start;
-            }
-            set {
-                _start = value;
-            }
-        }
-
-        /// <summary>
-        /// gets or sets the end of the range to extract
-        /// </summary>
-        /// <value>end position</value>
-        public int End {
-            get {
-                return _end;
-            }
-            set {
-                if (value <= _start)
-                    throw new ArgumentException ("end must be larger than start for range iterator to have a valid value");
-                _end = value;
-            }
+            _end = end;
         }
 
         public override IEnumerable<Node> Evaluate {
@@ -62,7 +34,7 @@ namespace phosphorus.expressions.iterators
                 foreach (Node idxCurrent in Left.Evaluate) {
                     if (idxNo++ >= _start)
                         yield return idxCurrent;
-                    if (idxNo >= _end)
+                    if (_end != -1 && idxNo >= _end)
                         yield break;
                 }
             }

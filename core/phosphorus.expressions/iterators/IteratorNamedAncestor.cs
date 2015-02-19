@@ -11,12 +11,16 @@ using phosphorus.core;
 namespace phosphorus.expressions.iterators
 {
     /// <summary>
-    /// returns all parent <see cref="phosphorus.core.Node"/>s of previous iterator result
+    /// returns an ancestor node with the specified name
     /// </summary>
     public class IteratorNamedAncestor : Iterator
     {
         private string _name;
 
+        /// <summary>
+        /// initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorNamedAncestor"/> class
+        /// </summary>
+        /// <param name="name">name to look for</param>
         public IteratorNamedAncestor (string name)
         {
             _name = name;

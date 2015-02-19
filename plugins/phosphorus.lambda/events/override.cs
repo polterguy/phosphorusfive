@@ -30,7 +30,7 @@ namespace phosphorus.lambda
                 return idx.Name == "super";
             }));
             if (overrideNodes.Count != 1)
-                throw new ArgumentException ("[override] requires one [super] parameter");
+                throw new LambdaException ("[override] requires exactly one [super] parameter", e.Args, context);
 
             // retrieving all overrides
             List<string> overrides = new List<string> (XUtil.Iterate<string> (overrideNodes [0], context));

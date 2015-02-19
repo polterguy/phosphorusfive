@@ -26,19 +26,6 @@ namespace phosphorus.expressions.iterators
             _modulo = modulo;
         }
 
-        /// <summary>
-        /// gets or sets the modulo to extract
-        /// </summary>
-        /// <value>modulo</value>
-        public int Modulo {
-            get {
-                return _modulo;
-            }
-            set {
-                _modulo = value;
-            }
-        }
-
         public override IEnumerable<Node> Evaluate {
             get {
                 int idxNo = 0;

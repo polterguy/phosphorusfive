@@ -13,38 +13,53 @@ using phosphorus.expressions.iterators;
 namespace phosphorus.expressions
 {
     /// <summary>
-    /// expression class, for retrieving and changing values in node trees according to
+    /// expression class, for retrieving and changing values in node trees, according to
     /// pf.lambda expressions
     /// </summary>
     public class Expression
     {
+        // contains actual expression we're evaluating
         private string _expression;
+
+        // these next two buggers are kept around to provide contextual information for exceptions,
+        // among other things, and to make conversions possible
+        private Node _evaluatedNode;
+        private ApplicationContext _context;
 
         /*
          * private ctor, to make sure we can extend creation logic in the future
          */
         private Expression (string expression)
         {
-            if (!XUtil.IsExpression (expression))
-                throw new ArgumentException (string.Format ("'{0}' is not a valid expression", expression));
+            // ps, postponing syntax checking until "Evaluate", since we've got "context" in Evaluate
             _expression = expression;
         }
 
         /// <summary>
         /// initializes a new instance of the <see cref="phosphorus.execute.Expression"/> class
         /// </summary>
-        /// <param name="expression">execution engine expression</param>
+        /// <param name="expression">expression to evaluate</param>
         public static Expression Create (string expression)
         {
             return new Expression (expression);
         }
 
         /// <summary>
-        /// evaluates expression for given <see cref="phosphorus.core.Node"/>  and returns 
-        /// <see cref="phosphorus.execute.Expression.Match"/>
+        /// evaluates expression for given <see cref="phosphorus.core.Node"/>, and returns 
+        /// <see cref="phosphorus.execute.Expression.Match"/> object wrapping all matches for 
+        /// evaluated expression
         /// </summary>
         public Match Evaluate (Node node, ApplicationContext context)
         {
+            // verifying we've got an actual expression, since expression should be finished formatted
+            // at this point, we can use "Exact" version
+            if (!XUtil.IsExpression (_expression))
+                throw new ExpressionException (_expression, node, context);
+
+            // storing these bugger for later references, used in exceptions, among other things
+            _evaluatedNode = node;
+            _context = context;
+
             // creating our "root group iterator"
             IteratorGroup current = new IteratorGroup (node);
             string typeOfExpression = null, previousToken = null;
@@ -59,10 +74,10 @@ namespace phosphorus.expressions
                         // this is our last token, storing it as "expression type", before ending iteration
                         typeOfExpression = idxToken;
                         break;
-                    } else {
+                    } else if (idxToken != "?") { // ignoring "?", handled in next iteration
 
                         // building expression tree
-                        current = FindMatches (current, idxToken, previousToken, context);
+                        current = AppendToken (current, idxToken, previousToken);
                     }
 
                     // storing previous token, since some iterators are dependent upon knowing it
@@ -71,17 +86,335 @@ namespace phosphorus.expressions
             }
 
             // creating a Match object, and returning to caller
-            return CreateMatchFromIterator (current, typeOfExpression, context);
+            return CreateMatchFromIterator (current, typeOfExpression);
+        }
+
+        /*
+         * handles an expression iterator token
+         */
+        private IteratorGroup AppendToken (
+            IteratorGroup current, 
+            string token, 
+            string previousToken)
+        {
+            switch (token) {
+            case "(":
+
+                // opening new group
+                return new IteratorGroup (current);
+            case ")":
+
+                // closing group
+                if (current.ParentGroup == null) // making sure there's actually an open group first
+                    throw new ExpressionException (
+                        _expression, 
+                        "Closing parenthesis ')' has no matching '(' in expression.", 
+                        _evaluatedNode, 
+                        _context);
+                return current.ParentGroup;
+            case "/":
+
+                // new token iterator
+                if (previousToken == "/") {
+
+                    // two slashes "//" preceding each other, hence we're looking for a named value,
+                    // where its name is string.Empty
+                    current.AddIterator (new IteratorNamed (string.Empty));
+                }
+                break;
+            case "|":
+            case "&":
+            case "^":
+            case "!":
+
+                // boolean algebraic operator, opening up a new sub-expression
+                LogicalToken (current, token, previousToken);
+                break;
+            case "@":
+
+                // reference expression. Notice the first "@" is removed during setup
+                if (current.IsReference) // making sure reference expressions can only be declared once
+                    throw new ExpressionException (
+                        _expression, 
+                        "You cannot declare your expression to be a reference expression more than once.", 
+                        _evaluatedNode, 
+                        _context);
+                current.IsReference = true;
+                break;
+            default:
+
+                // handles everything else
+                DefaultToken (current, token, previousToken, _context);
+                break;
+            }
+
+            // defaulting to returning what we came in with
+            return current;
+        }
+        
+        /*
+         * handles "|", "&", "!" and "^" tokens
+         */
+        private void LogicalToken (IteratorGroup current, string token, string previousToken)
+        {
+            switch (token) {
+            case "|":
+
+                // OR logical boolean algebraic operator
+                current.AddLogical (new Logical (Logical.LogicalType.OR));
+                break;
+            case "&":
+
+                // AND logical boolean algebraic operator
+                current.AddLogical (new Logical (Logical.LogicalType.AND));
+                break;
+            case "!":
+
+                // NOT logical boolean algebraic operator
+                current.AddLogical (new Logical (Logical.LogicalType.NOT));
+                break;
+            case "^":
+                
+                // XOR logical boolean algebraic operator
+                current.AddLogical (new Logical (Logical.LogicalType.XOR));
+                break;
+            }
+        }
+        
+        /*
+         * handles all other tokens, such as "named tokens" and "valued tokens"
+         */
+        private void DefaultToken (
+            IteratorGroup current, 
+            string token, 
+            string previousToken,
+            ApplicationContext context)
+        {
+            if (token.StartsWith ("=")) {
+
+                // some type of value token, either normal value, or regex value
+                ValueToken (current, token);
+            } else if (token.StartsWith ("[")) {
+
+                // range iterator token
+                RangeToken (current, token);
+            } else if (token.StartsWith ("..") && token.Length > 2) {
+
+                // named ancestor token
+                current.AddIterator (new IteratorNamedAncestor (token.Substring (2)));
+            } else if (token.StartsWith ("%")) {
+
+                // modulo token
+                ModuloToken (current, token);
+            } else if (token.StartsWith ("-") || token.StartsWith ("+")) {
+
+                // modulo token
+                SiblingToken (current, token);
+            } else if (token == "..") {
+
+                // root node token
+                current.AddIterator (new IteratorRoot ());
+            } else if (token == "*") {
+
+                // all children token
+                current.AddIterator (new IteratorChildren ());
+            } else if (token == "**") {
+
+                // flatten descendants token
+                current.AddIterator (new IteratorFlatten ());
+            } else if (token == ".") {
+
+                // parent node token
+                current.AddIterator (new IteratorParent ());
+            } else if (token == "#") {
+
+                // reference node token
+                current.AddIterator (new IteratorReference ());
+            } else if (token == "<") {
+
+                // left shift token
+                current.AddIterator (new IteratorShiftLeft ());
+            } else if (token == ">") {
+
+                // right shift token
+                current.AddIterator (new IteratorShiftRight ());
+            } else if (token.StartsWith ("/")) {
+
+                // named regex token
+                current.AddIterator (new IteratorNamedRegex (token, _expression, _evaluatedNode, _context));
+            } else if (Utilities.IsNumber (token)) {
+
+                // numbered child token
+                current.AddIterator (new IteratorNumbered (int.Parse (token)));
+            } else {
+
+                // defaulting to "named iterator", making sure we escape any prepending back slashes,
+                // to support escaped "\", numbers, "..xx" named nodes, and similar constructs
+                if (token.StartsWith ("\\"))
+                    token = token.Substring (1);
+                current.AddIterator (new IteratorNamed (token));
+            }
+        }
+
+        /*
+         * value token, either a regular expression token, or a normal value comparison token,
+         * optionally with a type declaration
+         */
+        private void ValueToken (IteratorGroup current, string token)
+        {
+            if (token.IndexOf ('/') == 1) {
+
+                // value token, with regular expression
+                ValueTokenRegex (current, token);
+            } else {
+
+                // value token, not regex, possibly a type declaration though
+                ValueTokenNormal (current, token);
+            }
+        }
+
+        /*
+         * creates a value token, which is also a regular expression
+         */
+        private void ValueTokenRegex (IteratorGroup current, string token)
+        {
+            token = token.Substring (1); // removing equal sign (=)
+            current.AddIterator (new IteratorValuedRegex (token, _expression, _evaluatedNode, _context));
+        }
+        
+        /*
+         * creates a value token, which is not a regular expression
+         */
+        private void ValueTokenNormal (IteratorGroup current, string token)
+        {
+            token = token.Substring (1); // removing equal sign (=)
+            string type = null; // defaulting to "no type", meaning "string" type basically
+            if (token.IndexOf ('\\') == 0) {
+
+                // escaped equality token, necessary to support ":" as beginning of string values,
+                // without having type information tranformation logic kicking in
+                token = token.Substring (1);
+            } else {
+
+                // might contain a type declaration, checking here
+                if (token.IndexOf (':') == 0) {
+
+                    // yup, we've got a type declaration for our token ...
+                    type = token.Substring (1, token.IndexOf (":", 1) - 1);
+                    token = token.Substring (type.Length + 2);
+                }
+            }
+            current.AddIterator (new IteratorValued (token, type, _context));
+        }
+
+        // TODO: cleanup, too long ...
+        /*
+         * creates a range token [x,y]
+         */
+        private void RangeToken (IteratorGroup current, string token)
+        {
+            // verifying token ends with "]"
+            if (token [token.Length - 1] != ']')
+                throw new ExpressionException (
+                    _expression, 
+                    string.Format ("Syntax error in range token '{0}', no ']' at end of token", token), 
+                    _evaluatedNode, 
+                    _context);
+
+            if (token.IndexOf (',') != -1) {
+                token = token.Substring (1, token.Length - 2);
+                string[] values = token.Split (',');
+
+                // verifying token has only two integer values, separated by ","
+                if (values.Length != 2)
+                    throw new ExpressionException (
+                        _expression, 
+                        string.Format ("Syntax error in range token '[{0}]', ranged iterator takes two integer values, separated by ','", token),
+                        _evaluatedNode, 
+                        _context);
+                int start = -1;
+                int end = -1;
+                string startStr = values [0].Trim ();
+                string endStr = values [1].Trim ();
+                if (startStr.Length > 0) {
+                    if (!Utilities.IsNumber (startStr))
+                        throw new ExpressionException (
+                            _expression, 
+                            string.Format ("Syntax error in range token '[{0}]', expected number, found string", token),
+                            _evaluatedNode, 
+                            _context);
+                    start = int.Parse (startStr, CultureInfo.InvariantCulture);
+                }
+                if (endStr.Length > 0) {
+                    if (!Utilities.IsNumber (endStr))
+                        throw new ExpressionException (
+                            _expression, 
+                            string.Format ("Syntax error in range token '[{0}]', expected number, found string", token),
+                            _evaluatedNode, 
+                            _context);
+                    end = int.Parse (endStr, CultureInfo.InvariantCulture);
+                    if (end <= start)
+                        throw new ExpressionException (
+                            _expression, 
+                            string.Format ("Syntax error in range token '[{0}]', end must be larger than start", token),
+                            _evaluatedNode, 
+                            _context);
+                }
+                current.AddIterator (new IteratorRange (start, end));
+            } else {
+                throw new ExpressionException (
+                    _expression, 
+                    string.Format ("Syntax error in range token '{0}', expected two values, found one", token),
+                    _evaluatedNode, 
+                    _context);
+            }
+        }
+        
+        /*
+         * creates a range iterator
+         */
+        private void ModuloToken (IteratorGroup current, string token)
+        {
+            // removing "%" character
+            token = token.Substring (1);
+
+            // making sure we're given a number
+            if (!Utilities.IsNumber (token))
+                throw new ExpressionException (
+                    _expression, 
+                    string.Format ("Syntax error in modulo token '{0}', expected integer value, found string", token),
+                    _evaluatedNode, 
+                    _context);
+            current.AddIterator (new IteratorModulo (int.Parse (token)));
+        }
+        
+        /*
+         * creates a sibling iterator
+         */
+        private void SiblingToken (IteratorGroup current, string token)
+        {
+            string intValue = token.Substring (1);
+            char oper = token [0];
+            int value = 1;
+            if (intValue.Length > 0 && !Utilities.IsNumber (intValue))
+                throw new ExpressionException (
+                    _expression, 
+                    string.Format ("Syntax error in sibling token '{0}', expected integer value, found string", token),
+                    _evaluatedNode, 
+                    _context);
+            else if (intValue.Length > 0)
+                value = int.Parse (intValue);
+            current.AddIterator (new IteratorSibling (value * (oper == '+' ? 1 : -1)));
         }
 
         /*
          * create a Match object from an Iterator group
          */
-        private Match CreateMatchFromIterator (IteratorGroup group, string type, ApplicationContext context)
+        private Match CreateMatchFromIterator (IteratorGroup group, string type)
         {
             // checking to see if we have open groups, which is a bug
             if (group.ParentGroup != null)
-                throw new ArgumentException ("unclosed group while evaluating; " + _expression);
+                throw new ExpressionException (_expression, "Group in expression was not closed.", _evaluatedNode, _context);
 
             // parsing type of match
             string convert = null;
@@ -89,7 +422,22 @@ namespace phosphorus.expressions
                 convert = type.Substring (type.IndexOf ('.') + 1);
                 type = type.Substring (0, type.IndexOf ('.'));
             }
-            Match.MatchType matchType = (Match.MatchType)Enum.Parse (typeof(Match.MatchType), type);
+            Match.MatchType matchType;
+            switch (type) {
+            case "node":
+            case "value":
+            case "count":
+            case "name":
+            case "path":
+                matchType = (Match.MatchType)Enum.Parse (typeof(Match.MatchType), type);
+                break;
+            default:
+                throw new ExpressionException (
+                    _expression, 
+                    string.Format ("'{0}' is an unknown type declaration for your expression", type),
+                    _evaluatedNode,
+                    _context);
+            }
 
             // checking if expression is a reference expression, 
             // at which point we'll have to evaluate all referenced expressions
@@ -97,462 +445,32 @@ namespace phosphorus.expressions
 
                 // expression is a "reference expression", 
                 // meaning we'll have to evaluate all referenced expressions
-                var match = new Match (group.Evaluate, matchType, context, convert);
-                return EvaluateReferenceExpression (match, context, convert);
+                var match = new Match (group.Evaluate, matchType, _context, convert);
+                return EvaluateReferenceExpression (match, _context, convert);
             } else {
 
                 // returning simple match object
-                return new Match (group.Evaluate, matchType, context, convert);
-            }
-        }
-        
-        /*
-         * return matches according to token
-         */
-        private IteratorGroup FindMatches (
-            IteratorGroup current, 
-            string token, 
-            string previousToken,
-            ApplicationContext context)
-        {
-            switch (token) {
-            case "?":
-                return FindMatchQuestionMarkToken (current, previousToken);
-            case "(":
-                return FindMatchOpenGroup (current, previousToken);
-            case ")":
-                return FindMatchCloseGroup (current, previousToken);
-            case "/":
-                return FindMatchSlashToken (current, previousToken);
-            case "*":
-                return FindMatchAsterixToken (current, previousToken);
-            case "**":
-                return FindMatchDoubleAsterixToken (current, previousToken);
-            case "+":
-            case "-":
-                return FindMatchSiblingToken (current, token, previousToken);
-            case ".":
-                return FindMatchDotToken (current, previousToken);
-            case "..":
-                return FindMatchDoubleDotToken (current, previousToken);
-            case "|":
-            case "&":
-            case "^":
-            case "!":
-                return FindMatchLogicalToken (current, token, previousToken);
-            case "=":
-                return FindMatchEqualSignToken (current, previousToken);
-            case ":":
-                if (!(current.LastIterator is IteratorValued))
-                    throw new ArgumentException ("syntax error in expression, ':' found at unexpected position");
-                // "typed" value expression
-                return current;
-            case "[":
-                return FindMatchOpenRangeToken (current, previousToken);
-            case ",":
-                return FindMatchCommaToken (current, previousToken);
-            case "]":
-                return FindMatchCloseRangeToken (current, previousToken);
-            case "%":
-                return FindMatchModuloToken (current, previousToken);
-            case "#":
-                return FindMatchHashToken (current, previousToken);
-            case "<":
-                return FindMatchShiftLeftToken (current, previousToken);
-            case ">":
-                return FindMatchShiftRightToken (current, previousToken);
-            case "@":
-                return FindMatchReferenceExpressionToken (current, token);
-            default:
-                return FindMatchDefaultToken (current, token, previousToken, context);
-            }
-        }
-        
-        /*
-         * handles ">" token
-         */
-        private IteratorGroup FindMatchShiftRightToken (IteratorGroup current, string previousToken)
-        {
-            if (previousToken != "/") {
-                throw new ArgumentException ("unclosed iterator before shift right '>' in expression; '" + _expression + "'");
-            }
-            current.AddIterator (new IteratorShiftRight ());
-            return current;
-        }
-
-        /*
-         * handles "<" token
-         */
-        private IteratorGroup FindMatchShiftLeftToken (IteratorGroup current, string previousToken)
-        {
-            if (previousToken != "/") {
-                throw new ArgumentException ("unclosed iterator before shift left '<' in expression; '" + _expression + "'");
-            }
-            current.AddIterator (new IteratorShiftLeft ());
-            return current;
-        }
-
-        /*
-         * handles "#" token
-         */
-        private IteratorGroup FindMatchHashToken (IteratorGroup current, string previousToken)
-        {
-            if (previousToken != "/") {
-                throw new ArgumentException ("unclosed iterator before hash '#' in expression; '" + _expression + "'");
-            }
-            current.AddIterator (new IteratorReference ());
-            return current;
-        }
-
-        /*
-         * handles "%" token
-         */
-        private IteratorGroup FindMatchModuloToken (IteratorGroup current, string previousToken)
-        {
-            if (previousToken != "/") {
-                throw new ArgumentException ("unclosed iterator before square bracket '[' in expression; '" + _expression + "'");
-            }
-            current.AddIterator (new IteratorModulo (-1));
-            return current;
-        }
-
-        /*
-         * handles "[" token
-         */
-        private IteratorGroup FindMatchOpenRangeToken (IteratorGroup current, string previousToken)
-        {
-            if (previousToken != "/") {
-                throw new ArgumentException ("unclosed iterator before square bracket '[' in expression; '" + _expression + "'");
-            }
-            return current;
-        }
-        
-        /*
-         * handles "," token
-         */
-        private IteratorGroup FindMatchCommaToken (IteratorGroup current, string previousToken)
-        {
-            if (previousToken == "[") {
-                // empty "start" part
-                current.AddIterator (new IteratorRange (0));
-            }
-            return current;
-        }
-
-        /*
-         * handles "]" token
-         */
-        private IteratorGroup FindMatchCloseRangeToken (IteratorGroup current, string previousToken)
-        {
-            if (previousToken == ",")
-                ((IteratorRange)current.LastIterator).End = int.MaxValue;
-            return current;
-        }
-
-        /*
-         * handles "?" token
-         */
-        private IteratorGroup FindMatchQuestionMarkToken (IteratorGroup current, string previousToken)
-        {
-            if (previousToken != "/" && previousToken != ")" && previousToken != null) {
-                throw new ArgumentException ("unclosed iterator before question mark '?' in expression; '" + _expression + "'");
-            }
-            return current;
-        }
-
-        /*
-         * handles "(" token
-         */
-        private IteratorGroup FindMatchOpenGroup (IteratorGroup current, string previousToken)
-        {
-            if (previousToken == null || (previousToken.Length != 1 || "(|&^!/".IndexOf (previousToken) == - 1)) {
-                throw new ArgumentException ("syntax error in expression; '" + 
-                    _expression + 
-                    "' probably missing a slash '/' before group was opened in one of your '(' tokens");
-            }
-            return new IteratorGroup (current);
-        }
-        
-        /*
-         * handles ")" token
-         */
-        private IteratorGroup FindMatchCloseGroup (IteratorGroup current, string previousToken)
-        {
-            if (previousToken != "/" && previousToken != ")") {
-                throw new ArgumentException ("syntax error in expression; '" + 
-                    _expression + 
-                    "' probably missing a slash '/' before group was closed in one of your ')' tokens");
-            }
-            if (current.ParentGroup == null) {
-                throw new ArgumentException ("too many parantheses ')' in expression; '" + 
-                    _expression + 
-                    "', tried to close a group that didn't exist");
-            }
-            return current.ParentGroup;
-        }
-
-        /*
-         * handles "/" token
-         */
-        private IteratorGroup FindMatchSlashToken (IteratorGroup current, string previousToken)
-        {
-            if (previousToken == "/") {
-                // two slashes "//" preceding each other, hence we're looking for a named value, where its name is string.Empty
-                current.AddIterator (new IteratorNamed (string.Empty));
-            }
-            return current;
-        }
-        
-        /*
-         * handles "\" token
-         */
-        private IteratorGroup FindMatchDoubleDotToken (IteratorGroup current, string previousToken)
-        {
-            if (previousToken != "/") {
-                throw new ArgumentException ("syntax error in expression; '" + 
-                    _expression + 
-                    "' probably missing a slash '/' before root token '..'");
-            }
-            current.AddIterator (new IteratorRoot ());
-            return current;
-        }
-        
-        /*
-         * handles "*" token
-         */
-        private IteratorGroup FindMatchAsterixToken (IteratorGroup current, string previousToken)
-        {
-            if (previousToken != "/") {
-                throw new ArgumentException ("syntax error in expression; '" + 
-                    _expression + 
-                    "' probably missing a slash '/' before '*' token");
-            }
-            current.AddIterator (new IteratorChildren ());
-            return current;
-        }
-        
-        /*
-         * handles "**" token
-         */
-        private IteratorGroup FindMatchDoubleAsterixToken (IteratorGroup current, string previousToken)
-        {
-            if (previousToken != "/") {
-                throw new ArgumentException ("syntax error in expression; '" + 
-                    _expression + 
-                    "' probably missing a slash '/' before '**' token");
-            }
-            current.AddIterator (new IteratorFlatten ());
-            return current;
-        }
-
-        /*
-         * handles "-" && "+" tokens
-         */
-        private IteratorGroup FindMatchSiblingToken (IteratorGroup current, string token, string previousToken)
-        {
-            if (previousToken != "/") {
-                throw new ArgumentException ("syntax error in expression; '" + 
-                    _expression + 
-                    "' probably missing a slash '/' before '" + token + "' token");
-            }
-            current.AddIterator (new IteratorSibling (token == "+" ? 1 : -1));
-            return current;
-        }
-        
-        /*
-         * handles "." token
-         */
-        private IteratorGroup FindMatchDotToken (IteratorGroup current, string previousToken)
-        {
-            if (previousToken != "/") {
-                throw new ArgumentException ("syntax error in expression; '" + 
-                    _expression + 
-                    "' probably missing a slash '/' before '**' token");
-            }
-            current.AddIterator (new IteratorParent ());
-            return current;
-        }
-        
-        /*
-         * handles "|", "&", "^" and "!" tokens
-         */
-        private IteratorGroup FindMatchLogicalToken (IteratorGroup current, string token, string previousToken)
-        {
-            switch (token) {
-            case "|":
-                current.AddLogical (new Logical (Logical.LogicalType.OR));
-                break;
-            case "&":
-                current.AddLogical (new Logical (Logical.LogicalType.AND));
-                break;
-            case "^":
-                current.AddLogical (new Logical (Logical.LogicalType.XOR));
-                break;
-            case "!":
-                current.AddLogical (new Logical (Logical.LogicalType.NOT));
-                break;
-            }
-            return current;
-        }
-        
-        /*
-         * handles "=" token
-         */
-        private IteratorGroup FindMatchEqualSignToken (IteratorGroup current, string previousToken)
-        {
-            if (previousToken != "/") {
-                throw new ArgumentException ("syntax error in expression; '" + 
-                    _expression + 
-                    "' probably missing a slash '/' before valued token '='");
-            }
-            current.AddIterator (new IteratorValued ()); // actual value will be set in next token
-            return current;
-        }
-        
-        /*
-         * handles all other tokens, such as "named tokens" and "valued tokens"
-         */
-        private IteratorGroup FindMatchDefaultToken (
-            IteratorGroup current, 
-            string token, 
-            string previousToken,
-            ApplicationContext context)
-        {
-            if (previousToken == "=") {
-                ((IteratorValued)current.LastIterator).Value = token;
-                return current;
-            } else if (previousToken == ":") {
-                if (!(current.LastIterator is IteratorValued))
-                    throw new ArgumentException ("syntax error in expression, ':' found at unexpected position");
-                if (string.IsNullOrEmpty (((IteratorValued)current.LastIterator).Type)) {
-                    ((IteratorValued)current.LastIterator).Type = token;
-                    ((IteratorValued)current.LastIterator).Context = context;
-                } else {
-                    ((IteratorValued)current.LastIterator).Value = token;
-                }
-                return current;
-            } else if (previousToken == "+" || previousToken == "-") {
-                return FindMatchSiblingIntegerToken (current, token, previousToken);
-            } else if (previousToken == "[") {
-                return FindMatchRangeBeginToken (current, token);
-            } else if (previousToken == ",") {
-                return FindMatchRangeEndToken (current, token);
-            } else if (previousToken == "%") {
-                return FindMatchModuloIntegerToken (current, token);
-            } else {
-                if (previousToken != "/") {
-                    throw new ArgumentException ("syntax error in expression; '" + 
-                        _expression + 
-                        "' probably missing a slash '/' before token; '" + 
-                        token + "'");
-                }
-                if (Utilities.IsNumber (token)) {
-                    current.AddIterator (new IteratorNumbered (int.Parse (token)));
-                    return current;
-                } else {
-                    return FindMatchNamedToken (current, token);
-                }
+                return new Match (group.Evaluate, matchType, _context, convert);
             }
         }
 
-        /*
-         * handles "reference" expressions
-         */
-        private IteratorGroup FindMatchReferenceExpressionToken (IteratorGroup current, string token)
-        {
-            if (current.IsReference) {
-                throw new ArgumentException ("you cannot set the reference expression flag twice");
-            }
-            current.IsReference = true;
-            return current;
-        }
-        
-        /*
-         * handles integer value following "+" and "-" tokens
-         */
-        private IteratorGroup FindMatchSiblingIntegerToken (IteratorGroup current, string token, string previousToken)
-        {
-            if (!Utilities.IsNumber (token)) {
-                throw new ArgumentException ("a sibling operator must have an integer number as its next token, syntax error close to; '" + 
-                    token + "' in expression; '" + _expression + "'");
-            }
-            ((IteratorSibling)current.LastIterator).Offset = previousToken == "-" ? -int.Parse (token) : int.Parse (token);
-            return current;
-        }
-        
-        /*
-         * handles integer value following "[" token
-         */
-        private IteratorGroup FindMatchRangeBeginToken (IteratorGroup current, string token)
-        {
-            if (!Utilities.IsNumber (token)) {
-                throw new ArgumentException ("start of range was not a number, syntax error at; '" + 
-                    token + 
-                    "' in expression; '" + 
-                    _expression + "'");
-            }
-            current.AddIterator (new IteratorRange (int.Parse (token)));
-            return current;
-        }
-        
-        /*
-         * handles integer value following "," token
-         */
-        private IteratorGroup FindMatchRangeEndToken (IteratorGroup current, string token)
-        {
-            if (!Utilities.IsNumber (token)) {
-                throw new ArgumentException ("end of range was not a number, syntax error at; '" + 
-                    token + 
-                    "' in expression; '" + 
-                    _expression + "'");
-            }
-            ((IteratorRange)current.LastIterator).End = int.Parse (token);
-            return current;
-        }
-        
-        /*
-         * handles integer value following "%" token
-         */
-        private IteratorGroup FindMatchModuloIntegerToken (IteratorGroup current, string token)
-        {
-            if (!Utilities.IsNumber (token)) {
-                throw new ArgumentException ("modulo was not a number, syntax error at; '" + 
-                    token + 
-                    "' in expression; '" + 
-                    _expression + "'");
-            }
-            ((IteratorModulo)current.LastIterator).Modulo = int.Parse (token);
-            return current;
-        }
-
-        /*
-         * handles named tokens, both named ancestors, named children and regex-named children
-         */
-        private IteratorGroup FindMatchNamedToken (IteratorGroup current, string token)
-        {
-            if (token.StartsWith ("/")) {
-                if (token.LastIndexOf ("/") == 0) {
-                    throw new ArgumentException ("token; '" + 
-                        token + 
-                        "' in expression; '" + 
-                        _expression + 
-                        "' is not a valid regular expression");
-                }
-                current.AddIterator (new IteratorNamedRegex (token));
-            } else if (token.StartsWith ("..")) {
-                // named ancestor
-                current.AddIterator (new IteratorNamedAncestor (token.Substring (2)));
-            } else {
-                current.AddIterator (new IteratorNamed (token));
-            }
-            return current;
-        }
-        
         /*
          * evaluates a reference expression
          */
         private Match EvaluateReferenceExpression (Match match, ApplicationContext context, string convert)
         {
+            // making sure only 'value' and 'name' expression types can be "reference expressions"
+            if (match.TypeOfMatch != Match.MatchType.name && match.TypeOfMatch != Match.MatchType.value) {
+
+                // logical error, since only 'value' and 'name' expressions can possibly do something intelligent
+                // as reference expressions
+                throw new ExpressionException (
+                    _expression, 
+                    "Only 'value' and 'name' expressions can be reference expressions", 
+                    _evaluatedNode,
+                    context);
+            }
+
             // looping through referenced expressions, yielding result from these referenced expression(s)
             Match retVal = new Match (match.TypeOfMatch, context, convert);
 
@@ -568,6 +486,9 @@ namespace phosphorus.expressions
 
                     // current MatchEntity contains an expression as its value, evaluating expression, and
                     // adding result of expression
+                    // TODO: support formatting expressions through delegate callbacks, such that XUtil.Iterate
+                    // and similar constructs can handle reference expressions, through callback, where referenced
+                    // expression contains formatting parameters
                     var innerMatch = Expression.Create (
                         Utilities.Convert<string> (idxMatch.Value, context)).Evaluate (idxMatch.Node, context);
                     foreach (var idxInner in innerMatch) {

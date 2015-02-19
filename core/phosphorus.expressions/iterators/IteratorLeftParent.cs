@@ -11,7 +11,8 @@ using phosphorus.core;
 namespace phosphorus.expressions.iterators
 {
     /// <summary>
-    /// "stop iterator" which is useful for using as "root iterators" of children <see cref="phosphorus.execute.iterators.IteratorGroup"/>
+    /// "stop iterator", which is used as "root iterators" for nested
+    /// <see cref="phosphorus.execute.iterators.IteratorGroup"/> iterators
     /// iterators
     /// </summary>
     public class IteratorLeftParent : Iterator

@@ -8,6 +8,7 @@ using System;
 using System.Reflection;
 using System.Collections.Generic;
 using phosphorus.core;
+using phosphorus.expressions;
 
 namespace phosphorus.lambda
 {
@@ -47,7 +48,7 @@ namespace phosphorus.lambda
         private static void lambda_else_if (ApplicationContext context, ActiveEventArgs e)
         {
             // syntax checking statement
-            VerifyElseSyntax (e.Args);
+            VerifyElseSyntax (e.Args, context, "else-if");
 
             // checking to see if previous "if" or "else-if" has already evaluated to true
             if (e.Args.Parent [0].Name == "__pf_evaluated") {
@@ -78,7 +79,7 @@ namespace phosphorus.lambda
         private static void lambda_else (ApplicationContext context, ActiveEventArgs e)
         {
             // syntax checking statement
-            VerifyElseSyntax (e.Args);
+            VerifyElseSyntax (e.Args, context, "else");
 
             // checking to see if previous "if" or "else-if" has already evaluated to true
             if (e.Args.Parent [0].Name == "__pf_evaluated") {
@@ -110,11 +111,11 @@ namespace phosphorus.lambda
         /*
          * verifies that an [else] or [else-if] has a previous [if]
          */
-        private static void VerifyElseSyntax (Node node)
+        private static void VerifyElseSyntax (Node node, ApplicationContext context, string statement)
         {
             Node previous = node.PreviousSibling;
             if (previous == null || (previous.Name != "if" && previous.Name != "else-if"))
-                throw new ArgumentException ("you cannot have a [else-if] statement without a matching [if] or [else-if] as its previous sibling");
+                throw new LambdaException ("you cannot have an [" + statement + "] without a matching [if] or [else-if] as its previous sibling", node, context);
         }
         
         /*

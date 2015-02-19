@@ -13,7 +13,7 @@ namespace phosphorus.expressions.iterators
     /// <summary>
     /// special iterator for grouping iterators.  an IteratorGroup will either iterate on the result of its
     /// parent group, or a single node. by grouping iterators, you can have multiple iterators grouped together,
-    /// working with the evaluatedd result of its parent group iterator
+    /// working with the evaluated results, of its parent group iterator
     /// </summary>
     public class IteratorGroup : Iterator
     {
@@ -64,11 +64,10 @@ namespace phosphorus.expressions.iterators
             }
         }
 
-        // TODO: Rename to "IsReference"
         /// <summary>
         /// returns true if this is a "reference expression"
         /// </summary>
-        /// <value>true if this is a reference expression</value>
+        /// <value>true if this is a reference expression, otherwise false</value>
         public override bool IsReference {
             get {
                 return _groupRoot.IsReference;
@@ -87,7 +86,7 @@ namespace phosphorus.expressions.iterators
         {
             _logicals.Add (logical);
 
-            // making sure "group root iterator" is root iterator of all Logicals
+            // making sure "group root iterator" is root iterator for all Logicals
             _logicals [_logicals.Count - 1].AddIterator (_groupRoot);
         }
 

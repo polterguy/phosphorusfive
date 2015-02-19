@@ -60,10 +60,17 @@
 
 * [context-event] and [context-override] keywords, with associated [context-delete-event] and [context-delete-override] keywords
 
-* create consistency between all Active events using only ONE of "remove" or "delete". [pf.data.delete] might possibly be [remove]
-  instead, the same with [pf.folder.remove], [pf.file.remove], etc ...
+* create consistency between all Active events using only ONE of "remove" or "delete". [pf.data.delete] might possibly be 
+  [remove] instead, the same with [pf.folder.remove], [pf.file.remove], etc ...
 
 * investigate [pf.data.update] to see if it's even necessary
 
 * unit tests for XUtil.IterateNode
+
+* make sure phosphorus.application-pool is "startup project" in release
+
+* create Unit Tests for every single example in video tutorials
+
+* try to eliminate all exceptions being raised in MatchIterators and Expression.cs, since they're for the most parts not needed
+
 

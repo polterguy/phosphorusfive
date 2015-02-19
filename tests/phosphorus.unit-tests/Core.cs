@@ -10,6 +10,9 @@ using phosphorus.core;
 
 namespace phosphorus.unittests
 {
+    /// <summary>
+    /// unit tests for phosphorus.core project
+    /// </summary>
     [TestFixture]
     public class Core
     {
@@ -98,13 +101,23 @@ namespace phosphorus.unittests
             context.Raise ("foo", tmp);
             Assert.AreEqual ("success", tmp.Value, "Active Event in current assembly did not execute when expected");
         }
-        
+
+        /// <summary>
+        /// used in ApplicationContext3 Unit Test
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "foo2")]
         private static void foo2_1 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
         }
 
+        /// <summary>
+        /// used in ApplicationContext3 Unit Test
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "foo2")]
         private static void foo2_2 (ApplicationContext context, ActiveEventArgs e)
         {
@@ -124,6 +137,11 @@ namespace phosphorus.unittests
             Assert.AreEqual ("successsuccess", tmp.Value, "Active Event in current assembly did not execute when expected");
         }
         
+        /// <summary>
+        /// used in ApplicationContext4 Unit Test
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "foo3")]
         private void foo3 (ApplicationContext context, ActiveEventArgs e)
         {
@@ -144,12 +162,22 @@ namespace phosphorus.unittests
             Assert.AreEqual ("success", tmp.Value, "Active Event in current assembly did not execute when expected");
         }
         
+        /// <summary>
+        /// used in ApplicationContext5 Unit Test
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "foo4")]
         private void foo4_1 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
         }
 
+        /// <summary>
+        /// used in ApplicationContext5 Unit Test
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "foo4")]
         private void foo4_2 (ApplicationContext context, ActiveEventArgs e)
         {
@@ -170,12 +198,22 @@ namespace phosphorus.unittests
             Assert.AreEqual ("successsuccess", tmp.Value, "Active Event in current assembly did not execute when expected");
         }
         
+        /// <summary>
+        /// used in ApplicationContext6 Unit Test
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "foo5")]
         private void foo5_1 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
         }
 
+        /// <summary>
+        /// used in ApplicationContext6 Unit Test
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "foo5")]
         private static void foo5_2 (ApplicationContext context, ActiveEventArgs e)
         {
@@ -197,6 +235,11 @@ namespace phosphorus.unittests
             Assert.AreEqual ("successsuccess", tmp.Value, "Active Event in current assembly did not execute when expected");
         }
         
+        /// <summary>
+        /// used in ApplicationContext7 Unit Test
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "foo6")]
         private static void foo6 (ApplicationContext context, ActiveEventArgs e)
         {
@@ -224,6 +267,11 @@ namespace phosphorus.unittests
             Assert.AreEqual ("success", tmp.Value, "context contained previously registered instance listener");
         }
         
+        /// <summary>
+        /// used in ApplicationContext8 Unit Test
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "foo7")]
         private static void foo7 (ApplicationContext context, ActiveEventArgs e)
         {
@@ -246,6 +294,11 @@ namespace phosphorus.unittests
             Assert.AreEqual ("success", tmp.Value, "context contained previously registered instance listener");
         }
         
+        /// <summary>
+        /// used in ApplicationContext9 Unit Test
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "foo8")]
         private void foo8 (ApplicationContext context, ActiveEventArgs e)
         {
@@ -269,12 +322,22 @@ namespace phosphorus.unittests
             Assert.AreEqual (string.Empty, tmp.Value, "context contained previously registered instance listener");
         }
         
+        /// <summary>
+        /// used in ApplicationContext10 Unit Test
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "foo9")]
         private void foo9_1 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
         }
 
+        /// <summary>
+        /// used in ApplicationContext10 Unit Test
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "foo9")]
         private static void foo9_2 (ApplicationContext context, ActiveEventArgs e)
         {
@@ -296,6 +359,11 @@ namespace phosphorus.unittests
             Assert.AreEqual ("success", tmp.Value, "context contained previously registered instance listener");
         }
         
+        /// <summary>
+        /// used in ApplicationContext11 Unit Test
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "foo10")]
         private static void foo10 (ApplicationContext context, ActiveEventArgs e)
         {
@@ -317,6 +385,11 @@ namespace phosphorus.unittests
             Assert.AreEqual (string.Empty, tmp.Value, "assembly didn't unload correctly");
         }
         
+        /// <summary>
+        /// used in ApplicationContext12 Unit Test
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "foo11")]
         private void foo11 (ApplicationContext context, ActiveEventArgs e)
         {
@@ -352,12 +425,22 @@ namespace phosphorus.unittests
             context.Raise ("non-existing", tmp);
         }
 
+        /// <summary>
+        /// used in ApplicationContext13 Unit Test
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "foo12")]
         private static void foo12 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "failure";
         }
         
+        /// <summary>
+        /// used in ApplicationContext13 Unit Test
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "foo13", Overrides = "foo12")]
         private static void foo13 (ApplicationContext context, ActiveEventArgs e)
         {
@@ -378,12 +461,22 @@ namespace phosphorus.unittests
             Assert.AreEqual ("success", node.Value, "active event wasn't correctly overridden");
         }
         
+        /// <summary>
+        /// used in ApplicationContext14 Unit Test
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "foo14")]
         private void foo14 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "failure";
         }
 
+        /// <summary>
+        /// used in ApplicationContext14 Unit Test
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "foo15", Overrides = "foo14")]
         private void foo15 (ApplicationContext context, ActiveEventArgs e)
         {
@@ -405,12 +498,22 @@ namespace phosphorus.unittests
             Assert.AreEqual ("success", node.Value, "active event wasn't correctly overridden");
         }
         
+        /// <summary>
+        /// used in ApplicationContext15 Unit Test
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "foo16")]
         private static void foo16 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "failure";
         }
 
+        /// <summary>
+        /// used in ApplicationContext15 Unit Test
+        /// </summary>
+        /// <param name="context">application context</param>
+        /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "foo17", Overrides = "foo16")]
         private void foo17 (ApplicationContext context, ActiveEventArgs e)
         {

@@ -67,6 +67,10 @@
     <Compile Include="iterators\IteratorValued.cs" />
     <Compile Include="XUtil.cs" />
     <Compile Include="MatchEntity.cs" />
+    <Compile Include="exceptions\ExpressionException.cs" />
+    <Compile Include="exceptions\LambdaException.cs" />
+    <Compile Include="iterators\IteratorValuedRegex.cs" />
+    <Compile Include="iterators\IteratorRegex.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -86,4 +90,7 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
+  <ItemGroup>
+    <Folder Include="exceptions\" />
+  </ItemGroup>
 </Project>
