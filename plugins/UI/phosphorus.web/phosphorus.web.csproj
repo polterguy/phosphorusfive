@@ -50,6 +50,8 @@
     <Compile Include="response\echo.cs" />
     <Compile Include="response\headers.cs" />
     <Compile Include="widgets\properties.cs" />
+    <Compile Include="PhosphorusWebException.cs" />
+    <Compile Include="response\transmit_file.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

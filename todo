@@ -71,8 +71,25 @@
 
 * "indent", "de-indent" and "quote string" helper buttons in pf.lambda executor in System42
 
+* [lambda2html] Active Event
 
+* [transmit-file] Active Event in phosphorus.five
 
+* support for loading and saving binary files
+
+* [http-post] Active Event, for creating a POST response to any arbitrary server, to receive response text somehow
+  useful for Web Services, and similar types of constructs
+
+* verify that it is possible to retrieve [POST] parameters in [pf.web.load-ui] event handlers
+
+* [zip] and [unzip] Active Events
+
+* more [crypto] features
+
+* [MIME] wrapper, for being able to transmit and read MIME messages to other servers
+
+* make it possible to turn OFF viewstate in ApplicationPool through web.config setting, also make it possible
+  to store both Session and ViewState in MongoDB, and/or other database implementations
 
 
 
