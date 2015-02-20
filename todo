@@ -49,14 +49,6 @@
   manipulated inside event, as mutable objects, then this is not thread safe, possibly fix through [lock] keyword
   I think this is done ...?
 
-* [lock] keyword, allowing for locking through Iterate, recursively calling "lock" method, to allow locking multiple strings
-  at the same time, implemented using a static Dictionary in "lock" class, using "_global_lock" to ensure lookups and creations
-  into Dictionary is "thread safe". potentially consuming this logic in [pf.data.xxx] and [event] keywords, to allow for locking
-  these buggers from being accessed ...?
-
-* [lambda.fork] which creates a new thread, passing in the Cloned node from [lambda.fork] (potentially entire tree, think 
-  about this one), for then to invoke [lambda] keyword, to allow for spawning threads of pf.lambda execution objects
-
 * [context-event] and [context-override] keywords, with associated [context-delete-event] and [context-delete-override] keywords
   I don't think we need this, but keep it in TODO for a while ...
 
@@ -74,6 +66,11 @@
 * finish up MongoDB plugin ...
 
 * Windows/.Net support should be implemented
+
+* Comet (LazyHttp) support
+
+* "indent", "de-indent" and "quote string" helper buttons in pf.lambda executor in System42
+
 
 
 
