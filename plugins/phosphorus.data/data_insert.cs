@@ -88,7 +88,7 @@ namespace phosphorus.data
             } else {
                 string tmpId = node.Get<string> (context);
                 if (XUtil.Iterate (
-                    string.Format (@"@/*/*/=""{0}""/?node", (tmpId.StartsWith ("/") ? "\\\\" + tmpId : tmpId)), 
+                    string.Format (@"@/*/*/""={0}""/?node", (tmpId.StartsWith ("/") ? "\\\\" + tmpId : tmpId)), 
                     Common.Database, 
                     context).GetEnumerator ().MoveNext ()) {
                     throw new ArgumentException ("ID exists from before in database");
