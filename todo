@@ -17,17 +17,15 @@
 * create "plugin" support for "for-each", "set", "add" etc, to allow iterating for instance Widgets, and change their properties
   directly to create less verbose code
 
-* verify properties of widgets can be changed immediately after [pf.web.create-widget] without resorting to [oninitialload]
-
 * clean up [pf.html.html2lambda] to allow creating pf.lambda code in HTML
 
 * [flatten] keyword in pf.lambda, to create a string representation of a list of nodes, with optional "separator string"
   between node values/names, possibly as a "formatting expression" defined e.g. like this; "{name}:{value};" to allow for both
   name of node and value of node to become part of string representation
 
-* [split] keyword in pf.lambda, to create node list representation of a string, according to some "split character", and optionally a
-  "name split character" to allow for both name and value of node to be set according to the original string, in addition to optionally
-  also "type information"
+* [split] keyword in pf.lambda, to create node list representation of a string, according to some "split character", 
+  and optionally a "name split character" to allow for both name and value of node to be set according to the original 
+  string, in addition to optionally also "type information"
 
 * store timezone (GTM+x) in DateTime when serializing and de-serializing from Hyperlisp
 
@@ -49,6 +47,7 @@
 
 * verify thread safety when dynamically creating Active Events. when events created with [event] contains nodes, that are
   manipulated inside event, as mutable objects, then this is not thread safe, possibly fix through [lock] keyword
+  I think this is done ...?
 
 * [lock] keyword, allowing for locking through Iterate, recursively calling "lock" method, to allow locking multiple strings
   at the same time, implemented using a static Dictionary in "lock" class, using "_global_lock" to ensure lookups and creations
@@ -59,6 +58,7 @@
   about this one), for then to invoke [lambda] keyword, to allow for spawning threads of pf.lambda execution objects
 
 * [context-event] and [context-override] keywords, with associated [context-delete-event] and [context-delete-override] keywords
+  I don't think we need this, but keep it in TODO for a while ...
 
 * create consistency between all Active events using only ONE of "remove" or "delete". [pf.data.delete] might possibly be 
   [remove] instead, the same with [pf.folder.remove], [pf.file.remove], etc ...
@@ -71,6 +71,11 @@
 
 * create Unit Tests for every single example in video tutorials
 
-* try to eliminate all exceptions being raised in MatchIterators and Expression.cs, since they're for the most parts not needed
+* finish up MongoDB plugin ...
+
+* Windows/.Net support should be implemented
+
+
+
 
 

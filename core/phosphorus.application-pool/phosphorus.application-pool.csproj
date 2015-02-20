@@ -118,6 +118,10 @@
       <Project>{A4DAD930-CFCA-49EA-B69B-E2C7AA74DA10}</Project>
       <Name>phosphorus.meta</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\plugins\phosphorus.threading\phosphorus.threading.csproj">
+      <Project>{EF65C1FB-FCC8-43F0-90AC-39DA931268E4}</Project>
+      <Name>phosphorus.threading</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="code\" />
