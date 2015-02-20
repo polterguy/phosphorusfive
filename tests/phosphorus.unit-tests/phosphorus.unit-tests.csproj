@@ -76,6 +76,10 @@
       <Project>{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}</Project>
       <Name>phosphorus.expressions</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\plugins\phosphorus.threading\phosphorus.threading.csproj">
+      <Project>{EF65C1FB-FCC8-43F0-90AC-39DA931268E4}</Project>
+      <Name>phosphorus.threading</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Expressions.cs" />
@@ -92,6 +96,7 @@
     <Compile Include="plugins\Hyperlisp.cs" />
     <Compile Include="plugins\Database.cs" />
     <Compile Include="lambda\Events.cs" />
+    <Compile Include="lambda\Threading.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
