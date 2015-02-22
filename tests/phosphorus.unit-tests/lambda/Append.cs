@@ -324,8 +324,7 @@ namespace phosphorus.unittests.lambda
         }
         
         /// <summary>
-        /// appends a a static source, where source has no values
-        /// where value is a reference node
+        /// appends a a static source, where source has no result
         /// </summary>
         [Test]
         public void Append15 ()
@@ -358,6 +357,58 @@ _out");
             Assert.AreEqual ("_data", node [3] [0].Name);
             Assert.AreEqual ("foo", node [3] [0] [0].Name);
             Assert.AreEqual ("bar", node [3] [0] [0].Value);
+        }
+        
+        /// <summary>
+        /// appends an integer value, making sure [append] works as it should
+        /// where value is a reference node
+        /// </summary>
+        [Test]
+        public void Append17 ()
+        {
+            Node node = ExecuteLambda (@"append:@/+/?node
+  source:int:500
+_out");
+            // verifying [append] works as it should
+            Assert.AreEqual (1, node [1].Count);
+            Assert.AreEqual (string.Empty, node [1] [0].Name);
+            Assert.AreEqual (500, node [1] [0].Value);
+        }
+        
+        /// <summary>
+        /// appends a static string source, which is converted into node, 
+        /// where conversion yields multiple result nodes
+        /// </summary>
+        [Test]
+        public void Append18 ()
+        {
+            Node node = new Node ()
+                .Add ("_data")
+                .Add ("append", "@/-/?node").LastChild
+                    .Add ("source", "foo1:success\r\nbar1:int:5").Root;
+            _context.Raise ("append", node [1]);
+
+            // verifying [append] works as it should
+            Assert.AreEqual (2, node [0].Count);
+            Assert.AreEqual ("foo1", node [0] [0].Name);
+            Assert.AreEqual ("success", node [0] [0].Value);
+            Assert.AreEqual ("bar1", node [0] [1].Name);
+            Assert.AreEqual (5, node [0] [1].Value);
+        }
+        
+        /// <summary>
+        /// appends a string value, using [src] instead of [source], making
+        /// sure [append] works as it should
+        /// </summary>
+        [Test]
+        public void Append19 ()
+        {
+            Node node = ExecuteLambda (@"append:@/+/?node
+  src:success
+_out");
+            // verifying [append] works as it should
+            Assert.AreEqual (1, node [1].Count);
+            Assert.AreEqual ("success", node [1] [0].Name);
         }
 
         /// <summary>

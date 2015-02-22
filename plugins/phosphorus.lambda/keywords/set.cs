@@ -31,7 +31,7 @@ namespace phosphorus.lambda
                 SetRelativeSource (e.Args, context);
             } else {
 
-                // static source, not a node, might be an expression
+                // static source, source might be anything
                 SetStaticSource (e.Args, context);
             }
         }
@@ -42,11 +42,7 @@ namespace phosphorus.lambda
         private static void SetStaticSource (Node node, ApplicationContext context)
         {
             // figuring out source
-            object source = GetStaticSource (node, context);
-
-            // making sure we support "escaped expressions"
-            if (source is string && (source as string).StartsWith ("\\"))
-                source = (source as string).Substring (1);
+            object source = XUtil.SourceSingle<object> (node, context, "set");
 
             // iterating through all destinations, updating with source
             foreach (var idxDestination in XUtil.Iterate (node, context)) {
@@ -63,42 +59,15 @@ namespace phosphorus.lambda
             foreach (var idxDestination in XUtil.Iterate (node, context)) {
 
                 // source is relative to destination
-                idxDestination.Value = XUtil.Single<object> (node.LastChild, idxDestination.Node, context, null);
-            }
-        }
+                object source = XUtil.Single<object> (node.LastChild, idxDestination.Node, context, null);
+                if (source is Node) {
 
-        /*
-         * retrieves the source for a static ([source]) update
-         */
-        private static object GetStaticSource (Node node, ApplicationContext context)
-        {
-            object source = null;
-            if (node.LastChild != null && node.LastChild.Name == "source") {
-
-                // we have a [source] parameter here, figuring out what it points to
-                if (node.LastChild.Value != null) {
-
-                    // source is either constant value, or an expression
-                    source = XUtil.Single<object> (node.LastChild, context, null);
-                    if (source is Node) {
-
-                        // source is a constant node, making sure we clone it, in case source and destination overlaps
-                        source = (source as Node).Clone ();
-                    }
-                } else {
-
-                    if (node.LastChild.Count == 1) {
-
-                        // source is a constant node, making sure we clone it, in case source and destination overlaps
-                        source = node.LastChild.FirstChild.Clone ();
-                    } else {
-
-                        // more than one source
-                        throw new LambdaException ("[set] requires that you give it one [source], or ommit the [source] entirely", node, context);
-                    }
+                    // source is a constant node, making sure we clone it, in case source and destination overlaps
+                    source = (source as Node).Clone ();
                 }
+
+                idxDestination.Value = source;
             }
-            return source;
         }
     }
 }

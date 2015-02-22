@@ -190,9 +190,25 @@ namespace phosphorus.core
          */
         private static string Convert2String (object value, ApplicationContext context)
         {
-            return context.Raise (
-                "pf.hyperlist.get-string-value." + 
-                value.GetType ().FullName, new Node (string.Empty, value)).Value as string;
+            if (value is IEnumerable<Node>) {
+                StringBuilder builder = new StringBuilder ();
+                bool first = true;
+                foreach (var idx in value as IEnumerable<Node>) {
+                    if (first) {
+                        first = false;
+                    } else {
+                        builder.Append ("\r\n");
+                    }
+                    builder.Append (context.Raise (
+                        "pf.hyperlist.get-string-value." + 
+                        idx.GetType ().FullName, new Node (string.Empty, idx)).Value);
+                }
+                return builder.ToString ();
+            } else {
+                return context.Raise (
+                    "pf.hyperlist.get-string-value." + 
+                    value.GetType ().FullName, new Node (string.Empty, value)).Value as string;
+            }
         }
 
         /*

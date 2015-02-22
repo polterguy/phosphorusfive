@@ -6,6 +6,7 @@
 
 using System;
 using System.Web;
+using System.Collections.Generic;
 using phosphorus.core;
 using phosphorus.expressions;
 
@@ -17,29 +18,25 @@ namespace phosphorus.web
     public static class cookie
     {
         /// <summary>
-        /// sends on or more cookies back to client where [duration] becomes number of days before it expires,
-        /// [value] becomes the nodes that are stored in the cookie, and the value of the main node becomes
-        /// the name(s) of the cookie(s)
+        /// creates one or more cookies to send back to client, where [duration] becomes number of days before it expires, and
+        /// [source], or [src], becomes the nodes that are stored in the cookie
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.cookie.set")]
         private static void pf_web_cookie_set (ApplicationContext context, ActiveEventArgs e)
         {
-            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+            CollectionBase.Set (e.Args, context, delegate (string key, object value) {
+                if (value == null) {
+                    
+                    // removing existing cookie
+                    HttpContext.Current.Response.Cookies [key].Expires = DateTime.Now.Date.AddDays (-1);
+                } else {
+                    
+                    // creating cookie
+                    HttpContext.Current.Response.Cookies.Add (CreateCookieFromNode (e.Args, context, key, value));
 
-                // creating cookie
-                HttpCookie cookie = CreateCookieFromNode (context, idx, e.Args);
-                if (cookie != null) {
-
-                    // returning cookie to client
-                    HttpContext.Current.Response.Cookies.Add (cookie);
-                } else if (HttpContext.Current.Response.Cookies.Get (idx) != null) {
-
-                    // removing cookie
-                    HttpContext.Current.Response.Cookies [idx].Expires = DateTime.Now.Date.AddDays (-1);
-                }
-            }
+                }});
         }
 
         /// <summary>
@@ -52,67 +49,45 @@ namespace phosphorus.web
         [ActiveEvent (Name = "pf.web.cookie.get")]
         private static void pf_web_cookie_get (ApplicationContext context, ActiveEventArgs e)
         {
-            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+            CollectionBase.Get (e.Args, context, delegate (string key) {
 
-                // checking to see if this cookie exists
-                HttpCookie cookie = HttpContext.Current.Request.Cookies.Get (idx);
+                //fetching cookie
+                HttpCookie cookie = HttpContext.Current.Request.Cookies.Get (key);
                 if (cookie != null && !string.IsNullOrEmpty (cookie.Value)) {
 
-                    // URL decoding cookie value, before converting to pf.lambda
-                    string cookieValue = HttpUtility.UrlDecode (cookie.Value);
-                    Node convertNode = new Node (string.Empty, cookieValue);
-                    context.Raise ("pf.hyperlisp.hyperlisp2lambda", convertNode);
-
-                    if (XUtil.IsExpression (e.Args.Value)) {
-
-                        // adding key node, and values beneath key node
-                        e.Args.Add (new Node (idx));
-                        e.Args.LastChild.AddRange ((convertNode as Node).Clone ().Children);
-                    } else {
-
-                        // since this is not an expression, we simply append values into main node
-                        e.Args.AddRange ((convertNode as Node).Clone ().Children);
-                    }
+                    // adding key node, and values beneath key node
+                    return Utilities.Convert<Node> (HttpUtility.UrlDecode (cookie.Value), context).Clone ().Children;
                 }
-            }
+                return null;
+            });
         }
 
         /*
-         * creates a cookie from given Node and returns back to caller. returns null if no cookie
-         * values exists in node
+         * creates a cookie from given Node and returns back to caller
          */
-        private static HttpCookie CreateCookieFromNode (ApplicationContext context, string name, Node node)
+        private static HttpCookie CreateCookieFromNode (Node node, ApplicationContext context, string name, object nodes)
         {
-            HttpCookie retVal = null;
+            // creating cookie to send back to caller
+            HttpCookie retVal = new HttpCookie (name, HttpUtility.UrlEncode (Utilities.Convert<string> (nodes, context)));
+            retVal.Expires = DateTime.Now.Date.AddDays (node.GetChildValue ("duration", context, 365));
 
-            if (node.Count > 0) {
-
-                // converting value to Hyperlisp, and URL encoding it for our cookie
-                // but removing "property nodes" such as [duration] before converting
-                Node convert = node.Clone ().RemoveAll ("duration").RemoveAll ("http-only");
-
-                // in case there is no actual value, but only [duration] and other "property nodes"
-                if (convert.Count > 0) {
-
-                    // this node structure actually have values to be stored in cookie
-                    context.Raise ("pf.hyperlisp.lambda2hyperlisp", convert);
-                    string value = HttpUtility.UrlEncode (convert.Get<string> (context));
-
-                    // finding duration, defaulting to 365 if none
-                    int duration = node.GetChildValue ("duration", context, 365);
-
-                    // creating cookie to send back to caller
-                    retVal = new HttpCookie (name, value);
-                    retVal.Expires = DateTime.Now.Date.AddDays (duration);
-
-                    // making sure cookie is "secured" before we send it back to client, unless
-                    // caller explicitly tells us he or she does not want it secured
-                    retVal.HttpOnly = node.GetChildValue ("http-only", context, true);
-                }
-            }
+            // making sure cookie is "secured" before we send it back to client, unless
+            // caller explicitly tells us he or she does not want it secured
+            retVal.HttpOnly = node.GetChildValue ("http-only", context, true);
 
             // returning cookie (or null) back to caller
             return retVal;
+        }
+        
+        /// <summary>
+        /// lists all cookies keys in request
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.web.cookie.list")]
+        private static void pf_web_cookie_list (ApplicationContext context, ActiveEventArgs e)
+        {
+            CollectionBase.List (e.Args, context, delegate { return HttpContext.Current.Request.Cookies.AllKeys; });
         }
     }
 }

@@ -59,6 +59,9 @@ namespace phosphorus.five.applicationpool
          */
         protected override void OnInit (EventArgs e)
         {
+            // retrieving viewstate entries per session
+            ViewStateSessionEntries = int.Parse (ConfigurationManager.AppSettings ["viewstate-per-session-entries"]);
+
             // creating application context
             _context = Loader.Instance.CreateApplicationContext ();
 

@@ -58,10 +58,8 @@ namespace phosphorus.ajax.core
                 return idx.Item1 == _viewStateId;
             });
             if (entry == null) {
-                throw new ApplicationException (@"the viewstate for this page has been invalidated du to too many open browser windows 
-within the same application, or reloading a page over and over again, 
-such that older viewstate entries has been invalidated. try to either 
-close some windows, or avoid reloading the same window over and over again");
+                throw new ApplicationException (@"The state for this page is not longer valid, probable cause was that there was too
+many viewstate values for current session, and hence current viewstate was removed. If you wish to see this page again, you must reload it");
             }
 
             LosFormatter formatter = new LosFormatter ();

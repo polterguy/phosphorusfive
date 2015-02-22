@@ -6,6 +6,7 @@
 
 using System;
 using System.Web;
+using System.Collections.Generic;
 using phosphorus.core;
 using phosphorus.expressions;
 
@@ -25,12 +26,16 @@ namespace phosphorus.web
         [ActiveEvent (Name = "pf.web.application.set")]
         private static void pf_web_application_set (ApplicationContext context, ActiveEventArgs e)
         {
-            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
-                if (e.Args.Count > 0)
-                    HttpContext.Current.Application [idx] = e.Args.Clone ();
-                else
-                    HttpContext.Current.Application.Remove (idx);
-            }
+            CollectionBase.Set (e.Args, context, delegate (string key, object value) {
+                if (value == null) {
+
+                    // removing object, if it exists
+                    HttpContext.Current.Application.Remove (key);
+                } else {
+
+                    // adding object
+                    HttpContext.Current.Application [key] = value;
+                }});
         }
 
         /// <summary>
@@ -41,21 +46,20 @@ namespace phosphorus.web
         [ActiveEvent (Name = "pf.web.application.get")]
         private static void pf_web_application_get (ApplicationContext context, ActiveEventArgs e)
         {
-            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
-                Node tmp = HttpContext.Current.Application [idx] as Node;
-                if (tmp != null) {
-                    if (XUtil.IsExpression (e.Args.Value)) {
-
-                        // adding key node, and values beneath key node
-                        e.Args.Add (new Node (idx));
-                        e.Args.LastChild.AddRange ((tmp as Node).Clone ().Children);
-                    } else {
-
-                        // since this is not an expression, we simply append values into main node
-                        e.Args.AddRange ((tmp as Node).Clone ().Children);
-                    }
-                }
-            }
+            CollectionBase.Get (e.Args, context, delegate(string key) {
+                return HttpContext.Current.Application [key];
+            });
+        }
+        
+        /// <summary>
+        /// lists all application keys
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.web.application.list")]
+        private static void pf_web_application_list (ApplicationContext context, ActiveEventArgs e)
+        {
+            CollectionBase.List (e.Args, context, delegate { return HttpContext.Current.Application.AllKeys; });
         }
     }
 }

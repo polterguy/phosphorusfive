@@ -86,22 +86,21 @@ namespace phosphorus.ajax.core
         }
 
         /// <summary>
-        /// overide this one if you wish to increase or decrease the number of viewstate entries per session, meaning for
-        /// all practical concerns, the number of legally open browser windows within the same application. the default value
-        /// is 10 viewstate entries for each session. unless we have a max value for ViewStateSessionEntries, we will "leak memory",
-        /// since this will create a new ViewState session entry, every time a user refreshes the browser window, or opens a new
-        /// browser window in the same application. hence, to avoid "leaks", we have to have a maximum number of ViewState session
-        /// entries
+        /// maximum number of ViewState entries in Session. if this is zero, ViewState will not be stored in Session,
+        /// but sent back and forth between client and browser as usual
         /// </summary>
         /// <value>the number of valid viewstate entries for each session</value>
-        protected virtual int ViewStateSessionEntries {
-            get { return 10; }
+        public int ViewStateSessionEntries {
+            get;
+            set;
         }
 
         protected override System.Web.UI.PageStatePersister PageStatePersister
         {
             get
             {
+                if (ViewStateSessionEntries == 0)
+                    return base.PageStatePersister;
                 if (_statePersister == null)
                     _statePersister = new StatePersister (this, ViewStateSessionEntries);
                 return _statePersister;

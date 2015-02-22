@@ -26,9 +26,9 @@ namespace phosphorus.lambda
         private static void lambda_append (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Count == 0)
-                throw new LambdaException ("[append] needs a valid [source] or [rel-source]", e.Args, context);
+                throw new LambdaException ("[append] needs a valid [source], [src] or [rel-source]", e.Args, context);
 
-            if (e.Args.LastChild.Name == "source") {
+            if (e.Args.LastChild.Name == "source" || e.Args.LastChild.Name == "src") {
 
                 // static source
                 AppendStaticSource (e.Args, context);
@@ -39,62 +39,8 @@ namespace phosphorus.lambda
             } else {
             
                 // syntax error
-                throw new LambdaException ("[append] needs a valid [source] or [rel-source]", e.Args, context);
+                throw new LambdaException ("[append] needs a valid [source], [src] or [rel-source]", e.Args, context);
             }
-        }
-
-        /*
-         * retrieves source nodes for "static" update
-         */
-        private static List<Node> GetSourceNodes (Node node, ApplicationContext context)
-        {
-            List<Node> sourceNodes = new List<Node> ();
-            if (XUtil.IsExpression (node.LastChild.Value)) {
-                foreach (var idx in XUtil.Iterate (node.LastChild, context)) {
-                    if (idx.TypeOfMatch != Match.MatchType.node && !(idx.Value is Node)) {
-
-                        // [source] is an expression leading to something that's not a node, this
-                        // will trigger conversion from string to node, adding a "root node" during
-                        // conversion. making sure we remove this node, when appending source nodes
-                        var currentNode = Utilities.Convert<Node> (idx.Value, context);
-                        if (currentNode != null) {
-                            foreach (var idxInner in currentNode.Children) {
-                                sourceNodes.Add (idxInner.Clone ());
-                            }
-                        }
-                    } else {
-
-                        // [source] is an expression, leading to something that's already a node somehow
-                        var currentNode = Utilities.Convert<Node> (idx.Value, context);
-                        if (currentNode != null)
-                            sourceNodes.Add (currentNode.Clone ());
-                    }
-                }
-            } else if (node.LastChild.Value is Node) {
-
-                // value of [source] is a node, adding this node
-                foreach (var idx in XUtil.Iterate<Node> (node.LastChild, context)) {
-                    sourceNodes.Add (idx.Clone ());
-                }
-            } else if (node.LastChild.Value == null) {
-
-                // [source] has no value, neither static string values, nor expressions
-                // adding all children of [source]
-                foreach (var idx in node.LastChild.Children) {
-                    sourceNodes.Add (idx.Clone ());
-                }
-            } else {
-
-                // [source] is not an expression, but has a string value. this will trigger a conversion
-                // from string to node, creating a "root node" during conversion. skipping this "root" node,
-                // and only adding children of that auto-generated root node
-                foreach (var idx in XUtil.Iterate<Node> (node.LastChild, context)) {
-                    foreach (var idxInner in idx.Children) {
-                        sourceNodes.Add (idxInner.Clone ());
-                    }
-                }
-            }
-            return sourceNodes;
         }
 
         /*
@@ -104,7 +50,11 @@ namespace phosphorus.lambda
         {
             // retrieving source before we start iterating destination,
             // in case destination and source overlaps
-            List<Node> sourceNodes = GetSourceNodes (node, context);
+            List<Node> sourceNodes = XUtil.Source (node, context);
+
+            // making sure there is a source
+            if (sourceNodes == null)
+                return;
 
             // looping through every destination node
             bool isFirst = true; // since source is already cloned, we avoid cloning the first run

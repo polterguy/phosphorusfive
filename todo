@@ -73,14 +73,10 @@
 
 * [lambda2html] Active Event
 
-* [transmit-file] Active Event in phosphorus.five
-
 * support for loading and saving binary files
 
 * [http-post] Active Event, for creating a POST response to any arbitrary server, to receive response text somehow
   useful for Web Services, and similar types of constructs
-
-* verify that it is possible to retrieve [POST] parameters in [pf.web.load-ui] event handlers
 
 * [zip] and [unzip] Active Events
 
@@ -88,8 +84,26 @@
 
 * [MIME] wrapper, for being able to transmit and read MIME messages to other servers
 
-* make it possible to turn OFF viewstate in ApplicationPool through web.config setting, also make it possible
-  to store both Session and ViewState in MongoDB, and/or other database implementations
+* make it possible to store both Session, and ViewState, in MongoDB, and/or other database implementations
+
+* create META support for retrieving XML comments from Active Events
+
+* create support for retrieving body (lambda objects) of dynamically create Active Events
+
+* clean up all [pw.web.session/application/etc] to make sure EVERYTHING can somehow be returned back to client as node, or something ...?
+  and that their API conforms to each other
+
+* support for storing stuff in ViewState, like Session and Application
+
+* support [src] as alternative to [source] in [set] and [append]
+
+* finish up [pw.web.post] to POST requests towards URLs
+
+* make sure [set] can set 'value' and 'name' when source leads to multiple nodes, and create unit test for it
+
+
+
+
 
 
 

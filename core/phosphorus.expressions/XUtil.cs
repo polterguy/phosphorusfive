@@ -6,6 +6,7 @@
 
 using System;
 using System.Globalization;
+using System.Collections;
 using System.Collections.Generic;
 using phosphorus.core;
 
@@ -187,7 +188,7 @@ namespace phosphorus.expressions
             string multipleRetVal = null;
             foreach (var idx in Iterate<T> (node, dataSource, context)) {
 
-                // hack to make sure we never convert object to string unless necessary
+                // hack, to make sure we never convert object to string, unless necessary
                 if (singleRetVal == null) {
                     singleRetVal = idx;
                 } else {
@@ -428,6 +429,119 @@ namespace phosphorus.expressions
             foreach (var idx in match) {
                 yield return idx;
             }
+        }
+
+        /// <summary>
+        /// retrieves the value of [source], or [src] child node, returns null if no source exists. will only
+        /// allow one single result
+        /// </summary>
+        /// <param name="node">node where [source] or [src] is expected to be a child</param>
+        /// <param name="context">application context</param>
+        /// <param name="keyword">name of keyword that requests node, used if we need to throw an exception</param>
+        /// <typeparam name="T">type to convert source to</typeparam>
+        public static T SourceSingle<T> (Node node, ApplicationContext context, string keyword)
+        {
+            object source = null;
+            if (node.LastChild != null && (node.LastChild.Name == "source" || node.LastChild.Name == "src")) {
+
+                // we have a [source] or [src] parameter here, figuring out what it points to, or contains
+                if (node.LastChild.Value != null) {
+
+                    // caller does not allow multiple value, converting value to single object, somehow
+                    source = Single<object> (node.LastChild, context, null);
+                    if (source is Node) {
+
+                        // source is node, making sure we clone it, in case source and destination overlaps
+                        source = (source as Node).Clone ();
+                    }
+                } else {
+
+                    // there are no value in [src] node, trying to create source out of [src]'s children
+                    if (node.LastChild.Count == 1) {
+
+                        // source is a constant node, making sure we clone it, in case source and destination overlaps
+                        source = node.LastChild.FirstChild.Clone ();
+                    } else {
+
+                        // more than one source
+                        throw new LambdaException (
+                            string.Format ("[{0}] requires that you give it one [source], [src], or ommit source entirely", keyword),
+                            node, 
+                            context);
+                    }
+                }
+            }
+
+            // making sure we support "escaped expressions"
+            if (source is string && (source as string).StartsWith ("\\"))
+                source = (source as string).Substring (1);
+
+            // returning object converted to type T
+            return Utilities.Convert<T> (source, context);
+        }
+
+        /// <summary>
+        /// retrieves the value of [source], or [src] child node, returns null if no source exists,
+        /// if source expression leads to empty result, or there is no source somehow
+        /// </summary>
+        /// <param name="node">node where [source] or [src] is expected to be a child</param>
+        /// <param name="context">application context</param>
+        public static List<Node> Source (Node node, ApplicationContext context)
+        {
+            // return value
+            List<Node> sourceNodes = new List<Node> ();
+
+            // checking if any source exists
+            if (node.LastChild == null || (node.LastChild.Name != "source" && node.LastChild.Name != "src"))
+                return null; // no source was given
+
+            // checking to see if we're given an expression
+            if (XUtil.IsExpression (node.LastChild.Value)) {
+
+                // [source] or [src] is an expression somehow
+                foreach (var idx in XUtil.Iterate (node.LastChild, context)) {
+                    if (idx.TypeOfMatch != Match.MatchType.node && !(idx.Value is Node)) {
+
+                        // [source] is an expression leading to something that's not a node, this
+                        // will trigger conversion from string to node, adding a "root node" during
+                        // conversion. we make sure we remove this node, when creating our source
+                        foreach (var idxInner in Utilities.Convert<Node> (idx.Value, context).Children) {
+                            sourceNodes.Add (idxInner.Clone ());
+                        }
+                    } else {
+
+                        // [source] is an expression, leading to something that's already a node somehow
+                        sourceNodes.Add ((idx.Value as Node).Clone ());
+                    }
+                }
+            } else if (node.LastChild.Value is Node) {
+
+                // value of source is a node, adding this node
+                sourceNodes.Add ((node.LastChild.Value as Node).Clone ());
+            } else if (node.LastChild.Value is string) {
+
+                // source is not an expression, but has a string value. this will trigger a conversion
+                // from string, to node, creating a "root node" during conversion. we are discarding this 
+                // "root" node, and only adding children of that automatically generated root node
+                foreach (var idx in Utilities.Convert<Node> (node.LastChild.Value, context).Children) {
+                    sourceNodes.Add (idx.Clone ());
+                }
+            } else if (node.LastChild.Value == null) {
+
+                // source has no value, neither static string values, nor expressions
+                // adding all children of source node, if any
+                foreach (var idx in node.LastChild.Children) {
+                    sourceNodes.Add (idx.Clone ());
+                }
+            } else {
+                
+                // source is not an expression, but has a non-string value. making sure we create a node
+                // out of that value, returning that node back to caller
+                sourceNodes.Add (new Node (string.Empty, node.LastChild.Value));
+            }
+
+            // returning node list back to caller
+            return sourceNodes.Count > 0 ? sourceNodes : null;
         }
 
         /*

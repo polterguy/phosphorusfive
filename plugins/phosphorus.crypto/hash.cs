@@ -27,6 +27,9 @@ namespace phosphorus.crypto
         private static void pf_crypto_hash_string (ApplicationContext context, ActiveEventArgs e)
         {
             string whatToHash = XUtil.Single<string> (e.Args, context);
+            if (whatToHash == null)
+                return; // nothing to hash here ...
+
             using (MD5 md5 = MD5.Create ()) {
                 string hashValue = Convert.ToBase64String (md5.ComputeHash (Encoding.UTF8.GetBytes (whatToHash)));
                 e.Args.Add (new Node ("value", hashValue));

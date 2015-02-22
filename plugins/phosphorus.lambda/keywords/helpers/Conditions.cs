@@ -220,8 +220,8 @@ namespace phosphorus.lambda
         private int Compare (Node currentStatement)
         {
             // constructing nodes for simplicity, since Node implements IComparable, which does our heavy lifting
-            var lhs = new Node (string.Empty, XUtil.Single<object> (currentStatement, _context));
-            var rhs = new Node (string.Empty, XUtil.Single<object> (currentStatement.FirstChildNotOf (string.Empty), _context));
+            var lhs = new Node (string.Empty, XUtil.Single<object> (currentStatement, _context, null));
+            var rhs = new Node (string.Empty, XUtil.Single<object> (currentStatement.FirstChildNotOf (string.Empty), _context, null));
             return lhs.CompareTo (rhs);
         }
 

@@ -683,5 +683,45 @@ set:@/-/?value
             Assert.AreEqual ("_result", node [0].Get<Node> (_context).Name);
             Assert.AreEqual ("success", node [0].Get<Node> (_context).Value);
         }
+        
+        /// <summary>
+        /// verifies that overlapping [rel-source] and destination expressions works
+        /// </summary>
+        [Test]
+        public void Set39 ()
+        {
+            Node node = ExecuteLambda (@"_result:success
+set:@/-/?value
+  rel-source:@?node");
+            Assert.AreEqual (0, node [0].Count);
+            Assert.AreEqual ("_result", node [0].Get<Node> (_context).Name);
+            Assert.AreEqual ("success", node [0].Get<Node> (_context).Value);
+        }
+        
+        /// <summary>
+        /// verifies that using escaped expressions as constant source works
+        /// </summary>
+        [Test]
+        public void Set40 ()
+        {
+            Node node = ExecuteLambda (@"_result
+set:@/-/?value
+  source:\@?node");
+            Assert.AreEqual (0, node [0].Count);
+            Assert.AreEqual ("@?node", node [0].Value);
+        }
+        
+        /// <summary>
+        /// verifies that using [src] instead of [source] works
+        /// </summary>
+        [Test]
+        public void Set41 ()
+        {
+            Node node = ExecuteLambda (@"_result
+set:@/-/?value
+  src:success");
+            Assert.AreEqual (0, node [0].Count);
+            Assert.AreEqual ("success", node [0].Value);
+        }
     }
 }

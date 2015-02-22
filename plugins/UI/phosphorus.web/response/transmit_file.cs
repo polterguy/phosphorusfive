@@ -22,12 +22,15 @@ namespace phosphorus.web
     {
         /*
          * helper class to discard HTML/JSON response, without having to resort to ending response.
-         * basically simply transfers file to client, and nothing else
+         * basically simply transfers file(s) to client, while discarding JSON/HTML response
          */
         private class FileFilter : MemoryStream
         {
             private List<string> _files = new List<string> ();
 
+            /*
+             * used to append files to response, all files will be returned in order of append
+             */
             public void AppendFile (string fileName)
             {
                 _files.Add (fileName);
@@ -35,13 +38,16 @@ namespace phosphorus.web
 
             public override void Close ()
             {
-                // notice, discarding all other output, and returning all files as "one" ...
-                foreach (var idxFile in _files) {
-                    using (FileStream stream = File.OpenRead (idxFile)) {
-                        stream.CopyTo (HttpContext.Current.Response.OutputStream);
+                try {
+                    // notice, discarding all other output, and returning all files as "one" ...
+                    foreach (var idxFile in _files) {
+                        using (FileStream stream = File.OpenRead (idxFile)) {
+                            stream.CopyTo (HttpContext.Current.Response.OutputStream);
+                        }
                     }
+                } finally {
+                    base.Close ();
                 }
-                base.Close ();
             }
         }
 
