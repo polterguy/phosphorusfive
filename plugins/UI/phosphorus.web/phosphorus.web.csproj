@@ -50,16 +50,17 @@
     <Compile Include="response\echo.cs" />
     <Compile Include="response\headers.cs" />
     <Compile Include="widgets\properties.cs" />
-    <Compile Include="PhosphorusWebException.cs" />
     <Compile Include="response\transmit_file.cs" />
     <Compile Include="parameters.cs" />
     <Compile Include="post_request.cs" />
-    <Compile Include="CollectionBase.cs" />
+    <Compile Include="Common\PhosphorusWebException.cs" />
+    <Compile Include="Common\CollectionBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="widgets\" />
     <Folder Include="response\" />
+    <Folder Include="Common\" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

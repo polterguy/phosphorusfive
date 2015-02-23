@@ -71,13 +71,13 @@ namespace phosphorus.hyperlisp
                 return new Token (Token.TokenType.Name, string.Empty); // empty name
             if ((nextChar == '\r' || nextChar == '\n' || nextChar == -1) && previousToken.Type == Token.TokenType.Separator)
                 return new Token (Token.TokenType.TypeOrContent, string.Empty); // empty name
-            if (nextChar == '/' && 
-                (previousToken == null || previousToken.Type == Token.TokenType.CarriageReturn || previousToken.Type == Token.TokenType.Spacer))
-                return SkipCommentToken ();
             if (nextChar == -1)
                 return null; // end of stream
 
             nextChar = _reader.Read ();
+            if (nextChar == '/' && (_reader.Peek () == '/'  || _reader.Peek () == '*') &&
+                (previousToken == null || previousToken.Type == Token.TokenType.CarriageReturn || previousToken.Type == Token.TokenType.Spacer))
+                return SkipCommentToken ();
             if (nextChar == ':')
                 return new Token (Token.TokenType.Separator, ":");
             if (nextChar == ' ') {
@@ -105,7 +105,7 @@ namespace phosphorus.hyperlisp
          */
         private Token SkipCommentToken()
         {
-            _reader.Read (); // skipping current character, which is a '/' character, next character should be either '/' or '*'
+            _reader.Peek (); // skipping current character, which is a '/' character, next character should be either '/' or '*'
             int nextChar = _reader.Read ();
             if (nextChar == '/') {
                 _reader.ReadLine ();

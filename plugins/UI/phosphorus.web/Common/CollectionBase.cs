@@ -42,7 +42,7 @@ namespace phosphorus.web
         public static void Set (Node node, ApplicationContext context, SetDelegate functor)
         {
             // retrieving source
-            var source = XUtil.Source (node, context);
+            object source = XUtil.Source (node, context);
 
             // looping through each destination, creating an object, or removing an existing
             // object, for each destination
@@ -75,11 +75,14 @@ namespace phosphorus.web
 
                         // value is Node
                         resultNode.Add ((value as Node).Clone ());
-                    } else if (value is IEnumerable<Node>) {
+                    } else if (value is IEnumerable<object>) {
 
                         // value is a bunch of nodes
-                        foreach (Node idxValue in value as IEnumerable<Node>) {
-                            resultNode.Add (idxValue.Clone ());
+                        foreach (var idxValue in value as IEnumerable<object>) {
+                            if (idxValue is Node)
+                                resultNode.Add ((idxValue as Node).Clone ());
+                            else
+                                resultNode.Add (string.Empty, idxValue);
                         }
                     } else {
 

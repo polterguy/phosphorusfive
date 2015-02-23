@@ -50,7 +50,7 @@ namespace phosphorus.lambda
         {
             // retrieving source before we start iterating destination,
             // in case destination and source overlaps
-            List<Node> sourceNodes = XUtil.Source (node, context);
+            List<Node> sourceNodes = XUtil.SourceNodes (node, context);
 
             // making sure there is a source
             if (sourceNodes == null)

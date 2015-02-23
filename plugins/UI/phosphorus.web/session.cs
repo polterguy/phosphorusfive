@@ -60,6 +60,8 @@ namespace phosphorus.web
         private static void pf_web_session_list (ApplicationContext context, ActiveEventArgs e)
         {
             CollectionBase.List (e.Args, context, delegate {
+
+                // returning all keys as List<string> to List method
                 List<string> keys = new List<string> ();
                 foreach (var idx in HttpContext.Current.Session.Keys) {
                     keys.Add (idx.ToString ());

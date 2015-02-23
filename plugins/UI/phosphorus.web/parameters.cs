@@ -42,26 +42,7 @@ namespace phosphorus.web
         [ActiveEvent (Name = "pf.web.parameters.list")]
         private static void pf_web_parameters_list (ApplicationContext context, ActiveEventArgs e)
         {
-            // retrieving filters, if any
-            List<string> filter = new List<string> (XUtil.Iterate<string> (e.Args, context));
-
-            // looping through each parameter
-            foreach (var idxKey in HttpContext.Current.Request.Params.AllKeys) {
-
-                // returning current key, if it matches our filter, or filter is not given
-                if (filter.Count == 0) {
-                    e.Args.Add (idxKey);
-                } else {
-                    foreach (string idxFilter in filter) {
-                        if (idxKey.IndexOf (idxFilter) != -1) {
-
-                            // matches filter, hence adding to output
-                            e.Args.Add (idxKey);
-                            break;
-                        }
-                    }
-                }
-            }
+            CollectionBase.List (e.Args, context, delegate { return HttpContext.Current.Request.Params.AllKeys; });
         }
     }
 }

@@ -723,5 +723,78 @@ set:@/-/?value
             Assert.AreEqual (0, node [0].Count);
             Assert.AreEqual ("success", node [0].Value);
         }
+        
+        /// <summary>
+        /// verifies that setting a 'value' to a bunch of static nodes works
+        /// </summary>
+        [Test]
+        public void Set42 ()
+        {
+            Node node = ExecuteLambda (@"_result
+set:@/-/?value
+  src
+    foo1:bar1
+    foo2:bar2");
+            Assert.AreEqual (0, node [0].Count);
+            Assert.AreEqual (2, node [1] [0].Count);
+            Assert.AreEqual ("foo1:bar1\r\nfoo2:bar2", node [0].Value);
+        }
+        
+        /// <summary>
+        /// verifies that setting a 'name' to a bunch of static nodes works
+        /// </summary>
+        [Test]
+        public void Set43 ()
+        {
+            Node node = ExecuteLambda (@"_result
+set:@/-/?name
+  src
+    foo1:bar1
+    foo2:bar2");
+            Assert.AreEqual (0, node [0].Count);
+            Assert.AreEqual (2, node [1] [0].Count);
+            Assert.AreEqual ("foo1:bar1\r\nfoo2:bar2", node [0].Name);
+        }
+
+        /// <summary>
+        /// verifies that setting a 'value' to an expression returning multiple nodes works
+        /// </summary>
+        [Test]
+        public void Set44 ()
+        {
+            Node node = ExecuteLambda (@"_result
+_data
+  foo1:bar1
+  foo2:bar2
+set:@/-2/?value
+  src:@/./-/*?node");
+            Assert.AreEqual (0, node [0].Count);
+            Assert.AreEqual ("foo1:bar1\r\nfoo2:bar2", node [0].Value);
+        }
+        
+        /// <summary>
+        /// verifies that setting a 'value' to an expression leading to an IEnumerable single value,
+        /// does not tamper with the original object in any ways
+        /// </summary>
+        [Test]
+        public void Set45 ()
+        {
+            // easy way to create a node
+            Node node = ExecuteLambda (@"_source
+_destination
+_set:@/-/?value
+  src:@/./-2?value");
+
+            // discarding previous execution, setting a node to string[], for then to re-execute again, after renaming our 
+            // [_set] node to actually do something
+            node [0].Value = new string [] { "howdy", "world" };
+            node [2].Name = "set";
+
+            // executing again
+            _context.Raise ("lambda", node);
+            Assert.AreEqual (2, node [1].Get<string[]> (_context).Length);
+            Assert.AreEqual ("howdy", node [1].Get<string[]> (_context) [0]);
+            Assert.AreEqual ("world", node [1].Get<string[]> (_context) [1]);
+        }
     }
 }

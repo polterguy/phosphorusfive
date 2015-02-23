@@ -5,6 +5,7 @@
  */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using phosphorus.core;
 using phosphorus.expressions;
@@ -42,7 +43,7 @@ namespace phosphorus.lambda
         private static void SetStaticSource (Node node, ApplicationContext context)
         {
             // figuring out source
-            object source = XUtil.SourceSingle<object> (node, context, "set");
+            object source = XUtil.SourceSingle (node, context);
 
             // iterating through all destinations, updating with source
             foreach (var idxDestination in XUtil.Iterate (node, context)) {

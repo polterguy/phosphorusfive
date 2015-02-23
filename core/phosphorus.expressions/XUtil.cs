@@ -194,6 +194,8 @@ namespace phosphorus.expressions
                 } else {
                     if (multipleRetVal == null)
                         multipleRetVal = Utilities.Convert<string> (singleRetVal, context);
+                    if (idx is Node)
+                        multipleRetVal += "\r\n";
                     multipleRetVal += Utilities.Convert<string> (idx, context);
                 }
             }
@@ -431,15 +433,65 @@ namespace phosphorus.expressions
             }
         }
 
+        // TODO: refactor these next buggers, too complex
         /// <summary>
-        /// retrieves the value of [source], or [src] child node, returns null if no source exists. will only
-        /// allow one single result
+        /// retrieves the value of [source], or [src] child node, converted into T. returns null if no source exists. 
+        /// does not care about whether or not there are multiple values, and will return a List if there are, though
+        /// will attempt to return only one value if it can
         /// </summary>
         /// <param name="node">node where [source] or [src] is expected to be a child</param>
         /// <param name="context">application context</param>
-        /// <param name="keyword">name of keyword that requests node, used if we need to throw an exception</param>
-        /// <typeparam name="T">type to convert source to</typeparam>
-        public static T SourceSingle<T> (Node node, ApplicationContext context, string keyword)
+        public static object Source (Node node, ApplicationContext context)
+        {
+            object source = null;
+            if (node.LastChild != null && (node.LastChild.Name == "source" || node.LastChild.Name == "src")) {
+
+                // we have a [source] or [src] parameter here, figuring out what it points to, or contains
+                if (IsExpression (node.LastChild.Value)) {
+
+                    // this is an expression which might lead to multiple results, trying to return one result,
+                    // but will resort to returning List of objects if necssary
+                    List<object> tmpList = new List<object> (Iterate<object> (node.LastChild, context));
+                    if (tmpList.Count == 0)
+                        source = null;
+                    else if (tmpList.Count == 1)
+                        source = tmpList [0];
+                    else
+                        source = tmpList;
+                } else if (node.LastChild.Value != null) {
+
+                    // source is a constant
+                    source = node.LastChild.Value;
+                } else {
+
+                    // there are no value in [src] node, trying to create source out of [src]'s children
+                    if (node.LastChild.Count == 1) {
+
+                        // source is a constant node, making sure we clone it, in case source and destination overlaps
+                        source = node.LastChild.FirstChild.Clone ();
+                    } else {
+
+                        // more than one source, making sure we clone them, before we return the clones
+                        source = new List<Node> (node.LastChild.Clone ().UntieChildren ());
+                    }
+                }
+            }
+
+            // making sure we support "escaped expressions"
+            if (source is string && (source as string).StartsWith ("\\"))
+                source = (source as string).Substring (1);
+
+            // returning source
+            return source;
+        }
+        
+        /// <summary>
+        /// retrieves the value of [source], or [src] child node(s), forcing one single return value.
+        /// returns null if no source exists. will only. used in among other things [set]
+        /// </summary>
+        /// <param name="node">node where [source] or [src] is expected to be a child</param>
+        /// <param name="context">application context</param>
+        public static object SourceSingle (Node node, ApplicationContext context)
         {
             object source = null;
             if (node.LastChild != null && (node.LastChild.Name == "source" || node.LastChild.Name == "src")) {
@@ -447,7 +499,7 @@ namespace phosphorus.expressions
                 // we have a [source] or [src] parameter here, figuring out what it points to, or contains
                 if (node.LastChild.Value != null) {
 
-                    // caller does not allow multiple value, converting value to single object, somehow
+                    // this might be an expression or a constant, converting value to single object, somehow
                     source = Single<object> (node.LastChild, context, null);
                     if (source is Node) {
 
@@ -463,11 +515,8 @@ namespace phosphorus.expressions
                         source = node.LastChild.FirstChild.Clone ();
                     } else {
 
-                        // more than one source
-                        throw new LambdaException (
-                            string.Format ("[{0}] requires that you give it one [source], [src], or ommit source entirely", keyword),
-                            node, 
-                            context);
+                        // more than one source, making sure we convert it into one single value, meaning a 'string'
+                        source = Utilities.Convert<string> (new List<Node> (node.LastChild.Children), context);
                     }
                 }
             }
@@ -476,17 +525,16 @@ namespace phosphorus.expressions
             if (source is string && (source as string).StartsWith ("\\"))
                 source = (source as string).Substring (1);
 
-            // returning object converted to type T
-            return Utilities.Convert<T> (source, context);
+            // returning source
+            return source;
         }
 
         /// <summary>
-        /// retrieves the value of [source], or [src] child node, returns null if no source exists,
-        /// if source expression leads to empty result, or there is no source somehow
+        /// retrieves the value of [source], or [src] child node. used in among other things [append]
         /// </summary>
         /// <param name="node">node where [source] or [src] is expected to be a child</param>
         /// <param name="context">application context</param>
-        public static List<Node> Source (Node node, ApplicationContext context)
+        public static List<Node> SourceNodes (Node node, ApplicationContext context)
         {
             // return value
             List<Node> sourceNodes = new List<Node> ();
