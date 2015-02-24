@@ -49,7 +49,7 @@ namespace phosphorus.core
 
             // checking if type is IConvertible
             if (value is IConvertible)
-                return (T)Convert.ChangeType (value, typeof(T), System.Globalization.CultureInfo.InvariantCulture);
+                return (T)System.Convert.ChangeType (value, typeof(T), System.Globalization.CultureInfo.InvariantCulture);
 
             // stuff like for instance Guids don't implement IConvertible, but still return sane values, if we
             // first do ToString on them, for then to cast them to object, for then to cast object to T, if the caller
@@ -181,7 +181,7 @@ namespace phosphorus.core
             for (int idxNo = 0; idxNo < 4; idxNo++) {
                 hexNumberString += (char)reader.Read ();
             }
-            int hexNumber = Convert.ToInt32 (hexNumberString, 16);
+            int hexNumber = System.Convert.ToInt32 (hexNumberString, 16);
             return new string ((char)hexNumber, 1);
         }
         
