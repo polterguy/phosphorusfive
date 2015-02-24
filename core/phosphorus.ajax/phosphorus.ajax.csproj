@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -45,18 +45,10 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.Extensions, Version=1.0.61025.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
-      <Private>False</Private>
-    </Reference>
+    <Reference Include="System.Web.Extensions" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <Folder Include="javascript\" />
-    <Folder Include="widgets\" />
-    <Folder Include="core\" />
-    <Folder Include="core\filters\" />
-    <Folder Include="core\internals\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="javascript\manager.js" />
   </ItemGroup>
@@ -66,7 +58,9 @@
     <Compile Include="core\filters\Filter.cs" />
     <Compile Include="widgets\Widget.cs" />
     <Compile Include="core\filters\JsonFilter.cs" />
-    <Compile Include="core\AjaxPage.cs" />
+    <Compile Include="core\AjaxPage.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="core\IAjaxPage.cs" />
     <Compile Include="core\Utilities.cs" />
     <Compile Include="widgets\Literal.cs" />
