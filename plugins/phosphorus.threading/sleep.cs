@@ -25,7 +25,7 @@ namespace phosphorus.threading
         [ActiveEvent (Name = "sleep")]
         private static void lambda_sleep (ApplicationContext context, ActiveEventArgs e)
         {
-            int milliseconds = XUtil.Single<int> (e.Args, context);
+            var milliseconds = XUtil.Single<int> (e.Args, context);
             Thread.Sleep (milliseconds);
         }
     }

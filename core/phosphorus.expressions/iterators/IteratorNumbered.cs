@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using phosphorus.core;
 
 namespace phosphorus.expressions.iterators
@@ -15,10 +16,10 @@ namespace phosphorus.expressions.iterators
     /// </summary>
     public class IteratorNumbered : Iterator
     {
-        private int _number;
+        private readonly int _number;
 
         /// <summary>
-        /// initializes a new instance of the <see cref="phosphorus.execute.iterators.IteratorNumbered"/> class
+        /// initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorNumbered"/> class
         /// </summary>
         /// <param name="number">n'th child to return if it exists in previous result</param>
         public IteratorNumbered (int number)
@@ -28,11 +29,7 @@ namespace phosphorus.expressions.iterators
 
         public override IEnumerable<Node> Evaluate {
             get {
-                foreach (Node idxCurrent in Left.Evaluate) {
-                    if (idxCurrent.Count > _number) {
-                        yield return idxCurrent [_number];
-                    }
-                }
+                return from idxCurrent in Left.Evaluate where idxCurrent.Count > _number select idxCurrent [_number];
             }
         }
     }

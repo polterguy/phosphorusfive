@@ -40,7 +40,7 @@ namespace phosphorus.file
         private static void LoadFileLocally (Node node, string filename, ApplicationContext context)
         {
             // retrieving root folder of app
-            string rootFolder = common.GetRootFolder (context);
+            var rootFolder = common.GetRootFolder (context);
 
             // checking to see if file exists
             if (File.Exists (rootFolder + filename)) {

@@ -27,7 +27,7 @@ namespace phosphorus.file
         private static void pf_folder_list_files (ApplicationContext context, ActiveEventArgs e)
         {
             // retrieving root folder
-            string rootFolder = common.GetRootFolder (context);
+            var rootFolder = common.GetRootFolder (context);
 
             // iterating through each folder given by caller
             foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
@@ -37,7 +37,7 @@ namespace phosphorus.file
                     if (!idxFile.EndsWith ("~")) {
 
                         // file is not a backup file on Linux
-                        string fileName = idxFile;
+                        var fileName = idxFile;
                         if (!string.IsNullOrEmpty (rootFolder))
                             fileName = fileName.Replace (rootFolder, "");
 

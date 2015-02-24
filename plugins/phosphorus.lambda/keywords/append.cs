@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using phosphorus.core;
 using phosphorus.expressions;
+using phosphorus.expressions.exceptions;
 
 namespace phosphorus.lambda
 {
@@ -44,18 +45,18 @@ namespace phosphorus.lambda
         {
             // retrieving source before we start iterating destination,
             // in case destination and source overlaps
-            List<Node> sourceNodes = XUtil.SourceNodes (node, context);
+            var sourceNodes = XUtil.SourceNodes (node, context);
 
             // making sure there is a source
             if (sourceNodes == null)
                 return;
 
             // looping through every destination node
-            bool isFirst = true; // since source is already cloned, we avoid cloning on our first run
+            var isFirst = true; // since source is already cloned, we avoid cloning on our first run
             foreach (var idxDestination in XUtil.Iterate (node, context)) {
 
                 // verifying destination actually is a node
-                Node curDest = idxDestination.Value as Node;
+                var curDest = idxDestination.Value as Node;
                 if (curDest == null)
                     throw new LambdaException ("cannot [append] into something that's not a node", node, context);
 
@@ -68,7 +69,7 @@ namespace phosphorus.lambda
                 } else {
 
                     // cloning on all consecutive run-throughs
-                    foreach (Node idxSource in sourceNodes) {
+                    foreach (var idxSource in sourceNodes) {
                         curDest.Add (idxSource.Clone ());
                     }
                 }
@@ -83,7 +84,7 @@ namespace phosphorus.lambda
             foreach (var idxDestination in XUtil.Iterate (node, context)) {
                 
                 // verifying destination actually is a node
-                Node curDest = idxDestination.Value as Node;
+                var curDest = idxDestination.Value as Node;
                 if (curDest == null)
                     throw new LambdaException ("cannot [append] into something that's not a node", node, context);
 

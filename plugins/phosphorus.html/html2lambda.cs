@@ -29,7 +29,7 @@ namespace phosphorus.html
             HtmlNode.ElementsFlags.Remove ("form");
 
             foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
-                HtmlDocument doc = new HtmlDocument ();
+                var doc = new HtmlDocument ();
                 doc.LoadHtml (idx);
                 e.Args.Add (new Node ());
                 ParseHtmlDocument (e.Args.LastChild, doc.DocumentNode);
@@ -48,7 +48,7 @@ namespace phosphorus.html
             foreach (var idxAtr in cur.Attributes) {
                 res.Add (new Node ("@" + idxAtr.Name, idxAtr.Value));
             }
-            bool first = true;
+            var first = true;
             foreach (var idxChild in cur.ChildNodes) {
                 if (idxChild.Name != "#comment" && 
                     (idxChild.HasAttributes || idxChild.HasChildNodes || !string.IsNullOrEmpty(idxChild.InnerText.Trim()))) {

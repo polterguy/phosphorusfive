@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using phosphorus.core;
 
@@ -18,9 +19,9 @@ namespace phosphorus.expressions.iterators
     /// </summary>
     public class IteratorValued : Iterator
     {
-        private string _value;
-        private string _type;
-        private ApplicationContext _context;
+        private readonly string _value;
+        private readonly string _type;
+        private readonly ApplicationContext _context;
 
         public IteratorValued (string value, string type, ApplicationContext context)
         {
@@ -39,10 +40,7 @@ namespace phosphorus.expressions.iterators
                 }
 
                 // filtering away all previous matches that does not match the specified value
-                foreach (Node idxCurrent in Left.Evaluate) {
-                    if (value.Equals (idxCurrent.Value))
-                        yield return idxCurrent;
-                }
+                return Left.Evaluate.Where(idxCurrent => value.Equals (idxCurrent.Value));
             }
         }
     }

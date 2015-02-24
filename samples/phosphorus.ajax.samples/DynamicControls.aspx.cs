@@ -56,7 +56,7 @@ namespace phosphorus.five.samples
         protected void append_onclick (pf.Void btn, EventArgs e)
         {
             CurrentEdit = null;
-            pf.Literal widget = list.CreatePersistentControl<pf.Literal> ("x" + (_next ++), list.Controls.Count);
+            var widget = list.CreatePersistentControl<pf.Literal> ("x" + (_next ++), list.Controls.Count);
             widget.ElementType = "li";
             widget.RenderType = pf.Widget.RenderingType.NoClose;
             widget ["onclick"] = "item_onclick";
@@ -67,7 +67,7 @@ namespace phosphorus.five.samples
         protected void insert_top_onclick (pf.Void btn, EventArgs e)
         {
             CurrentEdit = null;
-            pf.Literal widget = list.CreatePersistentControl<pf.Literal> ("x" + (_next ++), 0);
+            var widget = list.CreatePersistentControl<pf.Literal> ("x" + (_next ++), 0);
             widget.ElementType = "li";
             widget.RenderType = pf.Widget.RenderingType.NoClose;
             widget ["onclick"] = "item_onclick";
@@ -78,7 +78,7 @@ namespace phosphorus.five.samples
         protected void insert_at_random_onclick (pf.Void btn, EventArgs e)
         {
             CurrentEdit = null;
-            pf.Literal widget = list.CreatePersistentControl<pf.Literal> ("x" + (_next ++), new Random ().Next (0, list.Controls.Count));
+            var widget = list.CreatePersistentControl<pf.Literal> ("x" + (_next ++), new Random ().Next (0, list.Controls.Count));
             widget.ElementType = "li";
             widget.RenderType = pf.Widget.RenderingType.NoClose;
             widget ["onclick"] = "item_onclick";
@@ -92,10 +92,10 @@ namespace phosphorus.five.samples
             if (list.Controls.Count == 0) {
                 txt ["value"] = "nothing to replace!!";
             } else {
-                int which = new Random ().Next (0, list.Controls.Count);
+                var which = new Random ().Next (0, list.Controls.Count);
                 list.RemoveControlPersistentAt (which);
 
-                pf.Literal widget = list.CreatePersistentControl<pf.Literal> ("x" + (_next ++), which);
+                var widget = list.CreatePersistentControl<pf.Literal> ("x" + (_next ++), which);
                 widget.ElementType = "li";
                 widget.RenderType = pf.Widget.RenderingType.NoClose;
                 widget ["onclick"] = "item_onclick";
@@ -107,8 +107,8 @@ namespace phosphorus.five.samples
         protected void love_bomb_onclick (pf.Void btn, EventArgs e)
         {
             CurrentEdit = null;
-            Random rnd = new Random ();
-            foreach (pf.Literal idx in list.GetChildControls<pf.Literal> ()) {
+            var rnd = new Random ();
+            foreach (var idx in list.GetChildControls<pf.Literal> ()) {
                 if (rnd.Next (0, 3) == 1) {
                     idx.innerValue = "i like turtles!";
                     idx ["class"] = "turtles";
@@ -120,13 +120,13 @@ namespace phosphorus.five.samples
         protected void harvest_love_onclick (pf.Void btn, EventArgs e)
         {
             CurrentEdit = null;
-            List<Control> toRemove = new List<Control> ();
-            foreach (pf.Literal idx in list.GetChildControls<pf.Literal> ()) {
+            var toRemove = new List<Control> ();
+            foreach (var idx in list.GetChildControls<pf.Literal> ()) {
                 if (idx.innerValue.Contains ("turtles")) {
                     toRemove.Add (idx);
                 }
             }
-            foreach (Control idx in toRemove) {
+            foreach (var idx in toRemove) {
                 list.RemoveControlPersistent (idx);
             }
         }
@@ -134,7 +134,7 @@ namespace phosphorus.five.samples
         [WebMethod]
         protected void update_onclick (pf.Void btn, EventArgs e)
         {
-            pf.Literal liter = list.FindControl (CurrentEdit) as pf.Literal;
+            var liter = list.FindControl (CurrentEdit) as pf.Literal;
             liter.innerValue = txt ["value"];
             CurrentEdit = null;
         }

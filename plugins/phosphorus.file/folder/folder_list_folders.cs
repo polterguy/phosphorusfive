@@ -27,7 +27,7 @@ namespace phosphorus.file
         private static void pf_folder_list_folders (ApplicationContext context, ActiveEventArgs e)
         {
             // retrieving root folder
-            string rootFolder = common.GetRootFolder (context);
+            var rootFolder = common.GetRootFolder (context);
 
             // iterating through each folder passed in by caller
             foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
@@ -35,7 +35,7 @@ namespace phosphorus.file
                 // iterating all folders in current directory, and returning as nodes beneath args given
                 foreach (var idxFolder in Directory.GetDirectories (rootFolder + idx)) {
 
-                    string folderName = idxFolder;
+                    var folderName = idxFolder;
                     if (!string.IsNullOrEmpty (rootFolder))
                         folderName = folderName.Replace (rootFolder, "");
 

@@ -26,7 +26,7 @@ namespace phosphorus.exe
         [ActiveEvent (Name = "pf.console.output")]
         private static void console_write_line (ApplicationContext context, ActiveEventArgs e)
         {
-            string value = XUtil.FormatNode (e.Args, context) as string;
+            var value = XUtil.FormatNode (e.Args, context);
             Console.WriteLine (value ?? "");
         }
 
@@ -38,7 +38,7 @@ namespace phosphorus.exe
         [ActiveEvent (Name = "pf.console.write")]
         private static void console_write (ApplicationContext context, ActiveEventArgs e)
         {
-            string value = XUtil.FormatNode (e.Args, context) as string;
+            var value = XUtil.FormatNode (e.Args, context);
             if (value != null)
                 Console.Write (value);
         }
@@ -61,11 +61,11 @@ namespace phosphorus.exe
 
                 // handling our command-line arguments
                 string language;
-                Node exeNode = ParseArguments (args, out language);
+                var exeNode = ParseArguments (args, out language);
 
                 // creating application context after parameters are loaded, since there might be
                 // additional plugins requested during the parsing of our command-line arguments
-                ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+                var context = Loader.Instance.CreateApplicationContext ();
 
                 // change our default execution language, if we should
                 if (!string.IsNullOrEmpty (language))
@@ -75,7 +75,7 @@ namespace phosphorus.exe
                 context.Raise ("pf.core.application-start", new Node ());
 
                 // loads and convert file to lambda nodes
-                Node convertExeFile = context.Raise ("pf.hyperlisp.hyperlisp2lambda", new Node (string.Empty, 
+                var convertExeFile = context.Raise ("pf.hyperlisp.hyperlisp2lambda", new Node (string.Empty, 
                     context.Raise ("pf.file.load", new Node (string.Empty, exeNode.Value)) [0].Get<string> (context)));
 
                 // appending nodes from lambda file into execution objects, and execute lambda file given through command-line arguments
@@ -126,11 +126,11 @@ namespace phosphorus.exe
         private static Node ParseArguments (string[] args, out string language)
         {
             language = null;
-            Node exeNode = new Node ("input-file");
-            bool nextIsInput = false;
-            bool nextIsPlugin = false;
-            bool nextIsLanguage = false;
-            foreach (string idx in args) {
+            var exeNode = new Node ("input-file");
+            var nextIsInput = false;
+            var nextIsPlugin = false;
+            var nextIsLanguage = false;
+            foreach (var idx in args) {
                 if (nextIsInput && exeNode.Value == null) {
                     exeNode.Value = idx;
                     nextIsInput = false;

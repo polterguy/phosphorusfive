@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using phosphorus.core;
 using phosphorus.expressions;
+using phosphorus.expressions.exceptions;
 
 namespace phosphorus.lambda
 {
@@ -25,7 +26,7 @@ namespace phosphorus.lambda
         private static void lambda_override (ApplicationContext context, ActiveEventArgs e)
         {
             // syntax checking
-            List<Node> overrideNodes = new List<Node> (e.Args.FindAll (
+            var overrideNodes = new List<Node> (e.Args.FindAll (
             delegate (Node idx) {
                 return idx.Name == "super";
             }));
@@ -33,11 +34,11 @@ namespace phosphorus.lambda
                 throw new LambdaException ("[override] requires exactly one [super] parameter", e.Args, context);
 
             // retrieving all overrides
-            List<string> overrides = new List<string> (XUtil.Iterate<string> (overrideNodes [0], context));
+            var overrides = new List<string> (XUtil.Iterate<string> (overrideNodes [0], context));
 
             // iterating through each override event, creating our override
             foreach (var idxBase in XUtil.Iterate<string> (e.Args, context)) {
-                foreach (string idxSuper in overrides) {
+                foreach (var idxSuper in overrides) {
                     events_common.CreateOverride (context, idxBase, idxSuper);
                 }
             }

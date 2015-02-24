@@ -34,7 +34,7 @@ namespace phosphorus.threading
                 context.Raise ("lambda", e.Args);
                 if (e.Args ["__threads"] != null) {
                     foreach (var idx in e.Args ["__threads"].Children) {
-                        Thread thread = idx.Get<Thread> (context);
+                        var thread = idx.Get<Thread> (context);
                         thread.Join ();
                     }
                 }

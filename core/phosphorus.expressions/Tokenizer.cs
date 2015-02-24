@@ -15,13 +15,13 @@ namespace phosphorus.expressions
     /// <summary>
     /// tokenizer for expressions
     /// </summary>
-    public class Tokenizer : IDisposable
+    public sealed class Tokenizer : IDisposable
     {
-        private StringReader _reader;
+        private readonly StringReader _reader;
         private bool _disposed;
 
         /// <summary>
-        /// initializes a new instance of the <see cref="phosphorus.lambda.Tokenizer"/> class
+        /// initializes a new instance of the <see cref="phosphorus.expressions.Tokenizer"/> class
         /// </summary>
         /// <param name="expression">expression to tokenize</param>
         public Tokenizer (string expression)
@@ -39,7 +39,7 @@ namespace phosphorus.expressions
             get {
                 string previousToken = null;
                 while (true) {
-                    string token = GetNextToken (previousToken);
+                    var token = GetNextToken (previousToken);
                     if (token == null)
                         yield break;
                     yield return token;
@@ -48,12 +48,13 @@ namespace phosphorus.expressions
             }
         }
 
+        // TODO: refactor, too complex
         /*
          * finds next token and returns to caller, returns null if there are no more tokens in expression
          */
         private string GetNextToken (string previousToken)
         {
-            int nextChar = _reader.Read ();
+            var nextChar = _reader.Read ();
 
             // left trimming white spaces
             while (nextChar != -1 && "\r\n \t".IndexOf ((char)nextChar) != -1) {
@@ -63,7 +64,7 @@ namespace phosphorus.expressions
             }
 
             // buffer to keep our token in
-            StringBuilder builder = new StringBuilder ();
+            var builder = new StringBuilder ();
             builder.Append ((char)nextChar);
 
             // returning token immediately, if it's a single character token,
@@ -97,7 +98,7 @@ namespace phosphorus.expressions
         /// disposing the tokenizer
         /// </summary>
         /// <param name="disposing">if set to <c>true</c> disposing will occur, otherwise false</param>
-        protected virtual void Dispose (bool disposing)
+        private void Dispose (bool disposing)
         {
             if (!_disposed && disposing) {
                 _disposed = true;

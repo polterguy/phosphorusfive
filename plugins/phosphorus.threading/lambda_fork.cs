@@ -35,7 +35,7 @@ namespace phosphorus.threading
             } else {
 
                 // executing expression, or nodes, somehow
-                List<Node> exeList = new List<Node> ();
+                var exeList = new List<Node> ();
                 foreach (var idxExe in XUtil.Iterate<Node> (e.Args, context)) {
                     exeList.Add (idxExe.Clone ());
                 }
@@ -52,7 +52,7 @@ namespace phosphorus.threading
             }
 
             // creating new thread
-            Thread thread = new Thread (new ParameterizedThreadStart (Execute));
+            var thread = new Thread (new ParameterizedThreadStart (Execute));
             thread.Start (new object [] { exe, args, context, wait });
 
             // checking to see if we should wait
@@ -71,11 +71,11 @@ namespace phosphorus.threading
          */
         private static void Execute (object threadArgs)
         {
-            object[] enumerables = threadArgs as object[];
-            IEnumerable<Node> exe = enumerables [0] as IEnumerable<Node>;
-            IEnumerable<Node> args = enumerables [1] as IEnumerable<Node>;
-            ApplicationContext context = enumerables [2] as ApplicationContext;
-            Node wait = enumerables [3] as Node;
+            var enumerables = threadArgs as object[];
+            var exe = enumerables [0] as IEnumerable<Node>;
+            var args = enumerables [1] as IEnumerable<Node>;
+            var context = enumerables [2] as ApplicationContext;
+            var wait = enumerables [3] as Node;
 
             foreach (var idxExe in exe) {
                 if (args != null) {

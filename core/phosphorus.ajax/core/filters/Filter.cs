@@ -18,9 +18,8 @@ namespace phosphorus.ajax.core.filters
     /// </summary>
     public abstract class Filter : Stream
     {
-        private Stream _next;
-        private MemoryStream _stream;
-        private Encoding _encoding;
+        private readonly Stream _next;
+        private readonly MemoryStream _stream;
 
         /// <summary>
         /// initializes a new instance of the <see cref="phosphorus.ajax.core.filters.Filter"/> class
@@ -30,8 +29,8 @@ namespace phosphorus.ajax.core.filters
         {
             Manager = manager;
             _stream = new MemoryStream();
-            _next = (Manager.Page as Page).Response.Filter;
-            _encoding = manager.Page.Response.ContentEncoding;
+            _next = Manager.Page.Response.Filter;
+            Encoding = manager.Page.Response.ContentEncoding;
         }
 
         /// <summary>
@@ -47,10 +46,7 @@ namespace phosphorus.ajax.core.filters
         /// gets or sets the encoding.
         /// </summary>
         /// <value>The encoding.</value>
-        public Encoding Encoding {
-            get { return _encoding; }
-            set { _encoding = value; }
-        }
+        public Encoding Encoding { get; set; }
 
         /// <summary>
         /// renders the response, override this method and return the rendered response
@@ -64,9 +60,9 @@ namespace phosphorus.ajax.core.filters
         public override void Close ()
         {
             _stream.Seek (0, SeekOrigin.Begin);
-            string responseContent = RenderResponse ();
+            var responseContent = RenderResponse ();
             base.Close ();
-            byte[] buffer = _encoding.GetBytes (responseContent);
+            var buffer = Encoding.GetBytes (responseContent);
             _next.Write (buffer, 0, buffer.Length);
         }
 

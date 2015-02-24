@@ -73,7 +73,7 @@ namespace phosphorus.ajax.widgets
         };
 
         // contains all attributes of widget
-        private internals.AttributeStorage _attributes = new internals.AttributeStorage ();
+        private readonly internals.AttributeStorage _attributes = new internals.AttributeStorage ();
 
         // how to render the widget. normally this is automatically determined, but sometimes it needs to be overridden explicitly
         protected RenderingMode _renderMode = RenderingMode.Default;
@@ -244,7 +244,7 @@ namespace phosphorus.ajax.widgets
                             _attributes.SetAttributeFormData ("innerValue", Page.Request.Params [this ["name"]]);
                             break;
                         case "option":
-                            Widget parent = Parent as Widget;
+                            var parent = Parent as Widget;
                             if (parent != null && parent.ElementType == "select" && !parent.HasAttribute ("disabled") && !string.IsNullOrEmpty (parent ["name"])) {
                                 if (Page.Request.Params [parent ["name"]] == this ["value"]) {
                                     _attributes.SetAttributeFormData ("selected", null);
@@ -271,7 +271,7 @@ namespace phosphorus.ajax.widgets
         /// <param name="eventName">event name such as 'onclick', or name of c# method on page, usercontrol or masterpage</param>
         protected virtual void InvokeEventHandler (string eventName)
         {
-            string eventHandlerName = eventName; // defaulting to event name for WebMethod invocations from JavaScript
+            var eventHandlerName = eventName; // defaulting to event name for WebMethod invocations from JavaScript
             if (HasAttribute (eventName)) {
 
                 // probably "onclick" or other types of automatically generated mapping between server method and javascript handler
@@ -279,12 +279,12 @@ namespace phosphorus.ajax.widgets
             }
 
             // finding out at what context to invoke the method within
-            Control owner = this.Parent;
+            var owner = this.Parent;
             while (!(owner is UserControl) && !(owner is Page) && !(owner is MasterPage))
                 owner = owner.Parent;
 
             // retrieving the method
-            MethodInfo method = owner.GetType ().GetMethod (eventHandlerName, 
+            var method = owner.GetType ().GetMethod (eventHandlerName, 
                                                             BindingFlags.Instance | 
                                                             BindingFlags.Public | 
                                                             BindingFlags.NonPublic | 
@@ -293,7 +293,7 @@ namespace phosphorus.ajax.widgets
                 throw new NotImplementedException ("method + '" + eventHandlerName + "' could not be found");
 
             // verifying method has the WebMethod attribute
-            object[] atrs = method.GetCustomAttributes (typeof (core.WebMethod), false /* for security reasons we want method to be explicitly marked as WebMethod */);
+            var atrs = method.GetCustomAttributes (typeof (core.WebMethod), false /* for security reasons we want method to be explicitly marked as WebMethod */);
             if (atrs == null || atrs.Length == 0)
                 throw new AccessViolationException ("method + '" + eventHandlerName + "' is illegal to invoke over http");
 
@@ -336,7 +336,7 @@ namespace phosphorus.ajax.widgets
         public override void RenderControl (HtmlTextWriter writer)
         {
             if (AreAncestorsVisible ()) {
-                bool ancestorReRendering = IsAncestorRendering ();
+                var ancestorReRendering = IsAncestorRendering ();
                 if (Visible) {
                     if (IsPhosphorusRequest && !ancestorReRendering) {
                         if (_renderMode == RenderingMode.ReRender) {
@@ -376,7 +376,7 @@ namespace phosphorus.ajax.widgets
 
         protected override void LoadViewState (object savedState)
         {
-            object[] tmp = savedState as object[];
+            var tmp = savedState as object[];
             base.LoadViewState (tmp [0]);
             _attributes.LoadFromViewState (tmp [1]);
             _attributes.LoadRemovedFromViewState (tmp [2]);
@@ -384,7 +384,7 @@ namespace phosphorus.ajax.widgets
 
         protected override object SaveViewState ()
         {
-            object[] retVal = new object [3];
+            var retVal = new object [3];
             retVal [0] = base.SaveViewState ();
             retVal [1] = _attributes.SaveToViewState ();
             retVal [2] = _attributes.SaveRemovedToViewState ();
@@ -415,8 +415,8 @@ namespace phosphorus.ajax.widgets
 
         private string GetWidgetHtml ()
         {
-            using (MemoryStream stream = new MemoryStream ()) {
-                using (HtmlTextWriter txt = new HtmlTextWriter (new StreamWriter (stream))) {
+            using (var stream = new MemoryStream ()) {
+                using (var txt = new HtmlTextWriter (new StreamWriter (stream))) {
                     RenderHtmlResponse (txt);
                     txt.Flush ();
                 }
@@ -429,8 +429,8 @@ namespace phosphorus.ajax.widgets
 
         private string GetChildrenHtml ()
         {
-            using (MemoryStream stream = new MemoryStream ()) {
-                using (HtmlTextWriter txt = new HtmlTextWriter (new StreamWriter (stream))) {
+            using (var stream = new MemoryStream ()) {
+                using (var txt = new HtmlTextWriter (new StreamWriter (stream))) {
                     RenderChildren (txt);
                     txt.Flush ();
                 }
@@ -453,7 +453,7 @@ namespace phosphorus.ajax.widgets
         private bool AreAncestorsVisible ()
         {
             // if this control and all of its ancestors are visible, then return true, else false
-            Control idx = this.Parent;
+            var idx = this.Parent;
             while (true) {
                 if (!idx.Visible)
                     break;
@@ -469,9 +469,9 @@ namespace phosphorus.ajax.widgets
         private bool IsAncestorRendering ()
         {
             // returns true if any of its ancestors are rendering html
-            Control idx = this.Parent;
+            var idx = this.Parent;
             while (idx != null) {
-                Widget wdg = idx as Widget;
+                var wdg = idx as Widget;
                 if (wdg != null && (wdg._renderMode == RenderingMode.ReRender || wdg._renderMode == RenderingMode.ReRenderChildren))
                     return true;
                 idx = idx.Parent;

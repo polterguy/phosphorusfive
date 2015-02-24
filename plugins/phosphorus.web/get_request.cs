@@ -49,17 +49,17 @@ namespace phosphorus.web
         private static void LoadFileFromURL (Node node, string url)
         {
             // setting up HttpWebRequest
-            HttpWebRequest request = WebRequest.Create (url) as HttpWebRequest;
+            var request = WebRequest.Create (url) as HttpWebRequest;
             request.AllowAutoRedirect = true;
 
             // retrieving response and its encoding, defaulting encoding to UTF8
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse ();
-            Encoding encoding = response.CharacterSet == null ? 
+            var response = (HttpWebResponse)request.GetResponse ();
+            var encoding = response.CharacterSet == null ? 
                 Encoding.UTF8 : 
                 Encoding.GetEncoding (response.CharacterSet);
 
             // retrieving files from response stream, and appending into node
-            using (Stream stream = response.GetResponseStream ()) {
+            using (var stream = response.GetResponseStream ()) {
                 using (TextReader reader = new StreamReader (stream, encoding)) {
                     node.Add (new Node (response.ResponseUri.ToString (), reader.ReadToEnd ()));
                 }

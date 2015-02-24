@@ -23,8 +23,8 @@ namespace phosphorus.web.ui
         [ActiveEvent (Name = "pf.web.widgets.container")]
         private static void pf_web_controls_container (ApplicationContext context, ActiveEventArgs e)
         {
-            Container widget = CreateControl<Container> (context, e.Args, "div");
-            Node formId = e.Args.Find (
+            var widget = CreateControl<Container> (context, e.Args, "div");
+            var formId = e.Args.Find (
                 delegate (Node idx) {
                     return idx.Name == "_form-id";
             });
@@ -43,7 +43,7 @@ namespace phosphorus.web.ui
         [ActiveEvent (Name = "pf.web.widgets.literal")]
         private static void pf_web_controls_literal (ApplicationContext context, ActiveEventArgs e)
         {
-            Literal widget = CreateControl<Literal> (context, e.Args, "p");
+            var widget = CreateControl<Literal> (context, e.Args, "p");
             e.Args.Value = DecorateWidget (context, widget, e.Args);
             if (widget.ElementType == "textarea" && !widget.HasAttribute ("name"))
                 widget ["name"] = widget.ClientID;
@@ -57,7 +57,7 @@ namespace phosphorus.web.ui
         [ActiveEvent (Name = "pf.web.widgets.void")]
         private static void pf_web_controls_void (ApplicationContext context, ActiveEventArgs e)
         {
-            phosphorus.ajax.widgets.Void widget = CreateControl<phosphorus.ajax.widgets.Void> (context, e.Args, "input");
+            var widget = CreateControl<phosphorus.ajax.widgets.Void> (context, e.Args, "input");
             e.Args.Value = DecorateWidget (context, widget, e.Args);
             if (widget.ElementType == "input" && !widget.HasAttribute ("name"))
                 widget ["name"] = widget.ClientID;
@@ -71,12 +71,12 @@ namespace phosphorus.web.ui
         private static T CreateControl<T> (ApplicationContext context, Node node, string elementType, Widget.RenderingType type = Widget.RenderingType.Default) where T : Widget, new()
         {
             // creating widget as persistent control
-            Container parent = node.Find (
+            var parent = node.Find (
                 delegate (Node idx) {
                     return idx.Name == "__parent";
             }).Get<Container> (context);
 
-            T widget = parent.CreatePersistentControl<T> (
+            var widget = parent.CreatePersistentControl<T> (
                 node.Get<string> (context), 
                 -1, 
                 delegate (object sender, EventArgs e) {
@@ -106,7 +106,7 @@ namespace phosphorus.web.ui
         private static void CreateLoadingEvents (ApplicationContext context, Node node, Widget widget)
         {
             // checking to see if we've got an "initialload" Active Event for widget, and if so, handle it
-            Node onInitialLoad = node.Find (
+            var onInitialLoad = node.Find (
                 delegate (Node idx) {
                     return idx.Name == "oninitialload";
             });
@@ -127,7 +127,7 @@ namespace phosphorus.web.ui
         private static Widget DecorateWidget (ApplicationContext context, Widget widget, Node args)
         {
             // looping through all children nodes of Widget's node to decorate Widget
-            foreach (Node idxArg in args.Children) {
+            foreach (var idxArg in args.Children) {
                 switch (idxArg.Name) {
                 case "has-id":
                     if (!idxArg.Get<bool> (context))
@@ -173,7 +173,7 @@ namespace phosphorus.web.ui
         {
             // making sure "input", "select" and "textarea" widgets have a name corresponding to 
             // their ID unless name is explicitly given
-            bool addName = false;
+            var addName = false;
             switch (widget.ElementType) {
             case "input":
                 if (widget.ElementType != "button")
@@ -210,7 +210,7 @@ namespace phosphorus.web.ui
          */
         private static void CreateChildWidgets (ApplicationContext context, Widget widget, Node children)
         {
-            foreach (Node idxChild in children.Children) {
+            foreach (var idxChild in children.Children) {
                 idxChild.Insert (0, new Node ("__parent", widget));
                 idxChild.Insert (1, new Node ("_form-id", children.Parent.Find (
                     delegate (Node idx) {
@@ -246,7 +246,7 @@ namespace phosphorus.web.ui
 
                 // creating our pf.lambda object, and invoking our [_pf.web.add-widget-event] Active Event to map the
                 // ajax event to our pf.lambda object, passing in the widget that contains the Ajax Event
-                Node eventNode = new Node (string.Empty, widget);
+                var eventNode = new Node (string.Empty, widget);
                 eventNode.Add (node.Clone ());
 
                 // making sure [_form-id] and [_widget-id] is passed into pf.lambda object as parameters

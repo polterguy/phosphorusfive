@@ -54,7 +54,7 @@ namespace phosphorus.unittests.plugins
         [Test]
         public void Select01 ()
         {
-            Node tmp = ExecuteLambda (@"pf.data.select:@/*/*/_mumbo_field/=jumbo_value/?node");
+            var tmp = ExecuteLambda (@"pf.data.select:@/*/*/_mumbo_field/=jumbo_value/?node");
             Assert.AreEqual (0, tmp [0].Count);
         }
 
@@ -65,7 +65,7 @@ namespace phosphorus.unittests.plugins
         [Test]
         public void Select02 ()
         {
-            Node tmp = ExecuteLambda (@"pf.data.insert
+            var tmp = ExecuteLambda (@"pf.data.insert
   _test1
     howdy:world
 pf.data.select:@/*/*/_test1/?node
@@ -85,7 +85,7 @@ pf.data.select:@/*/*/_test1/?node");
         [Test]
         public void Select03 ()
         {
-            Node tmp = ExecuteLambda (@"pf.data.insert
+            var tmp = ExecuteLambda (@"pf.data.insert
   _testX
     howdy:world
 pf.data.select:@/*/*/_testX/0/?name");
@@ -100,7 +100,7 @@ pf.data.select:@/*/*/_testX/0/?name");
         [Test]
         public void Select04 ()
         {
-            Node tmp = ExecuteLambda (@"pf.data.insert
+            var tmp = ExecuteLambda (@"pf.data.insert
   _testX
     howdy:world
 pf.data.select:@/*/*/_testX/0/?value");
@@ -115,7 +115,7 @@ pf.data.select:@/*/*/_testX/0/?value");
         [Test]
         public void Select05 ()
         {
-            Node tmp = ExecuteLambda (@"pf.data.insert
+            var tmp = ExecuteLambda (@"pf.data.insert
   _testX
     howdy:world
 pf.data.select:@/*/*/_testX/0/?count");
@@ -130,7 +130,7 @@ pf.data.select:@/*/*/_testX/0/?count");
         [Test]
         public void Select06 ()
         {
-            Node tmp = ExecuteLambda (@"pf.data.insert
+            var tmp = ExecuteLambda (@"pf.data.insert
   _testX
     howdy:world
 pf.data.select:@/*/*/_testX/0/?path");
@@ -146,7 +146,7 @@ pf.data.select:@/*/*/_testX/0/?path");
         [Test]
         public void Select07 ()
         {
-            Node tmp = ExecuteLambda (@"pf.data.insert
+            var tmp = ExecuteLambda (@"pf.data.insert
   _testX
     howdy1:world1
   _testX
@@ -166,7 +166,7 @@ pf.data.select:@/*/*/_testX/0/?name");
         [Test]
         public void Select08 ()
         {
-            Node tmp = ExecuteLambda (@"pf.data.insert
+            var tmp = ExecuteLambda (@"pf.data.insert
   _testX
     howdy1:world1
   _testX
@@ -186,7 +186,7 @@ pf.data.select:@/*/*/_testX/0/?value");
         [Test]
         public void Select09 ()
         {
-            Node tmp = ExecuteLambda (@"pf.data.insert
+            var tmp = ExecuteLambda (@"pf.data.insert
   _testX
     howdy1:world1
   _testX
@@ -206,7 +206,7 @@ pf.data.select:@/*/*/_testX/0/?path");
         [Test]
         public void Select10 ()
         {
-            Node tmp = ExecuteLambda (@"pf.data.insert
+            var tmp = ExecuteLambda (@"pf.data.insert
   _testX
     howdy1:world1
   _testX
@@ -224,7 +224,7 @@ pf.data.select:@/*/*/_testX/?count");
         [Test]
         public void Select11 ()
         {
-            Node tmp = ExecuteLambda (@"pf.data.insert
+            var tmp = ExecuteLambda (@"pf.data.insert
   _test4
     howdy:world
   _test4
@@ -248,7 +248,7 @@ pf.data.select:@/*/*/_test4/*/query_field/*/x/=y/././?node");
         [Test]
         public void Select12 ()
         {
-            Node tmp = ExecuteLambda (@"pf.data.insert
+            var tmp = ExecuteLambda (@"pf.data.insert
   _test4
     howdy:world
 pf.data.select:@/*/*/{0}/?node
@@ -266,7 +266,7 @@ pf.data.select:@/*/*/{0}/?node
         [Test]
         public void Delete01 ()
         {
-            Node tmp = ExecuteLambda (@"pf.data.insert
+            var tmp = ExecuteLambda (@"pf.data.insert
   _test4
     howdy:world
 pf.data.delete:@/*/*/{0}/?node
@@ -281,7 +281,7 @@ pf.data.select:@/*/*/_test4/?node");
         [Test]
         public void Insert01 ()
         {
-            Node tmp = ExecuteLambda (@"pf.data.insert:@/+/?node
+            var tmp = ExecuteLambda (@"pf.data.insert:@/+/?node
 _testX
   howdy:world
 pf.data.select:@/*/*/_testX/?node");
@@ -298,7 +298,7 @@ pf.data.select:@/*/*/_testX/?node");
         [Test]
         public void Insert02 ()
         {
-            Node tmp = ExecuteLambda (@"pf.data.insert:@/+/|/+/+/?node
+            var tmp = ExecuteLambda (@"pf.data.insert:@/+/|/+/+/?node
 _testX
   howdy:world
 _testX
@@ -322,7 +322,7 @@ pf.data.select:@/*/*/_testX/?node");
         [Test]
         public void Insert03 ()
         {
-            Node tmp = ExecuteLambda (@"pf.data.insert:node:@""_testX
+            var tmp = ExecuteLambda (@"pf.data.insert:node:@""_testX
   howdy:world""
 pf.data.select:@/*/*/_testX/?node");
             Assert.AreEqual (1, tmp [1].Count);
@@ -339,7 +339,7 @@ pf.data.select:@/*/*/_testX/?node");
         [Test]
         public void Insert04 ()
         {
-            Node tmp = ExecuteLambda (@"pf.data.insert:@""_testX
+            var tmp = ExecuteLambda (@"pf.data.insert:@""_testX
   howdy:world
 _testX
   howdy:world""
@@ -358,7 +358,7 @@ pf.data.select:@/*/*/_testX/?node");
         [Test]
         public void Insert05 ()
         {
-            Node tmp = ExecuteLambda (@"pf.data.insert
+            var tmp = ExecuteLambda (@"pf.data.insert
   foo:bar
 pf.data.select:@/*/*/foo/?value");
             Assert.AreEqual (1, tmp [1].Count);
@@ -373,7 +373,7 @@ pf.data.select:@/*/*/foo/?value");
         [Test]
         public void Update01 ()
         {
-            Node tmp = ExecuteLambda (@"pf.data.insert
+            var tmp = ExecuteLambda (@"pf.data.insert
   _test5
     howdy:world
   _test5
@@ -401,7 +401,7 @@ pf.data.select:@/*/*/_test5/*/query_field2/*/x/=zz/././?node");
         [Test]
         public void Update02 ()
         {
-            Node tmp = ExecuteLambda (@"pf.data.insert
+            var tmp = ExecuteLambda (@"pf.data.insert
   _test6
     howdy:world
   _test6
@@ -429,7 +429,7 @@ pf.data.select:@/*/*/_test6/?node");
         [Test]
         public void Update03 ()
         {
-            Node tmp = ExecuteLambda (@"pf.data.insert
+            var tmp = ExecuteLambda (@"pf.data.insert
   _testX
 pf.data.update:@/*/*/_testX/?value
   source:{0}{1}
@@ -448,7 +448,7 @@ pf.data.select:@/*/*/_testX/?node");
         [Test]
         public void Update04 ()
         {
-            Node tmp = ExecuteLambda (@"pf.data.insert
+            var tmp = ExecuteLambda (@"pf.data.insert
   _test7
     howdy:world
 pf.data.update:@/*/*/_test7/?node
@@ -471,7 +471,7 @@ pf.data.select:@/*/*/_test7/?node");
         [Test]
         public void Update05 ()
         {
-            Node tmp = ExecuteLambda (@"pf.data.insert
+            var tmp = ExecuteLambda (@"pf.data.insert
   _test9
     howdy:world
 pf.data.update:@/*/*/_test9/*/howdy/?value
@@ -493,7 +493,7 @@ pf.data.select:@/*/*/_test9/?node");
         [Test]
         public void Update06 ()
         {
-            Node tmp = ExecuteLambda (@"pf.data.insert
+            var tmp = ExecuteLambda (@"pf.data.insert
   _test9
     howdy:world
 pf.data.update:@/*/*/_test9/*/howdy/?value
@@ -512,7 +512,7 @@ pf.data.select:@/*/*/_test9/?node");
         [Test]
         public void Update07 ()
         {
-            Node tmp = ExecuteLambda (@"pf.data.insert
+            var tmp = ExecuteLambda (@"pf.data.insert
   _test9
     howdy:world
 pf.data.update:@/*/*/_test9/*/howdy/?value
@@ -533,7 +533,7 @@ pf.data.select:@/*/*/_test9/?node");
         [Test]
         public void Update08 ()
         {
-            Node tmp = ExecuteLambda (@"pf.data.insert
+            var tmp = ExecuteLambda (@"pf.data.insert
   _test9
     _1:""howdy ""
     _2:world
@@ -556,7 +556,7 @@ pf.data.select:@/*/*/_test9/?node");
         [Test]
         public void Update09 ()
         {
-            Node tmp = ExecuteLambda (@"pf.data.insert
+            var tmp = ExecuteLambda (@"pf.data.insert
   howdy
 pf.data.update:@/*/*/howdy/?node
   source

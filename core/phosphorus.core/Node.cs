@@ -31,7 +31,7 @@ namespace phosphorus.core
             public DNA (string value)
             {
                 _value = new List<int> ();
-                foreach (string idxInt in value.Split (new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries)) {
+                foreach (var idxInt in value.Split (new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries)) {
                     _value.Add (int.Parse (idxInt));
                 }
             }
@@ -39,15 +39,15 @@ namespace phosphorus.core
             internal DNA (Node node)
                 : this ()
             {
-                Node idxNode = node;
-                while (idxNode._parent != null) {
-                    for (int idxNo = 0; idxNo < idxNode._parent._children.Count; idxNo ++) {
-                        if (idxNode == idxNode._parent._children [idxNo]) {
+                var idxNode = node;
+                while (idxNode.Parent != null) {
+                    for (var idxNo = 0; idxNo < idxNode.Parent._children.Count; idxNo ++) {
+                        if (idxNode == idxNode.Parent._children [idxNo]) {
                             _value.Insert (0, idxNo);
                             break;
                         }
                     }
-                    idxNode = idxNode._parent;
+                    idxNode = idxNode.Parent;
                 }
             }
 
@@ -71,7 +71,7 @@ namespace phosphorus.core
                 if (dna == null)
                     return false;
 
-                foreach (char idx in dna) {
+                foreach (var idx in dna) {
                     if ("0123456789-".IndexOf (idx) == -1)
                         return false;
                 }
@@ -145,8 +145,8 @@ namespace phosphorus.core
             /// <param name="rhs">right hand side node</param>
             public static DNA operator & (DNA lhs, DNA rhs)
             {
-                DNA retVal = new DNA ();
-                for (int idxNo = 0; idxNo < lhs._value.Count && idxNo < rhs._value.Count; idxNo++) {
+                var retVal = new DNA ();
+                for (var idxNo = 0; idxNo < lhs._value.Count && idxNo < rhs._value.Count; idxNo++) {
                     if (lhs._value [idxNo].CompareTo (rhs._value [idxNo]) == 0)
                         retVal._value.Add (idxNo);
                     else
@@ -159,7 +159,7 @@ namespace phosphorus.core
             {
                 if (!(obj is DNA))
                     return false;
-                DNA rhs = obj as DNA;
+                var rhs = obj as DNA;
                 if (Count != rhs.Count)
                     return false;
                 for (var idxNo = 0; idxNo < Count; idxNo++) {
@@ -176,8 +176,8 @@ namespace phosphorus.core
 
             public override string ToString ()
             {
-                string tmp = "";
-                foreach (int idx in _value) {
+                var tmp = "";
+                foreach (var idx in _value) {
                     tmp += "-" + idx;
                 }
                 tmp = tmp.Trim (new char[] { '-' });
@@ -188,10 +188,10 @@ namespace phosphorus.core
             {
                 if (obj == null || !(obj is DNA))
                     throw new ArgumentException ("cannot compare DNA to: " + (obj ?? "[null]").ToString ());
-                DNA rhs = obj as DNA;
+                var rhs = obj as DNA;
 
-                for (int idxNo = 0; idxNo < _value.Count && idxNo < rhs._value.Count; idxNo ++) {
-                    int cmpVals = _value [idxNo].CompareTo (rhs._value [idxNo]);
+                for (var idxNo = 0; idxNo < _value.Count && idxNo < rhs._value.Count; idxNo ++) {
+                    var cmpVals = _value [idxNo].CompareTo (rhs._value [idxNo]);
                     if (cmpVals != 0)
                         return cmpVals;
                 }
@@ -290,8 +290,7 @@ namespace phosphorus.core
             }
         }
 
-        private List<Node> _children;
-        private Node _parent;
+        private readonly List<Node> _children;
         private string _name;
 
         /// <summary>
@@ -340,7 +339,7 @@ namespace phosphorus.core
         {
             _children = new List<Node> (children);
             foreach (var idx in children) {
-                idx._parent = this;
+                idx.Parent = this;
             }
         }
 
@@ -422,11 +421,7 @@ namespace phosphorus.core
         /// returns the parent of node
         /// </summary>
         /// <value>parent node</value>
-        public Node Parent {
-            get {
-                return _parent;
-            }
-        }
+        public Node Parent { get; private set; }
 
         /// <summary>
         /// returns the first child of the node
@@ -446,7 +441,7 @@ namespace phosphorus.core
         /// <value>the first child</value>
         public Node FirstChildNotOf (string name)
         {
-            foreach (Node idx in _children) {
+            foreach (var idx in _children) {
                 if (idx.Name != name)
                     return idx;
             }
@@ -471,17 +466,17 @@ namespace phosphorus.core
         /// <value>the previous sibling</value>
         public Node PreviousSibling {
             get {
-                if (_parent == null)
+                if (Parent == null)
                     return null;
-                int idxNo = 0;
-                foreach (Node idxNode in _parent._children) {
+                var idxNo = 0;
+                foreach (var idxNode in Parent._children) {
                     if (idxNode == this)
                         break;
                     idxNo += 1;
                 }
                 idxNo -= 1;
                 if (idxNo >= 0)
-                    return _parent._children [idxNo];
+                    return Parent._children [idxNo];
                 return null;
             }
         }
@@ -492,12 +487,12 @@ namespace phosphorus.core
         /// <value>the next sibling</value>
         public Node NextSibling {
             get {
-                if (_parent == null)
+                if (Parent == null)
                     return null;
-                int idxNo = _parent._children.IndexOf (this);
+                var idxNo = Parent._children.IndexOf (this);
                 idxNo += 1;
-                if (idxNo < _parent._children.Count)
-                    return _parent._children [idxNo];
+                if (idxNo < Parent._children.Count)
+                    return Parent._children [idxNo];
                 return null;
             }
         }
@@ -508,7 +503,7 @@ namespace phosphorus.core
         /// <value>the previous node</value>
         public Node PreviousNode {
             get {
-                Node idx = PreviousSibling;
+                var idx = PreviousSibling;
                 if (idx != null) {
                     while (idx.Count > 0) {
                         idx = idx [idx.Count - 1];
@@ -527,12 +522,12 @@ namespace phosphorus.core
             get {
                 if (Count > 0)
                     return FirstChild;
-                Node nextSibling = NextSibling;
+                var nextSibling = NextSibling;
                 if (nextSibling != null)
                     return nextSibling;
-                Node idxParent = Parent;
+                var idxParent = Parent;
                 while (idxParent != null) {
-                    Node next = idxParent.NextSibling;
+                    var next = idxParent.NextSibling;
                     if (next != null)
                         return next;
                     idxParent = idxParent.Parent;
@@ -547,9 +542,9 @@ namespace phosphorus.core
         /// <value>the root node</value>
         public Node Root {
             get {
-                Node idxNode = this;
-                while (idxNode._parent != null)
-                    idxNode = idxNode._parent;
+                var idxNode = this;
+                while (idxNode.Parent != null)
+                    idxNode = idxNode.Parent;
                 return idxNode;
             }
         }
@@ -559,8 +554,8 @@ namespace phosphorus.core
         /// </summary>
         public Node UnTie ()
         {
-            _parent._children.Remove (this);
-            _parent = null;
+            Parent._children.Remove (this);
+            Parent = null;
             return this;
         }
 
@@ -573,9 +568,9 @@ namespace phosphorus.core
             if (node == null) {
                 throw new ArgumentException ("cannot replace a node with null");
             } else {
-                node._parent = this._parent;
-                this._parent._children [this._parent._children.IndexOf (this)] = node;
-                this._parent = null;
+                node.Parent = this.Parent;
+                this.Parent._children [this.Parent._children.IndexOf (this)] = node;
+                this.Parent = null;
                 return node;
             }
         }
@@ -588,9 +583,9 @@ namespace phosphorus.core
         {
             if (dna.Equals (null))
                 return null;
-            Node idxNode = this;
-            while (idxNode._parent != null)
-                idxNode = idxNode._parent;
+            var idxNode = this;
+            while (idxNode.Parent != null)
+                idxNode = idxNode.Parent;
             foreach (var idxNo in dna._value) {
                 if (idxNo < 0 || idxNo >= idxNode._children.Count)
                     return null;
@@ -663,11 +658,11 @@ namespace phosphorus.core
             Predicate<Node> functor = null)
         {
             if (functor == null) {
-                foreach (Node idx in _children) {
+                foreach (var idx in _children) {
                     yield return idx.Get<T> (context);
                 }
             } else {
-                foreach (Node idx in _children) {
+                foreach (var idx in _children) {
                     if (functor (idx))
                         yield return idx.Get<T> (context);
                 }
@@ -682,8 +677,8 @@ namespace phosphorus.core
         /// <typeparam name="T">type of object you wish to construct from node iterator</typeparam>
         public IEnumerable<T> ConvertChildren<T> (NodeIterator<T> functor)
         {
-            foreach (Node idx in _children) {
-                T retVal = functor (idx);
+            foreach (var idx in _children) {
+                var retVal = functor (idx);
                 if (retVal != null && !retVal.Equals (default (T)))
                     yield return retVal;
             }
@@ -696,7 +691,7 @@ namespace phosphorus.core
         /// <param name="name">name of node to return</param>
         public Node FindOrCreate (string name)
         {
-            Node retVal = _children.Find (
+            var retVal = _children.Find (
                 delegate (Node idx) {
                     return idx.Name == name;
             });
@@ -713,7 +708,7 @@ namespace phosphorus.core
         /// <param name="value">value of node to return</param>
         public Node FindOrCreate (string name, object value)
         {
-            Node retVal = _children.Find (
+            var retVal = _children.Find (
                 delegate (Node idx) {
                     return idx.Name == name && 
                         ((value == null && idx.Value == null) || (value != null && value.Equals (idx.Value)));
@@ -729,7 +724,7 @@ namespace phosphorus.core
         /// <param name="name">name of node to return</param>
         public T GetChildValue<T> (string name, ApplicationContext context, T defaultValue = default (T))
         {
-            Node child = _children.Find (
+            var child = _children.Find (
             delegate (Node idx) {
                 return idx.Name == name;
             });
@@ -803,9 +798,9 @@ namespace phosphorus.core
         /// <param name="node">node to add</param>
         public Node Add (Node node)
         {
-            if (node._parent != null)
-                node._parent.Remove (node);
-            node._parent = this;
+            if (node.Parent != null)
+                node.Parent.Remove (node);
+            node.Parent = this;
             _children.Add (node);
             return this;
         }
@@ -847,7 +842,7 @@ namespace phosphorus.core
         /// <param name="index">where to add</param>
         public Node Insert (int index, Node node)
         {
-            node._parent = this;
+            node.Parent = this;
             _children.Insert (index, node);
             return this;
         }
@@ -858,7 +853,7 @@ namespace phosphorus.core
         /// <param name="nodes">nodes to add</param>
         public Node AddRange (IEnumerable<Node> nodes)
         {
-            foreach (Node idxNode in new List<Node> (nodes)) {
+            foreach (var idxNode in new List<Node> (nodes)) {
                 Add (idxNode);
             }
             return this;
@@ -878,10 +873,10 @@ namespace phosphorus.core
         /// </summary>
         public Node Clone ()
         {
-            Node retVal = new Node ();
+            var retVal = new Node ();
             retVal.Name = Name;
             retVal.Value = Value;
-            foreach (Node idxChild in _children) {
+            foreach (var idxChild in _children) {
                 retVal.Add (idxChild.Clone ());
             }
             return retVal;
@@ -894,7 +889,7 @@ namespace phosphorus.core
         /// <param name="rhs">the object to compare the node against</param>
         public int CompareTo (object rhs)
         {
-            Node rhsNode = rhs as Node;
+            var rhsNode = rhs as Node;
             if (rhsNode == null)
                 return 1;
             return CompareTo (rhsNode);
@@ -908,7 +903,7 @@ namespace phosphorus.core
         /// <param name="rhs">node to compare again the current instance for equality</param>
         public int CompareTo (Node rhs)
         {
-            int retVal = Name.CompareTo (rhs.Name);
+            var retVal = Name.CompareTo (rhs.Name);
             if (retVal != 0)
                 return retVal;
             if (Value == null) {
@@ -925,7 +920,7 @@ namespace phosphorus.core
             } else if (rhs._children.Count < _children.Count) {
                 return 1;
             } else {
-                for (int idxNo = 0; idxNo < Count; idxNo ++) {
+                for (var idxNo = 0; idxNo < Count; idxNo ++) {
                     retVal = _children [idxNo].CompareTo (rhs._children [idxNo]);
                     if (retVal != 0)
                         return retVal;
@@ -944,7 +939,7 @@ namespace phosphorus.core
             if (value.GetType () != rhsValue.GetType ()) {
                 return value.GetType ().ToString ().CompareTo (rhsValue.GetType ().ToString ());
             }
-            IComparable thisValue = value as IComparable;
+            var thisValue = value as IComparable;
             if (thisValue == null)
                 throw new ArgumentException ("cannot compare objects of type; '" + value.GetType () + "'");
             return thisValue.CompareTo (rhsValue);
@@ -984,7 +979,7 @@ namespace phosphorus.core
         /// <returns>a <see cref="System.String"/> that represents the current <see cref="phosphorus.core.Node"/></returns>
         public override string ToString ()
         {
-            string retVal = "";
+            var retVal = "";
             if (!string.IsNullOrEmpty (Name))
                 retVal += "Name=" + Name;
             if (Value != null)

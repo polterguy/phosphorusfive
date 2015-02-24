@@ -31,13 +31,13 @@ namespace phosphorus.mongodb
         private static void pf_mongo_insert (ApplicationContext context, ActiveEventArgs e)
         {
             // retrieving nodes to actually insert
-            IEnumerable<Node> list = GetInsertNodes (e.Args, context);
+            var list = GetInsertNodes (e.Args, context);
 
             // inserting nodes
             var db = common.DataBase;
 
             // looping through all nodes to insert
-            foreach (Node idxNode in list) {
+            foreach (var idxNode in list) {
 
                 // verifying node's value is "null", since anything else would be a bug
                 // this ensures we can use the root node's value to return the ID of the BsonDocument back to caller, in 
@@ -49,7 +49,7 @@ namespace phosphorus.mongodb
                 var collection = db.GetCollection<BsonDocument> (idxNode.Name);
 
                 // creating a Bson document from the currently iterated Node
-                BsonDocument doc = CreateBsonDocumentFromNode (context, idxNode);
+                var doc = CreateBsonDocumentFromNode (context, idxNode);
 
                 // doing actually insert into database, and returning the "ID" created by MongoDB as "value"
                 // of currently node inserted
@@ -64,8 +64,8 @@ namespace phosphorus.mongodb
         private static BsonDocument CreateBsonDocumentFromNode (ApplicationContext context, Node node)
         {
             // looping through all properties on node recursively, adding them to bson document
-            BsonDocument doc = new BsonDocument ();
-            foreach (Node idxInner in node.Children) {
+            var doc = new BsonDocument ();
+            foreach (var idxInner in node.Children) {
                 doc.Add (idxInner.Name, CreateBsonValueFromNode (context, idxInner));
             }
             return doc;
@@ -81,12 +81,12 @@ namespace phosphorus.mongodb
                 return BsonNull.Value;
 
             // document to contain both "value" and "children" nodes
-            BsonDocument retVal = new BsonDocument ();
+            var retVal = new BsonDocument ();
 
             // we only return "value" node if value is not null
             if (node.Value != null) {
                 if (node.Value is Node) {
-                    Node convert = new Node (string.Empty, node.Value);
+                    var convert = new Node (string.Empty, node.Value);
                     context.Raise ("pf.hyperlisp.lambda2hyperlisp", convert);
                     retVal.Add ("value", BsonValue.Create (convert.Value));
                 } else {
@@ -98,8 +98,8 @@ namespace phosphorus.mongodb
             if (node.Count > 0) {
 
                 // recursively iterating through children to add them up into "children" doc of current node
-                BsonDocument childrenDoc = new BsonDocument ();
-                foreach (Node idx in node.Children) {
+                var childrenDoc = new BsonDocument ();
+                foreach (var idx in node.Children) {
                     childrenDoc.Add (idx.Name, CreateBsonValueFromNode (context, idx));
                 }
                 retVal.Add ("*", childrenDoc);
@@ -117,7 +117,7 @@ namespace phosphorus.mongodb
             if (!XUtil.IsExpression (node.Value)) {
                 if (node.Count == 0)
                     throw new ArgumentException ("not data given to [pf.mongo.xxx] Active Event when data was expected");
-                foreach (Node idx in node.Children) {
+                foreach (var idx in node.Children) {
                     yield return idx;
                 }
                 yield break;
@@ -125,9 +125,9 @@ namespace phosphorus.mongodb
 
             // here we have an expression, returning the results of the expression, supporting "formatting expressions",
             // in addition to static expressions
-            string expression = node.Get<string> (context);
+            var expression = node.Get<string> (context);
             if (node.Count > 0)
-                expression = XUtil.FormatNode (node, node, context) as string;
+                expression = XUtil.FormatNode (node, node, context);
             var match = Expression.Create (expression).Evaluate (node, context);
             if (match.Count == 0)
                 throw new ArgumentException ("expression expected to return 'node' in [pf.mongo.xxx] returned nothing");
@@ -138,7 +138,7 @@ namespace phosphorus.mongodb
                 yield break;
             }
 
-            for (int idxNo = 0; idxNo < match.Count; idxNo++) {
+            for (var idxNo = 0; idxNo < match.Count; idxNo++) {
                 var retVal = match [idxNo].Value as Node;
                 if (retVal == null)
                     throw new ArgumentException ("expression for [pf.mongo.xxx] that was expected to return a 'node' value, didn't");

@@ -26,7 +26,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void ForEach1 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data").LastChild
                     .Add ("su")
                     .Add ("cc")
@@ -48,7 +48,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void ForEach2 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data").LastChild
                     .Add (string.Empty, "succ")
                     .Add (string.Empty, 5)
@@ -70,7 +70,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void ForEach3 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data").LastChild
                     .Add (string.Empty, "succ")
                     .Add (string.Empty, 5)
@@ -91,7 +91,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void ForEach4 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data")
                 .Add ("for-each", "@/-/?node").LastChild
                     .Add ("set", "@?node").Root;
@@ -105,7 +105,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void ForEach5 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data")
                 .Add ("for-each", "@/-/?node").LastChild
                     .Add ("lambda").LastChild

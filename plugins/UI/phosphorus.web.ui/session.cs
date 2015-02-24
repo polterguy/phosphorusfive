@@ -62,7 +62,7 @@ namespace phosphorus.web.ui
             CollectionBase.List (e.Args, context, delegate {
 
                 // returning all keys as List<string> to List method
-                List<string> keys = new List<string> ();
+                var keys = new List<string> ();
                 foreach (var idx in HttpContext.Current.Session.Keys) {
                     keys.Add (idx.ToString ());
                 }

@@ -17,9 +17,9 @@ namespace phosphorus.expressions.iterators
     {
         public override IEnumerable<Node> Evaluate {
             get {
-                IEnumerator<Node> enumerator = Left.Evaluate.GetEnumerator () as IEnumerator<Node>;
-                enumerator.MoveNext ();
-                yield return enumerator.Current.Root;
+                var enumerator = Left.Evaluate.GetEnumerator ();
+                if (enumerator.MoveNext())
+                    yield return enumerator.Current.Root;
             }
         }
     }

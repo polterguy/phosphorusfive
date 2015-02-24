@@ -4,15 +4,15 @@
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
  */
 
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using phosphorus.core;
 using phosphorus.expressions.iterators;
 
 namespace phosphorus.expressions
 {
     /// <summary>
-    /// logical class, for performing boolean algebra on <see cref="phosphorus.execute.iterators.Iterator"/>, making it
+    /// logical class, for performing boolean algebra on <see cref="phosphorus.expressions.iterators.Iterator"/>, making it
     /// possible to use all four main boolean operators on <see cref="phosphorus.core.Node"/> sets
     /// </summary>
     public class Logical
@@ -25,29 +25,28 @@ namespace phosphorus.expressions
             /// <summary>
             /// OR operator, for ORing results together
             /// </summary>
-            OR,
+            Or,
 
             /// <summary>
             /// AND operator, for ANDing results together
             /// </summary>
-            AND,
+            And,
 
             /// <summary>
             /// XOR operator, for eXclusively ORing results together
             /// </summary>
-            XOR,
+            Xor,
 
             /// <summary>
             /// NOT operator, for return all from previous results, except those in next result
             /// </summary>
-            NOT
+            Not
         }
 
-        private LogicalType _type;
-        private Iterator _iterator;
+        private readonly LogicalType _type;
 
         /// <summary>
-        /// initializes a new instance of the <see cref="phosphorus.execute.iterators.Logical"/> class
+        /// initializes a new instance of the <see cref="phosphorus.expressions.Logical"/> class
         /// </summary>
         /// <param name="type">type of logical, OR, AND, XOR or NOT</param>
         public Logical (LogicalType type)
@@ -61,18 +60,17 @@ namespace phosphorus.expressions
         /// <param name="iterator">iterator to append</param>
         public void AddIterator (Iterator iterator)
         {
-            iterator.Left = _iterator;
-            _iterator = iterator;
+            iterator.Left = Iterator;
+            Iterator = iterator;
         }
 
         /// <summary>
-        /// returns the last <see cref="phosphorus.execute.iterators.Iterator"/> in the list of iterators belonging to this logical
+        /// returns the last <see cref="phosphorus.expressions.iterators.Iterator"/> in the list of iterators belonging to this logical
         /// </summary>
         /// <value>the last iterator in the stack of iterators</value>
         public Iterator Iterator {
-            get {
-                return _iterator;
-            }
+            get;
+            private set;
         }
 
         /// <summary>
@@ -87,37 +85,28 @@ namespace phosphorus.expressions
 
         internal List<Node> EvaluateNodes (List<Node> nodes)
         {
-            List<Node> rhs = new List<Node> (_iterator.Evaluate);
-            List<Node> retVal = new List<Node> ();
+            var rhs = new List<Node> (Iterator.Evaluate);
+            var retVal = new List<Node> ();
             switch (_type) {
-            case LogicalType.OR:
+            case LogicalType.Or:
                 retVal.AddRange (nodes);
-                foreach (Node idx in rhs) {
-                    if (!retVal.Contains (idx))
-                        retVal.Add (idx);
+                foreach (var idx in rhs.Where (idx => !retVal.Contains (idx))) {
+                    retVal.Add (idx);
                 }
                 break;
-            case LogicalType.AND:
+            case LogicalType.And:
                 retVal.AddRange (nodes.FindAll (
-                    delegate (Node idx) {
-                    return rhs.Contains (idx);
-                }));
+                    idx => rhs.Contains(idx)));
                 break;
-            case LogicalType.XOR:
+            case LogicalType.Xor:
                 retVal.AddRange (nodes.FindAll (
-                    delegate (Node idx) {
-                    return !rhs.Contains (idx);
-                }));
+                    idx => !rhs.Contains(idx)));
                 retVal.AddRange (rhs.FindAll (
-                    delegate (Node idx) {
-                    return !nodes.Contains (idx);
-                }));
+                    idx => !nodes.Contains(idx)));
                 break;
-            case LogicalType.NOT:
+            case LogicalType.Not:
                 retVal.AddRange (nodes.FindAll (
-                    delegate (Node idx) {
-                    return !rhs.Contains (idx);
-                }));
+                    idx => !rhs.Contains(idx)));
                 break;
             }
             return retVal;

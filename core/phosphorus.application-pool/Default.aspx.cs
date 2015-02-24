@@ -88,7 +88,7 @@ namespace phosphorus.five.applicationpool
         {
             // raising our [pf.web.load-ui] Active Event, creating the node to pass in first
             // where the [_form] node becomes the name of thr form requested
-            Node args = new Node ("pf.web.load-ui");
+            var args = new Node ("pf.web.load-ui");
             args.Add (new Node ("_form", HttpContext.Current.Items ["__pf_original_url"] as string));
 
             // making sure we pass in any HTTP GET parameters
@@ -114,19 +114,19 @@ namespace phosphorus.five.applicationpool
         private void pf_web_create_widget (ApplicationContext context, ActiveEventArgs e)
         {
             // finding parent widget first, which defaults to "container" widget, if no widget is given
-            Node parentNode = e.Args.Find (
+            var parentNode = e.Args.Find (
                 delegate (Node idx) {
                     return idx.Name == "parent";
             });
-            Container parent = parentNode != null ? FindControl<Container> (parentNode.Get<string> (context), Page) : container;
+            var parent = parentNode != null ? FindControl<Container> (parentNode.Get<string> (context), Page) : container;
 
             // creating widget
-            Node creationalArgs = e.Args.Clone ();
+            var creationalArgs = e.Args.Clone ();
             CreateForm (context, creationalArgs, parent);
-            Control widget = creationalArgs.Get<Control> (context);
+            var widget = creationalArgs.Get<Control> (context);
 
             // creating events for widget
-            Node eventNode = e.Args.Find (
+            var eventNode = e.Args.Find (
                 delegate (Node idx) {
                     return idx.Name == "events";
             });
@@ -162,9 +162,9 @@ namespace phosphorus.five.applicationpool
                 // this Active Event is handled by one of the widgets on this page object
                 // making sure we raise it passing in the arguments passed in to the Active Event cloned
                 foreach (var idxEvt in PageEvents [e.Name]) {
-                    Node exeCopy = idxEvt.Item2.Clone ();
+                    var exeCopy = idxEvt.Item2.Clone ();
                     exeCopy.Value = e.Args.Value;
-                    foreach (Node idxArg in e.Args.Children) {
+                    foreach (var idxArg in e.Args.Children) {
                         exeCopy.Add (idxArg.Clone ());
                     }
                     context.Raise ("lambda", exeCopy);
@@ -184,7 +184,7 @@ namespace phosphorus.five.applicationpool
             foreach (var idxCtrlId in XUtil.Iterate<string> (e.Args, context)) {
 
                 // finding widget with given ID
-                Container ctrl = FindControl<Container> (idxCtrlId, Page);
+                var ctrl = FindControl<Container> (idxCtrlId, Page);
 
                 // removing all Active Event handlers and all Ajax Event handlers for widget
                 foreach (Control idx in ctrl.Controls) {
@@ -210,7 +210,7 @@ namespace phosphorus.five.applicationpool
             foreach (var idxCtrlId in XUtil.Iterate<string> (e.Args, context)) {
 
                 // finding widget with given ID
-                Widget widget = FindControl<Widget> (idxCtrlId, Page);
+                var widget = FindControl<Widget> (idxCtrlId, Page);
 
                 // removing all Ajax event handlers for widget
                 RemoveEvents (widget);
@@ -219,7 +219,7 @@ namespace phosphorus.five.applicationpool
                 RemoveActiveEvents (widget);
 
                 // actually removing widget from Page control collection, and persisting our change
-                Container parent = widget.Parent as Container;
+                var parent = widget.Parent as Container;
                 parent.RemoveControlPersistent (widget);
             }
         }
@@ -230,9 +230,9 @@ namespace phosphorus.five.applicationpool
         private void RemoveActiveEvents (Control widget)
         {
             // removing all Active Events for given widget
-            List<string> keysToRemove = new List<string> ();
-            foreach (string idxKey in PageEvents.Keys) {
-                List<Tuple<string, Node>> toRemove = new List<Tuple<string, Node>> ();
+            var keysToRemove = new List<string> ();
+            foreach (var idxKey in PageEvents.Keys) {
+                var toRemove = new List<Tuple<string, Node>> ();
                 foreach (var idxTuple in PageEvents [idxKey]) {
                     if (idxTuple.Item1 == widget.ID) {
                         toRemove.Add (idxTuple);
@@ -245,7 +245,7 @@ namespace phosphorus.five.applicationpool
                     keysToRemove.Add (idxKey);
                 }
             }
-            foreach (string idxKeyToRemove in keysToRemove) {
+            foreach (var idxKeyToRemove in keysToRemove) {
                 PageEvents.Remove (idxKeyToRemove);
             }
 
@@ -275,7 +275,7 @@ namespace phosphorus.five.applicationpool
         [ActiveEvent (Name = "pf.web.include-javascript")]
         private void pf_web_include_javascript (ApplicationContext context, ActiveEventArgs e)
         {
-            string js = XUtil.Single<string> (e.Args, context);
+            var js = XUtil.Single<string> (e.Args, context);
             Manager.SendJavaScriptToClient (js);
         }
         
@@ -289,8 +289,8 @@ namespace phosphorus.five.applicationpool
         [ActiveEvent (Name = "pf.web.return-value")]
         private void pf_web_return_value (ApplicationContext context, ActiveEventArgs e)
         {
-            string key = XUtil.Single<string> (e.Args, context);
-            string str = XUtil.Single<string> (e.Args.LastChild, context);
+            var key = XUtil.Single<string> (e.Args, context);
+            var str = XUtil.Single<string> (e.Args.LastChild, context);
             Manager.SendObject (key, str);
         }
 
@@ -303,14 +303,14 @@ namespace phosphorus.five.applicationpool
         private void _pf_web_add_widget_event (ApplicationContext context, ActiveEventArgs e)
         {
             // retrieving widget id, and creating an event collection for the given widget
-            Widget widget = e.Args.Get<Widget> (context);
+            var widget = e.Args.Get<Widget> (context);
             if (!AjaxEvents.ContainsKey (widget.ID))
                 AjaxEvents [widget.ID] = new Dictionary<string, List<Node>> ();
 
             // creating an event collection for the given event for the given widget. notice that one widget might
             // create multiple pf.lambda objects for the same event, meaning one widget might have several ajax event handlers
             // for the same ajax event
-            string eventName = e.Args [0].Name;
+            var eventName = e.Args [0].Name;
             if (!AjaxEvents [widget.ID].ContainsKey (eventName))
                 AjaxEvents [widget.ID] [eventName] = new List<Node> ();
 
@@ -331,7 +331,7 @@ namespace phosphorus.five.applicationpool
         {
             // defaulting parent to page object, but checking to see if an explicit parent is given through e.Args
             Control parentCtrl = Page;
-            Node parentNode = e.Args.Find (
+            var parentNode = e.Args.Find (
                 delegate (Node idx) {
                     return idx.Name == "parent";
             });
@@ -387,7 +387,7 @@ namespace phosphorus.five.applicationpool
             if (idx.ID == id)
                 return idx as T;
             foreach (Control idxChild in idx.Controls) {
-                T tmpRet = FindControl<T> (id, idxChild);
+                var tmpRet = FindControl<T> (id, idxChild);
                 if (tmpRet != null)
                     return tmpRet;
             }
@@ -426,10 +426,10 @@ namespace phosphorus.five.applicationpool
         [WebMethod]
         protected void common_event_handler (pf.Widget sender, Widget.AjaxEventArgs e)
         {
-            string id = sender.ID;
-            string eventName = e.Name;
-            List<Node> lambdas = AjaxEvents [id] [eventName];
-            foreach (Node idxLambda in lambdas) {
+            var id = sender.ID;
+            var eventName = e.Name;
+            var lambdas = AjaxEvents [id] [eventName];
+            foreach (var idxLambda in lambdas) {
                 _context.Raise ("lambda", idxLambda.Clone ());
             }
         }

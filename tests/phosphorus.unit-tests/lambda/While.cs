@@ -27,7 +27,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void While1 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data").LastChild
                     .Add ("su")
                     .Add ("cc")
@@ -50,7 +50,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void While2 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data").LastChild
                     .Add ("su")
                     .Add ("cc")
@@ -76,7 +76,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void While3 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data").LastChild
                     .Add ("su")
                     .Add ("cc")
@@ -102,7 +102,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void While4 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data").LastChild
                     .Add ("su")
                     .Add ("cc")
@@ -128,7 +128,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void While5 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data").LastChild
                     .Add ("success", "foo")
                     .Add ("error").Parent
@@ -149,7 +149,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void While6 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data").LastChild
                     .Add ("success", "foo")
                     .Add ("error").Parent
@@ -172,7 +172,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void While7 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_result")
                 .Add ("while", "tjobing").LastChild
                     .Add ("lambda").LastChild

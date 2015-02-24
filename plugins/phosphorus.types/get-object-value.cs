@@ -34,8 +34,8 @@ namespace phosphorus.hyperlisp
         [ActiveEvent (Name = "pf.hyperlisp.get-object-value.node")]
         private static void pf_hyperlisp_get_object_value_node (ApplicationContext context, ActiveEventArgs e)
         {
-            string code = e.Args.Get<string> (context);
-            Node tmp = new Node (string.Empty, code);
+            var code = e.Args.Get<string> (context);
+            var tmp = new Node (string.Empty, code);
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             if (tmp.Count > 0) {
 
@@ -54,8 +54,8 @@ namespace phosphorus.hyperlisp
         [ActiveEvent (Name = "pf.hyperlisp.get-object-value.abs.node")]
         private static void pf_hyperlisp_get_object_value_abs_node (ApplicationContext context, ActiveEventArgs e)
         {
-            string code = e.Args.Get<string> (context);
-            Node tmp = new Node (string.Empty, code);
+            var code = e.Args.Get<string> (context);
+            var tmp = new Node (string.Empty, code);
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
             if (tmp.Count == 1) {
 
@@ -243,7 +243,7 @@ namespace phosphorus.hyperlisp
         [ActiveEvent (Name = "pf.hyperlisp.get-object-value.date")]
         private static void pf_hyperlisp_get_object_value_date (ApplicationContext context, ActiveEventArgs e)
         {
-            string strDate = e.Args.Get<string> (context);
+            var strDate = e.Args.Get<string> (context);
             if (strDate.Length == 10)
                 e.Args.Value = DateTime.ParseExact (strDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
             else if (strDate.Length == 19)
@@ -262,7 +262,7 @@ namespace phosphorus.hyperlisp
         [ActiveEvent (Name = "pf.hyperlisp.get-object-value.time")]
         private static void pf_hyperlisp_get_object_value_time (ApplicationContext context, ActiveEventArgs e)
         {
-            string str = e.Args.Get<string> (context);
+            var str = e.Args.Get<string> (context);
             e.Args.Value = TimeSpan.ParseExact (str, "c", CultureInfo.InvariantCulture);
         }
     }

@@ -32,7 +32,7 @@ namespace phosphorus.file
 
                 // first time we invoke this bugger, retrieving root folder by raising our
                 // "retrieve root folder" Active Event
-                Node rootNode = new Node ();
+                var rootNode = new Node ();
                 context.Raise ("pf.core.application-folder", rootNode);
                 _rootFolder = rootNode.Get<string> (context);
 

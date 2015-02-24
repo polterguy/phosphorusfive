@@ -20,7 +20,7 @@ namespace phosphorus.ajax.core
         /// <param name="name">Name.</param>
         public static bool IsLegalMethodName (string name)
         {
-            foreach (char idxChar in name) {
+            foreach (var idxChar in name) {
                 if ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_".IndexOf (idxChar) == -1)
                     return false;
             }

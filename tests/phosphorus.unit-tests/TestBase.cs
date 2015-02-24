@@ -39,7 +39,7 @@ namespace phosphorus.unittests
         /// <param name="hyperlisp">Hyperlisp you wish to execute</param>
         protected Node ExecuteLambda (string hyperlisp, string lambdaActiveEvent = "lambda")
         {
-            Node node = new Node ();
+            var node = new Node ();
             node.Value = hyperlisp;
             _context.Raise ("pf.hyperlisp.hyperlisp2lambda", node);
             node.Value = null;

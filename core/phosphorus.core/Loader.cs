@@ -21,10 +21,10 @@ namespace phosphorus.core
     /// </summary>
     public class Loader
     {
-        private static Loader _instance = new Loader ();
-        private List<Assembly> _assemblies = new List<Assembly> ();
-        private Dictionary<Type, List<Tuple<ActiveEventAttribute, MethodInfo>>> _instanceActiveEvents;
-        private Dictionary<Type, List<Tuple<ActiveEventAttribute, MethodInfo>>> _staticActiveEvents;
+        private static readonly Loader _instance = new Loader ();
+        private readonly List<Assembly> _assemblies = new List<Assembly> ();
+        private readonly Dictionary<Type, List<Tuple<ActiveEventAttribute, MethodInfo>>> _instanceActiveEvents;
+        private readonly Dictionary<Type, List<Tuple<ActiveEventAttribute, MethodInfo>>> _staticActiveEvents;
 
         private Loader ()
         {
@@ -49,7 +49,7 @@ namespace phosphorus.core
         /// <returns>the application context</returns>
         public ApplicationContext CreateApplicationContext ()
         {
-            ApplicationContext context = new ApplicationContext (_instanceActiveEvents, _staticActiveEvents);
+            var context = new ApplicationContext (_instanceActiveEvents, _staticActiveEvents);
             return context;
         }
 
@@ -82,7 +82,7 @@ namespace phosphorus.core
         public void LoadAssembly (Type type)
         {
             // checking to see if assembly is already loaded up, to avoid initializing the same assembly twice
-            Assembly assembly = type.Assembly;
+            var assembly = type.Assembly;
             if (_assemblies.Exists (
                 delegate(Assembly idx) {
                 return idx == assembly;
@@ -136,7 +136,7 @@ namespace phosphorus.core
             }
 
             // we must dynamically load assembly and initialize it
-            Assembly assembly = Assembly.LoadFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path + name));
+            var assembly = Assembly.LoadFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path + name));
             InitializeAssembly (assembly);
             _assemblies.Add (assembly);
         }
@@ -152,7 +152,7 @@ namespace phosphorus.core
                 name += ".dll";
 
             // finding the assembly in our list of initialized assemblies
-            Assembly assembly = _assemblies.Find (
+            var assembly = _assemblies.Find (
                 delegate (Assembly idx) {
                     return idx.ManifestModule.Name.ToLower () == name;
             });
@@ -174,7 +174,7 @@ namespace phosphorus.core
         private void RemoveAssembly (Assembly assembly)
         {
             // looping through all types from assembly, to see if they're handling Active Events
-            foreach (Type idxType in assembly.GetTypes ())
+            foreach (var idxType in assembly.GetTypes ())
             {
                 if (_instanceActiveEvents.ContainsKey (idxType))
                     _instanceActiveEvents.Remove (idxType);
@@ -191,10 +191,10 @@ namespace phosphorus.core
         private void InitializeAssembly (Assembly assembly)
         {
             // looping through all types in assembly
-            foreach (Type idxType in assembly.GetTypes ())
+            foreach (var idxType in assembly.GetTypes ())
             {
                 // adding instance Active Events
-                MethodInfo[] instanceMethods = idxType.GetMethods (
+                var instanceMethods = idxType.GetMethods (
                     BindingFlags.FlattenHierarchy | 
                     BindingFlags.Instance | 
                     BindingFlags.NonPublic | 
@@ -202,7 +202,7 @@ namespace phosphorus.core
                 AddActiveEventsForType (idxType, instanceMethods, _instanceActiveEvents);
 
                 // adding static Active Events
-                MethodInfo[] staticMethods = idxType.GetMethods (
+                var staticMethods = idxType.GetMethods (
                     BindingFlags.FlattenHierarchy | 
                     BindingFlags.Static | 
                     BindingFlags.NonPublic | 
@@ -253,7 +253,7 @@ namespace phosphorus.core
          */
         private void VerifyActiveEventSignature (MethodInfo method)
         {
-            ParameterInfo[] pars = method.GetParameters ();
+            var pars = method.GetParameters ();
             if (pars.Length != 2 || 
                 pars [0].ParameterType != typeof(ApplicationContext) || 
                 pars [1].ParameterType != typeof(ActiveEventArgs))

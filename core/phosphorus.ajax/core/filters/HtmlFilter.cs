@@ -35,7 +35,7 @@ namespace phosphorus.ajax.core.filters
         protected override string RenderResponse ()
         {
             TextReader reader = new StreamReader (this, Encoding);
-            string content = reader.ReadToEnd ();
+            var content = reader.ReadToEnd ();
             content = IncludeStylesheetFiles (content);
             content = IncludeJavaScriptFiles (content);
             content = IncludeJavaScriptContent (content);
@@ -52,17 +52,17 @@ namespace phosphorus.ajax.core.filters
 
             // stripping away "</body>...</html>" from the end, and keeping the "</body>...</html>" parts to concatenate into result after
             // inserting all JavaScript files inbetween
-            string endBuffer = "";
-            int idxPosition = 0;
+            var endBuffer = "";
+            var idxPosition = 0;
             for (; idxPosition < content.Length; idxPosition ++) {
                 if (endBuffer.EndsWith (">") && endBuffer.EndsWith ("<head>", StringComparison.InvariantCultureIgnoreCase))
                     break;
                 endBuffer += content [idxPosition];
             }
-            StringBuilder builder = new StringBuilder (endBuffer + "\r\n");
+            var builder = new StringBuilder (endBuffer + "\r\n");
 
             // including javascript files
-            foreach (string idxFile in (Manager.Page as IAjaxPage).StylesheetFilesToPush) {
+            foreach (var idxFile in (Manager.Page as IAjaxPage).StylesheetFilesToPush) {
                 builder.Append (string.Format("        <link rel=\"stylesheet\" type=\"text/css\" href=\"{0}\"></link>\r\n", idxFile));
             }
 
@@ -81,17 +81,17 @@ namespace phosphorus.ajax.core.filters
 
             // stripping away "</body>...</html>" from the end, and keeping the "</body>...</html>" parts to concatenate into result after
             // inserting all JavaScript files inbetween
-            string endBuffer = "";
-            int idxPosition = content.Length - 1;
+            var endBuffer = "";
+            var idxPosition = content.Length - 1;
             for (; idxPosition >= 0; idxPosition --) {
                 endBuffer = content [idxPosition] + endBuffer;
                 if (endBuffer.StartsWith ("<") && endBuffer.StartsWith ("</body>", StringComparison.InvariantCultureIgnoreCase))
                     break;
             }
-            StringBuilder builder = new StringBuilder (content.Substring (0, idxPosition));
+            var builder = new StringBuilder (content.Substring (0, idxPosition));
 
             // including javascript files
-            foreach (string idxFile in (Manager.Page as IAjaxPage).JavaScriptFilesToPush) {
+            foreach (var idxFile in (Manager.Page as IAjaxPage).JavaScriptFilesToPush) {
                 builder.Append (string.Format(@"    <script type=""text/javascript"" src=""{0}""></script>
     ", idxFile.Replace ("&", "&amp;")));
             }
@@ -111,19 +111,19 @@ namespace phosphorus.ajax.core.filters
 
             // stripping away "</body>...</html>" from the end, and keeping the "</body>...</html>" parts to concatenate into result after
             // inserting all JavaScript files inbetween
-            string endBuffer = "";
-            int idxPosition = content.Length - 1;
+            var endBuffer = "";
+            var idxPosition = content.Length - 1;
             for (; idxPosition >= 0; idxPosition --) {
                 endBuffer = content [idxPosition] + endBuffer;
                 if (endBuffer.StartsWith ("<") && endBuffer.StartsWith ("</body>", StringComparison.InvariantCultureIgnoreCase))
                     break;
             }
-            StringBuilder builder = new StringBuilder (content.Substring (0, idxPosition));
+            var builder = new StringBuilder (content.Substring (0, idxPosition));
 
             // including javascript files
             builder.Append (@"    <script type=""text/javascript"">window.onload = function() {
 ");
-            foreach (string idxScript in Manager.Changes ["__pf_script"] as List<string>) {
+            foreach (var idxScript in Manager.Changes ["__pf_script"] as List<string>) {
                 builder.Append (idxScript);
                 builder.Append ("\r\n");
             }

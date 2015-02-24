@@ -37,14 +37,14 @@ namespace phosphorus.five.applicationpool
             }
 
             // then raising the application start active event
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            var context = Loader.Instance.CreateApplicationContext ();
             context.Raise ("pf.core.application-start", null);
 
             // for then to execute our "startup file", if there exists any
             if (!string.IsNullOrEmpty (ConfigurationManager.AppSettings ["application-startup-file"])) {
 
                 // there is an application-startup-file declared in app.config file, executing it as pf.lambda file
-                string appStartFilePath = ConfigurationManager.AppSettings ["application-startup-file"];
+                var appStartFilePath = ConfigurationManager.AppSettings ["application-startup-file"];
                 ExecuteLambdaFile (context, appStartFilePath);
             }
         }
@@ -55,12 +55,12 @@ namespace phosphorus.five.applicationpool
         private static void ExecuteLambdaFile (ApplicationContext context, string filePath)
         {
             // loading file
-            Node loadFileNode = new Node (string.Empty, filePath);
+            var loadFileNode = new Node (string.Empty, filePath);
             context.Raise ("pf.file.load", loadFileNode);
 
             // TODO: use Utilities.Convert later when code is stable
             // converting file to lambda tree
-            Node fileToNodes = new Node (string.Empty, loadFileNode [0].Get<string> (context));
+            var fileToNodes = new Node (string.Empty, loadFileNode [0].Get<string> (context));
             context.Raise ("pf.hyperlisp.hyperlisp2lambda", fileToNodes);
 
             // raising file as pf.lambda object
@@ -73,7 +73,7 @@ namespace phosphorus.five.applicationpool
         protected void Application_BeginRequest (object sender, EventArgs e)
         {
             // rewriting path such that "x.com/somefolder/somefile" becomes "x.com?file=somefolder/somefile"
-            string localPath = HttpContext.Current.Request.Url.LocalPath;
+            var localPath = HttpContext.Current.Request.Url.LocalPath;
 
             // checking to see if this is a [pf.page] request, and if so, we rewrite the path to "Default.aspx"
             // and store the original URL in the HttpContext.Item collection for later references

@@ -42,7 +42,7 @@ namespace phosphorus.web.ui
         public static void Set (Node node, ApplicationContext context, SetDelegate functor)
         {
             // retrieving source
-            object source = XUtil.Source (node, context);
+            var source = XUtil.Source (node, context);
 
             // looping through each destination, creating an object, or removing an existing
             // object, for each destination
@@ -65,12 +65,12 @@ namespace phosphorus.web.ui
             foreach (var idx in XUtil.Iterate<string> (node, context)) {
 
                 // retrieving object from key
-                object value = functor (idx);
+                var value = functor (idx);
                 if (value != null) {
 
                     // adding key node, and value as object, if value is not node, otherwise
                     // appending value nodes beneath key node
-                    Node resultNode = node.Add (idx).LastChild;
+                    var resultNode = node.Add (idx).LastChild;
                     if (value is Node) {
 
                         // value is Node
@@ -98,7 +98,7 @@ namespace phosphorus.web.ui
         public static void List (Node node, ApplicationContext context, ListDelegate functor)
         {
             // retrieving filters, if any
-            List<string> filter = new List<string> (XUtil.Iterate<string> (node, context));
+            var filter = new List<string> (XUtil.Iterate<string> (node, context));
 
             // looping through each existing key in collection
             foreach (var idxKey in functor ()) {
@@ -111,7 +111,7 @@ namespace phosphorus.web.ui
                 } else {
 
                     // filter was given, checking if key matches one of our filters
-                    foreach (string idxFilter in filter) {
+                    foreach (var idxFilter in filter) {
                         if (idxKey.IndexOf (idxFilter) != -1) {
 
                             // matches filter, hence adding to output

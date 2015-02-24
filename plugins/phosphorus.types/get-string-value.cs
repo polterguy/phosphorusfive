@@ -36,7 +36,7 @@ namespace phosphorus.hyperlisp
         [ActiveEvent (Name = "pf.hyperlisp.get-string-value.phosphorus.core.Node")]
         private static void pf_hyperlisp_get_string_value_phosphorus_core_Node (ApplicationContext context, ActiveEventArgs e)
         {
-            Node tmp = new Node ("", e.Args.Value);
+            var tmp = new Node ("", e.Args.Value);
             context.Raise ("pf.hyperlisp.lambda2hyperlisp", tmp);
             e.Args.Value = tmp.Value;
         }
@@ -49,7 +49,7 @@ namespace phosphorus.hyperlisp
         [ActiveEvent (Name = "pf.hyperlisp.get-string-value.System.DateTime")]
         private static void pf_hyperlisp_get_string_value_System_DateTime (ApplicationContext context, ActiveEventArgs e)
         {
-            DateTime value = e.Args.Get<DateTime> (context);
+            var value = e.Args.Get<DateTime> (context);
             if (value.Hour == 0 && value.Minute == 0 && value.Second == 0 && value.Millisecond == 0)
                 e.Args.Value = value.ToString ("yyyy-MM-dd", CultureInfo.InvariantCulture);
             else if (value.Millisecond == 0)

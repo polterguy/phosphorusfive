@@ -38,7 +38,7 @@ namespace phosphorus.lambda
             } else {
 
                 // static source, hence retrieving source before iteration starts
-                object source = XUtil.SourceSingle (e.Args, context);
+                var source = XUtil.SourceSingle (e.Args, context);
 
                 // iterating through all destinations, updating with source
                 foreach (var idxDestination in XUtil.Iterate (e.Args, context)) {

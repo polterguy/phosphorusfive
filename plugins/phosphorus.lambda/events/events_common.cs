@@ -18,13 +18,13 @@ namespace phosphorus.lambda
     public static class events_common
     {
         // contains our list of dynamically created Active Events
-        private static Dictionary<string, Node> _events = new Dictionary<string, Node> ();
+        private static readonly Dictionary<string, Node> _events = new Dictionary<string, Node> ();
 
         // used to remember the overrides across Application Context instances
-        private static Dictionary<string, List<string>> _overrides = new Dictionary<string, List<string>> ();
+        private static readonly Dictionary<string, List<string>> _overrides = new Dictionary<string, List<string>> ();
 
         // used to create lock when creating, deleting and consuming events
-        private static object _lock;
+        private static readonly object _lock;
 
         // necessary to make sure we have a global "lock" object
         static events_common ()
@@ -41,7 +41,7 @@ namespace phosphorus.lambda
         private static void pf_meta_list_events (ApplicationContext context, ActiveEventArgs e)
         {
             // retrieving filter, if any
-            List<string> filter = new List<string> (e.Args.Value == null ? new string [] { } : XUtil.Iterate<string> (e.Args, context));
+            var filter = new List<string> (e.Args.Value == null ? new string [] { } : XUtil.Iterate<string> (e.Args, context));
 
             // looping through each Active Event from core
             foreach (var idx in _events.Keys) {
@@ -83,7 +83,7 @@ namespace phosphorus.lambda
 
                 // looping through each "lambda.xxx" node inside of event creation node, appending these
                 // into our event node
-                foreach (Node idxLambda in lambdas) {
+                foreach (var idxLambda in lambdas) {
                     _events [name].Add (idxLambda.Clone ());
                 }
             }
@@ -190,7 +190,7 @@ namespace phosphorus.lambda
             if (_events.ContainsKey (e.Name)) {
 
                 // keep a reference to all lambda objects in current event, such that we can later delete them
-                List<Node> lambdas = new List<Node> ();
+                var lambdas = new List<Node> ();
 
                 // acquiring lock to make sure we're thread safe,
                 // this lock must be released before event is invoked, and is only here since we're consuming
@@ -206,12 +206,12 @@ namespace phosphorus.lambda
                         // looping through all [lambda.xxx] objects in current event, concatenating these into
                         // event invocation statement, storing a reference to each lambda object,
                         // before we release lock, and execute event invocation node
-                        Node idxLambdaParent = _events [e.Name];
-                        foreach (Node idxLambda in idxLambdaParent.Children) {
+                        var idxLambdaParent = _events [e.Name];
+                        foreach (var idxLambda in idxLambdaParent.Children) {
 
                             // appending lambda nodes into current Active Event node, and storing lambda such that we can
                             // later remove it from current node
-                            Node tmp = idxLambda.Clone ();
+                            var tmp = idxLambda.Clone ();
                             e.Args.Add (tmp);
                             lambdas.Add (tmp);
                         }

@@ -38,7 +38,7 @@ namespace phosphorus.unittests.plugins
         public void Exists ()
         {
             // creating file using phosphorus.file
-            Node node = new Node (string.Empty, "test1.txt")
+            var node = new Node (string.Empty, "test1.txt")
                 .Add ("source", "this is a test");
             _context.Raise ("pf.file.save", node);
 
@@ -58,7 +58,7 @@ namespace phosphorus.unittests.plugins
         public void ExistsExpression1 ()
         {
             // creating files using phosphorus.file
-            Node node = new Node (string.Empty, "test1.txt")
+            var node = new Node (string.Empty, "test1.txt")
                 .Add ("source", "this is a test");
             _context.Raise ("pf.file.save", node);
             node = new Node (string.Empty, "test2.txt")
@@ -85,7 +85,7 @@ namespace phosphorus.unittests.plugins
         public void ExistsExpression2 ()
         {
             // creating files using phosphorus.file
-            Node node = new Node (string.Empty, "test1.txt")
+            var node = new Node (string.Empty, "test1.txt")
                 .Add ("source", "this is a test");
             _context.Raise ("pf.file.save", node);
             node = new Node (string.Empty, "test1.txt")
@@ -113,7 +113,7 @@ namespace phosphorus.unittests.plugins
         public void ExistsExpression3 ()
         {
             // creating files using phosphorus.file
-            Node node = new Node (string.Empty, "test1.txt")
+            var node = new Node (string.Empty, "test1.txt")
                 .Add ("source", "this is a test");
             _context.Raise ("pf.file.save", node);
 
@@ -134,7 +134,7 @@ namespace phosphorus.unittests.plugins
         public void Remove ()
         {
             // creating file using phosphorus.file
-            Node node = new Node (string.Empty, "test1.txt")
+            var node = new Node (string.Empty, "test1.txt")
                 .Add ("source", "this is a test");
             _context.Raise ("pf.file.save", node);
 
@@ -153,7 +153,7 @@ namespace phosphorus.unittests.plugins
         public void RemoveExpression1 ()
         {
             // creating files using phosphorus.file
-            Node node = new Node (string.Empty, "test1.txt")
+            var node = new Node (string.Empty, "test1.txt")
                 .Add ("source", "this is a test");
             _context.Raise ("pf.file.save", node);
 
@@ -179,7 +179,7 @@ namespace phosphorus.unittests.plugins
         public void RemoveExpression2 ()
         {
             // creating files using phosphorus.file
-            Node node = new Node (string.Empty, "test1.txt")
+            var node = new Node (string.Empty, "test1.txt")
                 .Add ("source", "this is a test");
             _context.Raise ("pf.file.save", node);
 
@@ -206,7 +206,7 @@ namespace phosphorus.unittests.plugins
         public void RemoveExpression3 ()
         {
             // creating files using phosphorus.file
-            Node node = new Node (string.Empty, "test1.txt")
+            var node = new Node (string.Empty, "test1.txt")
                 .Add ("source", "this is a test");
             _context.Raise ("pf.file.save", node);
 
@@ -231,7 +231,7 @@ namespace phosphorus.unittests.plugins
             }
 
             // creating file using phosphorus.file
-            Node node = new Node (string.Empty, "test1.txt")
+            var node = new Node (string.Empty, "test1.txt")
                 .Add ("source", "this is a test");
             _context.Raise ("pf.file.save", node);
 
@@ -258,7 +258,7 @@ namespace phosphorus.unittests.plugins
             }
 
             // creating file using phosphorus.file
-            Node node = new Node (string.Empty, "@/0/|/1/?name")
+            var node = new Node (string.Empty, "@/0/|/1/?name")
                 .Add ("test1.txt")
                 .Add ("test2.txt")
                 .Add ("source", "this is a test");
@@ -291,7 +291,7 @@ namespace phosphorus.unittests.plugins
             }
 
             // creating file using phosphorus.file
-            Node node = new Node (string.Empty, "@/1/|/2/?{0}")
+            var node = new Node (string.Empty, "@/1/|/2/?{0}")
                 .Add (string.Empty, "name")
                 .Add ("test1.txt")
                 .Add ("test2.txt")
@@ -322,7 +322,7 @@ namespace phosphorus.unittests.plugins
             }
 
             // creating file using phosphorus.file
-            Node node = new Node (string.Empty, "te{0}")
+            var node = new Node (string.Empty, "te{0}")
                 .Add (string.Empty, "st1.txt")
                 .Add ("source", "this is a test");
             _context.Raise ("pf.file.save", node);
@@ -347,7 +347,7 @@ namespace phosphorus.unittests.plugins
             }
 
             // creating file using phosphorus.file
-            Node node = new Node (string.Empty, "test1.txt")
+            var node = new Node (string.Empty, "test1.txt")
                 .Add ("success")
                 .Add ("source", "@/-/?name");
             _context.Raise ("pf.file.save", node);
@@ -372,7 +372,7 @@ namespace phosphorus.unittests.plugins
             }
 
             // creating file using phosphorus.file
-            Node node = new Node (string.Empty, "test1.txt")
+            var node = new Node (string.Empty, "test1.txt")
                 .Add ("succ")
                 .Add ("ess")
                 .Add ("source", "@/-2/|/-1/?name");
@@ -398,7 +398,7 @@ namespace phosphorus.unittests.plugins
             }
 
             // creating file using phosphorus.file
-            Node node = new Node (string.Empty, "te{0}1.txt")
+            var node = new Node (string.Empty, "te{0}1.txt")
                 .Add (string.Empty, "st")
                 .Add ("success")
                 .Add ("source", "@/-/?name");
@@ -424,7 +424,7 @@ namespace phosphorus.unittests.plugins
             }
 
             // creating file using phosphorus.file
-            Node node = new Node (string.Empty, "test1.txt")
+            var node = new Node (string.Empty, "test1.txt")
                 .Add ("success")
                 .Add ("source", "@/{0}/?name").LastChild
                     .Add (string.Empty, "-").Root;
@@ -453,7 +453,7 @@ namespace phosphorus.unittests.plugins
             }
 
             // creating file using phosphorus.file
-            Node node = new Node (string.Empty, "@/0/|/1/?name")
+            var node = new Node (string.Empty, "@/0/|/1/?name")
                 .Add ("test1.txt").LastChild
                     .Add ("success1").Parent
                 .Add ("test2.txt").LastChild
@@ -488,7 +488,7 @@ namespace phosphorus.unittests.plugins
             }
 
             // creating file using phosphorus.file
-            Node node = new Node (string.Empty, "@/0/|/1/?name")
+            var node = new Node (string.Empty, "@/0/|/1/?name")
                 .Add ("test1.txt").LastChild
                     .Add ("success1").Parent
                 .Add ("test2.txt").LastChild
@@ -526,7 +526,7 @@ namespace phosphorus.unittests.plugins
             }
 
             // creating file using phosphorus.file
-            Node node = new Node (string.Empty, "@/0/|/1/?name")
+            var node = new Node (string.Empty, "@/0/|/1/?name")
                 .Add ("test1.txt").LastChild
                     .Add ("success1", "name").Parent
                 .Add ("test2.txt").LastChild
@@ -592,7 +592,7 @@ pf.file.save:test1.txt
             }
 
             // creating file using phosphorus.file
-            Node node = new Node (string.Empty, "test1.txt")
+            var node = new Node (string.Empty, "test1.txt")
                 .Add ("source", "this is a LONGER test");
             _context.Raise ("pf.file.save", node);
 
@@ -619,7 +619,7 @@ pf.file.save:test1.txt
             }
             
             // creating file using phosphorus.file
-            Node node = new Node (string.Empty, "test1.txt")
+            var node = new Node (string.Empty, "test1.txt")
                 .Add ("source", "success");
             _context.Raise ("pf.file.save", node);
 
@@ -647,7 +647,7 @@ pf.file.save:test1.txt
             }
 
             // creating files using phosphorus.file
-            Node node = new Node (string.Empty, "test1.txt")
+            var node = new Node (string.Empty, "test1.txt")
                 .Add ("source", "success1");
             _context.Raise ("pf.file.save", node);
 
@@ -679,7 +679,7 @@ pf.file.save:test1.txt
             }
 
             // creating files using phosphorus.file
-            Node node = new Node (string.Empty, "test1.txt")
+            var node = new Node (string.Empty, "test1.txt")
                 .Add ("source", "success");
             _context.Raise ("pf.file.save", node);
 
@@ -704,7 +704,7 @@ pf.file.save:test1.txt
             }
 
             // creating files using phosphorus.file
-            Node node = new Node (string.Empty, "test1.txt")
+            var node = new Node (string.Empty, "test1.txt")
                 .Add ("source", "success");
             _context.Raise ("pf.file.save", node);
 

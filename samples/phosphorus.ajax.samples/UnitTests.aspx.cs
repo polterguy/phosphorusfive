@@ -166,14 +166,14 @@ namespace phosphorus.five.samples
         [WebMethod]
         protected void sandbox_invoke_add_child_onclick (pf.Container container, EventArgs e)
         {
-            List<pf.Literal> existing = new List<pf.Literal> (container.GetChildControls<pf.Literal> ());
+            var existing = new List<pf.Literal> (container.GetChildControls<pf.Literal> ());
             if (existing.Count != 1)
                 throw new ApplicationException ("widget disappeared somehow");
 
             if (existing[0].innerValue != "foo")
                 throw new ApplicationException ("widget had wrong innerValue");
 
-            pf.Literal literal = container.CreatePersistentControl<pf.Literal> ();
+            var literal = container.CreatePersistentControl<pf.Literal> ();
             literal.ElementType = "strong";
             literal.innerValue = "howdy world";
 
@@ -188,7 +188,7 @@ namespace phosphorus.five.samples
         [WebMethod]
         protected void sandbox_invoke_insert_child_onclick (pf.Container container, EventArgs e)
         {
-            pf.Literal literal = container.CreatePersistentControl<pf.Literal> (null, 0);
+            var literal = container.CreatePersistentControl<pf.Literal> (null, 0);
             literal.ElementType = "strong";
             literal.innerValue = "howdy world";
 
@@ -203,7 +203,7 @@ namespace phosphorus.five.samples
         [WebMethod]
         protected void sandbox_invoke_add_child_check_exist_1_onclick (pf.Container container, EventArgs e)
         {
-            pf.Literal literal = container.CreatePersistentControl<pf.Literal> ();
+            var literal = container.CreatePersistentControl<pf.Literal> ();
             literal.ElementType = "strong";
             literal.innerValue = "howdy world";
         }
@@ -211,7 +211,7 @@ namespace phosphorus.five.samples
         [WebMethod]
         protected void sandbox_invoke_add_child_check_exist_2_onclick (pf.Container container, EventArgs e)
         {
-            List<pf.Literal> existing = new List<pf.Literal> (container.GetChildControls<pf.Literal> ());
+            var existing = new List<pf.Literal> (container.GetChildControls<pf.Literal> ());
             if (existing.Count != 2)
                 throw new ApplicationException ("widget disappeared somehow");
             
@@ -221,7 +221,7 @@ namespace phosphorus.five.samples
             if (existing[1].innerValue != "howdy world")
                 throw new ApplicationException ("widget had wrong innerValue");
 
-            pf.Literal literal = container.CreatePersistentControl<pf.Literal> ();
+            var literal = container.CreatePersistentControl<pf.Literal> ();
             literal.ElementType = "strong";
             literal.innerValue = "howdy world 2";
 
@@ -236,7 +236,7 @@ namespace phosphorus.five.samples
         [WebMethod]
         protected void sandbox_invoke_insert_child_check_exist_1_onclick (pf.Container container, EventArgs e)
         {
-            pf.Literal literal = container.CreatePersistentControl<pf.Literal> (null, 0);
+            var literal = container.CreatePersistentControl<pf.Literal> (null, 0);
             literal.ElementType = "strong";
             literal.innerValue = "howdy world";
         }
@@ -244,7 +244,7 @@ namespace phosphorus.five.samples
         [WebMethod]
         protected void sandbox_invoke_insert_child_check_exist_2_onclick (pf.Container container, EventArgs e)
         {
-            List<pf.Literal> existing = new List<pf.Literal> (container.GetChildControls<pf.Literal> ());
+            var existing = new List<pf.Literal> (container.GetChildControls<pf.Literal> ());
             if (existing.Count != 2)
                 throw new ApplicationException ("widget disappeared somehow");
 
@@ -254,7 +254,7 @@ namespace phosphorus.five.samples
             if (existing[1].innerValue != "foo")
                 throw new ApplicationException ("widget had wrong innerValue");
 
-            pf.Literal literal = container.CreatePersistentControl<pf.Literal> (null, 1);
+            var literal = container.CreatePersistentControl<pf.Literal> (null, 1);
             literal.ElementType = "strong";
             literal.innerValue = "howdy world 2";
 
@@ -269,14 +269,14 @@ namespace phosphorus.five.samples
         [WebMethod]
         protected void sandbox_invoke_remove_child_onclick (pf.Container container, EventArgs e)
         {
-            List<pf.Literal> literals = new List<pf.Literal> (container.GetChildControls<pf.Literal> ());
+            var literals = new List<pf.Literal> (container.GetChildControls<pf.Literal> ());
             container.RemoveControlPersistent (literals [0]);
         }
         
         [WebMethod]
         protected void sandbox_invoke_remove_multiple_onclick (pf.Container container, EventArgs e)
         {
-            List<pf.Literal> literals = new List<pf.Literal> (container.GetChildControls<pf.Literal> ());
+            var literals = new List<pf.Literal> (container.GetChildControls<pf.Literal> ());
             container.RemoveControlPersistent (literals [0]);
             container.RemoveControlPersistent (literals [1]);
         }
@@ -284,9 +284,9 @@ namespace phosphorus.five.samples
         [WebMethod]
         protected void sandbox_invoke_append_remove_onclick (pf.Container container, EventArgs e)
         {
-            List<pf.Literal> literals = new List<pf.Literal> (container.GetChildControls<pf.Literal> ());
+            var literals = new List<pf.Literal> (container.GetChildControls<pf.Literal> ());
             container.RemoveControlPersistent (literals [0]);
-            pf.Literal literal = container.CreatePersistentControl<pf.Literal> (null, 0);
+            var literal = container.CreatePersistentControl<pf.Literal> (null, 0);
             literal.ElementType = "strong";
             literal.innerValue = "howdy world";
         }
@@ -302,12 +302,12 @@ namespace phosphorus.five.samples
             // creating two new controls
 
             // parent is sandbox_invoke_remove_many
-            pf.Literal lit1 = container.CreatePersistentControl<pf.Literal> (null, 0);
+            var lit1 = container.CreatePersistentControl<pf.Literal> (null, 0);
             lit1.ElementType = "strong";
             lit1.innerValue = "howdy";
 
             // parent is sandbox_invoke_remove_many_5
-            pf.Literal lit2 = ((pf.Container)((pf.Container)container.Controls [2]).Controls [1]).CreatePersistentControl<pf.Literal> ();
+            var lit2 = ((pf.Container)((pf.Container)container.Controls [2]).Controls [1]).CreatePersistentControl<pf.Literal> ();
             lit2.ElementType = "em";
             lit2.innerValue = "world";
         }

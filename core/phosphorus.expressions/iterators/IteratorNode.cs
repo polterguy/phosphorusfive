@@ -16,10 +16,10 @@ namespace phosphorus.expressions.iterators
     /// </summary>
     public class IteratorNode : Iterator
     {
-        private Node _node;
+        private readonly Node _node;
 
         /// <summary>
-        /// initializes a new instance of the <see cref="phosphorus.execute.iterators.IteratorNode"/> class
+        /// initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorNode"/> class
         /// </summary>
         /// <param name="node">the node to start iterating upon</param>
         public IteratorNode (Node node)

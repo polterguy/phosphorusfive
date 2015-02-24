@@ -15,8 +15,8 @@ namespace phosphorus.ajax.core
     internal class StatePersister : PageStatePersister
     {
         private const string _sessionKey = "__pf_viewstate_session_key";
-        private Guid _viewStateId;
-        private int _numberOfViewStateEntries;
+        private readonly Guid _viewStateId;
+        private readonly int _numberOfViewStateEntries;
 
         public StatePersister (Page page, int numberOfViewStateEntries)
             : base (page)
@@ -34,7 +34,7 @@ namespace phosphorus.ajax.core
             {
                 // adding the viewstate ID to the form, such that we can retrieve it again when the
                 // client does a postback
-                LiteralControl literal = new LiteralControl ();
+                var literal = new LiteralControl ();
                 literal.Text = string.Format (@"
             <input type=""hidden"" value=""{0}"" name=""__pf_state_key"">
         ", _viewStateId);
@@ -62,18 +62,18 @@ namespace phosphorus.ajax.core
 many viewstate values for current session, and hence current viewstate was removed. If you wish to see this page again, you must reload it");
             }
 
-            LosFormatter formatter = new LosFormatter ();
-            Pair pair = formatter.Deserialize (entry.Item2) as Pair;
+            var formatter = new LosFormatter ();
+            var pair = formatter.Deserialize (entry.Item2) as Pair;
             ControlState = pair.First;
             ViewState = pair.Second;
         }
 
         public override void Save ()
         {
-            StringBuilder builder = new StringBuilder ();
-            using (StringWriter writer = new StringWriter (builder))
+            var builder = new StringBuilder ();
+            using (var writer = new StringWriter (builder))
             {
-                LosFormatter formatter = new LosFormatter ();
+                var formatter = new LosFormatter ();
                 formatter.Serialize (writer, new Pair (ControlState, ViewState));
             }
 

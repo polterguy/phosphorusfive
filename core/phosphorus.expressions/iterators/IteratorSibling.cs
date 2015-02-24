@@ -15,10 +15,10 @@ namespace phosphorus.expressions.iterators
     /// </summary>
     public class IteratorSibling : Iterator
     {
-        private int _offset;
+        private readonly int _offset;
 
         /// <summary>
-        /// initializes a new instance of the <see cref="phosphorus.execute.iterators.IteratorSibling"/> class
+        /// initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorSibling"/> class
         /// </summary>
         /// <param name="offset">offset siblings from current nodes</param>
         public IteratorSibling (int offset)
@@ -28,9 +28,9 @@ namespace phosphorus.expressions.iterators
 
         public override IEnumerable<Node> Evaluate {
             get {
-                foreach (Node idxCurrent in Left.Evaluate) {
-                    int offset = _offset;
-                    Node tmpIdx = idxCurrent;
+                foreach (var idxCurrent in Left.Evaluate) {
+                    var offset = _offset;
+                    var tmpIdx = idxCurrent;
                     while (offset != 0 && tmpIdx != null) {
                         if (offset < 0) {
                             offset += 1;

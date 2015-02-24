@@ -6,8 +6,8 @@
 
 using System;
 using System.Globalization;
-using System.Collections.Generic;
 using phosphorus.core;
+using phosphorus.expressions.exceptions;
 using phosphorus.expressions.iterators;
 
 namespace phosphorus.expressions
@@ -19,7 +19,7 @@ namespace phosphorus.expressions
     public class Expression
     {
         // contains actual expression we're evaluating
-        private string _expression;
+        private readonly string _expression;
 
         // these next two buggers are kept around to provide contextual information for exceptions,
         // among other things, and to make conversions possible
@@ -36,7 +36,7 @@ namespace phosphorus.expressions
         }
 
         /// <summary>
-        /// initializes a new instance of the <see cref="phosphorus.execute.Expression"/> class
+        /// initializes a new instance of the <see cref="phosphorus.expressions.Expression"/> class
         /// </summary>
         /// <param name="expression">expression to evaluate</param>
         public static Expression Create (string expression)
@@ -46,7 +46,7 @@ namespace phosphorus.expressions
 
         /// <summary>
         /// evaluates expression for given <see cref="phosphorus.core.Node"/>, and returns 
-        /// <see cref="phosphorus.execute.Expression.Match"/> object wrapping all matches for 
+        /// <see cref="phosphorus.expressions.Match"/> object wrapping all matches for 
         /// evaluated expression
         /// </summary>
         public Match Evaluate (Node node, ApplicationContext context)
@@ -61,20 +61,21 @@ namespace phosphorus.expressions
             _context = context;
 
             // creating our "root group iterator"
-            IteratorGroup current = new IteratorGroup (node);
+            var current = new IteratorGroup (node);
             string typeOfExpression = null, previousToken = null;
 
             // Tokenizer uses StringReader to tokenize, making sure tokenizer is disposed when finished
-            using (Tokenizer tokenizer = new Tokenizer (_expression)) {
+            using (var tokenizer = new Tokenizer (_expression)) {
 
                 // looping through every token in espression, building up our Iterator tree hierarchy
-                foreach (string idxToken in tokenizer.Tokens) {
+                foreach (var idxToken in tokenizer.Tokens) {
                     if (previousToken == "?") {
 
                         // this is our last token, storing it as "expression type", before ending iteration
                         typeOfExpression = idxToken;
                         break;
-                    } else if (idxToken != "?") { // ignoring "?", handled in next iteration
+                    }
+                    if (idxToken != "?") { // ignoring "?", handled in next iteration
 
                         // building expression tree
                         current = AppendToken (current, idxToken, previousToken);
@@ -132,14 +133,52 @@ namespace phosphorus.expressions
                 break;
             case "@":
 
-                // reference expression. Notice the first "@" is removed during setup
-                if (current.IsReference) // making sure reference expressions can only be declared once
+                // reference expression, but only if it is the first token in expression
+                if (previousToken != null) {
+                    DefaultToken (current, token, previousToken, _context);
+                } else if (current.IsReference) {// making sure reference expressions can only be declared once
                     throw new ExpressionException (
                         _expression, 
                         "You cannot declare your expression to be a reference expression more than once.", 
                         _evaluatedNode, 
                         _context);
+                }
                 current.IsReference = true;
+                break;
+            case "..":
+
+                // root node token
+                current.AddIterator (new IteratorRoot ());
+                break;
+            case "*":
+
+                // all children token
+                current.AddIterator (new IteratorChildren ());
+                break;
+            case "**":
+
+                // flatten descendants token
+                current.AddIterator (new IteratorFlatten ());
+                break;
+            case ".":
+
+                // parent node token
+                current.AddIterator (new IteratorParent ());
+                break;
+            case "#":
+
+                // reference node token
+                current.AddIterator (new IteratorReference ());
+                break;
+            case "<":
+
+                // left shift token
+                current.AddIterator (new IteratorShiftLeft ());
+                break;
+            case ">":
+
+                // right shift token
+                current.AddIterator (new IteratorShiftRight ());
                 break;
             default:
 
@@ -155,28 +194,28 @@ namespace phosphorus.expressions
         /*
          * handles "|", "&", "!" and "^" tokens
          */
-        private void LogicalToken (IteratorGroup current, string token, string previousToken)
+        private static void LogicalToken (IteratorGroup current, string token, string previousToken)
         {
             switch (token) {
             case "|":
 
                 // OR logical boolean algebraic operator
-                current.AddLogical (new Logical (Logical.LogicalType.OR));
+                current.AddLogical (new Logical (Logical.LogicalType.Or));
                 break;
             case "&":
 
                 // AND logical boolean algebraic operator
-                current.AddLogical (new Logical (Logical.LogicalType.AND));
+                current.AddLogical (new Logical (Logical.LogicalType.And));
                 break;
             case "!":
 
                 // NOT logical boolean algebraic operator
-                current.AddLogical (new Logical (Logical.LogicalType.NOT));
+                current.AddLogical (new Logical (Logical.LogicalType.Not));
                 break;
             case "^":
                 
                 // XOR logical boolean algebraic operator
-                current.AddLogical (new Logical (Logical.LogicalType.XOR));
+                current.AddLogical (new Logical (Logical.LogicalType.Xor));
                 break;
             }
         }
@@ -206,53 +245,28 @@ namespace phosphorus.expressions
 
                 // modulo token
                 ModuloToken (current, token);
-            } else if (token.StartsWith ("-") || token.StartsWith ("+")) {
+            } else if (token.StartsWith("-") || token.StartsWith("+")) {
 
                 // modulo token
-                SiblingToken (current, token);
-            } else if (token == "..") {
-
-                // root node token
-                current.AddIterator (new IteratorRoot ());
-            } else if (token == "*") {
-
-                // all children token
-                current.AddIterator (new IteratorChildren ());
-            } else if (token == "**") {
-
-                // flatten descendants token
-                current.AddIterator (new IteratorFlatten ());
-            } else if (token == ".") {
-
-                // parent node token
-                current.AddIterator (new IteratorParent ());
-            } else if (token == "#") {
-
-                // reference node token
-                current.AddIterator (new IteratorReference ());
-            } else if (token == "<") {
-
-                // left shift token
-                current.AddIterator (new IteratorShiftLeft ());
-            } else if (token == ">") {
-
-                // right shift token
-                current.AddIterator (new IteratorShiftRight ());
-            } else if (token.StartsWith ("/")) {
+                SiblingToken(current, token);
+            } 
+            else if (token.StartsWith("/")) {
 
                 // named regex token
-                current.AddIterator (new IteratorNamedRegex (token, _expression, _evaluatedNode, _context));
-            } else if (Utilities.IsNumber (token)) {
-
-                // numbered child token
-                current.AddIterator (new IteratorNumbered (int.Parse (token)));
+                current.AddIterator(new IteratorNamedRegex(token, _expression, _evaluatedNode, _context));
             } else {
+                if (Utilities.IsNumber(token)) {
 
-                // defaulting to "named iterator", making sure we escape any prepending back slashes,
-                // to support escaped "\", numbers, "..xx" named nodes, and similar constructs
-                if (token.StartsWith ("\\"))
-                    token = token.Substring (1);
-                current.AddIterator (new IteratorNamed (token));
+                    // numbered child token
+                    current.AddIterator(new IteratorNumbered(int.Parse(token)));
+                } else {
+
+                    // defaulting to "named iterator", making sure we escape any prepending back slashes,
+                    // to support escaped "\", numbers, "..xx" named nodes, and similar constructs
+                    if (token.StartsWith("\\"))
+                        token = token.Substring(1);
+                    current.AddIterator(new IteratorNamed(token));
+                }
             }
         }
 
@@ -300,7 +314,7 @@ namespace phosphorus.expressions
                 if (token.IndexOf (':') == 0) {
 
                     // yup, we've got a type declaration for our token ...
-                    type = token.Substring (1, token.IndexOf (":", 1) - 1);
+                    type = token.Substring (1, token.IndexOf(":", 1, StringComparison.InvariantCulture) - 1);
                     token = token.Substring (type.Length + 2);
                 }
             }
@@ -323,7 +337,7 @@ namespace phosphorus.expressions
 
             if (token.IndexOf (',') != -1) {
                 token = token.Substring (1, token.Length - 2);
-                string[] values = token.Split (',');
+                var values = token.Split (',');
 
                 // verifying token has only two integer values, separated by ","
                 if (values.Length != 2)
@@ -332,10 +346,10 @@ namespace phosphorus.expressions
                         string.Format ("Syntax error in range token '[{0}]', ranged iterator takes two integer values, separated by ','", token),
                         _evaluatedNode, 
                         _context);
-                int start = -1;
-                int end = -1;
-                string startStr = values [0].Trim ();
-                string endStr = values [1].Trim ();
+                var start = -1;
+                var end = -1;
+                var startStr = values [0].Trim ();
+                var endStr = values [1].Trim ();
                 if (startStr.Length > 0) {
                     if (!Utilities.IsNumber (startStr))
                         throw new ExpressionException (
@@ -393,16 +407,16 @@ namespace phosphorus.expressions
          */
         private void SiblingToken (IteratorGroup current, string token)
         {
-            string intValue = token.Substring (1);
-            char oper = token [0];
-            int value = 1;
+            var intValue = token.Substring (1);
+            var oper = token [0];
+            var value = 1;
             if (intValue.Length > 0 && !Utilities.IsNumber (intValue))
                 throw new ExpressionException (
                     _expression, 
                     string.Format ("Syntax error in sibling token '{0}', expected integer value, found string", token),
                     _evaluatedNode, 
                     _context);
-            else if (intValue.Length > 0)
+            if (intValue.Length > 0)
                 value = int.Parse (intValue);
             current.AddIterator (new IteratorSibling (value * (oper == '+' ? 1 : -1)));
         }
@@ -473,7 +487,7 @@ namespace phosphorus.expressions
             }
 
             // looping through referenced expressions, yielding result from these referenced expression(s)
-            Match retVal = new Match (match.TypeOfMatch, context, convert);
+            var retVal = new Match (match.TypeOfMatch, context, convert);
 
             // looping through each match from reference expression
             foreach (var idxMatch in match) {
@@ -490,8 +504,7 @@ namespace phosphorus.expressions
                     // TODO: support formatting expressions through delegate callbacks, such that XUtil.Iterate
                     // and similar constructs can handle reference expressions, through callback, where referenced
                     // expression contains formatting parameters
-                    var innerMatch = Expression.Create (
-                        Utilities.Convert<string> (idxMatch.Value, context)).Evaluate (idxMatch.Node, context);
+                    var innerMatch = Create (Utilities.Convert<string> (idxMatch.Value, context)).Evaluate (idxMatch.Node, context);
                     foreach (var idxInner in innerMatch) {
                         retVal.Entities.Add (idxInner);
                     }

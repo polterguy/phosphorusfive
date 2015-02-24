@@ -30,11 +30,11 @@ namespace phosphorus.web.ui
         {
             var origNodeList = new List<Node> (e.Args.Children);
             foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
-                Widget widget = FindWidget (context, idx);
-                foreach (Node nameNode in origNodeList) {
+                var widget = FindWidget (context, idx);
+                foreach (var nameNode in origNodeList) {
                     if (widget.ElementType == "select" && nameNode.Name == "value") {
                         foreach (var idxCtrl in widget.Controls) {
-                            Widget idxWidget = idxCtrl as Widget;
+                            var idxWidget = idxCtrl as Widget;
                             if (idxWidget != null) {
                                 if (idxWidget.HasAttribute ("selected")) {
                                     if (XUtil.IsExpression (e.Args.Value)) {
@@ -82,8 +82,8 @@ namespace phosphorus.web.ui
         private static void pf_web_widgets_property_set (ApplicationContext context, ActiveEventArgs e)
         {
             foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
-                Widget widget = FindWidget (context, idx);
-                foreach (Node valueNode in e.Args.Children) {
+                var widget = FindWidget (context, idx);
+                foreach (var valueNode in e.Args.Children) {
                     string propertyValue;
                     switch (valueNode.Name) {
                     case "element":
@@ -111,8 +111,8 @@ namespace phosphorus.web.ui
         private static void pf_web_widgets_property_remove (ApplicationContext context, ActiveEventArgs e)
         {
             foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
-                Widget widget = FindWidget (context, idx);
-                foreach (Node nameNode in e.Args.Children) {
+                var widget = FindWidget (context, idx);
+                foreach (var nameNode in e.Args.Children) {
                     widget.RemoveAttribute (nameNode.Name);
                 }
             }
@@ -123,7 +123,7 @@ namespace phosphorus.web.ui
          */
         private static Widget FindWidget (ApplicationContext context, string widgetId)
         {
-            Node findCtrl = new Node (string.Empty, widgetId);
+            var findCtrl = new Node (string.Empty, widgetId);
             context.Raise ("_pf.web.find-control", findCtrl);
             return findCtrl [0].Get<Widget> (context);
         }

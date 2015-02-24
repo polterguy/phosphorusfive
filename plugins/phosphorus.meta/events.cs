@@ -26,7 +26,7 @@ namespace phosphorus.lambda
         private static void pf_meta_list_events (ApplicationContext context, ActiveEventArgs e)
         {
             // retrieving filter, if any
-            List<string> filter = new List<string> (e.Args.Value == null ? new string [] { } : XUtil.Iterate<string> (e.Args, context));
+            var filter = new List<string> (e.Args.Value == null ? new string [] { } : XUtil.Iterate<string> (e.Args, context));
 
             // looping through each Active Event from core
             foreach (var idx in context.ActiveEvents) {
@@ -59,11 +59,11 @@ namespace phosphorus.lambda
         [ActiveEvent (Name = "pf.meta.list-overrides")]
         private static void pf_meta_list_overrides (ApplicationContext context, ActiveEventArgs e)
         {
-            string query = e.Args.Get<string> (context);
+            var query = e.Args.Get<string> (context);
             foreach (var idx in context.Overrides) {
                 if (query == null || idx.Item1.Contains (query)) {
-                    Node over = new Node (string.Empty, idx.Item1);
-                    foreach (string idxStr in idx.Item2) {
+                    var over = new Node (string.Empty, idx.Item1);
+                    foreach (var idxStr in idx.Item2) {
                         over.Add (new Node (string.Empty, idxStr));
                     }
                     e.Args.Add (over);

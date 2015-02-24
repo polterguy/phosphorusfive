@@ -26,7 +26,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void If01 ()
         {
-            Node result = ExecuteLambda (@"if:foo
+            var result = ExecuteLambda (@"if:foo
   set:@/../?value
     source:success");
             Assert.AreEqual ("success", result.Value);
@@ -38,7 +38,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void If02 ()
         {
-            Node result = ExecuteLambda (@"if:foo
+            var result = ExecuteLambda (@"if:foo
   =:foo
   lambda
     set:@/../?value
@@ -52,7 +52,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void If03 ()
         {
-            Node result = ExecuteLambda (@"_result:success
+            var result = ExecuteLambda (@"_result:success
 if:foo
   =:bar
   lambda
@@ -68,7 +68,7 @@ if:foo
         [Test]
         public void If04 ()
         {
-            Node result = ExecuteLambda (@"_result:foo
+            var result = ExecuteLambda (@"_result:foo
 if:@/../*/_result/?value
   =:foo
   lambda
@@ -84,7 +84,7 @@ if:@/../*/_result/?value
         [Test]
         public void If05 ()
         {
-            Node result = ExecuteLambda (@"_result:success
+            var result = ExecuteLambda (@"_result:success
 if:@/../*/_result/?value
   =:foo
   lambda
@@ -101,7 +101,7 @@ if:@/../*/_result/?value
         [Test]
         public void If06 ()
         {
-            Node result = ExecuteLambda (@"_result:error
+            var result = ExecuteLambda (@"_result:error
 if:error
   =:@/../*/_result/?value
   lambda
@@ -118,7 +118,7 @@ if:error
         [Test]
         public void If07 ()
         {
-            Node result = ExecuteLambda (@"_result:success
+            var result = ExecuteLambda (@"_result:success
 if:foo
   =:@/../*/_result/?value
   lambda
@@ -134,7 +134,7 @@ if:foo
         [Test]
         public void If08 ()
         {
-            Node result = ExecuteLambda (@"_result1:foo
+            var result = ExecuteLambda (@"_result1:foo
 _result2:foo
 if:@/../*/_result1/?value
   =:@/../*/_result2/?value
@@ -151,7 +151,7 @@ if:@/../*/_result1/?value
         [Test]
         public void If09 ()
         {
-            Node result = ExecuteLambda (@"_result1:success
+            var result = ExecuteLambda (@"_result1:success
 _result2:foo
 if:@/../*/_result1/?value
   =:@/../*/_result2/?value
@@ -168,7 +168,7 @@ if:@/../*/_result1/?value
         [Test]
         public void If10 ()
         {
-            Node result = ExecuteLambda (@"_result1:int:5
+            var result = ExecuteLambda (@"_result1:int:5
 _result2:5
 if:@/../*/_result1/?value
   =:@/../*/_result2/?value
@@ -185,7 +185,7 @@ if:@/../*/_result1/?value
         [Test]
         public void If11 ()
         {
-            Node result = ExecuteLambda (@"_result1:int:5
+            var result = ExecuteLambda (@"_result1:int:5
 _result2:int:5
 if:@/../*/_result1/?value
   =:@/../*/_result2/?value
@@ -202,7 +202,7 @@ if:@/../*/_result1/?value
         [Test]
         public void If12 ()
         {
-            Node result = ExecuteLambda (@"_result1:int:5
+            var result = ExecuteLambda (@"_result1:int:5
 _result2:int:6
 if:@/../*/_result1/?value
   =:@/../*/_result2/?value
@@ -219,7 +219,7 @@ if:@/../*/_result1/?value
         [Test]
         public void If13 ()
         {
-            Node result = ExecuteLambda (@"_result1
+            var result = ExecuteLambda (@"_result1
   foo1:bar1
   foo2:bar2
 _result2
@@ -240,7 +240,7 @@ if:@/../*/_result1/*/?value
         [Test]
         public void If14 ()
         {
-            Node result = ExecuteLambda (@"_result1:success
+            var result = ExecuteLambda (@"_result1:success
   foo1:bar1
   foo2:bar2
 _result2
@@ -262,7 +262,7 @@ if:@/../*/_result1/*/?value
         [Test]
         public void If15 ()
         {
-            Node result = ExecuteLambda (@"_result1
+            var result = ExecuteLambda (@"_result1
   foo1:bar1
   foo2:int:5
 _result2
@@ -284,7 +284,7 @@ if:@/../*/_result1/*/?value
         [Test]
         public void If16 ()
         {
-            Node result = ExecuteLambda (@"_result1:success
+            var result = ExecuteLambda (@"_result1:success
   foo1:bar1
   foo2:int:5
 _result2
@@ -306,7 +306,7 @@ if:@/../*/_result1/*/?value
         [Test]
         public void If17 ()
         {
-            Node result = ExecuteLambda (@"_result1:success
+            var result = ExecuteLambda (@"_result1:success
   foo1:bar1
   foo2:int:5
 _result2
@@ -329,7 +329,7 @@ if:@/../*/_result1/*/?node
         [Test]
         public void If18 ()
         {
-            Node result = ExecuteLambda (@"_result1:error
+            var result = ExecuteLambda (@"_result1:error
   foo1:bar1
   foo2:int:5
 _result2
@@ -355,7 +355,7 @@ if:@/../*/_result1/*/?value
         [Test]
         public void If19 ()
         {
-            Node result = ExecuteLambda (@"_result1:error
+            var result = ExecuteLambda (@"_result1:error
   foo1:bar1
   foo2:5
 _result2
@@ -380,7 +380,7 @@ if:@/../*/_result1/*/?value
         [Test]
         public void If20 ()
         {
-            Node result = ExecuteLambda (@"_result
+            var result = ExecuteLambda (@"_result
   foo1:bar1
   foo2:int:5
 if:@/../*/_result/*/?count
@@ -398,7 +398,7 @@ if:@/../*/_result/*/?count
         [Test]
         public void If21 ()
         {
-            Node result = ExecuteLambda (@"_result
+            var result = ExecuteLambda (@"_result
   foo1:bar1
   foo2:int:5
 if:@/../*/_result/?node
@@ -417,7 +417,7 @@ if:@/../*/_result/?node
         [Test]
         public void If22 ()
         {
-            Node result = ExecuteLambda (@"_result:success
+            var result = ExecuteLambda (@"_result:success
 if:@/../*/_result/?value
   =
   lambda
@@ -432,7 +432,7 @@ if:@/../*/_result/?value
         [Test]
         public void If23 ()
         {
-            Node result = ExecuteLambda (@"_result:success
+            var result = ExecuteLambda (@"_result:success
 if:foo
   =
   lambda
@@ -447,7 +447,7 @@ if:foo
         [Test]
         public void If24 ()
         {
-            Node result = ExecuteLambda (@"_result:error
+            var result = ExecuteLambda (@"_result:error
 if:{0}o
   :fo
   =:{0}o
@@ -464,7 +464,7 @@ if:{0}o
         [Test]
         public void If25 ()
         {
-            Node result = ExecuteLambda (@"_result:error
+            var result = ExecuteLambda (@"_result:error
 if:@/../{0}/?value
   :0
   =:@/../{0}/?value
@@ -482,7 +482,7 @@ if:@/../{0}/?value
         [Test]
         public void If26 ()
         {
-            Node result = ExecuteLambda (@"_result:error
+            var result = ExecuteLambda (@"_result:error
 if:int:5
   >=:int:4
   lambda
@@ -497,7 +497,7 @@ if:int:5
         [Test]
         public void If27 ()
         {
-            Node result = ExecuteLambda (@"_result:success
+            var result = ExecuteLambda (@"_result:success
 if:int:4
   >=:int:5
   lambda
@@ -512,7 +512,7 @@ if:int:4
         [Test]
         public void If28 ()
         {
-            Node result = ExecuteLambda (@"_result:error
+            var result = ExecuteLambda (@"_result:error
 if:b
   >=:a
   lambda
@@ -527,7 +527,7 @@ if:b
         [Test]
         public void If29 ()
         {
-            Node result = ExecuteLambda (@"_result:success
+            var result = ExecuteLambda (@"_result:success
 if:a
   >=:b
   lambda
@@ -542,7 +542,7 @@ if:a
         [Test]
         public void If30 ()
         {
-            Node result = ExecuteLambda (@"_result:error
+            var result = ExecuteLambda (@"_result:error
 if:a
   <=:b
   lambda
@@ -557,7 +557,7 @@ if:a
         [Test]
         public void If31 ()
         {
-            Node result = ExecuteLambda (@"_result:success
+            var result = ExecuteLambda (@"_result:success
 if:b
   <=:a
   lambda
@@ -572,7 +572,7 @@ if:b
         [Test]
         public void If32 ()
         {
-            Node result = ExecuteLambda (@"_result:error
+            var result = ExecuteLambda (@"_result:error
 if:abba
   !=:abca
   lambda
@@ -587,7 +587,7 @@ if:abba
         [Test]
         public void If33 ()
         {
-            Node result = ExecuteLambda (@"_result:success
+            var result = ExecuteLambda (@"_result:success
 if:abba
   !=:abba
   lambda
@@ -602,7 +602,7 @@ if:abba
         [Test]
         public void If34 ()
         {
-            Node result = ExecuteLambda (@"_result:error
+            var result = ExecuteLambda (@"_result:error
 if:b
   >:abba
   lambda
@@ -617,7 +617,7 @@ if:b
         [Test]
         public void If35 ()
         {
-            Node result = ExecuteLambda (@"_result:error
+            var result = ExecuteLambda (@"_result:error
 if:abba
   <:bce
   lambda
@@ -632,7 +632,7 @@ if:abba
         [Test]
         public void If36 ()
         {
-            Node result = ExecuteLambda (@"_result:error
+            var result = ExecuteLambda (@"_result:error
 if:!
   :@/../*/foo/?node
   lambda
@@ -647,7 +647,7 @@ if:!
         [Test]
         public void If37 ()
         {
-            Node result = ExecuteLambda (@"_result:success
+            var result = ExecuteLambda (@"_result:success
 if:!
   :@/../*/_result/?node
   lambda
@@ -662,7 +662,7 @@ if:!
         [Test]
         public void If38 ()
         {
-            Node result = ExecuteLambda (@"_result
+            var result = ExecuteLambda (@"_result
 if:!
   :@/../*/_result/?node
   lambda
@@ -680,7 +680,7 @@ else
         [Test]
         public void If39 ()
         {
-            Node result = ExecuteLambda (@"_result
+            var result = ExecuteLambda (@"_result
 if:!
   :@/../*/_result/?node
   lambda
@@ -698,7 +698,7 @@ else-if:@/../*/_result/?node
         [Test]
         public void If40 ()
         {
-            Node result = ExecuteLambda (@"_result
+            var result = ExecuteLambda (@"_result
 if:!
   :@/../*/_result/?node
   lambda

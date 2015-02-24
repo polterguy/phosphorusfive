@@ -20,10 +20,10 @@ namespace phosphorus.threading
         private delegate void LockFunctor ();
 
         // wraps a single lock object
-        private static Dictionary<string, object> _lockers = new Dictionary<string, object> ();
+        private static readonly Dictionary<string, object> _lockers = new Dictionary<string, object> ();
 
         // locks access to above dictionary, to make sure logic is thread safe in itself
-        private static object _globalLocker = new object ();
+        private static readonly object _globalLocker = new object ();
 
         /// <summary>
         /// locks an object wrapped by the given string(s), which makes sure other threads trying to access lock
@@ -35,7 +35,7 @@ namespace phosphorus.threading
         [ActiveEvent (Name = "lock")]
         private static void lambda_lock (ApplicationContext context, ActiveEventArgs e)
         {
-            List<string> lockers = new List<string> (XUtil.Iterate<string> (e.Args, context));
+            var lockers = new List<string> (XUtil.Iterate<string> (e.Args, context));
             LockNext (
                 lockers,
                 delegate {

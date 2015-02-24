@@ -20,9 +20,9 @@ namespace phosphorus.core
     /// </summary>
     public class ApplicationContext
     {
-        private Dictionary<string, List<Tuple<MethodInfo, object>>> _registeredActiveEvents;
-        private Dictionary<Type, List<Tuple<ActiveEventAttribute, MethodInfo>>> _typesInstanceActiveEvents;
-        private Dictionary<string, List<string>> _overrides;
+        private readonly Dictionary<string, List<Tuple<MethodInfo, object>>> _registeredActiveEvents;
+        private readonly Dictionary<Type, List<Tuple<ActiveEventAttribute, MethodInfo>>> _typesInstanceActiveEvents;
+        private readonly Dictionary<string, List<string>> _overrides;
 
         internal ApplicationContext (
             Dictionary<Type, List<Tuple<ActiveEventAttribute, MethodInfo>>> instanceEvents,
@@ -69,7 +69,7 @@ namespace phosphorus.core
 
             // recursively iterating the Type of the object given, until we reach an object where we know there won't exist
             // any Active Events
-            Type type = instance.GetType ();
+            var type = instance.GetType ();
             while (!type.FullName.StartsWith ("System.")) {
 
                 // checking to see if this type is registered in our list of types that has Active Events
@@ -110,7 +110,7 @@ namespace phosphorus.core
                 throw new ArgumentNullException ("instance");
 
             // iterating over the Type until we find a type we know for a fact won't contains Active Events
-            Type type = instance.GetType ();
+            var type = instance.GetType ();
             while (!type.FullName.StartsWith ("System.")) {
 
                 // checking to see if our list of instance Active Events contains the currently iterated Type
@@ -218,7 +218,7 @@ namespace phosphorus.core
         {
             if (args == null)
                 args = new Node ();
-            ActiveEventArgs e = new ActiveEventArgs (name, args);
+            var e = new ActiveEventArgs (name, args);
             RaiseImplementation (e);
             return e.Args;
         }
@@ -233,7 +233,7 @@ namespace phosphorus.core
         {
             if (args == null)
                 args = new Node ();
-            ActiveEventArgs e = new ActiveEventArgs (name, args);
+            var e = new ActiveEventArgs (name, args);
             RaiseDirectly (e);
             return e.Args;
         }
@@ -302,7 +302,7 @@ namespace phosphorus.core
                 foreach (var idxActiveEventName in _overrides [e.Name]) {
 
                     // creating a "derived" Active Event invocation, storing the base Active Event in our derived ActiveEventArgs
-                    ActiveEventArgs derived = new ActiveEventArgs (idxActiveEventName, e.Args, e);
+                    var derived = new ActiveEventArgs (idxActiveEventName, e.Args, e);
 
                     // recursively calling "self", in case the derived Active Event is overridden too
                     RaiseImplementation (derived);

@@ -510,7 +510,7 @@
                             <pf:Container
                                 runat="server"
                                 id="sandbox_invoke_remove_many_5"
-                                ElementType="div">bar</pf:Literal>
+                                ElementType="div">
                                 <pf:Literal
                                     runat="server"
                                     id="sandbox_invoke_remove_many_8"

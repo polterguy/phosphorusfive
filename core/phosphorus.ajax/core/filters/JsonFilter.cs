@@ -20,7 +20,7 @@ namespace phosphorus.ajax.core.filters
     /// </summary>
     public class JsonFilter : Filter
     {
-        private string _oldViewState;
+        private readonly string _oldViewState;
 
         /// <summary>
         /// initializes a new instance of the <see cref="phosphorus.ajax.core.filters.JsonFilter"/> class
@@ -40,10 +40,10 @@ namespace phosphorus.ajax.core.filters
         protected override string RenderResponse ()
         {
             TextReader reader = new StreamReader (this, Encoding);
-            string content = reader.ReadToEnd ();
+            var content = reader.ReadToEnd ();
 
             // registering viewstate for change
-            string viewstate = GetViewState (content);
+            var viewstate = GetViewState (content);
             if (!string.IsNullOrEmpty (viewstate)) {
                 if (viewstate != _oldViewState) {
                     Manager.RegisterWidgetChanges ("__VIEWSTATE", "value", viewstate, _oldViewState);
@@ -66,8 +66,8 @@ namespace phosphorus.ajax.core.filters
 
         private string GetViewState (string html)
         {
-            Regex regex = new Regex (@"<input[\s\n]+type=""hidden""[\s\n]+name=""__VIEWSTATE""[\s\n]+id=""__VIEWSTATE""[\s\n]+value=""(.+[^""])""[\s\n]*/>", RegexOptions.Compiled);
-            Match match = regex.Match (html);
+            var regex = new Regex (@"<input[\s\n]+type=""hidden""[\s\n]+name=""__VIEWSTATE""[\s\n]+id=""__VIEWSTATE""[\s\n]+value=""(.+[^""])""[\s\n]*/>", RegexOptions.Compiled);
+            var match = regex.Match (html);
             return match.Groups[1].Value;
         }
     }

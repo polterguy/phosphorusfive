@@ -35,7 +35,7 @@ namespace phosphorus.lambda
                 } else {
 
                     // code tree contains [lambda.xxx] objects beneath [while]
-                    foreach (Node idxExe in condition.ExecutionLambdas) {
+                    foreach (var idxExe in condition.ExecutionLambdas) {
                         context.Raise (idxExe.Name, idxExe);
                     }
                 }

@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using phosphorus.core;
 using phosphorus.expressions;
+using phosphorus.expressions.exceptions;
 
 namespace phosphorus.lambda
 {
@@ -135,12 +136,12 @@ namespace phosphorus.lambda
         private static void ExecuteBlockNormal (ApplicationContext context, Node exe, IEnumerable<Node> args, bool directly = false)
         {
             // passing in arguments, if there are any
-            foreach (Node idx in args) {
+            foreach (var idx in args) {
                 exe.Add (idx.Clone ());
             }
 
             // iterating through all nodes in execution scope, and raising these as Active Events
-            Node idxExe = exe.FirstChild;
+            var idxExe = exe.FirstChild;
             while (idxExe != null) {
 
                 // executing current statement and retrieving next execution statement
@@ -156,18 +157,18 @@ namespace phosphorus.lambda
         {
             // storing original execution nodes, such that we can set back execution
             // block to what it originally was
-            List<Node> oldNodes = new List<Node> ();
-            foreach (Node idx in exe.Children) {
+            var oldNodes = new List<Node> ();
+            foreach (var idx in exe.Children) {
                 oldNodes.Add (idx.Clone ());
             }
 
             // passing in arguments, if there are any
-            foreach (Node idx in args) {
+            foreach (var idx in args) {
                 exe.Add (idx.Clone ());
             }
 
             // iterating through all nodes in execution scope, and raising these as Active Events
-            Node idxExe = exe.FirstChild;
+            var idxExe = exe.FirstChild;
             while (idxExe != null) {
 
                 // executing current statement and retrieving next execution statement
@@ -190,12 +191,12 @@ namespace phosphorus.lambda
             exe = exe.Clone ();
 
             // passing in arguments, if there are any
-            foreach (Node idx in args) {
+            foreach (var idx in args) {
                 exe.Add (idx.Clone ());
             }
 
             // iterating through all nodes in execution scope, and raising these as Active Events
-            Node idxExe = exe.FirstChild;
+            var idxExe = exe.FirstChild;
             while (idxExe != null) {
 
                 // executing current statement and retrieving next execution statement
@@ -209,7 +210,7 @@ namespace phosphorus.lambda
         private static Node ExecuteStatement (Node exe, ApplicationContext context, bool force = false, bool directly = false)
         {
             // storing "next execution node" as fallback, to support "delete this node" pattern
-            Node nextFallback = exe.NextSibling;
+            var nextFallback = exe.NextSibling;
 
             // we don't execute nodes that start with an underscore "_" since these are considered "data segments"
             // also we don't execute nodes with no name, since these interfers with "null Active Event handlers"
