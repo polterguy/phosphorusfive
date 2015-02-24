@@ -20,13 +20,18 @@ namespace phosphorus.ajax.core.filters
     /// </summary>
     public class JsonFilter : Filter
     {
+        private string _oldViewState;
+
         /// <summary>
         /// initializes a new instance of the <see cref="phosphorus.ajax.core.filters.JsonFilter"/> class
         /// </summary>
         /// <param name="manager">the manager this instance is rendering for</param>
         public JsonFilter (Manager manager)
             : base (manager)
-        { }
+        {
+            Manager.Page.Response.Headers ["Content-Type"] = "application/json";
+            _oldViewState = Manager.Page.Request.Params["__VIEWSTATE"];
+        }
 
         /// <summary>
         /// renders the response
@@ -34,17 +39,14 @@ namespace phosphorus.ajax.core.filters
         /// <returns>the response returned back to client</returns>
         protected override string RenderResponse ()
         {
-            Manager.Page.Response.Headers ["Content-Type"] = "application/json";
-
             TextReader reader = new StreamReader (this, Encoding);
             string content = reader.ReadToEnd ();
 
             // registering viewstate for change
             string viewstate = GetViewState (content);
             if (!string.IsNullOrEmpty (viewstate)) {
-                string oldViewstate = Manager.Page.Request.Params ["__VIEWSTATE"];
-                if (viewstate != oldViewstate) {
-                    Manager.RegisterWidgetChanges ("__VIEWSTATE", "value", viewstate, oldViewstate);
+                if (viewstate != _oldViewState) {
+                    Manager.RegisterWidgetChanges ("__VIEWSTATE", "value", viewstate, _oldViewState);
                 }
             }
 

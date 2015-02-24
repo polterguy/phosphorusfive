@@ -416,16 +416,13 @@
      */
     onerror: function (statusCode, statusText, responseHtml, evt) {
       var previousActive = document.activeElement;
-      var tmpEl = document.createElement('div');
+      var tmpEl = document.createElement('iframe');
       tmpEl.id = '__pf_error';
       tmpEl.style.cssText = 'position:fixed;top:0;left:0;background-color:rgba(0,0,0,.7);height:100%;width:100%;z-index:10000;';
-      tmpEl.innerHTML = responseHtml;
-      for (var idx = 0; idx < tmpEl.children.length; idx++) {
-        if (tmpEl.children[idx].tagName == 'DIV') {
-          tmpEl.children[idx].style.cssText = 'width:80%;left:10%;position:absolute;top:8%;';
-          break;
-        }
-      }
+      var body = document.getElementsByTagName('body')[0];
+      body.appendChild(tmpEl);
+      tmpEl.contentDocument.documentElement.innerHTML = responseHtml;
+
       var btn = document.createElement('button');
       btn.innerHTML = 'close';
       btn.style.cssText = 'position:absolute;top:5px;right:5px;z-index:10001;display:block;width:100px;height:36px;font-size:18px;';
@@ -440,9 +437,7 @@
           previousActive.focus();
         }
       };
-      tmpEl.appendChild (btn);
-      var body = document.getElementsByTagName ('body')[0];
-      body.appendChild (tmpEl);
+      tmpEl.contentDocument.documentElement.appendChild(btn);
       btn.focus ();
     },
 

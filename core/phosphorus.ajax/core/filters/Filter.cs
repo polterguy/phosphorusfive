@@ -66,7 +66,7 @@ namespace phosphorus.ajax.core.filters
             _stream.Seek (0, SeekOrigin.Begin);
             string responseContent = RenderResponse ();
             base.Close ();
-            byte[] buffer = Manager.Page.Response.ContentEncoding.GetBytes (responseContent);
+            byte[] buffer = _encoding.GetBytes (responseContent);
             _next.Write (buffer, 0, buffer.Length);
         }
 

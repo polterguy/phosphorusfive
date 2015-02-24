@@ -2,6 +2,7 @@
 <%@ Page 
     Language="C#" 
     Inherits="phosphorus.five.samples.UnitTests"
+    ViewStateSessionEntries="5"
     Codebehind="UnitTests.aspx.cs" %>
 
 <!DOCTYPE html>
