@@ -34,7 +34,14 @@ namespace phosphorus.file
 
                 // iterating all folders in current directory, and returning as nodes beneath args given
                 foreach (var idxFolder in Directory.GetDirectories (rootFolder + idx)) {
-                    e.Args.Add (new Node (string.Empty, idxFolder.Replace (rootFolder, "")));
+
+                    string folderName = idxFolder;
+                    if (!string.IsNullOrEmpty (rootFolder))
+                        folderName = folderName.Replace (rootFolder, "");
+
+                    // normalizing file path delimiters for both Linux and Windows
+                    folderName = folderName.Replace ("\\", "/");
+                    e.Args.Add (new Node (string.Empty, folderName));
                 }
             }
         }

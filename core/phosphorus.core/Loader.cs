@@ -7,6 +7,7 @@
 using System;
 using System.Reflection;
 using System.Collections.Generic;
+using System.IO;
 
 namespace phosphorus.core
 {
@@ -135,7 +136,7 @@ namespace phosphorus.core
             }
 
             // we must dynamically load assembly and initialize it
-            Assembly assembly = Assembly.LoadFile (path + name);
+            Assembly assembly = Assembly.LoadFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path + name));
             InitializeAssembly (assembly);
             _assemblies.Add (assembly);
         }

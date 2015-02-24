@@ -56,10 +56,13 @@ _out");
         [Test]
         public void Events03 ()
         {
-            Node node = ExecuteLambda (@"event:test.foo3
+            Node node = ExecuteLambda (@"remove-event:test.foo3
+event:test.foo3
   lambda
     set:@/././*/_out/?value
-      source:succ
+      source:{0}{1}
+        :succ
+        :@/././././*/_out/?value
   lambda
     set:@/././*/_out/?value
       source:{0}{1}
@@ -67,7 +70,7 @@ _out");
         :ess
 test.foo3
   _out");
-            Assert.AreEqual ("success", node [1] [0].Value);
+            Assert.AreEqual ("success", node [2] [0].Value);
         }
         
         /// <summary>
@@ -269,7 +272,11 @@ test.foo14");
         [Test]
         public void Override01 ()
         {
-            Node node = ExecuteLambda (@"event:test.foo15
+            Node node = ExecuteLambda (@"remove-override:test.foo15
+  super:test.foo16
+remove-event:test.foo15
+remove-event:test.foo16
+event:test.foo15
   lambda
     set:@/../?value
       source:error
@@ -292,7 +299,11 @@ test.foo15");
         [Test]
         public void Override02 ()
         {
-            ExecuteLambda (@"event:test.foo17
+            ExecuteLambda (@"remove-event:test.foo17
+remove-event:test.foo18
+remove-override:test.foo17
+  super:test.foo18
+event:test.foo17
   lambda
     set:@/../?value
       source:error
@@ -318,7 +329,14 @@ override:test.foo17
         [Test]
         public void Override03 ()
         {
-            Node node = ExecuteLambda (@"event:test.foo19
+            Node node = ExecuteLambda (@"remove-event:test.foo19
+remove-event:test.foo20
+remove-event:test.foo21
+remove-override:test.foo19
+  super:test.foo20
+remove-override:test.foo19
+  super:test.foo21
+event:test.foo19
   lambda
     set:@/../?value
       source:error
@@ -349,7 +367,12 @@ test.foo19");
         [Test]
         public void Override04 ()
         {
-            Node node = ExecuteLambda (@"event:test.foo22
+            Node node = ExecuteLambda (@"remove-event:test.foo22
+remove-event:test.foo23
+remove-event:test.foo24
+remove-override:test.foo22
+  super:@/../*/(/=test.foo23/[0,1]|/=test.foo24/[0,1])/?value
+event:test.foo22
   lambda
     set:@/../?value
       source:error
@@ -366,7 +389,7 @@ event:test.foo24
         :@/../?value
         :ess
 override:test.foo22
-  super:@/../*/(/=test.foo23/|/=test.foo24/)/?value
+  super:@/../*/(/=test.foo23/[0,1]|/=test.foo24/[0,1])/?value
 test.foo22");
             Assert.AreEqual ("success", node.Value);
         }
@@ -378,7 +401,14 @@ test.foo22");
         [Test]
         public void Override05 ()
         {
-            Node node = ExecuteLambda (@"event:test.foo25
+            Node node = ExecuteLambda (@"remove-event:test.foo25
+remove-event:test.foo26
+remove-event:test.foo27
+remove-override:test.foo25
+  super:test.foo27
+remove-override:test.foo26
+  super:test.foo27
+event:test.foo25
   lambda
     set:@/../?value
       source:error
@@ -409,7 +439,12 @@ test.foo26
         [Test]
         public void Override06 ()
         {
-            Node node = ExecuteLambda (@"event:test.foo28
+            Node node = ExecuteLambda (@"remove-event:test.foo28
+remove-event:test.foo29
+remove-event:test.foo30
+remove-override:@/../*/(/=test.foo28/[0,1]|/=test.foo29/[0,1])?value
+  super:test.foo30
+event:test.foo28
   lambda
     set:@/../?value
       source:error
@@ -423,7 +458,7 @@ event:test.foo30
       source:{0}{1}
         :@/../?value
         :success
-override:@/../*/(/=test.foo28/|/=test.foo29/)?value
+override:@/../*/(/=test.foo28/[0,1]|/=test.foo29/[0,1])?value
   super:test.foo30
 test.foo28
 test.foo29
@@ -438,7 +473,11 @@ test.foo29
         [Test]
         public void Override07 ()
         {
-            Node node = ExecuteLambda (@"event:test.foo31
+            Node node = ExecuteLambda (@"remove-event:test.foo31
+remove-event:test.foo32
+remove-override:test.foo31
+  super:test.foo32
+event:test.foo31
   lambda
     set:@/../?value
       source:{0}{1}
@@ -463,7 +502,11 @@ test.foo31");
         [Test]
         public void Override08 ()
         {
-            Node node = ExecuteLambda (@"event:test.foo33
+            Node node = ExecuteLambda (@"remove-event:test.foo33
+remove-event:test.foo34
+remove-override:test.foo33
+  super:test.foo34
+event:test.foo33
   lambda
     set:@/../?value
       source:{0}{1}

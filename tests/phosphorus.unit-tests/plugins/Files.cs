@@ -6,6 +6,7 @@
 
 using System;
 using System.IO;
+using System.Reflection;
 using NUnit.Framework;
 using phosphorus.core;
 
@@ -18,8 +19,20 @@ namespace phosphorus.unittests.plugins
     public class Files : TestBase
     {
         public Files ()
-            : base ("phosphorus.file")
+            : base ("phosphorus.file", "phosphorus.unit-tests")
         { }
+
+        /*
+         * necessary to return "root folder" of executing Assembly
+         */
+        [ActiveEvent (Name = "pf.core.application-folder")]
+        private static void GetRootFolder (ApplicationContext context, ActiveEventArgs e)
+        {
+            string asmPath = Assembly.GetExecutingAssembly ().Location;
+            asmPath = asmPath.Replace ("\\", "/");
+            asmPath = asmPath.Substring (0, asmPath.LastIndexOf ("/") + 1);
+            e.Args.Value = asmPath;
+        }
 
         /// <summary>
         /// verifies [pf.file.exists] works correctly
@@ -51,7 +64,7 @@ namespace phosphorus.unittests.plugins
             Node node = new Node (string.Empty, "test1.txt")
                 .Add ("source", "this is a test");
             _context.Raise ("pf.file.save", node);
-            node = new Node (string.Empty, "test1.txt")
+            node = new Node (string.Empty, "test2.txt")
                 .Add ("source", "this is a test");
             _context.Raise ("pf.file.save", node);
 
