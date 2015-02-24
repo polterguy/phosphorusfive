@@ -417,6 +417,7 @@ namespace phosphorus.expressions
                 throw new ExpressionException (_expression, "Group in expression was not closed.", _evaluatedNode, _context);
 
             // parsing type of match
+            // TODO: shares a lot of functionality with XUtil.ExpressionType, try to refactor
             string convert = null;
             if (type.Contains (".")) {
                 convert = type.Substring (type.IndexOf ('.') + 1);

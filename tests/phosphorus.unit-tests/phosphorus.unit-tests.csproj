@@ -97,6 +97,7 @@
     <Compile Include="plugins\Database.cs" />
     <Compile Include="lambda\Events.cs" />
     <Compile Include="lambda\Threading.cs" />
+    <Compile Include="lambda\Tutorials.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

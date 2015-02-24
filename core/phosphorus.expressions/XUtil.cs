@@ -17,6 +17,9 @@ namespace phosphorus.expressions
     /// </summary>
     public static class XUtil
     {
+        // used to retrieve items in Single<T> methods
+        private delegate IEnumerable<T> SingleDelegate<T> ();
+
         /// <summary>
         /// returns true if value is an expression
         /// </summary>
@@ -60,7 +63,7 @@ namespace phosphorus.expressions
                     expressionNode,
                     context);
 
-            string exp = IsFormatted (expressionNode) ? FormatNode (expressionNode, context) : expressionNode.Get<string> (context);
+            string exp = TryFormat<string> (expressionNode, context);
             string type = exp.Substring (exp.LastIndexOf ('?') + 1);
             if (type.Contains ("."))
                 type = type.Substring (0, type.IndexOf ('.'));
@@ -82,6 +85,8 @@ namespace phosphorus.expressions
                     expressionNode,
                     context);
             }
+
+            // returning type back to caller
             return matchType;
         }
 
@@ -150,6 +155,43 @@ namespace phosphorus.expressions
         }
 
         /// <summary>
+        /// checks if node is formatted, and if it is, it will format the node, and return the
+        /// formatted value, as type T
+        /// </summary>
+        /// <returns>the value of the node</returns>
+        /// <param name="node">node that might be formatted</param>
+        /// <param name="context">application context</param>
+        /// <param name="defaultValue">default value</param>
+        /// <typeparam name="T">the type you wish to convert the node's value into</typeparam>
+        public static T TryFormat<T> (Node node, ApplicationContext context, T defaultValue = default(T))
+        {
+            return TryFormat<T> (node, node, context, defaultValue);
+        }
+        
+        /// <summary>
+        /// checks if node is formatted, and if it is, it will format the node, and return the
+        /// formatted value, as type T
+        /// </summary>
+        /// <returns>the value of the node</returns>
+        /// <param name="node">node that might be formatted</param>
+        /// <param name="dataSource">data source to use for formatting operation</param>
+        /// <param name="context">application context</param>
+        /// <param name="defaultValue">default value</param>
+        /// <typeparam name="T">the type you wish to convert the node's value into</typeparam>
+        public static T TryFormat<T> (Node node, Node dataSource, ApplicationContext context, T defaultValue = default(T))
+        {
+            if (IsFormatted (node)) {
+
+                // node is formatted, formatting the node, and converting results to T
+                return Utilities.Convert<T> (FormatNode (node, dataSource, context), context, defaultValue);
+            } else {
+
+                // node is not formatted, returning its value as type T, possibly triggering a conversion
+                return Utilities.Convert<T> (node.Value, context, defaultValue);
+            }
+        }
+
+        /// <summary>
         /// returns a single value of type T from the constant or expression in node's value. if node's value
         /// is an expression, then expression will be evaluated, and result of expression converted to T. if
         /// expression yields multiple results, then the results will be concatenated into a string, in order
@@ -182,30 +224,16 @@ namespace phosphorus.expressions
         /// <param name="context">application context</param>
         /// <param name="defaultValue">default value to return if expression or constant yields null</param>
         /// <typeparam name="T">type of object to return</typeparam>
-        public static T Single<T> (Node node, Node dataSource, ApplicationContext context, T defaultValue = default (T))
+        public static T Single<T> (
+            Node node, 
+            Node dataSource, 
+            ApplicationContext context, 
+            T defaultValue = default (T))
         {
-            object singleRetVal = null;
-            string multipleRetVal = null;
-            foreach (var idx in Iterate<T> (node, dataSource, context)) {
-
-                // hack, to make sure we never convert object to string, unless necessary
-                if (singleRetVal == null) {
-                    singleRetVal = idx;
-                } else {
-                    if (multipleRetVal == null)
-                        multipleRetVal = Utilities.Convert<string> (singleRetVal, context);
-                    if (idx is Node)
-                        multipleRetVal += "\r\n";
-                    multipleRetVal += Utilities.Convert<string> (idx, context);
-                }
-            }
-
-            // making sure we never convert results unless necessary
-            if (multipleRetVal == null)
-                return Utilities.Convert<T> (singleRetVal, context, defaultValue);
-
-            // there were multiple return values, hence we'll need to use conversion
-            return Utilities.Convert<T> (multipleRetVal, context, defaultValue);
+            return SingleImplementation<T> (
+            delegate {
+                return Iterate<T> (node, dataSource, context);
+            }, context, defaultValue);
         }
 
         /// <summary>
@@ -227,26 +255,10 @@ namespace phosphorus.expressions
             ApplicationContext context, 
             T defaultValue = default (T))
         {
-            object singleRetVal = null;
-            string multipleRetVal = null;
-            foreach (var idx in Iterate<T> (expression, dataSource, context)) {
-
-                // hack to make sure we never convert object to string unless necessary
-                if (singleRetVal == null) {
-                    singleRetVal = idx;
-                } else {
-                    if (multipleRetVal == null)
-                        multipleRetVal = Utilities.Convert<string> (singleRetVal, context);
-                    multipleRetVal += Utilities.Convert<string> (idx, context);
-                }
-            }
-
-            // making sure we never convert results unless necessary
-            if (multipleRetVal == null)
-                return Utilities.Convert<T> (singleRetVal, context, defaultValue);
-
-            // there were multiple return values, hence we'll need to use conversion
-            return Utilities.Convert<T> (multipleRetVal, context, defaultValue);
+            return SingleImplementation<T> (
+            delegate {
+                return Iterate<T> (expression, dataSource, context);
+            }, context, defaultValue);
         }
 
         /// <summary>
@@ -287,15 +299,15 @@ namespace phosphorus.expressions
             if (IsExpression (node.Value)) {
 
                 // node's value is expression, iterating expression result, yielding back to caller
-                string exp = IsFormatted (node) ? FormatNode (node, dataSource, context) : node.Get<string> (context);
+                string exp = TryFormat<string> (node, dataSource, context);
                 foreach (var idx in Iterate<T> (exp, dataSource, context)) {
                     yield return idx;
                 }
             } else if (node.Value != null) {
 
-                // node's value is not null, converting value to type requests, and yielding back to caller
-                object value = IsFormatted (node) ? FormatNode (node, dataSource, context) : node.Value;
-                yield return Utilities.Convert<T> (value, context);
+                // node's value is not null, converting value to type requested, possibly triggering a
+                // formatting operation, and yielding the result back to caller
+                yield return TryFormat<T> (node, dataSource, context);
             } else if (typeof(T) == typeof(Node)) {
 
                 // node's value is null, caller requests nodes, 
@@ -323,19 +335,30 @@ namespace phosphorus.expressions
         /// <typeparam name="T">type of object you wish to retrieve</typeparam>
         public static IEnumerable<T> Iterate<T> (string expression, Node dataSource, ApplicationContext context)
         {
+            // syntax checking
             if (!IsExpression (expression))
                 throw new ExpressionException (expression, dataSource, context);
 
+            // creating a match object
             var match = Expression.Create (expression).Evaluate (dataSource, context);
+
+            // checking type of match
             if (match.TypeOfMatch == Match.MatchType.count) {
+
+                // if expression is of type 'count', we return 'count', possibly triggering
+                // a conversion, returning count as type T, hence only iterating once
                 yield return Utilities.Convert<T> (match.Count, context);
             } else {
+
+                // caller requested anything but 'count', we return it as type T, possibly triggering
+                // a conversion
                 foreach (var idx in match) {
                     yield return Utilities.Convert<T> (idx.Value, context);
                 }
             }
         }
 
+        // TODO: do we really need this one, we've got IterateNodes and Iterate, which checks for T being Node ...?
         /// <summary>
         /// retrieves a list of nodes from the given node somehow
         /// </summary>
@@ -362,6 +385,8 @@ namespace phosphorus.expressions
                     } else {
 
                         // not a node match, converting match to node, and returning children of that node
+                        // since conversion to node will create a "root wrapper node", we return that node's children,
+                        // to eliminate the automatically generated "root node"
                         foreach (Node innerNode in Utilities.Convert<Node> (idxMatch.Value, context).Children) {
                             yield return innerNode;
                         }
@@ -389,16 +414,19 @@ namespace phosphorus.expressions
         }
 
         /// <summary>
-        /// returns all matches from expression in node. node may contain formatting parameters which will
-        /// be evaluated before expression using dataSource as start node for any expressions within formatting
+        /// returns all matches from expression in node. node may contain formatting parameters, which will
+        /// be evaluated first, using dataSource as start node, for any expressions within formatting expression
         /// parameters
         /// </summary>
         /// <param name="node">node being expression node</param>
         /// <param name="dataSource">node being data source node</param>
         /// <param name="context">application context</param>
-        public static IEnumerable<MatchEntity> Iterate (Node node, Node dataSource, ApplicationContext context)
+        public static IEnumerable<MatchEntity> Iterate (
+            Node node, 
+            Node dataSource, 
+            ApplicationContext context)
         {
-            string exp = IsFormatted (node) ? FormatNode (node, dataSource, context) : node.Get<string> (context);
+            string exp = TryFormat<string> (node, dataSource, context);
             return Iterate (exp, dataSource, context);
         }
 
@@ -410,9 +438,13 @@ namespace phosphorus.expressions
         /// <param name="node">node being expression node</param>
         /// <param name="dataSource">node being data source node</param>
         /// <param name="context">application context</param>
-        public static IEnumerable<MatchEntity> Iterate (Node node, Node dataSource, Node formattingSource, ApplicationContext context)
+        public static IEnumerable<MatchEntity> Iterate (
+            Node node, 
+            Node dataSource, 
+            Node formattingSource, 
+            ApplicationContext context)
         {
-            string exp = IsFormatted (node) ? FormatNode (node, formattingSource, context) : node.Get<string> (context);
+            string exp = TryFormat<string> (node, formattingSource, context);
             return Iterate (exp, dataSource, context);
         }
 
@@ -422,13 +454,22 @@ namespace phosphorus.expressions
         /// <param name="expression">expression</param>
         /// <param name="dataSource">node being data source node</param>
         /// <param name="context">application context</param>
-        public static IEnumerable<MatchEntity> Iterate (string expression, Node dataSource, ApplicationContext context)
+        public static IEnumerable<MatchEntity> Iterate (
+            string expression, 
+            Node dataSource, 
+            ApplicationContext context)
         {
+            // syntax checking
             if (!IsExpression (expression))
                 throw new ExpressionException (expression, dataSource, context);
 
+            // creating a match to iterate over
             var match = Expression.Create (expression).Evaluate (dataSource, context);
+
+            // iterating over each MatchEntity in Match
             foreach (var idx in match) {
+
+                // yielding MatchEntity back to caller
                 yield return idx;
             }
         }
@@ -452,16 +493,31 @@ namespace phosphorus.expressions
                     // this is an expression which might lead to multiple results, trying to return one result,
                     // but will resort to returning List of objects if necssary
                     List<object> tmpList = new List<object> (Iterate<object> (node.LastChild, context));
-                    if (tmpList.Count == 0)
+                    if (tmpList.Count == 0) {
+
+                        // no source values
                         source = null;
-                    else if (tmpList.Count == 1)
+                    } else if (tmpList.Count == 1) {
+
+                        // one single object in list, returning only that single object
                         source = tmpList [0];
-                    else
+                    } else {
+
+                        // multiple objects, returning all objects
                         source = tmpList;
+                    }
                 } else if (node.LastChild.Value != null) {
 
-                    // source is a constant
-                    source = node.LastChild.Value;
+                    // source is a constant, might still be formatted
+                    if (IsFormatted (node.LastChild)) {
+
+                        // node is formatted
+                        source = FormatNode (node.LastChild, context);
+                    } else {
+
+                        // node is not formatted
+                        source = node.LastChild.Value;
+                    }
                 } else {
 
                     // there are no value in [src] node, trying to create source out of [src]'s children
@@ -486,8 +542,8 @@ namespace phosphorus.expressions
         }
         
         /// <summary>
-        /// retrieves the value of [source], or [src] child node(s), forcing one single return value.
-        /// returns null if no source exists. will only. used in among other things [set]
+        /// retrieves the value of [source], or [src] child node(s), forcing one single return value, somehow.
+        /// returns null if no source exists. used in among other things [set].
         /// </summary>
         /// <param name="node">node where [source] or [src] is expected to be a child</param>
         /// <param name="context">application context</param>
@@ -499,7 +555,7 @@ namespace phosphorus.expressions
                 // we have a [source] or [src] parameter here, figuring out what it points to, or contains
                 if (node.LastChild.Value != null) {
 
-                    // this might be an expression or a constant, converting value to single object, somehow
+                    // this might be an expression, or a constant, converting value to single object, somehow
                     source = Single<object> (node.LastChild, context, null);
                     if (source is Node) {
 
@@ -508,7 +564,7 @@ namespace phosphorus.expressions
                     }
                 } else {
 
-                    // there are no value in [src] node, trying to create source out of [src]'s children
+                    // there are no values in [src] node, trying to create source out of [src]'s children
                     if (node.LastChild.Count == 1) {
 
                         // source is a constant node, making sure we clone it, in case source and destination overlaps
@@ -595,15 +651,20 @@ namespace phosphorus.expressions
         /*
          * helper method to recursively format node's value
          */
-        private static string FormatNodeRecursively (Node node, Node dataSource, ApplicationContext context)
+        private static string FormatNodeRecursively (
+            Node node, 
+            Node dataSource, 
+            ApplicationContext context)
         {
             bool isFormatted = IsFormatted (node);
             bool isExpression = IsExpression (node.Value);
 
             if (isExpression && isFormatted) {
 
-                // node is recursively formatted, and also an expression. formating node first, then evaluating expression
-                return Single<string> (FormatNode (node, dataSource, context), dataSource, context) ?? ""; // cannot return null here, in case expression yields null
+                // node is recursively formatted, and also an expression
+                // formating node first, then evaluating expression
+                // PS, we cannot return null here, in case expression yields null
+                return Single<string> (FormatNode (node, dataSource, context), dataSource, context, "");
             } else if (isFormatted) {
 
                 // node is formatted recursively, but not an expression
@@ -611,12 +672,66 @@ namespace phosphorus.expressions
             } else if (isExpression) {
 
                 // node is an expression, but not formatted
-                return Single<string> (node.Get<string> (context), dataSource, context);
+                // PS, we cannot return null here, in case expression yields null
+                return Single<string> (node.Get<string> (context), dataSource, context, "");
             } else {
 
-                // node is neither an expression, returning node's value, defaulting to string.Empty if no value exists
+                // node is neither an expression, returning node's value
+                // PS, we cannot return null here, in case value yields null
                 return node.Get<string> (context, string.Empty);
             }
+        }
+
+        // TODO: try to refactor, too complex
+        /*
+         * common implementation for Single<T> methods. requires a delegate responsible for returning
+         * the IEnumerable that the method iterates over
+         */
+        private static T SingleImplementation<T> (
+            SingleDelegate<T> functor, 
+            ApplicationContext context, 
+            T defaultValue)
+        {
+            object singleRetVal = null;
+            string multipleRetVal = null;
+            bool firstRun = true;
+            foreach (var idx in functor ()) {
+
+                // hack, to make sure we never convert object to string, unless necessary
+                if (firstRun) {
+
+                    // first iteration of foreach loop
+                    singleRetVal = idx;
+                    firstRun = false;
+                } else {
+
+                    // second, third, or fourth, etc, iteration of foreach
+                    // this means we will have to convert the iterated objects into string, concatenate the objects,
+                    // before converting to type T afterwards
+                    if (multipleRetVal == null) {
+
+                        // second iteration of foreach
+                        multipleRetVal = Utilities.Convert<string> (singleRetVal, context);
+                    }
+                    if (idx is Node || (singleRetVal != null && singleRetVal is Node)) {
+
+                        // current iteration contains a node, making sure we format our string nicely, such that
+                        // the end result becomes valid hyperlisp, before trying to convert to type T afterwards
+                        multipleRetVal += "\r\n";
+                        singleRetVal = null;
+                    }
+                    multipleRetVal += Utilities.Convert<string> (idx, context);
+                }
+            }
+
+            // if there was not multiple iterations above, we use our "singleRetVal" object, which never was
+            // converted into a string, to make sure we don't convert unless necessary, and keep reference objects
+            // stay just that
+            if (multipleRetVal == null)
+                return Utilities.Convert<T> (singleRetVal, context, defaultValue);
+
+            // there were multiple return values, hence we'll need to use conversion
+            return Utilities.Convert<T> (multipleRetVal, context, defaultValue);
         }
     }
 }
