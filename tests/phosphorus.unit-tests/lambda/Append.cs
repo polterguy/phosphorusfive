@@ -232,7 +232,7 @@ namespace phosphorus.unittests.lambda
         }
         
         /// <summary>
-        /// appends a relative source, where destination is child of source
+        /// appends a relative source, where source is parent of destination
         /// </summary>
         [Test]
         public void Append11 ()

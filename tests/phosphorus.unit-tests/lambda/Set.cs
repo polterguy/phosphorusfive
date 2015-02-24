@@ -507,8 +507,8 @@ namespace phosphorus.unittests.lambda
         
         /// <summary>
         /// verifies [set] works when destination is formatted node expression,
-        /// and source is relative formatted expression, and one of sources yields
-        /// no result
+        /// and source is relative source, which is a formatted expression, 
+        /// and one of sources yields no result
         /// </summary>
         [Test]
         public void Set31 ()

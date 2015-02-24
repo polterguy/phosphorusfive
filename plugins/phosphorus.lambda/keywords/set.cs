@@ -25,49 +25,25 @@ namespace phosphorus.lambda
         [ActiveEvent (Name = "set")]
         private static void lambda_set (ApplicationContext context, ActiveEventArgs e)
         {
-            // figuring out source, and executing the corresponding logic
-            if (e.Args.Count > 0 && e.Args.LastChild.Name == "rel-source") {
+            // figuring out source type, for then to execute the corresponding logic
+            if (e.Args.Count > 0 && (e.Args.LastChild.Name == "rel-source" || e.Args.LastChild.Name == "rel-src")) {
 
-                // relative source, source must be an expression
-                SetRelativeSource (e.Args, context);
+                // iterating through all destinations, figuring out source relative to each destinations
+                foreach (var idxDestination in XUtil.Iterate (e.Args, context)) {
+
+                    // source is relative to destination, postponing figuring it out, until we're inside 
+                    // our destination nodes, on each iteration, passing in destination node as data source
+                    idxDestination.Value = XUtil.SourceSingle (e.Args, idxDestination.Node, context);
+                }
             } else {
 
-                // static source, source might be anything
-                SetStaticSource (e.Args, context);
-            }
-        }
+                // static source, hence retrieving source before iteration starts
+                object source = XUtil.SourceSingle (e.Args, context);
 
-        /*
-         * sets all destinations to static value where value is string or expression
-         */
-        private static void SetStaticSource (Node node, ApplicationContext context)
-        {
-            // figuring out source
-            object source = XUtil.SourceSingle (node, context);
-
-            // iterating through all destinations, updating with source
-            foreach (var idxDestination in XUtil.Iterate (node, context)) {
-                idxDestination.Value = source;
-            }
-        }
-
-        /*
-         * sets all destination nodes relative to themselves
-         */
-        private static void SetRelativeSource (Node node, ApplicationContext context)
-        {
-            // iterating through all destinations, figuring out source relative to each destinations
-            foreach (var idxDestination in XUtil.Iterate (node, context)) {
-
-                // source is relative to destination
-                object source = XUtil.Single<object> (node.LastChild, idxDestination.Node, context, null);
-                if (source is Node) {
-
-                    // source is a constant node, making sure we clone it, in case source and destination overlaps
-                    source = (source as Node).Clone ();
+                // iterating through all destinations, updating with source
+                foreach (var idxDestination in XUtil.Iterate (e.Args, context)) {
+                    idxDestination.Value = source;
                 }
-
-                idxDestination.Value = source;
             }
         }
     }

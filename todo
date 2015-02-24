@@ -101,6 +101,9 @@
 
 * make sure [set] can set 'value' and 'name' when source leads to multiple nodes, and create unit test for it
 
+* [rel-source] on [pf.web.session.set] and friends
+
+* more unit tests for [rel-source] on set and friends
 
 
 

@@ -47,13 +47,16 @@ namespace phosphorus.expressions
                 (value [1] == '?' || value [1] == '/' || value [1] == '{' || value [1] == '@');
         }
 
+        // TODO: refactor, too complex, also contains overlapping functionality with Expression.cs
         /// <summary>
         /// returns type of expression
         /// </summary>
         /// <returns>type of expression</returns>
         /// <param name="expressionNode">node containing expression to check, will be formatted if necessary</param>
         /// <param name="context">application context</param>
-        public static Match.MatchType ExpressionType (Node expressionNode, ApplicationContext context)
+        public static Match.MatchType ExpressionType (
+            Node expressionNode, 
+            ApplicationContext context)
         {
             // checking if we're actually given an expression
             if (!IsExpression (expressionNode.Value))
@@ -109,7 +112,9 @@ namespace phosphorus.expressions
         /// <returns>formatted string</returns>
         /// <param name="node">node containing formatting expression and formatting children nodes</param>
         /// <param name="context">application context</param>
-        public static string FormatNode (Node node, ApplicationContext context)
+        public static string FormatNode (
+            Node node, 
+            ApplicationContext context)
         {
             return FormatNode (node, node, context);
         }
@@ -123,7 +128,10 @@ namespace phosphorus.expressions
         /// <param name="node">node containing formatting expression and formatting children nodes</param>
         /// <param name="dataSource">node to use as dataSource for any expressions within formatting parameters</param>
         /// <param name="context">application context</param>
-        public static string FormatNode (Node node, Node dataSource, ApplicationContext context)
+        public static string FormatNode (
+            Node node, 
+            Node dataSource, 
+            ApplicationContext context)
         {
             // making sure node contains formatting values
             if (!IsFormatted (node))
@@ -144,7 +152,9 @@ namespace phosphorus.expressions
                     return FormatNodeRecursively (idx, dataSource == node ? idx : dataSource, context) ?? "";
                 } else {
 
-                    // this is not a part of the formatting values for our formating expression
+                    // this is not a part of the formatting values for our formating expression,
+                    // since it doesn't have an empty name, hence we return null, to signal to 
+                    // ConvertChildren that this is to be excluded from list
                     return null;
                 }
             }));
@@ -163,7 +173,10 @@ namespace phosphorus.expressions
         /// <param name="context">application context</param>
         /// <param name="defaultValue">default value</param>
         /// <typeparam name="T">the type you wish to convert the node's value into</typeparam>
-        public static T TryFormat<T> (Node node, ApplicationContext context, T defaultValue = default(T))
+        public static T TryFormat<T> (
+            Node node, 
+            ApplicationContext context, 
+            T defaultValue = default(T))
         {
             return TryFormat<T> (node, node, context, defaultValue);
         }
@@ -178,7 +191,11 @@ namespace phosphorus.expressions
         /// <param name="context">application context</param>
         /// <param name="defaultValue">default value</param>
         /// <typeparam name="T">the type you wish to convert the node's value into</typeparam>
-        public static T TryFormat<T> (Node node, Node dataSource, ApplicationContext context, T defaultValue = default(T))
+        public static T TryFormat<T> (
+            Node node, 
+            Node dataSource, 
+            ApplicationContext context, 
+            T defaultValue = default(T))
         {
             if (IsFormatted (node)) {
 
@@ -204,7 +221,10 @@ namespace phosphorus.expressions
         /// <param name="context">application context</param>
         /// <param name="defaultValue">default value to return if expression or constant yields null</param>
         /// <typeparam name="T">type of object to return</typeparam>
-        public static T Single<T> (Node node, ApplicationContext context, T defaultValue = default (T))
+        public static T Single<T> (
+            Node node, 
+            ApplicationContext context, 
+            T defaultValue = default (T))
         {
             return Single<T> (node, node, context, defaultValue);
         }
@@ -333,7 +353,10 @@ namespace phosphorus.expressions
         /// <param name="dataSource">node to use as start node for any expressions within formatting parameters</param>
         /// <param name="context">application context</param>
         /// <typeparam name="T">type of object you wish to retrieve</typeparam>
-        public static IEnumerable<T> Iterate<T> (string expression, Node dataSource, ApplicationContext context)
+        public static IEnumerable<T> Iterate<T> (
+            string expression, 
+            Node dataSource, 
+            ApplicationContext context)
         {
             // syntax checking
             if (!IsExpression (expression))
@@ -358,6 +381,82 @@ namespace phosphorus.expressions
             }
         }
 
+        /// <summary>
+        /// returns all matches from expression in node. node may contain formatting parameters which will
+        /// be evaluated before expression 
+        /// </summary>
+        /// <param name="node">node being both expression node and data source node</param>
+        /// <param name="context">application context</param>
+        public static IEnumerable<MatchEntity> Iterate (
+            Node node, 
+            ApplicationContext context)
+        {
+            return Iterate (node, node, context);
+        }
+
+        /// <summary>
+        /// returns all matches from expression in node. node may contain formatting parameters, which will
+        /// be evaluated first, using dataSource as start node, for any expressions within formatting expression
+        /// parameters
+        /// </summary>
+        /// <param name="node">node being expression node</param>
+        /// <param name="dataSource">node being data source node</param>
+        /// <param name="context">application context</param>
+        public static IEnumerable<MatchEntity> Iterate (
+            Node node, 
+            Node dataSource, 
+            ApplicationContext context)
+        {
+            string exp = TryFormat<string> (node, dataSource, context);
+            return Iterate (exp, dataSource, context);
+        }
+
+        /// <summary>
+        /// returns all matches from expression in node. node may contain formatting parameters, which will
+        /// be evaluated before expression, using formattingSource as start node for any expressions within 
+        /// formatting, while using dataSource as source for evaluating expression
+        /// parameters
+        /// </summary>
+        /// <param name="node">node being expression node</param>
+        /// <param name="dataSource">node being data source node</param>
+        /// <param name="formattingSource">node being data source node for formatting expressions</param>
+        /// <param name="context">application context</param>
+        public static IEnumerable<MatchEntity> Iterate (
+            Node node, 
+            Node dataSource, 
+            Node formattingSource, 
+            ApplicationContext context)
+        {
+            string exp = TryFormat<string> (node, formattingSource, context);
+            return Iterate (exp, dataSource, context);
+        }
+
+        /// <summary>
+        /// returns all matches from given expression
+        /// </summary>
+        /// <param name="expression">expression</param>
+        /// <param name="dataSource">node being data source node</param>
+        /// <param name="context">application context</param>
+        public static IEnumerable<MatchEntity> Iterate (
+            string expression, 
+            Node dataSource, 
+            ApplicationContext context)
+        {
+            // syntax checking
+            if (!IsExpression (expression))
+                throw new ExpressionException (expression, dataSource, context);
+
+            // creating a match to iterate over
+            var match = Expression.Create (expression).Evaluate (dataSource, context);
+
+            // iterating over each MatchEntity in Match
+            foreach (var idx in match) {
+
+                // yielding MatchEntity back to caller
+                yield return idx;
+            }
+        }
+        
         // TODO: do we really need this one, we've got IterateNodes and Iterate, which checks for T being Node ...?
         /// <summary>
         /// retrieves a list of nodes from the given node somehow
@@ -365,7 +464,9 @@ namespace phosphorus.expressions
         /// <returns>a list of nodes</returns>
         /// <param name="node">node containing either an expression leading to your node list, or a list of children</param>
         /// <param name="context">application context</param>
-        public static IEnumerable<Node> IterateChildren (Node node, ApplicationContext context)
+        public static IEnumerable<Node> IterateChildren (
+            Node node, 
+            ApplicationContext context)
         {
             if (node.Value == null) {
 
@@ -403,96 +504,39 @@ namespace phosphorus.expressions
         }
 
         /// <summary>
-        /// returns all matches from expression in node. node may contain formatting parameters which will
-        /// be evaluated before expression 
+        /// retrieves the value of [source], or [src] child node, converted into T. returns null if no source exists. 
+        /// does not care about whether or not there are multiple values, and will return a List if there are, though
+        /// will attempt to return only one value if it can
         /// </summary>
-        /// <param name="node">node being both expression node and data source node</param>
+        /// <param name="node">node where [source], [rel-source], [rel-src] or [src] is expected to be a child</param>
         /// <param name="context">application context</param>
-        public static IEnumerable<MatchEntity> Iterate (Node node, ApplicationContext context)
+        public static object Source (Node node, ApplicationContext context)
         {
-            return Iterate (node, node, context);
+            return Source (node, node.LastChild, context);
         }
-
-        /// <summary>
-        /// returns all matches from expression in node. node may contain formatting parameters, which will
-        /// be evaluated first, using dataSource as start node, for any expressions within formatting expression
-        /// parameters
-        /// </summary>
-        /// <param name="node">node being expression node</param>
-        /// <param name="dataSource">node being data source node</param>
-        /// <param name="context">application context</param>
-        public static IEnumerable<MatchEntity> Iterate (
-            Node node, 
-            Node dataSource, 
-            ApplicationContext context)
-        {
-            string exp = TryFormat<string> (node, dataSource, context);
-            return Iterate (exp, dataSource, context);
-        }
-
-        /// <summary>
-        /// returns all matches from expression in node. node may contain formatting parameters which will
-        /// be evaluated before expression using dataSource as start node for any expressions within formatting
-        /// parameters
-        /// </summary>
-        /// <param name="node">node being expression node</param>
-        /// <param name="dataSource">node being data source node</param>
-        /// <param name="context">application context</param>
-        public static IEnumerable<MatchEntity> Iterate (
-            Node node, 
-            Node dataSource, 
-            Node formattingSource, 
-            ApplicationContext context)
-        {
-            string exp = TryFormat<string> (node, formattingSource, context);
-            return Iterate (exp, dataSource, context);
-        }
-
-        /// <summary>
-        /// returns all matches from given expression
-        /// </summary>
-        /// <param name="expression">expression</param>
-        /// <param name="dataSource">node being data source node</param>
-        /// <param name="context">application context</param>
-        public static IEnumerable<MatchEntity> Iterate (
-            string expression, 
-            Node dataSource, 
-            ApplicationContext context)
-        {
-            // syntax checking
-            if (!IsExpression (expression))
-                throw new ExpressionException (expression, dataSource, context);
-
-            // creating a match to iterate over
-            var match = Expression.Create (expression).Evaluate (dataSource, context);
-
-            // iterating over each MatchEntity in Match
-            foreach (var idx in match) {
-
-                // yielding MatchEntity back to caller
-                yield return idx;
-            }
-        }
-
-        // TODO: refactor these next buggers, too complex
+            
+        // TODO: refactor these next buggers, they're too complex
         /// <summary>
         /// retrieves the value of [source], or [src] child node, converted into T. returns null if no source exists. 
         /// does not care about whether or not there are multiple values, and will return a List if there are, though
         /// will attempt to return only one value if it can
         /// </summary>
-        /// <param name="node">node where [source] or [src] is expected to be a child</param>
+        /// <param name="node">node where [source], [rel-source], [rel-src] or [src] is expected to be a child</param>
+        /// <param name="dataSource">node used as data source for expressions</param>
         /// <param name="context">application context</param>
-        public static object Source (Node node, ApplicationContext context)
+        public static object Source (Node node, Node dataSource, ApplicationContext context)
         {
             object source = null;
-            if (node.LastChild != null && (node.LastChild.Name == "source" || node.LastChild.Name == "src")) {
+            if (node.LastChild != null && 
+                (node.LastChild.Name == "source" || node.LastChild.Name == "src" ||
+                 node.LastChild.Name == "rel-source" || node.LastChild.Name == "rel-src")) {
 
                 // we have a [source] or [src] parameter here, figuring out what it points to, or contains
                 if (IsExpression (node.LastChild.Value)) {
 
                     // this is an expression which might lead to multiple results, trying to return one result,
                     // but will resort to returning List of objects if necssary
-                    List<object> tmpList = new List<object> (Iterate<object> (node.LastChild, context));
+                    List<object> tmpList = new List<object> (Iterate<object> (node.LastChild, dataSource, context));
                     if (tmpList.Count == 0) {
 
                         // no source values
@@ -512,7 +556,7 @@ namespace phosphorus.expressions
                     if (IsFormatted (node.LastChild)) {
 
                         // node is formatted
-                        source = FormatNode (node.LastChild, context);
+                        source = FormatNode (node.LastChild, dataSource, context);
                     } else {
 
                         // node is not formatted
@@ -545,18 +589,32 @@ namespace phosphorus.expressions
         /// retrieves the value of [source], or [src] child node(s), forcing one single return value, somehow.
         /// returns null if no source exists. used in among other things [set].
         /// </summary>
-        /// <param name="node">node where [source] or [src] is expected to be a child</param>
+        /// <param name="node">node where [source], [rel-source], [rel-src] or [src] is expected to be a child</param>
         /// <param name="context">application context</param>
         public static object SourceSingle (Node node, ApplicationContext context)
         {
+            return SourceSingle (node, node.LastChild, context);
+        }
+            
+        /// <summary>
+        /// retrieves the value of [source], or [src] child node(s), forcing one single return value, somehow.
+        /// returns null if no source exists. used in among other things [set].
+        /// </summary>
+        /// <param name="node">node where [source], [rel-source], [rel-src] or [src] is expected to be a child</param>
+        /// <param name="dataSource">node which will be used as data source node for expresions</param>
+        /// <param name="context">application context</param>
+        public static object SourceSingle (Node node, Node dataSource, ApplicationContext context)
+        {
             object source = null;
-            if (node.LastChild != null && (node.LastChild.Name == "source" || node.LastChild.Name == "src")) {
+            if (node.LastChild != null && 
+                (node.LastChild.Name == "source" || node.LastChild.Name == "src" || 
+                 node.LastChild.Name == "rel-source" || node.LastChild.Name == "rel-source")) {
 
                 // we have a [source] or [src] parameter here, figuring out what it points to, or contains
                 if (node.LastChild.Value != null) {
 
                     // this might be an expression, or a constant, converting value to single object, somehow
-                    source = Single<object> (node.LastChild, context, null);
+                    source = Single<object> (node.LastChild, dataSource, context, null);
                     if (source is Node) {
 
                         // source is node, making sure we clone it, in case source and destination overlaps
@@ -592,18 +650,34 @@ namespace phosphorus.expressions
         /// <param name="context">application context</param>
         public static List<Node> SourceNodes (Node node, ApplicationContext context)
         {
+            return SourceNodes (node, node.LastChild, context);
+        }
+            
+        /// <summary>
+        /// retrieves the value of [source], [rel-source], [rel-src], or [src] child node.
+        /// used in among other things [append]
+        /// </summary>
+        /// <param name="node">node where [source] or [src] is expected to be a child</param>
+        /// <param name="dataSource">node used as dataSource for expressions</param>
+        /// <param name="context">application context</param>
+        public static List<Node> SourceNodes (Node node, Node dataSource, ApplicationContext context)
+        {
             // return value
             List<Node> sourceNodes = new List<Node> ();
 
             // checking if any source exists
-            if (node.LastChild == null || (node.LastChild.Name != "source" && node.LastChild.Name != "src"))
+            if (node.LastChild == null || 
+                (node.LastChild.Name != "source" && 
+                 node.LastChild.Name != "src" &&
+                 node.LastChild.Name != "rel-source" && 
+                 node.LastChild.Name != "rel-src"))
                 return null; // no source was given
 
             // checking to see if we're given an expression
             if (XUtil.IsExpression (node.LastChild.Value)) {
 
                 // [source] or [src] is an expression somehow
-                foreach (var idx in XUtil.Iterate (node.LastChild, context)) {
+                foreach (var idx in XUtil.Iterate (node.LastChild, dataSource, context)) {
                     if (idx.TypeOfMatch != Match.MatchType.node && !(idx.Value is Node)) {
 
                         // [source] is an expression leading to something that's not a node, this

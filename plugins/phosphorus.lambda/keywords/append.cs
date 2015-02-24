@@ -25,21 +25,15 @@ namespace phosphorus.lambda
         [ActiveEvent (Name = "append")]
         private static void lambda_append (ApplicationContext context, ActiveEventArgs e)
         {
-            if (e.Args.Count == 0)
-                throw new LambdaException ("[append] needs a valid [source], [src] or [rel-source]", e.Args, context);
-
-            if (e.Args.LastChild.Name == "source" || e.Args.LastChild.Name == "src") {
-
-                // static source
-                AppendStaticSource (e.Args, context);
-            } else if (e.Args.LastChild.Name == "rel-source" && XUtil.IsExpression (e.Args.LastChild.Value)) {
-
+            // figuring out source type, for then to execute the corresponding logic
+            if (e.Args.Count > 0 && (e.Args.LastChild.Name == "rel-source" || e.Args.LastChild.Name == "rel-src")) {
+                
                 // relative source
                 AppendRelativeSource (e.Args, context);
             } else {
-            
-                // syntax error
-                throw new LambdaException ("[append] needs a valid [source], [src] or [rel-source]", e.Args, context);
+                
+                // static source
+                AppendStaticSource (e.Args, context);
             }
         }
 
@@ -57,7 +51,7 @@ namespace phosphorus.lambda
                 return;
 
             // looping through every destination node
-            bool isFirst = true; // since source is already cloned, we avoid cloning the first run
+            bool isFirst = true; // since source is already cloned, we avoid cloning on our first run
             foreach (var idxDestination in XUtil.Iterate (node, context)) {
 
                 // verifying destination actually is a node
@@ -67,9 +61,13 @@ namespace phosphorus.lambda
 
                 // minor optimization trick, since source already is cloned upon first run
                 if (isFirst) {
+
+                    // we don't clone on the first run-through, since node-set is already cloned
                     curDest.AddRange (sourceNodes);
                     isFirst = false;
                 } else {
+
+                    // cloning on all consecutive run-throughs
                     foreach (Node idxSource in sourceNodes) {
                         curDest.Add (idxSource.Clone ());
                     }
@@ -89,7 +87,7 @@ namespace phosphorus.lambda
                 if (curDest == null)
                     throw new LambdaException ("cannot [append] into something that's not a node", node, context);
 
-                foreach (var idxSource in XUtil.Iterate<Node> (node.LastChild, curDest, context)) {
+                foreach (var idxSource in XUtil.SourceNodes (node, idxDestination.Node, context)) {
                     curDest.Add (idxSource.Clone ());
                 }
             }
