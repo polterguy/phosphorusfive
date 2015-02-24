@@ -94,7 +94,7 @@ namespace phosphorus.expressions
                     if (_match.Convert == "string") {
                         retVal = Utilities.Convert<string> (retVal, _match.Context);
                     } else {
-                        retVal = _match.Context.Raise ("pf.hyperlist.get-object-value." + _match.Convert, new Node (string.Empty, retVal)).Value;
+                        retVal = _match.Context.Raise ("pf.hyperlisp.get-object-value." + _match.Convert, new Node (string.Empty, retVal)).Value;
                     }
                 }
                 return retVal;

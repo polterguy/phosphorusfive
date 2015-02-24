@@ -24,7 +24,7 @@ namespace phosphorus.hyperlisp
          * bool, since it creates a non-ISO date string representation by default, and Boolean, since it creates "True" and
          * "False", instead of "true" and "false" - [capital letters are avoided in hyperlisp, if we can]
          * 
-         * the name of all of these Active Events is "pf.hyperlist.get-string-value." + the fully qualified name of your type,
+         * the name of all of these Active Events is "pf.hyperlisp.get-string-value." + the fully qualified name of your type,
          * or the return value of "typeof(YourType).FullName"
          */
 
@@ -33,8 +33,8 @@ namespace phosphorus.hyperlisp
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">parameters</param>
-        [ActiveEvent (Name = "pf.hyperlist.get-string-value.phosphorus.core.Node")]
-        private static void pf_hyperlist_get_string_value_phosphorus_core_Node (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.hyperlisp.get-string-value.phosphorus.core.Node")]
+        private static void pf_hyperlisp_get_string_value_phosphorus_core_Node (ApplicationContext context, ActiveEventArgs e)
         {
             Node tmp = new Node ("", e.Args.Value);
             context.Raise ("pf.hyperlisp.lambda2hyperlisp", tmp);
@@ -46,8 +46,8 @@ namespace phosphorus.hyperlisp
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">parameters</param>
-        [ActiveEvent (Name = "pf.hyperlist.get-string-value.System.DateTime")]
-        private static void pf_hyperlist_get_string_value_System_DateTime (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.hyperlisp.get-string-value.System.DateTime")]
+        private static void pf_hyperlisp_get_string_value_System_DateTime (ApplicationContext context, ActiveEventArgs e)
         {
             DateTime value = e.Args.Get<DateTime> (context);
             if (value.Hour == 0 && value.Minute == 0 && value.Second == 0 && value.Millisecond == 0)
@@ -63,8 +63,8 @@ namespace phosphorus.hyperlisp
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">parameters</param>
-        [ActiveEvent (Name = "pf.hyperlist.get-string-value.System.TimeSpan")]
-        private static void pf_hyperlist_get_string_value_System_TimeSpan (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.hyperlisp.get-string-value.System.TimeSpan")]
+        private static void pf_hyperlisp_get_string_value_System_TimeSpan (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = e.Args.Get<TimeSpan> (context).ToString ("c", CultureInfo.InvariantCulture);
         }
@@ -74,8 +74,8 @@ namespace phosphorus.hyperlisp
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">parameters</param>
-        [ActiveEvent (Name = "pf.hyperlist.get-string-value.System.Boolean")]
-        private static void pf_hyperlist_get_string_value_System_Boolean (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.hyperlisp.get-string-value.System.Boolean")]
+        private static void pf_hyperlisp_get_string_value_System_Boolean (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = e.Args.Get<bool> (context).ToString ().ToLower ();
         }
@@ -85,8 +85,8 @@ namespace phosphorus.hyperlisp
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">parameters</param>
-        [ActiveEvent (Name = "pf.hyperlist.get-string-value.System.Byte[]")]
-        private static void pf_hyperlist_get_string_value_System_ByteBlob (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.hyperlisp.get-string-value.System.Byte[]")]
+        private static void pf_hyperlisp_get_string_value_System_ByteBlob (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = Convert.ToBase64String (e.Args.Get<byte[]> (context));
         }

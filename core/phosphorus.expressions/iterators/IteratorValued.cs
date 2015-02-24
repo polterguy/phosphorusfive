@@ -35,7 +35,7 @@ namespace phosphorus.expressions.iterators
                 if (!string.IsNullOrEmpty (_type)) {
 
                     // converting given value to specified type
-                    value = _context.Raise ("pf.hyperlist.get-object-value." + _type, new Node (string.Empty, value)).Value;
+                    value = _context.Raise ("pf.hyperlisp.get-object-value." + _type, new Node (string.Empty, value)).Value;
                 }
 
                 // filtering away all previous matches that does not match the specified value

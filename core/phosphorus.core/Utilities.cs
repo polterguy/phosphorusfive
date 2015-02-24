@@ -200,13 +200,13 @@ namespace phosphorus.core
                         builder.Append ("\r\n");
                     }
                     builder.Append (context.Raise (
-                        "pf.hyperlist.get-string-value." + 
+                        "pf.hyperlisp.get-string-value." + 
                         idx.GetType ().FullName, new Node (string.Empty, idx)).Value);
                 }
                 return builder.ToString ();
             } else {
                 return context.Raise (
-                    "pf.hyperlist.get-string-value." + 
+                    "pf.hyperlisp.get-string-value." + 
                     value.GetType ().FullName, new Node (string.Empty, value)).Value as string;
             }
         }
@@ -217,11 +217,11 @@ namespace phosphorus.core
         private static T Convert2Object<T> (string value, ApplicationContext context, T defaultValue = default (T))
         {
             var typeName = context.Raise (
-                "pf.hyperlist.get-type-name." + typeof(T).FullName).Get<string> (context);
+                "pf.hyperlisp.get-type-name." + typeof(T).FullName).Get<string> (context);
             if (typeName == null)
                 return defaultValue;
             return context.Raise (
-                "pf.hyperlist.get-object-value." + 
+                "pf.hyperlisp.get-object-value." + 
                 typeName, new Node (string.Empty, value)).Get<T> (context);
         }
     }

@@ -89,7 +89,7 @@ namespace phosphorus.hyperlisp
             builder.Append (
                 string.Format (":{0}", 
                     _context.Raise (
-                        "pf.hyperlist.get-type-name." + node.Value.GetType (), 
+                        "pf.hyperlisp.get-type-name." + node.Value.GetType (), 
                         new Node ()).Get<string> (_context)));
         }
         
