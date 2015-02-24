@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using phosphorus.core;
 using phosphorus.expressions;
 
-namespace phosphorus.web
+namespace phosphorus.web.ui
 {
     /// <summary>
     /// helper to retrieve and set cookies

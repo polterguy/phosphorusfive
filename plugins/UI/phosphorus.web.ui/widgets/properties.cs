@@ -10,7 +10,7 @@ using phosphorus.core;
 using phosphorus.expressions;
 using phosphorus.ajax.widgets;
 
-namespace phosphorus.web
+namespace phosphorus.web.ui
 {
     /// <summary>
     /// helper to retrieve and change properties of widgets

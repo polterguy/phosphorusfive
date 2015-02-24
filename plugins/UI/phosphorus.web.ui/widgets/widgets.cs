@@ -8,7 +8,7 @@ using System;
 using phosphorus.core;
 using phosphorus.ajax.widgets;
 
-namespace phosphorus.web
+namespace phosphorus.web.ui
 {
     /// <summary>
     /// class for creating web widgets

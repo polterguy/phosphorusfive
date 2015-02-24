@@ -19,7 +19,7 @@ namespace phosphorus.unittests.plugins
     public class Files : TestBase
     {
         public Files ()
-            : base ("phosphorus.file", "phosphorus.unit-tests")
+            : base ("phosphorus.file", "phosphorus.unit-tests", "phosphorus.hyperlisp", "phosphorus.lambda")
         { }
 
         /*
@@ -28,10 +28,7 @@ namespace phosphorus.unittests.plugins
         [ActiveEvent (Name = "pf.core.application-folder")]
         private static void GetRootFolder (ApplicationContext context, ActiveEventArgs e)
         {
-            string asmPath = Assembly.GetExecutingAssembly ().Location;
-            asmPath = asmPath.Replace ("\\", "/");
-            asmPath = asmPath.Substring (0, asmPath.LastIndexOf ("/") + 1);
-            e.Args.Value = asmPath;
+            e.Args.Value = Assembly.GetExecutingAssembly ().Location;
         }
 
         /// <summary>
@@ -246,7 +243,8 @@ namespace phosphorus.unittests.plugins
         }
 
         /// <summary>
-        /// verifies [pf.file.save] works correctly when given an expression
+        /// verifies [pf.file.save] works correctly when given an expression, leading to
+        /// multiple different files being saved at the same time, with the same static content
         /// </summary>
         [Test]
         public void SaveExpression01 ()
@@ -278,7 +276,8 @@ namespace phosphorus.unittests.plugins
         }
         
         /// <summary>
-        /// verifies [pf.file.save] works correctly when given an expression
+        /// verifies [pf.file.save] works correctly when given a formatted expression as path, leading
+        /// to multiple file names, where files contains same static content
         /// </summary>
         [Test]
         public void SaveExpression02 ()
@@ -311,7 +310,8 @@ namespace phosphorus.unittests.plugins
         }
         
         /// <summary>
-        /// verifies [pf.file.save] works correctly when given an expression
+        /// verifies [pf.file.save] works correctly when given a formatted expression, which is
+        /// not a pf.lambda expression, saving one file, with static content
         /// </summary>
         [Test]
         public void SaveExpression03 ()
@@ -335,7 +335,8 @@ namespace phosphorus.unittests.plugins
         }
 
         /// <summary>
-        /// verifies [pf.file.save] works correctly when given an expression
+        /// verifies [pf.file.save] works correctly when given an expression, where [source] is an expression,
+        /// pointing to one 'name'
         /// </summary>
         [Test]
         public void SaveExpression04 ()
@@ -359,7 +360,8 @@ namespace phosphorus.unittests.plugins
         }
         
         /// <summary>
-        /// verifies [pf.file.save] works correctly when given an expression
+        /// verifies [pf.file.save] works correctly when given an expression, where [source] is an expression,
+        /// pointing to two 'name' values
         /// </summary>
         [Test]
         public void SaveExpression05 ()
@@ -384,7 +386,8 @@ namespace phosphorus.unittests.plugins
         }
         
         /// <summary>
-        /// verifies [pf.file.save] works correctly when given an expression
+        /// verifies [pf.file.save] works correctly when given a formatted expression as path,
+        /// which is not a pf.lambda expression, and [source] is an expression, leading to one 'name'
         /// </summary>
         [Test]
         public void SaveExpression06 ()
@@ -409,7 +412,8 @@ namespace phosphorus.unittests.plugins
         }
         
         /// <summary>
-        /// verifies [pf.file.save] works correctly when given an expression
+        /// verifies [pf.file.save] works correctly when given a constant as file name, and [source] is
+        /// a formatted pf.lambda expression, pointing to one 'name'
         /// </summary>
         [Test]
         public void SaveExpression07 ()
@@ -434,7 +438,8 @@ namespace phosphorus.unittests.plugins
         }
         
         /// <summary>
-        /// verifies [pf.file.save] works correctly when given a relative source
+        /// verifies [pf.file.save] works correctly when given a relative source, and [rel-source] is
+        /// a child of file path expression, and [rel-source] expression points to one single 'name'
         /// </summary>
         [Test]
         public void SaveExpression08 ()
@@ -468,7 +473,8 @@ namespace phosphorus.unittests.plugins
         }
         
         /// <summary>
-        /// verifies [pf.file.save] works correctly when given a relative source
+        /// verifies [pf.file.save] works correctly when given a relative source, and [rel-source] is also
+        /// formatted, with a constant formatting value
         /// </summary>
         [Test]
         public void SaveExpression09 ()
@@ -503,7 +509,10 @@ namespace phosphorus.unittests.plugins
         }
         
         /// <summary>
-        /// verifies [pf.file.save] works correctly when given a relative source
+        /// verifies [pf.file.save] works correctly when given a relative source, and [rel-source] 
+        /// is a formatted expression, where one of its formatting values is an expression, making
+        /// sure also formatting values as expressions use the correct data source node when evaluating 
+        /// their expressions
         /// </summary>
         [Test]
         public void SaveExpression10 ()
@@ -534,6 +543,40 @@ namespace phosphorus.unittests.plugins
             Assert.AreEqual (true, File.Exists (GetBasePath () + "test2.txt"));
             using (TextReader reader = File.OpenText (GetBasePath () + "test2.txt")) {
                 Assert.AreEqual ("success2", reader.ReadToEnd ());
+            }
+        }
+
+        /// <summary>
+        /// making sure [pf.file.save] works when given a constant as a filepath, and an expression as
+        /// a [source], where the expression is of type 'node', and points to multiple nodes
+        /// </summary>
+        [Test]
+        public void SaveExpression11 ()
+        {
+            ExecuteLambda (@"_data
+  foo1:bar1
+  foo2:bar2
+pf.file.save:test1.txt
+  source:@/../*/_data/*/?node");
+            using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
+                Assert.AreEqual ("foo1:bar1\r\nfoo2:bar2", reader.ReadToEnd ());
+            }
+        }
+        
+        /// <summary>
+        /// making sure [pf.file.save] works when given a constant as a filepath, and an expression as
+        /// a [source], where the expression is of type 'node', and points to one node
+        /// </summary>
+        [Test]
+        public void SaveExpression12 ()
+        {
+            ExecuteLambda (@"_data
+  foo1:bar1
+  foo2:bar2
+pf.file.save:test1.txt
+  source:@/../*/_data/?node");
+            using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
+                Assert.AreEqual ("_data\r\n  foo1:bar1\r\n  foo2:bar2", reader.ReadToEnd ());
             }
         }
 

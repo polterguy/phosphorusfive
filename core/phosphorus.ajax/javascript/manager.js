@@ -415,29 +415,40 @@
      * default error handler, shows the 'blue (yellow on windows) screen of death', in a modal window
      */
     onerror: function (statusCode, statusText, responseHtml, evt) {
-      var previousActive = document.activeElement;
-      var tmpEl = document.createElement('iframe');
-      tmpEl.id = '__pf_error';
-      tmpEl.style.cssText = 'position:fixed;top:0;left:0;background-color:rgba(0,0,0,.7);height:100%;width:100%;z-index:10000;';
-      var body = document.getElementsByTagName('body')[0];
-      body.appendChild(tmpEl);
-      tmpEl.contentDocument.documentElement.innerHTML = responseHtml;
+      var pAct = document.activeElement;
 
+      // creating a semi-transparent wrapper element, to stuff our error iframe into
+      var err = document.createElement('div');
+      err.id = '__pf_error';
+      err.style.cssText = 'position:fixed;top:0;left:0;background-color:rgba(0,0,0,.7);height:100%;width:100%;z-index:10000;';
+
+      // creating an iframe for simplicity, such that we can "dump" error HTML into it, without having to parsee anything
+      var ifr = document.createElement('iframe');
+      ifr.style.cssText = 'height:90%;width:90%;margin:2% 5% 2% 5%;';
+      err.appendChild(ifr);
+
+      // creating a button, such that we can close our error window
       var btn = document.createElement('button');
       btn.innerHTML = 'close';
       btn.style.cssText = 'position:absolute;top:5px;right:5px;z-index:10001;display:block;width:100px;height:36px;font-size:18px;';
       btn.onclick = function () {
         var el = pf.$('__pf_error').el;
         el.parentNode.removeChild(el);
+        pAct.focus();
       };
       btn.onkeyup = function (e) {
         if (e.keyCode == 27) {
           var el = pf.$('__pf_error').el;
           el.parentNode.removeChild(el);
-          previousActive.focus();
+          pAct.focus();
         }
       };
-      tmpEl.contentDocument.documentElement.appendChild(btn);
+      err.appendChild(btn);
+      var body = document.getElementsByTagName('body')[0];
+      body.appendChild(err);
+
+      // we have to postpone this bugger till iframe is "attached"
+      ifr.contentDocument.documentElement.innerHTML = responseHtml;
       btn.focus ();
     },
 

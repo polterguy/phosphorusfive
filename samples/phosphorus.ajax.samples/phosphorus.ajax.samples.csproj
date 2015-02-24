@@ -95,7 +95,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\core\phosphorus.ajax\phosphorus.ajax.csproj">
-      <Project>{11644924-3367-4812-be60-7da41fc9e4ae}</Project>
+      <Project>{11644924-3367-4812-BE60-7DA41FC9E4AE}</Project>
       <Name>phosphorus.ajax</Name>
     </ProjectReference>
   </ItemGroup>
@@ -106,6 +106,7 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
   <ProjectExtensions>
     <MonoDevelop>
       <Properties VerifyCodeBehindFields="True" VerifyCodeBehindEvents="True">

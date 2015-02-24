@@ -13,7 +13,7 @@ using phosphorus.core;
 using phosphorus.expressions;
 using phosphorus.ajax.core;
 
-namespace phosphorus.web
+namespace phosphorus.web.ui
 {
     /// <summary>
     /// wraps [pf.web.transfer-file] Active Event

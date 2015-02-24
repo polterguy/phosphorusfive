@@ -45,10 +45,7 @@ namespace phosphorus.unittests.plugins
         [ActiveEvent (Name = "pf.core.application-folder")]
         private static void GetRootFolder (ApplicationContext context, ActiveEventArgs e)
         {
-            string asmPath = Assembly.GetExecutingAssembly ().Location;
-            asmPath = asmPath.Replace ("\\", "/");
-            asmPath = asmPath.Substring (0, asmPath.LastIndexOf ("/") + 1);
-            e.Args.Value = asmPath;
+            e.Args.Value = Assembly.GetExecutingAssembly ().Location;
         }
 
         /// <summary>

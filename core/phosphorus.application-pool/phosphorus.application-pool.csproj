@@ -61,6 +61,7 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
   <ProjectExtensions>
     <MonoDevelop>
       <Properties VerifyCodeBehindFields="True" VerifyCodeBehindEvents="True">
@@ -122,10 +123,6 @@
       <Project>{CA83A3ED-BD5D-4557-AA1B-A7C04ABD4D4F}</Project>
       <Name>phosphorus.data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\plugins\UI\phosphorus.web\phosphorus.web.csproj">
-      <Project>{0F68BFA7-1CF7-4737-9058-CED4A9ED3427}</Project>
-      <Name>phosphorus.web</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\plugins\phosphorus.mongodb\phosphorus.mongodb.csproj">
       <Project>{CB706162-9ED3-4CAB-863C-B8F960EC5AC6}</Project>
       <Name>phosphorus.mongodb</Name>
@@ -157,6 +154,14 @@
     <ProjectReference Include="..\..\plugins\phosphorus.threading\phosphorus.threading.csproj">
       <Project>{EF65C1FB-FCC8-43F0-90AC-39DA931268E4}</Project>
       <Name>phosphorus.threading</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\UI\phosphorus.web.ui\phosphorus.web.ui.csproj">
+      <Project>{0F68BFA7-1CF7-4737-9058-CED4A9ED3427}</Project>
+      <Name>phosphorus.web.ui</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\phosphorus.web\phosphorus.web.csproj">
+      <Project>{378663D4-1FC1-4109-8896-F72440C6C269}</Project>
+      <Name>phosphorus.web</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

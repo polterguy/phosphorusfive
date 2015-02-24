@@ -11,7 +11,7 @@ using System.Text;
 using phosphorus.core;
 using phosphorus.expressions;
 
-namespace phosphorus.web
+namespace phosphorus.web.ui
 {
     /// <summary>
     /// helper to echo any piece of text back to client as HTTP response

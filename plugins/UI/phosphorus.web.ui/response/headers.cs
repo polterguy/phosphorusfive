@@ -9,7 +9,7 @@ using System.Web;
 using phosphorus.core;
 using phosphorus.expressions;
 
-namespace phosphorus.web
+namespace phosphorus.web.ui
 {
     /// <summary>
     /// helper to manipulate the HTTP response

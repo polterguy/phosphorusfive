@@ -6,60 +6,68 @@
 
 using System;
 using System.Web;
+using System.Collections;
 using System.Collections.Generic;
 using phosphorus.core;
 using phosphorus.expressions;
 
-namespace phosphorus.web
+namespace phosphorus.web.ui
 {
     /// <summary>
-    /// helper to retrieve and set application values
+    /// helper to retrieve and set session values
     /// </summary>
-    public static class application
+    public static class session
     {
         /// <summary>
-        /// sets the given application key to the nodes given as children of [pf.web.application.set]. if no nodes are given,
-        /// the application object with the given key is cleared
+        /// sets one or more session values
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.application.set")]
-        private static void pf_web_application_set (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.session.set")]
+        private static void pf_web_session_set (ApplicationContext context, ActiveEventArgs e)
         {
             CollectionBase.Set (e.Args, context, delegate (string key, object value) {
                 if (value == null) {
 
                     // removing object, if it exists
-                    HttpContext.Current.Application.Remove (key);
+                    HttpContext.Current.Session.Remove (key);
                 } else {
 
                     // adding object
-                    HttpContext.Current.Application [key] = value;
+                    HttpContext.Current.Session [key] = value;
                 }});
         }
 
         /// <summary>
-        /// returns the application object given through the value of [pf.web.application.get] as a node
+        /// returns one or more session values back to caller as nodes
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.application.get")]
-        private static void pf_web_application_get (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.session.get")]
+        private static void pf_web_session_get (ApplicationContext context, ActiveEventArgs e)
         {
             CollectionBase.Get (e.Args, context, delegate(string key) {
-                return HttpContext.Current.Application [key];
+                return HttpContext.Current.Session [key];
             });
         }
         
         /// <summary>
-        /// lists all application keys
+        /// lists all session keys
         /// </summary>
         /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.application.list")]
-        private static void pf_web_application_list (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.session.list")]
+        private static void pf_web_session_list (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.List (e.Args, context, delegate { return HttpContext.Current.Application.AllKeys; });
+            CollectionBase.List (e.Args, context, delegate {
+
+                // returning all keys as List<string> to List method
+                List<string> keys = new List<string> ();
+                foreach (var idx in HttpContext.Current.Session.Keys) {
+                    keys.Add (idx.ToString ());
+                }
+                return keys;
+            });
         }
     }
 }

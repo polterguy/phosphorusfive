@@ -27,34 +27,32 @@ namespace phosphorus.file
         [ActiveEvent (Name = "pf.file.save")]
         private static void pf_file_save (ApplicationContext context, ActiveEventArgs e)
         {
-            if (e.Args.LastChild.Name == "source") {
+            if (e.Args.LastChild.Name == "source" || e.Args.LastChild.Name == "src") {
 
                 // static source
-                SaveFileStaticSource (e.Args.LastChild, e.Args, context);
-            } else if (e.Args.LastChild.Name == "rel-source") {
+                SaveFileStaticSource (e.Args, context);
+            } else if (e.Args.LastChild.Name == "rel-source" || e.Args.LastChild.Name == "rel-src") {
 
                 // relative source
                 SaveFileRelativeSource (e.Args, context);
-            } else {
-
-                // oops ...!
-                throw new ArgumentException ("no [source] or [rel-source] given to [pf.file.save]");
             }
         }
 
         /*
          * saves one or more files with a static source (content)
          */
-        private static void SaveFileStaticSource (Node sourceNode, Node destinationNode, ApplicationContext context)
+        private static void SaveFileStaticSource (Node sourceNode, ApplicationContext context)
         {
             // getting root folder
             string rootFolder = common.GetRootFolder (context);
 
             // retrieving source, or "content" for file(s)
-            string source = XUtil.Single<string> (sourceNode, context);
+            string source = Utilities.Convert<string> (XUtil.SourceSingle (sourceNode, context), context);
 
-            // iterating through each path given
-            foreach (var idx in XUtil.Iterate<string> (destinationNode, context)) {
+            // iterating through each file path given
+            foreach (var idx in XUtil.Iterate<string> (sourceNode, context)) {
+
+                // saving source to currenly iterated file
                 using (TextWriter writer = File.CreateText (rootFolder + idx)) {
                     writer.Write (source);
                 }
@@ -64,17 +62,17 @@ namespace phosphorus.file
         /*
          * saves a file with relative source (content)
          */
-        private static void SaveFileRelativeSource (Node destinationNode, ApplicationContext context)
+        private static void SaveFileRelativeSource (Node sourceNode, ApplicationContext context)
         {
             // getting root folder
             string rootFolder = common.GetRootFolder (context);
 
             // iterating over each destination
-            foreach (var idx in XUtil.Iterate (destinationNode.Get<string> (context), destinationNode, context)) {
+            foreach (var idx in XUtil.Iterate (sourceNode, context)) {
                 using (TextWriter writer = File.CreateText (rootFolder + idx.Value)) {
 
                     // finding source relative to destination
-                    string source = XUtil.Single<string> (destinationNode.LastChild, idx.Node, context);
+                    string source = Utilities.Convert<string> (XUtil.SourceSingle (sourceNode, idx.Node, context), context);
                     writer.Write (source);
                 }
             }

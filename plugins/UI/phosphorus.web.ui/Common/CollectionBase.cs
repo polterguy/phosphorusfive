@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using phosphorus.core;
 using phosphorus.expressions;
 
-namespace phosphorus.web
+namespace phosphorus.web.ui
 {
     /// <summary>
     /// helper class for classes that requires to set and retrieve values from collections, 

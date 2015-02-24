@@ -6,7 +6,7 @@
 
 using System;
 
-namespace phosphorus.web
+namespace phosphorus.web.ui
 {
     /// <summary>
     /// exception for something going wrong in regards to web plugin
