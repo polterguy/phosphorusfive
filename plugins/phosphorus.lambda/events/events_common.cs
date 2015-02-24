@@ -33,6 +33,41 @@ namespace phosphorus.lambda
         }
 
         /// <summary>
+        /// lists all dynamically create Active Events
+        /// </summary>
+        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.meta.list-events")]
+        private static void pf_meta_list_events (ApplicationContext context, ActiveEventArgs e)
+        {
+            // retrieving filter, if any
+            List<string> filter = new List<string> (e.Args.Value == null ? new string [] { } : XUtil.Iterate<string> (e.Args, context));
+
+            // looping through each Active Event from core
+            foreach (var idx in _events.Keys) {
+
+                // checking to see if we have any filter
+                if (filter.Count == 0) {
+
+                    // no filter(s) given, slurping up everything
+                    e.Args.Add (new Node ("dynamic", idx));
+                }
+                else {
+
+                    // we have filter(s), checking to see if Active Event name matches at least one of our filters
+                    foreach (var idxFilter in filter) {
+                        if (idx.IndexOf (idxFilter) != -1) {
+
+                            // yup, it matched, adding current Active Event as result, and ending our filter foreach loop
+                            e.Args.Add (new Node ("dynamic", idx));
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// creates a dynamic Active Event
         /// </summary>
         /// <param name="name">name of Active Event</param>
