@@ -5,7 +5,6 @@
  */
 
 using System;
-using System.Configuration;
 using System.Collections.Generic;
 using phosphorus.core;
 using phosphorus.expressions;

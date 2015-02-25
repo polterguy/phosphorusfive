@@ -7,8 +7,6 @@
  * be redistrivuted according to the Affero GPL license
  */
 
-using System;
-using System.Configuration;
 using MongoDB.Bson;
 using phosphorus.core;
 

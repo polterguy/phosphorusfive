@@ -4,10 +4,7 @@
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
  */
 
-using System;
-using System.Reflection;
 using phosphorus.core;
-using phosphorus.expressions;
 
 namespace phosphorus.file
 {

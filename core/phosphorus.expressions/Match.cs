@@ -7,6 +7,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using phosphorus.core;
+
 // ReSharper disable InconsistentNaming
 
 namespace phosphorus.expressions

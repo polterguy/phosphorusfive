@@ -4,10 +4,7 @@
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
  */
 
-using System;
-using System.IO;
 using NUnit.Framework;
-using phosphorus.core;
 
 namespace phosphorus.unittests.lambda
 {

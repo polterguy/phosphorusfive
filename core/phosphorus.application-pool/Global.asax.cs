@@ -1,27 +1,27 @@
-
 /*
  * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
  * phosphorus five is licensed as mitx11, see the enclosed LICENSE file for details
  */
 
+using System;
+using System.Configuration;
+using System.Reflection;
+using System.Web;
+using phosphorus.core;
+using phosphorus.five.applicationpool.code;
+
+// ReSharper disable UnusedMember.Local
+// ReSharper disable UnusedParameter.Local
+
 namespace phosphorus.five.applicationpool
 {
-    using System;
-    using System.Web;
-    using System.Reflection;
-    using System.Configuration;
-    using System.Collections;
-    using System.ComponentModel;
-    using System.Web.SessionState;
-    using phosphorus.core;
-
     public class Global : HttpApplication
     {
         private static string _applicationBasePath;
-
         /*
          * loads up all plugins assemblies and raises the [pf.core.application-start] Active Event
          */
+
         protected void Application_Start (Object sender, EventArgs e)
         {
             // sotring application base path for later usage
@@ -32,17 +32,19 @@ namespace phosphorus.five.applicationpool
 
             // adding all Active Event handler assemblies from web.config
             var configuration = ConfigurationManager.GetSection ("activeEventAssemblies") as ActiveEventAssemblies;
+            if (configuration == null)
+                throw new ConfigurationErrorsException ("no activeEventAssemblies section found in web.config");
+
             foreach (ActiveEventAssembly idxAssembly in configuration.Assemblies) {
                 Loader.Instance.LoadAssembly (Server.MapPath (configuration.PluginDirectory), idxAssembly.Assembly);
             }
 
             // then raising the application start active event
             var context = Loader.Instance.CreateApplicationContext ();
-            context.Raise ("pf.core.application-start", null);
+            context.Raise ("pf.core.application-start");
 
             // for then to execute our "startup file", if there exists any
             if (!string.IsNullOrEmpty (ConfigurationManager.AppSettings ["application-startup-file"])) {
-
                 // there is an application-startup-file declared in app.config file, executing it as pf.lambda file
                 var appStartFilePath = ConfigurationManager.AppSettings ["application-startup-file"];
                 ExecuteLambdaFile (context, appStartFilePath);
@@ -52,6 +54,7 @@ namespace phosphorus.five.applicationpool
         /*
          * executes a lambda file
          */
+
         private static void ExecuteLambdaFile (ApplicationContext context, string filePath)
         {
             // loading file
@@ -70,6 +73,7 @@ namespace phosphorus.five.applicationpool
         /*
          * handled to create support for "beautiful URLs", to rewrite path, to support virtual pages, through pf.lambda
          */
+
         protected void Application_BeginRequest (object sender, EventArgs e)
         {
             // rewriting path such that "x.com/somefolder/somefile" becomes "x.com?file=somefolder/somefile"
@@ -79,7 +83,6 @@ namespace phosphorus.five.applicationpool
             // and store the original URL in the HttpContext.Item collection for later references
             // TODO: Support paths with "." in them, since now we don't support folders and paths with "." within their names
             if (localPath.ToLower ().Trim ('/') == "default.aspx" || !localPath.Contains (".")) {
-
                 // if file requested is Default.aspx, we change it to simply "?file=default"
                 if (localPath == "/Default.aspx")
                     localPath = "/";
@@ -91,16 +94,13 @@ namespace phosphorus.five.applicationpool
                 HttpContext.Current.RewritePath ("~/Default.aspx");
             }
         }
-        
+
         /// <summary>
-        /// returns the application base path as value of given args node
+        ///     returns the application base path as value of given args node
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="context">ApplicationContexttionContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.core.application-folder")]
-        private static void pf_core_application_folder (ApplicationContext context, ActiveEventArgs e)
-        {
-            e.Args.Value = _applicationBasePath;
-        }
+        private static void pf_core_application_folder (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = _applicationBasePath; }
     }
 }

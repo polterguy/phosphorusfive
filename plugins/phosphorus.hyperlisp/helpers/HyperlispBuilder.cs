@@ -4,9 +4,8 @@
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
  */
 
-using System;
-using System.Text;
 using System.Collections.Generic;
+using System.Text;
 using phosphorus.core;
 
 namespace phosphorus.hyperlisp

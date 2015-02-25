@@ -5,8 +5,9 @@
  */
 
 using System;
-using phosphorus.core;
 using phosphorus.ajax.widgets;
+using phosphorus.core;
+using Void = phosphorus.ajax.widgets.Void;
 
 namespace phosphorus.web.ui
 {
@@ -57,7 +58,7 @@ namespace phosphorus.web.ui
         [ActiveEvent (Name = "pf.web.widgets.void")]
         private static void pf_web_controls_void (ApplicationContext context, ActiveEventArgs e)
         {
-            var widget = CreateControl<phosphorus.ajax.widgets.Void> (context, e.Args, "input");
+            var widget = CreateControl<Void> (context, e.Args, "input");
             e.Args.Value = DecorateWidget (context, widget, e.Args);
             if (widget.ElementType == "input" && !widget.HasAttribute ("name"))
                 widget ["name"] = widget.ClientID;
@@ -131,7 +132,7 @@ namespace phosphorus.web.ui
                 switch (idxArg.Name) {
                 case "has-id":
                     if (!idxArg.Get<bool> (context))
-                        widget.NoIDAttribute = true;
+                        widget.NoIdAttribute = true;
                     break;
                 case "render-type":
                     SetRenderType (widget, idxArg.Get<string> (context));

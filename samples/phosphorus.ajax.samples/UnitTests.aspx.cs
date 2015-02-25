@@ -4,15 +4,14 @@
  * phosphorus five is licensed as mitx11, see the enclosed LICENSE file for details
  */
 
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using phosphorus.ajax.core;
+
 namespace phosphorus.five.samples
 {
-    using System;
-    using System.Web;
-    using System.Web.UI;
-    using System.Reflection;
-    using System.Collections.Generic;
-    using phosphorus.ajax.core;
-    using pf = phosphorus.ajax.widgets;
+    using pf = ajax.widgets;
 
     public partial class UnitTests : AjaxPage
     {
@@ -43,7 +42,7 @@ namespace phosphorus.five.samples
         protected void sandbox_invoke_multiple_onclick (pf.Literal literal, EventArgs e)
         {
             literal.innerValue += "x";
-            System.Threading.Thread.Sleep (100);
+            Thread.Sleep (100);
         }
         
         [WebMethod]

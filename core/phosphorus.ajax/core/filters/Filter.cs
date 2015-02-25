@@ -1,20 +1,15 @@
-
 /*
  * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
  */
 
-using System;
 using System.IO;
 using System.Text;
-using System.Web.UI;
-using System.Globalization;
-using phosphorus.ajax.core;
 
 namespace phosphorus.ajax.core.filters
 {
     /// <summary>
-    /// base class for all http response filters in phosphorus.ajax
+    ///     base class for all http response filters in phosphorus.ajax
     /// </summary>
     public abstract class Filter : Stream
     {
@@ -22,40 +17,112 @@ namespace phosphorus.ajax.core.filters
         private readonly MemoryStream _stream;
 
         /// <summary>
-        /// initializes a new instance of the <see cref="phosphorus.ajax.core.filters.Filter"/> class
+        ///     initializes a new instance of the <see cref="phosphorus.ajax.core.filters.Filter" /> class
         /// </summary>
         /// <param name="manager">the manager for this filter</param>
-        public Filter (Manager manager)
+        protected Filter (Manager manager)
         {
             Manager = manager;
-            _stream = new MemoryStream();
+            _stream = new MemoryStream ();
             _next = Manager.Page.Response.Filter;
             Encoding = manager.Page.Response.ContentEncoding;
         }
 
         /// <summary>
-        /// returns the manager for this filter
+        ///     returns the manager for this filter
         /// </summary>
         /// <value>the manager</value>
-        public Manager Manager {
-            get;
-            private set;
+        protected Manager Manager { get; private set; }
+
+        /// <summary>
+        ///     gets or sets the encoding.
+        /// </summary>
+        /// <value>The encoding.</value>
+        protected Encoding Encoding { get; private set; }
+
+        /// <summary>
+        ///     returns a value indicating whether this instance can read
+        /// </summary>
+        /// <value><c>true</c> if this instance can read; otherwise, <c>false</c></value>
+        public override bool CanRead
+        {
+            get { return _stream.CanRead; }
         }
 
         /// <summary>
-        /// gets or sets the encoding.
+        ///     returns a value indicating whether this instance can seek
         /// </summary>
-        /// <value>The encoding.</value>
-        public Encoding Encoding { get; set; }
+        /// <value><c>true</c> if this instance can seek; otherwise, <c>false</c></value>
+        public override bool CanSeek
+        {
+            get { return _stream.CanSeek; }
+        }
 
         /// <summary>
-        /// renders the response, override this method and return the rendered response
+        ///     returns a value indicating whether this instance can write
+        /// </summary>
+        /// <value><c>true</c> if this instance can write; otherwise, <c>false</c></value>
+        public override bool CanWrite
+        {
+            get { return _stream.CanWrite; }
+        }
+
+        /// <summary>
+        ///     returns the length
+        /// </summary>
+        /// <value>the length</value>
+        public override long Length
+        {
+            get { return _stream.Length; }
+        }
+
+        /// <summary>
+        ///     gets or sets the position of the stream
+        /// </summary>
+        /// <value>the position</value>
+        public override long Position
+        {
+            get { return _stream.Position; }
+            set { _stream.Position = value; }
+        }
+
+        /// <summary>
+        ///     returns a value indicating whether this instance can timeout
+        /// </summary>
+        /// <value><c>true</c> if this instance can timeout; otherwise, <c>false</c></value>
+        public override bool CanTimeout
+        {
+            get { return _stream.CanTimeout; }
+        }
+
+        /// <summary>
+        ///     gets or sets the read timeout
+        /// </summary>
+        /// <value>the read timeout</value>
+        public override int ReadTimeout
+        {
+            get { return _stream.ReadTimeout; }
+            set { _stream.ReadTimeout = value; }
+        }
+
+        /// <summary>
+        ///     gets or sets the write timeout
+        /// </summary>
+        /// <value>the write timeout</value>
+        public override int WriteTimeout
+        {
+            get { return _stream.WriteTimeout; }
+            set { _stream.WriteTimeout = value; }
+        }
+
+        /// <summary>
+        ///     renders the response, override this method and return the rendered response
         /// </summary>
         /// <returns>the response</returns>
         protected abstract string RenderResponse ();
 
         /// <summary>
-        /// closes the stream
+        ///     closes the stream
         /// </summary>
         public override void Close ()
         {
@@ -67,107 +134,41 @@ namespace phosphorus.ajax.core.filters
         }
 
         /// <summary>
-        /// returns a value indicating whether this instance can read
+        ///     flush this instance
         /// </summary>
-        /// <value><c>true</c> if this instance can read; otherwise, <c>false</c></value>
-        public override bool CanRead {
-            get { return _stream.CanRead; }
-        }
+        public override void Flush () { _stream.Flush (); }
 
         /// <summary>
-        /// returns a value indicating whether this instance can seek
-        /// </summary>
-        /// <value><c>true</c> if this instance can seek; otherwise, <c>false</c></value>
-        public override bool CanSeek {
-            get { return _stream.CanSeek; }
-        }
-
-        /// <summary>
-        /// returns a value indicating whether this instance can write
-        /// </summary>
-        /// <value><c>true</c> if this instance can write; otherwise, <c>false</c></value>
-        public override bool CanWrite {
-            get { return _stream.CanWrite; }
-        }
-
-        /// <summary>
-        /// returns the length
-        /// </summary>
-        /// <value>the length</value>
-        public override long Length {
-            get { return _stream.Length; }
-        }
-
-        /// <summary>
-        /// gets or sets the position of the stream
-        /// </summary>
-        /// <value>the position</value>
-        public override long Position {
-            get { return _stream.Position; }
-            set { _stream.Position = value; }
-        }
-
-        /// <summary>
-        /// flush this instance
-        /// </summary>
-        public override void Flush ()
-        {
-            _stream.Flush ();
-        }
-
-        /// <summary>
-        /// seek the specified offset and origin
+        ///     seek the specified offset and origin
         /// </summary>
         /// <param name="offset">offset</param>
         /// <param name="origin">origin</param>
-        public override long Seek (long offset, SeekOrigin origin)
-        {
-            return _stream.Seek (offset, origin);
-        }
+        public override long Seek (long offset, SeekOrigin origin) { return _stream.Seek (offset, origin); }
 
         /// <summary>
-        /// sets the length
+        ///     sets the length
         /// </summary>
         /// <param name="value">length</param>
-        public override void SetLength (long value)
-        {
-            _stream.SetLength (value);
-        }
+        public override void SetLength (long value) { _stream.SetLength (value); }
 
         /// <summary>
-        /// reads into the specified buffer, offset and count
+        ///     reads into the specified buffer, offset and count
         /// </summary>
         /// <param name="buffer">fuffer</param>
         /// <param name="offset">offset</param>
         /// <param name="count">count</param>
-        public override int Read (byte[] buffer, int offset, int count)
-        {
-            return _stream.Read (buffer, offset, count);
-        }
+        public override int Read (byte[] buffer, int offset, int count) { return _stream.Read (buffer, offset, count); }
 
         /// <summary>
-        /// write the specified buffer, offset and count
+        ///     write the specified buffer, offset and count
         /// </summary>
         /// <param name="buffer">buffer</param>
         /// <param name="offset">offset</param>
         /// <param name="count">count</param>
-        public override void Write (byte[] buffer, int offset, int count)
-        {
-            _stream.Write (buffer, offset, count);
-        }
+        public override void Write (byte[] buffer, int offset, int count) { _stream.Write (buffer, offset, count); }
 
         /// <summary>
-        /// returns a value indicating whether this instance can timeout
-        /// </summary>
-        /// <value><c>true</c> if this instance can timeout; otherwise, <c>false</c></value>
-        public override bool CanTimeout {
-            get {
-                return _stream.CanTimeout;
-            }
-        }
-
-        /// <summary>
-        /// disposes this instance
+        ///     disposes this instance
         /// </summary>
         /// <param name="disposing">if set to <c>true</c> disposing</param>
         protected override void Dispose (bool disposing)
@@ -178,47 +179,15 @@ namespace phosphorus.ajax.core.filters
         }
 
         /// <summary>
-        /// reads one byte
+        ///     reads one byte
         /// </summary>
         /// <returns>the byte</returns>
-        public override int ReadByte ()
-        {
-            return _stream.ReadByte ();
-        }
+        public override int ReadByte () { return _stream.ReadByte (); }
 
         /// <summary>
-        /// gets or sets the read timeout
-        /// </summary>
-        /// <value>the read timeout</value>
-        public override int ReadTimeout {
-            get {
-                return _stream.ReadTimeout;
-            }
-            set {
-                _stream.ReadTimeout = value;
-            }
-        }
-
-        /// <summary>
-        /// writes one byte
+        ///     writes one byte
         /// </summary>
         /// <param name="value">value</param>
-        public override void WriteByte (byte value)
-        {
-            _stream.WriteByte (value);
-        }
-
-        /// <summary>
-        /// gets or sets the write timeout
-        /// </summary>
-        /// <value>the write timeout</value>
-        public override int WriteTimeout {
-            get {
-                return _stream.WriteTimeout;
-            }
-            set {
-                _stream.WriteTimeout = value;
-            }
-        }
+        public override void WriteByte (byte value) { _stream.WriteByte (value); }
     }
 }

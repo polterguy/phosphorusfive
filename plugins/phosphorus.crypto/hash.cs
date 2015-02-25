@@ -5,8 +5,8 @@
  */
 
 using System;
-using System.Text;
 using System.Security.Cryptography;
+using System.Text;
 using phosphorus.core;
 using phosphorus.expressions;
 
