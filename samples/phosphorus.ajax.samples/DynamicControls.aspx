@@ -22,7 +22,7 @@
 
                 <pf:Container
                     runat="server"
-                    id="list"
+                    id="List"
                     ElementType="ul">
                     <pf:Literal
                         runat="server"
@@ -39,7 +39,7 @@
                 <p>
                     <pf:Void
                         runat="server"
-                        id="txt"
+                        id="Txt"
                         ElementType="input"
                         type="text"
                         style="width:100px;"
@@ -96,7 +96,7 @@
 
                     <pf:Void
                         runat="server"
-                        id="update"
+                        id="Update"
                         ElementType="input"
                         type="button"
                         onclick="update_onclick"

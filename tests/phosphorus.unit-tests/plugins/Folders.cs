@@ -1,4 +1,3 @@
-
 /*
  * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
@@ -11,17 +10,16 @@ using phosphorus.core;
 namespace phosphorus.unittests.plugins
 {
     /// <summary>
-    /// unit tests for testing the [pf.file.xxx] namespace
+    ///     unit tests for testing the [pf.file.xxx] namespace
     /// </summary>
     [TestFixture]
     public class Folders : TestBase
     {
         public Folders ()
-            : base ("phosphorus.file")
-        { }
+            : base ("phosphorus.file") { }
 
         /// <summary>
-        /// verifies [pf.folder.create] works correctly
+        ///     verifies [pf.folder.create] works correctly
         /// </summary>
         [Test]
         public void Create ()
@@ -33,16 +31,16 @@ namespace phosphorus.unittests.plugins
 
             // creating folder using "phosphorus.file"
             var node = new Node (string.Empty, "test1");
-            _context.Raise ("pf.folder.create", node);
-            
+            Context.Raise ("pf.folder.create", node);
+
             // verifying create functioned as is should
             Assert.AreEqual ("test1", node [0].Name);
             Assert.AreEqual (true, node [0].Value);
             Assert.AreEqual (true, Directory.Exists (GetBasePath () + "test1"));
         }
-        
+
         /// <summary>
-        /// verifies [pf.folder.create] works correctly
+        ///     verifies [pf.folder.create] works correctly
         /// </summary>
         [Test]
         public void CreateExpression1 ()
@@ -59,8 +57,8 @@ namespace phosphorus.unittests.plugins
             var node = new Node (string.Empty, "@/*/?name")
                 .Add ("test1")
                 .Add ("test2");
-            _context.Raise ("pf.folder.create", node);
-            
+            Context.Raise ("pf.folder.create", node);
+
             // verifying create functioned as is should
             Assert.AreEqual ("test1", node [2].Name);
             Assert.AreEqual (true, node [2].Value);
@@ -69,9 +67,9 @@ namespace phosphorus.unittests.plugins
             Assert.AreEqual (true, Directory.Exists (GetBasePath () + "test1"));
             Assert.AreEqual (true, Directory.Exists (GetBasePath () + "test2"));
         }
-        
+
         /// <summary>
-        /// verifies [pf.folder.create] works correctly
+        ///     verifies [pf.folder.create] works correctly
         /// </summary>
         [Test]
         public void CreateExpression2 ()
@@ -83,13 +81,13 @@ namespace phosphorus.unittests.plugins
             if (Directory.Exists (GetBasePath () + "test2")) {
                 Directory.Delete (GetBasePath () + "test2", true);
             }
-            
+
             // creating folder using "phosphorus.file"
             var node = new Node (string.Empty, "@/*/!/0/?{0}")
                 .Add (string.Empty, "name")
                 .Add ("test1")
                 .Add ("test2");
-            _context.Raise ("pf.folder.create", node);
+            Context.Raise ("pf.folder.create", node);
 
             // verifying create functioned as is should
             Assert.AreEqual ("test1", node [3].Name);
@@ -99,9 +97,9 @@ namespace phosphorus.unittests.plugins
             Assert.AreEqual (true, Directory.Exists (GetBasePath () + "test1"));
             Assert.AreEqual (true, Directory.Exists (GetBasePath () + "test2"));
         }
-        
+
         /// <summary>
-        /// verifies [pf.folder.create] works correctly
+        ///     verifies [pf.folder.create] works correctly
         /// </summary>
         [Test]
         public void CreateExpression3 ()
@@ -124,7 +122,7 @@ namespace phosphorus.unittests.plugins
                 .Add ("test1")
                 .Add ("test2")
                 .Add ("test3");
-            _context.Raise ("pf.folder.create", node);
+            Context.Raise ("pf.folder.create", node);
 
             // verifying create functioned as is should
             Assert.AreEqual ("test1", node [3].Name);
@@ -136,7 +134,7 @@ namespace phosphorus.unittests.plugins
         }
 
         /// <summary>
-        /// verifies [pf.folder.exists] works correctly
+        ///     verifies [pf.folder.exists] works correctly
         /// </summary>
         [Test]
         public void Exists ()
@@ -148,15 +146,15 @@ namespace phosphorus.unittests.plugins
 
             // checking to see if folder exists using "phosphorus.file"
             var node = new Node (string.Empty, "test1");
-            _context.Raise ("pf.folder.exists", node);
+            Context.Raise ("pf.folder.exists", node);
 
             // verifying exists returned true as it should
             Assert.AreEqual ("test1", node [0].Name);
             Assert.AreEqual (true, node [0].Value);
         }
-        
+
         /// <summary>
-        /// verifies [pf.folder.exists] works correctly
+        ///     verifies [pf.folder.exists] works correctly
         /// </summary>
         [Test]
         public void ExistsExpression1 ()
@@ -173,7 +171,7 @@ namespace phosphorus.unittests.plugins
             var node = new Node (string.Empty, "@/*/?name")
                 .Add ("test1")
                 .Add ("test2");
-            _context.Raise ("pf.folder.exists", node);
+            Context.Raise ("pf.folder.exists", node);
 
             // verifying exists returned true as it should
             Assert.AreEqual ("test1", node [2].Name);
@@ -181,9 +179,9 @@ namespace phosphorus.unittests.plugins
             Assert.AreEqual ("test2", node [3].Name);
             Assert.AreEqual (true, node [3].Value);
         }
-        
+
         /// <summary>
-        /// verifies [pf.folder.exists] works correctly
+        ///     verifies [pf.folder.exists] works correctly
         /// </summary>
         [Test]
         public void ExistsExpression2 ()
@@ -201,7 +199,7 @@ namespace phosphorus.unittests.plugins
                 .Add (string.Empty, "name")
                 .Add ("test1")
                 .Add ("test2");
-            _context.Raise ("pf.folder.exists", node);
+            Context.Raise ("pf.folder.exists", node);
 
             // verifying exists returned true as it should
             Assert.AreEqual ("test1", node [3].Name);
@@ -209,9 +207,9 @@ namespace phosphorus.unittests.plugins
             Assert.AreEqual ("test2", node [4].Name);
             Assert.AreEqual (true, node [4].Value);
         }
-        
+
         /// <summary>
-        /// verifies [pf.folder.exists] works correctly
+        ///     verifies [pf.folder.exists] works correctly
         /// </summary>
         [Test]
         public void ExistsExpression3 ()
@@ -232,7 +230,7 @@ namespace phosphorus.unittests.plugins
                 .Add ("test1")
                 .Add ("test2")
                 .Add ("test3");
-            _context.Raise ("pf.folder.exists", node);
+            Context.Raise ("pf.folder.exists", node);
 
             // verifying exists returned true as it should
             Assert.AreEqual ("test1", node [3].Name);
@@ -242,9 +240,9 @@ namespace phosphorus.unittests.plugins
             Assert.AreEqual ("test3", node [5].Name);
             Assert.AreEqual (false, node [5].Value); // this bugger doesn't exist
         }
-        
+
         /// <summary>
-        /// verifies [pf.folder.exists] works correctly
+        ///     verifies [pf.folder.exists] works correctly
         /// </summary>
         [Test]
         public void ListFiles ()
@@ -260,20 +258,20 @@ namespace phosphorus.unittests.plugins
                 .Add ("test1/test2.txt")
                 .Add ("test1/test3.txt")
                 .Add ("source", "success");
-            _context.Raise ("pf.file.save", node);
+            Context.Raise ("pf.file.save", node);
 
             // listing files within folder
             node = new Node (string.Empty, "test1");
-            _context.Raise ("pf.folder.list-files", node);
+            Context.Raise ("pf.folder.list-files", node);
 
             // verifying list-files returned true as it should
             Assert.AreEqual ("test1/test1.txt", node [0].Value);
             Assert.AreEqual ("test1/test2.txt", node [1].Value);
             Assert.AreEqual ("test1/test3.txt", node [2].Value);
         }
-        
+
         /// <summary>
-        /// verifies [pf.folder.exists] works correctly
+        ///     verifies [pf.folder.exists] works correctly
         /// </summary>
         [Test]
         public void ListFilesExpression1 ()
@@ -294,22 +292,22 @@ namespace phosphorus.unittests.plugins
                 .Add ("test2/test2.txt")
                 .Add ("test1/test3.txt")
                 .Add ("source", "success");
-            _context.Raise ("pf.file.save", node);
+            Context.Raise ("pf.file.save", node);
 
             // listing files within folder
             node = new Node (string.Empty, "@/*/?name")
                 .Add ("test1")
                 .Add ("test2");
-            _context.Raise ("pf.folder.list-files", node);
+            Context.Raise ("pf.folder.list-files", node);
 
             // verifying list-files returned true as it should
             Assert.AreEqual ("test1/test1.txt", node [2].Value);
             Assert.AreEqual ("test1/test3.txt", node [3].Value);
             Assert.AreEqual ("test2/test2.txt", node [4].Value);
         }
-        
+
         /// <summary>
-        /// verifies [pf.folder.exists] works correctly
+        ///     verifies [pf.folder.exists] works correctly
         /// </summary>
         [Test]
         public void ListFilesExpression2 ()
@@ -330,23 +328,23 @@ namespace phosphorus.unittests.plugins
                 .Add ("test2/test2.txt")
                 .Add ("test1/test3.txt")
                 .Add ("source", "success");
-            _context.Raise ("pf.file.save", node);
+            Context.Raise ("pf.file.save", node);
 
             // listing files within folder
             node = new Node (string.Empty, "@/*/!/*//?{0}")
                 .Add (string.Empty, "name")
                 .Add ("test1")
                 .Add ("test2");
-            _context.Raise ("pf.folder.list-files", node);
+            Context.Raise ("pf.folder.list-files", node);
 
             // verifying list-files returned true as it should
             Assert.AreEqual ("test1/test1.txt", node [3].Value);
             Assert.AreEqual ("test1/test3.txt", node [4].Value);
             Assert.AreEqual ("test2/test2.txt", node [5].Value);
         }
-        
+
         /// <summary>
-        /// verifies [pf.folder.exists] works correctly
+        ///     verifies [pf.folder.exists] works correctly
         /// </summary>
         [Test]
         public void ListFilesExpression3 ()
@@ -363,21 +361,21 @@ namespace phosphorus.unittests.plugins
                 .Add ("test1/test2.txt")
                 .Add ("test1/test3.txt")
                 .Add ("source", "success");
-            _context.Raise ("pf.file.save", node);
+            Context.Raise ("pf.file.save", node);
 
             // listing files within folder
             node = new Node (string.Empty, "te{0}")
                 .Add (string.Empty, "st1");
-            _context.Raise ("pf.folder.list-files", node);
+            Context.Raise ("pf.folder.list-files", node);
 
             // verifying list-files returned true as it should
             Assert.AreEqual ("test1/test1.txt", node [1].Value);
             Assert.AreEqual ("test1/test2.txt", node [2].Value);
             Assert.AreEqual ("test1/test3.txt", node [3].Value);
         }
-        
+
         /// <summary>
-        /// verifies [pf.folder.list-folders] works correctly
+        ///     verifies [pf.folder.list-folders] works correctly
         /// </summary>
         [Test]
         public void ListFolders ()
@@ -392,15 +390,15 @@ namespace phosphorus.unittests.plugins
 
             // listing folders within folder
             var node = new Node (string.Empty, "test1");
-            _context.Raise ("pf.folder.list-folders", node);
+            Context.Raise ("pf.folder.list-folders", node);
 
             // verifying list-files returned true as it should
             Assert.AreEqual ("test1/xxx", node [0].Value);
             Assert.AreEqual ("test1/yyy", node [1].Value);
         }
-        
+
         /// <summary>
-        /// verifies [pf.folder.list-folders] works correctly
+        ///     verifies [pf.folder.list-folders] works correctly
         /// </summary>
         [Test]
         public void ListFoldersExpression1 ()
@@ -421,15 +419,15 @@ namespace phosphorus.unittests.plugins
             var node = new Node (string.Empty, "@/*/?name")
                 .Add ("test1")
                 .Add ("test2");
-            _context.Raise ("pf.folder.list-folders", node);
+            Context.Raise ("pf.folder.list-folders", node);
 
             // verifying list-files returned true as it should
             Assert.AreEqual ("test1/xxx", node [2].Value);
             Assert.AreEqual ("test2/yyy", node [3].Value);
         }
-        
+
         /// <summary>
-        /// verifies [pf.folder.list-folders] works correctly
+        ///     verifies [pf.folder.list-folders] works correctly
         /// </summary>
         [Test]
         public void ListFoldersExpression2 ()
@@ -451,15 +449,15 @@ namespace phosphorus.unittests.plugins
                 .Add (string.Empty, "/*/!/*//")
                 .Add ("test1")
                 .Add ("test2");
-            _context.Raise ("pf.folder.list-folders", node);
+            Context.Raise ("pf.folder.list-folders", node);
 
             // verifying list-files returned true as it should
             Assert.AreEqual ("test1/xxx", node [3].Value);
             Assert.AreEqual ("test2/yyy", node [4].Value);
         }
-        
+
         /// <summary>
-        /// verifies [pf.folder.list-folders] works correctly
+        ///     verifies [pf.folder.list-folders] works correctly
         /// </summary>
         [Test]
         public void ListFoldersExpression3 ()
@@ -475,7 +473,7 @@ namespace phosphorus.unittests.plugins
             // listing folders within folder
             var node = new Node (string.Empty, "te{0}")
                 .Add (string.Empty, "st1");
-            _context.Raise ("pf.folder.list-folders", node);
+            Context.Raise ("pf.folder.list-folders", node);
 
             // verifying list-files returned true as it should
             Assert.AreEqual ("test1/xxx", node [1].Value);
@@ -483,7 +481,7 @@ namespace phosphorus.unittests.plugins
         }
 
         /// <summary>
-        /// verifies [pf.folder.remove] works as it should
+        ///     verifies [pf.folder.remove] works as it should
         /// </summary>
         [Test]
         public void Remove1 ()
@@ -495,7 +493,7 @@ namespace phosphorus.unittests.plugins
 
             // removing directory using "phosphorus.file"
             var node = new Node (string.Empty, "test1");
-            _context.Raise ("pf.folder.remove", node);
+            Context.Raise ("pf.folder.remove", node);
 
             // verifying remove works as it should
             Assert.AreEqual (false, Directory.Exists (GetBasePath () + "test1"));
@@ -504,7 +502,7 @@ namespace phosphorus.unittests.plugins
         }
 
         /// <summary>
-        /// verifies [pf.folder.remove] works as it should
+        ///     verifies [pf.folder.remove] works as it should
         /// </summary>
         [Test]
         public void Remove2 ()
@@ -516,21 +514,21 @@ namespace phosphorus.unittests.plugins
                 // creating a file within directory, to verify remove removes recursively
                 var createFile = new Node (string.Empty, "test1/test1.txt")
                     .Add ("source", "this is a test");
-                _context.Raise ("pf.file.save", createFile);
+                Context.Raise ("pf.file.save", createFile);
             }
 
             // removing directory using "phosphorus.file"
             var node = new Node (string.Empty, "test1");
-            _context.Raise ("pf.folder.remove", node);
+            Context.Raise ("pf.folder.remove", node);
 
             // verifying remove works as it should
             Assert.AreEqual (false, Directory.Exists (GetBasePath () + "test1"));
             Assert.AreEqual (true, node [0].Value);
             Assert.AreEqual ("test1", node [0].Name);
         }
-        
+
         /// <summary>
-        /// verifies [pf.folder.remove] works as it should
+        ///     verifies [pf.folder.remove] works as it should
         /// </summary>
         [Test]
         public void RemoveExpression1 ()
@@ -547,7 +545,7 @@ namespace phosphorus.unittests.plugins
             var node = new Node (string.Empty, "@/*/?name")
                 .Add ("test1")
                 .Add ("test2");
-            _context.Raise ("pf.folder.remove", node);
+            Context.Raise ("pf.folder.remove", node);
 
             // verifying remove works as it should
             Assert.AreEqual (false, Directory.Exists (GetBasePath () + "test1"));
@@ -557,9 +555,9 @@ namespace phosphorus.unittests.plugins
             Assert.AreEqual (true, node [3].Value);
             Assert.AreEqual ("test2", node [3].Name);
         }
-        
+
         /// <summary>
-        /// verifies [pf.folder.remove] works as it should
+        ///     verifies [pf.folder.remove] works as it should
         /// </summary>
         [Test]
         public void RemoveExpression2 ()
@@ -577,7 +575,7 @@ namespace phosphorus.unittests.plugins
                 .Add (string.Empty, "name")
                 .Add ("test1")
                 .Add ("test2");
-            _context.Raise ("pf.folder.remove", node);
+            Context.Raise ("pf.folder.remove", node);
 
             // verifying remove works as it should
             Assert.AreEqual (false, Directory.Exists (GetBasePath () + "test1"));
@@ -587,9 +585,9 @@ namespace phosphorus.unittests.plugins
             Assert.AreEqual (true, node [4].Value);
             Assert.AreEqual ("test2", node [4].Name);
         }
-        
+
         /// <summary>
-        /// verifies [pf.folder.remove] works as it should
+        ///     verifies [pf.folder.remove] works as it should
         /// </summary>
         [Test]
         public void RemoveExpression3 ()
@@ -602,7 +600,7 @@ namespace phosphorus.unittests.plugins
             // removing directory using "phosphorus.file"
             var node = new Node (string.Empty, "te{0}")
                 .Add (string.Empty, "st1");
-            _context.Raise ("pf.folder.remove", node);
+            Context.Raise ("pf.folder.remove", node);
 
             // verifying remove works as it should
             Assert.AreEqual (false, Directory.Exists (GetBasePath () + "test1"));

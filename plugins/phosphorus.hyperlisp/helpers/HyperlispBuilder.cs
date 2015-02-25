@@ -1,4 +1,3 @@
-
 /*
  * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
@@ -8,10 +7,10 @@ using System.Collections.Generic;
 using System.Text;
 using phosphorus.core;
 
-namespace phosphorus.hyperlisp
+namespace phosphorus.hyperlisp.helpers
 {
     /// <summary>
-    /// class responsible for creating hyperlisp from a <see cref="phosphorus.core.Node"/> list
+    ///     class responsible for creating hyperlisp from a <see cref="phosphorus.core.Node" /> list
     /// </summary>
     public class HyperlispBuilder
     {
@@ -19,7 +18,7 @@ namespace phosphorus.hyperlisp
         private readonly IEnumerable<Node> _nodes;
 
         /// <summary>
-        /// initializes a new instance of the <see cref="phosphorus.hyperlisp.HyperlispBuilder"/> class
+        ///     initializes a new instance of the <see cref="HyperlispBuilder" /> class
         /// </summary>
         /// <param name="context">application context object</param>
         /// <param name="nodes">nodes to convert into hyperlisp</param>
@@ -30,11 +29,13 @@ namespace phosphorus.hyperlisp
         }
 
         /// <summary>
-        /// retrieves the hyperlisp
+        ///     retrieves the hyperlisp
         /// </summary>
         /// <value>hyperlisp</value>
-        public string Hyperlisp {
-            get {
+        public string Hyperlisp
+        {
+            get
+            {
                 var builder = new StringBuilder ();
                 Nodes2Hyperlisp (builder, _nodes, 0);
                 return builder.ToString ().TrimEnd ();
@@ -44,6 +45,7 @@ namespace phosphorus.hyperlisp
         /*
          * recursively invoked for every "level" in node hierarchy
          */
+
         private void Nodes2Hyperlisp (StringBuilder builder, IEnumerable<Node> nodes, int level)
         {
             foreach (var idxNode in nodes) {
@@ -62,6 +64,7 @@ namespace phosphorus.hyperlisp
         /*
          * appends node's name to hyperlisp stringbuilder output
          */
+
         private void AppendName (StringBuilder builder, Node node)
         {
             if (node.Name.Contains ("\n")) {
@@ -76,25 +79,27 @@ namespace phosphorus.hyperlisp
         /*
          * appends node's type to hyperlisp stringbuilder output
          */
+
         private void AppendType (StringBuilder builder, Node node)
         {
             if (node.Value == null)
                 return; // no type information here
 
             var type = node.Value.GetType ();
-            if (type == typeof(string))
+            if (type == typeof (string))
                 return; // string is "default" type information
 
             builder.Append (
-                string.Format (":{0}", 
+                string.Format (":{0}",
                     _context.Raise (
-                        "pf.hyperlisp.get-type-name." + node.Value.GetType (), 
+                        "pf.hyperlisp.get-type-name." + node.Value.GetType (),
                         new Node ()).Get<string> (_context)));
         }
-        
+
         /*
          * appends node's value to hyperlisp stringbuilder output
          */
+
         private void AppendValue (StringBuilder builder, Node node)
         {
             if (node.Value == null)

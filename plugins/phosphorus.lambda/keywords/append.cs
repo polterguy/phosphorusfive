@@ -1,4 +1,3 @@
-
 /*
  * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
@@ -8,29 +7,30 @@ using phosphorus.core;
 using phosphorus.expressions;
 using phosphorus.expressions.exceptions;
 
-namespace phosphorus.lambda
+// ReSharper disable UnusedMember.Local
+// ReSharper disable UnusedMember.Global
+
+namespace phosphorus.lambda.keywords
 {
     /// <summary>
-    /// class wrapping execution engine keyword "append",
-    /// which allows for appending nodes into a node's list of children
+    ///     class wrapping execution engine keyword "append",
+    ///     which allows for appending nodes into a node's list of children
     /// </summary>
-    public static class append
+    public static class Append
     {
         /// <summary>
-        /// [add] keyword for execution engine. allows adding nodes from one part of your tree to another part
+        ///     [add] keyword for execution engine. allows adding nodes from one part of your tree to another part
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "append")]
         private static void lambda_append (ApplicationContext context, ActiveEventArgs e)
         {
             // figuring out source type, for then to execute the corresponding logic
             if (e.Args.Count > 0 && (e.Args.LastChild.Name == "rel-source" || e.Args.LastChild.Name == "rel-src")) {
-                
                 // relative source
                 AppendRelativeSource (e.Args, context);
             } else {
-                
                 // static source
                 AppendStaticSource (e.Args, context);
             }
@@ -39,6 +39,7 @@ namespace phosphorus.lambda
         /*
          * source is static
          */
+
         private static void AppendStaticSource (Node node, ApplicationContext context)
         {
             // retrieving source before we start iterating destination,
@@ -52,7 +53,6 @@ namespace phosphorus.lambda
             // looping through every destination node
             var isFirst = true; // since source is already cloned, we avoid cloning on our first run
             foreach (var idxDestination in XUtil.Iterate (node, context)) {
-
                 // verifying destination actually is a node
                 var curDest = idxDestination.Value as Node;
                 if (curDest == null)
@@ -60,12 +60,10 @@ namespace phosphorus.lambda
 
                 // minor optimization trick, since source already is cloned upon first run
                 if (isFirst) {
-
                     // we don't clone on the first run-through, since node-set is already cloned
                     curDest.AddRange (sourceNodes);
                     isFirst = false;
                 } else {
-
                     // cloning on all consecutive run-throughs
                     foreach (var idxSource in sourceNodes) {
                         curDest.Add (idxSource.Clone ());
@@ -77,10 +75,10 @@ namespace phosphorus.lambda
         /*
          * relative source
          */
+
         private static void AppendRelativeSource (Node node, ApplicationContext context)
         {
             foreach (var idxDestination in XUtil.Iterate (node, context)) {
-                
                 // verifying destination actually is a node
                 var curDest = idxDestination.Value as Node;
                 if (curDest == null)

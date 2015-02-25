@@ -1,4 +1,3 @@
-
 /*
  * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
@@ -10,17 +9,16 @@ using phosphorus.core;
 namespace phosphorus.unittests.lambda
 {
     /// <summary>
-    /// unit tests for testing the [lambda.xxx] lambda keyword
+    ///     unit tests for testing the [lambda.xxx] lambda keyword
     /// </summary>
     [TestFixture]
     public class Lambda : TestBase
     {
         public Lambda ()
-            : base ("phosphorus.lambda", "phosphorus.types", "phosphorus.hyperlisp")
-        { }
+            : base ("phosphorus.lambda", "phosphorus.types", "phosphorus.hyperlisp") { }
 
         /// <summary>
-        /// verifies that [lambda] is mutable
+        ///     verifies that [lambda] is mutable
         /// </summary>
         [Test]
         public void Lambda01 ()
@@ -30,9 +28,9 @@ set:@/-/?value
   source:success");
             Assert.AreEqual ("success", result [0].Value);
         }
-        
+
         /// <summary>
-        /// verifies that [lambda.immutable] is not mutable
+        ///     verifies that [lambda.immutable] is not mutable
         /// </summary>
         [Test]
         public void Lambda02 ()
@@ -42,9 +40,9 @@ set:@/-/?value
   source:error", "lambda.immutable");
             Assert.AreEqual ("success", result [0].Value);
         }
-        
+
         /// <summary>
-        /// verifies that [lambda.copy] is not mutable
+        ///     verifies that [lambda.copy] is not mutable
         /// </summary>
         [Test]
         public void Lambda03 ()
@@ -54,9 +52,9 @@ set:@/-/?value
   source:error", "lambda.copy");
             Assert.AreEqual ("success", result [0].Value);
         }
-        
+
         /// <summary>
-        /// verifies that [lambda.copy] does not have access to nodes outside if itself
+        ///     verifies that [lambda.copy] does not have access to nodes outside if itself
         /// </summary>
         [Test]
         public void Lambda04 ()
@@ -67,9 +65,9 @@ lambda.copy
     source:error");
             Assert.AreEqual ("success", result [0].Value);
         }
-        
+
         /// <summary>
-        /// verifies that [lambda.immutable] has access to nodes outside if itself
+        ///     verifies that [lambda.immutable] has access to nodes outside if itself
         /// </summary>
         [Test]
         public void Lambda05 ()
@@ -80,9 +78,9 @@ lambda.immutable
     source:success");
             Assert.AreEqual ("success", result [0].Value);
         }
-        
+
         /// <summary>
-        /// verifies that [lambda] can invoke lambda objects through expressions leading to nodes
+        ///     verifies that [lambda] can invoke lambda objects through expressions leading to nodes
         /// </summary>
         [Test]
         public void Lambda06 ()
@@ -93,9 +91,9 @@ lambda.immutable
 lambda:@/-/?node");
             Assert.AreEqual ("success", result [0].Value);
         }
-        
+
         /// <summary>
-        /// verifies that [lambda] can invoke reference nodes
+        ///     verifies that [lambda] can invoke reference nodes
         /// </summary>
         [Test]
         public void Lambda07 ()
@@ -104,11 +102,11 @@ lambda:@/-/?node");
   set:@/./?value
     source:success""
 lambda:@/-/?value");
-            Assert.AreEqual ("success", result [0].Get<Node> (_context).Value);
+            Assert.AreEqual ("success", result [0].Get<Node> (Context).Value);
         }
-        
+
         /// <summary>
-        /// verifies that [lambda] can pass in arguments when executing results of expressions
+        ///     verifies that [lambda] can pass in arguments when executing results of expressions
         /// </summary>
         [Test]
         public void Lambda08 ()
@@ -122,7 +120,7 @@ lambda:@/-/?node
         }
 
         /// <summary>
-        /// verifies that [lambda] can invoke text objects
+        ///     verifies that [lambda] can invoke text objects
         /// </summary>
         [Test]
         public void Lambda09 ()
@@ -131,11 +129,11 @@ lambda:@/-/?node
   source:success""
 lambda:@/-/?value
   _result:node:_result"); // passing in reference node, to be able to retrieve values from lambda invocation
-            Assert.AreEqual ("success", result [1] [0].Get<Node> (_context).Value);
+            Assert.AreEqual ("success", result [1] [0].Get<Node> (Context).Value);
         }
-        
+
         /// <summary>
-        /// verifies that [lambda] can execute expression yielding multiple results
+        ///     verifies that [lambda] can execute expression yielding multiple results
         /// </summary>
         [Test]
         public void Lambda10 ()
@@ -151,9 +149,9 @@ _exe1
 lambda:@/-2/|/-1/?node");
             Assert.AreEqual ("success", result.Value);
         }
-        
+
         /// <summary>
-        /// verifies that [lambda.single] can execute one single node
+        ///     verifies that [lambda.single] can execute one single node
         /// </summary>
         [Test]
         public void Lambda11 ()
@@ -164,10 +162,10 @@ lambda:@/-2/|/-1/?node");
 lambda.single:@/-/0/?node");
             Assert.AreEqual ("success", result.Value);
         }
-        
+
         /// <summary>
-        /// verifies that [lambda.single] can execute single nodes when given an
-        /// expression that returns multiple results
+        ///     verifies that [lambda.single] can execute single nodes when given an
+        ///     expression that returns multiple results
         /// </summary>
         [Test]
         public void Lambda12 ()
@@ -183,10 +181,10 @@ _exe1
 lambda.single:@/-2/*/|/-1/*/?node");
             Assert.AreEqual ("success", result.Value);
         }
-        
+
         /// <summary>
-        /// verifies that [lambda.single] can execute single nodes when given an
-        /// expression that returns multiple results, where some nodes are NOT'ed away
+        ///     verifies that [lambda.single] can execute single nodes when given an
+        ///     expression that returns multiple results, where some nodes are NOT'ed away
         /// </summary>
         [Test]
         public void Lambda13 ()
@@ -205,9 +203,9 @@ _exe1
 lambda.single:@/../*/(/_exe1/!/=error/)/*/?node");
             Assert.AreEqual ("success", result.Value);
         }
-        
+
         /// <summary>
-        /// verifies that [lambda.single] will not execute anything when given a block of code
+        ///     verifies that [lambda.single] will not execute anything when given a block of code
         /// </summary>
         [Test]
         public void Lambda14 ()
@@ -220,8 +218,8 @@ lambda.single:@/-/?node");
         }
 
         /// <summary>
-        /// verifies that [lambda] can do the "delete this" pattern, without messing
-        /// up the execution pointer, making it skip an active event
+        ///     verifies that [lambda] can do the "delete this" pattern, without messing
+        ///     up the execution pointer, making it skip an active event
         /// </summary>
         [Test]
         public void Lambda15 ()
@@ -233,10 +231,10 @@ set:@/../?value
   source:success");
             Assert.AreEqual ("success", result.Value);
         }
-        
+
         /// <summary>
-        /// verifies that [lambda] can create a new node, just beneath the currently executed node,
-        /// without making the engine "skip" a node
+        ///     verifies that [lambda] can create a new node, just beneath the currently executed node,
+        ///     without making the engine "skip" a node
         /// </summary>
         [Test]
         public void Lambda16 ()
@@ -249,9 +247,9 @@ set:@/../?value
 lambda:@/-/?node");
             Assert.AreEqual ("success", result.Value);
         }
-        
+
         /// <summary>
-        /// verifies that [lambda] can invoke text objects as values
+        ///     verifies that [lambda] can invoke text objects as values
         /// </summary>
         [Test]
         public void Lambda17 ()
@@ -259,7 +257,7 @@ lambda:@/-/?node");
             var result = ExecuteLambda (@"lambda:@""set:@/../*/_result/#/?value
   source:success""
   _result:node:_result"); // passing in reference node, to be able to retrieve values from lambda invocation
-            Assert.AreEqual ("success", result [0] [0].Get<Node> (_context).Value);
+            Assert.AreEqual ("success", result [0] [0].Get<Node> (Context).Value);
         }
     }
 }

@@ -7,18 +7,20 @@
 using System.Web;
 using phosphorus.core;
 using phosphorus.expressions;
+// ReSharper disable UnusedMember.Local
+// ReSharper disable UnusedMember.Global
 
-namespace phosphorus.web.ui
+namespace phosphorus.web.ui.response
 {
     /// <summary>
     /// helper to manipulate the HTTP response
     /// </summary>
-    public static class headers
+    public static class Headers
     {
         /// <summary>
         /// changes or removes existing HTTP headers, or adds new HTTP headers to response
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="context"><see cref="phosphorus.core.ApplicationContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.headers.set")]
         private static void pf_web_headers_set (ApplicationContext context, ActiveEventArgs e)

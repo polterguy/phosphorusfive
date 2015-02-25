@@ -1,4 +1,3 @@
-
 /*
  * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
@@ -10,27 +9,26 @@ using phosphorus.core;
 namespace phosphorus.expressions.exceptions
 {
     /// <summary>
-    /// exception thrown when expressions contains syntax errors
+    ///     exception thrown when expressions contains syntax errors
     /// </summary>
     public class ExpressionException : ArgumentException
     {
-        private readonly string _expression;
-        private readonly Node _node;
         private readonly ApplicationContext _context;
+        private readonly string _expression;
         private readonly string _message;
+        private readonly Node _node;
 
         /// <summary>
-        /// initializes a new instance of the <see cref="ExpressionException"/> class
+        ///     initializes a new instance of the <see cref="ExpressionException" /> class
         /// </summary>
         /// <param name="expression">expression that caused exception</param>
         /// <param name="node">node where expression was found</param>
         /// <param name="context">application context</param>
         public ExpressionException (string expression, Node node, ApplicationContext context)
-            : this (expression, null, node, context)
-        { }
+            : this (expression, null, node, context) { }
 
         /// <summary>
-        /// initializes a new instance of the <see cref="ExpressionException"/> class
+        ///     initializes a new instance of the <see cref="ExpressionException" /> class
         /// </summary>
         /// <param name="expression">expression that caused exception</param>
         /// <param name="message">message providing additional information</param>
@@ -41,7 +39,6 @@ namespace phosphorus.expressions.exceptions
             _message = message;
             _expression = expression;
             if (node != null && context != null) {
-
                 // making sure we go a "couple of nodes upwards" in hierarchy, to provide some context,
                 // but not too much, to not overload user with information
                 _node = node;
@@ -58,7 +55,9 @@ namespace phosphorus.expressions.exceptions
         /*
          * overiding StackTrace from Exception class to provide "Hyperlisp stack trace" as an additional piece of contextual information
          */
-        public override string StackTrace {
+
+        public override string StackTrace
+        {
             get
             {
                 if (_node == null)
@@ -74,8 +73,11 @@ namespace phosphorus.expressions.exceptions
         /*
          * overriding Message to provide expression that malfunctioned as an additional piece of contextual information
          */
-        public override string Message {
-            get {
+
+        public override string Message
+        {
+            get
+            {
                 var retVal = string.Format ("Expression '{0}' is not a valid expression.", _expression);
                 if (_message != null)
                     retVal = _message + "\r\n" + retVal;

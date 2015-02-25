@@ -1,4 +1,3 @@
-
 /*
  * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
@@ -10,12 +9,15 @@
 using MongoDB.Bson;
 using phosphorus.core;
 
-namespace phosphorus.mongodb
+// ReSharper disable UnusedMember.Local
+// ReSharper disable UnusedMember.Global
+
+namespace phosphorus.mongodb.helpers
 {
     /// <summary>
-    /// contains Hyperlisp type converters for MongoDB types, such as ObjectId, etc
+    ///     contains Hyperlisp type converters for MongoDB types, such as ObjectId, etc
     /// </summary>
-    public static class typeconverters
+    public static class TypeConverters
     {
         /// <summary>
         /// </summary>
@@ -29,15 +31,13 @@ namespace phosphorus.mongodb
         }
 
         /// <summary>
-        /// returns "objectid" for using as type information for the MongoDB.Bson.ObjectId type in hyperlisp
+        ///     returns "objectid" for using as type information for the MongoDB.Bson.ObjectId type in hyperlisp
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">parameters</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-type-name.MongoDB.Bson.ObjectId")]
         [ActiveEvent (Name = "pf.hyperlisp.get-type-name.MongoDB.Bson.BsonObjectId")]
-        private static void pf_hyperlisp_get_type_name_MongoDB_Bson_ObjectId (ApplicationContext context, ActiveEventArgs e)
-        {
-            e.Args.Value = "objectid";
-        }
+        // ReSharper disable once UnusedParameter.Local
+        private static void pf_hyperlisp_get_type_name_MongoDB_Bson_ObjectId (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = "objectid"; }
     }
 }

@@ -1,4 +1,3 @@
-
 /*
  * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
@@ -9,16 +8,18 @@ using System.Reflection;
 using phosphorus.core;
 using phosphorus.expressions;
 
+// ReSharper disable UnusedMember.Local
+
 namespace phosphorus.exe
 {
     /// <summary>
-    /// main class for pf.lambda executor. this project builds a mono exe file that can execute hyperlisp, and other types
-    /// of "pf.lambda" objects
+    ///     main class for pf.lambda executor. this project builds a mono exe file that can execute hyperlisp, and other types
+    ///     of "pf.lambda" objects
     /// </summary>
-    class MainClass
+    internal static class MainClass
     {
         /// <summary>
-        /// helper active event to make it possible to output stuff to console
+        ///     helper active event to make it possible to output stuff to console
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">active event arguments</param>
@@ -31,7 +32,7 @@ namespace phosphorus.exe
         }
 
         /// <summary>
-        /// helper active event to make it possible to output stuff to console
+        ///     helper active event to make it possible to output stuff to console
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">active event arguments</param>
@@ -44,7 +45,7 @@ namespace phosphorus.exe
         }
 
         /// <summary>
-        /// the entry point of the program, where the program control starts and ends
+        ///     the entry point of the program, where the program control starts and ends
         /// </summary>
         /// <param name="args">command-line arguments.</param>
         public static void Main (string[] args)
@@ -52,7 +53,6 @@ namespace phosphorus.exe
             if (args == null || args.Length == 0) {
                 OutputInstructions (); // outputting instructions, and then exiting
             } else {
-
                 // initializing plugins that must be here in order for lambda executioner to function
                 Loader.Instance.LoadAssembly (Assembly.GetExecutingAssembly ());
                 Loader.Instance.LoadAssembly ("plugins/", "phosphorus.hyperlisp");
@@ -75,7 +75,7 @@ namespace phosphorus.exe
                 context.Raise ("pf.core.application-start", new Node ());
 
                 // loads and convert file to lambda nodes
-                var convertExeFile = context.Raise ("pf.hyperlisp.hyperlisp2lambda", new Node (string.Empty, 
+                var convertExeFile = context.Raise ("pf.hyperlisp.hyperlisp2lambda", new Node (string.Empty,
                     context.Raise ("pf.file.load", new Node (string.Empty, exeNode.Value)) [0].Get<string> (context)));
 
                 // appending nodes from lambda file into execution objects, and execute lambda file given through command-line arguments
@@ -87,7 +87,8 @@ namespace phosphorus.exe
         /*
          * outputs instructions for how to use the lambda executor to the console
          */
-        private static void OutputInstructions()
+
+        private static void OutputInstructions ()
         {
             Console.WriteLine ();
             Console.WriteLine ();
@@ -96,9 +97,9 @@ namespace phosphorus.exe
             Console.WriteLine ("********************************************************************************");
             Console.WriteLine ();
             Console.WriteLine ("the lambda executor allows you to execute lambda files. "
-                + "for it to function, it needs at the very least the \"phosphorus.hyperlisp\","
-                + "\"phosphorus.lambda\" and \"phosphorus.file\" plugins in a directory called "
-                + "\"plugins\", directly underneath the lambda.exe file itself");
+                               + "for it to function, it needs at the very least the \"phosphorus.hyperlisp\","
+                               + "\"phosphorus.lambda\" and \"phosphorus.file\" plugins in a directory called "
+                               + "\"plugins\", directly underneath the lambda.exe file itself");
             Console.WriteLine ();
             Console.WriteLine ("command-line arguments;");
             Console.WriteLine ();
@@ -111,18 +112,19 @@ namespace phosphorus.exe
             Console.WriteLine ("   the default lambda execution language is hyperlisp");
             Console.WriteLine ();
             Console.WriteLine ("all other arguments are passed into the execution tree of the lambda file you "
-                + "are executing as a key/value pair, e.g; _var \"x\" creates a new node for you "
-                + "at the top of your execution file called '_var' with the content of 'x'");
+                               + "are executing as a key/value pair, e.g; _var \"x\" creates a new node for you "
+                               + "at the top of your execution file called '_var' with the content of 'x'");
             Console.WriteLine ();
             Console.WriteLine ("the lambda executor contains two Active Events, which you can use from "
-                + "your lambda execution files called, \"pf.console.write-line\" and "
-                + "\"pf.console.write\", which allows you to write a text to the console, either "
-                + "as a line with CR/LF appended at the end, or without CR/LF at the end");
+                               + "your lambda execution files called, \"pf.console.write-line\" and "
+                               + "\"pf.console.write\", which allows you to write a text to the console, either "
+                               + "as a line with CR/LF appended at the end, or without CR/LF at the end");
         }
 
         /*
          * creates our node parameter collection to pass into pf.lambda execution engine
          */
+
         private static Node ParseArguments (string[] args, out string language)
         {
             language = null;

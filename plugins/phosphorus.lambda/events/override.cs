@@ -1,4 +1,3 @@
-
 /*
  * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
@@ -9,26 +8,26 @@ using phosphorus.core;
 using phosphorus.expressions;
 using phosphorus.expressions.exceptions;
 
-namespace phosphorus.lambda
+// ReSharper disable UnusedMember.Local
+// ReSharper disable UnusedMember.Global
+
+namespace phosphorus.lambda.events
 {
     /// <summary>
-    /// class wrapping [override] keyword
+    ///     class wrapping [override] keyword
     /// </summary>
-    public static class pfOverride
+    public static class Override
     {
         /// <summary>
-        /// overrides zero or more events, with all given [super] parameters
+        ///     overrides zero or more events, with all given [super] parameters
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "override")]
         private static void lambda_override (ApplicationContext context, ActiveEventArgs e)
         {
             // syntax checking
-            var overrideNodes = new List<Node> (e.Args.FindAll (
-            delegate (Node idx) {
-                return idx.Name == "super";
-            }));
+            var overrideNodes = new List<Node> (e.Args.FindAll (idx => idx.Name == "super"));
             if (overrideNodes.Count != 1)
                 throw new LambdaException ("[override] requires exactly one [super] parameter", e.Args, context);
 
@@ -38,7 +37,7 @@ namespace phosphorus.lambda
             // iterating through each override event, creating our override
             foreach (var idxBase in XUtil.Iterate<string> (e.Args, context)) {
                 foreach (var idxSuper in overrides) {
-                    events_common.CreateOverride (context, idxBase, idxSuper);
+                    EventsCommon.CreateOverride (context, idxBase, idxSuper);
                 }
             }
         }

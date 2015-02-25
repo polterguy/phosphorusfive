@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -45,20 +45,18 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Compile Include="common.cs" />
-    <Compile Include="file\file_exist.cs" />
-    <Compile Include="file\file_load.cs" />
-    <Compile Include="file\file_remove.cs" />
-    <Compile Include="file\file_save.cs" />
-    <Compile Include="folder\folder_create.cs" />
-    <Compile Include="folder\folder_exists.cs" />
-    <Compile Include="folder\folder_list_files.cs" />
-    <Compile Include="folder\folder_list_folders.cs" />
-    <Compile Include="folder\folder_remove.cs" />
+    <Compile Include="Common.cs" />
+    <Compile Include="file\Exists.cs" />
+    <Compile Include="file\Load.cs" />
+    <Compile Include="file\Remove.cs" />
+    <Compile Include="file\Save.cs" />
+    <Compile Include="folder\Create.cs" />
+    <Compile Include="folder\Exists.cs" />
+    <Compile Include="folder\ListFiles.cs" />
+    <Compile Include="folder\ListFolders.cs" />
+    <Compile Include="folder\Remove.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="file\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\..\core\phosphorus.core\phosphorus.core.csproj">
       <Project>{C783FEDB-C973-4F38-8EBB-55A0163612F5}</Project>

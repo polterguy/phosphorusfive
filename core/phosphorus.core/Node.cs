@@ -6,6 +6,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+// ReSharper disable UnusedMethodReturnValue.Global
+// ReSharper disable UnusedMember.Global
+// ReSharper disable MemberCanBePrivate.Global
+
+// ReSharper disable PossibleNullReferenceException
 
 namespace phosphorus.core
 {
@@ -18,31 +24,31 @@ namespace phosphorus.core
         /// <summary>
         /// DNA code for Node
         /// </summary>
-        public class DNA : IComparable, IConvertible
+        public class Dna : IComparable, IConvertible
         {
-            internal List<int> _value;
+            internal readonly List<int> Value;
 
-            private DNA ()
+            private Dna ()
             {
-                _value = new List<int> ();
+                Value = new List<int> ();
             }
 
-            public DNA (string value)
+            public Dna (string value)
             {
-                _value = new List<int> ();
-                foreach (var idxInt in value.Split (new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries)) {
-                    _value.Add (int.Parse (idxInt));
+                Value = new List<int> ();
+                foreach (var idxInt in value.Split (new[] { '-' }, StringSplitOptions.RemoveEmptyEntries)) {
+                    Value.Add (int.Parse (idxInt));
                 }
             }
 
-            internal DNA (Node node)
+            internal Dna (Node node)
                 : this ()
             {
                 var idxNode = node;
                 while (idxNode.Parent != null) {
                     for (var idxNo = 0; idxNo < idxNode.Parent._children.Count; idxNo ++) {
                         if (idxNode == idxNode.Parent._children [idxNo]) {
-                            _value.Insert (0, idxNo);
+                            Value.Insert (0, idxNo);
                             break;
                         }
                     }
@@ -56,7 +62,7 @@ namespace phosphorus.core
             /// <value>depth</value>
             public int Count {
                 get {
-                    return _value.Count;
+                    return Value.Count;
                 }
             }
 
@@ -64,17 +70,10 @@ namespace phosphorus.core
             /// determines if is given value is a DNA path or not
             /// </summary>
             /// <returns><c>true</c> if is value is dna; otherwise, <c>false</c></returns>
-            /// <param name="value">value to check</param>
+            /// <param name="dna">value to check if is dna</param>
             public static bool IsPath (string dna)
             {
-                if (dna == null)
-                    return false;
-
-                foreach (var idx in dna) {
-                    if ("0123456789-".IndexOf (idx) == -1)
-                        return false;
-                }
-                return true;
+                return dna != null && dna.All (idx => "0123456789-".IndexOf (idx) != -1);
             }
 
             /// <summary>
@@ -82,9 +81,9 @@ namespace phosphorus.core
             /// </summary>
             /// <param name="lhs">left hand side node</param>
             /// <param name="rhs">right hand side node</param>
-            public static bool operator == (DNA lhs, DNA rhs)
+            public static bool operator == (Dna lhs, Dna rhs)
             {
-                return lhs.CompareTo (rhs) == 0;
+                return lhs != null && lhs.CompareTo (rhs) == 0;
             }
 
             /// <summary>
@@ -92,9 +91,9 @@ namespace phosphorus.core
             /// </summary>
             /// <param name="lhs">left hand side node</param>
             /// <param name="rhs">right hand side node</param>
-            public static bool operator != (DNA lhs, DNA rhs)
+            public static bool operator != (Dna lhs, Dna rhs)
             {
-                return lhs.CompareTo (rhs) != 0;
+                return lhs != null && lhs.CompareTo (rhs) != 0;
             }
 
             /// <summary>
@@ -102,7 +101,7 @@ namespace phosphorus.core
             /// </summary>
             /// <param name="lhs">left hand side node</param>
             /// <param name="rhs">right hand side node</param>
-            public static bool operator > (DNA lhs, DNA rhs)
+            public static bool operator > (Dna lhs, Dna rhs)
             {
                 return lhs.CompareTo (rhs) == 1;
             }
@@ -112,7 +111,7 @@ namespace phosphorus.core
             /// </summary>
             /// <param name="lhs">left hand side node</param>
             /// <param name="rhs">right hand side node</param>
-            public static bool operator < (DNA lhs, DNA rhs)
+            public static bool operator < (Dna lhs, Dna rhs)
             {
                 return lhs.CompareTo (rhs) == -1;
             }
@@ -122,7 +121,7 @@ namespace phosphorus.core
             /// </summary>
             /// <param name="lhs">left hand side node</param>
             /// <param name="rhs">right hand side node</param>
-            public static bool operator >= (DNA lhs, DNA rhs)
+            public static bool operator >= (Dna lhs, Dna rhs)
             {
                 return lhs.CompareTo (rhs) != -1;
             }
@@ -132,7 +131,7 @@ namespace phosphorus.core
             /// </summary>
             /// <param name="lhs">left hand side node</param>
             /// <param name="rhs">right hand side node</param>
-            public static bool operator <= (DNA lhs, DNA rhs)
+            public static bool operator <= (Dna lhs, Dna rhs)
             {
                 return lhs.CompareTo (rhs) != 1;
             }
@@ -142,12 +141,12 @@ namespace phosphorus.core
             /// </summary>
             /// <param name="lhs">left hand side node</param>
             /// <param name="rhs">right hand side node</param>
-            public static DNA operator & (DNA lhs, DNA rhs)
+            public static Dna operator & (Dna lhs, Dna rhs)
             {
-                var retVal = new DNA ();
-                for (var idxNo = 0; idxNo < lhs._value.Count && idxNo < rhs._value.Count; idxNo++) {
-                    if (lhs._value [idxNo].CompareTo (rhs._value [idxNo]) == 0)
-                        retVal._value.Add (idxNo);
+                var retVal = new Dna ();
+                for (var idxNo = 0; idxNo < lhs.Value.Count && idxNo < rhs.Value.Count; idxNo++) {
+                    if (lhs.Value [idxNo].CompareTo (rhs.Value [idxNo]) == 0)
+                        retVal.Value.Add (idxNo);
                     else
                         break;
                 }
@@ -156,13 +155,13 @@ namespace phosphorus.core
 
             public override bool Equals (object obj)
             {
-                if (!(obj is DNA))
+                if (!(obj is Dna))
                     return false;
-                var rhs = obj as DNA;
+                var rhs = (Dna) obj;
                 if (Count != rhs.Count)
                     return false;
                 for (var idxNo = 0; idxNo < Count; idxNo++) {
-                    if (_value [idxNo] != rhs._value [idxNo])
+                    if (Value [idxNo] != rhs.Value [idxNo])
                         return false;
                 }
                 return true;
@@ -170,33 +169,30 @@ namespace phosphorus.core
 
             public override int GetHashCode ()
             {
-                return _value.GetHashCode ();
+                return Value.GetHashCode ();
             }
 
             public override string ToString ()
             {
-                var tmp = "";
-                foreach (var idx in _value) {
-                    tmp += "-" + idx;
-                }
-                tmp = tmp.Trim (new char[] { '-' });
+                var tmp = Value.Aggregate ("", (current, idx) => current + ("-" + idx));
+                tmp = tmp.Trim ('-');
                 return tmp;
             }
 
             public int CompareTo (object obj)
             {
-                if (obj == null || !(obj is DNA))
-                    throw new ArgumentException ("cannot compare DNA to: " + (obj ?? "[null]").ToString ());
-                var rhs = obj as DNA;
+                if (!(obj is Dna))
+                    throw new ArgumentException ("cannot compare DNA to: " + (obj ?? "[null]"));
+                var rhs = (Dna) obj;
 
-                for (var idxNo = 0; idxNo < _value.Count && idxNo < rhs._value.Count; idxNo ++) {
-                    var cmpVals = _value [idxNo].CompareTo (rhs._value [idxNo]);
+                for (var idxNo = 0; idxNo < Value.Count && idxNo < rhs.Value.Count; idxNo ++) {
+                    var cmpVals = Value [idxNo].CompareTo (rhs.Value [idxNo]);
                     if (cmpVals != 0)
                         return cmpVals;
                 }
-                if (_value.Count > rhs._value.Count)
+                if (Value.Count > rhs.Value.Count)
                     return 1;
-                if (_value.Count < rhs._value.Count)
+                if (Value.Count < rhs.Value.Count)
                     return -1;
                 return 0;
             }
@@ -295,7 +291,7 @@ namespace phosphorus.core
         /// <summary>
         /// delegate for iterating children nodes
         /// </summary>
-        public delegate T NodeIterator<T> (Node node);
+        public delegate T NodeIterator<out T> (Node node);
 
         /// <summary>
         /// initializes a new instance of the <see cref="phosphorus.core.Node"/> class
@@ -336,8 +332,9 @@ namespace phosphorus.core
         public Node (string name, object value, IEnumerable<Node> children)
             : this (name, value)
         {
-            _children = new List<Node> (children);
-            foreach (var idx in children) {
+            var collection = children as Node[] ?? children.ToArray ();
+            _children = new List<Node> (collection);
+            foreach (var idx in collection) {
                 idx.Parent = this;
             }
         }
@@ -382,7 +379,7 @@ namespace phosphorus.core
         /// <typeparam name="T">type to return</typeparam>
         public T Get<T> (ApplicationContext context, T defaultValue = default (T))
         {
-            return Utilities.Convert <T> (Value, context, defaultValue);
+            return Utilities.Convert (Value, context, defaultValue);
         }
 
         /// <summary>
@@ -410,9 +407,9 @@ namespace phosphorus.core
         /// returns DNA code for Node
         /// </summary>
         /// <value>the DNA code, or position in Node tree</value>
-        public DNA Path {
+        public Dna Path {
             get {
-                return new DNA (this);
+                return new Dna (this);
             }
         }
 
@@ -439,13 +436,7 @@ namespace phosphorus.core
         /// </summary>
         /// <value>the first child</value>
         public Node FirstChildNotOf (string name)
-        {
-            foreach (var idx in _children) {
-                if (idx.Name != name)
-                    return idx;
-            }
-            return null;
-        }
+        { return _children.FirstOrDefault (idx => idx.Name != name); }
 
         /// <summary>
         /// returns the last child of the node
@@ -467,12 +458,7 @@ namespace phosphorus.core
             get {
                 if (Parent == null)
                     return null;
-                var idxNo = 0;
-                foreach (var idxNode in Parent._children) {
-                    if (idxNode == this)
-                        break;
-                    idxNo += 1;
-                }
+                var idxNo = Parent._children.TakeWhile (idxNode => idxNode != this).Count ();
                 idxNo -= 1;
                 if (idxNo >= 0)
                     return Parent._children [idxNo];
@@ -566,26 +552,25 @@ namespace phosphorus.core
         {
             if (node == null) {
                 throw new ArgumentException ("cannot replace a node with null");
-            } else {
-                node.Parent = this.Parent;
-                this.Parent._children [this.Parent._children.IndexOf (this)] = node;
-                this.Parent = null;
-                return node;
             }
+            node.Parent = Parent;
+            Parent._children [Parent._children.IndexOf (this)] = node;
+            Parent = null;
+            return node;
         }
 
         /// <summary>
-        /// finds a node according to the given <see cref="phosphorus.core.Node+DNA"/>
+        /// finds a node according to the given dna
         /// </summary>
         /// <param name="dna">dna of node to find</param>
-        public Node Find (DNA dna)
+        public Node Find (Dna dna)
         {
             if (dna.Equals (null))
                 return null;
             var idxNode = this;
             while (idxNode.Parent != null)
                 idxNode = idxNode.Parent;
-            foreach (var idxNo in dna._value) {
+            foreach (var idxNo in dna.Value) {
                 if (idxNo < 0 || idxNo >= idxNode._children.Count)
                     return null;
                 idxNode = idxNode [idxNo];
@@ -598,17 +583,17 @@ namespace phosphorus.core
         /// </summary>
         /// <returns>the node, if found, otherwise null</returns>
         /// <param name="dna">the DNA or Path of the node to return</param>
-        public Node FindDNA (string dna)
+        public Node FindDna (string dna)
         {
             if (string.IsNullOrEmpty (dna))
                 return null;
-            return Find (new DNA (dna));
+            return Find (new Dna (dna));
         }
 
         /// <summary>
         /// finds the first matching node according to the given predicate
         /// </summary>
-        /// <param name="match">node matching the given predicate, or null if none</param>
+        /// <param name="functor">predicate that nodes must match</param>
         public Node Find (Predicate<Node> functor)
         {
             return _children.Find (functor);
@@ -617,7 +602,7 @@ namespace phosphorus.core
         /// <summary>
         /// finds all nodes according to the given predicate
         /// </summary>
-        /// <param name="match">node matching the given predicate</param>
+        /// <param name="functor">functor nodes must match</param>
         public IEnumerable<Node> FindAll (Predicate<Node> functor)
         {
             return _children.FindAll (functor);
@@ -629,10 +614,7 @@ namespace phosphorus.core
         /// <param name="name">name of node to return</param>
         public Node Find (string name)
         {
-            return Find (
-                delegate (Node idx) {
-                    return idx.Name == name;
-            });
+            return Find (idx => idx.Name == name);
         }
 
         /// <summary>
@@ -641,10 +623,7 @@ namespace phosphorus.core
         /// <param name="name">name of node to return</param>
         public IEnumerable<Node> FindAll (string name)
         {
-            return FindAll (
-                delegate (Node idx) {
-                    return idx.Name == name;
-            });
+            return FindAll (idx => idx.Name == name);
         }
 
         /// <summary>
@@ -674,13 +653,8 @@ namespace phosphorus.core
         /// </summary>
         /// <param name="functor">match delegate</param>
         /// <typeparam name="T">type of object you wish to construct from node iterator</typeparam>
-        public IEnumerable<T> ConvertChildren<T> (NodeIterator<T> functor)
-        {
-            foreach (var idx in _children) {
-                var retVal = functor (idx);
-                if (retVal != null && !retVal.Equals (default (T)))
-                    yield return retVal;
-            }
+        public IEnumerable<T> ConvertChildren<T> (NodeIterator<T> functor) {
+            return _children.Select (idx => functor (idx)).Where (retVal => retVal != null && !retVal.Equals (default (T)));
         }
 
         /// <summary>
@@ -690,10 +664,7 @@ namespace phosphorus.core
         /// <param name="name">name of node to return</param>
         public Node FindOrCreate (string name)
         {
-            var retVal = _children.Find (
-                delegate (Node idx) {
-                    return idx.Name == name;
-            });
+            var retVal = _children.Find (idx => idx.Name == name);
             if (retVal != null)
                 return retVal;
             return Add (new Node (name)).LastChild;
@@ -707,11 +678,7 @@ namespace phosphorus.core
         /// <param name="value">value of node to return</param>
         public Node FindOrCreate (string name, object value)
         {
-            var retVal = _children.Find (
-                delegate (Node idx) {
-                    return idx.Name == name && 
-                        ((value == null && idx.Value == null) || (value != null && value.Equals (idx.Value)));
-            });
+            var retVal = _children.Find (idx => idx.Name == name && ((value == null && idx.Value == null) || (value != null && value.Equals (idx.Value))));
             if (retVal != null)
                 return retVal;
             return Add (new Node (name, value)).LastChild;
@@ -721,15 +688,15 @@ namespace phosphorus.core
         /// finds the first node having the given name
         /// </summary>
         /// <param name="name">name of node to return</param>
+        /// <param name="context">application context</param>
+        /// <param name="defaultValue">default value to use if no child with the given name is found</param>
         public T GetChildValue<T> (string name, ApplicationContext context, T defaultValue = default (T))
         {
-            var child = _children.Find (
-            delegate (Node idx) {
-                return idx.Name == name;
-            });
-            return child == null ? defaultValue : child.Get<T> (context, defaultValue);
+            var child = _children.Find (idx => idx.Name == name);
+            return child == null ? defaultValue : child.Get (context, defaultValue);
         }
 
+        // ReSharper disable once MemberCanBePrivate.Global
         public Node Remove (Node node)
         {
             if (!_children.Remove (node))
@@ -763,10 +730,7 @@ namespace phosphorus.core
         /// <param name="name">name of nodes to remove</param>
         public Node RemoveAll (string name)
         {
-            return RemoveAll (
-                delegate (Node idx) {
-                    return idx.Name == name;
-            });
+            return RemoveAll (idx => idx.Name == name);
         }
 
         /// <summary>
@@ -784,10 +748,7 @@ namespace phosphorus.core
         /// </summary>
         public Node Sort ()
         {
-            _children.Sort (
-                delegate (Node lhs, Node rhs) {
-                    return lhs.Name.CompareTo (rhs.Name);
-            });
+            _children.Sort ((lhs, rhs) => String.Compare (lhs.Name, rhs.Name, StringComparison.InvariantCulture));
             return this;
         }
 
@@ -828,7 +789,7 @@ namespace phosphorus.core
         /// </summary>
         /// <param name="name">name of node to add</param>
         /// <param name="value">value of node to add</param>
-        /// <param name="children">initial child collection of node</param>
+        /// <param name="nodes">initial child collection of node</param>
         public Node Add (string name, object value, IEnumerable<Node> nodes)
         {
             return Add (new Node (name, value, nodes));
@@ -872,9 +833,7 @@ namespace phosphorus.core
         /// </summary>
         public Node Clone ()
         {
-            var retVal = new Node ();
-            retVal.Name = Name;
-            retVal.Value = Value;
+            var retVal = new Node {Name = Name, Value = Value};
             foreach (var idxChild in _children) {
                 retVal.Add (idxChild.Clone ());
             }
@@ -902,7 +861,7 @@ namespace phosphorus.core
         /// <param name="rhs">node to compare again the current instance for equality</param>
         public int CompareTo (Node rhs)
         {
-            var retVal = Name.CompareTo (rhs.Name);
+            var retVal = String.Compare(Name, rhs.Name, StringComparison.InvariantCulture);
             if (retVal != 0)
                 return retVal;
             if (Value == null) {
@@ -936,7 +895,7 @@ namespace phosphorus.core
             if (value == null && rhsValue == null)
                 return 0;
             if (value.GetType () != rhsValue.GetType ()) {
-                return value.GetType ().ToString ().CompareTo (rhsValue.GetType ().ToString ());
+                return String.Compare(value.GetType ().ToString (), rhsValue.GetType ().ToString (), StringComparison.InvariantCulture);
             }
             var thisValue = value as IComparable;
             if (thisValue == null)
@@ -982,11 +941,11 @@ namespace phosphorus.core
             if (!string.IsNullOrEmpty (Name))
                 retVal += "Name=" + Name;
             if (Value != null)
-                retVal += ", Value=" + Value.ToString ();
+                retVal += ", Value=" + Value;
             if (Count > 0)
-                retVal += ", Count=" + Count.ToString ();
+                retVal += ", Count=" + Count;
             if (Path.Count > 0)
-                retVal += ", Path=" + Path.ToString ();
+                retVal += ", Path=" + Path;
             retVal = retVal.Trim (',', ' ');
             return retVal;
         }

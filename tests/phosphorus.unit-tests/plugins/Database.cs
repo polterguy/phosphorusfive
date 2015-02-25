@@ -1,4 +1,3 @@
-
 /*
  * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
@@ -8,10 +7,13 @@ using System;
 using NUnit.Framework;
 using phosphorus.core;
 
+// ReSharper disable UnusedMember.Local
+// ReSharper disable UnusedParameter.Local
+
 namespace phosphorus.unittests.plugins
 {
     /// <summary>
-    /// [pf.data.xxx] unit tests
+    ///     [pf.data.xxx] unit tests
     /// </summary>
     [TestFixture]
     public class Database : TestBase
@@ -25,12 +27,13 @@ namespace phosphorus.unittests.plugins
             Loader.Instance.LoadAssembly ("phosphorus.lambda");
             Loader.Instance.LoadAssembly ("phosphorus.file");
             Loader.Instance.LoadAssembly ("phosphorus.data");
-            _context = Loader.Instance.CreateApplicationContext ();
+            Context = Loader.Instance.CreateApplicationContext ();
         }
 
         /*
          * runs before every unit test, deletes all documents from "unit_tests"
          */
+
         [SetUp]
         public void SetUp ()
         {
@@ -41,14 +44,12 @@ namespace phosphorus.unittests.plugins
         /*
          * necessary to return "root folder" of executing Assembly
          */
+
         [ActiveEvent (Name = "pf.core.application-folder")]
-        private static void GetRootFolder (ApplicationContext context, ActiveEventArgs e)
-        {
-            e.Args.Value = GetBasePath ();
-        }
+        private static void GetRootFolder (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = GetBasePath (); }
 
         /// <summary>
-        /// selects non-existing objects from database, making sure nothing is returned
+        ///     selects non-existing objects from database, making sure nothing is returned
         /// </summary>
         [Test]
         public void Select01 ()
@@ -58,8 +59,8 @@ namespace phosphorus.unittests.plugins
         }
 
         /// <summary>
-        /// inserts node, then selects, for then to delete and select again, making
-        /// sure both insert, select and delete works as it should
+        ///     inserts node, then selects, for then to delete and select again, making
+        ///     sure both insert, select and delete works as it should
         /// </summary>
         [Test]
         public void Select02 ()
@@ -79,7 +80,7 @@ pf.data.select:@/*/*/_test1/?node");
         }
 
         /// <summary>
-        /// inserts into database for then to select 'name', to verify select works as it should
+        ///     inserts into database for then to select 'name', to verify select works as it should
         /// </summary>
         [Test]
         public void Select03 ()
@@ -94,7 +95,7 @@ pf.data.select:@/*/*/_testX/0/?name");
         }
 
         /// <summary>
-        /// inserts into database for then to select 'value', to verify select works as it should
+        ///     inserts into database for then to select 'value', to verify select works as it should
         /// </summary>
         [Test]
         public void Select04 ()
@@ -109,7 +110,7 @@ pf.data.select:@/*/*/_testX/0/?value");
         }
 
         /// <summary>
-        /// inserts into database, for then to select 'count' to verify select works as it should
+        ///     inserts into database, for then to select 'count' to verify select works as it should
         /// </summary>
         [Test]
         public void Select05 ()
@@ -124,7 +125,7 @@ pf.data.select:@/*/*/_testX/0/?count");
         }
 
         /// <summary>
-        /// inserts into database, for then to select 'path' to verify select works as it should
+        ///     inserts into database, for then to select 'path' to verify select works as it should
         /// </summary>
         [Test]
         public void Select06 ()
@@ -135,12 +136,12 @@ pf.data.select:@/*/*/_testX/0/?count");
 pf.data.select:@/*/*/_testX/0/?path");
             Assert.AreEqual (1, tmp [1].Count);
             Assert.AreEqual (string.Empty, tmp [1] [0].Name);
-            Assert.IsTrue (tmp [1] [0].Value is Node.DNA);
+            Assert.IsTrue (tmp [1] [0].Value is Node.Dna);
         }
 
         /// <summary>
-        /// inserts multiple objects into database, for then to select 'name', having multiple return values, to
-        /// verify select and insert works as it should
+        ///     inserts multiple objects into database, for then to select 'name', having multiple return values, to
+        ///     verify select and insert works as it should
         /// </summary>
         [Test]
         public void Select07 ()
@@ -159,8 +160,8 @@ pf.data.select:@/*/*/_testX/0/?name");
         }
 
         /// <summary>
-        /// inserts multiple objects into database, for then to select 'value', having multiple return values, to
-        /// verify select and insert works as it should
+        ///     inserts multiple objects into database, for then to select 'value', having multiple return values, to
+        ///     verify select and insert works as it should
         /// </summary>
         [Test]
         public void Select08 ()
@@ -179,8 +180,8 @@ pf.data.select:@/*/*/_testX/0/?value");
         }
 
         /// <summary>
-        /// inserts multiple objects into database, for then to select 'path', having multiple return values, to
-        /// verify select and insert works as it should
+        ///     inserts multiple objects into database, for then to select 'path', having multiple return values, to
+        ///     verify select and insert works as it should
         /// </summary>
         [Test]
         public void Select09 ()
@@ -194,13 +195,13 @@ pf.data.select:@/*/*/_testX/0/?path");
             Assert.AreEqual (2, tmp [1].Count);
             Assert.AreEqual (string.Empty, tmp [1] [0].Name);
             Assert.AreEqual (string.Empty, tmp [1] [1].Name);
-            Assert.IsTrue (tmp [1] [0].Value is Node.DNA);
-            Assert.IsTrue (tmp [1] [1].Value is Node.DNA);
+            Assert.IsTrue (tmp [1] [0].Value is Node.Dna);
+            Assert.IsTrue (tmp [1] [1].Value is Node.Dna);
         }
 
         /// <summary>
-        /// inserts multiple objects into database, for then to select 'count', having multiple return values, to
-        /// verify select and insert works as it should
+        ///     inserts multiple objects into database, for then to select 'count', having multiple return values, to
+        ///     verify select and insert works as it should
         /// </summary>
         [Test]
         public void Select10 ()
@@ -215,10 +216,10 @@ pf.data.select:@/*/*/_testX/?count");
             Assert.AreEqual (string.Empty, tmp [1] [0].Name);
             Assert.AreEqual (2, tmp [1] [0].Value);
         }
-        
+
         /// <summary>
-        /// inserts a couple of nodes, for then to select 'deep' from database, making
-        /// sure select and insert works as it should
+        ///     inserts a couple of nodes, for then to select 'deep' from database, making
+        ///     sure select and insert works as it should
         /// </summary>
         [Test]
         public void Select11 ()
@@ -239,10 +240,10 @@ pf.data.select:@/*/*/_test4/*/query_field/*/x/=y/././?node");
             Assert.AreEqual ("x", tmp [1] [0] [1] [0].Name);
             Assert.AreEqual ("y", tmp [1] [0] [1] [0].Value);
         }
-        
+
         /// <summary>
-        /// inserts one node, for then to select the node, using a formatting expression, containing
-        /// an expression as one of its formatting parameters
+        ///     inserts one node, for then to select the node, using a formatting expression, containing
+        ///     an expression as one of its formatting parameters
         /// </summary>
         [Test]
         public void Select12 ()
@@ -257,10 +258,10 @@ pf.data.select:@/*/*/{0}/?node
             Assert.AreEqual ("howdy", tmp [1] [1] [0].Name);
             Assert.AreEqual ("world", tmp [1] [1] [0].Value);
         }
-        
+
         /// <summary>
-        /// inserts one node, for then to delete the node, using a formatting expression, 
-        /// where one of the formatting parameters are an expression in itself
+        ///     inserts one node, for then to delete the node, using a formatting expression,
+        ///     where one of the formatting parameters are an expression in itself
         /// </summary>
         [Test]
         public void Delete01 ()
@@ -275,7 +276,7 @@ pf.data.select:@/*/*/_test4/?node");
         }
 
         /// <summary>
-        /// inserts from an expression source, making sure insert can handle expressions
+        ///     inserts from an expression source, making sure insert can handle expressions
         /// </summary>
         [Test]
         public void Insert01 ()
@@ -292,7 +293,7 @@ pf.data.select:@/*/*/_testX/?node");
         }
 
         /// <summary>
-        /// inserts multiple items from an expression source, making sure insert works as it should
+        ///     inserts multiple items from an expression source, making sure insert works as it should
         /// </summary>
         [Test]
         public void Insert02 ()
@@ -313,10 +314,10 @@ pf.data.select:@/*/*/_testX/?node");
             Assert.AreEqual ("howdy", tmp [3] [1] [0].Name);
             Assert.AreEqual ("world", tmp [3] [1] [0].Value);
         }
-        
+
         /// <summary>
-        /// inserts one item into database where item is "string" type, making sure insert can corectly convert
-        /// from string to Node
+        ///     inserts one item into database where item is "string" type, making sure insert can corectly convert
+        ///     from string to Node
         /// </summary>
         [Test]
         public void Insert03 ()
@@ -330,10 +331,10 @@ pf.data.select:@/*/*/_testX/?node");
             Assert.AreEqual ("howdy", tmp [1] [0] [0].Name);
             Assert.AreEqual ("world", tmp [1] [0] [0].Value);
         }
-        
+
         /// <summary>
-        /// inserts two items into database, where items are "strings", making sure insert can corectly convert
-        /// from string to Node(s)
+        ///     inserts two items into database, where items are "strings", making sure insert can corectly convert
+        ///     from string to Node(s)
         /// </summary>
         [Test]
         public void Insert04 ()
@@ -351,8 +352,8 @@ pf.data.select:@/*/*/_testX/?node");
         }
 
         /// <summary>
-        /// inserts an item into the database which is nothing but a "simple value" type of item
-        /// from string to Node
+        ///     inserts an item into the database which is nothing but a "simple value" type of item
+        ///     from string to Node
         /// </summary>
         [Test]
         public void Insert05 ()
@@ -366,8 +367,8 @@ pf.data.select:@/*/*/foo/?value");
         }
 
         /// <summary>
-        /// inserts a couple of items into database, for then to perform a 'deep' update, making
-        /// sure update works as it should
+        ///     inserts a couple of items into database, for then to perform a 'deep' update, making
+        ///     sure update works as it should
         /// </summary>
         [Test]
         public void Update01 ()
@@ -394,8 +395,8 @@ pf.data.select:@/*/*/_test5/*/query_field2/*/x/=zz/././?node");
         }
 
         /// <summary>
-        /// inserts some items into database, for then to update multiple items at the same time,
-        /// making sure update works as it should
+        ///     inserts some items into database, for then to update multiple items at the same time,
+        ///     making sure update works as it should
         /// </summary>
         [Test]
         public void Update02 ()
@@ -422,8 +423,8 @@ pf.data.select:@/*/*/_test6/?node");
         }
 
         /// <summary>
-        /// inserts one item into database, for then to update through 'value' expression, making sure update works
-        /// as it should
+        ///     inserts one item into database, for then to update through 'value' expression, making sure update works
+        ///     as it should
         /// </summary>
         [Test]
         public void Update03 ()
@@ -441,8 +442,8 @@ pf.data.select:@/*/*/_testX/?node");
         }
 
         /// <summary>
-        /// inserts one item into database, for then to update root item through use of expressions,
-        /// making sure update works as it should
+        ///     inserts one item into database, for then to update root item through use of expressions,
+        ///     making sure update works as it should
         /// </summary>
         [Test]
         public void Update04 ()
@@ -464,8 +465,8 @@ pf.data.select:@/*/*/_test7/?node");
         }
 
         /// <summary>
-        /// inserts an item into database, for them to update 'value' of item to become a node, through an expression,
-        /// making sure values in database can store nodes as their values
+        ///     inserts an item into database, for them to update 'value' of item to become a node, through an expression,
+        ///     making sure values in database can store nodes as their values
         /// </summary>
         [Test]
         public void Update05 ()
@@ -480,14 +481,14 @@ pf.data.select:@/*/*/_test9/?node");
             Assert.AreEqual (1, tmp [3].Count);
             Assert.AreEqual ("_test9", tmp [3] [0].Name);
             Assert.AreEqual ("howdy", tmp [3] [0] [0].Name);
-            Assert.AreEqual ("_howdy", tmp [3] [0] [0].Get<Node> (_context).Name);
-            Assert.AreEqual ("world", tmp [3] [0] [0].Get<Node> (_context).Value);
-            Assert.AreEqual (0, tmp [3] [0] [0].Get<Node> (_context).Count);
+            Assert.AreEqual ("_howdy", tmp [3] [0] [0].Get<Node> (Context).Name);
+            Assert.AreEqual ("world", tmp [3] [0] [0].Get<Node> (Context).Value);
+            Assert.AreEqual (0, tmp [3] [0] [0].Get<Node> (Context).Count);
         }
-        
+
         /// <summary>
-        /// inserts an item into database, for them to update 'value' using [rel-source], making sure update works as
-        /// it should
+        ///     inserts an item into database, for them to update 'value' using [rel-source], making sure update works as
+        ///     it should
         /// </summary>
         [Test]
         public void Update06 ()
@@ -503,10 +504,10 @@ pf.data.select:@/*/*/_test9/?node");
             Assert.AreEqual ("howdy", tmp [2] [0] [0].Name);
             Assert.AreEqual ("_test9", tmp [2] [0] [0].Value);
         }
-        
+
         /// <summary>
-        /// inserts an item into database, for them to update 'value' using [rel-source], where [rel-source]
-        /// is a formatting expression, making sure update works as it should
+        ///     inserts an item into database, for them to update 'value' using [rel-source], where [rel-source]
+        ///     is a formatting expression, making sure update works as it should
         /// </summary>
         [Test]
         public void Update07 ()
@@ -524,10 +525,10 @@ pf.data.select:@/*/*/_test9/?node");
             Assert.AreEqual ("howdy", tmp [2] [0] [0].Name);
             Assert.AreEqual ("_test9world", tmp [2] [0] [0].Value);
         }
-        
+
         /// <summary>
-        /// inserts an item into database, for them to update 'value' using [rel-source], where [rel-source]
-        /// points to multiple node's values
+        ///     inserts an item into database, for them to update 'value' using [rel-source], where [rel-source]
+        ///     points to multiple node's values
         /// </summary>
         [Test]
         public void Update08 ()
@@ -547,10 +548,10 @@ pf.data.select:@/*/*/_test9/?node");
             Assert.AreEqual ("_dest", tmp [2] [0] [2].Name);
             Assert.AreEqual ("howdy world", tmp [2] [0] [2].Value);
         }
-        
+
         /// <summary>
-        /// inserts an item into database, for them to update item, making sure the item gets a new ID when one
-        /// is explicitly given
+        ///     inserts an item into database, for them to update item, making sure the item gets a new ID when one
+        ///     is explicitly given
         /// </summary>
         [Test]
         public void Update09 ()
@@ -566,18 +567,15 @@ pf.data.select:@/*/*/howdy2/?node");
         }
 
         /// <summary>
-        /// tries to insert one item into database with no name
+        ///     tries to insert one item into database with no name
         /// </summary>
         [Test]
         [ExpectedException]
-        public void SyntaxError01 ()
-        {
-            ExecuteLambda (@"pf.data.insert
-  :bar1");
-        }
-        
+        public void SyntaxError01 () { ExecuteLambda (@"pf.data.insert
+  :bar1"); }
+
         /// <summary>
-        /// tries to update an item without submitting a [source] or [rel-source]
+        ///     tries to update an item without submitting a [source] or [rel-source]
         /// </summary>
         [Test]
         [ExpectedException]

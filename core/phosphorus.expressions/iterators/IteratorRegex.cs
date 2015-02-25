@@ -1,4 +1,3 @@
-
 /*
  * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
@@ -11,12 +10,12 @@ using phosphorus.expressions.exceptions;
 namespace phosphorus.expressions.iterators
 {
     /// <summary>
-    /// base class for all regular expression iterators, providing helper methods
+    ///     base class for all regular expression iterators, providing helper methods
     /// </summary>
     public abstract class IteratorRegex : Iterator
     {
         /// <summary>
-        /// returns regular expression engine options for regex iterator
+        ///     returns regular expression engine options for regex iterator
         /// </summary>
         /// <returns>regex options</returns>
         /// <param name="optionsString">string containing textual representation of all options</param>
@@ -31,35 +30,35 @@ namespace phosphorus.expressions.iterators
             // looping through all options given
             foreach (var idx in optionsString) {
                 switch (idx) {
-                case 'i':
-                    options |= RegexOptions.IgnoreCase;
-                    break;
-                case 'm':
-                    options |= RegexOptions.Multiline;
-                    break;
-                case 'c':
-                    options |= RegexOptions.Compiled;
-                    break;
-                case 'e':
-                    options |= RegexOptions.ECMAScript;
-                    break;
-                case 'w':
-                    options |= RegexOptions.IgnorePatternWhitespace;
-                    break;
-                case 'r':
-                    options |= RegexOptions.RightToLeft;
-                    break;
-                case 's':
-                    options |= RegexOptions.Singleline;
-                    break;
-                case 'd':
-                    break; // handled outside of this method ... (distinct option)
-                default:
-                    throw new ExpressionException (
-                        expression, 
-                        string.Format ("'{0}' is not a recognized option for regular expression iterator", idx),
-                        node,
-                        context);
+                    case 'i':
+                        options |= RegexOptions.IgnoreCase;
+                        break;
+                    case 'm':
+                        options |= RegexOptions.Multiline;
+                        break;
+                    case 'c':
+                        options |= RegexOptions.Compiled;
+                        break;
+                    case 'e':
+                        options |= RegexOptions.ECMAScript;
+                        break;
+                    case 'w':
+                        options |= RegexOptions.IgnorePatternWhitespace;
+                        break;
+                    case 'r':
+                        options |= RegexOptions.RightToLeft;
+                        break;
+                    case 's':
+                        options |= RegexOptions.Singleline;
+                        break;
+                    case 'd':
+                        break; // handled outside of this method ... (distinct option)
+                    default:
+                        throw new ExpressionException (
+                            expression,
+                            string.Format ("'{0}' is not a recognized option for regular expression iterator", idx),
+                            node,
+                            context);
                 }
             }
             return options;

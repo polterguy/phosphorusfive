@@ -1,4 +1,3 @@
-
 /*
  * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
@@ -10,31 +9,30 @@ using System.IO;
 using System.Text;
 using phosphorus.core;
 
-namespace phosphorus.hyperlisp
+namespace phosphorus.hyperlisp.helpers
 {
     /// <summary>
-    /// class responsible for tokenizing hyperlisp
+    ///     class responsible for tokenizing hyperlisp
     /// </summary>
-    public class Tokenizer : IDisposable
+    public sealed class Tokenizer : IDisposable
     {
         private readonly StringReader _reader;
         private bool _disposed;
 
         /// <summary>
-        /// initializes a new instance of the <see cref="phosphorus.hyperlisp.Tokenizer"/> class
+        ///     initializes a new instance of the <see cref="Tokenizer" /> class
         /// </summary>
         /// <param name="hyperlisp">hyperlisp to tokenize</param>
-        public Tokenizer (string hyperlisp)
-        {
-            _reader = new StringReader (hyperlisp);
-        }
+        public Tokenizer (string hyperlisp) { _reader = new StringReader (hyperlisp); }
 
         /// <summary>
-        /// returns all <see cref="phosphorus.hyperlisp.Token"/>s for given hyperlisp
+        ///     returns all <see cref="Token" />s for given hyperlisp
         /// </summary>
         /// <value>tokens from hyperlisp</value>
-        public IEnumerable<Token> Tokens {
-            get {
+        public IEnumerable<Token> Tokens
+        {
+            get
+            {
                 var previousToken = new Token (Token.TokenType.CarriageReturn, "\r\n"); // we start out with a CR/LF token
                 while (true) {
                     var token = NextToken (previousToken);
@@ -46,11 +44,16 @@ namespace phosphorus.hyperlisp
             }
         }
 
+        /*
+         * private implementation of IDisposable interface
+         */
+        void IDisposable.Dispose () { Dispose (true); }
+
         /// <summary>
-        /// disposing the tokenizer
+        ///     disposing the tokenizer
         /// </summary>
         /// <param name="disposing">if set to <c>true</c> disposing will occur, otherwise false</param>
-        protected virtual void Dispose (bool disposing)
+        private void Dispose (bool disposing)
         {
             if (!_disposed && disposing) {
                 _disposed = true;
@@ -61,10 +64,11 @@ namespace phosphorus.hyperlisp
         /*
          * retrieves next hyperlisp token from text reader
          */
+
         private Token NextToken (Token previousToken)
         {
             var nextChar = _reader.Peek ();
-            if ((nextChar == ':') && 
+            if ((nextChar == ':') &&
                 (previousToken == null || previousToken.Type == Token.TokenType.Spacer || previousToken.Type == Token.TokenType.CarriageReturn))
                 return new Token (Token.TokenType.Name, string.Empty); // empty name
             if ((nextChar == '\r' || nextChar == '\n' || nextChar == -1) && previousToken.Type == Token.TokenType.Separator)
@@ -73,7 +77,7 @@ namespace phosphorus.hyperlisp
                 return null; // end of stream
 
             nextChar = _reader.Read ();
-            if (nextChar == '/' && (_reader.Peek () == '/'  || _reader.Peek () == '*') &&
+            if (nextChar == '/' && (_reader.Peek () == '/' || _reader.Peek () == '*') &&
                 (previousToken == null || previousToken.Type == Token.TokenType.CarriageReturn || previousToken.Type == Token.TokenType.Spacer))
                 return SkipCommentToken ();
             if (nextChar == ':')
@@ -81,29 +85,27 @@ namespace phosphorus.hyperlisp
             if (nextChar == ' ') {
                 if (previousToken.Type == Token.TokenType.CarriageReturn) {
                     return NextSpaceToken ();
-                } else {
-
-                    // whitespace only carry semantics as first token in each line in hyperlisp content
-                    // therefor we must "left-trim" the reader, before retrieving next token
-                    TrimReader ();
-                    return NextToken (previousToken);
                 }
+                // whitespace only carry semantics as first token in each line in hyperlisp content
+                // therefor we must "left-trim" the reader, before retrieving next token
+                TrimReader ();
+                return NextToken (previousToken);
             }
             if (nextChar == '\r') {
-                return NextCRLFToken ();
-            } else if (nextChar == '\n') {
-                return new Token (Token.TokenType.CarriageReturn, "\r\n"); // normalizing carriage returns
-            } else {
-                return NextDefaultToken (nextChar, previousToken);
+                return NextCrlfToken ();
             }
+            if (nextChar == '\n') {
+                return new Token (Token.TokenType.CarriageReturn, "\r\n"); // normalizing carriage returns
+            }
+            return NextDefaultToken (nextChar, previousToken);
         }
 
         /*
          * skips the comment token starting at current position of reader
          */
-        private Token SkipCommentToken()
+
+        private Token SkipCommentToken ()
         {
-            _reader.Peek (); // skipping current character, which is a '/' character, next character should be either '/' or '*'
             var nextChar = _reader.Read ();
             if (nextChar == '/') {
                 _reader.ReadLine ();
@@ -127,6 +129,7 @@ namespace phosphorus.hyperlisp
         /*
          * trims reader until reader head is at first non-space character
          */
+
         private void TrimReader ()
         {
             var nextChar = _reader.Peek ();
@@ -139,12 +142,13 @@ namespace phosphorus.hyperlisp
         /*
          * reads and validates next space token ("  ") from text reader
          */
+
         private Token NextSpaceToken ()
         {
             var buffer = " ";
             var nextChar = _reader.Peek ();
             while (nextChar == ' ') {
-                buffer += (char)_reader.Read ();
+                buffer += (char) _reader.Read ();
                 nextChar = _reader.Peek ();
             }
             return new Token (Token.TokenType.Spacer, buffer);
@@ -153,7 +157,8 @@ namespace phosphorus.hyperlisp
         /*
          * reads and validates next carriage return / line feed token ("\r\n" or "\n")
          */
-        private Token NextCRLFToken ()
+
+        private Token NextCrlfToken ()
         {
             var nextChar = _reader.Read ();
             if (nextChar == -1)
@@ -166,12 +171,14 @@ namespace phosphorus.hyperlisp
         /*
          * reads next "default token" from text reader, can be string, multiline string or simply legal unescaped characters
          */
+
         private Token NextDefaultToken (int nextChar, Token previousToken)
         {
             if (nextChar == '"') {
                 return new Token (GetTokenType (previousToken), Utilities.ReadSingleLineStringLiteral (_reader)); // single line string literal
-            } else if (nextChar == '@') {
-                if ((char)_reader.Peek () == '"') {
+            }
+            if (nextChar == '@') {
+                if ((char) _reader.Peek () == '"') {
                     _reader.Read (); // multiline string literal, skipping '"' part
                     return new Token (GetTokenType (previousToken), Utilities.ReadMultiLineStringLiteral (_reader));
                 }
@@ -179,10 +186,10 @@ namespace phosphorus.hyperlisp
 
             // default token type, no string quoting here
             var builder = new StringBuilder ();
-            builder.Append ((char)nextChar);
+            builder.Append ((char) nextChar);
             nextChar = _reader.Peek ();
-            while (nextChar != -1 && "\r\n:".IndexOf ((char)nextChar) == -1) {
-                builder.Append ((char)_reader.Read ());
+            while (nextChar != -1 && "\r\n:".IndexOf ((char) nextChar) == -1) {
+                builder.Append ((char) _reader.Read ());
                 nextChar = _reader.Peek ();
             }
 
@@ -193,19 +200,12 @@ namespace phosphorus.hyperlisp
         /*
          * returns the curent token's type according to the previous token type
          */
+
         private Token.TokenType GetTokenType (Token previousToken)
         {
             if (previousToken != null && previousToken.Type == Token.TokenType.Separator)
                 return Token.TokenType.TypeOrContent;
             return Token.TokenType.Name;
-        }
-
-        /*
-         * private implementation of IDisposable interface
-         */
-        void IDisposable.Dispose ()
-        {
-            Dispose (true);
         }
     }
 }

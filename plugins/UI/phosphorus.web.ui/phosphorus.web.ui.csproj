@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -43,24 +43,20 @@
     <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="session.cs" />
-    <Compile Include="application.cs" />
-    <Compile Include="widgets\widgets.cs" />
-    <Compile Include="cookies.cs" />
-    <Compile Include="response\echo.cs" />
-    <Compile Include="response\headers.cs" />
-    <Compile Include="widgets\properties.cs" />
-    <Compile Include="response\transmit_file.cs" />
-    <Compile Include="parameters.cs" />
+    <Compile Include="Session.cs" />
+    <Compile Include="Application.cs" />
+    <Compile Include="widgets\Widgets.cs" />
+    <Compile Include="Cookies.cs" />
+    <Compile Include="response\Echo.cs" />
+    <Compile Include="response\Headers.cs" />
+    <Compile Include="widgets\Properties.cs" />
+    <Compile Include="response\TransmitFile.cs" />
+    <Compile Include="Parameters.cs" />
     <Compile Include="Common\PhosphorusWebException.cs" />
     <Compile Include="Common\CollectionBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <Folder Include="widgets\" />
-    <Folder Include="response\" />
-    <Folder Include="Common\" />
-  </ItemGroup>
+  <ItemGroup />
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>

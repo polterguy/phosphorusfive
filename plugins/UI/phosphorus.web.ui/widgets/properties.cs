@@ -1,4 +1,3 @@
-
 /*
  * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
  * phosphorus five is licensed as mitx11, see the enclosed LICENSE file for details
@@ -9,20 +8,23 @@ using phosphorus.ajax.widgets;
 using phosphorus.core;
 using phosphorus.expressions;
 
-namespace phosphorus.web.ui
+// ReSharper disable UnusedMember.Local
+
+namespace phosphorus.web.ui.widgets
 {
     /// <summary>
-    /// helper to retrieve and change properties of widgets
+    ///     helper to retrieve and change properties of widgets
     /// </summary>
-    public static class properties
+    // ReSharper disable once UnusedMember.Global
+    public static class Properties
     {
         /// <summary>
-        /// returns properties requested by caller as children nodes of [pf.web.widgets.get-property]. the properties you
-        /// wish to retrieve, are given as the names of the children nodes of [pf.web.widgets.get-property]. the widget you
-        /// wish to retrieve properties from, is given as the value of [pf.web.widgets.get-property]. the value of
-        /// [pf.web.widgets.get-property] can also be an expression
+        ///     returns properties requested by caller as children nodes of [pf.web.widgets.get-property]. the properties you
+        ///     wish to retrieve, are given as the names of the children nodes of [pf.web.widgets.get-property]. the widget you
+        ///     wish to retrieve properties from, is given as the value of [pf.web.widgets.get-property]. the value of
+        ///     [pf.web.widgets.get-property] can also be an expression
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.widgets.property.get")]
         private static void pf_web_widgets_property_get (ApplicationContext context, ActiveEventArgs e)
@@ -47,22 +49,22 @@ namespace phosphorus.web.ui
                         }
                     } else {
                         switch (nameNode.Name) {
-                        case "element":
-                            if (XUtil.IsExpression (e.Args.Value)) {
-                                e.Args.FindOrCreate (nameNode.Name).Value = widget.ElementType;
-                            } else {
-                                nameNode.Value = widget.ElementType;
-                            }
-                            break;
-                        default:
-                            if (!string.IsNullOrEmpty (nameNode.Name)) {
+                            case "element":
                                 if (XUtil.IsExpression (e.Args.Value)) {
-                                    e.Args.FindOrCreate (widget.ID).Add (nameNode.Name).LastChild.Value = widget [nameNode.Name];
+                                    e.Args.FindOrCreate (nameNode.Name).Value = widget.ElementType;
                                 } else {
-                                    nameNode.Value = widget [nameNode.Name];
+                                    nameNode.Value = widget.ElementType;
                                 }
-                            }
-                            break;
+                                break;
+                            default:
+                                if (!string.IsNullOrEmpty (nameNode.Name)) {
+                                    if (XUtil.IsExpression (e.Args.Value)) {
+                                        e.Args.FindOrCreate (widget.ID).Add (nameNode.Name).LastChild.Value = widget [nameNode.Name];
+                                    } else {
+                                        nameNode.Value = widget [nameNode.Name];
+                                    }
+                                }
+                                break;
                         }
                     }
                 }
@@ -70,12 +72,13 @@ namespace phosphorus.web.ui
         }
 
         /// <summary>
-        /// set properties of the widget with the ID of the value of [pf.web.widgets.set-property] to the value of the children
-        /// nodes of [pf.web.widgets.set-property]. the properties you wish to set, is given through the names of the children
-        /// nodes of [pf.web.widgets.set-property]. the values you wish to set can also be expressions, or formatting expressions.
-        /// the value of [pf.web.widgets.set-property] can also be an expression
+        ///     set properties of the widget with the ID of the value of [pf.web.widgets.set-property] to the value of the children
+        ///     nodes of [pf.web.widgets.set-property]. the properties you wish to set, is given through the names of the children
+        ///     nodes of [pf.web.widgets.set-property]. the values you wish to set can also be expressions, or formatting
+        ///     expressions.
+        ///     the value of [pf.web.widgets.set-property] can also be an expression
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.widgets.property.set")]
         private static void pf_web_widgets_property_set (ApplicationContext context, ActiveEventArgs e)
@@ -85,26 +88,26 @@ namespace phosphorus.web.ui
                 foreach (var valueNode in e.Args.Children) {
                     string propertyValue;
                     switch (valueNode.Name) {
-                    case "element":
-                        propertyValue = valueNode.Get<string> (context);
-                        widget.ElementType = propertyValue;
-                        break;
-                    default:
-                        propertyValue = valueNode.Get<string> (context);
-                        widget [valueNode.Name] = propertyValue;
-                        break;
+                        case "element":
+                            propertyValue = valueNode.Get<string> (context);
+                            widget.ElementType = propertyValue;
+                            break;
+                        default:
+                            propertyValue = valueNode.Get<string> (context);
+                            widget [valueNode.Name] = propertyValue;
+                            break;
                     }
                 }
             }
         }
 
         /// <summary>
-        /// removes properties requested by caller as children nodes of [pf.web.widgets.remove-property]. the properties you
-        /// wish to remove, are given as the names of the children nodes of [pf.web.widgets.get-property]. the widget ID you
-        /// wish to retrieve properties from, is given as the value of [pf.web.widgets.get-property].
-        /// the value of [pf.web.widgets.remove-property] can also be an expression
+        ///     removes properties requested by caller as children nodes of [pf.web.widgets.remove-property]. the properties you
+        ///     wish to remove, are given as the names of the children nodes of [pf.web.widgets.get-property]. the widget ID you
+        ///     wish to retrieve properties from, is given as the value of [pf.web.widgets.get-property].
+        ///     the value of [pf.web.widgets.remove-property] can also be an expression
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.Core.ApplicationContext"/> for Active Event</param>
+        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.widgets.property.remove")]
         private static void pf_web_widgets_property_remove (ApplicationContext context, ActiveEventArgs e)
@@ -120,6 +123,7 @@ namespace phosphorus.web.ui
         /*
          * returns the widget we're looking for
          */
+
         private static Widget FindWidget (ApplicationContext context, string widgetId)
         {
             var findCtrl = new Node (string.Empty, widgetId);

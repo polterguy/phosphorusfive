@@ -1,4 +1,3 @@
-
 /*
  * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
@@ -8,10 +7,10 @@ using System;
 using System.Collections.Generic;
 using phosphorus.core;
 
-namespace phosphorus.hyperlisp
+namespace phosphorus.hyperlisp.helpers
 {
     /// <summary>
-    /// class responsible for creating a <see cref="phosphorus.core.Node"/> hierarchy from hyperlisp syntax
+    ///     class responsible for creating a <see cref="phosphorus.core.Node" /> hierarchy from hyperlisp syntax
     /// </summary>
     public class NodeBuilder
     {
@@ -19,10 +18,10 @@ namespace phosphorus.hyperlisp
         private readonly string _hyperlisp;
 
         /// <summary>
-        /// initializes a new instance of the <see cref="phosphorus.hyperlisp.NodeBuilder"/> class
+        ///     initializes a new instance of the <see cref="NodeBuilder" /> class
         /// </summary>
         /// <param name="context">application context</param>
-        /// <param name="hyperlisp">hyperlisp to convert into a list of <see cref="phosphorus.core.Node"/>s</param>
+        /// <param name="hyperlisp">hyperlisp to convert into a list of <see cref="phosphorus.core.Node" />s</param>
         public NodeBuilder (ApplicationContext context, string hyperlisp)
         {
             _context = context;
@@ -30,19 +29,18 @@ namespace phosphorus.hyperlisp
         }
 
         /// <summary>
-        /// creates a list of <see cref="phosphorus.core.Node"/>s from the given hyperlisp
+        ///     creates a list of <see cref="phosphorus.core.Node" />s from the given hyperlisp
         /// </summary>
         /// <returns>the hyperlisp converted to a list of nodes</returns>
-        /// <param name="context">application context</param>
-        /// <param name="hyperlisp">the hyperlisp you wish to convert</param>
-        public List<Node> Nodes {
-            get {
+        public List<Node> Nodes
+        {
+            get
+            {
                 if (string.IsNullOrEmpty (_hyperlisp))
-                    return new List<Node> (new Node[] { new Node(string.Empty) }); // empty result
+                    return new List<Node> (new[] {new Node (string.Empty)}); // empty result
 
                 // we need a text reader for our tokenizer
                 using (var tokenizer = new Tokenizer (_hyperlisp)) {
-
                     // creating root node
                     var node = new Node ();
                     Token previousToken = null;
@@ -62,19 +60,20 @@ namespace phosphorus.hyperlisp
         /*
          * helper method for NodesFromHyperlisp, creates a node tree hierarchy from a token
          */
+
         private Node TokensToNode (Node node, Token token, Token previousToken)
         {
             switch (token.Type) {
-            case Token.TokenType.Name:
+                case Token.TokenType.Name:
 
-                // this is the name of the node
-                node = NameTokenToNode (node, token, previousToken);
-                break;
-            case Token.TokenType.TypeOrContent:
+                    // this is the name of the node
+                    node = NameTokenToNode (node, token, previousToken);
+                    break;
+                case Token.TokenType.TypeOrContent:
 
-                // this might either be the value or the type information of our node
-                HandleContentOrTypeToken (node, token, previousToken);
-                break;
+                    // this might either be the value or the type information of our node
+                    HandleContentOrTypeToken (node, token, previousToken);
+                    break;
             }
             return node;
         }
@@ -82,20 +81,18 @@ namespace phosphorus.hyperlisp
         /*
          * handles a "Name" token
          */
+
         private Node NameTokenToNode (Node node, Token token, Token previousToken)
         {
             if (previousToken == null || previousToken.Type == Token.TokenType.CarriageReturn) {
-
                 // root node
                 node = node.Root;
             } else if (previousToken.Type == Token.TokenType.Spacer && node.Path.Count > previousToken.Scope) {
-
                 // some ancestor, finding the correct ancestor
                 while (node.Path.Count != previousToken.Scope) {
                     node = node.Parent;
                 }
             } else if (previousToken.Type != Token.TokenType.Spacer || node.Path.Count + 1 == previousToken.Scope) {
-
                 // more than two consecutive spaces offset from previous token's name, which is a syntax error
                 throw new ArgumentException ("syntax error in hyperlisp, too many consecutive spaces during the opening of child collection near; '" + token.Value + "'");
             }
@@ -109,23 +106,14 @@ namespace phosphorus.hyperlisp
         /*
          * handles a "TypeOrContent" token
          */
+        // ReSharper disable once UnusedParameter.Local
         private void HandleContentOrTypeToken (Node node, Token token, Token previousToken)
         {
             if (previousToken.Type != Token.TokenType.Separator)
 
                 // syntax error, should never come here, but for clarity, and to make sure, we still handle
                 throw new ArgumentException ("syntax error in hyperlisp file, missing ':' before; '" + token.Value + "'");
-            if (node.Value == null) {
-
-                // notice, this can either be value or type information, defaulting to value, then if tokens have "additional" value
-                // token later, before CarriageReturn, we retrieve the actual value according to the type information, otherwise this is value
-                node.Value = token.Value;
-            } else {
-
-                // previous token was actually type information, while this token is actual string representation of value
-                // doing our conversion
-                node.Value = ConvertStringValue (token.Value, node.Get<string> (_context));
-            }
+            node.Value = node.Value == null ? token.Value : ConvertStringValue (token.Value, node.Get<string> (_context));
         }
 
         /*
@@ -136,6 +124,7 @@ namespace phosphorus.hyperlisp
          * check out the "typeconverters.cs" file, which handles all types natively supported
          * by phosphorus five
          */
+
         private object ConvertStringValue (string value, string typeInfo)
         {
             if (typeInfo == "string")

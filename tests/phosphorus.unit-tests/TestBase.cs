@@ -4,30 +4,33 @@
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
  */
 
+using System;
 using System.Reflection;
 using phosphorus.core;
+// ReSharper disable UnusedMember.Local
+// ReSharper disable UnusedParameter.Local
 
 namespace phosphorus.unittests
 {
     /// <summary>
     /// base class for unit tests, contains helper methods for common unit tests operations
     /// </summary>
-    public class TestBase
+    public abstract class TestBase
     {
-        protected ApplicationContext _context;
+        protected ApplicationContext Context;
 
         /// <summary>
         /// initializes a new instance of the <see cref="phosphorus.unittests.TestBase"/> class. pass
         /// in assemblies you wish to load as Active Event handlers
         /// </summary>
         /// <param name="assemblies">Assemblies.</param>
-        public TestBase (params string[] assemblies)
+        protected TestBase (params string[] assemblies)
         {
             foreach (var idx in assemblies) {
                 Loader.Instance.LoadAssembly (idx);
             }
-            Loader.Instance.LoadAssembly (this.GetType ());
-            _context = Loader.Instance.CreateApplicationContext ();
+            Loader.Instance.LoadAssembly (GetType ());
+            Context = Loader.Instance.CreateApplicationContext ();
         }
 
         /// <summary>
@@ -35,13 +38,13 @@ namespace phosphorus.unittests
         /// </summary>
         /// <returns>pf.lambda result nodes</returns>
         /// <param name="hyperlisp">Hyperlisp you wish to execute</param>
+        /// <param name="lambdaActiveEvent">what type of lambda event to raise</param>
         protected Node ExecuteLambda (string hyperlisp, string lambdaActiveEvent = "lambda")
         {
-            var node = new Node ();
-            node.Value = hyperlisp;
-            _context.Raise ("pf.hyperlisp.hyperlisp2lambda", node);
+            var node = new Node {Value = hyperlisp};
+            Context.Raise ("pf.hyperlisp.hyperlisp2lambda", node);
             node.Value = null;
-            return _context.Raise (lambdaActiveEvent, node);
+            return Context.Raise (lambdaActiveEvent, node);
         }
 
         /// <summary>
@@ -51,7 +54,7 @@ namespace phosphorus.unittests
         protected static string GetBasePath ()
         {
             string retVal = Assembly.GetExecutingAssembly ().Location.Replace ("\\", "/");
-            retVal = retVal.Substring (0, retVal.LastIndexOf ("/") + 1);
+            retVal = retVal.Substring (0, retVal.LastIndexOf("/", StringComparison.InvariantCulture) + 1);
             return retVal;
         }
 

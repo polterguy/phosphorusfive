@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -42,25 +42,21 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="keywords\set.cs" />
-    <Compile Include="keywords\for-each.cs" />
-    <Compile Include="lambda.cs" />
-    <Compile Include="keywords\branching.cs" />
-    <Compile Include="keywords\while.cs" />
+    <Compile Include="keywords\Set.cs" />
+    <Compile Include="keywords\ForEach.cs" />
+    <Compile Include="Lambda.cs" />
+    <Compile Include="keywords\Branching.cs" />
+    <Compile Include="keywords\While.cs" />
     <Compile Include="keywords\helpers\Conditions.cs" />
-    <Compile Include="keywords\append.cs" />
-    <Compile Include="events\events_common.cs" />
-    <Compile Include="events\event.cs" />
-    <Compile Include="events\override.cs" />
-    <Compile Include="events\remove_override.cs" />
-    <Compile Include="events\remove_event.cs" />
+    <Compile Include="keywords\Append.cs" />
+    <Compile Include="events\EventsCommon.cs" />
+    <Compile Include="events\Event.cs" />
+    <Compile Include="events\Override.cs" />
+    <Compile Include="events\RemoveOverride.cs" />
+    <Compile Include="events\RemoveEvent.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <Folder Include="keywords\" />
-    <Folder Include="keywords\helpers\" />
-    <Folder Include="events\" />
-  </ItemGroup>
+  <ItemGroup />
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>

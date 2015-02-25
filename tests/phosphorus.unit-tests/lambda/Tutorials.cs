@@ -1,4 +1,3 @@
-
 /*
  * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
@@ -10,17 +9,17 @@ using phosphorus.core;
 namespace phosphorus.unittests.lambda
 {
     /// <summary>
-    /// unit tests for most of our tutorial code at http://magixilluminate.com/blogs
+    ///     unit tests for most of our tutorial code at http://magixilluminate.com/blogs
     /// </summary>
     [TestFixture]
     public class Tutorials : TestBase
     {
         public Tutorials ()
-            : base ("phosphorus.lambda", "phosphorus.types", "phosphorus.hyperlisp")
-        { }
+            : base ("phosphorus.lambda", "phosphorus.types", "phosphorus.hyperlisp") { }
 
         /// <summary>
-        /// unit test verifying this tutorial works; http://magixilluminate.com/2015/02/16/phosphorus-five-the-set-keyword-and-variables-part-1/
+        ///     unit test verifying this tutorial works;
+        ///     http://magixilluminate.com/2015/02/16/phosphorus-five-the-set-keyword-and-variables-part-1/
         /// </summary>
         [Test]
         public void Tutorial1_1 ()
@@ -31,9 +30,10 @@ set:@/-/?value
 
             Assert.AreEqual ("Howdy World", node [0].Value);
         }
-        
+
         /// <summary>
-        /// unit test verifying this tutorial works; http://magixilluminate.com/2015/02/16/phosphorus-five-the-set-keyword-and-variables-part-1/
+        ///     unit test verifying this tutorial works;
+        ///     http://magixilluminate.com/2015/02/16/phosphorus-five-the-set-keyword-and-variables-part-1/
         /// </summary>
         [Test]
         public void Tutorial1_2 ()
@@ -47,9 +47,10 @@ set:@/../*/_data/*/?value
             Assert.AreEqual ("Hello World", node [0] [0].Value);
             Assert.AreEqual ("Hello World", node [0] [1].Value);
         }
-        
+
         /// <summary>
-        /// unit test verifying this tutorial works; http://magixilluminate.com/2015/02/16/phosphorus-five-the-set-keyword-and-variables-part-1/
+        ///     unit test verifying this tutorial works;
+        ///     http://magixilluminate.com/2015/02/16/phosphorus-five-the-set-keyword-and-variables-part-1/
         /// </summary>
         [Test]
         public void Tutorial1_3 ()
@@ -66,9 +67,10 @@ set:@/../*/_data/*/?value
             Assert.AreEqual ("Hello World", node [0] [1].Value);
             Assert.AreEqual ("Hello World", node [1] [0].Value);
         }
-        
+
         /// <summary>
-        /// unit test verifying this tutorial works; http://magixilluminate.com/2015/02/16/phosphorus-five-the-set-keyword-and-variables-part-1/
+        ///     unit test verifying this tutorial works;
+        ///     http://magixilluminate.com/2015/02/16/phosphorus-five-the-set-keyword-and-variables-part-1/
         /// </summary>
         [Test]
         public void Tutorial1_4 ()
@@ -85,9 +87,10 @@ set:@/../*/_data/*/?node
             Assert.AreEqual ("foo-update", node [0] [1].Name);
             Assert.AreEqual ("bar-update", node [0] [1].Value);
         }
-        
+
         /// <summary>
-        /// unit test verifying this tutorial works; http://magixilluminate.com/2015/02/16/phosphorus-five-the-set-keyword-and-variables-part-1/
+        ///     unit test verifying this tutorial works;
+        ///     http://magixilluminate.com/2015/02/16/phosphorus-five-the-set-keyword-and-variables-part-1/
         /// </summary>
         [Test]
         public void Tutorial1_5 ()
@@ -99,12 +102,13 @@ set:@/../*/_data/*/foo1/?value
   source:@/../*/_data/*/foo2/?node");
 
             Assert.AreEqual (2, node [0].Count);
-            Assert.AreEqual ("foo2", node [0] [0].Get<Node> (_context).Name);
-            Assert.AreEqual ("bar2", node [0] [0].Get<Node> (_context).Value);
+            Assert.AreEqual ("foo2", node [0] [0].Get<Node> (Context).Name);
+            Assert.AreEqual ("bar2", node [0] [0].Get<Node> (Context).Value);
         }
-        
+
         /// <summary>
-        /// unit test verifying this tutorial works; http://magixilluminate.com/2015/02/17/phosphorus-five-the-set-keyword-expressions-and-variables-part-2/
+        ///     unit test verifying this tutorial works;
+        ///     http://magixilluminate.com/2015/02/17/phosphorus-five-the-set-keyword-expressions-and-variables-part-2/
         /// </summary>
         [Test]
         public void Tutorial2_1 ()
@@ -116,9 +120,10 @@ set:@/-/?value
 
             Assert.AreEqual (555, node [1].Value);
         }
-        
+
         /// <summary>
-        /// unit test verifying this tutorial works; http://magixilluminate.com/2015/02/17/phosphorus-five-the-set-keyword-expressions-and-variables-part-2/
+        ///     unit test verifying this tutorial works;
+        ///     http://magixilluminate.com/2015/02/17/phosphorus-five-the-set-keyword-expressions-and-variables-part-2/
         /// </summary>
         [Test]
         public void Tutorial2_2 ()
@@ -130,9 +135,10 @@ set:@/-/?value
 
             Assert.AreEqual (555, node [1].Value);
         }
-        
+
         /// <summary>
-        /// unit test verifying this tutorial works; http://magixilluminate.com/2015/02/17/phosphorus-five-the-set-keyword-expressions-and-variables-part-2/
+        ///     unit test verifying this tutorial works;
+        ///     http://magixilluminate.com/2015/02/17/phosphorus-five-the-set-keyword-expressions-and-variables-part-2/
         /// </summary>
         [Test]
         public void Tutorial2_3 ()
@@ -147,9 +153,10 @@ set:@/-/?value
 
             Assert.AreEqual ("success", node [1].Value);
         }
-        
+
         /// <summary>
-        /// unit test verifying this tutorial works; http://magixilluminate.com/2015/02/17/phosphorus-five-the-set-keyword-expressions-and-variables-part-2/
+        ///     unit test verifying this tutorial works;
+        ///     http://magixilluminate.com/2015/02/17/phosphorus-five-the-set-keyword-expressions-and-variables-part-2/
         /// </summary>
         [Test]
         public void Tutorial2_4 ()
@@ -167,9 +174,10 @@ set:@/-/?value
 
             Assert.AreEqual ("success", node [1].Value);
         }
-        
+
         /// <summary>
-        /// unit test verifying this tutorial works; http://magixilluminate.com/2015/02/17/phosphorus-five-the-set-keyword-expressions-and-variables-part-2/
+        ///     unit test verifying this tutorial works;
+        ///     http://magixilluminate.com/2015/02/17/phosphorus-five-the-set-keyword-expressions-and-variables-part-2/
         /// </summary>
         [Test]
         public void Tutorial2_5 ()
@@ -187,9 +195,10 @@ set:@/-/?value
 
             Assert.AreEqual ("su-error-ccess", node [1].Value);
         }
-        
+
         /// <summary>
-        /// unit test verifying this tutorial works; http://magixilluminate.com/2015/02/17/phosphorus-five-the-set-keyword-expressions-and-variables-part-2/
+        ///     unit test verifying this tutorial works;
+        ///     http://magixilluminate.com/2015/02/17/phosphorus-five-the-set-keyword-expressions-and-variables-part-2/
         /// </summary>
         [Test]
         public void Tutorial2_6 ()
@@ -204,9 +213,10 @@ set:@/../*/_data/*/?value
             Assert.AreEqual ("foo1", node [0] [0].Value);
             Assert.AreEqual ("foo2", node [0] [1].Value);
         }
-        
+
         /// <summary>
-        /// unit test verifying this tutorial works; http://magixilluminate.com/2015/02/17/phosphorus-five-the-set-keyword-expressions-and-variables-part-2/
+        ///     unit test verifying this tutorial works;
+        ///     http://magixilluminate.com/2015/02/17/phosphorus-five-the-set-keyword-expressions-and-variables-part-2/
         /// </summary>
         [Test]
         public void Tutorial2_7 ()
@@ -226,9 +236,10 @@ set:@/-2/*/*/?node");
             Assert.AreEqual ("foo1_child:Howdy", node [0] [0].Value);
             Assert.AreEqual ("foo2_child:World", node [0] [1].Value);
         }
-        
+
         /// <summary>
-        /// unit test verifying this tutorial works; http://magixilluminate.com/2015/02/18/phosphorus-five-the-append-keyword-and-hyper-dimensional-boolean-algebraic-graph-expressions/
+        ///     unit test verifying this tutorial works;
+        ///     http://magixilluminate.com/2015/02/18/phosphorus-five-the-append-keyword-and-hyper-dimensional-boolean-algebraic-graph-expressions/
         /// </summary>
         [Test]
         public void Tutorial3_1 ()
@@ -247,9 +258,10 @@ append:@/../*/_destination/?node
             Assert.AreEqual ("foo2", node [0] [1].Name);
             Assert.AreEqual ("bar2", node [0] [1].Value);
         }
-        
+
         /// <summary>
-        /// unit test verifying this tutorial works; http://magixilluminate.com/2015/02/18/phosphorus-five-the-append-keyword-and-hyper-dimensional-boolean-algebraic-graph-expressions/
+        ///     unit test verifying this tutorial works;
+        ///     http://magixilluminate.com/2015/02/18/phosphorus-five-the-append-keyword-and-hyper-dimensional-boolean-algebraic-graph-expressions/
         /// </summary>
         [Test]
         public void Tutorial3_2 ()
@@ -270,9 +282,10 @@ append:@/../*/_destination/?node
             Assert.AreEqual ("foo2", node [1] [1].Name);
             Assert.AreEqual ("bar2", node [1] [1].Value);
         }
-        
+
         /// <summary>
-        /// unit test verifying this tutorial works; http://magixilluminate.com/2015/02/18/phosphorus-five-the-append-keyword-and-hyper-dimensional-boolean-algebraic-graph-expressions/
+        ///     unit test verifying this tutorial works;
+        ///     http://magixilluminate.com/2015/02/18/phosphorus-five-the-append-keyword-and-hyper-dimensional-boolean-algebraic-graph-expressions/
         /// </summary>
         [Test]
         public void Tutorial3_3 ()
@@ -292,9 +305,10 @@ foo3:bar3""");
             Assert.AreEqual ("foo3", node [0] [2].Name);
             Assert.AreEqual ("bar3", node [0] [2].Value);
         }
-        
+
         /// <summary>
-        /// unit test verifying this tutorial works; http://magixilluminate.com/2015/02/18/phosphorus-five-the-append-keyword-and-hyper-dimensional-boolean-algebraic-graph-expressions/
+        ///     unit test verifying this tutorial works;
+        ///     http://magixilluminate.com/2015/02/18/phosphorus-five-the-append-keyword-and-hyper-dimensional-boolean-algebraic-graph-expressions/
         /// </summary>
         [Test]
         public void Tutorial3_4 ()
@@ -314,9 +328,10 @@ append:@/-/?node
             Assert.AreEqual ("success", node [1] [1].Name);
             Assert.AreEqual ("World", node [1] [1].Value);
         }
-        
+
         /// <summary>
-        /// unit test verifying this tutorial works; http://magixilluminate.com/2015/02/18/phosphorus-five-the-append-keyword-and-hyper-dimensional-boolean-algebraic-graph-expressions/
+        ///     unit test verifying this tutorial works;
+        ///     http://magixilluminate.com/2015/02/18/phosphorus-five-the-append-keyword-and-hyper-dimensional-boolean-algebraic-graph-expressions/
         /// </summary>
         [Test]
         public void Tutorial3_5 ()
@@ -350,9 +365,10 @@ append:@/-/?node
             Assert.AreEqual (1, node [1] [2].Count);
             Assert.AreEqual ("smart", node [1] [2] [0].Name);
         }
-        
+
         /// <summary>
-        /// unit test verifying this tutorial works; http://magixilluminate.com/2015/02/18/phosphorus-five-the-append-keyword-and-hyper-dimensional-boolean-algebraic-graph-expressions/
+        ///     unit test verifying this tutorial works;
+        ///     http://magixilluminate.com/2015/02/18/phosphorus-five-the-append-keyword-and-hyper-dimensional-boolean-algebraic-graph-expressions/
         /// </summary>
         [Test]
         public void Tutorial3_6 ()
@@ -380,9 +396,10 @@ append:@/-/?node
             Assert.AreEqual ("dogs", node [1] [1].Name);
             Assert.AreEqual ("donkey", node [1] [2].Name);
         }
-        
+
         /// <summary>
-        /// unit test verifying this tutorial works; http://magixilluminate.com/2015/02/20/phosphorus-five-the-for-each-statement-web-widgets-and-even-more-expressions/
+        ///     unit test verifying this tutorial works;
+        ///     http://magixilluminate.com/2015/02/20/phosphorus-five-the-for-each-statement-web-widgets-and-even-more-expressions/
         /// </summary>
         [Test]
         public void Tutorial4_1 ()
@@ -410,7 +427,7 @@ pf.web.create-widget:example1
       innerValue:Hello World
       element:h1");
 
-            var result = Utilities.Convert<string> (node.Children, _context);
+            var result = Utilities.Convert<string> (node.Children, Context);
             Assert.AreEqual (@"_data
   foo1:Thomas Hansen
   foo2:John Doe
@@ -442,9 +459,10 @@ pf.web.create-widget:example1
       class:span-24 prepend-top
       innerValue:Jane Doe", result);
         }
-        
+
         /// <summary>
-        /// unit test verifying this tutorial works; http://magixilluminate.com/2015/02/23/phosphorus-five-iterators-and-expressions-dissected-part-1/
+        ///     unit test verifying this tutorial works;
+        ///     http://magixilluminate.com/2015/02/23/phosphorus-five-iterators-and-expressions-dissected-part-1/
         /// </summary>
         [Test]
         public void Tutorial5_1 ()
@@ -453,12 +471,13 @@ pf.web.create-widget:example1
 set:@?value
 set:@?node");
 
-            var result = Utilities.Convert<string> (node.Children, _context);
+            var result = Utilities.Convert<string> (node.Children, Context);
             Assert.AreEqual (":@?name\r\nset", result);
         }
-        
+
         /// <summary>
-        /// unit test verifying this tutorial works; http://magixilluminate.com/2015/02/23/phosphorus-five-iterators-and-expressions-dissected-part-1/
+        ///     unit test verifying this tutorial works;
+        ///     http://magixilluminate.com/2015/02/23/phosphorus-five-iterators-and-expressions-dissected-part-1/
         /// </summary>
         [Test]
         public void Tutorial5_2 ()
@@ -471,9 +490,10 @@ set:@?node");
 
             Assert.AreEqual ("Hello World", node.Value);
         }
-        
+
         /// <summary>
-        /// unit test verifying this tutorial works; http://magixilluminate.com/2015/02/23/phosphorus-five-iterators-and-expressions-dissected-part-1/
+        ///     unit test verifying this tutorial works;
+        ///     http://magixilluminate.com/2015/02/23/phosphorus-five-iterators-and-expressions-dissected-part-1/
         /// </summary>
         [Test]
         public void Tutorial5_3 ()
@@ -486,9 +506,10 @@ set:@?node");
 
             Assert.AreEqual ("Hello World", node [0].Name);
         }
-        
+
         /// <summary>
-        /// unit test verifying this tutorial works; http://magixilluminate.com/2015/02/23/phosphorus-five-iterators-and-expressions-dissected-part-1/
+        ///     unit test verifying this tutorial works;
+        ///     http://magixilluminate.com/2015/02/23/phosphorus-five-iterators-and-expressions-dissected-part-1/
         /// </summary>
         [Test]
         public void Tutorial5_4 ()
@@ -501,9 +522,10 @@ set:@?node");
 
             Assert.AreEqual ("Hello World", node [0] [0].Name);
         }
-        
+
         /// <summary>
-        /// unit test verifying this tutorial works; http://magixilluminate.com/2015/02/23/phosphorus-five-iterators-and-expressions-dissected-part-1/
+        ///     unit test verifying this tutorial works;
+        ///     http://magixilluminate.com/2015/02/23/phosphorus-five-iterators-and-expressions-dissected-part-1/
         /// </summary>
         [Test]
         public void Tutorial5_5 ()
@@ -518,9 +540,10 @@ set:@?node");
             Assert.AreEqual ("Hello World", node [0] [0].Name);
             Assert.AreEqual ("Hello World", node [0] [1].Name);
         }
-        
+
         /// <summary>
-        /// unit test verifying this tutorial works; http://magixilluminate.com/2015/02/23/phosphorus-five-iterators-and-expressions-dissected-part-1/
+        ///     unit test verifying this tutorial works;
+        ///     http://magixilluminate.com/2015/02/23/phosphorus-five-iterators-and-expressions-dissected-part-1/
         /// </summary>
         [Test]
         public void Tutorial5_6 ()
@@ -535,9 +558,10 @@ set:@?node");
             Assert.AreEqual ("_x", node [0] [0].Name);
             Assert.AreEqual ("Hello World", node [0] [1].Name);
         }
-        
+
         /// <summary>
-        /// unit test verifying this tutorial works; http://magixilluminate.com/2015/02/23/phosphorus-five-iterators-and-expressions-dissected-part-1/
+        ///     unit test verifying this tutorial works;
+        ///     http://magixilluminate.com/2015/02/23/phosphorus-five-iterators-and-expressions-dissected-part-1/
         /// </summary>
         [Test]
         public void Tutorial5_7 ()
@@ -552,9 +576,10 @@ set:@?node");
             Assert.AreEqual ("Hello World", node [0] [0].Name);
             Assert.AreEqual ("lambda", node [0] [1].Name);
         }
-        
+
         /// <summary>
-        /// unit test verifying this tutorial works; http://magixilluminate.com/2015/02/23/phosphorus-five-iterators-and-expressions-dissected-part-1/
+        ///     unit test verifying this tutorial works;
+        ///     http://magixilluminate.com/2015/02/23/phosphorus-five-iterators-and-expressions-dissected-part-1/
         /// </summary>
         [Test]
         public void Tutorial5_8 ()
@@ -570,9 +595,10 @@ set:@?node");
             Assert.AreEqual ("Hello World", node [0] [0].Name);
             Assert.AreEqual ("_x", node [0] [1].Name);
         }
-        
+
         /// <summary>
-        /// unit test verifying this tutorial works; http://magixilluminate.com/2015/02/23/phosphorus-five-iterators-and-expressions-dissected-part-1/
+        ///     unit test verifying this tutorial works;
+        ///     http://magixilluminate.com/2015/02/23/phosphorus-five-iterators-and-expressions-dissected-part-1/
         /// </summary>
         [Test]
         public void Tutorial5_9 ()
@@ -591,9 +617,10 @@ set:@/../*/\*?value
             Assert.AreEqual ("success 2", node [1].Value);
             Assert.AreEqual ("success 3", node [2].Value);
         }
-        
+
         /// <summary>
-        /// unit test verifying this tutorial works; http://magixilluminate.com/2015/02/23/phosphorus-five-iterators-and-expressions-dissected-part-1/
+        ///     unit test verifying this tutorial works;
+        ///     http://magixilluminate.com/2015/02/23/phosphorus-five-iterators-and-expressions-dissected-part-1/
         /// </summary>
         [Test]
         public void Tutorial5_10 ()

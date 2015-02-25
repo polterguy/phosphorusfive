@@ -1,4 +1,3 @@
-
 /*
  * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
@@ -9,17 +8,16 @@ using NUnit.Framework;
 namespace phosphorus.unittests.lambda
 {
     /// <summary>
-    /// unit tests for testing the [append] lambda keyword
+    ///     unit tests for testing the [append] lambda keyword
     /// </summary>
     [TestFixture]
     public class Branching : TestBase
     {
         public Branching ()
-            : base ("phosphorus.lambda", "phosphorus.types", "phosphorus.hyperlisp")
-        { }
+            : base ("phosphorus.lambda", "phosphorus.types", "phosphorus.hyperlisp") { }
 
         /// <summary>
-        /// verifies [if] works when given constant
+        ///     verifies [if] works when given constant
         /// </summary>
         [Test]
         public void If01 ()
@@ -29,9 +27,9 @@ namespace phosphorus.unittests.lambda
     source:success");
             Assert.AreEqual ("success", result.Value);
         }
-        
+
         /// <summary>
-        /// verifies [if] works when comparing two constant strings that are equal
+        ///     verifies [if] works when comparing two constant strings that are equal
         /// </summary>
         [Test]
         public void If02 ()
@@ -45,7 +43,7 @@ namespace phosphorus.unittests.lambda
         }
 
         /// <summary>
-        /// verifies [if] works when comparing two constant strings that are not equal
+        ///     verifies [if] works when comparing two constant strings that are not equal
         /// </summary>
         [Test]
         public void If03 ()
@@ -58,10 +56,10 @@ if:foo
       source:error");
             Assert.AreEqual ("success", result [0].Value);
         }
-        
+
         /// <summary>
-        /// verifies [if] works when comparing one constant to one expression,
-        /// and result should yield true
+        ///     verifies [if] works when comparing one constant to one expression,
+        ///     and result should yield true
         /// </summary>
         [Test]
         public void If04 ()
@@ -76,8 +74,8 @@ if:@/../*/_result/?value
         }
 
         /// <summary>
-        /// verifies [if] works when comparing one constant to one expression,
-        /// and result should yield false
+        ///     verifies [if] works when comparing one constant to one expression,
+        ///     and result should yield false
         /// </summary>
         [Test]
         public void If05 ()
@@ -90,11 +88,11 @@ if:@/../*/_result/?value
       source:error");
             Assert.AreEqual ("success", result [0].Value);
         }
-        
+
         /// <summary>
-        /// verifies [if] works when comparing one constant to one expression,
-        /// and result should yield true, and expression is on right hand side 
-        /// of comparison
+        ///     verifies [if] works when comparing one constant to one expression,
+        ///     and result should yield true, and expression is on right hand side
+        ///     of comparison
         /// </summary>
         [Test]
         public void If06 ()
@@ -109,9 +107,9 @@ if:error
         }
 
         /// <summary>
-        /// verifies [if] works when comparing one constant to one expression,
-        /// and result should yield false, and expression is on right hand side 
-        /// of comparison
+        ///     verifies [if] works when comparing one constant to one expression,
+        ///     and result should yield false, and expression is on right hand side
+        ///     of comparison
         /// </summary>
         [Test]
         public void If07 ()
@@ -126,8 +124,8 @@ if:foo
         }
 
         /// <summary>
-        /// verifies [if] works when comparing two expressions,
-        /// and result should yield true
+        ///     verifies [if] works when comparing two expressions,
+        ///     and result should yield true
         /// </summary>
         [Test]
         public void If08 ()
@@ -141,10 +139,10 @@ if:@/../*/_result1/?value
       source:success");
             Assert.AreEqual ("success", result [0].Value);
         }
-        
+
         /// <summary>
-        /// verifies [if] works when comparing two expressions,
-        /// and result should yield false
+        ///     verifies [if] works when comparing two expressions,
+        ///     and result should yield false
         /// </summary>
         [Test]
         public void If09 ()
@@ -160,8 +158,8 @@ if:@/../*/_result1/?value
         }
 
         /// <summary>
-        /// verifies [if] works when comparing two expressions with different types returned,
-        /// and result should yield false
+        ///     verifies [if] works when comparing two expressions with different types returned,
+        ///     and result should yield false
         /// </summary>
         [Test]
         public void If10 ()
@@ -177,8 +175,8 @@ if:@/../*/_result1/?value
         }
 
         /// <summary>
-        /// verifies [if] works when comparing two expressions returning integer values,
-        /// and result should yield true
+        ///     verifies [if] works when comparing two expressions returning integer values,
+        ///     and result should yield true
         /// </summary>
         [Test]
         public void If11 ()
@@ -194,8 +192,8 @@ if:@/../*/_result1/?value
         }
 
         /// <summary>
-        /// verifies [if] works when comparing two expressions returning integer values,
-        /// and result should yield false
+        ///     verifies [if] works when comparing two expressions returning integer values,
+        ///     and result should yield false
         /// </summary>
         [Test]
         public void If12 ()
@@ -209,10 +207,10 @@ if:@/../*/_result1/?value
       source:error");
             Assert.AreEqual (5, result [0].Value);
         }
-        
+
         /// <summary>
-        /// verifies [if] works when comparing two expressions,
-        /// returning multiple results, and result should yield true
+        ///     verifies [if] works when comparing two expressions,
+        ///     returning multiple results, and result should yield true
         /// </summary>
         [Test]
         public void If13 ()
@@ -232,8 +230,8 @@ if:@/../*/_result1/*/?value
         }
 
         /// <summary>
-        /// verifies [if] works when comparing two expressions,
-        /// returning multiple results, and result should yield false
+        ///     verifies [if] works when comparing two expressions,
+        ///     returning multiple results, and result should yield false
         /// </summary>
         [Test]
         public void If14 ()
@@ -253,9 +251,9 @@ if:@/../*/_result1/*/?value
         }
 
         /// <summary>
-        /// verifies [if] works when comparing two expressions,
-        /// returning multiple results, with multiple different types,
-        /// and result should yield true
+        ///     verifies [if] works when comparing two expressions,
+        ///     returning multiple results, with multiple different types,
+        ///     and result should yield true
         /// </summary>
         [Test]
         public void If15 ()
@@ -275,9 +273,9 @@ if:@/../*/_result1/*/?value
         }
 
         /// <summary>
-        /// verifies [if] works when comparing two expressions,
-        /// returning multiple results, with multiple different types,
-        /// and result should yield false
+        ///     verifies [if] works when comparing two expressions,
+        ///     returning multiple results, with multiple different types,
+        ///     and result should yield false
         /// </summary>
         [Test]
         public void If16 ()
@@ -297,9 +295,9 @@ if:@/../*/_result1/*/?value
         }
 
         /// <summary>
-        /// verifies [if] works when comparing two expressions,
-        /// returning multiple results, where node graph is different
-        /// in expression results
+        ///     verifies [if] works when comparing two expressions,
+        ///     returning multiple results, where node graph is different
+        ///     in expression results
         /// </summary>
         [Test]
         public void If17 ()
@@ -318,11 +316,11 @@ if:@/../*/_result1/*/?node
       source:error");
             Assert.AreEqual ("success", result [0].Value);
         }
-        
+
         /// <summary>
-        /// verifies [if] works when comparing two expressions,
-        /// returning multiple results, where node graph is different
-        /// in expression results, yet results should be similar anyway
+        ///     verifies [if] works when comparing two expressions,
+        ///     returning multiple results, where node graph is different
+        ///     in expression results, yet results should be similar anyway
         /// </summary>
         [Test]
         public void If18 ()
@@ -344,11 +342,11 @@ if:@/../*/_result1/*/?value
             // which should be similar, since our [error] node above in [_result2] has no value
             Assert.AreEqual ("success", result [0].Value);
         }
-        
+
         /// <summary>
-        /// verifies [if] works when comparing two expressions,
-        /// returning multiple results, where node graph is different
-        /// in expression results, yet results should be similar anyway
+        ///     verifies [if] works when comparing two expressions,
+        ///     returning multiple results, where node graph is different
+        ///     in expression results, yet results should be similar anyway
         /// </summary>
         [Test]
         public void If19 ()
@@ -373,7 +371,7 @@ if:@/../*/_result1/*/?value
         }
 
         /// <summary>
-        /// verifies [if] works when comparing one count expression to a constant
+        ///     verifies [if] works when comparing one count expression to a constant
         /// </summary>
         [Test]
         public void If20 ()
@@ -388,10 +386,10 @@ if:@/../*/_result/*/?count
       source:success");
             Assert.AreEqual ("success", result [0].Value);
         }
-        
+
         /// <summary>
-        /// verifies [if] works when comparing an expression returning a node,
-        /// to a constant node
+        ///     verifies [if] works when comparing an expression returning a node,
+        ///     to a constant node
         /// </summary>
         [Test]
         public void If21 ()
@@ -408,9 +406,9 @@ if:@/../*/_result/?node
       source:success");
             Assert.AreEqual ("success", result [0].Value);
         }
-        
+
         /// <summary>
-        /// verifies [if] works when comparing an expression with 'null'
+        ///     verifies [if] works when comparing an expression with 'null'
         /// </summary>
         [Test]
         public void If22 ()
@@ -423,9 +421,9 @@ if:@/../*/_result/?value
       source:error");
             Assert.AreEqual ("success", result [0].Value);
         }
-        
+
         /// <summary>
-        /// verifies [if] works when comparing a constant with 'null'
+        ///     verifies [if] works when comparing a constant with 'null'
         /// </summary>
         [Test]
         public void If23 ()
@@ -438,9 +436,9 @@ if:foo
       source:error");
             Assert.AreEqual ("success", result [0].Value);
         }
-        
+
         /// <summary>
-        /// verifies [if] works when comparing two constants with formatting expressions
+        ///     verifies [if] works when comparing two constants with formatting expressions
         /// </summary>
         [Test]
         public void If24 ()
@@ -455,9 +453,9 @@ if:{0}o
       source:success");
             Assert.AreEqual ("success", result [0].Value);
         }
-        
+
         /// <summary>
-        /// verifies [if] works when comparing two expressions with formatting expressions
+        ///     verifies [if] works when comparing two expressions with formatting expressions
         /// </summary>
         [Test]
         public void If25 ()
@@ -473,9 +471,9 @@ if:@/../{0}/?value
       source:success");
             Assert.AreEqual ("success", result [0].Value);
         }
-        
+
         /// <summary>
-        /// verifies [if] works when comparing two integers with >= and comparison should yield true
+        ///     verifies [if] works when comparing two integers with >= and comparison should yield true
         /// </summary>
         [Test]
         public void If26 ()
@@ -488,9 +486,9 @@ if:int:5
       source:success");
             Assert.AreEqual ("success", result [0].Value);
         }
-        
+
         /// <summary>
-        /// verifies [if] works when comparing two integers with >= and comparison should yield false
+        ///     verifies [if] works when comparing two integers with >= and comparison should yield false
         /// </summary>
         [Test]
         public void If27 ()
@@ -503,9 +501,9 @@ if:int:4
       source:error");
             Assert.AreEqual ("success", result [0].Value);
         }
-        
+
         /// <summary>
-        /// verifies [if] works when comparing two strings with >= and comparison should yield true
+        ///     verifies [if] works when comparing two strings with >= and comparison should yield true
         /// </summary>
         [Test]
         public void If28 ()
@@ -518,9 +516,9 @@ if:b
       source:success");
             Assert.AreEqual ("success", result [0].Value);
         }
-        
+
         /// <summary>
-        /// verifies [if] works when comparing two strings with >= and comparison should yield false
+        ///     verifies [if] works when comparing two strings with >= and comparison should yield false
         /// </summary>
         [Test]
         public void If29 ()
@@ -533,9 +531,9 @@ if:a
       source:error");
             Assert.AreEqual ("success", result [0].Value);
         }
-        
+
         /// <summary>
-        /// verifies [if] works when comparing two strings with <= and comparison should yield true
+        ///     verifies [if] works when comparing two strings with &lt;= and comparison should yield true
         /// </summary>
         [Test]
         public void If30 ()
@@ -548,9 +546,9 @@ if:a
       source:success");
             Assert.AreEqual ("success", result [0].Value);
         }
-        
+
         /// <summary>
-        /// verifies [if] works when comparing two strings with <= and comparison should yield false
+        ///     verifies [if] works when comparing two strings with &lt;= and comparison should yield false
         /// </summary>
         [Test]
         public void If31 ()
@@ -563,9 +561,9 @@ if:b
       source:error");
             Assert.AreEqual ("success", result [0].Value);
         }
-        
+
         /// <summary>
-        /// verifies [if] works when comparing two strings with != and comparison should yield true
+        ///     verifies [if] works when comparing two strings with != and comparison should yield true
         /// </summary>
         [Test]
         public void If32 ()
@@ -578,9 +576,9 @@ if:abba
       source:success");
             Assert.AreEqual ("success", result [0].Value);
         }
-        
+
         /// <summary>
-        /// verifies [if] works when comparing two strings with != and comparison should yield false
+        ///     verifies [if] works when comparing two strings with != and comparison should yield false
         /// </summary>
         [Test]
         public void If33 ()
@@ -593,9 +591,9 @@ if:abba
       source:error");
             Assert.AreEqual ("success", result [0].Value);
         }
-        
+
         /// <summary>
-        /// verifies [if] works when comparing two strings with > and comparison should yield true
+        ///     verifies [if] works when comparing two strings with > and comparison should yield true
         /// </summary>
         [Test]
         public void If34 ()
@@ -608,9 +606,9 @@ if:b
       source:success");
             Assert.AreEqual ("success", result [0].Value);
         }
-        
+
         /// <summary>
-        /// verifies [if] works when comparing two strings with < and comparison should yield true
+        ///     verifies [if] works when comparing two strings with &lt; and comparison should yield true
         /// </summary>
         [Test]
         public void If35 ()
@@ -623,9 +621,9 @@ if:abba
       source:success");
             Assert.AreEqual ("success", result [0].Value);
         }
-        
+
         /// <summary>
-        /// verifies [if] works when the operator is ! (NOT) and statement should yield true
+        ///     verifies [if] works when the operator is ! (NOT) and statement should yield true
         /// </summary>
         [Test]
         public void If36 ()
@@ -638,9 +636,9 @@ if:!
       source:success");
             Assert.AreEqual ("success", result [0].Value);
         }
-        
+
         /// <summary>
-        /// verifies [if] works when the operator is ! (NOT) and statement should yield false
+        ///     verifies [if] works when the operator is ! (NOT) and statement should yield false
         /// </summary>
         [Test]
         public void If37 ()
@@ -653,9 +651,9 @@ if:!
       source:error");
             Assert.AreEqual ("success", result [0].Value);
         }
-        
+
         /// <summary>
-        /// verifies [else] kicks in when [if] evaluates to false
+        ///     verifies [else] kicks in when [if] evaluates to false
         /// </summary>
         [Test]
         public void If38 ()
@@ -671,9 +669,9 @@ else
     source:success");
             Assert.AreEqual ("success", result [0].Value);
         }
-        
+
         /// <summary>
-        /// verifies [else-if] kicks in when [if] evaluates to false
+        ///     verifies [else-if] kicks in when [if] evaluates to false
         /// </summary>
         [Test]
         public void If39 ()
@@ -689,9 +687,9 @@ else-if:@/../*/_result/?node
     source:success");
             Assert.AreEqual ("success", result [0].Value);
         }
-        
+
         /// <summary>
-        /// verifies [else] kicks in when [if] and [else-if] evaluates to false
+        ///     verifies [else] kicks in when [if] and [else-if] evaluates to false
         /// </summary>
         [Test]
         public void If40 ()

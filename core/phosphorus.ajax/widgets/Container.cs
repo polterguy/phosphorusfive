@@ -89,7 +89,7 @@ namespace phosphorus.ajax.widgets
 
             // creating new control, and adding to the controls collection
             var control = GetCreator<T> ().Create () as T;
-            control.ID = string.IsNullOrEmpty (id) ? CreateID () : id;
+            control.ID = string.IsNullOrEmpty (id) ? CreateId () : id;
 
             if (onLoad != null) {
                 control.Load += onLoad;
@@ -205,7 +205,7 @@ namespace phosphorus.ajax.widgets
          * creates a new unique ID
          */
 
-        private string CreateID ()
+        private string CreateId ()
         {
             // TODO: statistically this is supposed to become a unique 7 digits hexadecimal number, but we should improve this logic later!
             var retVal = Guid.NewGuid ().ToString ().Replace ("-", "");

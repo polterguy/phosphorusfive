@@ -1,4 +1,3 @@
-
 /*
  * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
@@ -9,13 +8,14 @@ using System;
 namespace phosphorus.core
 {
     /// <summary>
-    /// Active Event arguments
+    ///     Active Event arguments
     /// </summary>
     public class ActiveEventArgs : EventArgs
     {
         /*
          * initializes a new instance of this class
          */
+
         internal ActiveEventArgs (string name, Node args, ActiveEventArgs baseEvent = null)
         {
             Args = args;
@@ -24,30 +24,21 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// arguments passed in and returned from Active Events
+        ///     arguments passed in and returned from Active Events
         /// </summary>
         /// <value>the arguments</value>
-        public Node Args {
-            get;
-            set;
-        }
+        public Node Args { get; private set; }
 
         /// <summary>
-        /// name of the Active Event
+        ///     name of the Active Event
         /// </summary>
         /// <value>the name</value>
-        public string Name {
-            get;
-            private set;
-        }
+        public string Name { get; private set; }
 
         /// <summary>
-        /// returns the base Active Event for the currently raised Active Event, if any
+        ///     returns the base Active Event for the currently raised Active Event, if any
         /// </summary>
         /// <value>the base Active Event</value>
-        public ActiveEventArgs Base {
-            get;
-            private set;
-        }
+        public ActiveEventArgs Base { get; private set; }
     }
 }

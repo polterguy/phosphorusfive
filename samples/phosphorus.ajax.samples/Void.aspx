@@ -23,7 +23,7 @@
                 <p>
                     <pf:Void
                         runat="server"
-                        id="txt"
+                        id="Txt"
                         name="txt"
                         ElementType="input"
                         style="width:250px;"
@@ -39,7 +39,7 @@
 
                 <pf:Literal
                     runat="server"
-                    id="lbl"
+                    id="Lbl"
                     RenderType="NoClose"
                     ElementType="p">change is the only constant</pf:Literal>
 
