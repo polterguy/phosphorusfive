@@ -4,8 +4,6 @@
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
  */
 
-using System;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using phosphorus.core;
 using phosphorus.expressions.exceptions;

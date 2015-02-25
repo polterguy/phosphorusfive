@@ -1,24 +1,24 @@
-
 /*
  * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
  */
 
-using System;
-using System.Web.UI;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using pf = phosphorus.ajax.widgets;
+using System.Web.UI;
 using phosphorus.ajax.core.filters;
+using pf = phosphorus.ajax.widgets;
 
-[assembly: WebResource("phosphorus.ajax.javascript.manager.js", "application/javascript")]
+// ReSharper disable PossibleNullReferenceException
+
+[assembly: WebResource ("phosphorus.ajax.javascript.manager.js", "application/javascript")]
 
 namespace phosphorus.ajax.core
 {
     /// <summary>
-    /// manages an IAjaxPage by providing services to the page, and helps render the page correctly, by 
-    /// adding a filter stream in the filtering chain that renders the page according to how it is supposed to be rendered, 
-    /// depending upon what type of request the http request is
+    ///     manages an IAjaxPage by providing services to the page, and helps render the page correctly, by
+    ///     adding a filter stream in the filtering chain that renders the page according to how it is supposed to be rendered,
+    ///     depending upon what type of request the http request is
     /// </summary>
     public class Manager
     {
@@ -26,7 +26,7 @@ namespace phosphorus.ajax.core
         private readonly OrderedDictionary _changes = new OrderedDictionary ();
 
         /// <summary>
-        /// initializes a new instance of the <see cref="phosphorus.ajax.core.Manager"/> class
+        ///     initializes a new instance of the <see cref="phosphorus.ajax.core.Manager" /> class
         /// </summary>
         /// <param name="page">the page the manager is managing</param>
         public Manager (Page page)
@@ -44,30 +44,33 @@ namespace phosphorus.ajax.core
 
             // including main javascript file
             Page.Load += delegate {
-                var coreScriptFileUrl = Page.ClientScript.GetWebResourceUrl (typeof(Manager), "phosphorus.ajax.javascript.manager.js");
+                var coreScriptFileUrl = Page.ClientScript.GetWebResourceUrl (typeof (Manager), "phosphorus.ajax.javascript.manager.js");
                 (Page as IAjaxPage).RegisterJavaScriptFile (coreScriptFileUrl);
             };
         }
 
         /// <summary>
-        /// returns the page for this instance
+        ///     returns the page for this instance
         /// </summary>
         /// <value>the page</value>
-        public Page Page {
-            get;
-            private set;
-        }
+        public Page Page { get; private set; }
 
         /// <summary>
-        /// returns true if this request is an ajax request
+        ///     returns true if this request is an ajax request
         /// </summary>
         /// <value><c>true</c> if this instance is an ajax request; otherwise, <c>false</c></value>
-        public bool IsPhosphorusRequest {
+        public bool IsPhosphorusRequest
+        {
             get { return !string.IsNullOrEmpty (Page.Request.Params ["__pf_event"]); }
         }
 
+        internal OrderedDictionary Changes
+        {
+            get { return _changes; }
+        }
+
         /// <summary>
-        /// sends the given javascript to client for execution
+        ///     sends the given javascript to client for execution
         /// </summary>
         /// <param name="script">javascript to execute on client</param>
         public void SendJavaScriptToClient (string script)
@@ -80,14 +83,11 @@ namespace phosphorus.ajax.core
         }
 
         /// <summary>
-        /// send an object back to the client as json
+        ///     send an object back to the client as json
         /// </summary>
         /// <param name="id">id of object, must be unique for request</param>
         /// <param name="value">object to serialize back as json</param>
-        public void SendObject (string id, object value)
-        {
-            _changes [id] = value;
-        }
+        public void SendObject (string id, object value) { _changes [id] = value; }
 
         internal void RegisterWidgetChanges (string id, string name, string newValue, string oldValue = null)
         {
@@ -126,41 +126,37 @@ namespace phosphorus.ajax.core
             list.Add (id);
         }
 
-        internal OrderedDictionary Changes {
-            get { return _changes; }
-        }
-
         private object GetPropertyChanges (string oldValue, string newValue)
         {
             if (oldValue == null || oldValue.Length < 10 || newValue == null || newValue.Length < 10) {
                 return newValue; // no need to reduce size
-            } else {
-                // finding the position of where the changes start such that we can return 
-                // as small amounts of changes back to client as possible, to conserve bandwidth and make response smaller
-                if (oldValue == newValue) {
-                    return null;
-                }
-                var start = -1;
-                string update = null;
-                for (var idx = 0; idx < oldValue.Length && idx < newValue.Length; idx++) {
-                    if (oldValue [idx] != newValue [idx]) {
-                        start = idx;
-                        if (idx < newValue.Length) {
-                            update = newValue.Substring (idx);
-                        }
-                        break;
+            }
+            // finding the position of where the changes start such that we can return 
+            // as small amounts of changes back to client as possible, to conserve bandwidth and make response smaller
+            if (oldValue == newValue) {
+                return null;
+            }
+            var start = -1;
+            string update = null;
+            for (var idx = 0; idx < oldValue.Length && idx < newValue.Length; idx++) {
+                if (oldValue [idx] != newValue [idx]) {
+                    start = idx;
+                    if (idx < newValue.Length) {
+                        update = newValue.Substring (idx);
                     }
-                }
-                if (start == -1 && newValue.Length > oldValue.Length) {
-                    return new object[] { oldValue.Length, newValue.Substring (oldValue.Length) };
-                } else if (start == -1 && newValue.Length < oldValue.Length) {
-                    return new object[] { newValue.Length };
-                } else if (start < 5) {
-                    return newValue; // we cannot save anything here ...
-                } else {
-                    return new object[] { start, update };
+                    break;
                 }
             }
+            if (start == -1 && newValue.Length > oldValue.Length) {
+                return new object[] {oldValue.Length, newValue.Substring (oldValue.Length)};
+            }
+            if (start == -1 && newValue.Length < oldValue.Length) {
+                return new object[] {newValue.Length};
+            }
+            if (start < 5) {
+                return newValue; // we cannot save anything here ...
+            }
+            return new object[] {start, update};
         }
     }
 }

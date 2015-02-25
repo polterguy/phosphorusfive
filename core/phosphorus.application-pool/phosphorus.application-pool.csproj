@@ -102,6 +102,10 @@
     <Compile Include="code\ActiveEventAssemblies.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\tests\phosphorus.unit-tests\phosphorus.unit-tests.csproj">
+      <Project>{D709ED7D-C599-4703-B192-613F0EFF7D97}</Project>
+      <Name>phosphorus.unit-tests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\phosphorus.ajax\phosphorus.ajax.csproj">
       <Project>{11644924-3367-4812-BE60-7DA41FC9E4AE}</Project>
       <Name>phosphorus.ajax</Name>

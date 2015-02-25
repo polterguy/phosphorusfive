@@ -1,62 +1,51 @@
-
 /*
  * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
  * phosphorus five is licensed as mitx11, see the enclosed LICENSE file for details
  */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Web.UI;
-using System.Collections.Generic;
 
-namespace phosphorus.ajax.core
+// ReSharper disable PossibleNullReferenceException
+
+namespace phosphorus.ajax.core.internals
 {
     internal class StatePersister : PageStatePersister
     {
-        private const string _sessionKey = "__pf_viewstate_session_key";
-        private readonly Guid _viewStateId;
+        private const string SessionKey = "__pf_viewstate_session_key";
         private readonly int _numberOfViewStateEntries;
+        private readonly Guid _viewStateId;
 
         public StatePersister (Page page, int numberOfViewStateEntries)
             : base (page)
         {
             _numberOfViewStateEntries = numberOfViewStateEntries;
 
-            if (page.IsPostBack) {
-                // this is a postback, need to fetch existing ViewState from session
-                _viewStateId = new Guid (page.Request ["__pf_state_key"]);
-            } else {
-                // this is an initial load, or a reload of a page, need to create a new ViewState key
-                _viewStateId = Guid.NewGuid ();
-            }
-            if (!(page as IAjaxPage).Manager.IsPhosphorusRequest)
-            {
-                // adding the viewstate ID to the form, such that we can retrieve it again when the
-                // client does a postback
-                var literal = new LiteralControl ();
-                literal.Text = string.Format (@"
+            _viewStateId = page.IsPostBack ? new Guid (page.Request ["__pf_state_key"]) : Guid.NewGuid ();
+            if ((page as IAjaxPage).Manager.IsPhosphorusRequest) return;
+            // adding the viewstate ID to the form, such that we can retrieve it again when the
+            // client does a postback
+            var literal = new LiteralControl {Text = string.Format (@"
             <input type=""hidden"" value=""{0}"" name=""__pf_state_key"">
-        ", _viewStateId);
-                page.Form.Controls.Add (literal);
-            }
+        ", _viewStateId)};
+            page.Form.Controls.Add (literal);
         }
 
         public override void Load ()
         {
-            if (Page.Session [_sessionKey] == null)
+            if (Page.Session [SessionKey] == null)
                 throw new ApplicationException ("session timeout");
 
             // to avoid session clogging up with an infinite number of viewstate values, one for each initial loading of a page,
             // we have a list of viewstates, not allowing to exceed "_numberOfViewStateEntries" per session.
             // this means that we have a practical limit of "_numberOfViewStateEntries" open browser windows per session, or more
             // accurately; user cannot reload the same page without invalidating viewstates older than "_numberOfViewStateEntries"
-            var viewState = Page.Session [_sessionKey] as List<Tuple<Guid, string>>;
+            var viewState = Page.Session [SessionKey] as List<Tuple<Guid, string>>;
 
-            var entry = viewState.Find (
-                delegate (Tuple<Guid, string> idx) {
-                return idx.Item1 == _viewStateId;
-            });
+            var entry = viewState.Find (idx => idx.Item1 == _viewStateId);
             if (entry == null) {
                 throw new ApplicationException (@"The state for this page is not longer valid, probable cause was that there was too
 many viewstate values for current session, and hence current viewstate was removed. If you wish to see this page again, you must reload it");
@@ -71,8 +60,7 @@ many viewstate values for current session, and hence current viewstate was remov
         public override void Save ()
         {
             var builder = new StringBuilder ();
-            using (var writer = new StringWriter (builder))
-            {
+            using (var writer = new StringWriter (builder)) {
                 var formatter = new LosFormatter ();
                 formatter.Serialize (writer, new Pair (ControlState, ViewState));
             }
@@ -81,22 +69,18 @@ many viewstate values for current session, and hence current viewstate was remov
             // we have a list of viewstates, not allowing to exceed "_numberOfViewStateEntries" per session.
             // this means that we have a practical limit of "_numberOfViewStateEntries" open browser windows per session, or more
             // accurately; user cannot reload the same page without invalidating viewstates older than "_numberOfViewStateEntries"
-            var viewState = Page.Session [_sessionKey] as List<Tuple<Guid, string>>;
+            var viewState = Page.Session [SessionKey] as List<Tuple<Guid, string>>;
             if (viewState == null) {
                 viewState = new List<Tuple<Guid, string>> ();
-                Page.Session [_sessionKey] = viewState;
+                Page.Session [SessionKey] = viewState;
             }
 
             // making sure the most recent is at the end
-            viewState.RemoveAll (
-                delegate (Tuple<Guid, string> idx) {
-                return idx.Item1 == _viewStateId;
-            });
+            viewState.RemoveAll (idx => idx.Item1 == _viewStateId);
             viewState.Add (new Tuple<Guid, string> (_viewStateId, builder.ToString ()));
 
             // making sure we never have more than "_numberOfViewStateEntries" entries
             while (viewState.Count > _numberOfViewStateEntries) {
-
                 // removing oldest entry
                 viewState.RemoveAt (0);
             }

@@ -4,7 +4,6 @@
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
  */
 
-using System;
 using System.IO;
 using System.Net;
 using System.Text;

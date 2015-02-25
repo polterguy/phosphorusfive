@@ -8,9 +8,7 @@
  */
 
 using System;
-using System.Collections.Generic;
 using MongoDB.Bson;
-using MongoDB.Driver;
 using phosphorus.core;
 using phosphorus.expressions;
 

@@ -1,45 +1,39 @@
-
 /*
  * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
  */
 
 using System;
-using System.Web.UI;
 using System.Collections.Generic;
-using phosphorus.ajax.core;
+using System.Web.UI;
+using phosphorus.ajax.widgets;
+
+// ReSharper disable PossibleNullReferenceException
 
 namespace phosphorus.ajax.core.internals
 {
     internal class AttributeStorage
     {
-        // this is never touched after viewstate is loaded
-        private readonly List<Attribute> _preViewState = new List<Attribute>();
-
+        private readonly List<Attribute> _dynamicallyAddedThisRequest = new List<Attribute> ();
+        private readonly List<Attribute> _dynamicallyRemovedThisRequest = new List<Attribute> ();
+        private readonly List<Attribute> _formDataThisRequest = new List<Attribute> ();
         // all of these will have values added and removed automatically during the request
         // depending upon when and how attributes are added and removed
-        private readonly List<Attribute> _originalValue = new List<Attribute>();
-        private readonly List<Attribute> _dynamicallyRemovedThisRequest = new List<Attribute>();
-        private readonly List<Attribute> _dynamicallyAddedThisRequest = new List<Attribute>();
-        private readonly List<Attribute> _formDataThisRequest = new List<Attribute>();
-        private readonly List<Attribute> _viewStatePersistedRemoved = new List<Attribute>();
-        private readonly List<Attribute> _viewStatePersisted = new List<Attribute>();
-
-        public AttributeStorage ()
-        { }
+        private readonly List<Attribute> _originalValue = new List<Attribute> ();
+        // this is never touched after viewstate is loaded
+        private readonly List<Attribute> _preViewState = new List<Attribute> ();
+        private readonly List<Attribute> _viewStatePersisted = new List<Attribute> ();
+        private readonly List<Attribute> _viewStatePersistedRemoved = new List<Attribute> ();
 
         /// <summary>
-        /// determines whether this instance has the attribute with the specified name
+        ///     determines whether this instance has the attribute with the specified name
         /// </summary>
         /// <returns><c>true</c> if this instance has the attribute with the specified key; otherwise, <c>false</c></returns>
         /// <param name="name">name of attribute to retrieve value of</param>
-        public bool HasAttribute (string name)
-        {
-            return GetAttributeInternal (name) != null;
-        }
+        public bool HasAttribute (string name) { return GetAttributeInternal (name) != null; }
 
         /// <summary>
-        /// returns the value of the attribute with the specified name
+        ///     returns the value of the attribute with the specified name
         /// </summary>
         /// <returns>the value of the attribute</returns>
         /// <param name="name">name of attribute to retrieve value of</param>
@@ -52,8 +46,8 @@ namespace phosphorus.ajax.core.internals
         }
 
         /// <summary>
-        /// changes the value of the attribute with the specified name. if no attribute exists, a new attribute
-        /// will be created with the specified name and value
+        ///     changes the value of the attribute with the specified name. if no attribute exists, a new attribute
+        ///     will be created with the specified name and value
         /// </summary>
         /// <param name="name">name of attribute to change</param>
         /// <param name="value">new value of attribute</param>
@@ -71,21 +65,19 @@ namespace phosphorus.ajax.core.internals
         }
 
         /// <summary>
-        /// removes the attribute with the specified name
+        ///     removes the attribute with the specified name
         /// </summary>
         /// <param name="name">name of attribute to remove</param>
         public void RemoveAttribute (string name)
         {
             if (FindAttribute (_dynamicallyAddedThisRequest, name) != null) {
-
                 // attribute was added this request, simply removing the add
                 RemoveAttributeInternal (_dynamicallyAddedThisRequest, name);
             } else {
-
                 // changing attribute, but first storing old value
                 StoreOldValue (name);
                 SetAttributeInternal (_dynamicallyRemovedThisRequest, name, null);
-            
+
                 // removing from all other lists
                 RemoveAttributeInternal (_dynamicallyAddedThisRequest, name);
                 RemoveAttributeInternal (_formDataThisRequest, name);
@@ -95,11 +87,7 @@ namespace phosphorus.ajax.core.internals
         }
 
         // invoked before viewstate is being tracked
-        internal void SetAttributePreViewState (string name, string value)
-        {
-            SetAttributeInternal (_preViewState, name, value);
-        }
-
+        internal void SetAttributePreViewState (string name, string value) { SetAttributeInternal (_preViewState, name, value); }
         // invoked when form data is being retrieved from http request parameters
         internal void SetAttributeFormData (string name, string value)
         {
@@ -134,8 +122,8 @@ namespace phosphorus.ajax.core.internals
                 _viewStatePersistedRemoved.Add (new Attribute (idx));
             }
         }
-        
-        internal object SaveToViewState()
+
+        internal object SaveToViewState ()
         {
             var atrs = new List<Attribute> ();
 
@@ -147,28 +135,23 @@ namespace phosphorus.ajax.core.internals
 
             // then removing all that has the same value as when they were created before viewstate was being tracked
             atrs.RemoveAll (
-                delegate(Attribute idx) {
-                return _preViewState.Exists (
-                    delegate(Attribute idxPre) {
-                    return idxPre.Name == idx.Name && idxPre.Value == idx.Value;
-                });
-            });
+                delegate (Attribute idx) { return _preViewState.Exists (idxPre => idxPre.Name == idx.Name && idxPre.Value == idx.Value); });
 
             // nothing to return
             if (atrs.Count == 0)
                 return null;
 
             // returning attributes
-            var retVal = new string [atrs.Count][];
+            var retVal = new string[atrs.Count][];
             for (var idx = 0; idx < atrs.Count; idx++) {
-                retVal [idx] = new string [2];
+                retVal [idx] = new string[2];
                 retVal [idx] [0] = atrs [idx].Name;
                 retVal [idx] [1] = atrs [idx].Value;
             }
             return retVal;
         }
 
-        internal object SaveRemovedToViewState()
+        internal object SaveRemovedToViewState ()
         {
             var atrs = new List<Attribute> ();
             atrs.AddRange (_dynamicallyRemovedThisRequest);
@@ -177,7 +160,7 @@ namespace phosphorus.ajax.core.internals
             if (atrs.Count == 0)
                 return null;
 
-            var retVal = new string [atrs.Count];
+            var retVal = new string[atrs.Count];
             for (var idx = 0; idx < atrs.Count; idx++) {
                 retVal [idx] = atrs [0].Name;
             }
@@ -185,7 +168,7 @@ namespace phosphorus.ajax.core.internals
         }
 
         // invoked when rendering of attributes to html is required
-        internal void Render (HtmlTextWriter writer, phosphorus.ajax.widgets.Widget widget)
+        internal void Render (HtmlTextWriter writer, Widget widget)
         {
             // adding all changes
             var lst = new List<Attribute> ();
@@ -201,17 +184,14 @@ namespace phosphorus.ajax.core.internals
 
             // removing stuff that's not really attributes
             // TODO: create generic version, that allows for supplying a list of removals to do
-            lst.RemoveAll (
-                delegate(Attribute idx) {
-                    return idx.Name == "outerHTML" || idx.Name == "innerValue" || idx.Name == "Tag";
-                });
+            lst.RemoveAll (idx => idx.Name == "outerHTML" || idx.Name == "innerValue" || idx.Name == "Tag");
 
             // rendering to html writer
             foreach (var idx in lst) {
                 var name = idx.Name;
                 string value;
                 if (idx.Name.StartsWith ("on") && Utilities.IsLegalMethodName (idx.Value)) {
-                    if (widget.NoIDAttribute)
+                    if (widget.NoIdAttribute)
                         throw new ArgumentException ("cannot have events on a Widget that doesn't render its ID attribute");
                     if (name.EndsWith ("_"))
                         continue; // "invisible" event
@@ -221,9 +201,9 @@ namespace phosphorus.ajax.core.internals
                 }
                 writer.Write (" ");
                 if (value == null) {
-                    writer.Write (string.Format (@"{0}", name));
+                    writer.Write (@"{0}", name);
                 } else {
-                    writer.Write (string.Format (@"{0}=""{1}""", name, value.Replace ("\"", "\\\"")));
+                    writer.Write (@"{0}=""{1}""", name, value.Replace ("\"", "\\\""));
                 }
             }
         }
@@ -237,7 +217,6 @@ namespace phosphorus.ajax.core.internals
 
             // adding up our changes
             foreach (var idx in _dynamicallyAddedThisRequest) {
-
                 // finding old value, if any
                 var oldAtr = FindAttribute (_originalValue, idx.Name);
                 if (oldAtr != null) {
@@ -253,24 +232,16 @@ namespace phosphorus.ajax.core.internals
         {
             // we only store old value the first time attribute is touched
             if (FindAttribute (_originalValue, name) == null) {
-
                 // storing old value
-                var old = FindAttribute (_formDataThisRequest, name);
-                if (old == null) {
-                    old = FindAttribute (_viewStatePersisted, name);
-                    if (old == null) {
-                        old = FindAttribute (_preViewState, name);
-                    }
-                }
+                var old = FindAttribute (_formDataThisRequest, name) ?? (FindAttribute (_viewStatePersisted, name) ?? FindAttribute (_preViewState, name));
                 if (old != null) {
-
                     // "deep copy"
                     _originalValue.Add (new Attribute (old.Name, old.Value));
                 }
             }
         }
 
-        private Attribute GetAttributeInternal(string name)
+        private Attribute GetAttributeInternal (string name)
         {
             var added = FindAttribute (_dynamicallyAddedThisRequest, name);
             if (added != null)
@@ -294,34 +265,16 @@ namespace phosphorus.ajax.core.internals
 
             // last resort ...
             var preViewState = FindAttribute (_preViewState, name);
-            if (preViewState != null)
-                return preViewState;
-
-            return null;
+            return preViewState;
         }
 
-        private void SetAttributeInternal (List<Attribute> attributes, string name, string value)
+        private static void SetAttributeInternal (List<Attribute> attributes, string name, string value)
         {
-            attributes.RemoveAll (
-                delegate(Attribute idx) {
-                return idx.Name == name;
-            });
+            attributes.RemoveAll (idx => idx.Name == name);
             attributes.Add (new Attribute (name, value));
         }
 
-        private void RemoveAttributeInternal (List<Attribute> attributes, string name)
-        {
-            attributes.RemoveAll (
-                delegate(Attribute idx) {
-                return idx.Name == name;
-            });
-        }
-
-        private Attribute FindAttribute (List<Attribute> attributes, string name)
-        {
-            return attributes.Find (delegate(Attribute idx) {
-                return idx.Name == name;
-            });
-        }
+        private static void RemoveAttributeInternal (List<Attribute> attributes, string name) { attributes.RemoveAll (idx => idx.Name == name); }
+        private static Attribute FindAttribute (List<Attribute> attributes, string name) { return attributes.Find (idx => idx.Name == name); }
     }
 }

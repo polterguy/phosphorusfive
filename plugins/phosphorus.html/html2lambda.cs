@@ -4,8 +4,6 @@
  * phosphorus five is licensed as mitx11, see the enclosed LICENSE file for details
  */
 
-using System;
-using System.IO;
 using HtmlAgilityPack;
 using phosphorus.core;
 using phosphorus.expressions;

@@ -4,14 +4,14 @@
  * phosphorus five is licensed as mitx11, see the enclosed LICENSE file for details
  */
 
+using System;
+using System.Collections.Generic;
+using System.Web.UI;
+using phosphorus.ajax.core;
+
 namespace phosphorus.five.samples
 {
-    using System;
-    using System.Web;
-    using System.Web.UI;
-    using System.Collections.Generic;
-    using phosphorus.ajax.core;
-    using pf = phosphorus.ajax.widgets;
+    using pf = ajax.widgets;
 
     public partial class DynamicControls : AjaxPage
     {

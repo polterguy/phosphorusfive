@@ -1,35 +1,31 @@
-
 /*
  * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
  */
 
 using System;
-using System.IO;
-using System.Web;
-using System.Text;
-using System.Web.UI;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using phosphorus.ajax.core;
+using System.IO;
+using System.Text;
+
+// ReSharper disable PossibleNullReferenceException
 
 namespace phosphorus.ajax.core.filters
 {
     /// <summary>
-    /// the http response filter for rendering plain html back to client
+    ///     the http response filter for rendering plain html back to client
     /// </summary>
     public class HtmlFilter : Filter
     {
         /// <summary>
-        /// initializes a new instance of the <see cref="phosphorus.ajax.core.filters.HtmlFilter"/> class
+        ///     initializes a new instance of the <see cref="phosphorus.ajax.core.filters.HtmlFilter" /> class
         /// </summary>
         /// <param name="manager">the manager this instance is rendering for</param>
         public HtmlFilter (Manager manager)
-            : base (manager)
-        { }
+            : base (manager) { }
 
         /// <summary>
-        /// renders the response
+        ///     renders the response
         /// </summary>
         /// <returns>the response returned back to client</returns>
         protected override string RenderResponse ()
@@ -45,6 +41,7 @@ namespace phosphorus.ajax.core.filters
         /*
          * includes the CSS stylesheet files we should include for this response
          */
+
         private string IncludeStylesheetFiles (string content)
         {
             if ((Manager.Page as IAjaxPage).StylesheetFilesToPush.Count == 0)
@@ -63,17 +60,18 @@ namespace phosphorus.ajax.core.filters
 
             // including javascript files
             foreach (var idxFile in (Manager.Page as IAjaxPage).StylesheetFilesToPush) {
-                builder.Append (string.Format("        <link rel=\"stylesheet\" type=\"text/css\" href=\"{0}\"></link>\r\n", idxFile));
+                builder.Append (string.Format ("        <link rel=\"stylesheet\" type=\"text/css\" href=\"{0}\"></link>\r\n", idxFile));
             }
 
             // adding back up again the "</html>" parts
             builder.Append (content.Substring (idxPosition));
             return builder.ToString ();
         }
-        
+
         /*
          * includes the JavaScript files we should include for this response
          */
+
         private string IncludeJavaScriptFiles (string content)
         {
             if ((Manager.Page as IAjaxPage).JavaScriptFilesToPush.Count == 0)
@@ -92,7 +90,7 @@ namespace phosphorus.ajax.core.filters
 
             // including javascript files
             foreach (var idxFile in (Manager.Page as IAjaxPage).JavaScriptFilesToPush) {
-                builder.Append (string.Format(@"    <script type=""text/javascript"" src=""{0}""></script>
+                builder.Append (string.Format (@"    <script type=""text/javascript"" src=""{0}""></script>
     ", idxFile.Replace ("&", "&amp;")));
             }
 
@@ -104,6 +102,7 @@ namespace phosphorus.ajax.core.filters
         /*
          * includes the JavaScript content we should include for this response
          */
+
         private string IncludeJavaScriptContent (string content)
         {
             if (!Manager.Changes.Contains ("__pf_script"))
