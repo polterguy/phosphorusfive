@@ -267,7 +267,8 @@ namespace phosphorus.unittests
         }
 
         /// <summary>
-        ///     verifies Iterate from XUtil works correctly
+        ///     verifies Iterate from XUtil works correctly, when iterating over an expression, of type value,
+        ///     requesting return type of 'string', using the expressionOrConstant overload of Iterate
         /// </summary>
         [Test]
         public void Iterate01 ()
@@ -281,7 +282,8 @@ namespace phosphorus.unittests
         }
 
         /// <summary>
-        ///     verifies Iterate from XUtil works correctly
+        ///     verifies Iterate from XUtil works correctly, when iterating over an expression, of type value,
+        ///     requesting return type of 'string', using the Node overload of Iterate
         /// </summary>
         [Test]
         public void Iterate02 ()
@@ -295,7 +297,8 @@ namespace phosphorus.unittests
         }
 
         /// <summary>
-        ///     verifies Iterate from XUtil works correctly
+        ///     verifies Iterate from XUtil works correctly, when requesting a 'string', iterating over a constant, who's
+        ///     value is already a string
         /// </summary>
         [Test]
         public void Iterate03 ()
@@ -309,7 +312,9 @@ namespace phosphorus.unittests
         }
 
         /// <summary>
-        ///     verifies Iterate from XUtil works correctly
+        ///     verifies Iterate from XUtil works correctly, when requesting a 'string', iterating over an expression, that
+        ///     is formatted, where the formatting parameter is an expression in itself, using the overload of Iterate,
+        ///     taking the optional dataSource for formatters
         /// </summary>
         [Test]
         public void Iterate04 ()
@@ -324,7 +329,9 @@ namespace phosphorus.unittests
         }
 
         /// <summary>
-        ///     verifies Iterate from XUtil works correctly
+        ///     verifies Iterate from XUtil works correctly, when requesting 'string', iterating over a formatted expression,
+        ///     where one of the formatting values is an expression in itself, not using the dataSource overload of Iterate,
+        ///     but the default version, where formatting nodes and dataSource nodes are the same values
         /// </summary>
         [Test]
         public void Iterate05 ()
@@ -339,7 +346,8 @@ namespace phosphorus.unittests
         }
 
         /// <summary>
-        ///     verifies Iterate from XUtil works correctly
+        ///     verifies Iterate from XUtil works correctly, when requesting 'string', iterating over an expression,
+        ///     where the expression's result leads to a value, which holds objects of integer types
         /// </summary>
         [Test]
         public void Iterate06 ()
@@ -353,7 +361,8 @@ namespace phosphorus.unittests
         }
 
         /// <summary>
-        ///     verifies Iterate from XUtil works correctly
+        ///     verifies Iterate from XUtil works correctly, when using the MatchEntity version, iterating over an expression,
+        ///     leading to a bunch of values, which are of type "int"
         /// </summary>
         [Test]
         public void Iterate07 ()
@@ -367,7 +376,8 @@ namespace phosphorus.unittests
         }
 
         /// <summary>
-        ///     verifies Iterate from XUtil works correctly
+        ///     verifies Iterate from XUtil works correctly, when requesting 'int', iterating over a node, who's
+        ///     children node's values are integer values
         /// </summary>
         [Test]
         public void Iterate08 ()
@@ -381,7 +391,8 @@ namespace phosphorus.unittests
         }
 
         /// <summary>
-        ///     verifies Iterate from XUtil works correctly
+        ///     verifies Iterate from XUtil works correctly, when requesting 'Node', iterating over a node, who's children
+        ///     values are integer values
         /// </summary>
         [Test]
         public void Iterate09 ()
@@ -395,7 +406,7 @@ namespace phosphorus.unittests
         }
 
         /// <summary>
-        ///     verifies Iterate from XUtil works correctly
+        ///     verifies Iterate from XUtil works correctly, when iterating over a formatted constant value
         /// </summary>
         [Test]
         public void Iterate10 ()
@@ -406,8 +417,10 @@ namespace phosphorus.unittests
             Assert.AreEqual ("success", value);
         }
 
+        // TODO: the next one has pretty weird logic, and I am not even sure if it is correct ...?
         /// <summary>
-        ///     verifies Iterate from XUtil works correctly
+        ///     verifies Iterate from XUtil works correctly, when requesting 'node', and iterating over a constant which is formatted,
+        ///     and the value of that formatted expression should be converted into a Node, where it's value is an integer
         /// </summary>
         [Test]
         public void Iterate11 ()
@@ -464,6 +477,40 @@ foo2:bar2""");
 foo2:bar2""
 _bar:@/-?value");
             var result = XUtil.Iterate<Node> (node [1], Context, true)
+                .Aggregate (string.Empty, (current, idx) => current + (idx.Name + ":" + idx.Value + "-"));
+            Assert.AreEqual ("foo1:bar1-foo2:bar2-", result);
+        }
+
+        /// <summary>
+        ///     uses XUtil.Iterate to iterate the children of a node who's value is an expression, 
+        ///     leading to a value. who's value is a node, verifying Iterate works as expected
+        /// </summary>
+        [Test]
+        public void Iterate15 ()
+        {
+            var node = CreateNode (@"_foo:node:@""_exe
+  foo1:bar1
+  foo2:bar2""
+_bar:@/-?value");
+            var result = XUtil.Iterate<Node> (node [1], Context, true)
+                .Aggregate (string.Empty, (current, idx) => current + (idx.Name + ":" + idx.Value + "-"));
+            Assert.AreEqual ("foo1:bar1-foo2:bar2-", result);
+        }
+
+        /// <summary>
+        ///     uses XUtil.Iterate to iterate the children of a node who's value is a reference expression, 
+        ///     leading to a value, that's an expression, leading to a value, who's value is a node, 
+        ///     verifying Iterate works as expected
+        /// </summary>
+        [Test]
+        public void Iterate16 ()
+        {
+            var node = CreateNode (@"_foo:node:@""_exe
+  foo1:bar1
+  foo2:bar2""
+_foo2:@/-?value
+_bar:@@/-?value");
+            var result = XUtil.Iterate<Node> (node [2], Context, true)
                 .Aggregate (string.Empty, (current, idx) => current + (idx.Name + ":" + idx.Value + "-"));
             Assert.AreEqual ("foo1:bar1-foo2:bar2-", result);
         }

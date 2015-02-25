@@ -15,7 +15,7 @@ namespace phosphorus.unittests
     ///     unit tests for phosphorus.core project
     /// </summary>
     [TestFixture]
-    public class Core
+    public class Core : TestBase
     {
         /// <summary>
         ///     verifies loading an assembly works
@@ -53,7 +53,7 @@ namespace phosphorus.unittests
         ///     verifying loading the currently executing assembly works
         /// </summary>
         [Test]
-        public void LoadAssembly5 () { Loader.Instance.LoadAssembly ("phosphorus.unit-tests"); }
+        public void LoadAssembly5 () { Loader.Instance.LoadAssembly (GetType ()); }
 
         /// <summary>
         ///     verifyi loading an assembly by type works
@@ -80,7 +80,6 @@ namespace phosphorus.unittests
         [Test]
         public void ApplicationContext2 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
             var tmp = new Node ();
             context.Raise ("foo", tmp);
@@ -109,7 +108,6 @@ namespace phosphorus.unittests
         [Test]
         public void ApplicationContext3 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
             var tmp = new Node (string.Empty, string.Empty);
             context.Raise ("foo2", tmp);
@@ -130,7 +128,6 @@ namespace phosphorus.unittests
         [Test]
         public void ApplicationContext4 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
             context.RegisterListeningObject (this);
             var tmp = new Node ();
@@ -160,7 +157,6 @@ namespace phosphorus.unittests
         [Test]
         public void ApplicationContext5 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
             context.RegisterListeningObject (this);
             var tmp = new Node (string.Empty, string.Empty);
@@ -191,7 +187,6 @@ namespace phosphorus.unittests
         [Test]
         public void ApplicationContext6 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
             context.RegisterListeningObject (this);
             var tmp = new Node (string.Empty, string.Empty);
@@ -214,7 +209,6 @@ namespace phosphorus.unittests
         [Test]
         public void ApplicationContext7 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
             context.RegisterListeningObject (this);
 
@@ -243,7 +237,6 @@ namespace phosphorus.unittests
         [Test]
         public void ApplicationContext8 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
             context.RegisterListeningObject (this);
             context.RegisterListeningObject (this);
@@ -266,7 +259,6 @@ namespace phosphorus.unittests
         [Test]
         public void ApplicationContext9 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
             context.RegisterListeningObject (this);
 
@@ -299,7 +291,6 @@ namespace phosphorus.unittests
         [Test]
         public void ApplicationContext10 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
             context.RegisterListeningObject (this);
             context.UnregisterListeningObject (this);
@@ -323,11 +314,12 @@ namespace phosphorus.unittests
         [Test]
         public void ApplicationContext11 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
+            Loader.Instance.LoadAssembly (GetType ());
             Loader.Instance.UnloadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
             var tmp = new Node (string.Empty, string.Empty);
             context.Raise ("foo10", tmp);
+            Loader.Instance.LoadAssembly (GetType ());
             Assert.AreEqual (string.Empty, tmp.Value, "assembly didn't unload correctly");
         }
 
@@ -345,13 +337,14 @@ namespace phosphorus.unittests
         [Test]
         public void ApplicationContext12 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
+            Loader.Instance.LoadAssembly (this.GetType ());
             var context = Loader.Instance.CreateApplicationContext ();
             context.RegisterListeningObject (this);
 
             // intentionally unloading assembly, before re-creating context
             Loader.Instance.UnloadAssembly ("phosphorus.unit-tests");
             context = Loader.Instance.CreateApplicationContext ();
+            Loader.Instance.LoadAssembly (this.GetType ());
             var tmp = new Node (string.Empty, string.Empty);
             context.Raise ("foo11", tmp);
             Assert.AreEqual (string.Empty, tmp.Value, "assembly didn't unload correctly");
@@ -391,7 +384,6 @@ namespace phosphorus.unittests
         [Test]
         public void ApplicationContext13 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
             var node = new Node ();
             context.Raise ("foo12", node);
@@ -421,7 +413,6 @@ namespace phosphorus.unittests
         [Test]
         public void ApplicationContext14 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
             context.RegisterListeningObject (this);
             var node = new Node ();
@@ -452,7 +443,6 @@ namespace phosphorus.unittests
         [Test]
         public void ApplicationContext15 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
             var node = new Node ();
 
@@ -481,7 +471,6 @@ namespace phosphorus.unittests
         [Test]
         public void ApplicationContext16 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
             var node = new Node ();
             context.Raise ("foo18", node);
@@ -494,7 +483,6 @@ namespace phosphorus.unittests
         [Test]
         public void ApplicationContext17 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
             context.RegisterListeningObject (this);
             var node = new Node ();
@@ -514,7 +502,6 @@ namespace phosphorus.unittests
         [Test]
         public void ApplicationContext18 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
             var node = new Node ();
             context.Raise ("foo22", node);
@@ -527,7 +514,6 @@ namespace phosphorus.unittests
         [Test]
         public void ApplicationContext19 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
 
             // raising without this registered as listener first
@@ -573,7 +559,6 @@ namespace phosphorus.unittests
         [Test]
         public void ApplicationContext20 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
 
             // raising without registering this as listener first
@@ -603,7 +588,6 @@ namespace phosphorus.unittests
         [Test]
         public void ApplicationContext21 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
 
             // raising without overriding Active Event
@@ -627,7 +611,6 @@ namespace phosphorus.unittests
         [Test]
         public void ApplicationContext22 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
 
             // raising without overriding Active Event
@@ -659,7 +642,6 @@ namespace phosphorus.unittests
         [Test]
         public void ApplicationContext23 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
             context.RegisterListeningObject (this);
 
@@ -690,7 +672,6 @@ namespace phosphorus.unittests
         [Test]
         public void ApplicationContext24 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
 
             // raising without overriding Active Event
@@ -732,7 +713,6 @@ namespace phosphorus.unittests
         [Test]
         public void ApplicationContext25 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
 
             // raising without overriding Active Event
@@ -753,7 +733,6 @@ namespace phosphorus.unittests
         [Test]
         public void ApplicationContext26 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
 
             // raising without overriding Active Event
@@ -774,7 +753,6 @@ namespace phosphorus.unittests
         [Test]
         public void ApplicationContext27 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
 
             // raising without overriding Active Event
@@ -828,7 +806,6 @@ namespace phosphorus.unittests
         [Test]
         public void ApplicationContext28 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
 
             // raising Active Event
@@ -855,7 +832,6 @@ namespace phosphorus.unittests
         [Test]
         public void ApplicationContext29 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
 
             // raising Active Event
@@ -884,7 +860,6 @@ namespace phosphorus.unittests
         [Test]
         public void ApplicationContext30 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
 
             // raising first Active Event
@@ -938,7 +913,6 @@ namespace phosphorus.unittests
         [Test]
         public void ApplicationContext31 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
 
             // raising first Active Event
@@ -955,7 +929,6 @@ namespace phosphorus.unittests
         [Test]
         public void ApplicationContext32 ()
         {
-            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
             var tmp = new Node ();
             context.Raise ("foo54", tmp);

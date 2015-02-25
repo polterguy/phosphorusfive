@@ -378,7 +378,7 @@ namespace phosphorus.expressions
                     // caller requested anything but 'count', we return it as type T, possibly triggering
                     // a conversion
                     foreach (var idx in match) {
-                        if (iterateChildren && !(idx.Value is Node) && typeof (T) == typeof (Node)) {
+                        if (iterateChildren && typeof (T) == typeof (Node)) {
                             // user requested to iterateChildren, and since current match triggers a conversion,
                             // we iterate the children of that conversion, and not the automatically generated
                             // root node

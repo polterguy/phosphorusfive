@@ -19,7 +19,7 @@ namespace phosphorus.unittests.plugins
     public class Files : TestBase
     {
         public Files ()
-            : base ("phosphorus.file", "phosphorus.unit-tests", "phosphorus.hyperlisp", "phosphorus.lambda") { }
+            : base ("phosphorus.file", "phosphorus.hyperlisp", "phosphorus.lambda") { }
 
         /*
          * necessary to return "root folder" of executing Assembly
