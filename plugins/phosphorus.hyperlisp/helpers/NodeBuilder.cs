@@ -19,8 +19,8 @@ namespace phosphorus.hyperlisp
     /// </summary>
     public class NodeBuilder
     {
-        private ApplicationContext _context;
-        private string _hyperlisp;
+        private readonly ApplicationContext _context;
+        private readonly string _hyperlisp;
 
         /// <summary>
         /// initializes a new instance of the <see cref="phosphorus.hyperlisp.NodeBuilder"/> class
@@ -48,7 +48,7 @@ namespace phosphorus.hyperlisp
                 using (var tokenizer = new Tokenizer (_hyperlisp)) {
 
                     // creating root node
-                    Node node = new Node ();
+                    var node = new Node ();
                     Token previousToken = null;
 
                     // looping through all tokens sequentially
@@ -146,7 +146,7 @@ namespace phosphorus.hyperlisp
                 return value; // string is default type
 
             // converting our string to the actual object, and returning back to caller
-            return _context.Raise ("pf.hyperlist.get-object-value." + (typeInfo == "node" ? "abs." : "") + typeInfo, new Node (string.Empty, value)).Value;
+            return _context.Raise ("pf.hyperlisp.get-object-value." + (typeInfo == "node" ? "abs." : "") + typeInfo, new Node (string.Empty, value)).Value;
         }
     }
 }

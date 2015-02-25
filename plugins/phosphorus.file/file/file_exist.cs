@@ -27,7 +27,7 @@ namespace phosphorus.file
         private static void pf_file_exists (ApplicationContext context, ActiveEventArgs e)
         {
             // finding root folder
-            string rootFolder = common.GetRootFolder (context);
+            var rootFolder = common.GetRootFolder (context);
 
             // iterating through each filepath given
             foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {

@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using phosphorus.core;
 
 namespace phosphorus.expressions.iterators
@@ -15,10 +16,10 @@ namespace phosphorus.expressions.iterators
     /// </summary>
     public class IteratorModulo : Iterator
     {
-        private int _modulo = 0;
+        private readonly int _modulo;
 
         /// <summary>
-        /// initializes a new instance of the <see cref="phosphorus.execute.iterators.IteratorModulo"/> class
+        /// initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorModulo"/> class
         /// </summary>
         /// <param name="modulo">modulo</param>
         public IteratorModulo (int modulo)
@@ -27,12 +28,10 @@ namespace phosphorus.expressions.iterators
         }
 
         public override IEnumerable<Node> Evaluate {
-            get {
-                int idxNo = 0;
-                foreach (Node idxCurrent in Left.Evaluate) {
-                    if (idxNo++ % _modulo == 0)
-                        yield return idxCurrent;
-                }
+            get
+            {
+                var idxNo = 0;
+                return Left.Evaluate.Where(idxCurrent => idxNo++ % _modulo == 0);
             }
         }
     }

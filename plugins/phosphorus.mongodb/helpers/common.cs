@@ -21,49 +21,34 @@ namespace phosphorus.mongodb
     public static class common
     {
         // contains the connection string to the MongoDB you're using in this application
-        private static string _connectionString;
-        private static MongoClient _client;
-        private static string _db;
 
         /*
          * static constructor, instantiating all common static values according to settings
          */
         static common ()
         {
-            _connectionString = ConfigurationManager.AppSettings ["mongodb-connection-string"] ?? "mongodb://localhost";
-            _db = ConfigurationManager.AppSettings ["mongodb-database"] ?? "phosphorus";
-            _client = new MongoClient (_connectionString);
+            ConnectionString = ConfigurationManager.AppSettings ["mongodb-connection-string"] ?? "mongodb://localhost";
+            DataBaseName = ConfigurationManager.AppSettings ["mongodb-database"] ?? "phosphorus";
+            Client = new MongoClient (ConnectionString);
         }
         
         /// <summary>
         /// returns the connection string for our MongoDB
         /// </summary>
         /// <value>the connection string</value>
-        public static string ConnectionString {
-            get {
-                return _connectionString;
-            }
-        }
+        public static string ConnectionString { get; private set; }
 
         /// <summary>
         /// returns the database name for the MongoDB
         /// </summary>
         /// <value>the database name</value>
-        public static string DataBaseName {
-            get {
-                return _db;
-            }
-        }
+        public static string DataBaseName { get; private set; }
 
         /// <summary>
         /// returns a MongoDB client
         /// </summary>
         /// <value>the MongoDB client</value>
-        public static MongoClient Client {
-            get {
-                return _client;
-            }
-        }
+        public static MongoClient Client { get; private set; }
 
         /// <summary>
         /// returns the database the MongoClient
@@ -71,7 +56,7 @@ namespace phosphorus.mongodb
         /// <value>the database</value>
         public static MongoDatabase DataBase {
             get {
-                return _client.GetServer ().GetDatabase (_db);
+                return Client.GetServer ().GetDatabase (DataBaseName);
             }
         }
 
@@ -83,9 +68,9 @@ namespace phosphorus.mongodb
         public static QueryDocument CreateQueryDocumentFromNode (Node node)
         {
             // loops through all children nodes, adding as BsonElements to returned QueryDocument
-            QueryDocument retVal = new QueryDocument ();
+            var retVal = new QueryDocument ();
             if (node != null) {
-                foreach (Node idx in node.Children) {
+                foreach (var idx in node.Children) {
                     retVal.Add (CreateQueryElementFromNode (idx));
                 }
             }
@@ -134,15 +119,15 @@ namespace phosphorus.mongodb
             if (node.Count > 1) {
 
                 // this is an "array of items"
-                BsonArray array = new BsonArray ();
-                foreach (Node idx in node.Children) {
+                var array = new BsonArray ();
+                foreach (var idx in node.Children) {
                     array.Add (CreateQueryValueFromNode (idx));
                 }
                 bValue = array;
             } else {
 
                 // this is a "dictionary of ONE item", being a document by itself
-                QueryDocument doc = new QueryDocument ();
+                var doc = new QueryDocument ();
                 doc.Add (CreateQueryElementFromNode (node[0]));
                 bValue = doc;
             }
@@ -169,7 +154,7 @@ namespace phosphorus.mongodb
             } else {
 
                 // value is itself a Querydocument
-                QueryDocument doc = new QueryDocument ();
+                var doc = new QueryDocument ();
                 doc.Add (CreateQueryElementFromNode (node));
                 return doc;
             }

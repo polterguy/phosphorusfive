@@ -18,14 +18,13 @@ namespace phosphorus.ajax.core
     /// </summary>
     public class AjaxPage : Page, IAjaxPage
     {
-        private Manager _manager;
         private PageStatePersister _statePersister;
-        private List<string> _javaScriptFilesToPush = new List<string> ();
-        private List<string> _stylesheetFilesToPush = new List<string> ();
+        private readonly List<string> _javaScriptFilesToPush = new List<string> ();
+        private readonly List<string> _stylesheetFilesToPush = new List<string> ();
 
         protected override void OnPreInit (EventArgs e)
         {
-            _manager = new Manager (this);
+            Manager = new Manager (this);
             base.OnPreInit (e);
         }
 
@@ -33,9 +32,7 @@ namespace phosphorus.ajax.core
         /// returns the ajax manager for your page
         /// </summary>
         /// <value>the ajax manager</value>
-        public Manager Manager {
-            get { return _manager; }
-        }
+        public Manager Manager { get; private set; }
 
         /// <summary>
         /// registers JavaScript for page
@@ -45,7 +42,7 @@ namespace phosphorus.ajax.core
         {
             if (ViewState ["__pf_js_files"] == null)
                 ViewState ["__pf_js_files"] = new List<string> ();
-            List<string> lst = ViewState ["__pf_js_files"] as List<string>;
+            var lst = ViewState ["__pf_js_files"] as List<string>;
             if (!lst.Contains (url)) {
                 lst.Add (url);
                 _javaScriptFilesToPush.Add (url);
@@ -69,7 +66,7 @@ namespace phosphorus.ajax.core
         {
             if (ViewState ["__pf_css_files"] == null)
                 ViewState ["__pf_css_files"] = new List<string> ();
-            List<string> lst = ViewState ["__pf_css_files"] as List<string>;
+            var lst = ViewState ["__pf_css_files"] as List<string>;
             if (!lst.Contains (url)) {
                 lst.Add (url);
                 _stylesheetFilesToPush.Add (url);

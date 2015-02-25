@@ -26,7 +26,7 @@ namespace phosphorus.web.ui
          */
         private class FileFilter : MemoryStream
         {
-            private List<string> _files = new List<string> ();
+            private readonly List<string> _files = new List<string> ();
 
             /*
              * used to append files to response, all files will be returned in order of append
@@ -41,7 +41,7 @@ namespace phosphorus.web.ui
                 try {
                     // notice, discarding all other output, and returning all files as "one" ...
                     foreach (var idxFile in _files) {
-                        using (FileStream stream = File.OpenRead (idxFile)) {
+                        using (var stream = File.OpenRead (idxFile)) {
                             stream.CopyTo (HttpContext.Current.Response.OutputStream);
                         }
                     }
@@ -60,7 +60,7 @@ namespace phosphorus.web.ui
         private static void pf_web_transmit_file (ApplicationContext context, ActiveEventArgs e)
         {
             // checking to see if it's even possible to transmit a file
-            IAjaxPage ajaxPage = HttpContext.Current.CurrentHandler as IAjaxPage;
+            var ajaxPage = HttpContext.Current.CurrentHandler as IAjaxPage;
             if (ajaxPage.Manager.IsPhosphorusRequest) {
                 throw new PhosphorusWebException ("You cannot transfer files in an an Ajax Request");
             }
@@ -71,7 +71,7 @@ namespace phosphorus.web.ui
             }
 
             // retrieving Response Filter
-            FileFilter filter = HttpContext.Current.Response.Filter as FileFilter;
+            var filter = HttpContext.Current.Response.Filter as FileFilter;
 
             foreach (var idxFile in XUtil.Iterate<string> (e.Args, context)) {
                 filter.AppendFile (idxFile);

@@ -52,7 +52,7 @@ namespace phosphorus.web.ui
             CollectionBase.Get (e.Args, context, delegate (string key) {
 
                 //fetching cookie
-                HttpCookie cookie = HttpContext.Current.Request.Cookies.Get (key);
+                var cookie = HttpContext.Current.Request.Cookies.Get (key);
                 if (cookie != null && !string.IsNullOrEmpty (cookie.Value)) {
 
                     // adding key node, and values beneath key node
@@ -68,7 +68,7 @@ namespace phosphorus.web.ui
         private static HttpCookie CreateCookieFromNode (Node node, ApplicationContext context, string name, object nodes)
         {
             // creating cookie to send back to caller
-            HttpCookie retVal = new HttpCookie (name, HttpUtility.UrlEncode (Utilities.Convert<string> (nodes, context)));
+            var retVal = new HttpCookie (name, HttpUtility.UrlEncode (Utilities.Convert<string> (nodes, context)));
             retVal.Expires = DateTime.Now.Date.AddDays (node.GetChildValue ("duration", context, 365));
 
             // making sure cookie is "secured" before we send it back to client, unless

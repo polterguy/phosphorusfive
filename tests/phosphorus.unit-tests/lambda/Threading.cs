@@ -28,7 +28,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Threading01 ()
         {
-            Node node = ExecuteLambda (@"_exe
+            var node = ExecuteLambda (@"_exe
   lock:job
     append:@/././*/_wait/#/*/_foos?node
       source:@/../*/""/foo/""?node

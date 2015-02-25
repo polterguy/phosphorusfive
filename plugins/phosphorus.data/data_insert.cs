@@ -35,7 +35,7 @@ namespace phosphorus.data
                     throw new ArgumentException ("[pf.data.insert] requires at least one child node, or a source expression, or source value");
 
                 // looping through all nodes given as children and saving them to database
-                List<Node> changed = new List<Node> ();
+                var changed = new List<Node> ();
                 foreach (var idx in XUtil.Iterate<Node> (e.Args, context)) {
                     if (e.Args.Value is string && !XUtil.IsExpression (e.Args.Value)) {
                         
@@ -63,7 +63,7 @@ namespace phosphorus.data
             SyntaxCheckInsertNode (node, context);
 
             // finding next available database file node
-            Node fileNode = Common.GetAvailableFileNode (context);
+            var fileNode = Common.GetAvailableFileNode (context);
 
             // figuring out which file Node updated belongs to, and storing in changed list
             if (!changed.Contains (fileNode))
@@ -86,7 +86,7 @@ namespace phosphorus.data
             if (node.Value == null) {
                 node.Value = Guid.NewGuid ();
             } else {
-                string tmpId = node.Get<string> (context);
+                var tmpId = node.Get<string> (context);
                 if (XUtil.Iterate (
                     string.Format (@"@/*/*/""={0}""/?node", (tmpId.StartsWith ("/") ? "\\\\" + tmpId : tmpId)), 
                     Common.Database, 

@@ -17,23 +17,21 @@ namespace phosphorus.expressions.iterators
     {
         public override IEnumerable<Node> Evaluate {
             get {
-                List<Node> retVal = new List<Node> ();
-                foreach (Node idxCurrent in Left.Evaluate) {
+                var retVal = new List<Node> ();
+                foreach (var idxCurrent in Left.Evaluate) {
                     retVal.Add (idxCurrent);
                     ReturnChildren (idxCurrent, retVal);
                 }
-                foreach (Node idx in retVal) {
-                    yield return idx;
-                }
+                return retVal;
             }
         }
 
         /*
          * recursively invoked for all descendant nodes
          */
-        private void ReturnChildren (Node idx, List<Node> retVal)
+        private static void ReturnChildren (Node idx, List<Node> retVal)
         {
-            foreach (Node idxChild in idx.Children) {
+            foreach (var idxChild in idx.Children) {
                 retVal.Add (idxChild);
                 ReturnChildren (idxChild, retVal);
             }

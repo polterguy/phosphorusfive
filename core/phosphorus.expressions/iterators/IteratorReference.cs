@@ -17,14 +17,14 @@ namespace phosphorus.expressions.iterators
     {
         public override IEnumerable<Node> Evaluate {
             get {
-                foreach (Node idxCurrent in Left.Evaluate) {
+                foreach (var idxCurrent in Left.Evaluate) {
                     Node reference = null;
                     if (idxCurrent.Value is Node.DNA) {
-                        reference = idxCurrent.Find (idxCurrent.Value as Node.DNA);
+                        reference = idxCurrent.Find ((Node.DNA) idxCurrent.Value);
                     } else if (idxCurrent.Value is Node) {
-                        reference = idxCurrent.Value as Node;
+                        reference = (Node) idxCurrent.Value;
                     } else if (Node.DNA.IsPath (idxCurrent.Value as string)) {
-                        Node.DNA dna = new Node.DNA (idxCurrent.Value as string);
+                        var dna = new Node.DNA ((string) idxCurrent.Value);
                         reference = idxCurrent.Find (dna);
                     }
                     if (reference != null)

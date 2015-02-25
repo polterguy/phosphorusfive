@@ -23,7 +23,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Events01 ()
         {
-            Node node = ExecuteLambda (@"event:test.foo1
+            var node = ExecuteLambda (@"event:test.foo1
   lambda
     set:@/././*/_out/?value
       source:success
@@ -40,7 +40,7 @@ test.foo1
         [Test]
         public void Events02 ()
         {
-            Node node = ExecuteLambda (@"event:test.foo2
+            var node = ExecuteLambda (@"event:test.foo2
   lambda
     set:@@/././?value
       source:success
@@ -56,7 +56,7 @@ _out");
         [Test]
         public void Events03 ()
         {
-            Node node = ExecuteLambda (@"remove-event:test.foo3
+            var node = ExecuteLambda (@"remove-event:test.foo3
 event:test.foo3
   lambda
     set:@/././*/_out/?value
@@ -80,7 +80,7 @@ test.foo3
         [Test]
         public void Events04 ()
         {
-            Node node = ExecuteLambda (@"event:test.foo4
+            var node = ExecuteLambda (@"event:test.foo4
   lambda.copy
     set:@/././*/_out/?value
       source:error
@@ -103,7 +103,7 @@ test.foo4
 
             // creating new Application Context
             _context = Loader.Instance.CreateApplicationContext ();
-            Node node = ExecuteLambda (@"test.foo5
+            var node = ExecuteLambda (@"test.foo5
   _out");
             Assert.AreEqual ("success", node [0] [0].Value);
         }
@@ -114,7 +114,7 @@ test.foo4
         [Test]
         public void Events06 ()
         {
-            Node node = ExecuteLambda (@"event:test.foo6
+            var node = ExecuteLambda (@"event:test.foo6
   lambda
     set:@/././*/_out/?value
       source:succ
@@ -140,7 +140,7 @@ test.foo6
   lambda
     set:@/././*/_out/?value
       source:success");
-            Node node = ExecuteLambda (@"test.foo7
+            var node = ExecuteLambda (@"test.foo7
   _out");
             Assert.AreEqual ("success", node [0] [0].Value);
         }
@@ -151,7 +151,7 @@ test.foo6
         [Test]
         public void Events08 ()
         {
-            Node node = ExecuteLambda (@"event:test.foo8
+            var node = ExecuteLambda (@"event:test.foo8
   lambda
     set:@/././*/_out/?value
       source:error
@@ -168,7 +168,7 @@ test.foo8
         [Test]
         public void Events09 ()
         {
-            Node node = ExecuteLambda (@"event:test.foo9
+            var node = ExecuteLambda (@"event:test.foo9
   lambda
     set:@/././*/_out/?value
       source:error
@@ -186,7 +186,7 @@ test.foo9
         [Test]
         public void Events10 ()
         {
-            Node node = ExecuteLambda (@"event:test.foo10
+            var node = ExecuteLambda (@"event:test.foo10
   lambda
     set:@/././*/_out/?value
       source:error
@@ -209,7 +209,7 @@ test.foo11
         [Test]
         public void Events11 ()
         {
-            Node node = ExecuteLambda (@"_evts
+            var node = ExecuteLambda (@"_evts
   test.foo12
   test.foo13
 event:@/-/*/?name
@@ -237,7 +237,7 @@ test.foo13
         [Test]
         public void Events12 ()
         {
-            Node node = ExecuteLambda (@"event:test.hardcoded
+            var node = ExecuteLambda (@"event:test.hardcoded
   lambda
     set:@/././?value
       source:succ
@@ -252,7 +252,7 @@ test.hardcoded");
         [Test]
         public void Events13 ()
         {
-            Node node = ExecuteLambda (@"event:test.foo14
+            var node = ExecuteLambda (@"event:test.foo14
   lambda
     set:@/././?value
       source:@/./+/#/?name
@@ -272,7 +272,7 @@ test.foo14");
         [Test]
         public void Override01 ()
         {
-            Node node = ExecuteLambda (@"remove-override:test.foo15
+            var node = ExecuteLambda (@"remove-override:test.foo15
   super:test.foo16
 remove-event:test.foo15
 remove-event:test.foo16
@@ -318,7 +318,7 @@ override:test.foo17
 
             // creating new application context, to make sure override is re-mapped on consecutive context objects
             _context = Loader.Instance.CreateApplicationContext ();
-            Node node = ExecuteLambda (@"test.foo17");
+            var node = ExecuteLambda (@"test.foo17");
             Assert.AreEqual ("success", node.Value);
         }
         
@@ -329,7 +329,7 @@ override:test.foo17
         [Test]
         public void Override03 ()
         {
-            Node node = ExecuteLambda (@"remove-event:test.foo19
+            var node = ExecuteLambda (@"remove-event:test.foo19
 remove-event:test.foo20
 remove-event:test.foo21
 remove-override:test.foo19
@@ -367,7 +367,7 @@ test.foo19");
         [Test]
         public void Override04 ()
         {
-            Node node = ExecuteLambda (@"remove-event:test.foo22
+            var node = ExecuteLambda (@"remove-event:test.foo22
 remove-event:test.foo23
 remove-event:test.foo24
 remove-override:test.foo22
@@ -401,7 +401,7 @@ test.foo22");
         [Test]
         public void Override05 ()
         {
-            Node node = ExecuteLambda (@"remove-event:test.foo25
+            var node = ExecuteLambda (@"remove-event:test.foo25
 remove-event:test.foo26
 remove-event:test.foo27
 remove-override:test.foo25
@@ -439,7 +439,7 @@ test.foo26
         [Test]
         public void Override06 ()
         {
-            Node node = ExecuteLambda (@"remove-event:test.foo28
+            var node = ExecuteLambda (@"remove-event:test.foo28
 remove-event:test.foo29
 remove-event:test.foo30
 remove-override:@/../*/(/=test.foo28/[0,1]|/=test.foo29/[0,1])?value
@@ -473,7 +473,7 @@ test.foo29
         [Test]
         public void Override07 ()
         {
-            Node node = ExecuteLambda (@"remove-event:test.foo31
+            var node = ExecuteLambda (@"remove-event:test.foo31
 remove-event:test.foo32
 remove-override:test.foo31
   super:test.foo32
@@ -502,7 +502,7 @@ test.foo31");
         [Test]
         public void Override08 ()
         {
-            Node node = ExecuteLambda (@"remove-event:test.foo33
+            var node = ExecuteLambda (@"remove-event:test.foo33
 remove-event:test.foo34
 remove-override:test.foo33
   super:test.foo34

@@ -16,8 +16,8 @@ namespace phosphorus.hyperlisp
     /// </summary>
     public class HyperlispBuilder
     {
-        private ApplicationContext _context;
-        private IEnumerable<Node> _nodes;
+        private readonly ApplicationContext _context;
+        private readonly IEnumerable<Node> _nodes;
 
         /// <summary>
         /// initializes a new instance of the <see cref="phosphorus.hyperlisp.HyperlispBuilder"/> class
@@ -36,7 +36,7 @@ namespace phosphorus.hyperlisp
         /// <value>hyperlisp</value>
         public string Hyperlisp {
             get {
-                StringBuilder builder = new StringBuilder ();
+                var builder = new StringBuilder ();
                 Nodes2Hyperlisp (builder, _nodes, 0);
                 return builder.ToString ().TrimEnd ();
             }
@@ -47,8 +47,8 @@ namespace phosphorus.hyperlisp
          */
         private void Nodes2Hyperlisp (StringBuilder builder, IEnumerable<Node> nodes, int level)
         {
-            foreach (Node idxNode in nodes) {
-                int idxLevel = level;
+            foreach (var idxNode in nodes) {
+                var idxLevel = level;
                 while (idxLevel-- > 0) {
                     builder.Append ("  ");
                 }
@@ -82,14 +82,14 @@ namespace phosphorus.hyperlisp
             if (node.Value == null)
                 return; // no type information here
 
-            Type type = node.Value.GetType ();
+            var type = node.Value.GetType ();
             if (type == typeof(string))
                 return; // string is "default" type information
 
             builder.Append (
                 string.Format (":{0}", 
                     _context.Raise (
-                        "pf.hyperlist.get-type-name." + node.Value.GetType (), 
+                        "pf.hyperlisp.get-type-name." + node.Value.GetType (), 
                         new Node ()).Get<string> (_context)));
         }
         
@@ -101,7 +101,7 @@ namespace phosphorus.hyperlisp
             if (node.Value == null)
                 return; // nothing to append here
 
-            string value = node.Get<string> (_context);
+            var value = node.Get<string> (_context);
             if (value.Contains ("\n")) {
                 builder.Append (string.Format (@":@""{0}""", value.Replace (@"""", @"""""")));
             } else if (value.Contains (":") || value.Trim () != value) {

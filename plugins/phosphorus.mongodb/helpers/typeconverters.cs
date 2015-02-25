@@ -23,10 +23,10 @@ namespace phosphorus.mongodb
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">parameters</param>
-        [ActiveEvent (Name = "pf.hyperlist.get-object-value.objectid")]
-        private static void pf_hyperlist_get_object_value_objectid (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.hyperlisp.get-object-value.objectid")]
+        private static void pf_hyperlisp_get_object_value_objectid (ApplicationContext context, ActiveEventArgs e)
         {
-            string strValue = e.Args.Get<string> (context);
+            var strValue = e.Args.Get<string> (context);
             e.Args.Value = ObjectId.Parse (strValue);
         }
 
@@ -35,9 +35,9 @@ namespace phosphorus.mongodb
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">parameters</param>
-        [ActiveEvent (Name = "pf.hyperlist.get-type-name.MongoDB.Bson.ObjectId")]
-        [ActiveEvent (Name = "pf.hyperlist.get-type-name.MongoDB.Bson.BsonObjectId")]
-        private static void pf_hyperlist_get_type_name_MongoDB_Bson_ObjectId (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.hyperlisp.get-type-name.MongoDB.Bson.ObjectId")]
+        [ActiveEvent (Name = "pf.hyperlisp.get-type-name.MongoDB.Bson.BsonObjectId")]
+        private static void pf_hyperlisp_get_type_name_MongoDB_Bson_ObjectId (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "objectid";
         }

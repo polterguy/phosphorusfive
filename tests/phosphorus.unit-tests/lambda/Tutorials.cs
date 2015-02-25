@@ -26,7 +26,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Tutorial1_1 ()
         {
-            Node node = ExecuteLambda (@"_foo:bar
+            var node = ExecuteLambda (@"_foo:bar
 set:@/-/?value
   source:Howdy World");
 
@@ -39,7 +39,7 @@ set:@/-/?value
         [Test]
         public void Tutorial1_2 ()
         {
-            Node node = ExecuteLambda (@"_data
+            var node = ExecuteLambda (@"_data
   foo1:bar1
   foo2:bar2
 set:@/../*/_data/*/?value
@@ -55,7 +55,7 @@ set:@/../*/_data/*/?value
         [Test]
         public void Tutorial1_3 ()
         {
-            Node node = ExecuteLambda (@"_data
+            var node = ExecuteLambda (@"_data
   foo1:bar1
   foo2:bar2
 _data
@@ -74,7 +74,7 @@ set:@/../*/_data/*/?value
         [Test]
         public void Tutorial1_4 ()
         {
-            Node node = ExecuteLambda (@"_data
+            var node = ExecuteLambda (@"_data
   foo1:bar1
   foo2:bar2
 set:@/../*/_data/*/?node
@@ -93,7 +93,7 @@ set:@/../*/_data/*/?node
         [Test]
         public void Tutorial1_5 ()
         {
-            Node node = ExecuteLambda (@"_data
+            var node = ExecuteLambda (@"_data
   foo1:bar1
   foo2:bar2
 set:@/../*/_data/*/foo1/?value
@@ -110,7 +110,7 @@ set:@/../*/_data/*/foo1/?value
         [Test]
         public void Tutorial2_1 ()
         {
-            Node node = ExecuteLambda (@"_data:int:555
+            var node = ExecuteLambda (@"_data:int:555
 _result
 set:@/-/?value
   source:@/../*/_data/?value");
@@ -124,7 +124,7 @@ set:@/-/?value
         [Test]
         public void Tutorial2_2 ()
         {
-            Node node = ExecuteLambda (@"_data:555
+            var node = ExecuteLambda (@"_data:555
 _result
 set:@/-/?value
   source:@/../*/_data/?value.int");
@@ -138,7 +138,7 @@ set:@/-/?value
         [Test]
         public void Tutorial2_3 ()
         {
-            Node node = ExecuteLambda (@"_data
+            var node = ExecuteLambda (@"_data
   source1:su
   source2:cc
   source3:ess
@@ -155,7 +155,7 @@ set:@/-/?value
         [Test]
         public void Tutorial2_4 ()
         {
-            Node node = ExecuteLambda (@"_data
+            var node = ExecuteLambda (@"_data
   source1:su
   source2:cc
   source3:ess
@@ -175,7 +175,7 @@ set:@/-/?value
         [Test]
         public void Tutorial2_5 ()
         {
-            Node node = ExecuteLambda (@"_data
+            var node = ExecuteLambda (@"_data
   source1:su
   source2:cc
   source3:ess
@@ -195,7 +195,7 @@ set:@/-/?value
         [Test]
         public void Tutorial2_6 ()
         {
-            Node node = ExecuteLambda (@"_data
+            var node = ExecuteLambda (@"_data
   foo1:bar1
   foo2:bar2
 set:@/../*/_data/*/?value
@@ -212,7 +212,7 @@ set:@/../*/_data/*/?value
         [Test]
         public void Tutorial2_7 ()
         {
-            Node node = ExecuteLambda (@"_data
+            var node = ExecuteLambda (@"_data
   foo1:bar1
     foo1_child:Howdy
   foo2:bar2
@@ -234,7 +234,7 @@ set:@/-2/*/*/?node");
         [Test]
         public void Tutorial3_1 ()
         {
-            Node node = ExecuteLambda (@"_destination
+            var node = ExecuteLambda (@"_destination
 append:@/../*/_destination/?node
   source
     foo1:bar1
@@ -255,7 +255,7 @@ append:@/../*/_destination/?node
         [Test]
         public void Tutorial3_2 ()
         {
-            Node node = ExecuteLambda (@"_source
+            var node = ExecuteLambda (@"_source
   foo1:bar1
   foo2:bar2
 _destination
@@ -278,7 +278,7 @@ append:@/../*/_destination/?node
         [Test]
         public void Tutorial3_3 ()
         {
-            Node node = ExecuteLambda (@"_destination
+            var node = ExecuteLambda (@"_destination
 append:@/-/?node
   source:node:""foo1:bar1""
 append:@/-2/?node
@@ -300,7 +300,7 @@ foo3:bar3""");
         [Test]
         public void Tutorial3_4 ()
         {
-            Node node = ExecuteLambda (@"_source
+            var node = ExecuteLambda (@"_source
   success:Howdy
   error:oops....!
   success:World
@@ -322,7 +322,7 @@ append:@/-/?node
         [Test]
         public void Tutorial3_5 ()
         {
-            Node node = ExecuteLambda (@"_mammal
+            var node = ExecuteLambda (@"_mammal
   sea
     dolphins
       smart
@@ -358,7 +358,7 @@ append:@/-/?node
         [Test]
         public void Tutorial3_6 ()
         {
-            Node node = ExecuteLambda (@"_mammal
+            var node = ExecuteLambda (@"_mammal
   sea
     dolphins
       smart
@@ -388,7 +388,7 @@ append:@/-/?node
         [Test]
         public void Tutorial4_1 ()
         {
-            Node node = ExecuteLambda (@"_data
+            var node = ExecuteLambda (@"_data
   foo1:Thomas Hansen
   foo2:John Doe
   foo2_5:""Error \r\nHansen""
@@ -411,7 +411,7 @@ pf.web.create-widget:example1
       innerValue:Hello World
       element:h1");
 
-            string result = Utilities.Convert<string> (node.Children, _context);
+            var result = Utilities.Convert<string> (node.Children, _context);
             Assert.AreEqual (@"_data
   foo1:Thomas Hansen
   foo2:John Doe
@@ -450,11 +450,11 @@ pf.web.create-widget:example1
         [Test]
         public void Tutorial5_1 ()
         {
-            Node node = ExecuteLambda (@"set:@?name
+            var node = ExecuteLambda (@"set:@?name
 set:@?value
 set:@?node");
 
-            string result = Utilities.Convert<string> (node.Children, _context);
+            var result = Utilities.Convert<string> (node.Children, _context);
             Assert.AreEqual (":@?name\r\nset", result);
         }
         
@@ -464,7 +464,7 @@ set:@?node");
         [Test]
         public void Tutorial5_2 ()
         {
-            Node node = ExecuteLambda (@"lambda
+            var node = ExecuteLambda (@"lambda
   lambda
     lambda
       set:@/..?value
@@ -479,7 +479,7 @@ set:@?node");
         [Test]
         public void Tutorial5_3 ()
         {
-            Node node = ExecuteLambda (@"lambda
+            var node = ExecuteLambda (@"lambda
   lambda
     lambda
       set:@/../0?name
@@ -494,7 +494,7 @@ set:@?node");
         [Test]
         public void Tutorial5_4 ()
         {
-            Node node = ExecuteLambda (@"lambda
+            var node = ExecuteLambda (@"lambda
   lambda
     lambda
       set:@/../*/*?name
@@ -509,7 +509,7 @@ set:@?node");
         [Test]
         public void Tutorial5_5 ()
         {
-            Node node = ExecuteLambda (@"lambda
+            var node = ExecuteLambda (@"lambda
   _x
   lambda
     lambda
@@ -526,7 +526,7 @@ set:@?node");
         [Test]
         public void Tutorial5_6 ()
         {
-            Node node = ExecuteLambda (@"lambda
+            var node = ExecuteLambda (@"lambda
   _x
   lambda
     lambda
@@ -543,7 +543,7 @@ set:@?node");
         [Test]
         public void Tutorial5_7 ()
         {
-            Node node = ExecuteLambda (@"lambda
+            var node = ExecuteLambda (@"lambda
   _x
   lambda
     lambda
@@ -560,7 +560,7 @@ set:@?node");
         [Test]
         public void Tutorial5_8 ()
         {
-            Node node = ExecuteLambda (@"lambda
+            var node = ExecuteLambda (@"lambda
   _x:success
   _x:error
   lambda
@@ -578,7 +578,7 @@ set:@?node");
         [Test]
         public void Tutorial5_9 ()
         {
-            Node node = ExecuteLambda (@"=
+            var node = ExecuteLambda (@"=
 555
 *
 set:@/../*/\=?value
@@ -599,7 +599,7 @@ set:@/../*/\*?value
         [Test]
         public void Tutorial5_10 ()
         {
-            Node node = ExecuteLambda (@"""foo\r\nbar""
+            var node = ExecuteLambda (@"""foo\r\nbar""
 set:@/../*/""foo\r\nbar""?name
   source:success");
 

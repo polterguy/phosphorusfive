@@ -27,12 +27,12 @@ namespace phosphorus.lambda
         private static void lambda_for_each (ApplicationContext context, ActiveEventArgs e)
         {
             foreach (var idxSource in XUtil.Iterate (e.Args, context)) {
-                Node dp = new Node ("__dp", idxSource.Value);
+                var dp = new Node ("__dp", idxSource.Value);
                 e.Args.Insert (0, dp);
 
                 // checking to see if there are any [lambda.xxx] children beneath [for-each]
                 // at which case we execute these nodes
-                bool executed = false;
+                var executed = false;
                 foreach (var idxExe in e.Args.FindAll (
                     delegate (Node idxChild) {
                         return idxChild.Name.StartsWith ("lambda");

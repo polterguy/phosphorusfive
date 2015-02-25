@@ -44,8 +44,8 @@ namespace phosphorus.hyperlisp
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">parameters</param>
-        [ActiveEvent (Name = "pf.hyperlist.get-type-name.phosphorus.core.Node")]
-        private static void pf_hyperlist_get_type_name_phosphorus_core_Node (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.hyperlisp.get-type-name.phosphorus.core.Node")]
+        private static void pf_hyperlisp_get_type_name_phosphorus_core_Node (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "node";
         }
@@ -55,8 +55,8 @@ namespace phosphorus.hyperlisp
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">parameters</param>
-        [ActiveEvent (Name = "pf.hyperlist.get-type-name.phosphorus.core.Node+DNA")]
-        private static void pf_hyperlist_get_type_name_phosphorus_core_Node_DNA (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.hyperlisp.get-type-name.phosphorus.core.Node+DNA")]
+        private static void pf_hyperlisp_get_type_name_phosphorus_core_Node_DNA (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "path";
         }
@@ -66,8 +66,8 @@ namespace phosphorus.hyperlisp
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">parameters</param>
-        [ActiveEvent (Name = "pf.hyperlist.get-type-name.System.Guid")]
-        private static void pf_hyperlist_get_type_name_System_Guid (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.hyperlisp.get-type-name.System.Guid")]
+        private static void pf_hyperlisp_get_type_name_System_Guid (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "guid";
         }
@@ -77,8 +77,8 @@ namespace phosphorus.hyperlisp
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">parameters</param>
-        [ActiveEvent (Name = "pf.hyperlist.get-type-name.System.Int64")]
-        private static void pf_hyperlist_get_type_name_System_Int64 (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.hyperlisp.get-type-name.System.Int64")]
+        private static void pf_hyperlisp_get_type_name_System_Int64 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "long";
         }
@@ -88,8 +88,8 @@ namespace phosphorus.hyperlisp
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">parameters</param>
-        [ActiveEvent (Name = "pf.hyperlist.get-type-name.System.UInt64")]
-        private static void pf_hyperlist_get_type_name_System_UInt64 (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.hyperlisp.get-type-name.System.UInt64")]
+        private static void pf_hyperlisp_get_type_name_System_UInt64 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "ulong";
         }
@@ -99,8 +99,8 @@ namespace phosphorus.hyperlisp
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">parameters</param>
-        [ActiveEvent (Name = "pf.hyperlist.get-type-name.System.Int32")]
-        private static void pf_hyperlist_get_type_name_System_Int32 (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.hyperlisp.get-type-name.System.Int32")]
+        private static void pf_hyperlisp_get_type_name_System_Int32 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "int";
         }
@@ -110,8 +110,8 @@ namespace phosphorus.hyperlisp
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">parameters</param>
-        [ActiveEvent (Name = "pf.hyperlist.get-type-name.System.UInt32")]
-        private static void pf_hyperlist_get_type_name_System_UInt32 (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.hyperlisp.get-type-name.System.UInt32")]
+        private static void pf_hyperlisp_get_type_name_System_UInt32 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "uint";
         }
@@ -121,8 +121,8 @@ namespace phosphorus.hyperlisp
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">parameters</param>
-        [ActiveEvent (Name = "pf.hyperlist.get-type-name.System.Int16")]
-        private static void pf_hyperlist_get_type_name_System_Int16 (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.hyperlisp.get-type-name.System.Int16")]
+        private static void pf_hyperlisp_get_type_name_System_Int16 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "short";
         }
@@ -132,8 +132,8 @@ namespace phosphorus.hyperlisp
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">parameters</param>
-        [ActiveEvent (Name = "pf.hyperlist.get-type-name.System.UInt16")]
-        private static void pf_hyperlist_get_type_name_System_UInt16 (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.hyperlisp.get-type-name.System.UInt16")]
+        private static void pf_hyperlisp_get_type_name_System_UInt16 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "ushort";
         }
@@ -143,8 +143,8 @@ namespace phosphorus.hyperlisp
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">parameters</param>
-        [ActiveEvent (Name = "pf.hyperlist.get-type-name.System.Single")]
-        private static void pf_hyperlist_get_type_name_System_Single (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.hyperlisp.get-type-name.System.Single")]
+        private static void pf_hyperlisp_get_type_name_System_Single (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "float";
         }
@@ -154,8 +154,8 @@ namespace phosphorus.hyperlisp
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">parameters</param>
-        [ActiveEvent (Name = "pf.hyperlist.get-type-name.System.Double")]
-        private static void pf_hyperlist_get_type_name_System_Double (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.hyperlisp.get-type-name.System.Double")]
+        private static void pf_hyperlisp_get_type_name_System_Double (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "double";
         }
@@ -165,8 +165,8 @@ namespace phosphorus.hyperlisp
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">parameters</param>
-        [ActiveEvent (Name = "pf.hyperlist.get-type-name.System.Decimal")]
-        private static void pf_hyperlist_get_type_name_System_Decimal (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.hyperlisp.get-type-name.System.Decimal")]
+        private static void pf_hyperlisp_get_type_name_System_Decimal (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "decimal";
         }
@@ -176,8 +176,8 @@ namespace phosphorus.hyperlisp
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">parameters</param>
-        [ActiveEvent (Name = "pf.hyperlist.get-type-name.System.Boolean")]
-        private static void pf_hyperlist_get_type_name_System_Boolean (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.hyperlisp.get-type-name.System.Boolean")]
+        private static void pf_hyperlisp_get_type_name_System_Boolean (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "bool";
         }
@@ -187,8 +187,8 @@ namespace phosphorus.hyperlisp
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">parameters</param>
-        [ActiveEvent (Name = "pf.hyperlist.get-type-name.System.Byte")]
-        private static void pf_hyperlist_get_type_name_System_Byte (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.hyperlisp.get-type-name.System.Byte")]
+        private static void pf_hyperlisp_get_type_name_System_Byte (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "byte";
         }
@@ -198,8 +198,8 @@ namespace phosphorus.hyperlisp
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">parameters</param>
-        [ActiveEvent (Name = "pf.hyperlist.get-type-name.System.Byte[]")]
-        private static void pf_hyperlist_get_type_name_System_ByteBlob (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.hyperlisp.get-type-name.System.Byte[]")]
+        private static void pf_hyperlisp_get_type_name_System_ByteBlob (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "blob";
         }
@@ -209,8 +209,8 @@ namespace phosphorus.hyperlisp
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">parameters</param>
-        [ActiveEvent (Name = "pf.hyperlist.get-type-name.System.SByte")]
-        private static void pf_hyperlist_get_type_name_System_SByte (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.hyperlisp.get-type-name.System.SByte")]
+        private static void pf_hyperlisp_get_type_name_System_SByte (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "sbyte";
         }
@@ -220,8 +220,8 @@ namespace phosphorus.hyperlisp
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">parameters</param>
-        [ActiveEvent (Name = "pf.hyperlist.get-type-name.System.Char")]
-        private static void pf_hyperlist_get_type_name_System_Char (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.hyperlisp.get-type-name.System.Char")]
+        private static void pf_hyperlisp_get_type_name_System_Char (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "char";
         }
@@ -231,8 +231,8 @@ namespace phosphorus.hyperlisp
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">parameters</param>
-        [ActiveEvent (Name = "pf.hyperlist.get-type-name.System.DateTime")]
-        private static void pf_hyperlist_get_type_name_System_DateTime (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.hyperlisp.get-type-name.System.DateTime")]
+        private static void pf_hyperlisp_get_type_name_System_DateTime (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "date";
         }
@@ -242,8 +242,8 @@ namespace phosphorus.hyperlisp
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">parameters</param>
-        [ActiveEvent (Name = "pf.hyperlist.get-type-name.System.TimeSpan")]
-        private static void pf_hyperlist_get_type_name_System_TimeSpan (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.hyperlisp.get-type-name.System.TimeSpan")]
+        private static void pf_hyperlisp_get_type_name_System_TimeSpan (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "time";
         }

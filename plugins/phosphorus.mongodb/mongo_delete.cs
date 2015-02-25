@@ -29,7 +29,7 @@ namespace phosphorus.mongodb
         [ActiveEvent (Name = "pf.mongo.delete")]
         private static void pf_mongo_delete (ApplicationContext context, ActiveEventArgs e)
         {
-            string table = e.Args.Get<string> (context);
+            var table = e.Args.Get<string> (context);
             if (string.IsNullOrEmpty (table)) // no table name given
                 throw new ArgumentException ("[pf.mongo.delete] needs the table name as the value of its node, either through an expression or a constant");
 
@@ -46,7 +46,7 @@ namespace phosphorus.mongodb
             var collection = common.DataBase.GetCollection<BsonDocument> (table);
 
             // converting the current node structure to a Bson Document, used as criteria for our select
-            QueryDocument query = common.CreateQueryDocumentFromNode (e.Args);
+            var query = common.CreateQueryDocumentFromNode (e.Args);
 
             // running the query, removing all items matching criteria from database
             collection.Remove (query);

@@ -23,7 +23,7 @@ namespace phosphorus.ajax.core
     public class Manager
     {
         // contains all changes that needs to be serialized back to client
-        private OrderedDictionary _changes = new OrderedDictionary ();
+        private readonly OrderedDictionary _changes = new OrderedDictionary ();
 
         /// <summary>
         /// initializes a new instance of the <see cref="phosphorus.ajax.core.Manager"/> class
@@ -44,7 +44,7 @@ namespace phosphorus.ajax.core
 
             // including main javascript file
             Page.Load += delegate {
-                string coreScriptFileUrl = Page.ClientScript.GetWebResourceUrl (typeof(Manager), "phosphorus.ajax.javascript.manager.js");
+                var coreScriptFileUrl = Page.ClientScript.GetWebResourceUrl (typeof(Manager), "phosphorus.ajax.javascript.manager.js");
                 (Page as IAjaxPage).RegisterJavaScriptFile (coreScriptFileUrl);
             };
         }
@@ -75,7 +75,7 @@ namespace phosphorus.ajax.core
             if (!_changes.Contains ("__pf_script")) {
                 _changes ["__pf_script"] = new List<string> ();
             }
-            List<string> lst = _changes ["__pf_script"] as List<string>;
+            var lst = _changes ["__pf_script"] as List<string>;
             lst.Add (script);
         }
 
@@ -98,7 +98,7 @@ namespace phosphorus.ajax.core
             if (!widgets.ContainsKey (id)) {
                 widgets [id] = new Dictionary<string, object> ();
             }
-            var widgetChanges = widgets [id] as Dictionary<string, object>;
+            var widgetChanges = widgets [id];
             widgetChanges [name] = change;
         }
 
@@ -110,11 +110,11 @@ namespace phosphorus.ajax.core
             if (!widgets.ContainsKey (id)) {
                 widgets [id] = new Dictionary<string, object> ();
             }
-            var widgetChanges = widgets [id] as Dictionary<string, object>;
+            var widgetChanges = widgets [id];
             if (!widgetChanges.ContainsKey ("__pf_del")) {
                 widgetChanges ["__pf_del"] = new List<string> ();
             }
-            List<string> list = widgetChanges ["__pf_del"] as List<string>;
+            var list = widgetChanges ["__pf_del"] as List<string>;
             list.Add (name);
         }
 
@@ -122,7 +122,7 @@ namespace phosphorus.ajax.core
         {
             if (!_changes.Contains ("__pf_del"))
                 _changes ["__pf_del"] = new List<string> ();
-            List<string> list = _changes ["__pf_del"] as List<string>;
+            var list = _changes ["__pf_del"] as List<string>;
             list.Add (id);
         }
 
@@ -140,9 +140,9 @@ namespace phosphorus.ajax.core
                 if (oldValue == newValue) {
                     return null;
                 }
-                int start = -1;
+                var start = -1;
                 string update = null;
-                for (int idx = 0; idx < oldValue.Length && idx < newValue.Length; idx++) {
+                for (var idx = 0; idx < oldValue.Length && idx < newValue.Length; idx++) {
                     if (oldValue [idx] != newValue [idx]) {
                         start = idx;
                         if (idx < newValue.Length) {

@@ -30,7 +30,7 @@ namespace phosphorus.file
         private static void pf_folder_exists (ApplicationContext context, ActiveEventArgs e)
         {
             // retrieving root folder first
-            string rootFolder = common.GetRootFolder (context);
+            var rootFolder = common.GetRootFolder (context);
 
             // iterating through each folder the caller requests knowledge about
             foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {

@@ -69,10 +69,10 @@ namespace phosphorus.lambda
         }
 
         // root node for our condition object
-        private Node _statementNode;
+        private readonly Node _statementNode;
 
         // application context needed to create expressions, in case expressions have typed values
-        private ApplicationContext _context;
+        private readonly ApplicationContext _context;
 
         // for simple exist statements, there's no need for a [lambda] execution object since everything
         // inside of condition object automatically becomes a "lambda"
@@ -110,7 +110,7 @@ namespace phosphorus.lambda
         public IEnumerable<Node> ExecutionLambdas
         {
             get {
-                foreach (Node idxChild in _statementNode.Children) {
+                foreach (var idxChild in _statementNode.Children) {
                     if (idxChild.Name.StartsWith ("lambda"))
                         yield return idxChild;
                 }
@@ -143,7 +143,7 @@ namespace phosphorus.lambda
          */
         private bool EvaluateStatement (Node currentStatement)
         {
-            Operator oper = GetOperator (currentStatement);
+            var oper = GetOperator (currentStatement);
             switch (oper) {
             case Operator.Exist:
                 if (currentStatement == _statementNode && 
@@ -230,13 +230,13 @@ namespace phosphorus.lambda
          */
         private bool EvaluateRelatedAnd (Node currentStatement)
         {
-            Node nextChild = FindNextCondition (currentStatement.FirstChildNotOf (string.Empty), "and");
+            var nextChild = FindNextCondition (currentStatement.FirstChildNotOf (string.Empty), "and");
             if (nextChild != null) {
                 if (!EvaluateStatement (nextChild))
                     return false;
             }
             if (currentStatement != _statementNode) {
-                Node nextSibling = FindNextCondition (currentStatement.NextSibling, "and");
+                var nextSibling = FindNextCondition (currentStatement.NextSibling, "and");
                 if (nextSibling != null) {
                     if (!EvaluateStatement (nextSibling))
                         return false;
@@ -250,13 +250,13 @@ namespace phosphorus.lambda
          */
         private bool EvaluateRelatedOr (Node currentStatement)
         {
-            Node nextChild = FindNextCondition (currentStatement.FirstChildNotOf (string.Empty), "or");
+            var nextChild = FindNextCondition (currentStatement.FirstChildNotOf (string.Empty), "or");
             if (nextChild != null) {
                 if (EvaluateStatement (nextChild))
                     return true;
             }
             if (currentStatement != _statementNode) {
-                Node nextSibling = FindNextCondition (currentStatement.NextSibling, "or");
+                var nextSibling = FindNextCondition (currentStatement.NextSibling, "or");
                 if (nextSibling != null) {
                     if (EvaluateStatement (nextSibling))
                         return true;

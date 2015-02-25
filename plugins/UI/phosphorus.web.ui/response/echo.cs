@@ -23,7 +23,7 @@ namespace phosphorus.web.ui
          */
         private class EchoFilter : MemoryStream
         {
-            private StringBuilder _builder = new StringBuilder ();
+            private readonly StringBuilder _builder = new StringBuilder ();
 
             public void Append (string txt)
             {
@@ -53,7 +53,7 @@ namespace phosphorus.web.ui
             }
 
             // retrieving a reference to our EchFilter
-            EchoFilter echoFilter = HttpContext.Current.Response.Filter as EchoFilter;
+            var echoFilter = HttpContext.Current.Response.Filter as EchoFilter;
 
             foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
                 echoFilter.Append (idx);

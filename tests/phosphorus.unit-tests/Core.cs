@@ -79,7 +79,7 @@ namespace phosphorus.unittests
         [Test]
         public void ApplicationContext1 ()
         {
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            var context = Loader.Instance.CreateApplicationContext ();
             Assert.IsNotNull (context);
         }
 
@@ -96,8 +96,8 @@ namespace phosphorus.unittests
         public void ApplicationContext2 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
+            var context = Loader.Instance.CreateApplicationContext ();
+            var tmp = new Node ();
             context.Raise ("foo", tmp);
             Assert.AreEqual ("success", tmp.Value, "Active Event in current assembly did not execute when expected");
         }
@@ -131,8 +131,8 @@ namespace phosphorus.unittests
         public void ApplicationContext3 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node (string.Empty, string.Empty);
+            var context = Loader.Instance.CreateApplicationContext ();
+            var tmp = new Node (string.Empty, string.Empty);
             context.Raise ("foo2", tmp);
             Assert.AreEqual ("successsuccess", tmp.Value, "Active Event in current assembly did not execute when expected");
         }
@@ -155,9 +155,9 @@ namespace phosphorus.unittests
         public void ApplicationContext4 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            var context = Loader.Instance.CreateApplicationContext ();
             context.RegisterListeningObject (this);
-            Node tmp = new Node ();
+            var tmp = new Node ();
             context.Raise ("foo3", tmp);
             Assert.AreEqual ("success", tmp.Value, "Active Event in current assembly did not execute when expected");
         }
@@ -191,9 +191,9 @@ namespace phosphorus.unittests
         public void ApplicationContext5 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            var context = Loader.Instance.CreateApplicationContext ();
             context.RegisterListeningObject (this);
-            Node tmp = new Node (string.Empty, string.Empty);
+            var tmp = new Node (string.Empty, string.Empty);
             context.Raise ("foo4", tmp);
             Assert.AreEqual ("successsuccess", tmp.Value, "Active Event in current assembly did not execute when expected");
         }
@@ -228,9 +228,9 @@ namespace phosphorus.unittests
         public void ApplicationContext6 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            var context = Loader.Instance.CreateApplicationContext ();
             context.RegisterListeningObject (this);
-            Node tmp = new Node (string.Empty, string.Empty);
+            var tmp = new Node (string.Empty, string.Empty);
             context.Raise ("foo5", tmp);
             Assert.AreEqual ("successsuccess", tmp.Value, "Active Event in current assembly did not execute when expected");
         }
@@ -254,7 +254,7 @@ namespace phosphorus.unittests
         public void ApplicationContext7 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            var context = Loader.Instance.CreateApplicationContext ();
             context.RegisterListeningObject (this);
 
             // intentionally throwing away previous context
@@ -262,7 +262,7 @@ namespace phosphorus.unittests
             context.RegisterListeningObject (this);
 
             // raising Active Event on new context, making sure our event handler is only invoked once
-            Node tmp = new Node (string.Empty, string.Empty);
+            var tmp = new Node (string.Empty, string.Empty);
             context.Raise ("foo6", tmp);
             Assert.AreEqual ("success", tmp.Value, "context contained previously registered instance listener");
         }
@@ -286,10 +286,10 @@ namespace phosphorus.unittests
         public void ApplicationContext8 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            var context = Loader.Instance.CreateApplicationContext ();
             context.RegisterListeningObject (this);
             context.RegisterListeningObject (this);
-            Node tmp = new Node (string.Empty, string.Empty);
+            var tmp = new Node (string.Empty, string.Empty);
             context.Raise ("foo7", tmp);
             Assert.AreEqual ("success", tmp.Value, "context contained previously registered instance listener");
         }
@@ -312,12 +312,12 @@ namespace phosphorus.unittests
         public void ApplicationContext9 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            var context = Loader.Instance.CreateApplicationContext ();
             context.RegisterListeningObject (this);
 
             // unregistering instance listener before we raise event
             context.UnregisterListeningObject (this);
-            Node tmp = new Node (string.Empty, string.Empty);
+            var tmp = new Node (string.Empty, string.Empty);
             context.Raise ("foo8", tmp);
             Assert.AreEqual (string.Empty, tmp.Value, "context contained previously registered instance listener");
         }
@@ -351,10 +351,10 @@ namespace phosphorus.unittests
         public void ApplicationContext10 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            var context = Loader.Instance.CreateApplicationContext ();
             context.RegisterListeningObject (this);
             context.UnregisterListeningObject (this);
-            Node tmp = new Node (string.Empty, string.Empty);
+            var tmp = new Node (string.Empty, string.Empty);
             context.Raise ("foo9", tmp);
             Assert.AreEqual ("success", tmp.Value, "context contained previously registered instance listener");
         }
@@ -379,8 +379,8 @@ namespace phosphorus.unittests
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             Loader.Instance.UnloadAssembly ("phosphorus.unit-tests");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node (string.Empty, string.Empty);
+            var context = Loader.Instance.CreateApplicationContext ();
+            var tmp = new Node (string.Empty, string.Empty);
             context.Raise ("foo10", tmp);
             Assert.AreEqual (string.Empty, tmp.Value, "assembly didn't unload correctly");
         }
@@ -403,13 +403,13 @@ namespace phosphorus.unittests
         public void ApplicationContext12 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
+            var context = Loader.Instance.CreateApplicationContext ();
             context.RegisterListeningObject (this);
 
             // intentionally unloading assembly, before re-creating context
             Loader.Instance.UnloadAssembly ("phosphorus.unit-tests");
             context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node (string.Empty, string.Empty);
+            var tmp = new Node (string.Empty, string.Empty);
             context.Raise ("foo11", tmp);
             Assert.AreEqual (string.Empty, tmp.Value, "assembly didn't unload correctly");
         }
@@ -420,8 +420,8 @@ namespace phosphorus.unittests
         [Test]
         public void InvokeNullEventHandler ()
         {
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node (string.Empty, string.Empty);
+            var context = Loader.Instance.CreateApplicationContext ();
+            var tmp = new Node (string.Empty, string.Empty);
             context.Raise ("non-existing", tmp);
         }
 
@@ -456,7 +456,7 @@ namespace phosphorus.unittests
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
-            Node node = new Node ();
+            var node = new Node ();
             context.Raise ("foo12", node);
             Assert.AreEqual ("success", node.Value, "active event wasn't correctly overridden");
         }
@@ -493,7 +493,7 @@ namespace phosphorus.unittests
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
             context.RegisterListeningObject (this);
-            Node node = new Node ();
+            var node = new Node ();
             context.Raise ("foo14", node);
             Assert.AreEqual ("success", node.Value, "active event wasn't correctly overridden");
         }
@@ -529,7 +529,7 @@ namespace phosphorus.unittests
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
-            Node node = new Node ();
+            var node = new Node ();
 
             // raising before registering override, to ensure override is not registered before
             // instance listener is registered
@@ -561,7 +561,7 @@ namespace phosphorus.unittests
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
-            Node node = new Node ();
+            var node = new Node ();
             context.Raise ("foo18", node);
             Assert.AreEqual ("success", node.Value, "active event wasn't correctly overridden");
         }
@@ -578,7 +578,7 @@ namespace phosphorus.unittests
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
             context.RegisterListeningObject (this);
-            Node node = new Node ();
+            var node = new Node ();
             context.Raise ("foo20", node);
             Assert.AreEqual ("success", node.Value, "active event wasn't correctly overridden");
         }
@@ -606,7 +606,7 @@ namespace phosphorus.unittests
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
             var context = Loader.Instance.CreateApplicationContext ();
-            Node node = new Node ();
+            var node = new Node ();
             context.Raise ("foo22", node);
             Assert.IsTrue (node.Get<string> (context) == "success1success2" || node.Get<string> (context) == "success2success1", "active event wasn't correctly overridden");
         }
@@ -639,7 +639,7 @@ namespace phosphorus.unittests
             var context = Loader.Instance.CreateApplicationContext ();
 
             // raising without this registered as listener first
-            Node node = new Node ();
+            var node = new Node ();
             context.Raise ("foo24", node);
             Assert.AreEqual (null, node.Value, "active event wasn't correctly overridden");
 
@@ -650,7 +650,7 @@ namespace phosphorus.unittests
             Assert.AreEqual ("failure", node.Value, "active event wasn't correctly overridden");
 
             // then re-raising with foo25 instance registeredd ass listener
-            foo25 tmp = new foo25 ();
+            var tmp = new foo25 ();
             context.RegisterListeningObject (tmp);
             node = new Node ();
             context.Raise ("foo24", node);
@@ -694,7 +694,7 @@ namespace phosphorus.unittests
             var context = Loader.Instance.CreateApplicationContext ();
 
             // raising without registering this as listener first
-            Node node = new Node ();
+            var node = new Node ();
             context.Raise ("foo26", node);
             Assert.AreEqual ("success", node.Value, "active event wasn't correctly overridden");
 
@@ -730,7 +730,7 @@ namespace phosphorus.unittests
             var context = Loader.Instance.CreateApplicationContext ();
 
             // raising without overriding Active Event
-            Node node = new Node ();
+            var node = new Node ();
             context.Raise ("foo28", node);
             Assert.AreEqual ("failure", node.Value, "active event wasn't correctly overridden");
 
@@ -754,7 +754,7 @@ namespace phosphorus.unittests
             var context = Loader.Instance.CreateApplicationContext ();
 
             // raising without overriding Active Event
-            Node node = new Node ();
+            var node = new Node ();
             context.Raise ("foo28", node);
             Assert.AreEqual ("failure", node.Value, "active event wasn't correctly overridden");
 
@@ -793,7 +793,7 @@ namespace phosphorus.unittests
             context.RegisterListeningObject (this);
 
             // raising without overriding Active Event
-            Node node = new Node ();
+            var node = new Node ();
             context.Raise ("foo30", node);
             Assert.AreEqual ("failure", node.Value, "active event wasn't correctly overridden");
 
@@ -829,7 +829,7 @@ namespace phosphorus.unittests
             var context = Loader.Instance.CreateApplicationContext ();
 
             // raising without overriding Active Event
-            Node node = new Node ();
+            var node = new Node ();
             context.Raise ("foo32", node);
             Assert.AreEqual ("failure", node.Value, "active event wasn't correctly overridden");
 
@@ -877,7 +877,7 @@ namespace phosphorus.unittests
             var context = Loader.Instance.CreateApplicationContext ();
 
             // raising without overriding Active Event
-            Node node = new Node ();
+            var node = new Node ();
             context.Raise ("foo35", node);
             Assert.AreEqual ("success", node.Value, "active event wasn't correctly overridden");
         }
@@ -907,7 +907,7 @@ namespace phosphorus.unittests
             var context = Loader.Instance.CreateApplicationContext ();
 
             // raising without overriding Active Event
-            Node node = new Node ();
+            var node = new Node ();
             context.Raise ("foo36", node);
             Assert.AreEqual ("success2", node.Value, "active event wasn't correctly overridden");
         }
@@ -937,7 +937,7 @@ namespace phosphorus.unittests
             var context = Loader.Instance.CreateApplicationContext ();
 
             // raising without overriding Active Event
-            Node node = new Node ();
+            var node = new Node ();
             context.Raise ("foo39", node);
             Assert.AreEqual ("failure", node.Value, "active event wasn't correctly overridden");
 
@@ -994,7 +994,7 @@ namespace phosphorus.unittests
             var context = Loader.Instance.CreateApplicationContext ();
 
             // raising Active Event
-            Node node = new Node ();
+            var node = new Node ();
             context.Raise ("foo42", node);
             Assert.AreEqual ("failuresuccess", node.Value, "active event wasn't correctly overridden");
         }
@@ -1021,7 +1021,7 @@ namespace phosphorus.unittests
             var context = Loader.Instance.CreateApplicationContext ();
 
             // raising Active Event
-            Node node = new Node ();
+            var node = new Node ();
             context.Raise ("foo44", node);
             Assert.AreEqual ("successfailure", node.Value, "active event wasn't correctly overridden");
         }
@@ -1056,7 +1056,7 @@ namespace phosphorus.unittests
             var context = Loader.Instance.CreateApplicationContext ();
 
             // raising first Active Event
-            Node node = new Node ();
+            var node = new Node ();
             context.Raise ("foo46", node);
             Assert.AreEqual ("failure1success", node.Value, "active event wasn't correctly overridden");
             
@@ -1110,7 +1110,7 @@ namespace phosphorus.unittests
             var context = Loader.Instance.CreateApplicationContext ();
 
             // raising first Active Event
-            Node node = new Node ();
+            var node = new Node ();
             context.Raise ("foo50", node);
             Assert.IsTrue (node.Get<string> (context) == "failure1failure2successfailure1failure3success" || 
                            node.Get<string> (context) == "failure1failure3successfailure1failure2success", "active event wasn't correctly overridden");
@@ -1127,8 +1127,8 @@ namespace phosphorus.unittests
         public void ApplicationContext32 ()
         {
             Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
-            ApplicationContext context = Loader.Instance.CreateApplicationContext ();
-            Node tmp = new Node ();
+            var context = Loader.Instance.CreateApplicationContext ();
+            var tmp = new Node ();
             context.Raise ("foo54", tmp);
             Assert.AreEqual ("successsuccess", tmp.Value, "Active Event in current assembly did not execute as expected");
         }

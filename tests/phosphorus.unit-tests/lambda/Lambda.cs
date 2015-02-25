@@ -26,7 +26,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Lambda01 ()
         {
-            Node result = ExecuteLambda (@"_data
+            var result = ExecuteLambda (@"_data
 set:@/-/?value
   source:success");
             Assert.AreEqual ("success", result [0].Value);
@@ -38,7 +38,7 @@ set:@/-/?value
         [Test]
         public void Lambda02 ()
         {
-            Node result = ExecuteLambda (@"_data:success
+            var result = ExecuteLambda (@"_data:success
 set:@/-/?value
   source:error", "lambda.immutable");
             Assert.AreEqual ("success", result [0].Value);
@@ -50,7 +50,7 @@ set:@/-/?value
         [Test]
         public void Lambda03 ()
         {
-            Node result = ExecuteLambda (@"_data:success
+            var result = ExecuteLambda (@"_data:success
 set:@/-/?value
   source:error", "lambda.copy");
             Assert.AreEqual ("success", result [0].Value);
@@ -62,7 +62,7 @@ set:@/-/?value
         [Test]
         public void Lambda04 ()
         {
-            Node result = ExecuteLambda (@"_data:success
+            var result = ExecuteLambda (@"_data:success
 lambda.copy
   set:@/../*/_data/?value
     source:error");
@@ -75,7 +75,7 @@ lambda.copy
         [Test]
         public void Lambda05 ()
         {
-            Node result = ExecuteLambda (@"_data:error
+            var result = ExecuteLambda (@"_data:error
 lambda.immutable
   set:@/../*/_data/?value
     source:success");
@@ -88,7 +88,7 @@ lambda.immutable
         [Test]
         public void Lambda06 ()
         {
-            Node result = ExecuteLambda (@"_exe
+            var result = ExecuteLambda (@"_exe
   set:@/./?value
     source:success
 lambda:@/-/?node");
@@ -101,7 +101,7 @@ lambda:@/-/?node");
         [Test]
         public void Lambda07 ()
         {
-            Node result = ExecuteLambda (@"_exe:node:@""_exe
+            var result = ExecuteLambda (@"_exe:node:@""_exe
   set:@/./?value
     source:success""
 lambda:@/-/?value");
@@ -114,7 +114,7 @@ lambda:@/-/?value");
         [Test]
         public void Lambda08 ()
         {
-            Node result = ExecuteLambda (@"_exe
+            var result = ExecuteLambda (@"_exe
   set:@/./?value
     source:@/././*/_result/?value
 lambda:@/-/?node
@@ -128,7 +128,7 @@ lambda:@/-/?node
         [Test]
         public void Lambda09 ()
         {
-            Node result = ExecuteLambda (@"_exe:@""set:@/../*/_result/#/?value
+            var result = ExecuteLambda (@"_exe:@""set:@/../*/_result/#/?value
   source:success""
 lambda:@/-/?value
   _result:node:_result"); // passing in reference node, to be able to retrieve values from lambda invocation
@@ -141,7 +141,7 @@ lambda:@/-/?value
         [Test]
         public void Lambda10 ()
         {
-            Node result = ExecuteLambda (@"_exe1
+            var result = ExecuteLambda (@"_exe1
   set:@/../?value
     source:succ
 _exe1
@@ -159,7 +159,7 @@ lambda:@/-2/|/-1/?node");
         [Test]
         public void Lambda11 ()
         {
-            Node result = ExecuteLambda (@"_exe1
+            var result = ExecuteLambda (@"_exe1
   set:@/../?value
     source:success
 lambda.single:@/-/0/?node");
@@ -173,7 +173,7 @@ lambda.single:@/-/0/?node");
         [Test]
         public void Lambda12 ()
         {
-            Node result = ExecuteLambda (@"_exe1
+            var result = ExecuteLambda (@"_exe1
   set:@/../?value
     source:succ
 _exe1
@@ -192,7 +192,7 @@ lambda.single:@/-2/*/|/-1/*/?node");
         [Test]
         public void Lambda13 ()
         {
-            Node result = ExecuteLambda (@"_exe1
+            var result = ExecuteLambda (@"_exe1
   set:@/../?value
     source:succ
 _exe1:error
@@ -213,7 +213,7 @@ lambda.single:@/../*/(/_exe1/!/=error/)/*/?node");
         [Test]
         public void Lambda14 ()
         {
-            Node result = ExecuteLambda (@"_exe1:success
+            var result = ExecuteLambda (@"_exe1:success
   set:@/./?value
     source:error
 lambda.single:@/-/?node");
@@ -227,7 +227,7 @@ lambda.single:@/-/?node");
         [Test]
         public void Lambda15 ()
         {
-            Node result = ExecuteLambda (@"_exe1
+            var result = ExecuteLambda (@"_exe1
   set:@/./?node
 lambda:@/-/?node
 set:@/../?value
@@ -242,7 +242,7 @@ set:@/../?value
         [Test]
         public void Lambda16 ()
         {
-            Node result = ExecuteLambda (@"_exe1
+            var result = ExecuteLambda (@"_exe1
   append:@/../?node
     source
       set:@/../?value
@@ -257,7 +257,7 @@ lambda:@/-/?node");
         [Test]
         public void Lambda17 ()
         {
-            Node result = ExecuteLambda (@"lambda:@""set:@/../*/_result/#/?value
+            var result = ExecuteLambda (@"lambda:@""set:@/../*/_result/#/?value
   source:success""
   _result:node:_result"); // passing in reference node, to be able to retrieve values from lambda invocation
             Assert.AreEqual ("success", result [0] [0].Get<Node> (_context).Value);

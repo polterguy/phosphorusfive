@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using phosphorus.core;
+using phosphorus.expressions.exceptions;
 
 namespace phosphorus.expressions.iterators
 {
@@ -27,10 +28,10 @@ namespace phosphorus.expressions.iterators
         protected RegexOptions GetOptions (string optionsString, string expression, Node node, ApplicationContext context)
         {
             // default options is invariant culture
-            RegexOptions options = RegexOptions.CultureInvariant;
+            var options = RegexOptions.CultureInvariant;
 
             // looping through all options given
-            foreach (char idx in optionsString) {
+            foreach (var idx in optionsString) {
                 switch (idx) {
                 case 'i':
                     options |= RegexOptions.IgnoreCase;
@@ -58,7 +59,7 @@ namespace phosphorus.expressions.iterators
                 default:
                     throw new ExpressionException (
                         expression, 
-                        string.Format ("'{0}' is not a recognized option for regular expression iterator"),
+                        string.Format ("'{0}' is not a recognized option for regular expression iterator", idx),
                         node,
                         context);
                 }

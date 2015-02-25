@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using phosphorus.core;
 using phosphorus.expressions;
+using phosphorus.expressions.exceptions;
 
 namespace phosphorus.lambda
 {
@@ -25,13 +26,13 @@ namespace phosphorus.lambda
         private static void lambda_remove_override (ApplicationContext context, ActiveEventArgs e)
         {
             // finding all super events given
-            List<Node> supers = new List<Node> (e.Args.FindAll (
+            var supers = new List<Node> (e.Args.FindAll (
                 delegate (Node idxNode) {
                     return idxNode.Name == "super";
             }));
             if (supers.Count != 1)
                 throw new LambdaException ("[remove-override] requires exactly one [super] parameter", e.Args, context);
-            List<string> superEvents = new List<string> (XUtil.Iterate<string> (supers [0], context));
+            var superEvents = new List<string> (XUtil.Iterate<string> (supers [0], context));
 
             // iterating through all base overrides to delete
             foreach (var idxBase in XUtil.Iterate<string> (e.Args, context)) {

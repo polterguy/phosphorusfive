@@ -26,7 +26,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Set01 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data")
                 .Add ("set", "@/-/?value").LastChild
                     .Add ("source", "success").Root;
@@ -42,7 +42,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Set02 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data")
                 .Add("success")
                 .Add ("set", "@/-2/?value").LastChild
@@ -59,7 +59,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Set03 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data")
                 .Add ("set", "@/-/?{0}").LastChild
                     .Add(string.Empty, "value")
@@ -76,7 +76,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Set04 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data")
                 .Add ("set", "@/-/?value").LastChild
                     .Add ("source", "{0}{1}{2}").LastChild
@@ -95,7 +95,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Set05 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data")
                 .Add("success")
                 .Add ("set", "@/-2/?value").LastChild
@@ -113,7 +113,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Set06 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data")
                 .Add ("set", "@/-/?name").LastChild
                     .Add ("source", "success").Root;
@@ -129,7 +129,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Set07 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data")
                 .Add("_data2", "success")
                 .Add ("set", "@/-2/?node").LastChild
@@ -151,7 +151,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Set08 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data")
                 .Add ("set", "@/-/?node").LastChild
                     .Add ("source").LastChild
@@ -173,7 +173,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Set09 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data")
                 .Add ("set", "@/-/?node").LastChild
                     .Add ("source", new Node ("_data2", "success")).Root;
@@ -194,7 +194,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Set10 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data")
                 .Add ("set", "@/-/?value").LastChild
                     .Add ("source", 5).Root;
@@ -210,7 +210,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Set11 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data")
                 .Add ("set", "@/-/?name").LastChild
                     .Add ("source", 5).Root;
@@ -226,7 +226,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Set12 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data", "error")
                 .Add ("set", "@/-/?value").Root;
             _context.Raise ("set", node [1]);
@@ -241,7 +241,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Set13 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("error")
                 .Add ("set", "@/-/?name").Root;
             _context.Raise ("set", node [1]);
@@ -256,7 +256,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Set14 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("error")
                 .Add ("set", "@/-/?node").Root;
             _context.Raise ("set", node [1]);
@@ -271,7 +271,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Set18 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data")
                 .Add ("set", "@/-/?value").LastChild
                     .Add ("source", "@/../**/?count").Root;
@@ -287,7 +287,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Set19 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data")
                 .Add ("set", "@/-/?name").LastChild
                     .Add ("source", "@/../**/?count").Root;
@@ -304,7 +304,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Set20 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data").LastChild
                     .Add ("succ")
                     .Add ("ess").Parent
@@ -324,7 +324,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Set21 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data").LastChild
                     .Add (string.Empty, "succ")
                     .Add (string.Empty, 5)
@@ -345,7 +345,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Set22 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data").LastChild
                     .Add (string.Empty, "succ")
                     .Add (string.Empty, 5)
@@ -365,7 +365,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Set23 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data").LastChild
                     .Add ("succ")
                     .Add ("ess").Parent
@@ -386,7 +386,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Set24 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data").LastChild
                     .Add ("succ")
                     .Add ("ess").Parent
@@ -405,7 +405,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Set25 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data")
                 .Add ("set", "@/-/?value").LastChild
                     .Add ("source", "@/mumbo/?value").Root;
@@ -422,7 +422,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Set26 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data").LastChild
                     .Add("_1", "success1")
                     .Add("_2", "success2").Parent
@@ -442,7 +442,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Set27 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data").LastChild
                     .Add("success1")
                     .Add("success2").Parent
@@ -462,7 +462,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Set28 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data").LastChild
                     .Add(string.Empty).LastChild
                         .Add("_1", "success1").Parent
@@ -488,7 +488,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Set29 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data").LastChild
                     .Add("_1").LastChild
                         .Add("_1", "success1").Parent
@@ -513,7 +513,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Set31 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data").LastChild
                     .Add("_1").LastChild
                         .Add("_1", "success1").Parent
@@ -542,7 +542,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Set32 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data").LastChild
                     .Add("success1").LastChild
                         .Add("success11").Parent
@@ -569,7 +569,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Set33 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data").LastChild
                     .Add("success1").LastChild
                         .Add("_val1:success1").Parent
@@ -597,7 +597,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Set34 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data").LastChild
                     .Add("success1").LastChild
                         .Add("foo1", 5).Parent // making sure types works
@@ -625,7 +625,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Set35 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data").LastChild
                     .Add ("_1")
                     .Add ("_2").Parent
@@ -645,7 +645,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Set36 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data").LastChild
                     .Add ("_1")
                     .Add ("_2").Parent
@@ -662,7 +662,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Set37 ()
         {
-            Node node = ExecuteLambda (@"_result
+            var node = ExecuteLambda (@"_result
 set:@/-/?node
   source:@""success-name:success-value""");
             Assert.AreEqual (0, node [0].Count);
@@ -676,7 +676,7 @@ set:@/-/?node
         [Test]
         public void Set38 ()
         {
-            Node node = ExecuteLambda (@"_result:success
+            var node = ExecuteLambda (@"_result:success
 set:@/-/?value
   source:@/./-/?node");
             Assert.AreEqual (0, node [0].Count);
@@ -690,7 +690,7 @@ set:@/-/?value
         [Test]
         public void Set39 ()
         {
-            Node node = ExecuteLambda (@"_result:success
+            var node = ExecuteLambda (@"_result:success
 set:@/-/?value
   rel-source:@?node");
             Assert.AreEqual (0, node [0].Count);
@@ -704,7 +704,7 @@ set:@/-/?value
         [Test]
         public void Set40 ()
         {
-            Node node = ExecuteLambda (@"_result
+            var node = ExecuteLambda (@"_result
 set:@/-/?value
   source:\@?node");
             Assert.AreEqual (0, node [0].Count);
@@ -717,7 +717,7 @@ set:@/-/?value
         [Test]
         public void Set41 ()
         {
-            Node node = ExecuteLambda (@"_result
+            var node = ExecuteLambda (@"_result
 set:@/-/?value
   src:success");
             Assert.AreEqual (0, node [0].Count);
@@ -730,7 +730,7 @@ set:@/-/?value
         [Test]
         public void Set42 ()
         {
-            Node node = ExecuteLambda (@"_result
+            var node = ExecuteLambda (@"_result
 set:@/-/?value
   src
     foo1:bar1
@@ -746,7 +746,7 @@ set:@/-/?value
         [Test]
         public void Set43 ()
         {
-            Node node = ExecuteLambda (@"_result
+            var node = ExecuteLambda (@"_result
 set:@/-/?name
   src
     foo1:bar1
@@ -762,7 +762,7 @@ set:@/-/?name
         [Test]
         public void Set44 ()
         {
-            Node node = ExecuteLambda (@"_result
+            var node = ExecuteLambda (@"_result
 _data
   foo1:bar1
   foo2:bar2
@@ -780,7 +780,7 @@ set:@/-2/?value
         public void Set45 ()
         {
             // easy way to create a node
-            Node node = ExecuteLambda (@"_source
+            var node = ExecuteLambda (@"_source
 _destination
 _set:@/-/?value
   src:@/./-2?value");

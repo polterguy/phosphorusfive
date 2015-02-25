@@ -57,14 +57,14 @@ namespace phosphorus.data
         private static void UpdateRelativeSource (Node node, ApplicationContext context)
         {
             // iterating through all destinations, figuring out source relative to each destinations
-            List<Node> changed = new List<Node> ();
+            var changed = new List<Node> ();
             foreach (var idxDestination in XUtil.Iterate (node, Common.Database, context)) {
                 
                 // figuring out which file Node updated belongs to, and storing in changed list
                 Common.AddNodeToChanges (idxDestination.Node, changed);
 
                 // retrieving source relative to destination
-                object source = XUtil.Single<object> (node.LastChild, idxDestination.Node, context, null);
+                var source = XUtil.Single<object> (node.LastChild, idxDestination.Node, context, null);
 
                 // source is relative to destination
                 idxDestination.Value = source;
@@ -80,10 +80,10 @@ namespace phosphorus.data
         private static void UpdateStaticSource (Node node, ApplicationContext context)
         {
             // figuring out source
-            object source = GetStaticSource (node, context);
+            var source = GetStaticSource (node, context);
 
             // iterating through all destinations, updating with source
-            List<Node> changed = new List<Node> ();
+            var changed = new List<Node> ();
             foreach (var idxDestination in XUtil.Iterate (node, Common.Database, node, context)) {
                 
                 // figuring out which file Node updated belongs to, and storing in changed list

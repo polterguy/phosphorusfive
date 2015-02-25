@@ -7,18 +7,18 @@
 using System;
 using phosphorus.core;
 
-namespace phosphorus.expressions
+namespace phosphorus.expressions.exceptions
 {
     /// <summary>
     /// exception thrown when node hierarchy contains a logical error
     /// </summary>
     public class LambdaException : ApplicationException
     {
-        private Node _node;
-        private ApplicationContext _context;
+        private readonly Node _node;
+        private readonly ApplicationContext _context;
 
         /// <summary>
-        /// initializes a new instance of the <see cref="phosphorus.expressions.LambdaException"/> class
+        /// initializes a new instance of the <see cref="LambdaException"/> class
         /// </summary>
         /// <param name="message">message for exception, describing what went wrong</param>
         /// <param name="node">contextual information, where execution error was found</param>
@@ -50,7 +50,7 @@ namespace phosphorus.expressions
          */
         public override string StackTrace {
             get {
-                Node convert = new Node ();
+                var convert = new Node ();
                 convert.AddRange (_node.Clone ().Children);
                 _context.Raise ("pf.hyperlisp.lambda2hyperlisp", convert);
                 return string.Format ("pf.lambda stack trace;\r\n{0}\r\n\r\nC# stack trace;\r\n{1}", 

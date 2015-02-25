@@ -5,10 +5,7 @@
  */
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using phosphorus.core;
-using phosphorus.expressions.iterators;
 
 namespace phosphorus.expressions
 {
@@ -17,7 +14,7 @@ namespace phosphorus.expressions
     /// </summary>
     public class MatchEntity
     {
-        private Match _match;
+        private readonly Match _match;
         private Match.MatchType? _type;
 
         internal MatchEntity (Node node, Match match)
@@ -39,7 +36,7 @@ namespace phosphorus.expressions
         /// <value>node for match result</value>
         public Node Node {
             get;
-            internal set;
+            private set;
         }
 
         /// <summary>
@@ -47,14 +44,8 @@ namespace phosphorus.expressions
         /// </summary>
         /// <value>type of match</value>
         public Match.MatchType TypeOfMatch {
-            get {
-                if (!_type.HasValue)
-                    return _match.TypeOfMatch;
-                return _type.Value;
-            }
-            set {
-                _type = value;
-            }
+            get { return _type ?? _match.TypeOfMatch; }
+            private set { _type = value; }
         }
         
         /// <summary>
@@ -62,9 +53,7 @@ namespace phosphorus.expressions
         /// </summary>
         /// <value>type of match</value>
         public Match Match {
-            get {
-                return _match;
-            }
+            get { return _match; }
         }
 
         /// <summary>
@@ -91,18 +80,16 @@ namespace phosphorus.expressions
                     throw new ApplicationException ("cannot get entity value from match of type 'count'");
                 }
                 if (retVal != null && !string.IsNullOrEmpty (_match.Convert)) {
-                    if (_match.Convert == "string") {
-                        retVal = Utilities.Convert<string> (retVal, _match.Context);
-                    } else {
-                        retVal = _match.Context.Raise ("pf.hyperlist.get-object-value." + _match.Convert, new Node (string.Empty, retVal)).Value;
-                    }
+                    retVal = _match.Convert == "string" ? 
+                        Utilities.Convert<string> (retVal, _match.Context) : 
+                        _match.Context.Raise ("pf.hyperlisp.get-object-value." + _match.Convert, new Node (string.Empty, retVal)).Value;
                 }
                 return retVal;
             }
             set {
                 switch (TypeOfMatch) {
                 case Match.MatchType.name:
-                    Node.Name = Utilities.Convert<string> (value, _match.Context, string.Empty);
+                    Node.Name = Utilities.Convert (value, _match.Context, string.Empty);
                     break;
                 case Match.MatchType.value:
                     Node.Value = value; // ps, not cloned!
@@ -111,7 +98,7 @@ namespace phosphorus.expressions
                     if (value == null) {
                         Node.UnTie ();
                     } else {
-                        Node tmp = Utilities.Convert<Node> (value, _match.Context);
+                        var tmp = Utilities.Convert<Node> (value, _match.Context);
                         if (value is string) {
                             // Node was created from a conversion from string, making sure that we discard
                             // the automatically created "root node" in object

@@ -30,7 +30,7 @@ namespace phosphorus.file
         private static void pf_folder_create (ApplicationContext context, ActiveEventArgs e)
         {
             // retrieving root folder
-            string rootFolder = common.GetRootFolder (context);
+            var rootFolder = common.GetRootFolder (context);
 
             // iterating through each folder caller wants to create
             foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {

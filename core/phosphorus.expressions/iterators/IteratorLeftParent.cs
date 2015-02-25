@@ -12,15 +12,15 @@ namespace phosphorus.expressions.iterators
 {
     /// <summary>
     /// "stop iterator", which is used as "root iterators" for nested
-    /// <see cref="phosphorus.execute.iterators.IteratorGroup"/> iterators
+    /// <see cref="phosphorus.expressions.iterators.IteratorGroup"/> iterators
     /// iterators
     /// </summary>
     public class IteratorLeftParent : Iterator
     {
-        private Iterator _leftParent;
+        private readonly Iterator _leftParent;
 
         /// <summary>
-        /// initializes a new instance of the <see cref="phosphorus.execute.iterators.IteratorLeftParent"/> class.
+        /// initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorLeftParent"/> class.
         /// </summary>
         /// <param name="leftParent">the last iterator of the parent group iterator</param>
         public IteratorLeftParent (Iterator leftParent)

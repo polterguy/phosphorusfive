@@ -41,15 +41,15 @@ namespace phosphorus.ajax.widgets
         // by storing "factory objects" like this in a dictionary with the type being the key, we avoid 
         // having to use anymore reflection than absolutely necessary
         // please notice that this dictionary is static, and hence will be reused across multiple requests and sessions
-        private static Dictionary<Type, ICreator> _creators = new Dictionary<Type, ICreator>();
+        private static readonly Dictionary<Type, ICreator> _creators = new Dictionary<Type, ICreator>();
 
-        private static List<Tuple<string, Type>> _typeMapper = new List<Tuple<string, Type>> ();
+        private static readonly List<Tuple<string, Type>> _typeMapper = new List<Tuple<string, Type>> ();
 
         // contains the original controls collection, before we started adding and removing controls for current request
         private List<Control> _originalCollection;
 
         // used to lock GetCreator to make sure we don't get a race condition when instantiating new creators
-        private static object _lock = new object ();
+        private static readonly object _lock = new object ();
 
         /// <summary>
         /// initializes a new instance of the <see cref="phosphorus.ajax.widgets.Container"/> class
@@ -94,7 +94,7 @@ namespace phosphorus.ajax.widgets
         public IEnumerable<T> GetChildControls<T> () where T : Control
         {
             foreach (Control idx in Controls) {
-                T tmp = idx as T;
+                var tmp = idx as T;
                 if (idx != null)
                     yield return tmp;
             }
@@ -125,7 +125,7 @@ namespace phosphorus.ajax.widgets
             ReRenderChildren ();
 
             // creating new control, and adding to the controls collection
-            T control = GetCreator<T>().Create () as T;
+            var control = GetCreator<T>().Create () as T;
             if (string.IsNullOrEmpty (id)) {
 
                 // creating an automatic unique id for widget
@@ -188,13 +188,13 @@ namespace phosphorus.ajax.widgets
         protected override void LoadViewState (object savedState)
         {
             // reloading persisted controls, if there are any
-            object[] tmp = savedState as object[];
+            var tmp = savedState as object[];
             if (tmp != null && tmp.Length > 0 && tmp [0] is string[][]) {
 
                 // we're managing our own controls collection, and need to reload from viewstate all the 
                 // control types and ids. first figuring out which controls actually exists in this control at the moment
                 var ctrlsViewstate = new List<Tuple<string, string>> ();
-                foreach (string[] idx in tmp [0] as string[][]) {
+                foreach (var idx in tmp [0] as string[][]) {
                     ctrlsViewstate.Add (new Tuple<string, string> (idx [0], idx [1]));
                 }
 
@@ -207,14 +207,14 @@ namespace phosphorus.ajax.widgets
                     }))
                         toRemove.Add (idxControl);
                 }
-                foreach (Control idxCtrl in toRemove) {
+                foreach (var idxCtrl in toRemove) {
                     Controls.Remove (idxCtrl);
                 }
 
                 // then adding all controls that are persisted but does not exist in the controls collection
-                int controlPosition = 0;
+                var controlPosition = 0;
                 foreach (var idxTuple in ctrlsViewstate) {
-                    bool exist = false;
+                    var exist = false;
                     foreach (Control idxCtrl in Controls) {
                         if (idxTuple.Item2 == idxCtrl.ID) {
                             exist = true;
@@ -222,7 +222,7 @@ namespace phosphorus.ajax.widgets
                         }
                     }
                     if (!exist) {
-                        Control control = _creators [GetTypeFromID (idxTuple.Item1)].Create ();
+                        var control = _creators [GetTypeFromID (idxTuple.Item1)].Create ();
                         control.ID = idxTuple.Item2;
                         Controls.AddAt (controlPosition, control);
                     }
@@ -249,7 +249,7 @@ namespace phosphorus.ajax.widgets
                     if (!string.IsNullOrEmpty (idx.ID)) // skipping auto-generated literal controls
                         lst.Add (new string[] { GetTypeID ( idx.GetType ()), idx.ID });
                 }
-                object[] tmp = new object [2];
+                var tmp = new object [2];
                 tmp [0] = lst.ToArray ();
                 tmp [1] = base.SaveViewState ();
                 return tmp;
@@ -265,12 +265,12 @@ namespace phosphorus.ajax.widgets
             // making sure all the automatically generated LiteralControls are removed, since they mess up their IDs,
             // but not in a normal postback, or initial loading of the page, since we need the formatting they provide
             if ((Page as core.IAjaxPage).Manager.IsPhosphorusRequest) {
-                List<Control> ctrls = new List<Control> ();
+                var ctrls = new List<Control> ();
                 foreach (Control idx in Controls) {
                     if (string.IsNullOrEmpty (idx.ID))
                         ctrls.Add (idx);
                 }
-                foreach (Control idx in ctrls) {
+                foreach (var idx in ctrls) {
                     Controls.Remove (idx);
                 }
             }
@@ -294,7 +294,7 @@ namespace phosphorus.ajax.widgets
         private string CreateID ()
         {
             // TODO: statistically this is supposed to become a unique 7 digits hexadecimal number, but we should improve this logic later!
-            string retVal = Guid.NewGuid ().ToString ().Replace ("-", "");
+            var retVal = Guid.NewGuid ().ToString ().Replace ("-", "");
             retVal = "x" + retVal [0] + retVal [5] + retVal [10] + retVal [15] + retVal [20] + retVal [25] + retVal [30];
             return retVal;
         }
@@ -309,8 +309,8 @@ namespace phosphorus.ajax.widgets
 
                 // getting control's html
                 string html;
-                using (MemoryStream stream = new MemoryStream ()) {
-                    using (HtmlTextWriter txt = new HtmlTextWriter (new StreamWriter (stream))) {
+                using (var stream = new MemoryStream ()) {
+                    using (var txt = new HtmlTextWriter (new StreamWriter (stream))) {
                         idx.RenderControl (txt);
                         txt.Flush ();
                     }
@@ -319,7 +319,7 @@ namespace phosphorus.ajax.widgets
                         html = reader.ReadToEnd ();
                     }
                 }
-                int position = Controls.IndexOf (idx);
+                var position = Controls.IndexOf (idx);
                 widgets.Add (new Tuple<string, int> (html, position));
             }
 
@@ -341,8 +341,8 @@ namespace phosphorus.ajax.widgets
         // renders all controls that was removed, and returns list back to caller
         private void RenderRemovedControls ()
         {
-            foreach (Control idxOriginal in _originalCollection) {
-                bool exist = false;
+            foreach (var idxOriginal in _originalCollection) {
+                var exist = false;
                 foreach (Control idxActual in Controls) {
                     if (idxActual.ID == idxOriginal.ID) {
                         exist = true;
@@ -356,7 +356,7 @@ namespace phosphorus.ajax.widgets
         
         private void RenderOldControls (HtmlTextWriter writer)
         {
-            RenderingMode old = _renderMode;
+            var old = _renderMode;
             _renderMode = RenderingMode.Default;
             foreach (Control idx in Controls) {
                 if (_originalCollection.Contains (idx)) {
@@ -421,7 +421,7 @@ namespace phosphorus.ajax.widgets
         private static IEnumerable<T> GetDescendantControlsImplementation<T> (Control from) where T : Control
         {
             foreach (Control idx in from.Controls) {
-                T tmp = idx as T;
+                var tmp = idx as T;
                 if (tmp != null) {
                     yield return tmp;
                 }

@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using phosphorus.core;
 using phosphorus.expressions;
+using phosphorus.expressions.exceptions;
 
 namespace phosphorus.lambda
 {
@@ -102,7 +103,7 @@ namespace phosphorus.lambda
          */
         private static void CreateEvaluatedSignal (Node node)
         {
-            Node next = node.NextSibling;
+            var next = node.NextSibling;
             if (next != null && (next.Name == "else-if" || next.Name == "else")) {
                 node.Parent.Insert (0, new Node ("__pf_evaluated")); // "signal node" inserted
             }
@@ -113,7 +114,7 @@ namespace phosphorus.lambda
          */
         private static void VerifyElseSyntax (Node node, ApplicationContext context, string statement)
         {
-            Node previous = node.PreviousSibling;
+            var previous = node.PreviousSibling;
             if (previous == null || (previous.Name != "if" && previous.Name != "else-if"))
                 throw new LambdaException ("you cannot have an [" + statement + "] without a matching [if] or [else-if] as its previous sibling", node, context);
         }
@@ -123,7 +124,7 @@ namespace phosphorus.lambda
          */
         private static void TryRemoveSignal (Node node)
         {
-            Node next = node.NextSibling;
+            var next = node.NextSibling;
             if (next == null || (next.Name != "else-if" && next.Name != "else")) {
                 node.Parent.RemoveAt (0);
             }
@@ -141,7 +142,7 @@ namespace phosphorus.lambda
             } else {
 
                 // code tree contains [lambda.xxx] objects beneath [while]
-                foreach (Node idxExe in condition.ExecutionLambdas) {
+                foreach (var idxExe in condition.ExecutionLambdas) {
                     context.Raise (idxExe.Name, idxExe);
                 }
             }

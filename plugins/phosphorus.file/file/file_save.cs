@@ -44,10 +44,10 @@ namespace phosphorus.file
         private static void SaveFileStaticSource (Node sourceNode, ApplicationContext context)
         {
             // getting root folder
-            string rootFolder = common.GetRootFolder (context);
+            var rootFolder = common.GetRootFolder (context);
 
             // retrieving source, or "content" for file(s)
-            string source = Utilities.Convert<string> (XUtil.SourceSingle (sourceNode, context), context);
+            var source = Utilities.Convert<string> (XUtil.SourceSingle (sourceNode, context), context);
 
             // iterating through each file path given
             foreach (var idx in XUtil.Iterate<string> (sourceNode, context)) {
@@ -65,14 +65,14 @@ namespace phosphorus.file
         private static void SaveFileRelativeSource (Node sourceNode, ApplicationContext context)
         {
             // getting root folder
-            string rootFolder = common.GetRootFolder (context);
+            var rootFolder = common.GetRootFolder (context);
 
             // iterating over each destination
             foreach (var idx in XUtil.Iterate (sourceNode, context)) {
                 using (TextWriter writer = File.CreateText (rootFolder + idx.Value)) {
 
                     // finding source relative to destination
-                    string source = Utilities.Convert<string> (XUtil.SourceSingle (sourceNode, idx.Node, context), context);
+                    var source = Utilities.Convert<string> (XUtil.SourceSingle (sourceNode, idx.Node, context), context);
                     writer.Write (source);
                 }
             }

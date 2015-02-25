@@ -14,16 +14,16 @@ namespace phosphorus.ajax.core.internals
     internal class AttributeStorage
     {
         // this is never touched after viewstate is loaded
-        private List<Attribute> _preViewState = new List<Attribute>();
+        private readonly List<Attribute> _preViewState = new List<Attribute>();
 
         // all of these will have values added and removed automatically during the request
         // depending upon when and how attributes are added and removed
-        private List<Attribute> _originalValue = new List<Attribute>();
-        private List<Attribute> _dynamicallyRemovedThisRequest = new List<Attribute>();
-        private List<Attribute> _dynamicallyAddedThisRequest = new List<Attribute>();
-        private List<Attribute> _formDataThisRequest = new List<Attribute>();
-        private List<Attribute> _viewStatePersistedRemoved = new List<Attribute>();
-        private List<Attribute> _viewStatePersisted = new List<Attribute>();
+        private readonly List<Attribute> _originalValue = new List<Attribute>();
+        private readonly List<Attribute> _dynamicallyRemovedThisRequest = new List<Attribute>();
+        private readonly List<Attribute> _dynamicallyAddedThisRequest = new List<Attribute>();
+        private readonly List<Attribute> _formDataThisRequest = new List<Attribute>();
+        private readonly List<Attribute> _viewStatePersistedRemoved = new List<Attribute>();
+        private readonly List<Attribute> _viewStatePersisted = new List<Attribute>();
 
         public AttributeStorage ()
         { }
@@ -118,8 +118,8 @@ namespace phosphorus.ajax.core.internals
             if (viewstateObject == null)
                 return;
 
-            string[][] vals = viewstateObject as string[][];
-            foreach (string[] idx in vals) {
+            var vals = viewstateObject as string[][];
+            foreach (var idx in vals) {
                 _viewStatePersisted.Add (new Attribute (idx [0], idx [1]));
             }
         }
@@ -129,15 +129,15 @@ namespace phosphorus.ajax.core.internals
             if (viewstateObject == null)
                 return;
 
-            string[] vals = viewstateObject as string[];
-            foreach (string idx in vals) {
+            var vals = viewstateObject as string[];
+            foreach (var idx in vals) {
                 _viewStatePersistedRemoved.Add (new Attribute (idx));
             }
         }
         
         internal object SaveToViewState()
         {
-            List<Attribute> atrs = new List<Attribute> ();
+            var atrs = new List<Attribute> ();
 
             // first add all that are dynamically added
             atrs.AddRange (_dynamicallyAddedThisRequest);
@@ -159,8 +159,8 @@ namespace phosphorus.ajax.core.internals
                 return null;
 
             // returning attributes
-            string[][] retVal = new string [atrs.Count][];
-            for (int idx = 0; idx < atrs.Count; idx++) {
+            var retVal = new string [atrs.Count][];
+            for (var idx = 0; idx < atrs.Count; idx++) {
                 retVal [idx] = new string [2];
                 retVal [idx] [0] = atrs [idx].Name;
                 retVal [idx] [1] = atrs [idx].Value;
@@ -170,15 +170,15 @@ namespace phosphorus.ajax.core.internals
 
         internal object SaveRemovedToViewState()
         {
-            List<Attribute> atrs = new List<Attribute> ();
+            var atrs = new List<Attribute> ();
             atrs.AddRange (_dynamicallyRemovedThisRequest);
             atrs.AddRange (_viewStatePersistedRemoved);
 
             if (atrs.Count == 0)
                 return null;
 
-            string[] retVal = new string [atrs.Count];
-            for (int idx = 0; idx < atrs.Count; idx++) {
+            var retVal = new string [atrs.Count];
+            for (var idx = 0; idx < atrs.Count; idx++) {
                 retVal [idx] = atrs [0].Name;
             }
             return retVal;
@@ -188,13 +188,13 @@ namespace phosphorus.ajax.core.internals
         internal void Render (HtmlTextWriter writer, phosphorus.ajax.widgets.Widget widget)
         {
             // adding all changes
-            List<Attribute> lst = new List<Attribute> ();
+            var lst = new List<Attribute> ();
             lst.AddRange (_dynamicallyAddedThisRequest);
             lst.AddRange (_formDataThisRequest);
             lst.AddRange (_viewStatePersisted);
 
             // adding all that existed before viewstate was being tracked, but ONLY if they do not exist in other lists
-            foreach (Attribute idx in _preViewState) {
+            foreach (var idx in _preViewState) {
                 if (FindAttribute (lst, idx.Name) == null)
                     lst.Add (idx);
             }
@@ -207,8 +207,8 @@ namespace phosphorus.ajax.core.internals
                 });
 
             // rendering to html writer
-            foreach (Attribute idx in lst) {
-                string name = idx.Name;
+            foreach (var idx in lst) {
+                var name = idx.Name;
                 string value;
                 if (idx.Name.StartsWith ("on") && Utilities.IsLegalMethodName (idx.Value)) {
                     if (widget.NoIDAttribute)
@@ -231,12 +231,12 @@ namespace phosphorus.ajax.core.internals
         internal void RegisterChanges (Manager manager, string id)
         {
             // adding up the ones that were deleted during this request
-            foreach (Attribute idx in _dynamicallyRemovedThisRequest) {
+            foreach (var idx in _dynamicallyRemovedThisRequest) {
                 manager.RegisterDeletedAttribute (id, idx.Name);
             }
 
             // adding up our changes
-            foreach (Attribute idx in _dynamicallyAddedThisRequest) {
+            foreach (var idx in _dynamicallyAddedThisRequest) {
 
                 // finding old value, if any
                 var oldAtr = FindAttribute (_originalValue, idx.Name);

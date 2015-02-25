@@ -37,7 +37,7 @@ namespace phosphorus.data
                 Common.Initialize (context);
 
                 // used to signal if we performed any iterations 
-                bool foundHit = false;
+                var foundHit = false;
 
                 // iterating through each result from database node tree
                 foreach (var idxMatch in XUtil.Iterate (e.Args, Common.Database, e.Args, context)) {

@@ -66,7 +66,7 @@ namespace phosphorus.core
         /// <param name="value">string to check</param>
         public static bool IsNumber (string value)
         {
-            foreach (char idx in value) {
+            foreach (var idx in value) {
                 if ("0123456789".IndexOf (idx) == -1)
                     return false;
             }
@@ -177,11 +177,11 @@ namespace phosphorus.core
          */
         private static string HexaCharacter (StringReader reader)
         {
-            string hexNumberString = string.Empty;
-            for (int idxNo = 0; idxNo < 4; idxNo++) {
+            var hexNumberString = string.Empty;
+            for (var idxNo = 0; idxNo < 4; idxNo++) {
                 hexNumberString += (char)reader.Read ();
             }
-            int hexNumber = System.Convert.ToInt32 (hexNumberString, 16);
+            var hexNumber = System.Convert.ToInt32 (hexNumberString, 16);
             return new string ((char)hexNumber, 1);
         }
         
@@ -191,8 +191,8 @@ namespace phosphorus.core
         private static string Convert2String (object value, ApplicationContext context)
         {
             if (value is IEnumerable<Node>) {
-                StringBuilder builder = new StringBuilder ();
-                bool first = true;
+                var builder = new StringBuilder ();
+                var first = true;
                 foreach (var idx in value as IEnumerable<Node>) {
                     if (first) {
                         first = false;
@@ -200,13 +200,13 @@ namespace phosphorus.core
                         builder.Append ("\r\n");
                     }
                     builder.Append (context.Raise (
-                        "pf.hyperlist.get-string-value." + 
+                        "pf.hyperlisp.get-string-value." + 
                         idx.GetType ().FullName, new Node (string.Empty, idx)).Value);
                 }
                 return builder.ToString ();
             } else {
                 return context.Raise (
-                    "pf.hyperlist.get-string-value." + 
+                    "pf.hyperlisp.get-string-value." + 
                     value.GetType ().FullName, new Node (string.Empty, value)).Value as string;
             }
         }
@@ -217,11 +217,11 @@ namespace phosphorus.core
         private static T Convert2Object<T> (string value, ApplicationContext context, T defaultValue = default (T))
         {
             var typeName = context.Raise (
-                "pf.hyperlist.get-type-name." + typeof(T).FullName).Get<string> (context);
+                "pf.hyperlisp.get-type-name." + typeof(T).FullName).Get<string> (context);
             if (typeName == null)
                 return defaultValue;
             return context.Raise (
-                "pf.hyperlist.get-object-value." + 
+                "pf.hyperlisp.get-object-value." + 
                 typeName, new Node (string.Empty, value)).Get<T> (context);
         }
     }

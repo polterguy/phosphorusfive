@@ -29,8 +29,8 @@ namespace phosphorus.unittests
         [Test]
         public void IsExpression ()
         {
-            bool notExp = XUtil.IsExpression ("mumbo jumbo");
-            bool isExp = XUtil.IsExpression ("@/x?value");
+            var notExp = XUtil.IsExpression ("mumbo jumbo");
+            var isExp = XUtil.IsExpression ("@/x?value");
             Assert.AreEqual (false, notExp);
             Assert.AreEqual (true, isExp);
         }
@@ -41,7 +41,7 @@ namespace phosphorus.unittests
         [Test]
         public void ValueExpression ()
         {
-            Node node = new Node ("root", "success");
+            var node = new Node ("root", "success");
             var match = Expression.Create ("@?value").Evaluate (node, _context);
             Assert.AreEqual (1, match.Count);
             Assert.AreEqual ("success", match [0].Value);
@@ -53,7 +53,7 @@ namespace phosphorus.unittests
         [Test]
         public void NameExpression ()
         {
-            Node node = new Node ("success");
+            var node = new Node ("success");
             var match = Expression.Create ("@?name").Evaluate (node, _context);
             Assert.AreEqual (match.Count, 1);
             Assert.AreEqual ("success", match [0].Value);
@@ -65,7 +65,7 @@ namespace phosphorus.unittests
         [Test]
         public void CountExpression ()
         {
-            Node node = new Node ("root");
+            var node = new Node ("root");
             var match = Expression.Create ("@?count").Evaluate (node, _context);
             Assert.AreEqual (1, match.Count);
             Assert.AreEqual (Match.MatchType.count, match.TypeOfMatch);
@@ -77,7 +77,7 @@ namespace phosphorus.unittests
         [Test]
         public void PathExpression ()
         {
-            Node node = new Node ("root");
+            var node = new Node ("root");
             var match = Expression.Create ("@?path").Evaluate (node, _context);
             Assert.AreEqual (1, match.Count);
             Assert.AreEqual (new Node.DNA (""), match [0].Value);
@@ -89,7 +89,7 @@ namespace phosphorus.unittests
         [Test]
         public void NodeExpression ()
         {
-            Node node = new Node ("root");
+            var node = new Node ("root");
             var match = Expression.Create ("@?node").Evaluate (node, _context);
             Assert.AreEqual (1, match.Count);
             Assert.AreEqual (node, match [0].Value);
@@ -102,7 +102,7 @@ namespace phosphorus.unittests
         [Test]
         public void IsFormatted ()
         {
-            Node node = new Node ("root", "{0}{1}")
+            var node = new Node ("root", "{0}{1}")
                 .Add ("", "su")
                 .Add ("x", "error")
                 .Add ("", "ccess");
@@ -121,11 +121,11 @@ namespace phosphorus.unittests
         [Test]
         public void Format1 ()
         {
-            Node node = new Node ("root", "{0}{1}")
+            var node = new Node ("root", "{0}{1}")
                 .Add ("", "su")
                 .Add ("x", "error")
                 .Add ("", "ccess");
-            string value = XUtil.FormatNode (node, _context);
+            var value = XUtil.FormatNode (node, _context);
             Assert.AreEqual ("success", value);
         }
 
@@ -135,7 +135,7 @@ namespace phosphorus.unittests
         [Test]
         public void Format2 ()
         {
-            Node node = new Node ("root", "{0}cc{1}")
+            var node = new Node ("root", "{0}cc{1}")
                 .Add ("", "@/*/_first?value")
                 .Add ("", "@/*/_second?value")
                 .Add ("_source").LastChild
@@ -144,7 +144,7 @@ namespace phosphorus.unittests
                     .Add ("_second", "ess").Root;
 
             // notice that data source node and formatting nodes are different here ...
-            string value = XUtil.FormatNode (node, node [2], _context);
+            var value = XUtil.FormatNode (node, node [2], _context);
             Assert.AreEqual ("success", value);
         }
 
@@ -154,8 +154,8 @@ namespace phosphorus.unittests
         [Test]
         public void Single01 ()
         {
-            Node node = new Node ("root", "success");
-            string value = XUtil.Single<string> (node, _context);
+            var node = new Node ("root", "success");
+            var value = XUtil.Single<string> (node, _context);
             Assert.AreEqual ("success", value);
         }
 
@@ -165,11 +165,11 @@ namespace phosphorus.unittests
         [Test]
         public void Single02 ()
         {
-            Node node = new Node ("root")
+            var node = new Node ("root")
                 .Add ("", "su")
                 .Add ("", "cc")
                 .Add ("", "ess");
-            string value = XUtil.Single<string> ("@/*?value", node, _context);
+            var value = XUtil.Single<string> ("@/*?value", node, _context);
             Assert.AreEqual ("success", value);
         }
 
@@ -179,11 +179,11 @@ namespace phosphorus.unittests
         [Test]
         public void Single03 ()
         {
-            Node node = new Node ("root", "@/*?value")
+            var node = new Node ("root", "@/*?value")
                 .Add ("", "su")
                 .Add ("", "cc")
                 .Add ("", "ess");
-            string value = XUtil.Single<string> (node, _context);
+            var value = XUtil.Single<string> (node, _context);
             Assert.AreEqual ("success", value);
         }
 
@@ -193,9 +193,9 @@ namespace phosphorus.unittests
         [Test]
         public void Single04 ()
         {
-            Node node = new Node ("root", "{0}")
+            var node = new Node ("root", "{0}")
                 .Add ("", "success");
-            string value = XUtil.Single<string> (node, _context);
+            var value = XUtil.Single<string> (node, _context);
             Assert.AreEqual ("success", value);
         }
 
@@ -205,10 +205,10 @@ namespace phosphorus.unittests
         [Test]
         public void Single05 ()
         {
-            Node node = new Node ("root", "{0}")
+            var node = new Node ("root", "{0}")
                 .Add ("", "@/0?name").LastChild
                     .Add ("success").Root;
-            string value = XUtil.Single<string> (node, _context);
+            var value = XUtil.Single<string> (node, _context);
             Assert.AreEqual ("success", value);
         }
 
@@ -218,10 +218,10 @@ namespace phosphorus.unittests
         [Test]
         public void Single06 ()
         {
-            Node node = new Node ("root", "{0}")
+            var node = new Node ("root", "{0}")
                 .Add ("", "@/0?name").LastChild
                     .Add ("success").Root;
-            string value = XUtil.Single<string> (node, node [0], _context);
+            var value = XUtil.Single<string> (node, node [0], _context);
             Assert.AreEqual ("success", value);
         }
 
@@ -231,11 +231,11 @@ namespace phosphorus.unittests
         [Test]
         public void Single07 ()
         {
-            Node node = new Node ("root", "success")
+            var node = new Node ("root", "success")
                 .Add ("", "error");
 
             // making sure first node is used for finding single value
-            string value = XUtil.Single<string> (node, node [0], _context);
+            var value = XUtil.Single<string> (node, node [0], _context);
             Assert.AreEqual ("success", value);
         }
 
@@ -245,11 +245,11 @@ namespace phosphorus.unittests
         [Test]
         public void Single08 ()
         {
-            Node node = new Node ("root")
+            var node = new Node ("root")
                 .Add ("1")
                 .Add ("2")
                 .Add ("3");
-            int value = XUtil.Single<int> ("@/*?name", node, _context);
+            var value = XUtil.Single<int> ("@/*?name", node, _context);
             Assert.AreEqual (123, value);
         }
 
@@ -259,11 +259,11 @@ namespace phosphorus.unittests
         [Test]
         public void Single09 ()
         {
-            Node node = new Node ("root")
+            var node = new Node ("root")
                 .Add ("", 1)
                 .Add ("", 2)
                 .Add ("", 3);
-            int value = XUtil.Single<int> ("@/*?value", node, _context);
+            var value = XUtil.Single<int> ("@/*?value", node, _context);
             Assert.AreEqual (123, value);
         }
 
@@ -273,7 +273,7 @@ namespace phosphorus.unittests
         [Test]
         public void Iterate01 ()
         {
-            Node node = new Node ("root")
+            var node = new Node ("root")
                 .Add ("", "su")
                 .Add ("", "cc")
                 .Add ("", "ess");
@@ -290,7 +290,7 @@ namespace phosphorus.unittests
         [Test]
         public void Iterate02 ()
         {
-            Node node = new Node ("root", "@/*?value")
+            var node = new Node ("root", "@/*?value")
                 .Add ("", "su")
                 .Add ("", "cc")
                 .Add ("", "ess");
@@ -307,7 +307,7 @@ namespace phosphorus.unittests
         [Test]
         public void Iterate03 ()
         {
-            Node node = new Node ("root", "success")
+            var node = new Node ("root", "success")
                 .Add ("", "error");
             string value = null;
 
@@ -324,7 +324,7 @@ namespace phosphorus.unittests
         [Test]
         public void Iterate04 ()
         {
-            Node node = new Node ("root", "@{0}?value")
+            var node = new Node ("root", "@{0}?value")
                 .Add ("", "@/0?name").LastChild
                     .Add ("/0", "success").Root;
             string value = null;
@@ -342,7 +342,7 @@ namespace phosphorus.unittests
         [Test]
         public void Iterate05 ()
         {
-            Node node = new Node ("root", "@{0}?value")
+            var node = new Node ("root", "@{0}?value")
                 .Add ("", "@/0?name").LastChild
                     .Add ("/0/0", "success").Root;
             string value = null;
@@ -360,7 +360,7 @@ namespace phosphorus.unittests
         [Test]
         public void Iterate06 ()
         {
-            Node node = new Node ("root")
+            var node = new Node ("root")
                 .Add ("", 1)
                 .Add ("", 2)
                 .Add ("", 3);
@@ -377,11 +377,11 @@ namespace phosphorus.unittests
         [Test]
         public void Iterate07 ()
         {
-            Node node = new Node ("root")
+            var node = new Node ("root")
                 .Add ("", 1)
                 .Add ("", 2)
                 .Add ("", 3);
-            int value = 0;
+            var value = 0;
             foreach (var idx in XUtil.Iterate ("@/*?value", node, _context)) {
                 value += Utilities.Convert<int> (idx.Value, _context);
             }
@@ -394,11 +394,11 @@ namespace phosphorus.unittests
         [Test]
         public void Iterate08 ()
         {
-            Node node = new Node ("root")
+            var node = new Node ("root")
                 .Add ("", 1)
                 .Add ("", 2)
                 .Add ("", 3);
-            int value = 0;
+            var value = 0;
             foreach (var idx in XUtil.Iterate<int> (node, _context)) {
                 value += idx;
             }
@@ -411,11 +411,11 @@ namespace phosphorus.unittests
         [Test]
         public void Iterate09 ()
         {
-            Node node = new Node ("root")
+            var node = new Node ("root")
                 .Add ("", 1)
                 .Add ("", 2)
                 .Add ("", 3);
-            int value = 0;
+            var value = 0;
             foreach (var idx in XUtil.Iterate<Node> (node, _context)) {
                 value += idx.Get<int> (_context);
             }
@@ -428,9 +428,9 @@ namespace phosphorus.unittests
         [Test]
         public void Iterate10 ()
         {
-            Node node = new Node ("root", "succ{0}")
+            var node = new Node ("root", "succ{0}")
                 .Add (string.Empty, "ess");
-            string value = "";
+            var value = "";
             foreach (var idx in XUtil.Iterate<string> (node, _context)) {
                 value += idx;
             }
@@ -443,9 +443,9 @@ namespace phosphorus.unittests
         [Test]
         public void Iterate11 ()
         {
-            Node node = new Node ("root", "succ{0}")
+            var node = new Node ("root", "succ{0}")
                 .Add (string.Empty, "ess:int:5");
-            string value = "";
+            var value = "";
 
             // string should be converted into a Node
             foreach (var idx in XUtil.Iterate<Node> (node, _context)) {
@@ -461,9 +461,9 @@ namespace phosphorus.unittests
         [Test]
         public void RootExpression()
         {
-            Node node = new Node ("success")
+            var node = new Node ("success")
                 .Add ("");
-            string value = XUtil.Single<string> ("@/..?name", node [0], _context);
+            var value = XUtil.Single<string> ("@/..?name", node [0], _context);
             Assert.AreEqual ("success", value);
         }
         
@@ -473,10 +473,10 @@ namespace phosphorus.unittests
         [Test]
         public void ChildrenExpression()
         {
-            Node node = new Node ("")
+            var node = new Node ("")
                 .Add ("su")
                 .Add ("ccess");
-            string value = XUtil.Single<string> ("@/*?name", node, _context);
+            var value = XUtil.Single<string> ("@/*?name", node, _context);
             Assert.AreEqual ("success", value);
         }
         
@@ -486,12 +486,12 @@ namespace phosphorus.unittests
         [Test]
         public void DescendantsExpression()
         {
-            Node node = new Node ("")
+            var node = new Node ("")
                 .Add ("su").LastChild
                     .Add ("cc").LastChild
                         .Add ("es").Root.FirstChild
                 .Add ("s");
-            string value = XUtil.Single<string> ("@/**?name", node, _context);
+            var value = XUtil.Single<string> ("@/**?name", node, _context);
             Assert.AreEqual ("success", value);
         }
         
@@ -501,11 +501,11 @@ namespace phosphorus.unittests
         [Test]
         public void AncestorExpression()
         {
-            Node node = new Node ("")
+            var node = new Node ("")
                 .Add ("_start", "success").LastChild
                     .Add (string.Empty).LastChild
                         .Add (string.Empty).Root;
-            string value = XUtil.Single<string> ("@/.._start?value", node [0] [0] [0], _context);
+            var value = XUtil.Single<string> ("@/.._start?value", node [0] [0] [0], _context);
             Assert.AreEqual ("success", value);
         }
         
@@ -515,10 +515,10 @@ namespace phosphorus.unittests
         [Test]
         public void SiblingExpressions()
         {
-            Node node = new Node ("")
+            var node = new Node ("")
                 .Add ("success")
                 .Add ("error");
-            string value = XUtil.Single<string> ("@/-?name", node [1], _context);
+            var value = XUtil.Single<string> ("@/-?name", node [1], _context);
             Assert.AreEqual ("success", value);
 
             node = new Node ("")
@@ -548,10 +548,10 @@ namespace phosphorus.unittests
         [Test]
         public void NameEqualsExpression ()
         {
-            Node node = new Node ("root")
+            var node = new Node ("root")
                 .Add ("success")
                 .Add ("error");
-            string value = XUtil.Single<string> ("@/*/success?name", node, _context);
+            var value = XUtil.Single<string> ("@/*/success?name", node, _context);
             Assert.AreEqual ("success", value);
         }
         
@@ -561,9 +561,9 @@ namespace phosphorus.unittests
         [Test]
         public void ValueEqualsExpression ()
         {
-            Node node = new Node ("root")
+            var node = new Node ("root")
                 .Add ("success", "query");
-            string value = XUtil.Single<string> ("@/*/=query?name", node, _context);
+            var value = XUtil.Single<string> ("@/*/=query?name", node, _context);
             Assert.AreEqual ("success", value);
         }
         
@@ -573,9 +573,9 @@ namespace phosphorus.unittests
         [Test]
         public void ValueTypeExpression1 ()
         {
-            Node node = new Node ("root")
+            var node = new Node ("root")
                 .Add ("success", 5);
-            string value = XUtil.Single<string> ("@/*/=:int:5?name", node, _context);
+            var value = XUtil.Single<string> ("@/*/=:int:5?name", node, _context);
             Assert.AreEqual ("success", value);
         }
 
@@ -585,9 +585,9 @@ namespace phosphorus.unittests
         [Test]
         public void ValueTypeExpression2 ()
         {
-            Node node = new Node ("root")
+            var node = new Node ("root")
                 .Add ("error", "5");
-            string value = XUtil.Single<string> ("@/*/=:int:5?name", node, _context);
+            var value = XUtil.Single<string> ("@/*/=:int:5?name", node, _context);
             Assert.IsNull (value);
         }
 
@@ -597,9 +597,9 @@ namespace phosphorus.unittests
         [Test]
         public void ValueTypeExpression3 ()
         {
-            Node node = new Node ("root")
+            var node = new Node ("root")
                 .Add ("error", 5);
-            string value = XUtil.Single<string> ("@/*/=5?name", node, _context);
+            var value = XUtil.Single<string> ("@/*/=5?name", node, _context);
             Assert.IsNull (value);
         }
 
@@ -609,10 +609,10 @@ namespace phosphorus.unittests
         [Test]
         public void NumberedExpression ()
         {
-            Node node = new Node ("root")
+            var node = new Node ("root")
                 .Add ("error")
                 .Add ("success");
-            string value = XUtil.Single<string> ("@/1?name", node, _context);
+            var value = XUtil.Single<string> ("@/1?name", node, _context);
             Assert.AreEqual ("success", value);
         }
         
@@ -622,14 +622,14 @@ namespace phosphorus.unittests
         [Test]
         public void RangeExpression ()
         {
-            Node node = new Node ("root")
+            var node = new Node ("root")
                 .Add ("error")
                 .Add ("su")
                 .Add ("cc")
                 .Add ("e")
                 .Add ("ss")
                 .Add ("error");
-            string value = XUtil.Single<string> ("@/*/[1,5]?name", node, _context);
+            var value = XUtil.Single<string> ("@/*/[1,5]?name", node, _context);
             Assert.AreEqual ("success", value);
 
             node = new Node ("root")
@@ -657,10 +657,10 @@ namespace phosphorus.unittests
         [Test]
         public void ReferenceExpression ()
         {
-            Node node = new Node ("root")
+            var node = new Node ("root")
                 .Add ("_1")
                 .Add ("_2", new Node ("_value", "success"));
-            string value = XUtil.Single<string> ("@/1/#?value", node, _context);
+            var value = XUtil.Single<string> ("@/1/#?value", node, _context);
             Assert.AreEqual ("success", value);
         }
         
@@ -670,10 +670,10 @@ namespace phosphorus.unittests
         [Test]
         public void ParentExpression ()
         {
-            Node node = new Node ("success")
+            var node = new Node ("success")
                 .Add ("error")
                 .Add ("error");
-            string value = XUtil.Single<string> ("@/.?name", node [1], _context);
+            var value = XUtil.Single<string> ("@/.?name", node [1], _context);
             Assert.AreEqual ("success", value);
         }
         
@@ -683,10 +683,10 @@ namespace phosphorus.unittests
         [Test]
         public void NamedRegexExpression ()
         {
-            Node node = new Node ("root")
+            var node = new Node ("root")
                 .Add ("error")
                 .Add ("success");
-            string value = XUtil.Single<string> (@"@/*/""/s/""?name", node, _context);
+            var value = XUtil.Single<string> (@"@/*/""/s/""?name", node, _context);
             Assert.AreEqual ("success", value);
         }
         
@@ -696,10 +696,10 @@ namespace phosphorus.unittests
         [Test]
         public void ValuedRegexExpression ()
         {
-            Node node = new Node ("root")
+            var node = new Node ("root")
                 .Add ("error")
                 .Add ("success", "val");
-            string value = XUtil.Single<string> (@"@/*/""=/val/""?name", node, _context);
+            var value = XUtil.Single<string> (@"@/*/""=/val/""?name", node, _context);
             Assert.AreEqual ("success", value);
         }
         
@@ -709,11 +709,11 @@ namespace phosphorus.unittests
         [Test]
         public void ModuloExpression ()
         {
-            Node node = new Node ("root")
+            var node = new Node ("root")
                 .Add ("succ")
                 .Add ("error")
                 .Add ("ess");
-            string value = XUtil.Single<string> ("@/*/%2?name", node, _context);
+            var value = XUtil.Single<string> ("@/*/%2?name", node, _context);
             Assert.AreEqual ("success", value);
         }
         
@@ -723,11 +723,11 @@ namespace phosphorus.unittests
         [Test]
         public void LeftShiftExpression ()
         {
-            Node node = new Node ("succ")
+            var node = new Node ("succ")
                 .Add ("error")
                 .Add ("ess")
                 .Add ("error");
-            string value = XUtil.Single<string> ("@/*/%2/<?name", node, _context);
+            var value = XUtil.Single<string> ("@/*/%2/<?name", node, _context);
             Assert.AreEqual ("success", value);
         }
         
@@ -737,10 +737,10 @@ namespace phosphorus.unittests
         [Test]
         public void RightShiftExpression ()
         {
-            Node node = new Node ("root")
+            var node = new Node ("root")
                 .Add ("success")
                 .Add ("error");
-            string value = XUtil.Single<string> ("@/>?name", node, _context);
+            var value = XUtil.Single<string> ("@/>?name", node, _context);
             Assert.AreEqual ("success", value);
         }
         
@@ -750,10 +750,10 @@ namespace phosphorus.unittests
         [Test]
         public void OrExpression ()
         {
-            Node node = new Node ("root")
+            var node = new Node ("root")
                 .Add ("succ")
                 .Add ("ess");
-            string value = XUtil.Single<string> ("@/0/|/1?name", node, _context);
+            var value = XUtil.Single<string> ("@/0/|/1?name", node, _context);
             Assert.AreEqual ("success", value);
         }
         
@@ -763,10 +763,10 @@ namespace phosphorus.unittests
         [Test]
         public void AndExpression ()
         {
-            Node node = new Node ("root")
+            var node = new Node ("root")
                 .Add ("value1", "error")
                 .Add ("value2", "success");
-            string value = XUtil.Single<string> ("@/*/&/*/value2?value", node, _context);
+            var value = XUtil.Single<string> ("@/*/&/*/value2?value", node, _context);
             Assert.AreEqual ("success", value);
         }
         
@@ -776,11 +776,11 @@ namespace phosphorus.unittests
         [Test]
         public void XorExpression ()
         {
-            Node node = new Node ("root")
+            var node = new Node ("root")
                 .Add ("succ")
                 .Add ("ess")
                 .Add ("error");
-            string value = XUtil.Single<string> ("@/*/((/succ/|/error/)^(/ess/|/error/))?name", node, _context);
+            var value = XUtil.Single<string> ("@/*/((/succ/|/error/)^(/ess/|/error/))?name", node, _context);
             Assert.AreEqual ("success", value);
         }
         
@@ -791,11 +791,11 @@ namespace phosphorus.unittests
         public void NotExpression ()
         {
             // verifying simple not works
-            Node node = new Node ("root")
+            var node = new Node ("root")
                 .Add ("succ")
                 .Add ("ess")
                 .Add ("error");
-            string value = XUtil.Single<string> ("@/*/!/2?name", node, _context);
+            var value = XUtil.Single<string> ("@/*/!/2?name", node, _context);
             Assert.AreEqual ("success", value);
 
             // verifying grouped not works
@@ -821,11 +821,11 @@ namespace phosphorus.unittests
         [Test]
         public void PrecedenceExpression ()
         {
-            Node node = new Node ("root")
+            var node = new Node ("root")
                 .Add ("_1", "error")
                 .Add ("_2", "error")
                 .Add ("_3", "success");
-            string value = XUtil.Single<string> ("@/*/(/_1/|/_2/|/_3/&/_3/)?value", node, _context);
+            var value = XUtil.Single<string> ("@/*/(/_1/|/_2/|/_3/&/_3/)?value", node, _context);
             Assert.AreEqual ("success", value);
         }
         
@@ -835,11 +835,11 @@ namespace phosphorus.unittests
         [Test]
         public void OrderedExpression ()
         {
-            Node node = new Node ("root")
+            var node = new Node ("root")
                 .Add ("ess")
                 .Add ("succ")
                 .Add ("error");
-            string value = XUtil.Single<string> ("@/1/|/0?name", node, _context);
+            var value = XUtil.Single<string> ("@/1/|/0?name", node, _context);
             Assert.AreEqual ("success", value);
         }
         
@@ -849,11 +849,11 @@ namespace phosphorus.unittests
         [Test]
         public void MultilineExpression ()
         {
-            Node node = new Node ("root")
+            var node = new Node ("root")
                 .Add ("error")
                 .Add ("success", "x\r\ny")
                 .Add ("error");
-            string value = XUtil.Single<string> ("@/*/@\"=x\r\ny\"?name", node, _context);
+            var value = XUtil.Single<string> ("@/*/@\"=x\r\ny\"?name", node, _context);
             Assert.AreEqual ("success", value);
         }
         
@@ -863,11 +863,11 @@ namespace phosphorus.unittests
         [Test]
         public void ReferencedExpression1 ()
         {
-            Node node = new Node ("root")
+            var node = new Node ("root")
                 .Add ("error", "@/+?name")
                 .Add ("success")
                 .Add ("error");
-            string value = XUtil.Single<string> ("@@/0?value", node, _context);
+            var value = XUtil.Single<string> ("@@/0?value", node, _context);
             Assert.AreEqual ("success", value);
         }
         
@@ -877,11 +877,11 @@ namespace phosphorus.unittests
         [Test]
         public void ReferencedExpression2 ()
         {
-            Node node = new Node ("root")
+            var node = new Node ("root")
                 .Add ("error", "@@/+2?value")
                 .Add ("success")
                 .Add ("exp", "@/-?name");
-            string value = XUtil.Single<string> ("@@/0?value", node, _context);
+            var value = XUtil.Single<string> ("@@/0?value", node, _context);
             Assert.AreEqual ("success", value);
         }
 
@@ -892,7 +892,7 @@ namespace phosphorus.unittests
         [Test]
         public void ReferencedExpression3 ()
         {
-            Node node = ExecuteLambda (@"_data
+            var node = ExecuteLambda (@"_data
   _1:su
   cc:@?name
   _3:ess
@@ -907,7 +907,7 @@ set:@/..?value
         [Test]
         public void ConvertExpression1 ()
         {
-            Node node = ExecuteLambda (@"_data:567
+            var node = ExecuteLambda (@"_data:567
 set:@/..?value
   source:@/../*/_data?value.int");
             Assert.AreEqual (567, node.Value);
@@ -919,7 +919,7 @@ set:@/..?value
         [Test]
         public void ConvertExpression2 ()
         {
-            Node node = ExecuteLambda (@"_data:int:567
+            var node = ExecuteLambda (@"_data:int:567
 set:@/..?value
   source:@/../*/_data?value.string");
             Assert.AreEqual ("567", node.Value);
@@ -931,9 +931,9 @@ set:@/..?value
         [Test]
         public void Convert1 ()
         {
-            Node node = new Node ("root")
+            var node = new Node ("root")
                 .Add ("foo", 5);
-            string value = Utilities.Convert<string> (node, _context);
+            var value = Utilities.Convert<string> (node, _context);
             Assert.AreEqual ("root\r\n  foo:int:5", value);
         }
 
@@ -943,8 +943,8 @@ set:@/..?value
         [Test]
         public void Convert2 ()
         {
-            DateTime date = new DateTime (2015, 01, 22, 23, 59, 59);
-            string value = Utilities.Convert<string> (date, _context);
+            var date = new DateTime (2015, 01, 22, 23, 59, 59);
+            var value = Utilities.Convert<string> (date, _context);
             Assert.AreEqual ("2015-01-22T23:59:59", value);
         }
 
@@ -957,9 +957,9 @@ set:@/..?value
             Loader.Instance.UnloadAssembly ("phosphorus.types");
             _context = Loader.Instance.CreateApplicationContext ();
             try {
-                Node node = new Node ("root")
+                var node = new Node ("root")
                     .Add ("foo", 5);
-                string value = Utilities.Convert<string> (node, _context);
+                var value = Utilities.Convert<string> (node, _context);
                 Assert.AreEqual ("Name=root, Count=1", value);
             }
             finally {
@@ -974,14 +974,14 @@ set:@/..?value
         [Test]
         public void EscapedIterators ()
         {
-            Node node = new Node ("_data")
+            var node = new Node ("_data")
                 .Add ("*").LastChild
                     .Add ("..").LastChild
                         .Add (".").LastChild
                             .Add ("/").LastChild
                                 .Add ("\\").LastChild
                                     .Add ("success").Root;
-            string value = XUtil.Single<string> (@"@/*/\*/*/\../*/\./*/""\\/""/*/\\/*?name", node, _context);
+            var value = XUtil.Single<string> (@"@/*/\*/*/\../*/\./*/""\\/""/*/\\/*?name", node, _context);
             Assert.AreEqual ("success", value);
         }
         
@@ -991,7 +991,7 @@ set:@/..?value
         [Test]
         public void MultiLineExpression ()
         {
-            Node node = ExecuteLambda (@"_mammal
+            var node = ExecuteLambda (@"_mammal
   sea
     dolphins
       smart

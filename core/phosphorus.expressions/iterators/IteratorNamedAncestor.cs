@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using phosphorus.core;
 
 namespace phosphorus.expressions.iterators
@@ -15,7 +16,7 @@ namespace phosphorus.expressions.iterators
     /// </summary>
     public class IteratorNamedAncestor : Iterator
     {
-        private string _name;
+        private readonly string _name;
 
         /// <summary>
         /// initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorNamedAncestor"/> class
@@ -27,15 +28,17 @@ namespace phosphorus.expressions.iterators
         }
 
         public override IEnumerable<Node> Evaluate {
-            get {
-                foreach (Node idxCurrent in Left.Evaluate) {
-                    Node idxAncestor = idxCurrent.Parent;
-                    while (idxAncestor != null) {
-                        if (idxAncestor.Name == _name) {
-                            yield return idxAncestor;
+            get
+            {
+                foreach (var idxAncestor in Left.Evaluate.Select(idxCurrent => idxCurrent.Parent))
+                {
+                    var curAncestor = idxAncestor;
+                    while (curAncestor != null) {
+                        if (curAncestor.Name == _name) {
+                            yield return curAncestor;
                             break;
                         }
-                        idxAncestor = idxAncestor.Parent;
+                        curAncestor = curAncestor.Parent;
                     }
                 }
             }

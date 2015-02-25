@@ -19,7 +19,7 @@ namespace phosphorus.hyperlisp
     /// </summary>
     public class Tokenizer : IDisposable
     {
-        private StringReader _reader;
+        private readonly StringReader _reader;
         private bool _disposed;
 
         /// <summary>
@@ -37,9 +37,9 @@ namespace phosphorus.hyperlisp
         /// <value>tokens from hyperlisp</value>
         public IEnumerable<Token> Tokens {
             get {
-                Token previousToken = new Token (Token.TokenType.CarriageReturn, "\r\n"); // we start out with a CR/LF token
+                var previousToken = new Token (Token.TokenType.CarriageReturn, "\r\n"); // we start out with a CR/LF token
                 while (true) {
-                    Token token = NextToken (previousToken);
+                    var token = NextToken (previousToken);
                     if (token == null)
                         yield break;
                     previousToken = token;
@@ -65,7 +65,7 @@ namespace phosphorus.hyperlisp
          */
         private Token NextToken (Token previousToken)
         {
-            int nextChar = _reader.Peek ();
+            var nextChar = _reader.Peek ();
             if ((nextChar == ':') && 
                 (previousToken == null || previousToken.Type == Token.TokenType.Spacer || previousToken.Type == Token.TokenType.CarriageReturn))
                 return new Token (Token.TokenType.Name, string.Empty); // empty name
@@ -106,7 +106,7 @@ namespace phosphorus.hyperlisp
         private Token SkipCommentToken()
         {
             _reader.Peek (); // skipping current character, which is a '/' character, next character should be either '/' or '*'
-            int nextChar = _reader.Read ();
+            var nextChar = _reader.Read ();
             if (nextChar == '/') {
                 _reader.ReadLine ();
             } else if (nextChar == '*') {
@@ -131,7 +131,7 @@ namespace phosphorus.hyperlisp
          */
         private void TrimReader ()
         {
-            int nextChar = _reader.Peek ();
+            var nextChar = _reader.Peek ();
             while (nextChar == ' ') {
                 _reader.Read ();
                 nextChar = _reader.Peek ();
@@ -143,8 +143,8 @@ namespace phosphorus.hyperlisp
          */
         private Token NextSpaceToken ()
         {
-            string buffer = " ";
-            int nextChar = _reader.Peek ();
+            var buffer = " ";
+            var nextChar = _reader.Peek ();
             while (nextChar == ' ') {
                 buffer += (char)_reader.Read ();
                 nextChar = _reader.Peek ();
@@ -157,7 +157,7 @@ namespace phosphorus.hyperlisp
          */
         private Token NextCRLFToken ()
         {
-            int nextChar = _reader.Read ();
+            var nextChar = _reader.Read ();
             if (nextChar == -1)
                 throw new ArgumentException ("syntax error in hyperlisp, carriage return character found, but no new line character found at end of file");
             if (nextChar != '\n')
@@ -180,7 +180,7 @@ namespace phosphorus.hyperlisp
             }
 
             // default token type, no string quoting here
-            StringBuilder builder = new StringBuilder ();
+            var builder = new StringBuilder ();
             builder.Append ((char)nextChar);
             nextChar = _reader.Peek ();
             while (nextChar != -1 && "\r\n:".IndexOf ((char)nextChar) == -1) {

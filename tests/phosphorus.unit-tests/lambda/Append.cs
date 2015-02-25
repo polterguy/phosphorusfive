@@ -26,7 +26,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Append01 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data")
                 .Add ("append", "@/-/?node").LastChild
                     .Add ("source").LastChild
@@ -48,7 +48,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Append02 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data")
                 .Add ("source").LastChild
                     .Add("foo", "success").Parent
@@ -71,7 +71,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Append03 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data")
                 .Add ("source").LastChild
                     .Add("foo", "success").Parent
@@ -95,7 +95,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Append04 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data")
                 .Add ("append", "@/-/?node").LastChild
                     .Add ("source", "foo1:success\r\n  bar1:int:5").Root;
@@ -115,7 +115,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Append05 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data")
                 .Add ("_source", "success-name:success-value")
                 .Add ("append", "@/-2/?node").LastChild
@@ -134,7 +134,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Append06 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data")
                 .Add ("_source", new Node ("success", 5))
                 .Add ("append", "@/-2/?node").LastChild
@@ -153,7 +153,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Append07 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data")
                 .Add ("append", "@/-/?node").LastChild
                     .Add ("source", new Node ("success", 5)).Root;
@@ -171,7 +171,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Append08 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_source").LastChild
                     .Add ("_destination").Parent
                 .Add ("append", "@/-/0/?node").LastChild
@@ -192,7 +192,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Append09 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_destination").LastChild
                     .Add ("_source").Parent
                 .Add ("append", "@/-/?node").LastChild
@@ -213,7 +213,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Append10 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_destination1").LastChild
                     .Add ("_source1").Parent
                 .Add ("_destination2").LastChild
@@ -237,7 +237,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Append11 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_source1").LastChild
                     .Add ("_destination1").Parent
                 .Add ("_source2").LastChild
@@ -267,7 +267,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Append12 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_source1")
                 .Add ("_source2")
                 .Add ("append", "@/-1/|/-2/?node").LastChild
@@ -290,7 +290,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Append13 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_source", new Node ("success", 5))
                 .Add ("_destination")
                 .Add ("append", "@/-/?node").LastChild
@@ -310,7 +310,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Append14 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_destination-parent", new Node ("_destination"))
                 .Add ("success", 5)
                 .Add ("append", "@/-2/?value").LastChild
@@ -329,7 +329,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Append15 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_destination")
                 .Add ("append", "@/-/?node").LastChild
                     .Add ("source", "@/mumbo/?node").Root;
@@ -346,7 +346,7 @@ namespace phosphorus.unittests.lambda
         [Test]
         public void Append16 ()
         {
-            Node node = ExecuteLambda (@"_data
+            var node = ExecuteLambda (@"_data
   foo:bar
 _exp:@/-/?node
 append:@/+/?node
@@ -366,7 +366,7 @@ _out");
         [Test]
         public void Append17 ()
         {
-            Node node = ExecuteLambda (@"append:@/+/?node
+            var node = ExecuteLambda (@"append:@/+/?node
   source:int:500
 _out");
             // verifying [append] works as it should
@@ -382,7 +382,7 @@ _out");
         [Test]
         public void Append18 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_data")
                 .Add ("append", "@/-/?node").LastChild
                     .Add ("source", "foo1:success\r\nbar1:int:5").Root;
@@ -403,7 +403,7 @@ _out");
         [Test]
         public void Append19 ()
         {
-            Node node = ExecuteLambda (@"append:@/+/?node
+            var node = ExecuteLambda (@"append:@/+/?node
   src:success
 _out");
             // verifying [append] works as it should
@@ -418,7 +418,7 @@ _out");
         [ExpectedException]
         public void SyntaxError1 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_destination", "foo")
                 .Add ("error")
                 .Add ("append", "@/-2/?value").LastChild
@@ -433,7 +433,7 @@ _out");
         [ExpectedException]
         public void SyntaxError2 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_destination", "foo")
                 .Add ("error")
                 .Add ("append", "@/-2/?value").LastChild
@@ -448,7 +448,7 @@ _out");
         [ExpectedException]
         public void SyntaxError3 ()
         {
-            Node node = new Node ()
+            var node = new Node ()
                 .Add ("_destination")
                 .Add ("error")
                 .Add ("append", "@/-2/?value").LastChild

@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using phosphorus.core;
 
 namespace phosphorus.expressions.iterators
@@ -15,10 +16,10 @@ namespace phosphorus.expressions.iterators
     /// </summary>
     public class IteratorNamed : Iterator
     {
-        private string _name;
+        private readonly string _name;
 
         /// <summary>
-        /// initializes a new instance of the <see cref="phosphorus.execute.iterators.IteratorNamed"/> class
+        /// initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorNamed"/> class
         /// </summary>
         /// <param name="name">name to match</param>
         public IteratorNamed (string name)
@@ -28,10 +29,7 @@ namespace phosphorus.expressions.iterators
 
         public override IEnumerable<Node> Evaluate {
             get {
-                foreach (Node idxCurrent in Left.Evaluate) {
-                    if (idxCurrent.Name == _name)
-                        yield return idxCurrent;
-                }
+                return Left.Evaluate.Where(idxCurrent => idxCurrent.Name == _name);
             }
         }
     }

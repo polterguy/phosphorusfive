@@ -31,13 +31,13 @@ namespace phosphorus.web
             foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
 
                 // creating our HTTP web request
-                HttpWebRequest request = WebRequest.Create (idx) as HttpWebRequest;
+                var request = WebRequest.Create (idx) as HttpWebRequest;
                 request.AllowAutoRedirect = true;
                 request.Method = "POST";
                 request.ContentType = "application/x-www-form-urlencoded";
 
                 // writing parameters over request stream
-                using (StreamWriter writer = new StreamWriter (request.GetRequestStream ())) {
+                using (var writer = new StreamWriter (request.GetRequestStream ())) {
                     foreach (var idxPar in e.Args.FindAll (delegate (Node idxNode) { return idxNode.Name != string.Empty; })) {
                         if (idxPar.Value != null) {
                             writer.Write (
@@ -49,13 +49,13 @@ namespace phosphorus.web
                 }
 
                 // retrieving response and its encoding
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse ();
-                Encoding encoding = response.CharacterSet == null ? 
+                var response = (HttpWebResponse)request.GetResponse ();
+                var encoding = response.CharacterSet == null ? 
                     Encoding.Default : 
                     Encoding.GetEncoding (response.CharacterSet);
 
                 // retrieving files from response stream, and appending into node
-                using (Stream stream = response.GetResponseStream ()) {
+                using (var stream = response.GetResponseStream ()) {
                     using (TextReader reader = new StreamReader (stream, encoding)) {
                         e.Args.Add (new Node (response.ResponseUri.ToString (), reader.ReadToEnd ()));
                     }

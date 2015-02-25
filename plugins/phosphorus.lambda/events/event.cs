@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using phosphorus.core;
 using phosphorus.expressions;
+using phosphorus.expressions.exceptions;
 
 namespace phosphorus.lambda
 {
@@ -26,7 +27,7 @@ namespace phosphorus.lambda
         private static void lambda_event (ApplicationContext context, ActiveEventArgs e)
         {
             // making sure there's at least one actual [lambda] object within Active Event creation statement
-            List<Node> lambdas = new List<Node> (e.Args.FindAll (
+            var lambdas = new List<Node> (e.Args.FindAll (
                 delegate (Node idx) {
                     return idx.Name.StartsWith ("lambda");
             }));

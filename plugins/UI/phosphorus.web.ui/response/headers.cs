@@ -33,7 +33,7 @@ namespace phosphorus.web.ui
             } else {
 
                 // adding header(s) invocation
-                string value = e.Args.LastChild.Get<string> (context);
+                var value = e.Args.LastChild.Get<string> (context);
                 foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
                     HttpContext.Current.Response.AddHeader (idx, value);
                 }

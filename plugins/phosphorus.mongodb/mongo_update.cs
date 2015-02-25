@@ -29,7 +29,7 @@ namespace phosphorus.mongodb
         [ActiveEvent (Name = "pf.mongo.update")]
         private static void pf_mongo_update (ApplicationContext context, ActiveEventArgs e)
         {
-            string table = e.Args.Get<string> (context);
+            var table = e.Args.Get<string> (context);
             if (string.IsNullOrEmpty (table)) // no table name given
                 throw new ArgumentException ("[pf.mongo.update] needs the table name as the value of its node, either through an expression or a constant");
 
@@ -46,12 +46,12 @@ namespace phosphorus.mongodb
             var collection = common.DataBase.GetCollection<BsonDocument> (table);
 
             // converting the current node structure to a Bson Document, used as criteria for our select
-            QueryDocument query = common.CreateQueryDocumentFromNode (e.Args.Find (
+            var query = common.CreateQueryDocumentFromNode (e.Args.Find (
                 delegate (Node idx) {
                     return idx.Name == "where";
                 }));
 
-            UpdateDocument update = CreateUpdateDocument (e.Args.Find (
+            var update = CreateUpdateDocument (e.Args.Find (
                 delegate (Node idx) {
                     return idx.Name == "$set";
             }));
@@ -66,8 +66,8 @@ namespace phosphorus.mongodb
          */
         private static UpdateDocument CreateUpdateDocument (Node node)
         {
-            UpdateDocument retVal = new UpdateDocument (true);
-            foreach (Node idx in node.Children) {
+            var retVal = new UpdateDocument (true);
+            foreach (var idx in node.Children) {
                 retVal.Add ("$set", new BsonDocument (idx.Name + ".value", BsonValue.Create (idx.Value)));
             }
             return retVal;

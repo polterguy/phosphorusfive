@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using phosphorus.core;
 
 namespace phosphorus.expressions.iterators
@@ -17,11 +18,7 @@ namespace phosphorus.expressions.iterators
     {
         public override IEnumerable<Node> Evaluate {
             get {
-                foreach (Node idxCurrent in Left.Evaluate) {
-                    Node previous = idxCurrent.PreviousNode;
-                    if (previous != null)
-                        yield return previous;
-                }
+                return Left.Evaluate.Select(idxCurrent => idxCurrent.PreviousNode).Where(previous => previous != null);
             }
         }
     }

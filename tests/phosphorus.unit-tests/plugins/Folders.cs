@@ -33,7 +33,7 @@ namespace phosphorus.unittests.plugins
             }
 
             // creating folder using "phosphorus.file"
-            Node node = new Node (string.Empty, "test1");
+            var node = new Node (string.Empty, "test1");
             _context.Raise ("pf.folder.create", node);
             
             // verifying create functioned as is should
@@ -57,7 +57,7 @@ namespace phosphorus.unittests.plugins
             }
 
             // creating folder using "phosphorus.file"
-            Node node = new Node (string.Empty, "@/*/?name")
+            var node = new Node (string.Empty, "@/*/?name")
                 .Add ("test1")
                 .Add ("test2");
             _context.Raise ("pf.folder.create", node);
@@ -86,7 +86,7 @@ namespace phosphorus.unittests.plugins
             }
             
             // creating folder using "phosphorus.file"
-            Node node = new Node (string.Empty, "@/*/!/0/?{0}")
+            var node = new Node (string.Empty, "@/*/!/0/?{0}")
                 .Add (string.Empty, "name")
                 .Add ("test1")
                 .Add ("test2");
@@ -121,7 +121,7 @@ namespace phosphorus.unittests.plugins
             }
 
             // creating folder using "phosphorus.file"
-            Node node = new Node (string.Empty, "@/*/?name")
+            var node = new Node (string.Empty, "@/*/?name")
                 .Add ("test1")
                 .Add ("test2")
                 .Add ("test3");
@@ -148,7 +148,7 @@ namespace phosphorus.unittests.plugins
             }
 
             // checking to see if folder exists using "phosphorus.file"
-            Node node = new Node (string.Empty, "test1");
+            var node = new Node (string.Empty, "test1");
             _context.Raise ("pf.folder.exists", node);
 
             // verifying exists returned true as it should
@@ -171,7 +171,7 @@ namespace phosphorus.unittests.plugins
             }
 
             // checking to see if folder exists using "phosphorus.file"
-            Node node = new Node (string.Empty, "@/*/?name")
+            var node = new Node (string.Empty, "@/*/?name")
                 .Add ("test1")
                 .Add ("test2");
             _context.Raise ("pf.folder.exists", node);
@@ -198,7 +198,7 @@ namespace phosphorus.unittests.plugins
             }
 
             // checking to see if folder exists using "phosphorus.file"
-            Node node = new Node (string.Empty, "@/*/!/0/?{0}")
+            var node = new Node (string.Empty, "@/*/!/0/?{0}")
                 .Add (string.Empty, "name")
                 .Add ("test1")
                 .Add ("test2");
@@ -229,7 +229,7 @@ namespace phosphorus.unittests.plugins
             }
 
             // checking to see if folder exists using "phosphorus.file"
-            Node node = new Node (string.Empty, "@/*/?name")
+            var node = new Node (string.Empty, "@/*/?name")
                 .Add ("test1")
                 .Add ("test2")
                 .Add ("test3");
@@ -256,7 +256,7 @@ namespace phosphorus.unittests.plugins
             }
 
             // creating files within folder
-            Node node = new Node (string.Empty, "@/*/!/*/source/?name")
+            var node = new Node (string.Empty, "@/*/!/*/source/?name")
                 .Add ("test1/test1.txt")
                 .Add ("test1/test2.txt")
                 .Add ("test1/test3.txt")
@@ -290,7 +290,7 @@ namespace phosphorus.unittests.plugins
             Directory.CreateDirectory (GetBasePath () + "test2");
 
             // creating files within folder
-            Node node = new Node (string.Empty, "@/*/!/*/source/?name")
+            var node = new Node (string.Empty, "@/*/!/*/source/?name")
                 .Add ("test1/test1.txt")
                 .Add ("test2/test2.txt")
                 .Add ("test1/test3.txt")
@@ -326,7 +326,7 @@ namespace phosphorus.unittests.plugins
             Directory.CreateDirectory (GetBasePath () + "test2");
 
             // creating files within folder
-            Node node = new Node (string.Empty, "@/*/!/*/source/?name")
+            var node = new Node (string.Empty, "@/*/!/*/source/?name")
                 .Add ("test1/test1.txt")
                 .Add ("test2/test2.txt")
                 .Add ("test1/test3.txt")
@@ -359,7 +359,7 @@ namespace phosphorus.unittests.plugins
             Directory.CreateDirectory (GetBasePath () + "test1");
 
             // creating files within folder
-            Node node = new Node (string.Empty, "@/*/!/*/source/?name")
+            var node = new Node (string.Empty, "@/*/!/*/source/?name")
                 .Add ("test1/test1.txt")
                 .Add ("test1/test2.txt")
                 .Add ("test1/test3.txt")
@@ -392,7 +392,7 @@ namespace phosphorus.unittests.plugins
             Directory.CreateDirectory (GetBasePath () + "test1/yyy");
 
             // listing folders within folder
-            Node node = new Node (string.Empty, "test1");
+            var node = new Node (string.Empty, "test1");
             _context.Raise ("pf.folder.list-folders", node);
 
             // verifying list-files returned true as it should
@@ -419,7 +419,7 @@ namespace phosphorus.unittests.plugins
             Directory.CreateDirectory (GetBasePath () + "test2/yyy");
 
             // listing folders within folder
-            Node node = new Node (string.Empty, "@/*/?name")
+            var node = new Node (string.Empty, "@/*/?name")
                 .Add ("test1")
                 .Add ("test2");
             _context.Raise ("pf.folder.list-folders", node);
@@ -448,7 +448,7 @@ namespace phosphorus.unittests.plugins
             Directory.CreateDirectory (GetBasePath () + "test2/yyy");
 
             // listing folders within folder
-            Node node = new Node (string.Empty, "@{0}?name")
+            var node = new Node (string.Empty, "@{0}?name")
                 .Add (string.Empty, "/*/!/*//")
                 .Add ("test1")
                 .Add ("test2");
@@ -474,7 +474,7 @@ namespace phosphorus.unittests.plugins
             Directory.CreateDirectory (GetBasePath () + "test1/yyy");
 
             // listing folders within folder
-            Node node = new Node (string.Empty, "te{0}")
+            var node = new Node (string.Empty, "te{0}")
                 .Add (string.Empty, "st1");
             _context.Raise ("pf.folder.list-folders", node);
 
@@ -495,7 +495,7 @@ namespace phosphorus.unittests.plugins
             }
 
             // removing directory using "phosphorus.file"
-            Node node = new Node (string.Empty, "test1");
+            var node = new Node (string.Empty, "test1");
             _context.Raise ("pf.folder.remove", node);
 
             // verifying remove works as it should
@@ -515,13 +515,13 @@ namespace phosphorus.unittests.plugins
                 Directory.CreateDirectory (GetBasePath () + "test1");
 
                 // creating a file within directory, to verify remove removes recursively
-                Node createFile = new Node (string.Empty, "test1/test1.txt")
+                var createFile = new Node (string.Empty, "test1/test1.txt")
                     .Add ("source", "this is a test");
                 _context.Raise ("pf.file.save", createFile);
             }
 
             // removing directory using "phosphorus.file"
-            Node node = new Node (string.Empty, "test1");
+            var node = new Node (string.Empty, "test1");
             _context.Raise ("pf.folder.remove", node);
 
             // verifying remove works as it should
@@ -545,7 +545,7 @@ namespace phosphorus.unittests.plugins
             }
 
             // removing directory using "phosphorus.file"
-            Node node = new Node (string.Empty, "@/*/?name")
+            var node = new Node (string.Empty, "@/*/?name")
                 .Add ("test1")
                 .Add ("test2");
             _context.Raise ("pf.folder.remove", node);
@@ -574,7 +574,7 @@ namespace phosphorus.unittests.plugins
             }
 
             // removing directory using "phosphorus.file"
-            Node node = new Node (string.Empty, "@/*/!/*//?{0}")
+            var node = new Node (string.Empty, "@/*/!/*//?{0}")
                 .Add (string.Empty, "name")
                 .Add ("test1")
                 .Add ("test2");
@@ -601,7 +601,7 @@ namespace phosphorus.unittests.plugins
             }
 
             // removing directory using "phosphorus.file"
-            Node node = new Node (string.Empty, "te{0}")
+            var node = new Node (string.Empty, "te{0}")
                 .Add (string.Empty, "st1");
             _context.Raise ("pf.folder.remove", node);
 

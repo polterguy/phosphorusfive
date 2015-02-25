@@ -30,7 +30,7 @@ namespace phosphorus.file
         private static void pf_file_remove (ApplicationContext context, ActiveEventArgs e)
         {
             // getting root folder
-            string rootFolder = common.GetRootFolder (context);
+            var rootFolder = common.GetRootFolder (context);
 
             // iterating through each path given
             foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {

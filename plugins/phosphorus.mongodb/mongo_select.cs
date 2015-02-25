@@ -29,7 +29,7 @@ namespace phosphorus.mongodb
         [ActiveEvent (Name = "pf.mongo.select")]
         private static void pf_mongo_select (ApplicationContext context, ActiveEventArgs e)
         {
-            string table = e.Args.Get<string> (context);
+            var table = e.Args.Get<string> (context);
             if (string.IsNullOrEmpty (table)) // no table name given
                 throw new ArgumentException ("[pf.mongo.select] needs the table name as the value of its node, either through an expression, or a constant");
 
@@ -46,7 +46,7 @@ namespace phosphorus.mongodb
             var collection = common.DataBase.GetCollection<BsonDocument> (table);
 
             // converting the current node structure to a Bson Document, used as criteria for our select
-            QueryDocument query = common.CreateQueryDocumentFromNode (e.Args.Find (
+            var query = common.CreateQueryDocumentFromNode (e.Args.Find (
                 delegate (Node idx) {
                     return idx.Name == "where";
                 }));
@@ -54,7 +54,7 @@ namespace phosphorus.mongodb
             // running the query, and putting results into [result] return node
             var result = collection.Find (query);
             if (result.Count () > 0) {
-                Node resultNode = new Node ("result");
+                var resultNode = new Node ("result");
                 e.Args.Add (resultNode);
                 foreach (var idxMatch in result) {
                     resultNode.Add (CreateNodeFromQueryMatch (idxMatch, table));
@@ -68,7 +68,7 @@ namespace phosphorus.mongodb
         private static Node CreateNodeFromQueryMatch (BsonDocument cursor, string table)
         {
             // making sure we return the "_id" as the value of our main node
-            Node retVal = new Node (table, cursor ["_id"]);
+            var retVal = new Node (table, cursor ["_id"]);
 
             // looping through all children elements in match, decorating our Node list
             foreach (var idx in cursor) {
@@ -85,8 +85,8 @@ namespace phosphorus.mongodb
          */
         private static Node CreateNodeFromElement (BsonElement element)
         {
-            Node retVal = new Node (element.Name);
-            BsonDocument inner = element.Value.AsBsonDocument;
+            var retVal = new Node (element.Name);
+            var inner = element.Value.AsBsonDocument;
             if (inner.Contains ("value")) {
 
                 // item as "value"

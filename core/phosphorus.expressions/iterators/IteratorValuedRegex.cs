@@ -6,8 +6,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using phosphorus.core;
+using phosphorus.expressions.exceptions;
 
 namespace phosphorus.expressions.iterators
 {
@@ -16,12 +18,12 @@ namespace phosphorus.expressions.iterators
     /// </summary>
     public class IteratorValuedRegex : IteratorRegex
     {
-        private string _value;
+        private readonly string _value;
 
         // kept around to be able to create sane exceptions
-        private string _expression;
-        private Node _node;
-        private ApplicationContext _context;
+        private readonly string _expression;
+        private readonly Node _node;
+        private readonly ApplicationContext _context;
 
         public IteratorValuedRegex (string value, string expression, Node node, ApplicationContext context)
         {
@@ -33,38 +35,39 @@ namespace phosphorus.expressions.iterators
 
         public override IEnumerable<Node> Evaluate {
             get {
-                if (_value.LastIndexOf ("/") == 0)
+                if (_value.LastIndexOf ("/", StringComparison.InvariantCulture) == 0)
                     throw new ExpressionException (
                         _expression, 
                         "token; '" + _value + "' is not a valid regular expression, missing back slash at end of regex.",
                         _node,
                         _context);
-                string optionsString = _value.Substring (_value.LastIndexOf ("/") + 1);
-                bool distinct = optionsString.IndexOf ('d') > -1;
-                Regex regex = new Regex (
-                    _value.Substring (1, _value.LastIndexOf ("/") - 1), 
+                var optionsString = _value.Substring (_value.LastIndexOf ("/", StringComparison.InvariantCulture) + 1);
+                var distinct = optionsString.IndexOf ('d') > -1;
+                var regex = new Regex (
+                    _value.Substring (1, _value.LastIndexOf ("/", StringComparison.InvariantCulture) - 1), 
                     GetOptions (optionsString));
                 if (distinct) {
 
                     // requesting "distinct" (unique) values
-                    Dictionary<string, bool> dict = new Dictionary<string, bool> ();
-                    foreach (Node idxCurrent in Left.Evaluate) {
-                        if (idxCurrent.Value != null) {
-                            string valueOfNode = idxCurrent.Get<string> (_context);
-                            if (!dict.ContainsKey (valueOfNode) && regex.IsMatch (valueOfNode)) {
-                                dict [valueOfNode] = true;
-                                yield return idxCurrent;
-                            }
-                        }
+                    var dict = new Dictionary<string, bool> ();
+                    foreach (var idxCurrent in Left.Evaluate) {
+                        if (idxCurrent.Value == null)
+                            continue;
+
+                        var valueOfNode = idxCurrent.Get<string> (_context);
+                        if (dict.ContainsKey(valueOfNode) || !regex.IsMatch(valueOfNode))
+                            continue;
+
+                        dict [valueOfNode] = true;
+                        yield return idxCurrent;
                     }
                 } else {
 
                     // requesting all node values that matches regular expression normally
-                    foreach (Node idxCurrent in Left.Evaluate) {
-                        if (idxCurrent.Value != null) {
-                            if (regex.IsMatch (idxCurrent.Get<string> (_context)))
-                                yield return idxCurrent;
-                        }
+                    foreach (var idxCurrent in 
+                        Left.Evaluate.Where(
+                            idxCurrent => idxCurrent.Value != null).Where(idxCurrent => regex.IsMatch(idxCurrent.Get<string> (_context)))) {
+                        yield return idxCurrent;
                     }
                 }
             }
@@ -76,10 +79,10 @@ namespace phosphorus.expressions.iterators
         private RegexOptions GetOptions (string optionsString)
         {
             // default options is invariant culture
-            RegexOptions options = RegexOptions.CultureInvariant;
+            var options = RegexOptions.CultureInvariant;
 
             // looping through all options given
-            foreach (char idx in optionsString) {
+            foreach (var idx in optionsString) {
                 switch (idx) {
                 case 'i':
                     options |= RegexOptions.IgnoreCase;
@@ -107,7 +110,7 @@ namespace phosphorus.expressions.iterators
                 default:
                     throw new ExpressionException (
                         _expression, 
-                        string.Format ("'{0}' is not a recognized option for regular expression iterator"),
+                        string.Format ("'{0}' is not a recognized option for regular expression iterator", idx),
                         _node,
                         _context);
                 }
