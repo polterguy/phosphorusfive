@@ -34,15 +34,15 @@ namespace phosphorus.file
 
                 // iterating all files in current directory, and returning as nodes beneath args given
                 foreach (var idxFile in Directory.GetFiles (rootFolder + idx)) {
+
+                    // intentionally dropping "invisible linux 'backup' files"
                     if (!idxFile.EndsWith ("~")) {
 
                         // file is not a backup file on Linux
-                        string fileName = idxFile;
-                        if (!string.IsNullOrEmpty (rootFolder))
-                            fileName = fileName.Replace (rootFolder, "");
-
-                        // normalizing file path delimiters for both Linux and Windows
-                        fileName = fileName.Replace ("\\", "/");
+                        // normalizing file path delimiters for both Linux and Windows, before we return it 
+                        // back to caller
+                        string fileName = idxFile.Replace ("\\", "/");
+                        fileName = fileName.Replace (rootFolder, "");
                         e.Args.Add (new Node (string.Empty, fileName));
                     }
                 }

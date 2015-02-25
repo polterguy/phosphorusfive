@@ -36,7 +36,8 @@ namespace phosphorus.file
             foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
                 if (Directory.Exists (rootFolder + idx)) {
 
-                    // folder exists, removing it, and returning success back to caller
+                    // folder exists, removing it recursively,
+                    // and returning success back to caller
                     Directory.Delete (rootFolder + idx, true);
                     e.Args.Add (new Node (idx, true));
                 } else {

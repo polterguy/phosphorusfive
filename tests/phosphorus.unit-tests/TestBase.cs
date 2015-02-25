@@ -52,7 +52,9 @@ namespace phosphorus.unittests
         /// <returns>path</returns>
         protected static string GetBasePath ()
         {
-            return Assembly.GetExecutingAssembly ().Location;
+            string retVal = Assembly.GetExecutingAssembly ().Location.Replace ("\\", "/");
+            retVal = retVal.Substring (0, retVal.LastIndexOf ("/") + 1);
+            return retVal;
         }
 
         /*

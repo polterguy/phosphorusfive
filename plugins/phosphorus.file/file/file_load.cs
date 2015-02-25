@@ -27,32 +27,26 @@ namespace phosphorus.file
         [ActiveEvent (Name = "pf.file.load")]
         private static void pf_file_load (ApplicationContext context, ActiveEventArgs e)
         {
-            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
-
-                // local file
-                LoadFileLocally (e.Args, idx, context);
-            }
-        }
-
-        /*
-         * loads a file from the local file system
-         */
-        private static void LoadFileLocally (Node node, string filename, ApplicationContext context)
-        {
             // retrieving root folder of app
             string rootFolder = common.GetRootFolder (context);
 
-            // checking to see if file exists
-            if (File.Exists (rootFolder + filename)) {
+            // iterating through each file path given
+            foreach (var idxFilename in XUtil.Iterate<string> (e.Args, context)) {
 
-                // file exists, loading it as text file and appending into node
-                using (TextReader reader = File.OpenText (rootFolder + filename)) {
-                    node.Add (new Node (filename, reader.ReadToEnd ()));
+                // checking to see if file exists
+                if (File.Exists (rootFolder + idxFilename)) {
+
+                    // file exists, loading it as text file, and appending text into node
+                    // with filename as name, and content as value
+                    using (TextReader reader = File.OpenText (rootFolder + idxFilename)) {
+                        e.Args.Add (new Node (idxFilename, reader.ReadToEnd ()));
+                    }
+                } else {
+
+                    // file didn't exist, making sure we signal caller, by return a "false" node,
+                    // where name of node is filename, and value is boolean false
+                    e.Args.Add (new Node (idxFilename, false));
                 }
-            } else {
-
-                // file didn't exist, making sure we signal caller by appending a "false" node
-                node.Add (new Node (filename, false));
             }
         }
     }
