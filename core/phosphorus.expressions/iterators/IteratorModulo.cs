@@ -31,7 +31,7 @@ namespace phosphorus.expressions.iterators
             get
             {
                 var idxNo = 0;
-                return Left.Evaluate.Where(idxCurrent => idxNo++ % _modulo == 0);
+                return Left.Evaluate.Where (idxCurrent => idxNo++ % _modulo == 0);
             }
         }
     }
