@@ -154,6 +154,7 @@ namespace phosphorus.five.applicationpool
                 // might happen when for instance loading events from file, then an automatic
                 // root node will be created, with an empty name, during conversion from string
                 // to Node. we have to make sure we iterate this root node's children, and not the node itself
+                // TODO: create some sort of "supporting method" to handle these cases, since it's a recurring pattern
                 if (idxEvt.Name == string.Empty) {
                     foreach (var idxChildNode in idxEvt.Children) {
                         if (idxChildNode.Name == "")

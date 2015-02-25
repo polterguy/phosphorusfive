@@ -168,7 +168,7 @@ namespace phosphorus.expressions
         /// <param name="context">application context</param>
         /// <param name="defaultValue">default value</param>
         /// <typeparam name="T">the type you wish to convert the node's value into</typeparam>
-        private static T TryFormat<T> (
+        public static T TryFormat<T> (
             Node node,
             ApplicationContext context,
             T defaultValue = default(T))
@@ -186,7 +186,7 @@ namespace phosphorus.expressions
         /// <param name="context">application context</param>
         /// <param name="defaultValue">default value</param>
         /// <typeparam name="T">the type you wish to convert the node's value into</typeparam>
-        private static T TryFormat<T> (
+        public static T TryFormat<T> (
             Node node,
             Node dataSource,
             ApplicationContext context,
@@ -328,32 +328,36 @@ namespace phosphorus.expressions
         ///     iterates the given expression on the given dataSource node and converts each result from expression to
         ///     type T before returning back to caller
         /// </summary>
-        /// <param name="expression">expression to run on dataSource</param>
+        /// <param name="expressionOrConstant">expression to run on dataSource</param>
         /// <param name="dataSource">node to use as start node for any expressions within formatting parameters</param>
         /// <param name="context">application context</param>
         /// <typeparam name="T">type of object you wish to retrieve</typeparam>
         public static IEnumerable<T> Iterate<T> (
-            string expression,
+            object expressionOrConstant,
             Node dataSource,
             ApplicationContext context)
         {
             // syntax checking
-            if (!IsExpression (expression))
-                throw new ExpressionException (expression, dataSource, context);
-
-            // creating a match object
-            var match = Expression.Create (expression).Evaluate (dataSource, context);
-
-            // checking type of match
-            if (match.TypeOfMatch == Match.MatchType.count) {
-                // if expression is of type 'count', we return 'count', possibly triggering
-                // a conversion, returning count as type T, hence only iterating once
-                yield return Utilities.Convert<T> (match.Count, context);
+            if (!IsExpression (expressionOrConstant)) {
+                if (expressionOrConstant != null) {
+                    yield return Utilities.Convert<T> (expressionOrConstant, context);
+                }
             } else {
-                // caller requested anything but 'count', we return it as type T, possibly triggering
-                // a conversion
-                foreach (var idx in match) {
-                    yield return Utilities.Convert<T> (idx.Value, context);
+
+                // we have an expression, creating a match object
+                var match = Expression.Create (Utilities.Convert<string> (expressionOrConstant, context)).Evaluate (dataSource, context);
+
+                // checking type of match
+                if (match.TypeOfMatch == Match.MatchType.count) {
+                    // if expression is of type 'count', we return 'count', possibly triggering
+                    // a conversion, returning count as type T, hence only iterating once
+                    yield return Utilities.Convert<T> (match.Count, context);
+                } else {
+                    // caller requested anything but 'count', we return it as type T, possibly triggering
+                    // a conversion
+                    foreach (var idx in match) {
+                        yield return Utilities.Convert<T> (idx.Value, context);
+                    }
                 }
             }
         }
