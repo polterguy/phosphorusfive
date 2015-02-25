@@ -153,7 +153,7 @@ namespace phosphorus.five.applicationpool
                 // when [events] is an expression, pointing to a string value, which
                 // might happen when for instance loading events from file, then an automatic
                 // root node will be created, with an empty name, during conversion from string
-                // to Node. making sure we iterate this root node's children, and not the node itself
+                // to Node. we have to make sure we iterate this root node's children, and not the node itself
                 if (idxEvt.Name == string.Empty) {
                     foreach (var idxChildNode in idxEvt.Children) {
                         if (idxChildNode.Name == "")

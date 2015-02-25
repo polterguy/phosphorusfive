@@ -105,6 +105,7 @@
 
 * more unit tests for [rel-source] on set and friends
 
+* make sure none of the iterators are throwing null reference exceptions, trying to access a null object, but instead ends iteration
 
 
 

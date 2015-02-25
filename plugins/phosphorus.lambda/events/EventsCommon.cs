@@ -37,7 +37,19 @@ namespace phosphorus.lambda.events
         private static void pf_meta_list_events (ApplicationContext context, ActiveEventArgs e)
         {
             // retrieving filter, if any
-            var filter = new List<string> (e.Args.Value == null ? new string[] {} : XUtil.Iterate<string> (e.Args, context));
+            // ps, we cannot use the default XUtil.Iterate here, since it'll start iterating children
+            // if there's no expression in value of node, and since this event have multiple handlers,
+            // then whatever handler comes in last, basically "looses out", and won't get to return anything,
+            // since filters then being used for second handler, becomes the return values from the first handler
+            var filter = new List<string> ();
+            if (e.Args.Value != null) {
+                if (XUtil.IsExpression (e.Args.Value)) {
+                    filter.AddRange (XUtil.Iterate<string> (e.Args.Get<string> (context), e.Args, context));
+                }
+                else {
+                    filter.Add (e.Args.Get<string> (context));
+                }
+            }
 
             // looping through each Active Event from core
             foreach (var idx in Events.Keys) {
