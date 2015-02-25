@@ -425,6 +425,50 @@ namespace phosphorus.unittests
         }
 
         /// <summary>
+        ///     uses XUtil.Iterate to iterate the children of a node who's value is a node, verifying
+        ///     Iterate works as expected
+        /// </summary>
+        [Test]
+        public void Iterate12 ()
+        {
+            var node = CreateNode (@"_foo:node:@""_root
+  foo1:bar1
+  foo2:bar2""");
+            var result = XUtil.Iterate<Node> (node [0], Context, true)
+                .Aggregate (string.Empty, (current, idx) => current + (idx.Name + ":" + idx.Value + "-"));
+            Assert.AreEqual ("foo1:bar1-foo2:bar2-", result);
+        }
+
+        /// <summary>
+        ///     uses XUtil.Iterate to iterate the children of a node who's value is a string, verifying
+        ///     Iterate works as expected
+        /// </summary>
+        [Test]
+        public void Iterate13 ()
+        {
+            var node = CreateNode (@"_foo:@""foo1:bar1
+foo2:bar2""");
+            var result = XUtil.Iterate<Node> (node [0], Context, true)
+                .Aggregate (string.Empty, (current, idx) => current + (idx.Name + ":" + idx.Value + "-"));
+            Assert.AreEqual ("foo1:bar1-foo2:bar2-", result);
+        }
+
+        /// <summary>
+        ///     uses XUtil.Iterate to iterate the children of a node who's value is an expression, 
+        ///     leading to a string, verifying Iterate works as expected
+        /// </summary>
+        [Test]
+        public void Iterate14 ()
+        {
+            var node = CreateNode (@"_foo:@""foo1:bar1
+foo2:bar2""
+_bar:@/-?value");
+            var result = XUtil.Iterate<Node> (node [1], Context, true)
+                .Aggregate (string.Empty, (current, idx) => current + (idx.Name + ":" + idx.Value + "-"));
+            Assert.AreEqual ("foo1:bar1-foo2:bar2-", result);
+        }
+
+        /// <summary>
         ///     verifies root expressions works correctly
         /// </summary>
         [Test]

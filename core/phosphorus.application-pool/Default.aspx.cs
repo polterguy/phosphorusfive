@@ -148,28 +148,15 @@ namespace phosphorus.five.applicationpool
 
         private void CreateWidgetEvents (Control widget, Node eventNode, ApplicationContext context)
         {
-            foreach (var idxEvt in XUtil.Iterate<Node> (eventNode, context)) {
+            foreach (var idxEvt in XUtil.Iterate<Node> (eventNode, context, true)) {
 
-                // when [events] is an expression, pointing to a string value, which
-                // might happen when for instance loading events from file, then an automatic
-                // root node will be created, with an empty name, during conversion from string
-                // to Node. we have to make sure we iterate this root node's children, and not the node itself
-                // TODO: create some sort of "supporting method" to handle these cases, since it's a recurring pattern
-                if (idxEvt.Name == string.Empty) {
-                    foreach (var idxChildNode in idxEvt.Children) {
-                        if (idxChildNode.Name == "")
-                            throw new Exception ("cannot have Active Events dyanmically created like that, with an empty name");
-                        if (!PageEvents.ContainsKey (idxChildNode.Name)) {
-                            PageEvents [idxChildNode.Name] = new List<Tuple<string, Node>> ();
-                        }
-                        PageEvents [idxChildNode.Name].Add (new Tuple<string, Node> (widget.ID, idxChildNode.Clone ()));
-                    }
-                } else {
-                    if (!PageEvents.ContainsKey (idxEvt.Name)) {
-                        PageEvents [idxEvt.Name] = new List<Tuple<string, Node>> ();
-                    }
-                    PageEvents [idxEvt.Name].Add (new Tuple<string, Node> (widget.ID, idxEvt.Clone ()));
+                // checking to see if there's already an existing event with the given name
+                if (!PageEvents.ContainsKey (idxEvt.Name)) {
+                    PageEvents [idxEvt.Name] = new List<Tuple<string, Node>> ();
                 }
+
+                // adding event, cloning node
+                PageEvents [idxEvt.Name].Add (new Tuple<string, Node> (widget.ID, idxEvt.Clone ()));
             }
         }
 
