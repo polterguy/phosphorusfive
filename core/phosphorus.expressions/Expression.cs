@@ -302,7 +302,7 @@ namespace phosphorus.expressions
                 // might contain a type declaration, checking here
                 if (token.IndexOf (':') == 0) {
                     // yup, we've got a type declaration for our token ...
-                    type = token.Substring (1, token.IndexOf (":", 1, StringComparison.InvariantCulture) - 1);
+                    type = token.Substring (1, token.IndexOf (":", 1, StringComparison.Ordinal) - 1);
                     token = token.Substring (type.Length + 2);
                 }
             }

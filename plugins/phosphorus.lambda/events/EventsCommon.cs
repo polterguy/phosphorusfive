@@ -49,7 +49,7 @@ namespace phosphorus.lambda.events
                     e.Args.Add (new Node ("dynamic", idx));
                 } else {
                     // we have filter(s), checking to see if Active Event name matches at least one of our filters
-                    if (filter.Any (idxFilter => idx.IndexOf (idxFilter, StringComparison.InvariantCulture) != -1)) {
+                    if (filter.Any (idxFilter => idx.IndexOf (idxFilter, StringComparison.Ordinal) != -1)) {
                         e.Args.Add (new Node ("dynamic", idx));
                     }
                 }
@@ -197,17 +197,15 @@ namespace phosphorus.lambda.events
                     }
                 }
 
-                // in case event was deleted after first check, but before nodes were appended,
-                // we double check here, to be bullet proof in regards to thread safety
-                if (lambdas.Count > 0) {
-                    // this event was still around after acquiring lock
-                    context.Raise ("lambda", e.Args);
+                // invoking each [lambda.xxx] object from event
+                foreach (var idxLambda in lambdas) {
+                    context.Raise (idxLambda.Name, idxLambda);
+                }
 
-                    // cleaning up after ourselves, deleting only the lambda objects that came
-                    // from our dynamically created event
-                    foreach (var idxLambda in lambdas) {
-                        idxLambda.UnTie ();
-                    }
+                // cleaning up after ourselves, deleting only the lambda objects that came
+                // from our dynamically created event
+                foreach (var idxLambda in lambdas) {
+                    idxLambda.UnTie ();
                 }
             }
         }

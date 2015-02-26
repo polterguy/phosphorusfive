@@ -28,7 +28,7 @@ namespace phosphorus.meta
         private static void pf_meta_list_events (ApplicationContext context, ActiveEventArgs e)
         {
             // retrieving filter, if any
-            var filter = new List<string> (XUtil.Iterate<string> (XUtil.TryFormat<object> (e.Args, context), e.Args, context));
+            var filter = new List<string> (XUtil.Iterate<string> (XUtil.TryFormat<object> (e.Args, context, null), e.Args, context));
             if (e.Args.Value != null && filter.Count == 0)
                 return; // possibly a filter expression, leading into oblivion
 
@@ -40,7 +40,7 @@ namespace phosphorus.meta
                     e.Args.Add (new Node ("static", idx));
                 } else {
                     // we have filter(s), checking to see if Active Event name matches at least one of our filters
-                    if (filter.Any (idxFilter => idx.IndexOf (idxFilter, StringComparison.InvariantCulture) != -1)) {
+                    if (filter.Any (idxFilter => idx.IndexOf (idxFilter, StringComparison.Ordinal) != -1)) {
                         e.Args.Add (new Node ("static", idx));
                     }
                 }
@@ -55,14 +55,31 @@ namespace phosphorus.meta
         [ActiveEvent (Name = "pf.meta.list-overrides")]
         private static void pf_meta_list_overrides (ApplicationContext context, ActiveEventArgs e)
         {
-            var query = e.Args.Get<string> (context);
-            foreach (var idx in context.Overrides) {
-                if (query == null || idx.Item1.Contains (query)) {
-                    var over = new Node (string.Empty, idx.Item1);
-                    foreach (var idxStr in idx.Item2) {
-                        over.Add (new Node (string.Empty, idxStr));
+            // retrieving filter, if any
+            var filter = new List<string> (XUtil.Iterate<string> (XUtil.TryFormat<object> (e.Args, context, null), e.Args, context));
+            if (e.Args.Value != null && filter.Count == 0)
+                return; // possibly a filter expression, leading into oblivion
+
+            // looping through each override base event from core
+            foreach (var idxBase in context.Overrides) {
+                // checking to see if we have any filter
+                bool didAdd = false;
+                if (filter.Count == 0) {
+                    // no filter(s) given, slurping up everything
+                    e.Args.Add (new Node (idxBase.Item1));
+                    didAdd = true;
+                } else {
+                    // we have filter(s), checking to see if Active Event name matches at least one of our filters
+                    if (filter.Any (idxFilter => idxBase.Item1.IndexOf (idxFilter, StringComparison.Ordinal) != -1)) {
+                        e.Args.Add (new Node (idxBase.Item1));
+                        didAdd = true;
                     }
-                    e.Args.Add (over);
+                }
+                // looping through all super events associated with base event from core, but only if previous operation actually added base event
+                if (didAdd) {
+                    foreach (var idxSuper in idxBase.Item2) {
+                        e.Args.LastChild.Add (idxSuper);
+                    }
                 }
             }
         }

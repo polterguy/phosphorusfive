@@ -748,7 +748,7 @@ namespace phosphorus.core
         /// </summary>
         public Node Sort ()
         {
-            _children.Sort ((lhs, rhs) => String.Compare (lhs.Name, rhs.Name, StringComparison.InvariantCulture));
+            _children.Sort ((lhs, rhs) => String.Compare (lhs.Name, rhs.Name, StringComparison.Ordinal));
             return this;
         }
 
@@ -861,7 +861,7 @@ namespace phosphorus.core
         /// <param name="rhs">node to compare again the current instance for equality</param>
         public int CompareTo (Node rhs)
         {
-            var retVal = String.Compare(Name, rhs.Name, StringComparison.InvariantCulture);
+            var retVal = String.Compare(Name, rhs.Name, StringComparison.Ordinal);
             if (retVal != 0)
                 return retVal;
             if (Value == null) {
@@ -895,7 +895,7 @@ namespace phosphorus.core
             if (value == null && rhsValue == null)
                 return 0;
             if (value.GetType () != rhsValue.GetType ()) {
-                return String.Compare(value.GetType ().ToString (), rhsValue.GetType ().ToString (), StringComparison.InvariantCulture);
+                return String.Compare(value.GetType ().ToString (), rhsValue.GetType ().ToString (), StringComparison.Ordinal);
             }
             var thisValue = value as IComparable;
             if (thisValue == null)

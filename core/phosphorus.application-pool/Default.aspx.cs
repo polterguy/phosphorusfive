@@ -19,25 +19,31 @@ using phosphorus.expressions;
 
 // ReSharper disable UnusedMember.Local
 // ReSharper disable UnusedParameter.Local
+// ReSharper disable PartialTypeWithSinglePart
 
 namespace phosphorus.five.applicationpool
 {
     using pf = ajax.widgets;
 
-    // ReSharper disable once PartialTypeWithSinglePart
+    /// <summary>
+    /// This is the main .aspx page for the Application Pool, and the only page in the system, from which
+    /// all web requests are being handled. Contains many useful helper Active events for things such as including
+    /// JavaScript files, StyleSheet files, etc.
+    /// </summary>
     public partial class Default : AjaxPage
     {
         // Application Context for page life cycle
         private ApplicationContext _context;
+
         // main container for all widgets
         protected pf.Container container;
-        /*
-         * contains all ajax events, and their associated pf.lambda code, for all controls on page. please notice that
-         * when we do this like this, we have to store the ViewState into the Session object, which we're doign automatically in
-         * OnInit, since otherwise the server-side functionality will follow the page to the client, and allow for the client side
-         * to tamper with the server-side functionality, and modify server-side methods or Active Events
-         */
 
+        /*
+         * Contains all ajax events, and their associated pf.lambda code, for all controls on page. Please notice that
+         * when we do this like this, we have to store the ViewState into the Session object, which we're doing automatically in
+         * OnInit, since otherwise the server-side functionality will follow the page to the client, and allow for the client side
+         * to tamper with the server-side functionality, which of course would be a major security concern, if being allowed.
+         */
         private Dictionary<string, Dictionary<string, List<Node>>> AjaxEvents
         {
             get
@@ -49,42 +55,46 @@ namespace phosphorus.five.applicationpool
         }
 
         /*
-         * contains all dynamically created "widget events", which are Active Events local for a specific widget,
-         * created as parts of the [events] keyword
+         * Contains all dynamically created "widget events", which are Active Events local for a specific widget,
+         * created as parts of the [events] keyword. These events are being raised in the "null Active Event handler",
+         * further down on the page, where we're doing a lookup for each Active Event raised by the system, to see if
+         * there is a local page handler for that Active Event.
+         * The dictionary "key" is the name of the Active Event, and the Item1 in the Tuple is the ID of the Widget
+         * that "owns" the Active Event. Item2 in our Tuple, is a list of all [lambda.xxx] objects from our event handler
          */
-
-        private Dictionary<string, List<Tuple<string, Node>>> PageEvents
+        private Dictionary<string, List<Tuple<string, List<Node>>>> PageActiveEvents
         {
             get
             {
-                if (ViewState ["PageEvents"] == null) {
-                    ViewState ["PageEvents"] = new Dictionary<string, List<Tuple<string, Node>>> ();
+                if (ViewState ["PageActiveEvents"] == null) {
+                    ViewState ["PageActiveEvents"] = new Dictionary<string, List<Tuple<string, List<Node>>>> ();
                 }
-                return (Dictionary<string, List<Tuple<string, Node>>>) ViewState ["PageEvents"];
+                return (Dictionary<string, List<Tuple<string, List<Node>>>>) ViewState ["PageActiveEvents"];
             }
         }
 
         /*
-         * overridden to create context, and do other initialization, such as mapping up our Page_Load event,
-         * but only for the initial loading of our page
+         * Overridden to create context, and do other types of initialization, such as mapping up our Page_Load event,
+         * and making sure ViewState is being stored on Server, etc.
          */
-
         protected override void OnInit (EventArgs e)
         {
             // retrieving viewstate entries per session
+            // please notice that if you change the setting of this key to "0", then the ViewState is no
+            // longer stored on the server, which is a major security concern, since it allows for pf.lambda
+            // code to be "ViewState hacked"
             ViewStateSessionEntries = int.Parse (ConfigurationManager.AppSettings ["viewstate-per-session-entries"]);
 
-            // creating application context
+            // creating our application context for current request
             _context = Loader.Instance.CreateApplicationContext ();
 
-            // registering "this" web page as listener object
+            // registering "this" web page as listener object, since page contains many Active Event handlers itself
             _context.RegisterListeningObject (this);
 
             // rewriting path to what was actually requested, such that HTML form element doesn't become garbage ...
             // this ensures that our HTML form element stays correct. basically "undoing" what was done in Global.asax.cs
             // in addition, when retrieving request URL later, we get the "correct" request URL, and not the URL to "Default.aspx"
-            // ReSharper disable once AssignNullToNotNullAttribute
-            HttpContext.Current.RewritePath (HttpContext.Current.Items ["__pf_original_url"] as string);
+            HttpContext.Current.RewritePath ((string) HttpContext.Current.Items ["__pf_original_url"]);
 
             // mapping up our Page_Load event for initial loading of web page
             if (!IsPostBack)
@@ -95,22 +105,23 @@ namespace phosphorus.five.applicationpool
         }
 
         /*
-         * invoked for the first loading of web page to make sure we load up our UI, passing in any arguments
+         * Invoked only for the initial request of our web page, to make sure we load up our UI, passing in any arguments.
+         * Not invoked during any consecutive POST requests
          */
-
         private void Page_LoadInitialLoading (object sender, EventArgs e)
         {
             // raising our [pf.web.load-ui] Active Event, creating the node to pass in first
-            // where the [_form] node becomes the name of thr form requested
+            // where the [_form] node becomes the name of the form requested, and all other HTTP GET arguments
+            // are passed in through [_args]
             var args = new Node ("pf.web.load-ui");
-            args.Add (new Node ("_form", HttpContext.Current.Items ["__pf_original_url"] as string));
+            args.Add (new Node ("_form", (string) HttpContext.Current.Items ["__pf_original_url"]));
 
             // making sure we pass in any HTTP GET parameters
             if (Request.QueryString.Keys.Count > 0) {
                 // retrieving all GET parameters and passing in as [_args]
                 args.Add (new Node ("_args"));
                 foreach (var idxArg in Request.QueryString.AllKeys) {
-                    args [1].Add (new Node (idxArg, Request.QueryString [idxArg]));
+                    args.LastChild.Add (new Node (idxArg, Request.QueryString [idxArg]));
                 }
             }
 
@@ -119,44 +130,63 @@ namespace phosphorus.five.applicationpool
         }
 
         /// <summary>
-        ///     creates a web widget (form) specified through its children nodes
+        ///     Creates a web widget, specified through its children nodes. Creates a wrapper widget, by invoking 
+        ///     [pf.web.widgets.container]. Optionally you can pass in a [parent] node, to decide where you wish
+        ///     to position your widget. If you don't pass in any [parent] node, then the main "container" widget
+        ///     will be used as the parent of your widget. In addition, you can also optionally pass in an [events]
+        ///     node, which if given, should contain a list of "local widget Active Events", which are associated
+        ///     with your widget somehow. These Active Events only exists as long as the widget exists on your page,
+        ///     and will be automatically destroyed when widget is destroyed.
         /// </summary>
-        /// <param name="context">ApplicationContexttionContext"/> for Active Event</param>
+        /// <param name="context">Context for current request</param>
         /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.create-widget")]
         private void pf_web_create_widget (ApplicationContext context, ActiveEventArgs e)
         {
-            // finding parent widget first, which defaults to "container" widget, if no widget is given
-            var parentNode = e.Args.Find (idx => idx.Name == "parent");
+            // finding parent widget first, which defaults to "container" widget, if no parent is given
+            var parentNode = e.Args.Find (idx => idx.Name == "parent" && idx.Value != null);
             var parent = parentNode != null ? FindControl<pf.Container> (parentNode.Get<string> (context), Page) : container;
 
-            // creating widget
+            // creating widget. since CreateForm modifies node given, by e.g. adding the parent widget as [_parent],
+            // we need to clone this node before passing it into our creation logic
             var creationalArgs = e.Args.Clone ();
             CreateForm (context, creationalArgs, parent);
             var widget = creationalArgs.Get<Control> (context);
 
-            // creating events for widget
+            // initializing Active Events for widget, if there are any given
             var eventNode = e.Args.Find (idx => idx.Name == "events");
-            if (eventNode != null) {
+            if (eventNode != null)
                 CreateWidgetEvents (widget, eventNode, context);
-            }
         }
 
         /*
-         * creates events for web widget created through [pf.web.create-widget]
+         * creates widget according to node given, and returns to caller
          */
+        private void CreateForm (ApplicationContext context, Node node, pf.Container parent)
+        {
+            node.Insert (0, new Node ("__parent", parent));
+            node.Insert (1, new Node ("_form-id", node.Value));
+            context.Raise ("pf.web.widgets.container", node);
+        }
 
+        /*
+         * creates local widget events for web widgets created through [pf.web.create-widget]
+         */
         private void CreateWidgetEvents (Control widget, Node eventNode, ApplicationContext context)
         {
             foreach (var idxEvt in XUtil.Iterate<Node> (eventNode, context, true)) {
 
                 // checking to see if there's already an existing event with the given name
-                if (!PageEvents.ContainsKey (idxEvt.Name)) {
-                    PageEvents [idxEvt.Name] = new List<Tuple<string, Node>> ();
+                if (!PageActiveEvents.ContainsKey (idxEvt.Name)) {
+                    PageActiveEvents [idxEvt.Name] = new List<Tuple<string, List<Node>>> ();
                 }
 
                 // adding event, cloning node
-                PageEvents [idxEvt.Name].Add (new Tuple<string, Node> (widget.ID, idxEvt.Clone ()));
+                var tpl = new Tuple<string, List<Node>> (widget.ID, new List<Node> ());
+                foreach (var idxLambda in idxEvt.FindAll ((idxEvtChild) => idxEvtChild.Name.StartsWith ("lambda", StringComparison.Ordinal))) {
+                    tpl.Item2.Add (idxLambda.Clone ());
+                }
+                PageActiveEvents[idxEvt.Name].Add(tpl);
             }
         }
 
@@ -168,17 +198,30 @@ namespace phosphorus.five.applicationpool
         [ActiveEvent (Name = "")]
         private void null_handler (ApplicationContext context, ActiveEventArgs e)
         {
-            // checking to see if the currently raised Active Event has a calllback within our page
-            if (PageEvents.ContainsKey (e.Name)) {
-                // this Active Event is handled by one of the widgets on this page object
-                // making sure we raise it passing in the arguments passed in to the Active Event cloned
-                foreach (var idxEvt in PageEvents [e.Name]) {
-                    var exeCopy = idxEvt.Item2.Clone ();
-                    exeCopy.Value = e.Args.Value;
-                    foreach (var idxArg in e.Args.Children) {
-                        exeCopy.Add (idxArg.Clone ());
+            // checking to see if the currently raised Active Event has a handler on our page
+            if (PageActiveEvents.ContainsKey (e.Name)) {
+                // keeping a reference to what we add to the current Active Event "root node"
+                // such that we can clean up after ourselves afterwards
+                var lambdas = new List<Node> ();
+
+                // looping through each Active Event handler for current event
+                foreach (var idxEvt in PageActiveEvents [e.Name]) {
+                    foreach (var idxEvtContent in idxEvt.Item2) {
+                        var tmp = idxEvtContent.Clone();
+                        e.Args.Add(tmp);
+                        lambdas.Add(tmp);
                     }
-                    context.Raise ("lambda", exeCopy);
+                }
+
+                // invoking each [lambda.xxx] object from event
+                foreach (var idxLambda in lambdas) {
+                    context.Raise (idxLambda.Name, idxLambda);
+                }
+                
+                // cleaning up after ourselves, deleting only the lambda objects that came
+                // from our dynamically created event
+                foreach (var idxLambda in lambdas) {
+                    idxLambda.UnTie ();
                 }
             }
         }
@@ -241,17 +284,17 @@ namespace phosphorus.five.applicationpool
         {
             // removing all Active Events for given widget
             var keysToRemove = new List<string> ();
-            foreach (var idxKey in PageEvents.Keys) {
-                var toRemove = PageEvents [idxKey].Where (idxTuple => idxTuple.Item1 == widget.ID).ToList ();
+            foreach (var idxKey in PageActiveEvents.Keys) {
+                var toRemove = PageActiveEvents [idxKey].Where (idxTuple => idxTuple.Item1 == widget.ID).ToList ();
                 foreach (var idxToRemove in toRemove) {
-                    PageEvents [idxKey].Remove (idxToRemove);
+                    PageActiveEvents [idxKey].Remove (idxToRemove);
                 }
-                if (PageEvents [idxKey].Count == 0) {
+                if (PageActiveEvents [idxKey].Count == 0) {
                     keysToRemove.Add (idxKey);
                 }
             }
             foreach (var idxKeyToRemove in keysToRemove) {
-                PageEvents.Remove (idxKeyToRemove);
+                PageActiveEvents.Remove (idxKeyToRemove);
             }
 
             // looping through all child widgets, and removing those, by recursively calling self
@@ -384,17 +427,6 @@ namespace phosphorus.five.applicationpool
             if (idx.ID == id)
                 return idx as T;
             return (from Control idxChild in idx.Controls select FindControl<T> (id, idxChild)).FirstOrDefault (tmpRet => tmpRet != null);
-        }
-
-        /*
-         * creates widget according to node given, and returns to caller
-         */
-
-        private void CreateForm (ApplicationContext context, Node node, pf.Container parent)
-        {
-            node.Insert (0, new Node ("__parent", parent));
-            node.Insert (1, new Node ("_form-id", node.Value));
-            context.Raise ("pf.web.widgets.container", node);
         }
 
         /*

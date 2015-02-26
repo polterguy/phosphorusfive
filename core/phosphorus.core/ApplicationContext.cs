@@ -285,20 +285,26 @@ namespace phosphorus.core
 
         private void RaiseDirectly (ActiveEventArgs e)
         {
-            // first looping through all "null Active Event handlers" and raising these
-            if (_registeredActiveEvents.ContainsKey ("")) {
-                foreach (var idxMethod in _registeredActiveEvents [""]) {
-                    idxMethod.Item1.Invoke (idxMethod.Item2, new object[] {this, e});
+            // checking if we have any handlers
+            if (_registeredActiveEvents.ContainsKey (e.Name)) {
+                // looping through all Active Events handlers for the given Active Event name, and invoking them
+                foreach (var idxMethod in _registeredActiveEvents [e.Name]) {
+                    idxMethod.Item1.Invoke (idxMethod.Item2, new object[] { this, e });
                 }
             }
 
-            if (!_registeredActiveEvents.ContainsKey (e.Name))
-                return; // no Active Event registered with that name
-
-            // looping through all Active Events handlers for the given Active Event name, and
-            // invoking them
-            foreach (var idxMethod in _registeredActiveEvents [e.Name]) {
-                idxMethod.Item1.Invoke (idxMethod.Item2, new object[] {this, e});
+            // then looping through all "null Active Event handlers" afterwards
+            // ORDER COUNTS. Since most native Active Events are dependent upon arguments
+            // being specifically ordered somehow, we must wait until after we have raised
+            // all "native Active Events", before we raise all "null Active Event handlers".
+            // this is because "null event handlers" might possibly append nodes to the current
+            // Active Event's "root node", and hence mess up the parameter passing of native Active
+            // Events, that also have "null event handlers", where these null event handlers,
+            // are handling events, existing also as "native Active Event handlers"
+            if (_registeredActiveEvents.ContainsKey (string.Empty)) {
+                foreach (var idxMethod in _registeredActiveEvents [string.Empty]) {
+                    idxMethod.Item1.Invoke (idxMethod.Item2, new object[] {this, e});
+                }
             }
         }
     }

@@ -32,8 +32,8 @@ namespace phosphorus.expressions.iterators
         /// <param name="context">application context</param>
         public IteratorNamedRegex (string regex, string expression, Node node, ApplicationContext context)
         {
-            _regex = regex.Substring (1, regex.LastIndexOf ("/", StringComparison.InvariantCulture) - 1);
-            _options = regex.Substring (regex.LastIndexOf ("/", StringComparison.InvariantCulture) + 1);
+            _regex = regex.Substring (1, regex.LastIndexOf ("/", StringComparison.Ordinal) - 1);
+            _options = regex.Substring (regex.LastIndexOf ("/", StringComparison.Ordinal) + 1);
             _expression = expression;
             _node = node;
             _context = context;

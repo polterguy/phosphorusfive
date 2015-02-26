@@ -111,7 +111,7 @@ namespace phosphorus.data
                 var folderNode = new Node (
                     string.Empty,
                     fileNode.Get<string> (context)
-                        .Substring (0, fileNode.Get<string> (context).LastIndexOf ("/", StringComparison.InvariantCulture)));
+                        .Substring (0, fileNode.Get<string> (context).LastIndexOf ("/", StringComparison.Ordinal)));
                 context.Raise ("pf.file.list-files", folderNode);
                 if (folderNode.Count == 0) {
                     context.Raise ("pf.folder.remove", folderNode);

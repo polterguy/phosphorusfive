@@ -112,7 +112,7 @@ namespace phosphorus.core
                 name += ".dll";
 
             // checking to see if assembly is already loaded
-            if (_assemblies.Exists (idx => String.Equals (idx.ManifestModule.Name, name, StringComparison.InvariantCulture)))
+            if (_assemblies.Exists (idx => String.Equals (idx.ManifestModule.Name, name, StringComparison.Ordinal)))
                 return;
 
             // checking our current AppDomain to see if assembly is already a part of our AppDomain

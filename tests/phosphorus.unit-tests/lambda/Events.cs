@@ -226,11 +226,14 @@ test.foo13
         }
 
         [ActiveEvent (Name = "test.hardcoded")]
-        private static void test_hardcoded (ApplicationContext context, ActiveEventArgs e) { e.Args.Value += "ess"; }
+        private static void test_hardcoded (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value += "succ";
+        }
 
         /// <summary>
         ///     creates an Active Event that already exists as a C# Active Event, verifying both are called,
-        ///     and that "dynamically created" event is invoked first
+        ///     and that "dynamically created" event is invoked last
         /// </summary>
         [Test]
         public void Events12 ()
@@ -238,7 +241,8 @@ test.foo13
             var node = ExecuteLambda (@"event:test.hardcoded
   lambda
     set:@/././?value
-      source:succ
+      source:{0}ess
+        :@/./././.?value
 test.hardcoded");
             Assert.AreEqual ("success", node [1].Value);
         }

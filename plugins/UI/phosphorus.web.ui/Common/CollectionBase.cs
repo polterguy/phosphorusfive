@@ -105,7 +105,7 @@ namespace phosphorus.web.ui.Common
                     node.Add (idxKey);
                 } else {
                     // filter was given, checking if key matches one of our filters
-                    if (filter.Any (idxFilter => idxKey.IndexOf (idxFilter, StringComparison.InvariantCulture) != -1)) {
+                    if (filter.Any (idxFilter => idxKey.IndexOf (idxFilter, StringComparison.Ordinal) != -1)) {
                         node.Add (idxKey);
                     }
                 }

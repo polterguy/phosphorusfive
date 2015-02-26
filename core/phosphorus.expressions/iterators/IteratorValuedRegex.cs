@@ -35,16 +35,16 @@ namespace phosphorus.expressions.iterators
         {
             get
             {
-                if (_value.LastIndexOf ("/", StringComparison.InvariantCulture) == 0)
+                if (_value.LastIndexOf ("/", StringComparison.Ordinal) == 0)
                     throw new ExpressionException (
                         _expression,
                         "token; '" + _value + "' is not a valid regular expression, missing back slash at end of regex.",
                         _node,
                         _context);
-                var optionsString = _value.Substring (_value.LastIndexOf ("/", StringComparison.InvariantCulture) + 1);
+                var optionsString = _value.Substring (_value.LastIndexOf ("/", StringComparison.Ordinal) + 1);
                 var distinct = optionsString.IndexOf ('d') > -1;
                 var regex = new Regex (
-                    _value.Substring (1, _value.LastIndexOf ("/", StringComparison.InvariantCulture) - 1),
+                    _value.Substring (1, _value.LastIndexOf ("/", StringComparison.Ordinal) - 1),
                     GetOptions (optionsString));
                 if (distinct) {
                     // requesting "distinct" (unique) values
