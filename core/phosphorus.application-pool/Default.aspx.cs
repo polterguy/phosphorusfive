@@ -148,10 +148,14 @@ namespace phosphorus.five.applicationpool
 
         private void CreateWidgetEvents (Control widget, Node eventNode, ApplicationContext context)
         {
-            foreach (var idxEvt in XUtil.IterateChildren (eventNode, context)) {
+            foreach (var idxEvt in XUtil.Iterate<Node> (eventNode, context, true)) {
+
+                // checking to see if there's already an existing event with the given name
                 if (!PageEvents.ContainsKey (idxEvt.Name)) {
                     PageEvents [idxEvt.Name] = new List<Tuple<string, Node>> ();
                 }
+
+                // adding event, cloning node
                 PageEvents [idxEvt.Name].Add (new Tuple<string, Node> (widget.ID, idxEvt.Clone ()));
             }
         }

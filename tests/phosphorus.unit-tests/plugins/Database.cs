@@ -19,16 +19,8 @@ namespace phosphorus.unittests.plugins
     public class Database : TestBase
     {
         public Database ()
-        {
-            // making sure we load our necessary assemblies
-            Loader.Instance.LoadAssembly ("phosphorus.types");
-            Loader.Instance.LoadAssembly ("phosphorus.unit-tests");
-            Loader.Instance.LoadAssembly ("phosphorus.hyperlisp");
-            Loader.Instance.LoadAssembly ("phosphorus.lambda");
-            Loader.Instance.LoadAssembly ("phosphorus.file");
-            Loader.Instance.LoadAssembly ("phosphorus.data");
-            Context = Loader.Instance.CreateApplicationContext ();
-        }
+            : base ("phosphorus.types", "phosphorus.hyperlisp", "phosphorus.lambda", "phosphorus.file", "phosphorus.data")
+        { }
 
         /*
          * runs before every unit test, deletes all documents from "unit_tests"

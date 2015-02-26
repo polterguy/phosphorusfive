@@ -48,6 +48,18 @@ namespace phosphorus.unittests
         }
 
         /// <summary>
+        /// creates a pf.lambda Node from the given Hyperlisp
+        /// </summary>
+        /// <returns>pf.lambda result nodes</returns>
+        /// <param name="hyperlisp">Hyperlisp you wish to execute</param>
+        protected Node CreateNode (string hyperlisp)
+        {
+            var node = new Node { Value = hyperlisp };
+            Context.Raise ("pf.hyperlisp.hyperlisp2lambda", node);
+            return node;
+        }
+
+        /// <summary>
         /// retrieves the base path to where your unit test dll is on disc
         /// </summary>
         /// <returns>path</returns>

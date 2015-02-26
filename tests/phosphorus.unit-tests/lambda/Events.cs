@@ -3,6 +3,7 @@
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
  */
 
+using System.Linq;
 using NUnit.Framework;
 using phosphorus.core;
 
@@ -15,7 +16,7 @@ namespace phosphorus.unittests.lambda
     public class Events : TestBase
     {
         public Events ()
-            : base ("phosphorus.hyperlisp", "phosphorus.lambda", "phosphorus.types", "phosphorus.unit-tests") { }
+            : base ("phosphorus.hyperlisp", "phosphorus.lambda", "phosphorus.types", "phosphorus.meta") { }
 
         /// <summary>
         ///     creates a simple event, and invokes it, to verify events works as they should
@@ -260,6 +261,135 @@ test.foo14
 test.foo14");
             Assert.AreEqual ("", node [1].Value);
             Assert.AreEqual ("success", node [2].Value);
+        }
+
+        [ActiveEvent (Name = "test.static.event-1")]
+        [ActiveEvent (Name = "test.static.event-2")]
+        private static void test_static_event_1 (ApplicationContext context, ActiveEventArgs e)
+        { }
+
+        /// <summary>
+        ///     verifies that [pf.meta.list-event] works correctly when having no filter, and Active Event
+        ///     is supposed to return two statically created Active Events
+        /// </summary>
+        [Test]
+        public void Events14 ()
+        {
+            var node = ExecuteLambda (@"pf.meta.list-events");
+            Assert.IsTrue (node [0].Children.SingleOrDefault (idx => "test.static.event-1".Equals (idx.Value)) != null);
+            Assert.IsTrue (node [0].Children.SingleOrDefault (idx => "test.static.event-2".Equals (idx.Value)) != null);
+        }
+
+        /// <summary>
+        ///     verifies that [pf.meta.list-event] works correctly when having a string filter, and Active Event
+        ///     is supposed to return two statically created Active Events
+        /// </summary>
+        [Test]
+        public void Events15 ()
+        {
+            var node = ExecuteLambda (@"pf.meta.list-events:test.static.event-");
+            Assert.AreEqual (2, node [0].Count);
+            Assert.IsTrue (node [0].Children.SingleOrDefault (idx => "test.static.event-1".Equals (idx.Value)) != null);
+            Assert.IsTrue (node [0].Children.SingleOrDefault (idx => "test.static.event-2".Equals (idx.Value)) != null);
+        }
+
+        /// <summary>
+        ///     verifies that [pf.meta.list-event] works correctly when having a filter being a 'value' expression, and Active Event
+        ///     is supposed to return two statically created Active Events
+        /// </summary>
+        [Test]
+        public void Events16 ()
+        {
+            var node = ExecuteLambda (@"_filter:test.static.event-
+pf.meta.list-events:@/-?value");
+            Assert.AreEqual (2, node [1].Count);
+            Assert.IsTrue (node [1].Children.SingleOrDefault (idx => "test.static.event-1".Equals (idx.Value)) != null);
+            Assert.IsTrue (node [1].Children.SingleOrDefault (idx => "test.static.event-2".Equals (idx.Value)) != null);
+        }
+
+        /// <summary>
+        ///     verifies that [pf.meta.list-event] works correctly when having a filter being a 'value' expression,
+        ///     and value is a list of reference node, which is supposed to be converted into string, and Active Event
+        ///     is supposed to return two statically created Active Events
+        /// </summary>
+        [Test]
+        public void Events17 ()
+        {
+            var node = ExecuteLambda (@"_filter:node:""test.static.event-""
+pf.meta.list-events:@/-?value");
+            Assert.AreEqual (2, node [1].Count);
+            Assert.IsTrue (node [1].Children.SingleOrDefault (idx => "test.static.event-1".Equals (idx.Value)) != null);
+            Assert.IsTrue (node [1].Children.SingleOrDefault (idx => "test.static.event-2".Equals (idx.Value)) != null);
+        }
+
+        /// <summary>
+        ///     verifies that [pf.meta.list-event] works correctly when having a filter, which is a reference expression,
+        ///     leading another expression, leading to multiple nodes, where each node's value is an exact match, and Active Event
+        ///     is supposed to return two statically created Active Events
+        /// </summary>
+        [Test]
+        public void Events18 ()
+        {
+            var node = ExecuteLambda (@"_filter:@/*?value
+  :test.static.event-1
+  :test.static.event-2
+pf.meta.list-events:@@/-?value");
+            Assert.AreEqual (2, node [1].Count);
+            Assert.IsTrue (node [1].Children.SingleOrDefault (idx => "test.static.event-1".Equals (idx.Value)) != null);
+            Assert.IsTrue (node [1].Children.SingleOrDefault (idx => "test.static.event-2".Equals (idx.Value)) != null);
+        }
+
+        /// <summary>
+        ///     verifies that [pf.meta.list-event] works correctly when having a filter, which leads to nothing, 
+        ///     and Active Event is supposed to return nothing
+        /// </summary>
+        [Test]
+        public void Events19 ()
+        {
+            var node = ExecuteLambda (@"pf.meta.list-events:@/-?value");
+            Assert.AreEqual (0, node [0].Count);
+        }
+
+        /// <summary>
+        ///     verifies that [pf.meta.list-event] works correctly when having a filter, which is a reference expression,
+        ///     leading another expression, leading to a single node, where that node's value is an exact match, and Active Event
+        ///     is supposed to return two statically created Active Events
+        /// </summary>
+        [Test]
+        public void Events20 ()
+        {
+            var node = ExecuteLambda (@"_filter:@/*?value
+  :test.static.event-
+pf.meta.list-events:@@/-?value");
+            Assert.AreEqual (2, node [1].Count);
+            Assert.IsTrue (node [1].Children.SingleOrDefault (idx => "test.static.event-1".Equals (idx.Value)) != null);
+            Assert.IsTrue (node [1].Children.SingleOrDefault (idx => "test.static.event-2".Equals (idx.Value)) != null);
+        }
+
+        /// <summary>
+        ///     verifies that [pf.meta.list-event] works correctly when having a filter, which is a reference expression,
+        ///     leading another expression, leading to a single node, where that node's value is an exact match, and Active Event
+        ///     is supposed to return one statically created Active Events
+        /// </summary>
+        [Test]
+        public void Events21 ()
+        {
+            var node = ExecuteLambda (@"_filter:@/*?value
+  :test.static.event-1
+pf.meta.list-events:@@/-?value");
+            Assert.AreEqual (1, node [1].Count);
+            Assert.IsTrue (node [1].Children.SingleOrDefault (idx => "test.static.event-1".Equals (idx.Value)) != null);
+        }
+
+        /// <summary>
+        ///     verifies that [pf.meta.list-event] works correctly and returns static events as [static] node names
+        /// </summary>
+        [Test]
+        public void Events22 ()
+        {
+            var node = ExecuteLambda (@"pf.meta.list-events:test.static.event-1");
+            Assert.AreEqual (1, node [0].Count);
+            Assert.IsTrue (node [0].Children.SingleOrDefault (idx => "static".Equals (idx.Name)) != null);
         }
 
         /// <summary>

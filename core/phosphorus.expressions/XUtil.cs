@@ -24,7 +24,10 @@ namespace phosphorus.expressions
         /// </summary>
         /// <returns><c>true</c> if value is an expression; otherwise, <c>false</c></returns>
         /// <param name="value">value to check</param>
-        public static bool IsExpression (object value) { return value != null && IsExpression (value as string); }
+        public static bool IsExpression (object value)
+        {
+            return IsExpression (value as string);
+        }
 
         /// <summary>
         ///     returns true if value is an expression
@@ -33,6 +36,7 @@ namespace phosphorus.expressions
         /// <param name="value">value to check</param>
         public static bool IsExpression (string value)
         {
+            // TODO: simplify, needs support for expressions on multiple lines, having first iterator on second line
             return value != null &&
                    value.StartsWith ("@") &&
                    value.Length >= 4 && // "@{0}" is the shortest possible expression, and has 4 characters
@@ -108,7 +112,10 @@ namespace phosphorus.expressions
         /// <param name="context">application context</param>
         public static string FormatNode (
             Node node,
-            ApplicationContext context) { return FormatNode (node, node, context); }
+            ApplicationContext context)
+        {
+            return FormatNode (node, node, context);
+        }
 
         /// <summary>
         ///     formats the node's value as a string.Format expression, using each child node
@@ -161,10 +168,13 @@ namespace phosphorus.expressions
         /// <param name="context">application context</param>
         /// <param name="defaultValue">default value</param>
         /// <typeparam name="T">the type you wish to convert the node's value into</typeparam>
-        private static T TryFormat<T> (
+        public static T TryFormat<T> (
             Node node,
             ApplicationContext context,
-            T defaultValue = default(T)) { return TryFormat (node, node, context, defaultValue); }
+            T defaultValue = default(T))
+        {
+            return TryFormat (node, node, context, defaultValue);
+        }
 
         /// <summary>
         ///     checks if node is formatted, and if it is, it will format the node, and return the
@@ -176,11 +186,14 @@ namespace phosphorus.expressions
         /// <param name="context">application context</param>
         /// <param name="defaultValue">default value</param>
         /// <typeparam name="T">the type you wish to convert the node's value into</typeparam>
-        private static T TryFormat<T> (
+        public static T TryFormat<T> (
             Node node,
             Node dataSource,
             ApplicationContext context,
-            T defaultValue = default(T)) { return Utilities.Convert (IsFormatted (node) ? FormatNode (node, dataSource, context) : node.Value, context, defaultValue); }
+            T defaultValue = default(T))
+        {
+            return Utilities.Convert (IsFormatted (node) ? FormatNode (node, dataSource, context) : node.Value, context, defaultValue);
+        }
 
         /// <summary>
         ///     returns a single value of type T from the constant or expression in node's value. if node's value
@@ -198,7 +211,10 @@ namespace phosphorus.expressions
         public static T Single<T> (
             Node node,
             ApplicationContext context,
-            T defaultValue = default (T)) { return Single (node, node, context, defaultValue); }
+            T defaultValue = default (T))
+        {
+            return Single (node, node, context, defaultValue);
+        }
 
         /// <summary>
         ///     returns a single value of type T from the constant or expression in node's value. if node's value
@@ -221,7 +237,10 @@ namespace phosphorus.expressions
             Node node,
             Node dataSource,
             ApplicationContext context,
-            T defaultValue = default (T)) { return SingleImplementation (() => Iterate<T> (node, dataSource, context), context, defaultValue); }
+            T defaultValue = default (T))
+        {
+            return SingleImplementation (() => Iterate<T> (node, dataSource, context), context, defaultValue);
+        }
 
         /// <summary>
         ///     returns a single value of type T from the result of the expression given. if
@@ -240,7 +259,10 @@ namespace phosphorus.expressions
             string expression,
             Node dataSource,
             ApplicationContext context,
-            T defaultValue = default (T)) { return SingleImplementation (() => Iterate<T> (expression, dataSource, context), context, defaultValue); }
+            T defaultValue = default (T))
+        {
+            return SingleImplementation (() => Iterate<T> (expression, dataSource, context), context, defaultValue);
+        }
 
         /// <summary>
         ///     iterates the given node's value, which might be either an expression or a constant. if node's
@@ -252,8 +274,13 @@ namespace phosphorus.expressions
         /// </summary>
         /// <param name="node">node who's value will be evaluated</param>
         /// <param name="context">application context</param>
+        /// <param name="iterateChildren">if true, and object is converted from string, then children of that generated node
+        /// will be iterated, and not the automatically generated root node, created during string conversion</param>
         /// <typeparam name="T">type of object you wish to retrieve</typeparam>
-        public static IEnumerable<T> Iterate<T> (Node node, ApplicationContext context) { return Iterate<T> (node, node, context); }
+        public static IEnumerable<T> Iterate<T> (Node node, ApplicationContext context, bool iterateChildren = false)
+        {
+            return Iterate<T> (node, node, context, iterateChildren);
+        }
 
         /// <summary>
         ///     iterates the given node's value, which might be either an expression or a constant. if node's
@@ -266,22 +293,33 @@ namespace phosphorus.expressions
         /// <param name="node">node who's value will be evaluated</param>
         /// <param name="dataSource">node to use as start node for any expressions within formatting parameters</param>
         /// <param name="context">application context</param>
+        /// <param name="iterateChildren">if true, and object is converted from string, then children of that generated node
+        /// will be iterated, and not the automatically generated root node, created during string conversion</param>
         /// <typeparam name="T">type of object you wish to retrieve</typeparam>
         public static IEnumerable<T> Iterate<T> (
             Node node,
             Node dataSource,
-            ApplicationContext context)
+            ApplicationContext context,
+            bool iterateChildren = false)
         {
             if (IsExpression (node.Value)) {
                 // node's value is expression, iterating expression result, yielding back to caller
                 var exp = TryFormat<string> (node, dataSource, context);
-                foreach (var idx in Iterate<T> (exp, dataSource, context)) {
+                foreach (var idx in Iterate<T> (exp, dataSource, context, iterateChildren)) {
                     yield return idx;
                 }
             } else if (node.Value != null) {
                 // node's value is not null, converting value to type requested, possibly triggering a
                 // formatting operation, and yielding the result back to caller
-                yield return TryFormat<T> (node, dataSource, context);
+                if (iterateChildren && typeof (T) == typeof (Node)) {
+                    // node's value is either a Node, or something which will be converted into a node,
+                    // and since caller requests to iterate its children, we do just that
+                    foreach (var idx in TryFormat<Node> (node, dataSource, context).Children) {
+                        yield return Utilities.Convert<T> (idx, context);
+                    }
+                } else {
+                    yield return TryFormat<T> (node, dataSource, context);
+                }
             } else if (typeof (T) == typeof (Node)) {
                 // node's value is null, caller requests nodes, 
                 // iterating through children, yielding children back to caller
@@ -301,32 +339,56 @@ namespace phosphorus.expressions
         ///     iterates the given expression on the given dataSource node and converts each result from expression to
         ///     type T before returning back to caller
         /// </summary>
-        /// <param name="expression">expression to run on dataSource</param>
+        /// <param name="expressionOrConstant">expression to run on dataSource</param>
         /// <param name="dataSource">node to use as start node for any expressions within formatting parameters</param>
         /// <param name="context">application context</param>
+        /// <param name="iterateChildren">if true, and object is converted from string, then children of that generated node
+        /// will be iterated, and not the automatically generated root node, created during string conversion</param>
         /// <typeparam name="T">type of object you wish to retrieve</typeparam>
         public static IEnumerable<T> Iterate<T> (
-            string expression,
+            object expressionOrConstant,
             Node dataSource,
-            ApplicationContext context)
+            ApplicationContext context,
+            bool iterateChildren = false)
         {
             // syntax checking
-            if (!IsExpression (expression))
-                throw new ExpressionException (expression, dataSource, context);
-
-            // creating a match object
-            var match = Expression.Create (expression).Evaluate (dataSource, context);
-
-            // checking type of match
-            if (match.TypeOfMatch == Match.MatchType.count) {
-                // if expression is of type 'count', we return 'count', possibly triggering
-                // a conversion, returning count as type T, hence only iterating once
-                yield return Utilities.Convert<T> (match.Count, context);
+            if (!IsExpression (expressionOrConstant)) {
+                if (expressionOrConstant != null) {
+                    if (iterateChildren && typeof (T) == typeof (Node) && expressionOrConstant is Node) {
+                        // user requests to iterate children, and since value already is a node, we
+                        // iterate the children of that node, instead of the node itself
+                        foreach (var idxInner in Utilities.Convert<Node> (expressionOrConstant, context).Children) {
+                            yield return Utilities.Convert<T> (idxInner, context);
+                        }
+                    } else {
+                        yield return Utilities.Convert<T> (expressionOrConstant, context);
+                    }
+                }
             } else {
-                // caller requested anything but 'count', we return it as type T, possibly triggering
-                // a conversion
-                foreach (var idx in match) {
-                    yield return Utilities.Convert<T> (idx.Value, context);
+
+                // we have an expression, creating a match object
+                var match = Expression.Create (Utilities.Convert<string> (expressionOrConstant, context)).Evaluate (dataSource, context);
+
+                // checking type of match
+                if (match.TypeOfMatch == Match.MatchType.count) {
+                    // if expression is of type 'count', we return 'count', possibly triggering
+                    // a conversion, returning count as type T, hence only iterating once
+                    yield return Utilities.Convert<T> (match.Count, context);
+                } else {
+                    // caller requested anything but 'count', we return it as type T, possibly triggering
+                    // a conversion
+                    foreach (var idx in match) {
+                        if (iterateChildren && typeof (T) == typeof (Node)) {
+                            // user requested to iterateChildren, and since current match triggers a conversion,
+                            // we iterate the children of that conversion, and not the automatically generated
+                            // root node
+                            foreach (var idxInner in Utilities.Convert<Node> (idx.Value, context).Children) {
+                                yield return Utilities.Convert<T> (idxInner, context);
+                            }
+                        } else {
+                            yield return Utilities.Convert<T> (idx.Value, context);
+                        }
+                    }
                 }
             }
         }
@@ -339,7 +401,10 @@ namespace phosphorus.expressions
         /// <param name="context">application context</param>
         public static IEnumerable<MatchEntity> Iterate (
             Node node,
-            ApplicationContext context) { return Iterate (node, node, context); }
+            ApplicationContext context)
+        {
+            return Iterate (node, node, context);
+        }
 
         /// <summary>
         ///     returns all matches from expression in node. node may contain formatting parameters, which will
@@ -400,47 +465,6 @@ namespace phosphorus.expressions
             return match;
         }
 
-        // TODO: do we really need this one, we've got IterateNodes and Iterate, which checks for T being Node ...?
-        /// <summary>
-        ///     retrieves a list of nodes from the given node somehow
-        /// </summary>
-        /// <returns>a list of nodes</returns>
-        /// <param name="node">node containing either an expression leading to your node list, or a list of children</param>
-        /// <param name="context">application context</param>
-        public static IEnumerable<Node> IterateChildren (
-            Node node,
-            ApplicationContext context)
-        {
-            if (node.Value == null) {
-                // returning children of given node
-                foreach (var idxChild in node.Children) {
-                    yield return idxChild;
-                }
-            } else if (IsExpression (node.Value)) {
-                // node's value is expression, depending upon type of expression, we either return nodes directly,
-                // or children of match converted to node
-                foreach (var idxMatch in Iterate (node, context)) {
-                    if (idxMatch.TypeOfMatch == Match.MatchType.node) {
-                        // node match, returning node directly
-                        yield return Utilities.Convert<Node> (idxMatch.Value, context);
-                    } else {
-                        // not a node match, converting match to node, and returning children of that node
-                        // since conversion to node will create a "root wrapper node", we return that node's children,
-                        // to eliminate the automatically generated "root node"
-                        foreach (var innerNode in Utilities.Convert<Node> (idxMatch.Value, context).Children) {
-                            yield return innerNode;
-                        }
-                    }
-                }
-            } else {
-                // value of node is either a node itself, or a string that'll be converted to a node,
-                // we return children of value, converting if necessary
-                foreach (var innerNode in Utilities.Convert<Node> (node.Value, context).Children) {
-                    yield return innerNode;
-                }
-            }
-        }
-
         /// <summary>
         ///     retrieves the value of [source], or [src] child node, converted into T. returns null if no source exists.
         ///     does not care about whether or not there are multiple values, and will return a List if there are, though
@@ -448,7 +472,10 @@ namespace phosphorus.expressions
         /// </summary>
         /// <param name="node">node where [source], [rel-source], [rel-src] or [src] is expected to be a child</param>
         /// <param name="context">application context</param>
-        public static object Source (Node node, ApplicationContext context) { return Source (node, node.LastChild, context); }
+        public static object Source (Node node, ApplicationContext context)
+        {
+            return Source (node, node.LastChild, context);
+        }
 
         // TODO: refactor these next buggers, they're too complex
         /// <summary>
@@ -511,7 +538,10 @@ namespace phosphorus.expressions
         /// </summary>
         /// <param name="node">node where [source], [rel-source], [rel-src] or [src] is expected to be a child</param>
         /// <param name="context">application context</param>
-        public static object SourceSingle (Node node, ApplicationContext context) { return SourceSingle (node, node.LastChild, context); }
+        public static object SourceSingle (Node node, ApplicationContext context)
+        {
+            return SourceSingle (node, node.LastChild, context);
+        }
 
         /// <summary>
         ///     retrieves the value of [source], or [src] child node(s), forcing one single return value, somehow.
@@ -559,7 +589,10 @@ namespace phosphorus.expressions
         /// </summary>
         /// <param name="node">node where [source] or [src] is expected to be a child</param>
         /// <param name="context">application context</param>
-        public static List<Node> SourceNodes (Node node, ApplicationContext context) { return SourceNodes (node, node.LastChild, context); }
+        public static List<Node> SourceNodes (Node node, ApplicationContext context)
+        {
+            return SourceNodes (node, node.LastChild, context);
+        }
 
         /// <summary>
         ///     retrieves the value of [source], [rel-source], [rel-src], or [src] child node.
@@ -654,7 +687,6 @@ namespace phosphorus.expressions
          * common implementation for Single<T> methods. requires a delegate responsible for returning
          * the IEnumerable that the method iterates over
          */
-
         private static T SingleImplementation<T> (
             SingleDelegate<T> functor,
             ApplicationContext context,

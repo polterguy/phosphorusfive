@@ -28,18 +28,20 @@ namespace phosphorus.meta
         private static void pf_meta_list_events (ApplicationContext context, ActiveEventArgs e)
         {
             // retrieving filter, if any
-            var filter = new List<string> (e.Args.Value == null ? new string[] {} : XUtil.Iterate<string> (e.Args, context));
+            var filter = new List<string> (XUtil.Iterate<string> (XUtil.TryFormat<object> (e.Args, context), e.Args, context));
+            if (e.Args.Value != null && filter.Count == 0)
+                return; // possibly a filter expression, leading into oblivion
 
             // looping through each Active Event from core
             foreach (var idx in context.ActiveEvents) {
                 // checking to see if we have any filter
                 if (filter.Count == 0) {
                     // no filter(s) given, slurping up everything
-                    e.Args.Add (new Node (string.Empty, idx));
+                    e.Args.Add (new Node ("static", idx));
                 } else {
                     // we have filter(s), checking to see if Active Event name matches at least one of our filters
                     if (filter.Any (idxFilter => idx.IndexOf (idxFilter, StringComparison.InvariantCulture) != -1)) {
-                        e.Args.Add (new Node (string.Empty, idx));
+                        e.Args.Add (new Node ("static", idx));
                     }
                 }
             }

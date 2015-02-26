@@ -37,7 +37,9 @@ namespace phosphorus.lambda.events
         private static void pf_meta_list_events (ApplicationContext context, ActiveEventArgs e)
         {
             // retrieving filter, if any
-            var filter = new List<string> (e.Args.Value == null ? new string[] {} : XUtil.Iterate<string> (e.Args, context));
+            var filter = new List<string> (XUtil.Iterate<string> (XUtil.TryFormat<object> (e.Args, context), e.Args, context));
+            if (e.Args.Value != null && filter.Count == 0)
+                return; // possibly a filter expression, leading into oblivion
 
             // looping through each Active Event from core
             foreach (var idx in Events.Keys) {
