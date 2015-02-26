@@ -226,6 +226,7 @@ namespace phosphorus.five.applicationpool
             }
         }
 
+        // TODO: verify this works now after changing above logic ...
         /// <summary>
         ///     clears the given widget, removing all its children widgets
         /// </summary>
@@ -239,11 +240,8 @@ namespace phosphorus.five.applicationpool
                 // finding widget with given ID
                 var ctrl = FindControl<pf.Container> (idxCtrlId, Page);
 
-                // removing all Active Event handlers and all Ajax Event handlers for widget
-                foreach (Control idx in ctrl.Controls) {
-                    RemoveActiveEvents (idx);
-                    RemoveEvents (idx);
-                }
+                RemoveActiveEvents (ctrl);
+                RemoveEvents (ctrl);
 
                 // clearing child controls, and re-rendering widget
                 ctrl.Controls.Clear ();

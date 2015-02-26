@@ -309,6 +309,8 @@ namespace phosphorus.expressions
                     yield return idx;
                 }
             } else if (node.Value != null) {
+                // TODO: try to merge with above if statement, since Node version and object version of Iterate here
+                // have overlapping functionality
                 // node's value is not null, converting value to type requested, possibly triggering a
                 // formatting operation, and yielding the result back to caller
                 if (iterateChildren && typeof (T) == typeof (Node)) {
@@ -351,18 +353,20 @@ namespace phosphorus.expressions
             ApplicationContext context,
             bool iterateChildren = false)
         {
-            // syntax checking
+            // ending early, if we're given nothing to iterate
+            if (expressionOrConstant == null)
+                yield break;
+
+            // checking if node's value is an expression
             if (!IsExpression (expressionOrConstant)) {
-                if (expressionOrConstant != null) {
-                    if (iterateChildren && typeof (T) == typeof (Node) && expressionOrConstant is Node) {
-                        // user requests to iterate children, and since value already is a node, we
-                        // iterate the children of that node, instead of the node itself
-                        foreach (var idxInner in Utilities.Convert<Node> (expressionOrConstant, context).Children) {
-                            yield return Utilities.Convert<T> (idxInner, context);
-                        }
-                    } else {
-                        yield return Utilities.Convert<T> (expressionOrConstant, context);
+                if (iterateChildren && typeof (T) == typeof (Node)) {
+                    // user requests to iterate children, therefor we
+                    // iterate the children of our constant node, instead of the node itself
+                    foreach (var idxInner in Utilities.Convert<Node> (expressionOrConstant, context).Children) {
+                        yield return Utilities.Convert<T> (idxInner, context);
                     }
+                } else {
+                    yield return Utilities.Convert<T> (expressionOrConstant, context);
                 }
             } else {
 
