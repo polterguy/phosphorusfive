@@ -9,6 +9,7 @@ using System.Globalization;
 using System.Linq;
 using phosphorus.core;
 using phosphorus.expressions.exceptions;
+// ReSharper disable MemberCanBePrivate.Global
 
 // ReSharper disable CoVariantArrayConversion
 
@@ -277,7 +278,10 @@ namespace phosphorus.expressions
         /// <param name="iterateChildren">if true, and object is converted from string, then children of that generated node
         /// will be iterated, and not the automatically generated root node, created during string conversion</param>
         /// <typeparam name="T">type of object you wish to retrieve</typeparam>
-        public static IEnumerable<T> Iterate<T> (Node node, ApplicationContext context, bool iterateChildren = false)
+        public static IEnumerable<T> Iterate<T> (
+            Node node, 
+            ApplicationContext context, 
+            bool iterateChildren = false)
         {
             return Iterate<T> (node, node, context, iterateChildren);
         }
@@ -293,7 +297,7 @@ namespace phosphorus.expressions
         /// <param name="node">node who's value will be evaluated</param>
         /// <param name="dataSource">node to use as start node for any expressions within formatting parameters</param>
         /// <param name="context">application context</param>
-        /// <param name="iterateChildren">if true, and object is converted from string, then children of that generated node
+        /// <param name="iterateChildren">if true, and results are somehow converted to nodes, then children of that generated node
         /// will be iterated, and not the automatically generated root node, created during string conversion</param>
         /// <typeparam name="T">type of object you wish to retrieve</typeparam>
         public static IEnumerable<T> Iterate<T> (
@@ -302,44 +306,14 @@ namespace phosphorus.expressions
             ApplicationContext context,
             bool iterateChildren = false)
         {
-            if (IsExpression (node.Value)) {
-                // node's value is expression, iterating expression result, yielding back to caller
-                var exp = TryFormat<string> (node, dataSource, context);
-                foreach (var idx in Iterate<T> (exp, dataSource, context, iterateChildren)) {
-                    yield return idx;
-                }
-            } else if (node.Value != null) {
-                // TODO: try to merge with above if statement, since Node version and object version of Iterate here
-                // have overlapping functionality
-                // node's value is not null, converting value to type requested, possibly triggering a
-                // formatting operation, and yielding the result back to caller
-                if (iterateChildren && typeof (T) == typeof (Node)) {
-                    // node's value is either a Node, or something which will be converted into a node,
-                    // and since caller requests to iterate its children, we do just that
-                    foreach (var idx in TryFormat<Node> (node, dataSource, context).Children) {
-                        yield return Utilities.Convert<T> (idx, context);
-                    }
-                } else {
-                    yield return TryFormat<T> (node, dataSource, context);
-                }
-            } else if (typeof (T) == typeof (Node)) {
-                // node's value is null, caller requests nodes, 
-                // iterating through children, yielding children back to caller
-                foreach (var idx in node.Children) {
-                    yield return Utilities.Convert<T> (idx, context);
-                }
-            } else {
-                // node's value is null, caller requests anything but node, iterating children, yielding
-                // values of children, converted to type back to caller
-                foreach (var idx in node.Children) {
-                    yield return idx.Get<T> (context);
-                }
-            }
+            return node.Value != null ? 
+                Iterate<T> (TryFormat<object> (node, dataSource, context), dataSource, context, iterateChildren) : 
+                IterateChildren<T> (node, context);
         }
 
         /// <summary>
-        ///     iterates the given expression on the given dataSource node and converts each result from expression to
-        ///     type T before returning back to caller
+        ///     iterates the given expression or constant on the given dataSource node, and converts each result to
+        ///     type T before yielding results back to caller
         /// </summary>
         /// <param name="expressionOrConstant">expression to run on dataSource</param>
         /// <param name="dataSource">node to use as start node for any expressions within formatting parameters</param>
@@ -355,43 +329,66 @@ namespace phosphorus.expressions
         {
             // ending early, if we're given nothing to iterate
             if (expressionOrConstant == null)
-                yield break;
+                return new T [] {};
 
             // checking if node's value is an expression
-            if (!IsExpression (expressionOrConstant)) {
-                if (iterateChildren && typeof (T) == typeof (Node)) {
-                    // user requests to iterate children, therefor we
-                    // iterate the children of our constant node, instead of the node itself
-                    foreach (var idxInner in Utilities.Convert<Node> (expressionOrConstant, context).Children) {
-                        yield return Utilities.Convert<T> (idxInner, context);
-                    }
-                } else {
-                    yield return Utilities.Convert<T> (expressionOrConstant, context);
-                }
+            if (IsExpression (expressionOrConstant)) {
+
+                // we have an expression, making sure our expression iterator overload is invoked
+                return Iterate<T> (Utilities.Convert<string> (expressionOrConstant, context), dataSource, context, iterateChildren);
+            }
+
+            // checking to see if user requests "children of conversions"
+            if (iterateChildren && typeof (T) == typeof (Node)) {
+                // user requests to iterate children, therefor we
+                // iterate the children of our constant node, instead of the node itself
+                return (IEnumerable<T>) Utilities.Convert<Node> (expressionOrConstant, context).Children;
+            }
+            return new [] { Utilities.Convert<T> (expressionOrConstant, context) };
+        }
+
+        /// <summary>
+        ///     iterates the given expression or constant on the given dataSource node, and converts each result to
+        ///     type T before yielding results back to caller
+        /// </summary>
+        /// <param name="expression">expression to run on dataSource</param>
+        /// <param name="dataSource">node to use as start node for any expressions within formatting parameters</param>
+        /// <param name="context">application context</param>
+        /// <param name="iterateChildren">if true, and object is converted from string, then children of that generated node
+        /// will be iterated, and not the automatically generated root node, created during string conversion</param>
+        /// <typeparam name="T">type of object you wish to retrieve</typeparam>
+        public static IEnumerable<T> Iterate<T> (
+            string expression,
+            Node dataSource,
+            ApplicationContext context,
+            bool iterateChildren = false)
+        {
+            if (!IsExpression (expression))
+                throw new ExpressionException (expression, "Iterate was not given a valid expression", dataSource, context);
+
+            // we have an expression, creating a match object
+            var match = Expression.Create (expression).Evaluate (dataSource, context);
+
+            // checking type of match
+            if (match.TypeOfMatch == Match.MatchType.count) {
+                // if expression is of type 'count', we return 'count', possibly triggering
+                // a conversion, returning count as type T, hence only iterating once
+                yield return Utilities.Convert<T> (match.Count, context);
             } else {
-
-                // we have an expression, creating a match object
-                var match = Expression.Create (Utilities.Convert<string> (expressionOrConstant, context)).Evaluate (dataSource, context);
-
-                // checking type of match
-                if (match.TypeOfMatch == Match.MatchType.count) {
-                    // if expression is of type 'count', we return 'count', possibly triggering
-                    // a conversion, returning count as type T, hence only iterating once
-                    yield return Utilities.Convert<T> (match.Count, context);
-                } else {
-                    // caller requested anything but 'count', we return it as type T, possibly triggering
-                    // a conversion
-                    foreach (var idx in match) {
-                        if (iterateChildren && typeof (T) == typeof (Node)) {
-                            // user requested to iterateChildren, and since current match triggers a conversion,
-                            // we iterate the children of that conversion, and not the automatically generated
-                            // root node
-                            foreach (var idxInner in Utilities.Convert<Node> (idx.Value, context).Children) {
-                                yield return Utilities.Convert<T> (idxInner, context);
-                            }
-                        } else {
-                            yield return Utilities.Convert<T> (idx.Value, context);
+                // caller requested anything but 'count', we return it as type T, possibly triggering
+                // a conversion
+                foreach (var idx in match) {
+                    if (iterateChildren && typeof (T) == typeof (Node)) {
+                        // TODO: verify this becomes correct, when iterating over all sorts of different types of expressions
+                        // e.g. what happens when expression is of type "Node", and no conversion occurs. Is it right to still yield children ...?
+                        // user requested to iterateChildren, and since current match triggers a conversion,
+                        // we iterate the children of that conversion, and not the automatically generated
+                        // root node
+                        foreach (var idxInner in Utilities.Convert<Node> (idx.Value, context).Children) {
+                            yield return Utilities.Convert<T> (idxInner, context);
                         }
+                    } else {
+                        yield return Utilities.Convert<T> (idx.Value, context);
                     }
                 }
             }
@@ -427,6 +424,7 @@ namespace phosphorus.expressions
             return Iterate (exp, dataSource, context);
         }
 
+        // TODO: the next one is only used in [pf.data.select], try to rethink logic of this part, somehow
         /// <summary>
         ///     returns all matches from expression in node. node may contain formatting parameters, which will
         ///     be evaluated before expression, using formattingSource as start node for any expressions within
@@ -662,7 +660,6 @@ namespace phosphorus.expressions
         /*
          * helper method to recursively format node's value
          */
-
         private static string FormatNodeRecursively (
             Node node,
             Node dataSource,
@@ -727,6 +724,29 @@ namespace phosphorus.expressions
             // converted into a string, to make sure we don't convert unless necessary, and keep reference objects
             // stay just that
             return Utilities.Convert (multipleRetVal ?? singleRetVal, context, defaultValue);
+        }
+
+        /*
+         * used internally when somehow requesting children nodes being iterated
+         */
+        private static IEnumerable<T> IterateChildren<T> (
+            Node node,
+            ApplicationContext context)
+        {
+            if (typeof (T) == typeof (Node)) {
+                // node's value is null, caller requests nodes, 
+                // iterating through children of node, yielding results back to caller
+                foreach (var idx in node.Children) {
+                    yield return Utilities.Convert<T> (idx, context);
+                }
+            }
+            else {
+                // node's value is null, caller requests anything but node, iterating children, yielding
+                // values of children, converted to type back to caller
+                foreach (var idx in node.Children) {
+                    yield return idx.Get<T> (context);
+                }
+            }
         }
 
         // used to retrieve items in Single<T> methods
