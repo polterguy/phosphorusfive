@@ -525,7 +525,7 @@ _bar:@@/-?value");
             var node = CreateNode (@"_foo
   foo1:bar1
   foo2:bar2
-_bar:@/-/*?node");
+_bar:@/-?node");
             var result = XUtil.Iterate<Node> (node [1], Context, true)
                 .Aggregate (string.Empty, (current, idx) => current + (idx.Name + ":" + idx.Value + "-"));
             Assert.AreEqual ("foo1:bar1-foo2:bar2-", result);

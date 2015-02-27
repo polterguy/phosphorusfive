@@ -4,8 +4,10 @@
  */
 
 using System;
+using System.Collections.Generic;
 using phosphorus.ajax.widgets;
 using phosphorus.core;
+using phosphorus.expressions;
 using Void = phosphorus.ajax.widgets.Void;
 
 // ReSharper disable UnusedMember.Local
@@ -68,14 +70,17 @@ namespace phosphorus.web.ui.widgets
         /*
          * creates a widget from the given node
          */
-
-        private static T CreateControl<T> (ApplicationContext context, Node node, string elementType, Widget.RenderingType type = Widget.RenderingType.Default) where T : Widget, new ()
+        private static T CreateControl<T> (
+            ApplicationContext context, 
+            Node node, 
+            string elementType, 
+            Widget.RenderingType type = Widget.RenderingType.Default) where T : Widget, new ()
         {
             // creating widget as persistent control
             var parent = node.Find (idx => idx.Name == "__parent").Get<Container> (context);
 
             var widget = parent.CreatePersistentControl<T> (
-                node.Get<string> (context),
+                XUtil.Single<string> (node.Value, node, context),
                 -1,
                 delegate (object sender, EventArgs e) {
                     // hooks up "oninitialload" event, if we're supposed to
@@ -100,17 +105,24 @@ namespace phosphorus.web.ui.widgets
         /*
          * creates the [oninitialload] event for widget, if we should
          */
-
         private static void CreateLoadingEvents (ApplicationContext context, Node node, Widget widget)
         {
             // checking to see if we've got an "initialload" Active Event for widget, and if so, handle it
             var onInitialLoad = node.Find (idx => idx.Name == "oninitialload");
-            if (onInitialLoad != null) {
-                onInitialLoad = onInitialLoad.Clone ();
-                onInitialLoad.Insert (0, new Node ("_form-id", node.Root.Find (idx => idx.Name == "_form-id").Value));
-                onInitialLoad.Insert (1, new Node ("_widget-id", widget.ID));
-                context.Raise ("lambda", onInitialLoad);
+            if (onInitialLoad == null)
+                return;
+
+            // finding lambda object(s) referred to by [oninitialload], and creating our lambda node structure
+            var evtLambdas = new List<Node> (XUtil.Iterate<Node> (onInitialLoad, context, true));
+            var evtNode = new Node ("oninitialload");
+            foreach (var idxLambda in evtLambdas) {
+                evtNode.Add (idxLambda.Clone ());
             }
+            evtNode.Insert (0, new Node ("_form-id", XUtil.Single<string> (node.Find (idx => idx.Name == "_form-id"), context)));
+            evtNode.Insert (1, new Node ("_widget-id", widget.ID));
+
+            // raising [oninitialload] immediately
+            context.Raise ("lambda", evtNode);
         }
 
         /*
@@ -123,20 +135,20 @@ namespace phosphorus.web.ui.widgets
             foreach (var idxArg in args.Children) {
                 switch (idxArg.Name) {
                     case "has-id":
-                        if (!idxArg.Get<bool> (context))
+                        if (!XUtil.Single<bool> (idxArg, context))
                             widget.NoIdAttribute = true;
                         break;
                     case "render-type":
-                        SetRenderType (widget, idxArg.Get<string> (context));
+                        SetRenderType (widget, XUtil.Single<string> (idxArg, context));
                         break;
                     case "element":
-                        SetElementType (widget, idxArg.Get<string> (context));
+                        SetElementType (widget, XUtil.Single<string> (idxArg, context));
                         break;
                     case "controls":
                         CreateChildWidgets (context, widget, idxArg);
                         break;
                     case "checked":
-                        if (idxArg.Value == null || idxArg.Get<bool> (context))
+                        if (XUtil.Single (idxArg, context, true))
                             widget ["checked"] = null;
                         break;
                     case "parent":
@@ -162,7 +174,6 @@ namespace phosphorus.web.ui.widgets
          * ensuring the "name" property is the same as the "ID" of the widget, unless a name property is explicitly given,
          * or element type doesn't necessarily require a "name" to function correctly
          */
-
         private static void EnsureNameProperty (Widget widget)
         {
             // making sure "input", "select" and "textarea" widgets have a name corresponding to 
@@ -186,20 +197,27 @@ namespace phosphorus.web.ui.widgets
         /*
          * sets the rendering type of Widget
          */
-        private static void SetRenderType (Widget widget, string renderType) { widget.RenderType = (Widget.RenderingType) Enum.Parse (typeof (Widget.RenderingType), renderType); }
+        private static void SetRenderType (Widget widget, string renderType)
+        {
+            widget.RenderType = (Widget.RenderingType) Enum.Parse (typeof (Widget.RenderingType), renderType);
+        }
+
         /*
          * changes the ElementType of the Widget
          */
-        private static void SetElementType (Widget widget, string elementType) { widget.ElementType = elementType; }
+        private static void SetElementType (Widget widget, string elementType)
+        {
+            widget.ElementType = elementType;
+        }
+
         /*
          * creates children widgets of widget
          */
-
         private static void CreateChildWidgets (ApplicationContext context, Widget widget, Node children)
         {
-            foreach (var idxChild in children.Children) {
+            foreach (var idxChild in XUtil.Iterate<Node> (children, context, true)) {
                 idxChild.Insert (0, new Node ("__parent", widget));
-                idxChild.Insert (1, new Node ("_form-id", children.Parent.Find (idx => idx.Name == "_form-id").Value));
+                idxChild.Insert (1, new Node ("_form-id", XUtil.Single<string> (children.Parent.Find (idx => idx.Name == "_form-id"), context)));
                 context.Raise ("pf.web.widgets." + idxChild.Name, idxChild);
             }
         }
@@ -214,7 +232,7 @@ namespace phosphorus.web.ui.widgets
                 if (node.Name != "oninitialload")
                     CreateEventHandler (context, widget, node);
             } else if (!node.Name.StartsWith ("_")) {
-                widget [node.Name] = node.Get<string> (context);
+                widget [node.Name] = XUtil.Single<string> (node, context);
             }
         }
 
@@ -234,8 +252,8 @@ namespace phosphorus.web.ui.widgets
                 eventNode.Add (node.Clone ());
 
                 // making sure [_form-id] and [_widget-id] is passed into pf.lambda object as parameters
-                eventNode [0].Insert (0, new Node ("_form-id", node.Root.Find (idx => idx.Name == "_form-id").Value));
-                eventNode [0].Insert (1, new Node ("_widget-id", node.Parent.Value));
+                eventNode [0].Insert (0, new Node ("_form-id", XUtil.Single<string> (node.Parent.Find (idx => idx.Name == "_form-id"), context)));
+                eventNode [0].Insert (1, new Node ("_widget-id", XUtil.Single<string> (node.Parent, context)));
 
                 // raising the Active Event that actually creates our ajax event handler for our pf.lambda object
                 context.Raise ("_pf.web.add-widget-event", eventNode);

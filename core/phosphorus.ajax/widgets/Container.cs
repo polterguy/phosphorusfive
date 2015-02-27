@@ -91,14 +91,16 @@ namespace phosphorus.ajax.widgets
             var control = GetCreator<T> ().Create () as T;
             control.ID = string.IsNullOrEmpty (id) ? CreateId () : id;
 
-            if (onLoad != null) {
-                control.Load += onLoad;
-            }
-
             if (index == -1)
                 Controls.Add (control);
             else
                 Controls.AddAt (index, control);
+
+            if (onLoad != null) {
+                control.Page.LoadComplete += delegate {
+                    onLoad (control, new EventArgs ());
+                };
+            }
 
             // returning newly created control back to caller, such that he can set his properties and such for it
             return control;

@@ -129,6 +129,8 @@ namespace phosphorus.five.applicationpool
             _context.Raise ("pf.web.load-ui", args);
         }
 
+        // TODO: make it possible to append widgets "before" and "after" a specifically given id, expected to be a children control's ID of
+        // the "parent" widget
         /// <summary>
         ///     Creates a web widget, specified through its children nodes. Creates a wrapper widget, by invoking 
         ///     [pf.web.widgets.container]. Optionally you can pass in a [parent] node, to decide where you wish
@@ -145,11 +147,16 @@ namespace phosphorus.five.applicationpool
         {
             // finding parent widget first, which defaults to "container" widget, if no parent is given
             var parentNode = e.Args.Find (idx => idx.Name == "parent" && idx.Value != null);
-            var parent = parentNode != null ? FindControl<pf.Container> (parentNode.Get<string> (context), Page) : container;
+            var parent = parentNode != null ? FindControl<pf.Container> (XUtil.Single<string> (parentNode, context), Page) : container;
 
             // creating widget. since CreateForm modifies node given, by e.g. adding the parent widget as [_parent],
-            // we need to clone this node before passing it into our creation logic
-            var creationalArgs = e.Args.Clone ();
+            // we need to clone this node, before passing it into our creation logic
+            // and since properties of widget might contain expressions, we clone the root node of our entire
+            // execution tree, for then to find our [pf.web.create-widget] statement within our cloned version, passing
+            // it in as a reference to our creational method
+            // TODO: try to change logic such that it works the same way [lambda.immutable] works, to use less resources
+            var creationalArgsRoot = e.Args.Root.Clone ();
+            var creationalArgs = creationalArgsRoot.Find (e.Args.Path);
             CreateForm (context, creationalArgs, parent);
             var widget = creationalArgs.Get<Control> (context);
 
@@ -162,7 +169,7 @@ namespace phosphorus.five.applicationpool
         /*
          * creates widget according to node given, and returns to caller
          */
-        private void CreateForm (ApplicationContext context, Node node, pf.Container parent)
+        private static void CreateForm (ApplicationContext context, Node node, pf.Container parent)
         {
             node.Insert (0, new Node ("__parent", parent));
             node.Insert (1, new Node ("_form-id", node.Value));
@@ -183,7 +190,7 @@ namespace phosphorus.five.applicationpool
 
                 // adding event, cloning node
                 var tpl = new Tuple<string, List<Node>> (widget.ID, new List<Node> ());
-                foreach (var idxLambda in idxEvt.FindAll ((idxEvtChild) => idxEvtChild.Name.StartsWith ("lambda", StringComparison.Ordinal))) {
+                foreach (var idxLambda in idxEvt.FindAll (idxEvtChild => idxEvtChild.Name.StartsWith ("lambda", StringComparison.Ordinal))) {
                     tpl.Item2.Add (idxLambda.Clone ());
                 }
                 PageActiveEvents[idxEvt.Name].Add(tpl);
@@ -199,34 +206,30 @@ namespace phosphorus.five.applicationpool
         private void null_handler (ApplicationContext context, ActiveEventArgs e)
         {
             // checking to see if the currently raised Active Event has a handler on our page
-            if (PageActiveEvents.ContainsKey (e.Name)) {
-                // keeping a reference to what we add to the current Active Event "root node"
-                // such that we can clean up after ourselves afterwards
-                var lambdas = new List<Node> ();
+            if (!PageActiveEvents.ContainsKey (e.Name)) return;
 
-                // looping through each Active Event handler for current event
-                foreach (var idxEvt in PageActiveEvents [e.Name]) {
-                    foreach (var idxEvtContent in idxEvt.Item2) {
-                        var tmp = idxEvtContent.Clone();
-                        e.Args.Add(tmp);
-                        lambdas.Add(tmp);
-                    }
-                }
+            // keeping a reference to what we add to the current Active Event "root node"
+            // such that we can clean up after ourselves afterwards
+            var lambdas = new List<Node> ();
 
-                // invoking each [lambda.xxx] object from event
-                foreach (var idxLambda in lambdas) {
-                    context.Raise (idxLambda.Name, idxLambda);
-                }
+            // looping through each Active Event handler for current event
+            foreach (var tmp in from idxEvt in PageActiveEvents [e.Name] from idxEvtContent in idxEvt.Item2 select idxEvtContent.Clone()) {
+                e.Args.Add(tmp);
+                lambdas.Add(tmp);
+            }
+
+            // invoking each [lambda.xxx] object from event
+            foreach (var idxLambda in lambdas) {
+                context.Raise (idxLambda.Name, idxLambda);
+            }
                 
-                // cleaning up after ourselves, deleting only the lambda objects that came
-                // from our dynamically created event
-                foreach (var idxLambda in lambdas) {
-                    idxLambda.UnTie ();
-                }
+            // cleaning up after ourselves, deleting only the lambda objects that came
+            // from our dynamically created event
+            foreach (var idxLambda in lambdas) {
+                idxLambda.UnTie ();
             }
         }
 
-        // TODO: verify this works now after changing above logic ...
         /// <summary>
         ///     clears the given widget, removing all its children widgets
         /// </summary>
@@ -236,12 +239,13 @@ namespace phosphorus.five.applicationpool
         private void pf_web_clear_widget (ApplicationContext context, ActiveEventArgs e)
         {
             // loping through all control ID's given
-            foreach (var idxCtrlId in XUtil.Iterate<string> (e.Args, context)) {
-                // finding widget with given ID
-                var ctrl = FindControl<pf.Container> (idxCtrlId, Page);
+            foreach (var ctrl in XUtil.Iterate<string> (e.Args, context).Select (idxCtrlId => FindControl<pf.Container> (idxCtrlId, Page))) {
 
-                RemoveActiveEvents (ctrl);
-                RemoveEvents (ctrl);
+                // then looping through all of its children controls
+                foreach (Control innerCtrl in ctrl.Controls) {
+                    RemoveActiveEvents (innerCtrl);
+                    RemoveEvents (innerCtrl);
+                }
 
                 // clearing child controls, and re-rendering widget
                 ctrl.Controls.Clear ();
@@ -258,10 +262,7 @@ namespace phosphorus.five.applicationpool
         private void pf_web_remove_widget (ApplicationContext context, ActiveEventArgs e)
         {
             // loping through all control ID's given
-            foreach (var idxCtrlId in XUtil.Iterate<string> (e.Args, context)) {
-                // finding widget with given ID
-                var widget = FindControl<pf.Widget> (idxCtrlId, Page);
-
+            foreach (var widget in XUtil.Iterate<string> (e.Args, context).Select (idxCtrlId => FindControl<pf.Widget> (idxCtrlId, Page))) {
                 // removing all Ajax event handlers for widget
                 RemoveEvents (widget);
 
@@ -269,15 +270,14 @@ namespace phosphorus.five.applicationpool
                 RemoveActiveEvents (widget);
 
                 // actually removing widget from Page control collection, and persisting our change
-                var parent = widget.Parent as pf.Container;
-                if (parent != null) parent.RemoveControlPersistent (widget);
+                var parent = (pf.Container)widget.Parent;
+                parent.RemoveControlPersistent (widget);
             }
         }
 
         /*
          * clears all Active Events for widget
          */
-
         private void RemoveActiveEvents (Control widget)
         {
             // removing all Active Events for given widget
@@ -307,7 +307,10 @@ namespace phosphorus.five.applicationpool
         /// <param name="context">ApplicationContexttionContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.reload-location")]
-        private void pf_web_reload_location (ApplicationContext context, ActiveEventArgs e) { Manager.SendJavaScriptToClient ("location.reload();"); }
+        private void pf_web_reload_location (ApplicationContext context, ActiveEventArgs e)
+        {
+            Manager.SendJavaScriptToClient ("location.reload();");
+        }
 
         /// <summary>
         ///     sends the given JavaScript to the client. JavaScript is given as value of [pf.web.include-javascript], and can

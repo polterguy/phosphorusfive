@@ -397,6 +397,23 @@ pf.meta.list-events:@@/-?value");
         }
 
         /// <summary>
+        ///     creates an event that returns a new node by using [append], verifying events work as they should
+        /// </summary>
+        [Test]
+        public void Events23 ()
+        {
+            var node = ExecuteLambda (@"event:test.foo15
+  lambda
+    append:@/./.?node
+      source
+        _result:success
+test.foo15");
+            Assert.AreEqual (1, node [1].Count);
+            Assert.AreEqual ("_result", node [1] [0].Name);
+            Assert.AreEqual ("success", node [1] [0].Value);
+        }
+
+        /// <summary>
         ///     creates an event that is overridden, making sure the overridden event is invoked,
         ///     and not the original event
         /// </summary>

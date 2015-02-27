@@ -251,18 +251,18 @@ namespace phosphorus.expressions
         ///     types in expression's result or constant. if node contains formatting children, these will be
         ///     evaluated as a formatting expression before expression is created, or constant is returned
         /// </summary>
-        /// <param name="expression">expression to evaluate</param>
+        /// <param name="expressionOrConstant">expression or constant to evaluate</param>
         /// <param name="dataSource">node to use as start node for expression</param>
         /// <param name="context">application context</param>
         /// <param name="defaultValue">default value to return if expression or constant yields null</param>
         /// <typeparam name="T">type of object to return</typeparam>
         public static T Single<T> (
-            string expression,
+            object expressionOrConstant,
             Node dataSource,
             ApplicationContext context,
             T defaultValue = default (T))
         {
-            return SingleImplementation (() => Iterate<T> (expression, dataSource, context), context, defaultValue);
+            return SingleImplementation (() => Iterate<T> (expressionOrConstant, dataSource, context), context, defaultValue);
         }
 
         /// <summary>
@@ -378,7 +378,7 @@ namespace phosphorus.expressions
                 // caller requested anything but 'count', we return it as type T, possibly triggering
                 // a conversion
                 foreach (var idx in match) {
-                    if (iterateChildren && typeof (T) == typeof (Node) && idx.TypeOfMatch != Match.MatchType.node) {
+                    if (iterateChildren && typeof (T) == typeof (Node)) {
                         // user requested to iterateChildren, and since current match triggers a conversion,
                         // we iterate the children of that conversion, and not the automatically generated
                         // root node
@@ -466,9 +466,9 @@ namespace phosphorus.expressions
         }
 
         /// <summary>
-        ///     retrieves the value of [source], or [src] child node, converted into T. returns null if no source exists.
+        ///     retrieves the value of [source], [rel-source], [src] or [re-src] child node, converted into T. returns null if no source exists.
         ///     does not care about whether or not there are multiple values, and will return a List if there are, though
-        ///     will attempt to return only one value if it can
+        ///     will attempt to return only one value if it can, such as when there's a list containing only one value
         /// </summary>
         /// <param name="node">node where [source], [rel-source], [rel-src] or [src] is expected to be a child</param>
         /// <param name="context">application context</param>
@@ -479,9 +479,9 @@ namespace phosphorus.expressions
 
         // TODO: refactor these next buggers, they're too complex
         /// <summary>
-        ///     retrieves the value of [source], or [src] child node, converted into T. returns null if no source exists.
-        ///     does not care about whether or not there are multiple values, and will return a List if there are, though
-        ///     will attempt to return only one value if it can
+        ///     retrieves the value of [source], [rel-source], [src] or [rel-src] child node, converted into T. returns null if no source exists.
+        ///     does not care about whether or not there are multiple values, and will return a List if there are multiple values, though
+        ///     will attempt to return only one value, if it can, such as when there's a list of only one value for instance
         /// </summary>
         /// <param name="node">node where [source], [rel-source], [rel-src] or [src] is expected to be a child</param>
         /// <param name="dataSource">node used as data source for expressions</param>
@@ -536,7 +536,7 @@ namespace phosphorus.expressions
         }
 
         /// <summary>
-        ///     retrieves the value of [source], or [src] child node(s), forcing one single return value, somehow.
+        ///     retrieves the value of [source], [rel-source], [src] or [rel-src] child node, forcing one single return value, somehow.
         ///     returns null if no source exists. used in among other things [set].
         /// </summary>
         /// <param name="node">node where [source], [rel-source], [rel-src] or [src] is expected to be a child</param>
@@ -547,7 +547,7 @@ namespace phosphorus.expressions
         }
 
         /// <summary>
-        ///     retrieves the value of [source], or [src] child node(s), forcing one single return value, somehow.
+        ///     retrieves the value of [source], [rel-source], [src] or [rel-src] child node, forcing one single return value, somehow.
         ///     returns null if no source exists. used in among other things [set].
         /// </summary>
         /// <param name="node">node where [source], [rel-source], [rel-src] or [src] is expected to be a child</param>
@@ -587,7 +587,7 @@ namespace phosphorus.expressions
         }
 
         /// <summary>
-        ///     retrieves the value of [source], or [src] child node. used in among other things [append]
+        ///     retrieves the value of [source], [rel-source], [src] or [rel-src] child node. used in among other things [append]
         /// </summary>
         /// <param name="node">node where [source] or [src] is expected to be a child</param>
         /// <param name="context">application context</param>
