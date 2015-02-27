@@ -514,6 +514,22 @@ _bar:@@/-?value");
                 .Aggregate (string.Empty, (current, idx) => current + (idx.Name + ":" + idx.Value + "-"));
             Assert.AreEqual ("foo1:bar1-foo2:bar2-", result);
         }
+        
+        /// <summary>
+        ///     uses XUtil.Iterate to iterate the children of a node who's value is an expression, 
+        ///     being a 'node' expression, verifying Iterate works as expected
+        /// </summary>
+        [Test]
+        public void Iterate17 ()
+        {
+            var node = CreateNode (@"_foo
+  foo1:bar1
+  foo2:bar2
+_bar:@/-/*?node");
+            var result = XUtil.Iterate<Node> (node [1], Context, true)
+                .Aggregate (string.Empty, (current, idx) => current + (idx.Name + ":" + idx.Value + "-"));
+            Assert.AreEqual ("foo1:bar1-foo2:bar2-", result);
+        }
 
         /// <summary>
         ///     verifies root expressions works correctly

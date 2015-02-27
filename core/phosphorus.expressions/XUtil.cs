@@ -275,7 +275,7 @@ namespace phosphorus.expressions
         /// </summary>
         /// <param name="node">node who's value will be evaluated</param>
         /// <param name="context">application context</param>
-        /// <param name="iterateChildren">if true, and object is converted from string, then children of that generated node
+        /// <param name="iterateChildren">if true, and results are converted from string, then the children of that generated node
         /// will be iterated, and not the automatically generated root node, created during string conversion</param>
         /// <typeparam name="T">type of object you wish to retrieve</typeparam>
         public static IEnumerable<T> Iterate<T> (
@@ -297,7 +297,7 @@ namespace phosphorus.expressions
         /// <param name="node">node who's value will be evaluated</param>
         /// <param name="dataSource">node to use as start node for any expressions within formatting parameters</param>
         /// <param name="context">application context</param>
-        /// <param name="iterateChildren">if true, and results are somehow converted to nodes, then children of that generated node
+        /// <param name="iterateChildren">if true, and results are converted from string, then the children of that generated node
         /// will be iterated, and not the automatically generated root node, created during string conversion</param>
         /// <typeparam name="T">type of object you wish to retrieve</typeparam>
         public static IEnumerable<T> Iterate<T> (
@@ -318,7 +318,7 @@ namespace phosphorus.expressions
         /// <param name="expressionOrConstant">expression to run on dataSource</param>
         /// <param name="dataSource">node to use as start node for any expressions within formatting parameters</param>
         /// <param name="context">application context</param>
-        /// <param name="iterateChildren">if true, and object is converted from string, then children of that generated node
+        /// <param name="iterateChildren">if true, and results are converted from string, then the children of that generated node
         /// will be iterated, and not the automatically generated root node, created during string conversion</param>
         /// <typeparam name="T">type of object you wish to retrieve</typeparam>
         public static IEnumerable<T> Iterate<T> (
@@ -354,7 +354,7 @@ namespace phosphorus.expressions
         /// <param name="expression">expression to run on dataSource</param>
         /// <param name="dataSource">node to use as start node for any expressions within formatting parameters</param>
         /// <param name="context">application context</param>
-        /// <param name="iterateChildren">if true, and object is converted from string, then children of that generated node
+        /// <param name="iterateChildren">if true, and results are converted from string, then the children of that generated node
         /// will be iterated, and not the automatically generated root node, created during string conversion</param>
         /// <typeparam name="T">type of object you wish to retrieve</typeparam>
         public static IEnumerable<T> Iterate<T> (
@@ -378,9 +378,7 @@ namespace phosphorus.expressions
                 // caller requested anything but 'count', we return it as type T, possibly triggering
                 // a conversion
                 foreach (var idx in match) {
-                    if (iterateChildren && typeof (T) == typeof (Node)) {
-                        // TODO: verify this becomes correct, when iterating over all sorts of different types of expressions
-                        // e.g. what happens when expression is of type "Node", and no conversion occurs. Is it right to still yield children ...?
+                    if (iterateChildren && typeof (T) == typeof (Node) && idx.TypeOfMatch != Match.MatchType.node) {
                         // user requested to iterateChildren, and since current match triggers a conversion,
                         // we iterate the children of that conversion, and not the automatically generated
                         // root node
@@ -513,7 +511,14 @@ namespace phosphorus.expressions
                     }
                 } else if (node.LastChild.Value != null) {
                     // source is a constant, might still be formatted
-                    source = IsFormatted (node.LastChild) ? FormatNode (node.LastChild, dataSource, context) : node.LastChild.Value;
+                    source = TryFormat<object> (node.LastChild, dataSource, context);
+                    
+                    // making sure we support "escaped expressions"
+                    // else if source is a node, we make sure we clone it, in case source and destination overlaps
+                    if (source is string && (source as string).StartsWith ("\\"))
+                        source = (source as string).Substring (1);
+                    else if (source is Node)
+                        source = (source as Node).Clone ();
                 } else {
                     // there are no value in [src] node, trying to create source out of [src]'s children
                     if (node.LastChild.Count == 1) {
@@ -525,10 +530,6 @@ namespace phosphorus.expressions
                     }
                 }
             }
-
-            // making sure we support "escaped expressions"
-            if (source is string && (source as string).StartsWith ("\\"))
-                source = (source as string).Substring (1);
 
             // returning source
             return source;
@@ -562,10 +563,13 @@ namespace phosphorus.expressions
                 if (node.LastChild.Value != null) {
                     // this might be an expression, or a constant, converting value to single object, somehow
                     source = Single<object> (node.LastChild, dataSource, context);
-                    if (source is Node) {
-                        // source is node, making sure we clone it, in case source and destination overlaps
+                    
+                    // making sure we support "escaped expressions"
+                    // else if source is a node, we make sure we clone it, in case source and destination overlaps
+                    if (source is string && (source as string).StartsWith ("\\"))
+                        source = (source as string).Substring (1);
+                    else if (source is Node)
                         source = (source as Node).Clone ();
-                    }
                 } else {
                     // there are no values in [src] node, trying to create source out of [src]'s children
                     if (node.LastChild.Count == 1) {
@@ -573,14 +577,10 @@ namespace phosphorus.expressions
                         source = node.LastChild.FirstChild.Clone ();
                     } else {
                         // more than one source, making sure we convert it into one single value, meaning a 'string'
-                        source = Utilities.Convert<string> (new List<Node> (node.LastChild.Children), context);
+                        source = Utilities.Convert<string> (node.LastChild.Children, context);
                     }
                 }
             }
-
-            // making sure we support "escaped expressions"
-            if (source is string && (source as string).StartsWith ("\\"))
-                source = (source as string).Substring (1);
 
             // returning source
             return source;
