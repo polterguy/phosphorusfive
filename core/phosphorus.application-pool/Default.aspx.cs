@@ -154,11 +154,11 @@ namespace phosphorus.five.applicationpool
             // and since properties of widget might contain expressions, we clone the root node of our entire
             // execution tree, for then to find our [pf.web.create-widget] statement within our cloned version, passing
             // it in as a reference to our creational method
-            // TODO: try to change logic such that it works the same way [lambda.immutable] works, to use less resources
-            var creationalArgsRoot = e.Args.Root.Clone ();
-            var creationalArgs = creationalArgsRoot.Find (e.Args.Path);
-            CreateForm (context, creationalArgs, parent);
-            var widget = creationalArgs.Get<Control> (context);
+            var originalChildren = e.Args.Children.Select (idxNode => idxNode.Clone ()).ToList ();
+            CreateForm (context, e.Args, parent);
+            var widget = e.Args.Get<Control> (context);
+            e.Args.Clear ();
+            e.Args.AddRange (originalChildren);
 
             // initializing Active Events for widget, if there are any given
             var eventNode = e.Args.Find (idx => idx.Name == "events");

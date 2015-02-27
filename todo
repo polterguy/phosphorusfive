@@ -102,7 +102,7 @@
 
 * exclude Hyperlisp files from being downloaded through web.config
 
-
+* rename [_widget-id] and [_form-id] used in [pf.web.create-widget] to something more intelligent
 
 
 

@@ -5,19 +5,20 @@
 
 using System;
 using System.Collections.Generic;
+using System.Web.UI;
 using phosphorus.ajax.widgets;
 using phosphorus.core;
 using phosphorus.expressions;
 using Void = phosphorus.ajax.widgets.Void;
 
 // ReSharper disable UnusedMember.Local
+// ReSharper disable UnusedMember.Global
 
 namespace phosphorus.web.ui.widgets
 {
     /// <summary>
     ///     class for creating web widgets
     /// </summary>
-    // ReSharper disable once UnusedMember.Global
     public static class Widgets
     {
         /// <summary>
@@ -33,8 +34,6 @@ namespace phosphorus.web.ui.widgets
             if (formId != null && formId.Value == null)
                 formId.Value = widget.ClientID;
             e.Args.Value = DecorateWidget (context, widget, e.Args);
-            if (widget.ElementType == "select" && !widget.HasAttribute ("name"))
-                widget ["name"] = widget.ClientID;
         }
 
         /// <summary>
@@ -47,8 +46,6 @@ namespace phosphorus.web.ui.widgets
         {
             var widget = CreateControl<Literal> (context, e.Args, "p");
             e.Args.Value = DecorateWidget (context, widget, e.Args);
-            if (widget.ElementType == "textarea" && !widget.HasAttribute ("name"))
-                widget ["name"] = widget.ClientID;
         }
 
         /// <summary>
@@ -61,10 +58,6 @@ namespace phosphorus.web.ui.widgets
         {
             var widget = CreateControl<Void> (context, e.Args, "input");
             e.Args.Value = DecorateWidget (context, widget, e.Args);
-            if (widget.ElementType == "input" && !widget.HasAttribute ("name"))
-                widget ["name"] = widget.ClientID;
-            if (widget.ElementType == "input" && widget ["type"] == "radio" && !widget.HasAttribute ("value"))
-                widget ["value"] = widget.ClientID;
         }
 
         /*
@@ -79,12 +72,20 @@ namespace phosphorus.web.ui.widgets
             // creating widget as persistent control
             var parent = node.Find (idx => idx.Name == "__parent").Get<Container> (context);
 
+            // getting [oninitialload], if any
+            var onInitialLoad = CreateLoadingEvents (context, node);
+            var formId = XUtil.Single<string> (node.Find (idx => idx.Name == "_form-id"), context);
+
             var widget = parent.CreatePersistentControl<T> (
                 XUtil.Single<string> (node.Value, node, context),
                 -1,
                 delegate (object sender, EventArgs e) {
-                    // hooks up "oninitialload" event, if we're supposed to
-                    CreateLoadingEvents (context, node, sender as Widget);
+                    if (onInitialLoad == null)
+                        return;
+
+                    onInitialLoad.Insert (0, new Node ("_form-id", formId));
+                    onInitialLoad.Insert (1, new Node ("_widget-id", ((Control)sender).ID));
+                    context.Raise ("lambda", onInitialLoad);
                 });
 
             // in case no ID was given, we "return" it to creator as value of current node
@@ -105,12 +106,12 @@ namespace phosphorus.web.ui.widgets
         /*
          * creates the [oninitialload] event for widget, if we should
          */
-        private static void CreateLoadingEvents (ApplicationContext context, Node node, Widget widget)
+        private static Node CreateLoadingEvents (ApplicationContext context, Node node)
         {
             // checking to see if we've got an "initialload" Active Event for widget, and if so, handle it
             var onInitialLoad = node.Find (idx => idx.Name == "oninitialload");
             if (onInitialLoad == null)
-                return;
+                return null;
 
             // finding lambda object(s) referred to by [oninitialload], and creating our lambda node structure
             var evtLambdas = new List<Node> (XUtil.Iterate<Node> (onInitialLoad, context, true));
@@ -118,11 +119,9 @@ namespace phosphorus.web.ui.widgets
             foreach (var idxLambda in evtLambdas) {
                 evtNode.Add (idxLambda.Clone ());
             }
-            evtNode.Insert (0, new Node ("_form-id", XUtil.Single<string> (node.Find (idx => idx.Name == "_form-id"), context)));
-            evtNode.Insert (1, new Node ("_widget-id", widget.ID));
 
-            // raising [oninitialload] immediately
-            context.Raise ("lambda", evtNode);
+            // returning pf.lambda node
+            return evtNode;
         }
 
         /*
@@ -225,7 +224,6 @@ namespace phosphorus.web.ui.widgets
         /*
          * handles all default properties of Widget
          */
-
         private static void HandleDefaultProperty (ApplicationContext context, Widget widget, Node node)
         {
             if (node.Name.StartsWith ("on")) {
@@ -237,25 +235,28 @@ namespace phosphorus.web.ui.widgets
         }
 
         /*
-         * creates an event handler on the given widget for the given node
+         * creates an event handler on the given widget for the given node. if the name of the node ends with "-script", the
+         * event will be assumed to be a JavaScript event, and simply sent back to client as JavaScript. if it doesn not end
+         * with "-script", the event will be handled as a server-side pf.lambda event
          */
-
         private static void CreateEventHandler (ApplicationContext context, Widget widget, Node node)
         {
-            if (node.Value != null) {
+            if (node.Name.EndsWith ("-script")) {
                 // javascript code to be executed
-                widget [node.Name] = node.Get<string> (context);
+                widget [node.Name.Replace ("-script", "")] = XUtil.Single<string> (node, context);
             } else {
-                // creating our pf.lambda object, and invoking our [_pf.web.add-widget-event] Active Event to map the
-                // ajax event to our pf.lambda object, passing in the widget that contains the Ajax Event
-                var eventNode = new Node (string.Empty, widget);
-                eventNode.Add (node.Clone ());
-
-                // making sure [_form-id] and [_widget-id] is passed into pf.lambda object as parameters
-                eventNode [0].Insert (0, new Node ("_form-id", XUtil.Single<string> (node.Parent.Find (idx => idx.Name == "_form-id"), context)));
-                eventNode [0].Insert (1, new Node ("_widget-id", XUtil.Single<string> (node.Parent, context)));
+                // finding lambda object(s) referred to by [event], and creating our lambda node structure
+                var evtLambdas = new List<Node> (XUtil.Iterate<Node> (node, context, true));
+                var evtNode = new Node (node.Name);
+                foreach (var idxLambda in evtLambdas) {
+                    evtNode.Add (idxLambda.Clone ());
+                }
+                evtNode.Insert (0, new Node ("_form-id", XUtil.Single<string> (node.Parent.Find (idx => idx.Name == "_form-id"), context)));
+                evtNode.Insert (1, new Node ("_widget-id", widget.ID));
 
                 // raising the Active Event that actually creates our ajax event handler for our pf.lambda object
+                var eventNode = new Node (string.Empty, widget);
+                eventNode.Add (evtNode);
                 context.Raise ("_pf.web.add-widget-event", eventNode);
             }
         }
