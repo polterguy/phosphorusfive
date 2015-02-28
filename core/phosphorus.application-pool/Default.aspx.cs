@@ -244,7 +244,7 @@ namespace phosphorus.five.applicationpool
         /// <summary>
         ///     null Active Event handler, for handling widget specific Active Events
         /// </summary>
-        /// <param name="context">ApplicationContexttionContext"/> for Active Event</param>
+        /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "")]
         private void null_handler (ApplicationContext context, ActiveEventArgs e)
@@ -277,7 +277,7 @@ namespace phosphorus.five.applicationpool
         /// <summary>
         ///     clears the given widget, removing all its children widgets
         /// </summary>
-        /// <param name="context">ApplicationContexttionContext"/> for Active Event</param>
+        /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.clear-widget")]
         private void pf_web_clear_widget (ApplicationContext context, ActiveEventArgs e)
@@ -300,7 +300,7 @@ namespace phosphorus.five.applicationpool
         /// <summary>
         ///     removes the given widget(s) entirely
         /// </summary>
-        /// <param name="context">ApplicationContexttionContext"/> for Active Event</param>
+        /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.remove-widget")]
         private void pf_web_remove_widget (ApplicationContext context, ActiveEventArgs e)
@@ -349,7 +349,7 @@ namespace phosphorus.five.applicationpool
         /// <summary>
         ///     reloads the current URL
         /// </summary>
-        /// <param name="context">ApplicationContexttionContext"/> for Active Event</param>
+        /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.reload-location")]
         private void pf_web_reload_location (ApplicationContext context, ActiveEventArgs e)
@@ -361,7 +361,7 @@ namespace phosphorus.five.applicationpool
         ///     sends the given JavaScript to the client. JavaScript is given as value of [pf.web.include-javascript], and can
         ///     be a constant, an expression or a formatting expression
         /// </summary>
-        /// <param name="context">ApplicationContexttionContext"/> for Active Event</param>
+        /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.include-javascript")]
         private void pf_web_include_javascript (ApplicationContext context, ActiveEventArgs e)
@@ -376,7 +376,7 @@ namespace phosphorus.five.applicationpool
         ///     sent being the value of the first child of [pf.web.return-value]. the value to send, can either be an expression, a
         ///     constant, or a node formatting expression
         /// </summary>
-        /// <param name="context">ApplicationContexttionContext"/> for Active Event</param>
+        /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.return-value")]
         private void pf_web_return_value (ApplicationContext context, ActiveEventArgs e)
@@ -389,7 +389,7 @@ namespace phosphorus.five.applicationpool
         /// <summary>
         ///     creates an ajax event containing pf.lambda code for the given widget's event
         /// </summary>
-        /// <param name="context">ApplicationContexttionContext"/> for Active Event</param>
+        /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "_pf.web.add-widget-event")]
         private void _pf_web_add_widget_event (ApplicationContext context, ActiveEventArgs e)
@@ -416,7 +416,7 @@ namespace phosphorus.five.applicationpool
         /// <summary>
         ///     returns the control with the given ID as first child of args, from optionally [parent] control's ID given
         /// </summary>
-        /// <param name="context">ApplicationContexttionContext"/> for Active Event</param>
+        /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "_pf.web.find-control")]
         private void _pf_web_find_control (ApplicationContext context, ActiveEventArgs e)
@@ -434,7 +434,7 @@ namespace phosphorus.five.applicationpool
         /// <summary>
         ///     includes a JavaScript file on the client side
         /// </summary>
-        /// <param name="context">ApplicationContexttionContext"/> for Active Event</param>
+        /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.add-javascript-file")]
         private void pf_web_add_javascript_file (ApplicationContext context, ActiveEventArgs e)
@@ -447,7 +447,7 @@ namespace phosphorus.five.applicationpool
         /// <summary>
         ///     includes a stylesheet file on the client side
         /// </summary>
-        /// <param name="context">ApplicationContexttionContext"/> for Active Event</param>
+        /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.add-stylesheet-file")]
         private void pf_web_add_stylesheet_file (ApplicationContext context, ActiveEventArgs e)
@@ -460,7 +460,7 @@ namespace phosphorus.five.applicationpool
         /// <summary>
         ///     changes the "title" HTML element's value of the portal
         /// </summary>
-        /// <param name="context">ApplicationContexttionContext"/> for Active Event</param>
+        /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.set-title")]
         private void pf_web_set_title (ApplicationContext context, ActiveEventArgs e)

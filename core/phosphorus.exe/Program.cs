@@ -19,104 +19,111 @@ namespace phosphorus.exe
     internal static class MainClass
     {
         /// <summary>
-        ///     helper active event to make it possible to output stuff to console
+        ///     Returns the application base path as value of given args node. 
+        ///     Necessary to make our [pf.file.xxx] namespace work correctly.
+        /// </summary>
+        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="e">parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.core.application-folder")]
+        private static void pf_core_application_folder (ApplicationContext context, ActiveEventArgs e)
+        {
+            string path = Assembly.GetExecutingAssembly().Location;
+            path = path.Replace ("\\", "//");
+            path = path.Substring (0, path.LastIndexOf ("/") + 1);
+            e.Args.Value = path;
+        }
+
+        /// <summary>
+        ///     Allows you to write one line of text back to the console, appending CR/LF at the end automatically
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">active event arguments</param>
         [ActiveEvent (Name = "pf.console.write-line")]
-        [ActiveEvent (Name = "pf.console.output")]
         private static void console_write_line (ApplicationContext context, ActiveEventArgs e)
         {
-            var value = XUtil.FormatNode (e.Args, context);
-            Console.WriteLine (value ?? "");
+            var value = XUtil.Single<string> (e.Args, context, "");
+            Console.WriteLine (value);
         }
 
         /// <summary>
-        ///     helper active event to make it possible to output stuff to console
+        ///     Allows you to write any text back to the console, without ending your text with CR/LF
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">active event arguments</param>
         [ActiveEvent (Name = "pf.console.write")]
         private static void console_write (ApplicationContext context, ActiveEventArgs e)
         {
-            var value = XUtil.FormatNode (e.Args, context);
-            if (value != null)
-                Console.Write (value);
+            var value = XUtil.Single<string> (e.Args, context, "");
+            Console.Write (value);
         }
 
         /// <summary>
-        ///     the entry point of the program, where the program control starts and ends
+        ///     The entry point of the program, where the program control starts and ends
         /// </summary>
         /// <param name="args">command-line arguments.</param>
         public static void Main (string[] args)
         {
-            if (args == null || args.Length == 0) {
-                OutputInstructions (); // outputting instructions, and then exiting
-            } else {
-                // initializing plugins that must be here in order for lambda executioner to function
-                Loader.Instance.LoadAssembly (Assembly.GetExecutingAssembly ());
-                Loader.Instance.LoadAssembly ("plugins/", "phosphorus.hyperlisp");
-                Loader.Instance.LoadAssembly ("plugins/", "phosphorus.lambda");
-                Loader.Instance.LoadAssembly ("plugins/", "phosphorus.file");
+            try {
+                if (args == null || args.Length == 0) {
+                    OutputInstructions (); // outputting instructions, and then exiting
+                } else {
+                    // initializing plugins that must be here in order for lambda executioner to function
+                    Loader.Instance.LoadAssembly (Assembly.GetExecutingAssembly ());
+                    Loader.Instance.LoadAssembly ("plugins/", "phosphorus.hyperlisp");
+                    Loader.Instance.LoadAssembly ("plugins/", "phosphorus.lambda");
+                    Loader.Instance.LoadAssembly ("plugins/", "phosphorus.file");
 
-                // handling our command-line arguments
-                string language;
-                var exeNode = ParseArguments (args, out language);
+                    // handling our command-line arguments
+                    string language;
+                    var exeNode = ParseArguments (args, out language);
 
-                // creating application context after parameters are loaded, since there might be
-                // additional plugins requested during the parsing of our command-line arguments
-                var context = Loader.Instance.CreateApplicationContext ();
+                    // creating application context after parameters are loaded, since there might be
+                    // additional plugins requested during the parsing of our command-line arguments
+                    var context = Loader.Instance.CreateApplicationContext ();
 
-                // change our default execution language, if we should
-                if (!string.IsNullOrEmpty (language))
-                    context.Raise ("execution-language", new Node (string.Empty, language));
+                    // raising our application startup Active Event, in case there are modules loaded depending upon it
+                    context.Raise ("pf.core.application-start", new Node ());
 
-                // raising our application startup Active Event, in case there are modules loaded depending upon its
-                context.Raise ("pf.core.application-start", new Node ());
+                    // loads and convert file to lambda nodes
+                    var convertExeFile = context.Raise ("pf.hyperlisp.hyperlisp2lambda", new Node (string.Empty,
+                        context.Raise ("pf.file.load", new Node (string.Empty, exeNode.Value)) [0].Get<string> (context)));
 
-                // loads and convert file to lambda nodes
-                var convertExeFile = context.Raise ("pf.hyperlisp.hyperlisp2lambda", new Node (string.Empty,
-                    context.Raise ("pf.file.load", new Node (string.Empty, exeNode.Value)) [0].Get<string> (context)));
-
-                // appending nodes from lambda file into execution objects, and execute lambda file given through command-line arguments
-                exeNode.AddRange (convertExeFile.Children);
-                context.Raise ("lambda", exeNode);
+                    // appending nodes from lambda file into execution objects, and execute lambda file given through command-line arguments
+                    exeNode.AddRange (convertExeFile.Children);
+                    context.Raise ("lambda", exeNode);
+                }
+            } catch (Exception err) {
+                while (err.InnerException != null)
+                    err = err.InnerException;
+                Console.WriteLine (err.Message);
+                Console.WriteLine (err.StackTrace);
             }
         }
 
         /*
          * outputs instructions for how to use the lambda executor to the console
          */
-
         private static void OutputInstructions ()
         {
             Console.WriteLine ();
             Console.WriteLine ();
             Console.WriteLine ("********************************************************************************");
-            Console.WriteLine ("******   instructions for phosphorus.five command line lambda executor  ********");
+            Console.WriteLine ("*****    Instructions for Phosphorus.Five command line pf.lambda executor  *****");
             Console.WriteLine ("********************************************************************************");
             Console.WriteLine ();
-            Console.WriteLine ("the lambda executor allows you to execute lambda files. "
-                               + "for it to function, it needs at the very least the \"phosphorus.hyperlisp\","
-                               + "\"phosphorus.lambda\" and \"phosphorus.file\" plugins in a directory called "
-                               + "\"plugins\", directly underneath the lambda.exe file itself");
+            Console.WriteLine ("The lambda executor allows you to execute pf.lambda Hyperlisp files.");
             Console.WriteLine ();
-            Console.WriteLine ("command-line arguments;");
+            Console.WriteLine ("-f is mandatory, and is your lambda file, for instance; -f some-lambda-file");
             Console.WriteLine ();
-            Console.WriteLine ("-f is mandatory, and is your lambda file, e.g; -f some-lambda-file");
-            Console.WriteLine ();
-            Console.WriteLine ("-p allows you to load additional plugins, e.g; -p \"plugins/my.plugin\"");
+            Console.WriteLine ("-p allows you to load additional plugins, for instance; -p \"plugins/my.plugin\"");
             Console.WriteLine ("   you can repeat the -p argument as many times as you wish");
             Console.WriteLine ();
-            Console.WriteLine ("-l is optional, and defines your default execution language, e.g; -l xml");
-            Console.WriteLine ("   the default lambda execution language is hyperlisp");
-            Console.WriteLine ();
-            Console.WriteLine ("all other arguments are passed into the execution tree of the lambda file you "
+            Console.WriteLine ("All other arguments are passed into the execution tree of the lambda file you "
                                + "are executing as a key/value pair, e.g; _var \"x\" creates a new node for you "
                                + "at the top of your execution file called '_var' with the content of 'x'");
             Console.WriteLine ();
-            Console.WriteLine ("the lambda executor contains two Active Events, which you can use from "
-                               + "your lambda execution files called, \"pf.console.write-line\" and "
+            Console.WriteLine ("The lambda executor contains two Active Events itself, which you can use from "
+                               + "your lambda execution files called, \"pf.console.write-line\", and "
                                + "\"pf.console.write\", which allows you to write a text to the console, either "
                                + "as a line with CR/LF appended at the end, or without CR/LF at the end");
         }
@@ -124,20 +131,18 @@ namespace phosphorus.exe
         /*
          * creates our node parameter collection to pass into pf.lambda execution engine
          */
-
         private static Node ParseArguments (string[] args, out string language)
         {
             language = null;
             var exeNode = new Node ("input-file");
             var nextIsInput = false;
             var nextIsPlugin = false;
-            var nextIsLanguage = false;
             foreach (var idx in args) {
                 if (nextIsInput && exeNode.Value == null) {
                     exeNode.Value = idx;
                     nextIsInput = false;
                 } else if (nextIsInput) {
-                    throw new ArgumentException ("you cannot submit more than one execution file to the lambda executor");
+                    throw new ArgumentException ("You cannot submit more than one execution file to the lambda executor. You can though create one Hyperlisp file, that executes multiple files, and execute this file.");
                 } else if (idx == "-f") {
                     nextIsInput = true;
                 } else if (nextIsPlugin) {
@@ -145,12 +150,6 @@ namespace phosphorus.exe
                     nextIsPlugin = false;
                 } else if (idx == "-p") {
                     nextIsPlugin = true;
-                } else if (nextIsLanguage) {
-                    if (language != null)
-                        throw new ArgumentException ("you cannot define execution language twice");
-                    language = idx;
-                } else if (idx == "-l") {
-                    nextIsLanguage = true;
                 } else if (exeNode.Count == 0 || exeNode [exeNode.Count - 1].Value != null) {
                     exeNode.Add (new Node (idx));
                 } else {
@@ -159,7 +158,7 @@ namespace phosphorus.exe
             }
 
             if (exeNode.Value == null)
-                throw new ArgumentException ("no execution file given to lambda executor");
+                throw new ArgumentException ("No execution file given to lambda executor");
             return exeNode;
         }
     }
