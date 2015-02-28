@@ -45,10 +45,6 @@
 
 * finish up comments on Unit Tests, class "Core" for instance
 
-* verify thread safety when dynamically creating Active Events. when events created with [event] contains nodes, that are
-  manipulated inside event, as mutable objects, then this is not thread safe, possibly fix through [lock] keyword
-  I think this is done ...?
-
 * [context-event] and [context-override] keywords, with associated [context-delete-event] and [context-delete-override] keywords
   I don't think we need this, but keep it in TODO for a while ...
 
@@ -66,9 +62,6 @@
 * [lambda2html] Active Event
 
 * support for loading and saving binary files
-
-* [http-post] Active Event, for creating a POST response to any arbitrary server, to receive response text somehow
-  useful for Web Services, and similar types of constructs
 
 * [zip] and [unzip] Active Events
 
@@ -100,9 +93,13 @@
 * make sure [sys42.show-tree] can "append more results" to itself, such that it keeps the same dialogue for multiple invocations
   during the same, and consecutive request
 
-* exclude Hyperlisp files from being downloaded through web.config
+* make support for [rel-source] in [pf.web.return-value]
 
-* rename [_widget-id] and [_form-id] used in [pf.web.create-widget] to something more intelligent, e.g. [_event] and [_widget] ...?
+* plugin architecture for creating custom iterators, both using C# and in pf.lambda
+
+* "-1" property for ViewStateInSession property, to allow "infinite" number of ViewState keys in Session object, with a BIG warning
+  to user that this posess a security risk though!
+
 
 
 

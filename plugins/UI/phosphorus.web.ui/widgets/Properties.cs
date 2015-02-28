@@ -26,8 +26,8 @@ namespace phosphorus.web.ui.widgets
         /// </summary>
         /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.widgets.property.get")]
-        private static void pf_web_widgets_property_get (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.property.get")]
+        private static void pf_web_property_get (ApplicationContext context, ActiveEventArgs e)
         {
             var origNodeList = new List<Node> (e.Args.Children);
             foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
@@ -80,8 +80,8 @@ namespace phosphorus.web.ui.widgets
         /// </summary>
         /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.widgets.property.set")]
-        private static void pf_web_widgets_property_set (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.property.set")]
+        private static void pf_web_property_set (ApplicationContext context, ActiveEventArgs e)
         {
             foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
                 var widget = FindWidget (context, idx);
@@ -109,8 +109,8 @@ namespace phosphorus.web.ui.widgets
         /// </summary>
         /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.widgets.property.remove")]
-        private static void pf_web_widgets_property_remove (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.property.remove")]
+        private static void pf_web_property_remove (ApplicationContext context, ActiveEventArgs e)
         {
             foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
                 var widget = FindWidget (context, idx);

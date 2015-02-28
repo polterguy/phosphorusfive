@@ -53,7 +53,7 @@
       <Name>phosphorus.hyperlisp</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\plugins\phosphorus.meta\phosphorus.meta.csproj">
-      <Project>{a4dad930-cfca-49ea-b69b-e2c7aa74da10}</Project>
+      <Project>{A4DAD930-CFCA-49EA-B69B-E2C7AA74DA10}</Project>
       <Name>phosphorus.meta</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\plugins\phosphorus.types\phosphorus.types.csproj">

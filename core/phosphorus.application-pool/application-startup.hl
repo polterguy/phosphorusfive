@@ -20,7 +20,7 @@ event:pf.create-additional-hello
           innerValue:"hello again :) - click me 2!"
           onclick
             set:@/+/?value
-              source:@/../*/_form-id/?value
+              source:@/../*/_widget/?value
             pf.remove-additional-hello
 
 /*

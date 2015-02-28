@@ -30,7 +30,7 @@ namespace phosphorus.web.ui.widgets
         private static void pf_web_controls_container (ApplicationContext context, ActiveEventArgs e)
         {
             var widget = CreateControl<Container> (context, e.Args, "div");
-            var formId = e.Args.Find (idx => idx.Name == "_form-id");
+            var formId = e.Args.Find (idx => idx.Name == "_widget");
             if (formId != null && formId.Value == null)
                 formId.Value = widget.ClientID;
             e.Args.Value = DecorateWidget (context, widget, e.Args);
@@ -71,26 +71,26 @@ namespace phosphorus.web.ui.widgets
         {
             // creating widget as persistent control
             var parent = node.Find (idx => idx.Name == "__parent").Get<Container> (context);
+            var position = -1;
+            var posNode = node.Find (idx => idx.Name == "_position");
+            if (posNode != null)
+                position = posNode.Get<int> (context);
 
             // getting [oninitialload], if any
             var onInitialLoad = CreateLoadingEvents (context, node);
-            var formId = XUtil.Single<string> (node.Find (idx => idx.Name == "_form-id"), context);
+            var formId = XUtil.Single<string> (node.Find (idx => idx.Name == "_widget"), context);
 
             var widget = parent.CreatePersistentControl<T> (
                 XUtil.Single<string> (node.Value, node, context),
-                -1,
+                position,
                 delegate (object sender, EventArgs e) {
                     if (onInitialLoad == null)
                         return;
 
-                    onInitialLoad.Insert (0, new Node ("_form-id", formId));
-                    onInitialLoad.Insert (1, new Node ("_widget-id", ((Control)sender).ID));
+                    onInitialLoad.Insert (0, new Node ("_widget", formId));
+                    onInitialLoad.Insert (1, new Node ("_event", ((Control)sender).ID));
                     context.Raise ("lambda", onInitialLoad);
                 });
-
-            // in case no ID was given, we "return" it to creator as value of current node
-            if (node.Value == null)
-                node.Value = widget.ID;
 
             // setting ElementType (html element) of Widget
             widget.ElementType = elementType;
@@ -216,7 +216,7 @@ namespace phosphorus.web.ui.widgets
         {
             foreach (var idxChild in XUtil.Iterate<Node> (children, context, true)) {
                 idxChild.Insert (0, new Node ("__parent", widget));
-                idxChild.Insert (1, new Node ("_form-id", XUtil.Single<string> (children.Parent.Find (idx => idx.Name == "_form-id"), context)));
+                idxChild.Insert (1, new Node ("_widget", XUtil.Single<string> (children.Parent.Find (idx => idx.Name == "_widget"), context)));
                 context.Raise ("pf.web.widgets." + idxChild.Name, idxChild);
             }
         }
@@ -251,8 +251,8 @@ namespace phosphorus.web.ui.widgets
                 foreach (var idxLambda in evtLambdas) {
                     evtNode.Add (idxLambda.Clone ());
                 }
-                evtNode.Insert (0, new Node ("_form-id", XUtil.Single<string> (node.Parent.Find (idx => idx.Name == "_form-id"), context)));
-                evtNode.Insert (1, new Node ("_widget-id", widget.ID));
+                evtNode.Insert (0, new Node ("_widget", XUtil.Single<string> (node.Parent.Find (idx => idx.Name == "_widget"), context)));
+                evtNode.Insert (1, new Node ("_event", widget.ID));
 
                 // raising the Active Event that actually creates our ajax event handler for our pf.lambda object
                 var eventNode = new Node (string.Empty, widget);

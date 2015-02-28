@@ -10,6 +10,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using phosphorus.ajax.core;
+using phosphorus.ajax.widgets;
 using phosphorus.core;
 using phosphorus.expressions;
 
@@ -129,16 +130,17 @@ namespace phosphorus.five.applicationpool
             _context.Raise ("pf.web.load-ui", args);
         }
 
-        // TODO: make it possible to append widgets "before" and "after" a specifically given id, expected to be a children control's ID of
-        // the "parent" widget
         /// <summary>
-        ///     Creates a web widget, specified through its children nodes. Creates a wrapper widget, by invoking 
-        ///     [pf.web.widgets.container]. Optionally you can pass in a [parent] node, to decide where you wish
-        ///     to position your widget. If you don't pass in any [parent] node, then the main "container" widget
-        ///     will be used as the parent of your widget. In addition, you can also optionally pass in an [events]
-        ///     node, which if given, should contain a list of "local widget Active Events", which are associated
-        ///     with your widget somehow. These Active Events only exists as long as the widget exists on your page,
-        ///     and will be automatically destroyed when widget is destroyed.
+        ///     Creates a web widget. Optionally declare the type of widget you wish to create as [widget], and which parent 
+        ///     widget it should have as [parent]. You can also optionally declare where you wish to position your widget, by
+        ///     using either [before] or [after], to make sure your widget becomes either before some specific widget, or after
+        ///     it. Internally, this Active Event uses the [pf.web.widgets.xxx] Active Events to actually create your widget.
+        ///     See any of those Active Events to see what types of properties you can further decorate your widget with, which
+        ///     varies according to what type of [widget] you are creating. [widget] defaults to "container", and [parent] defaults
+        ///     to "container", which is your main root widget on the page. If neither [before] nor [after] is given, widget will
+        ///     be appended into controls collection at the end of whatever [parent] widget you choose to use. You can also optionally
+        ///     declare local widget Active Events by passing in an [events] node, which will be lcally declared Active Events for
+        ///     your widget, only active, as long as Widget exists on page.
         /// </summary>
         /// <param name="context">Context for current request</param>
         /// <param name="e">parameters passed into Active Event</param>
@@ -149,16 +151,18 @@ namespace phosphorus.five.applicationpool
             var parentNode = e.Args.Find (idx => idx.Name == "parent" && idx.Value != null);
             var parent = parentNode != null ? FindControl<pf.Container> (XUtil.Single<string> (parentNode, context), Page) : container;
 
+            // finding position in parent control's list, defaulting to "-1", meaning "append at end"
+            int position = GetWidgetPosition (e.Args, context, parent);
+
+            // finding type of widget
+            string type = "container";
+            var widgetType = e.Args.Find (idx => idx.Name == "widget" && idx.Value != null);
+            if (widgetType != null)
+                type = XUtil.Single<string> (widgetType, context);
+
             // creating widget. since CreateForm modifies node given, by e.g. adding the parent widget as [_parent],
-            // we need to clone this node, before passing it into our creation logic
-            // and since properties of widget might contain expressions, we clone the root node of our entire
-            // execution tree, for then to find our [pf.web.create-widget] statement within our cloned version, passing
-            // it in as a reference to our creational method
-            var originalChildren = e.Args.Children.Select (idxNode => idxNode.Clone ()).ToList ();
-            CreateForm (context, e.Args, parent);
-            var widget = e.Args.Get<Control> (context);
-            e.Args.Clear ();
-            e.Args.AddRange (originalChildren);
+            // we need to make sure the nodes are set back to wwhat they were before the invocation of our Active Event
+            var widget = CreateWidget (context, e.Args, parent, position, type);
 
             // initializing Active Events for widget, if there are any given
             var eventNode = e.Args.Find (idx => idx.Name == "events");
@@ -167,13 +171,53 @@ namespace phosphorus.five.applicationpool
         }
 
         /*
+         * Helper for above. Retrieves the position user requested widget to be inserted at
+         */
+        private int GetWidgetPosition (Node node, ApplicationContext context, Widget parent)
+        {
+            int position = -1;
+            var beforeNode = node.Find (idx => idx.Name == "before" && idx.Value != null);
+            if (beforeNode != null) {
+                var beforeControl = FindControl<pf.Widget> (XUtil.Single<string> (beforeNode, context), parent);
+                position = parent.Controls.IndexOf (beforeControl);
+            } else {
+                var afterNode = node.Find (idx => idx.Name == "after" && idx.Value != null);
+                if (afterNode != null) {
+                    var afterControl = FindControl<pf.Widget> (XUtil.Single<string> (afterNode, context), parent);
+                    position = parent.Controls.IndexOf (afterControl) + 1;
+                }
+            }
+            return position;
+        }
+
+        /*
          * creates widget according to node given, and returns to caller
          */
-        private static void CreateForm (ApplicationContext context, Node node, pf.Container parent)
+        private static Widget CreateWidget (
+            ApplicationContext context, 
+            Node node, 
+            pf.Container parent, 
+            int position, 
+            string type)
         {
+            // making sure the original node hierarchy is reset back to what it was after creation
+            // since the creation Active Events changes the node hierarchy in all sorts of different ways
+            var originalChildren = node.Clone();
             node.Insert (0, new Node ("__parent", parent));
-            node.Insert (1, new Node ("_form-id", node.Value));
-            context.Raise ("pf.web.widgets.container", node);
+            node.Insert (1, new Node ("_widget", node.Value));
+            node.Insert (2, new Node ("_position", position));
+
+            // raising the Active Event that actually creates our widget, and retrieving the created widget afterwards
+            context.Raise ("pf.web.widgets." + type, node);
+            var widget = node.Get<Widget> (context);
+
+            // cleaning up our node structure afterwards
+            node.Clear ();
+            node.AddRange (originalChildren.Children);
+            node.Value = originalChildren.Value;
+
+            // returning widget back to caller
+            return widget;
         }
 
         /*
@@ -417,12 +461,16 @@ namespace phosphorus.five.applicationpool
         /// <param name="context">ApplicationContexttionContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.set-title")]
-        private void pf_web_set_title (ApplicationContext context, ActiveEventArgs e) { Title = XUtil.Single<string> (e.Args, context); }
+        private void pf_web_set_title (ApplicationContext context, ActiveEventArgs e)
+        {
+            if (Manager.IsPhosphorusRequest)
+                throw new Exception ("You cannot set the title of your page in an Ajax Request, only during post requests, or initial loading of page");
+            Title = XUtil.Single<string> (e.Args, context);
+        }
 
         /*
          * recursively searches through page for Container with specified id, starting from "idx"
          */
-
         private T FindControl<T> (string id, Control idx) where T : Control
         {
             if (idx.ID == id)
@@ -433,7 +481,6 @@ namespace phosphorus.five.applicationpool
         /*
          * recursively removes all events for control and all of its children controls
          */
-
         private void RemoveEvents (Control idx)
         {
             // removing all ajax events belonging to widget
@@ -450,7 +497,6 @@ namespace phosphorus.five.applicationpool
         /*
          * common ajax event handler for all widget's events on page
          */
-
         [WebMethod]
         protected void common_event_handler (pf.Widget sender, pf.Widget.AjaxEventArgs e)
         {
