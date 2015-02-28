@@ -22,7 +22,19 @@ namespace phosphorus.web.ui.widgets
     public static class Widgets
     {
         /// <summary>
-        ///     creates a generic container type of Widget, that will only allow for child controls, and not content besides that
+        ///     Creates a generic container type of Widget, that can contain children widgets of itself. Active Event is not
+        ///     meant to be raised directly, but through the [pf.web.create-widget] Active Event, since it needs a reference to
+        ///     its parent control directly, among other things. Pass in [element] to override the HTML element rendered. Pass 
+        ///     in [has-id] with "false" to remove the rendering of its HTML ID element. Pass in [controls] as a list of child
+        ///     controls that will be rendered in its children controls collection. Pass in [oninitialload] to have some server-side
+        ///     piece of pf.lambda code execute during its initial loading. Pass in [render-type], to override how the widget is 
+        ///     rendered, by supplying either "SelfClosing", "NoClose" or "Default" as values, overriding how the element is closed,
+        ///     if at all. Anything within the [controls] parameter passedd in, will have [pf.web.widgets.] appended in front of it,
+        ///     and raised as an Active Event, adding the results of that Active Event into its [controls] collection automatically.
+        ///     Any nodes starting with "on", will be handled as events. If your events ends with "-script", they will
+        ///     be rendered back to client as JavaScript events, if they end with anything else but "-script", they will be assumed
+        ///     to be DOM events, and your node containing pf.lambda code, supposed to execute during that DOM event on the server-side.
+        ///     Any other nodes, are automatically added as HTML attributes, wwith their given values, and rendered as such back to client.
         /// </summary>
         /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
@@ -37,7 +49,17 @@ namespace phosphorus.web.ui.widgets
         }
 
         /// <summary>
-        ///     creates a generic literal type of Widget, that will allow for only innerValue and no children controls
+        ///     Creates a generic literal type of Widget, that can contain an inner value, being HTML or text. Active Event is not
+        ///     meant to be raised directly, but through the [pf.web.create-widget] Active Event, since it needs a reference to
+        ///     its parent control directly, among other things. Pass in [element] to override the HTML element rendered. Pass 
+        ///     in [has-id] with "false" to remove the rendering of its HTML ID element. Pass in [innerValue] as a text string
+        ///     that will be rendered in its HTML or text content. Pass in [oninitialload] to have some server-side
+        ///     piece of pf.lambda code execute during its initial loading. Pass in [render-type], to override how the widget is 
+        ///     rendered, by supplying either "SelfClosing", "NoClose" or "Default" as values, overriding how the element is closed,
+        ///     if at all. Any nodes starting with "on", will be handled as events. If your events ends with "-script", they will
+        ///     be rendered back to client as JavaScript events, if they end with anything else but "-script", they will be assumed
+        ///     to be DOM events, and your node containing pf.lambda code, supposed to execute during that DOM event on the server-side.
+        ///     Any other nodes, are automatically added as HTML attributes, wwith their given values, and rendered as such back to client.
         /// </summary>
         /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
@@ -49,7 +71,16 @@ namespace phosphorus.web.ui.widgets
         }
 
         /// <summary>
-        ///     creates a generic void type of Widget, that will not allow for any content, but only attributes
+        ///     Creates a generic void type of Widget, that cannot contain neither "text" nor "controls". Active Event is not
+        ///     meant to be raised directly, but through the [pf.web.create-widget] Active Event, since it needs a reference to
+        ///     its parent control directly, among other things. Pass in [element] to override the HTML element rendered. Pass 
+        ///     in [has-id] with "false" to remove the rendering of its HTML ID element. Pass in [oninitialload] to have some server-side
+        ///     piece of pf.lambda code execute during its initial loading. Pass in [render-type], to override how the widget is 
+        ///     rendered, by supplying either "SelfClosing", "NoClose" or "Default" as values, overriding how the element is closed,
+        ///     if at all. Any nodes starting with "on", will be handled as events. If your events ends with "-script", they will
+        ///     be rendered back to client as JavaScript events, if they end with anything else but "-script", they will be assumed
+        ///     to be DOM events, and your node containing pf.lambda code, supposed to execute during that DOM event on the server-side.
+        ///     Any other nodes, are automatically added as HTML attributes, wwith their given values, and rendered as such back to client.
         /// </summary>
         /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
@@ -150,6 +181,9 @@ namespace phosphorus.web.ui.widgets
                         if (XUtil.Single (idxArg, context, true))
                             widget ["checked"] = null;
                         break;
+                    case "widget":
+                    case "before":
+                    case "after":
                     case "parent":
                     case "events":
                         // skipping these buggers, since they're not supposed to be handled here

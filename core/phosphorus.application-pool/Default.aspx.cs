@@ -139,7 +139,7 @@ namespace phosphorus.five.applicationpool
         ///     varies according to what type of [widget] you are creating. [widget] defaults to "container", and [parent] defaults
         ///     to "container", which is your main root widget on the page. If neither [before] nor [after] is given, widget will
         ///     be appended into controls collection at the end of whatever [parent] widget you choose to use. You can also optionally
-        ///     declare local widget Active Events by passing in an [events] node, which will be lcally declared Active Events for
+        ///     declare local widget Active Events by passing in an [events] node, which will be locally declared Active Events for
         ///     your widget, only active, as long as Widget exists on page.
         /// </summary>
         /// <param name="context">Context for current request</param>
@@ -298,7 +298,7 @@ namespace phosphorus.five.applicationpool
         }
 
         /// <summary>
-        ///     removes the widget with the id of the value of the [pf.web.remove-widget]
+        ///     removes the given widget(s) entirely
         /// </summary>
         /// <param name="context">ApplicationContexttionContext"/> for Active Event</param>
         /// <param name="e">parameters passed into Active Event</param>
@@ -345,6 +345,7 @@ namespace phosphorus.five.applicationpool
             }
         }
 
+        // TODO: do we really need this guy?
         /// <summary>
         ///     reloads the current URL
         /// </summary>
@@ -369,6 +370,7 @@ namespace phosphorus.five.applicationpool
             Manager.SendJavaScriptToClient (js);
         }
 
+        // TODO: support [re-source], the same way we do in [set] in this guy
         /// <summary>
         ///     send the given string back to browser as JSON with the key given as value of [pf.web.return-value], and the string
         ///     sent being the value of the first child of [pf.web.return-value]. the value to send, can either be an expression, a
