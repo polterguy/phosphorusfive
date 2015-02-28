@@ -100,6 +100,9 @@
 * "-1" property for ViewStateInSession property, to allow "infinite" number of ViewState keys in Session object, with a BIG warning
   to user that this posess a security risk though!
 
+* "immediate mode" in lambda.exe, to allow for writing in hyperlisp to be executed, for then to end code with 2xCR to execute Hyperlisp
+
+* "sockets" Active Events library, for creating Daemons to listen to ports, and react accordingly
 
 
 
