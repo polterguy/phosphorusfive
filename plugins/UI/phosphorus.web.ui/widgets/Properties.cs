@@ -123,7 +123,7 @@ namespace phosphorus.web.ui.widgets
         /// <summary>
         ///     Removes the properties of the widget(s) with the given ID(s).
         ///     The properties you wish to remove, are given as the names of the children nodes. The widget(s) you
-        ///     wish to remove properties from, are given as the value of node
+        ///     wish to remove properties from, are given as the value of node.
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>

@@ -71,7 +71,7 @@ namespace phosphorus.web.ui.widgets
         }
 
         /// <summary>
-        ///     Creates a generic void type of Widget, that cannot contain neither "text" nor "controls". Active Event is not
+        ///     Creates a generic void type of Widget, that cannot contain neither "text" nor "widgets". Active Event is not
         ///     meant to be raised directly, but through the [pf.web.create-widget] Active Event, since it needs a reference to
         ///     its parent control directly, among other things. Pass in [element] to override the HTML element rendered. Pass 
         ///     in [has-id] with "false" to remove the rendering of its HTML ID element. Pass in [oninitialload] to have some server-side
@@ -179,7 +179,7 @@ namespace phosphorus.web.ui.widgets
                     case "render-type":
                         widget.RenderType = (Widget.RenderingType) Enum.Parse (typeof (Widget.RenderingType), XUtil.Single<string> (idxArg, context));
                         break;
-                    case "controls":
+                    case "widgets":
                         CreateChildWidgets (context, widget, idxArg);
                         break;
                     case "widget":

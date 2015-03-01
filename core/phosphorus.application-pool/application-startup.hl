@@ -15,7 +15,7 @@ event:pf.create-additional-hello
   lambda
     pf.web.create-widget
       parent:main
-      controls
+      widgets
         literal
           innerValue:"hello again :) - click me 2!"
           onclick
@@ -31,7 +31,7 @@ event:pf.web.load-ui
   lambda
     pf.web.add-stylesheet-file:/media/css/main.css
     pf.web.create-widget:main
-      controls
+      widgets
         literal
           element:h1
           innerValue:"phosphorus.five, hello world app"
