@@ -182,6 +182,12 @@ namespace phosphorus.web.ui.widgets
                     case "widgets":
                         CreateChildWidgets (context, widget, idxArg);
                         break;
+                    case "controls":
+                        if (idxArg.Count > 0 && idxArg.Value == null) // "old" style of accessing [widgets] collection
+                            CreateChildWidgets (context, widget, idxArg);
+                        else
+                            HandleDefaultProperty (context, widget, idxArg);
+                        break;
                     case "widget":
                     case "before":
                     case "after":

@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using phosphorus.core;
 using phosphorus.expressions;
+using phosphorus.data.helpers;
 
 // ReSharper disable UnusedMember.Local
 // ReSharper disable UnusedMember.Global
@@ -14,15 +15,13 @@ using phosphorus.expressions;
 namespace phosphorus.data
 {
     /// <summary>
-    ///     class wrapping [pf.data.update] and its associated supporting methods
+    ///     Class wrapping [pf.data.update] and its associated supporting methods
     /// </summary>
     public static class Update
     {
         /// <summary>
-        ///     updates the results of the given expression in database, either according to a static [soure] node,
-        ///     or a relative [rel-source] node. if you supply a static [source], then source can either be a constant
-        ///     value, or an expression. if you supply a [rel-source], then source must be relative to nodes you wish
-        ///     to update
+        ///     Updates the results of the given expression in database, either according to a static [source] node,
+        ///     or a relative [rel-source] node
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -34,6 +33,7 @@ namespace phosphorus.data
                 // making sure database is initialized
                 Common.Initialize (context);
 
+                // TODO: refactor to allow [src], possibly using XUtil.Source ...?
                 // figuring out source, and executing the corresponding logic
                 if (e.Args.Count > 0 && e.Args.LastChild.Name == "rel-source") {
                     // static source, not a node, might be an expression
@@ -51,7 +51,6 @@ namespace phosphorus.data
         /*
          * sets all destination nodes relative to themselves
          */
-
         private static void UpdateRelativeSource (Node node, ApplicationContext context)
         {
             // iterating through all destinations, figuring out source relative to each destinations

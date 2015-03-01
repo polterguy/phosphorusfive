@@ -6,6 +6,7 @@
 using System;
 using phosphorus.core;
 using phosphorus.expressions;
+using phosphorus.data.helpers;
 
 // ReSharper disable UnusedMember.Local
 // ReSharper disable UnusedMember.Global
@@ -13,12 +14,12 @@ using phosphorus.expressions;
 namespace phosphorus.data
 {
     /// <summary>
-    ///     class wrapping [pf.data.select] and its associated supporting methods
+    ///     Class wrapping [pf.data.select] and its associated supporting methods
     /// </summary>
     public static class Select
     {
         /// <summary>
-        ///     selects items from database according to expression given as value of node, and returns the matches
+        ///     Selects items from database according to expression given as value of node, and returns the matches
         ///     as children nodes
         /// </summary>
         /// <param name="context">Application context</param>
@@ -26,6 +27,9 @@ namespace phosphorus.data
         [ActiveEvent (Name = "pf.data.select")]
         private static void pf_data_select (ApplicationContext context, ActiveEventArgs e)
         {
+            if (e.Args.Value == null)
+                return; // nothing to do here ...
+
             // acquiring lock on database
             lock (Common.Lock) {
                 // verifying syntax

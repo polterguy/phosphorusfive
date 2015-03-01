@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using phosphorus.core;
 using phosphorus.expressions;
+using phosphorus.data.helpers;
 
 // ReSharper disable UnusedMember.Local
 // ReSharper disable UnusedMember.Global
@@ -14,26 +15,25 @@ using phosphorus.expressions;
 namespace phosphorus.data
 {
     /// <summary>
-    ///     class wrapping [pf.data.insert] and its associated supporting methods
+    ///     Class wrapping [pf.data.insert] and its associated supporting methods
     /// </summary>
     public static class Insert
     {
         /// <summary>
-        ///     inserts nodes into database
+        ///     Inserts nodes into database
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.data.insert")]
         private static void pf_data_insert (ApplicationContext context, ActiveEventArgs e)
         {
+            if (e.Args.Count == 0 && e.Args.Value == null)
+                return; // nothing to do here
+
             // acquiring lock on database
             lock (Common.Lock) {
                 // making sure database is initialized
                 Common.Initialize (context);
-
-                // verifying syntax of statement
-                if (e.Args.Count == 0 && e.Args.Value == null)
-                    throw new ArgumentException ("[pf.data.insert] requires at least one child node, or a source expression, or source value");
 
                 // looping through all nodes given as children and saving them to database
                 var changed = new List<Node> ();
@@ -57,7 +57,6 @@ namespace phosphorus.data
         /*
          * inserts one node into database
          */
-
         private static void InsertNode (Node node, ApplicationContext context, List<Node> changed)
         {
             // syntax checking insert node
@@ -77,7 +76,6 @@ namespace phosphorus.data
         /*
          * syntax checks node before insertion is allowed
          */
-
         private static void SyntaxCheckInsertNode (Node node, ApplicationContext context)
         {
             // making sure it is impossible to insert items without a name into database
@@ -88,9 +86,10 @@ namespace phosphorus.data
             if (node.Value == null) {
                 node.Value = Guid.NewGuid ();
             } else {
+                // an ID was given, making sure it doesn't exist from before
                 var tmpId = node.Get<string> (context);
                 if (XUtil.Iterate (
-                    string.Format (@"@/*/*/""={0}""/?node", (tmpId.StartsWith ("/") ? "\\\\" + tmpId : tmpId)),
+                    string.Format (@"@/*/*/""=\\{0}""/?node", tmpId),
                     Common.Database,
                     context).GetEnumerator ().MoveNext ()) {
                     throw new ArgumentException ("ID exists from before in database");

@@ -14,13 +14,13 @@ using phosphorus.web.ui.Common;
 namespace phosphorus.web.ui
 {
     /// <summary>
-    ///     helper to retrieve and set cookies
+    ///     Helper to retrieve and set cookies
     /// </summary>
     public static class Cookies
     {
         /// <summary>
-        ///     creates one or more cookies to send back to client, where [duration] becomes number of days before it expires, and
-        ///     [source], or [src], becomes the nodes that are stored in the cookie
+        ///     Creates one or more cookies to send back to client, where [duration] becomes number of days before it expires, and
+        ///     [source], or [src], becomes the nodes that are stored in the cookie.
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -40,9 +40,9 @@ namespace phosphorus.web.ui
         }
 
         /// <summary>
-        ///     retrieves one or more cookies from client, and converts to pf.lambda, returning the name
-        ///     of the cookie as a child of the main node, containing all children nodes from cookie. cookie(s)
-        ///     to retrieve are given as value of main node
+        ///     Returns the cookie(s) given through the value(s) of the main node. Since cookies can only be stored
+        ///     as strings, this method will always return the string representation of whatever was previously stored
+        ///     in it using [pf.web.cookie.set]
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -60,10 +60,20 @@ namespace phosphorus.web.ui
             });
         }
 
+        /// <summary>
+        ///     Lists all keys for all cookies
+        /// </summary>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.web.cookie.list")]
+        private static void pf_web_cookie_list (ApplicationContext context, ActiveEventArgs e)
+        {
+            CollectionBase.List (e.Args, context, () => HttpContext.Current.Request.Cookies.AllKeys);
+        }
+        
         /*
          * creates a cookie from given Node and returns back to caller
          */
-
         private static HttpCookie CreateCookieFromNode (Node node, ApplicationContext context, string name, object nodes)
         {
             // creating cookie to send back to caller
@@ -78,13 +88,5 @@ namespace phosphorus.web.ui
             // returning cookie (or null) back to caller
             return retVal;
         }
-
-        /// <summary>
-        ///     lists all cookies keys in request
-        /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.cookie.list")]
-        private static void pf_web_cookie_list (ApplicationContext context, ActiveEventArgs e) { CollectionBase.List (e.Args, context, () => HttpContext.Current.Request.Cookies.AllKeys); }
     }
 }

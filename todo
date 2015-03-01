@@ -48,7 +48,7 @@
 * [context-event] and [context-override] keywords, with associated [context-delete-event] and [context-delete-override] keywords
   I don't think we need this, but keep it in TODO for a while ...
 
-* create consistency between all Active events using only ONE of "remove" or "delete". [pf.data.delete] might possibly be 
+* create consistency between all Active events using only ONE of "remove" or "delete". [pf.data.remove] might possibly be 
   [remove] instead, the same with [pf.folder.remove], [pf.file.remove], etc ...
 
 * investigate [pf.data.update] to see if it's even necessary

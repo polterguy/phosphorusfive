@@ -14,12 +14,12 @@ using phosphorus.web.ui.Common;
 namespace phosphorus.web.ui
 {
     /// <summary>
-    ///     helper to retrieve POST and GET parameters
+    ///     Helper to retrieve POST and GET parameters
     /// </summary>
     public static class Parameters
     {
         /// <summary>
-        ///     retrieves the requested POST or GET parameter(s)
+        ///     Returns the HTTP GET or POST parameter(s) given through the value(s) of the main node
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -35,11 +35,14 @@ namespace phosphorus.web.ui
         }
 
         /// <summary>
-        ///     lists all parameters in request
+        ///     Lists all keys for our GET and POST parameters
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.parameters.list")]
-        private static void pf_web_parameters_list (ApplicationContext context, ActiveEventArgs e) { CollectionBase.List (e.Args, context, () => HttpContext.Current.Request.Params.AllKeys); }
+        private static void pf_web_parameters_list (ApplicationContext context, ActiveEventArgs e)
+        {
+            CollectionBase.List (e.Args, context, () => HttpContext.Current.Request.Params.AllKeys);
+        }
     }
 }

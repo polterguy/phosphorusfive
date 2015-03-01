@@ -104,7 +104,7 @@ namespace phosphorus.expressions
                         }
                         break;
                     default:
-                        throw new ApplicationException ("cannot set indexed value from match of type 'count' or 'path'");
+                        throw new ApplicationException ("You cannot use neither 'count' nor 'path' as destinations in your expressions");
                 }
             }
         }

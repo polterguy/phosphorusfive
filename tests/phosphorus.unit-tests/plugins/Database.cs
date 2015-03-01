@@ -30,7 +30,7 @@ namespace phosphorus.unittests.plugins
         public void SetUp ()
         {
             // deleting entire database, in case there already are items in it
-            ExecuteLambda (@"pf.data.delete:@/*/*/?node");
+            ExecuteLambda (@"pf.data.remove:@/*/*/?node");
         }
 
         /*
@@ -61,7 +61,7 @@ namespace phosphorus.unittests.plugins
   _test1
     howdy:world
 pf.data.select:@/*/*/_test1/?node
-pf.data.delete:@/*/*/_test1/?node
+pf.data.remove:@/*/*/_test1/?node
 pf.data.select:@/*/*/_test1/?node");
             Assert.AreEqual (1, tmp [1].Count);
             Assert.AreEqual ("_test1", tmp [1] [0].Name);
@@ -261,7 +261,7 @@ pf.data.select:@/*/*/{0}/?node
             var tmp = ExecuteLambda (@"pf.data.insert
   _test4
     howdy:world
-pf.data.delete:@/*/*/{0}/?node
+pf.data.remove:@/*/*/{0}/?node
   :@/../0/0/?name
 pf.data.select:@/*/*/_test4/?node");
             Assert.AreEqual (0, tmp [2].Count);
@@ -356,6 +356,18 @@ pf.data.select:@/*/*/foo/?value");
             Assert.AreEqual (1, tmp [1].Count);
             Assert.AreEqual (string.Empty, tmp [1] [0].Name);
             Assert.AreEqual ("bar", tmp [1] [0].Value);
+        }
+
+        /// <summary>
+        ///     inserts two items with the same ID, expecting an exception
+        /// </summary>
+        [Test]
+        [ExpectedException]
+        public void InsertError01 ()
+        {
+            ExecuteLambda (@"pf.data.insert
+  foo1:bar_x
+  foo2:bar_x");
         }
 
         /// <summary>

@@ -14,12 +14,12 @@ using phosphorus.web.ui.Common;
 namespace phosphorus.web.ui
 {
     /// <summary>
-    ///     helper to retrieve and set session values
+    ///     Helper to retrieve and set session values
     /// </summary>
     public static class Session
     {
         /// <summary>
-        ///     sets one or more session values
+        ///     Sets one or more session object(s) where [source], or [src], becomes the nodes that are stored in the session.
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -38,19 +38,25 @@ namespace phosphorus.web.ui
         }
 
         /// <summary>
-        ///     returns one or more session values back to caller as nodes
+        ///     Returns the session object(s) given through the value(s) of the main node
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.session.get")]
-        private static void pf_web_session_get (ApplicationContext context, ActiveEventArgs e) { CollectionBase.Get (e.Args, context, key => HttpContext.Current.Session [key]); }
+        private static void pf_web_session_get (ApplicationContext context, ActiveEventArgs e)
+        {
+            CollectionBase.Get (e.Args, context, key => HttpContext.Current.Session [key]);
+        }
 
         /// <summary>
-        ///     lists all session keys
+        ///     Lists all keys in the session object
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.session.list")]
-        private static void pf_web_session_list (ApplicationContext context, ActiveEventArgs e) { CollectionBase.List (e.Args, context, () => (from object idx in HttpContext.Current.Session.Keys select idx.ToString ()).ToList ()); }
+        private static void pf_web_session_list (ApplicationContext context, ActiveEventArgs e)
+        {
+            CollectionBase.List (e.Args, context, () => (from object idx in HttpContext.Current.Session.Keys select idx.ToString ()).ToList ());
+        }
     }
 }

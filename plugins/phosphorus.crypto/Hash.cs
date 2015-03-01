@@ -15,13 +15,12 @@ using phosphorus.expressions;
 namespace phosphorus.crypto
 {
     /// <summary>
-    ///     helper wrapping some cryptographic Active Events
+    ///     Helper to create hashed values from nodes and values
     /// </summary>
     public static class Hash
     {
         /// <summary>
-        ///     creates a hash out of the value from [pf.crypto.hash-string] and returns the hash value as the value of
-        ///     the first child of [pf.crypto.hash-string] named [value]
+        ///     Creates an MD5 hash-string from the value(s) given
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>

@@ -9,35 +9,35 @@ using System.Configuration;
 using System.Linq;
 using phosphorus.core;
 
-namespace phosphorus.data
+namespace phosphorus.data.helpers
 {
     /// <summary>
-    ///     helper class for common operations and methods needed in the [pf.data.xxx] namespace
+    ///     Helper class for common operations and methods used in the [pf.data.xxx] namespace.
     /// </summary>
     public static class Common
     {
         // contains the path to the database folder, where all the pf.lambda files are stored
         private static string _dbPath;
-        // actual database content
 
-        // used for locking access to database operations to create thread safe solutions
-
-        static Common () { Lock = new object (); }
+        static Common ()
+        {
+            Lock = new object ();
+        }
 
         /// <summary>
-        ///     returns the node containing the actual data in the database
+        ///     Returns the node containing the actual data in the database.
         /// </summary>
         /// <value>database tree</value>
         public static Node Database { get; private set; }
 
         /// <summary>
-        ///     used to lock database access
+        ///     Used to lock database access.
         /// </summary>
         /// <value>lock object</value>
         public static object Lock { get; private set; }
 
         /// <summary>
-        ///     makes sure database is properly initialized
+        ///     Makes sure database is properly initialized.
         /// </summary>
         /// <param name="context">application context</param>
         public static void Initialize (ApplicationContext context)
@@ -69,7 +69,6 @@ namespace phosphorus.data
         /*
          * appends node to list of changes, if it doesn't already exist there
          */
-
         public static void AddNodeToChanges (Node idxDest, List<Node> changed)
         {
             // finding "file node"
@@ -87,7 +86,6 @@ namespace phosphorus.data
         /*
          * saves all affected files
          */
-
         public static void SaveAffectedFiles (ApplicationContext context, List<Node> changed)
         {
             foreach (var idxNode in changed) {
@@ -100,7 +98,6 @@ namespace phosphorus.data
         /*
          * saves a database node to disc
          */
-
         private static void SaveFileNode (ApplicationContext context, Node fileNode)
         {
             if (fileNode.Count == 0) {
@@ -134,7 +131,6 @@ namespace phosphorus.data
         /*
          * returns the next available database file node to store nodes within
          */
-
         public static Node GetAvailableFileNode (ApplicationContext context)
         {
             // searching through database to see if there are any nodes we can use from before
@@ -161,7 +157,6 @@ namespace phosphorus.data
         /*
          * loads a file from "path" and returns as Node
          */
-
         private static Node LoadFile (ApplicationContext context, string path)
         {
             // loading file
@@ -179,12 +174,11 @@ namespace phosphorus.data
         }
 
         /*
-         * returns all directories within db path
+         * returns all directories within given folder
          */
-
-        private static IEnumerable<string> GetDirectories (ApplicationContext context, string directory)
+        private static IEnumerable<string> GetDirectories (ApplicationContext context, string folder)
         {
-            var dbFoldersNode = new Node (string.Empty, directory);
+            var dbFoldersNode = new Node (string.Empty, folder);
             context.Raise ("pf.folder.list-folders", dbFoldersNode);
 
             dbFoldersNode.Sort (
@@ -194,13 +188,12 @@ namespace phosphorus.data
                     return leftInt.CompareTo (rightInt);
                 });
 
-            return dbFoldersNode.Children.Select (idxDirectory => idxDirectory.Value as string);
+            return dbFoldersNode.Children.Select (idxDirectory => (string) idxDirectory.Value);
         }
 
         /*
          * returns files within directory
          */
-
         private static IEnumerable<string> GetFiles (ApplicationContext context, string directory)
         {
             var dbFoldersNode = new Node (string.Empty, directory);
@@ -219,7 +212,6 @@ namespace phosphorus.data
         /*
          * returns the next available filename for a new database file
          */
-
         private static string FindAvailableNewFileName (ApplicationContext context)
         {
             var maxFilesPerDirectory = int.Parse (ConfigurationManager.AppSettings ["database-files-per-directory"] ?? "256");
@@ -254,7 +246,6 @@ namespace phosphorus.data
         /*
          * helper to create directory
          */
-
         private static void CreateNewDirectory (ApplicationContext context, string directory)
         {
             var createDirectoryNode = new Node (string.Empty, directory);
