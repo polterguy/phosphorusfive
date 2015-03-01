@@ -94,7 +94,7 @@ namespace phosphorus.five.applicationpool
         ///     our [pf.file.xxx] namespace to work correctly
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.core.application-folder")]
         private static void pf_core_application_folder (ApplicationContext context, ActiveEventArgs e)
         {

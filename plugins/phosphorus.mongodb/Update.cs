@@ -26,8 +26,8 @@ namespace phosphorus.mongodb
         /// <summary>
         ///     updates items from the MongoDB database according to the criteria given
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.mongo.update")]
         private static void pf_mongo_update (ApplicationContext context, ActiveEventArgs e)
         {

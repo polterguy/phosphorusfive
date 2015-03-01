@@ -21,7 +21,7 @@ namespace phosphorus.web.ui.response
         /// changes or removes existing HTTP headers, or adds new HTTP headers to response
         /// </summary>
         /// <param name="context"><see cref="phosphorus.core.ApplicationContext"/> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.headers.set")]
         private static void pf_web_headers_set (ApplicationContext context, ActiveEventArgs e)
         {

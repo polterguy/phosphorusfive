@@ -20,8 +20,8 @@ namespace phosphorus.file.folder
         /// <summary>
         ///     list all the files in folder given as value of args given
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.folder.list-files")]
         private static void pf_folder_list_files (ApplicationContext context, ActiveEventArgs e)
         {

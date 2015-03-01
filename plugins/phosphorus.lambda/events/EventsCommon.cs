@@ -31,8 +31,8 @@ namespace phosphorus.lambda.events
         /// <summary>
         ///     lists all dynamically create Active Events
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.meta.list-events")]
         private static void pf_meta_list_events (ApplicationContext context, ActiveEventArgs e)
         {

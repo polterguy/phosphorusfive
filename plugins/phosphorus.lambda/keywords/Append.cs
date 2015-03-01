@@ -21,8 +21,8 @@ namespace phosphorus.lambda.keywords
         /// <summary>
         ///     [add] keyword for execution engine. allows adding nodes from one part of your tree to another part
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "append")]
         private static void lambda_append (ApplicationContext context, ActiveEventArgs e)
         {

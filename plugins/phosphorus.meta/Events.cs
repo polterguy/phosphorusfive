@@ -22,8 +22,8 @@ namespace phosphorus.meta
         /// <summary>
         ///     returns all active events, alternatively containing the string given through [pf.meta.list-events]
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.meta.list-events")]
         private static void pf_meta_list_events (ApplicationContext context, ActiveEventArgs e)
         {
@@ -50,8 +50,8 @@ namespace phosphorus.meta
         /// <summary>
         ///     returns all overrides in system, alternatively containing the string given through [pf.meta.list-overrides]
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.meta.list-overrides")]
         private static void pf_meta_list_overrides (ApplicationContext context, ActiveEventArgs e)
         {

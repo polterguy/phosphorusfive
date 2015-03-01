@@ -3,98 +3,117 @@
  * phosphorus five is licensed as mitx11, see the enclosed LICENSE file for details
  */
 
+using System;
 using System.Collections.Generic;
 using phosphorus.ajax.widgets;
 using phosphorus.core;
 using phosphorus.expressions;
+using phosphorus.expressions.exceptions;
 
 // ReSharper disable UnusedMember.Local
 
 namespace phosphorus.web.ui.widgets
 {
     /// <summary>
-    ///     helper to retrieve and change properties of widgets
+    ///     Helper to retrieve and change properties of widgets
     /// </summary>
     // ReSharper disable once UnusedMember.Global
     public static class Properties
     {
         /// <summary>
-        ///     returns properties requested by caller as children nodes of [pf.web.widgets.get-property]. the properties you
-        ///     wish to retrieve, are given as the names of the children nodes of [pf.web.widgets.get-property]. the widget you
-        ///     wish to retrieve properties from, is given as the value of [pf.web.widgets.get-property]. the value of
-        ///     [pf.web.widgets.get-property] can also be an expression
+        ///     Returns properties requested by caller as children nodes. The properties you
+        ///     wish to retrieve, are given as the names of the children nodes. The widget(s) you
+        ///     wish to retrieve properties from, is given as the value of node.
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.property.get")]
         private static void pf_web_property_get (ApplicationContext context, ActiveEventArgs e)
         {
+            if (e.Args.Value == null || e.Args.Count == 0)
+                return; // nothing to do here ...
+
+            // need to store original children nodes, since method might create new children nodes, during enumeration
             var origNodeList = new List<Node> (e.Args.Children);
+
+            // looping through all widget IDs given by caller
             foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+
+                // finding widget
                 var widget = FindWidget (context, idx);
+
+                // looping through all properties requested by caller
                 foreach (var nameNode in origNodeList) {
-                    if (widget.ElementType == "select" && nameNode.Name == "value") {
-                        foreach (var idxCtrl in widget.Controls) {
-                            var idxWidget = idxCtrl as Widget;
-                            if (idxWidget != null) {
-                                if (idxWidget.HasAttribute ("selected")) {
-                                    if (XUtil.IsExpression (e.Args.Value)) {
-                                        e.Args.FindOrCreate (nameNode.Name).Value = idxWidget ["value"];
-                                    } else {
-                                        nameNode.Value = idxWidget ["value"];
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-                    } else {
-                        switch (nameNode.Name) {
-                            case "element":
-                                if (XUtil.IsExpression (e.Args.Value)) {
-                                    e.Args.FindOrCreate (nameNode.Name).Value = widget.ElementType;
-                                } else {
-                                    nameNode.Value = widget.ElementType;
-                                }
-                                break;
-                            default:
-                                if (!string.IsNullOrEmpty (nameNode.Name)) {
-                                    if (XUtil.IsExpression (e.Args.Value)) {
-                                        e.Args.FindOrCreate (widget.ID).Add (nameNode.Name).LastChild.Value = widget [nameNode.Name];
-                                    } else {
-                                        nameNode.Value = widget [nameNode.Name];
-                                    }
-                                }
-                                break;
-                        }
+
+                    // checking if this is a generic attribute, or a specific property
+                    switch (nameNode.Name) {
+                        case "":
+                            continue; // formatting parameter to expression in main node
+                        case "visible":
+                            CreatePropertyReturn (e.Args, nameNode, widget, widget.Visible);
+                            break;
+                        case "invisible-element":
+                            CreatePropertyReturn (e.Args, nameNode, widget, widget.InvisibleElement);
+                            break;
+                        case "element":
+                            CreatePropertyReturn (e.Args, nameNode, widget, widget.ElementType);
+                            break;
+                        case "has-id":
+                            CreatePropertyReturn (e.Args, nameNode, widget, widget.NoIdAttribute);
+                            break;
+                        case "render-type":
+                            CreatePropertyReturn (e.Args, nameNode, widget, widget.RenderType.ToString ());
+                            break;
+                        default:
+                            if (!string.IsNullOrEmpty (nameNode.Name))
+                                CreatePropertyReturn (e.Args, nameNode, widget);
+                            break;
                     }
                 }
             }
         }
 
         /// <summary>
-        ///     set properties of the widget with the ID of the value of [pf.web.widgets.set-property] to the value of the children
-        ///     nodes of [pf.web.widgets.set-property]. the properties you wish to set, is given through the names of the children
-        ///     nodes of [pf.web.widgets.set-property]. the values you wish to set can also be expressions, or formatting
-        ///     expressions.
-        ///     the value of [pf.web.widgets.set-property] can also be an expression
+        ///     Sets the properties of the widget(s) with the given ID(s) to the value of its children nodes.
+        ///     The properties you wish to set, are given as the names of the children nodes. The widget(s) you
+        ///     wish to set the properties of, are given as the value of node
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.property.set")]
         private static void pf_web_property_set (ApplicationContext context, ActiveEventArgs e)
         {
+            if (e.Args.Value == null || e.Args.Count == 0)
+                return; // nothing to do here ...
+
+            // looping through all widget IDs given by caller
             foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+                
+                // finding widget
                 var widget = FindWidget (context, idx);
+
+                // looping through all properties requested by caller
                 foreach (var valueNode in e.Args.Children) {
-                    string propertyValue;
                     switch (valueNode.Name) {
+                        case "":
+                            continue; // formatting parameter to expression in main node
+                        case "visible":
+                            widget.Visible = valueNode.Get<bool> (context);
+                            break;
+                        case "invisible-element":
+                            widget.InvisibleElement = valueNode.Get<string> (context);
+                            break;
                         case "element":
-                            propertyValue = valueNode.Get<string> (context);
-                            widget.ElementType = propertyValue;
+                            widget.ElementType = valueNode.Get<string> (context);
+                            break;
+                        case "has-id":
+                            widget.NoIdAttribute = valueNode.Get<bool> (context);
+                            break;
+                        case "render-type":
+                            widget.RenderType = (Widget.RenderingType) Enum.Parse (typeof (Widget.RenderingType), valueNode.Get<string> (context));
                             break;
                         default:
-                            propertyValue = valueNode.Get<string> (context);
-                            widget [valueNode.Name] = propertyValue;
+                            widget [valueNode.Name] = valueNode.Get<string> (context);
                             break;
                     }
                 }
@@ -102,28 +121,59 @@ namespace phosphorus.web.ui.widgets
         }
 
         /// <summary>
-        ///     removes properties requested by caller as children nodes of [pf.web.widgets.remove-property]. the properties you
-        ///     wish to remove, are given as the names of the children nodes of [pf.web.widgets.get-property]. the widget ID you
-        ///     wish to retrieve properties from, is given as the value of [pf.web.widgets.get-property].
-        ///     the value of [pf.web.widgets.remove-property] can also be an expression
+        ///     Removes the properties of the widget(s) with the given ID(s).
+        ///     The properties you wish to remove, are given as the names of the children nodes. The widget(s) you
+        ///     wish to remove properties from, are given as the value of node
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.property.remove")]
         private static void pf_web_property_remove (ApplicationContext context, ActiveEventArgs e)
         {
+            // looping through all widgets
             foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+
+                // finding widget
                 var widget = FindWidget (context, idx);
+
+                // looping through each property to remove
                 foreach (var nameNode in e.Args.Children) {
-                    widget.RemoveAttribute (nameNode.Name);
+
+                    // verifying property can be removed
+                    switch (nameNode.Name) {
+                        case "":
+                            continue; // formatting parameter to expression in main node
+                        case "visible":
+                        case "invisible-element":
+                        case "element":
+                        case "has-id":
+                        case "render-type":
+                            throw new ArgumentException ("Cannot remove property; '" + nameNode.Name + "' of widget.");
+                        default:
+                            widget.RemoveAttribute (nameNode.Name);
+                            break;
+                    }
                 }
             }
+        }
+        
+        /*
+         * helper for [pf.web.property.get], creates a return value for one property
+         */
+        private static void CreatePropertyReturn (Node node, Node nameNode, Widget widget, object value = null)
+        {
+            // checking if widget has the attribute, if it doesn't, we don't even add any return nodes at all, to make it possible
+            // to separate widgets which has the property, but no value, (such as the selected property on checkboxes for instance),
+            // and widgets that does not have the property at all
+            if (value == null && !widget.HasAttribute (nameNode.Name))
+                return;
+
+            node.FindOrCreate (widget.ID).Add (nameNode.Name).LastChild.Value = value == null ? widget [nameNode.Name] : value;
         }
 
         /*
          * returns the widget we're looking for
          */
-
         private static Widget FindWidget (ApplicationContext context, string widgetId)
         {
             var findCtrl = new Node (string.Empty, widgetId);

@@ -36,8 +36,8 @@ namespace phosphorus.web.ui.widgets
         ///     to be DOM events, and your node containing pf.lambda code, supposed to execute during that DOM event on the server-side.
         ///     Any other nodes, are automatically added as HTML attributes, wwith their given values, and rendered as such back to client.
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.widgets.container")]
         private static void pf_web_controls_container (ApplicationContext context, ActiveEventArgs e)
         {
@@ -61,8 +61,8 @@ namespace phosphorus.web.ui.widgets
         ///     to be DOM events, and your node containing pf.lambda code, supposed to execute during that DOM event on the server-side.
         ///     Any other nodes, are automatically added as HTML attributes, wwith their given values, and rendered as such back to client.
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.widgets.literal")]
         private static void pf_web_controls_literal (ApplicationContext context, ActiveEventArgs e)
         {
@@ -82,8 +82,8 @@ namespace phosphorus.web.ui.widgets
         ///     to be DOM events, and your node containing pf.lambda code, supposed to execute during that DOM event on the server-side.
         ///     Any other nodes, are automatically added as HTML attributes, wwith their given values, and rendered as such back to client.
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.widgets.void")]
         private static void pf_web_controls_void (ApplicationContext context, ActiveEventArgs e)
         {
@@ -164,22 +164,23 @@ namespace phosphorus.web.ui.widgets
             // looping through all children nodes of Widget's node to decorate Widget
             foreach (var idxArg in args.Children) {
                 switch (idxArg.Name) {
-                    case "has-id":
-                        if (!XUtil.Single<bool> (idxArg, context))
-                            widget.NoIdAttribute = true;
+                    case "visible":
+                        widget.Visible = XUtil.Single<bool> (idxArg, context);
                         break;
-                    case "render-type":
-                        SetRenderType (widget, XUtil.Single<string> (idxArg, context));
+                    case "invisible-element":
+                        widget.InvisibleElement = XUtil.Single<string> (idxArg, context);
                         break;
                     case "element":
-                        SetElementType (widget, XUtil.Single<string> (idxArg, context));
+                        widget.ElementType = XUtil.Single<string> (idxArg, context);
+                        break;
+                    case "has-id":
+                        widget.NoIdAttribute = !XUtil.Single<bool> (idxArg, context);
+                        break;
+                    case "render-type":
+                        widget.RenderType = (Widget.RenderingType) Enum.Parse (typeof (Widget.RenderingType), XUtil.Single<string> (idxArg, context));
                         break;
                     case "controls":
                         CreateChildWidgets (context, widget, idxArg);
-                        break;
-                    case "checked":
-                        if (XUtil.Single (idxArg, context, true))
-                            widget ["checked"] = null;
                         break;
                     case "widget":
                     case "before":
@@ -225,22 +226,6 @@ namespace phosphorus.web.ui.widgets
             if (addName) {
                 widget ["name"] = widget.ID;
             }
-        }
-
-        /*
-         * sets the rendering type of Widget
-         */
-        private static void SetRenderType (Widget widget, string renderType)
-        {
-            widget.RenderType = (Widget.RenderingType) Enum.Parse (typeof (Widget.RenderingType), renderType);
-        }
-
-        /*
-         * changes the ElementType of the Widget
-         */
-        private static void SetElementType (Widget widget, string elementType)
-        {
-            widget.ElementType = elementType;
         }
 
         /*

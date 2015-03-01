@@ -22,8 +22,8 @@ namespace phosphorus.lambda
         /// <summary>
         ///     executes given block, or result of expression, as a block of statements to be executed
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "lambda")]
         private static void lambda_lambda (ApplicationContext context, ActiveEventArgs e)
         {
@@ -44,8 +44,8 @@ namespace phosphorus.lambda
         ///     without considering inheritance chain. this only applies to first level children of [lambda.invoke],
         ///     and not for descendants of children nodes, or children of nodes resulting from expression given
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "lambda.invoke")]
         private static void lambda_invoke (ApplicationContext context, ActiveEventArgs e)
         {
@@ -65,8 +65,8 @@ namespace phosphorus.lambda
         ///     executes given block, or result of expression, as a block of statements to be executed, setting
         ///     the the execution block node's back to what they were originally afterwards
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "lambda.immutable")]
         private static void lambda_immutable (ApplicationContext context, ActiveEventArgs e)
         {
@@ -88,8 +88,8 @@ namespace phosphorus.lambda
         ///     execution does not in any ways have access to nodes from the tree outside of itself, unless nodes are
         ///     passed in by reference
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "lambda.copy")]
         private static void lambda_copy (ApplicationContext context, ActiveEventArgs e)
         {
@@ -108,8 +108,8 @@ namespace phosphorus.lambda
         /// <summary>
         ///     executes a single pf.lambda statement
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "lambda.single")]
         private static void lambda_single (ApplicationContext context, ActiveEventArgs e)
         {

@@ -19,18 +19,37 @@ namespace phosphorus.web.ui.response
     /// </summary>
     public static class Echo
     {
+        /*
+         * helper class for encapsulating echo response
+         */
+        private class EchoFilter : MemoryStream
+        {
+            private readonly StringBuilder _builder = new StringBuilder ();
+
+            public void Append (string txt)
+            {
+                _builder.Append (txt);
+            }
+
+            public override void Close ()
+            {
+                HttpContext.Current.Response.Write (_builder.ToString ());
+                base.Close ();
+            }
+        }
+
         /// <summary>
-        ///     discards the current response, and echos any piece of text back to client as HTTP response
+        ///     Discards the current response, and echos the given piece of text back to client.
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.echo")]
         private static void pf_web_echo (ApplicationContext context, ActiveEventArgs e)
         {
             // retrieving a reference to our EchFilter
             var echoFilter = HttpContext.Current.Response.Filter as EchoFilter;
 
-            // if [pf.web.echo] is invoked before, we reuse the previous filter
+            // if [pf.web.echo] is invoked before on this request, therefor we reuse the previously created filter
             if (echoFilter == null) {
                 // not invoked before, creating new filter, discarding the old
                 echoFilter = new EchoFilter ();
@@ -39,22 +58,6 @@ namespace phosphorus.web.ui.response
 
             foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
                 echoFilter.Append (idx);
-            }
-        }
-
-        /*
-         * helper class for encapsulating echo response
-         */
-
-        private class EchoFilter : MemoryStream
-        {
-            private readonly StringBuilder _builder = new StringBuilder ();
-            public void Append (string txt) { _builder.Append (txt); }
-
-            public override void Close ()
-            {
-                HttpContext.Current.Response.Write (_builder.ToString ());
-                base.Close ();
             }
         }
     }

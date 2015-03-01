@@ -21,8 +21,8 @@ namespace phosphorus.data
         ///     selects items from database according to expression given as value of node, and returns the matches
         ///     as children nodes
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.data.select")]
         private static void pf_data_select (ApplicationContext context, ActiveEventArgs e)
         {

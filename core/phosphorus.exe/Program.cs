@@ -24,7 +24,7 @@ namespace phosphorus.exe
         ///     Necessary to make our [pf.file.xxx] namespace work correctly.
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.core.application-folder")]
         private static void pf_core_application_folder (ApplicationContext context, ActiveEventArgs e)
         {
@@ -125,7 +125,7 @@ namespace phosphorus.exe
                     Console.Write("pf>");
                     string line = Console.ReadLine ();
                     if (line == string.Empty)
-                        break;
+                        break; // breaking and executing given code
                     if (line == "exit") {
 
                         // discarding input and signaling exit of outer loop

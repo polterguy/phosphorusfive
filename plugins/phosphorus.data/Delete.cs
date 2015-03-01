@@ -21,8 +21,8 @@ namespace phosphorus.data
         ///     removes the nodes from the database matching the given expression and returns number of items affected
         ///     as value of [pf.data.remove] node's child
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.data.delete")]
         private static void pf_data_delete (ApplicationContext context, ActiveEventArgs e)
         {

@@ -56,7 +56,7 @@ namespace phosphorus.web.ui.response
         /// discards the current response, and transfers the file(s) given through its args
         /// </summary>
         /// <param name="context"><see cref="phosphorus.core.ApplicationContext"/> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.transmit-file")]
         private static void pf_web_transmit_file (ApplicationContext context, ActiveEventArgs e)
         {

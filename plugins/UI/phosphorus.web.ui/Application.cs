@@ -21,8 +21,8 @@ namespace phosphorus.web.ui
         ///     sets the given application key to the nodes given as children of [pf.web.application.set]. if no nodes are given,
         ///     the application object with the given key is cleared
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.application.set")]
         private static void pf_web_application_set (ApplicationContext context, ActiveEventArgs e)
         {
@@ -40,16 +40,16 @@ namespace phosphorus.web.ui
         /// <summary>
         ///     returns the application object given through the value of [pf.web.application.get] as a node
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.application.get")]
         private static void pf_web_application_get (ApplicationContext context, ActiveEventArgs e) { CollectionBase.Get (e.Args, context, key => HttpContext.Current.Application [key]); }
 
         /// <summary>
         ///     lists all application keys
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.application.list")]
         private static void pf_web_application_list (ApplicationContext context, ActiveEventArgs e) { CollectionBase.List (e.Args, context, () => HttpContext.Current.Application.AllKeys); }
     }

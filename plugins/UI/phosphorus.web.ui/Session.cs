@@ -21,8 +21,8 @@ namespace phosphorus.web.ui
         /// <summary>
         ///     sets one or more session values
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.session.set")]
         private static void pf_web_session_set (ApplicationContext context, ActiveEventArgs e)
         {
@@ -40,16 +40,16 @@ namespace phosphorus.web.ui
         /// <summary>
         ///     returns one or more session values back to caller as nodes
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.session.get")]
         private static void pf_web_session_get (ApplicationContext context, ActiveEventArgs e) { CollectionBase.Get (e.Args, context, key => HttpContext.Current.Session [key]); }
 
         /// <summary>
         ///     lists all session keys
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.session.list")]
         private static void pf_web_session_list (ApplicationContext context, ActiveEventArgs e) { CollectionBase.List (e.Args, context, () => (from object idx in HttpContext.Current.Session.Keys select idx.ToString ()).ToList ()); }
     }

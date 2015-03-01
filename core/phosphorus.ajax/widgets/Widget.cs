@@ -51,6 +51,7 @@ namespace phosphorus.ajax.widgets
 
         // contains all attributes of widget
         private readonly AttributeStorage _attributes = new AttributeStorage ();
+
         // how to render the widget. normally this is automatically determined, but sometimes it needs to be overridden explicitly
         protected RenderingMode RenderMode = RenderingMode.Default;
 
@@ -120,9 +121,24 @@ namespace phosphorus.ajax.widgets
         /// <param name="name">attribute to retrieve or set</param>
         public virtual string this [string name]
         {
-            get { return _attributes.GetAttribute (name); }
-            set
-            {
+            get {
+                string retVal = _attributes.GetAttribute (name);
+                if (retVal != null)
+                    return retVal;
+                if (name == "value" && ElementType == "select") {
+                    // special treatment for select HTML elements "value" property, since they might still have a value, even though
+                    // their "value" property returns null, since one of their children, "option" elements, still might contain a "selected" property
+                    foreach (Control idxCtrl in Controls) {
+                        var idxWidget = idxCtrl as Widget;
+                        if (idxWidget != null) {
+                            if (idxWidget.HasAttribute ("selected") && idxWidget.HasAttribute ("value"))
+                                return idxWidget ["value"];
+                        }
+                    }
+                }
+                return null;
+            }
+            set {
                 if (!IsTrackingViewState) {
                     _attributes.SetAttributePreViewState (name, value);
                 } else {
@@ -170,7 +186,24 @@ namespace phosphorus.ajax.widgets
         /// </summary>
         /// <returns><c>true</c> if this instance has the attribute with the specified name; otherwise, <c>false</c></returns>
         /// <param name="name">name of attribute to check for existence of</param>
-        public bool HasAttribute (string name) { return _attributes.HasAttribute (name); }
+        public bool HasAttribute (string name)
+        {
+            bool retVal = _attributes.HasAttribute (name);
+            if (retVal)
+                return true;
+            if (name == "value" && ElementType == "select") {
+                // special treatment for select HTML elements "value" property, since they might still have a value, even though
+                // their "value" property returns null, since one of their children, "option" elements, still might contain a "selected" property
+                foreach (Control idxCtrl in Controls) {
+                    var idxWidget = idxCtrl as Widget;
+                    if (idxWidget != null) {
+                        if (idxWidget.HasAttribute ("selected") && idxWidget.HasAttribute ("value"))
+                            return true;
+                    }
+                }
+            }
+            return false;
+        }
 
         /// <summary>
         ///     removes an attribute
@@ -207,7 +240,7 @@ namespace phosphorus.ajax.widgets
         protected void LoadFormData ()
         {
             if (this ["disabled"] == null) {
-                if (!string.IsNullOrEmpty (this ["name"]) || ElementType == "option") {
+                if (!string.IsNullOrEmpty (this ["name"])) {
                     switch (ElementType.ToLower ()) {
                         case "input":
                             switch (this ["type"]) {
@@ -227,16 +260,8 @@ namespace phosphorus.ajax.widgets
                         case "textarea":
                             _attributes.SetAttributeFormData ("innerValue", Page.Request.Params [this ["name"]]);
                             break;
-                        case "option":
-                            var parent = Parent as Widget;
-                            if (parent != null && parent.ElementType == "select" && !parent.HasAttribute ("disabled") && !string.IsNullOrEmpty (parent ["name"])) {
-                                if (Page.Request.Params [parent ["name"]] == this ["value"]) {
-                                    _attributes.SetAttributeFormData ("selected", null);
-                                } else {
-                                    if (HasAttribute ("selected"))
-                                        _attributes.RemoveAttribute ("selected");
-                                }
-                            }
+                        case "select":
+                            _attributes.SetAttributeFormData ("value", Page.Request.Params [this ["name"]]);
                             break;
                     }
                 }

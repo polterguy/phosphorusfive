@@ -21,8 +21,8 @@ namespace phosphorus.data
         /// <summary>
         ///     inserts nodes into database
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.data.insert")]
         private static void pf_data_insert (ApplicationContext context, ActiveEventArgs e)
         {

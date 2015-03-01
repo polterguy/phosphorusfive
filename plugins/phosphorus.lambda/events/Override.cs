@@ -21,8 +21,8 @@ namespace phosphorus.lambda.events
         /// <summary>
         ///     overrides zero or more events, with all given [super] parameters
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "override")]
         private static void lambda_override (ApplicationContext context, ActiveEventArgs e)
         {

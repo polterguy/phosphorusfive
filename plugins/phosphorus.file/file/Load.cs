@@ -21,8 +21,8 @@ namespace phosphorus.file.file
         ///     loads zero or more files from disc. can be given either an expression or a constant.
         ///     if file does not exist, false will be returned as value
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.file.load")]
         private static void pf_file_load (ApplicationContext context, ActiveEventArgs e)
         {

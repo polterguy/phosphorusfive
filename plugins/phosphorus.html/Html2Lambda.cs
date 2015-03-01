@@ -20,8 +20,8 @@ namespace phosphorus.html
         /// <summary>
         ///     parses an HTML document and creates a pf.lambda structure from it
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.html.html2lambda")]
         private static void pf_html_html2lambda (ApplicationContext context, ActiveEventArgs e)
         {

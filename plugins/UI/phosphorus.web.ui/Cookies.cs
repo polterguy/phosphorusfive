@@ -22,8 +22,8 @@ namespace phosphorus.web.ui
         ///     creates one or more cookies to send back to client, where [duration] becomes number of days before it expires, and
         ///     [source], or [src], becomes the nodes that are stored in the cookie
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.cookie.set")]
         private static void pf_web_cookie_set (ApplicationContext context, ActiveEventArgs e)
         {
@@ -44,8 +44,8 @@ namespace phosphorus.web.ui
         ///     of the cookie as a child of the main node, containing all children nodes from cookie. cookie(s)
         ///     to retrieve are given as value of main node
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.cookie.get")]
         private static void pf_web_cookie_get (ApplicationContext context, ActiveEventArgs e)
         {
@@ -82,8 +82,8 @@ namespace phosphorus.web.ui
         /// <summary>
         ///     lists all cookies keys in request
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.cookie.list")]
         private static void pf_web_cookie_list (ApplicationContext context, ActiveEventArgs e) { CollectionBase.List (e.Args, context, () => HttpContext.Current.Request.Cookies.AllKeys); }
     }

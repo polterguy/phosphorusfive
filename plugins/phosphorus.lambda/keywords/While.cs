@@ -21,8 +21,8 @@ namespace phosphorus.lambda.keywords
         ///     "while" statement, allowing for evaluating condition, and executing lambda(s) as long as statement evaluates to
         ///     true
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "while")]
         private static void lambda_while (ApplicationContext context, ActiveEventArgs e)
         {

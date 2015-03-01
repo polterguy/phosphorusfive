@@ -55,7 +55,6 @@ namespace phosphorus.expressions.exceptions
         /*
          * overiding StackTrace from Exception class to provide "Hyperlisp stack trace" as an additional piece of contextual information
          */
-
         public override string StackTrace
         {
             get
@@ -73,7 +72,6 @@ namespace phosphorus.expressions.exceptions
         /*
          * overriding Message to provide expression that malfunctioned as an additional piece of contextual information
          */
-
         public override string Message
         {
             get

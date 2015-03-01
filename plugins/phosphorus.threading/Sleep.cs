@@ -20,8 +20,8 @@ namespace phosphorus.threading
         /// <summary>
         ///     sleeps for n milliseconds, where n is given as value of node
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "sleep")]
         private static void lambda_sleep (ApplicationContext context, ActiveEventArgs e)
         {

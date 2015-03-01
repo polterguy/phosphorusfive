@@ -23,8 +23,8 @@ namespace phosphorus.file.folder
         ///     be returned as children nodes, having the path to the folder as name, and its value being true.
         ///     if a folder already exists from before, the return value will be false
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.folder.create")]
         private static void pf_folder_create (ApplicationContext context, ActiveEventArgs e)
         {

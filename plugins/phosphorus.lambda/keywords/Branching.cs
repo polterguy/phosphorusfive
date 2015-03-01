@@ -21,8 +21,8 @@ namespace phosphorus.lambda.keywords
         /// <summary>
         ///     [if] statement, allowing for evaluating condition, and executing lambda(s) if statement evaluates to true
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "if")]
         private static void lambda_if (ApplicationContext context, ActiveEventArgs e)
         {
@@ -41,8 +41,8 @@ namespace phosphorus.lambda.keywords
         ///     [else-if] statement, allowing for evaluating condition, and executing lambda(s) if statement evaluates to true, and
         ///     no previous [if] or previous [else-if] has evaluated to true
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "else-if")]
         private static void lambda_else_if (ApplicationContext context, ActiveEventArgs e)
         {
@@ -70,8 +70,8 @@ namespace phosphorus.lambda.keywords
         /// <summary>
         ///     [else] statement, allowing for executing lambda(s) if no previous [if] or [else-if] has evaluated to true
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "else")]
         private static void lambda_else (ApplicationContext context, ActiveEventArgs e)
         {

@@ -26,8 +26,8 @@ namespace phosphorus.mongodb
         /// <summary>
         ///     selects items from the MongoDB database according to criteria
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.mongo.select")]
         private static void pf_mongo_select (ApplicationContext context, ActiveEventArgs e)
         {

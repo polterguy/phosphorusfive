@@ -25,8 +25,8 @@ namespace phosphorus.web
         /// <summary>
         ///     creates an HTTP POST request
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.post")]
         private static void pf_web_post (ApplicationContext context, ActiveEventArgs e)
         {

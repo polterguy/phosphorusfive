@@ -22,8 +22,8 @@ namespace phosphorus.lambda.events
         ///     creates zero or more active events with the given name, where body is taken from
         ///     all [lambda.xxx] children nodes
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "event")]
         private static void lambda_event (ApplicationContext context, ActiveEventArgs e)
         {

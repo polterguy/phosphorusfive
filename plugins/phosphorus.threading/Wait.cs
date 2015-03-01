@@ -24,8 +24,8 @@ namespace phosphorus.threading
         ///     should probably use the [lock] statement, since access to [_wait] is shared
         ///     among all threads being children of [wait]
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "wait")]
         private static void lambda_wait (ApplicationContext context, ActiveEventArgs e)
         {

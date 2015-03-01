@@ -21,8 +21,8 @@ namespace phosphorus.web.ui
         /// <summary>
         ///     retrieves the requested POST or GET parameter(s)
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.parameters.get")]
         private static void pf_web_parameters_get (ApplicationContext context, ActiveEventArgs e)
         {
@@ -37,8 +37,8 @@ namespace phosphorus.web.ui
         /// <summary>
         ///     lists all parameters in request
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.web.parameters.list")]
         private static void pf_web_parameters_list (ApplicationContext context, ActiveEventArgs e) { CollectionBase.List (e.Args, context, () => HttpContext.Current.Request.Params.AllKeys); }
     }

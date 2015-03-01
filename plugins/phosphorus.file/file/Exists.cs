@@ -20,8 +20,8 @@ namespace phosphorus.file.file
         /// <summary>
         ///     returns true for each file in constant or expression of path given as args that exists
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.file.exists")]
         private static void pf_file_exists (ApplicationContext context, ActiveEventArgs e)
         {

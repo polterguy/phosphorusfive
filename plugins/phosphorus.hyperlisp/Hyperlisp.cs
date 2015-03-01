@@ -24,8 +24,8 @@ namespace phosphorus.hyperlisp
         ///     will transform the given hyperlisp into a list of nodes and append them into the root node given
         ///     through the active event args
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.hyperlisp.hyperlisp2lambda")]
         private static void pf_hyperlisp_hyperlisp2lambda (ApplicationContext context, ActiveEventArgs e)
         {
@@ -41,8 +41,8 @@ namespace phosphorus.hyperlisp
         ///     will transform the children nodes of the given active event args into hyperlisp and return as string
         ///     value of the value of the given active event args
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.hyperlisp.lambda2hyperlisp")]
         private static void pf_code_lambda2hyperlisp (ApplicationContext context, ActiveEventArgs e)
         {

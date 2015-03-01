@@ -28,8 +28,8 @@ namespace phosphorus.mongodb
         ///     [pf.mongo.insert],
         ///     or as an expression, or formatting expression, in the value of [pf.mongo.insert]
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.mongo.insert")]
         private static void pf_mongo_insert (ApplicationContext context, ActiveEventArgs e)
         {

@@ -21,8 +21,8 @@ namespace phosphorus.lambda.events
         /// <summary>
         ///     removes zero or more dynamically created overrides
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "remove-override")]
         private static void lambda_remove_override (ApplicationContext context, ActiveEventArgs e)
         {

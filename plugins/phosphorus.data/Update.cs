@@ -24,8 +24,8 @@ namespace phosphorus.data
         ///     value, or an expression. if you supply a [rel-source], then source must be relative to nodes you wish
         ///     to update
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.data.update")]
         private static void pf_data_update (ApplicationContext context, ActiveEventArgs e)
         {

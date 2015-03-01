@@ -23,8 +23,8 @@ namespace phosphorus.crypto
         ///     creates a hash out of the value from [pf.crypto.hash-string] and returns the hash value as the value of
         ///     the first child of [pf.crypto.hash-string] named [value]
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext" /> for Active Event</param>
-        /// <param name="e">parameters passed into Active Event</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.crypto.hash-string")]
         private static void pf_crypto_hash_string (ApplicationContext context, ActiveEventArgs e)
         {
