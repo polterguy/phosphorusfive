@@ -6,6 +6,8 @@
 using System;
 using System.Web.UI;
 
+// ReSharper disable InconsistentNaming
+
 namespace phosphorus.ajax.widgets
 {
     /// <summary>
@@ -35,11 +37,40 @@ namespace phosphorus.ajax.widgets
         /// </summary>
         /// <value>the inner html</value>
         [PersistenceMode (PersistenceMode.InnerDefaultProperty)]
-        // ReSharper disable once InconsistentNaming
         public string innerValue
         {
             get { return this ["innerValue"]; }
             set { this ["innerValue"] = value; }
+        }
+        
+        public override string this [string name]
+        {
+            get {
+                if (name == "value" && ElementType == "textarea") {
+                    // special treatment for textarea HTML elements "value" property, to create uniform access of all
+                    // form element values possible
+                    return base ["innerValue"];
+                }
+                return base [name];
+            }
+            set {
+                // special treatment for textarea to make it resemble what goes on on the client-side
+                if (name == "value" && ElementType == "textarea") {
+                    base ["innerValue"] = value;
+                } else {
+                    base [name] = value;
+                }
+            }
+        }
+
+        public override bool HasAttribute (string name)
+        {
+            if (name == "value" && ElementType == "textarea") {
+                // special treatment for textarea HTML elements "value" property, to create uniform access of all
+                // form element values possible
+                return HasAttribute ("innerValue");
+            }
+            return base.HasAttribute (name);
         }
 
         // notice how we do not call base here, and only render the innerValue and none of its children

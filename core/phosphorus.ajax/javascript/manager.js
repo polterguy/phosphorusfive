@@ -264,7 +264,7 @@
          * 'name' attribute, etc
          */
         serialize: function() {
-            var val = {};
+            var val = [];
             var els = this.el.getElementsByTagName("*");
             for (var i = 0; i < els.length; i++) {
                 var el = els[i];
@@ -277,22 +277,21 @@
                         case "checkbox":
                         case "radio":
                             if (el.checked) { // only push checked items
-                                val[el.name] = el.value;
+                                val.push ([el.name, el.value]);
                             }
                             break;
                         default: // defaulting to push value to server
-                            val[el.name] = el.value;
+                            val.push ([el.name, el.value]);
                             break;
                         }
                         break;
                     case "textarea":
-                        val[el.name] = el.value;
+                        val.push ([el.name, el.value]);
                         break;
                     case "select":
                         for (var i2 = 0; i2 < el.options.length; i2++) {
                             if (el.options[i2].selected) {
-                                val[el.name] = el.options[i2].value;
-                                break;
+                                val.push ([el.name, el.options[i2].value]);
                             }
                         }
                         break;
@@ -325,25 +324,15 @@
             };
 
             // serializing form before we call 'onbefore'
-            var pars = window.pf.extend(form.serialize(), {
-                __pf_event: evt,
-                __pf_widget: this.el.id
-            });
+            var pars = form.serialize();
             options.onbefore.apply(this, [pars, evt]);
 
             // sending request
-            var body = "";
-            for (var idx in pars) {
-                if (pars.hasOwnProperty(idx)) {
-                    if (body !== "") {
-                        body += "&";
-                    }
-                    var val = pars[idx];
-                    if (typeof val != "string") {
-                        val = JSON.stringify(val);
-                    }
-                    body += idx + "=" + encodeURIComponent(val);
-                }
+            var body = "__pf_event=" + evt + "&__pf_widget=" + this.el.id;
+            for (var idx = 0; idx < pars.length; idx++) {
+                body += "&";
+                var val = pars[idx];
+                body += val[0] + "=" + encodeURIComponent(val[1]);
             }
             xhr.send(body);
         },

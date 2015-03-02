@@ -216,6 +216,9 @@ namespace phosphorus.web.ui.widgets
          */
         private static void EnsureNameProperty (Widget widget)
         {
+            if (widget ["name"] != null)
+                return; // caller already explicitly added name attribute
+
             // making sure "input", "select" and "textarea" widgets have a name corresponding to 
             // their ID unless name is explicitly given
             var addName = false;

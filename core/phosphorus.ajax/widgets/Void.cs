@@ -19,8 +19,7 @@ namespace phosphorus.ajax.widgets
         public override string this [string name]
         {
             get { return base [name]; }
-            set
-            {
+            set {
                 if (name == "innerValue")
                     throw new ArgumentException ("you cannot set the 'innerValue' property of a Void widget");
                 base [name] = value;

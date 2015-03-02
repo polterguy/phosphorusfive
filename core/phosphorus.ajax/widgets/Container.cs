@@ -46,16 +46,46 @@ namespace phosphorus.ajax.widgets
             set { base.ElementType = value; }
         }
 
-        // overridden to throw an exception if user tries to explicitly set the innerValue attribute of this control
         public override string this [string name]
         {
-            get { return base [name]; }
-            set
-            {
+            get {
+                if (name == "value" && ElementType == "select") {
+                    // special treatment for select HTML elements "value" property, since they might still have a value, 
+                    // even though their "value" property returns null, since one of their children, "option" elements, 
+                    // still might contain a "selected" property
+                    string retVal = "";
+                    foreach (Control idxCtrl in Controls) {
+                        var idxWidget = idxCtrl as Widget;
+                        if (idxWidget != null) {
+                            if (idxWidget.HasAttribute ("selected"))
+                                retVal += idxWidget ["value"] + ",";
+                        }
+                    }
+                    return retVal.TrimEnd (',');
+                }
+                return base [name];
+            }
+            set {
                 if (name == "innerValue")
                     throw new ArgumentException ("you cannot set the 'innerValue' property of the '" + ID + "' Container widget");
                 base [name] = value;
             }
+        }
+
+        public override bool HasAttribute (string name)
+        {
+            if (name == "value" && ElementType == "select") {
+                // special treatment for select HTML elements "value" property, since they might still have a value, even though
+                // their "value" property returns null, since one of their children, "option" elements, still might contain a "selected" property
+                foreach (Control idxCtrl in Controls) {
+                    var idxWidget = idxCtrl as Widget;
+                    if (idxWidget != null) {
+                        if (idxWidget.HasAttribute ("selected") && idxWidget.HasAttribute ("value"))
+                            return true;
+                    }
+                }
+            }
+            return base.HasAttribute (name);
         }
 
         protected override bool HasContent

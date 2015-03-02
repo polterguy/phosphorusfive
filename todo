@@ -102,7 +102,11 @@
 
 * "sockets" Active Events library, for creating Daemons to listen to ports, and react accordingly
 
+* [pf.meta.list-widgets] Active Event to list all widgets on page
 
+* [pf.meta.list-properties] Active Event for listing all attributes on specific widgets
+
+* allow for trying to set and get properties of widgets that does not exist (check for null)
 
 
 

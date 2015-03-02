@@ -121,23 +121,7 @@ namespace phosphorus.ajax.widgets
         /// <param name="name">attribute to retrieve or set</param>
         public virtual string this [string name]
         {
-            get {
-                string retVal = _attributes.GetAttribute (name);
-                if (retVal != null)
-                    return retVal;
-                if (name == "value" && ElementType == "select") {
-                    // special treatment for select HTML elements "value" property, since they might still have a value, even though
-                    // their "value" property returns null, since one of their children, "option" elements, still might contain a "selected" property
-                    foreach (Control idxCtrl in Controls) {
-                        var idxWidget = idxCtrl as Widget;
-                        if (idxWidget != null) {
-                            if (idxWidget.HasAttribute ("selected") && idxWidget.HasAttribute ("value"))
-                                return idxWidget ["value"];
-                        }
-                    }
-                }
-                return null;
-            }
+            get { return _attributes.GetAttribute (name); }
             set {
                 if (!IsTrackingViewState) {
                     _attributes.SetAttributePreViewState (name, value);
@@ -186,23 +170,9 @@ namespace phosphorus.ajax.widgets
         /// </summary>
         /// <returns><c>true</c> if this instance has the attribute with the specified name; otherwise, <c>false</c></returns>
         /// <param name="name">name of attribute to check for existence of</param>
-        public bool HasAttribute (string name)
+        public virtual bool HasAttribute (string name)
         {
-            bool retVal = _attributes.HasAttribute (name);
-            if (retVal)
-                return true;
-            if (name == "value" && ElementType == "select") {
-                // special treatment for select HTML elements "value" property, since they might still have a value, even though
-                // their "value" property returns null, since one of their children, "option" elements, still might contain a "selected" property
-                foreach (Control idxCtrl in Controls) {
-                    var idxWidget = idxCtrl as Widget;
-                    if (idxWidget != null) {
-                        if (idxWidget.HasAttribute ("selected") && idxWidget.HasAttribute ("value"))
-                            return true;
-                    }
-                }
-            }
-            return false;
+            return _attributes.HasAttribute (name);
         }
 
         /// <summary>
@@ -237,21 +207,30 @@ namespace phosphorus.ajax.widgets
         ///     loads the form data from the http request, override this in your own widgets if you
         ///     have widgets that posts data to the server
         /// </summary>
-        protected void LoadFormData ()
+        protected virtual void LoadFormData ()
         {
             if (this ["disabled"] == null) {
-                if (!string.IsNullOrEmpty (this ["name"])) {
-                    switch (ElementType.ToLower ()) {
+                if (!string.IsNullOrEmpty (this ["name"]) || ElementType == "option") {
+                    switch (ElementType) {
                         case "input":
                             switch (this ["type"]) {
                                 case "radio":
                                 case "checkbox":
-                                    if (Page.Request.Params [this ["name"]] == "on") {
-                                        _attributes.SetAttributeFormData ("checked", null);
-                                    } else {
-                                        _attributes.RemoveAttribute ("checked");
-                                    }
-                                    break;
+                                    if (Page.Request.Params [this ["name"]] != null) {
+                                        var splits = Page.Request.Params [this ["name"]].Split (',');
+                                        bool found = false;
+                                        foreach (var idxSplit in splits) {
+                                            if (idxSplit == this ["value"]) {
+                                                found = true;
+                                                break;
+                                            }
+                                        }
+                                        if (found) {
+                                            _attributes.SetAttributeFormData ("checked", null);
+                                        } else {
+                                            _attributes.RemoveAttribute ("checked");
+                                        }
+                                    } break;
                                 default:
                                     _attributes.SetAttributeFormData ("value", Page.Request.Params [this ["name"]]);
                                     break;
@@ -260,9 +239,22 @@ namespace phosphorus.ajax.widgets
                         case "textarea":
                             _attributes.SetAttributeFormData ("innerValue", Page.Request.Params [this ["name"]]);
                             break;
-                        case "select":
-                            _attributes.SetAttributeFormData ("value", Page.Request.Params [this ["name"]]);
-                            break;
+                        case "option":
+                            if (Page.Request.Params [(this.Parent as Widget) ["name"]] != null) {
+                                var splits = Page.Request.Params [(this.Parent as Widget) ["name"]].Split (',');
+                                bool found = false;
+                                foreach (var idxSplit in splits) {
+                                    if (idxSplit == this ["value"]) {
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                                if (found) {
+                                    _attributes.SetAttributeFormData ("selected", null);
+                                } else {
+                                    _attributes.RemoveAttribute ("selected");
+                                }
+                            } break;
                     }
                 }
             }
