@@ -84,6 +84,10 @@
       <Project>{EF65C1FB-FCC8-43F0-90AC-39DA931268E4}</Project>
       <Name>phosphorus.threading</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\plugins\phosphorus.html\phosphorus.html.csproj">
+      <Project>{68EE106A-06BF-431B-9671-DF328666E03E}</Project>
+      <Name>phosphorus.html</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Expressions.cs" />
@@ -101,7 +105,8 @@
     <Compile Include="plugins\Database.cs" />
     <Compile Include="lambda\Events.cs" />
     <Compile Include="lambda\Threading.cs" />
-    <Compile Include="lambda\Tutorials.cs" />
+    <Compile Include="plugins\Html.cs" />
+    <Compile Include="tutorials\Tutorials01.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
@@ -115,4 +120,7 @@
     </MonoDevelop>
   </ProjectExtensions>
   <ItemGroup />
+  <ItemGroup>
+    <Folder Include="tutorials\" />
+  </ItemGroup>
 </Project>

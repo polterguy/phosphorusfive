@@ -13,15 +13,12 @@ using phosphorus.expressions;
 namespace phosphorus.file.folder
 {
     /// <summary>
-    ///     class to help create, traverse, modify and delete folders on disc
+    ///     Class to help remove folders from disc.
     /// </summary>
     public static class Remove
     {
         /// <summary>
-        ///     removes one or more folders from the path given as value of args, which might be a constant, or
-        ///     an expression. all folders that are successfully removed will be returned as children nodes,
-        ///     having the path to the folder as name, and its value being true. if a folder does not exist,
-        ///     the return value will be false for that folder
+        ///     Removes zero or more folders on disc.
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>

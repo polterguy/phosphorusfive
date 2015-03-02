@@ -13,21 +13,25 @@ using phosphorus.expressions;
 namespace phosphorus.html
 {
     /// <summary>
-    ///     helper to semantically manipulate or view HTML documents as pf.lambda nodes
+    ///     Class to help transform HTML to pf.lambda trees.
     /// </summary>
     public static class Html2Lambda
     {
+        static Html2Lambda ()
+        {
+            // making sure "form" element conforms to relational structure
+            HtmlNode.ElementsFlags.Remove ("form");
+        }
+
         /// <summary>
-        ///     parses an HTML document and creates a pf.lambda structure from it
+        ///     Parses an HTML document, and creates a pf.lambda structure from it.
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "pf.html.html2lambda")]
         private static void pf_html_html2lambda (ApplicationContext context, ActiveEventArgs e)
         {
-            // making sure "form" element conforms to relational structure
-            HtmlNode.ElementsFlags.Remove ("form");
-
+            // loops through all documents we're supposed to transform
             foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
                 var doc = new HtmlDocument ();
                 doc.LoadHtml (idx);
@@ -39,26 +43,30 @@ namespace phosphorus.html
         /*
          * helper for above, recursively parses HTML node given
          */
-
-        private static void ParseHtmlDocument (Node res, HtmlNode cur)
+        private static void ParseHtmlDocument (Node resultNode, HtmlNode htmlNode)
         {
-            res.Name = cur.Name;
-            if (!cur.HasChildNodes && !string.IsNullOrEmpty (cur.InnerText.Trim ())) {
-                res.Value = cur.InnerText;
+            // looping through each attribute
+            foreach (var idxAtr in htmlNode.Attributes) {
+                resultNode.Add (new Node ("@" + idxAtr.Name, idxAtr.Value));
             }
-            foreach (var idxAtr in cur.Attributes) {
-                res.Add (new Node ("@" + idxAtr.Name, idxAtr.Value));
+
+            // then the name of HTML element
+            resultNode.Name = htmlNode.Name;
+            if (htmlNode.ChildNodes.Count == 1 && htmlNode.ChildNodes [0].Name == "#text") {
+
+                // this is a "simple node", with no children, only HTML content
+                resultNode.Value = htmlNode.InnerText;
+                return; // don't care about children
             }
-            var first = true;
-            foreach (var idxChild in cur.ChildNodes) {
+
+            // then looping through each child HTML element
+            foreach (var idxChild in htmlNode.ChildNodes) {
+
+                // we don't add comments or empty elements
                 if (idxChild.Name != "#comment" &&
                     (idxChild.HasAttributes || idxChild.HasChildNodes || !string.IsNullOrEmpty (idxChild.InnerText.Trim ()))) {
-                    if (first) {
-                        first = false;
-                        res.Add (new Node ("children"));
-                    }
-                    res.LastChild.Add (new Node ());
-                    ParseHtmlDocument (res.LastChild.LastChild, idxChild);
+                    resultNode.Add (new Node ());
+                    ParseHtmlDocument (resultNode.LastChild, idxChild);
                 }
             }
         }

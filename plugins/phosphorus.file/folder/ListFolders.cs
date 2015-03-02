@@ -13,12 +13,12 @@ using phosphorus.expressions;
 namespace phosphorus.file.folder
 {
     /// <summary>
-    ///     class to help list folders on disc
+    ///     Class to help list folders on disc.
     /// </summary>
     public static class ListFolders
     {
         /// <summary>
-        ///     list all the folders in folder given as value of args given
+        ///     List all folders in the folder(s) given.
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>

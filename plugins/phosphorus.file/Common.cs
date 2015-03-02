@@ -8,7 +8,7 @@ using phosphorus.core;
 namespace phosphorus.file
 {
     /// <summary>
-    ///     class containing common methods for [pf.file.xxx]
+    ///     Class containing common methods for [pf.file.xxx] namespace
     /// </summary>
     public static class Common
     {
@@ -18,7 +18,7 @@ namespace phosphorus.file
         private static string _rootFolder;
 
         /// <summary>
-        ///     returns root folder of application pool back to caller
+        ///     Returns the root folder of application pool back to caller.
         /// </summary>
         /// <returns>the root folder</returns>
         /// <param name="context">application context</param>

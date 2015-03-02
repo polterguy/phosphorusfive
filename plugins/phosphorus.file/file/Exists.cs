@@ -13,12 +13,12 @@ using phosphorus.expressions;
 namespace phosphorus.file.file
 {
     /// <summary>
-    ///     class to help load and save files
+    ///     Class to help check if a file exists.
     /// </summary>
     public static class Exists
     {
         /// <summary>
-        ///     returns true for each file in constant or expression of path given as args that exists
+        ///     Returns true if file(s) exists.
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>

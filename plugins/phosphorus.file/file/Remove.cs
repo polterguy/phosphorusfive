@@ -13,15 +13,12 @@ using phosphorus.expressions;
 namespace phosphorus.file.file
 {
     /// <summary>
-    ///     class to help remove files
+    ///     Class to help remove files.
     /// </summary>
     public static class Remove
     {
         /// <summary>
-        ///     removes one or more files from the path given as value of args, which might be a constant, or
-        ///     an expression. all files that are successfully removed, will be returned as children nodes,
-        ///     with path of file being name, and value being true. if file is not successfully removed, return
-        ///     value for that file will be false
+        ///     Removes zero or more files from disc. If file is successfully removed, true will be returned.
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>

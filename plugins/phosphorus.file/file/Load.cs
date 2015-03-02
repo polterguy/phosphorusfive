@@ -13,13 +13,12 @@ using phosphorus.expressions;
 namespace phosphorus.file.file
 {
     /// <summary>
-    ///     class to help load files
+    ///     Class to help load files.
     /// </summary>
     public static class Load
     {
         /// <summary>
-        ///     loads zero or more files from disc. can be given either an expression or a constant.
-        ///     if file does not exist, false will be returned as value
+        ///     Loads zero or more files from disc. If file does not exist, false will be returned.
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>

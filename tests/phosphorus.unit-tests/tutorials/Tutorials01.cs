@@ -6,15 +6,15 @@
 using NUnit.Framework;
 using phosphorus.core;
 
-namespace phosphorus.unittests.lambda
+namespace phosphorus.unittests.tutorials
 {
     /// <summary>
-    ///     unit tests for most of our tutorial code at http://magixilluminate.com/blogs
+    ///     unit tests for many of the tutorials at http://magixilluminate.com/blogs
     /// </summary>
     [TestFixture]
-    public class Tutorials : TestBase
+    public class Tutorials01 : TestBase
     {
-        public Tutorials ()
+        public Tutorials01 ()
             : base ("phosphorus.lambda", "phosphorus.types", "phosphorus.hyperlisp") { }
 
         /// <summary>

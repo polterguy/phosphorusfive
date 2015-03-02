@@ -13,15 +13,12 @@ using phosphorus.expressions;
 namespace phosphorus.file.folder
 {
     /// <summary>
-    ///     class to help figure out if folder exists on disc
+    ///     Class to help figure out if a folder exists on disc.
     /// </summary>
     public static class Exists
     {
         /// <summary>
-        ///     checks to see if one or more folders exists, from the path given as value of args, which might
-        ///     be a constant, or an expression. all folders that exists, will be returned as children nodes,
-        ///     having the path to the folder as name, and its value being true. if a folder does not exist,
-        ///     the return value will be false for that folder
+        ///     Checks to see if a folder exists on disc or not, and returns true if folder exists.
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
