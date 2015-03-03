@@ -51,11 +51,11 @@ namespace phosphorus.html
             }
 
             // then the name of HTML element
-            resultNode.Name = htmlNode.Name;
+            resultNode.Name = htmlNode.Name == "#document" ? "doc" : htmlNode.Name;
             if (htmlNode.ChildNodes.Count == 1 && htmlNode.ChildNodes [0].Name == "#text") {
 
                 // this is a "simple node", with no children, only HTML content
-                resultNode.Value = htmlNode.InnerText;
+                resultNode.Value = htmlNode.InnerText.Replace ("&lt;", "<").Replace ("&gt;", ">").Replace ("&amp;", "&");
                 return; // don't care about children
             }
 

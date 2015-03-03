@@ -247,7 +247,7 @@ namespace phosphorus.five.applicationpool
                 return; // possibly a filter expression, leading into oblivion
 
             // recursively retrieving all widgets on page
-            ListWidgets (filter, e.Args, container);
+            ListWidgets (filter, e.Args, Page);
         }
 
         /// <summary>
@@ -375,6 +375,131 @@ namespace phosphorus.five.applicationpool
             }
         }
 
+        // TODO: do we really need this guy?
+        /// <summary>
+        ///     reloads the current URL
+        /// </summary>
+        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.web.reload-location")]
+        private void pf_web_reload_location (ApplicationContext context, ActiveEventArgs e)
+        {
+            Manager.SendJavaScriptToClient ("location.reload();");
+        }
+
+        /// <summary>
+        ///     sends the given JavaScript to the client. JavaScript is given as value of [pf.web.include-javascript], and can
+        ///     be a constant, an expression or a formatting expression
+        /// </summary>
+        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.web.include-javascript")]
+        private void pf_web_include_javascript (ApplicationContext context, ActiveEventArgs e)
+        {
+            var js = XUtil.Single<string> (e.Args, context);
+            Manager.SendJavaScriptToClient (js);
+        }
+        
+        /// <summary>
+        ///     includes a JavaScript file on the client side
+        /// </summary>
+        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.web.add-javascript-file")]
+        private void pf_web_add_javascript_file (ApplicationContext context, ActiveEventArgs e)
+        {
+            foreach (var idxFile in XUtil.Iterate<string> (e.Args, context)) {
+                RegisterJavaScriptFile (idxFile);
+            }
+        }
+
+        /// <summary>
+        ///     includes a stylesheet file on the client side
+        /// </summary>
+        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.web.add-stylesheet-file")]
+        private void pf_web_add_stylesheet_file (ApplicationContext context, ActiveEventArgs e)
+        {
+            foreach (var idxFile in XUtil.Iterate<string> (e.Args, context)) {
+                RegisterStylesheetFile (idxFile);
+            }
+        }
+
+        /// <summary>
+        ///     changes the "title" HTML element's value of the portal
+        /// </summary>
+        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.web.set-title")]
+        private void pf_web_set_title (ApplicationContext context, ActiveEventArgs e)
+        {
+            if (Manager.IsPhosphorusRequest)
+                throw new Exception ("You cannot set the title of your page in an Ajax Request, only during post requests, or initial loading of page");
+            Title = XUtil.Single<string> (e.Args, context);
+        }
+
+        // TODO: support [rel-source], the same way we do in [set] in this guy
+        /// <summary>
+        ///     send the given string back to browser as JSON with the key given as value of [pf.web.return-value], and the string
+        ///     sent being the value of the first child of [pf.web.return-value]. the value to send, can either be an expression, a
+        ///     constant, or a node formatting expression
+        /// </summary>
+        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.web.return-value")]
+        private void pf_web_return_value (ApplicationContext context, ActiveEventArgs e)
+        {
+            var key = XUtil.Single<string> (e.Args, context);
+            var str = XUtil.Single<string> (e.Args.LastChild, context);
+            Manager.SendObject (key, str);
+        }
+
+        /// <summary>
+        ///     creates an ajax event containing pf.lambda code for the given widget's event
+        /// </summary>
+        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "_pf.web.add-widget-event")]
+        private void _pf_web_add_widget_event (ApplicationContext context, ActiveEventArgs e)
+        {
+            // retrieving widget id, and creating an event collection for the given widget
+            var widget = e.Args.Get<pf.Widget> (context);
+            if (!AjaxEvents.ContainsKey (widget.ID))
+                AjaxEvents [widget.ID] = new Dictionary<string, List<Node>> ();
+
+            // creating an event collection for the given event for the given widget. notice that one widget might
+            // create multiple pf.lambda objects for the same event, meaning one widget might have several ajax event handlers
+            // for the same ajax event
+            var eventName = e.Args [0].Name;
+            if (!AjaxEvents [widget.ID].ContainsKey (eventName))
+                AjaxEvents [widget.ID] [eventName] = new List<Node> ();
+
+            // appending our pf.lambda object to the list of pf.lambda objects for the given widget's given event
+            AjaxEvents [widget.ID] [eventName].Add (e.Args [0].Clone ());
+
+            // mapping the widget's ajax event to our common event handler on page
+            widget [eventName] = "common_event_handler";
+        }
+
+        /// <summary>
+        ///     returns the control with the given ID as first child of args, from optionally [parent] control's ID given
+        /// </summary>
+        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "_pf.web.find-control")]
+        private void _pf_web_find_control (ApplicationContext context, ActiveEventArgs e)
+        {
+            // defaulting parent to page object, but checking to see if an explicit parent is given through e.Args
+            Control parentCtrl = Page;
+            var parentNode = e.Args.Find (idx => idx.Name == "parent");
+            if (parentNode != null)
+                parentCtrl = FindControl<Control> (parentNode.Get<string> (context), Page);
+
+            // returning control as first child of e.Args
+            e.Args.Insert (0, new Node (string.Empty, FindControl<Control> (e.Args.Get<string> (context), parentCtrl)));
+        }
+        
         /// <summary>
         ///     Null Active Event handler, for handling widget specific Active Events
         /// </summary>
@@ -505,131 +630,6 @@ namespace phosphorus.five.applicationpool
             }
         }
 
-        // TODO: do we really need this guy?
-        /// <summary>
-        ///     reloads the current URL
-        /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.reload-location")]
-        private void pf_web_reload_location (ApplicationContext context, ActiveEventArgs e)
-        {
-            Manager.SendJavaScriptToClient ("location.reload();");
-        }
-
-        /// <summary>
-        ///     sends the given JavaScript to the client. JavaScript is given as value of [pf.web.include-javascript], and can
-        ///     be a constant, an expression or a formatting expression
-        /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.include-javascript")]
-        private void pf_web_include_javascript (ApplicationContext context, ActiveEventArgs e)
-        {
-            var js = XUtil.Single<string> (e.Args, context);
-            Manager.SendJavaScriptToClient (js);
-        }
-
-        // TODO: support [re-source], the same way we do in [set] in this guy
-        /// <summary>
-        ///     send the given string back to browser as JSON with the key given as value of [pf.web.return-value], and the string
-        ///     sent being the value of the first child of [pf.web.return-value]. the value to send, can either be an expression, a
-        ///     constant, or a node formatting expression
-        /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.return-value")]
-        private void pf_web_return_value (ApplicationContext context, ActiveEventArgs e)
-        {
-            var key = XUtil.Single<string> (e.Args, context);
-            var str = XUtil.Single<string> (e.Args.LastChild, context);
-            Manager.SendObject (key, str);
-        }
-
-        /// <summary>
-        ///     creates an ajax event containing pf.lambda code for the given widget's event
-        /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "_pf.web.add-widget-event")]
-        private void _pf_web_add_widget_event (ApplicationContext context, ActiveEventArgs e)
-        {
-            // retrieving widget id, and creating an event collection for the given widget
-            var widget = e.Args.Get<pf.Widget> (context);
-            if (!AjaxEvents.ContainsKey (widget.ID))
-                AjaxEvents [widget.ID] = new Dictionary<string, List<Node>> ();
-
-            // creating an event collection for the given event for the given widget. notice that one widget might
-            // create multiple pf.lambda objects for the same event, meaning one widget might have several ajax event handlers
-            // for the same ajax event
-            var eventName = e.Args [0].Name;
-            if (!AjaxEvents [widget.ID].ContainsKey (eventName))
-                AjaxEvents [widget.ID] [eventName] = new List<Node> ();
-
-            // appending our pf.lambda object to the list of pf.lambda objects for the given widget's given event
-            AjaxEvents [widget.ID] [eventName].Add (e.Args [0].Clone ());
-
-            // mapping the widget's ajax event to our common event handler on page
-            widget [eventName] = "common_event_handler";
-        }
-
-        /// <summary>
-        ///     returns the control with the given ID as first child of args, from optionally [parent] control's ID given
-        /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "_pf.web.find-control")]
-        private void _pf_web_find_control (ApplicationContext context, ActiveEventArgs e)
-        {
-            // defaulting parent to page object, but checking to see if an explicit parent is given through e.Args
-            Control parentCtrl = Page;
-            var parentNode = e.Args.Find (idx => idx.Name == "parent");
-            if (parentNode != null)
-                parentCtrl = FindControl<Control> (parentNode.Get<string> (context), Page);
-
-            // returning control as first child of e.Args
-            e.Args.Insert (0, new Node (string.Empty, FindControl<Control> (e.Args.Get<string> (context), parentCtrl)));
-        }
-
-        /// <summary>
-        ///     includes a JavaScript file on the client side
-        /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.add-javascript-file")]
-        private void pf_web_add_javascript_file (ApplicationContext context, ActiveEventArgs e)
-        {
-            foreach (var idxFile in XUtil.Iterate<string> (e.Args, context)) {
-                RegisterJavaScriptFile (idxFile);
-            }
-        }
-
-        /// <summary>
-        ///     includes a stylesheet file on the client side
-        /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.add-stylesheet-file")]
-        private void pf_web_add_stylesheet_file (ApplicationContext context, ActiveEventArgs e)
-        {
-            foreach (var idxFile in XUtil.Iterate<string> (e.Args, context)) {
-                RegisterStylesheetFile (idxFile);
-            }
-        }
-
-        /// <summary>
-        ///     changes the "title" HTML element's value of the portal
-        /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.set-title")]
-        private void pf_web_set_title (ApplicationContext context, ActiveEventArgs e)
-        {
-            if (Manager.IsPhosphorusRequest)
-                throw new Exception ("You cannot set the title of your page in an Ajax Request, only during post requests, or initial loading of page");
-            Title = XUtil.Single<string> (e.Args, context);
-        }
-
         /*
          * recursively traverses entire Control hierarchy on page, and adds up into result node
          */
@@ -638,7 +638,7 @@ namespace phosphorus.five.applicationpool
             bool shouldAdd = filter.Count == 0;
             if (!shouldAdd) {
                 foreach (var idxFilter in filter) {
-                    if (current.ID.IndexOf (idxFilter) != -1) {
+                    if (current.ID.IndexOf (idxFilter) != -1 || current.GetType ().FullName.IndexOf (idxFilter) != -1) {
                         shouldAdd = true;
                         break;
                     }
@@ -647,7 +647,7 @@ namespace phosphorus.five.applicationpool
             if (!shouldAdd)
                 return; // didn't match filter
 
-            resultNode.Add (current.ID);
+            resultNode.Add (current.GetType ().FullName, current.ID);
             foreach (Control idxChild in current.Controls) {
                 ListWidgets (filter, resultNode, idxChild);
             }

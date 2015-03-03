@@ -102,10 +102,6 @@
 
 * "sockets" Active Events library, for creating Daemons to listen to ports, and react accordingly
 
-* [pf.meta.list-widgets] Active Event to list all widgets on page
-
-* [pf.web.widget-exists] Active Event, for checking if one specific widget exists ...?
-
 * create support for trapping and throwing exceptions in pf.lambda
 
 * create support for creating property on widget that is never rendered, but only used as "Xtra" or "Info"
