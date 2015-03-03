@@ -47,15 +47,14 @@ namespace phosphorus.ajax.widgets
         {
             get {
                 if (name == "value" && ElementType == "textarea") {
-                    // special treatment for textarea HTML elements "value" property, to create uniform access of all
-                    // form element values possible
+                    // special treatment for textarea, to make it resemble what goes on on the client-side
                     return base ["innerValue"];
                 }
                 return base [name];
             }
             set {
-                // special treatment for textarea to make it resemble what goes on on the client-side
                 if (name == "value" && ElementType == "textarea") {
+                    // special treatment for textarea, to make it resemble what goes on on the client-side
                     base ["innerValue"] = value;
                 } else {
                     base [name] = value;
@@ -66,8 +65,7 @@ namespace phosphorus.ajax.widgets
         public override bool HasAttribute (string name)
         {
             if (name == "value" && ElementType == "textarea") {
-                // special treatment for textarea HTML elements "value" property, to create uniform access of all
-                // form element values possible
+                // special treatment for textarea, to make it resemble what goes on on the client-side
                 return HasAttribute ("innerValue");
             }
             return base.HasAttribute (name);

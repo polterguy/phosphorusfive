@@ -228,7 +228,7 @@ namespace phosphorus.ajax.widgets
                                         if (found) {
                                             _attributes.SetAttributeFormData ("checked", null);
                                         } else {
-                                            _attributes.RemoveAttribute ("checked");
+                                            _attributes.RemoveAttribute ("checked", false);
                                         }
                                     } break;
                                 default:
@@ -252,7 +252,7 @@ namespace phosphorus.ajax.widgets
                                 if (found) {
                                     _attributes.SetAttributeFormData ("selected", null);
                                 } else {
-                                    _attributes.RemoveAttribute ("selected");
+                                    _attributes.RemoveAttribute ("selected", false);
                                 }
                             } break;
                     }

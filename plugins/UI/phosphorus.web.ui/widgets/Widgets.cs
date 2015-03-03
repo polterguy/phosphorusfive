@@ -67,6 +67,9 @@ namespace phosphorus.web.ui.widgets
         private static void pf_web_controls_literal (ApplicationContext context, ActiveEventArgs e)
         {
             var widget = CreateControl<Literal> (context, e.Args, "p");
+            var formId = e.Args.Find (idx => idx.Name == "_widget");
+            if (formId != null && formId.Value == null)
+                formId.Value = widget.ClientID;
             e.Args.Value = DecorateWidget (context, widget, e.Args);
         }
 
@@ -88,6 +91,9 @@ namespace phosphorus.web.ui.widgets
         private static void pf_web_controls_void (ApplicationContext context, ActiveEventArgs e)
         {
             var widget = CreateControl<Void> (context, e.Args, "input");
+            var formId = e.Args.Find (idx => idx.Name == "_widget");
+            if (formId != null && formId.Value == null)
+                formId.Value = widget.ClientID;
             e.Args.Value = DecorateWidget (context, widget, e.Args);
         }
 
@@ -158,7 +164,6 @@ namespace phosphorus.web.ui.widgets
         /*
          * decorates widget with common properties
          */
-
         private static Widget DecorateWidget (ApplicationContext context, Widget widget, Node args)
         {
             // looping through all children nodes of Widget's node to decorate Widget
@@ -193,6 +198,7 @@ namespace phosphorus.web.ui.widgets
                     case "after":
                     case "parent":
                     case "events":
+                    case "has-name":
                         // skipping these buggers, since they're not supposed to be handled here
                         break;
                     default:
@@ -205,7 +211,7 @@ namespace phosphorus.web.ui.widgets
             }
 
             // ensures "name" property is created, if necessary
-            EnsureNameProperty (widget);
+            EnsureNameProperty (widget, args, context);
 
             return widget;
         }
@@ -214,10 +220,16 @@ namespace phosphorus.web.ui.widgets
          * ensuring the "name" property is the same as the "ID" of the widget, unless a name property is explicitly given,
          * or element type doesn't necessarily require a "name" to function correctly
          */
-        private static void EnsureNameProperty (Widget widget)
+        private static void EnsureNameProperty (Widget widget, Node node, ApplicationContext context)
         {
             if (widget ["name"] != null)
                 return; // caller already explicitly added name attribute
+
+            if (node.FindAll (delegate(Node idx) {
+                return idx.Name == "has-name" && !idx.Get<bool> (context);
+            }).GetEnumerator ().MoveNext ()) {
+                return; // caller explicitly told us he didn't want no name
+            }
 
             // making sure "input", "select" and "textarea" widgets have a name corresponding to 
             // their ID unless name is explicitly given

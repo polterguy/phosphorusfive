@@ -15,6 +15,7 @@ namespace phosphorus.ajax.widgets
     public class Void : Widget
     {
         public Void () { RenderType = RenderingType.NoClose; }
+
         // overridden to throw an exception if user tries to explicitly set the innerValue attribute of this control
         public override string this [string name]
         {

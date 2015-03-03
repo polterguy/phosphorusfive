@@ -68,15 +68,17 @@ namespace phosphorus.ajax.core.internals
         ///     removes the attribute with the specified name
         /// </summary>
         /// <param name="name">name of attribute to remove</param>
-        public void RemoveAttribute (string name)
+        public void RemoveAttribute (string name, bool serializeToClient = true)
         {
             if (FindAttribute (_dynamicallyAddedThisRequest, name) != null) {
                 // attribute was added this request, simply removing the add
                 RemoveAttributeInternal (_dynamicallyAddedThisRequest, name);
             } else {
-                // changing attribute, but first storing old value
-                StoreOldValue (name);
-                SetAttributeInternal (_dynamicallyRemovedThisRequest, name, null);
+                // changing attribute, but first storing old value, but only if caller says we should
+                if (serializeToClient) {
+                    StoreOldValue (name);
+                    SetAttributeInternal (_dynamicallyRemovedThisRequest, name, null);
+                }
 
                 // removing from all other lists
                 RemoveAttributeInternal (_dynamicallyAddedThisRequest, name);
