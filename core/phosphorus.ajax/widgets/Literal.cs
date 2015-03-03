@@ -50,6 +50,9 @@ namespace phosphorus.ajax.widgets
                     // special treatment for textarea, to make it resemble what goes on on the client-side
                     return base ["innerValue"];
                 }
+                if (name == "value" && ElementType == "option" && !base.HasAttribute ("value"))
+                    // by default, option HTML elements returns their "innerValue" if they have no value attribute
+                    return this ["innerValue"];
                 return base [name];
             }
             set {

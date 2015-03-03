@@ -170,7 +170,30 @@
 
 
         value: function(value) {
-            this.el.value = window.pf._getChange(this.el.value, value);
+            if (this.el.tagName.toLowerCase () == 'select') {
+                value = window.pf._getChange(function(){
+                    var ret = '';
+                    for (var idxEl = 0; idxEl < this.el.children.length; idxEl++) {
+                        if (this.el.children[idxEl].selected) {
+                            ret += this.el.children[idxEl].value + ',';
+                        }
+                    }
+                    return ret.substring (0, ret.length - 2);
+                }.apply (this), value);
+                for (var idxEl = 0; idxEl < this.el.children.length; idxEl++) {
+                    this.el.children[idxEl].selected = false;
+                }
+                var splits = value.split (',');
+                for (var idxVal = 0; idxVal < splits.length; idxVal++) {
+                    for (var idxEl = 0; idxEl < this.el.children.length; idxEl++) {
+                        if (splits[idxVal] == this.el.children[idxEl].value || splits[idxVal] == this.el.children[idxEl].innerHTML) {
+                            this.el.children[idxEl].selected = true;
+                        }
+                    }
+                }
+            } else {
+                this.el.value = window.pf._getChange(this.el.value, value);
+            }
         },
 
 
@@ -200,6 +223,11 @@
             } else {
                 this.el.innerHTML = "";
             }
+        },
+
+
+        __pf_del_selected: function() {
+            this.el.selected = false;
         },
 
 

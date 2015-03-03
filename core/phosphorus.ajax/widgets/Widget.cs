@@ -179,7 +179,11 @@ namespace phosphorus.ajax.widgets
         ///     removes an attribute
         /// </summary>
         /// <param name="name">name of attribute to remove</param>
-        public void RemoveAttribute (string name) { _attributes.RemoveAttribute (name); }
+        public void RemoveAttribute (string name)
+        {
+            if (HasAttribute (name))
+                _attributes.RemoveAttribute (name);
+        }
 
         /// <summary>
         ///     forces a re-rendering of the widget. normally this is not something you should have to mess with yourself, but
@@ -235,6 +239,10 @@ namespace phosphorus.ajax.widgets
                                     _attributes.SetAttributeFormData ("value", Page.Request.Params [this ["name"]]);
                                     break;
                             }
+                            break;
+                        case "select":
+                            if (!AllChildrenHasIds () && Page.Request.Params [this ["name"]] != null)
+                                _attributes.SetAttributeFormData ("value", Page.Request.Params [this ["name"]]);
                             break;
                         case "textarea":
                             _attributes.SetAttributeFormData ("innerValue", Page.Request.Params [this ["name"]]);
@@ -380,9 +388,20 @@ namespace phosphorus.ajax.widgets
 
             base.OnLoad (e);
         }
+        
+        protected bool AllChildrenHasIds ()
+        {
+            foreach (Control idxCtrl in Controls) {
+                var idxWidget = idxCtrl as Widget;
+                if (idxWidget != null) {
+                    if (idxWidget.NoIdAttribute)
+                        return false;
+                }
+            }
+            return true;
+        }
 
         // private methods for internal use in the class
-
         private string GetWidgetHtml ()
         {
             using (var stream = new MemoryStream ()) {

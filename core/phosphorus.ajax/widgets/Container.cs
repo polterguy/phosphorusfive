@@ -49,7 +49,7 @@ namespace phosphorus.ajax.widgets
         public override string this [string name]
         {
             get {
-                if (name == "value" && ElementType == "select") {
+                if (name == "value" && ElementType == "select" && AllChildrenHasIds ()) {
                     // special treatment for select HTML elements, to make it resemble what goes on on the client-side
                     string retVal = "";
                     foreach (Control idxCtrl in Controls) {
@@ -66,18 +66,26 @@ namespace phosphorus.ajax.widgets
             set {
                 if (name == "innerValue")
                     throw new ArgumentException ("you cannot set the 'innerValue' property of the '" + ID + "' Container widget");
-                if (name == "value" && ElementType == "select") {
+                if (name == "value" && ElementType == "select" && AllChildrenHasIds ()) {
                     // special treatment for select HTML elements, to make it resemble what goes on on the client-side
                     var splits = value.Split (',');
+                    foreach (Control idxCtrl in Controls) {
+                        var idxWidget = idxCtrl as Widget;
+                        if (idxWidget != null) {
+                            idxWidget.RemoveAttribute ("selected");
+                        }
+                    }
                     foreach (string idxSplit in splits) {
                         foreach (Control idxCtrl in Controls) {
                             var idxWidget = idxCtrl as Widget;
                             if (idxWidget != null) {
-                                if (idxWidget ["value"] == idxSplit)
+                                if (idxWidget ["value"] == idxSplit) {
                                     idxWidget ["selected"] = null;
+                                }
                             }
                         }
                     }
+                    return;
                 }
                 base [name] = value;
             }
