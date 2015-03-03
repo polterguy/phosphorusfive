@@ -202,6 +202,24 @@
         },
 
 
+        checked: function(value) {
+            if (this.el.tagName.toLowerCase () === 'input') {
+                this.el.checked = true;
+            } else {
+                this.el.checked = window.pf._getChange(this.el.checked, value);
+            }
+        },
+
+
+        selected: function(value) {
+            if (this.el.tagName.toLowerCase () === 'option') {
+                this.el.selected = true;
+            } else {
+                this.el.selected = window.pf._getChange(this.el.selected, value);
+            }
+        },
+
+
         /*
          * these next functions are handlers for deleting attributes
          */
@@ -228,6 +246,11 @@
 
         __pf_del_selected: function() {
             this.el.selected = false;
+        },
+
+
+        __pf_del_checked: function() {
+            this.el.checked = false;
         },
 
 

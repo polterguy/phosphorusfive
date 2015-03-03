@@ -224,7 +224,7 @@ namespace phosphorus.ajax.widgets
                                         var splits = Page.Request.Params [this ["name"]].Split (',');
                                         bool found = false;
                                         foreach (var idxSplit in splits) {
-                                            if (idxSplit == this ["value"]) {
+                                            if (idxSplit == this ["value"] || (!HasAttribute ("value") && idxSplit == "on")) {
                                                 found = true;
                                                 break;
                                             }
