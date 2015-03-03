@@ -202,24 +202,6 @@
         },
 
 
-        checked: function(value) {
-            if (this.el.tagName.toLowerCase () === 'input') {
-                this.el.checked = true;
-            } else {
-                this.el.checked = window.pf._getChange(this.el.checked, value);
-            }
-        },
-
-
-        selected: function(value) {
-            if (this.el.tagName.toLowerCase () === 'option') {
-                this.el.selected = true;
-            } else {
-                this.el.selected = window.pf._getChange(this.el.selected, value);
-            }
-        },
-
-
         /*
          * these next functions are handlers for deleting attributes
          */
@@ -298,8 +280,16 @@
                     this.el.insertBefore(fragment, this.el.children[pos]);
                 } else {
 
-                    // default logic, simply setting attribute, with no fuzz
-                    this.el.setAttribute(key, window.pf._getChange(this.el[key], value));
+                    // checking if this is simply an "add attribute" setter
+                    if (value === null) {
+
+                        // simply adding empty attribute
+                        this.el[key] = true;
+                    } else {
+
+                        // default logic, simply setting attribute, with no fuzz
+                        this.el.setAttribute(key, window.pf._getChange(this.el[key], value));
+                    }
                 }
             }
         },

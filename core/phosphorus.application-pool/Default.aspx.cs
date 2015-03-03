@@ -29,7 +29,7 @@ namespace phosphorus.five.applicationpool
     /// <summary>
     /// This is the main .aspx page for the Application Pool, and the only page in the system, from which
     /// all web requests are being handled. Contains many useful helper Active events for things such as including
-    /// JavaScript files, StyleSheet files, etc.
+    /// JavaScript files, StyleSheet files, creating and manipulating web widgets, etc.
     /// </summary>
     public partial class Default : AjaxPage
     {
@@ -139,17 +139,18 @@ namespace phosphorus.five.applicationpool
         ///     varies according to what type of [widget] you are creating. [widget] defaults to "container", and [parent] defaults
         ///     to "container", which is your main root widget on the page. If neither [before] nor [after] is given, widget will
         ///     be appended into controls collection at the end of whatever [parent] widget you choose to use. You can also optionally
-        ///     declare local widget Active Events by passing in an [events] node, which will be locally declared Active Events for
+        ///     declare local widget Active Events, by passing in an [events] node, which will be locally declared Active Events for
         ///     your widget, only active, as long as Widget exists on page.
         /// </summary>
         /// <param name="context">Context for current request</param>
         /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.web.widgets.create")]
         [ActiveEvent (Name = "pf.web.create-widget")]
-        private void pf_web_create_widget (ApplicationContext context, ActiveEventArgs e)
+        private void pf_web_widgets_create (ApplicationContext context, ActiveEventArgs e)
         {
             // finding parent widget first, which defaults to "container" widget, if no parent is given
             var parentNode = e.Args.Find (idx => idx.Name == "parent" && idx.Value != null);
-            var parent = parentNode != null ? FindControl<pf.Container> (XUtil.Single<string> (parentNode, context), Page) : container;
+            var parent = (parentNode != null ? FindControl<pf.Container> (XUtil.Single<string> (parentNode, context), Page) : container) ?? container;
 
             // finding position in parent control's list, defaulting to "-1", meaning "append at end"
             int position = GetWidgetPosition (e.Args, context, parent);
@@ -168,6 +169,243 @@ namespace phosphorus.five.applicationpool
             var eventNode = e.Args.Find (idx => idx.Name == "events");
             if (eventNode != null)
                 CreateWidgetEvents (widget, eventNode, context);
+        }
+
+        /// <summary>
+        ///     clears the given widget, removing all its children widgets
+        /// </summary>
+        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.web.widgets.clear")]
+        private void pf_web_widgets_clear (ApplicationContext context, ActiveEventArgs e)
+        {
+            // syntax checking
+            if (e.Args.Value == null)
+                return; // nothing to do here
+
+            // loping through all control ID's given
+            foreach (var ctrl in XUtil.Iterate<string> (e.Args, context).Select (idxCtrlId => FindControl<pf.Container> (idxCtrlId, Page))) {
+
+                // checking if widget exists
+                if (ctrl == null)
+                    continue;
+
+                // then looping through all of its children controls
+                foreach (Control innerCtrl in ctrl.Controls) {
+                    RemoveActiveEvents (innerCtrl);
+                    RemoveEvents (innerCtrl);
+                }
+
+                // clearing child controls, and re-rendering widget
+                ctrl.Controls.Clear ();
+                ctrl.ReRenderChildren ();
+            }
+        }
+
+        /// <summary>
+        ///     Removes the given widget(s) entirely.
+        /// </summary>
+        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.web.widgets.remove")]
+        private void pf_web_widgets_remove (ApplicationContext context, ActiveEventArgs e)
+        {
+            // syntax checking
+            if (e.Args.Value == null)
+                return; // nothing to do here
+
+            // loping through all control ID's given
+            foreach (var widget in XUtil.Iterate<string> (e.Args, context).Select (idxCtrlId => FindControl<pf.Widget> (idxCtrlId, Page))) {
+
+                // checking if widget exists
+                if (widget == null)
+                    continue;
+
+                // removing all Ajax event handlers for widget
+                RemoveEvents (widget);
+
+                // removing all Active Event handlers for widget
+                RemoveActiveEvents (widget);
+
+                // actually removing widget from Page control collection, and persisting our change
+                var parent = (pf.Container)widget.Parent;
+                parent.RemoveControlPersistent (widget);
+            }
+        }
+        
+        /// <summary>
+        ///     Lists all widgets on page. Alternatively supply a filter as argument.
+        /// </summary>
+        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.web.widgets.list")]
+        private void pf_web_widgets_list (ApplicationContext context, ActiveEventArgs e)
+        {
+            // retrieving filter, if any
+            var filter = new List<string> (XUtil.Iterate<string> (XUtil.TryFormat<object> (e.Args, context, null), e.Args, context));
+            if (e.Args.Value != null && filter.Count == 0)
+                return; // possibly a filter expression, leading into oblivion
+
+            // recursively retrieving all widgets on page
+            ListWidgets (filter, e.Args, container);
+        }
+
+        /// <summary>
+        ///     Returns the given event(s) for the given widget(s)
+        /// </summary>
+        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.web.widgets.event.get")]
+        private void pf_web_widgets_event_get (ApplicationContext context, ActiveEventArgs e)
+        {
+            // syntax checking
+            if (e.Args.Value == null)
+                return; // nothing to do here
+
+            // looping through all widgets
+            foreach (var idxCtrlId in XUtil.Iterate<string> (e.Args, context)) {
+
+                // finding widget
+                var widget = FindControl<Widget> (idxCtrlId, Page);
+                if (widget == null || !AjaxEvents.ContainsKey (widget.ID))
+                    continue; // widget doesn't exist, or has no events
+
+                // checking if event exists for widget, and removing it if it does
+                Node nodeToAdd = null;
+                foreach (var idxEventNameNode in new List<Node> (e.Args.Children)) {
+                    if (AjaxEvents [widget.ID].ContainsKey (idxEventNameNode.Name)) {
+                        if (nodeToAdd == null)
+                            nodeToAdd = e.Args.Add (widget.ID).LastChild;
+                        Node evtNode = nodeToAdd.Add (idxEventNameNode.Name).LastChild;
+                        foreach (var idx in AjaxEvents [widget.ID] [idxEventNameNode.Name]) {
+                            evtNode.AddRange (idx.Clone ().Children);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Sets the given event(s) for the given widget(s)
+        /// </summary>
+        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.web.widgets.event.set")]
+        private void pf_web_widgets_event_set (ApplicationContext context, ActiveEventArgs e)
+        {
+            // syntax checking
+            if (e.Args.Value == null)
+                return; // nothing to do here
+
+            // looping through all widgets
+            foreach (var idxCtrlId in XUtil.Iterate<string> (e.Args, context)) {
+
+                // finding widget
+                var widget = FindControl<Widget> (idxCtrlId, Page);
+                if (widget == null)
+                    continue; // widget doesn't exist, or has no events
+
+                // looping through all events we should set
+                foreach (var idxEventNameNode in e.Args.Children) {
+                    if (!AjaxEvents.ContainsKey (widget.ID))
+                        AjaxEvents [widget.ID] = new Dictionary<string, List<Node>> ();
+                    AjaxEvents [widget.ID] [idxEventNameNode.Name] = new List<Node> ();
+                    Node curEventNode = idxEventNameNode.Clone ();
+                    AjaxEvents [widget.ID] [idxEventNameNode.Name].Add (curEventNode);
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Removes the given event(s) for the given widget(s)
+        /// </summary>
+        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.web.widgets.event.remove")]
+        private void pf_web_widgets_event_remove (ApplicationContext context, ActiveEventArgs e)
+        {
+            // syntax checking
+            if (e.Args.Value == null)
+                return; // nothing to do here
+
+            // looping through all widgets
+            foreach (var idxCtrlId in XUtil.Iterate<string> (e.Args, context)) {
+
+                // finding widget
+                var widget = FindControl<Widget> (idxCtrlId, Page);
+                if (widget == null || !AjaxEvents.ContainsKey (widget.ID))
+                    continue; // widget doesn't exist, or has no events
+
+                // checking if event exists for widget, and removing it if it does
+                foreach (var idxEventNameNode in e.Args.Children) {
+                    if (AjaxEvents [widget.ID].ContainsKey (idxEventNameNode.Name))
+                        AjaxEvents [widget.ID].Remove (idxEventNameNode.Name);
+                    widget.RemoveAttribute (idxEventNameNode.Name);
+                }
+                if (AjaxEvents [widget.ID].Count == 0)
+                    AjaxEvents.Remove (widget.ID);
+            }
+        }
+        
+        /// <summary>
+        ///     Lists all existing events for given widget(s).
+        /// </summary>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.web.widgets.event.list")]
+        private void pf_web_widgets_event_list (ApplicationContext context, ActiveEventArgs e)
+        {
+            // looping through all widgets
+            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+
+                // finding widget
+                var widget = FindControl<Widget> (idx, Page);
+                if (widget == null)
+                    continue;
+
+                // then looping through all attribute keys, filtering everything out that does not start with "on"
+                Node curNode = null;
+                foreach (var idxAtr in widget.AttributeKeys) {
+                    if (!idxAtr.StartsWith ("on"))
+                        continue;
+                    if (curNode == null)
+                        curNode = e.Args.Add (widget.ID).LastChild;
+                    curNode.Add (idxAtr);
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Null Active Event handler, for handling widget specific Active Events
+        /// </summary>
+        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "")]
+        private void null_handler (ApplicationContext context, ActiveEventArgs e)
+        {
+            // checking to see if the currently raised Active Event has a handler on our page
+            if (!PageActiveEvents.ContainsKey (e.Name)) return;
+
+            // keeping a reference to what we add to the current Active Event "root node"
+            // such that we can clean up after ourselves afterwards
+            var lambdas = new List<Node> ();
+
+            // looping through each Active Event handler for current event
+            foreach (var tmp in from idxEvt in PageActiveEvents [e.Name] from idxEvtContent in idxEvt.Item2 select idxEvtContent.Clone()) {
+                e.Args.Add(tmp);
+                lambdas.Add(tmp);
+            }
+
+            // invoking each [lambda.xxx] object from event
+            foreach (var idxLambda in lambdas) {
+                context.Raise (idxLambda.Name, idxLambda);
+            }
+
+            // cleaning up after ourselves, deleting only the lambda objects that came
+            // from our dynamically created event
+            foreach (var idxLambda in lambdas) {
+                idxLambda.UnTie ();
+            }
         }
 
         /*
@@ -221,7 +459,7 @@ namespace phosphorus.five.applicationpool
         }
 
         /*
-         * creates local widget events for web widgets created through [pf.web.create-widget]
+         * creates local widget events for web widgets created through [pf.web.widgets.create]
          */
         private void CreateWidgetEvents (Control widget, Node eventNode, ApplicationContext context)
         {
@@ -238,84 +476,6 @@ namespace phosphorus.five.applicationpool
                     tpl.Item2.Add (idxLambda.Clone ());
                 }
                 PageActiveEvents[idxEvt.Name].Add(tpl);
-            }
-        }
-
-        /// <summary>
-        ///     null Active Event handler, for handling widget specific Active Events
-        /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "")]
-        private void null_handler (ApplicationContext context, ActiveEventArgs e)
-        {
-            // checking to see if the currently raised Active Event has a handler on our page
-            if (!PageActiveEvents.ContainsKey (e.Name)) return;
-
-            // keeping a reference to what we add to the current Active Event "root node"
-            // such that we can clean up after ourselves afterwards
-            var lambdas = new List<Node> ();
-
-            // looping through each Active Event handler for current event
-            foreach (var tmp in from idxEvt in PageActiveEvents [e.Name] from idxEvtContent in idxEvt.Item2 select idxEvtContent.Clone()) {
-                e.Args.Add(tmp);
-                lambdas.Add(tmp);
-            }
-
-            // invoking each [lambda.xxx] object from event
-            foreach (var idxLambda in lambdas) {
-                context.Raise (idxLambda.Name, idxLambda);
-            }
-                
-            // cleaning up after ourselves, deleting only the lambda objects that came
-            // from our dynamically created event
-            foreach (var idxLambda in lambdas) {
-                idxLambda.UnTie ();
-            }
-        }
-
-        /// <summary>
-        ///     clears the given widget, removing all its children widgets
-        /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.clear-widget")]
-        private void pf_web_clear_widget (ApplicationContext context, ActiveEventArgs e)
-        {
-            // loping through all control ID's given
-            foreach (var ctrl in XUtil.Iterate<string> (e.Args, context).Select (idxCtrlId => FindControl<pf.Container> (idxCtrlId, Page))) {
-
-                // then looping through all of its children controls
-                foreach (Control innerCtrl in ctrl.Controls) {
-                    RemoveActiveEvents (innerCtrl);
-                    RemoveEvents (innerCtrl);
-                }
-
-                // clearing child controls, and re-rendering widget
-                ctrl.Controls.Clear ();
-                ctrl.ReRenderChildren ();
-            }
-        }
-
-        /// <summary>
-        ///     removes the given widget(s) entirely
-        /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.remove-widget")]
-        private void pf_web_remove_widget (ApplicationContext context, ActiveEventArgs e)
-        {
-            // loping through all control ID's given
-            foreach (var widget in XUtil.Iterate<string> (e.Args, context).Select (idxCtrlId => FindControl<pf.Widget> (idxCtrlId, Page))) {
-                // removing all Ajax event handlers for widget
-                RemoveEvents (widget);
-
-                // removing all Active Event handlers for widget
-                RemoveActiveEvents (widget);
-
-                // actually removing widget from Page control collection, and persisting our change
-                var parent = (pf.Container)widget.Parent;
-                parent.RemoveControlPersistent (widget);
             }
         }
 
@@ -468,6 +628,29 @@ namespace phosphorus.five.applicationpool
             if (Manager.IsPhosphorusRequest)
                 throw new Exception ("You cannot set the title of your page in an Ajax Request, only during post requests, or initial loading of page");
             Title = XUtil.Single<string> (e.Args, context);
+        }
+
+        /*
+         * recursively traverses entire Control hierarchy on page, and adds up into result node
+         */
+        private static void ListWidgets (List<string> filter, Node resultNode, Control current)
+        {
+            bool shouldAdd = filter.Count == 0;
+            if (!shouldAdd) {
+                foreach (var idxFilter in filter) {
+                    if (current.ID.IndexOf (idxFilter) != -1) {
+                        shouldAdd = true;
+                        break;
+                    }
+                }
+            }
+            if (!shouldAdd)
+                return; // didn't match filter
+
+            resultNode.Add (current.ID);
+            foreach (Control idxChild in current.Controls) {
+                ListWidgets (filter, resultNode, idxChild);
+            }
         }
 
         /*

@@ -88,6 +88,44 @@ namespace phosphorus.ajax.core.internals
             }
         }
 
+        /// <summary>
+        /// returns all attribute keys
+        /// </summary>
+        /// <value>attribute names</value>
+        public IEnumerable<string> Keys {
+            get {
+                Dictionary<string, bool> _alreadySen = new Dictionary<string, bool> ();
+                foreach (var idx in this._dynamicallyAddedThisRequest) {
+                    yield return idx.Name;
+                    _alreadySen [idx.Name] = true;
+                }
+                foreach (var idx in this._formDataThisRequest) {
+                    if (!_alreadySen.ContainsKey (idx.Name)) {
+                        yield return idx.Name;
+                        _alreadySen [idx.Name] = true;
+                    }
+                }
+                foreach (var idx in this._originalValue) {
+                    if (!_alreadySen.ContainsKey (idx.Name)) {
+                        yield return idx.Name;
+                        _alreadySen [idx.Name] = true;
+                    }
+                }
+                foreach (var idx in this._preViewState) {
+                    if (!_alreadySen.ContainsKey (idx.Name)) {
+                        yield return idx.Name;
+                        _alreadySen [idx.Name] = true;
+                    }
+                }
+                foreach (var idx in this._viewStatePersisted) {
+                    if (!_alreadySen.ContainsKey (idx.Name)) {
+                        yield return idx.Name;
+                        _alreadySen [idx.Name] = true;
+                    }
+                }
+            }
+        }
+
         // invoked before viewstate is being tracked
         internal void SetAttributePreViewState (string name, string value) { SetAttributeInternal (_preViewState, name, value); }
         // invoked when form data is being retrieved from http request parameters

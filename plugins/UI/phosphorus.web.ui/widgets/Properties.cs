@@ -27,8 +27,8 @@ namespace phosphorus.web.ui.widgets
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.property.get")]
-        private static void pf_web_property_get (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.widgets.property.get")]
+        private static void pf_web_widgets_property_get (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value == null || e.Args.Count == 0)
                 return; // nothing to do here ...
@@ -41,6 +41,8 @@ namespace phosphorus.web.ui.widgets
 
                 // finding widget
                 var widget = FindWidget (context, idx);
+                if (widget == null)
+                    continue;
 
                 // looping through all properties requested by caller
                 foreach (var nameNode in origNodeList) {
@@ -59,7 +61,7 @@ namespace phosphorus.web.ui.widgets
                             CreatePropertyReturn (e.Args, nameNode, widget, widget.ElementType);
                             break;
                         case "has-id":
-                            CreatePropertyReturn (e.Args, nameNode, widget, widget.NoIdAttribute);
+                            CreatePropertyReturn (e.Args, nameNode, widget, !widget.NoIdAttribute);
                             break;
                         case "render-type":
                             CreatePropertyReturn (e.Args, nameNode, widget, widget.RenderType.ToString ());
@@ -80,8 +82,8 @@ namespace phosphorus.web.ui.widgets
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.property.set")]
-        private static void pf_web_property_set (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.widgets.property.set")]
+        private static void pf_web_widgets_property_set (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value == null || e.Args.Count == 0)
                 return; // nothing to do here ...
@@ -91,6 +93,8 @@ namespace phosphorus.web.ui.widgets
                 
                 // finding widget
                 var widget = FindWidget (context, idx);
+                if (widget == null)
+                    continue;
 
                 // looping through all properties requested by caller
                 foreach (var valueNode in e.Args.Children) {
@@ -127,14 +131,16 @@ namespace phosphorus.web.ui.widgets
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.property.remove")]
-        private static void pf_web_property_remove (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.widgets.property.remove")]
+        private static void pf_web_widgets_property_remove (ApplicationContext context, ActiveEventArgs e)
         {
             // looping through all widgets
             foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
 
                 // finding widget
                 var widget = FindWidget (context, idx);
+                if (widget == null)
+                    continue;
 
                 // looping through each property to remove
                 foreach (var nameNode in e.Args.Children) {
@@ -147,6 +153,7 @@ namespace phosphorus.web.ui.widgets
                         case "invisible-element":
                         case "element":
                         case "has-id":
+                        case "has-name":
                         case "render-type":
                             throw new ArgumentException ("Cannot remove property; '" + nameNode.Name + "' of widget.");
                         default:
@@ -157,8 +164,41 @@ namespace phosphorus.web.ui.widgets
             }
         }
         
+        /// <summary>
+        ///     Lists all existing properties for given widget(s).
+        /// </summary>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.web.widgets.property.list")]
+        private static void pf_web_widgets_property_list (ApplicationContext context, ActiveEventArgs e)
+        {
+            // looping through all widgets
+            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+
+                // finding widget
+                var widget = FindWidget (context, idx);
+                if (widget == null)
+                    continue;
+
+                // creating our "return node" for currently handled widget
+                Node curNode = e.Args.Add (widget.ID).LastChild;
+
+                // first listing "static properties"
+                curNode.Add ("visible");
+                curNode.Add ("invisible-element");
+                curNode.Add ("element");
+                curNode.Add ("has-id");
+                curNode.Add ("render-type");
+                foreach (var idxAtr in widget.AttributeKeys) {
+                    if (idxAtr == "Tag" || idxAtr.StartsWith ("on"))
+                        continue;
+                    curNode.Add (idxAtr);
+                }
+            }
+        }
+
         /*
-         * helper for [pf.web.property.get], creates a return value for one property
+         * helper for [pf.web.widgets.property.get], creates a return value for one property
          */
         private static void CreatePropertyReturn (Node node, Node nameNode, Widget widget, object value = null)
         {

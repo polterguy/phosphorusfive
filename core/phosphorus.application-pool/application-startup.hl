@@ -6,14 +6,14 @@ event:pf.remove-additional-hello
   lambda
     set:@/+/?value
       source:@/./././?value
-    pf.web.remove-widget
+    pf.web.widgets.remove
 
 /*
  * creates one "hello" widget
  */
 event:pf.create-additional-hello
   lambda
-    pf.web.create-widget
+    pf.web.widgets.create
       parent:main
       widgets
         literal
@@ -30,7 +30,7 @@ event:pf.create-additional-hello
 event:pf.web.load-ui
   lambda
     pf.web.add-stylesheet-file:/media/css/main.css
-    pf.web.create-widget:main
+    pf.web.widgets.create:main
       widgets
         literal
           element:h1

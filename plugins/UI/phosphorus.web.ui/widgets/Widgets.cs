@@ -23,7 +23,7 @@ namespace phosphorus.web.ui.widgets
     {
         /// <summary>
         ///     Creates a generic container type of Widget, that can contain children widgets of itself. Active Event is not
-        ///     meant to be raised directly, but through the [pf.web.create-widget] Active Event, since it needs a reference to
+        ///     meant to be raised directly, but through the [pf.web.widgets.create] Active Event, since it needs a reference to
         ///     its parent control directly, among other things. Pass in [element] to override the HTML element rendered. Pass 
         ///     in [has-id] with "false" to remove the rendering of its HTML ID element. Pass in [controls] as a list of child
         ///     controls that will be rendered in its children controls collection. Pass in [oninitialload] to have some server-side
@@ -50,7 +50,7 @@ namespace phosphorus.web.ui.widgets
 
         /// <summary>
         ///     Creates a generic literal type of Widget, that can contain an inner value, being HTML or text. Active Event is not
-        ///     meant to be raised directly, but through the [pf.web.create-widget] Active Event, since it needs a reference to
+        ///     meant to be raised directly, but through the [pf.web.widgets.create] Active Event, since it needs a reference to
         ///     its parent control directly, among other things. Pass in [element] to override the HTML element rendered. Pass 
         ///     in [has-id] with "false" to remove the rendering of its HTML ID element. Pass in [innerValue] as a text string
         ///     that will be rendered in its HTML or text content. Pass in [oninitialload] to have some server-side
@@ -75,7 +75,7 @@ namespace phosphorus.web.ui.widgets
 
         /// <summary>
         ///     Creates a generic void type of Widget, that cannot contain neither "text" nor "widgets". Active Event is not
-        ///     meant to be raised directly, but through the [pf.web.create-widget] Active Event, since it needs a reference to
+        ///     meant to be raised directly, but through the [pf.web.widgets.create] Active Event, since it needs a reference to
         ///     its parent control directly, among other things. Pass in [element] to override the HTML element rendered. Pass 
         ///     in [has-id] with "false" to remove the rendering of its HTML ID element. Pass in [oninitialload] to have some server-side
         ///     piece of pf.lambda code execute during its initial loading. Pass in [render-type], to override how the widget is 
@@ -104,7 +104,7 @@ namespace phosphorus.web.ui.widgets
             ApplicationContext context, 
             Node node, 
             string elementType, 
-            Widget.RenderingType type = Widget.RenderingType.Default) where T : Widget, new ()
+            Widget.RenderingType type = Widget.RenderingType.normal) where T : Widget, new ()
         {
             // creating widget as persistent control
             var parent = node.Find (idx => idx.Name == "__parent").Get<Container> (context);
@@ -133,7 +133,7 @@ namespace phosphorus.web.ui.widgets
             widget.ElementType = elementType;
 
             // setting rendering type (no closing element, void or default)
-            if (type != Widget.RenderingType.Default)
+            if (type != Widget.RenderingType.normal)
                 widget.RenderType = type;
 
             // returning widget to caller

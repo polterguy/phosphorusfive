@@ -58,7 +58,7 @@ namespace phosphorus.five.samples
             CurrentEdit = null;
             var widget = List.CreatePersistentControl<pf.Literal> ("x" + (_next ++), List.Controls.Count);
             widget.ElementType = "li";
-            widget.RenderType = pf.Widget.RenderingType.NoClose;
+            widget.RenderType = pf.Widget.RenderingType.open;
             widget ["onclick"] = "item_onclick";
             widget.innerValue = Txt ["value"];
         }
@@ -69,7 +69,7 @@ namespace phosphorus.five.samples
             CurrentEdit = null;
             var widget = List.CreatePersistentControl<pf.Literal> ("x" + (_next ++), 0);
             widget.ElementType = "li";
-            widget.RenderType = pf.Widget.RenderingType.NoClose;
+            widget.RenderType = pf.Widget.RenderingType.open;
             widget ["onclick"] = "item_onclick";
             widget.innerValue = Txt ["value"];
         }
@@ -80,7 +80,7 @@ namespace phosphorus.five.samples
             CurrentEdit = null;
             var widget = List.CreatePersistentControl<pf.Literal> ("x" + (_next ++), new Random ().Next (0, List.Controls.Count));
             widget.ElementType = "li";
-            widget.RenderType = pf.Widget.RenderingType.NoClose;
+            widget.RenderType = pf.Widget.RenderingType.open;
             widget ["onclick"] = "item_onclick";
             widget.innerValue = Txt ["value"];
         }
@@ -97,7 +97,7 @@ namespace phosphorus.five.samples
 
                 var widget = List.CreatePersistentControl<pf.Literal> ("x" + (_next ++), which);
                 widget.ElementType = "li";
-                widget.RenderType = pf.Widget.RenderingType.NoClose;
+                widget.RenderType = pf.Widget.RenderingType.open;
                 widget ["onclick"] = "item_onclick";
                 widget.innerValue = Txt ["value"];
             }

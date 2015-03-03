@@ -104,9 +104,19 @@
 
 * [pf.meta.list-widgets] Active Event to list all widgets on page
 
-* [pf.meta.list-properties] Active Event for listing all attributes on specific widgets
+* [pf.web.widget-exists] Active Event, for checking if one specific widget exists ...?
 
-* allow for trying to set and get properties of widgets that does not exist (check for null)
+* create support for trapping and throwing exceptions in pf.lambda
+
+* create support for creating property on widget that is never rendered, but only used as "Xtra" or "Info"
+
+* rename [pf.web.reload-location] and other similar Active Events into some intelligent namespace ...?
+
+* make it possible to create "User Controls Widgets", which are widgets that exists in files, possible to pass in parameters
+
+* make it possible to get/set/remove/list etc, also JavaScript events, and not only Active Events, like it is now
+
+
 
 
 

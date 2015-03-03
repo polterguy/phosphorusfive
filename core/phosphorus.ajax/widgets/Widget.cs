@@ -5,8 +5,9 @@
 
 using System;
 using System.IO;
-using System.Reflection;
 using System.Web.UI;
+using System.Reflection;
+using System.Collections.Generic;
 using phosphorus.ajax.core;
 using phosphorus.ajax.core.internals;
 
@@ -30,7 +31,7 @@ namespace phosphorus.ajax.widgets
             /// <summary>
             ///     this is for elements that require both an opening element, and a closing element, such as "div" and "ul"
             /// </summary>
-            Default,
+            normal,
 
             /// <summary>
             ///     this forces the element to close itself, even when there is no content, which means it will be rendered with a
@@ -40,13 +41,13 @@ namespace phosphorus.ajax.widgets
             ///     of element that requires this type of rendering are "input" and "br", but only if you wish to follow xhtml
             ///     practices
             /// </summary>
-            SelfClosing,
+            immediate,
 
             /// <summary>
             ///     this is for elements that does not require a closing element. examples of elements that should be rendered
             ///     with this type are "p", "li", "input" and "br"
             /// </summary>
-            NoClose
+            open
         }
 
         // contains all attributes of widget
@@ -95,7 +96,7 @@ namespace phosphorus.ajax.widgets
         /// <value>the rendering type of the element</value>
         public RenderingType RenderType
         {
-            get { return (RenderingType) (ViewState ["rt"] ?? RenderingType.Default); }
+            get { return (RenderingType) (ViewState ["rt"] ?? RenderingType.normal); }
             set { ViewState ["rt"] = value; }
         }
 
@@ -186,6 +187,16 @@ namespace phosphorus.ajax.widgets
         }
 
         /// <summary>
+        /// returns all attribute keys for widget
+        /// </summary>
+        /// <value>The attributes.</value>
+        public IEnumerable<string> AttributeKeys {
+            get {
+                return _attributes.Keys;
+            }
+        }
+
+        /// <summary>
         ///     forces a re-rendering of the widget. normally this is not something you should have to mess with yourself, but
         ///     something the
         ///     framework itself will take care of. however, if you wish to force the control to re-render itself entirely as html
@@ -234,18 +245,30 @@ namespace phosphorus.ajax.widgets
                                         } else {
                                             _attributes.RemoveAttribute ("checked", false);
                                         }
+                                    } else {
+                                        _attributes.RemoveAttribute ("checked", false);
                                     } break;
                                 default:
-                                    _attributes.SetAttributeFormData ("value", Page.Request.Params [this ["name"]]);
+                                    if (Page.Request.Params [this ["name"]] != null)
+                                        _attributes.SetAttributeFormData ("value", Page.Request.Params [this ["name"]]);
+                                    else
+                                        _attributes.RemoveAttribute ("value");
                                     break;
                             }
                             break;
                         case "select":
-                            if (!AllChildrenHasIds () && Page.Request.Params [this ["name"]] != null)
-                                _attributes.SetAttributeFormData ("value", Page.Request.Params [this ["name"]]);
+                            if (!AllChildrenHasIds ()) {
+                                if (Page.Request.Params [this ["name"]] != null)
+                                    _attributes.SetAttributeFormData ("value", Page.Request.Params [this ["name"]]);
+                                else
+                                    _attributes.RemoveAttribute ("value");
+                            }
                             break;
                         case "textarea":
-                            _attributes.SetAttributeFormData ("innerValue", Page.Request.Params [this ["name"]]);
+                            if (Page.Request.Params [this ["name"]] != null)
+                                _attributes.SetAttributeFormData ("innerValue", Page.Request.Params [this ["name"]]);
+                            else
+                                _attributes.RemoveAttribute ("innerValue");
                             break;
                         case "option":
                             if (Page.Request.Params [(this.Parent as Widget) ["name"]] != null) {
@@ -262,7 +285,10 @@ namespace phosphorus.ajax.widgets
                                 } else {
                                     _attributes.RemoveAttribute ("selected", false);
                                 }
-                            } break;
+                            } else {
+                                _attributes.RemoveAttribute ("selected", false);
+                            }
+                            break;
                     }
                 }
             }
@@ -476,18 +502,18 @@ namespace phosphorus.ajax.widgets
             if (HasContent) {
                 writer.Write (">");
                 RenderChildren (writer);
-                if (RenderType == RenderingType.Default)
+                if (RenderType == RenderingType.normal)
                     writer.Write ("</{0}>", ElementType);
             } else {
                 // no content in widget
                 switch (RenderType) {
-                    case RenderingType.SelfClosing:
+                    case RenderingType.immediate:
                         writer.Write (" />");
                         break;
-                    case RenderingType.NoClose:
+                    case RenderingType.open:
                         writer.Write (">");
                         break;
-                    case RenderingType.Default:
+                    case RenderingType.normal:
                         writer.Write ("></{0}>", ElementType);
                         break;
                 }

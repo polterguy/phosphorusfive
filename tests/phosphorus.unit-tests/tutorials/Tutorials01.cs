@@ -417,10 +417,10 @@ for-each:@/../*/_data/*(!/""=/Error/"")?value
       innerValue
   set:@/./*/_literal/*/literal/*/innerValue?value
     source:@/././*/__dp?value
-  append:@/../*/pf.web.create-widget/*/controls?node
+  append:@/../*/pf.web.widgets.create/*/controls?node
     source:@/././*/_literal/*?node
 
-pf.web.create-widget:example1
+pf.web.widgets.create:example1
   class:span-24
   controls
     literal
@@ -441,9 +441,9 @@ for-each:@/../*/_data/*(!/""=/Error/"")?value
       innerValue
   set:@/./*/_literal/*/literal/*/innerValue?value
     source:@/././*/__dp?value
-  append:@/../*/pf.web.create-widget/*/controls?node
+  append:@/../*/pf.web.widgets.create/*/controls?node
     source:@/././*/_literal/*?node
-pf.web.create-widget:example1
+pf.web.widgets.create:example1
   class:span-24
   controls
     literal
