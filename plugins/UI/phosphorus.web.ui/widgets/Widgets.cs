@@ -212,17 +212,36 @@ namespace phosphorus.web.ui.widgets
 
             // ensures "name" property is created, if necessary
             EnsureNameProperty (widget, args, context);
+            
+            // ensures "name" property is created, if necessary
+            EnsureValueProperty (widget, args, context);
 
             return widget;
         }
 
         /*
+         * ensuring the "value" property is the same as the "ID" of the widget, but only for "radio" input elements,
+         * unless a value property is explicitly given
+         */
+        private static void EnsureValueProperty (Widget widget, Node node, ApplicationContext context)
+        {
+            if (widget.HasAttribute ("value"))
+                return; // caller already explicitly added value attribute
+            
+            // making sure "input" type "radio" widgets have a value corresponding to 
+            // their ID, unless value is explicitly given
+            if (widget.ElementType == "input" && widget ["type"] == "radio") {
+                widget ["value"] = widget.ID;
+            }
+        }
+            
+        /*
          * ensuring the "name" property is the same as the "ID" of the widget, unless a name property is explicitly given,
-         * or element type doesn't necessarily require a "name" to function correctly
+         * or element type doesn't necessarily require a "name" to function correctly, or [has-name] equals false
          */
         private static void EnsureNameProperty (Widget widget, Node node, ApplicationContext context)
         {
-            if (widget ["name"] != null)
+            if (widget.HasAttribute ("name"))
                 return; // caller already explicitly added name attribute
 
             if (node.FindAll (delegate(Node idx) {
@@ -232,7 +251,7 @@ namespace phosphorus.web.ui.widgets
             }
 
             // making sure "input", "select" and "textarea" widgets have a name corresponding to 
-            // their ID unless name is explicitly given
+            // their ID, unless name is explicitly given
             var addName = false;
             switch (widget.ElementType) {
                 case "input":
