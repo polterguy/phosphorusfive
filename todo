@@ -17,8 +17,6 @@
 * create "plugin" support for "for-each", "set", "add" etc, to allow iterating for instance Widgets, and change their properties
   directly to create less verbose code
 
-* clean up [pf.html.html2lambda] to allow creating pf.lambda code in HTML
-
 * [flatten] keyword in pf.lambda, to create a string representation of a list of nodes, with optional "separator string"
   between node values/names, possibly as a "formatting expression" defined e.g. like this; "{name}:{value};" to allow for both
   name of node and value of node to become part of string representation
@@ -45,13 +43,7 @@
 
 * finish up comments on Unit Tests, class "Core" for instance
 
-* [context-event] and [context-override] keywords, with associated [context-delete-event] and [context-delete-override] keywords
-  I don't think we need this, but keep it in TODO for a while ...
-
-* create consistency between all Active events using only ONE of "remove" or "delete". [pf.data.remove] might possibly be 
-  [remove] instead, the same with [pf.folder.remove], [pf.file.remove], etc ...
-
-* investigate [pf.data.update] to see if it's even necessary
+* clean up comments on all Active Events and the rest of the library
 
 * finish up MongoDB plugin ...
 
@@ -65,18 +57,13 @@
 
 * [zip] and [unzip] Active Events
 
-* more [crypto] features
+* more [crypto] features, using BouncyCastle for instance
 
 * [MIME] wrapper, for being able to transmit and read MIME messages to other servers
 
 * make it possible to store both Session, and ViewState, in MongoDB, and/or other database implementations
 
 * create META support for retrieving XML comments from Active Events
-
-* create support for retrieving body (lambda objects) of dynamically create Active Events
-
-* clean up all [pw.web.session/application/etc] to make sure EVERYTHING can somehow be returned back to client as node, or something ...?
-  and that their API conforms to each other
 
 * support for storing stuff in ViewState, like Session and Application
 
