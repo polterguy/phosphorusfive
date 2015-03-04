@@ -279,7 +279,7 @@ test.foo14");
         [Test]
         public void Events14 ()
         {
-            var node = ExecuteLambda (@"pf.meta.list-events");
+            var node = ExecuteLambda (@"pf.meta.event.list");
             Assert.IsTrue (node [0].Children.SingleOrDefault (idx => "test.static.event-1".Equals (idx.Value)) != null);
             Assert.IsTrue (node [0].Children.SingleOrDefault (idx => "test.static.event-2".Equals (idx.Value)) != null);
         }
@@ -291,7 +291,7 @@ test.foo14");
         [Test]
         public void Events15 ()
         {
-            var node = ExecuteLambda (@"pf.meta.list-events:test.static.event-");
+            var node = ExecuteLambda (@"pf.meta.event.list:test.static.event-");
             Assert.AreEqual (2, node [0].Count);
             Assert.IsTrue (node [0].Children.SingleOrDefault (idx => "test.static.event-1".Equals (idx.Value)) != null);
             Assert.IsTrue (node [0].Children.SingleOrDefault (idx => "test.static.event-2".Equals (idx.Value)) != null);
@@ -305,7 +305,7 @@ test.foo14");
         public void Events16 ()
         {
             var node = ExecuteLambda (@"_filter:test.static.event-
-pf.meta.list-events:@/-?value");
+pf.meta.event.list:@/-?value");
             Assert.AreEqual (2, node [1].Count);
             Assert.IsTrue (node [1].Children.SingleOrDefault (idx => "test.static.event-1".Equals (idx.Value)) != null);
             Assert.IsTrue (node [1].Children.SingleOrDefault (idx => "test.static.event-2".Equals (idx.Value)) != null);
@@ -320,7 +320,7 @@ pf.meta.list-events:@/-?value");
         public void Events17 ()
         {
             var node = ExecuteLambda (@"_filter:node:""test.static.event-""
-pf.meta.list-events:@/-?value");
+pf.meta.event.list:@/-?value");
             Assert.AreEqual (2, node [1].Count);
             Assert.IsTrue (node [1].Children.SingleOrDefault (idx => "test.static.event-1".Equals (idx.Value)) != null);
             Assert.IsTrue (node [1].Children.SingleOrDefault (idx => "test.static.event-2".Equals (idx.Value)) != null);
@@ -337,7 +337,7 @@ pf.meta.list-events:@/-?value");
             var node = ExecuteLambda (@"_filter:@/*?value
   :test.static.event-1
   :test.static.event-2
-pf.meta.list-events:@@/-?value");
+pf.meta.event.list:@@/-?value");
             Assert.AreEqual (2, node [1].Count);
             Assert.IsTrue (node [1].Children.SingleOrDefault (idx => "test.static.event-1".Equals (idx.Value)) != null);
             Assert.IsTrue (node [1].Children.SingleOrDefault (idx => "test.static.event-2".Equals (idx.Value)) != null);
@@ -350,7 +350,7 @@ pf.meta.list-events:@@/-?value");
         [Test]
         public void Events19 ()
         {
-            var node = ExecuteLambda (@"pf.meta.list-events:@/-?value");
+            var node = ExecuteLambda (@"pf.meta.event.list:@/-?value");
             Assert.AreEqual (0, node [0].Count);
         }
 
@@ -364,7 +364,7 @@ pf.meta.list-events:@@/-?value");
         {
             var node = ExecuteLambda (@"_filter:@/*?value
   :test.static.event-
-pf.meta.list-events:@@/-?value");
+pf.meta.event.list:@@/-?value");
             Assert.AreEqual (2, node [1].Count);
             Assert.IsTrue (node [1].Children.SingleOrDefault (idx => "test.static.event-1".Equals (idx.Value)) != null);
             Assert.IsTrue (node [1].Children.SingleOrDefault (idx => "test.static.event-2".Equals (idx.Value)) != null);
@@ -380,7 +380,7 @@ pf.meta.list-events:@@/-?value");
         {
             var node = ExecuteLambda (@"_filter:@/*?value
   :test.static.event-1
-pf.meta.list-events:@@/-?value");
+pf.meta.event.list:@@/-?value");
             Assert.AreEqual (1, node [1].Count);
             Assert.IsTrue (node [1].Children.SingleOrDefault (idx => "test.static.event-1".Equals (idx.Value)) != null);
         }
@@ -391,7 +391,7 @@ pf.meta.list-events:@@/-?value");
         [Test]
         public void Events22 ()
         {
-            var node = ExecuteLambda (@"pf.meta.list-events:test.static.event-1");
+            var node = ExecuteLambda (@"pf.meta.event.list:test.static.event-1");
             Assert.AreEqual (1, node [0].Count);
             Assert.IsTrue (node [0].Children.SingleOrDefault (idx => "static".Equals (idx.Name)) != null);
         }

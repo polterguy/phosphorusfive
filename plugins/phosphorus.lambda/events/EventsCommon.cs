@@ -10,6 +10,7 @@ using phosphorus.core;
 using phosphorus.expressions;
 
 // ReSharper disable UnusedMember.Local
+// ReSharper disable UnusedParameter.Local
 
 namespace phosphorus.lambda.events
 {
@@ -29,15 +30,41 @@ namespace phosphorus.lambda.events
         static EventsCommon () { Lock = new object (); }
 
         /// <summary>
-        ///     lists all dynamically create Active Events
+        ///     Retrieves one or more dynamically created Active Events, and their pf.lambda code.
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.meta.list-events")]
-        private static void pf_meta_list_events (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.meta.event.get")]
+        private static void pf_meta_event_get (ApplicationContext context, ActiveEventArgs e)
+        {
+            // syntax checking
+            if (e.Args.Value == null)
+                return; // nothing to do here
+
+            // looping through all events caller wish to retrieve
+            foreach (var idxEventName in XUtil.Iterate<string> (e.Args, context)) {
+                Node appendNode = null;
+                if (Events.ContainsKey (idxEventName)) {
+                    foreach (Node idxLambda in Events [idxEventName].Children) {
+                        if (appendNode == null) {
+                            appendNode = e.Args.Add (idxEventName).LastChild;
+                        }
+                        appendNode.Add (idxLambda.Clone ());
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Lists all dynamically create Active Events
+        /// </summary>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "pf.meta.event.list")]
+        private static void pf_meta_event_list (ApplicationContext context, ActiveEventArgs e)
         {
             // retrieving filter, if any
-            var filter = new List<string> (XUtil.Iterate<string> (XUtil.TryFormat<object> (e.Args, context), e.Args, context));
+            var filter = new List<string> (XUtil.Iterate<string> (XUtil.TryFormat<object> (e.Args, context, null), e.Args, context));
             if (e.Args.Value != null && filter.Count == 0)
                 return; // possibly a filter expression, leading into oblivion
 
@@ -55,7 +82,7 @@ namespace phosphorus.lambda.events
                 }
             }
         }
-
+        
         /// <summary>
         ///     creates a dynamic Active Event
         /// </summary>
@@ -141,9 +168,7 @@ namespace phosphorus.lambda.events
         /*
          * responsible for re-mapping our overrides when Application Context is initialized
          */
-
         [ActiveEvent (Name = "pf.core.initialize-application-context")]
-        // ReSharper disable once UnusedParameter.Local
         private static void pf_core_initialize_application_context (ApplicationContext context, ActiveEventArgs e)
         {
             // acquiring lock since we're consuming object shared amongst more than one thread (_overrides)
@@ -162,7 +187,6 @@ namespace phosphorus.lambda.events
         /*
          * responsible for executing all dynamically created Active Events or lambda objects
          */
-
         [ActiveEvent (Name = "")]
         private static void _pf_core_null_active_event (ApplicationContext context, ActiveEventArgs e)
         {

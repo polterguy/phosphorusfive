@@ -19,7 +19,7 @@ namespace phosphorus.lambda.events
     public static class Event
     {
         /// <summary>
-        ///     creates zero or more active events with the given name, where body is taken from
+        ///     Creates zero or more active events, with the given name, where body is taken from
         ///     all [lambda.xxx] children nodes
         /// </summary>
         /// <param name="context">Application context</param>
