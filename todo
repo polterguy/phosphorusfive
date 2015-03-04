@@ -65,8 +65,6 @@
 
 * create META support for retrieving XML comments from Active Events
 
-* support for storing stuff in ViewState, like Session and Application
-
 * finish up [pw.web.post] to POST requests towards URLs
 
 * make sure [set] can set 'value' and 'name' when source leads to multiple nodes, and create unit test for it
@@ -90,8 +88,6 @@
 * "sockets" Active Events library, for creating Daemons to listen to ports, and react accordingly
 
 * create support for trapping and throwing exceptions in pf.lambda
-
-* create support for creating property on widget that is never rendered, but only used as "Xtra" or "Info"
 
 * rename [pf.web.reload-location] and other similar Active Events into some intelligent namespace ...?
 
