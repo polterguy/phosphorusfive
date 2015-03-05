@@ -89,11 +89,14 @@
 
 * create support for trapping and throwing exceptions in pf.lambda
 
-* rename [pf.web.reload-location] and other similar Active Events into some intelligent namespace ...?
-
-* make it possible to create "User Controls Widgets", which are widgets that exists in files, possible to pass in parameters
+* make it possible to create "User Controls Widgets", which are widgets that exists in files, and make it possible to pass in parameters
 
 * make it possible to get/set/remove/list etc, also JavaScript events, and not only Active Events, like it is now
+
+* create support for using ASP.NET Cache object, such as we already have for Session and Application
+
+
+
 
 
 
