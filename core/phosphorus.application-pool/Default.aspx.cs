@@ -536,26 +536,14 @@ namespace phosphorus.five.applicationpool
             }
         }
 
-        // TODO: do we really need this guy?
         /// <summary>
-        ///     reloads the current URL
-        /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.reload-location")]
-        private void pf_web_reload_location (ApplicationContext context, ActiveEventArgs e)
-        {
-            Manager.SendJavaScriptToClient ("location.reload();");
-        }
-
-        /// <summary>
-        ///     sends the given JavaScript to the client. JavaScript is given as value of [pf.web.include-javascript], and can
+        ///     sends the given JavaScript to the client. JavaScript is given as value of [pf.web.javascript.add], and can
         ///     be a constant, an expression or a formatting expression
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.include-javascript")]
-        private void pf_web_include_javascript (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.javascript.add")]
+        private void pf_web_javascript_add (ApplicationContext context, ActiveEventArgs e)
         {
             var js = XUtil.Single<string> (e.Args, context);
             Manager.SendJavaScriptToClient (js);
@@ -566,8 +554,8 @@ namespace phosphorus.five.applicationpool
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.add-javascript-file")]
-        private void pf_web_add_javascript_file (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.javascript.include-file")]
+        private void pf_web_javascript_include_file (ApplicationContext context, ActiveEventArgs e)
         {
             foreach (var idxFile in XUtil.Iterate<string> (e.Args, context)) {
                 RegisterJavaScriptFile (idxFile);
@@ -579,8 +567,8 @@ namespace phosphorus.five.applicationpool
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.add-stylesheet-file")]
-        private void pf_web_add_stylesheet_file (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.stylesheet.include-file")]
+        private void pf_web_stylesheet_include_file (ApplicationContext context, ActiveEventArgs e)
         {
             foreach (var idxFile in XUtil.Iterate<string> (e.Args, context)) {
                 RegisterStylesheetFile (idxFile);
@@ -592,8 +580,8 @@ namespace phosphorus.five.applicationpool
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.set-title")]
-        private void pf_web_set_title (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.page.set-title")]
+        private void pf_web_page_set_title (ApplicationContext context, ActiveEventArgs e)
         {
             if (Manager.IsPhosphorusRequest)
                 throw new Exception ("You cannot set the title of your page in an Ajax Request, only during post requests, or initial loading of page");
@@ -602,14 +590,14 @@ namespace phosphorus.five.applicationpool
 
         // TODO: support [rel-source], the same way we do in [set] in this guy
         /// <summary>
-        ///     send the given string back to browser as JSON with the key given as value of [pf.web.return-value], and the string
-        ///     sent being the value of the first child of [pf.web.return-value]. the value to send, can either be an expression, a
+        ///     send the given string back to browser as JSON with the key given as value of [pf.web.response.return-value], and the string
+        ///     sent being the value of the first child of [pf.web.response.return-value]. the value to send, can either be an expression, a
         ///     constant, or a node formatting expression
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.return-value")]
-        private void pf_web_return_value (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.response.return-value")]
+        private void pf_web_response_return_value (ApplicationContext context, ActiveEventArgs e)
         {
             var key = XUtil.Single<string> (e.Args, context);
             var str = XUtil.Single<string> (e.Args.LastChild, context);
@@ -660,7 +648,7 @@ namespace phosphorus.five.applicationpool
             // returning control as first child of e.Args
             e.Args.Insert (0, new Node (string.Empty, FindControl<Control> (e.Args.Get<string> (context), parentCtrl)));
         }
-        
+
         /// <summary>
         ///     Null Active Event handler, for handling widget specific Active Events
         /// </summary>

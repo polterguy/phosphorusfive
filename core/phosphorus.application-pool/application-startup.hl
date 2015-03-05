@@ -29,7 +29,7 @@ event:pf.create-additional-hello
  */
 event:pf.web.load-ui
   lambda
-    pf.web.add-stylesheet-file:/media/css/main.css
+    pf.web.stylesheet.include-file:/media/css/main.css
     pf.web.widgets.create:main
       widgets
         literal

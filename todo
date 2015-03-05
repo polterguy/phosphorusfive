@@ -78,7 +78,7 @@
 * make sure [sys42.show-tree] can "append more results" to itself, such that it keeps the same dialogue for multiple invocations
   during the same, and consecutive request
 
-* make support for [rel-source] in [pf.web.return-value]
+* make support for [rel-source] in [pf.web.response.return-value]
 
 * plugin architecture for creating custom iterators, both using C# and in pf.lambda
 
