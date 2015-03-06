@@ -6,10 +6,21 @@
 using System.IO;
 using System.Text;
 
+/// <summary>
+/// Contains the HTTP Response Filters necessary to render the correct response back to client, depending upon what type of
+/// request we're handling. Normally you do not have to fiddle with anything inside of this namespace, since the framework
+/// takes care of the filters for your response automatically.
+/// </summary>
 namespace phosphorus.ajax.core.filters
 {
     /// <summary>
-    ///     base class for all http response filters in phosphorus.ajax
+    ///     Base class for all http response filters in phosphorus.ajax.
+    /// 
+    ///     The Filter class is used to override the response back
+    ///     to the client, to make sure we either return an HTML document containing the necessary JavaScript inclusions, or a
+    ///     JSON object during Ajax requests. Normally you do not need to fiddle with this class yourself, since the framework
+    ///     takes care of initializing instances of this, on a per need basis automatically. If you absolutely must access
+    ///     the Filter for your page, you can do so by accessing it through Page.Response.Filter.
     /// </summary>
     public abstract class Filter : Stream
     {
@@ -17,9 +28,9 @@ namespace phosphorus.ajax.core.filters
         private readonly MemoryStream _stream;
 
         /// <summary>
-        ///     initializes a new instance of the <see cref="phosphorus.ajax.core.filters.Filter" /> class
+        ///     Initializes a new instance of the Filter class.
         /// </summary>
-        /// <param name="manager">the manager for this filter</param>
+        /// <param name="manager">The manager for this filter</param>
         protected Filter (Manager manager)
         {
             Manager = manager;
@@ -29,57 +40,61 @@ namespace phosphorus.ajax.core.filters
         }
 
         /// <summary>
-        ///     returns the manager for this filter
+        ///     Returns the manager for this filter.
         /// </summary>
         /// <value>the manager</value>
         protected Manager Manager { get; private set; }
 
         /// <summary>
-        ///     gets or sets the encoding.
+        ///     Gets the encoding used when rendering the response.
+        /// 
+        ///     The Encoding is extracted from your Page
+        ///     instance during intialization. If you wish to override the Encoding used while rendering your
+        ///     response, then change the Encoding on your Page object, before instantiation of your Manager instance.
         /// </summary>
         /// <value>The encoding.</value>
-        protected Encoding Encoding { get; private set; }
+        public Encoding Encoding { get; set; }
 
         /// <summary>
-        ///     returns a value indicating whether this instance can read
+        ///     Returns a value indicating whether this instance can read.
         /// </summary>
-        /// <value><c>true</c> if this instance can read; otherwise, <c>false</c></value>
+        /// <value><c>true</c> if this instance can read; otherwise, <c>false</c>.</value>
         public override bool CanRead
         {
             get { return _stream.CanRead; }
         }
 
         /// <summary>
-        ///     returns a value indicating whether this instance can seek
+        ///     Returns a value indicating whether this instance can seek.
         /// </summary>
-        /// <value><c>true</c> if this instance can seek; otherwise, <c>false</c></value>
+        /// <value><c>true</c> if this instance can seek; otherwise, <c>false</c>.</value>
         public override bool CanSeek
         {
             get { return _stream.CanSeek; }
         }
 
         /// <summary>
-        ///     returns a value indicating whether this instance can write
+        ///     Returns a value indicating whether this instance can write.
         /// </summary>
-        /// <value><c>true</c> if this instance can write; otherwise, <c>false</c></value>
+        /// <value><c>true</c> if this instance can write; otherwise, <c>false</c>.</value>
         public override bool CanWrite
         {
             get { return _stream.CanWrite; }
         }
 
         /// <summary>
-        ///     returns the length
+        ///     Returns the length of the stream.
         /// </summary>
-        /// <value>the length</value>
+        /// <value>The length.</value>
         public override long Length
         {
             get { return _stream.Length; }
         }
 
         /// <summary>
-        ///     gets or sets the position of the stream
+        ///     Gets or sets the position of the stream.
         /// </summary>
-        /// <value>the position</value>
+        /// <value>The position.</value>
         public override long Position
         {
             get { return _stream.Position; }
@@ -87,18 +102,18 @@ namespace phosphorus.ajax.core.filters
         }
 
         /// <summary>
-        ///     returns a value indicating whether this instance can timeout
+        ///     Returns a value indicating whether this instance can timeout.
         /// </summary>
-        /// <value><c>true</c> if this instance can timeout; otherwise, <c>false</c></value>
+        /// <value><c>true</c> if this instance can timeout; otherwise, <c>false</c>.</value>
         public override bool CanTimeout
         {
             get { return _stream.CanTimeout; }
         }
 
         /// <summary>
-        ///     gets or sets the read timeout
+        ///     Gets or sets the read timeout.
         /// </summary>
-        /// <value>the read timeout</value>
+        /// <value>The read timeout.</value>
         public override int ReadTimeout
         {
             get { return _stream.ReadTimeout; }
@@ -106,9 +121,9 @@ namespace phosphorus.ajax.core.filters
         }
 
         /// <summary>
-        ///     gets or sets the write timeout
+        ///     Gets or sets the write timeout.
         /// </summary>
-        /// <value>the write timeout</value>
+        /// <value>The write timeout.</value>
         public override int WriteTimeout
         {
             get { return _stream.WriteTimeout; }
@@ -116,13 +131,14 @@ namespace phosphorus.ajax.core.filters
         }
 
         /// <summary>
-        ///     renders the response, override this method and return the rendered response
+        ///     Renders the response, override this method and return the rendered response, 
+        ///     if you create your own Filter classes.
         /// </summary>
-        /// <returns>the response</returns>
+        /// <returns>The response rendered back to the client.</returns>
         protected abstract string RenderResponse ();
 
         /// <summary>
-        ///     closes the stream
+        ///     Closes the stream and renders its content to the next filter in the chain of filters.
         /// </summary>
         public override void Close ()
         {
@@ -134,41 +150,41 @@ namespace phosphorus.ajax.core.filters
         }
 
         /// <summary>
-        ///     flush this instance
+        ///     Flush this instance.
         /// </summary>
         public override void Flush () { _stream.Flush (); }
 
         /// <summary>
-        ///     seek the specified offset and origin
+        ///     Seek the specified offset and origin.
         /// </summary>
-        /// <param name="offset">offset</param>
-        /// <param name="origin">origin</param>
+        /// <param name="offset">Offset.</param>
+        /// <param name="origin">Origin from where to count your offset from.</param>
         public override long Seek (long offset, SeekOrigin origin) { return _stream.Seek (offset, origin); }
 
         /// <summary>
-        ///     sets the length
+        ///     Sets the length.
         /// </summary>
-        /// <param name="value">length</param>
+        /// <param name="value">New length of stream.</param>
         public override void SetLength (long value) { _stream.SetLength (value); }
 
         /// <summary>
-        ///     reads into the specified buffer, offset and count
+        ///     Reads into the specified buffer, offset and count.
         /// </summary>
-        /// <param name="buffer">fuffer</param>
-        /// <param name="offset">offset</param>
-        /// <param name="count">count</param>
+        /// <param name="buffer">Buffer to hold the content you wish to read.</param>
+        /// <param name="offset">Offset from where you start reading.</param>
+        /// <param name="count">Number of bytes to read.</param>
         public override int Read (byte[] buffer, int offset, int count) { return _stream.Read (buffer, offset, count); }
 
         /// <summary>
-        ///     write the specified buffer, offset and count
+        ///     Write the specified buffer's content, offset and count.
         /// </summary>
-        /// <param name="buffer">buffer</param>
-        /// <param name="offset">offset</param>
-        /// <param name="count">count</param>
+        /// <param name="buffer">Buffer containing bytes to write.</param>
+        /// <param name="offset">Offset from where to start reading from the buffer.</param>
+        /// <param name="count">Number of bytes to write.</param>
         public override void Write (byte[] buffer, int offset, int count) { _stream.Write (buffer, offset, count); }
 
         /// <summary>
-        ///     disposes this instance
+        ///     Disposes this instance.
         /// </summary>
         /// <param name="disposing">if set to <c>true</c> disposing</param>
         protected override void Dispose (bool disposing)
@@ -179,15 +195,15 @@ namespace phosphorus.ajax.core.filters
         }
 
         /// <summary>
-        ///     reads one byte
+        ///     Reads one byte.
         /// </summary>
-        /// <returns>the byte</returns>
+        /// <returns>The byte it just read.</returns>
         public override int ReadByte () { return _stream.ReadByte (); }
 
         /// <summary>
-        ///     writes one byte
+        ///     Writes one byte.
         /// </summary>
-        /// <param name="value">value</param>
+        /// <param name="value">The byte you wish to write.</param>
         public override void WriteByte (byte value) { _stream.WriteByte (value); }
     }
 }

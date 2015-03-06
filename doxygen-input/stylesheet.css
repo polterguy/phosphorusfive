@@ -4,6 +4,14 @@ body, table, div, p, dl {
 	font: 400 18px/22px 'Lucida Grande', 'Calibri', Helvetica, Arial, sans-serif;
 }
 
+pre
+{
+	font-size:14px;
+	font-name:Courier;
+	background-color:#fefefe;
+	padding:25px;
+}
+
 /* @group Heading Levels */
 
 h1.groupheader {
@@ -1449,7 +1457,7 @@ tr.heading h2 {
 	margin-top:50px;
 	margin-left:auto;
 	margin-right:auto;
-	text-align:right;
+	text-align:center;
 	font-size:small;
 	color:#aaa;
 }

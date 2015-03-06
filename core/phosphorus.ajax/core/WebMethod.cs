@@ -8,7 +8,10 @@ using System;
 namespace phosphorus.ajax.core
 {
     /// <summary>
-    ///     attribute for marking methods as web methods, possible to invoke from javascript on client side through ajax
+    ///     Attribute for marking methods as web methods
+    /// 
+    ///     By marking your methods with this attribute, it becomes possible to invoke your methods 
+    ///     from JavaScript, from the client-side, through Ajax.
     /// </summary>
     [AttributeUsage (AttributeTargets.Method)]
     public class WebMethod : Attribute {}

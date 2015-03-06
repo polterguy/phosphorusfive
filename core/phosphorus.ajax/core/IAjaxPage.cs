@@ -8,34 +8,35 @@ using System.Collections.Generic;
 namespace phosphorus.ajax.core
 {
     /// <summary>
-    ///     interface for all your pages that uses the phosphorus.ajax library. instead of implementing this interface
-    ///     yourself, you can inherit from the <see cref="phosphorus.ajax.core.AjaxPage" />, which takes care of everything
-    ///     automatically for you
+    ///     Interface for all your pages that uses the phosphorus.ajax library.
+    /// 
+    ///     Instead of implementing this interface yourself, you can inherit from the 
+    ///     <see cref="phosphorus.ajax.core.AjaxPage">AjaxPage</see>, which takes care of everything automatically for you.
     /// </summary>
     public interface IAjaxPage
     {
         /// <summary>
-        ///     returns the manager for your page
+        ///     Returns the manager for your page.
         /// </summary>
-        /// <value>the manager</value>
+        /// <value>The manager.</value>
         Manager Manager { get; }
 
         /// <summary>
-        ///     returns the list of JavaScript files that was added during this request, and must be pushed back to client somehow
+        ///     Returns the list of JavaScript files that was added during this request, and must be pushed back to client somehow.
         /// </summary>
-        /// <value>The java script files to push.</value>
+        /// <value>The JavaScript files to push back to client.</value>
         List<string> JavaScriptFilesToPush { get; }
 
         /// <summary>
-        ///     returns the list of JavaScript files that was added during this request, and must be pushed back to client somehow
+        ///     Returns the list of Stylesheet files that was added during this request, and must be pushed back to client somehow.
         /// </summary>
-        /// <value>The java script files to push.</value>
+        /// <value>The CSS files to push back to client.</value>
         List<string> StylesheetFilesToPush { get; }
 
         /// <summary>
-        ///     registers a JavaScript file to be transmitted to the client
+        ///     Registers a JavaScript file to be included on to the client-side.
         /// </summary>
-        /// <param name="url">URL to JavaScript file</param>
+        /// <param name="url">URL to JavaScript file.</param>
         void RegisterJavaScriptFile (string url);
     }
 }

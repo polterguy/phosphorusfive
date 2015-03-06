@@ -11,14 +11,21 @@ using pf = phosphorus.ajax.widgets;
 
 // ReSharper disable PossibleNullReferenceException
 
+/*
+ * making sure we include our "manager.js" JavaScript file as a WebResource
+ */
 [assembly: WebResource ("phosphorus.ajax.javascript.manager.js", "application/javascript")]
 
 namespace phosphorus.ajax.core
 {
     /// <summary>
-    ///     manages an IAjaxPage by providing services to the page, and helps render the page correctly, by
-    ///     adding a filter stream in the filtering chain that renders the page according to how it is supposed to be rendered,
-    ///     depending upon what type of request the http request is
+    ///     Manages an IAjaxPage.
+    /// 
+    ///     Manages an IAjaxPage by providing services to the page, and helps render the page correctly, by among other things
+    ///     adding a filter stream in the filtering chain, that renders the page according to how it is supposed to be rendered,
+    ///     depending upon what type of request the http request is.
+    /// 
+    ///     Also contains several useful helper methods for developers.
     /// </summary>
     public class Manager
     {
@@ -26,9 +33,9 @@ namespace phosphorus.ajax.core
         private readonly OrderedDictionary _changes = new OrderedDictionary ();
 
         /// <summary>
-        ///     initializes a new instance of the <see cref="phosphorus.ajax.core.Manager" /> class
+        ///     Initializes a new instance of the Manager class.
         /// </summary>
-        /// <param name="page">the page the manager is managing</param>
+        /// <param name="page">The page the manager is managing.</param>
         public Manager (Page page)
         {
             Page = page;
@@ -50,29 +57,32 @@ namespace phosphorus.ajax.core
         }
 
         /// <summary>
-        ///     returns the page for this instance
+        ///     Returns the page for this instance.
         /// </summary>
-        /// <value>the page</value>
+        /// <value>The page.</value>
         public Page Page { get; private set; }
 
         /// <summary>
-        ///     returns true if this request is an ajax request
+        ///     Returns true if this request is a Phosphorus Ajax request.
         /// </summary>
-        /// <value><c>true</c> if this instance is an ajax request; otherwise, <c>false</c></value>
+        /// <value><c>true</c> if this instance is an ajax request; otherwise, <c>false</c>.</value>
         public bool IsPhosphorusRequest
         {
             get { return !string.IsNullOrEmpty (Page.Request.Params ["__pf_event"]); }
         }
 
+        /*
+         * contains all changes for all widgets for this HTTP request.
+         */
         internal OrderedDictionary Changes
         {
             get { return _changes; }
         }
 
         /// <summary>
-        ///     sends the given javascript to client for execution
+        ///     Sends the given JavaScript to client for execution.
         /// </summary>
-        /// <param name="script">javascript to execute on client</param>
+        /// <param name="script">JavaScript to execute on client-side.</param>
         public void SendJavaScriptToClient (string script)
         {
             if (!_changes.Contains ("__pf_script")) {
@@ -83,10 +93,10 @@ namespace phosphorus.ajax.core
         }
 
         /// <summary>
-        ///     send an object back to the client as json
+        ///     Sends an object back to the client as JSON.
         /// </summary>
-        /// <param name="id">id of object, must be unique for request</param>
-        /// <param name="value">object to serialize back as json</param>
+        /// <param name="id">ID of object, must be unique for request.</param>
+        /// <param name="value">Object to serialize back as JSON.</param>
         public void SendObject (string id, object value) { _changes [id] = value; }
 
         internal void RegisterWidgetChanges (string id, string name, string newValue, string oldValue = null)

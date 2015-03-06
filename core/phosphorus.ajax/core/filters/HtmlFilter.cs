@@ -13,21 +13,26 @@ using System.Text;
 namespace phosphorus.ajax.core.filters
 {
     /// <summary>
-    ///     the http response filter for rendering plain html back to client
+    ///     An http response filter for rendering plain html back to client.
+    /// 
+    ///     Takes care of including the necessary JavaScript files,
+    ///     StyleSheet files, and any JavaScript content that has been included during the Page lifecycle. Normally you do not need
+    ///     to fiddle with this class yourself, since the framework takes care of initializing instances of this type automatically
+    ///     for you.
     /// </summary>
     public class HtmlFilter : Filter
     {
         /// <summary>
-        ///     initializes a new instance of the <see cref="phosphorus.ajax.core.filters.HtmlFilter" /> class
+        ///     Initializes a new instance of the HtmlFilter class.
         /// </summary>
-        /// <param name="manager">the manager this instance is rendering for</param>
+        /// <param name="manager">The manager this instance is rendering for.</param>
         public HtmlFilter (Manager manager)
             : base (manager) { }
 
         /// <summary>
-        ///     renders the response
+        ///     Renders the response.
         /// </summary>
-        /// <returns>the response returned back to client</returns>
+        /// <returns>The HTML response returned back to client.</returns>
         protected override string RenderResponse ()
         {
             TextReader reader = new StreamReader (this, Encoding);
@@ -41,7 +46,6 @@ namespace phosphorus.ajax.core.filters
         /*
          * includes the CSS stylesheet files we should include for this response
          */
-
         private string IncludeStylesheetFiles (string content)
         {
             if ((Manager.Page as IAjaxPage).StylesheetFilesToPush.Count == 0)
@@ -71,7 +75,6 @@ namespace phosphorus.ajax.core.filters
         /*
          * includes the JavaScript files we should include for this response
          */
-
         private string IncludeJavaScriptFiles (string content)
         {
             if ((Manager.Page as IAjaxPage).JavaScriptFilesToPush.Count == 0)
@@ -102,7 +105,6 @@ namespace phosphorus.ajax.core.filters
         /*
          * includes the JavaScript content we should include for this response
          */
-
         private string IncludeJavaScriptContent (string content)
         {
             if (!Manager.Changes.Contains ("__pf_script"))

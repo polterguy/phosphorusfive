@@ -13,16 +13,19 @@ using pf = phosphorus.ajax.widgets;
 namespace phosphorus.ajax.core.filters
 {
     /// <summary>
-    ///     the http response filter for rendering json back to client in ajax requests
+    ///     Http response filter for rendering json back to client during ajax requests.
+    /// 
+    ///     Normally you do not have to fiddle
+    ///     with this class, since the framework takes care of initializing instances of this type automatically for you.
     /// </summary>
     public class JsonFilter : Filter
     {
         private readonly string _oldViewState;
 
         /// <summary>
-        ///     initializes a new instance of the <see cref="phosphorus.ajax.core.filters.JsonFilter" /> class
+        ///     Initializes a new instance of the JsonFilter class.
         /// </summary>
-        /// <param name="manager">the manager this instance is rendering for</param>
+        /// <param name="manager">The manager this instance is rendering for.</param>
         public JsonFilter (Manager manager)
             : base (manager)
         {
@@ -31,9 +34,9 @@ namespace phosphorus.ajax.core.filters
         }
 
         /// <summary>
-        ///     renders the response
+        ///     Renders the JSON response back to the client.
         /// </summary>
-        /// <returns>the response returned back to client</returns>
+        /// <returns>The response returned back to client.</returns>
         protected override string RenderResponse ()
         {
             TextReader reader = new StreamReader (this, Encoding);
@@ -61,6 +64,9 @@ namespace phosphorus.ajax.core.filters
             return new JavaScriptSerializer ().Serialize (Manager.Changes);
         }
 
+        /*
+         * helper for above
+         */
         private string GetViewState (string html)
         {
             var regex = new Regex (@"<input[\s\n]+type=""hidden""[\s\n]+name=""__VIEWSTATE""[\s\n]+id=""__VIEWSTATE""[\s\n]+value=""(.+[^""])""[\s\n]*/>", RegexOptions.Compiled);

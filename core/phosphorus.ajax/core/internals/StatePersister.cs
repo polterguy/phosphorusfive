@@ -13,13 +13,25 @@ using System.Web.UI;
 
 namespace phosphorus.ajax.core.internals
 {
+    /// <summary>
+    ///     Responsible for storing page's state for all requests in system.
+    /// 
+    ///     Persists state of page to session, and renders a hidden input field back to client, with the name of "__pf_state_key", being a
+    ///     key to the state for the page, while eliminating ViewState rendering for page. You rarely, if ever, have to fiddle with 
+    ///     this class yourself.
+    /// </summary>
     internal class StatePersister : PageStatePersister
     {
         private const string SessionKey = "__pf_viewstate_session_key";
         private readonly int _numberOfViewStateEntries;
         private readonly Guid _viewStateId;
 
-        public StatePersister (Page page, int numberOfViewStateEntries)
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="phosphorus.ajax.core.internals.StatePersister"/> class.
+        /// </summary>
+        /// <param name="page">Page instance.</param>
+        /// <param name="numberOfViewStateEntries">Number of view state entries per session.</param>
+        internal StatePersister (Page page, int numberOfViewStateEntries)
             : base (page)
         {
             _numberOfViewStateEntries = numberOfViewStateEntries;

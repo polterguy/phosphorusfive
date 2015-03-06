@@ -12,6 +12,9 @@ using phosphorus.ajax.widgets;
 
 namespace phosphorus.ajax.core.internals
 {
+    /// <summary>
+    ///     Class used to encapsulate all attributes for widgets. You rarely, if ever, have to fiddle with this class yourself.
+    /// </summary>
     internal class AttributeStorage
     {
         private readonly List<Attribute> _dynamicallyAddedThisRequest = new List<Attribute> ();
@@ -26,17 +29,20 @@ namespace phosphorus.ajax.core.internals
         private readonly List<Attribute> _viewStatePersistedRemoved = new List<Attribute> ();
 
         /// <summary>
-        ///     determines whether this instance has the attribute with the specified name
+        ///     Determines whether this instance has the attribute with the specified name.
         /// </summary>
-        /// <returns><c>true</c> if this instance has the attribute with the specified key; otherwise, <c>false</c></returns>
-        /// <param name="name">name of attribute to retrieve value of</param>
-        public bool HasAttribute (string name) { return GetAttributeInternal (name) != null; }
+        /// <returns><c>true</c> if this instance has the attribute with the specified key; otherwise, <c>false</c>.</returns>
+        /// <param name="name">The name of the attribute you wish to retrieve the value of.</param>
+        public bool HasAttribute (string name)
+        {
+            return GetAttributeInternal (name) != null;
+        }
 
         /// <summary>
-        ///     returns the value of the attribute with the specified name
+        ///     Returns the value of the attribute with the specified name.
         /// </summary>
-        /// <returns>the value of the attribute</returns>
-        /// <param name="name">name of attribute to retrieve value of</param>
+        /// <returns>The value of the attribute.</returns>
+        /// <param name="name">The name of the attribute you wish to retrieve the value of.</param>
         public string GetAttribute (string name)
         {
             var atr = GetAttributeInternal (name);
@@ -46,11 +52,11 @@ namespace phosphorus.ajax.core.internals
         }
 
         /// <summary>
-        ///     changes the value of the attribute with the specified name. if no attribute exists, a new attribute
-        ///     will be created with the specified name and value
+        ///     Changes the value of the attribute with the specified name. If no attribute with the specified name exists, 
+        ///     a new attribute will be created, with the specified name and value.
         /// </summary>
-        /// <param name="name">name of attribute to change</param>
-        /// <param name="value">new value of attribute</param>
+        /// <param name="name">The name of the attribute you wish to change the value of.</param>
+        /// <param name="value">The new value of attribute.</param>
         public void ChangeAttribute (string name, string value)
         {
             // changing attribute, but first storing old value
@@ -65,9 +71,9 @@ namespace phosphorus.ajax.core.internals
         }
 
         /// <summary>
-        ///     removes the attribute with the specified name
+        ///     Removes the attribute with the specified name.
         /// </summary>
-        /// <param name="name">name of attribute to remove</param>
+        /// <param name="name">The name of the attribute you wish to remove.</param>
         public void RemoveAttribute (string name, bool serializeToClient = true)
         {
             if (FindAttribute (_dynamicallyAddedThisRequest, name) != null) {
@@ -89,11 +95,12 @@ namespace phosphorus.ajax.core.internals
         }
 
         /// <summary>
-        /// returns all attribute keys
+        ///     Returns all attribute keys.
         /// </summary>
-        /// <value>attribute names</value>
+        /// <value>The names of all attributes stored in this instance.</value>
         public IEnumerable<string> Keys {
             get {
+                // TODO: refactor, too much repetition
                 Dictionary<string, bool> _alreadySen = new Dictionary<string, bool> ();
                 foreach (var idx in this._dynamicallyAddedThisRequest) {
                     yield return idx.Name;
@@ -126,9 +133,24 @@ namespace phosphorus.ajax.core.internals
             }
         }
 
-        // invoked before viewstate is being tracked
-        internal void SetAttributePreViewState (string name, string value) { SetAttributeInternal (_preViewState, name, value); }
+        /// <summary>
+        ///     Sets the state the attribute has, before ViewState is loaded. Typically this is the value found in
+        ///     for instance your .ASPX markup page.
+        /// </summary>
+        /// <param name="name">Name of attribute.</param>
+        /// <param name="value">Value of attribute.</param>
+        internal void SetAttributePreViewState (string name, string value)
+        {
+            SetAttributeInternal (_preViewState, name, value);
+        }
+
         // invoked when form data is being retrieved from http request parameters
+        /// <summary>
+        ///     Sets the attribute value as read from your HTTP POST parameters, typically passed in from form element
+        ///     on the client-side.
+        /// </summary>
+        /// <param name="name">Name of attribute.</param>
+        /// <param name="value">Value of attribute.</param>
         internal void SetAttributeFormData (string name, string value)
         {
             // adding attribute to form data list
@@ -141,17 +163,27 @@ namespace phosphorus.ajax.core.internals
             RemoveAttributeInternal (_viewStatePersisted, name);
         }
 
-        internal void LoadFromViewState (object viewstateObject)
+        /// <summary>
+        ///     Loads the attribute values from the ViewState object given.
+        /// </summary>
+        /// <param name="viewStateObject">The ViewState object.</param>
+        internal void LoadFromViewState (object viewStateObject)
         {
-            if (viewstateObject == null)
+            if (viewStateObject == null)
                 return;
 
-            var vals = viewstateObject as string[][];
+            var vals = viewStateObject as string[][];
             foreach (var idx in vals) {
                 _viewStatePersisted.Add (new Attribute (idx [0], idx [1]));
             }
         }
 
+        /// <summary>
+        ///     Loads the attributes that are removed from ViewState. Sometimes you remove an attribute
+        ///     that exists for instance in your .ASPX markup. For such cases, we actually need to track which 
+        ///     attributes have been removed, in addition to which have been changed. This method takes care of just that.
+        /// </summary>
+        /// <param name="viewstateObject">Viewstate object.</param>
         internal void LoadRemovedFromViewState (object viewstateObject)
         {
             if (viewstateObject == null)
@@ -163,6 +195,11 @@ namespace phosphorus.ajax.core.internals
             }
         }
 
+        /// <summary>
+        ///     Returns an object intended to be put into the ViewState of your page back to caller, containing
+        ///     all attribute changes on your page.
+        /// </summary>
+        /// <returns>The attribute changes in ViewState format.</returns>
         internal object SaveToViewState ()
         {
             var atrs = new List<Attribute> ();
@@ -191,6 +228,10 @@ namespace phosphorus.ajax.core.internals
             return retVal;
         }
 
+        /// <summary>
+        ///     Returns an object intended to be put into your ViewState containing all the removed attributes back to caller.
+        /// </summary>
+        /// <returns>The removed attributes.</returns>
         internal object SaveRemovedToViewState ()
         {
             var atrs = new List<Attribute> ();
@@ -207,7 +248,11 @@ namespace phosphorus.ajax.core.internals
             return retVal;
         }
 
-        // invoked when rendering of attributes to html is required
+        /// <summary>
+        ///     Renders the attributes to the given HtmlTextWriter. Used to render the attributes as HTML.
+        /// </summary>
+        /// <param name="writer">Where to write the attributes.</param>
+        /// <param name="widget">Widget we are rendering for.</param>
         internal void Render (HtmlTextWriter writer, Widget widget)
         {
             // adding all changes
@@ -248,6 +293,12 @@ namespace phosphorus.ajax.core.internals
             }
         }
 
+        /// <summary>
+        ///     Registers the changed attributes during this request into the given Manager object, such that
+        ///     changes can be rendered back to client.
+        /// </summary>
+        /// <param name="manager">Manager to render changes into.</param>
+        /// <param name="id">ID of widget that owns storage object.</param>
         internal void RegisterChanges (Manager manager, string id)
         {
             // adding up the ones that were deleted during this request
@@ -268,6 +319,9 @@ namespace phosphorus.ajax.core.internals
             }
         }
 
+        /*
+         * helper method
+         */
         private void StoreOldValue (string name)
         {
             // we only store old value the first time attribute is touched
@@ -281,6 +335,9 @@ namespace phosphorus.ajax.core.internals
             }
         }
 
+        /*
+         * helper method
+         */
         private Attribute GetAttributeInternal (string name)
         {
             var added = FindAttribute (_dynamicallyAddedThisRequest, name);
@@ -308,13 +365,29 @@ namespace phosphorus.ajax.core.internals
             return preViewState;
         }
 
+        /*
+         * helper method
+         */
         private static void SetAttributeInternal (List<Attribute> attributes, string name, string value)
         {
             attributes.RemoveAll (idx => idx.Name == name);
             attributes.Add (new Attribute (name, value));
         }
 
-        private static void RemoveAttributeInternal (List<Attribute> attributes, string name) { attributes.RemoveAll (idx => idx.Name == name); }
-        private static Attribute FindAttribute (List<Attribute> attributes, string name) { return attributes.Find (idx => idx.Name == name); }
+        /*
+         * helper method
+         */
+        private static void RemoveAttributeInternal (List<Attribute> attributes, string name)
+        {
+            attributes.RemoveAll (idx => idx.Name == name);
+        }
+
+        /*
+         * helper method
+         */
+        private static Attribute FindAttribute (List<Attribute> attributes, string name)
+        {
+            return attributes.Find (idx => idx.Name == name);
+        }
     }
 }
