@@ -54,6 +54,7 @@
     <Compile Include="Parameters.cs" />
     <Compile Include="Common\PhosphorusWebException.cs" />
     <Compile Include="Common\CollectionBase.cs" />
+    <Compile Include="Cache.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

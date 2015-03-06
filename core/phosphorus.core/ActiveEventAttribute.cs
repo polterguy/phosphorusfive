@@ -8,7 +8,10 @@ using System;
 namespace phosphorus.core
 {
     /// <summary>
-    ///     Active Event attribute
+    ///     Active Event attribute used for marking your methods as Active Events. Declare an Active Event by adding
+    ///     this attribute to your class, and make sure it has a unique 
+    ///     <see cref="phosphorus.core.ActiveEventAttribute.Name">Name</see> property. 
+    ///     \defgroup ActiveEvents Active Events
     /// </summary>
     [AttributeUsage (AttributeTargets.Method, AllowMultiple = true)]
     public class ActiveEventAttribute : Attribute
