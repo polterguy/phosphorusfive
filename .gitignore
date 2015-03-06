@@ -188,7 +188,10 @@ FakesAssemblies/
 test-results/
 phosphorus.userprefs
 
-#ignoring "system42" folder
+#ignoring "system42" folder and other project folders, usually linked into application pool folder
 system42
 wikipublish
 core/phosphorus.application-pool/database/*
+
+#ignoring doxygen output folder
+doxygen-output
