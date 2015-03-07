@@ -10,7 +10,14 @@ using phosphorus.core;
 namespace phosphorus.expressions.iterators
 {
     /// <summary>
-    ///     returns an ancestor node with the specified name
+    ///     Returns the first ancestor node matching the specified name.
+    /// 
+    ///     Will traverse the node hierarchy upwards from its current results, and return the first ancestor node
+    ///     who's name matches the value after the ".." parts of the Iterator.
+    /// 
+    ///     Example; /..foo
+    /// 
+    ///     will return the first ancestor node who's name is "foo".
     /// </summary>
     public class IteratorNamedAncestor : Iterator
     {

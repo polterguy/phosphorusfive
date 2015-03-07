@@ -9,7 +9,9 @@ using phosphorus.core;
 namespace phosphorus.expressions.exceptions
 {
     /// <summary>
-    ///     exception thrown when node hierarchy contains a logical error
+    ///     Exception thrown when node hierarchy contains a logical error.
+    /// 
+    ///     Typically raised when there's a logical error in your pf.lambda code, such as having an [else-if] with no [if], and so on.
     /// </summary>
     public class LambdaException : ApplicationException
     {
@@ -17,11 +19,11 @@ namespace phosphorus.expressions.exceptions
         private readonly Node _node;
 
         /// <summary>
-        ///     initializes a new instance of the <see cref="LambdaException" /> class
+        ///     Initializes a new instance of the <see cref="LambdaException" /> class.
         /// </summary>
-        /// <param name="message">message for exception, describing what went wrong</param>
-        /// <param name="node">contextual information, where execution error was found</param>
-        /// <param name="context">application context</param>
+        /// <param name="message">Message for exception, describing what went wrong.</param>
+        /// <param name="node">Node where expression was found.</param>
+        /// <param name="context">Application context. Necessary to perform conversion from pf.lambda to Hyperlisp to show Hyperlisp StackTrace.</param>
         public LambdaException (string message, Node node, ApplicationContext context)
             : base (message)
         {
@@ -47,7 +49,6 @@ namespace phosphorus.expressions.exceptions
         /*
          * overiding StackTrace from Exception class to provide "Hyperlisp stack trace" as an additional piece of contextual information
          */
-
         public override string StackTrace
         {
             get

@@ -10,17 +10,23 @@ using phosphorus.core;
 namespace phosphorus.expressions.iterators
 {
     /// <summary>
-    ///     returns all nodes matching the given modulo
+    ///     Returns all nodes matching the given modulo.
+    /// 
+    ///     Will return all n'th node from previous Iterator result, where "n" is defined through a modulo iterator, for instance; /%2
+    ///     to return all "even nodes" from previous iterator.
     /// </summary>
     public class IteratorModulo : Iterator
     {
         private readonly int _modulo;
 
         /// <summary>
-        ///     initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorModulo" /> class
+        ///     Initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorModulo" /> class.
         /// </summary>
         /// <param name="modulo">modulo</param>
-        public IteratorModulo (int modulo) { _modulo = modulo; }
+        public IteratorModulo (int modulo)
+        {
+            _modulo = modulo;
+        }
 
         public override IEnumerable<Node> Evaluate
         {

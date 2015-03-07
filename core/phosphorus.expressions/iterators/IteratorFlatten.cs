@@ -9,7 +9,12 @@ using phosphorus.core;
 namespace phosphorus.expressions.iterators
 {
     /// <summary>
-    ///     return all nodes and descendants of previous iterator, flattening hierarchy
+    ///     Returns all nodes, and descendants, of previous iterator.
+    /// 
+    ///     This Iterator will return ALL nodes from its previous result, including all children, children's children, and 
+    ///     so on, from its previous iterator.
+    /// 
+    ///     Warning! This might be a very, very large result set for large node trees!
     /// </summary>
     public class IteratorFlatten : Iterator
     {
@@ -29,7 +34,6 @@ namespace phosphorus.expressions.iterators
         /*
          * recursively invoked for all descendant nodes
          */
-
         private static void ReturnChildren (Node idx, List<Node> retVal)
         {
             foreach (var idxChild in idx.Children) {

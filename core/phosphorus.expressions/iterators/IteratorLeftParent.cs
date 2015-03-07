@@ -8,20 +8,25 @@ using phosphorus.core;
 
 namespace phosphorus.expressions.iterators
 {
+    // \todo Do we really need this class at all ...?
     /// <summary>
-    ///     "stop iterator", which is used as "root iterators" for nested
-    ///     <see cref="phosphorus.expressions.iterators.IteratorGroup" /> iterators
-    ///     iterators
+    ///     Root iterators for nested IteratorGroup iterators.
+    ///
+    ///     Helper Iterator to declare a new IteratorGroup. Internally used when a new group, or sub-expression is declared, 
+    ///     using parenthesis.
     /// </summary>
     public class IteratorLeftParent : Iterator
     {
         private readonly Iterator _leftParent;
 
         /// <summary>
-        ///     initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorLeftParent" /> class.
+        ///     Initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorLeftParent" /> class.
         /// </summary>
-        /// <param name="leftParent">the last iterator of the parent group iterator</param>
-        public IteratorLeftParent (Iterator leftParent) { _leftParent = leftParent; }
+        /// <param name="leftParent">The last iterator of the parent group iterator.</param>
+        public IteratorLeftParent (Iterator leftParent)
+        {
+            _leftParent = leftParent;
+        }
 
         public override IEnumerable<Node> Evaluate
         {

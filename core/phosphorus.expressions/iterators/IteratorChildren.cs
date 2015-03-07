@@ -10,7 +10,9 @@ using phosphorus.core;
 namespace phosphorus.expressions.iterators
 {
     /// <summary>
-    ///     returns all children of previous iterator
+    ///     Returns all children of previous iterator.
+    /// 
+    ///     Will return all Children nodes of the results of the previous Iterator.
     /// </summary>
     public class IteratorChildren : Iterator
     {

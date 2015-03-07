@@ -46,8 +46,39 @@ namespace phosphorus.core
     /// 
     ///     To raise an Active Event, use the <see cref="phosphorus.core.ApplicationContext.Raise">Raise</see> method. For instance;
     ///     <pre>
-    ///     Node args = new Node ("arg-name", "arg-value");
+    ///     Node args = new Node ("arg-name", "arg-value"); // passsing in parameters
     ///     _myContext.Raise ("foo.bar", args); // Name of Active Event</pre>
+    /// 
+    ///     Example of how to create a static Active Event handler, that will be automatically invoked every time an Active Event is raised;
+    /// 
+    ///     <pre>
+    ///     [ActiveEvent (Name = "foo.bar")]
+    ///     private static void static_foo_bar (ApplicationContext context, ActiveEventArgs e)
+    ///     {
+    ///         // retrieve args passed in through e.Args
+    ///         // return values to caller by manipulating e.Args
+    ///     }</pre>
+    /// 
+    ///     To create instance Active Events, you must make sure somehow that your instance objects are registered within your ApplicationContext,
+    ///     by using ApplicationContext.RegisterListeningObject for your object that contains instance Active Events. Here's an example, containing
+    ///     all the wire code you'll need to create to do such a thing;
+    /// 
+    ///     <pre>
+    ///     public class foo_bar
+    ///     {
+    ///         [ActiveEvent (Name = "foo.bar")]
+    ///         private void static_foo_bar (ApplicationContext context, ActiveEventArgs e)
+    ///         {
+    ///             // retrieve args passed in through e.Args
+    ///             // return values to caller by manipulating e.Args
+    ///         }
+    ///     }
+    /// 
+    ///     // somewhere else in your code, from where you wish to invoke the above method ...
+    /// 
+    ///     var foo_bar_instance = new foo_bar ();
+    ///     myAppContext.RegisterListeningObject (foo_bar_instance);
+    ///     myAppContext.Raise ("foo.bar", someNodeArgs);</pre>
     ///     
     ///     Since you can pass in any <see cref="phosphorus.core.Node">Node</see> hierarchy you wish into your Active Events, you
     ///     can effectively pass in, and return, any number, and types of arguments, from your Active Events.

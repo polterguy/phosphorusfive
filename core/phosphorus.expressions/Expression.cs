@@ -251,10 +251,7 @@ namespace phosphorus.expressions
                     // numbered child token
                     current.AddIterator (new IteratorNumbered (int.Parse (token)));
                 } else {
-                    // defaulting to "named iterator", making sure we escape any prepending back slashes,
-                    // to support escaped "\", numbers, "..xx" named nodes, and similar constructs
-                    if (token.StartsWith ("\\"))
-                        token = token.Substring (1);
+                    // defaulting to "named iterator"
                     current.AddIterator (new IteratorNamed (token));
                 }
             }

@@ -6,10 +6,18 @@
 using System;
 using phosphorus.core;
 
+/// <summary>
+///     Main namespace for exceptions within the phosphorus.expressions project.
+/// 
+///     Contains the exceptions that "phosphorus.expressions" might throw.
+/// </summary>
 namespace phosphorus.expressions.exceptions
 {
     /// <summary>
-    ///     exception thrown when expressions contains syntax errors
+    ///     Exception thrown when expressions contains syntax errors.
+    /// 
+    ///     Contains some helper logic to see Hyperlisp StackTrace, among other things, in addition to which expression
+    ///     that fissled in your code, and why.
     /// </summary>
     public class ExpressionException : ArgumentException
     {
@@ -19,21 +27,21 @@ namespace phosphorus.expressions.exceptions
         private readonly Node _node;
 
         /// <summary>
-        ///     initializes a new instance of the <see cref="ExpressionException" /> class
+        ///     Initializes a new instance of the <see cref="ExpressionException" /> class.
         /// </summary>
-        /// <param name="expression">expression that caused exception</param>
-        /// <param name="node">node where expression was found</param>
-        /// <param name="context">application context</param>
+        /// <param name="expression">Expression that caused exception.</param>
+        /// <param name="node">Node where expression was found.</param>
+        /// <param name="context">Application context. Necessary to perform conversion from pf.lambda to Hyperlisp to show Hyperlisp StackTrace.</param>
         public ExpressionException (string expression, Node node, ApplicationContext context)
             : this (expression, null, node, context) { }
 
         /// <summary>
-        ///     initializes a new instance of the <see cref="ExpressionException" /> class
+        ///     Initializes a new instance of the <see cref="ExpressionException" /> class.
         /// </summary>
-        /// <param name="expression">expression that caused exception</param>
-        /// <param name="message">message providing additional information</param>
-        /// <param name="node">node where expression was found</param>
-        /// <param name="context">application context</param>
+        /// <param name="expression">Expression that caused exception.</param>
+        /// <param name="message">Message providing additional information.</param>
+        /// <param name="node">Node where expression was found.</param>
+        /// <param name="context">Application context. Necessary to perform conversion from pf.lambda to Hyperlisp to show Hyperlisp StackTrace.</param>
         public ExpressionException (string expression, string message, Node node, ApplicationContext context)
         {
             _message = message;
