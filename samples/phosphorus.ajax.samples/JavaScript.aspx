@@ -51,7 +51,7 @@
 
       // called just before request is sent
       onbefore: function(pars, evt) {
-        pars.custom_data = 'your browser says; \'hello\'. ';
+        pars.push(['custom_data', 'your browser says; \'hello\'. ']);
       },
 
       // called when a successful response is returned, but before dom is updated with return value from server

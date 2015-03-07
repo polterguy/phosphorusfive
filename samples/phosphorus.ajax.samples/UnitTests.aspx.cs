@@ -42,7 +42,10 @@ namespace phosphorus.five.samples
         }
 
         [WebMethod]
-        protected void sandbox_invoke_javascript_onclick (pf.Literal literal, EventArgs e) { literal.innerValue = Page.Request.Params ["mumbo"] + " jumbo"; }
+        protected void sandbox_invoke_javascript_onclick (pf.Literal literal, EventArgs e)
+        {
+            literal.innerValue = Page.Request.Params ["mumbo"] + " jumbo";
+        }
 
         [WebMethod]
         protected void sandbox_invoke_change_content_onclick (pf.Literal literal, EventArgs e) { literal.innerValue = "new value"; }

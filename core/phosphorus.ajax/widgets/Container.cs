@@ -12,12 +12,19 @@ using phosphorus.ajax.core;
 
 // ReSharper disable PossibleNullReferenceException
 
+/// <summary>
+///     Contains all the main widgets in Phosphorus.Ajax.
+/// 
+///     All the widgets that exists in Phosphorus.ajax can be found in this namespace.
+/// </summary>
 namespace phosphorus.ajax.widgets
 {
     /// <summary>
-    ///     a widget that contains children widgets. everything between the opening and end declaration of this widget
-    ///     in your .aspx markup will be treated as controls. you can also dynamically add child controls to this widget
-    ///     by using the CreatePersistentControl method
+    ///     A widget that contains children widgets.
+    /// 
+    ///     Everything between the opening and end declaration of this widget in your .aspx markup will be treated as controls. 
+    ///     you can also dynamically add child controls to this widget by using the CreatePersistentControl method, and the 
+    ///     widget will take care of re-creating its children automatically.
     /// </summary>
     [ViewStateModeById]
     public class Container : Widget, INamingContainer
@@ -112,24 +119,33 @@ namespace phosphorus.ajax.widgets
         }
 
         /// <summary>
-        ///     returns all controls of the given type T from the Controls collection
+        ///     Returns all controls of the given type T from the Controls collection.
+        /// 
+        ///     Useful to traverse all controls of a specific type from the Controls collection, 
+        ///     such that you can traverse for instance Literal widgets, without having to cast them in your code,
+        ///     and having empty filler widgets, created automatically for you by Mono or .Net clutter your 
+        ///     iteration code.
         /// </summary>
         /// <returns>the controls</returns>
-        /// <typeparam name="T">type of controls to return</typeparam>
-        public IEnumerable<T> GetChildControls<T> () where T : Control { return from Control idx in Controls let tmp = idx as T where idx != null select tmp; }
+        /// <typeparam name="T">Type of controls to iterate.</typeparam>
+        public IEnumerable<T> GetChildControls<T> () where T : Control
+        {
+            return from Control idx in Controls let tmp = idx as T where idx != null select tmp;
+        }
 
         /// <summary>
-        ///     creates a persistent control that will be automatically re-created during future postbacks. you can create any
-        ///     Control
-        ///     here you wish, but your control must have a public constructor taking no arguments. only controls created through
-        ///     this
-        ///     method will be persisted and automatically re-created in future http requests
+        ///     Creates a persistent control that will be automatically re-created during future postbacks.
+        /// 
+        ///     You can create any Control here you wish, but your control must have a public constructor 
+        ///     taking no arguments. Only controls created through this method, will be persisted, and 
+        ///     automatically re-created during future http requests.
         /// </summary>
         /// <returns>the persistent control</returns>
-        /// <param name="id">id of control, if null, and automatic id will be created</param>
-        /// <param name="index">index of where to insert control</param>
-        /// <param name="onLoad">event handler callback for what to do during OnLoad</param>
-        /// <typeparam name="T">the type of control you wish to create</typeparam>
+        /// <param name="id">ID of your control. If null, and automatic id will be created and assigned.</param>
+        /// <param name="index">Index of where to insert control. If -1, the control will be appended into Controls collection.</param>
+        /// <param name="onLoad">Event handler callback for what to do during OnLoad. If you supply an event handler here, then your 
+        /// method will be invoked during LoadComplete of your Page, allowing you to have initialization functionality for your control.</param>
+        /// <typeparam name="T">The type of control you wish to create.</typeparam>
         public T CreatePersistentControl<T> (string id = null, int index = -1, EventHandler onLoad = null) where T : Control, new ()
         {
             StoreOriginalControls ();
@@ -155,9 +171,17 @@ namespace phosphorus.ajax.widgets
         }
 
         /// <summary>
-        ///     removes a control from the control collection, and persist the change
+        ///     Removes a control from the control collection, and persist the change.
+        /// 
+        ///     Using this method, together with CreatePersistentControl, you can change the Controls collection of your
+        ///     Container widgets, and have the changes persist across multiple HTTP Ajax or conventional POST requests.
+        ///     This allows you to add, remove and change the Controls collection of your Container widgets, and have the
+        ///     Widget remember its changes across requests.
+        /// 
+        ///     Using this feature, will increase the amount of ViewState your controls uses, since it persists the changes
+        ///     into the ViewState.
         /// </summary>
-        /// <param name="control">control to remove</param>
+        /// <param name="control">Control to remove.</param>
         public void RemoveControlPersistent (Control control)
         {
             StoreOriginalControls ();
@@ -166,7 +190,9 @@ namespace phosphorus.ajax.widgets
         }
 
         /// <summary>
-        ///     removes a control from the control collection, and persist the change
+        ///     Removes a control from the control collection, at the given index, and persists the change.
+        /// 
+        ///     See RemoveControlPersistent to understand how this method works.
         /// </summary>
         /// <param name="index">index of control to remove</param>
         public void RemoveControlPersistentAt (int index)
@@ -254,7 +280,6 @@ namespace phosphorus.ajax.widgets
         /*
          * creates a new unique ID
          */
-
         private string CreateId ()
         {
             // TODO: statistically this is supposed to become a unique 7 digits hexadecimal number, but we should improve this logic later!

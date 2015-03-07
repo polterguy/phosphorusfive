@@ -4,8 +4,10 @@
  */
 
 /// <summary>
-///     Namespace internally used by Phosphorus.Ajax to among other things keep track of attributes for widgets. This is
-///     a place you do not need to fiddle with, or understand, since this is internally used by the framework automatically for you.
+///     Namespace internally used by Phosphorus.Ajax to among other things keep track of attributes for widgets.
+/// 
+///     This is not a place you need to fiddle with, or study to understand, since this is internally used by 
+///     the framework, and automatically taken care of for you.
 /// </summary>
 namespace phosphorus.ajax.core.internals
 {

@@ -40,7 +40,7 @@
                 <pf:Literal
                     runat="server"
                     id="Lbl"
-                    RenderType="NoClose"
+                    RenderType="open"
                     ElementType="p">change is the only constant</pf:Literal>
 
                 <p>

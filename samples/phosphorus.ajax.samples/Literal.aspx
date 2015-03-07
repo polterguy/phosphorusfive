@@ -23,7 +23,7 @@
                 <pf:Literal
                     runat="server"
                     id="element"
-                    RenderType="NoClose"
+                    RenderType="open"
                     ElementType="p"
                     onclick="element_onclick">click me</pf:Literal>
 

@@ -279,94 +279,94 @@
                     <pf:Literal
                         runat="server"
                         id="sandbox_invoke_empty"
-                        RenderType="NoClose"
+                        RenderType="open"
                         ElementType="p" />
                     <pf:Literal
                         runat="server"
                         id="sandbox_invoke_exception"
-                        RenderType="NoClose"
+                        RenderType="open"
                         ElementType="p" />
                     <pf:Literal
                         runat="server"
                         id="sandbox_invoke_non_existing"
-                        RenderType="NoClose"
+                        RenderType="open"
                         ElementType="p" />
                     <pf:Literal
                         runat="server"
                         id="sandbox_invoke_no_webmethod"
-                        RenderType="NoClose"
+                        RenderType="open"
                         ElementType="p" />
                     <pf:Literal
                         runat="server"
                         id="sandbox_invoke_normal"
-                        RenderType="NoClose"
+                        RenderType="open"
                         onclick="sandbox_invoke_normal_onclick"
                         ElementType="p" />
                     <pf:Literal
                         runat="server"
                         id="sandbox_invoke_multiple"
-                        RenderType="NoClose"
+                        RenderType="open"
                         onclick="sandbox_invoke_multiple_onclick"
                         ElementType="p" />
                     <pf:Literal
                         runat="server"
                         id="sandbox_invoke_javascript"
-                        RenderType="NoClose"
+                        RenderType="open"
                         onclick="sandbox_invoke_javascript_onclick"
                         ElementType="p" />
                     <pf:Literal
                         runat="server"
                         id="sandbox_invoke_change_content"
-                        RenderType="NoClose"
+                        RenderType="open"
                         ElementType="p" />
                     <pf:Literal
                         runat="server"
                         id="sandbox_invoke_change_two_properties"
-                        RenderType="NoClose"
+                        RenderType="open"
                         ElementType="p" />
                     <pf:Literal
                         runat="server"
                         id="sandbox_invoke_add_remove_same"
-                        RenderType="NoClose"
+                        RenderType="open"
                         ElementType="p" />
                     <pf:Literal
                         runat="server"
                         id="sandbox_invoke_add_remove"
-                        RenderType="NoClose"
+                        RenderType="open"
                         ElementType="p" />
                     <pf:Literal
                         runat="server"
                         id="sandbox_invoke_change_twice"
-                        RenderType="NoClose"
+                        RenderType="open"
                         ElementType="p" />
                     <pf:Literal
                         runat="server"
                         id="sandbox_invoke_change_markup_attribute"
-                        RenderType="NoClose"
+                        RenderType="open"
                         class="foo"
                         ElementType="p" />
                     <pf:Literal
                         runat="server"
                         id="sandbox_invoke_remove_markup_attribute"
-                        RenderType="NoClose"
+                        RenderType="open"
                         class="foo"
                         ElementType="p" />
                     <pf:Literal
                         runat="server"
                         id="sandbox_invoke_remove_add_markup_attribute"
-                        RenderType="NoClose"
+                        RenderType="open"
                         class="foo"
                         ElementType="p" />
                     <pf:Literal
                         runat="server"
                         id="sandbox_invoke_concatenate_long_attribute"
-                        RenderType="NoClose"
+                        RenderType="open"
                         class="x1234567890abcdefghijklmnopqrstuvwxyz"
                         ElementType="p" />
                     <pf:Literal
                         runat="server"
                         id="sandbox_invoke_create_concatenate_long_attribute"
-                        RenderType="NoClose"
+                        RenderType="open"
                         ElementType="p" />
                     <pf:Container
                         runat="server"
@@ -382,7 +382,7 @@
                         runat="server"
                         id="sandbox_invoke_make_container_visible"
                         Visible="false"
-                        RenderType="NoClose"
+                        RenderType="open"
                         ElementType="p">
                         <pf:Literal
                             runat="server"
@@ -393,7 +393,7 @@
                         runat="server"
                         id="sandbox_invoke_make_container_visible_invisible_child"
                         Visible="false"
-                        RenderType="NoClose"
+                        RenderType="open"
                         ElementType="p">
                         <pf:Literal
                             runat="server"
@@ -405,7 +405,7 @@
                         runat="server"
                         id="sandbox_invoke_make_container_visible_child_visible"
                         Visible="false"
-                        RenderType="NoClose"
+                        RenderType="open"
                         ElementType="p">
                         <pf:Literal
                             runat="server"
@@ -416,7 +416,7 @@
                     <pf:Container
                         runat="server"
                         id="sandbox_invoke_add_child"
-                        RenderType="NoClose"
+                        RenderType="open"
                         ElementType="p">
                         <pf:Literal
                             runat="server"
@@ -426,7 +426,7 @@
                     <pf:Container
                         runat="server"
                         id="sandbox_invoke_insert_child"
-                        RenderType="NoClose"
+                        RenderType="open"
                         ElementType="p">
                         <pf:Literal
                             runat="server"
@@ -436,7 +436,7 @@
                     <pf:Container
                         runat="server"
                         id="sandbox_invoke_add_child_check_exist"
-                        RenderType="NoClose"
+                        RenderType="open"
                         ElementType="p">
                         <pf:Literal
                             runat="server"
@@ -446,7 +446,7 @@
                     <pf:Container
                         runat="server"
                         id="sandbox_invoke_insert_child_check_exist"
-                        RenderType="NoClose"
+                        RenderType="open"
                         ElementType="p">
                         <pf:Literal
                             runat="server"
@@ -456,7 +456,7 @@
                     <pf:Container
                         runat="server"
                         id="sandbox_invoke_append_remove"
-                        RenderType="NoClose"
+                        RenderType="open"
                         ElementType="p">
                         <pf:Literal
                             runat="server"
@@ -466,7 +466,7 @@
                     <pf:Container
                         runat="server"
                         id="sandbox_invoke_remove_child"
-                        RenderType="NoClose"
+                        RenderType="open"
                         ElementType="p">
                         <pf:Literal
                             runat="server"
@@ -476,7 +476,7 @@
                     <pf:Container
                         runat="server"
                         id="sandbox_invoke_remove_multiple"
-                        RenderType="NoClose"
+                        RenderType="open"
                         ElementType="p">
                         <pf:Literal
                             runat="server"

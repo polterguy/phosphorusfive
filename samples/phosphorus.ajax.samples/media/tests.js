@@ -241,7 +241,7 @@ tests.invoke_javascript = function(event) {
     },
 
     onbefore: function(pars, evt) {
-      pars.mumbo = 'mumbo';
+      pars.push (['mumbo','mumbo']);
     },
 
     onsuccess: function(serverReturn, evt) {

@@ -28,7 +28,7 @@ namespace phosphorus.web.ui.widgets
         ///     in [has-id] with "false" to remove the rendering of its HTML ID element. Pass in [controls] as a list of child
         ///     controls that will be rendered in its children controls collection. Pass in [oninitialload] to have some server-side
         ///     piece of pf.lambda code execute during its initial loading. Pass in [render-type], to override how the widget is 
-        ///     rendered, by supplying either "SelfClosing", "NoClose" or "Default" as values, overriding how the element is closed,
+        ///     rendered, by supplying either "immediate", "open" or "normal" as values, overriding how the element is closed,
         ///     if at all. Anything within the [controls] parameter passedd in, will have [pf.web.widgets.] appended in front of it,
         ///     and raised as an Active Event, adding the results of that Active Event into its [controls] collection automatically.
         ///     Any nodes starting with "on", will be handled as events. If your events ends with "-script", they will
@@ -55,7 +55,7 @@ namespace phosphorus.web.ui.widgets
         ///     in [has-id] with "false" to remove the rendering of its HTML ID element. Pass in [innerValue] as a text string
         ///     that will be rendered in its HTML or text content. Pass in [oninitialload] to have some server-side
         ///     piece of pf.lambda code execute during its initial loading. Pass in [render-type], to override how the widget is 
-        ///     rendered, by supplying either "SelfClosing", "NoClose" or "Default" as values, overriding how the element is closed,
+        ///     rendered, by supplying either "SelfClosing", "open" or "Default" as values, overriding how the element is closed,
         ///     if at all. Any nodes starting with "on", will be handled as events. If your events ends with "-script", they will
         ///     be rendered back to client as JavaScript events, if they end with anything else but "-script", they will be assumed
         ///     to be DOM events, and your node containing pf.lambda code, supposed to execute during that DOM event on the server-side.
@@ -79,7 +79,7 @@ namespace phosphorus.web.ui.widgets
         ///     its parent control directly, among other things. Pass in [element] to override the HTML element rendered. Pass 
         ///     in [has-id] with "false" to remove the rendering of its HTML ID element. Pass in [oninitialload] to have some server-side
         ///     piece of pf.lambda code execute during its initial loading. Pass in [render-type], to override how the widget is 
-        ///     rendered, by supplying either "SelfClosing", "NoClose" or "Default" as values, overriding how the element is closed,
+        ///     rendered, by supplying either "SelfClosing", "open" or "Default" as values, overriding how the element is closed,
         ///     if at all. Any nodes starting with "on", will be handled as events. If your events ends with "-script", they will
         ///     be rendered back to client as JavaScript events, if they end with anything else but "-script", they will be assumed
         ///     to be DOM events, and your node containing pf.lambda code, supposed to execute during that DOM event on the server-side.

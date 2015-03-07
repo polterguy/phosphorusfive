@@ -7,9 +7,11 @@ using System.IO;
 using System.Text;
 
 /// <summary>
-/// Contains the HTTP Response Filters necessary to render the correct response back to client, depending upon what type of
-/// request we're handling. Normally you do not have to fiddle with anything inside of this namespace, since the framework
-/// takes care of the filters for your response automatically.
+///     Contains all the HTTP response filters in Phosphorus.Ajax.
+/// 
+///     Contains the HTTP Response Filters necessary to render the correct response back to client, depending upon what type of
+///     request we're handling. Normally you do not have to fiddle with anything inside of this namespace, since the framework
+///     takes care of the filters for your response automatically.
 /// </summary>
 namespace phosphorus.ajax.core.filters
 {

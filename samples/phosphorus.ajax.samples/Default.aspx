@@ -31,7 +31,7 @@
                         runat="server"
                         id="hello"
                         ElementType="strong"
-                        RenderType="Default"
+                        RenderType="normal"
                         onclick="hello_onclick">click me for hello world</pf:Literal>
 
                 <p>

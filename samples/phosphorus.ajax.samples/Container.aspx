@@ -28,13 +28,13 @@
                         runat="server"
                         id="li1"
                         ElementType="li"
-                        RenderType="NoClose"
+                        RenderType="open"
                         onclick="element_onclick">first element (click me)</pf:Literal>
                     <pf:Literal
                         runat="server"
                         id="li2"
                         ElementType="li"
-                        RenderType="NoClose"
+                        RenderType="open"
                         onclick="element_onclick">second element (click me)</pf:Literal>
                 </pf:Container>
 

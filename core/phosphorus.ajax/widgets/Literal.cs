@@ -11,8 +11,9 @@ using System.Web.UI;
 namespace phosphorus.ajax.widgets
 {
     /// <summary>
-    ///     a widget that does not contain children widgets, but instead it contains only text as its inner content. use the
-    ///     innerValue property to access the text content of the widget
+    ///     Allows you to create a Widget that does not have children widgets, but instead has a simple text, HTML or string value.
+    /// 
+    ///     This Widget can only contain text or HTML. Use the innerValue property to access or change the text of your widget.
     /// </summary>
     [ParseChildren (true, "innerValue")]
     [PersistChildren (false)]
@@ -32,8 +33,10 @@ namespace phosphorus.ajax.widgets
         }
 
         /// <summary>
-        ///     gets or sets the innerValue property of the widget. this is also the inner default property of the widget,
-        ///     which means the stuff between the opening and end declaration of the widget in your .aspx markup
+        ///     Gets or sets the innerValue property of the widget.
+        /// 
+        ///     This is also the inner default property of the widget, which means the stuff between the opening
+        ///     and end declaration of the widget in your .aspx markup, will automatically end up as its content here.
         /// </summary>
         /// <value>the inner html</value>
         [PersistenceMode (PersistenceMode.InnerDefaultProperty)]
@@ -75,9 +78,15 @@ namespace phosphorus.ajax.widgets
         }
 
         // notice how we do not call base here, and only render the innerValue and none of its children
-        protected override void RenderChildren (HtmlTextWriter writer) { writer.Write (innerValue); }
+        protected override void RenderChildren (HtmlTextWriter writer)
+        {
+            writer.Write (innerValue);
+        }
 
-        protected override void AddedControl (Control control, int index) { throw new ApplicationException ("Literal widget cannot have children controls"); }
+        protected override void AddedControl (Control control, int index)
+        {
+            throw new ApplicationException ("Literal widget cannot have children controls");
+        }
 
         protected override bool HasContent
         {
