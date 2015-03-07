@@ -14,6 +14,9 @@ namespace phosphorus.expressions.iterators
     /// 
     ///     Will return all n'th node from previous Iterator result, where "n" is defined through a modulo iterator, for instance; /%2
     ///     to return all "even nodes" from previous iterator.
+    /// 
+    ///     Example;
+    ///     <pre>/%2</pre>
     /// </summary>
     public class IteratorModulo : Iterator
     {

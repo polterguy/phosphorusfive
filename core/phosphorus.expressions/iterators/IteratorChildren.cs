@@ -13,6 +13,9 @@ namespace phosphorus.expressions.iterators
     ///     Returns all children of previous iterator.
     /// 
     ///     Will return all Children nodes of the results of the previous Iterator.
+    /// 
+    ///     Example;
+    ///     <pre>/*</pre>
     /// </summary>
     public class IteratorChildren : Iterator
     {

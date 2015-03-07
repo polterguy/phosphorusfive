@@ -15,6 +15,9 @@ namespace phosphorus.expressions.iterators
     ///     so on, from its previous iterator.
     /// 
     ///     Warning! This might be a very, very large result set for large node trees!
+    /// 
+    ///     Example;
+    ///     <pre>/**</pre>
     /// </summary>
     public class IteratorFlatten : Iterator
     {

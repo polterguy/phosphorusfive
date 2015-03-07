@@ -9,7 +9,12 @@ using phosphorus.core;
 namespace phosphorus.expressions.iterators
 {
     /// <summary>
-    ///     returns the "root" <see cref="phosphorus.core.Node" /> of the entire tree which the iterator is iterating
+    ///     Returns the "root" <see cref="phosphorus.core.Node" /> of your tree-structure.
+    /// 
+    ///     Will return the root node of your tree.
+    /// 
+    ///     Example;
+    ///     <pre>/..</pre>
     /// </summary>
     public class IteratorRoot : Iterator
     {

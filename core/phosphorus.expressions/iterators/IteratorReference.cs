@@ -9,7 +9,10 @@ using phosphorus.core;
 namespace phosphorus.expressions.iterators
 {
     /// <summary>
-    ///     returns all nodes found through value of previous node's matched converted to path or node
+    ///     Returns all nodes found through value of previous node's matched converted to path or node.
+    /// 
+    ///     Example;
+    ///     <pre>/#</pre>
     /// </summary>
     public class IteratorReference : Iterator
     {

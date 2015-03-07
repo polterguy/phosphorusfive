@@ -9,7 +9,12 @@ using phosphorus.core;
 namespace phosphorus.expressions.iterators
 {
     /// <summary>
-    ///     returns all nodes within the specified range
+    ///     Returns all nodes within the specified range.
+    /// 
+    ///     Returns all nodes within the given range from previous result-set.
+    /// 
+    ///     Example, will return the second and third node from previous result-set;
+    ///     <pre>/[1,3]</pre>
     /// </summary>
     public class IteratorRange : Iterator
     {

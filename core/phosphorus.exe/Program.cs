@@ -12,7 +12,7 @@ using phosphorus.expressions;
 // ReSharper disable UnusedMember.Local
 
 /// <summary>
-///     Main namespace for the <em>"lambda.exe"</em> console program, that allows for execution of pf.lambda code through the console.
+///     Main namespace for the <em>"lambda.exe"</em> console program.
 /// 
 ///     This namespace contains the "lambda.exe" program, which allows for executing pf.lambda code, either in immediate mode, or
 ///     as Hyperlisp files through the console.

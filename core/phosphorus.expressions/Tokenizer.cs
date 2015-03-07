@@ -12,7 +12,10 @@ using phosphorus.core;
 namespace phosphorus.expressions
 {
     /// <summary>
-    ///     tokenizer for expressions
+    ///     Tokenizer for the Expression class.
+    /// 
+    ///     Responsible for tokenizing expressions, by breaking them up into tokens. Not something you'd normally fiddle
+    ///     with yourself.
     /// </summary>
     public sealed class Tokenizer : IDisposable
     {
@@ -20,9 +23,9 @@ namespace phosphorus.expressions
         private bool _disposed;
 
         /// <summary>
-        ///     initializes a new instance of the <see cref="phosphorus.expressions.Tokenizer" /> class
+        ///     Initializes a new instance of the <see cref="phosphorus.expressions.Tokenizer" /> class.
         /// </summary>
-        /// <param name="expression">expression to tokenize</param>
+        /// <param name="expression">Expression to tokenize.</param>
         public Tokenizer (string expression)
         {
             // removing first "@" character, since it's not a part of our iterators
@@ -30,10 +33,11 @@ namespace phosphorus.expressions
         }
 
         /// <summary>
-        ///     responsible for tokenizing the expression given during initialization, and return them
-        ///     back to caller
+        ///     Returns all tokens in expression.
+        /// 
+        ///     Iterates through all tokens in your Expression.
         /// </summary>
-        /// <value>The evaluate.</value>
+        /// <value>The tokens consisting your Expression.</value>
         public IEnumerable<string> Tokens
         {
             get
@@ -53,11 +57,11 @@ namespace phosphorus.expressions
          * private implementation of IDisposable interface
          */
         void IDisposable.Dispose () { Dispose (true); }
+
         /// \todo refactor, too complex
         /*
          * finds next token and returns to caller, returns null if there are no more tokens in expression
          */
-
         private string GetNextToken (string previousToken)
         {
             var nextChar = _reader.Read ();
@@ -100,10 +104,9 @@ namespace phosphorus.expressions
             return builder.ToString ().TrimEnd (' ', '\r', '\n', '\t');
         }
 
-        /// <summary>
-        ///     disposing the tokenizer
-        /// </summary>
-        /// <param name="disposing">if set to <c>true</c> disposing will occur, otherwise false</param>
+        /*
+         * disposes the tokenizer
+         */
         private void Dispose (bool disposing)
         {
             if (!_disposed && disposing) {

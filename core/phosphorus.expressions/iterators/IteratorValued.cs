@@ -10,9 +10,18 @@ using phosphorus.core;
 namespace phosphorus.expressions.iterators
 {
     /// <summary>
-    ///     returns all <see cref="phosphorus.core.Node" />s from previous iterated result,
-    ///     which matches the specified value, with the (optional) type declaration. if no type is
-    ///     given, type defaults to "string"
+    ///     Returns all nodes with the specified value.
+    /// 
+    ///     This Iterator can optionally be given a "type declaration", from which a type, represented by the string in
+    ///     its value will be created from. But the type declaration is optional, and defaults to 'string'.
+    /// 
+    ///     Example that returns all nodes who's value equals the string 'foo';
+    /// 
+    ///     <pre>/=foo</pre>
+    /// 
+    ///     Example that returns all nodes who's value equals the integer value of '5';
+    /// 
+    ///     <pre>/=:int:5</pre>
     /// </summary>
     public class IteratorValued : Iterator
     {

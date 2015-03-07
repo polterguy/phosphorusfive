@@ -16,25 +16,32 @@ using phosphorus.expressions.exceptions;
 namespace phosphorus.expressions
 {
     /// <summary>
-    ///     contains useful helper methods for dealing with pf.lambda expressions
+    ///     Helper class for handling pf.lambda Expression objects.
+    /// 
+    ///     This is the class you'd normally use when consuming expressions. Contains many useful helper methods for
+    ///     iterating expression result-sets, retrieve single compund values from expressions, etc.
     /// </summary>
     public static class XUtil
     {
         /// <summary>
-        ///     returns true if value is an expression
+        ///     Returns true if value is an Expression.
+        /// 
+        ///     If given value is an Expression, then this method will return true.
         /// </summary>
-        /// <returns><c>true</c> if value is an expression; otherwise, <c>false</c></returns>
-        /// <param name="value">value to check</param>
+        /// <returns><c>true</c> if value is an Expression; otherwise, <c>false</c>.</returns>
+        /// <param name="value">Value to check.</param>
         public static bool IsExpression (object value)
         {
             return IsExpression (value as string);
         }
 
         /// <summary>
-        ///     returns true if value is an expression
+        ///     Returns true if value is an Expression.
+        /// 
+        ///     If given value is an Expression, then this method will return true.
         /// </summary>
-        /// <returns><c>true</c> if value is an expression; otherwise, <c>false</c></returns>
-        /// <param name="value">value to check</param>
+        /// <returns><c>true</c> if value is an Expression; otherwise, <c>false</c>.</returns>
+        /// <param name="value">String value to check.</param>
         public static bool IsExpression (string value)
         {
             /// \todo simplify, needs support for expressions on multiple lines, having first iterator on second line
@@ -48,11 +55,13 @@ namespace phosphorus.expressions
 
         /// \todo refactor, too complex, also contains overlapping functionality with Expression.cs
         /// <summary>
-        ///     returns type of expression
+        ///     Returns type of Expression.
+        /// 
+        ///     Will parse and figure out what type of Expression we're dealing with, and return that to caller.
         /// </summary>
-        /// <returns>type of expression</returns>
-        /// <param name="expressionNode">node containing expression to check, will be formatted if necessary</param>
-        /// <param name="context">application context</param>
+        /// <returns>Type of Expression.</returns>
+        /// <param name="expressionNode">Node containing expression to check, will be formatted if necessary.</param>
+        /// <param name="context">Application context. Necessary to perform conversions.</param>
         public static Match.MatchType ExpressionType (
             Node expressionNode,
             ApplicationContext context)
@@ -93,10 +102,21 @@ namespace phosphorus.expressions
         }
 
         /// <summary>
-        ///     returns true if given node contains formatting parameters
+        ///     Returns true if given node's value is formatted.
+        /// 
+        ///     A formatted value of a <see cref="phosphorus.code.Node">Node</see>, means that the node has at least one 
+        ///     child node, with an empty name. If it does, then the node is assumed to be "formatted", meaning its value 
+        ///     should not be interpreted in isolation, but be formatted according to the values of all children nodes, who's
+        ///     names are string,Empty (""), using similar type of logic as can be found in for instance string.Format from C#.
+        /// 
+        ///     An example of a formatted node;
+        /// 
+        ///     <pre>
+        ///     foo:bar {0}
+        ///       :some-value</pre>
         /// </summary>
-        /// <returns><c>true</c> if node contains formatting parameters; otherwise, <c>false</c></returns>
-        /// <param name="node">node to check</param>
+        /// <returns><c>true</c> if node contains formatting parameters; otherwise, <c>false</c>.</returns>
+        /// <param name="node">Node to check.</param>
         public static bool IsFormatted (Node node)
         {
             // a formatted node is defined as having one or more children with string.Empty as name
@@ -105,12 +125,14 @@ namespace phosphorus.expressions
         }
 
         /// <summary>
-        ///     formats the node's value as a string.Format expression, using each child node
-        ///     with a string.Empty name as indexed formatting parameters
+        ///     Formats the given node, and returns the formatted value.
+        /// 
+        ///     Basically enumerates all children nodes of given node, and uses all child node with an empty name as
+        ///     a formatting parameter, which combined yields the "true" value of the node.
         /// </summary>
-        /// <returns>formatted string</returns>
-        /// <param name="node">node containing formatting expression and formatting children nodes</param>
-        /// <param name="context">application context</param>
+        /// <returns>Formatted string value.</returns>
+        /// <param name="node">Node containing formatting expression, and formatting children nodes.</param>
+        /// <param name="context">Application context.</param>
         public static string FormatNode (
             Node node,
             ApplicationContext context)
@@ -119,14 +141,15 @@ namespace phosphorus.expressions
         }
 
         /// <summary>
-        ///     formats the node's value as a string.Format expression, using each child node
-        ///     with a string.Empty name as indexed formatting parameters, using dataSource node
-        ///     as the root node for any expressions within node's formatting children values
+        ///     Formats the given node, and returns the formatted value.
+        /// 
+        ///     Basically enumerates all children nodes of given node, and uses all child node with an empty name as
+        ///     a formatting parameter, which combined yields the "true" value of the node.
         /// </summary>
-        /// <returns>formatted string</returns>
-        /// <param name="node">node containing formatting expression and formatting children nodes</param>
-        /// <param name="dataSource">node to use as dataSource for any expressions within formatting parameters</param>
-        /// <param name="context">application context</param>
+        /// <returns>Formatted string value.</returns>
+        /// <param name="node">Node containing formatting expression, and formatting children nodes.</param>
+        /// <param name="dataSource">Node to use as data-source for any expressions within formatting parameters.</param>
+        /// <param name="context">Application context.</param>
         public static string FormatNode (
             Node node,
             Node dataSource,
@@ -161,14 +184,15 @@ namespace phosphorus.expressions
         }
 
         /// <summary>
-        ///     checks if node is formatted, and if it is, it will format the node, and return the
-        ///     formatted value, as type T
+        ///     Tries to format the given node's value.
+        /// 
+        ///     If node is formatted, will format the given node, and return the formatted value of the node.
         /// </summary>
-        /// <returns>the value of the node</returns>
-        /// <param name="node">node that might be formatted</param>
-        /// <param name="context">application context</param>
-        /// <param name="defaultValue">default value</param>
-        /// <typeparam name="T">the type you wish to convert the node's value into</typeparam>
+        /// <returns>The value of the node after formatting, possibly converted.</returns>
+        /// <param name="node">Node that might be formatted.</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="defaultValue">Default value to return, if node has no value at all.</param>
+        /// <typeparam name="T">The type you wish to convert the node's value into.</typeparam>
         public static T TryFormat<T> (
             Node node,
             ApplicationContext context,
@@ -178,15 +202,16 @@ namespace phosphorus.expressions
         }
 
         /// <summary>
-        ///     checks if node is formatted, and if it is, it will format the node, and return the
-        ///     formatted value, as type T
+        ///     Tries to format the given node's value.
+        /// 
+        ///     If node is formatted, will format the given node, and return the formatted value of the node.
         /// </summary>
-        /// <returns>the value of the node</returns>
-        /// <param name="node">node that might be formatted</param>
-        /// <param name="dataSource">data source to use for formatting operation</param>
-        /// <param name="context">application context</param>
-        /// <param name="defaultValue">default value</param>
-        /// <typeparam name="T">the type you wish to convert the node's value into</typeparam>
+        /// <returns>The value of the node after formatting, possibly converted.</returns>
+        /// <param name="node">Node that might be formatted.</param>
+        /// <param name="dataSource">Data source to use for formatting operation, if formatting parameters contains expressions.</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="defaultValue">Default value to return, if node has no value at all.</param>
+        /// <typeparam name="T">The type you wish to convert the node's value into.</typeparam>
         public static T TryFormat<T> (
             Node node,
             Node dataSource,
@@ -197,18 +222,22 @@ namespace phosphorus.expressions
         }
 
         /// <summary>
-        ///     returns a single value of type T from the constant or expression in node's value. if node's value
-        ///     is an expression, then expression will be evaluated, and result of expression converted to T. if
-        ///     expression yields multiple results, then the results will be concatenated into a string, in order
-        ///     evaluated, before string is converted to T and returned. if expression returns one result, or
-        ///     node's value is a constant, then no conversion will be performed, unless necessary due to different
-        ///     types in expression's result or constant. if node contains formatting children, these will be
-        ///     evaluated as a formatting expression before expression is created, or constant is returned
+        ///     Returns a single value of type T from the constant or expression in node's value.
+        /// 
+        ///     If node's value is an expression, then expression will be evaluated, and result of expression converted to T. 
+        ///     If expression yields multiple results, then the results will be concatenated into a string, in order
+        ///     evaluated, before string is converted to T and returned.
+        /// 
+        ///     If expression returns one result, or node's value is a constant, then no conversion will be performed, 
+        ///     unless necessary due to different types in expression's result or constant.
+        /// 
+        ///     If node contains formatting children, these will be evaluated as a formatting expression, before Expression 
+        ///     is created, or constant is returned.
         /// </summary>
-        /// <param name="node">node who's value will be evaluated</param>
-        /// <param name="context">application context</param>
-        /// <param name="defaultValue">default value to return if expression or constant yields null</param>
-        /// <typeparam name="T">type of object to return</typeparam>
+        /// <param name="node">Node who's value will be evaluated.</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="defaultValue">Default value to return if expression or constant yields null.</param>
+        /// <typeparam name="T">Type of object to convert expression or constant's value into and return back to caller.</typeparam>
         public static T Single<T> (
             Node node,
             ApplicationContext context,
@@ -218,22 +247,24 @@ namespace phosphorus.expressions
         }
 
         /// <summary>
-        ///     returns a single value of type T from the constant or expression in node's value. if node's value
-        ///     is an expression, then expression will be evaluated, and result of expression converted to T. if
-        ///     expression yields multiple results, then the results will be concatenated into a string, in order
-        ///     evaluated, before string is converted to T and returned. if expression returns one result, or
-        ///     node's value is a constant, then no conversion will be performed, unless necessary due to different
-        ///     types in expression's result or constant. if node contains formatting children, these will be
-        ///     evaluated as a formatting expression before expression is created, or constant is returned
+        ///     Returns a single value of type T from the constant or expression in node's value.
+        /// 
+        ///     If node's value is an expression, then expression will be evaluated, and result of expression converted to T. 
+        ///     If expression yields multiple results, then the results will be concatenated into a string, in order
+        ///     evaluated, before string is converted to T and returned.
+        /// 
+        ///     If expression returns one result, or node's value is a constant, then no conversion will be performed, 
+        ///     unless necessary due to different types in expression's result or constant.
+        /// 
+        ///     If node contains formatting children, these will be evaluated as a formatting expression, before Expression 
+        ///     is created, or constant is returned.
         /// </summary>
-        /// <param name="node">node who's value will be evaluated</param>
-        /// <param name="dataSource">
-        ///     node that will be used as data source for any expressions within formatting
-        ///     paramaters of node's value
-        /// </param>
-        /// <param name="context">application context</param>
-        /// <param name="defaultValue">default value to return if expression or constant yields null</param>
-        /// <typeparam name="T">type of object to return</typeparam>
+        /// <param name="node">Node who's value will be evaluated.</param>
+        /// <param name="dataSource">Node that will be used as data source for any expressions within formatting 
+        /// paramaters of node's value.</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="defaultValue">Default value to return if expression or constant yields null.</param>
+        /// <typeparam name="T">Type of object to convert expression or constant's value into and return back to caller.</typeparam>
         public static T Single<T> (
             Node node,
             Node dataSource,
@@ -244,18 +275,20 @@ namespace phosphorus.expressions
         }
 
         /// <summary>
-        ///     returns a single value of type T from the result of the expression given. if
-        ///     expression yields multiple results, then the results will be concatenated into a string, in order
-        ///     evaluated, before string is converted to T and returned. if expression returns one result, or
-        ///     node's value is a constant, then no conversion will be performed, unless necessary due to different
-        ///     types in expression's result or constant. if node contains formatting children, these will be
-        ///     evaluated as a formatting expression before expression is created, or constant is returned
+        ///     Returns a single value of type T from the constant or expression given.
+        /// 
+        ///     If value is an expression, then expression will be evaluated, and result of expression converted to T. 
+        ///     If expression yields multiple results, then the results will be concatenated into a string, in order
+        ///     evaluated, before string is converted to T and returned.
+        /// 
+        ///     If expression returns one result, or node's value is a constant, then no conversion will be performed, 
+        ///     unless necessary due to different types in expression's result or constant.
         /// </summary>
-        /// <param name="expressionOrConstant">expression or constant to evaluate</param>
-        /// <param name="dataSource">node to use as start node for expression</param>
-        /// <param name="context">application context</param>
-        /// <param name="defaultValue">default value to return if expression or constant yields null</param>
-        /// <typeparam name="T">type of object to return</typeparam>
+        /// <param name="node">Node who's value will be evaluated.</param>
+        /// <param name="dataSource">Node that will be used as data source if first parameter is an Expression.</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="defaultValue">Default value to return if expression or constant yields null.</param>
+        /// <typeparam name="T">Type of object to convert expression or constant's value into and return back to caller.</typeparam>
         public static T Single<T> (
             object expressionOrConstant,
             Node dataSource,

@@ -16,6 +16,9 @@ namespace phosphorus.expressions.iterators
     /// 
     ///     Normally a "group" is declared by having a sub-expression declared inside of parenthesis "()", where the sub-expression(s)
     ///     will be evaluated using the outer Expression as its source nodes.
+    /// 
+    ///     Example;
+    ///     <pre>(/some-iterator)</pre>
     /// </summary>
     public class IteratorGroup : Iterator
     {

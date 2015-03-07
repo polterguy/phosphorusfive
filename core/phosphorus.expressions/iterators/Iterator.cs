@@ -22,16 +22,24 @@ using phosphorus.core;
 namespace phosphorus.expressions.iterators
 {
     /// <summary>
-    ///     Iterator class, wraps one iterator for hyperlisp expressions.
+    ///     Iterator class, wrapping one iterator, for pf.lambda expressions.
     /// 
     ///     Iterators are executed as a chain, encapsulated within a <see cref="phosphorus.expressions.Logical" /> object, which again 
-    ///     is a child of <see cref="phosphorus.expressions.iterators.IteratorGroup" />, which again is an iterator.
+    ///     is a child of <see cref="phosphorus.expressions.iterators.IteratorGroup" />, which again is an iterator in itself.
     /// 
     ///     When iterators are evaluated, they're evaluated in a left-associative manner, where the last iterator is
     ///     evaluated last, and evaluated as a result of its previous iterator's Left property.
     /// 
     ///     The root iterator of all expressions, is normally an iterator containing a single <see cref="phosphorus.core.Node"/> instance,
     ///     from which iteration begins.
+    /// 
+    ///     An example of an Expression containing two iterators are given here for reference purposes;
+    /// 
+    ///     <pre>@/../*?node</pre>
+    /// 
+    ///     The above Expression has one IteratorRoot iterator, and one IteratorChildren iterator, and has the type declaration
+    ///     leading to extracting the 'value' of its resulting nodes. Effectively leading to extracting all Value properties of
+    ///     all children nodes of the root node of your expression.
     /// </summary>
     public abstract class Iterator
     {

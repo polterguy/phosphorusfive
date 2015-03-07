@@ -5,6 +5,9 @@
 
 using System;
 
+/** \defgroup ActiveEvents Active Events
+ */
+
 /*! \mainpage Installing Phosphorus.Five
  *
  * 1. Make sure you've got <a href="http://www.monodevelop.com/">MonoDevelop</a>, <a href="http://xamarin.com/">Xamarin</a> or 
@@ -26,9 +29,15 @@ using System;
  * to edit your "web.config" file, and make sure it says "system42/application-startup.hl" as the value of your "application-startup-file"
  * appSettings key. And that you have downloaded and extracted System42 into your "core/phosphorus.application-startup" folder.
  * 
- */
-
-/** \defgroup ActiveEvents Active Events
+ * PS!<br/>
+ * Even though this is the documentation for the C# parts of the system, it also provides extensive documentation for the pure 
+ * <em>"pf.lambda"</em> user, who exclusively wishes to use the pf.lambda parts of Phosphorus.Five, which can be seen through classes such as
+ * the <see cref="phosphorus.expressions.Expression">Expression</see> class, providing extensive documentation about the pf.lambda
+ * expressions for the library.
+ * 
+ * Also the <see cref="phosphorus.expressions.iterators.Iterator">Iterators</see> are highly useful for the pure pf.lambda user to read up about,
+ * since they document every type of pf.lambda iterator you can use when composing your pf.lambda expressions.
+ * 
  */
 
 namespace phosphorus.core

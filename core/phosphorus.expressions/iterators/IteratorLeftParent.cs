@@ -14,6 +14,9 @@ namespace phosphorus.expressions.iterators
     ///
     ///     Helper Iterator to declare a new IteratorGroup. Internally used when a new group, or sub-expression is declared, 
     ///     using parenthesis.
+    /// 
+    ///     This iterator is never directly consumed in your code, but automatically created for you when you create an IteratorGroup
+    ///     Iterator.
     /// </summary>
     public class IteratorLeftParent : Iterator
     {

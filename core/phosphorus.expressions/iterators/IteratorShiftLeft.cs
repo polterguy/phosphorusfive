@@ -10,7 +10,13 @@ using phosphorus.core;
 namespace phosphorus.expressions.iterators
 {
     /// <summary>
-    ///     returns an offset sibling <see cref="phosphorus.core.Node" />
+    ///     Returns the "previous node".
+    /// 
+    ///     To understand how this method works, see the documentation for <see cref="phosphorus.core.PreviousNode"/>, since
+    ///     it basically is an implementation of an Iterator doing exactly what that method does.
+    /// 
+    ///     Example;
+    ///     <pre>/&lt;</pre>
     /// </summary>
     public class IteratorShiftLeft : Iterator
     {

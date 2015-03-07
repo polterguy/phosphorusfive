@@ -9,7 +9,14 @@ using phosphorus.core;
 namespace phosphorus.expressions.iterators
 {
     /// <summary>
-    ///     returns an offset sibling <see cref="phosphorus.core.Node" />
+    ///     Returns an offset sibling node from previous result-set.
+    /// 
+    ///     Can start with either "+" or "-", depending upon whether or not you'd like to retrieve a "younger sibling"
+    ///     or an "older sibling" from the previous result-set. Next comes an integer value, defining how many siblings
+    ///     you wish to "jump".
+    /// 
+    ///     Example, that returns the sibling which is "two generations older" than your current result-set node's;
+    ///     <pre>/+2</pre>
     /// </summary>
     public class IteratorSibling : Iterator
     {

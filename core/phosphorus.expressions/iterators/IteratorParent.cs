@@ -10,7 +10,10 @@ using phosphorus.core;
 namespace phosphorus.expressions.iterators
 {
     /// <summary>
-    ///     returns all parent <see cref="phosphorus.core.Node" />s of previous iterator result
+    ///     Returns all parent <see cref="phosphorus.core.Node" />s of previous iterator result.
+    /// 
+    ///     Example;
+    ///     <pre>/.</pre>
     /// </summary>
     public class IteratorParent : Iterator
     {

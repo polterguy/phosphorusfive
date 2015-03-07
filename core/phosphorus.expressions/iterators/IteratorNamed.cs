@@ -19,6 +19,13 @@ namespace phosphorus.expressions.iterators
     /// 
     ///     For instance, to return a node who's name is "555", instead of the 555th child node of previous results, you can use; /\555
     ///     as the value of your iterator.
+    /// 
+    ///     Example;
+    ///     <pre>/some-name</pre>
+    /// 
+    ///     This iterator is the default iterator being used by the Expression engine, unless it can find a better match for another type
+    ///     of iterator. Meaning, if your iterator doesn't match any of the other specialized iterators, then the engine defaults to
+    ///     treating your iterator as an iterator of this type.
     /// </summary>
     public class IteratorNamed : Iterator
     {

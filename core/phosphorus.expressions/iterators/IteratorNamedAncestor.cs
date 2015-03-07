@@ -15,9 +15,8 @@ namespace phosphorus.expressions.iterators
     ///     Will traverse the node hierarchy upwards from its current results, and return the first ancestor node
     ///     who's name matches the value after the ".." parts of the Iterator.
     /// 
-    ///     Example; /..foo
-    /// 
-    ///     will return the first ancestor node who's name is "foo".
+    ///     Example;
+    ///     <pre>/..foo</pre>
     /// </summary>
     public class IteratorNamedAncestor : Iterator
     {

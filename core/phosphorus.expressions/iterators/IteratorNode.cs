@@ -9,16 +9,18 @@ using phosphorus.core;
 namespace phosphorus.expressions.iterators
 {
     /// <summary>
-    ///     <see cref="phosphorus.core.Node" /> iterator, which is useful for using as the outer most iterator for the
-    ///     hyperlisp expression,
-    ///     taking a node as its input
+    ///     <see cref="phosphorus.core.Node" /> Iterator.
+    /// 
+    ///     This Iterator is never used directly by your code, but implicitly given through your expressions, and normally
+    ///     points to the "identity Node", which is the <see cref="phosphorus.core.Node">Node</see> where your Expression is
+    ///     declared.
     /// </summary>
     public class IteratorNode : Iterator
     {
         private readonly Node _node;
 
         /// <summary>
-        ///     initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorNode" /> class
+        ///     Initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorNode" /> class.
         /// </summary>
         /// <param name="node">the node to start iterating upon</param>
         public IteratorNode (Node node) { _node = node; }

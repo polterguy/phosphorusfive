@@ -42,7 +42,7 @@ namespace phosphorus.expressions.iterators
     ///     <strong>s</strong> - Single line regular expression mode.
     /// 
     ///     Here's an example of how to use ECMA script type of regular expressions, compile the regular expression, while only 
-    ///     returning distinct names, to return any node's who's names are "bar";
+    ///     returning distinct names, to return any node's who's names contains the text "bar";
     /// 
     ///     <pre>/"/bar/edc"</pre>
     /// </summary>
@@ -58,7 +58,7 @@ namespace phosphorus.expressions.iterators
         /// <summary>
         ///     Initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorNamed" /> class.
         /// </summary>
-        /// <param name="regex">regular expression</param>
+        /// <param name="regex">Regular expression</param>
         /// <param name="expression">pf.lambda expression</param>
         /// <param name="node">node</param>
         /// <param name="context">application context</param>

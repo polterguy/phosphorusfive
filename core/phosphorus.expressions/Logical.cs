@@ -11,61 +11,94 @@ using phosphorus.expressions.iterators;
 namespace phosphorus.expressions
 {
     /// <summary>
-    ///     logical class, for performing boolean algebra on <see cref="phosphorus.expressions.iterators.Iterator" />, making
-    ///     it
-    ///     possible to use all four main boolean operators on <see cref="phosphorus.core.Node" /> sets
+    ///     Class encapsulating Boolean algebraic operations for the Expression class.
+    ///
+    ///     Logicals are what allows you to perform Boolean Algebra on your expressions, and are normally defined in your 
+    ///     expressions using either of these characters; &, |, ^ or !
+    ///
+    ///     ! is your NOT operator, and means that it should NOT return whatever is returned as a result of your right-hand-side sub-expression.
+    ///
+    ///     | is your OR operator, and signifies that your expression should add together the results of your right-hand-side expression, 
+    ///     with whatever is at your left-hand-side as a combined result.
+    ///
+    ///     & is your AND operator, and basically means that in order to be a part of the combined results, the nodes must match both the 
+    ///     left-hand-side, and the right-hand-side sub-expression.
+    ///
+    ///     ^ is your XOR operator, and basically means that it should combine together the results of both your left-hand-side, with your
+    ///     right-hand-side, but only if it matches only ONE of your sides, and not if it matches neither sides or both sides.
+    /// 
+    ///     Example of an Expression returning all children nodes of the root node, having a value of "foo", but excluding the ones
+    ///     whos name is "bar";
+    /// 
+    ///     <pre>@/../*(/=foo!/bar)?node</pre>
     /// </summary>
     public class Logical
     {
         /// <summary>
-        ///     type of boolean operator
+        ///     Type of boolean operator.
+        /// 
+        ///     This is the type declaration of your Logical, and can be either !, &, | or ^, declaring which Boolean operator
+        ///     and operation you wish to perform on your expressions and sub-expressions.
         /// </summary>
         public enum LogicalType
         {
             /// <summary>
-            ///     OR operator, for ORing results together
+            ///     OR operator, for ORing results together.
+            /// 
+            ///     Defined through the pipe character (|).
             /// </summary>
             Or,
 
             /// <summary>
-            ///     AND operator, for ANDing results together
+            ///     AND operator, for ANDing results together.
+            /// 
+            ///     Defined through the ampersand character (&).
             /// </summary>
             And,
 
             /// <summary>
-            ///     XOR operator, for eXclusively ORing results together
+            ///     XOR operator, for XORing results together.
+            /// 
+            ///     Defined through the hat character (^).
             /// </summary>
             Xor,
 
             /// <summary>
-            ///     NOT operator, for return all from previous results, except those in next result
+            ///     NOT operator, for NOTing results together.
+            /// 
+            ///     Defined through the exclamation mark character (!).
             /// </summary>
             Not
         }
 
         /// <summary>
-        ///     initializes a new instance of the <see cref="phosphorus.expressions.Logical" /> class
+        ///     Initializes a new instance of the <see cref="phosphorus.expressions.Logical" /> class.
         /// </summary>
-        /// <param name="type">type of logical, OR, AND, XOR or NOT</param>
-        public Logical (LogicalType type) { TypeOfLogical = type; }
+        /// <param name="type">Type of logical, Or, And, Xor or Not.</param>
+        public Logical (LogicalType type)
+        {
+            TypeOfLogical = type;
+        }
 
         /// <summary>
-        ///     returns the last <see cref="phosphorus.expressions.iterators.Iterator" /> in the list of iterators belonging to
-        ///     this logical
+        ///     Returns the last <see cref="phosphorus.expressions.iterators.Iterator" /> in the list of iterators belonging to
+        ///     this logical.
         /// </summary>
-        /// <value>the last iterator in the stack of iterators</value>
+        /// <value>The last iterator in the chain of iterators.</value>
         public Iterator Iterator { get; private set; }
 
         /// <summary>
-        ///     gets the type of logical
+        ///     Gets the type of logical.
+        /// 
+        ///     Can be either Or, And, Xor or Not.
         /// </summary>
-        /// <value>the type of logical</value>
+        /// <value>The type of logical.</value>
         private LogicalType TypeOfLogical { get; set; }
 
         /// <summary>
-        ///     adds an iterator to the logical boolean operator
+        ///     Adds an iterator to the current logical group.
         /// </summary>
-        /// <param name="iterator">iterator to append</param>
+        /// <param name="iterator">Tterator to append to chain of iterators.</param>
         public void AddIterator (Iterator iterator)
         {
             iterator.Left = Iterator;

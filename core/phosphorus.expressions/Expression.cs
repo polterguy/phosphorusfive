@@ -11,11 +11,43 @@ using phosphorus.expressions.iterators;
 
 // ReSharper disable UnusedParameter.Local
 
+/// <summary>
+///     Main namespace for the Expression engine in Phosphorus.Five.
+/// 
+///     This namespace contains the Expression engine for Phosphorus.Five, and is what allows you to compose
+///     expressions, extracting node result-set from your pf.lambda execution tree.
+/// </summary>
 namespace phosphorus.expressions
 {
     /// <summary>
-    ///     expression class, for retrieving and changing values in node trees, according to
-    ///     pf.lambda expressions
+    ///     The main expression class in Phosphorus.Five.
+    /// 
+    ///     Responsible for parsing, building and evaluating your pf.lambda expressions, according to what types of iterators
+    ///     you compose together to form your complete expression.
+    /// 
+    ///     An expression is normally recognized automatically by any Active Events that supports them, and starts with a "@" character,
+    ///     followed by any number of Iterator objects, ending with a type declaration.
+    /// 
+    ///     Example;
+    /// 
+    ///     <pre>@/../*?node</pre>
+    /// 
+    ///     The above example will find all children nodes of the root node of your current execution tree.
+    /// 
+    ///     There are 5 different types of expressions you can declare;
+    /// 
+    ///     1. <strong>?value</strong> - Returns the <see cref="phosphorus.core.Node.Value">value</see> property of your nodes.
+    ///     2. <strong>?name</strong> - Returns the <see cref="phosphorus.core.Node.Name">name</see> property of your nodes.
+    ///     3. <strong>?count</strong> - Returns the <see cref="phosphorus.core.Node.Count">count</see> property of your nodes.
+    ///     4. <strong>?path</strong> - Returns the <see cref="phosphorus.core.Node.Path">path</see> property of your nodes.
+    ///     5. <strong>?node</strong> - Returns the actual <see cref="phosphorus.core.Node">nodes</see> themselves.
+    /// 
+    ///     Both '?count' and '?path' types of expressions are "read-only", and cannot be used as destinations, or changed in any
+    ///     ways. All other types of expressions, can be both assigned to, and retrieved.
+    /// 
+    ///     PS!<br/>
+    ///     Normally you don't want to consume this class directly, but instead use it indirectly through the XUtil class,
+    ///     which contains many helper methods to create and evaluate expressions for you!
     /// </summary>
     public class Expression
     {
@@ -25,10 +57,10 @@ namespace phosphorus.expressions
         // these next two buggers are kept around to provide contextual information for exceptions,
         // among other things, and to make conversions possible
         private Node _evaluatedNode;
+
         /*
          * private ctor, to make sure we can extend creation logic in the future
          */
-
         private Expression (string expression)
         {
             // ps, postponing syntax checking until "Evaluate", since we've got "context" in Evaluate
@@ -36,15 +68,23 @@ namespace phosphorus.expressions
         }
 
         /// <summary>
-        ///     initializes a new instance of the <see cref="phosphorus.expressions.Expression" /> class
+        ///     Initializes a new instance of the <see cref="phosphorus.expressions.Expression" /> class.
         /// </summary>
-        /// <param name="expression">expression to evaluate</param>
-        public static Expression Create (string expression) { return new Expression (expression); }
+        /// <param name="expression">\Expression to evaluate</param>
+        public static Expression Create (string expression)
+        {
+            return new Expression (expression);
+        }
 
         /// <summary>
-        ///     evaluates expression for given <see cref="phosphorus.core.Node" />, and returns
-        ///     <see cref="phosphorus.expressions.Match" /> object wrapping all matches for
-        ///     evaluated expression
+        ///     Evaluates expression for given <see cref="phosphorus.core.Node">node</see>.
+        /// 
+        ///     Returns a match object wrapping the result from your Expression.
+        /// 
+        ///     PS!
+        ///     Normally you very seldom want to use this method directly, or this class for that matter, but instead
+        ///     use one of the helper methods in the XUtil class, which takes care of creating expressions, and evaluating
+        ///     then automatically for you.
         /// </summary>
         public Match Evaluate (Node node, ApplicationContext context)
         {
@@ -89,7 +129,6 @@ namespace phosphorus.expressions
         /*
          * handles an expression iterator token
          */
-
         private IteratorGroup AppendToken (
             IteratorGroup current,
             string token,
@@ -191,7 +230,6 @@ namespace phosphorus.expressions
         /*
          * handles "|", "&", "!" and "^" tokens
          */
-
         private static void LogicalToken (IteratorGroup current, string token, string previousToken)
         {
             switch (token) {
@@ -221,7 +259,6 @@ namespace phosphorus.expressions
         /*
          * handles all other tokens, such as "named tokens" and "valued tokens"
          */
-
         private void DefaultToken (
             IteratorGroup current,
             string token,
@@ -261,7 +298,6 @@ namespace phosphorus.expressions
          * value token, either a regular expression token, or a normal value comparison token,
          * optionally with a type declaration
          */
-
         private void ValueToken (IteratorGroup current, string token)
         {
             if (token.IndexOf ('/') == 1) {
@@ -274,9 +310,8 @@ namespace phosphorus.expressions
         }
 
         /*
-         * creates a value token, which is also a regular expression
+         * creates a valued regex token
          */
-
         private void ValueTokenRegex (IteratorGroup current, string token)
         {
             token = token.Substring (1); // removing equal sign (=)
@@ -284,9 +319,8 @@ namespace phosphorus.expressions
         }
 
         /*
-         * creates a value token, which is not a regular expression
+         * creates a valued token
          */
-
         private void ValueTokenNormal (IteratorGroup current, string token)
         {
             token = token.Substring (1); // removing equal sign (=)
@@ -310,7 +344,6 @@ namespace phosphorus.expressions
         /*
          * creates a range token [x,y]
          */
-
         private void RangeToken (IteratorGroup current, string token)
         {
             // verifying token ends with "]"
@@ -371,9 +404,8 @@ namespace phosphorus.expressions
         }
 
         /*
-         * creates a range iterator
+         * creates a modulo token
          */
-
         private void ModuloToken (IteratorGroup current, string token)
         {
             // removing "%" character
@@ -390,9 +422,8 @@ namespace phosphorus.expressions
         }
 
         /*
-         * creates a sibling iterator
+         * creates a sibling token
          */
-
         private void SiblingToken (IteratorGroup current, string token)
         {
             var intValue = token.Substring (1);
@@ -412,7 +443,6 @@ namespace phosphorus.expressions
         /*
          * create a Match object from an Iterator group
          */
-
         private Match CreateMatchFromIterator (IteratorGroup group, string type)
         {
             // checking to see if we have open groups, which is an error
@@ -458,7 +488,6 @@ namespace phosphorus.expressions
         /*
          * evaluates a reference expression
          */
-
         private Match EvaluateReferenceExpression (Match match, ApplicationContext context, string convert)
         {
             // making sure only 'value' and 'name' expression types can be "reference expressions"

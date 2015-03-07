@@ -9,7 +9,10 @@ using phosphorus.core;
 namespace phosphorus.expressions
 {
     /// <summary>
-    ///     wrapper around a single Match item result
+    ///     Wraps a single match.
+    /// 
+    ///     When an Expression is evaluated, and returned as a Match object, then this class encapsulates one single
+    ///     matched item (node, value, path, name or count) from your Expression.
     /// </summary>
     public class MatchEntity
     {
@@ -24,33 +27,44 @@ namespace phosphorus.expressions
         }
 
         /// <summary>
-        ///     node that was matched
+        ///     Node that was matched.
+        /// 
+        ///     This is not necessarily the Value of your match entity object.
         /// </summary>
-        /// <value>node for match result</value>
+        /// <value>Node for match entity item.</value>
         public Node Node { get; private set; }
 
         /// <summary>
-        ///     type of match
+        ///     Type of match.
+        /// 
+        ///     Sometimes, especially when you're using reference expressions, then the type of match you end up with, is
+        ///     a mixed type. Meaning, some of your match entity items will be of type 'node', while others might be of type 'value',
+        ///     and so on. If so is the case, then this property will return the type declaration of your match entity item, instead
+        ///     of the type declaration of your Expression as a whole.
         /// </summary>
-        /// <value>type of match</value>
+        /// <value>Type of match for match entity item.</value>
         public Match.MatchType TypeOfMatch
         {
             get { return _type ?? _match.TypeOfMatch; }
         }
 
         /// <summary>
-        ///     returns match object
+        ///     Returns the parent match instance.
         /// </summary>
-        /// <value>type of match</value>
+        /// <value>Parent match.</value>
         public Match Match
         {
             get { return _match; }
         }
 
         /// <summary>
-        ///     retrieves or sets the value for the entity
+        ///     Retrieves or sets the value for the match entity item.
+        /// 
+        ///     Use this property to retrieve the actual value of your expression's matched entity items.
+        ///     If you assign a <see cref="phosphorus.core.Node">Node</see> to another node, then the node will
+        ///     be cloned before assignment, to avoid UnTying node from existing parent node's children collection.
         /// </summary>
-        /// <returns>the value of the match</returns>
+        /// <returns>The value of the match entity item.</returns>
         public object Value
         {
             get
@@ -99,8 +113,10 @@ namespace phosphorus.expressions
                                 if (tmp.Count != 1)
                                     throw new ApplicationException ("tried to convert a string that would create multiple nodes to one node");
                                 tmp = tmp [0];
+                                Node.Replace (tmp); // ps, NOT cloned!
+                            } else {
+                                Node.Replace (tmp.Clone ()); // ps, cloned!
                             }
-                            Node.Replace (tmp.Clone ()); // ps, cloned!
                         }
                         break;
                     default:

@@ -10,18 +10,21 @@ using phosphorus.expressions.exceptions;
 namespace phosphorus.expressions.iterators
 {
     /// <summary>
-    ///     base class for all regular expression iterators, providing helper methods
+    ///     Base class for all regular expression iterators.
+    /// 
+    ///     Not to be consumed directly by your code, but indirectly accessible through IteratorNamedRegex and IteratorValuedRegex.
+    ///     Contains helper methods for previously mentioned iterators, such as extracting regex options, etc.
     /// </summary>
     public abstract class IteratorRegex : Iterator
     {
         /// <summary>
-        ///     returns regular expression engine options for regex iterator
+        ///     Returns regular expression engine options for regex iterator.
         /// </summary>
-        /// <returns>regex options</returns>
-        /// <param name="optionsString">string containing textual representation of all options</param>
-        /// <param name="expression">necessary in case exception needs to be raised, to provide contextual information</param>
-        /// <param name="node">same as expression</param>
-        /// <param name="context">application context</param>
+        /// <returns>Regex options.</returns>
+        /// <param name="optionsString">String containing textual representation of all options.</param>
+        /// <param name="expression">Necessary in case an exception needs to be raised, to provide contextual information.</param>
+        /// <param name="node">Necessary to provide contextual information in case an exception occurs.</param>
+        /// <param name="context">Application context</param>
         protected RegexOptions GetOptions (string optionsString, string expression, Node node, ApplicationContext context)
         {
             // default options is invariant culture
