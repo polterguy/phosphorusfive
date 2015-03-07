@@ -299,18 +299,21 @@ namespace phosphorus.expressions
         }
 
         /// <summary>
-        ///     iterates the given node's value, which might be either an expression or a constant. if node's
-        ///     value is a constant, then this constant will be converted if necessary to T before returned. if
-        ///     node's value is an expression, then this expression will be evaluated, and all results converted
-        ///     to T before returned to caller. node's value can contain formatting parameters, which will be
-        ///     evaluated if existing. if node contains formatting parameters, these will be evaluated before
-        ///     expression is evaluated
+        ///     Iterates the given node's value, which might be either an expression or a constant.
+        /// 
+        ///     If node's value is a constant, then this constant will be converted if necessary to T, before returned.
+        /// 
+        ///     If node's value is an Expression, then this expression will be evaluated, and all results converted
+        ///     to T, before returned to caller.
+        /// 
+        ///     Node's value can contain formatting parameters, which will be evaluated if existing. If node contains
+        ///     formatting parameters, these will be evaluated before Expression is evaluated.
         /// </summary>
-        /// <param name="node">node who's value will be evaluated</param>
-        /// <param name="context">application context</param>
-        /// <param name="iterateChildren">if true, and results are converted from string, then the children of that generated node
-        /// will be iterated, and not the automatically generated root node, created during string conversion</param>
-        /// <typeparam name="T">type of object you wish to retrieve</typeparam>
+        /// <param name="node">Node who's value will be evaluated.</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="iterateChildren">If true, then the children nodes of the evaluated node  will be iterated, 
+        /// and not the actual node itself.</param>
+        /// <typeparam name="T">Type of object you wish to retrieve.</typeparam>
         public static IEnumerable<T> Iterate<T> (
             Node node, 
             ApplicationContext context, 
@@ -320,19 +323,22 @@ namespace phosphorus.expressions
         }
 
         /// <summary>
-        ///     iterates the given node's value, which might be either an expression or a constant. if node's
-        ///     value is a constant, then this constant will be converted if necessary to T before returned. if
-        ///     node's value is an expression, then this expression will be evaluated, and all results converted
-        ///     to T before returned to caller. node's value can contain formatting parameters, which will be
-        ///     evaluated if existing. if node contains formatting parameters, these will be evaluated before
-        ///     expression is evaluated
+        ///     Iterates the given node's value, which might be either an expression or a constant.
+        /// 
+        ///     If node's value is a constant, then this constant will be converted if necessary to T, before returned.
+        /// 
+        ///     If node's value is an Expression, then this expression will be evaluated, and all results converted
+        ///     to T, before returned to caller.
+        /// 
+        ///     Node's value can contain formatting parameters, which will be evaluated if existing. If node contains
+        ///     formatting parameters, these will be evaluated before Expression is evaluated.
         /// </summary>
-        /// <param name="node">node who's value will be evaluated</param>
-        /// <param name="dataSource">node to use as start node for any expressions within formatting parameters</param>
-        /// <param name="context">application context</param>
-        /// <param name="iterateChildren">if true, and results are converted from string, then the children of that generated node
-        /// will be iterated, and not the automatically generated root node, created during string conversion</param>
-        /// <typeparam name="T">type of object you wish to retrieve</typeparam>
+        /// <param name="node">Node who's value will be evaluated.</param>
+        /// <param name="dataSource">Node to use as data source for any formatting expressions within formatting parameters.</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="iterateChildren">If true, then the children nodes of the evaluated node  will be iterated, 
+        /// and not the actual node itself.</param>
+        /// <typeparam name="T">Type of object you wish to retrieve.</typeparam>
         public static IEnumerable<T> Iterate<T> (
             Node node,
             Node dataSource,
@@ -345,15 +351,22 @@ namespace phosphorus.expressions
         }
 
         /// <summary>
-        ///     iterates the given expression or constant on the given dataSource node, and converts each result to
-        ///     type T before yielding results back to caller
+        ///     Iterates the given node's value, which might be either an expression or a constant.
+        /// 
+        ///     If node's value is a constant, then this constant will be converted if necessary to T, before returned.
+        /// 
+        ///     If node's value is an Expression, then this expression will be evaluated, and all results converted
+        ///     to T, before returned to caller.
+        /// 
+        ///     Node's value can contain formatting parameters, which will be evaluated if existing. If node contains
+        ///     formatting parameters, these will be evaluated before Expression is evaluated.
         /// </summary>
-        /// <param name="expressionOrConstant">expression to run on dataSource</param>
-        /// <param name="dataSource">node to use as start node for any expressions within formatting parameters</param>
-        /// <param name="context">application context</param>
-        /// <param name="iterateChildren">if true, and results are converted from string, then the children of that generated node
-        /// will be iterated, and not the automatically generated root node, created during string conversion</param>
-        /// <typeparam name="T">type of object you wish to retrieve</typeparam>
+        /// <param name="expressionOrConstant">expression to run on dataSource, or constant object to iterate.</param>
+        /// <param name="dataSource">Node to use as data source if expressionOrConstant given is an Expression.</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="iterateChildren">If true, then the children nodes of the evaluated node  will be iterated, 
+        /// and not the actual node itself.</param>
+        /// <typeparam name="T">Type of object you wish to retrieve.</typeparam>
         public static IEnumerable<T> Iterate<T> (
             object expressionOrConstant,
             Node dataSource,
@@ -381,15 +394,17 @@ namespace phosphorus.expressions
         }
 
         /// <summary>
-        ///     iterates the given expression or constant on the given dataSource node, and converts each result to
-        ///     type T before yielding results back to caller
+        ///     Iterates the given Expression.
+        /// 
+        ///     This expression will be evaluated, on the given dataSource node, and all results converted to T, 
+        ///     before returned to caller.
         /// </summary>
         /// <param name="expression">expression to run on dataSource</param>
-        /// <param name="dataSource">node to use as start node for any expressions within formatting parameters</param>
-        /// <param name="context">application context</param>
-        /// <param name="iterateChildren">if true, and results are converted from string, then the children of that generated node
-        /// will be iterated, and not the automatically generated root node, created during string conversion</param>
-        /// <typeparam name="T">type of object you wish to retrieve</typeparam>
+        /// <param name="dataSource">Node to use as data source if expressionOrConstant given is an Expression.</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="iterateChildren">If true, then the children nodes of the evaluated node  will be iterated, 
+        /// and not the actual node itself.</param>
+        /// <typeparam name="T">Type of object you wish to retrieve.</typeparam>
         public static IEnumerable<T> Iterate<T> (
             string expression,
             Node dataSource,
@@ -426,11 +441,12 @@ namespace phosphorus.expressions
         }
 
         /// <summary>
-        ///     returns all matches from expression in node. node may contain formatting parameters which will
-        ///     be evaluated before expression
+        ///     Iterates all matches on Node.
+        /// 
+        ///     Node's value must be an Expression, otherwise an exception will be thrown.
         /// </summary>
-        /// <param name="node">node being both expression node and data source node</param>
-        /// <param name="context">application context</param>
+        /// <param name="node">Node being both expression node and data source node.</param>
+        /// <param name="context">Application context.</param>
         public static IEnumerable<MatchEntity> Iterate (
             Node node,
             ApplicationContext context)
@@ -439,13 +455,13 @@ namespace phosphorus.expressions
         }
 
         /// <summary>
-        ///     returns all matches from expression in node. node may contain formatting parameters, which will
-        ///     be evaluated first, using dataSource as start node, for any expressions within formatting expression
-        ///     parameters
+        ///     Iterates all matches on Node.
+        /// 
+        ///     Node's value must be an Expression, otherwise an exception will be thrown.
         /// </summary>
-        /// <param name="node">node being expression node</param>
-        /// <param name="dataSource">node being data source node</param>
-        /// <param name="context">application context</param>
+        /// <param name="node">Node being both expression node and data source node.</param>
+        /// <param name="dataSource">Node being data source node for any formatting expressions within node parameter.</param>
+        /// <param name="context">Application context.</param>
         public static IEnumerable<MatchEntity> Iterate (
             Node node,
             Node dataSource,
@@ -457,15 +473,17 @@ namespace phosphorus.expressions
 
         /// \todo the next one is only used in [pf.data.select], try to rethink logic of this part, somehow
         /// <summary>
-        ///     returns all matches from expression in node. node may contain formatting parameters, which will
-        ///     be evaluated before expression, using formattingSource as start node for any expressions within
-        ///     formatting, while using dataSource as source for evaluating expression
-        ///     parameters
+        ///     Returns all matches from expression in node.
+        /// 
+        ///     Node may contain formatting parameters, which will be evaluated before expression, using formattingSource 
+        ///     as start node, for any expressions within formatting parameters, while using dataSource as source for 
+        ///     evaluating expression parameters.
         /// </summary>
-        /// <param name="node">node being expression node</param>
-        /// <param name="dataSource">node being data source node</param>
-        /// <param name="formattingSource">node being data source node for formatting expressions</param>
-        /// <param name="context">application context</param>
+        /// <param name="node">Node being expression node.</param>
+        /// <param name="dataSource">Node being data source node.</param>
+        /// <param name="formattingSource">Node being data source node for formatting expressions within Expression 
+        /// in main node parameter.</param>
+        /// <param name="context">Application context.</param>
         public static IEnumerable<MatchEntity> Iterate (
             Node node,
             Node dataSource,
@@ -476,12 +494,15 @@ namespace phosphorus.expressions
             return Iterate (exp, dataSource, context);
         }
 
+        /// \todo Rehink the name of the dataSource parameters in all of these methods, since it is a highly unintuitive name.
         /// <summary>
-        ///     returns all matches from given expression
+        ///     Returns all matches from given Expression.
+        /// 
+        ///     Will iterate, and return, all matches from the given Expression.
         /// </summary>
-        /// <param name="expression">expression</param>
-        /// <param name="dataSource">node being data source node</param>
-        /// <param name="context">application context</param>
+        /// <param name="expression">Expression to evaluate.</param>
+        /// <param name="dataSource">Node being data source node.</param>
+        /// <param name="context">Application context.</param>
         public static IEnumerable<MatchEntity> Iterate (
             string expression,
             Node dataSource,
@@ -499,12 +520,18 @@ namespace phosphorus.expressions
         }
 
         /// <summary>
-        ///     retrieves the value of [source], [rel-source], [src] or [re-src] child node, converted into T. returns null if no source exists.
-        ///     does not care about whether or not there are multiple values, and will return a List if there are, though
-        ///     will attempt to return only one value if it can, such as when there's a list containing only one value
+        ///     Retrieves the value of the [source], [rel-source], [src] or [re-src] child node.
+        /// 
+        ///     Converts the result to type T. Returns null if no source exists. Does not care about whether or 
+        ///     not there are multiple values, and will return a List if there are, though
+        ///     will attempt to return only one value if it can, such as when there's a list containing only one value.
+        /// 
+        ///     Will only evaluate the last child node of the given node parameter, expecting its name to be [source], [rel-source],
+        ///     [src] or [rel-src]. If the last child node of the given node parameter does not match the previous criteria, then
+        ///     there will be no valid source, and method will return null.
         /// </summary>
-        /// <param name="node">node where [source], [rel-source], [rel-src] or [src] is expected to be a child</param>
-        /// <param name="context">application context</param>
+        /// <param name="node">Node where [source], [rel-source], [rel-src] or [src] is expected to be a child node.</param>
+        /// <param name="context">Application context.</param>
         public static object Source (Node node, ApplicationContext context)
         {
             return Source (node, node.LastChild, context);
@@ -512,13 +539,19 @@ namespace phosphorus.expressions
 
         /// \todo refactor these next buggers, they're too complex
         /// <summary>
-        ///     retrieves the value of [source], [rel-source], [src] or [rel-src] child node, converted into T. returns null if no source exists.
-        ///     does not care about whether or not there are multiple values, and will return a List if there are multiple values, though
-        ///     will attempt to return only one value, if it can, such as when there's a list of only one value for instance
+        ///     Retrieves the value of the [source], [rel-source], [src] or [re-src] child node.
+        /// 
+        ///     Converts the result to type T. Returns null if no source exists. Does not care about whether or 
+        ///     not there are multiple values, and will return a List if there are, though
+        ///     will attempt to return only one value if it can, such as when there's a list containing only one value.
+        /// 
+        ///     Will only evaluate the last child node of the given node parameter, expecting its name to be [source], [rel-source],
+        ///     [src] or [rel-src]. If the last child node of the given node parameter does not match the previous criteria, then
+        ///     there will be no valid source, and method will return null.
         /// </summary>
-        /// <param name="node">node where [source], [rel-source], [rel-src] or [src] is expected to be a child</param>
-        /// <param name="dataSource">node used as data source for expressions</param>
-        /// <param name="context">application context</param>
+        /// <param name="node">Node where [source], [rel-source], [rel-src] or [src] is expected to be a child node.</param>
+        /// <param name="dataSource">Node used as data source for expressions within the node parameter.</param>
+        /// <param name="context">Application context.</param>
         private static object Source (Node node, Node dataSource, ApplicationContext context)
         {
             object source = null;
@@ -569,23 +602,25 @@ namespace phosphorus.expressions
         }
 
         /// <summary>
-        ///     retrieves the value of [source], [rel-source], [src] or [rel-src] child node, forcing one single return value, somehow.
-        ///     returns null if no source exists. used in among other things [set].
+        ///     Retrieves the value of [source], [rel-source], [src] or [rel-src] child node
+        /// 
+        ///     Will force one single return value, somehow. Returns null if no source exists. Used in among other things [set].
         /// </summary>
-        /// <param name="node">node where [source], [rel-source], [rel-src] or [src] is expected to be a child</param>
-        /// <param name="context">application context</param>
+        /// <param name="node">Node where [source], [rel-source], [rel-src] or [src] is expected to be a child.</param>
+        /// <param name="context">Application context.</param>
         public static object SourceSingle (Node node, ApplicationContext context)
         {
             return SourceSingle (node, node.LastChild, context);
         }
 
         /// <summary>
-        ///     retrieves the value of [source], [rel-source], [src] or [rel-src] child node, forcing one single return value, somehow.
-        ///     returns null if no source exists. used in among other things [set].
+        ///     Retrieves the value of [source], [rel-source], [src] or [rel-src] child node.
+        /// 
+        ///     Will force one single return value, somehow. Returns null if no source exists. Used in among other things [set].
         /// </summary>
-        /// <param name="node">node where [source], [rel-source], [rel-src] or [src] is expected to be a child</param>
-        /// <param name="dataSource">node which will be used as data source node for expresions</param>
-        /// <param name="context">application context</param>
+        /// <param name="node">Node where [source], [rel-source], [rel-src] or [src] is expected to be a child.</param>
+        /// <param name="dataSource">Node which will be used as data source node if node's parameter's value is an Expression.</param>
+        /// <param name="context">Application context.</param>
         public static object SourceSingle (Node node, Node dataSource, ApplicationContext context)
         {
             object source = null;
@@ -620,22 +655,25 @@ namespace phosphorus.expressions
         }
 
         /// <summary>
-        ///     retrieves the value of [source], [rel-source], [src] or [rel-src] child node. used in among other things [append]
+        ///     Retrieves the value of [source], [rel-source], [src] or [rel-src] child node.
+        /// 
+        ///     Might return multiple values. Returns null if no source exists. Used in among other things [append].
         /// </summary>
-        /// <param name="node">node where [source] or [src] is expected to be a child</param>
-        /// <param name="context">application context</param>
+        /// <param name="node">Node where [source], [rel-source], [rel-src] or [src] is expected to be a child.</param>
+        /// <param name="context">Application context.</param>
         public static List<Node> SourceNodes (Node node, ApplicationContext context)
         {
             return SourceNodes (node, node.LastChild, context);
         }
 
         /// <summary>
-        ///     retrieves the value of [source], [rel-source], [rel-src], or [src] child node.
-        ///     used in among other things [append]
+        ///     Retrieves the value of [source], [rel-source], [src] or [rel-src] child node.
+        /// 
+        ///     Might return multiple values. Returns null if no source exists. Used in among other things [append].
         /// </summary>
-        /// <param name="node">node where [source] or [src] is expected to be a child</param>
-        /// <param name="dataSource">node used as dataSource for expressions</param>
-        /// <param name="context">application context</param>
+        /// <param name="node">Node where [source], [rel-source], [rel-src] or [src] is expected to be a child.</param>
+        /// <param name="dataSource">Node used as dataSource for formatting expressions within node parameter.</param>
+        /// <param name="context">Application context.</param>
         public static List<Node> SourceNodes (Node node, Node dataSource, ApplicationContext context)
         {
             // return value
