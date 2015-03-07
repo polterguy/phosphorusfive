@@ -1,5 +1,5 @@
 /*
- * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
+ * Phosphorus.Five, copyright 2014 - 2015, Mother Earth, Jannah, Gaia - YOU!
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
  */
 
@@ -10,17 +10,24 @@ using System.Reflection;
 
 // ReSharper disable PossibleNullReferenceException
 
+/// <summary>
+///     Main namespace for Phosphorus core functionality.
+/// 
+///     This namespace contains all the core mapping functionality of Phosphorus.Five, such as the Active Event implementation,
+///     the Node structure, in addition to some helper and utilities classes.
+/// </summary>
 namespace phosphorus.core
 {
     /// <summary>
-    ///     the application context allows your to register instance event listeners and raise Active Events. for an executable
+    ///     Application context, which your Active Events are raised through.
+    /// 
+    ///     The application context allows your to register instance event listeners and raise Active Events. For an executable
     ///     program, you'd probably only have one application context, while for a website project, and similar types of
-    ///     projects,
-    ///     you'd probably create an application context for each thread that access your website, by creating your application
-    ///     context in the beginning of your page life cycle. to create your application context, use the
-    ///     <see cref="phosphorus.core.Loader.CreateApplicationContext" /> method. make sure all Active Event assemblies are
-    ///     loaded before
-    ///     you create your application context
+    ///     projects, you'd probably create an application context for each thread that access your website, by creating your application
+    ///     context in the beginning of your page life cycle.
+    /// 
+    ///     To create your application context, use the <see cref="phosphorus.core.Loader.CreateApplicationContext" /> method. Make sure
+    ///     all Active Event assemblies are loaded before you create your application context.
     /// </summary>
     public class ApplicationContext
     {
@@ -39,7 +46,12 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        ///     returns all Active Events registered within the system
+        ///     Returns all Active Events registered within the current ApplicationContext object.
+        /// 
+        ///     Each ApplicationContext has its unique Active Events, depending upon whether or not the current context
+        ///     has overridden or created new Active Events.
+        /// 
+        ///     This property returns all Active Events for the current context.
         /// </summary>
         /// <value>The active events.</value>
         public IEnumerable<string> ActiveEvents
@@ -48,16 +60,26 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        ///     returns all overrides in system
+        ///     Returns all overrides for current Application context.
+        /// 
+        ///     Each ApplicationContext might have its own overridden Active Events. To access the overridden Active Events
+        ///     for your current context, use this property.
+        /// 
+        ///     This property return the name of the "base" Active Event as Item1 of the Tuple return value, and all of the
+        ///     "super" Active Events as a list, which can be found in Item2 of the Tuple returned.
         /// </summary>
-        /// <value>The active events.</value>
+        /// <value>The overrides in your context.</value>
         public IEnumerable<Tuple<string, List<string>>> Overrides
         {
             get { return _overrides.Select (idx => new Tuple<string, List<string>> (idx.Key, idx.Value)); }
         }
 
         /// <summary>
-        ///     registers an instance Active Event listening object
+        ///     Registers an instance Active Event listening object.
+        /// 
+        ///     If you have instance methods that are Active Event handlers, then you must register your instances in your
+        ///     context through this method. This allows you to create Active Event handlers, that are instance methods, in
+        ///     your app context.
         /// </summary>
         /// <param name="instance">object to register for Active Event handling</param>
         public void RegisterListeningObject (object instance)
@@ -96,7 +118,11 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        ///     unregisters an instance listening object
+        ///     Unregisters an instance listening object.
+        /// 
+        ///     If you no longer want your object to handle Active Events, you must call this method to "unregister" your object
+        ///     as an instance listener. Typically, you should let your class implement IDisposable, and unregister your object
+        ///     in its Dispose implementation, when you have instance listeners.
         /// </summary>
         /// <param name="instance">object to unregister</param>
         public void UnregisterListeningObject (object instance)
@@ -143,77 +169,102 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        ///     override the specified baseActiveEvent with the given overriddenActiveEvent.
+        ///     Overrides the specified "baseEvent" with the specified "superEvent".
+        /// 
+        ///     This method allows you to override one Active Event with another. The Active Event you wish to override,
+        ///     is specified through its baseEvent parameter, and the Active Event you wish to override your existing Active Event,
+        ///     is specified through its superEvent parameter.
+        /// 
+        ///     If you override an Active Event, then when the original Active Event is being raised, then instead of raising that
+        ///     Active Event, the "Super Event" will be raised instead. This gives you a superior alternative to polymorphism then
+        ///     traditional Object Oriented Programming (OOP), since the event that overrides the base event, does not need to know
+        ///     anything about the existing method at all.
+        /// 
+        ///     This allows you to loosely couple Active Events together, and let one Active Event overide the other, without bringing
+        ///     in expensive dependencies between your different projects.
+        /// 
+        ///     This is THE core feature of Phosphorus.Five, and what allows Phosphorus to have such a unique plugin architecture as it has.
         /// </summary>
-        /// <param name="baseActiveEvent">active event to override</param>
-        /// <param name="newActiveEvent">which active event we should override the base with</param>
-        public void Override (string baseActiveEvent, string newActiveEvent)
+        /// <param name="baseEvent">Active event to override.</param>
+        /// <param name="superEvent">Which active event we should override the specified baseEvent with.</param>
+        public void Override (string baseEvent, string superEvent)
         {
             // checking to see if this is our first override of the given base Active Event, and if so, we create our list of 
             // overridden Active Events for the given key of the base Active Event
-            if (!_overrides.ContainsKey (baseActiveEvent))
-                _overrides [baseActiveEvent] = new List<string> ();
+            if (!_overrides.ContainsKey (baseEvent))
+                _overrides [baseEvent] = new List<string> ();
 
             // this might produce multiple results for the same override, hence we must check during invocation
             // that we only raise the same override once!
             // However, since we're using the _overrides as a "stack", when removing overrides, this is the correct
             // semantic way to do this
-            _overrides [baseActiveEvent].Add (newActiveEvent);
+            _overrides [baseEvent].Add (superEvent);
         }
 
         /// <summary>
-        ///     removes an overriden Active Event
+        ///     Removes an overriden Active Event.
+        /// 
+        ///     Removes an override from your context, which will make sure the original baseEvent is invoked again when raised.
         /// </summary>
-        /// <param name="baseActiveEvent">name of the Active Event the override overrides</param>
-        /// <param name="newActiveEvent">name of the new Active Event to override the baseActiveEvent</param>
-        public void RemoveOverride (string baseActiveEvent, string newActiveEvent)
+        /// <param name="baseEvent">The name of the Active Event the override overrides.</param>
+        /// <param name="superEvent">The name of the super Active Event that overrides the baseEvent.</param>
+        public void RemoveOverride (string baseEvent, string superEvent)
         {
-            if (_overrides.ContainsKey (baseActiveEvent)) {
+            if (_overrides.ContainsKey (baseEvent)) {
                 // removing first occurency of newActiveEvent, which might not necessarily remove ALL entries with same name
-                _overrides [baseActiveEvent].Remove (newActiveEvent);
+                _overrides [baseEvent].Remove (superEvent);
 
                 // checking to see if this was the last override, and if so, remove the dictionary item all together to clean up
-                if (_overrides [baseActiveEvent].Count == 0)
-                    _overrides.Remove (baseActiveEvent);
+                if (_overrides [baseEvent].Count == 0)
+                    _overrides.Remove (baseEvent);
             }
         }
 
         /// <summary>
-        ///     raises the specified Active Event with the given arguments. Will traverse the "inheritance chain", or
-        ///     the overridden Active Events, to check if the Active Event client code wish to raise is overridden to
-        ///     another Active Event
+        ///     Raises one Active Event.
+        /// 
+        ///     Raises the specified Active Event, with the given parameters. Will traverse the "inheritance chain", or
+        ///     the overridden Active Events, to check if the Active Event your code wish to raise, is overridden with
+        ///     another Active Event.
         /// </summary>
         /// <param name="name">name of Active Event to raise</param>
-        /// <param name="args">arguments to pass into the Active Event</param>
-        public Node Raise (string name, Node args = null)
+        /// <param name="pars">arguments to pass into the Active Event</param>
+        public Node Raise (string name, Node pars = null)
         {
-            if (args == null)
-                args = new Node ();
-            var e = new ActiveEventArgs (name, args);
+            if (pars == null)
+                pars = new Node ();
+            var e = new ActiveEventArgs (name, pars);
             RaiseImplementation (e);
             return e.Args;
         }
 
         /// <summary>
-        ///     raises the specified Active Event directly with the given arguments. will not traverse the "inheritance chain", or
-        ///     the overridden Active Events
+        ///     Raises one Active Event directly, without considering its inheritence chain.
+        /// 
+        ///     Raises the specified Active Event directly, with the given parameters. Will not traverse the "inheritance chain", or
+        ///     the overridden Active Events. This method is sometimes useful for being able to invoke "base Active Events", if you have overridden
+        ///     an Active Event with another implementation.
+        /// 
+        ///     Though, to invoke "base Events", please consider the CallBase method too, if you can.
         /// </summary>
         /// <param name="name">name of Active Event to raise</param>
-        /// <param name="args">arguments to pass into the Active Event</param>
-        public void RaiseDirectly (string name, Node args = null)
+        /// <param name="pars">arguments to pass into the Active Event</param>
+        public void RaiseDirectly (string name, Node pars = null)
         {
-            if (args == null)
-                args = new Node ();
-            var e = new ActiveEventArgs (name, args);
+            if (pars == null)
+                pars = new Node ();
+            var e = new ActiveEventArgs (name, pars);
             RaiseDirectly (e);
         }
 
         /// <summary>
-        ///     raises the specified Active Event with the given arguments, directly, without trying to figure
+        ///     Raise the "base Event(s)" for your Active Events.
+        /// 
+        ///     Raises the specified Active Event's base event(s), with the given parameters, directly, without trying to figure
         ///     out any derived Active Events. Useful for invoking "base Active Events" from Active Events you
-        ///     know are overridden
+        ///     know are overridden.
         /// </summary>
-        /// <param name="e">Active Event you wish to call base for</param>
+        /// <param name="e">EventArgs wrapping the base event you wish to invoke.</param>
         public void CallBase (ActiveEventArgs e)
         {
             if (e.Base != null) {
@@ -224,7 +275,6 @@ namespace phosphorus.core
         /*
          * initializes app context
          */
-
         private void InitializeApplicationContext (Dictionary<Type, List<Tuple<ActiveEventAttribute, MethodInfo>>> staticEvents)
         {
             // looping through each Type in static Active Events given
@@ -257,7 +307,6 @@ namespace phosphorus.core
         /*
          * responsible for recursively figuring out the most derived Active Event to actually invoke
          */
-
         private void RaiseImplementation (ActiveEventArgs e)
         {
             // checking to see if the Active Event currently raised, is overridden, and if it is
@@ -282,7 +331,6 @@ namespace phosphorus.core
          * actual implementation of raising an Active Event. will raise the Active Event given directly, without
          * trying to figure out any polymorphistically overriden Active Events overriding the given Active Event
          */
-
         private void RaiseDirectly (ActiveEventArgs e)
         {
             // checking if we have any handlers

@@ -1,5 +1,5 @@
 /*
- * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
+ * Phosphorus.Five, copyright 2014 - 2015, Mother Earth, Jannah, Gaia - YOU!
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
  */
 
@@ -417,7 +417,7 @@ namespace phosphorus.unittests
             Assert.AreEqual ("success", value);
         }
 
-        // TODO: the next one has pretty weird logic, and I am not even sure if it is correct ...?
+        /// \todo the next one has pretty weird logic, and I am not even sure if it is correct ...?
         /// <summary>
         ///     verifies Iterate from XUtil works correctly, when requesting 'node', and iterating over a constant which is formatted,
         ///     and the value of that formatted expression should be converted into a Node, where it's value is an integer

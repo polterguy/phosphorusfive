@@ -1,6 +1,6 @@
 /*
- * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
- * phosphorus five is licensed as mitx11, see the enclosed LICENSE file for details
+ * Phosphorus.Five, copyright 2014 - 2015, Mother Earth, Jannah, Gaia - YOU!
+ * Phosphorus.Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details.
  */
 
 using System;
@@ -22,14 +22,26 @@ using phosphorus.expressions;
 // ReSharper disable UnusedParameter.Local
 // ReSharper disable PartialTypeWithSinglePart
 
+/// <summary>
+///     Main namespace for your Application Pool.
+/// 
+///     Your Application Pool is your "web project", and where everything happens, if you use Phosphorus.Five to create
+///     web applications. Normally you do not need to change anything at all in here, or even fiddle with, or realize that
+///     there even is an Application Pool created for you, since you can use Phosphorus.Five entirely through its Active Event
+///     system, and create plugins that automatically plugs into your Application Pool.
+/// 
+///     However, if you wish to achieve more detailed control over your end web project, then this is where you'd do just that.
+/// </summary>
 namespace phosphorus.five.applicationpool
 {
     using pf = ajax.widgets;
 
     /// <summary>
-    /// This is the main .aspx page for the Application Pool, and the only page in the system, from which
-    /// all web requests are being handled. Contains many useful helper Active events for things such as including
-    /// JavaScript files, StyleSheet files, creating and manipulating web widgets, etc.
+    ///     Main .aspx web page for your Application Pool.
+    /// 
+    ///     This is the main, and only, .aspx page for your Application Pool, from which all web requests are being handled.
+    ///     It contains many useful helper Active events, for things such as including JavaScript files, including StyleSheet files,
+    ///     creating and manipulating web widgets, etc.
     /// </summary>
     public partial class Default : AjaxPage
     {
@@ -145,16 +157,22 @@ namespace phosphorus.five.applicationpool
         }
 
         /// <summary>
-        ///     Creates a web widget. Optionally declare the type of widget you wish to create as [widget], and which parent 
-        ///     widget it should have as [parent]. You can also optionally declare where you wish to position your widget, by
-        ///     using either [before] or [after], to make sure your widget becomes either before some specific widget, or after
-        ///     it. Internally, this Active Event uses the [pf.web.widgets.xxx] Active Events to actually create your widget.
-        ///     See any of those Active Events to see what types of properties you can further decorate your widget with, which
-        ///     varies according to what type of [widget] you are creating. [widget] defaults to "container", and [parent] defaults
-        ///     to "container", which is your main root widget on the page. If neither [before] nor [after] is given, widget will
-        ///     be appended into controls collection at the end of whatever [parent] widget you choose to use. You can also optionally
-        ///     declare local widget Active Events, by passing in an [events] node, which will be locally declared Active Events for
-        ///     your widget, only active, as long as Widget exists on page.
+        ///     Creates a web widget.
+        /// 
+        ///     Optionally declare the type of widget you wish to create as [widget], and which parent 
+        ///     widget it should have, as [parent].
+        /// 
+        ///     You can also optionally declare where you wish to position your widget, by using either [before] or [after], to 
+        ///     make sure your widget becomes either before some specific widget, or after it. Internally, this Active Event uses 
+        ///     the [pf.web.widgets.xxx] Active Events to actually create your widget. See any of those Active Events to understand 
+        ///     what types of properties you can further decorate your widget with, which varies according to what type of [widget] 
+        ///     you are creating.
+        /// 
+        ///     [widget] defaults to "container", and [parent] defaults to "container", which is your main root widget on your page.
+        /// 
+        ///     If neither [before] nor [after] is given, widget will be appended into controls collection at the end of whatever
+        ///     [parent] widget you choose to use. You can also optionally declare local widget Active Events, by passing in an [events] 
+        ///     node, which will be locally declared Active Events for your widget, only active, as long as Widget exists on page.
         /// </summary>
         /// <param name="context">Context for current request</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -186,7 +204,10 @@ namespace phosphorus.five.applicationpool
         }
 
         /// <summary>
-        ///     clears the given widget, removing all its children widgets
+        ///     Clears the given widget, removing all its children widgets.
+        ///
+        ///     Empties your Widget's Controls collection entirely, but leaving the widget itself. Useful entirely emptiyng 
+        ///     your widget, removing all of its children widgets.
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -219,6 +240,8 @@ namespace phosphorus.five.applicationpool
 
         /// <summary>
         ///     Removes the given widget(s) entirely.
+        ///
+        ///     Removes the specified widget from your page in its entirety, including all of its children widgets.
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -252,7 +275,9 @@ namespace phosphorus.five.applicationpool
         }
         
         /// <summary>
-        ///     Lists all widgets on page. Alternatively supply a filter as argument.
+        ///     Lists all widgets on page.
+        ///
+        ///     Alternatively supply a filter as argument. If you do, then only widgets matching your filter will be returned.
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -270,6 +295,13 @@ namespace phosphorus.five.applicationpool
         
         /// <summary>
         ///     Sets additional data associated with widget(s).
+        ///
+        ///     This additional "data" is never rendered to the client, but exclusively kept on the server, which allows
+        ///     you to associate pieces of additional information coupled with your widgets, such as "database IDs", etc.
+        ///     The Widget(s) you wish to associate your data with, is passed in as the value of your main Node, the data
+        ///     you wish to associate with your widget, is passed in as children nodes of your main Node.
+        ///
+        ///     If you remove your Widget from your page, somehow, then this data is automatically removed too.
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -308,6 +340,12 @@ namespace phosphorus.five.applicationpool
 
         /// <summary>
         ///     Retrieves additional data associated with widget(s).
+        ///
+        ///     Returns any additional information you have stored with your widget. Which pieces of data
+        ///     you wish to retrieve, must be defined through the names of the children of the main Node when
+        ///     invoking this Active Event.
+        ///
+        ///     Which widget to retrieve data for, is given as the value of the main node when invoking this Active Event.
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -347,6 +385,9 @@ namespace phosphorus.five.applicationpool
 
         /// <summary>
         ///     Removes additional data associated with widget(s).
+        /// 
+        ///     Which widget you wish to remove data for, is given as value of main Node. Which data you wish to
+        ///     remove, is defined through the children nodes of your Active Event invocation.
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -382,6 +423,9 @@ namespace phosphorus.five.applicationpool
 
         /// <summary>
         ///     Lists all additional data associated with widget(s).
+        /// 
+        ///     Returns a list of all keys of additional data that is associated with your Widget. Supply what widget
+        ///     you're interested in querying as the value of the main Node when invoking this Active Event.
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -412,7 +456,13 @@ namespace phosphorus.five.applicationpool
         }
 
         /// <summary>
-        ///     Returns the given event(s) for the given widget(s)
+        ///     Returns the given event(s) for the given widget(s).
+        /// 
+        ///     Returns Active Events associated with your widget, matching the names of the children nodes
+        ///     of the main node used when invoking this Active Event.
+        /// 
+        ///     Supply which Widget you wish to retrieve events for ass the value of your main Node when invoking this
+        ///     Active Event, and what events you wish to retrieve as the names of the children nodes of your main node.
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -447,7 +497,12 @@ namespace phosphorus.five.applicationpool
         }
 
         /// <summary>
-        ///     Sets the given event(s) for the given widget(s)
+        ///     Changes the given event(s) for the given widget(s).
+        /// 
+        ///     Allows you to change one or more event(s) for one or more Widget(s). The widget you wish to change the 
+        ///     Active Events for is given as the value of your main node when invoking this Active Event. The events
+        ///     you wish to change, and their new content, is given as children nodes of your main node when invoking 
+        ///     this Active Event.
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -478,7 +533,11 @@ namespace phosphorus.five.applicationpool
         }
 
         /// <summary>
-        ///     Removes the given event(s) for the given widget(s)
+        ///     Removes the given event(s) for the given widget(s).
+        /// 
+        ///     The Widget you wish to remove Active Events from is given as the value of your main node 
+        ///     when invoking this Active Event. The Active Events you wish to remove, is defined as the names of the children 
+        ///     of your main node when invoking this Active Event.
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -510,6 +569,9 @@ namespace phosphorus.five.applicationpool
         
         /// <summary>
         ///     Lists all existing events for given widget(s).
+        /// 
+        ///     Returns a list of all Active Events for the specified Widget(s) defined as the value of your main node
+        ///     when invoking this Active Event.
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -537,8 +599,9 @@ namespace phosphorus.five.applicationpool
         }
 
         /// <summary>
-        ///     sends the given JavaScript to the client. JavaScript is given as value of [pf.web.javascript.add], and can
-        ///     be a constant, an expression or a formatting expression
+        ///     Sends the given JavaScript to the client.
+        /// 
+        ///     JavaScript is given as value of main node.
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -548,9 +611,18 @@ namespace phosphorus.five.applicationpool
             var js = XUtil.Single<string> (e.Args, context);
             Manager.SendJavaScriptToClient (js);
         }
-        
+
+        /// \todo implement inclusion of JavaScript files become async. Today it's included using a non-async GET request.
+        /// \todo Make sure inclusion of JavaScript files, and inclusion of JavaScript content is being executed sequentially,
+        // such that if I include JavaScript first, for then to include a file, then the JavaScript is executed before the
+        // file is downloaded, vice versa. This is a problem with among other things the CK Editor in System42.
         /// <summary>
-        ///     includes a JavaScript file on the client side
+        ///     Includes JavaScript file(s) on the client side.
+        /// 
+        ///     Using this method, you can dynamically declare JavaScript you wish to have included on the client-side
+        ///     in either Ajax requests, normal POST HTTP requests, or the initial loading of your page.
+        /// 
+        ///     The framework itself, will automatically take care of including your JavaScript files on the client-side.
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -562,8 +634,14 @@ namespace phosphorus.five.applicationpool
             }
         }
 
+        /// \todo implement support for including CSS files during Ajax requests.
         /// <summary>
-        ///     includes a stylesheet file on the client side
+        ///     Includes CSS StyleSheet file(s) on the client side.
+        /// 
+        ///     Using this method, you can dynamically declare CSS StyleSheet files you wish to have included on the client-side
+        ///     in either Ajax requests, normal POST HTTP requests, or the initial loading of your page.
+        /// 
+        ///     The framework itself, will automatically take care of including your JavaScript files on the client-side.
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -575,8 +653,11 @@ namespace phosphorus.five.applicationpool
             }
         }
 
+        /// \todo implement support for changing the title during Ajax requests
         /// <summary>
-        ///     changes the "title" HTML element's value of the portal
+        ///     Changes the title of your web page.
+        /// 
+        ///     Changes the "title" HTML element's content of your web page.
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -588,11 +669,12 @@ namespace phosphorus.five.applicationpool
             Title = XUtil.Single<string> (e.Args, context);
         }
 
-        // TODO: support [rel-source], the same way we do in [set] in this guy
+        /// \todo support [rel-source], the same way we do in [set] in this guy
         /// <summary>
-        ///     send the given string back to browser as JSON with the key given as value of [pf.web.response.return-value], and the string
-        ///     sent being the value of the first child of [pf.web.response.return-value]. the value to send, can either be an expression, a
-        ///     constant, or a node formatting expression
+        ///     Returns the given Node back to client as JSON.
+        /// 
+        ///     Sends the given Node back to client as JSON, with the key given as value of main Node, and the content sent being
+        ///     its children nodes.
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -605,7 +687,10 @@ namespace phosphorus.five.applicationpool
         }
 
         /// <summary>
-        ///     creates an ajax event containing pf.lambda code for the given widget's event
+        ///     Creates an ajax event containing pf.lambda code for the given widget's event.
+        /// 
+        ///     Used internally by plugins that needs to declare Ajax Events for Widgets, containing pf.lambda code to be executed,
+        ///     upon callbacks to server.
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -632,7 +717,10 @@ namespace phosphorus.five.applicationpool
         }
 
         /// <summary>
-        ///     returns the control with the given ID as first child of args, from optionally [parent] control's ID given
+        ///     Finds the specified Control on your page, and returns to caller.
+        /// 
+        ///     Returns the control with the specified ID, from optionally [parent] control's. If no [parent] node is defined,
+        ///     the first control matching the id given from the Page object will be returned.
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -650,7 +738,10 @@ namespace phosphorus.five.applicationpool
         }
 
         /// <summary>
-        ///     Null Active Event handler, for handling widget specific Active Events
+        ///     Null Active Event handler, for handling widget specific Active Events.
+        /// 
+        ///     Null Active Event handler, that checks for Widget specific events, and invoked the associated pf.lambda
+        ///     code if a match is found.
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>

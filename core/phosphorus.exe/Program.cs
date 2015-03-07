@@ -1,5 +1,5 @@
 /*
- * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
+ * Phosphorus.Five, copyright 2014 - 2015, Mother Earth, Jannah, Gaia - YOU!
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
  */
 
@@ -11,20 +11,32 @@ using phosphorus.expressions;
 
 // ReSharper disable UnusedMember.Local
 
+/// <summary>
+///     Main namespace for the <em>"lambda.exe"</em> console program, that allows for execution of pf.lambda code through the console.
+/// 
+///     This namespace contains the "lambda.exe" program, which allows for executing pf.lambda code, either in immediate mode, or
+///     as Hyperlisp files through the console.
+/// </summary>
 namespace phosphorus.exe
 {
     /// <summary>
-    ///     main class for pf.lambda executor. this project builds a mono exe file that can execute hyperlisp, and other types
-    ///     of "pf.lambda" objects
+    ///     Main class for the pf.lambda console executor.
+    /// 
+    ///     This is the main entry class for the "lambda.exe" console program, that allows for eexecuting Hyperlisp and pf.lambda code through
+    ///     the console, either directly using its <em>"immediate mode"</em>, or indirectly through Hyperlisp files.
+    /// 
+    ///     Class exposes two Active Events of its own, [pf.console.write] and [pf.console.write-line]. These two Active Events simply
+    ///     writes to the standard output, using the Console.Write/WriteLine from .Net and Mono.
     /// </summary>
     internal static class MainClass
     {
         /// <summary>
-        ///     Returns the application base path as value of given args node. 
-        ///     Necessary to make our [pf.file.xxx] namespace work correctly.
+        ///     Returns the application base path as value of given args node.
+        /// 
+        ///     Necessary to make for instance our [pf.file.xxx] namespace work correctly.
         /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context Active Event is raised within.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.core.application-folder")]
         private static void pf_core_application_folder (ApplicationContext context, ActiveEventArgs e)
         {
@@ -35,10 +47,12 @@ namespace phosphorus.exe
         }
 
         /// <summary>
-        ///     Allows you to write one line of text back to the console, appending CR/LF at the end automatically
+        ///     Allows you to write one line of text back to the console.
+        /// 
+        ///     Automatically appends Carriage Returns and Line Feeds (CR/LF) at the end of your output.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">active event arguments</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Active event arguments.</param>
         [ActiveEvent (Name = "pf.console.write-line")]
         private static void console_write_line (ApplicationContext context, ActiveEventArgs e)
         {
@@ -47,10 +61,12 @@ namespace phosphorus.exe
         }
 
         /// <summary>
-        ///     Allows you to write any text back to the console, without ending your text with CR/LF
+        ///     Allows you to write any text back to the console.
+        /// 
+        ///     Will not append neither Carriage Return nor Line Feeds (CR/LF) at the end of your text.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">active event arguments</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Active event arguments.</param>
         [ActiveEvent (Name = "pf.console.write")]
         private static void console_write (ApplicationContext context, ActiveEventArgs e)
         {
@@ -60,8 +76,11 @@ namespace phosphorus.exe
 
         /// <summary>
         ///     The entry point of the program, where the program control starts and ends
+        /// 
+        ///     Parses any arguments given, which may include "-i", "-p" and/or "-f". Execute the program
+        ///     without arguments to see all the different arguments possible to pass into it.
         /// </summary>
-        /// <param name="args">command-line arguments.</param>
+        /// <param name="args">Command-line arguments.</param>
         public static void Main (string[] args)
         {
             try {
@@ -115,7 +134,8 @@ namespace phosphorus.exe
         }
 
         /*
-         * starts immediate mode, allowing user to type in a bunch of Hyperlisp, executing when empty line is submitted
+         * starts immediate mode, allowing user to type in a bunch of Hyperlisp, executing when empty line is submitted.
+         * to exit program, type "exit" as a line of input.
          */ 
         private static void ImmediateMode (ApplicationContext context)
         {

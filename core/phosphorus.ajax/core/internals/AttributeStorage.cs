@@ -1,5 +1,5 @@
 /*
- * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
+ * Phosphorus.Five, copyright 2014 - 2015, Mother Earth, Jannah, Gaia - YOU!
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
  */
 
@@ -100,7 +100,7 @@ namespace phosphorus.ajax.core.internals
         /// <value>The names of all attributes stored in this instance.</value>
         public IEnumerable<string> Keys {
             get {
-                // TODO: refactor, too much repetition
+                /// \todo refactor, too much repetition
                 Dictionary<string, bool> _alreadySen = new Dictionary<string, bool> ();
                 foreach (var idx in this._dynamicallyAddedThisRequest) {
                     yield return idx.Name;
@@ -268,7 +268,7 @@ namespace phosphorus.ajax.core.internals
             }
 
             // removing stuff that's not really attributes
-            // TODO: create generic version, that allows for supplying a list of removals to do
+            /// \todo create generic version, that allows for supplying a list of removals to do
             lst.RemoveAll (idx => idx.Name == "outerHTML" || idx.Name == "innerValue" || idx.Name == "Tag");
 
             // rendering to html writer

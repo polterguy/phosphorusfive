@@ -1,5 +1,5 @@
 /*
- * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
+ * Phosphorus.Five, copyright 2014 - 2015, Mother Earth, Jannah, Gaia - YOU!
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
  */
 
@@ -13,17 +13,27 @@ using System.Text;
 namespace phosphorus.core
 {
     /// <summary>
-    ///     utilities class, contains helpers for common operations
+    ///     Utility class, contains helpers for common operations.
+    /// 
+    ///     This class contains helper methods used both by the library internally, and exposed for you to use in your programs.
+    ///     One particularly interesting method for you, is the Convert method, that allows you to convert any object, to any other 
+    ///     type of object, using the internal type system of Phosphorus.Five.
     /// </summary>
     public static class Utilities
     {
         /// <summary>
-        ///     converts the given value to type T
+        ///     Converts the given value to type T.
+        /// 
+        ///     Will convert the given value to an object of type T for you, either by checking to see if the object
+        ///     implements IConvertible, if the object already is of type T, or by using the internal type system of Phosphorus.Five, with
+        ///     its conversion Active Events.
+        /// 
+        ///     This method allows you to convert for instance between strings and Node, and is at the core of the type system of Phosphorus.Five.
         /// </summary>
-        /// <param name="value">value to convert</param>
-        /// <param name="context">application context</param>
-        /// <param name="defaultValue">default value to return if no conversion is possible</param>
-        /// <typeparam name="T">type to convert value to</typeparam>
+        /// <param name="value">Value to convert.</param>
+        /// <param name="context">Application context. Needed since it might potentially have to raise "conversion Active Events" to convert your value.</param>
+        /// <param name="defaultValue">Default value to return, if no conversion is possible.</param>
+        /// <typeparam name="T">Type to convert your value to.</typeparam>
         public static T Convert<T> (
             object value,
             ApplicationContext context,
@@ -65,10 +75,13 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        ///     returns true if string can be converted to an integer
+        ///     Returns true if string can be converted to an integer.
+        /// 
+        ///     Returns true if string contains nothing but whole integer numbers. Used in the parsing of
+        ///     pf.lambda expressions, when constructing iterators, among other things.
         /// </summary>
-        /// <returns><c>true</c> if this instance is a number; otherwise, <c>false</c></returns>
-        /// <param name="value">string to check</param>
+        /// <returns><c>true</c> if this instance is a whole, positive, integer number; otherwise, <c>false</c>.</returns>
+        /// <param name="value">String to check.</param>
         public static bool IsNumber (string value)
         {
             if (value.Any (idx => "0123456789".IndexOf (idx) == -1)) {
@@ -78,10 +91,15 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        ///     reads a single line string literal token from text reader
+        ///     Reads a single line string literal token from specified text reader.
+        /// 
+        ///     Will read a single line string literal in C# style from the specified reader, advancing the reader's position,
+        ///     such that it is just beyond the string literal when done.
+        /// 
+        ///     Used in among other things while parsing Hyperlisp and pf.lambda expressions.
         /// </summary>
-        /// <returns>the single line string literal</returns>
-        /// <param name="reader">reader to read from</param>
+        /// <returns>The single line string literal, parsed.</returns>
+        /// <param name="reader">Reader to read from.</param>
         public static string ReadSingleLineStringLiteral (StringReader reader)
         {
             var builder = new StringBuilder ();
@@ -104,10 +122,15 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        ///     reads a multiline string literal token from text reader
+        ///     Reads a multi line string literal token from specified text reader.
+        /// 
+        ///     Will read a multi line string literal in C# style from the specified reader, advancing the reader's position,
+        ///     such that it is just beyond the string literal when done.
+        /// 
+        ///     Used in among other things while parsing Hyperlisp and pf.lambda expressions.
         /// </summary>
-        /// <returns>the multi line string literal</returns>
-        /// <param name="reader">reader to read from</param>
+        /// <returns>The single line string literal, parsed.</returns>
+        /// <param name="reader">Reader to read from.</param>
         public static string ReadMultiLineStringLiteral (StringReader reader)
         {
             var builder = new StringBuilder ();
@@ -139,7 +162,6 @@ namespace phosphorus.core
         /*
          * appends an escape character to stringbuilder
          */
-
         private static string AppendEscapeCharacter (StringReader reader)
         {
             var c = reader.Read ();
@@ -180,7 +202,6 @@ namespace phosphorus.core
         /*
          * returns a character represented as an octal character representation
          */
-
         private static string HexaCharacter (StringReader reader)
         {
             var hexNumberString = string.Empty;
@@ -194,7 +215,6 @@ namespace phosphorus.core
         /*
          * converts value to string using conversion Active Events
          */
-
         private static string Convert2String (object value, ApplicationContext context)
         {
             var nodes = value as IEnumerable<Node>;
@@ -221,7 +241,6 @@ namespace phosphorus.core
         /*
          * converts string to object using conversion Active Events
          */
-
         private static T Convert2Object<T> (string value, ApplicationContext context, T defaultValue = default (T))
         {
             var typeName = context.Raise (

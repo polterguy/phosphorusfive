@@ -1,5 +1,5 @@
 /*
- * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
+ * Phosphorus.Five, copyright 2014 - 2015, Mother Earth, Jannah, Gaia - YOU!
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
  */
 
@@ -37,7 +37,7 @@ namespace phosphorus.expressions
         /// <param name="value">value to check</param>
         public static bool IsExpression (string value)
         {
-            // TODO: simplify, needs support for expressions on multiple lines, having first iterator on second line
+            /// \todo simplify, needs support for expressions on multiple lines, having first iterator on second line
             return value != null &&
                    value.StartsWith ("@") &&
                    value.Length >= 4 && // "@{0}" is the shortest possible expression, and has 4 characters
@@ -46,7 +46,7 @@ namespace phosphorus.expressions
                    (value [1] == '?' || value [1] == '/' || value [1] == '{' || value [1] == '@');
         }
 
-        // TODO: refactor, too complex, also contains overlapping functionality with Expression.cs
+        /// \todo refactor, too complex, also contains overlapping functionality with Expression.cs
         /// <summary>
         ///     returns type of expression
         /// </summary>
@@ -422,7 +422,7 @@ namespace phosphorus.expressions
             return Iterate (exp, dataSource, context);
         }
 
-        // TODO: the next one is only used in [pf.data.select], try to rethink logic of this part, somehow
+        /// \todo the next one is only used in [pf.data.select], try to rethink logic of this part, somehow
         /// <summary>
         ///     returns all matches from expression in node. node may contain formatting parameters, which will
         ///     be evaluated before expression, using formattingSource as start node for any expressions within
@@ -477,7 +477,7 @@ namespace phosphorus.expressions
             return Source (node, node.LastChild, context);
         }
 
-        // TODO: refactor these next buggers, they're too complex
+        /// \todo refactor these next buggers, they're too complex
         /// <summary>
         ///     retrieves the value of [source], [rel-source], [src] or [rel-src] child node, converted into T. returns null if no source exists.
         ///     does not care about whether or not there are multiple values, and will return a List if there are multiple values, though
@@ -526,7 +526,7 @@ namespace phosphorus.expressions
                         source = node.LastChild.FirstChild.Clone ();
                     } else {
                         // more than one source, making sure we clone them, before we return the clones
-                        source = new List<Node> (node.LastChild.Clone ().UntieChildren ());
+                        source = new List<Node> (node.LastChild.Clone ().UnTieChildren ());
                     }
                 }
             }
@@ -683,7 +683,7 @@ namespace phosphorus.expressions
                 node.Get (context, string.Empty);
         }
 
-        // TODO: try to refactor, too complex
+        /// \todo try to refactor, too complex
         /*
          * common implementation for Single<T> methods. requires a delegate responsible for returning
          * the IEnumerable that the method iterates over

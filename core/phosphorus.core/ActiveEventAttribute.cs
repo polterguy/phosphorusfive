@@ -1,5 +1,5 @@
 /*
- * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
+ * Phosphorus.Five, copyright 2014 - 2015, Mother Earth, Jannah, Gaia - YOU!
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
  */
 
@@ -34,12 +34,11 @@ using System;
 namespace phosphorus.core
 {
     /// <summary>
-    ///     The ActiveEvent attribute is used for marking your methods as Active Events.
+    ///     Attribute used for marking your methods as Active Events.
     /// 
-    ///     Declare an Active Event by adding
-    ///     this attribute to your class, and make sure it has a 
-    ///     <see cref="phosphorus.core.ActiveEventAttribute.Name">Name</see> property. Optionally, make your 
-    ///     Active Event override other existing Active Events by using <see cref="phosphorus.core.ActiveEventAttribute.Overrides">Overrides</see>.
+    ///     Declare an Active Event by adding this attribute to your class, and make sure it has a Name property. Optionally, make your 
+    ///     Active Event override other existing Active Events by using the Overrides property.
+    /// 
     ///     Active Events to a large extends replaces conventional functions and methods, and allows you to invoke methods by using the 
     ///     <see cref="phosphorus.core.ApplicationContext.Raise">Raise</see> method, and similar constructs. This allows you to completely
     ///     loosely couple together your modules in your application, without having any dependencies between them at all, which facilitates for
@@ -52,19 +51,38 @@ namespace phosphorus.core
     ///     
     ///     Since you can pass in any <see cref="phosphorus.core.Node">Node</see> hierarchy you wish into your Active Events, you
     ///     can effectively pass in, and return, any number, and types of arguments, from your Active Events.
+    /// 
+    ///     Please notice that you can also create "null Active Events", which are Active Events that will be raised every single time
+    ///     any Active Event is being raised, by setting its name to string.Empty (""). This is useful if you have Active Events that are
+    ///     supposed to handle a whole range of other Active Events, where you do not know until run-time which Active Events it is supposed
+    ///     to actually handle.
+    /// 
+    ///     The Active Event design pattern in Phosphorus.Five is THE core feature of the library, and what facilitates everything else to
+    ///     exist. Active Events to a large extent effectively replaces most other existing Design Patterns on the planet, more or less.
+    ///     At the very least, most of the original 23 Design Patterns created by the Gang of Four (GoF) are basically rendered "obsolete"
+    ///     when you realize how to use Active Events.
+    /// 
+    ///     Active Events completely replaces traditional Object Oriented Programming (OOP), since it repllaces the very way you invoke
+    ///     functions and methods in your solution, and is the facilitator behind the entirety of Phosphorus.Five, especially the "pf.lambda"
+    ///     parts, and its extremely Agile plugin Architecture.
     ///     \ingroup ActiveEvents
     /// </summary>
     [AttributeUsage (AttributeTargets.Method, AllowMultiple = true)]
     public class ActiveEventAttribute : Attribute
     {
         /// <summary>
-        ///     the name of the Active Event
+        ///     The name of your Active Event.
+        /// 
+        ///     This is the name used to raise your Active Event.
         /// </summary>
         /// <value>the name</value>
         public string Name { get; set; }
 
         /// <summary>
-        ///     the name of the Active Event this Active Event is overriding
+        ///     The name of the Active Event this Active Event is overriding.
+        /// 
+        ///     If your Active Event is overriding an existing Active Event, then the name of the base Active Event can be declared
+        ///     through this property.
         /// </summary>
         /// <value>the Active Event override</value>
         public string Overrides { get; set; }

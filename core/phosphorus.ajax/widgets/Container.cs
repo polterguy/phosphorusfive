@@ -1,5 +1,5 @@
 /*
- * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
+ * Phosphorus.Five, copyright 2014 - 2015, Mother Earth, Jannah, Gaia - YOU!
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
  */
 
@@ -282,7 +282,7 @@ namespace phosphorus.ajax.widgets
          */
         private string CreateId ()
         {
-            // TODO: statistically this is supposed to become a unique 7 digits hexadecimal number, but we should improve this logic later!
+            /// \todo statistically this is supposed to become a unique 7 digits hexadecimal number, but we should improve this logic later!
             var retVal = Guid.NewGuid ().ToString ().Replace ("-", "");
             retVal = "x" + retVal [0] + retVal [5] + retVal [10] + retVal [15] + retVal [20] + retVal [25] + retVal [30];
             return retVal;

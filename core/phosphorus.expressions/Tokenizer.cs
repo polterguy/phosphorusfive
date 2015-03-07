@@ -1,5 +1,5 @@
 /*
- * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
+ * Phosphorus.Five, copyright 2014 - 2015, Mother Earth, Jannah, Gaia - YOU!
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
  */
 
@@ -53,7 +53,7 @@ namespace phosphorus.expressions
          * private implementation of IDisposable interface
          */
         void IDisposable.Dispose () { Dispose (true); }
-        // TODO: refactor, too complex
+        /// \todo refactor, too complex
         /*
          * finds next token and returns to caller, returns null if there are no more tokens in expression
          */

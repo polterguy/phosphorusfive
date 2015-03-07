@@ -1,13 +1,14 @@
 /*
- * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
+ * Phosphorus.Five, copyright 2014 - 2015, Mother Earth, Jannah, Gaia - YOU!
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
  */
 
 /// <summary>
-///     Namespace internally used by Phosphorus.Ajax to among other things keep track of attributes for widgets.
+///     Namespace internally used by Phosphorus.Ajax.
 /// 
 ///     This is not a place you need to fiddle with, or study to understand, since this is internally used by 
-///     the framework, and automatically taken care of for you.
+///     the framework, and automatically taken care of for you. However, it contains the logic necessary to serialize
+///     attribute for your widgets, and persist their values across HTTP requests.
 /// </summary>
 namespace phosphorus.ajax.core.internals
 {

@@ -1,6 +1,6 @@
 /*
- * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
- * phosphorus five is licensed as mitx11, see the enclosed LICENSE file for details
+ * Phosphorus.Five, copyright 2014 - 2015, Mother Earth, Jannah, Gaia - YOU!
+ * Phosphorus.Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details.
  */
 
 using System;
@@ -15,6 +15,14 @@ using phosphorus.five.applicationpool.code;
 
 namespace phosphorus.five.applicationpool
 {
+    /// <summary>
+    ///     The HttpApplication object for your web application.
+    /// 
+    ///     Takes care of URL re-writing logic, in addition to containing some helper methods to return
+    ///     base folder of application, etc.
+    /// 
+    ///     Normally not a place you'll need to fiddle too much with.
+    /// </summary>
     public class Global : HttpApplication
     {
         private static string _applicationBasePath;
@@ -75,7 +83,7 @@ namespace phosphorus.five.applicationpool
 
             // checking to see if this is a [pf.page] request, and if so, we rewrite the path to "Default.aspx"
             // and store the original URL in the HttpContext.Item collection for later references
-            // TODO: Support paths with "." in them, since now we don't support folders and paths with "." within their names
+            /// \todo Support paths with "." in them, since now we don't support folders and paths with "." within their names
             if (localPath.ToLower ().Trim ('/') == "default.aspx" || !localPath.Contains (".")) {
                 // if file requested is Default.aspx, we change it to simply "?file=/"
                 if (localPath == "/Default.aspx")
@@ -90,8 +98,10 @@ namespace phosphorus.five.applicationpool
         }
 
         /// <summary>
-        ///     Returns the application base path as value of given args node. Necessary to make for instance
-        ///     our [pf.file.xxx] namespace to work correctly
+        ///     Returns the Application base folder.
+        /// 
+        ///     Returns the application base folder as value of given args node. Necessary to make for instance
+        ///     our [pf.file.xxx] namespace to work correctly.
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>

@@ -1,6 +1,6 @@
 
 /*
- * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
+ * Phosphorus.Five, copyright 2014 - 2015, Mother Earth, Jannah, Gaia - YOU!
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
  */
 
@@ -12,17 +12,38 @@ using System.Linq;
 // ReSharper disable MemberCanBePrivate.Global
 
 // ReSharper disable PossibleNullReferenceException
+// ReSharper disable MemberCanBePrivate.Global
 
 namespace phosphorus.core
 {
     /// <summary>
-    /// arguments passed into and returned from Active Events
+    ///     Arguments passed into and returned from Active Events.
+    /// 
+    ///     All Active Events takes an instance of this class as its parameters. Since class is a tree structure, capable
+    ///     of storing any objects as values of its nodes, you can effectively pass in any arguments you wish to your Active Events
+    ///     using this class.
+    /// 
+    ///     Class is a "Genetic Tree" implementation, meaning it has a "materialized path" implementation, through its Path property.
+    ///     The Path property is basically a list of integers, defining the exact position within the tree hierarchy, of your node.
+    ///     Using this property, you can partition your tree, and determine if a specific node is "before" or "after" another node, 
+    ///     what type of relationship two nodes from the same tree have, and what nodes are their "union nodes", etc.
+    /// 
+    ///     This class, together with the Active Event implementation in Phosphorus.Five, found through Loader and ApplicationContext,
+    ///     can be thought of as the "heart" of Phosphorus.Five, and is the facilitator of everything that makes Active Event possible,
+    ///     and Phosphorus.Five beautiful, if such a thing can be said about software.
+    /// 
+    ///     If you understand the Loader, ApplicationContext and this class, then you understand what separates Phosphorus.Five from
+    ///     all other software frameworks, and makes it possible to do the things that Phosphorus.Five does.
     /// </summary>
     [Serializable]
     public class Node : IComparable
     {
         /// <summary>
-        /// DNA code for Node
+        ///     Dna code for Node, or its "Path" property.
+        /// 
+        ///     The Path for any given Node is basically a "materializedd path" implementation, allowing you to partition your tree-structure,
+        ///     such that you can easily determine whether or not one specific node is "before" or "after" another node, and what types of
+        ///     relationship two nodes from the same tree have.
         /// </summary>
         public class Dna : IComparable, IConvertible
         {
@@ -33,6 +54,12 @@ namespace phosphorus.core
                 Value = new List<int> ();
             }
 
+            /// <summary>
+            ///     Initializes a new instance of the <see cref="phosphorus.core.Node+Dna"/> class.
+            /// 
+            ///     The value given, should be a list of integers, separated by hyphens (-)
+            /// </summary>
+            /// <param name="value">Value to create Dna object from.</param>
             public Dna (string value)
             {
                 Value = new List<int> ();
@@ -57,9 +84,11 @@ namespace phosphorus.core
             }
 
             /// <summary>
-            /// returns the depth of the DNA, meaning the number of ancestor nodes from root node the current node has
+            ///     Returns the depth of the Dna.
+            /// 
+            ///     The depth of a Dna object is the number of ancestor nodes from its root node, to the current node.
             /// </summary>
-            /// <value>depth</value>
+            /// <value>Depth of Dna object.</value>
             public int Count {
                 get {
                     return Value.Count;
@@ -67,80 +96,97 @@ namespace phosphorus.core
             }
 
             /// <summary>
-            /// determines if is given value is a DNA path or not
+            ///     Determines if given value is a Dna path or not.
+            /// 
+            ///     Will return true if the given value can be converted into a Dna object.
             /// </summary>
-            /// <returns><c>true</c> if is value is dna; otherwise, <c>false</c></returns>
-            /// <param name="dna">value to check if is dna</param>
-            public static bool IsPath (string dna)
+            /// <returns><c>true</c> if is value is convertible to a Dna object; otherwise, <c>false</c>.</returns>
+            /// <param name="value">Value to check if is convertible to Dna.</param>
+            public static bool IsPath (string value)
             {
-                return dna != null && dna.All (idx => "0123456789-".IndexOf (idx) != -1);
+                return value != null && value.All (idx => "0123456789-".IndexOf (idx) != -1);
             }
 
             /// <summary>
-            /// compares two nodes for equality
+            ///     Compares two Dna objects for equality.
             /// </summary>
-            /// <param name="lhs">left hand side node</param>
-            /// <param name="rhs">right hand side node</param>
+            /// <param name="lhs">Left hand side Dna.</param>
+            /// <param name="rhs">Right hand side Dna.</param>
             public static bool operator == (Dna lhs, Dna rhs)
             {
                 return lhs != null && lhs.CompareTo (rhs) == 0;
             }
 
             /// <summary>
-            /// compares two nodes for not-equality
+            ///     Compares two Dna objects for not-equality.
             /// </summary>
-            /// <param name="lhs">left hand side node</param>
-            /// <param name="rhs">right hand side node</param>
+            /// <param name="lhs">Left hand side Dna.</param>
+            /// <param name="rhs">Right hand side Dna.</param>
             public static bool operator != (Dna lhs, Dna rhs)
             {
                 return lhs != null && lhs.CompareTo (rhs) != 0;
             }
 
             /// <summary>
-            /// compares two nodes to see if left hand side is more than right hand side node
+            ///     Compares two Dna objects to see if left hand side is "more" than right hand side Dna objects.
+            /// 
+            ///     If this method returns true, then the left-hand-side Dna object is "further out" in the tree, than
+            ///     the right-hand-side instance. Meaning, "after" the rhs.
             /// </summary>
-            /// <param name="lhs">left hand side node</param>
-            /// <param name="rhs">right hand side node</param>
+            /// <param name="lhs">Left hand side Dna object.</param>
+            /// <param name="rhs">Right hand side Dna object.</param>
             public static bool operator > (Dna lhs, Dna rhs)
             {
                 return lhs.CompareTo (rhs) == 1;
             }
 
             /// <summary>
-            /// compares two nodes to see if left hand side is less than right hand side node
+            ///     Compares two Dna objects to see if left hand side is "less" than right hand side Dna objects.
+            /// 
+            ///     If this method returns true, then the right-hand-side Dna object is "further out" in the tree, than
+            ///     the left-hand-side instance. Meaning, "after" the lhs.
             /// </summary>
-            /// <param name="lhs">left hand side node</param>
-            /// <param name="rhs">right hand side node</param>
+            /// <param name="lhs">Left hand side Dna object.</param>
+            /// <param name="rhs">Right hand side Dna object.</param>
             public static bool operator < (Dna lhs, Dna rhs)
             {
                 return lhs.CompareTo (rhs) == -1;
             }
 
             /// <summary>
-            /// compares two nodes to see if left hand side is more than or equal to right hand side node
+            ///     Compares two Dna objects to see if left hand side is "more than or equal" to right hand side Dna objects.
+            /// 
+            ///     If this method returns true, then the left-hand-side Dna object is "further out or same" in the tree, than
+            ///     the right-hand-side instance. Meaning, "after or equals" the rhs.
             /// </summary>
-            /// <param name="lhs">left hand side node</param>
-            /// <param name="rhs">right hand side node</param>
+            /// <param name="lhs">Left hand side Dna object.</param>
+            /// <param name="rhs">Right hand side Dna object.</param>
             public static bool operator >= (Dna lhs, Dna rhs)
             {
                 return lhs.CompareTo (rhs) != -1;
             }
 
             /// <summary>
-            /// compares two nodes to see if left hand side is less than or equal to right hand side node
+            ///     Compares two Dna objects to see if left hand side is "less than or equal to" the right hand side Dna objects.
+            /// 
+            ///     If this method returns true, then the left-hand-side Dna object is "earlier or equal" to  the right-hand-side instance.
+            ///     Meaning, "before or equals" the rhs.
             /// </summary>
-            /// <param name="lhs">left hand side node</param>
-            /// <param name="rhs">right hand side node</param>
+            /// <param name="lhs">Left hand side Dna object.</param>
+            /// <param name="rhs">Right hand side Dna object.</param>
             public static bool operator <= (Dna lhs, Dna rhs)
             {
                 return lhs.CompareTo (rhs) != 1;
             }
 
             /// <summary>
-            /// returns the logical AND of the given DNA codes.  basically finds the common ancestor's DNA code
+            ///     Returns the logical AND of the given Dna codes.
+            /// 
+            ///     Basically finds the common ancestor's Dna code. Using this, you can find the "union" of two nodes from the same tree,
+            ///     or their "common ancestor".
             /// </summary>
-            /// <param name="lhs">left hand side node</param>
-            /// <param name="rhs">right hand side node</param>
+            /// <param name="lhs">Left hand side Dna.</param>
+            /// <param name="rhs">Right hand side Dna.</param>
             public static Dna operator & (Dna lhs, Dna rhs)
             {
                 var retVal = new Dna ();
@@ -153,6 +199,12 @@ namespace phosphorus.core
                 return retVal;
             }
 
+            /// <summary>
+            ///     Determines whether the specified <see cref="System.Object"/> is equal to the current <see cref="phosphorus.core.Node+Dna"/>.
+            /// </summary>
+            /// <param name="obj">The <see cref="System.Object"/> to compare with the current <see cref="phosphorus.core.Node+Dna"/>.</param>
+            /// <returns><c>true</c> if the specified <see cref="System.Object"/> is equal to the current
+            /// <see cref="phosphorus.core.Node+Dna"/>; otherwise, <c>false</c>.</returns>
             public override bool Equals (object obj)
             {
                 if (!(obj is Dna))
@@ -167,11 +219,20 @@ namespace phosphorus.core
                 return true;
             }
 
+            /// <summary>
+            ///     Serves as a hash function for a <see cref="phosphorus.core.Node+Dna"/> object.
+            /// </summary>
+            /// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as
+            /// a hash table.</returns>
             public override int GetHashCode ()
             {
                 return Value.GetHashCode ();
             }
 
+            /// <summary>
+            ///     Returns a <see cref="System.String"/> that represents the current <see cref="phosphorus.core.Node+Dna"/>.
+            /// </summary>
+            /// <returns>A <see cref="System.String"/> that represents the current <see cref="phosphorus.core.Node+Dna"/>.</returns>
             public override string ToString ()
             {
                 var tmp = Value.Aggregate ("", (current, idx) => current + ("-" + idx));
@@ -179,10 +240,18 @@ namespace phosphorus.core
                 return tmp;
             }
 
+            /// <summary>
+            ///     Compares the given object with the Dna instance and returns -1 if this is "before" obj, 0 if they equal, and +1 if
+            ///     obj is "more than" instance object.
+            /// 
+            ///     The given obj parameter, must be a Dna object, otherwise method will throw an exception.
+            /// </summary>
+            /// <returns>-1, 0 or +1, depending upon which of the two objects are "before" the other.</returns>
+            /// <param name="obj">The object to compare against this instance.</param>
             public int CompareTo (object obj)
             {
                 if (!(obj is Dna))
-                    throw new ArgumentException ("cannot compare DNA to: " + (obj ?? "[null]"));
+                    throw new ArgumentException ("cannot compare Dna to: " + (obj ?? "[null]"));
                 var rhs = (Dna) obj;
 
                 for (var idxNo = 0; idxNo < Value.Count && idxNo < rhs.Value.Count; idxNo ++) {
@@ -197,6 +266,10 @@ namespace phosphorus.core
                 return 0;
             }
 
+            // \todo Do we really need the IConvertible implementation in Dna?
+            /*
+             * IConvertible implementation, no need to document these parts ...
+             */
             public TypeCode GetTypeCode ()
             {
                 return TypeCode.Object;
@@ -204,57 +277,57 @@ namespace phosphorus.core
 
             public bool ToBoolean (IFormatProvider provider)
             {
-                throw new ApplicationException ("cannot convert a DNA path to Boolean");
+                throw new ApplicationException ("cannot convert a Dna path to Boolean");
             }
 
             public byte ToByte (IFormatProvider provider)
             {
-                throw new ApplicationException ("cannot convert a DNA path to byte");
+                throw new ApplicationException ("cannot convert a Dna path to byte");
             }
 
             public char ToChar (IFormatProvider provider)
             {
-                throw new ApplicationException ("cannot convert a DNA path to char");
+                throw new ApplicationException ("cannot convert a Dna path to char");
             }
 
             public DateTime ToDateTime (IFormatProvider provider)
             {
-                throw new ApplicationException ("cannot convert a DNA path to DateTime");
+                throw new ApplicationException ("cannot convert a Dna path to DateTime");
             }
 
             public decimal ToDecimal (IFormatProvider provider)
             {
-                throw new ApplicationException ("cannot convert a DNA path to decimal");
+                throw new ApplicationException ("cannot convert a Dna path to decimal");
             }
 
             public double ToDouble (IFormatProvider provider)
             {
-                throw new ApplicationException ("cannot convert a DNA path to double");
+                throw new ApplicationException ("cannot convert a Dna path to double");
             }
 
             public short ToInt16 (IFormatProvider provider)
             {
-                throw new ApplicationException ("cannot convert a DNA path to short");
+                throw new ApplicationException ("cannot convert a Dna path to short");
             }
 
             public int ToInt32 (IFormatProvider provider)
             {
-                throw new ApplicationException ("cannot convert a DNA path to int");
+                throw new ApplicationException ("cannot convert a Dna path to int");
             }
 
             public long ToInt64 (IFormatProvider provider)
             {
-                throw new ApplicationException ("cannot convert a DNA path to long");
+                throw new ApplicationException ("cannot convert a Dna path to long");
             }
 
             public sbyte ToSByte (IFormatProvider provider)
             {
-                throw new ApplicationException ("cannot convert a DNA path to sbyte");
+                throw new ApplicationException ("cannot convert a Dna path to sbyte");
             }
 
             public float ToSingle (IFormatProvider provider)
             {
-                throw new ApplicationException ("cannot convert a DNA path to float");
+                throw new ApplicationException ("cannot convert a Dna path to float");
             }
 
             public string ToString (IFormatProvider provider)
@@ -265,23 +338,23 @@ namespace phosphorus.core
             public object ToType (Type conversionType, IFormatProvider provider)
             {
                 if (conversionType != typeof(string))
-                    throw new ApplicationException ("cannot convert a DNA path to; " + conversionType);
+                    throw new ApplicationException ("cannot convert a Dna path to; " + conversionType);
                 return ToString ();
             }
 
             public ushort ToUInt16 (IFormatProvider provider)
             {
-                throw new ApplicationException ("cannot convert a DNA path to ushort");
+                throw new ApplicationException ("cannot convert a Dna path to ushort");
             }
 
             public uint ToUInt32 (IFormatProvider provider)
             {
-                throw new ApplicationException ("cannot convert a DNA path to uint");
+                throw new ApplicationException ("cannot convert a Dna path to uint");
             }
 
             public ulong ToUInt64 (IFormatProvider provider)
             {
-                throw new ApplicationException ("cannot convert a DNA path to ulong");
+                throw new ApplicationException ("cannot convert a Dna path to ulong");
             }
         }
 
@@ -289,12 +362,12 @@ namespace phosphorus.core
         private string _name;
 
         /// <summary>
-        /// delegate for iterating children nodes
+        ///     Delegate for iterating children nodes.
         /// </summary>
         public delegate T NodeIterator<out T> (Node node);
 
         /// <summary>
-        /// initializes a new instance of the <see cref="phosphorus.core.Node"/> class
+        ///     Initializes a new instance of the <see cref="phosphorus.core.Node"/> class.
         /// </summary>
         public Node ()
         {
@@ -303,9 +376,9 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// initializes a new instance of the <see cref="phosphorus.core.Node"/> class
+        ///     Initializes a new instance of the <see cref="phosphorus.core.Node"/> class.
         /// </summary>
-        /// <param name="name">name of node</param>
+        /// <param name="name">Name of node. Cannot be null.</param>
         public Node (string name)
             : this ()
         {
@@ -313,10 +386,10 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// initializes a new instance of the <see cref="phosphorus.core.Node"/> class
+        ///     Initializes a new instance of the <see cref="phosphorus.core.Node"/> class.
         /// </summary>
-        /// <param name="name">name of node</param>
-        /// <param name="value">value of node</param>
+        /// <param name="name">Name of node. Cannot be null.</param>
+        /// <param name="value">Value of node. Can be any object, including null.</param>
         public Node (string name, object value)
             : this (name)
         {
@@ -324,11 +397,13 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// initializes a new instance of the <see cref="phosphorus.core.Node"/> class
+        ///     initializes a new instance of the <see cref="phosphorus.core.Node"/> class.
         /// </summary>
-        /// <param name="name">name of node</param>
-        /// <param name="value">value of node</param>
-        /// <param name="children">initial children for node</param>
+        /// <param name="name">Name of node. Cannot be null.</param>
+        /// <param name="value">Value of node. Can be any object, including null.</param>
+        /// <param name="children">Initial children collection for node. Notice that if children given already
+        /// belongs to another Node's children collection, then they will be UnTied from the other node, and ReTied 
+        /// into currently created node.</param>
         public Node (string name, object value, IEnumerable<Node> children)
             : this (name, value)
         {
@@ -340,9 +415,9 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// gets or sets the name of the node
+        ///     Gets or sets the name of the node.
         /// </summary>
-        /// <value>the name</value>
+        /// <value>The node's new name.</value>
         public string Name {
             get {
                 return _name;
@@ -355,18 +430,18 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// gets or sets the value of the node
+        ///     Gets or sets the value of the node.
         /// </summary>
-        /// <value>the value</value>
+        /// <value>The node's new value.</value>
         public object Value {
             get;
             set;
         }
 
         /// <summary>
-        /// returns the number of chilren nodes
+        ///     Returns the number of chilren nodes the node has.
         /// </summary>
-        /// <value>number of children</value>
+        /// <value>Number of children.</value>
         public int Count {
             get {
                 return _children.Count;
@@ -374,18 +449,20 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// returns the value of this instance as typeof(T). converts to T if necessary
+        ///     Returns the value of this instance as typeof(T).
+        ///
+        ///    Returns Value, converted to T, if necessary. If a conversion is not possible, then an exception might occur.
         /// </summary>
-        /// <typeparam name="T">type to return</typeparam>
+        /// <typeparam name="T">Type to convert value to.</typeparam>
         public T Get<T> (ApplicationContext context, T defaultValue = default (T))
         {
             return Utilities.Convert (Value, context, defaultValue);
         }
 
         /// <summary>
-        /// gets the children of this instance
+        ///     Returns the children of this instance.
         /// </summary>
-        /// <value>its children</value>
+        /// <value>Tts children nodes.</value>
         public IEnumerable<Node> Children {
             get {
                 return _children;
@@ -393,10 +470,13 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// gets the children of this instance, while also untying them
+        ///     Returns the children of this instance, while also untying them.
+        ///
+        ///     Untiyng a node's children, means that the nodes will no longer belong to the Children collection of the node
+        ///     they originally belonged to.
         /// </summary>
-        /// <value>its children after being untied</value>
-        public IEnumerable<Node> UntieChildren ()
+        /// <value>Its children after being untied.</value>
+        public IEnumerable<Node> UnTieChildren ()
         {
             while (_children.Count > 0) {
                 yield return _children [0].UnTie ();
@@ -404,9 +484,9 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// returns DNA code for Node
+        ///     Returns Dna code for Node.
         /// </summary>
-        /// <value>the DNA code, or position in Node tree</value>
+        /// <value>The Dna code, or position in Node tree.</value>
         public Dna Path {
             get {
                 return new Dna (this);
@@ -414,15 +494,19 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// returns the parent of node
+        ///     Returns the parent of current node.
+        /// 
+        ///     The parent, is the node which the current node belongs to, through its parent's Children collection.
+        ///     The Node class, is a dually linked Tree Structure, where any node can have a list of children nodes, through
+        ///     its Children collection, where each child will also know its parent node, through this property.
         /// </summary>
-        /// <value>parent node</value>
+        /// <value>The parent node of this instance.</value>
         public Node Parent { get; private set; }
 
         /// <summary>
-        /// returns the first child of the node
+        ///     Returns the first child of the node.
         /// </summary>
-        /// <value>the first child</value>
+        /// <value>The current node's first child node.</value>
         public Node FirstChild {
             get {
                 if (_children.Count > 0)
@@ -432,16 +516,21 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// returns the first child of the node not having the given name
+        ///     Returns the first child node of the curent node, not having the given name.
+        /// 
+        ///     Will return the first child node of the Children collection of the durrent node, who's Name property is
+        ///     NOT the given name.
         /// </summary>
         /// <value>the first child</value>
         public Node FirstChildNotOf (string name)
-        { return _children.FirstOrDefault (idx => idx.Name != name); }
+        {
+            return _children.FirstOrDefault (idx => idx.Name != name);
+        }
 
         /// <summary>
-        /// returns the last child of the node
+        ///     Returns the last child of the node.
         /// </summary>
-        /// <value>the last child</value>
+        /// <value>The last child node.</value>
         public Node LastChild {
             get {
                 if (_children.Count > 0)
@@ -451,9 +540,13 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// returns the previous sibling of the current node
+        ///     Returns the previous sibling of the current node.
+        /// 
+        ///     The previous sibling node, is defined as the node in the Parent Children collection of nodes, who's index is "one less", than
+        ///     the index of the current node. Meaning, if current node is the 3rd instance in the Children collection of its Parent node, then
+        ///     this property will return the node that is the 2nd node in its Parent collection.
         /// </summary>
-        /// <value>the previous sibling</value>
+        /// <value>The current node's previous sibling.</value>
         public Node PreviousSibling {
             get {
                 if (Parent == null)
@@ -467,9 +560,11 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// returns the next sibling of the current node
+        ///     Returns the next sibling of the current node.
+        /// 
+        ///     The "opposite" of PreviousSibling. See PreviousSibling to understand what this property returns.
         /// </summary>
-        /// <value>the next sibling</value>
+        /// <value>The current node's next sibling.</value>
         public Node NextSibling {
             get {
                 if (Parent == null)
@@ -483,9 +578,16 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// returns the previous node from the current node
+        ///     Returns the previous node from the current node.
+        /// 
+        ///     Please notice, that this is not the same as the PreviousSibling property, since this will traverse the tree-hierarchy, and
+        ///     might return nodes from a completely different level, since it basically looks at the tree-structure of nodes, as a "sequential
+        ///     list of nodes", where the Dna code basically defines the "sequential positioning" of the nodes as a "list".
+        /// 
+        ///     If you perceive the Node hierarchy as Hyperlisp, where each node is defined as one line of code, then this property will 
+        ///     basically return the "previous line's node".
         /// </summary>
-        /// <value>the previous node</value>
+        /// <value>The current node's previous node.</value>
         public Node PreviousNode {
             get {
                 var idx = PreviousSibling;
@@ -500,9 +602,12 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// returns the next node from the current node
+        ///     Returns the next node from the current node.
+        /// 
+        ///     This property basically does the "opposite" of PreviousNode. To understand what this property does, please see the documentation
+        ///     for PreviousNode.
         /// </summary>
-        /// <value>the next node</value>
+        /// <value>The current node's next node.</value>
         public Node NextNode {
             get {
                 if (Count > 0)
@@ -522,9 +627,12 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// returns the root node of the tree
+        ///     Returns the root node of the tree.
+        /// 
+        ///     The root node is found by retrieving the Parent node's Parent, and so on, until we come to a node that does not 
+        ///     have a Parent node. That node is the "root node" of the current node. Meaning the root node of your entire tree.
         /// </summary>
-        /// <value>the root node</value>
+        /// <value>The root node of the current node.</value>
         public Node Root {
             get {
                 var idxNode = this;
@@ -535,7 +643,9 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// unties the node from its parent
+        ///     Unties the node from its Parent Children collection.
+        /// 
+        ///     Meaning, the node will effectively become its own "root node", and no longer belong to its Parent's Children collection.
         /// </summary>
         public Node UnTie ()
         {
@@ -545,9 +655,11 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// replace the specified node
+        ///     Replaces the current node with another node.
+        /// 
+        ///     Will replace the current node in its Parent Children collection with the specified node given as node.
         /// </summary>
-        /// <param name="node">node to replace current node with</param>
+        /// <param name="node">Node to replace the current node with.</param>
         public Node Replace (Node node)
         {
             if (node == null) {
@@ -560,9 +672,12 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// finds a node according to the given dna
+        ///     Finds a node according to the given dna.
+        /// 
+        ///     Will return the node who's Dna is the given dna from the tree. Regardless of which node you invoke this method from,
+        ///     the method will recursively lookup the node who's Dna matches the given Dna from the Root node of the current node.
         /// </summary>
-        /// <param name="dna">dna of node to find</param>
+        /// <param name="dna">Dna of node to find.</param>
         public Node Find (Dna dna)
         {
             if (dna.Equals (null))
@@ -579,10 +694,12 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// finds the node matching the given DNA
+        ///     Finds the node matching the given Dna.
+        /// 
+        ///     See the overload of Find taking a Dna as its parameter to understand what this method does.
         /// </summary>
-        /// <returns>the node, if found, otherwise null</returns>
-        /// <param name="dna">the DNA or Path of the node to return</param>
+        /// <returns>The node matching the given Dna string, if found, otherwise null.</returns>
+        /// <param name="dna">The Dna, or Path, of the node to return.</param>
         public Node FindDna (string dna)
         {
             if (string.IsNullOrEmpty (dna))
@@ -591,46 +708,56 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// finds the first matching node according to the given predicate
+        ///     Finds the first matching node, according to the given predicate.
+        /// 
+        ///     Will iterate the Children collection of the current node, and return the first Node matching the given functor.
         /// </summary>
-        /// <param name="functor">predicate that nodes must match</param>
+        /// <param name="functor">Predicate that nodes must match in order to be returned.</param>
         public Node Find (Predicate<Node> functor)
         {
             return _children.Find (functor);
         }
 
         /// <summary>
-        /// finds all nodes according to the given predicate
+        ///     Finds all nodes according to the given predicate.
+        /// 
+        ///     Will return all nodes matching the given functor from the current node's Children collection.
         /// </summary>
-        /// <param name="functor">functor nodes must match</param>
+        /// <param name="functor">Predicate that nodes must match in order to be returned.</param>
         public IEnumerable<Node> FindAll (Predicate<Node> functor)
         {
             return _children.FindAll (functor);
         }
 
         /// <summary>
-        /// finds the first node having the given name
+        ///     Finds the first node having the given name.
+        /// 
+        ///     Will return the first node from the current node's Children collection matching the given name. Search is case-sensitive.
         /// </summary>
-        /// <param name="name">name of node to return</param>
+        /// <param name="name">Name of node to return.</param>
         public Node Find (string name)
         {
             return Find (idx => idx.Name == name);
         }
 
         /// <summary>
-        /// finds all nodes having the given name
+        ///     Finds all nodes having the given name.
+        /// 
+        ///     Will return all nodes from the current node's Children collection matching the given name. Search is case-sensitive.
         /// </summary>
-        /// <param name="name">name of node to return</param>
+        /// <param name="name">Name of nodes to return.</param>
         public IEnumerable<Node> FindAll (string name)
         {
             return FindAll (idx => idx.Name == name);
         }
 
         /// <summary>
-        /// returns all values of children nodes as type T
+        ///     Returns all Value of children nodes as type T.
+        /// 
+        ///     Will return all node's Value properties converted to type T, if necessary.
         /// </summary>
-        /// <returns>the children values</returns>
-        /// <typeparam name="T">the type you wish to convert values to</typeparam>
+        /// <returns>The children values.</returns>
+        /// <typeparam name="T">The type you wish to convert the Children values to.</typeparam>
         public IEnumerable<T> GetChildrenValues<T> (
             ApplicationContext context, 
             Predicate<Node> functor = null)
@@ -648,20 +775,21 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// iterates every single node, invoking the given functor, and if functor does not return
-        /// default (T), it will yield that T value as a result back to caller
+        ///     Iterates every single node, invoking the given functor, and if functor does not return
+        ///     default (T), it will yield that T value, as a result back to caller.
         /// </summary>
-        /// <param name="functor">match delegate</param>
-        /// <typeparam name="T">type of object you wish to construct from node iterator</typeparam>
+        /// <param name="functor">Match delegate</param>
+        /// <typeparam name="T">The type of object you wish to construct from node iterator.</typeparam>
         public IEnumerable<T> ConvertChildren<T> (NodeIterator<T> functor) {
             return _children.Select (idx => functor (idx)).Where (retVal => retVal != null && !retVal.Equals (default (T)));
         }
 
         /// <summary>
-        /// finds the first node having the given name, if no node exists with given name,
-        /// then a new node with the given name will be created and returned to caller
+        ///     Finds, or creates, the first node having the given name.
+        /// 
+        ///     If no node exists with given name, then a new node with the given name will be created, and returned to caller.
         /// </summary>
-        /// <param name="name">name of node to return</param>
+        /// <param name="name">Name of node to return or create.</param>
         public Node FindOrCreate (string name)
         {
             var retVal = _children.Find (idx => idx.Name == name);
@@ -671,11 +799,12 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// finds the first node having the given name and value, if no matching node exists,
-        /// then a new node with the given name and value will be created and returned to caller
+        ///     Finds, or creates, the first node having the given name and value
+        /// 
+        ///     If no matching node exists, then a new node with the given name and value will be created, and returned to caller.
         /// </summary>
-        /// <param name="name">name of node to return</param>
-        /// <param name="value">value of node to return</param>
+        /// <param name="name">Name of node to return.</param>
+        /// <param name="value">Value of node to return.</param>
         public Node FindOrCreate (string name, object value)
         {
             var retVal = _children.Find (idx => idx.Name == name && ((value == null && idx.Value == null) || (value != null && value.Equals (idx.Value))));
@@ -685,18 +814,27 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// finds the first node having the given name
+        ///     Returns the Value of the first Children node, matching the given name, as type T.
+        /// 
+        ///     Will traverse the Children collection, looking for a node who's Name is name, and if found, return
+        ///     the Value of that node as type T.
         /// </summary>
-        /// <param name="name">name of node to return</param>
-        /// <param name="context">application context</param>
-        /// <param name="defaultValue">default value to use if no child with the given name is found</param>
+        /// <param name="name">Name of node to return.</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="defaultValue">Default value to use, if no child with the given name is found.</param>
         public T GetChildValue<T> (string name, ApplicationContext context, T defaultValue = default (T))
         {
             var child = _children.Find (idx => idx.Name == name);
             return child == null ? defaultValue : child.Get (context, defaultValue);
         }
 
-        // ReSharper disable once MemberCanBePrivate.Global
+        /// <summary>
+        ///     Removes the specified node.
+        /// 
+        ///     Removes the specified node, if it exists. If node doesn't exist in Children collection of current node, then an exception
+        ///     will be thrown. Returns the current node after removal, to make it easy to chain methods.
+        /// </summary>
+        /// <param name="node">Node.</param>
         public Node Remove (Node node)
         {
             if (!_children.Remove (node))
@@ -705,7 +843,10 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// removes the node at the specified index
+        ///     Removes the node at the specified index.
+        /// 
+        ///     Removes the node at the specified index. If index is larger than the Children collection Count, then an exception
+        ///     will be thrown. Returns the current node after removal, to make it easy to chain methods.
         /// </summary>
         /// <param name="index">where node to remove recides in the children collection</param>
         public Node RemoveAt (int index)
@@ -715,7 +856,10 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// removes all children nodes matching given predicate
+        ///     Removes all children nodes matching given predicate.
+        /// 
+        ///     Removes all nodes from the current node's Children collection matching the given functor Predicate. Returns current node
+        ///     afterwards, to make it easy to chain methods.
         /// </summary>
         /// <param name="functor">predicate</param>
         public Node RemoveAll (Predicate<Node> functor)
@@ -725,7 +869,10 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// removes all nodes with given name
+        ///     Removes all nodes matching the given name.
+        /// 
+        ///     Removes all nodes from the current node's Children collection matching the given name. Returns the current node afterwards,
+        ///     to make it easy to chain methods.
         /// </summary>
         /// <param name="name">name of nodes to remove</param>
         public Node RemoveAll (string name)
@@ -734,17 +881,23 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// sorts the children of the node
+        ///     Sorts the children of the current node.
+        /// 
+        ///     Sorts the Children collection of the current node, according to the Comparison functor given. Returns the current node
+        ///     afterwards, to make chaining of methods easy.
         /// </summary>
-        /// <param name="comparison">comparison delegate</param>
-        public Node Sort (Comparison<Node> comparison)
+        /// <param name="functor">Comparison delegate.</param>
+        public Node Sort (Comparison<Node> functor)
         {
-            _children.Sort (comparison);
+            _children.Sort (functor);
             return this;
         }
 
         /// <summary>
-        /// sorts the children of the node by name
+        ///     Sorts the children of the current node by their names.
+        /// 
+        ///     Sorts the Children collection of the current node, according to their Name properties. Returns the current node
+        ///     afterwards, to make chaining of methods easy.
         /// </summary>
         public Node Sort ()
         {
@@ -753,7 +906,9 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// adds a child node to its children collection
+        ///     Adds a child node to the current node's children collection.
+        /// 
+        ///     Adds a child node to the current node's Children collection. Returns the current node afterwards, to make chaining of methods easy.
         /// </summary>
         /// <param name="node">node to add</param>
         public Node Add (Node node)
@@ -766,7 +921,10 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// adds a child node to its children collection with given name
+        ///     Adds a child node to the current node's children collection.
+        /// 
+        ///     Adds a child node to the current node's Children collection, with the specified name.
+        ///     Returns the current node afterwards, to make chaining of methods easy.
         /// </summary>
         /// <param name="name">name of node to add</param>
         public Node Add (string name)
@@ -775,7 +933,10 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// adds a child node to its children collection with given name and value
+        ///     Adds a child node to the current node's children collection.
+        /// 
+        ///     Adds a child node to the current node's Children collection, with the specified name, and the specified value.
+        ///     Returns the current node afterwards, to make chaining of methods easy.
         /// </summary>
         /// <param name="name">name of node to add</param>
         /// <param name="value">value of node to add</param>
@@ -785,7 +946,10 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// adds a child node to its children collection with given name, value and children
+        ///     Adds a child node to the current node's children collection.
+        /// 
+        ///     Adds a child node to the current node's Children collection, with the specified name, the specified value, and the specified
+        ///     initial children collection. Returns the current node afterwards, to make chaining of methods easy.
         /// </summary>
         /// <param name="name">name of node to add</param>
         /// <param name="value">value of node to add</param>
@@ -796,7 +960,10 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// inserts a child node to its children collection at the specified index
+        ///     Inserts a child node to the current node's children collection.
+        /// 
+        ///     Inserts a child node to the current node's Children collection, at the specified index.
+        ///     Returns the current node afterwards, to make chaining of methods easy.
         /// </summary>
         /// <param name="node">node to add</param>
         /// <param name="index">where to add</param>
@@ -808,7 +975,10 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// adds a range of nodes
+        ///     Adds a range of nodes.
+        /// 
+        ///     Adds the specified nodes collection to the current node's Children collection.
+        ///     Returns the current node afterwards, to make chaining of methods easy.
         /// </summary>
         /// <param name="nodes">nodes to add</param>
         public Node AddRange (IEnumerable<Node> nodes)
@@ -820,7 +990,10 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// clears the children collection
+        ///     Clears the children collection.
+        /// 
+        ///     Completely empties the Children property of the current node.
+        ///     Returns the current node afterwards, to make chaining of methods easy.
         /// </summary>
         public Node Clear ()
         {
@@ -829,7 +1002,9 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// clones this instance
+        ///     Clones the current node.
+        /// 
+        ///     Creates a "deep copy" of the current node, returning that newly created node to caller.
         /// </summary>
         public Node Clone ()
         {
@@ -841,10 +1016,13 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// IComparable implementation, compares node to another object
+        ///     IComparable implementation, compares current node to another object.
+        /// 
+        ///     Will compare the current node to the specified value, and if equal, returns 0. If not equal, it will either return
+        ///     +1 or -1, depending upon which node is "before" the other. If rhs is not a Node, this method will return +1.
         /// </summary>
-        /// <returns>-1 if this node is "less than", +1 if rhs is "less than", 0 if objects are equal</returns>
-        /// <param name="rhs">the object to compare the node against</param>
+        /// <returns>-1 if this node is "less than", +1 if rhs is "less than", 0 if objects are equal.</returns>
+        /// <param name="rhs">The object to compare the node against.</param>
         public int CompareTo (object rhs)
         {
             var rhsNode = rhs as Node;
@@ -854,11 +1032,13 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        /// compares two nodes for equality and returns -1 if this is "less than" rhs, +1 if this is "more than" rhs, and 0
-        /// if they are equal, meaning they contain similar nodes
+        ///     Compares current node to another node.
+        /// 
+        ///     Will compare the current node to the specified node, and if equal, returns 0. If not equal, it will either return
+        ///     +1 or -1, depending upon which node is "before" the other.
         /// </summary>
-        /// <returns>-1, 0 or 1 depending upon the equality of the this and rhs</returns>
-        /// <param name="rhs">node to compare again the current instance for equality</param>
+        /// <returns>-1 if this node is "less than", +1 if rhs is "less than", 0 if objects are equal.</returns>
+        /// <param name="rhs">The object to compare the node against.</param>
         public int CompareTo (Node rhs)
         {
             var retVal = String.Compare(Name, rhs.Name, StringComparison.Ordinal);
@@ -886,6 +1066,57 @@ namespace phosphorus.core
             }
             return 0;
         }
+        
+        /// <summary>
+        ///     Gets or sets the node at the specified index.
+        /// 
+        ///     Will replace or retrieve the node in the Children collection at the specified index.
+        /// </summary>
+        /// <param name="index">Index of node to retrieve or set.</param>
+        public Node this [int index]
+        {
+            get {
+                return _children [index];
+            }
+            set {
+                this [index].Replace (value);
+            }
+        }
+
+        /// <summary>
+        ///     Gets or sets the first node in the children collection matching the given name.
+        /// 
+        ///     Returns or replaces the first node matching the given name.
+        /// </summary>
+        /// <param name="name">Name of node to retrieve or set.</param>
+        public Node this [string name]
+        {
+            get {
+                return Find (name);
+            }
+            set {
+                Find (name).Replace (value);
+            }
+        }
+
+        /// <summary>
+        ///     Returns a <see cref="System.String"/> that represents the current node.
+        /// </summary>
+        /// <returns>A <see cref="System.String"/> that represents the current node.</returns>
+        public override string ToString ()
+        {
+            var retVal = "";
+            if (!string.IsNullOrEmpty (Name))
+                retVal += "Name=" + Name;
+            if (Value != null)
+                retVal += ", Value=" + Value;
+            if (Count > 0)
+                retVal += ", Count=" + Count;
+            if (Path.Count > 0)
+                retVal += ", Path=" + Path;
+            retVal = retVal.Trim (',', ' ');
+            return retVal;
+        }
 
         /*
          * does actual comparison of two non-null Node values
@@ -901,53 +1132,6 @@ namespace phosphorus.core
             if (thisValue == null)
                 throw new ArgumentException ("cannot compare objects of type; '" + value.GetType () + "'");
             return thisValue.CompareTo (rhsValue);
-        }
-
-        /// <summary>
-        /// gets or sets the <see cref="phosphorus.core.Node"/> with the specified index
-        /// </summary>
-        /// <param name="index">index of node to retrieve or set</param>
-        public Node this [int index]
-        {
-            get {
-                return _children [index];
-            }
-            set {
-                this [index].Replace (value);
-            }
-        }
-
-        /// <summary>
-        /// gets or sets the first node in the children collection matching the given name
-        /// </summary>
-        /// <param name="name">name of node to retrieve or set</param>
-        public Node this [string name]
-        {
-            get {
-                return Find (name);
-            }
-            set {
-                Find (name).Replace (value);
-            }
-        }
-
-        /// <summary>
-        /// returns a <see cref="System.String"/> that represents the current <see cref="phosphorus.core.Node"/>
-        /// </summary>
-        /// <returns>a <see cref="System.String"/> that represents the current <see cref="phosphorus.core.Node"/></returns>
-        public override string ToString ()
-        {
-            var retVal = "";
-            if (!string.IsNullOrEmpty (Name))
-                retVal += "Name=" + Name;
-            if (Value != null)
-                retVal += ", Value=" + Value;
-            if (Count > 0)
-                retVal += ", Count=" + Count;
-            if (Path.Count > 0)
-                retVal += ", Path=" + Path;
-            retVal = retVal.Trim (',', ' ');
-            return retVal;
         }
     }
 }

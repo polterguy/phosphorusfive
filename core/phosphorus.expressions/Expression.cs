@@ -1,5 +1,5 @@
 /*
- * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
+ * Phosphorus.Five, copyright 2014 - 2015, Mother Earth, Jannah, Gaia - YOU!
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
  */
 
@@ -309,7 +309,7 @@ namespace phosphorus.expressions
             current.AddIterator (new IteratorValued (token, type, _context));
         }
 
-        // TODO: cleanup, too long ...
+        /// \todo cleanup, too long ...
         /*
          * creates a range token [x,y]
          */
@@ -423,7 +423,7 @@ namespace phosphorus.expressions
                 throw new ExpressionException (_expression, "Group in expression was not closed.", _evaluatedNode, _context);
 
             // parsing type of match
-            // TODO: shares a lot of functionality with XUtil.ExpressionType, try to refactor
+            /// \todo shares a lot of functionality with XUtil.ExpressionType, try to refactor
             string convert = null;
             if (type.Contains (".")) {
                 convert = type.Substring (type.IndexOf ('.') + 1);
@@ -487,7 +487,7 @@ namespace phosphorus.expressions
                 } else {
                     // current MatchEntity contains an expression as its value, evaluating expression, and
                     // adding result of expression
-                    // TODO: support formatting expressions through delegate callbacks, such that XUtil.Iterate
+                    /// \todo support formatting expressions through delegate callbacks, such that XUtil.Iterate
                     // and similar constructs can handle reference expressions, through callback, where referenced
                     // expression contains formatting parameters
                     var innerMatch = Create (Utilities.Convert<string> (idxMatch.Value, context)).Evaluate (idxMatch.Node, context);

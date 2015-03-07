@@ -1,5 +1,5 @@
 /*
- * phosphorus five, copyright 2014 - Mother Earth, Jannah, Gaia
+ * Phosphorus.Five, copyright 2014 - 2015, Mother Earth, Jannah, Gaia - YOU!
  * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
  */
 
@@ -12,17 +12,19 @@ using System.Reflection;
 namespace phosphorus.core
 {
     /// <summary>
-    ///     loads up assemblies for handling Active Events. class is a natural singleton, use the Instance static member to
-    ///     access
-    ///     the singleton instance. this class is also responsible for creating your
-    ///     <see cref="phosphorus.core.ApplicationContext" />,
-    ///     but make sure you create you application context after you have initialized all assemblies you wish should have
-    ///     Active Events
-    ///     for you, since once you've created your application context, you can no longer load more assemblies to handle
-    ///     Active Events,
-    ///     without creating a new application context. every time you load or unload an assembly, you should re-create your
-    ///     application
-    ///     context
+    ///     Loads up assemblies for handling Active Events.
+    /// 
+    ///     Class is a natural singleton, use the Instance static member to access its singleton instance.
+    /// 
+    ///     This class is also responsible for creating your <see cref="phosphorus.core.ApplicationContext" />,
+    ///     but make sure you create your application context AFTER you have initialized all assemblies you want to handle
+    ///     Active Events for you, since once you've created your application context, you can no longer load more assemblies to handle
+    ///     Active Events, without creating a new application context.
+    /// 
+    ///     Every time you load or unload an assembly, you should re-create your application context, at the very least.
+    /// 
+    ///     If you are within a "web context", using the phosphorus.application-pool as your driver, then you will have one
+    ///     ApplicationContext automatically created for you, for each request towards your site.
     /// </summary>
     public class Loader
     {
@@ -43,11 +45,12 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        ///     creates an application context. there should be one application context for every user in the system. an
-        ///     application
-        ///     context is being used for registering instance Active Event handlers and raising Active Events
+        ///     Creates a new ApplicationContext for you.
+        /// 
+        ///     Creates an application context. There should normally be one application context for every user or request
+        ///     in your system. The application context is used for registering instance Active Event handlers, and  raising Active Events.
         /// </summary>
-        /// <returns>the application context</returns>
+        /// <returns>The newly created context.</returns>
         public ApplicationContext CreateApplicationContext ()
         {
             var context = new ApplicationContext (_instanceActiveEvents, _staticActiveEvents);
@@ -55,9 +58,14 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        ///     loads an assembly for handling Active Events
+        ///     Loads an assembly for handling Active Events.
+        /// 
+        ///     If you have an assembly which you wish for to handle Active Events, then you must register your assembly
+        ///     through this method, or one of its overloads, before it can handle Active Events.
+        /// 
+        ///     If assembly is not already loaded into your ApplicationDomain, then it will be so after execution of this method.
         /// </summary>
-        /// <param name="assembly">assembly to load</param>
+        /// <param name="assembly">Assembly to register as Active event handler.</param>
         public void LoadAssembly (Assembly assembly)
         {
             // checking to see if assembly is already loaded up, to avoid initializing the same assembly twice
@@ -74,7 +82,12 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        ///     loads the assembly containing the given type for handling Active Events
+        ///     Loads and registers the assembly, containing the given type, for handling Active Events.
+        /// 
+        ///     If you have an assembly which you wish for to handle Active Events, then you must register your assembly
+        ///     through this method, or one of its overloads, before it can handle Active Events.
+        /// 
+        ///     If assembly is not already loaded into your ApplicationDomain, then it will be so after execution of this method.
         /// </summary>
         /// <param name="type">type from assembly you wish to load</param>
         public void LoadAssembly (Type type)
@@ -94,17 +107,33 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        ///     loads an assembly for handling Active Events using the current directory as the directory
-        ///     for the assembly to load
+        ///     Loads an assembly for handling Active Events.
+        /// 
+        ///     If you have an assembly which you wish for to handle Active Events, then you must register your assembly
+        ///     through this method, or one of its overloads, before it can handle Active Events.
+        /// 
+        ///     If assembly is not already loaded into your ApplicationDomain, then it will be so after execution of this method.
+        /// 
+        ///     This overload, uses the current directory to resolve where your Asembly exists.
         /// </summary>
-        /// <param name="name">name of assembly</param>
-        public void LoadAssembly (string name) { LoadAssembly (string.Empty, name); }
+        /// <param name="name">The name of the assembly you wish to load.</param>
+        public void LoadAssembly (string name)
+        {
+            LoadAssembly (string.Empty, name);
+        }
 
         /// <summary>
-        ///     loads an assembly for handling Active Events
+        ///     Loads an assembly for handling Active Events
+        /// 
+        ///     If you have an assembly which you wish for to handle Active Events, then you must register your assembly
+        ///     through this method, or one of its overloads, before it can handle Active Events.
+        /// 
+        ///     If assembly is not already loaded into your ApplicationDomain, then it will be so after execution of this method.
+        /// 
+        ///     This overload, uses the given directory to resolve where your Asembly exists.
         /// </summary>
-        /// <param name="path">directory of assembly</param>
-        /// <param name="name">name of assembly</param>
+        /// <param name="path">Directory where assembly exists.</param>
+        /// <param name="name">Name of your assembly.</param>
         public void LoadAssembly (string path, string name)
         {
             // "normalizing" name of assembly
@@ -131,7 +160,10 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        ///     unloads the assembly with the given name
+        ///     Unloads the assembly with the given name.
+        /// 
+        ///     All ApplicationContext objects created after this method is invoked, will no longer have Active Event handlers
+        ///     in the assembly you unload using this method.
         /// </summary>
         /// <param name="name">name of assembly to unload</param>
         public void UnloadAssembly (string name)
@@ -146,7 +178,7 @@ namespace phosphorus.core
             if (assembly != null) {
                 // removing assembly, and making sure all Active Events are "unregistered"
                 // please notice that assembly is still in AppDomain, but will no longer handle Active Events
-                // TODO: figure out how to "unload" assembly from AppDomain
+                /// \todo figure out how to "unload" assembly from AppDomain
                 _assemblies.Remove (assembly);
                 RemoveAssembly (assembly);
             }
@@ -156,7 +188,6 @@ namespace phosphorus.core
          * removes an assembly such that all Active Events from given assembly will no longer
          * be a part of our list of potential invocation objects for Active Events
          */
-
         private void RemoveAssembly (Assembly assembly)
         {
             // looping through all types from assembly, to see if they're handling Active Events
@@ -173,7 +204,6 @@ namespace phosphorus.core
          * Active Event attributes for one or more of its methods, and if it does, we register
          * type as Active Event sink
          */
-
         private void InitializeAssembly (Assembly assembly)
         {
             // looping through all types in assembly
@@ -200,7 +230,6 @@ namespace phosphorus.core
          * loops through all MethodInfo objects given, and adds them to the associated dictionary with type as key,
          * if they have Active Event attributes declared
          */
-
         private void AddActiveEventsForType (
             Type type,
             MethodInfo[] methods,
@@ -232,7 +261,6 @@ namespace phosphorus.core
         /*
          * verifies that the signature of our Active Event is correct
          */
-
         private static void VerifyActiveEventSignature (MethodInfo method)
         {
             var pars = method.GetParameters ();
