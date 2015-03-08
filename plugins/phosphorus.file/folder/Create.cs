@@ -14,14 +14,22 @@ namespace phosphorus.file.folder
 {
     /// <summary>
     ///     Class to help create folders on disc.
+    /// 
+    ///     Encapsulates the [pf.folder.create] Active Event, and its associated helper methods.
     /// </summary>
     public static class Create
     {
         /// <summary>
-        ///     Creates zero or more folders on disc. If folder exists from before, then false is returned.
+        ///     Creates zero or more folders on disc.
+        /// 
+        ///     If folder exists from before, then false is returned.
+        /// 
+        ///     Example that creates a "foo" folder, on root of your application;
+        /// 
+        ///     <pre>pf.folder.create:foo</pre>
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.folder.create")]
         private static void pf_folder_create (ApplicationContext context, ActiveEventArgs e)
         {

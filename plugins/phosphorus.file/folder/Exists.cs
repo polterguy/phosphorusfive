@@ -13,15 +13,29 @@ using phosphorus.expressions;
 namespace phosphorus.file.folder
 {
     /// <summary>
-    ///     Class to help figure out if a folder exists on disc.
+    ///     Class to check if a folder exists on disc.
+    /// 
+    ///     Encapsulates the [pf.folder.exists] Active Event, and its associated helper methods.
     /// </summary>
     public static class Exists
     {
         /// <summary>
-        ///     Checks to see if a folder exists on disc or not, and returns true if folder exists.
+        ///     Checks to see if a folder exists on disc or not.
+        /// 
+        ///     Will return "true" if folder exists, otherwise false.
+        /// 
+        ///     Example;
+        ///     <pre>pf.folder.exists:foo</pre>
+        /// 
+        ///     Example checking for existence of multiple folders, "foo1" and "foo2";
+        /// 
+        ///     <pre>_data
+        ///   foo1
+        ///   foo2
+        /// pf.folder.exists:@/-?name</pre>
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.folder.exists")]
         private static void pf_folder_exists (ApplicationContext context, ActiveEventArgs e)
         {

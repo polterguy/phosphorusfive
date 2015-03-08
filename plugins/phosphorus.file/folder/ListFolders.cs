@@ -13,15 +13,23 @@ using phosphorus.expressions;
 namespace phosphorus.file.folder
 {
     /// <summary>
-    ///     Class to help list folders on disc.
+    ///     Class to help list all folders within folder(s).
+    /// 
+    ///     Contains [pf.folder.list-folders], and its associated helper methods.
     /// </summary>
     public static class ListFolders
     {
         /// <summary>
-        ///     List all folders in the folder(s) given.
+        ///     List all folders in folder(s).
+        /// 
+        ///     Will list all folders within the specified folder(s).
+        /// 
+        ///     Example that lists all folders within root folder of your system;
+        /// 
+        ///     <pre>pf.folder.list-folders:</pre>
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.folder.list-folders")]
         private static void pf_folder_list_folders (ApplicationContext context, ActiveEventArgs e)
         {

@@ -14,14 +14,30 @@ namespace phosphorus.file.file
 {
     /// <summary>
     ///     Class to help load files.
+    /// 
+    ///     Contains [pf.file.load], and its associated helper methods.
     /// </summary>
     public static class Load
     {
         /// <summary>
-        ///     Loads zero or more files from disc. If file does not exist, false will be returned.
+        ///     Loads zero or more files from disc.
+        /// 
+        ///     If file does not exist, false will be returned for file path.
+        /// 
+        ///     Example that loads the file "foo.txt" from your "phosphorus.application-folder" if you run it through the main
+        ///     web application;
+        /// 
+        ///     <pre>pf.file.load:foo.txt</pre>
+        /// 
+        ///     Example that loads the file "foo1.txt" and "foo2.txt" from main folder;
+        /// 
+        ///     <pre>_data
+        ///   foo1.txt
+        ///   foo2.txt
+        /// pf.file.load:@/-/*name</pre>
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.file.load")]
         private static void pf_file_load (ApplicationContext context, ActiveEventArgs e)
         {

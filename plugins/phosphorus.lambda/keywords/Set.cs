@@ -11,6 +11,7 @@ using phosphorus.expressions;
 
 namespace phosphorus.lambda.keywords
 {
+    /// \todo [set] should probably be allowed to create new nodes, think about it ...?
     /// <summary>
     ///     class wrapping execution engine keyword "put", which allows for changing the value and name of nodes, or the node
     ///     itself

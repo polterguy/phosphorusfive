@@ -5,6 +5,21 @@
 
 using phosphorus.core;
 
+/// <summary>
+///     Main namespace for all file operations in Phosphorus.Five.
+/// 
+///     Contains all Active Events within the [pf.file.xxx] and [pf.folder.xxx] namespace.
+/// 
+///     Notice that all of these Active Events can only check for files within the main folder of your application,
+///     and they will have the root folder of your application automatically appended, to their files and folder, as they
+///     execute.
+/// 
+///     Due to the above reasons, it is therefor necessary for you to either expose an Active Event in your ApplicationContext
+///     returning this root folder, with the name of; [pf.core.application-folder]
+/// 
+///     This is automatically done for you though, if you use the main phosphorus.application-pool, or the lambda.exe console program
+///     as your main application context pool.
+/// </summary>
 namespace phosphorus.file
 {
     /// <summary>
