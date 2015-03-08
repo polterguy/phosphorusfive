@@ -14,15 +14,22 @@ using phosphorus.web.ui.Common;
 namespace phosphorus.web.ui
 {
     /// <summary>
-    ///     Helper to retrieve and set session values
+    ///     Helper to retrieve and set Session values.
+    /// 
+    ///     Allows for you to retrieve and set items in your Session object.
+    /// 
+    ///     The Session object, is an object that can store items locally on a session basis for each user of your web site.
     /// </summary>
     public static class Session
     {
         /// <summary>
-        ///     Sets one or more session object(s) where [source], or [src], becomes the nodes that are stored in the session.
+        ///     Sets one or more Session object(s).
+        /// 
+        ///     Where [source], or [src], becomes the nodes that are stored in the session. The main node's value(s), becomes
+        ///     the key your items are stored with.
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.web.session.set")]
         private static void pf_web_session_set (ApplicationContext context, ActiveEventArgs e)
         {
@@ -38,10 +45,12 @@ namespace phosphorus.web.ui
         }
 
         /// <summary>
-        ///     Returns the session object(s) given through the value(s) of the main node
+        ///     Retrieves Session object(s).
+        /// 
+        ///     Supply one or more keys to which items you wish to retrieve as the value of your main node.
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.web.session.get")]
         private static void pf_web_session_get (ApplicationContext context, ActiveEventArgs e)
         {
@@ -49,10 +58,12 @@ namespace phosphorus.web.ui
         }
 
         /// <summary>
-        ///     Lists all keys in the session object
+        ///     Lists all keys in the Session object.
+        /// 
+        ///     Returns all keys for all items in your Session object.
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.web.session.list")]
         private static void pf_web_session_list (ApplicationContext context, ActiveEventArgs e)
         {

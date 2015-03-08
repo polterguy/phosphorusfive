@@ -12,21 +12,30 @@ using phosphorus.expressions.exceptions;
 
 // ReSharper disable UnusedMember.Local
 
+/// <summary>
+///     Main namespace for all Active Events related to Ajax Web Widgets.
+/// 
+///     Contains wrapper classes that creates or manipulates Ajax Web Widgets in Phosphorus.Five.
+/// </summary>
 namespace phosphorus.web.ui.widgets
 {
     /// <summary>
-    ///     Helper to retrieve and change properties of widgets
+    ///     Helper to retrieve and change properties of widgets.
+    /// 
+    ///     Class wrapping the Active Events necessary to manipulate properties and attributes of Web Widgets.
     /// </summary>
     // ReSharper disable once UnusedMember.Global
     public static class Properties
     {
         /// <summary>
-        ///     Returns properties requested by caller as children nodes. The properties you
-        ///     wish to retrieve, are given as the names of the children nodes. The widget(s) you
-        ///     wish to retrieve properties from, is given as the value of node.
+        ///     Returns properties and/or attributes requested by caller as children nodes.
+        /// 
+        ///     Will return all properties and attributes on widget requested as the names of child nodes of the
+        ///     main node when invoking the Active Event. The ID of the widgets you wish to retrieve properties from,
+        ///     is given as the main value of the node.
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.web.widgets.property.get")]
         private static void pf_web_widgets_property_get (ApplicationContext context, ActiveEventArgs e)
         {
@@ -76,12 +85,14 @@ namespace phosphorus.web.ui.widgets
         }
 
         /// <summary>
-        ///     Sets the properties of the widget(s) with the given ID(s) to the value of its children nodes.
+        ///     Sets properties and/or attributes of web widgets.
+        /// 
+        ///     Sets the properties and attributes of the widget(s) with the given ID(s) to the value of its children nodes.
         ///     The properties you wish to set, are given as the names of the children nodes. The widget(s) you
-        ///     wish to set the properties of, are given as the value of node
+        ///     wish to set the properties of, are given as the value of node.
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.web.widgets.property.set")]
         private static void pf_web_widgets_property_set (ApplicationContext context, ActiveEventArgs e)
         {
@@ -125,12 +136,13 @@ namespace phosphorus.web.ui.widgets
         }
 
         /// <summary>
-        ///     Removes the properties of the widget(s) with the given ID(s).
+        ///     Removes the properties and/or attributes of web widgets.
+        /// 
         ///     The properties you wish to remove, are given as the names of the children nodes. The widget(s) you
         ///     wish to remove properties from, are given as the value of node.
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.web.widgets.property.remove")]
         private static void pf_web_widgets_property_remove (ApplicationContext context, ActiveEventArgs e)
         {
@@ -165,10 +177,13 @@ namespace phosphorus.web.ui.widgets
         }
         
         /// <summary>
-        ///     Lists all existing properties for given widget(s).
+        ///     Lists all existing properties for given web widget.
+        /// 
+        ///     Will return all properties and/or attributes of all widgets requested as the value of the main Active Event
+        ///     node.
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.web.widgets.property.list")]
         private static void pf_web_widgets_property_list (ApplicationContext context, ActiveEventArgs e)
         {

@@ -12,10 +12,18 @@ using phosphorus.expressions;
 // ReSharper disable UnusedMember.Local
 // ReSharper disable UnusedMember.Global
 
+/// <summary>
+///     Main namespace for Active Events that fiddles with the HTTP response.
+/// 
+///     Wraps all Active Events that manipulates the HTTP response, such as changing HTTP headers, and such.
+/// </summary>
 namespace phosphorus.web.ui.response
 {
     /// <summary>
-    ///     helper to echo any piece of text back to client as HTTP response
+    ///     Class encapsulating the [pf.web.echo] Active Event
+    /// 
+    ///     Class wrapping the Active Events necessary to echo, or write, a specific piece of text, or nodes
+    ///     back to client over the HTTP response.
     /// </summary>
     public static class Echo
     {
@@ -39,10 +47,13 @@ namespace phosphorus.web.ui.response
         }
 
         /// <summary>
-        ///     Discards the current response, and echos the given piece of text back to client.
+        ///     Returns the given text or object back to client.
+        /// 
+        ///     Discards the current response text, and writes the given piece of text, nodes or objects(s)
+        ///     back to client over the HTTP response.
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.web.echo")]
         private static void pf_web_echo (ApplicationContext context, ActiveEventArgs e)
         {

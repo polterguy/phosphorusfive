@@ -10,20 +10,28 @@ using phosphorus.core;
 using phosphorus.web.ui.Common;
 
 // ReSharper disable UnusedMember.Local
+// ReSharper disable UnusedMember.Global
 
 namespace phosphorus.web.ui
 {
     /// <summary>
-    ///     Helper to retrieve and set cache values
+    ///     Helper to retrieve and set Cache values.
+    /// 
+    ///     Allows for you to retrieve and set items in your Cache object.
+    /// 
+    ///     The Cache object is a "global shared" object between all sessions, visitors and user of your web site, 
+    ///     and allowss for you to share and cache information between different users of your web site.
     /// </summary>
-    // ReSharper disable once UnusedMember.Global
     public static class Cache
     {
         /// <summary>
-        ///     Sets one or more cache object(s) where [source], or [src], becomes the nodes that are stored in the cache.
+        ///     Sets one or more Cache object(s).
+        /// 
+        ///     Where [source], or [src], becomes the nodes that are stored in the cache. The main node's value(s), becomes
+        ///     the key your items are stored with.
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.web.cache.set")]
         private static void pf_web_cache_set (ApplicationContext context, ActiveEventArgs e)
         {
@@ -39,7 +47,9 @@ namespace phosphorus.web.ui
         }
 
         /// <summary>
-        ///     Returns the cache object(s) given through the value(s) of the main node.
+        ///     Retrieves Cache object(s).
+        /// 
+        ///     Supply one or more keys to which items you wish to retrieve as the value of your main node.
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -50,10 +60,12 @@ namespace phosphorus.web.ui
         }
 
         /// <summary>
-        ///     Lists all keys in the cache.
+        ///     Lists all keys in the Cache object.
+        /// 
+        ///     Returns all keys for all items in your Cache object.
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.web.cache.list")]
         private static void pf_web_cache_list (ApplicationContext context, ActiveEventArgs e)
         {

@@ -13,15 +13,19 @@ using phosphorus.expressions;
 namespace phosphorus.web.ui.response
 {
     /// <summary>
-    /// helper to manipulate the HTTP response
+    ///     Helper class to manipulate the HTTP response headers.
+    /// 
+    ///     Class encapsulating Active Events requires to change or set HTTP headers for the HTTTP response.
     /// </summary>
     public static class Headers
     {
         /// <summary>
-        /// changes or removes existing HTTP headers, or adds new HTTP headers to response
+        ///     Changes the HTTP headers for the current response.
+        /// 
+        ///     Allows changing, removing or adding the HTTP headers returned by the current HTTP response.
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext"/> for Active Event</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.web.headers.set")]
         private static void pf_web_headers_set (ApplicationContext context, ActiveEventArgs e)
         {

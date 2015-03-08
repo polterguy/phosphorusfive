@@ -8,10 +8,17 @@ using System;
 namespace phosphorus.web.ui.Common
 {
     /// <summary>
-    ///     exception for something going wrong in regards to web plugin
+    ///     Exception thrown when a web error occurs.
+    /// 
+    ///     Exception thrown when something goes wrong in phoshorus.web.ui project, during for instance creation of
+    ///     web widgets.
     /// </summary>
     public class PhosphorusWebException : Exception
     {
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="phosphorus.web.ui.Common.PhosphorusWebException"/> class.
+        /// </summary>
+        /// <param name="msg">Error message.</param>
         public PhosphorusWebException (string msg)
             : base (msg) { }
     }

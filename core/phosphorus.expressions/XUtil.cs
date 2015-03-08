@@ -113,8 +113,8 @@ namespace phosphorus.expressions
         ///     An example of a formatted node;
         /// 
         ///     <pre>
-        ///     foo:bar {0}
-        ///       :some-value</pre>
+        /// foo:bar {0}
+        ///   :some-value</pre>
         /// </summary>
         /// <returns><c>true</c> if node contains formatting parameters; otherwise, <c>false</c>.</returns>
         /// <param name="node">Node to check.</param>

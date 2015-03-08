@@ -14,15 +14,19 @@ using phosphorus.web.ui.Common;
 namespace phosphorus.web.ui
 {
     /// <summary>
-    ///     Helper to retrieve POST and GET parameters
+    ///     Helper to retrieve POST and GET parameters.
+    /// 
+    ///     This class allows you to retrieve HTTP POST and GET parameters values for the current request.
     /// </summary>
     public static class Parameters
     {
         /// <summary>
-        ///     Returns the HTTP GET or POST parameter(s) given through the value(s) of the main node
+        ///     Returns one or more HTTP GET or POST parameter(s)
+        /// 
+        ///     The name of the parameter you wish to retrieve, is given as the value(s) of the main node.
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.web.parameters.get")]
         private static void pf_web_parameters_get (ApplicationContext context, ActiveEventArgs e)
         {
@@ -35,10 +39,12 @@ namespace phosphorus.web.ui
         }
 
         /// <summary>
-        ///     Lists all keys for our GET and POST parameters
+        ///     Lists all keys for our GET and POST parameters.
+        /// 
+        ///     Returns all keys for all HTTP POST and GET parameters in current request.
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.web.parameters.list")]
         private static void pf_web_parameters_list (ApplicationContext context, ActiveEventArgs e)
         {

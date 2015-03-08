@@ -17,7 +17,9 @@ using phosphorus.web.ui.Common;
 namespace phosphorus.web.ui.response
 {
     /// <summary>
-    /// wraps [pf.web.transfer-file] Active Event
+    ///     Wraps [pf.web.transfer-file] Active Event.
+    /// 
+    ///     Class wrapping Active Event necessary to transfer one or more files back to the client over the HTTP reponse.
     /// </summary>
     public static class TransmitFile
     {
@@ -53,10 +55,12 @@ namespace phosphorus.web.ui.response
         }
 
         /// <summary>
-        /// discards the current response, and transfers the file(s) given through its args
+        ///     Transfers the given file(s) back to client.
+        /// 
+        ///     Will discard the current HTTP response, and write the given file(s) back to client, using the current response.
         /// </summary>
-        /// <param name="context"><see cref="phosphorus.core.ApplicationContext"/> for Active Event</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.web.transmit-file")]
         private static void pf_web_transmit_file (ApplicationContext context, ActiveEventArgs e)
         {

@@ -9,35 +9,52 @@ using System.Linq;
 using phosphorus.core;
 using phosphorus.expressions;
 
+/// <summary>
+///     Namespace wrapping helpers for collections.
+/// 
+///     Namespace contains common helper operations for collection base classes, such as Session, Application and Cookies.
+/// </summary>
 namespace phosphorus.web.ui.Common
 {
     /// <summary>
-    ///     helper class for classes that requires to set and retrieve values from collections,
-    ///     such as Session and Application
+    ///     Helper class to help set, get and list collections.
+    /// 
+    ///     Helper class for Active Events that needs to set, get and list collections, such as Session, Cookies and Application.
     /// </summary>
     public static class CollectionBase
     {
         /// <summary>
-        ///     callback functor object for Get operation
+        ///     Callback functor object for Get operation.
+        /// 
+        ///     Functor that expects callback to return an object matching the given key parameter.
+        ///     Used in for instance Session and Application wrapper to retrieve one item with the given name.
         /// </summary>
         public delegate object GetDelegate (string key);
 
         /// <summary>
-        ///     callback functor object for List operation
+        ///     Callback functor object for list operation.
+        /// 
+        ///     Expects callback to return all keys. Used in among the Session and Application wrapper, to 
+        ///     ask for all keys in Session and Application.
         /// </summary>
         public delegate IEnumerable<string> ListDelegate ();
 
         /// <summary>
-        ///     callback functor object for Set operation
+        ///     Callback functor object for set operation.
+        /// 
+        ///     Expects callback to change or set one item, with the given name, to the given value.
         /// </summary>
         public delegate void SetDelegate (string key, object value);
 
         /// <summary>
-        ///     sets a value to a collection
+        ///     Sets a single value in a collection.
+        /// 
+        ///     Requres caller to supply a functor callback, that should set one item in the collection. Will loop through
+        ///     all keys caller requests to set, and invoke callback once for each item.
         /// </summary>
-        /// <param name="node">root node of collection Active Event</param>
-        /// <param name="context">application context</param>
-        /// <param name="functor">callback functor, will be invoked once for each key</param>
+        /// <param name="node">Root node of collection Active Event invoker.</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="functor">Callback functor, will be invoked once for each key.</param>
         public static void Set (Node node, ApplicationContext context, SetDelegate functor)
         {
             // retrieving source
@@ -52,11 +69,14 @@ namespace phosphorus.web.ui.Common
         }
 
         /// <summary>
-        ///     gets a value from a collection
+        ///     Gets a value from a collection.
+        /// 
+        ///     Expects caller to supply a functor callback, that should retrieve one item from the collection.
+        ///     Will loop through all keys caller requests to set, and invoke callback once for each item.
         /// </summary>
-        /// <param name="node">root node of collection Active Event</param>
-        /// <param name="context">application context</param>
-        /// <param name="functor">callback functor, will be invoked once for each key</param>
+        /// <param name="node">Root node of collection Active Event invoker.</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="functor">Callback functor, will be invoked once for each key.</param>
         public static void Get (Node node, ApplicationContext context, GetDelegate functor)
         {
             // iterating through each "key"
@@ -92,6 +112,16 @@ namespace phosphorus.web.ui.Common
             }
         }
 
+        /// <summary>
+        ///     Lists all items from a collection.
+        /// 
+        ///     Expects caller to supply a functor callback, that should return all keys from the collection.
+        ///     Will loop through all keys supplied by caller, use them as a filter, and return all items from
+        ///     the collection, having a key that matches the filter(s).
+        /// </summary>
+        /// <param name="node">Root node of Active Event invoked.</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="functor">Callback functor, will be invoked once to retrieve all keys from collection.</param>
         public static void List (Node node, ApplicationContext context, ListDelegate functor)
         {
             // retrieving filters, if any

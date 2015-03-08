@@ -14,16 +14,24 @@ using phosphorus.web.ui.Common;
 namespace phosphorus.web.ui
 {
     /// <summary>
-    ///     Helper to retrieve and set cookies
+    ///     Helper to retrieve and set Cookie values.
+    /// 
+    ///     Allows for you to retrieve and set items in your user's cookie storage.
+    /// 
+    ///     Cookies allows you to transfer data back to the client's web-browser, that will be transfered back to the server,
+    ///     for consecutive requests.
     /// </summary>
     public static class Cookies
     {
         /// <summary>
-        ///     Creates one or more cookies to send back to client, where [duration] becomes number of days before it expires, and
-        ///     [source], or [src], becomes the nodes that are stored in the cookie.
+        ///     Sets one or more Cookie object(s).
+        /// 
+        ///     Where [source], or [src], becomes the nodes that are stored in the cookie. The main node's value(s), becomes
+        ///     the key your items are stored with. Pass in [duration] as number of days before cookie expires from cookie storage
+        ///     on client.
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.web.cookie.set")]
         private static void pf_web_cookie_set (ApplicationContext context, ActiveEventArgs e)
         {
@@ -40,9 +48,9 @@ namespace phosphorus.web.ui
         }
 
         /// <summary>
-        ///     Returns the cookie(s) given through the value(s) of the main node. Since cookies can only be stored
-        ///     as strings, this method will always return the string representation of whatever was previously stored
-        ///     in it using [pf.web.cookie.set]
+        ///     Retrieves Cookie object(s).
+        /// 
+        ///     Supply one or more keys to which items you wish to retrieve as the value of your main node.
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -61,10 +69,12 @@ namespace phosphorus.web.ui
         }
 
         /// <summary>
-        ///     Lists all keys for all cookies
+        ///     Lists all keys in the Cookie object of client.
+        /// 
+        ///     Returns all keys for all items in your user's Cookie object.
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.web.cookie.list")]
         private static void pf_web_cookie_list (ApplicationContext context, ActiveEventArgs e)
         {

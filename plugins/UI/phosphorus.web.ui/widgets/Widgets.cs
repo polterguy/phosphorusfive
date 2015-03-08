@@ -17,27 +17,60 @@ using Void = phosphorus.ajax.widgets.Void;
 namespace phosphorus.web.ui.widgets
 {
     /// <summary>
-    ///     class for creating web widgets
+    ///     Class for creating web widgets.
+    /// 
+    ///     Class wrapping the Active Events necessary to create Ajax Web Widgets.
     /// </summary>
     public static class Widgets
     {
         /// <summary>
-        ///     Creates a generic container type of Widget, that can contain children widgets of itself. Active Event is not
-        ///     meant to be raised directly, but through the [pf.web.widgets.create] Active Event, since it needs a reference to
-        ///     its parent control directly, among other things. Pass in [element] to override the HTML element rendered. Pass 
-        ///     in [has-id] with "false" to remove the rendering of its HTML ID element. Pass in [controls] as a list of child
-        ///     controls that will be rendered in its children controls collection. Pass in [oninitialload] to have some server-side
-        ///     piece of pf.lambda code execute during its initial loading. Pass in [render-type], to override how the widget is 
-        ///     rendered, by supplying either "immediate", "open" or "normal" as values, overriding how the element is closed,
-        ///     if at all. Anything within the [controls] parameter passedd in, will have [pf.web.widgets.] appended in front of it,
+        ///     Creates an Ajax Container Web Widget.
+        /// 
+        ///     Creates a generic container type of Widget, that can contain children widgets of itself.
+        /// 
+        ///     Active Event is not meant to be raised directly, but through the [pf.web.widgets.create] Active Event, since it 
+        ///     needs a reference to its parent control directly, among other things.
+        /// 
+        ///     Pass in [element] to override the HTML element rendered. 
+        /// 
+        ///     Pass  in [has-id] with "false" to remove the rendering of its HTML ID element.
+        /// 
+        ///     Pass in [controls] as a list of child controls that will be rendered in its children controls collection.
+        /// 
+        ///     Pass in [oninitialload] to have some server-side piece of pf.lambda code execute during its initial loading.
+        /// 
+        ///     Pass in [render-type], to override how the widget is rendered, by supplying either "immediate", "open" or "normal" 
+        ///     as values, overriding how the element is closed, if at all.
+        /// 
+        ///     Anything within the [controls] node passed in, will have <em>"pf.web.widgets."</em> appended in front of it,
         ///     and raised as an Active Event, adding the results of that Active Event into its [controls] collection automatically.
-        ///     Any nodes starting with "on", will be handled as events. If your events ends with "-script", they will
-        ///     be rendered back to client as JavaScript events, if they end with anything else but "-script", they will be assumed
-        ///     to be DOM events, and your node containing pf.lambda code, supposed to execute during that DOM event on the server-side.
-        ///     Any other nodes, are automatically added as HTML attributes, wwith their given values, and rendered as such back to client.
+        /// 
+        ///     Any nodes starting with "on", will be assumed to be server-side pf.lambda event handlers.
+        /// 
+        ///     If your events ends with "-script", they will however be rendered back to client as JavaScript events. If they end 
+        ///     with anything else but "-script", they will be assumed to be DOM events, and your node assumed to be containing 
+        ///     pf.lambda code, supposed to execute when that DOM event is raised, on the server-side, as pf.lambda code.
+        /// 
+        ///     Any other nodes, are automatically added as HTML attributes, with their given values, and rendered as such back to 
+        ///     the client.
+        /// 
+        ///     Example of usage;
+        ///     <pre>
+        /// pf.web.widgets.create:foo
+        ///   widget:container
+        ///   class:span-24 prepend-top info
+        ///   onclick
+        ///     pf.web.widgets.property.set:foo
+        ///       class:span-24 prepend-top success
+        ///     pf.web.widgets.property.set:bar
+        ///       innerValue:I was clicked!
+        ///   controls
+        ///     literal:bar
+        ///       innerValue:Yo World!
+        ///       element:h1</pre>
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.web.widgets.container")]
         private static void pf_web_controls_container (ApplicationContext context, ActiveEventArgs e)
         {
@@ -49,20 +82,48 @@ namespace phosphorus.web.ui.widgets
         }
 
         /// <summary>
-        ///     Creates a generic literal type of Widget, that can contain an inner value, being HTML or text. Active Event is not
-        ///     meant to be raised directly, but through the [pf.web.widgets.create] Active Event, since it needs a reference to
-        ///     its parent control directly, among other things. Pass in [element] to override the HTML element rendered. Pass 
-        ///     in [has-id] with "false" to remove the rendering of its HTML ID element. Pass in [innerValue] as a text string
-        ///     that will be rendered in its HTML or text content. Pass in [oninitialload] to have some server-side
-        ///     piece of pf.lambda code execute during its initial loading. Pass in [render-type], to override how the widget is 
-        ///     rendered, by supplying either "SelfClosing", "open" or "Default" as values, overriding how the element is closed,
-        ///     if at all. Any nodes starting with "on", will be handled as events. If your events ends with "-script", they will
-        ///     be rendered back to client as JavaScript events, if they end with anything else but "-script", they will be assumed
-        ///     to be DOM events, and your node containing pf.lambda code, supposed to execute during that DOM event on the server-side.
-        ///     Any other nodes, are automatically added as HTML attributes, wwith their given values, and rendered as such back to client.
+        ///     Creates an Ajax Literal Web Widget.
+        /// 
+        ///     Creates a generic literal type of Widget, that cannot contain children widgets, but instead has the [innerValue] 
+        ///     property, allowing to change its inner value as text or HTML.
+        /// 
+        ///     Active Event is not meant to be raised directly, but through the [pf.web.widgets.create] Active Event, since it 
+        ///     needs a reference to its parent control directly, among other things.
+        /// 
+        ///     Pass in [element] to override the HTML element rendered. 
+        /// 
+        ///     Pass  in [has-id] with "false" to remove the rendering of its HTML ID element.
+        /// 
+        ///     Pass in [innerValue] to change its inner text or HTML.
+        /// 
+        ///     Pass in [oninitialload] to have some server-side piece of pf.lambda code execute during its initial loading.
+        /// 
+        ///     Pass in [render-type], to override how the widget is rendered, by supplying either "immediate", "open" or "normal" 
+        ///     as values, overriding how the element is closed, if at all.
+        /// 
+        ///     Any nodes starting with "on", will be assumed to be server-side pf.lambda event handlers.
+        /// 
+        ///     If your events ends with "-script", they will however be rendered back to client as JavaScript events. If they end 
+        ///     with anything else but "-script", they will be assumed to be DOM events, and your node assumed to be containing 
+        ///     pf.lambda code, supposed to execute when that DOM event is raised, on the server-side, as pf.lambda code.
+        /// 
+        ///     Any other nodes, are automatically added as HTML attributes, with their given values, and rendered as such back to 
+        ///     the client.
+        /// 
+        ///     Example of usage;
+        ///     <pre>
+        /// pf.web.widgets.create:foo
+        ///   widget:literal
+        ///   class:span-24 prepend-top info
+        ///   innerValue:Click me!
+        ///   element:h1
+        ///   onclick
+        ///     pf.web.widgets.property.set:foo
+        ///       class:span-24 prepend-top success
+        ///       innerValue:I was clicked!
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.web.widgets.literal")]
         private static void pf_web_controls_literal (ApplicationContext context, ActiveEventArgs e)
         {
@@ -74,19 +135,46 @@ namespace phosphorus.web.ui.widgets
         }
 
         /// <summary>
-        ///     Creates a generic void type of Widget, that cannot contain neither "text" nor "widgets". Active Event is not
-        ///     meant to be raised directly, but through the [pf.web.widgets.create] Active Event, since it needs a reference to
-        ///     its parent control directly, among other things. Pass in [element] to override the HTML element rendered. Pass 
-        ///     in [has-id] with "false" to remove the rendering of its HTML ID element. Pass in [oninitialload] to have some server-side
-        ///     piece of pf.lambda code execute during its initial loading. Pass in [render-type], to override how the widget is 
-        ///     rendered, by supplying either "SelfClosing", "open" or "Default" as values, overriding how the element is closed,
-        ///     if at all. Any nodes starting with "on", will be handled as events. If your events ends with "-script", they will
-        ///     be rendered back to client as JavaScript events, if they end with anything else but "-script", they will be assumed
-        ///     to be DOM events, and your node containing pf.lambda code, supposed to execute during that DOM event on the server-side.
-        ///     Any other nodes, are automatically added as HTML attributes, wwith their given values, and rendered as such back to client.
+        ///     Creates an Ajax Void Web Widget.
+        /// 
+        ///     Creates a generic void type of Widget, that cannot contain neither children widgets, nor has the [innerValue] 
+        ///     property. This type of widget is useful for HTML elements that does not have neither a value, nor children widgets.
+        ///     Examples uncludes for instance <em>"input"</em> html elements of type <em>"button"</em>.
+        /// 
+        ///     Active Event is not meant to be raised directly, but through the [pf.web.widgets.create] Active Event, since it 
+        ///     needs a reference to its parent control directly, among other things.
+        /// 
+        ///     Pass in [element] to override the HTML element rendered. 
+        /// 
+        ///     Pass  in [has-id] with "false" to remove the rendering of its HTML ID element.
+        /// 
+        ///     Pass in [oninitialload] to have some server-side piece of pf.lambda code execute during its initial loading.
+        /// 
+        ///     Pass in [render-type], to override how the widget is rendered, by supplying either "immediate", "open" or "normal" 
+        ///     as values, overriding how the element is closed, if at all.
+        /// 
+        ///     Any nodes starting with "on", will be assumed to be server-side pf.lambda event handlers.
+        /// 
+        ///     If your events ends with "-script", they will however be rendered back to client as JavaScript events. If they end 
+        ///     with anything else but "-script", they will be assumed to be DOM events, and your node assumed to be containing 
+        ///     pf.lambda code, supposed to execute when that DOM event is raised, on the server-side, as pf.lambda code.
+        /// 
+        ///     Any other nodes, are automatically added as HTML attributes, with their given values, and rendered as such back to 
+        ///     the client.
+        /// 
+        ///     Example of usage;
+        ///     <pre>
+        /// pf.web.widgets.create:foo
+        ///   widget:void
+        ///   placeholder:Change my text ...
+        ///   element:input
+        ///   type:text
+        ///   onchange
+        ///     pf.web.widgets.property.set:foo
+        ///       value:I had my text changed!
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.web.widgets.void")]
         private static void pf_web_controls_void (ApplicationContext context, ActiveEventArgs e)
         {
