@@ -9,10 +9,18 @@ using System.Configuration;
 using System.Linq;
 using phosphorus.core;
 
+/// <summary>
+///     Main namespace for common data classes.
+/// 
+///     Contains common helper classes for the [pf.data.xxx] namespace in Phosphorus.Five.
+/// </summary>
 namespace phosphorus.data.helpers
 {
     /// <summary>
-    ///     Helper class for common operations and methods used in the [pf.data.xxx] namespace.
+    ///     Helper class for common operations.
+    /// 
+    ///     Contains helper methods for common operations shared among for instance the [pf.data.select] and [pf.data.remove]
+    ///     Active Events.
     /// </summary>
     public static class Common
     {
@@ -25,19 +33,31 @@ namespace phosphorus.data.helpers
         }
 
         /// <summary>
-        ///     Returns the node containing the actual data in the database.
+        ///     This is your actual Database.
+        /// 
+        ///     The [pf.data.xxx] namespace in Phosphorus.Five, is a memory-based Database, allowing you to have a quick and dirty
+        ///     database implementation, not usable for huge data centers, but smaller websites, in addition to serving as a cache
+        ///     object for you. This is where you actual Database data is stored.
         /// </summary>
-        /// <value>database tree</value>
+        /// <value>Database node tree.</value>
         public static Node Database { get; private set; }
 
         /// <summary>
         ///     Used to lock database access.
+        /// 
+        ///     Some operations in the database layer of Phosphorus.Five, requires that only one thread access the database 
+        ///     at the same time. This is the object we use to lock such access to the database.
         /// </summary>
         /// <value>lock object</value>
         public static object Lock { get; private set; }
 
         /// <summary>
         ///     Makes sure database is properly initialized.
+        /// 
+        ///     Basically loads all files from the database path, which can be found in your application configuration file, and
+        ///     loads up all items from all pf.lambda files inside your databasse directory, and stores them in memory.
+        /// 
+        ///     After initial execution, this method will return immediately, not being particularly costy in any ways.
         /// </summary>
         /// <param name="context">application context</param>
         public static void Initialize (ApplicationContext context)
@@ -66,9 +86,18 @@ namespace phosphorus.data.helpers
             }
         }
 
-        /*
-         * appends node to list of changes, if it doesn't already exist there
-         */
+        /// \todo Cleanup these parts to create better API.
+        /// <summary>
+        ///     Adds the file node to changes.
+        /// 
+        ///     When you update or remove items from the database, then this method is useful for figuring
+        ///     out which files are affected by your operation.
+        /// 
+        ///     Pass in the node that was either changed or removed, and the method will append the file node necessary to
+        ///     save as a consequence in the changed parameter.
+        /// </summary>
+        /// <param name="idxDest">Which node was changed.</param>
+        /// <param name="changed">List of nodes containing the files that needs to be saved due to change operation.</param>
         public static void AddNodeToChanges (Node idxDest, List<Node> changed)
         {
             // finding "file node"
@@ -86,6 +115,14 @@ namespace phosphorus.data.helpers
         /*
          * saves all affected files
          */
+        /// <summary>
+        ///     Saves the affected files.
+        /// 
+        ///     Will save all files in the changed parameter that needs to be save as a consequence of a change or
+        ///     remove operation into the database.
+        /// </summary>
+        /// <param name="context">Application context.</param>
+        /// <param name="changed">List of files that were changed, and hence will be saved.</param>
         public static void SaveAffectedFiles (ApplicationContext context, List<Node> changed)
         {
             foreach (var idxNode in changed) {
@@ -93,6 +130,38 @@ namespace phosphorus.data.helpers
                 if (idxNode.Count == 0)
                     idxNode.UnTie ();
             }
+        }
+
+        /// \todo Do we really need to save the file? It is not really supposed to be necessary...
+        /// <summary>
+        ///     Gets the available file node.
+        /// 
+        ///     Will automatically figure out the next available file node for you, and create a container file
+        ///     which will be used for the node.
+        /// </summary>
+        /// <returns>The next available file node.</returns>
+        /// <param name="context">Aplication context.</param>
+        public static Node GetAvailableFileNode (ApplicationContext context)
+        {
+            // searching through database to see if there are any nodes we can use from before
+            var objectsPerFile = int.Parse (ConfigurationManager.AppSettings ["database-nodes-per-file"] ?? "32");
+            foreach (var idxFileNode in Database.Children) {
+                if (idxFileNode.Count < objectsPerFile)
+                    return idxFileNode;
+            }
+
+            // creating new node and appending into database
+            var newFileName = FindAvailableNewFileName (context);
+            var newNode = new Node (string.Empty, newFileName);
+            Database.Add (newNode);
+
+            // making sure fil exists on disc, for future new creations of files before save operation occurs
+            var createFile = new Node (string.Empty, newFileName);
+            createFile.Add (new Node ("source", ""));
+            context.Raise ("pf.file.save", createFile);
+
+            // returning available file node back to caller
+            return newNode;
         }
 
         /*
@@ -126,32 +195,6 @@ namespace phosphorus.data.helpers
                 saveNode.Add (new Node ("source", convertNode.Value));
                 context.Raise ("pf.file.save", saveNode);
             }
-        }
-
-        /*
-         * returns the next available database file node to store nodes within
-         */
-        public static Node GetAvailableFileNode (ApplicationContext context)
-        {
-            // searching through database to see if there are any nodes we can use from before
-            var objectsPerFile = int.Parse (ConfigurationManager.AppSettings ["database-nodes-per-file"] ?? "32");
-            foreach (var idxFileNode in Database.Children) {
-                if (idxFileNode.Count < objectsPerFile)
-                    return idxFileNode;
-            }
-
-            // creating new node and appending into database
-            var newFileName = FindAvailableNewFileName (context);
-            var newNode = new Node (string.Empty, newFileName);
-            Database.Add (newNode);
-
-            // making sure fil exists on disc, for future new creations of files before save operation occurs
-            var createFile = new Node (string.Empty, newFileName);
-            createFile.Add (new Node ("source", ""));
-            context.Raise ("pf.file.save", createFile);
-
-            // returning available file node back to caller
-            return newNode;
         }
 
         /*

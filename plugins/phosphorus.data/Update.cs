@@ -15,13 +15,32 @@ using phosphorus.data.helpers;
 namespace phosphorus.data
 {
     /// <summary>
-    ///     Class wrapping [pf.data.update] and its associated supporting methods
+    ///     Class wrapping [pf.data.update].
+    /// 
+    ///     Encapsulates the [pf.data.update] Active Event, and its associated helper methods.
     /// </summary>
     public static class Update
     {
+        /// \todo Do we need an "append" type of database Active Event, since this bugger can only change existing nodes ...?
         /// <summary>
+        ///     Updates nodes in your database.
+        /// 
         ///     Updates the results of the given expression in database, either according to a static [source] node,
-        ///     or a relative [rel-source] node
+        ///     or a relative [rel-source] node.
+        /// 
+        ///     The database stores its nodes as the root node being the database itself, and beneath the root node, are
+        ///     all file nodes. This means that your expressions should start with; <em>@/*/*</em>, before the rest of
+        ///     your expression, referring to your actual data nodes.
+        /// 
+        ///     The node used as the "root node" for most database expressions, except [pf.data.insert] though, is the 
+        ///     root node of your database, and not your execution tree root node.
+        /// 
+        ///     Example that will update all names to "Johnny Doe", in items from your database, having a type, 
+        ///     containing the string "foo";
+        /// 
+        ///     <pre>
+        /// pf.data.update:@/*/*/"/foo/"/*/name?value
+        ///   source:Johnny Doe</pre>
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>

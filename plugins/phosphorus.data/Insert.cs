@@ -12,18 +12,56 @@ using phosphorus.data.helpers;
 // ReSharper disable UnusedMember.Local
 // ReSharper disable UnusedMember.Global
 
+/// <summary>
+///     Main namespace for all [pd.data.xxx] Active Events.
+/// 
+///     The [pf.data.xxx] namespace in Phosphorus.Five contains a memory-bases database implementation, for 
+///     small objects, allowing you a quick and dirty database, for smaller systems, and smaller pieces of data.
+/// </summary>
 namespace phosphorus.data
 {
     /// <summary>
-    ///     Class wrapping [pf.data.insert] and its associated supporting methods
+    ///     Class wrapping [pf.data.insert].
+    /// 
+    ///     Contains the Active Events [pf.data.insert], and its asociatedd helper methods.
     /// </summary>
     public static class Insert
     {
         /// <summary>
-        ///     Inserts nodes into database
+        ///     Inserts nodes into database.
+        /// 
+        ///     Will insert one or more nodes into your database. The nodes inserted, are the children nodes, or the expression
+        ///     pointed to by the value of the main node.
+        /// 
+        ///     Example;
+        /// 
+        ///     <pre>
+        /// pf.data.insert
+        ///   foo-bar
+        ///     name:Thomas Hansen
+        ///     age:1000 years</pre>
+        /// 
+        ///     All items inserted into your database, will have an ID automatically created for them, unless you explicitly
+        ///     give your items an ID yourself. This ID wil be of type 'guid', and globally unique for your items.
+        /// 
+        ///     This ID will be the 'value' of your item 'root node'. For instance, in the example above, the ID for [foo-bar], 
+        ///     will become the value of the [foo-bar] node.
+        /// 
+        ///     If you let this Active Event create an automatic ID for your items, then this ID will be returned as the 
+        ///     value of all your inserted items.
+        /// 
+        ///     Below is an example of how to use this Active Event with an expression pointing to the items to insert;
+        /// 
+        ///     <pre>
+        /// _items
+        ///   foo1
+        ///     name:John Doe
+        ///   foo2
+        ///     name:Jane Doe
+        /// pf.data.insert:@/-/*?node</pre>
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.data.insert")]
         private static void pf_data_insert (ApplicationContext context, ActiveEventArgs e)
         {

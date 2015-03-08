@@ -15,15 +15,32 @@ using phosphorus.data.helpers;
 namespace phosphorus.data
 {
     /// <summary>
-    ///     Class wrapping [pf.data.remove], and its associated supporting methods
+    ///     Class wrapping [pf.data.remove].
+    /// 
+    ///     Class containing the [pf.data.remove] Active Event, and its associated helper methods.
     /// </summary>
-    public static class Delete
+    public static class Remove
     {
         /// <summary>
-        ///     Removes the nodes from the database matching the given expression
+        ///     Removes nodes from your database.
+        /// 
+        ///     Removes all nodes matching your given <see cref="phosphorus.expressions.Expression">Expression</see>
+        ///     from your database.
+        /// 
+        ///     The database stores its nodes as the root node being the database itself, and beneath the root node, are
+        ///     all file nodes. This means that your expressions should start with; <em>@/*/*</em>, before the rest of
+        ///     your expression, referring to your actual data nodes.
+        /// 
+        ///     The node used as the "root node" for most database expressions, except [pf.data.insert] though, is the 
+        ///     root node of your database, and not your execution tree root node.
+        /// 
+        ///     Example that will remove all items from your database, having a type, containing the string "foo";
+        /// 
+        ///     <pre>
+        /// pf.data.remove:@/*/*/"/foo/"?node</pre>
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.data.remove")]
         private static void pf_data_remove (ApplicationContext context, ActiveEventArgs e)
         {

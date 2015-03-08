@@ -12,18 +12,34 @@ using phosphorus.expressions;
 // ReSharper disable UnusedMember.Local
 // ReSharper disable UnusedMember.Global
 
+/// <summary>
+///     Main namespace for everything related to cryptographic services.
+/// 
+///     Contains all helper classes that somehow relates to cryptography.
+/// </summary>
 namespace phosphorus.crypto
 {
     /// <summary>
-    ///     Helper to create hashed values from nodes and values
+    ///     Helper class to create hashed value.
+    /// 
+    ///     A hashed string is a one-way street, creating a unique value from the given value, making
+    ///     it impossible to figure out what the original value was by using the hashed value, still having
+    ///     the possibility of re-creating the same hash if you know what was used to create the hash the first time.
+    /// 
+    ///     This happens to be a nice way to store passwords, and other types of sensitive information, such that even
+    ///     if another person acquires access to the hashed value, he can still not quess the original password used to
+    ///     generate the hash.
     /// </summary>
     public static class Hash
     {
         /// <summary>
-        ///     Creates an MD5 hash-string from the value(s) given
+        ///     Creates an MD5 hash-string.
+        /// 
+        ///     Creates an MD5 hash from the given string, node or value, somehow. Will return the hashed value as [value] node,
+        ///     beneath the main node of your Active Event invocation.
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.crypto.hash-string")]
         private static void pf_crypto_hash_string (ApplicationContext context, ActiveEventArgs e)
         {
