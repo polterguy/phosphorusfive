@@ -9,10 +9,18 @@ using System.Linq;
 using phosphorus.core;
 using phosphorus.expressions;
 
+/// <summary>
+///     Contains helper classes for pf.lambda keywords.
+/// 
+///     Contains common helper classes for pf.lambda keywords.
+/// </summary>
 namespace phosphorus.lambda.keywords.helpers
 {
     /// <summary>
-    ///     class wrapping any statement, that somehow yields a condition, such as "pf.if", and "pf.while"
+    ///     Class wrapping conditional statement.
+    /// 
+    ///     This class is used in for instance [while], [if] and [else-if], and wraps the conditions used to
+    ///     figure out if statement yields true or not.
     /// </summary>
     public class Conditions
     {
@@ -26,10 +34,10 @@ namespace phosphorus.lambda.keywords.helpers
         private bool _isSimpleExist;
 
         /// <summary>
-        ///     initializes a new instance of the condition class
+        ///     Initializes a new instance of the condition class.
         /// </summary>
-        /// <param name="statementNode">the node of the conditional statement</param>
-        /// <param name="context">application context</param>
+        /// <param name="statementNode">The node of the conditional statement.</param>
+        /// <param name="context">Application context.</param>
         public Conditions (Node statementNode, ApplicationContext context)
         {
             if (statementNode == null)
@@ -40,20 +48,27 @@ namespace phosphorus.lambda.keywords.helpers
         }
 
         /// <summary>
-        ///     returns all execution lambda objects beneath the statement
-        ///     to execute if statement evaluates to true
+        ///     Returns lambda objects to execute if condition yields true.
+        /// 
+        ///     Returns all execution lambda objects beneath the statement to execute if statement evaluates to true.
         /// </summary>
-        /// <value>The execution lambdas.</value>
+        /// <value>The pf.lambdas nodes to execute if statement yields true.</value>
         public IEnumerable<Node> ExecutionLambdas
         {
             get { return _statementNode.Children.Where (idxChild => idxChild.Name.StartsWith ("lambda")); }
         }
 
         /// <summary>
-        ///     returns true if this is a simple "exists" Condition, meaning it has only one expression or constant
-        ///     being evaluated, and nothing to evaluate it against, and no children nodes of type [lambda.xxx]
+        ///     Returns true if value "exists".
+        /// 
+        ///     Returns true if this is a simple "exists" Condition, meaning it has only one expression, or constant
+        ///     being evaluated, and nothing to evaluate it against, and no children nodes of type [lambda.xxx].
+        /// 
+        ///     A condition can be "complex", meaning you compare one value against another value, or it can be a "simple exists check",
+        ///     meaning you simply check if some expression or constant yields "true". If it is a "simple exists check", then this will
+        ///     return true.
         /// </summary>
-        /// <value><c>true</c> if this instance is simple exist; otherwise, <c>false</c></value>
+        /// <value><c>true</c> if this instance is simple exist; otherwise, <c>false</c>.</value>
         public bool IsSimpleExist
         {
             get
@@ -70,7 +85,9 @@ namespace phosphorus.lambda.keywords.helpers
         }
 
         /// <summary>
-        ///     returns true if statement evaluates to true
+        ///     Evaluates Condition, and returns result.
+        /// 
+        ///     Will return true if Condition is true, otherwise false.
         /// </summary>
         public bool Evaluate ()
         {
@@ -81,7 +98,6 @@ namespace phosphorus.lambda.keywords.helpers
         /*
          * actual evaluation of statement, invokes itself recursively for all "related 'or' and/or 'and' statements" if it is required
          */
-
         private bool EvaluateStatement (Node currentStatement)
         {
             var oper = GetOperator (currentStatement);
@@ -114,7 +130,6 @@ namespace phosphorus.lambda.keywords.helpers
         /*
          * evaluates existence
          */
-
         private bool Exist (Node currentStatement)
         {
             if (!XUtil.IsExpression (currentStatement.Value))
@@ -153,9 +168,8 @@ namespace phosphorus.lambda.keywords.helpers
         }
 
         /*
-         * compres two expressions or constants
+         * compares two expressions or constants
          */
-
         private int Compare (Node currentStatement)
         {
             // constructing nodes for simplicity, since Node implements IComparable, which does our heavy lifting
@@ -167,7 +181,6 @@ namespace phosphorus.lambda.keywords.helpers
         /*
          * recursively evaluates all related "and" conditions
          */
-
         private bool EvaluateRelatedAnd (Node currentStatement)
         {
             var nextChild = FindNextCondition (currentStatement.FirstChildNotOf (string.Empty), "and");
@@ -186,9 +199,8 @@ namespace phosphorus.lambda.keywords.helpers
         }
 
         /*
-         * recursively evaluates all "or" conditions
+         * recursively evaluates all related "or" conditions
          */
-
         private bool EvaluateRelatedOr (Node currentStatement)
         {
             var nextChild = FindNextCondition (currentStatement.FirstChildNotOf (string.Empty), "or");
@@ -209,7 +221,6 @@ namespace phosphorus.lambda.keywords.helpers
         /*
          * finds next condition
          */
-
         private Node FindNextCondition (Node node, string type)
         {
             if (node == null)
@@ -232,7 +243,6 @@ namespace phosphorus.lambda.keywords.helpers
         /*
          * returns the operator for the current condition
          */
-
         private Operator GetOperator (Node currentStatement)
         {
             if (currentStatement.FirstChildNotOf (string.Empty) == null)
@@ -257,54 +267,33 @@ namespace phosphorus.lambda.keywords.helpers
             }
         }
 
-        /// <summary>
-        ///     the different types of legal conditions you can create
-        /// </summary>
+        /*
+         * the operators you can legally use for your conditions.
+         */
         private enum Operator
         {
-            /// <summary>
-            ///     equality, token '='
-            /// </summary>
+            // "=" operator
             Equals,
 
-            /// <summary>
-            ///     inequality, token '!='
-            /// </summary>
+            // "!=" operator
             NotEquals,
 
-            /// <summary>
-            ///     more than, token '>'
-            /// </summary>
+            // ">" operator
             MoreThan,
 
-            /// <summary>
-            ///     less than, token '&lt;'
-            /// </summary>
+            // "<" operator
             LessThan,
 
-            /// <summary>
-            ///     more than or equals, token '>='
-            /// </summary>
+            // ">=" operator
             MoreThanEquals,
 
-            /// <summary>
-            ///     less than or equals, token 'lt;='
-            /// </summary>
+            // "<=" operator
             LessThanEquals,
 
-            /// <summary>
-            ///     not, meaning "does not exist". checks if an expression returns anything,
-            ///     and if it does, Not evaluates to false. opposite of Exist, token '!',
-            ///     but token is in "front" of epxression or constant, meaning it changes position
-            ///     with the expression or constant you wish to "not evaluate"
-            /// </summary>
+            // "!" operator
             Not,
 
-            /// <summary>
-            ///     checks if an expression returns anything, and if it does, Exist evaluates to true.
-            ///     opposite of "Not". has no token, but is the default logical operator being used,
-            ///     if no operator is given
-            /// </summary>
+            // default, simple exists. No explicit operator.
             Exist
         }
     }

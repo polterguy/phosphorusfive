@@ -15,8 +15,9 @@ using phosphorus.expressions;
 namespace phosphorus.lambda.events
 {
     /// <summary>
-    ///     contains common stuff for global events and global overrides,
-    ///     created using the [event] keyword and the [override] keyword
+    ///     Common helper methods for dynamically created Active Events.
+    /// 
+    ///     Contains helper methods for creating and manipulating dynamically created Active Events.
     /// </summary>
     public static class EventsCommon
     {
@@ -30,10 +31,16 @@ namespace phosphorus.lambda.events
         static EventsCommon () { Lock = new object (); }
 
         /// <summary>
-        ///     Retrieves one or more dynamically created Active Events, and their pf.lambda code.
+        ///     Retrieves one or more dynamically created Active Events.
+        /// 
+        ///     Will return all [lambda.xxx] objects for the specified dynamically created Active Events.
+        /// 
+        ///     Example;
+        /// 
+        ///     <pre>pf.meta.event.get:foo</pre>
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.meta.event.get")]
         private static void pf_meta_event_get (ApplicationContext context, ActiveEventArgs e)
         {
@@ -56,10 +63,13 @@ namespace phosphorus.lambda.events
         }
 
         /// <summary>
-        ///     Lists all dynamically create Active Events
+        ///     Lists all dynamically created Active Events.
+        /// 
+        ///     Returns the names of all dynamically created Active Events, created through the [event] keyword.
+        ///     Optionally, pass in a filter as the value of the main node.
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.meta.event.list")]
         private static void pf_meta_event_list (ApplicationContext context, ActiveEventArgs e)
         {
@@ -82,13 +92,12 @@ namespace phosphorus.lambda.events
                 }
             }
         }
-        
-        /// <summary>
-        ///     creates a dynamic Active Event
-        /// </summary>
-        /// <param name="name">name of Active Event</param>
-        /// <param name="lambdas">lambda objects</param>
-        public static void CreateEvent (string name, IEnumerable<Node> lambdas)
+
+        /*
+         * Creates a new, or appends to an existing, Active Event the given [lambda.xxx] objects,
+         * to be executed when event is raised.
+         */
+        internal static void CreateEvent (string name, IEnumerable<Node> lambdas)
         {
             // acquiring lock since we're consuming object shared amongst more than one thread (_events)
             lock (Lock) {
@@ -104,11 +113,10 @@ namespace phosphorus.lambda.events
             }
         }
 
-        /// <summary>
-        ///     removes all dynamically Active Events created with the [event] keyword with the given name
-        /// </summary>
-        /// <param name="name">name of Active Event(s) to delete</param>
-        public static void RemoveEvent (string name)
+        /*
+         * removes the given dynamically created Active Event(s)
+         */
+        internal static void RemoveEvent (string name)
         {
             // acquiring lock since we're consuming object shared amongst more than one thread (_events)
             lock (Lock) {
@@ -118,13 +126,10 @@ namespace phosphorus.lambda.events
             }
         }
 
-        /// <summary>
-        ///     deletes given override
-        /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="baseEvent">name of base (overridden) event</param>
-        /// <param name="superEvent">name of super (overriding) event</param>
-        public static void RemoveOverride (ApplicationContext context, string baseEvent, string superEvent)
+        /*
+         * Removesthe specified override.
+         */
+        internal static void RemoveOverride (ApplicationContext context, string baseEvent, string superEvent)
         {
             // acquiring lock since we're consuming object shared amongst more than one thread (_override)
             lock (Lock) {
@@ -141,13 +146,10 @@ namespace phosphorus.lambda.events
             }
         }
 
-        /// <summary>
-        ///     creates an override from baseEvent to superEvent
-        /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="baseEvent">event to override</param>
-        /// <param name="superEvent">event supposed to override baseEvent</param>
-        public static void CreateOverride (ApplicationContext context, string baseEvent, string superEvent)
+        /*
+         * creates a new override.
+         */
+        internal static void CreateOverride (ApplicationContext context, string baseEvent, string superEvent)
         {
             // acquiring lock since we're consuming object shared amongst more than one thread (_overrides)
             lock (Lock) {
@@ -166,7 +168,7 @@ namespace phosphorus.lambda.events
         }
 
         /*
-         * responsible for re-mapping our overrides when Application Context is initialized
+         * Responsible for re-mapping our overrides when Application Context is initialized.
          */
         [ActiveEvent (Name = "pf.core.initialize-application-context")]
         private static void pf_core_initialize_application_context (ApplicationContext context, ActiveEventArgs e)

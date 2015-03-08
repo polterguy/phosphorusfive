@@ -10,19 +10,108 @@ using phosphorus.expressions.exceptions;
 // ReSharper disable UnusedMember.Local
 // ReSharper disable UnusedMember.Global
 
+/// <summary>
+///     Namespace wrapping all core "pf.lambda keywords".
+/// 
+///     A pf.lambda keyword, is any Active Event that does not contain a "." in its name. Most of these
+///     core Active Events can be found in this namespace.
+/// </summary>
 namespace phosphorus.lambda.keywords
 {
     /// <summary>
-    ///     class wrapping execution engine keyword "append",
-    ///     which allows for appending nodes into a node's list of children
+    ///     Class wrapping execution engine keyword [append].
+    /// 
+    ///     The [append] keyword, allows you to append nodes to another node-set. Either by using expressions, or constants as your source.
+    ///     Destination must be an <see cref="phosphorus.expressions.Expression">Expression</see>.
     /// </summary>
     public static class Append
     {
         /// <summary>
-        ///     [add] keyword for execution engine. allows adding nodes from one part of your tree to another part
+        ///     The [append] keyword allows you to append a node-set into another node-set.
+        /// 
+        ///     The [append] keyword, allows you to append a node-set into another node-set. Either by using a constant list of nodes, beneath
+        ///     your [source] parameter, or by having the value of your [source] or [src] parameter being an 
+        ///     <see cref="phosphorus.expressions.Expression">Expression</see>.
+        /// 
+        ///     You can also use a relative source, by supplying a [rel-src] or [rel-source], instead of a [source] or [src] parameter.
+        ///     This allows you to append into your destination, a node-set that is somehow relative to each of your destinations.
+        /// 
+        ///     Example that will append all children of [_source] into [_destination];
+        /// 
+        ///     <pre>_source
+        ///   foo1:bar1
+        ///   foo2:bar2
+        /// _destination
+        /// append:@/-?node
+        ///   source:@/./-2/"*"?node</pre>
+        /// 
+        ///     Example of appending the destination node's first child, into its second child;
+        ///     <pre>_source
+        ///   src1:foo1
+        ///     bar1:Howdy
+        ///       child:foo1
+        ///     dest
+        ///   src2:foo2
+        ///     bar2:World
+        ///       child:foo2
+        ///     dest
+        /// append:@/-/"*"/1?node
+        ///   rel-source:@/-?node</pre>
+        /// 
+        ///     The [append] Active Event, will also automatically convert any value to a node-set, if necessary, such as the example beneath
+        ///     is an example of;
+        /// 
+        ///     <pre>_source
+        ///   foo1:bar1
+        ///   foo2:bar2
+        /// _destination
+        /// append:@/-?node
+        ///   source:@/./-2/"*"?value</pre>
+        /// 
+        ///     The next piece of code, shows an example of how to append a constant list of nodes;
+        /// 
+        ///     <pre>_destination
+        /// append:@/-?node
+        ///   source
+        ///     foo1:bar1
+        ///     foo2:bar2</pre>
+        /// 
+        ///     The [append] Active Event will also automatically convert any value it is given as its [source], for instance;
+        /// 
+        ///     <pre>_destination
+        /// append:@/-?node
+        ///   source:"foo1:bar1\nfoo2:bar2"</pre>
+        /// 
+        ///     The [append] keyword can also be given multiple destinations, for instance;
+        ///     <pre>_dest1
+        /// _dest2
+        /// append:@/-1|/-2?node
+        ///   source
+        ///     foo1:bar1</pre>
+        /// 
+        ///     In addition, [append] can also of course have multiple sources, such as for instance;
+        /// 
+        ///     <pre>_destination
+        /// _src1
+        ///   foo1:bar1
+        /// _src2
+        ///   foo2:bar2
+        /// append:@/-3?node
+        ///   source:@/.(/-1|/-2)/"*"?node</pre>
+        /// 
+        ///     The [append] keyword can also append into reference nodes, for instance;
+        /// 
+        ///     <pre>_node:node:"_foo"
+        /// append:@/-/#?node
+        ///   source
+        ///     foo1:bar1</pre>
+        /// 
+        ///     The [append] keyword has probably dozens of other legal permutations, and combinations. Meaning, if you can think about it, 
+        ///     then [append] can probably do it. The [append] keyword, in combination with 
+        ///     <see cref="phosphorus.expressions.Expression">Expressions</see>, is probably one of your most flexible keywords in pf.lambda.
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "append")]
         private static void lambda_append (ApplicationContext context, ActiveEventArgs e)
         {
@@ -39,7 +128,6 @@ namespace phosphorus.lambda.keywords
         /*
          * source is static
          */
-
         private static void AppendStaticSource (Node node, ApplicationContext context)
         {
             // retrieving source before we start iterating destination,
@@ -75,7 +163,6 @@ namespace phosphorus.lambda.keywords
         /*
          * relative source
          */
-
         private static void AppendRelativeSource (Node node, ApplicationContext context)
         {
             foreach (var idxDestination in XUtil.Iterate (node, context)) {

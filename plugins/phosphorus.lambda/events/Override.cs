@@ -14,15 +14,29 @@ using phosphorus.expressions.exceptions;
 namespace phosphorus.lambda.events
 {
     /// <summary>
-    ///     class wrapping [override] keyword
+    ///     Class wrapping [override] keyword.
+    /// 
+    ///     This class encapsulates the [override] keyword, and its associated helper methods.
     /// </summary>
     public static class Override
     {
         /// <summary>
-        ///     overrides zero or more events, with all given [super] parameters
+        ///     Overrides zero or more events
+        /// 
+        ///     Overrides the given Active Event(s), with the given [super] Active Event(s).
+        /// 
+        ///     Example;
+        /// 
+        ///     <pre>event:bar
+        ///   lambda
+        ///     set:@/./.?value
+        ///       source:OVERRIDDEN!
+        /// override:foo
+        ///   super:bar
+        /// bar</pre>
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "override")]
         private static void lambda_override (ApplicationContext context, ActiveEventArgs e)
         {

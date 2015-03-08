@@ -13,16 +13,22 @@ using phosphorus.expressions.exceptions;
 
 namespace phosphorus.lambda.events
 {
+    /// \todo refactor to allow for removing multiple overrides at the same time, somehow ...
     /// <summary>
-    ///     class wrapping the [remove-override] keyword
+    ///     Class wrapping the [remove-override] keyword.
+    /// 
+    ///     Class encapsulating the [remove-override] keyword, and all its associated helper methods.
     /// </summary>
     public static class RemoveOverride
     {
         /// <summary>
-        ///     removes zero or more dynamically created overrides
+        ///     Removes zero or more dynamically created overrides.
+        /// 
+        ///     Will remove all dynamically created overrides, created using the [override] keyword. Pass in [super]
+        ///     as the name of the overriding Active Event, and the name(s) of your main node as the name of the base Active Event.
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "remove-override")]
         private static void lambda_remove_override (ApplicationContext context, ActiveEventArgs e)
         {

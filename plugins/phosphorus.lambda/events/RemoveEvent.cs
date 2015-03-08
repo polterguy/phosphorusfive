@@ -11,12 +11,16 @@ using phosphorus.expressions;
 namespace phosphorus.lambda.events
 {
     /// <summary>
-    ///     class wrapping [remove-event] keyword
+    ///     Class wrapping [remove-event] keyword.
+    /// 
+    ///     Class encapsulating [remove-event], and its associated helper methods.
     /// </summary>
     public static class RemoveEvent
     {
         /// <summary>
-        ///     removes zero or more dynamically created Active Events
+        ///     Removes zero or more dynamically created Active Events.
+        /// 
+        ///     Will remove all dynamically created Active Events with the given name(s).
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
