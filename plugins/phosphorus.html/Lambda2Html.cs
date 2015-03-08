@@ -16,14 +16,22 @@ namespace phosphorus.html
 {
     /// <summary>
     ///     Class to help transform pf.lambda trees to HTML.
+    /// 
+    ///     Encapsulates the [pf.html.lambda2html] Active Event, and its associated helper methods.
     /// </summary>
     public static class Lambda2Html
     {
         /// <summary>
-        ///     Creates an HTML document from the given pf.lambda structure.
+        ///     Creates an HTML/XML document from the given pf.lambda structure.
+        /// 
+        ///     Will create an HTML, or XML document, from the given pf.lambda structure, reversing the process
+        ///     from [pf.html.html2lambda].
+        /// 
+        ///     Any child node who's name starts with an "@" character, will be transformed into an HTML/XML attribute,
+        ///     while all other nodes, will be assumed to be children nodes, and the resulting "value" their content.
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.html.lambda2html")]
         private static void pf_html_lambda2html (ApplicationContext context, ActiveEventArgs e)
         {
@@ -36,6 +44,9 @@ namespace phosphorus.html
             e.Args.Value = builder.ToString ().Trim ();
         }
 
+        /*
+         * helper for above
+         */
         private static bool Convert (IEnumerable<Node> nodes, StringBuilder builder, int level, ApplicationContext context)
         {
             bool retVal = false;
@@ -60,6 +71,9 @@ namespace phosphorus.html
             return retVal;
         }
 
+        /*
+         * helper method, to parse and retrieve attributes
+         */
         private static string GetAttributes (Node node)
         {
             string retVal = "";

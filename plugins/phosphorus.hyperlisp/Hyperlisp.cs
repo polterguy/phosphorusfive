@@ -12,20 +12,33 @@ using phosphorus.hyperlisp.helpers;
 // ReSharper disable UnusedMember.Local
 // ReSharper disable UnusedMember.Global
 
+/// <summary>
+///     Main namespace for parsing and creating Hyperlisp.
+/// 
+///     Encapsulates all classes and Active Event necessary to create and parse Hyperlisp.
+/// </summary>
 namespace phosphorus.hyperlisp
 {
+    /// \todo Create more unit tests for all different permutations of Iterate.
     /// <summary>
-    ///     class to help transform between hyperlisp and <see cref="phosphorus.core.Node" />
+    ///     Class to help transform between Hyperlisp and <see cref="phosphorus.core.Node">Nodes</see>.
+    /// 
+    ///     Contains the [pf.hyperlisp.hyperlisp2lambda] and the [pf.hyperlisp.lambda2hyperlisp] Active Events,
+    ///     necessary to be able to parse Hyperlisp from pf.lambda nodes, and vice versa.
     /// </summary>
     public static class Hyperlisp
     {
         /// <summary>
-        ///     helper to transform from hyperlisp code syntax to <see cref="phosphorus.core.Node" /> tree structure.
-        ///     will transform the given hyperlisp into a list of nodes and append them into the root node given
-        ///     through the active event args
+        ///     Tranforms the given Hyperlisp to a pf.lambda node structure.
+        /// 
+        ///     Active Event will transform the given Hyperlisp to a pf.lambda node structure.
+        /// 
+        ///     Example;
+        /// 
+        ///     <pre>pf.hyperlisp.hyperlisp2lambda:@"foo:bar"</pre>
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.hyperlisp2lambda")]
         private static void pf_hyperlisp_hyperlisp2lambda (ApplicationContext context, ActiveEventArgs e)
         {
@@ -36,10 +49,11 @@ namespace phosphorus.hyperlisp
             e.Args.AddRange (new NodeBuilder (context, builder.ToString ().TrimEnd ('\r', '\n', ' ')).Nodes);
         }
 
+        /// \todo Create more unit tests for all different permutations of Iterate
         /// <summary>
-        ///     helper to transform from <see cref="phosphorus.core.Node" /> tree structure to hyperlisp code syntax.
-        ///     will transform the children nodes of the given active event args into hyperlisp and return as string
-        ///     value of the value of the given active event args
+        ///     Transforms the given pf.lambda node structure to Hyperlisp.
+        /// 
+        ///     Active Event will transform the given pf.lambda node structure to Hyperlisp
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>

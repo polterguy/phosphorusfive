@@ -8,16 +8,14 @@ using System;
 namespace phosphorus.hyperlisp.helpers
 {
     /*
-     * class used internall to tokenize hyperlisp
+     * class used internally to tokenize hyperlisp
      */
-
-    public class Token
+    internal class Token
     {
         /*
          * type of token
          */
-
-        public enum TokenType
+        internal enum TokenType
         {
             /*
              * "\r\n" token
@@ -51,8 +49,7 @@ namespace phosphorus.hyperlisp.helpers
         /*
          * constructor taking type and value or "content" of token
          */
-
-        public Token (TokenType type, string value)
+        internal Token (TokenType type, string value)
         {
             if (type == TokenType.Spacer) {
                 if (value.Length%2 != 0)
@@ -65,17 +62,18 @@ namespace phosphorus.hyperlisp.helpers
         /*
          * type of token
          */
-        public TokenType Type { get; private set; }
+        internal TokenType Type { get; private set; }
+
         /*
          * value or "content" of token, typically ":", "\r\n", an even number of spaces, or any other arbitrary string value, depending
          * upon the Type of token
          */
-        public string Value { get; private set; }
+        internal string Value { get; private set; }
+
         /*
          * only valid if type is "Spacer", returns the offset from the root node for the current token
          */
-
-        public int Scope
+        internal int Scope
         {
             get
             {

@@ -11,25 +11,24 @@ using phosphorus.core;
 
 namespace phosphorus.hyperlisp.helpers
 {
-    /// <summary>
-    ///     class responsible for tokenizing hyperlisp
-    /// </summary>
+    /*
+     * Class used internally to tokenize Hyperlisp.
+     */
     public sealed class Tokenizer : IDisposable
     {
         private readonly StringReader _reader;
         private bool _disposed;
 
-        /// <summary>
-        ///     initializes a new instance of the <see cref="Tokenizer" /> class
-        /// </summary>
-        /// <param name="hyperlisp">hyperlisp to tokenize</param>
+        /*
+         * ctor taking Hyperlisp as input. Use the "Tokens" property after creation to access pf.lambda nodes created
+         * from Hyperlisp.
+         */
         public Tokenizer (string hyperlisp) { _reader = new StringReader (hyperlisp); }
 
-        /// <summary>
-        ///     returns all <see cref="Token" />s for given hyperlisp
-        /// </summary>
-        /// <value>tokens from hyperlisp</value>
-        public IEnumerable<Token> Tokens
+        /*
+         * Returns pf.lambda tokens created from Hyperlisp passed in through CTOR.
+         */
+        internal IEnumerable<Token> Tokens
         {
             get
             {
@@ -49,10 +48,9 @@ namespace phosphorus.hyperlisp.helpers
          */
         void IDisposable.Dispose () { Dispose (true); }
 
-        /// <summary>
-        ///     disposing the tokenizer
-        /// </summary>
-        /// <param name="disposing">if set to <c>true</c> disposing will occur, otherwise false</param>
+        /*
+         * actual implementation of Dispose method
+         */
         private void Dispose (bool disposing)
         {
             if (!_disposed && disposing) {
@@ -64,7 +62,6 @@ namespace phosphorus.hyperlisp.helpers
         /*
          * retrieves next hyperlisp token from text reader
          */
-
         private Token NextToken (Token previousToken)
         {
             var nextChar = _reader.Peek ();
@@ -103,7 +100,6 @@ namespace phosphorus.hyperlisp.helpers
         /*
          * skips the comment token starting at current position of reader
          */
-
         private Token SkipCommentToken ()
         {
             var nextChar = _reader.Read ();
@@ -129,7 +125,6 @@ namespace phosphorus.hyperlisp.helpers
         /*
          * trims reader until reader head is at first non-space character
          */
-
         private void TrimReader ()
         {
             var nextChar = _reader.Peek ();
@@ -142,7 +137,6 @@ namespace phosphorus.hyperlisp.helpers
         /*
          * reads and validates next space token ("  ") from text reader
          */
-
         private Token NextSpaceToken ()
         {
             var buffer = " ";
@@ -157,7 +151,6 @@ namespace phosphorus.hyperlisp.helpers
         /*
          * reads and validates next carriage return / line feed token ("\r\n" or "\n")
          */
-
         private Token NextCrlfToken ()
         {
             var nextChar = _reader.Read ();
@@ -171,7 +164,6 @@ namespace phosphorus.hyperlisp.helpers
         /*
          * reads next "default token" from text reader, can be string, multiline string or simply legal unescaped characters
          */
-
         private Token NextDefaultToken (int nextChar, Token previousToken)
         {
             if (nextChar == '"') {
@@ -200,7 +192,6 @@ namespace phosphorus.hyperlisp.helpers
         /*
          * returns the curent token's type according to the previous token type
          */
-
         private Token.TokenType GetTokenType (Token previousToken)
         {
             if (previousToken != null && previousToken.Type == Token.TokenType.Separator)

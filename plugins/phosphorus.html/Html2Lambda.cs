@@ -10,10 +10,17 @@ using phosphorus.expressions;
 // ReSharper disable UnusedMember.Local
 // ReSharper disable UnusedMember.Global
 
+/// <summary>
+///     Main namespace for handling HTML.
+/// 
+///     Contains all Active Events related to the process of parsing, and creating HTML.
+/// </summary>
 namespace phosphorus.html
 {
     /// <summary>
-    ///     Class to help transform HTML to pf.lambda trees.
+    ///     Class to help transform HTML to a pf.lambda node structure.
+    /// 
+    ///     Encapsulates the [pf.html.html2lambda] Active Event, and its associated helper methods.
     /// </summary>
     public static class Html2Lambda
     {
@@ -24,10 +31,23 @@ namespace phosphorus.html
         }
 
         /// <summary>
-        ///     Parses an HTML document, and creates a pf.lambda structure from it.
+        ///     Parses an HTML document, and creates a pf.lambda node structure from the results.
+        /// 
+        ///     Allows you to parse HTML, and create a semantic pf.lambda node structure from the results.
+        /// 
+        ///     Example that downloads the main landing page from Digg.com, creates a lambda structure, extracts
+        ///     all (distinct) hyperlink URLs starting with "http", and puts the results into the [_res] node. Afterwards,
+        ///     it removes the downloaded HTML and the intermediate pf.lambda structure created by the HTML;
+        /// 
+        ///     <pre>_res
+        /// pf.web.get:"http://digg.com"
+        /// pf.html.html2lambda:@/-/"*"?value
+        /// append:@/../"*"/_res/?node
+        ///   source:@/./-/"**"/"/@href/"/"=/^http/d"?node
+        /// set:@/-3|/-2|/-1?node</pre>
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.html.html2lambda")]
         private static void pf_html_html2lambda (ApplicationContext context, ActiveEventArgs e)
         {

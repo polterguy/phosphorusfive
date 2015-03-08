@@ -7,10 +7,14 @@ using System;
 using System.Collections.Generic;
 using phosphorus.core;
 
+// ReSharper disable UnusedParameter.Local
+
 namespace phosphorus.hyperlisp.helpers
 {
     /// <summary>
-    ///     class responsible for creating a <see cref="phosphorus.core.Node" /> hierarchy from hyperlisp syntax
+    ///     Class encapsulating internals of parsing of Hyperlisp.
+    /// 
+    ///     Class containing actual implementation of logic behind the [pf.hyperlisp.hyperlisp2lambda] Active Event.
     /// </summary>
     public class NodeBuilder
     {
@@ -18,10 +22,10 @@ namespace phosphorus.hyperlisp.helpers
         private readonly string _hyperlisp;
 
         /// <summary>
-        ///     initializes a new instance of the <see cref="NodeBuilder" /> class
+        ///     Initializes a new instance of the <see cref="NodeBuilder" /> class.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="hyperlisp">hyperlisp to convert into a list of <see cref="phosphorus.core.Node" />s</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="hyperlisp">Hyperlisp to convert into a list of nodes.</param>
         public NodeBuilder (ApplicationContext context, string hyperlisp)
         {
             _context = context;
@@ -29,9 +33,11 @@ namespace phosphorus.hyperlisp.helpers
         }
 
         /// <summary>
-        ///     creates a list of <see cref="phosphorus.core.Node" />s from the given hyperlisp
+        ///     Creates a list of <see cref="phosphorus.core.Node" />s from the given Hyperlisp.
+        /// 
+        ///     Will return the parsed pf.lambda nodes from the Hyperlisp input given through the constructor.
         /// </summary>
-        /// <returns>the hyperlisp converted to a list of nodes</returns>
+        /// <returns>The Hyperlisp converted to a list of pf.lambda nodes.</returns>
         public List<Node> Nodes
         {
             get
@@ -60,7 +66,6 @@ namespace phosphorus.hyperlisp.helpers
         /*
          * helper method for NodesFromHyperlisp, creates a node tree hierarchy from a token
          */
-
         private Node TokensToNode (Node node, Token token, Token previousToken)
         {
             switch (token.Type) {
@@ -81,7 +86,6 @@ namespace phosphorus.hyperlisp.helpers
         /*
          * handles a "Name" token
          */
-
         private Node NameTokenToNode (Node node, Token token, Token previousToken)
         {
             if (previousToken == null || previousToken.Type == Token.TokenType.CarriageReturn) {
@@ -106,7 +110,6 @@ namespace phosphorus.hyperlisp.helpers
         /*
          * handles a "TypeOrContent" token
          */
-        // ReSharper disable once UnusedParameter.Local
         private void HandleContentOrTypeToken (Node node, Token token, Token previousToken)
         {
             if (previousToken.Type != Token.TokenType.Separator)
@@ -117,14 +120,11 @@ namespace phosphorus.hyperlisp.helpers
         }
 
         /*
-         * converts an object's string representation in hyperlisp to the correct object
+         * Converts an object's string representation in hyperlisp to the correct object
          * notice that everything you can convert into a string representation somehow, you
          * can actually store in your hyperlisp file, as long as you have created the correct
-         * converters and type information Active Events. for an example of how to do this,
-         * check out the "typeconverters.cs" file, which handles all types natively supported
-         * by phosphorus five
+         * converters and type information Active Events.
          */
-
         private object ConvertStringValue (string value, string typeInfo)
         {
             if (typeInfo == "string")

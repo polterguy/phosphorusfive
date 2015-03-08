@@ -7,10 +7,17 @@ using System.Collections.Generic;
 using System.Text;
 using phosphorus.core;
 
+/// <summary>
+///     Contains common helper methods for Hyperlisp.
+/// 
+///     Contains all the common helper methods necessary to create and parse Hyperlisp.
+/// </summary>
 namespace phosphorus.hyperlisp.helpers
 {
     /// <summary>
-    ///     class responsible for creating hyperlisp from a <see cref="phosphorus.core.Node" /> list
+    ///     Class encapsulating internals of creation of Hyperlisp.
+    /// 
+    ///     Class containing actual implementation of logic behind the [pf.hyperlisp.lambda2hyperlisp] Active Event.
     /// </summary>
     public class HyperlispBuilder
     {
@@ -18,10 +25,10 @@ namespace phosphorus.hyperlisp.helpers
         private readonly IEnumerable<Node> _nodes;
 
         /// <summary>
-        ///     initializes a new instance of the <see cref="HyperlispBuilder" /> class
+        ///     Initializes a new instance of the <see cref="HyperlispBuilder" /> class.
         /// </summary>
-        /// <param name="context">application context object</param>
-        /// <param name="nodes">nodes to convert into hyperlisp</param>
+        /// <param name="context">Application context object.</param>
+        /// <param name="nodes">Nodes to convert into Hyperlisp.</param>
         public HyperlispBuilder (ApplicationContext context, IEnumerable<Node> nodes)
         {
             _context = context;
@@ -29,7 +36,9 @@ namespace phosphorus.hyperlisp.helpers
         }
 
         /// <summary>
-        ///     retrieves the hyperlisp
+        ///     Parses and retrieves the Hyperlisp.
+        /// 
+        ///     Will convert the given pf.lambda node structure to Hyperlisp and return to caller.
         /// </summary>
         /// <value>hyperlisp</value>
         public string Hyperlisp
@@ -45,7 +54,6 @@ namespace phosphorus.hyperlisp.helpers
         /*
          * recursively invoked for every "level" in node hierarchy
          */
-
         private void Nodes2Hyperlisp (StringBuilder builder, IEnumerable<Node> nodes, int level)
         {
             foreach (var idxNode in nodes) {
@@ -64,12 +72,12 @@ namespace phosphorus.hyperlisp.helpers
         /*
          * appends node's name to hyperlisp stringbuilder output
          */
-
         private void AppendName (StringBuilder builder, Node node)
         {
             if (node.Name.Contains ("\n")) {
                 builder.Append (string.Format (@"@""{0}""", node.Name.Replace (@"""", @"""""")));
-            } else if ((node.Name == string.Empty && node.Value == null) || node.Name.Contains (":") || node.Name.Trim () != node.Name) {
+            } else if ((node.Name == string.Empty && node.Value == null) || 
+                       node.Name.Contains (":") || node.Name.Trim () != node.Name) {
                 builder.Append (string.Format (@"""{0}""", node.Name.Replace (@"""", @"\""")));
             } else {
                 builder.Append (string.Format ("{0}", node.Name));
@@ -79,7 +87,6 @@ namespace phosphorus.hyperlisp.helpers
         /*
          * appends node's type to hyperlisp stringbuilder output
          */
-
         private void AppendType (StringBuilder builder, Node node)
         {
             if (node.Value == null)
@@ -99,7 +106,6 @@ namespace phosphorus.hyperlisp.helpers
         /*
          * appends node's value to hyperlisp stringbuilder output
          */
-
         private void AppendValue (StringBuilder builder, Node node)
         {
             if (node.Value == null)
