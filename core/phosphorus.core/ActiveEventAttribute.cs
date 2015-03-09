@@ -29,6 +29,20 @@ using System;
  * to edit your "web.config" file, and make sure it says "system42/application-startup.hl" as the value of your "application-startup-file"
  * appSettings key. And that you have downloaded and extracted System42 into your "core/phosphorus.application-startup" folder.
  * 
+ * <strong>Conventions used in documentation.</strong>
+ * 
+ * All example code is written in a code box, with a blue line to its left, having an "x" in its top left corner, like the below example;
+ * 
+ * <pre>foo
+ *   bar</pre>
+ * 
+ * When the documentation is referring to nodes, and/or Active Events, it will often put the names of the nodes, and/or Active Events, inside 
+ * square brackets, and make the reference become <strong>bold</strong>. For instance, to refer to the above <em>"foo"</em> node, would 
+ * normally be  something like this; [foo]
+ * 
+ * Most example code in this documentation, is written such that it will produce some sort of output. A good advice to see its output, is
+ * to run the example code through the <em>"pf.lambda executor"</em> in System42, which allows you to see the output of executed pf.lambda code.
+ * 
  * PS!<br/>
  * Even though this is the documentation for the C# parts of the system, it also provides extensive documentation for the pure 
  * <em>"pf.lambda"</em> user, who exclusively wishes to use the pf.lambda parts of Phosphorus.Five, which can be seen through classes such as
@@ -36,7 +50,10 @@ using System;
  * expressions for the library.
  * 
  * Also the <see cref="phosphorus.expressions.iterators.Iterator">Iterators</see> are highly useful for the pure pf.lambda user to read up about,
- * since they document every type of pf.lambda iterator you can use when composing your pf.lambda expressions.
+ * since they document every type of pf.lambda iterator you can use when composing your pf.lambda expressions. In addition to of course the pf.lambda
+ * keywords, which for the most parts can be found in the <see cref="phosphorus.lambda.keywords">keywords</see> namespace.
+ * 
+ * All Active Events are also extensively documented, and can be found through the <em>"Modules"</em> link at the top of this page.
  * 
  */
 
@@ -97,12 +114,17 @@ namespace phosphorus.core
     ///     supposed to handle a whole range of other Active Events, where you do not know until run-time which Active Events it is supposed
     ///     to actually handle.
     /// 
+    ///     Active Events you create, can also easily be raised from pf.lambda code. To raise the above Active Event from pf.lambda, you
+    ///     could write something like this;
+    /// 
+    ///     <pre>foo.bar</pre>
+    /// 
     ///     The Active Event design pattern in Phosphorus.Five is THE core feature of the library, and what facilitates everything else to
-    ///     exist. Active Events to a large extent effectively replaces most other existing Design Patterns on the planet, more or less.
-    ///     At the very least, most of the original 23 Design Patterns created by the Gang of Four (GoF) are basically rendered "obsolete"
+    ///     exist. Active Events to a large extent effectively replaces most other existing Design Patterns to some extent.
+    ///     At the very least, most of the original 23 Design Patterns created by the Gang of Four (GoF) are basically <em>"obsolete"</em>,
     ///     when you realize how to use Active Events.
     /// 
-    ///     Active Events completely replaces traditional Object Oriented Programming (OOP), since it repllaces the very way you invoke
+    ///     Active Events more or less completely replaces traditional Object Oriented Programming (OOP), since it replaces the very way you invoke
     ///     functions and methods in your solution, and is the facilitator behind the entirety of Phosphorus.Five, especially the "pf.lambda"
     ///     parts, and its extremely Agile plugin Architecture.
     ///     \ingroup ActiveEvents

@@ -13,16 +13,51 @@ using phosphorus.lambda.keywords.helpers;
 namespace phosphorus.lambda.keywords
 {
     /// <summary>
-    ///     class wrapping execution engine keyword "pf.if", "pf.else-if" and "pf.else", which allows for branching or
-    ///     conditional execution of nodes
+    ///     Class wrapping conditional pf.lambda keywords, such as [if], [else-if] and [else].
+    /// 
+    ///     Class wrapping pf.lambda keywords [if], [else-if] and [else], which allows for branching, or conditional execution of pf.lambda nodes.
     /// </summary>
     public static class Branching
     {
         /// <summary>
-        ///     [if] statement, allowing for evaluating condition, and executing lambda(s) if statement evaluates to true
+        ///     The [if] keyword allows for conditional execution of pf.lambda nodes.
+        /// 
+        ///     Will evaluate some <see cref="phosphorus.lambda.keywords.helpers.Conditions">Condition</see>, and if the condition evaluates 
+        ///     to true, it will execute the blocks of pf.lambda code inside of itself.
+        /// 
+        ///     Example;
+        /// 
+        ///     <pre>_foo:bar
+        /// if:@/-?value
+        ///   =:bar
+        ///   lambda
+        ///     set:@/././-?value
+        ///       source:matched!</pre>
+        /// 
+        ///     The [if] statement, can also be coupled with [else-if] and [else] statements. The [else-if] statement allows you to check another
+        ///     condition if your first [if] condition yields false. While the [else] statement, is the default pf.lambda nodes to execute, if
+        ///     none of your [if] or [else-if] statements conditions yields true. Consider the following code;
+        /// 
+        ///     <pre>_foo:bar
+        /// if:@/-?value
+        ///   =:bar
+        ///   lambda
+        ///     set:@/././-?value
+        ///       source:matched with if!
+        /// else-if:@/-2?value
+        ///   =:bar2
+        ///   lambda
+        ///     set:@/././-2?value
+        ///       source:matched with else-if!
+        /// else
+        ///   set:@/./-3?value
+        ///     source:matched with else!</pre>
+        /// 
+        ///     Try to change the above [_foo] node's value, first change it to "bar2", then change it to anything else, and see how that
+        ///     affects your end result when executing the code.
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "if")]
         private static void lambda_if (ApplicationContext context, ActiveEventArgs e)
         {
@@ -38,11 +73,13 @@ namespace phosphorus.lambda.keywords
         }
 
         /// <summary>
-        ///     [else-if] statement, allowing for evaluating condition, and executing lambda(s) if statement evaluates to true, and
-        ///     no previous [if] or previous [else-if] has evaluated to true
+        ///     The [else-if] keyword allows for conditional execution of pf.lambda nodes.
+        /// 
+        ///     The [else-if] statement must be coupled with a preceeding [if] statement. To understand how the [else-if] keywords
+        ///     works, see the documentation for <see cref="phosphorus.lambda.keywords.Branching.lambda_if">[if]</see>.
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "else-if")]
         private static void lambda_else_if (ApplicationContext context, ActiveEventArgs e)
         {
@@ -68,10 +105,13 @@ namespace phosphorus.lambda.keywords
         }
 
         /// <summary>
-        ///     [else] statement, allowing for executing lambda(s) if no previous [if] or [else-if] has evaluated to true
+        ///     The [else] keyword allows for conditional execution of pf.lambda nodes.
+        /// 
+        ///     The [else] statement must be coupled with a preceeding [if] statement. To understand how the [else] keywords
+        ///     works, see the documentation for <see cref="phosphorus.lambda.keywords.Branching.lambda_if">[if]</see>.
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "else")]
         private static void lambda_else (ApplicationContext context, ActiveEventArgs e)
         {

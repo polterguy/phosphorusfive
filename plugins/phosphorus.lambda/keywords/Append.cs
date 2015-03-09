@@ -11,7 +11,7 @@ using phosphorus.expressions.exceptions;
 // ReSharper disable UnusedMember.Global
 
 /// <summary>
-///     Namespace wrapping all core "pf.lambda keywords".
+///     Namespace wrapping most of the core "pf.lambda keywords".
 /// 
 ///     A pf.lambda keyword, is any Active Event that does not contain a "." in its name. Most of these
 ///     core Active Events can be found in this namespace.
@@ -35,6 +35,8 @@ namespace phosphorus.lambda.keywords
         /// 
         ///     You can also use a relative source, by supplying a [rel-src] or [rel-source], instead of a [source] or [src] parameter.
         ///     This allows you to append into your destination, a node-set that is somehow relative to each of your destinations.
+        /// 
+        ///     The value of your [append] node is its destination, and its [source], [rel-source], and so on, must be its last child node.
         /// 
         ///     Example that will append all children of [_source] into [_destination];
         /// 
@@ -107,7 +109,7 @@ namespace phosphorus.lambda.keywords
         ///     foo1:bar1</pre>
         /// 
         ///     The [append] keyword has probably dozens of other legal permutations, and combinations. Meaning, if you can think about it, 
-        ///     then [append] can probably do it. The [append] keyword, in combination with 
+        ///     then [append] can probably do it. The [append] keyword, combined with 
         ///     <see cref="phosphorus.expressions.Expression">Expressions</see>, is probably one of your most flexible keywords in pf.lambda.
         /// </summary>
         /// <param name="context">Application context.</param>

@@ -45,9 +45,20 @@ namespace phosphorus.expressions
     ///     Both '?count' and '?path' types of expressions are "read-only", and cannot be used as destinations, or changed in any
     ///     ways. All other types of expressions, can be both assigned to, and retrieved.
     /// 
-    ///     Below is an example of an expression that retrieves all values of all children nodes beneath the root node of your execution tree;
+    ///     Each iterator, starts with a forward slash /, and ends with any of the following characters; "!&^|()?/". If you wish to
+    ///     use any of the previously mentioned 8 special characters as parts of your iterators, you must put your entire iterator inside
+    ///     double-quotes, for instance;
     /// 
-    ///     <pre>@/../"*"?value</pre>
+    ///     <pre>@/"foo&bar"?value</pre>
+    /// 
+    ///     The above expression will look for a node who's name is "foo&bar".
+    /// 
+    ///     You can use any number of iterators when you compose your expressions, and each iterator will be evaluated in a left-to-right manner,
+    ///     which means that your first iterator will be evaluated first, and then used as the input to your next iterator. This makes your
+    ///     iterators becomes evaluated as a "chain of enumerables", where each iterator appends a new "filter criteria", and creates a new
+    ///     result, based upon its previous iterator, that it passes into the next iterator in the chain.
+    /// 
+    ///     It might help to think of expressions as XPath expressions, since they to some extent do the same thing.
     /// 
     ///     By mixing the different <see cref="phosphorus.expressions.iterators.Iterator">Iterators</see> in your expressions, together
     ///     with <see cref="phosphorus.expressions.Logical">Logicals</see>, allowing for you to perform Boolean Algebraic operations
@@ -120,6 +131,34 @@ namespace phosphorus.expressions
     ///       iq:yes
     /// append:@/-2?node
     ///   source:@/../"*"/_data/"**"/iq/=yes/.?name</pre>
+    /// 
+    ///     You can also convert the results of your expressions, to any of the types that there exists a [pf.hyperlisp.get-object-value.xxx]
+    ///     Active Event for. You do this by appending the type after your expression's type declaration, separated with a period (.).
+    ///     For instance, to convert the results of an expression to integers, you could use something like this;
+    /// 
+    ///     <pre>_input:5
+    /// _result
+    /// set:@/-?value
+    ///   source:@/./-2?value.int</pre>
+    /// 
+    ///     You can also create <em>"reference expressions"</em>, which are expressions leading to other expressions, where you do not want to
+    ///     retrieve the expressions your expression is leading too, but rather what those expressions are referring to. When you create
+    ///     reference expressions, then the results from your outer expressions will be evaluated, and if the results are another expression,
+    ///     then that expression will be evaluated, and its results returned back to the original caller. This way you can combine constant
+    ///     values and expressions, and create reference expressions, that will either return the constant they point to, or the value their
+    ///     referenced expressions points to. Consider this;
+    /// 
+    ///     <pre>_src:su
+    ///   first:@/.?value
+    ///   second:cc
+    ///   third:@/+?name
+    ///   ess
+    /// _destination
+    /// set:@/-?value
+    ///   source:\@@/./-2/"*"?value</pre>
+    /// 
+    ///     Most Active Events in Phosphorus.Five can take expressions as their arguments. Understanding expressions, is key to learning
+    ///     Phosphorus.Five.
     /// 
     ///     PS!<br/>
     ///     Normally you don't want to consume this class directly, but instead use it indirectly through the XUtil class,

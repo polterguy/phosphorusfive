@@ -24,22 +24,20 @@ namespace phosphorus.expressions.iterators
     /// <summary>
     ///     Iterator class, wrapping one iterator, for pf.lambda expressions.
     /// 
-    ///     Iterators are executed as a chain, encapsulated within a <see cref="phosphorus.expressions.Logical" /> object, which again 
-    ///     is a child of <see cref="phosphorus.expressions.iterators.IteratorGroup" />, which again is an iterator in itself.
+    ///     Iterators is at the heart of <see cref="phosphorus.expressions.Expression">Expressions</see>, and are executed as a chain, 
+    ///     encapsulated within a <see cref="phosphorus.expressions.Logical">Logical</see> object, which again  is a child of an 
+    ///     <see cref="phosphorus.expressions.iterators.IteratorGroup">IteratorGroup</see>. When iterators are evaluated, they are 
+    ///     evaluated in a left-associative manner, where the last iterator is evaluated last, and evaluated as a result of its previous 
+    ///     iterator's Left property.
     /// 
-    ///     When iterators are evaluated, they're evaluated in a left-associative manner, where the last iterator is
-    ///     evaluated last, and evaluated as a result of its previous iterator's Left property.
-    /// 
-    ///     The root iterator of all expressions, is normally an iterator containing a single <see cref="phosphorus.core.Node"/> instance,
-    ///     from which iteration begins.
-    /// 
-    ///     An example of an Expression containing two iterators are given here for reference purposes;
+    ///     The root iterator of all expressions, is normally an iterator, containing a single <see cref="phosphorus.core.Node">Node</see>
+    ///     instance, from which iteration begins. Below is an example of an Expression containing two iterators;
     /// 
     ///     <pre>@/../*?node</pre>
     /// 
-    ///     The above Expression has one IteratorRoot iterator, and one IteratorChildren iterator, and has the type declaration
-    ///     leading to extracting the 'value' of its resulting nodes. Effectively leading to extracting all Value properties of
-    ///     all children nodes of the root node of your expression.
+    ///     The above Expression has one IteratorRoot iterator, and one IteratorChildren iterator, and has the 'value' type declaration,
+    ///     which means it will extract the 'value' of its resulting nodes. Effectively extracting all value properties, from all children nodes,
+    ///     of the root node of your expression's execution tree.
     /// </summary>
     public abstract class Iterator
     {

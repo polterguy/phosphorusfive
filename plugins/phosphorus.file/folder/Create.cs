@@ -10,6 +10,12 @@ using phosphorus.expressions;
 // ReSharper disable UnusedMember.Local
 // ReSharper disable UnusedMember.Global
 
+/// <summary>
+///     Main namespace for everything related to folders.
+/// 
+///     The Active Events within this namespace, allows you to create, remove, view, and change, your folders, and the contents of the folders, 
+///     within your Phosphorus.Five installation.
+/// </summary>
 namespace phosphorus.file.folder
 {
     /// <summary>
