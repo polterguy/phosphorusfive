@@ -12,17 +12,45 @@ using phosphorus.lambda.keywords.helpers;
 namespace phosphorus.lambda.keywords
 {
     /// <summary>
-    ///     class wrapping execution engine keyword "pf.while" for looping while condition is true
-    ///     conditional execution of nodes
+    ///     Class wrapping the [while] keyword in pf.lambda.
+    /// 
+    ///     The [while] keyword allows you to loop for as long as some condition is true.
     /// </summary>
     public static class While
     {
         /// <summary>
-        ///     "while" statement, allowing for evaluating condition, and executing lambda(s) as long as statement evaluates to
-        ///     true
+        ///     The [while] keyword allows you to loop for as long as some condition is true.
+        /// 
+        ///     The [while] keyword is an alternative to [for-each] to create loops. However, where the [for-each] loops for each item in a 
+        ///     result-set, [while] loops as long as some <see cref="phosphorus.lambda.keywords.helpers.Conditions">Condition</see> is true.
+        /// 
+        ///     Example;
+        /// 
+        ///     <pre>_data
+        ///   foo1:bar1
+        ///   foo2:bar2
+        /// while:@/-/"*"?node
+        ///   set:@/./-/0?node</pre>
+        /// 
+        ///     Since [while] will loop for as long as a condition is true, it is easy to create a never-ending loop, that will lock the current
+        ///     execution thread, creating a "dead-lock" in your pf.lambda code. To avoid such dead-locks, you must makke sure that your condition
+        ///     at some point yields false. Just like the [if] keyword, the [while] keyword must have explicit [lambda.xxx] objects beneath itself,
+        ///     unless your [while] condition is a "simple exists" condition. For instance;
+        /// 
+        ///     <pre>_data
+        ///   foo1:bar1
+        ///   foo2:bar2
+        /// while:@/-/0?name
+        ///   =:foo1
+        ///   lambda
+        ///     set:@/././&lt;?node</pre>
+        /// 
+        ///     To see a more extensive example of how to create conditions for your [while] loops, please see the documentation for 
+        ///     <see cref="phosphorus.lambda.keywords.Branching.lambda_if">[if]</see> or 
+        ///     <see cref="phosphorus.lambda.keywords.helpers.Conditions">Condition</see>.
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "while")]
         private static void lambda_while (ApplicationContext context, ActiveEventArgs e)
         {
