@@ -5,7 +5,7 @@
 
 using System;
 
-namespace phosphorus.web.ui.Common
+namespace phosphorus.web.ui.common
 {
     /// <summary>
     ///     Exception thrown when a web error occurs.
@@ -16,7 +16,7 @@ namespace phosphorus.web.ui.Common
     public class PhosphorusWebException : Exception
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="phosphorus.web.ui.Common.PhosphorusWebException"/> class.
+        ///     Initializes a new instance of the <see cref="phosphorus.web.ui.common.PhosphorusWebException"/> class.
         /// </summary>
         /// <param name="msg">Error message.</param>
         public PhosphorusWebException (string msg)

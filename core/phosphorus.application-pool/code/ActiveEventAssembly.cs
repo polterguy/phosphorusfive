@@ -5,7 +5,7 @@
 
 using System.Configuration;
 
-namespace phosphorus.five.applicationpool.code
+namespace phosphorus.applicationpool.code
 {
     /// <summary>
     ///     Active event assembly.

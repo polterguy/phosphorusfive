@@ -10,7 +10,7 @@ using System.Configuration;
 /// 
 ///     Contains all code that is necessary to glue together your application-pool.
 /// </summary>
-namespace phosphorus.five.applicationpool.code
+namespace phosphorus.applicationpool.code
 {
     /// <summary>
     ///     Class wrapping your configuration section from your web.config that defines which assemblies to use as Active Event plugins.

@@ -15,16 +15,89 @@ using phosphorus.ajax.core;
 /// <summary>
 ///     Contains all the main widgets in Phosphorus.Ajax.
 /// 
-///     All the widgets that exists in Phosphorus.ajax can be found in this namespace.
+///     The widgets that Phosphorus.Ajax is composed out of, can be found in this namespace.
+/// 
+///     * Literal - Allows you to create widgets that contains simple text or HTML values.
+///     * Container - A widget that can contain children widgets of its own.
+///     * Void - Useful for creating widgets that has neither children widgets, nor any inner HTML. HTML input elements are one example.
+/// 
+///     However, since you can override any property, and add any attribute you wish, to any of the above widgets, these widgets are actually
+///     enough to be able to create any HTML markup you wish. If you wish to create a container widget, that renders like an HTML address element,
+///     then all you have to do, as to set the <em>"ElementType"</em> property of your widget to "address".
+/// 
+///     If you wish to handle the <em>"onmouseover"</em> DOM event on the server-side, then all you need to do, is to provide an "onmouseover" attribute,
+///     referencing the event handler from your codebehind, and voila; You're in <em>"server-land"</em>, whenever anyone hovers their mouse over your
+///     HTML element. Phosphorus.Ajax will automatically understand the difference between a server-side Event Handler, and JavaScript DOM client-side
+///     events. If you supply something that is not a legal C# or VB.NET method name as the value of any attribute starting with the text "on" in your
+///     widgets, then Phosphorus.Ajax will assume you've supplied a JavaScript DOM event handler, and simply render your widget's attribute, as a 
+///     client-side JavaScript piece of code, to be executed when DOM event bubbles up.
+/// 
+///     Below is some sample code of how to create an Hello World application in C# using Phosphorus.Ajax;
+/// 
+///     <strong>Default.aspx</strong>
+/// 
+/// <pre>&lt;\%\@ Page 
+///     Language="C#" 
+///     Inherits="samples._Default"
+///     Codebehind="Default.aspx.cs" \%&gt;
+/// &lt;!DOCTYPE html&gt;
+/// &lt;html&gt;
+///     &lt;head&gt;
+///     &lt;/head&gt;
+///     &lt;body&gt;
+///         &lt;form id="form1" runat="server" autocomplete="off"&gt;
+///             &lt;pf:Literal
+///                 runat="server"
+///                 id="hello"
+///                 ElementType="h1"
+///                 onclick="hello_onclick"&gt;click me for hello world&lt;/pf:Literal&gt;
+///         &lt;/form&gt;
+///     &lt;/body&gt;
+/// &lt;/html&gt;
+/// </pre>
+/// 
+/// <strong>Default.aspx.cs</strong>
+/// 
+/// <pre>
+/// using System;
+/// using phosphorus.ajax.core;
+/// namespace samples
+/// {
+///     using pf = ajax.widgets;
+///     public partial class _Default : AjaxPage
+///     {
+///         [WebMethod]
+///         protected void hello_onclick (pf.Literal sender, EventArgs e)
+///         {
+///             sender.innerValue = "Hello World";
+///         }
+///     }
+/// }
+/// </pre>
+/// 
+/// Notice in the above code, how the event handler takes the widget itself as the first argument. Also notice how the event handler must be
+/// marked with the <em>WebMethod</em> attribute in your codebehind.
+/// 
+/// When using Phosphorus.Ajax, the Ajax mapping functionality, and persistence of attributes, and serialization back and forth from client to server,
+/// is automatically taken care of for you. Phosphorus.Ajax is 100% WebControl compatible, which means you can intermix it with other Web Controls 
+/// compatible libraries, and the core ASP.NET WebControls.
 /// </summary>
 namespace phosphorus.ajax.widgets
 {
     /// <summary>
-    ///     A widget that contains children widgets.
+    ///     A widget that can contains children widgets of its own.
     /// 
-    ///     Everything between the opening and end declaration of this widget in your .aspx markup will be treated as controls. 
-    ///     you can also dynamically add child controls to this widget by using the CreatePersistentControl method, and the 
-    ///     widget will take care of re-creating its children automatically.
+    ///     This is the main "container" widget in Phosphorus.Ajax, which means that it can contain children controls (widgets), through its
+    ///     Controls property. Also everything between the opening and end declaration of this widget in your .aspx markup will be treated as controls. 
+    ///     You can also dynamically add and remove child controls to this widget by using the CreatePersistentControl method and the 
+    ///     RemoveControlPersistent</see> method. If you do, then the widget will automatically remember its updated Controls collection across 
+    ///     server requests.
+    /// 
+    ///     If you do not use neither of the above mentioned methods, then the widget behaves exactly like one of the default built-in controls
+    ///     from ASP.NET, and you must take care of re-creating dynamically additions, and remove dynamical removals yourself, during HTTP requests, 
+    ///     if you have changed your Controls collection.
+    /// 
+    ///     The closest equivalent you can find in ASP.NET to this widget, is probably the <em>"Panel"</em> ASP.NET WebControl.
     /// </summary>
     [ViewStateModeById]
     public class Container : Widget, INamingContainer
@@ -122,25 +195,34 @@ namespace phosphorus.ajax.widgets
         ///     Returns all controls of the given type T from the Controls collection.
         /// 
         ///     Useful to traverse all controls of a specific type from the Controls collection, 
-        ///     such that you can traverse for instance Literal widgets, without having to cast them in your code,
-        ///     and having empty filler widgets, created automatically for you by Mono or .Net clutter your 
+        ///     such that you can traverse for instance all Literal widgets, without having to cast them in your code,
+        ///     and having empty filler widgets checks, which are created automatically for you by Mono or .Net clutter your 
         ///     iteration code.
         /// </summary>
-        /// <returns>the controls</returns>
-        /// <typeparam name="T">Type of controls to iterate.</typeparam>
+        /// <returns>All controls of type T from the Controls property.</returns>
+        /// <typeparam name="T">Type of controls to retrieve.</typeparam>
         public IEnumerable<T> GetChildControls<T> () where T : Control
         {
             return from Control idx in Controls let tmp = idx as T where idx != null select tmp;
         }
 
         /// <summary>
-        ///     Creates a persistent control that will be automatically re-created during future postbacks.
+        ///     Creates a persistent child control, that will be automatically re-created during future server requests.
+        /// 
+        ///     This method allws you to create a <em>"persistent web control"</em>, which means that the Container widget will remember
+        ///     that control, and its position, and automatically re-create that control automatically for you in future server-requests.
+        /// 
+        ///     This feature does add a small object to your ViewState, but actually less than what you think, since instead of storing
+        ///     the whole type in the ViewState, it stores an integer, being a reference to a type, and a type creator.
         /// 
         ///     You can create any Control here you wish, but your control must have a public constructor 
         ///     taking no arguments. Only controls created through this method, will be persisted, and 
-        ///     automatically re-created during future http requests.
+        ///     automatically re-created during future server requests.
+        /// 
+        ///     If you wish, you can supply an onLoad EventHandler or Delegate, which will be executed during the <em>"LoadComplete"</em>
+        ///     event of your Page. Which allows you to create initialization code for your widget.
         /// </summary>
-        /// <returns>the persistent control</returns>
+        /// <returns>The persistent control.</returns>
         /// <param name="id">ID of your control. If null, and automatic id will be created and assigned.</param>
         /// <param name="index">Index of where to insert control. If -1, the control will be appended into Controls collection.</param>
         /// <param name="onLoad">Event handler callback for what to do during OnLoad. If you supply an event handler here, then your 
@@ -174,9 +256,9 @@ namespace phosphorus.ajax.widgets
         ///     Removes a control from the control collection, and persist the change.
         /// 
         ///     Using this method, together with CreatePersistentControl, you can change the Controls collection of your
-        ///     Container widgets, and have the changes persist across multiple HTTP Ajax or conventional POST requests.
-        ///     This allows you to add, remove and change the Controls collection of your Container widgets, and have the
-        ///     Widget remember its changes across requests.
+        ///     container widgets, and have the changes persist across multiple server requests.
+        ///     This allows you to add, remove, and change the Controls collection of your container widgets, and have the
+        ///     widget remember its changes across requests.
         /// 
         ///     Using this feature, will increase the amount of ViewState your controls uses, since it persists the changes
         ///     into the ViewState.
@@ -192,9 +274,10 @@ namespace phosphorus.ajax.widgets
         /// <summary>
         ///     Removes a control from the control collection, at the given index, and persists the change.
         /// 
-        ///     See RemoveControlPersistent to understand how this method works.
+        ///     See <see cref="phosphorus.ajax.widgets.Container.RemoveControlPersistent">RemoveControlPersistent</see> to understand how this method 
+        ///     works. This method works the same, except it removes a control at a specified index, and not a specific control.
         /// </summary>
-        /// <param name="index">index of control to remove</param>
+        /// <param name="index">Index of control to remove.</param>
         public void RemoveControlPersistentAt (int index)
         {
             StoreOriginalControls ();
@@ -282,7 +365,6 @@ namespace phosphorus.ajax.widgets
          */
         private string CreateId ()
         {
-            /// \todo statistically this is supposed to become a unique 7 digits hexadecimal number, but we should improve this logic later!
             var retVal = Guid.NewGuid ().ToString ().Replace ("-", "");
             retVal = "x" + retVal [0] + retVal [5] + retVal [10] + retVal [15] + retVal [20] + retVal [25] + retVal [30];
             return retVal;
@@ -384,11 +466,17 @@ namespace phosphorus.ajax.widgets
                     idx => idx.Item2 == type))
                     TypeMapper.Add (new Tuple<string, Type> (TypeMapper.Count.ToString (), type));
             }
+
+            // recursively calling self for simplicity
             return GetTypeId (type);
         }
 
         // used to retrieve the type from the type mapper collection
-        private static Type GetTypeFromId (string id) { return TypeMapper.Find (idx => idx.Item1 == id).Item2; }
+        private static Type GetTypeFromId (string id)
+        {
+            return TypeMapper.Find (idx => idx.Item1 == id).Item2;
+        }
+
         // interface to create controls to avoid reflection as much as possible
         private interface ICreator
         {

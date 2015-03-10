@@ -9,16 +9,16 @@ using System.Web.UI;
 namespace phosphorus.ajax.widgets
 {
     /// <summary>
-    ///     A widget that has no children, and no content, and is self closed.
+    ///     A widget that has neither children controls, nor content.
     /// 
-    ///     A Widget that is neither a Container, nor a Literal, meaning you can not set neither its innerValue
+    ///     A widget that is neither a Container, nor a Literal, meaning you can set neither its innerValue,
     ///     nor its children controls. This type of widget is useful for widgets that does not allow for any content,
     ///     such as input HTML elements of type "button", and "checkbox", etc.
     /// 
-    ///     By default, this widget is rendered using RenderingType.open, which means it won't be closed automatically,
+    ///     By default, this widget is rendered using <em>"RenderingType.open"</em>, which means it won't be closed automatically,
     ///     neither by adding an end HTML tag, nor by closing the tag immediately. If you wish to be XHTML compliant,
-    ///     you should probably change this logic to let it close immediately, using RenderingType.immediate as its 
-    ///     RenderType property value.
+    ///     you should probably change this logic to let it close either immediately, using <em>"RenderingType.immediate"</em> as its 
+    ///     RenderType property value, or closing it normally, by using <em>"RenderingType.normal"</em>.
     /// </summary>
     [ViewStateModeById]
     public class Void : Widget

@@ -42,8 +42,18 @@ namespace phosphorus.web.ui.widgets
         ///     Pass in [render-type], to override how the widget is rendered, by supplying either "immediate", "open" or "normal" 
         ///     as values, overriding how the element is closed, if at all.
         /// 
-        ///     Anything within the [controls] node passed in, will have <em>"pf.web.widgets."</em> appended in front of it,
-        ///     and raised as an Active Event, adding the results of that Active Event into its [controls] collection automatically.
+        ///     Use [visible] to change the initial visibility of widget when created.
+        /// 
+        ///     Use [invisible-element] to change the HTML element type your widget is rendered with when it is rendered ass invisible.
+        /// 
+        ///     Use [events] as a wrapper for <em>"local widget Active Events"</em>, which are Active Events only existing for as long
+        ///     as your widget exists.
+        /// 
+        ///     Use [has-name] to override whether or not a widget should have an automatically asssigned name attribute, if it makes sense.
+        ///     Legal values are "true" and "false".
+        /// 
+        ///     Anything within the [widgets] node passed in, will have <em>"pf.web.widgets."</em> appended in front of it,
+        ///     and raised as an Active Event, adding the results of that Active Event into its [widgets] collection automatically.
         /// 
         ///     Any nodes starting with "on", will be assumed to be server-side pf.lambda event handlers.
         /// 
@@ -68,6 +78,9 @@ namespace phosphorus.web.ui.widgets
         ///     literal:bar
         ///       innerValue:Yo World!
         ///       element:h1</pre>
+        /// 
+        ///     You would rarely, if ever, consume this Active Event directly, but instead consume it indirectly, through the 
+        ///     <see cref="phosphorus.applicationpool.Default.pf_web_widgets_create">[pf.web.widgets.create]</see> Active Event.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -101,6 +114,16 @@ namespace phosphorus.web.ui.widgets
         ///     Pass in [render-type], to override how the widget is rendered, by supplying either "immediate", "open" or "normal" 
         ///     as values, overriding how the element is closed, if at all.
         /// 
+        ///     Use [visible] to change the initial visibility of widget when created.
+        /// 
+        ///     Use [invisible-element] to change the HTML element type your widget is rendered with when it is rendered ass invisible.
+        /// 
+        ///     Use [events] as a wrapper for <em>"local widget Active Events"</em>, which are Active Events only existing for as long
+        ///     as your widget exists.
+        /// 
+        ///     Use [has-name] to override whether or not a widget should have an automatically asssigned name attribute, if it makes sense.
+        ///     Legal values are "true" and "false".
+        /// 
         ///     Any nodes starting with "on", will be assumed to be server-side pf.lambda event handlers.
         /// 
         ///     If your events ends with "-script", they will however be rendered back to client as JavaScript events. If they end 
@@ -120,7 +143,10 @@ namespace phosphorus.web.ui.widgets
         ///   onclick
         ///     pf.web.widgets.property.set:foo
         ///       class:span-24 prepend-top success
-        ///       innerValue:I was clicked!
+        ///       innerValue:I was clicked!</pre>
+        /// 
+        ///     You would rarely, if ever, consume this Active Event directly, but instead consume it indirectly, through the 
+        ///     <see cref="phosphorus.applicationpool.Default.pf_web_widgets_create">[pf.web.widgets.create]</see> Active Event.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -153,6 +179,16 @@ namespace phosphorus.web.ui.widgets
         ///     Pass in [render-type], to override how the widget is rendered, by supplying either "immediate", "open" or "normal" 
         ///     as values, overriding how the element is closed, if at all.
         /// 
+        ///     Use [visible] to change the initial visibility of widget when created.
+        /// 
+        ///     Use [invisible-element] to change the HTML element type your widget is rendered with when it is rendered ass invisible.
+        /// 
+        ///     Use [events] as a wrapper for <em>"local widget Active Events"</em>, which are Active Events only existing for as long
+        ///     as your widget exists.
+        /// 
+        ///     Use [has-name] to override whether or not a widget should have an automatically asssigned name attribute, if it makes sense.
+        ///     Legal values are "true" and "false".
+        /// 
         ///     Any nodes starting with "on", will be assumed to be server-side pf.lambda event handlers.
         /// 
         ///     If your events ends with "-script", they will however be rendered back to client as JavaScript events. If they end 
@@ -171,7 +207,10 @@ namespace phosphorus.web.ui.widgets
         ///   type:text
         ///   onchange
         ///     pf.web.widgets.property.set:foo
-        ///       value:I had my text changed!
+        ///       value:I had my text changed!</pre>
+        /// 
+        ///     You would rarely, if ever, consume this Active Event directly, but instead consume it indirectly, through the 
+        ///     <see cref="phosphorus.applicationpool.Default.pf_web_widgets_create">[pf.web.widgets.create]</see> Active Event.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>

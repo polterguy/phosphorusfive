@@ -11,9 +11,15 @@ using System.Web.UI;
 namespace phosphorus.ajax.widgets
 {
     /// <summary>
-    ///     Allows you to create a Widget that does not have children widgets, but instead has a simple text, HTML or string value.
+    ///     Allows you to create a widget that contains simple text or HTML.
     /// 
-    ///     This Widget can only contain text or HTML. Use the innerValue property to access or change the text of your widget.
+    ///     This widget can only contain text or HTML. Use the <em>"innerValue"</em> property to access or change the text of your widget.
+    /// 
+    ///     Contrary to the Container widget, this widget cannot have children controls, and trying to add controls to its Controls collection,
+    ///     will throw an exception. This widget is for HTML elements where you don't care about having Ajax functionality, or DOM event handlers
+    ///     for its children, but are satisified with being able to set its <em>"text"</em> or <em>"innerHTML"</em> property.
+    /// 
+    ///     Use the <em>"innerValue"</em> property of the widget to change or retrieve its inner text/HTML content.
     /// </summary>
     [ParseChildren (true, "innerValue")]
     [PersistChildren (false)]
@@ -36,9 +42,9 @@ namespace phosphorus.ajax.widgets
         ///     Gets or sets the innerValue property of the widget.
         /// 
         ///     This is also the inner default property of the widget, which means the stuff between the opening
-        ///     and end declaration of the widget in your .aspx markup, will automatically end up as its content here.
+        ///     and end declaration of the widget in your .aspx markup, will automatically end up as its content, or innerHTML property here.
         /// </summary>
-        /// <value>the inner html</value>
+        /// <value>The innerHTML equivalent from JavaScript.</value>
         [PersistenceMode (PersistenceMode.InnerDefaultProperty)]
         public string innerValue
         {

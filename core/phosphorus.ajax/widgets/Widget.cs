@@ -18,25 +18,36 @@ using phosphorus.ajax.core.internals;
 namespace phosphorus.ajax.widgets
 {
     /// <summary>
-    ///     Generic Ajax HTML widget.
+    ///     Abstract base class for all widgets in Phosphorus.Ajax.
     /// 
-    ///     This is the abstract base class for all widgets in Phosphorus.Ajax, and is what allows the framework to update
-    ///     properties of Controls and widgets automatically over Ajax requests.
+    ///     This is the abstract base class for all widgets in Phosphorus.Ajax, and is what allows Phosphorus.Ajax to update
+    ///     properties of widgets automatically during Ajax requests.
     /// 
-    ///     It contains most of the properties you'll use when consuming phosphorus.ajax.
+    ///     All changes to your widgets will be automatically rendered back to client as JSON, and only the changes will be sent. This means
+    ///     that Phosphorus.Ajax consumes very little bandwidth. This fact combined with the fact that Phosphorus.Ajax only contains ~5KB of
+    ///     JavaScript in release builds, makes your websites extremely small and responsive.
+    /// 
+    ///     This class automatically maps up all properties and attributes of your widgets, and also automatically creates Ajax server-side event
+    ///     handlers for your DOM events, and sends back the changes to the client when you're done handling your HTTP postbacks and requests.
+    /// 
+    ///     This widget can render any HTML you wish, and dynamically change, set, or remove, any attributes and/or server-side Ajax Events you 
+    ///     wish, in addition to have your client-side JavaScript DOM events automatically mapped for you.
+    /// 
+    ///     Basically; You get to create your code exclusively in C#, and this class maps your C# to JavaScript and client-side logic for you. Though,
+    ///     if you wish, you can of course combine widgets created through this class, with any amounts of client-side logic, and JavaScript you wish.
     /// </summary>
     [ViewStateModeById]
     public abstract class Widget : Control, IAttributeAccessor
     {
         /// <summary>
-        ///     Wrapper for an ajax server-side event.
+        ///     Wrapper for an Ajax server-side event.
         /// 
-        ///     EventArgs for your Ajax event handlers.
+        ///     EventArgs for your Ajax event handlers. All your Ajax event handlers on your server-side, will be sent an object of this instance.
         /// </summary>
         public class AjaxEventArgs : EventArgs
         {
             /// <summary>
-            /// Initializes a new instance of the AjaxEventArgs class.
+            ///     Initializes a new instance of the AjaxEventArgs class.
             /// </summary>
             /// <param name="name">Name.</param>
             public AjaxEventArgs (string name)
@@ -54,9 +65,9 @@ namespace phosphorus.ajax.widgets
         }
 
         /// <summary>
-        ///     Defines how to render the HTML element of your Widget.
+        ///     Defines how to render the HTML element of your widget.
         /// 
-        ///     This defines how to render your Widget's HTML. You can choose to end your HTML element immediately, keep
+        ///     This defines how to render your widget's HTML. You can choose to end your HTML element immediately, keep
         ///     it open, which is useful for for instance "p" HTML element, or use the default rendering here.
         /// 
         ///     Notice, if you wish to be XHTML compliant, you cannot use the "open" property value, but must use either
@@ -67,7 +78,7 @@ namespace phosphorus.ajax.widgets
             /// <summary>
             ///     This is for elements that require both an opening element, and a closing element, such as "div" and "ul".
             /// 
-            ///     Using this property, will close the HTML element rwrapping your widget with an explicit closing tag.
+            ///     Using this property, will close the HTML element wrapping your widget, with an explicit closing tag.
             /// </summary>
             normal,
 
@@ -76,7 +87,7 @@ namespace phosphorus.ajax.widgets
             /// 
             ///     This property value, will close your element immediately, if it can, meaning it won't render a closing
             ///     HTML tag for you, but instead close the tag immediately, with a slash / appended at the end of your element,
-            ///     before the &gt; at the end of your element is rendered.
+            ///     before the &gt; at the end of your element's opening HTML tag.
             /// </summary>
             immediate,
 
@@ -86,17 +97,18 @@ namespace phosphorus.ajax.widgets
             ///     Unless you want to render your website as XHTML, then you can use this property value on some of your widgets, 
             ///     such as for instance the "p" (paragraph) HTML element, to save some few bytes, and create more beautiful HTML.
             /// 
-            ///     This property means that your HTML element, wrapping your Ajax Widget will not be closed at all, and there will
+            ///     This property means that your HTML element, wrapping your Ajax widget will not be closed at all, and there will
             ///     be no end HTML element, nor will the tag close immediately.
             /// </summary>
             open
         }
 
         /// <summary>
-        ///     Defines how the widget is supposed to be rendered during this request.
+        ///     Defines how the widget is supposed to be rendered during the current request.
         /// 
         ///     Allows you to override the rendering mode of your widget, to re-render it, re-render its children collection,
-        ///     render it in invisible mode, and so on.
+        ///     render it in invisible mode, and so on. Normally you don't have to fiddle with this, unless you have added and/or removed
+        ///     controls from your widget's Control collection.
         /// </summary>
         protected enum RenderingMode
         {
@@ -110,7 +122,7 @@ namespace phosphorus.ajax.widgets
             /// <summary>
             ///     Re-rendering mode.
             /// 
-            ///     This mode means that your Widget will be re-rendered entirely, and have its entire HTML replaces on the client-side.
+            ///     This mode means that your widget will be re-rendered entirely, and have its entire HTML replaces on the client-side.
             ///     This is useful if you have tampered with properties of your widget that cannot be changed automatically during Ajax
             ///     requests using the default JSON serialization logic.
             /// </summary>
@@ -119,23 +131,23 @@ namespace phosphorus.ajax.widgets
             /// <summary>
             ///     Re-renders the children collection.
             /// 
-            ///     Will re-render the children of the Widget, which is useful if you have tampered with the children collection
-            ///     of your Widget, and you need to re-render the children.
+            ///     Will re-render the children of the widget, which is useful if you have tampered with the children collection
+            ///     of your widget, and you need to re-render the children.
             /// </summary>
             ReRenderChildren,
 
             /// <summary>
-            ///     Renders the Widget in invisible mode.
+            ///     Renders the widget in invisible mode.
             /// 
-            ///     This is the rendered mode that your widget will be renderedd in when it is set to invisible through the Visible property.
+            ///     This is the rendered mode that your widget will be rendered in, when it is set to invisible through its Visible property.
             /// </summary>
             RenderInvisible
         }
 
         /// <summary>
-        ///     Initializes a new instance of the Widget class.
+        ///     Initializes a new instance of the widget class.
         /// 
-        ///     Sets the RenderingMode property to RenderingMode.Default.
+        ///     Creates a new instance of your widget.
         /// </summary>
         public Widget ()
         {
@@ -146,12 +158,15 @@ namespace phosphorus.ajax.widgets
         private readonly AttributeStorage _attributes = new AttributeStorage ();
 
         /// <summary>
-        ///     Gets or sets the render mode.
+        ///     Gets or sets the rendering mode.
         /// 
         ///     The rendering mode defines how your widget is rendered during the current request, and allows you to set its
         ///     state to "re-render", "re-render children", and so on, which is useful when you create your own widgets, and
         ///     make changes to them, that requires them to either be re-rendered themselves, or have their children collection
         ///     re-rendered.
+        /// 
+        ///     Normally you do not need to fiddle with this property yourself, but can allow the framework to take care of this automatically
+        ///     for you.
         /// </summary>
         /// <value>The render mode.</value>
         protected RenderingMode RenderMode {
@@ -163,7 +178,7 @@ namespace phosphorus.ajax.widgets
         /// 
         ///     Set this value to whatever HTML element you wish to use for your widget, such as "p", "div", "ul" etc.
         /// </summary>
-        /// <value>The element type.</value>
+        /// <value>The HTML element used to render widget.</value>
         public virtual string ElementType
         {
             get { return this ["Tag"]; }
@@ -192,10 +207,10 @@ namespace phosphorus.ajax.widgets
         }
 
         /// <summary>
-        ///     Gets or sets the render type.
+        ///     Gets or sets the rendering type.
         /// 
-        ///     The rendering type determines how your widget is rendered, see RenderingType, to understand how this affects
-        ///     your rendered HTML.
+        ///     The rendering type of your widget, determines how it is rendered. See 
+        ///     <see cref="phosphorus.ajax.widgets.Widget.RenderingType">RenderingType</see>, to understand how this affects your rendered HTML.
         /// </summary>
         /// <value>The render type.</value>
         public RenderingType RenderType
@@ -205,16 +220,22 @@ namespace phosphorus.ajax.widgets
         }
 
         /// <summary>
-        ///     Sets whether or not your Widget has its ID attribute rendered.
+        ///     Sets or gets whether your widget has its ID attribute rendered to the client or not.
         /// 
-        ///     If this property is true, then no "id" attribute will be rendered back to the client for the given Widget. This is useful 
+        ///     If this property is true, then no "id" attribute will be rendered back to the client for the widget. This is useful 
         ///     for widgets that does not require an id attribute, where the id attribute is not supposed to be rendered to the
-        ///     client. Examples uncludes for instance "option" HTML elements, where the id attribute is not always necessary, and
-        ///     not rendering the id attribute, creates better and more beautiful HTML.
+        ///     client.
         /// 
-        ///     The Widget must still have a unique ID, but this id will only be used on the server-side, and never rendered back to the client.
+        ///     Examples includes for instance "option" HTML elements, where the id attribute is not always necessary, and
+        ///     not rendering the id attribute, creates "better" and more beautiful HTML.
+        /// 
+        ///     The widget must still have a unique id, but this id will only be used on the server-side, and never rendered back to the client.
+        /// 
+        ///     If you do not render the id attribute, then you cannot change any of the widget's attributes or properties during server-side
+        ///     Ajax callbacks, since the id attribute is used on the client-side to find the widget in the DOM, to update its properties and
+        ///     attributes.
         /// </summary>
-        /// <value>Whether or not an "id" attribute is rendered to the client.</value>
+        /// <value>Whether an "id" attribute is rendered to the client or not.</value>
         public bool NoIdAttribute
         {
             get { return ViewState ["noid"] != null && (bool) ViewState ["noid"]; }
@@ -222,16 +243,18 @@ namespace phosphorus.ajax.widgets
         }
 
         /// <summary>
-        ///     Gets or sets the named attribute for the widget.
+        ///     Gets or sets an attribute value for your widget.
         /// 
-        ///     This allows you to dynamically add and retrieve any attribute you wish to your Widget. Notice that attribute 
+        ///     This allows you to dynamically set and get any attribute value you wish from your widget. Notice that the attribute 
         ///     might still exist, even if the return value is null, since attributes can have "null values", such as for instance 
         ///     the "controls" attribute for the html5 video element, or the "disabled" attribute on form elements.
         /// 
         ///     If you wish to check for the existence of an attribute, then use HasAttribute method. If you wish to remove an attribute, 
         ///     use the RemoveAttribute method.
+        /// 
+        ///     If you however wish to change an attribute, or add a "null" attribute, then you can use the [ ] operator to accomplish just that.
         /// </summary>
-        /// <param name="name">Attribute value to retrieve or set.</param>
+        /// <param name="name">Name of attribute to retrieve or set value of.</param>
         public virtual string this [string name]
         {
             get { return _attributes.GetAttribute (name); }
@@ -249,6 +272,9 @@ namespace phosphorus.ajax.widgets
         /// 
         ///     This is used during rendering of the widget, to determine how the widget should be rendered. If you create
         ///     your own widget classes, you should return false in an override from this method, if your widget has no content.
+        /// 
+        ///     This is necessary to determine how to render the widget's main HTML element if your widget is being rendered in
+        ///     for instance <em>"immediate mode"</em>.
         /// </summary>
         /// <value><c>true</c> if this instance has content; otherwise, <c>false</c>.</value>
         protected abstract bool HasContent
@@ -305,7 +331,7 @@ namespace phosphorus.ajax.widgets
         /// <summary>
         ///     Removes the specified attribute.
         /// 
-        ///     Allows you to remove the specified attribute. Notice, that you cannot use the operator [] to remove attributes,
+        ///     Allows you to remove the specified attribute. Notice, that you cannot use the [ ] operator to remove attributes,
         ///     since even passing in "null" as the value, will just eliminate the attribute's value, and not the attribute itself.
         ///     If you wish to remove an attribute, you must use this method instead.
         /// </summary>
@@ -317,12 +343,13 @@ namespace phosphorus.ajax.widgets
         }
 
         /// <summary>
-        ///     Returns all attribute keys for widget.
+        ///     Returns all attributes for widget.
         /// 
-        ///     Sometimes it may be useful to see all the attribute that exists for a specific widget. For such cases, you can
-        ///     use this property, to retrieve all the names of tha attributes that exists for your widget.
+        ///     Sometimes it may be useful to see all the attributes that exists for a specific widget. For such cases, you can
+        ///     use this property, to retrieve all the keys of the attributes that exists for your widget, for then to use the
+        ///     returned values as input to the [ ] operator, to retrieve the values of your attributes.
         /// </summary>
-        /// <value>The attributes keys.</value>
+        /// <value>All attribute keys for widget.</value>
         public IEnumerable<string> AttributeKeys {
             get {
                 return _attributes.Keys;
@@ -332,8 +359,11 @@ namespace phosphorus.ajax.widgets
         /// <summary>
         ///     Forces a re-rendering of your widget.
         /// 
-        ///     Normally this is not something you should have to mess with yourself, but something the framework itself will take care of. 
-        ///     However, if you wish to force the control to re-render itself entirely as html back to the client, you can invoke this method.
+        ///     Normally, this is not something you should have to mess with yourself, but something the framework itself will take care of. 
+        ///     However, if you wish to force the control to re-render itself entirely as HTML back to the client, you can invoke this method.
+        /// 
+        ///     Sometimes this might be necessary, if you for instance have added widgets to the widget's Controls collection, without having used
+        ///     the <em>"persistence"</em> features of the Container widget.
         /// </summary>
         public void ReRender ()
         {
@@ -343,8 +373,11 @@ namespace phosphorus.ajax.widgets
         /// <summary>
         ///     Forces a re-rendering of your widget's children controls.
         /// 
-        ///     Normally this is not something you should have to mess with yourself, but something the framework itself will take care of. 
-        ///     However, if you wish to force the control to re-render its children entirely as html back to the client, you can invoke this method.
+        ///     Normally, this is not something you should have to mess with yourself, but something the framework itself will take care of. 
+        ///     However, if you wish to force the control to re-render its children entirely as HTML back to the client, you can invoke this method.
+        /// 
+        ///     Sometimes this might be necessary, if you for instance have added widgets to the widget's Controls collection, without having used
+        ///     the <em>"persistence"</em> features of the Container widget.
         /// </summary>
         public void ReRenderChildren ()
         {
@@ -353,13 +386,12 @@ namespace phosphorus.ajax.widgets
         }
 
         /// <summary>
-        ///     Loads the form data from the http request.
+        ///     Loads the form data from the HTTP request object for the current widget.
         /// 
-        ///     Override this in your own widgets if you have widgets that posts data to the server, and you need custom loading logic
-        ///     to retrieve the form data from the request.
+        ///     The default implementation of this method, will automatically de-serialize all basic HTML form elements, such as
+        ///     "input", "select", "option" and "textarea" elements.
         /// 
-        ///     The default implementation will take care of loading values from "textarea", "input" and "select" HTML form elements automatically
-        ///     for you.
+        ///     If you create your own custom types of widgets, that transmits data to the server, then you must override this method.
         /// </summary>
         protected virtual void LoadFormData ()
         {
@@ -436,14 +468,19 @@ namespace phosphorus.ajax.widgets
         /// <summary>
         ///     Invokes the given event handler.
         /// 
-        ///     If the widget has an attribute with the 'eventName', then the value of that attribute will be retrieved, 
-        ///     and a method on the page, usercontrol, or master page, the control belongs to, will be expected to contain 
-        ///     a method with that name. If the widget does not have an attribute with the 'eventName' name, then a method 
+        ///     If the widget has an attribute with the given 'eventName' argument, then the value of that attribute will be retrieved, 
+        ///     and the Page object, UserControl widget belongs to, or MasterPage the control is embedded inside of, will be expected to contain 
+        ///     a method with that name.
+        /// 
+        ///     If the widget does not have an attribute with the 'eventName' name, then a method 
         ///     with the name of 'eventName' will be invoked searching through the page, usercontrol, or master page, the 
         ///     control belongs to, in that order. All methods invoked this way must have the WebMethod attribute on them.
         ///     If you override this method, you should call base if you do not recognize the 'eventName'.
+        /// 
+        ///     This allows you to explicitly invoke server-side WebMethods in your Page, UserControl or MasterPage, within the context of
+        ///     a specific widget. While at the same time, allowing you to automatically map client-side DOM events to server-side WebMethods.
         /// </summary>
-        /// <param name="eventName">Event name such as 'onclick', or name of C# method on page, usercontrol, or masterpage.</param>
+        /// <param name="eventName">Event name such as 'onclick', or name of C# method on Page, UserControl, or MasterPage.</param>
         /// <exception cref="NotImplementedException"></exception>
         protected void InvokeEventHandler (string eventName)
         {
@@ -477,7 +514,7 @@ namespace phosphorus.ajax.widgets
         }
 
         /// <summary>
-        ///     Renders all children as json update to be sent back to client.
+        ///     Renders all children as JSON update to be sent back to client.
         /// 
         ///     Override this method if you wish to create custom functionality as an alternative.
         /// </summary>
@@ -563,7 +600,7 @@ namespace phosphorus.ajax.widgets
         ///     when we need to determine how to access the POST parameter passed in from the client, to set
         ///     the "value" of a "select" HTML element.
         /// </summary>
-        /// <returns><c>true</c>, if children has identifiers was alled, <c>false</c> otherwise.</returns>
+        /// <returns><c>true</c>, if all children have ID attributes rendered, <c>false</c> otherwise.</returns>
         protected bool AllChildrenHasIds ()
         {
             foreach (Control idxCtrl in Controls) {

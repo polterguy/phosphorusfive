@@ -1088,24 +1088,6 @@ dl.section dd {
 	float:left;
 }
 
-#download-tar
-{
-	display:block;
-	width:90px;
-	height:70px;
-	background:url(sprite_download.png) no-repeat bottom right;
-	position:absolute;
-	right:25px;
-	bottom:-35px;
-	text-indent:-5000px;
-	overflow:hidden;
-}
-
-#download-tar:hover
-{
-	background:url(sprite_download.png) no-repeat top right;
-}
-
 #download-zip
 {
 	display:block;
@@ -1113,7 +1095,7 @@ dl.section dd {
 	height:70px;
 	background:url(sprite_download.png) no-repeat bottom left;
 	position:absolute;
-	right:120px;
+	right:20px;
 	bottom:-35px;
 	text-indent:-5000px;
 	overflow:hidden;

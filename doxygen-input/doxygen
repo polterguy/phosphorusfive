@@ -6,7 +6,7 @@
 DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = "Phosphorus.Five"
 PROJECT_NUMBER         =
-PROJECT_BRIEF          = "Enabling Agile Development"
+PROJECT_BRIEF          = "Enabling Agile Programming"
 PROJECT_LOGO           = magix-logo-big.png
 OUTPUT_DIRECTORY       = ../doxygen-output
 CREATE_SUBDIRS         = NO

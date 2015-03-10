@@ -12,11 +12,31 @@ using phosphorus.ajax.core.internals;
 // ReSharper disable MemberCanBeProtected.Global
 
 // This might look fuuny, but to document the namespace, such that Doxygen recognizes it, 
-// and can create documentation for it, we must do it like this
+// and can create documentation for it, we must do it like this.
 /// <summary>
-///     Contains all Ajax functionality in Phosphorus
+///     Contains all Ajax functionality in Phosphorus.
 /// 
-///     Contains all the Ajax functionality in Phosphorus, such as its Widgets, AjaxPage and so on. 
+///     Contains all the Ajax functionality in Phosphorus, such as its Widgets, AjaxPage and so on. Phosphorus.Ajax is a C# ASP.NET WebControls
+///     library, that can be used without bringing in any other dependencies from Phosphorus.Five. In such a regard, Phosphorus.Ajax is an alternative
+///     to other Ajax Libraries, such as Anthem.NET and ASP.NET Ajax.
+/// 
+///     If all you wish to to, is to have a nice Ajax library for your C# or VB.NET ASP.NET projects, then Phosphorus.Ajax is a decent alternative.
+///     If this is what you want, then the only project dll you need to reference inside of your own projects is <em>"phosphorus.ajax.dll"</em>.
+/// 
+///     Phosphorus.Ajax is a managed Ajax Library, and all JavaScript for the library is roughly 5KB when built in Release Build. In addition, 
+///     Phosphorus.Ajax only sends the changes back from the server to your client, which means that the amount of bandwidth usage when using
+///     Phosphorus.Ajax is probably unmatched by other similar libraries.
+/// 
+///     With Phosphorus.Ajax, you have complete control over what HTML is rendered from your server. There are no <em>"magic divs"</em>, or huge
+///     JavaScript files being transfered. Phosphorus.Ajax tries to fix what needs to be fixed, and leave the rest up to you. Phosphorus.Ajax is
+///     100% perfectly compatible with all other major Ajax Libraries out there, such as jQuery and Prototype.js.
+/// 
+///     With Phosphorus.Ajax, you can create your WebControls, just like you would in a normal ASP.NET project, and let the Ajax parts, and updating
+///     of your widget's properties, automtically be taken care of. While still retaining 100% control over what goes over the wire, and what HTML
+///     is rendered.
+/// 
+///     For examples of how to use Phosphorus.Ajax, you can check out the example web project from the Phosphorus.Five download called 
+///     <em>"phosphorus.ajax.samples"</em>.
 /// </summary>
 namespace phosphorus.ajax
 {

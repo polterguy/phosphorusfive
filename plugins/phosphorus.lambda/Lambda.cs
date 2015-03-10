@@ -12,6 +12,23 @@ using phosphorus.expressions.exceptions;
 // ReSharper disable UnusedMember.Local
 // ReSharper disable UnusedMember.Global
 
+/// <summary>
+///     Main namespace for pf.lambda keywords.
+/// 
+///     Contains all the keywords in pf.lambda, such as [while], [for-each] and [lambda]. pf.lambda is a graph object transformation programming
+///     <em>"language"</em>, which means it allows you to modify and transform tree-structures, and execute these as execution trees. pf.lambda
+///     is based upon Active Events, which is a design pattern that allows you to dynamically tie together statically created programming modules,
+///     created for instance in C#, such as is the case with pf.lambda. Below is an example of a simple pf.lambda program;
+/// 
+///     <pre>_foo
+///   bar1:x
+///   bar2:y
+/// _dest
+/// set:@/-?value
+///   source:@/./-2/"*"?value</pre>
+/// 
+///     The above program, simply transforms the values of all nodes beneath the [_foo] node, and creates a single string value from them.
+/// </summary>
 namespace phosphorus.lambda
 {
     /// <summary>

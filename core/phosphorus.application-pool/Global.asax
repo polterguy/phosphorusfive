@@ -1,1 +1,1 @@
-<%@ Application Codebehind="Global.asax.cs" Inherits="phosphorus.five.applicationpool.Global" Language="C#" %>
+<%@ Application Codebehind="Global.asax.cs" Inherits="phosphorus.applicationpool.Global" Language="C#" %>

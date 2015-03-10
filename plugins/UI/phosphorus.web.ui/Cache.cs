@@ -7,7 +7,7 @@ using System.Web;
 using System.Collections;
 using System.Collections.Generic;
 using phosphorus.core;
-using phosphorus.web.ui.Common;
+using phosphorus.web.ui.common;
 
 // ReSharper disable UnusedMember.Local
 // ReSharper disable UnusedMember.Global
@@ -35,7 +35,7 @@ namespace phosphorus.web.ui
         [ActiveEvent (Name = "pf.web.cache.set")]
         private static void pf_web_cache_set (ApplicationContext context, ActiveEventArgs e)
         {
-            phosphorus.web.ui.Common.CollectionBase.Set (e.Args, context, delegate (string key, object value) {
+            phosphorus.web.ui.common.CollectionBase.Set (e.Args, context, delegate (string key, object value) {
                 if (value == null) {
                     // removing object, if it exists
                     HttpContext.Current.Cache.Remove (key);
@@ -56,7 +56,7 @@ namespace phosphorus.web.ui
         [ActiveEvent (Name = "pf.web.cache.get")]
         private static void pf_web_cache_get (ApplicationContext context, ActiveEventArgs e)
         {
-            phosphorus.web.ui.Common.CollectionBase.Get (e.Args, context, key => HttpContext.Current.Cache [key]);
+            phosphorus.web.ui.common.CollectionBase.Get (e.Args, context, key => HttpContext.Current.Cache [key]);
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace phosphorus.web.ui
             foreach (IDictionaryEnumerator idx in HttpContext.Current.Cache) {
                 retVal.Add (idx.Key.ToString ());
             }
-            phosphorus.web.ui.Common.CollectionBase.List (e.Args, context, () => retVal);
+            phosphorus.web.ui.common.CollectionBase.List (e.Args, context, () => retVal);
         }
     }
 }

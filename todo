@@ -95,6 +95,7 @@
 
 * create support for using ASP.NET Cache object, such as we already have for Session and Application
 
+* sys42 - "New wizard page ..." feature, for creating a pf.page through a wizard.
 
 
 

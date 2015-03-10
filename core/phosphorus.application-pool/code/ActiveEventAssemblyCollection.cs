@@ -7,7 +7,7 @@ using System.Configuration;
 
 // ReSharper disable ClassNeverInstantiated.Global
 
-namespace phosphorus.five.applicationpool.code
+namespace phosphorus.applicationpool.code
 {
     /// <summary>
     ///     Active event assembly collection.

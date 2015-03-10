@@ -32,7 +32,7 @@ using phosphorus.expressions;
 /// 
 ///     However, if you wish to achieve more detailed control over your end web project, then this is where you'd do just that.
 /// </summary>
-namespace phosphorus.five.applicationpool
+namespace phosphorus.applicationpool
 {
     using pf = ajax.widgets;
 
@@ -173,6 +173,26 @@ namespace phosphorus.five.applicationpool
         ///     If neither [before] nor [after] is given, widget will be appended into controls collection at the end of whatever
         ///     [parent] widget you choose to use. You can also optionally declare local widget Active Events, by passing in an [events] 
         ///     node, which will be locally declared Active Events for your widget, only active, as long as Widget exists on page.
+        /// 
+        ///     Example;
+        /// 
+        ///     <pre>pf.web.widgets.create:foo
+        ///   widget:literal
+        ///   element:h1
+        ///   innerValue:Click me!
+        ///   class:span-24 prepend-top info
+        ///   onclick
+        ///     pf.web.widgets.create
+        ///       after:foo
+        ///       widget:literal
+        ///       innerValue:I was dynamically created!
+        ///       class:span-24 success
+        ///       onclick
+        ///         pf.web.widgets.remove:@/./"*"/_event?value</pre>
+        /// 
+        ///     Using [pf.web.widgets.create], in combination with the other Active Events for manipulating Ajax Web Widgets, you can take 100%
+        ///     complete control over the HTML your site is rendered, while still retaining all your widget creation code on the server-side, in
+        ///     a managed environment, through pf.lambda.
         /// </summary>
         /// <param name="context">Context for current request</param>
         /// <param name="e">Parameters passed into Active Event</param>

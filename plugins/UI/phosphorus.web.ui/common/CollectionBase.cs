@@ -14,7 +14,7 @@ using phosphorus.expressions;
 /// 
 ///     Namespace contains common helper operations for collection base classes, such as Session, Application and Cookies.
 /// </summary>
-namespace phosphorus.web.ui.Common
+namespace phosphorus.web.ui.common
 {
     /// <summary>
     ///     Helper class to help set, get and list collections.
