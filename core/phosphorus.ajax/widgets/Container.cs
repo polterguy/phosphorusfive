@@ -20,6 +20,7 @@ using phosphorus.ajax.core;
 ///     * Literal - Allows you to create widgets that contains simple text or HTML values.
 ///     * Container - A widget that can contain children widgets of its own.
 ///     * Void - Useful for creating widgets that has neither children widgets, nor any inner HTML. HTML input elements are one example.
+///     * Widget - Base class with common functionality for all widgets.
 /// 
 ///     However, since you can override any property, and add any attribute you wish, to any of the above widgets, these widgets are actually
 ///     enough to be able to create any HTML markup you wish. If you wish to create a container widget, that renders like an HTML address element,
@@ -27,8 +28,10 @@ using phosphorus.ajax.core;
 /// 
 ///     If you wish to handle the <em>"onmouseover"</em> DOM event on the server-side, then all you need to do, is to provide an "onmouseover" attribute,
 ///     referencing the event handler from your codebehind, and voila; You're in <em>"server-land"</em>, whenever anyone hovers their mouse over your
-///     HTML element. Phosphorus.Ajax will automatically understand the difference between a server-side Event Handler, and JavaScript DOM client-side
-///     events. If you supply something that is not a legal C# or VB.NET method name as the value of any attribute starting with the text "on" in your
+///     HTML element.
+/// 
+///     Phosphorus.Ajax will automatically understand the difference between a server-side Event Handler, and a JavaScript DOM client-side
+///     event. If you supply something that is not a legal C# or VB.NET method name as the value of any attribute starting with the text "on" in your
 ///     widgets, then Phosphorus.Ajax will assume you've supplied a JavaScript DOM event handler, and simply render your widget's attribute, as a 
 ///     client-side JavaScript piece of code, to be executed when DOM event bubbles up.
 /// 
@@ -67,9 +70,9 @@ using phosphorus.ajax.core;
 ///     public partial class _Default : AjaxPage
 ///     {
 ///         [WebMethod]
-///         protected void hello_onclick (pf.Literal sender, EventArgs e)
+///         protected void hello_onclick (<strong>pf.Literal</strong> sender, EventArgs e)
 ///         {
-///             sender.innerValue = "Hello World";
+///             sender.innerValue = "Hello World :)";
 ///         }
 ///     }
 /// }

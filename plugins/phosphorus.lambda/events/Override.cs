@@ -34,6 +34,16 @@ namespace phosphorus.lambda.events
         /// override:foo
         ///   super:bar
         /// bar</pre>
+        /// 
+        /// Please notice though, that if you execute the above code twice, you'll end up creating two overrides, with the exact same
+        ///     base event and super event. To avoid this, you might want to consider using [remove-override] before you override your Active Events
+        ///     with the [override] keyword.
+        /// 
+        ///     If you wish to invoke the <em>"base event"</em>, you can do such using 
+        ///     <see cref="phosphorus.lambda.Lambda.lambda_invoke">[lambda.invoke]</see>.
+        /// 
+        ///     The Active Event you override using [override] does not have to exist. When invoking the base Active Event, your override will still
+        ///     be invoked automatically.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
