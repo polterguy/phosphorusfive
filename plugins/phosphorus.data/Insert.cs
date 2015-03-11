@@ -16,14 +16,33 @@ using phosphorus.data.helpers;
 ///     Main namespace for all [pd.data.xxx] Active Events.
 /// 
 ///     The [pf.data.xxx] namespace in Phosphorus.Five contains a memory-bases database implementation, for 
-///     small objects, allowing you a quick and dirty database, for smaller systems, and smaller pieces of data.
+///     small data-servers, allowing you to have a quick and dirty database, for smaller systems, and smaller pieces of data.
+/// 
+///     Although you should not use the [pf.data.xxx] database for larger databases, you can connect several servers together,
+///     creating a cluster of memory-based database servers, facilitating for huge data-centers.
+/// 
+///     The [pf.data.xxx] database has 3 settings it reads from your application's config file. These are;
+/// 
+///     * <em>database-path</em> - This is the relative directory to where the database stores its files.
+///     * <em>database-nodes-per-file</em> - This is the number of items your database will allow for each file.
+///     * <em>database-files-per-directory</em> - This is the number of files your database will store for each sub-directory.
+/// 
+///     The database stores its objects in Hyperlisp format, which allows you to edit your database's content, using
+///     nothing but a text-based editor. The database will create sub-directories beneath its database-path, where each directory 
+///     will not create more files then its <em>"database-files-per-directory"</em> setting.
+/// 
+///     The database relies heavily upon <see cref="phosphorus.expressions.Expression">Expressions</see>, and stores its items
+///     in memory in one root node, containing one node for each database file, where each file-node contains the database items.
+///     This means that to access for instance items of type <em>"address"</em>, you must use an expression resembling something like this;
+/// 
+///     <pre>@/*/*/address ...</pre>
 /// </summary>
 namespace phosphorus.data
 {
     /// <summary>
     ///     Class wrapping [pf.data.insert].
     /// 
-    ///     Contains the Active Events [pf.data.insert], and its asociatedd helper methods.
+    ///     Contains the Active Events [pf.data.insert], and its associated helper methods.
     /// </summary>
     public static class Insert
     {

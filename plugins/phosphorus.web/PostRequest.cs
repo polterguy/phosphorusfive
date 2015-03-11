@@ -18,15 +18,19 @@ using phosphorus.expressions;
 namespace phosphorus.web
 {
     /// <summary>
-    ///     helper to create an HTTP POST request
+    ///     Class wrapping the [pf.web.post] Active Event.
+    /// 
+    ///     Contains the [pf.web.post] Active Event, and its associated helper methods.
     /// </summary>
     public static class PostRequest
     {
         /// <summary>
-        ///     creates an HTTP POST request
+        ///     Creates an HTTP POST request.
+        /// 
+        ///     Allows you to create an HTTP POST request to a URL, to post values, and download documents over the web.
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.web.post")]
         private static void pf_web_post (ApplicationContext context, ActiveEventArgs e)
         {

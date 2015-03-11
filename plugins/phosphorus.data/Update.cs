@@ -21,7 +21,6 @@ namespace phosphorus.data
     /// </summary>
     public static class Update
     {
-        /// \todo Do we need an "append" type of database Active Event, since this bugger can only change existing nodes ...?
         /// <summary>
         ///     Updates nodes in your database.
         /// 

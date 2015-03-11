@@ -28,6 +28,28 @@ using phosphorus.expressions.exceptions;
 ///   source:@/./-2/"*"?value</pre>
 /// 
 ///     The above program, simply transforms the values of all nodes beneath the [_foo] node, and creates a single string value from them.
+/// 
+///     pf.lambda is not a <em>"general purpose"</em> programming language, but should rather be though of as an <em>"orchestration programming
+///     language"</em>, allowing you to loosely tie together existing functionality, in a dynamic programming environment. This just happens to
+///     be one of the largest problems in today's world of System Development and System Architecture. However, to illustrate the point that you 
+///     cannot use pf.lambda for all your concerns, realize that pf.lamba cannot even add two numbers. If you tried to add 2+2 in pf.lambda, it would
+///     actually yield the result of <em>"22"</em>.
+/// 
+///     When it comes to <em>"orchestrating"</em> your application together though, pf.lambda is probably a superior choice, since it allows you
+///     to very loosely couple together existing functionality, from different modules, without bringing in any dependencies between your modules, 
+///     what-so-ever. This trait of pf.lambda, is the reasons why we say that pf.lambda <em>"enables Agile Programming"</em>.
+/// 
+///     pf.lambda is your <em>"front-end programming language"</em> you might say, because it allows you to <em>"tie together"</em> functionality
+///     written in other languages, within a very loosely coupled architecture. Phosphorus.Five contains Active Events for a lot of the tasks you'd normally
+///     need to write your own plugins for though, which means that you actually very seldom need to resort to C# or VB.NET to extend your 
+///     Phosphorus.Five installation. When you do however, you will fast recognize, that the Active Event design pattern, gives you a superior
+///     bridge between pf.lambda and C#.
+/// 
+///     In fact, if you study pf.lambda, and its implementation, you will recognize that pf.lambda <em>"hardly exists"</em>, since it's really
+///     nothing but loosely coupled Active Events in itself. For instance the [for-each] keyword, or the [if] keyword in pf.lambda, are actually
+///     Active Events, that knows nothing about each other. This allows you to easily extend pf.lambda with your own keywords, as you see fit.
+/// 
+///     And in fact, there are no semantic differences between any Active Event, such as [pf.file.load], and a <em>"keyword"</em> in pf.lambda.
 /// </summary>
 namespace phosphorus.lambda
 {
