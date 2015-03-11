@@ -10,10 +10,18 @@ using phosphorus.core;
 // ReSharper disable UnusedMember.Local
 // ReSharper disable UnusedMember.Global
 
+/// <summary>
+///     Main namespace for types and type-conversions in Phosphorus.Five.
+/// 
+///     Contains classes that helps you convert back and forth between objects of different types. Heavily used in Hyperlisp, to allow
+///     Hyperlisp to declare instances of Guids, integers, and other types.
+/// </summary>
 namespace phosphorus.types
 {
     /// <summary>
-    ///     helper class for converting from string value representation to actual object
+    ///     Class helps converts from string to object.
+    /// 
+    ///     Contains all Active Events necessary to convert from for instance <em>"string"</em> to object value of specified type.
     /// </summary>
     public static class GetObjectValue
     {
@@ -28,10 +36,14 @@ namespace phosphorus.types
          */
 
         /// <summary>
-        ///     returns a Node created from its string representation
+        ///     Creates a <see cref="phosphorus.core.Node">Node</see> list from its string representation.
+        /// 
+        ///     Returns a Node list created from its string representation. String representation of object is expected to
+        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string
+        ///     representation parameter passed in.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-object-value.node")]
         private static void pf_hyperlisp_get_object_value_node (ApplicationContext context, ActiveEventArgs e)
         {
@@ -42,10 +54,15 @@ namespace phosphorus.types
         }
 
         /// <summary>
-        ///     returns a Node created from its string representation
+        ///     Creates a single <see cref="phosphorus.core.Node">Node</see> from its string representation.
+        /// 
+        ///     Returns a single Node created from its string representation. String representation of object is expected to
+        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string
+        ///     representation parameter passed in. If you pass in a string with multiple root nodes, then this Active Event will
+        ///     choke, and throw an exception.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-object-value.abs.node")]
         private static void pf_hyperlisp_get_object_value_abs_node (ApplicationContext context, ActiveEventArgs e)
         {
@@ -63,132 +80,241 @@ namespace phosphorus.types
         }
 
         /// <summary>
-        ///     returns a DNA created from its string representation
+        ///     Creates a <see cref="phosphorus.core.Node.Dna">DNA</see> from its string representation.
+        /// 
+        ///     Returns a path or DNA created from its string representation. String representation of object is expected to
+        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string
+        ///     representation parameter passed in.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-object-value.path")]
-        private static void pf_hyperlisp_get_object_value_path (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = new Node.Dna (e.Args.Get<string> (context)); }
+        private static void pf_hyperlisp_get_object_value_path (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = new Node.Dna (e.Args.Get<string> (context));
+        }
 
         /// <summary>
-        ///     returns a guid created from its string representation
+        ///     Creates a Guid from its string representation.
+        /// 
+        ///     Returns a System.Guid created from its string representation. String representation of object is expected to
+        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string
+        ///     representation parameter passed in.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-object-value.guid")]
-        private static void pf_hyperlisp_get_object_value_guid (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = Guid.Parse (e.Args.Get<string> (context)); }
+        private static void pf_hyperlisp_get_object_value_guid (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = Guid.Parse (e.Args.Get<string> (context));
+        }
 
         /// <summary>
-        ///     returns a long created from its string representation
+        ///     Creates a long from its string representation.
+        /// 
+        ///     Returns a System.Int64 created from its string representation. String representation of object is expected to
+        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string
+        ///     representation parameter passed in.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-object-value.long")]
-        private static void pf_hyperlisp_get_object_value_long (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = long.Parse (e.Args.Get<string> (context), CultureInfo.InvariantCulture); }
+        private static void pf_hyperlisp_get_object_value_long (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = long.Parse (e.Args.Get<string> (context), CultureInfo.InvariantCulture);
+        }
 
         /// <summary>
-        ///     returns a ulong created from its string representation
+        ///     Creates a ulong from its string representation.
+        /// 
+        ///     Returns a System.UInt64 created from its string representation. String representation of object is expected to
+        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string
+        ///     representation parameter passed in.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-object-value.ulong")]
-        private static void pf_hyperlisp_get_object_value_ulong (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = ulong.Parse (e.Args.Get<string> (context), CultureInfo.InvariantCulture); }
+        private static void pf_hyperlisp_get_object_value_ulong (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = ulong.Parse (e.Args.Get<string> (context), CultureInfo.InvariantCulture);
+        }
 
         /// <summary>
-        ///     returns an integer created from its string representation
+        ///     Creates an int from its string representation.
+        /// 
+        ///     Returns a System.Int32 created from its string representation. String representation of object is expected to
+        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string
+        ///     representation parameter passed in.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-object-value.int")]
-        private static void pf_hyperlisp_get_object_value_int (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = int.Parse (e.Args.Get<string> (context), CultureInfo.InvariantCulture); }
+        private static void pf_hyperlisp_get_object_value_int (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = int.Parse (e.Args.Get<string> (context), CultureInfo.InvariantCulture);
+        }
 
         /// <summary>
-        ///     returns an integer created from its string representation
+        ///     Creates a uint from its string representation.
+        /// 
+        ///     Returns a System.UInt32 created from its string representation. String representation of object is expected to
+        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string
+        ///     representation parameter passed in.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-object-value.uint")]
-        private static void pf_hyperlisp_get_object_value_uint (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = uint.Parse (e.Args.Get<string> (context), CultureInfo.InvariantCulture); }
+        private static void pf_hyperlisp_get_object_value_uint (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = uint.Parse (e.Args.Get<string> (context), CultureInfo.InvariantCulture);
+        }
 
         /// <summary>
-        ///     returns a 16 bit integer created from its string representation
+        ///     Creates a short from its string representation.
+        /// 
+        ///     Returns a System.Int16 created from its string representation. String representation of object is expected to
+        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string
+        ///     representation parameter passed in.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-object-value.short")]
-        private static void pf_hyperlisp_get_object_value_short (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = short.Parse (e.Args.Get<string> (context), CultureInfo.InvariantCulture); }
+        private static void pf_hyperlisp_get_object_value_short (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = short.Parse (e.Args.Get<string> (context), CultureInfo.InvariantCulture);
+        }
 
         /// <summary>
-        ///     returns a single or 32 bit floating point number created from its string representation
+        ///     Creates a single from its string representation.
+        /// 
+        ///     Returns a System.Single created from its string representation. String representation of object is expected to
+        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string
+        ///     representation parameter passed in.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-object-value.float")]
-        private static void pf_hyperlisp_get_object_value_float (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = float.Parse (e.Args.Get<string> (context), CultureInfo.InvariantCulture); }
+        private static void pf_hyperlisp_get_object_value_float (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = float.Parse (e.Args.Get<string> (context), CultureInfo.InvariantCulture);
+        }
 
         /// <summary>
-        ///     returns a double or 64 bit floating point number created from its string representation
+        ///     Creates a double from its string representation.
+        /// 
+        ///     Returns a System.Double created from its string representation. String representation of object is expected to
+        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string
+        ///     representation parameter passed in.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-object-value.double")]
-        private static void pf_hyperlisp_get_object_value_double (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = Double.Parse (e.Args.Get<string> (context), CultureInfo.InvariantCulture); }
+        private static void pf_hyperlisp_get_object_value_double (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = double.Parse (e.Args.Get<string> (context), CultureInfo.InvariantCulture);
+        }
 
         /// <summary>
-        ///     returns a decimal number created from its string representation
+        ///     Creates a decimal from its string representation.
+        /// 
+        ///     Returns a System.Decimal created from its string representation. String representation of object is expected to
+        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string
+        ///     representation parameter passed in.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-object-value.decimal")]
-        private static void pf_hyperlisp_get_object_value_decimal (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = decimal.Parse (e.Args.Get<string> (context), CultureInfo.InvariantCulture); }
+        private static void pf_hyperlisp_get_object_value_decimal (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = decimal.Parse (e.Args.Get<string> (context), CultureInfo.InvariantCulture);
+        }
 
         /// <summary>
-        ///     returns a Boolean value being either true or false depending upon whether or not the the string given it
-        ///     is "true" or not. meaning "true", "True" and "trUE" becomes true, all other values becomes false
+        ///     Creates a bool from its string representation.
+        /// 
+        ///     Returns a System.Boolean created from its string representation. String representation of object is expected to
+        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string
+        ///     representation parameter passed in.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-object-value.bool")]
-        private static void pf_hyperlisp_get_object_value_bool (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = e.Args.Get<string> (context).ToLower () == "true"; }
+        private static void pf_hyperlisp_get_object_value_bool (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = e.Args.Get<string> (context).ToLower () == "true";
+        }
 
         /// <summary>
-        ///     returns a byte value from its string representation
+        ///     Creates a byte from its string representation.
+        /// 
+        ///     Returns a System.Byte created from its string representation. String representation of object is expected to
+        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string
+        ///     representation parameter passed in.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-object-value.byte")]
-        private static void pf_hyperlisp_get_object_value_byte (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = byte.Parse (e.Args.Get<string> (context), CultureInfo.InvariantCulture); }
+        private static void pf_hyperlisp_get_object_value_byte (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = byte.Parse (e.Args.Get<string> (context), CultureInfo.InvariantCulture);
+        }
 
         /// <summary>
-        ///     returns a byte[] value from its string representation
+        ///     Creates a byte array from its string representation.
+        /// 
+        ///     Returns a System.Byte[] created from its string representation. String representation of object is expected to
+        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string
+        ///     representation parameter passed in. The string representation of a byte array, is expected to be the BASE64 encoded version of
+        ///     its bytes.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-object-value.blob")]
-        private static void pf_hyperlisp_get_object_value_blob (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = Convert.FromBase64String (e.Args.Get<string> (context)); }
+        private static void pf_hyperlisp_get_object_value_blob (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = Convert.FromBase64String (e.Args.Get<string> (context));
+        }
 
         /// <summary>
-        ///     returns a sbyte value from its string representation
+        ///     Creates an sbyte from its string representation.
+        /// 
+        ///     Returns a System.SByte created from its string representation. String representation of object is expected to
+        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string
+        ///     representation parameter passed in.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-object-value.sbyte")]
-        private static void pf_hyperlisp_get_object_value_sbyte (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = sbyte.Parse (e.Args.Get<string> (context), CultureInfo.InvariantCulture); }
+        private static void pf_hyperlisp_get_object_value_sbyte (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = sbyte.Parse (e.Args.Get<string> (context), CultureInfo.InvariantCulture);
+        }
 
         /// <summary>
-        ///     returns a char value from its string representation
+        ///     Creates a char from its string representation.
+        /// 
+        ///     Returns a System.Char created from its string representation. String representation of object is expected to
+        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string
+        ///     representation parameter passed in.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-object-value.char")]
-        private static void pf_hyperlisp_get_object_value_char (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = char.Parse (e.Args.Get<string> (context)); }
+        private static void pf_hyperlisp_get_object_value_char (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = char.Parse (e.Args.Get<string> (context));
+        }
 
         /// <summary>
-        ///     returns a DateTime from the given string representation, expected to be in format "yyyy.MM.ddTHH:mm:ss", which
-        ///     is an ISO valid date represented using its string representation
+        ///     Creates a date from its string representation.
+        /// 
+        ///     Returns a System.DateTime created from its string representation. String representation of object is expected to
+        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string
+        ///     representation parameter passed in. The string representation of the date object, is expected to be in ISO format, with
+        ///     its time and milliseconds parts being optional. For instance; "yyy-MM-dd", "yyyy-MM-ddTHH:mm:ss" or "yyyy-MM-ddTHH:mm:ss.fff".
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-object-value.date")]
         private static void pf_hyperlisp_get_object_value_date (ApplicationContext context, ActiveEventArgs e)
         {
@@ -204,10 +330,14 @@ namespace phosphorus.types
         }
 
         /// <summary>
-        ///     returns a TimeSpan parsed from the given node's value
+        ///     Creates a timespan from its string representation.
+        /// 
+        ///     Returns a System.TimeSpan created from its string representation. String representation of object is expected to
+        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string
+        ///     representation parameter passed in.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-object-value.time")]
         private static void pf_hyperlisp_get_object_value_time (ApplicationContext context, ActiveEventArgs e)
         {

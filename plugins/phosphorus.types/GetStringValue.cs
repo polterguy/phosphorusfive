@@ -13,7 +13,9 @@ using phosphorus.core;
 namespace phosphorus.types
 {
     /// <summary>
-    ///     helper class for converting from object value to string representation of object
+    ///     Helper class to create string representation of objects of different types.
+    /// 
+    ///     Contains all Active Events necessary to create a string from an object.
     /// </summary>
     public static class GetStringValue
     {
@@ -31,10 +33,13 @@ namespace phosphorus.types
          */
 
         /// <summary>
-        ///     returns Node as string value
+        ///     Creates a string from a Node.
+        /// 
+        ///     Will convert the given <see cref="phosphorus.core.Node">Node</see> to its string representation. The string representation
+        ///     of a node, is Hyperlisp.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-string-value.phosphorus.core.Node")]
         private static void pf_hyperlisp_get_string_value_phosphorus_core_Node (ApplicationContext context, ActiveEventArgs e)
         {
@@ -44,10 +49,14 @@ namespace phosphorus.types
         }
 
         /// <summary>
-        ///     returns date's value in ISO string representation format, meaning date in "yyyy.MM.ddTHH:mm:ss" format
+        ///     Creates a string from a date.
+        /// 
+        ///     Will convert the given System.DateTime object to its string representation. The string representation of a DateTime is
+        ///     its ISO standardized format, meaning for instance; "yy-MM-dd". Its time parts, and milliseconds parts, will only be
+        ///     converted, if they contain anything but "0".
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-string-value.System.DateTime")]
         private static void pf_hyperlisp_get_string_value_System_DateTime (ApplicationContext context, ActiveEventArgs e)
         {
@@ -61,27 +70,43 @@ namespace phosphorus.types
         }
 
         /// <summary>
-        ///     returns string representation of TimeSpan object
+        ///     Creates a string from a timespan.
+        /// 
+        ///     Will convert the given System.TimeSpan to its string representation.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-string-value.System.TimeSpan")]
-        private static void pf_hyperlisp_get_string_value_System_TimeSpan (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = e.Args.Get<TimeSpan> (context).ToString ("c", CultureInfo.InvariantCulture); }
+        private static void pf_hyperlisp_get_string_value_System_TimeSpan (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = e.Args.Get<TimeSpan> (context).ToString ("c", CultureInfo.InvariantCulture);
+        }
 
         /// <summary>
-        ///     returns "true" or "false" depending upon whether or not the given bool value is true or not
+        ///     Creates a string from a bool.
+        /// 
+        ///     Will convert the given System.Boolean to its string representation, meaning either "false" or "true". Notice, no capital letters.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-string-value.System.Boolean")]
-        private static void pf_hyperlisp_get_string_value_System_Boolean (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = e.Args.Get<bool> (context).ToString ().ToLower (); }
+        private static void pf_hyperlisp_get_string_value_System_Boolean (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = e.Args.Get<bool> (context).ToString ().ToLower ();
+        }
 
         /// <summary>
-        ///     returns base64 string from byte[]
+        ///     Creates a string from a byte array.
+        /// 
+        ///     Will convert the given System.Byte[] to its string representation. The string representation of a byte array, is its 
+        ///     BASE64 encoded bytes.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-string-value.System.Byte[]")]
-        private static void pf_hyperlisp_get_string_value_System_ByteBlob (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = Convert.ToBase64String (e.Args.Get<byte[]> (context)); }
+        private static void pf_hyperlisp_get_string_value_System_ByteBlob (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = Convert.ToBase64String (e.Args.Get<byte[]> (context));
+        }
     }
 }

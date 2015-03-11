@@ -12,7 +12,9 @@ using phosphorus.core;
 namespace phosphorus.types
 {
     /// <summary>
-    ///     helper class for converting between strings and objects for types supported by hyperlisp syntax
+    ///     Helper class for retrieving Hyperlisp type-names of types.
+    /// 
+    ///     Class containing Active Events necessary to determine the Hyperlisp type-name of types.
     /// </summary>
     public static class GetTypeName
     {
@@ -41,155 +43,250 @@ namespace phosphorus.types
          */
 
         /// <summary>
-        ///     returns "node" for using as type information for the phosphorus.core.Node type in hyperlisp
+        ///     Returns the Hyperlisp type-name for the Node type.
+        /// 
+        ///     Returns the Hyperlisp type-name for <see cref="phosphorus.core.Node">Node</see>s, which is <em>"node"</em>.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-type-name.phosphorus.core.Node")]
-        private static void pf_hyperlisp_get_type_name_phosphorus_core_Node (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = "node"; }
+        private static void pf_hyperlisp_get_type_name_phosphorus_core_Node (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "node";
+        }
 
         /// <summary>
-        ///     returns "path" for using as type information for the phosphorus.core.Node+DNA type in hyperlisp
+        ///     Returns the Hyperlisp type-name for the DNA type.
+        /// 
+        ///     Returns the Hyperlisp type-name for <see cref="phosphorus.core.Node.Dna">DNA</see>s, which is <em>"path"</em>.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
-        [ActiveEvent (Name = "pf.hyperlisp.get-type-name.phosphorus.core.Node+DNA")]
-        private static void pf_hyperlisp_get_type_name_phosphorus_core_Node_DNA (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = "path"; }
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
+        [ActiveEvent (Name = "pf.hyperlisp.get-type-name.phosphorus.core.Node+Dna")]
+        private static void pf_hyperlisp_get_type_name_phosphorus_core_Node_DNA (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "path";
+        }
 
         /// <summary>
-        ///     returns "guid" for using as type information for the given System type in hyperlisp
+        ///     Returns the Hyperlisp type-name for the Guid type.
+        /// 
+        ///     Returns the Hyperlisp type-name for System.Guid, which is <em>"guid"</em>.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-type-name.System.Guid")]
-        private static void pf_hyperlisp_get_type_name_System_Guid (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = "guid"; }
+        private static void pf_hyperlisp_get_type_name_System_Guid (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "guid";
+        }
 
         /// <summary>
-        ///     returns "long" for using as type information for the given System type in hyperlisp
+        ///     Returns the Hyperlisp type-name for the long type.
+        /// 
+        ///     Returns the Hyperlisp type-name for System.Int64, which is <em>"long"</em>.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-type-name.System.Int64")]
-        private static void pf_hyperlisp_get_type_name_System_Int64 (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = "long"; }
+        private static void pf_hyperlisp_get_type_name_System_Int64 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "long";
+        }
 
         /// <summary>
-        ///     returns "ulong" for using as type information for the given System type in hyperlisp
+        ///     Returns the Hyperlisp type-name for the ulong type.
+        /// 
+        ///     Returns the Hyperlisp type-name for System.UInt64, which is <em>"ulong"</em>.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-type-name.System.UInt64")]
-        private static void pf_hyperlisp_get_type_name_System_UInt64 (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = "ulong"; }
+        private static void pf_hyperlisp_get_type_name_System_UInt64 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "ulong";
+        }
 
         /// <summary>
-        ///     returns "int" for using as type information for the given System type in hyperlisp
+        ///     Returns the Hyperlisp type-name for the int type.
+        /// 
+        ///     Returns the Hyperlisp type-name for System.Int32, which is <em>"int"</em>.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-type-name.System.Int32")]
-        private static void pf_hyperlisp_get_type_name_System_Int32 (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = "int"; }
+        private static void pf_hyperlisp_get_type_name_System_Int32 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "int";
+        }
 
         /// <summary>
-        ///     returns "uint" for using as type information for the given System type in hyperlisp
+        ///     Returns the Hyperlisp type-name for the uint type.
+        /// 
+        ///     Returns the Hyperlisp type-name for System.UInt32, which is <em>"uint"</em>.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-type-name.System.UInt32")]
-        private static void pf_hyperlisp_get_type_name_System_UInt32 (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = "uint"; }
+        private static void pf_hyperlisp_get_type_name_System_UInt32 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "uint";
+        }
 
         /// <summary>
-        ///     returns "short" for using as type information for the given System type in hyperlisp
+        ///     Returns the Hyperlisp type-name for the short type.
+        /// 
+        ///     Returns the Hyperlisp type-name for System.Int16, which is <em>"short"</em>.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-type-name.System.Int16")]
-        private static void pf_hyperlisp_get_type_name_System_Int16 (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = "short"; }
+        private static void pf_hyperlisp_get_type_name_System_Int16 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "short";
+        }
 
         /// <summary>
-        ///     returns "ushort" for using as type information for the given System type in hyperlisp
+        ///     Returns the Hyperlisp type-name for the ushort type.
+        /// 
+        ///     Returns the Hyperlisp type-name for System.UInt16, which is <em>"ushort"</em>.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-type-name.System.UInt16")]
-        private static void pf_hyperlisp_get_type_name_System_UInt16 (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = "ushort"; }
+        private static void pf_hyperlisp_get_type_name_System_UInt16 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "ushort";
+        }
 
         /// <summary>
-        ///     returns "single" for using as type information for the given System type in hyperlisp
+        ///     Returns the Hyperlisp type-name for the single type.
+        /// 
+        ///     Returns the Hyperlisp type-name for System.Single, which is <em>"float"</em>.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-type-name.System.Single")]
-        private static void pf_hyperlisp_get_type_name_System_Single (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = "float"; }
+        private static void pf_hyperlisp_get_type_name_System_Single (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "float";
+        }
 
         /// <summary>
-        ///     returns "double" for using as type information for the given System type in hyperlisp
+        ///     Returns the Hyperlisp type-name for the double type.
+        /// 
+        ///     Returns the Hyperlisp type-name for System.Double, which is <em>"double"</em>.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-type-name.System.Double")]
-        private static void pf_hyperlisp_get_type_name_System_Double (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = "double"; }
+        private static void pf_hyperlisp_get_type_name_System_Double (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "double";
+        }
 
         /// <summary>
-        ///     returns "decimal" for using as type information for the given System type in hyperlisp
+        ///     Returns the Hyperlisp type-name for the decimal type.
+        /// 
+        ///     Returns the Hyperlisp type-name for System.Decimal, which is <em>"decimal"</em>.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-type-name.System.Decimal")]
-        private static void pf_hyperlisp_get_type_name_System_Decimal (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = "decimal"; }
+        private static void pf_hyperlisp_get_type_name_System_Decimal (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "decimal";
+        }
 
         /// <summary>
-        ///     returns "bool" for using as type information for the given System type in hyperlisp
+        ///     Returns the Hyperlisp type-name for the bool type.
+        /// 
+        ///     Returns the Hyperlisp type-name for System.Boolean, which is <em>"bool"</em>.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-type-name.System.Boolean")]
-        private static void pf_hyperlisp_get_type_name_System_Boolean (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = "bool"; }
+        private static void pf_hyperlisp_get_type_name_System_Boolean (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "bool";
+        }
 
         /// <summary>
-        ///     returns "byte" for using as type information for the given System type in hyperlisp
+        ///     Returns the Hyperlisp type-name for the byte type.
+        /// 
+        ///     Returns the Hyperlisp type-name for System.Byte, which is <em>"byte"</em>.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-type-name.System.Byte")]
-        private static void pf_hyperlisp_get_type_name_System_Byte (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = "byte"; }
+        private static void pf_hyperlisp_get_type_name_System_Byte (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "byte";
+        }
 
         /// <summary>
-        ///     returns "blob" for using as type information for the given System type in hyperlisp
+        ///     Returns the Hyperlisp type-name for the byte array type.
+        /// 
+        ///     Returns the Hyperlisp type-name for System.Byte[], which is <em>"blob"</em>.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-type-name.System.Byte[]")]
-        private static void pf_hyperlisp_get_type_name_System_ByteBlob (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = "blob"; }
+        private static void pf_hyperlisp_get_type_name_System_ByteBlob (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "blob";
+        }
 
         /// <summary>
-        ///     returns "sbyte" for using as type information for the given System type in hyperlisp
+        ///     Returns the Hyperlisp type-name for the sbyte type.
+        /// 
+        ///     Returns the Hyperlisp type-name for System.SByte, which is <em>"sbyte"</em>.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-type-name.System.SByte")]
-        private static void pf_hyperlisp_get_type_name_System_SByte (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = "sbyte"; }
+        private static void pf_hyperlisp_get_type_name_System_SByte (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "sbyte";
+        }
 
         /// <summary>
-        ///     returns "char" for using as type information for the given System type in hyperlisp
+        ///     Returns the Hyperlisp type-name for the char type.
+        /// 
+        ///     Returns the Hyperlisp type-name for System.Char, which is <em>"char"</em>.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-type-name.System.Char")]
-        private static void pf_hyperlisp_get_type_name_System_Char (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = "char"; }
+        private static void pf_hyperlisp_get_type_name_System_Char (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "char";
+        }
 
         /// <summary>
-        ///     returns "date" for using as type information for the given System type in hyperlisp
+        ///     Returns the Hyperlisp type-name for the date type.
+        /// 
+        ///     Returns the Hyperlisp type-name for System.DateTime, which is <em>"date"</em>.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-type-name.System.DateTime")]
-        private static void pf_hyperlisp_get_type_name_System_DateTime (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = "date"; }
+        private static void pf_hyperlisp_get_type_name_System_DateTime (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "date";
+        }
 
         /// <summary>
-        ///     returns "time" for using as type information for the given System type in hyperlisp
+        ///     Returns the Hyperlisp type-name for the timespan type.
+        /// 
+        ///     Returns the Hyperlisp type-name for System.TimeSpan, which is <em>"time"</em>.
         /// </summary>
-        /// <param name="context">application context</param>
-        /// <param name="e">parameters</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-type-name.System.TimeSpan")]
-        private static void pf_hyperlisp_get_type_name_System_TimeSpan (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = "time"; }
+        private static void pf_hyperlisp_get_type_name_System_TimeSpan (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "time";
+        }
     }
 }

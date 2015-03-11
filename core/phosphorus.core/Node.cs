@@ -39,7 +39,7 @@ namespace phosphorus.core
     public class Node : IComparable
     {
         /// <summary>
-        ///     Dna code for Node, or its "Path" property.
+        ///     DNA code for Node, or its "Path" property.
         /// 
         ///     The Path for any given Node is basically a "materializedd path" implementation, allowing you to partition your tree-structure,
         ///     such that you can easily determine whether or not one specific node is "before" or "after" another node, and what types of
