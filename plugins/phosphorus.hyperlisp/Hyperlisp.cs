@@ -44,10 +44,7 @@ using phosphorus.hyperlisp.helpers;
 ///   }
 /// ]}]}</pre>
 /// 
-/// The above piece of JSON is a LOT of syntax, for very little effect. The observant reader might at this point point out that the "Name" and
-///     "Value" parts of the above JSON seems to not be necessary, until he realize that pf.lambda could (obviously) repeat the same keyword,
-///     or Active Event, in the same scope, making our above "Name" and "Value" necessary. In Hyperlisp the same structure can be described 
-///     with this code;
+/// The above piece of JSON is a LOT of syntax, for very little effect. In Hyperlisp the same structure can be described with this code;
 /// 
 ///     <pre>foo:bar
 ///   foo_child_name1:foo_child_value1
@@ -71,7 +68,7 @@ using phosphorus.hyperlisp.helpers;
 /// 
 ///     The basic structure of Hyperlisp is that it starts with a "key", then there's a colon, followed by the "value". If you have a type,
 ///     other than string, you'll need to put the type between the "key" and "value". Beneath the node itself, you can describe the node's children
-///     nodes, by prepending the names of the children with two spaces ("&nbsp;&nbsp;").
+///     nodes, by prepending the names of the children with two spaces (\"&nbsp;&nbsp;\").
 /// 
 ///     The type-system of Hyperlisp is also extendible, which means that you can create your own types, and create support for your own
 ///     types in Hyperlisp, which you can find examples of in the phosphorus.types project. As long as you can somehow represent your types with
@@ -79,12 +76,12 @@ using phosphorus.hyperlisp.helpers;
 /// 
 ///     Hyperlisp recognizes strings the same way C# does, which means you can create single-line string literals like this;
 /// 
-///     <pre>foo:"this is a single\nline \"string\""</pre>
+///     <pre>foo:\"this is a single\\nline \\\"string\\\"\"</pre>
 /// 
 ///     And you can create multi-line strings like this;
 /// 
-///     <pre>foo:\@"this is a
-/// multi line string"</pre>
+///     <pre>foo:\@\"this is a
+/// multi line string\"</pre>
 /// 
 /// Both the name of a node, and its value, can be represented using both single-line string literals, and multi-line string literals. Only
 ///     the value of a node can have a type associated with it though.
@@ -143,6 +140,25 @@ using phosphorus.hyperlisp.helpers;
 ///     foo7:\@\"I am a 'syntax error', I apparently seem to be the grandchild of _root2, 
 /// without any children of _root2 existing. To 'fix me', remove two of the spaces in front of my 'name' portion!\"
 /// _root3:I am a syntax error, since I contain a ':' character inside of my value! To fix me, double-quote me!</pre>
+/// 
+/// Hyperlisp is not a replacement for neither JSON nor BSON, and in fact, Phosphorus.Ajax uses for instance JSON as its Ajax
+///     transport mechanism, when returning values from the server. But for declaring key/value/children tree-structures on the server-side,
+///     it is very much superior to both JSON and XML. First of all, since it significantly reduces the size of its files compared to both JSON
+///     and XML. Secondly, because it provides much more intuitive and easily understood syntax. Thirdly, because it provides an extendible
+///     type mechanism, allowing you to store type-information together with your data.
+/// 
+///     When returning objects from your server to a web-browser client, you should probably stay with JSON, but when sending values between
+///     servers, and storing pf.lambda execution trees, then Hyperlisp is superior in all ways. This can be seen by the fact that the phosphorus.data
+///     database, in its entirety, uses Hyperlisp as its file format. Hyperlisp is also probably superior in all ways compared to XML when it
+///     comes to the concept of web-services, and sending data back and forth between what you'd normally use an XML Web Service for. Among other
+///     things, because of its significantly smaller size, than that of XML.
+/// 
+///     Hyperlisp is also extremely convenient when it comes to storing pf.lambda objects in files on disc. To load a Hyperlisp file, transform it
+///     to pf.lambda, for then to execute the transformed pf.lambda object, can be done with three lines of code;
+/// 
+///     <pre>pf.file.load:foo.hl
+/// pf.hyperlisp.hyperlisp2lambda:@/-/0?value
+/// lambda.copy:@/-?node</pre>
 /// </summary>
 namespace phosphorus.hyperlisp
 {
@@ -181,7 +197,13 @@ namespace phosphorus.hyperlisp
         /// <summary>
         ///     Transforms the given pf.lambda node structure to Hyperlisp.
         /// 
-        ///     Active Event will transform the given pf.lambda node structure to Hyperlisp
+        ///     Active Event will transform the given pf.lambda node structure to Hyperlisp.
+        /// 
+        ///     Example;
+        /// <pre>_data
+        ///   foo1:bar1
+        ///   foo2:bar2
+        /// pf.hyperlisp.lambda2hyperlisp:@/-?node</pre>
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
