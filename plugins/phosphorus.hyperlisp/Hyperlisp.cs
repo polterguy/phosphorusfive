@@ -153,7 +153,9 @@ using phosphorus.hyperlisp.helpers;
 ///     comes to the concept of web-services, and sending data back and forth between what you'd normally use an XML Web Service for. Among other
 ///     things, because of its significantly smaller size, than that of XML.
 /// 
-///     Hyperlisp is also extremely convenient when it comes to storing pf.lambda objects in files on disc. To load a Hyperlisp file, transform it
+///     \htmlonly<iframe width="560" height="315" src="https://www.youtube.com/embed/yptjGVYOhu4" frameborder="0" allowfullscreen></iframe>\endhtmlonly
+/// 
+/// Hyperlisp is also extremely convenient when it comes to storing pf.lambda objects in files on disc. To load a Hyperlisp file, transform it
 ///     to pf.lambda, for then to execute the transformed pf.lambda object, can be done with three lines of code;
 /// 
 ///     <pre>pf.file.load:foo.hl
