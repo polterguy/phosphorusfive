@@ -12,18 +12,33 @@ using phosphorus.expressions;
 // ReSharper disable UnusedMember.Local
 // ReSharper disable UnusedMember.Global
 
+/// <summary>
+///     Main namespace for "meta" Active Events.
+/// 
+///     Meta Active Events are Active Events that doesn't necessarily produce a result, or executes code that does anything, but rather
+///     returns information about the system's <em>"state"</em>. A good exampe is [pf.meta.event.list], which returns all Active Events
+///     registered in the system.
+/// 
+///     To some extent, the "meta" Active Events, are actually scattered around the entire system. This is because the
+///     different modules, will add their own meta Active Events.
+/// </summary>
 namespace phosphorus.meta
 {
     /// <summary>
-    ///     contains meta active events to retrieve all Active Events and overrides within system
+    ///     Wraps necessary Active Events to retrieve information about Active Events.
+    /// 
+    ///     Contains meta Active Events to retrieve information about all Active Events, and overrides within system.
     /// </summary>
     public static class Events
     {
         /// <summary>
-        ///     returns all active events, alternatively containing the string given through [pf.meta.event.list]
+        ///     Wraps Active Events that returns all registered Active Events and overrides within the system.
+        /// 
+        ///     Returns all active events. You can optionally add a filter criteria, that will only list Active Events containing
+        ///     the string(s) passed in as an argument.
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.meta.event.list")]
         private static void pf_meta_list_events (ApplicationContext context, ActiveEventArgs e)
         {
@@ -48,10 +63,12 @@ namespace phosphorus.meta
         }
 
         /// <summary>
-        ///     returns all overrides in system, alternatively containing the string given through [pf.meta.list-overrides]
+        ///     Returns all overrides in the system.
+        /// 
+        ///     Optionally supply a filter criteria, or string(s), that each Active Event must contain in order to be defined as a match.
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.meta.list-overrides")]
         private static void pf_meta_list_overrides (ApplicationContext context, ActiveEventArgs e)
         {

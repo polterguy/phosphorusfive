@@ -13,7 +13,9 @@ using phosphorus.expressions;
 namespace phosphorus.threading
 {
     /// <summary>
-    ///     wraps [lock] keyword
+    ///     Class wrapping the [lock] keyword.
+    /// 
+    ///     The [lock] keyword, allows you to lock access to a shared resource from within your threads.
     /// </summary>
     public static class Lock
     {
@@ -23,12 +25,44 @@ namespace phosphorus.threading
         private static readonly object GlobalLocker = new object ();
 
         /// <summary>
-        ///     locks an object wrapped by the given string(s), which makes sure other threads trying to access lock
-        ///     on same string(s), will have to wait for the first thread to exit the [lock] statement, before they're
-        ///     being allowed access to execute the given code
+        ///     Locks an object wrapped by the given string(s).
+        /// 
+        ///     [lock] allows you to make sure that only one thread within your system, is given access to some object, shared among multiple threads.
+        /// 
+        ///     If you use [lock] with for instance the string value of "foo", then all other objects trying to lock the same string of "foo", will
+        ///     be left outside of their [lock] statement, having to wait for the first piece of code that locked the string "foo" to finish, before
+        ///     they're allowed to enter the code, and create a lock on the same object, or string.
+        /// 
+        ///     Example;
+        /// 
+        ///     <pre>_foo
+        /// set:@/+/0?value
+        ///   source:@/./-?node
+        /// lambda.fork
+        ///   _foo
+        ///   lock:foo
+        ///     append:@/./-/#?node
+        ///       source
+        ///         bar:thread
+        /// sleep:1
+        /// lock:foo
+        ///   append:@/../"*"/_foo?node
+        ///     source
+        ///       bar:main</pre>
+        /// 
+        ///     The above piece of code, will deny the main thread to enter the [lock] code-block, before the other thread, created through [lambda.fork],
+        ///     is finished executing its work. This prevents a race-condition between the main thread, and the [lambda.fork] thread, when accessing and
+        ///     modifying the [_foo] node.
+        /// 
+        ///     The [sleep] statement above, is simply there to ensure that the [lambda.fork] thread starts its work, before the
+        ///     main thread enters its [lock]. Without the [sleep] statement above, the main thread might theoretically have entered its [lock], before
+        ///     the worker thread, which would result in that you wouldn't have access to whatever the worker thread did, before the code was finished executing.
+        /// 
+        ///     See the <see cref="phosphorus.threading.Wait.lambda_wait">[wait]</see> Active Event for an example of how to create multiple threads,
+        ///     and a deeper explanation of how threading works.
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "lock")]
         private static void lambda_lock (ApplicationContext context, ActiveEventArgs e)
         {
@@ -42,7 +76,6 @@ namespace phosphorus.threading
          * lock first string object in array, and pops it off list, before recursively calling self, until
          * no more objects remains, and when all objects are locked, it will execute given "functor" delegate
          */
-
         private static void LockNext (List<string> lockers, LockFunctor functor)
         {
             if (lockers.Count == 0) {
@@ -58,7 +91,6 @@ namespace phosphorus.threading
         /*
          * returns the locker with the given name
          */
-
         private static object GetLocker (string name)
         {
             lock (GlobalLocker) {

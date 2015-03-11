@@ -634,11 +634,8 @@ namespace phosphorus.expressions
                     source = Single<object> (node.LastChild, dataSource, context);
                     
                     // making sure we support "escaped expressions"
-                    // else if source is a node, we make sure we clone it, in case source and destination overlaps
                     if (source is string && (source as string).StartsWith ("\\"))
                         source = (source as string).Substring (1);
-                    else if (source is Node)
-                        source = (source as Node).Clone ();
                 } else {
                     // there are no values in [src] node, trying to create source out of [src]'s children
                     if (node.LastChild.Count == 1) {

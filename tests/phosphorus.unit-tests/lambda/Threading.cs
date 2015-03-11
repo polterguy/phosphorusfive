@@ -39,5 +39,29 @@ wait
   _foos");
             Assert.AreEqual (4, node [1] [4].Count);
         }
+        
+        /// <summary>
+        ///     Forks a single thread, accessing shared object, making sure [lambda.fork] works as it should, and
+        ///     passing by reference into threads works as it should.
+        /// </summary>
+        [Test]
+        public void Threading02 ()
+        {
+            var node = ExecuteLambda (@"_foo
+set:@/+/0?value
+  source:@/./-?node
+lambda.fork
+  _foo
+  lock:foo
+    append:@/./-/#?node
+      source
+        bar:thread
+sleep:1
+lock:foo
+  append:@/../""*""/_foo?node
+    source
+      bar:main");
+            Assert.AreEqual (2, node [0].Count);
+        }
     }
 }

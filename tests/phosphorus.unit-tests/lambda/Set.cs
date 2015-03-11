@@ -668,31 +668,19 @@ set:@/-/?node
         }
 
         /// <summary>
-        ///     verifies that overlapping [source] and destination expressions works
+        ///     Verifies that setting a node's value to another node, does not clone the original node, allowing
+        ///     for nodes to be passed by reference.
         /// </summary>
         [Test]
         public void Set38 ()
         {
-            var node = ExecuteLambda (@"_result:success
-set:@/-/?value
-  source:@/./-/?node");
-            Assert.AreEqual (0, node [0].Count);
-            Assert.AreEqual ("_result", node [0].Get<Node> (Context).Name);
-            Assert.AreEqual ("success", node [0].Get<Node> (Context).Value);
-        }
-
-        /// <summary>
-        ///     verifies that overlapping [rel-source] and destination expressions works
-        /// </summary>
-        [Test]
-        public void Set39 ()
-        {
-            var node = ExecuteLambda (@"_result:success
-set:@/-/?value
-  rel-source:@?node");
-            Assert.AreEqual (0, node [0].Count);
-            Assert.AreEqual ("_result", node [0].Get<Node> (Context).Name);
-            Assert.AreEqual ("success", node [0].Get<Node> (Context).Value);
+            var node = ExecuteLambda (@"_result
+_out
+set:@/-2/?value
+  source:@/./-?node
+set:@/-3/#?value
+  source:foo");
+            Assert.AreEqual ("foo", node [1].Value);
         }
 
         /// <summary>
