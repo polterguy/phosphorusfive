@@ -97,6 +97,7 @@
 
 * sys42 - "New wizard page ..." feature, for creating a pf.page through a wizard.
 
+* support multipart data in [pf.web.post] through MimeKit
 
 
 

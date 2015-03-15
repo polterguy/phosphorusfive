@@ -50,10 +50,10 @@
     <Compile Include="keywords\helpers\Conditions.cs" />
     <Compile Include="keywords\Append.cs" />
     <Compile Include="events\EventsCommon.cs" />
-    <Compile Include="events\Event.cs" />
     <Compile Include="events\Override.cs" />
     <Compile Include="events\RemoveOverride.cs" />
     <Compile Include="events\RemoveEvent.cs" />
+    <Compile Include="events\PFEvent.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

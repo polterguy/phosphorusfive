@@ -62,7 +62,7 @@ namespace phosphorus.web.ui
                 var cookie = HttpContext.Current.Request.Cookies.Get (key);
                 if (cookie != null && !string.IsNullOrEmpty (cookie.Value)) {
                     // adding key node, and values beneath key node
-                    return Utilities.Convert<Node> (HttpUtility.UrlDecode (cookie.Value), context).Clone ().Children;
+                    return HttpUtility.UrlDecode (cookie.Value);
                 }
                 return null;
             });

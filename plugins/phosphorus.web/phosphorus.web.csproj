@@ -41,10 +41,12 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Web" />
+    <Reference Include="RestSharp">
+      <HintPath>..\..\resources\RestSharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PostRequest.cs" />
-    <Compile Include="GetRequest.cs" />
+    <Compile Include="PFRestRequest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

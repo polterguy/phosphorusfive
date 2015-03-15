@@ -346,7 +346,7 @@ namespace phosphorus.expressions
             ApplicationContext context,
             bool iterateChildren = false)
         {
-            return node.Value != null ? 
+            return node != null && dataSource != null && node.Value != null ? 
                 Iterate<T> (TryFormat<object> (node, dataSource, context), dataSource, context, iterateChildren) : 
                 IterateChildren<T> (node, context);
         }
@@ -689,6 +689,8 @@ namespace phosphorus.expressions
             if (IsExpression (node.LastChild.Value)) {
                 // [source] or [src] is an expression somehow
                 foreach (var idx in Iterate (node.LastChild, dataSource, context)) {
+                    if (idx.Value == null)
+                        continue;
                     if (idx.TypeOfMatch != Match.MatchType.node && !(idx.Value is Node)) {
                         // [source] is an expression leading to something that's not a node, this
                         // will trigger conversion from string to node, adding a "root node" during
@@ -802,18 +804,19 @@ namespace phosphorus.expressions
             Node node,
             ApplicationContext context)
         {
-            if (typeof (T) == typeof (Node)) {
-                // node's value is null, caller requests nodes, 
-                // iterating through children of node, yielding results back to caller
-                foreach (var idx in node.Children) {
-                    yield return Utilities.Convert<T> (idx, context);
-                }
-            }
-            else {
-                // node's value is null, caller requests anything but node, iterating children, yielding
-                // values of children, converted to type back to caller
-                foreach (var idx in node.Children) {
-                    yield return idx.Get<T> (context);
+            if (node != null) {
+                if (typeof(T) == typeof(Node)) {
+                    // node's value is null, caller requests nodes, 
+                    // iterating through children of node, yielding results back to caller
+                    foreach (var idx in node.Children) {
+                        yield return Utilities.Convert<T> (idx, context);
+                    }
+                } else {
+                    // node's value is null, caller requests anything but node, iterating children, yielding
+                    // values of children, converted to type back to caller
+                    foreach (var idx in node.Children) {
+                        yield return idx.Get<T> (context);
+                    }
                 }
             }
         }

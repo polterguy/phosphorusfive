@@ -97,12 +97,11 @@ namespace phosphorus.web.ui.common
                         }
                     }
                     else if (value is IEnumerable<object>) {
-                        // value is a bunch of nodes
+                        // value is a bunch of object values
                         foreach (var idxValue in value as IEnumerable<object>) {
                             resultNode.Add (string.Empty, idxValue);
                         }
-                    }
-                    else {
+                    } else {
                         // value is any "other type of value", returning it anyway, even though it
                         // cannot possibly have come from pf.lambda, to allow user to retrieve "any values"
                         // that exists
