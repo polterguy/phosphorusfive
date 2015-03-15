@@ -42,7 +42,19 @@
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BouncyCastle">
+      <HintPath>..\..\packages\MimeKit.1.0.10.0\lib\net40\BouncyCastle.dll</HintPath>
+    </Reference>
+    <Reference Include="MimeKit">
+      <HintPath>..\..\packages\MimeKit.1.0.10.0\lib\net40\MimeKit.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp, Version=105.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\RestSharp.105.0.1\lib\net4\RestSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Extensions" />
@@ -175,5 +187,6 @@
   <ItemGroup />
   <ItemGroup>
     <None Include="application-startup.hl" />
+    <Content Include="packages.config" />
   </ItemGroup>
 </Project>
