@@ -39,6 +39,27 @@ namespace phosphorus.web.ui
         }
 
         /// <summary>
+        ///     Sets one or more HTTP header(s).
+        /// 
+        ///     The name of the header you wish to set, is given as the value(s) of the main node.
+        /// </summary>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
+        [ActiveEvent (Name = "pf.web.headers.set")]
+        private static void pf_web_headers_set (ApplicationContext context, ActiveEventArgs e)
+        {
+            CollectionBase.Set (e.Args, context, delegate (string key, object value) {
+                if (value == null) {
+                    // removing object, if it exists
+                    HttpContext.Current.Response.Headers.Remove (key);
+                } else {
+                    // adding object
+                    HttpContext.Current.Response.Headers.Set (key, Utilities.Convert<string> (value, context));
+                }
+            });
+        }
+
+        /// <summary>
         ///     Lists all keys for our HTTP headers.
         /// 
         ///     Returns all keys for all HTTP headers in current request.

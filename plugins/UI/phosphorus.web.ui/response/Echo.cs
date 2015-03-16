@@ -36,6 +36,8 @@ namespace phosphorus.web.ui.response
 
             public void Append (string txt)
             {
+                if (_builder.Length > 0)
+                    _builder.Append ("\n");
                 _builder.Append (txt);
             }
 
@@ -49,7 +51,7 @@ namespace phosphorus.web.ui.response
         /// <summary>
         ///     Returns the given text or object back to client.
         /// 
-        ///     Discards the current response text, and writes the given piece of text, nodes or objects(s)
+        ///     Discards the current response, and writes the given piece of text, nodes or objects(s)
         ///     back to client over the HTTP response.
         /// </summary>
         /// <param name="context">Application context.</param>
@@ -57,10 +59,13 @@ namespace phosphorus.web.ui.response
         [ActiveEvent (Name = "pf.web.echo")]
         private static void pf_web_echo (ApplicationContext context, ActiveEventArgs e)
         {
+            if (e.Args.Value == null)
+                return; // nothing to do here ...
+
             // retrieving a reference to our EchFilter
             var echoFilter = HttpContext.Current.Response.Filter as EchoFilter;
 
-            // if [pf.web.echo] is invoked before on this request, therefor we reuse the previously created filter
+            // if [pf.web.echo] is invoked before on this request, we reuse the previously created filter
             if (echoFilter == null) {
                 // not invoked before, creating new filter, discarding the old
                 echoFilter = new EchoFilter ();
