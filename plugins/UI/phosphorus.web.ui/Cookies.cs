@@ -32,8 +32,8 @@ namespace phosphorus.web.ui
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "pf.web.cookie.set")]
-        private static void pf_web_cookie_set (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.cookies.set")]
+        private static void pf_web_cookies_set (ApplicationContext context, ActiveEventArgs e)
         {
             CollectionBase.Set (e.Args, context, delegate (string key, object value) {
                 if (value == null) {
@@ -54,8 +54,8 @@ namespace phosphorus.web.ui
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.cookie.get")]
-        private static void pf_web_cookie_get (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.cookies.get")]
+        private static void pf_web_cookies_get (ApplicationContext context, ActiveEventArgs e)
         {
             CollectionBase.Get (e.Args, context, delegate (string key) {
                 //fetching cookie
@@ -75,8 +75,8 @@ namespace phosphorus.web.ui
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "pf.web.cookie.list")]
-        private static void pf_web_cookie_list (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.cookies.list")]
+        private static void pf_web_cookies_list (ApplicationContext context, ActiveEventArgs e)
         {
             CollectionBase.List (e.Args, context, () => HttpContext.Current.Request.Cookies.AllKeys);
         }

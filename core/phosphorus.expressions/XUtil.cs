@@ -270,9 +270,10 @@ namespace phosphorus.expressions
             Node node,
             Node dataSource,
             ApplicationContext context,
-            T defaultValue = default (T))
+            T defaultValue = default (T),
+            string inject = null)
         {
-            return SingleImplementation (() => Iterate<T> (node, dataSource, context), context, defaultValue);
+            return SingleImplementation (() => Iterate<T> (node, dataSource, context), context, defaultValue, inject);
         }
 
         /// <summary>
@@ -762,7 +763,8 @@ namespace phosphorus.expressions
         private static T SingleImplementation<T> (
             SingleDelegate<T> functor,
             ApplicationContext context,
-            T defaultValue)
+            T defaultValue,
+            string inject = null)
         {
             object singleRetVal = null;
             string multipleRetVal = null;
@@ -787,6 +789,8 @@ namespace phosphorus.expressions
                         multipleRetVal += "\r\n";
                         singleRetVal = null;
                     }
+                    if (inject != null)
+                        multipleRetVal += inject;
                     multipleRetVal += Utilities.Convert<string> (idx, context);
                 }
             }

@@ -41,6 +41,15 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Web" />
+    <Reference Include="BouncyCastle">
+      <HintPath>..\..\..\packages\MimeKit.1.0.10.0\lib\net40\BouncyCastle.dll</HintPath>
+    </Reference>
+    <Reference Include="MimeKit">
+      <HintPath>..\..\..\packages\MimeKit.1.0.10.0\lib\net40\MimeKit.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Security" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Session.cs" />
@@ -84,5 +93,8 @@
       <Project>{11644924-3367-4812-BE60-7DA41FC9E4AE}</Project>
       <Name>phosphorus.ajax</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

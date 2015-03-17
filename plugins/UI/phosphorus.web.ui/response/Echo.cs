@@ -4,10 +4,12 @@
  */
 
 using System.IO;
-using System.Text;
 using System.Web;
+using System.Text;
+using System.Collections.Generic;
 using phosphorus.core;
 using phosphorus.expressions;
+using MimeKit;
 
 // ReSharper disable UnusedMember.Local
 // ReSharper disable UnusedMember.Global
@@ -28,23 +30,54 @@ namespace phosphorus.web.ui.response
     public static class Echo
     {
         /*
-         * helper class for encapsulating echo response
+         * class encapsulating a single content part, to transfer through echo
          */
-        private class EchoFilter : MemoryStream
+        private class Part
         {
-            private readonly StringBuilder _builder = new StringBuilder ();
-
-            public void Append (string txt)
+            /*
+             * describes which type of part we're dealing with
+             */
+            public enum PartType
             {
-                if (_builder.Length > 0)
-                    _builder.Append ("\n");
-                _builder.Append (txt);
+                // file part, meaning a file is supposed to be transferred
+                File,
+
+                // simple text part
+                Text
+            };
+
+            /*
+             * creates a new Part for tranferring through echo
+             */
+            public Part (PartType typeOfPart, string value, string contentType)
+            {
+                TypeOfPart = typeOfPart;
+                Value = value;
+                ContentType = contentType;
             }
 
-            public override void Close ()
-            {
-                HttpContext.Current.Response.Write (_builder.ToString ());
-                base.Close ();
+            /*
+             * contains "Content-Type" for part
+             */
+            public string ContentType {
+                get;
+                private set;
+            }
+
+            /*
+             * contains type of part, meaning "File" or "Text", and so on
+             */
+            public PartType TypeOfPart {
+                get;
+                private set;
+            }
+
+            /*
+             * contains "value", which is filename for files, content for text, and so on
+             */
+            public string Value {
+                get;
+                private set;
             }
         }
 
@@ -59,22 +92,151 @@ namespace phosphorus.web.ui.response
         [ActiveEvent (Name = "pf.web.echo")]
         private static void pf_web_echo (ApplicationContext context, ActiveEventArgs e)
         {
-            if (e.Args.Value == null)
-                return; // nothing to do here ...
+            // discarding current response, and removing session cookie
+            HttpContext.Current.Response.Filter = null;
+            HttpContext.Current.Response.ClearContent ();
+            HttpContext.Current.Response.Cookies.Remove ("ASP.NET_SessionId");
 
-            // retrieving a reference to our EchFilter
-            var echoFilter = HttpContext.Current.Response.Filter as EchoFilter;
+            // retrieving parts caller wants to transfer
+            var parts = GetParts (context, e.Args);
 
-            // if [pf.web.echo] is invoked before on this request, we reuse the previously created filter
-            if (echoFilter == null) {
-                // not invoked before, creating new filter, discarding the old
-                echoFilter = new EchoFilter ();
-                HttpContext.Current.Response.Filter = echoFilter;
+            // rendering parts back to client
+            RenderParts (context, parts, e.Args);
+
+            // flushing response and making sure default content is never rendered
+            HttpContext.Current.Response.OutputStream.Flush ();
+            HttpContext.Current.Response.Flush ();
+            HttpContext.Current.Response.SuppressContent = true;
+
+            // abandoning session
+            HttpContext.Current.Session.Abandon ();
+        }
+
+        /*
+         * returns all parts that echo should transfer
+         */
+        private static List<Part> GetParts (ApplicationContext context, Node node)
+        {
+            List<Part> retVal = new List<Part> ();
+
+            // first adding all [text] parts
+            foreach (var idxTextNode in node.FindAll ("text")) {
+                retVal.Add (
+                    new Part (
+                        Part.PartType.Text, 
+                        XUtil.Single<string> (idxTextNode, idxTextNode, context, "", "\r\n"), 
+                        XUtil.Single<string> (idxTextNode ["sub-type"], context, "Hyperlisp")));
             }
 
-            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
-                echoFilter.Append (idx);
+            // then adding all [file] parts
+            foreach (var idxTextNode in node.FindAll ("file")) {
+                retVal.Add (
+                    new Part (
+                        Part.PartType.File, 
+                        XUtil.Single<string> (idxTextNode, context), 
+                        XUtil.Single<string> (idxTextNode ["content-type"], context, "text/Hyperlisp")));
             }
+            return retVal;
+        }
+        
+        /*
+         * responsible for rendering content back to client over HttpContext.Current.Response
+         */
+        private static void RenderParts (ApplicationContext context, List<Part> parts, Node node)
+        {
+            if (parts.Count == 0)
+                return; // nothing to do here
+            if (parts.Count == 1) {
+
+                // rendering simple content back to client
+                RenderSinglePart (context, parts [0]);
+            } else {
+
+                // rendering "multipart/mixed" to client
+                RenderMultiPart (context, parts, node);
+            }
+        }
+        
+        /*
+         * renders multiple parts back to client
+         */
+        private static void RenderMultiPart (ApplicationContext context, List<Part> parts, Node node)
+        {
+            // creating Multipart to render
+            Multipart multipart = new Multipart (node.GetChildValue ("sub-type", context, "mixed"));
+
+            List<Stream> streams = new List<Stream> ();
+            try {
+                // looping through all parts
+                foreach (var idxPart in parts) {
+                    if (idxPart.TypeOfPart == Part.PartType.Text) {
+
+                        // simple text part
+                        var textPart = new TextPart (idxPart.ContentType);
+                        textPart.SetText (Encoding.UTF8, idxPart.Value);
+                        multipart.Add (textPart);
+                    } else {
+
+                        // file type
+                        var filePart = new MimePart (idxPart.ContentType);
+                        filePart.FileName = idxPart.Value;
+                        FileStream stream = new FileStream (idxPart.Value, FileMode.Open);
+                        streams.Add (stream); // to make sure we can dispose bugger ...
+                        filePart.ContentObject = new ContentObject (stream);
+                        if (filePart.ContentType.MediaType != "text") {
+                            filePart.ContentTransferEncoding = ContentEncoding.Base64;
+                        }
+                        multipart.Add (filePart);
+                    }
+                }
+
+                // rendering back to client
+                if (node ["content-type"] != null)
+                    HttpContext.Current.Response.ContentType = node ["content-type"].Get<string> (context);
+                else
+                    HttpContext.Current.Response.ContentType = multipart.ContentType.MimeType;
+                multipart.WriteTo (HttpContext.Current.Response.OutputStream);
+            }
+            finally {
+                foreach (var idx in streams) {
+                    idx.Dispose ();
+                }
+            }
+        }
+
+        /*
+         * renders one single part back to client
+         */
+        private static void RenderSinglePart (ApplicationContext context, Part part)
+        {
+            if (part.TypeOfPart == Part.PartType.Text) {
+
+                // simple text type
+                HttpContext.Current.Response.ContentType = "text/" + part.ContentType + "; charset=utf-8";
+                HttpContext.Current.Response.Write (part.Value);
+            } else {
+
+                // file type
+                HttpContext.Current.Response.ContentType = 
+                    part.ContentType + (part.ContentType.Contains ("charset") ? "" : "; charset=utf-8");
+                using (Stream stream = new FileStream (GetBasePath (context) + part.Value, FileMode.Open)) {
+                    stream.CopyTo (HttpContext.Current.Response.OutputStream);
+                }
+            }
+        }
+
+        /*
+         * returns base path of application
+         */
+        private static string _basePath;
+        private static string GetBasePath (ApplicationContext context)
+        {
+            if (_basePath == null) {
+                Node node = new Node ();
+                context.Raise ("pf.core.application-folder", node);
+                _basePath = node.Get<string> (context);
+            }
+            return _basePath;
         }
     }
 }
