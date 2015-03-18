@@ -295,9 +295,10 @@ namespace phosphorus.expressions
             object expressionOrConstant,
             Node dataSource,
             ApplicationContext context,
-            T defaultValue = default (T))
+            T defaultValue = default (T),
+            string inject = null)
         {
-            return SingleImplementation (() => Iterate<T> (expressionOrConstant, dataSource, context), context, defaultValue);
+            return SingleImplementation (() => Iterate<T> (expressionOrConstant, dataSource, context), context, defaultValue, inject);
         }
 
         /// <summary>

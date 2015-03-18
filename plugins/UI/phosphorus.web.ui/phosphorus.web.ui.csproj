@@ -66,6 +66,7 @@
     <Compile Include="common\CollectionBase.cs" />
     <Compile Include="Headers.cs" />
     <Compile Include="Request.cs" />
+    <Compile Include="MimeParse.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

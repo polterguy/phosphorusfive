@@ -49,11 +49,20 @@ namespace phosphorus.web.ui.response
             /*
              * creates a new Part for tranferring through echo
              */
-            public Part (PartType typeOfPart, string value, string contentType)
+            public Part (PartType typeOfPart, string value, string contentType, string partName)
             {
                 TypeOfPart = typeOfPart;
                 Value = value;
                 ContentType = contentType;
+                PartName = partName;
+            }
+
+            /*
+             * contains name of part, if any
+             */
+            public string PartName {
+                get;
+                private set;
             }
 
             /*
@@ -124,8 +133,9 @@ namespace phosphorus.web.ui.response
                 retVal.Add (
                     new Part (
                         Part.PartType.Text, 
-                        XUtil.Single<string> (idxTextNode, idxTextNode, context, "", "\r\n"), 
-                        XUtil.Single<string> (idxTextNode ["sub-type"], context, "Hyperlisp")));
+                        XUtil.Single (idxTextNode.Value, idxTextNode, context, "", "\r\n"), 
+                        XUtil.Single (idxTextNode.GetChildValue<string> ("sub-type", context, null), idxTextNode ["sub-type"], context, "Hyperlisp"),
+                        XUtil.Single<string> (idxTextNode.GetChildValue<string> ("name", context, null), idxTextNode ["name"], context, null)));
             }
 
             // then adding all [file] parts
@@ -133,8 +143,9 @@ namespace phosphorus.web.ui.response
                 retVal.Add (
                     new Part (
                         Part.PartType.File, 
-                        XUtil.Single<string> (idxTextNode, context), 
-                        XUtil.Single<string> (idxTextNode ["content-type"], context, "text/Hyperlisp")));
+                        XUtil.Single<string> (idxTextNode.Value, idxTextNode, context), 
+                        XUtil.Single<string> (idxTextNode.GetChildValue<string> ("content-type", context, null), idxTextNode ["content-type"], context, "text/Hyperlisp"),
+                        XUtil.Single<string> (idxTextNode.GetChildValue<string> ("name", context, null), idxTextNode ["name"], context, null)));
             }
             return retVal;
         }
@@ -173,6 +184,8 @@ namespace phosphorus.web.ui.response
 
                         // simple text part
                         var textPart = new TextPart (idxPart.ContentType);
+                        if (!string.IsNullOrEmpty (idxPart.PartName))
+                            textPart.Headers.Add ("Content-Disposition", string.Format ("form-data; name={0}", idxPart.PartName));
                         textPart.SetText (Encoding.UTF8, idxPart.Value);
                         multipart.Add (textPart);
                     } else {
@@ -180,6 +193,8 @@ namespace phosphorus.web.ui.response
                         // file type
                         var filePart = new MimePart (idxPart.ContentType);
                         filePart.FileName = idxPart.Value;
+                        if (!string.IsNullOrEmpty (idxPart.PartName))
+                            filePart.Headers.Add ("Content-Disposition", string.Format ("form-data; name={0}", idxPart.PartName));
                         FileStream stream = new FileStream (idxPart.Value, FileMode.Open);
                         streams.Add (stream); // to make sure we can dispose bugger ...
                         filePart.ContentObject = new ContentObject (stream);
@@ -191,10 +206,10 @@ namespace phosphorus.web.ui.response
                 }
 
                 // rendering back to client
-                if (node ["content-type"] != null)
-                    HttpContext.Current.Response.ContentType = node ["content-type"].Get<string> (context);
-                else
-                    HttpContext.Current.Response.ContentType = multipart.ContentType.MimeType;
+                // we do get some repetition of Content-Type here, since we're repeating it in both headers and body of
+                // message, however, it has some advantages, like the ability to serialize an entire response, without its headers, 
+                // keeping the entire MIME message intact, plus some proxies might fuck with headers, and so on
+                HttpContext.Current.Response.ContentType = multipart.ContentType.MimeType + multipart.ContentType.Parameters;
                 multipart.WriteTo (HttpContext.Current.Response.OutputStream);
             }
             finally {
@@ -213,12 +228,16 @@ namespace phosphorus.web.ui.response
 
                 // simple text type
                 HttpContext.Current.Response.ContentType = "text/" + part.ContentType + "; charset=utf-8";
+                if (!string.IsNullOrEmpty (part.PartName))
+                    HttpContext.Current.Response.Headers.Add ("Content-Disposition", "form-data; " + "name=" + part.PartName);
                 HttpContext.Current.Response.Write (part.Value);
             } else {
 
                 // file type
                 HttpContext.Current.Response.ContentType = 
                     part.ContentType + (part.ContentType.Contains ("charset") ? "" : "; charset=utf-8");
+                if (!string.IsNullOrEmpty (part.PartName))
+                    HttpContext.Current.Response.Headers.Add ("Content-Disposition", "form-data; " + "name=" + part.PartName);
                 using (Stream stream = new FileStream (GetBasePath (context) + part.Value, FileMode.Open)) {
                     stream.CopyTo (HttpContext.Current.Response.OutputStream);
                 }
