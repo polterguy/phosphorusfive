@@ -31,24 +31,31 @@ namespace phosphorus.web.ui
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "pf.web.parameters.mime.parse")]
-        private static void pf_web_parameters_mime_parse (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.request.mime.parse")]
+        private static void pf_web_request_mime_parse (ApplicationContext context, ActiveEventArgs e)
         {
-            if (ContentType.Parse (HttpContext.Current.Request.ContentType).MediaType != "multipart")
+            if (string.IsNullOrEmpty (HttpContext.Current.Request.ContentType) || 
+                ContentType.Parse (HttpContext.Current.Request.ContentType).MediaType != "multipart")
                 return; // nothing to do here ...
 
             // loading Multipart from body of request
-            Multipart root = Multipart.Load (HttpContext.Current.Request.InputStream) as Multipart;
+            Multipart multipart = Multipart.Load (HttpContext.Current.Request.InputStream) as Multipart;
 
             // looping through each MimePart in Multipart, and returning to caller
-            foreach (MimePart idxPart in root) {
-                e.Args.Add (idxPart.ContentDisposition.Parameters ["name"]);
+            foreach (MimePart idxPart in multipart) {
 
-                // checking if this bugger has a "filename" given
-                if (idxPart.ContentDisposition.Parameters.Contains ("filename"))
-                    e.Args.LastChild.Add ("filename", idxPart.ContentDisposition.Parameters ["filename"]);
+                // figuring out "name" of node using "name" parameter, if ContentDisposition exists, and is of type "form-data"
+                string name = "content";
+                if (idxPart.ContentDisposition != null && 
+                    idxPart.ContentDisposition.Disposition == "form-data" &&
+                    idxPart.ContentDisposition.Parameters.Contains ("name"))
+                    name = idxPart.ContentDisposition.Parameters ["name"];
+                e.Args.Add (name);
 
-                e.Args.LastChild.Add ("Content-Type", idxPart.ContentType.MimeType);
+                // adding all headers
+                foreach (var idxHeader in idxPart.Headers) {
+                    e.Args.LastChild.Add (idxHeader.Field, idxHeader.Value);
+                }
 
                 if (idxPart.ContentType.MediaType == "text") {
                     e.Args.LastChild.Add ("value", ((TextPart)idxPart).GetText (Encoding.UTF8));

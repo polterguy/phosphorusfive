@@ -89,7 +89,7 @@ namespace phosphorus.web
         
         /*
          * creates the URL for the current request
-         * if this is a "GET" method request, then all [args] will be a part of the URL, in encoded format
+         * if this is a "GET" method request, then all [args] and [files] nodes will be a part of the URL, in encoded format
          */
         private static string CreateUrl (string url, Node node, ApplicationContext context)
         {
@@ -100,14 +100,34 @@ namespace phosphorus.web
                 // this is either a "GET" or a "DELETE" method type of request, hence passing in the [args] as part of URL
                 bool first = url.IndexOf ("?") == -1;
                 foreach (var idxArg in XUtil.Iterate <Node> (node ["args"], context)) {
+
+                    // making sure our first argument starts with a "?", and all consecutive arguments have "&" prepended in front of them
                     if (first) {
                         first = false;
-                        url += "?" + idxArg.Name + "=" + HttpUtility.UrlEncode (idxArg.Get<string> (context));
+                        url += "?" + idxArg.Name + "=" + HttpUtility.UrlEncode (XUtil.Single<string> (idxArg.Value, idxArg, (context)));
                     } else {
-                        url += "&" + idxArg.Name + "=" + HttpUtility.UrlEncode (idxArg.Get<string> (context));
+                        url += "&" + idxArg.Name + "=" + HttpUtility.UrlEncode (XUtil.Single<string> (idxArg.Value, idxArg, (context)));
+                    }
+                }
+
+                // then passsing in the [files], which probably doesn't make a lot of sense, since the URL will become MONSTROUS
+                // but for consistency reasons we still do it. Even though server will probably reject request, if it is too long...
+                foreach (var idxArg in XUtil.Iterate <Node> (node ["files"], context)) {
+
+                    // making sure our first argument starts with a "?", and all consecutive arguments have "&" prepended in front of them
+                    if (first) {
+                        first = false;
+                        url += "?" + idxArg.Name + "=";
+                    } else {
+                        url += "&" + idxArg.Name + "=";
+                    }
+                    using (StreamReader reader = new StreamReader (File.OpenRead (GetBasePath (context) + XUtil.Single<string> (idxArg.Value, idxArg, context)))) {
+                        url += HttpUtility.UrlEncode (reader.ReadToEnd ());
                     }
                 }
             }
+
+            // returning updated URL to caller
             return url;
         }
 
@@ -116,9 +136,10 @@ namespace phosphorus.web
          */
         private static void AddHeadersToRequest (HttpWebRequest request, Node node, ApplicationContext context)
         {
+            // looping through each header in our [headers] collection, and adding to request
             foreach (var idxHeader in XUtil.Iterate<Node> (node ["headers"], context)) {
 
-                // fucking MSFT HttpWebRequest needs special treatment of all sorts of weird headers ...!!
+                // %&$@ing MSFT HttpWebRequest needs special treatment of all sorts of weird headers ...!!
                 switch (idxHeader.Name) {
                 case "Accept":
                     request.Accept = XUtil.Single<string> (idxHeader.Value, idxHeader, context);
@@ -215,14 +236,14 @@ namespace phosphorus.web
                         "application/x-www-form-urlencoded");
 
             // checking what type of request this is, and acting accordingly
-            if (request.ContentType == "application/x-www-form-urlencoded") {
+            if (request.ContentType.StartsWith ("application/x-www-form-urlencoded")) {
 
                 // creating a simple URL encoded request
-                return CreateUrlEncodedResponse (request, node, context);
-            } else if (request.ContentType == "multipart/form-data") {
+                return CreateUrlEncodedRequest (request, node, context);
+            } else if (request.ContentType.StartsWith ("multipart/form-data")) {
 
                 // using MimeKit to create a complex "multipart/form-data" request
-                return CreateMultipartResponse (request, node, context);
+                return CreateMultipartRequest (request, node, context);
             } else {
 
                 // only "application/x-www-form-urlencoded" and "multipart/form-data" are supported
@@ -233,7 +254,7 @@ namespace phosphorus.web
         /*
          * creates a "application/x-www-form-urlencoded" response from a POST request
          */
-        private static HttpWebResponse CreateUrlEncodedResponse (HttpWebRequest request, Node node, ApplicationContext context)
+        private static HttpWebResponse CreateUrlEncodedRequest (HttpWebRequest request, Node node, ApplicationContext context)
         {
             // creating a stream writer wrapping the "request content stream"
             using (StreamWriter writer = new StreamWriter (request.GetRequestStream ())) {
@@ -245,7 +266,8 @@ namespace phosphorus.web
                         first = false; // first parameter
                     else
                         writer.Write ("&"); // second, third, or fourth, etc, parameter, making sure we separate our parameters correctly
-                    writer.Write (string.Format ("{0}={1}", idxArg.Name, HttpUtility.UrlEncode (idxArg.Get<string> (context))));
+                    string value = XUtil.Single<string> (idxArg.Value, idxArg, context);
+                    writer.Write (string.Format ("{0}={1}", idxArg.Name, HttpUtility.UrlEncode (value)));
                 }
             }
 
@@ -256,50 +278,108 @@ namespace phosphorus.web
         /*
          * creates a "multipart/form-data" response from a POST request
          */
-        private static HttpWebResponse CreateMultipartResponse (HttpWebRequest request, Node node, ApplicationContext context)
+        private static HttpWebResponse CreateMultipartRequest (HttpWebRequest request, Node node, ApplicationContext context)
         {
             // creating root Multipart to hold all [args] and [files]
             Multipart root = new Multipart (ContentType.Parse (request.ContentType).MediaSubtype);
 
-            // looping through each [args], building the correct MimePart according to type
-            foreach (var idxArg in XUtil.Iterate<Node> (node ["args"], context)) {
+            // adding [args] to request
+            AddArgsToRequest (request, node, context, root);
 
-                // figuring out Content-Type of current argument, defaulting to "text/plain"
-                string contentTypeStr = "text/plain";
-                if (idxArg ["content-type"] != null) {
-                    contentTypeStr = XUtil.Single<string> (idxArg ["content-type"].Value, idxArg ["content-type"], context, "text/plain");
-                }
-                ContentType contentType = ContentType.Parse (contentTypeStr);
-                if (contentType.MediaType == "text") {
+            // adding [files] to request, while storing streams, such that we can dispose them when done
+            List<Stream> streams = new List<Stream> ();
+            try {
+                AddFilesToRequest (request, node, context, root, streams);
 
-                    // normal "text" part argument
-                    TextPart part = new TextPart (contentType.MediaSubtype);
-                    part.Headers.Add ("Content-Disposition", string.Format ("form-data; name={0}", idxArg.Name));
-                    part.SetText (Encoding.UTF8, XUtil.Single<string> (idxArg.Value, idxArg, context));
-                    root.Add (part);
-                } else {
-
-                    // anything but "text" type of content
-                    MimePart part = new MimePart (contentType);
-                    part.Headers.Add ("Content-Disposition", string.Format ("form-data; name={0}", idxArg.Name));
-                    byte [] content = XUtil.Single<byte []> (idxArg.Value, idxArg, context);
-                    MemoryStream stream = new MemoryStream ();
-                    stream.Write (content, 0, content.Length);
-                    stream.Position = 0;
-                    part.ContentObject = new ContentObject (stream);
-                    part.ContentTransferEncoding = ContentEncoding.Base64;
-                    root.Add (part);
+                // writing multipart to request stream, for then to return response
+                root.WriteTo (request.GetRequestStream ());
+            } finally {
+                foreach (var idxStream in streams) {
+                    idxStream.Dispose ();
                 }
             }
-
-            // making sure Content-Type header also have boundary
-            request.ContentType = root.ContentType.MimeType + root.ContentType.Parameters;
-
-            // writing multipart to request stream, for then to return response
-            root.WriteTo (request.GetRequestStream ());
             return (HttpWebResponse)request.GetResponse ();
         }
+
+        /*
+         * adding up [args] given to Multipart
+         */
+        private static void AddArgsToRequest (
+            HttpWebRequest request, 
+            Node node, 
+            ApplicationContext context, 
+            Multipart root)
+        {
+            // looping through each [args], building a new MimePart
+            foreach (var idxArg in XUtil.Iterate<Node> (node ["args"], context)) {
+
+                // we have to parse the headers first, to find our "Content-Type", before we instantiate MimePart
+                HeaderList headers = new HeaderList ();
+
+                // defaulting "Content-Type" to "text/plain"
+                ContentType contentType = new ContentType ("text", "plain");
+                foreach (var idxHeader in idxArg.Children) {
+                    if (idxHeader.Name == "Content-Type")
+                        contentType = ContentType.Parse (XUtil.Single<string> (idxHeader.Value, idxHeader, context));
+                    else
+                        headers.Add (idxHeader.Name, XUtil.Single<string> (idxHeader.Value, idxHeader, context));
+                }
+
+                // creating our MimePart, and adding the headers we previously created
+                MimePart part = new MimePart (contentType);
+                foreach (var idxHeader in headers) {
+                    part.Headers.Add (idxHeader);
+                }
+
+                // creating our ContentObject for our MimePart, and adding MimePart to root Multipart
+                MemoryStream stream = new MemoryStream (
+                    idxArg.Value is byte[] ? 
+                    (byte[])idxArg.Value : 
+                    Encoding.UTF8.GetBytes (XUtil.Single<string> (idxArg.Value, idxArg, context)));
+                part.ContentObject = new ContentObject (stream);
+                root.Add (part);
+            }
+        }
         
+        /*
+         * adding up [files] given to Multipart
+         */
+        private static void AddFilesToRequest (
+            HttpWebRequest request, 
+            Node node, 
+            ApplicationContext context, 
+            Multipart root,
+            List<Stream> streams)
+        {
+            // looping through each [args], building a new MimePart
+            foreach (var idxArg in XUtil.Iterate<Node> (node ["files"], context)) {
+
+                // we have to parse the headers first, to find our "Content-Type", before we instantiate MimePart
+                HeaderList headers = new HeaderList ();
+
+                // defaulting "Content-Type" to "text/plain"
+                ContentType contentType = new ContentType ("text", "plain");
+                foreach (var idxHeader in idxArg.Children) {
+                    if (idxHeader.Name == "Content-Type")
+                        contentType = ContentType.Parse (XUtil.Single<string> (idxHeader.Value, idxHeader, context));
+                    else
+                        headers.Add (idxHeader.Name, XUtil.Single<string> (idxHeader.Value, idxHeader, context));
+                }
+
+                // creating our MimePart, and adding the headers we previously created
+                MimePart part = new MimePart (contentType);
+                foreach (var idxHeader in headers) {
+                    part.Headers.Add (idxHeader);
+                }
+
+                // creating our ContentObject for our MimePart, and adding MimePart to root Multipart
+                FileStream stream = new FileStream (XUtil.Single<string> (idxArg.Value, idxArg, context), FileMode.Open, FileAccess.Read);
+                streams.Add (stream);
+                part.ContentObject = new ContentObject (stream);
+                root.Add (part);
+            }
+        }
+
         /*
          * parses headers of response
          */
@@ -358,7 +438,7 @@ namespace phosphorus.web
                     ParseMultiPartContent (response, node, context, parseMime);
                 } else {
 
-                    // no parsing of MIME should be done, even though return value is a "multipart"
+                    // no parsing of MIME should be done, even though return value from server is "multipart"
                     using (StreamReader reader = new StreamReader (response.GetResponseStream ())) {
                         node.Add ("content", reader.ReadToEnd ());
                     }
@@ -385,17 +465,22 @@ namespace phosphorus.web
             var rootMultiPart = Multipart.Load (response.GetResponseStream ()) as Multipart;
             foreach (MimePart idxPart in rootMultiPart) {
 
-                // handling one MimePart, setting value of [content] node to "name" from ContentDisposition, but only if Disposition equals "form-data"
+                // setting value of [content] node to "name" from ContentDisposition, but only if Disposition equals "form-data", and "name" parameter exists
                 string name = null;
                 if (idxPart.ContentDisposition != null && 
                     idxPart.ContentDisposition.Disposition == "form-data" && 
                     idxPart.ContentDisposition.Parameters.Contains ("name"))
                     name = idxPart.ContentDisposition.Parameters ["name"];
                 node.Add ("content", name);
-                node.LastChild.Add ("content-type", idxPart.ContentType.MimeType);
+
+                // making sure we also return all MIME headers
+                foreach (var idxHeader in idxPart.Headers) {
+                    node.LastChild.Add (idxHeader.Field, idxHeader.Value);
+                }
+
                 if (idxPart.ContentType.MediaType == "text") {
 
-                    // text Content-Type
+                    // text Content-Type, putting text value into [value] node
                     using (StreamReader reader = new StreamReader (idxPart.ContentObject.Open ())) {
                         node.LastChild.Add ("value", reader.ReadToEnd ());
                     }
@@ -403,6 +488,8 @@ namespace phosphorus.web
 
                     // some sort of binary or "non-text" Content-Type
                     using (MemoryStream stream = new MemoryStream ()) {
+
+                        // decoding to MemoryStream and stuffing raw bytes into [value] node
                         idxPart.ContentObject.DecodeTo (stream);
                         stream.Position = 0;
                         byte[] buffer = new byte [stream.Length];
@@ -418,9 +505,9 @@ namespace phosphorus.web
          */
         private static void ParseSinglePartContent (HttpWebResponse response, Node node, ApplicationContext context)
         {
-            // adding root [content] node, and [content-type]
+            // adding root [content] node, and then [value] beneath that, to be consistent in how we build
+            // our tree node structure, regardless of what server returns
             node.Add ("content");
-            node.LastChild.Add ("content-type", ContentType.Parse (response.ContentType).MimeType);
 
             // checking what type of response this is
             if (ContentType.Parse (response.ContentType).MediaType == "text") {
@@ -440,6 +527,20 @@ namespace phosphorus.web
                     node.LastChild.Add ("value", buffer);
                 }
             }
+        }
+
+        /*
+         * returns base path of application
+         */
+        private static string _basePath;
+        private static string GetBasePath (ApplicationContext context)
+        {
+            if (_basePath == null) {
+                Node node = new Node ();
+                context.Raise ("pf.core.application-folder", node);
+                _basePath = node.Get<string> (context);
+            }
+            return _basePath;
         }
     }
 }
