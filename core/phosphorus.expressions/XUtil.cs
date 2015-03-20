@@ -790,6 +790,7 @@ namespace phosphorus.expressions
                         multipleRetVal += "\r\n";
                         singleRetVal = null;
                     }
+                    // TODO: verify this logic, I think it might produce two sets of CR/LF sometimes ...
                     if (inject != null)
                         multipleRetVal += inject;
                     multipleRetVal += Utilities.Convert<string> (idx, context);

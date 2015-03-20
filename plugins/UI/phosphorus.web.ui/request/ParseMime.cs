@@ -22,7 +22,7 @@ namespace phosphorus.web.ui.request
     ///     This class allows you to retrieve HTTP POST parameters values that was serialized by the client 
     ///     as a MIME message in the body of the request.
     /// </summary>
-    public static class MimeParse
+    public static class ParseMime
     {
         /// <summary>
         ///     Parses all MIME parameters sent by client.
@@ -31,6 +31,8 @@ namespace phosphorus.web.ui.request
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
+        // TODO: Change this such that it doesn't read from request, but from an expression, 
+        // since [pf.web.request.get-body] should be enough for reading request, or ...?
         [ActiveEvent (Name = "pf.web.request.parse-mime")]
         private static void pf_web_request_parse_mime (ApplicationContext context, ActiveEventArgs e)
         {

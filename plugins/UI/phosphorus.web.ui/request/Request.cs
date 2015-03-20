@@ -10,6 +10,7 @@ using System.Web;
 using System.Collections.Generic;
 using phosphorus.core;
 using phosphorus.expressions;
+using MimeKit;
 
 // ReSharper disable UnusedMember.Local
 // ReSharper disable UnusedMember.Global
@@ -23,13 +24,16 @@ using phosphorus.expressions;
 namespace phosphorus.web.ui.request
 {
     /// <summary>
+    ///     Class wrapping Active Events related to the HTTP request.
+    /// 
+    ///     Contains helper Active Events to retrieve information and meta-information about the current HTTP request.
     /// </summary>
     public static class Request
     {
         /// <summary>
         ///     Retrieves type of request.
         /// 
-        ///     Will return the type of request, such as for instance "GET" or "POST" as value of main node.
+        ///     Will return the type of request, such as for instance "GET", "POST", "DELETE" or "PUT" as value of main node.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -37,6 +41,48 @@ namespace phosphorus.web.ui.request
         private static void pf_web_request_method (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = HttpContext.Current.Request.HttpMethod;
+        }
+
+        /// <summary>
+        ///     Returns the current HTTP request's body.
+        /// 
+        ///     Will return the current HTTP request body. If the 'Content-Type' is "text/something", then the request will
+        ///     be returned as text, otherwise as raw bytes. If no 'Content-Type' header exists, the request will be assumed
+        ///     to be of some sort of binary type.
+        /// 
+        ///     The body of the request will be returned as the value of [result] node.
+        /// </summary>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
+        [ActiveEvent (Name = "pf.web.request.get-body")]
+        private static void pf_web_request_get_body (ApplicationContext context, ActiveEventArgs e)
+        {
+            if (RequestIsText (e.Args, context)) {
+                
+                // some sort of "textual" based type of request
+                StreamReader reader = new StreamReader (HttpContext.Current.Request.InputStream);
+                e.Args.Add ("result", reader.ReadToEnd ());
+            } else {
+                
+                // some sort of "binary" type of request, we assume
+                MemoryStream stream = new MemoryStream ();
+                HttpContext.Current.Request.InputStream.CopyTo (stream);
+                e.Args.Add ("result", stream.GetBuffer ());
+            }
+        }
+
+        /*
+         * determines if current request is "text"
+         */
+        private static bool RequestIsText (Node node, ApplicationContext context)
+        {
+            if (node.GetChildValue ("force-text", context, false))
+                return true;
+            if (node.GetChildValue ("force-binary", context, false))
+                return false;
+            if (ContentType.Parse (HttpContext.Current.Request.ContentType ?? "text/plain" /* defaulting to text/plain */).MediaType == "text")
+                return true;
+            return false;
         }
     }
 }

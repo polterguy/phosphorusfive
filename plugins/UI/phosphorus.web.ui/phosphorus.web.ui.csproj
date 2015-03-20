@@ -65,8 +65,8 @@
     <Compile Include="request\Headers.cs" />
     <Compile Include="request\Parameters.cs" />
     <Compile Include="request\Request.cs" />
-    <Compile Include="request\MimeParse.cs" />
     <Compile Include="response\Cookies.cs" />
+    <Compile Include="request\ParseMime.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

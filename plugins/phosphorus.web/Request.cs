@@ -9,6 +9,7 @@ using System.Net;
 using System.Web;
 using System.Text;
 using System.Collections.Generic;
+using System.Runtime.Serialization.Formatters.Binary;
 using phosphorus.core;
 using phosphorus.expressions;
 using MimeKit;
@@ -24,9 +25,9 @@ using MimeKit;
 namespace phosphorus.web
 {
     /// <summary>
-    ///     Class wrapping [pf.web.request.create] Active Event.
+    ///     Class wrapping [pf.web.create-request] Active Event.
     /// 
-    ///     Contains the [pf.web.request.create] Active Event, and its associated helper methods.
+    ///     Contains the [pf.web.create-request] Active Event, and its associated helper methods.
     /// </summary>
     public static class Request
     {
@@ -37,7 +38,7 @@ namespace phosphorus.web
         ///     add HTTP headers to your request as a key/value collection beneath [headers]. In addition you can transfer cookies to the server
         ///     through [cookie] as key/value pair nodes.
         /// 
-        ///     The content or arguments you wish to transfer can be given through [args], which is a collection of key/value arguments, which will
+        ///     The content or arguments you wish to transfer can be given through [content], which is a collection of key/value arguments, which will
         ///     be transferred to the server end-point. You can also pass in files through [files]. Both files and arguments passed in this way, 
         ///     will be transferred as a MIME message, if you choose to send the request as either a 'POST' or 'PUT' request, and you set the 
         ///     'Content-Type' header to 'multipart/xxx', where 'xxx' can be freely chosen by you.
@@ -50,13 +51,13 @@ namespace phosphorus.web
         ///     then all arguments, and files passed in, will be sent in using the HTTP URL, meaning they will be a part of the URL of your request.
         /// 
         ///     If you create a 'POST' or 'PUT' request, and you are setting the 'Content-Type' header to 'multipart/anything', then you can
-        ///     supply MIME headers for each object, [files] and/or [args], as children nodes of your argument or file. All MIME headers set this
-        ///     way will be correctly handled by this Active Event. This means that you can for instance choose a transfer encoding for your argument 
-        ///     or file as 'Content-Transfer-Encoding', and content type as 'Content-Type', etc. You can for instance set the 'Content-Transfer-Encoding' 
+        ///     supply MIME headers for each object, [files] and/or [content], as children nodes of your argument(s) or file(s). All MIME headers set this
+        ///     way, will be correctly handled by this Active Event. This means that you can for instance choose a transfer encoding for your argument(s) 
+        ///     and/or file(s) as 'Content-Transfer-Encoding', and content type as 'Content-Type', etc. You can for instance set the 'Content-Transfer-Encoding' 
         ///     to 'binary', 'base64', or any of the other transfer encoding values supported by MimeKit. If you do not set the 'Content-Disposition' 
         ///     header, then for a file transfered through [files], it will default to "form-data; name='node-name'; filename='filepath/name.ext'", 
         ///     where 'node-name' is the name of the node where you supply your file, and 'filepath/name.ext' is the path and name of your file. If 
-        ///     you do not supply a 'Content-Disposition' header for an argument transferred through [args], then its default value will be 
+        ///     you do not supply a 'Content-Disposition' header for an argument transferred through [content], then its default value will be 
         ///     'form-data; name=node-name'.
         /// 
         ///     If you have multiple arguments and/or files, then it is probably wise of you to choose 'multipart/mixed' or 'multipart/form-data' as
@@ -64,14 +65,14 @@ namespace phosphorus.web
         /// 
         ///     Example that will create a MIME multipart HTTP request;
         /// 
-        ///     <pre>pf.web.request.create:"http://127.0.0.1:8080/echo"
+        ///     <pre>pf.web.create-request:"http://127.0.0.1:8080/echo"
         ///   method:post
         ///   headers
         ///     Content-Type:multipart/mixed
         ///     foo-header:foo header value
         ///   cookies
         ///     foo-cookie:foo cookie value
-        ///   args
+        ///   content
         ///     foo-arg:Howdy world
         ///       Content-Type:text/plain
         ///   files
@@ -83,36 +84,56 @@ namespace phosphorus.web
         /// 
         ///     Example that will create a 'application/x-www-form-urlencoded' type of request;
         /// 
-        ///     <pre>pf.web.request.create:"http://127.0.0.1:8080/echo"
+        ///     <pre>pf.web.create-request:"http://127.0.0.1:8080/echo"
         ///   method:post
-        ///   args
+        ///   content
         ///     foo-arg:Howdy world
         ///       this-bugger-will:be ignored!!!
         ///     bar-arg:Yo Dude!</pre>
         /// 
-        ///     Please notice that in a 'application/x-www-form-urlencoded' type of request, any children nodes of your arguments will simply be ignored. 
-        ///     You can still supply [cookies] and/or [headers] though. The same is true for any type of 'GET' or 'DELETE' request.
+        ///     Please notice that in a 'application/x-www-form-urlencoded' type of request, any children nodes of your arguments will be ignored. 
+        ///     You can still supply [cookies] and/or [headers]. The same is true for any type of 'GET' or 'DELETE' request.
         /// 
-        ///     Also notice, that this Active Event will automatically 'parse' any multipart (MIME) messages returned from the server end point,
+        ///     Also notice, that this Active Event will automatically parse any multipart (MIME) messages returned from the server end point,
         ///     unless you set the [parse-mime] parameter to 'false', at which point the response from the server, will be one single return value.
         /// 
         ///     After execution, this Active Event will create one [result] node for each URL you gave as input, adding all headers, cookies, and
         ///     contents returned from server as [headers], [cookies] and [content]. Beneath the [content] node, any MIME headers for that particular
-        ///     piece of return value, will be appended as key/value children, and the actual contents of that MIME part can be found in [value]. Unless
-        ///     you set [parse-mime] to false, at which point there will be only one [content] node for each URL end-point.
+        ///     piece of return value, will be appended as key/value children, and the actual contents of that MIME part can be found in [value].
         /// 
-        ///     If the server endpoint sets the 'Content-Disposition' header for a MIME part, supplying a 'name' parameter, then the value of the
+        ///     If the server returns anything but MIME, or you set [parse-mime] to false, then this Active Event will attempt to figure out whether or 
+        ///     not the returned value is binary or text, by inspecting the response headers, and return it accordingly. This behavior can be overridden 
+        ///     by adding either [force-text] or [force-binary] as parameters, setting their values to 'true', which will override the default attempt 
+        ///     at trying to figure out what type of response the server returned, and force the Active Event to treat the returned value as either 
+        ///     'text' or 'binary' when returning the result to caller.
+        /// 
+        ///     If the server endpoint sets the 'Content-Disposition' header for a MIME part, supplying a 'name' parameter, then the name of the
         ///     [content] node, will be set to the 'name' parameters from the Content-Disposition header of that MIME part. This allows for 
         ///     returning 'named arguments' from your server end-points easily.
         /// 
+        ///     If you create a request with the HTTP header 'Content-Type' being some sort of 'text/xxx' type, then this Active Event will append a CR/LF
+        ///     sequence between all your arguments and/or files, but still pass them in as 'one object'. This allows you to for instance, create complex
+        ///     Hyperlisp graph objects, by combining [files], and/or [content] together, having them concatenated into one piece of Hyperlisp, before sending
+        ///     the combined result to your server end-point.
+        /// 
+        ///     Regardless of which type of request you create, you can repeat the [content] node, and/or the [files] nodes, as many times as you wish, and
+        ///     all [content], and/or [files], will be appended into your request, in the order they are declared.
+        /// 
+        ///     Since this Active Event does not necessarily rely upon encoding binary objects, and/or binary files as base64, in addition to that it does neither
+        ///     temporary store files in memory when transmitting files to the server end-point, while still being able to send multiple documents
+        ///     to its server end-point, it should significantly outperform other alternative ways of invoking Web Services, such as for instance SOAP, while
+        ///     still being 100% SOAP compatible, since you can just as well transfer XML. At the same time, it is not in any ways 'breaking' the philosophy
+        ///     of REST in any ways, since it 100% perfectly relies upon REST at its core. All other things set aside, this should outperform traditional
+        ///     Web Services significantly. Both in bandwidth usage, and in resource usage, for both the client, and the server.
+        /// 
         ///     By combining this Active Event with the <see cref="phosphorus.web.ui.response.Echo.pf_web_response_echo">[pf.web.response.echo]</see> and 
-        ///     <see cref="phosphorus.web.ui.MimeParse.pf_web_request_parse_mime">[pf.web.request.parse-mime]</see>/<see cref="phosphorus.web.ui.Parameters.pf_web_parameters_get">[pf.web.request.parameters.get]</see>
+        ///     <see cref="phosphorus.web.ui.request.ParseMime.pf_web_request_parse_mime">[pf.web.request.parse-mime]</see>/<see cref="phosphorus.web.ui.request.Parameters.pf_web_request_parameters_get">[pf.web.request.parameters.get]</see>
         ///     Active Events on the server-side, you can easily create and consume Web Services in your applications.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "pf.web.request.create")]
-        private static void pf_web_request_create (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.create-request")]
+        private static void pf_web_create_request (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value == null)
                 return; // nothing to do here
@@ -122,6 +143,8 @@ namespace phosphorus.web
 
                 // creates, decorates, and executes request
                 HttpWebResponse response = ExecuteRequest (idxUrl, e.Args, context);
+                if (response == null)
+                    return; // possibly an HTTP verb we do not support
 
                 // adding "result node" for current request
                 e.Args.Add ("result", idxUrl);
@@ -137,7 +160,9 @@ namespace phosphorus.web
                     response, 
                     e.Args.LastChild, 
                     context, 
-                    XUtil.Single<bool> (e.Args.GetChildValue<object> ("parse-mime", context, null), e.Args ["parse-mime"], context, true));
+                    XUtil.Single<bool> (e.Args.GetChildValue<object> ("parse-mime", context, null), e.Args ["parse-mime"], context, true),
+                    XUtil.Single<bool> (e.Args.GetChildValue<object> ("force-text", context, null), e.Args ["force-text"], context, false),
+                    XUtil.Single<bool> (e.Args.GetChildValue<object> ("force-binary", context, null), e.Args ["force-binary"], context, false));
             }
         }
 
@@ -165,40 +190,49 @@ namespace phosphorus.web
         
         /*
          * creates the URL for the current request
-         * if this is a "GET" method request, then all [args] and [files] nodes will be a part of the URL, in encoded format
+         * if this is a "GET" method request, then all [content] and [files] nodes will be a part of the URL, in encoded format
          */
         private static string CreateUrl (string url, Node node, ApplicationContext context)
         {
             // figuring out what type of request this is, defaulting to GET unless [method] is explicitly given
             string method = XUtil.Single (node.GetChildValue<string> ("method", context, null), node, context, "GET").ToUpper ();
+
             if (method == "GET" || method == "DELETE") {
 
-                // this is either a "GET" or a "DELETE" method type of request, hence passing in the [args] as part of URL
+                // this is either a "GET" or a "DELETE" method type of request, hence passing in the [content] and [files] as part of URL
                 bool first = url.IndexOf ("?") == -1;
-                foreach (var idxArg in XUtil.Iterate <Node> (node ["args"], context)) {
+                foreach (var idxNode in node.FindAll (delegate (Node idxArgNode) {
+                    return idxArgNode.Name == "content" || idxArgNode.Name == "files";
+                })) {
+                    if (idxNode.Name == "content") {
 
-                    // making sure our first argument starts with a "?", and all consecutive arguments have "&" prepended in front of them
-                    if (first) {
-                        first = false;
-                        url += "?" + idxArg.Name + "=" + HttpUtility.UrlEncode (XUtil.Single<string> (idxArg.Value, idxArg, (context)));
-                    } else {
-                        url += "&" + idxArg.Name + "=" + HttpUtility.UrlEncode (XUtil.Single<string> (idxArg.Value, idxArg, (context)));
-                    }
-                }
+                        // looping through each argument in current segment
+                        foreach (var idxArg in XUtil.Iterate <Node> (idxNode, context)) {
 
-                // then passsing in the [files], which probably doesn't make a lot of sense, since the URL will become MONSTROUS
-                // but for consistency reasons we still do it. Even though server will probably reject request, if it is too long...
-                foreach (var idxArg in XUtil.Iterate <Node> (node ["files"], context)) {
+                            // making sure our first argument starts with a "?", and all consecutive arguments have "&" prepended in front of them
+                            if (first) {
+                                first = false;
+                                url += "?" + idxArg.Name + "=" + HttpUtility.UrlEncode (XUtil.Single<string> (idxArg.Value, idxArg, (context)));
+                            } else {
+                                url += "&" + idxArg.Name + "=" + HttpUtility.UrlEncode (XUtil.Single<string> (idxArg.Value, idxArg, (context)));
+                            }
+                        }
+                    } else  {
+                        
+                        // looping through each file in current segment
+                        foreach (var idxFile in XUtil.Iterate <Node> (idxNode, context)) {
 
-                    // making sure our first argument starts with a "?", and all consecutive arguments have "&" prepended in front of them
-                    if (first) {
-                        first = false;
-                        url += "?" + idxArg.Name + "=";
-                    } else {
-                        url += "&" + idxArg.Name + "=";
-                    }
-                    using (StreamReader reader = new StreamReader (File.OpenRead (GetBasePath (context) + XUtil.Single<string> (idxArg.Value, idxArg, context)))) {
-                        url += HttpUtility.UrlEncode (reader.ReadToEnd ());
+                            // making sure our first argument starts with a "?", and all consecutive arguments have "&" prepended in front of them
+                            if (first) {
+                                first = false;
+                                url += "?" + idxFile.Name + "=";
+                            } else {
+                                url += "&" + idxFile.Name + "=";
+                            }
+                            using (StreamReader reader = new StreamReader (File.OpenRead (GetBasePath (context) + XUtil.Single<string> (idxFile.Value, idxFile, context)))) {
+                                url += HttpUtility.UrlEncode (reader.ReadToEnd ());
+                            }
+                        }
                     }
                 }
             }
@@ -283,24 +317,24 @@ namespace phosphorus.web
             case "GET":
             case "DELETE":
 
-                // nothing to do here, [args] was passed in as a part of URL in encoded form
+                // nothing to do here, [content] was passed in as a part of URL in encoded form
                 return (HttpWebResponse)request.GetResponse ();
             case "POST":
             case "PUT":
 
-                // need to handle [args] in some intelligent manner
-                return CreateComplexResponse (request, node, context);
+                // need to handle [content] in some intelligent manner
+                return CreateComplexRequest (request, node, context);
             default:
 
                 // we only support the 4 basic methods; GET, DELETE, POST and PUT
-                throw new ArgumentException (string.Format ("Sorry, [pf.web.request.create] don't know how to create a '{0}' type of request", node ["method"].Value));
+                return null; // hence, we do nothing, but allow for other Active Event handlers to still execute without any exceptions.
             }
         }
 
         /*
          * creates a "complex" response, from either "PUT" or "POST" method type of request
          */
-        private static HttpWebResponse CreateComplexResponse (HttpWebRequest request, Node node, ApplicationContext context)
+        private static HttpWebResponse CreateComplexRequest (HttpWebRequest request, Node node, ApplicationContext context)
         {
             // retrieving Content-Type, defaulting to "application/x-www-form-urlencoded", unless explicitly overridden
             request.ContentType = node ["headers"] == null ? 
@@ -318,17 +352,21 @@ namespace phosphorus.web
                 return CreateUrlEncodedRequest (request, node, context);
             } else if (request.ContentType.StartsWith ("multipart")) {
 
-                // using MimeKit to create a complex "multipart/form-data" request
+                // using MimeKit to create a complex "multipart/xxx" request
                 return CreateMultipartRequest (request, node, context);
-            } else {
+            } else if (request.ContentType.StartsWith ("text")) {
 
-                // only "application/x-www-form-urlencoded" and "multipart/form-data" are supported
-                throw new ArgumentException ("Sorry, I don't know how to create such a request!");
+                // creating a "text" type of request, simply streaming all [content] and [files] as one big text-content, appending CR/LF between each object
+                return CreateTextContentRequest (request, node, context);
+            } else {
+                
+                // creating "anything else"
+                return CreateGenericContentRequest (request, node, context);
             }
         }
 
         /*
-         * creates a "application/x-www-form-urlencoded" response from a POST request
+         * creates a response from a "application/x-www-form-urlencoded" type of POST request
          */
         private static HttpWebResponse CreateUrlEncodedRequest (HttpWebRequest request, Node node, ApplicationContext context)
         {
@@ -336,14 +374,36 @@ namespace phosphorus.web
             using (StreamWriter writer = new StreamWriter (request.GetRequestStream ())) {
                 bool first = true;
 
-                // looping through each [args] children node given, and URL encoding it into request stream writer
-                foreach (var idxArg in XUtil.Iterate<Node> (node ["args"], context)) {
-                    if (first)
-                        first = false; // first parameter
-                    else
-                        writer.Write ("&"); // second, third, or fourth, etc, parameter, making sure we separate our parameters correctly
-                    string value = XUtil.Single<string> (idxArg.Value, idxArg, context);
-                    writer.Write (string.Format ("{0}={1}", idxArg.Name, HttpUtility.UrlEncode (value)));
+                foreach (var idxNode in node.FindAll (delegate (Node idxArgNode) {
+                    return idxArgNode.Name == "content" || idxArgNode.Name == "files";
+                })) {
+                    if (idxNode.Name == "content") {
+
+                        // looping through each [content] children node in current segment, and URL encoding it into request stream writer
+                        foreach (var idxArg in XUtil.Iterate<Node> (idxNode, context)) {
+                            if (first)
+                                first = false; // first parameter
+                            else
+                                writer.Write ("&"); // second, third, or fourth, etc, parameter, making sure we separate our parameters correctly
+                            string value = XUtil.Single<string> (idxArg.Value, idxArg, context);
+                            writer.Write (string.Format ("{0}={1}", idxArg.Name, HttpUtility.UrlEncode (value)));
+                        }
+                    } else  {
+
+                        // looping through each [files] children node in current segment, and URL encoding the file into request stream writer
+                        foreach (var idxArg in XUtil.Iterate<Node> (idxNode, context)) {
+                            if (first)
+                                first = false; // first parameter
+                            else
+                                writer.Write ("&"); // second, third, or fourth, etc, parameter, making sure we separate our parameters correctly
+                            string fileName = XUtil.Single<string> (idxArg.Value, idxArg, context);
+                            using (FileStream stream = File.OpenRead (GetBasePath (context) + fileName)) {
+                                byte[] value = new byte [stream.Length];
+                                stream.Read (value, 0, value.Length);
+                                writer.Write (string.Format ("{0}={1}", idxArg.Name, HttpUtility.UrlEncode (value)));
+                            }
+                        }
+                    }
                 }
             }
 
@@ -352,21 +412,29 @@ namespace phosphorus.web
         }
         
         /*
-         * creates a "multipart/form-data" response from a POST request
+         * creates a response from a "multipart/something" type of POST request
          */
         private static HttpWebResponse CreateMultipartRequest (HttpWebRequest request, Node node, ApplicationContext context)
         {
-            // creating root Multipart to hold all [args] and [files]
+            // creating root Multipart to hold all [content] and [files]
             Multipart root = new Multipart (ContentType.Parse (request.ContentType).MediaSubtype);
 
-            // adding [args] to request
-            AddArgsToMultipart (request, node, context, root);
-
-            // adding [files] to request, while storing streams, such that we can dispose them when done
             List<Stream> streams = new List<Stream> ();
             try {
-                AddFilesToMultipart (request, node, context, root, streams);
+                foreach (var idxNode in node.FindAll (delegate (Node idxArgNode) {
+                    return idxArgNode.Name == "content" || idxArgNode.Name == "files";
+                })) {
+                    if (idxNode.Name == "content") {
 
+                        // adding [content] from current segment to request
+                        AddContentToMultipart (request, idxNode, context, root);
+                    } else {
+
+                        // adding [files] from current segment to request, while storing streams, such that we can dispose them when done
+                        AddFilesToMultipart (request, idxNode, context, root, streams);
+                    }
+                }
+                
                 // writing multipart to request stream
                 root.WriteTo (request.GetRequestStream ());
             } finally {
@@ -380,18 +448,18 @@ namespace phosphorus.web
             // returning HttpWebResponse to caller
             return (HttpWebResponse)request.GetResponse ();
         }
-
+        
         /*
-         * adding up [args] given to Multipart
+         * adding up [content] given to Multipart
          */
-        private static void AddArgsToMultipart (
+        private static void AddContentToMultipart (
             HttpWebRequest request, 
             Node node, 
             ApplicationContext context, 
             Multipart root)
         {
-            // looping through each [args], building a new MimePart
-            foreach (var idxArg in XUtil.Iterate<Node> (node ["args"], context)) {
+            // looping through each child of [content], building a new MimePart
+            foreach (var idxArg in XUtil.Iterate<Node> (node, context)) {
 
                 // creating our MimePart, and adding the headers
                 MimePart part = new MimePart ();
@@ -401,7 +469,7 @@ namespace phosphorus.web
 
                 // unless Content-Disposition is explicitly defined, we default it to "form-data; name='node-name'"
                 if (part.ContentDisposition == null) {
-                    part.Headers.Add ("Content-Disposition", "form-data");
+                    part.Headers.Add ("Content-Disposition", "form-data"); // fix this when MimeKit comes with new release!
                     part.ContentDisposition.Parameters.Add ("name", idxArg.Name);
                 }
 
@@ -414,7 +482,7 @@ namespace phosphorus.web
                 root.Add (part);
             }
         }
-        
+
         /*
          * adding up [files] given to Multipart
          */
@@ -425,8 +493,8 @@ namespace phosphorus.web
             Multipart root,
             List<Stream> streams)
         {
-            // looping through each [args], building a new MimePart
-            foreach (var idxArg in XUtil.Iterate<Node> (node ["files"], context)) {
+            // looping through each child of [files], building a new MimePart
+            foreach (var idxArg in XUtil.Iterate<Node> (node, context)) {
 
                 // creating our MimePart, and adding the headers
                 MimePart part = new MimePart ();
@@ -439,7 +507,7 @@ namespace phosphorus.web
 
                 // unless Content-Disposition is explicitly defined, we default it to "form-data; name='node-name'; filename='filepath/name.ext'"
                 if (part.ContentDisposition == null) {
-                    part.Headers.Add ("Content-Disposition", "form-data");
+                    part.Headers.Add ("Content-Disposition", "form-data"); // fix this when MimeKit comes with new release ...
                     part.ContentDisposition.Parameters.Add ("name", idxArg.Name);
                     part.ContentDisposition.Parameters.Add ("filename", fileName);
                 }
@@ -450,6 +518,90 @@ namespace phosphorus.web
                 part.ContentObject = new ContentObject (stream);
                 root.Add (part);
             }
+        }
+
+        /*
+         * creates a response from a "text/something" type of POST request
+         */
+        private static HttpWebResponse CreateTextContentRequest (HttpWebRequest request, Node node, ApplicationContext context)
+        {
+            // creating a stream writer wrapping the "request content stream"
+            using (StreamWriter writer = new StreamWriter (request.GetRequestStream ()) { AutoFlush = true }) {
+
+                // looping through each [content] and [files] sequentially, in order declared
+                bool first = true;
+                foreach (var idxNode in node.FindAll (delegate (Node idxArgNode) {
+                    return idxArgNode.Name == "content" || idxArgNode.Name == "files";
+                })) {
+
+                    // looping through each [content] children node given, and pushing it into request stream, making sure that CR/LF is
+                    // put between each arg/file
+                    if (idxNode.Name == "content") {
+
+                        // looping through each [content] in current segment
+                        foreach (var idxArg in XUtil.Iterate<Node> (idxNode, context)) {
+                            if (first)
+                                first = false;
+                            else
+                                writer.Write ("\r\n");
+                            string value = XUtil.Single<string> (idxArg.Value, idxArg, context, "", "\r\n"/*in case Hyperlisp is transferred with expression yielding multiple results*/);
+                            writer.Write (value);
+                        }
+                    } else {
+                        
+                        // looping through each [files] in current segment
+                        foreach (var idxFile in XUtil.Iterate<Node> (idxNode, context)) {
+                            if (first)
+                                first = false;
+                            else
+                                writer.Write ("\r\n");
+                            string fileName = XUtil.Single<string> (idxFile.Value, idxFile, context);
+                            using (FileStream stream = File.OpenRead (GetBasePath (context) + fileName)) {
+                                stream.CopyTo (writer.BaseStream); // assuming file is text file ...
+                            }
+                        }
+                    }
+                }
+            }
+
+            // returning response to caller
+            return (HttpWebResponse)request.GetResponse ();
+        }
+        
+        /*
+         * creates a generic type of POST request, from "anything/whatever" Content-Type
+         */
+        private static HttpWebResponse CreateGenericContentRequest (HttpWebRequest request, Node node, ApplicationContext context)
+        {
+            // creating a stream writer wrapping the "request content stream"
+            using (StreamWriter writer = new StreamWriter (request.GetRequestStream ()) { AutoFlush = true }) {
+
+                foreach (var idxNode in node.FindAll (delegate (Node idxArgNode) {
+                    return idxArgNode.Name == "content" || idxArgNode.Name == "files";
+                })) {
+                    if (idxNode.Name == "content") {
+
+                        // looping through each [content] children node in current segment, and pushing it into request stream
+                        foreach (var idxArg in XUtil.Iterate<Node> (idxNode, context)) {
+                            object value = XUtil.Single<object> (idxArg.Value, idxArg, context);
+                            writer.Write (value);
+                        }
+                    } else {
+
+                        // looping through each [files] children node in current segment, and streaming the file into request stream writer,
+                        // assuming all files are text files
+                        foreach (var idxArg in XUtil.Iterate<Node> (idxNode, context)) {
+                            string fileName = XUtil.Single<string> (idxArg.Value, idxArg, context);
+                            using (FileStream stream = File.OpenRead (GetBasePath (context) + fileName)) {
+                                stream.CopyTo (writer.BaseStream);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // returning response to caller
+            return (HttpWebResponse)request.GetResponse ();
         }
 
         /*
@@ -495,8 +647,14 @@ namespace phosphorus.web
             HttpWebResponse response, 
             Node node, 
             ApplicationContext context, 
-            bool parseMime)
+            bool parseMime,
+            bool forceText,
+            bool forceBinary)
         {
+            // sanity check
+            if (forceText && forceBinary)
+                throw new ArgumentException ("You cannot force both text and binary return value");
+
             // figuring out what type of response we were given, and acting accordingly
             var contentType = ContentType.Parse (response.ContentType);
 
@@ -507,19 +665,17 @@ namespace phosphorus.web
                 if (parseMime) {
 
                     // using MimeKit to parse response
-                    ParseMultiPartContent (response, node, context, parseMime);
+                    ParseMultiPartContent (response, node, context);
                 } else {
 
                     // no parsing of MIME should be done, even though return value from server is "multipart"
-                    using (StreamReader reader = new StreamReader (response.GetResponseStream ())) {
-                        node.Add ("content").LastChild.Add ("value", reader.ReadToEnd ());
-                    }
+                    ParseSinglePartContent (response, node, context, forceText, forceBinary);
                 }
                 break;
             default:
 
                 // server returned a "single object", no need to parse this bugger
-                ParseSinglePartContent (response, node, context);
+                ParseSinglePartContent (response, node, context, forceText, forceBinary);
                 break;
             }
         }
@@ -530,43 +686,49 @@ namespace phosphorus.web
         private static void ParseMultiPartContent (
             HttpWebResponse response, 
             Node node, 
-            ApplicationContext context,
-            bool parseMime)
+            ApplicationContext context)
         {
             // creating and looping through each MimePart in response
             var rootMultiPart = Multipart.Load (response.GetResponseStream ()) as Multipart;
-            foreach (MimePart idxPart in rootMultiPart) {
+            foreach (MimeEntity idxEntity in rootMultiPart) {
 
                 // setting value of [content] node to "name" from ContentDisposition, but only if Disposition equals "form-data", and "name" parameter exists
-                string name = null;
-                if (idxPart.ContentDisposition != null && 
-                    idxPart.ContentDisposition.Disposition == "form-data" && 
-                    idxPart.ContentDisposition.Parameters.Contains ("name"))
-                    name = idxPart.ContentDisposition.Parameters ["name"];
-                node.Add ("content", name);
+                string name = "content";
+                if (idxEntity.ContentDisposition != null && 
+                    idxEntity.ContentDisposition.Disposition == "form-data" && 
+                    idxEntity.ContentDisposition.Parameters.Contains ("name"))
+                    name = idxEntity.ContentDisposition.Parameters ["name"];
+                node.Add (name);
 
                 // making sure we also return all MIME headers
-                foreach (var idxHeader in idxPart.Headers) {
+                foreach (var idxHeader in idxEntity.Headers) {
                     node.LastChild.Add (idxHeader.Field, idxHeader.Value);
                 }
 
-                if (idxPart.ContentType.MediaType == "text") {
+                var idxPart = idxEntity as MimePart;
+                if (idxPart == null) {
 
-                    // text Content-Type, putting text value into [value] node
-                    using (StreamReader reader = new StreamReader (idxPart.ContentObject.Open ())) {
-                        node.LastChild.Add ("value", reader.ReadToEnd ());
-                    }
+                    // possibly another "inner" multipart. Just returning it "raw" back to caller
+                    MemoryStream stream = new MemoryStream ();
+
+                    // writing entire MimeEntity to MemoryStream, and stuffing raw bytes into [value] node
+                    idxEntity.WriteTo (stream);
+                    node.LastChild.Add ("value", stream.GetBuffer ());
                 } else {
+                    if (idxPart.ContentType.MediaType == "text") {
 
-                    // some sort of binary or "non-text" Content-Type
-                    using (MemoryStream stream = new MemoryStream ()) {
+                        // text Content-Type, putting text value into [value] node
+                        using (StreamReader reader = new StreamReader (idxPart.ContentObject.Open ())) {
+                            node.LastChild.Add ("value", reader.ReadToEnd ());
+                        }
+                    } else {
 
-                        // decoding to MemoryStream and stuffing raw bytes into [value] node
+                        // some sort of binary or "non-text" Content-Type
+                        MemoryStream stream = new MemoryStream ();
+
+                        // decoding to MemoryStream, and stuffing raw bytes into [value] node
                         idxPart.ContentObject.DecodeTo (stream);
-                        stream.Position = 0;
-                        byte[] buffer = new byte [stream.Length];
-                        stream.Read (buffer, 0, buffer.Length);
-                        node.LastChild.Add ("value", buffer);
+                        node.LastChild.Add ("value", stream.GetBuffer ());
                     }
                 }
             }
@@ -575,14 +737,19 @@ namespace phosphorus.web
         /*
          * parsing a "single object" return value from HttpWebResponse
          */
-        private static void ParseSinglePartContent (HttpWebResponse response, Node node, ApplicationContext context)
+        private static void ParseSinglePartContent (
+            HttpWebResponse response, 
+            Node node, 
+            ApplicationContext context,
+            bool forceText,
+            bool forceBinary)
         {
             // adding root [content] node, and then [value] beneath that, to be consistent in how we build
             // our tree node structure, regardless of what server returns
             node.Add ("content");
 
             // checking what type of response this is
-            if (ContentType.Parse (response.ContentType).MediaType == "text") {
+            if (forceText || (!forceBinary && ContentType.Parse (response.ContentType).MediaType == "text")) {
 
                 // some sort of text Content-Type
                 using (StreamReader reader = new StreamReader (response.GetResponseStream ())) {
