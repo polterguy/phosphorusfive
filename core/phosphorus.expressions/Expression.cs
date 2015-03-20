@@ -325,7 +325,7 @@ namespace phosphorus.expressions
                 case "#":
 
                     // reference node token
-                    current.AddIterator (new IteratorReference ());
+                    current.AddIterator (new IteratorReference (_context));
                     break;
                 case "<":
 

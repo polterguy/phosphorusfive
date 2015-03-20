@@ -32,6 +32,82 @@ namespace phosphorus.web
     {
         /// <summary>
         ///     Creates a new HTTP REST request.
+        /// 
+        ///     Choose which type of request you wish to create as [method], which can be either 'GET', 'PUT', 'POST' or 'DELETE'. You can 
+        ///     add HTTP headers to your request as a key/value collection beneath [headers]. In addition you can transfer cookies to the server
+        ///     through [cookie] as key/value pair nodes.
+        /// 
+        ///     The content or arguments you wish to transfer can be given through [args], which is a collection of key/value arguments, which will
+        ///     be transferred to the server end-point. You can also pass in files through [files]. Both files and arguments passed in this way, 
+        ///     will be transferred as a MIME message, if you choose to send the request as either a 'POST' or 'PUT' request, and you set the 
+        ///     'Content-Type' header to 'multipart/xxx', where 'xxx' can be freely chosen by you.
+        /// 
+        ///     Any files passed in through [files], will not be loaded into memory, but directly transfered over the HTTP request, preserving 
+        ///     memory on your client.
+        /// 
+        ///     If you do not set the 'Content-Type' header, and your request is either a 'POST' or 'PUT' type of request, then its default value will be 
+        ///     'application/x-www-form-urlencoded', and the request create will be url-encoded. If your request is of type 'GET' or 'DELETE', 
+        ///     then all arguments, and files passed in, will be sent in using the HTTP URL, meaning they will be a part of the URL of your request.
+        /// 
+        ///     If you create a 'POST' or 'PUT' request, and you are setting the 'Content-Type' header to 'multipart/anything', then you can
+        ///     supply MIME headers for each object, [files] and/or [args], as children nodes of your argument or file. All MIME headers set this
+        ///     way will be correctly handled by this Active Event. This means that you can for instance choose a transfer encoding for your argument 
+        ///     or file as 'Content-Transfer-Encoding', and content type as 'Content-Type', etc. You can for instance set the 'Content-Transfer-Encoding' 
+        ///     to 'binary', 'base64', or any of the other transfer encoding values supported by MimeKit. If you do not set the 'Content-Disposition' 
+        ///     header, then for a file transfered through [files], it will default to "form-data; name='node-name'; filename='filepath/name.ext'", 
+        ///     where 'node-name' is the name of the node where you supply your file, and 'filepath/name.ext' is the path and name of your file. If 
+        ///     you do not supply a 'Content-Disposition' header for an argument transferred through [args], then its default value will be 
+        ///     'form-data; name=node-name'.
+        /// 
+        ///     If you have multiple arguments and/or files, then it is probably wise of you to choose 'multipart/mixed' or 'multipart/form-data' as
+        ///     your 'Content-Type' header of your request, since some web servers will reject the request, if the URL used is too long.
+        /// 
+        ///     Example that will create a MIME multipart HTTP request;
+        /// 
+        ///     <pre>pf.web.request.create:"http://127.0.0.1:8080/echo"
+        ///   method:post
+        ///   headers
+        ///     Content-Type:multipart/mixed
+        ///     foo-header:foo header value
+        ///   cookies
+        ///     foo-cookie:foo cookie value
+        ///   args
+        ///     foo-arg:Howdy world
+        ///       Content-Type:text/plain
+        ///   files
+        ///     file1:foo-file.hl
+        ///       Content-Type:text/Hyperlisp
+        ///     file2:image.png
+        ///       Content-Type:image/png
+        ///       Content-Transfer-Encoding:base64</pre>
+        /// 
+        ///     Example that will create a 'application/x-www-form-urlencoded' type of request;
+        /// 
+        ///     <pre>pf.web.request.create:"http://127.0.0.1:8080/echo"
+        ///   method:post
+        ///   args
+        ///     foo-arg:Howdy world
+        ///       this-bugger-will:be ignored!!!
+        ///     bar-arg:Yo Dude!</pre>
+        /// 
+        ///     Please notice that in a 'application/x-www-form-urlencoded' type of request, any children nodes of your arguments will simply be ignored. 
+        ///     You can still supply [cookies] and/or [headers] though. The same is true for any type of 'GET' or 'DELETE' request.
+        /// 
+        ///     Also notice, that this Active Event will automatically 'parse' any multipart (MIME) messages returned from the server end point,
+        ///     unless you set the [parse-mime] parameter to 'false', at which point the response from the server, will be one single return value.
+        /// 
+        ///     After execution, this Active Event will create one [result] node for each URL you gave as input, adding all headers, cookies, and
+        ///     contents returned from server as [headers], [cookies] and [content]. Beneath the [content] node, any MIME headers for that particular
+        ///     piece of return value, will be appended as key/value children, and the actual contents of that MIME part can be found in [value]. Unless
+        ///     you set [parse-mime] to false, at which point there will be only one [content] node for each URL end-point.
+        /// 
+        ///     If the server endpoint sets the 'Content-Disposition' header for a MIME part, supplying a 'name' parameter, then the value of the
+        ///     [content] node, will be set to the 'name' parameters from the Content-Disposition header of that MIME part. This allows for 
+        ///     returning 'named arguments' from your server end-points easily.
+        /// 
+        ///     By combining this Active Event with the <see cref="phosphorus.web.ui.response.Echo.pf_web_response_echo">[pf.web.response.echo]</see> and 
+        ///     <see cref="phosphorus.web.ui.MimeParse.pf_web_request_parse_mime">[pf.web.request.parse-mime]</see>/<see cref="phosphorus.web.ui.Parameters.pf_web_parameters_get">[pf.web.request.parameters.get]</see>
+        ///     Active Events on the server-side, you can easily create and consume Web Services in your applications.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -72,16 +148,16 @@ namespace phosphorus.web
         {
             // creating request, and adding headers and cookies, setting some properties, and returning response to caller
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create (CreateUrl (url, node, context));
+            
+            // setting properties
+            request.Timeout = XUtil.Single (node.GetChildValue<object> ("timeout", context, null), node ["timeout"], context, 100000);
+            request.Method = XUtil.Single (node.GetChildValue<object> ("method", context, null), node ["method"], context, "GET").ToUpper ();
 
             // adding headers
             AddHeadersToRequest (request, node, context);
 
             // adding cookies
             AddCookiesToRequest (request, node, context);
-
-            // setting other properties
-            request.Timeout = XUtil.Single (node.GetChildValue<object> ("timeout", context, null), node ["timeout"], context, 100000);
-            request.Method = XUtil.Single (node.GetChildValue<object> ("method", context, null), node ["method"], context, "GET").ToUpper ();
 
             // retrieving response, and returning to caller
             return ExecuteRequest (request, node, context);
@@ -240,7 +316,7 @@ namespace phosphorus.web
 
                 // creating a simple URL encoded request
                 return CreateUrlEncodedRequest (request, node, context);
-            } else if (request.ContentType.StartsWith ("multipart/form-data")) {
+            } else if (request.ContentType.StartsWith ("multipart")) {
 
                 // using MimeKit to create a complex "multipart/form-data" request
                 return CreateMultipartRequest (request, node, context);
@@ -284,27 +360,31 @@ namespace phosphorus.web
             Multipart root = new Multipart (ContentType.Parse (request.ContentType).MediaSubtype);
 
             // adding [args] to request
-            AddArgsToRequest (request, node, context, root);
+            AddArgsToMultipart (request, node, context, root);
 
             // adding [files] to request, while storing streams, such that we can dispose them when done
             List<Stream> streams = new List<Stream> ();
             try {
-                AddFilesToRequest (request, node, context, root, streams);
+                AddFilesToMultipart (request, node, context, root, streams);
 
-                // writing multipart to request stream, for then to return response
+                // writing multipart to request stream
                 root.WriteTo (request.GetRequestStream ());
             } finally {
+
+                // cleaning up
                 foreach (var idxStream in streams) {
                     idxStream.Dispose ();
                 }
             }
+
+            // returning HttpWebResponse to caller
             return (HttpWebResponse)request.GetResponse ();
         }
 
         /*
          * adding up [args] given to Multipart
          */
-        private static void AddArgsToRequest (
+        private static void AddArgsToMultipart (
             HttpWebRequest request, 
             Node node, 
             ApplicationContext context, 
@@ -313,22 +393,16 @@ namespace phosphorus.web
             // looping through each [args], building a new MimePart
             foreach (var idxArg in XUtil.Iterate<Node> (node ["args"], context)) {
 
-                // we have to parse the headers first, to find our "Content-Type", before we instantiate MimePart
-                HeaderList headers = new HeaderList ();
-
-                // defaulting "Content-Type" to "text/plain"
-                ContentType contentType = new ContentType ("text", "plain");
+                // creating our MimePart, and adding the headers
+                MimePart part = new MimePart ();
                 foreach (var idxHeader in idxArg.Children) {
-                    if (idxHeader.Name == "Content-Type")
-                        contentType = ContentType.Parse (XUtil.Single<string> (idxHeader.Value, idxHeader, context));
-                    else
-                        headers.Add (idxHeader.Name, XUtil.Single<string> (idxHeader.Value, idxHeader, context));
+                    part.Headers.Replace (idxHeader.Name, XUtil.Single<string> (idxHeader.Value, idxHeader, context));
                 }
 
-                // creating our MimePart, and adding the headers we previously created
-                MimePart part = new MimePart (contentType);
-                foreach (var idxHeader in headers) {
-                    part.Headers.Add (idxHeader);
+                // unless Content-Disposition is explicitly defined, we default it to "form-data; name='node-name'"
+                if (part.ContentDisposition == null) {
+                    part.Headers.Add ("Content-Disposition", "form-data");
+                    part.ContentDisposition.Parameters.Add ("name", idxArg.Name);
                 }
 
                 // creating our ContentObject for our MimePart, and adding MimePart to root Multipart
@@ -344,7 +418,7 @@ namespace phosphorus.web
         /*
          * adding up [files] given to Multipart
          */
-        private static void AddFilesToRequest (
+        private static void AddFilesToMultipart (
             HttpWebRequest request, 
             Node node, 
             ApplicationContext context, 
@@ -354,26 +428,24 @@ namespace phosphorus.web
             // looping through each [args], building a new MimePart
             foreach (var idxArg in XUtil.Iterate<Node> (node ["files"], context)) {
 
-                // we have to parse the headers first, to find our "Content-Type", before we instantiate MimePart
-                HeaderList headers = new HeaderList ();
-
-                // defaulting "Content-Type" to "text/plain"
-                ContentType contentType = new ContentType ("text", "plain");
+                // creating our MimePart, and adding the headers
+                MimePart part = new MimePart ();
                 foreach (var idxHeader in idxArg.Children) {
-                    if (idxHeader.Name == "Content-Type")
-                        contentType = ContentType.Parse (XUtil.Single<string> (idxHeader.Value, idxHeader, context));
-                    else
-                        headers.Add (idxHeader.Name, XUtil.Single<string> (idxHeader.Value, idxHeader, context));
+                    part.Headers.Replace (idxHeader.Name, XUtil.Single<string> (idxHeader.Value, idxHeader, context));
                 }
 
-                // creating our MimePart, and adding the headers we previously created
-                MimePart part = new MimePart (contentType);
-                foreach (var idxHeader in headers) {
-                    part.Headers.Add (idxHeader);
+                // retrieving relative path and name of file
+                string fileName = XUtil.Single<string> (idxArg.Value, idxArg, context);
+
+                // unless Content-Disposition is explicitly defined, we default it to "form-data; name='node-name'; filename='filepath/name.ext'"
+                if (part.ContentDisposition == null) {
+                    part.Headers.Add ("Content-Disposition", "form-data");
+                    part.ContentDisposition.Parameters.Add ("name", idxArg.Name);
+                    part.ContentDisposition.Parameters.Add ("filename", fileName);
                 }
 
                 // creating our ContentObject for our MimePart, and adding MimePart to root Multipart
-                FileStream stream = new FileStream (XUtil.Single<string> (idxArg.Value, idxArg, context), FileMode.Open, FileAccess.Read);
+                FileStream stream = new FileStream (GetBasePath (context) + fileName, FileMode.Open, FileAccess.Read);
                 streams.Add (stream);
                 part.ContentObject = new ContentObject (stream);
                 root.Add (part);
@@ -440,7 +512,7 @@ namespace phosphorus.web
 
                     // no parsing of MIME should be done, even though return value from server is "multipart"
                     using (StreamReader reader = new StreamReader (response.GetResponseStream ())) {
-                        node.Add ("content", reader.ReadToEnd ());
+                        node.Add ("content").LastChild.Add ("value", reader.ReadToEnd ());
                     }
                 }
                 break;

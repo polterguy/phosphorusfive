@@ -26,8 +26,8 @@ namespace phosphorus.web.ui.response
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "pf.web.headers.set")]
-        private static void pf_web_headers_set (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.response.headers.set")]
+        private static void pf_web_response_headers_set (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Count == 0) {
 

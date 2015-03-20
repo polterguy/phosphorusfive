@@ -11,7 +11,7 @@ using phosphorus.web.ui.common;
 // ReSharper disable UnusedMember.Local
 // ReSharper disable UnusedMember.Global
 
-namespace phosphorus.web.ui
+namespace phosphorus.web.ui.request
 {
     /// <summary>
     ///     Helper to retrieve POST and GET parameters.
@@ -27,8 +27,8 @@ namespace phosphorus.web.ui
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "pf.web.parameters.get")]
-        private static void pf_web_parameters_get (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.request.parameters.get")]
+        private static void pf_web_request_parameters_get (ApplicationContext context, ActiveEventArgs e)
         {
             // looping through each parameter requested by caller
             foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
@@ -45,8 +45,8 @@ namespace phosphorus.web.ui
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "pf.web.parameters.list")]
-        private static void pf_web_parameters_list (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.request.parameters.list")]
+        private static void pf_web_request_parameters_list (ApplicationContext context, ActiveEventArgs e)
         {
             CollectionBase.List (e.Args, context, () => HttpContext.Current.Request.Params.AllKeys);
         }

@@ -55,18 +55,18 @@
     <Compile Include="Session.cs" />
     <Compile Include="Application.cs" />
     <Compile Include="widgets\Widgets.cs" />
-    <Compile Include="Cookies.cs" />
     <Compile Include="response\Echo.cs" />
     <Compile Include="response\Headers.cs" />
     <Compile Include="widgets\Properties.cs" />
-    <Compile Include="response\TransmitFile.cs" />
-    <Compile Include="Parameters.cs" />
     <Compile Include="Cache.cs" />
     <Compile Include="common\PhosphorusWebException.cs" />
     <Compile Include="common\CollectionBase.cs" />
-    <Compile Include="Headers.cs" />
-    <Compile Include="Request.cs" />
-    <Compile Include="MimeParse.cs" />
+    <Compile Include="request\Cookies.cs" />
+    <Compile Include="request\Headers.cs" />
+    <Compile Include="request\Parameters.cs" />
+    <Compile Include="request\Request.cs" />
+    <Compile Include="request\MimeParse.cs" />
+    <Compile Include="response\Cookies.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
@@ -97,5 +97,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="request\" />
   </ItemGroup>
 </Project>

@@ -27,7 +27,7 @@
 
 * store timezone (GTM+x) in DateTime when serializing and de-serializing from Hyperlisp
 
-* Active Event to zip many CSS/JavaScript files back to client as one, relying on [pf.web.echo]
+* Active Event to zip many CSS/JavaScript files back to client as one, relying on [pf.web.response.echo]
 
 * create support for "style" property setters/getters in widgets through pf.lambda optionally can take a list of style names/values, instead
   of like it is now where it's "just a string"

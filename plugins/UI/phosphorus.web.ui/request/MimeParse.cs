@@ -14,7 +14,7 @@ using MimeKit;
 // ReSharper disable UnusedMember.Local
 // ReSharper disable UnusedMember.Global
 
-namespace phosphorus.web.ui
+namespace phosphorus.web.ui.request
 {
     /// <summary>
     ///     Helper to retrieve POST parameters serialized as MIME message.
@@ -31,8 +31,8 @@ namespace phosphorus.web.ui
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "pf.web.request.mime.parse")]
-        private static void pf_web_request_mime_parse (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.request.parse-mime")]
+        private static void pf_web_request_parse_mime (ApplicationContext context, ActiveEventArgs e)
         {
             if (string.IsNullOrEmpty (HttpContext.Current.Request.ContentType) || 
                 ContentType.Parse (HttpContext.Current.Request.ContentType).MediaType != "multipart")

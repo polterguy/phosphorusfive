@@ -6,6 +6,8 @@
 using System.Collections.Generic;
 using phosphorus.core;
 
+// ReSharper disable CanBeReplacedWithTryCastAndCheckForNull
+
 namespace phosphorus.expressions.iterators
 {
     /// <summary>
@@ -16,26 +18,19 @@ namespace phosphorus.expressions.iterators
     /// </summary>
     public class IteratorReference : Iterator
     {
+        private ApplicationContext _context;
+
+        public IteratorReference (ApplicationContext context)
+        {
+            _context = context;
+        }
+
         public override IEnumerable<Node> Evaluate
         {
             get
             {
                 foreach (var idxCurrent in Left.Evaluate) {
-                    Node reference = null;
-                    // ReSharper disable once CanBeReplacedWithTryCastAndCheckForNull
-                    if (idxCurrent.Value is Node.Dna) {
-                        reference = idxCurrent.Find ((Node.Dna) idxCurrent.Value);
-                    } else {
-                        var node = idxCurrent.Value as Node;
-                        if (node != null) {
-                            reference = node;
-                        } else if (Node.Dna.IsPath (idxCurrent.Value as string)) {
-                            var path = new Node.Dna ((string) idxCurrent.Value);
-                            reference = idxCurrent.Find (path);
-                        }
-                    }
-                    if (reference != null)
-                        yield return reference;
+                    yield return idxCurrent.Get<Node> (_context);
                 }
             }
         }

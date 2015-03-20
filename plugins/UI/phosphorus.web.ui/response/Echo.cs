@@ -14,15 +14,10 @@ using MimeKit;
 // ReSharper disable UnusedMember.Local
 // ReSharper disable UnusedMember.Global
 
-/// <summary>
-///     Main namespace for Active Events that fiddles with the HTTP response.
-/// 
-///     Wraps all Active Events that manipulates the HTTP response, such as changing HTTP headers, and such.
-/// </summary>
 namespace phosphorus.web.ui.response
 {
     /// <summary>
-    ///     Class encapsulating the [pf.web.echo] Active Event
+    ///     Class encapsulating the [pf.web.response.echo] Active Event
     /// 
     ///     Class wrapping the Active Events necessary to echo, or write, a specific piece of text, or nodes
     ///     back to client over the HTTP response.
@@ -45,8 +40,8 @@ namespace phosphorus.web.ui.response
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "pf.web.echo")]
-        private static void pf_web_echo (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.response.echo")]
+        private static void pf_web_response_echo (ApplicationContext context, ActiveEventArgs e)
         {
             // discarding current response, and removing session cookie
             HttpContext.Current.Response.Filter = null;
@@ -84,7 +79,7 @@ namespace phosphorus.web.ui.response
             if (nodes.Count == 0)
                 return;
 
-            if (nodes.Count == 1) {
+            if (nodes.Count == 1 && ContentType.Parse (HttpContext.Current.Response.ContentType).MediaType != "multipart") {
 
                 // one single object, rendering it, putting headers into HTTP Header collection of HTTP Response
                 RenderSingleObject (nodes [0], context);
@@ -100,7 +95,7 @@ namespace phosphorus.web.ui.response
          */
         private static void RenderSingleObject (Node node, ApplicationContext context)
         {
-            // adding headers to response header collection
+            // adding headers to response header collection. Notice that this will overwrite the [headers] sent in
             AddHeadersToResponse (node, context);
 
             // checking type of object to render
@@ -175,8 +170,8 @@ namespace phosphorus.web.ui.response
                             part.ContentObject = new ContentObject (stream);
                         } else {
 
-                            // some sort of text object
-                            MemoryStream stream = new MemoryStream (Encoding.UTF8.GetBytes (XUtil.Single<string> (idxNode.Value, idxNode, context)));
+                            // some sort of text object, making sure we inject CR/LF between values, if value is an expressions
+                            MemoryStream stream = new MemoryStream (Encoding.UTF8.GetBytes (XUtil.Single<string> (idxNode.Value, idxNode, context, "", "\r\n")));
                             part.ContentObject = new ContentObject (stream);
                         }
                     }

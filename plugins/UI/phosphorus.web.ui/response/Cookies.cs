@@ -11,7 +11,13 @@ using phosphorus.web.ui.common;
 // ReSharper disable UnusedMember.Local
 // ReSharper disable UnusedMember.Global
 
-namespace phosphorus.web.ui
+/// <summary>
+///     Main namespace for everything related to the current HTTP response.
+/// 
+///     Contains many helper classes and Active Events, for everything related to the current HTTP response, such as
+///     setting headers, cookies, and returning MIME content to client, etc.
+/// </summary>
+namespace phosphorus.web.ui.response
 {
     /// <summary>
     ///     Helper to retrieve and set Cookie values.
@@ -32,8 +38,8 @@ namespace phosphorus.web.ui
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "pf.web.cookies.set")]
-        private static void pf_web_cookies_set (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.response.cookies.set")]
+        private static void pf_web_response_cookies_set (ApplicationContext context, ActiveEventArgs e)
         {
             CollectionBase.Set (e.Args, context, delegate (string key, object value) {
                 if (value == null) {
@@ -47,40 +53,6 @@ namespace phosphorus.web.ui
             });
         }
 
-        /// <summary>
-        ///     Retrieves Cookie object(s).
-        /// 
-        ///     Supply one or more keys to which items you wish to retrieve as the value of your main node.
-        /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "pf.web.cookies.get")]
-        private static void pf_web_cookies_get (ApplicationContext context, ActiveEventArgs e)
-        {
-            CollectionBase.Get (e.Args, context, delegate (string key) {
-                //fetching cookie
-                var cookie = HttpContext.Current.Request.Cookies.Get (key);
-                if (cookie != null && !string.IsNullOrEmpty (cookie.Value)) {
-                    // adding key node, and values beneath key node
-                    return HttpUtility.UrlDecode (cookie.Value);
-                }
-                return null;
-            });
-        }
-
-        /// <summary>
-        ///     Lists all keys in the Cookie object of client.
-        /// 
-        ///     Returns all keys for all items in your user's Cookie object.
-        /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "pf.web.cookies.list")]
-        private static void pf_web_cookies_list (ApplicationContext context, ActiveEventArgs e)
-        {
-            CollectionBase.List (e.Args, context, () => HttpContext.Current.Request.Cookies.AllKeys);
-        }
-        
         /*
          * creates a cookie from given Node and returns back to caller
          */

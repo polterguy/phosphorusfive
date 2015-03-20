@@ -14,7 +14,13 @@ using phosphorus.expressions;
 // ReSharper disable UnusedMember.Local
 // ReSharper disable UnusedMember.Global
 
-namespace phosphorus.web.ui
+/// <summary>
+///     Main namespace for everything related to the current HTTP request.
+/// 
+///     Contains many helper classes and Active Events for retrieving information and/or data from the current HTTP request, such
+///     as for instance retrieving cookies, headers, parameters, and parsing content as MIME, etc.
+/// </summary>
+namespace phosphorus.web.ui.request
 {
     /// <summary>
     /// </summary>

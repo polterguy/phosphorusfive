@@ -439,13 +439,27 @@ namespace phosphorus.core
         }
 
         /// <summary>
-        ///     Returns the number of chilren nodes the node has.
+        ///     Returns the number of children nodes the node has.
         /// </summary>
         /// <value>Number of children.</value>
         public int Count {
             get {
                 return _children.Count;
             }
+        }
+
+        /// <summary>
+        ///     Returns the number of children nodes matching the given predicate.
+        /// </summary>
+        /// <param name="functor">Predicate nodes must match to be counted.</param>
+        public int CountWhere (Predicate<Node> functor)
+        {
+            int retVal = 0;
+            foreach (var idxNode in Children) {
+                if (functor (idxNode))
+                    retVal += 1;
+            }
+            return retVal;
         }
 
         /// <summary>
@@ -462,7 +476,7 @@ namespace phosphorus.core
         /// <summary>
         ///     Returns the children of this instance.
         /// </summary>
-        /// <value>Tts children nodes.</value>
+        /// <value>Its children nodes.</value>
         public IEnumerable<Node> Children {
             get {
                 return _children;

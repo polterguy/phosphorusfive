@@ -11,7 +11,7 @@ using phosphorus.web.ui.common;
 // ReSharper disable UnusedMember.Local
 // ReSharper disable UnusedMember.Global
 
-namespace phosphorus.web.ui
+namespace phosphorus.web.ui.request
 {
     /// <summary>
     ///     Helper to retrieve HTTP headers.
@@ -27,8 +27,8 @@ namespace phosphorus.web.ui
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "pf.web.headers.get")]
-        private static void pf_web_headers_get (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.request.headers.get")]
+        private static void pf_web_request_headers_get (ApplicationContext context, ActiveEventArgs e)
         {
             // looping through each parameter requested by caller
             foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
@@ -39,35 +39,14 @@ namespace phosphorus.web.ui
         }
 
         /// <summary>
-        ///     Sets one or more HTTP header(s).
-        /// 
-        ///     The name of the header you wish to set, is given as the value(s) of the main node.
-        /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "pf.web.headers.set")]
-        private static void pf_web_headers_set (ApplicationContext context, ActiveEventArgs e)
-        {
-            CollectionBase.Set (e.Args, context, delegate (string key, object value) {
-                if (value == null) {
-                    // removing object, if it exists
-                    HttpContext.Current.Response.Headers.Remove (key);
-                } else {
-                    // adding object
-                    HttpContext.Current.Response.Headers.Set (key, Utilities.Convert<string> (value, context));
-                }
-            });
-        }
-
-        /// <summary>
         ///     Lists all keys for our HTTP headers.
         /// 
         ///     Returns all keys for all HTTP headers in current request.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "pf.web.headers.list")]
-        private static void pf_web_headers_list (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.web.request.headers.list")]
+        private static void pf_web_request_headers_list (ApplicationContext context, ActiveEventArgs e)
         {
             CollectionBase.List (e.Args, context, () => HttpContext.Current.Request.Headers.AllKeys);
         }
