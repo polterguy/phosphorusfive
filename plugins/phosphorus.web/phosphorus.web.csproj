@@ -59,6 +59,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Request.cs" />
+    <Compile Include="RequestOld.cs" />
+    <Compile Include="helpers\RequestFactory.cs" />
+    <Compile Include="helpers\IRequest.cs" />
+    <Compile Include="helpers\IResponse.cs" />
+    <Compile Include="helpers\requests\HttpRequest.cs" />
+    <Compile Include="helpers\requests\HttpDeleteRequest.cs" />
+    <Compile Include="helpers\requests\HttpGetRequest.cs" />
+    <Compile Include="helpers\requests\HttpPostRequest.cs" />
+    <Compile Include="helpers\requests\HttpPutRequest.cs" />
+    <Compile Include="helpers\responses\BinaryResponse.cs" />
+    <Compile Include="helpers\responses\MultipartResponse.cs" />
+    <Compile Include="helpers\responses\TextResponse.cs" />
+    <Compile Include="helpers\requests\HttpUriFormattedRequest.cs" />
+    <Compile Include="helpers\requests\HttpComplexRequest.cs" />
+    <Compile Include="helpers\responses\HttpResponse.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -85,4 +100,9 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
+  <ItemGroup>
+    <Folder Include="helpers\" />
+    <Folder Include="helpers\requests\" />
+    <Folder Include="helpers\responses\" />
+  </ItemGroup>
 </Project>

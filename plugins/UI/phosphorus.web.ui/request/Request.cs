@@ -80,7 +80,7 @@ namespace phosphorus.web.ui.request
                 return true;
             if (node.GetChildValue ("force-binary", context, false))
                 return false;
-            if (ContentType.Parse (HttpContext.Current.Request.ContentType ?? "text/plain" /* defaulting to text/plain */).MediaType == "text")
+            if (ContentType.Parse (HttpContext.Current.Request.ContentType).MediaType == "text")
                 return true;
             return false;
         }

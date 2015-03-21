@@ -209,8 +209,6 @@ namespace phosphorus.web.ui.response
                 foreach (var idxNode in nodes) {
 
                     // creating MimePart and settings its headers
-                    // TODO: support inner Multipart object here ...!!
-                    // if Content-Type == "multipart/something", we create Multipart here by parsing content or something, and not MimePart, or ...?
                     MimePart part = new MimePart ();
                     foreach (var idxHeader in idxNode.Children) {
                         part.Headers.Replace (idxHeader.Name, XUtil.Single<string> (idxHeader.Value, idxHeader, context));
