@@ -9,8 +9,13 @@ using phosphorus.core;
 using phosphorus.expressions;
 using MimeKit;
 
-namespace phosphorus.web.helpers
+namespace phosphorus.net.helpers
 {
+    /// <summary>
+    ///     Class wrapping an HTTP/POST request.
+    /// 
+    ///     Class encapsulating an HTTP/POST type of request. Nothing to really see here, most of the heavy loading is done in base class.
+    /// </summary>
     public class HttpPutRequest : HttpComplexRequest
     {
         protected override void Decorate (ApplicationContext context, Node node, HttpWebRequest request, ContentType type)

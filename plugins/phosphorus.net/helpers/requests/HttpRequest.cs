@@ -10,15 +10,20 @@ using phosphorus.core;
 using phosphorus.expressions;
 using MimeKit;
 
-namespace phosphorus.web.helpers
+namespace phosphorus.net.helpers
 {
+    /// <summary>
+    ///     Class wrapping an HTTP request.
+    /// 
+    ///     Class encapsulating the necessary methods to create and execute an HTTP request. Common base class for all HTTP types of requests.
+    /// </summary>
     public abstract class HttpRequest : IRequest
     {
         private HttpWebRequest _request;
 
-        public virtual IResponse Execute (ApplicationContext context, Node node, string url)
+        public IResponse Execute (ApplicationContext context, Node node, string url)
         {
-            _request = (HttpWebRequest)WebRequest.Create (GetUri (context, node, url));
+            _request = (HttpWebRequest)WebRequest.Create (GetURL (context, node, url));
             _request.AllowAutoRedirect = 
                 XUtil.Single (
                     node.GetChildValue<object> ("allow-auto-redirect", context, null), node ["allow-auto-redirect"], context, true);
@@ -30,11 +35,26 @@ namespace phosphorus.web.helpers
             return GetResponse (_request);
         }
 
-        protected virtual string GetUri (ApplicationContext context, Node node, string url)
+        /// <summary>
+        ///     Returns URL for HTTP request.
+        /// 
+        ///     Override this method to massage, and/or transform, the URL.
+        /// </summary>
+        /// <returns>The URL.</returns>
+        /// <param name="context">Application context.</param>
+        /// <param name="node">Node.</param>
+        /// <param name="url">URL.</param>
+        protected virtual string GetURL (ApplicationContext context, Node node, string url)
         {
             return url;
         }
 
+        /// <summary>
+        ///     Adds the HTTP headers for the request.
+        /// </summary>
+        /// <param name="context">Application context.</param>
+        /// <param name="node">Node.</param>
+        /// <param name="request">Request.</param>
         protected virtual void AddHeaders (ApplicationContext context, Node node, HttpWebRequest request)
         {
             // looping through each header in our [headers] collection, and adding to request
@@ -82,6 +102,12 @@ namespace phosphorus.web.helpers
             }
         }
 
+        /// <summary>
+        ///     Adds the HTTP cookies for the request
+        /// </summary>
+        /// <param name="context">Application context.</param>
+        /// <param name="node">Node.</param>
+        /// <param name="request">Request.</param>
         protected virtual void AddCookies (ApplicationContext context, Node node, HttpWebRequest request)
         {
             // making sure we've got our Cookie Container
@@ -96,8 +122,22 @@ namespace phosphorus.web.helpers
             }
         }
 
+        /// <summary>
+        ///     Decorates the specified request.
+        /// 
+        ///     Decorates the specified HTTP request according to what parameters the node given contains.
+        /// </summary>
+        /// <param name="context">Application context.</param>
+        /// <param name="node">Node.</param>
+        /// <param name="request">Request.</param>
+        /// <param name="type">Type.</param>
         protected abstract void Decorate (ApplicationContext context, Node node, HttpWebRequest request, ContentType type);
 
+        /// <summary>
+        ///     Returns the HTTP response from the server.
+        /// </summary>
+        /// <returns>The response.</returns>
+        /// <param name="request">Request.</param>
         protected virtual IResponse GetResponse (HttpWebRequest request)
         {
             HttpWebResponse response = (HttpWebResponse)request.GetResponse ();

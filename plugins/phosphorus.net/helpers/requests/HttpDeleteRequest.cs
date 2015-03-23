@@ -9,14 +9,20 @@ using phosphorus.core;
 using phosphorus.expressions;
 using MimeKit;
 
-namespace phosphorus.web.helpers
+namespace phosphorus.net.helpers
 {
-    public class HttpDeleteRequest : HttpUriFormattedRequest
+    /// <summary>
+    ///     Class wrapping an HTTP/DELETE type of request.
+    /// 
+    ///     Wraps a DELETE HTTP request. Nothing to really see here, most of the heavy loading is done in base class.
+    /// </summary>
+    public class HttpDeleteRequest : HttpUrlFormattedRequest
     {
         protected override void Decorate (ApplicationContext context, Node node, HttpWebRequest request, ContentType type)
         {
             // nothing to do here, since parameters are already handled in URL
             request.Method = "DELETE";
+            base.Decorate (context, node, request, type);
         }
     }
 }

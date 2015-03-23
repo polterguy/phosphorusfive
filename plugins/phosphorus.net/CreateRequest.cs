@@ -6,7 +6,7 @@
 using System;
 using phosphorus.core;
 using phosphorus.expressions;
-using phosphorus.web.helpers;
+using phosphorus.net.helpers;
 
 // ReSharper disable UnusedMember.Local
 // ReSharper disable UnusedMember.Global
@@ -98,6 +98,43 @@ namespace phosphorus.net
         /// 
         ///     If you create a 'multipart/something' request, then the boundary of your mime message will be appended as an argument to your 'Content-Type'
         ///     header of your request, making the boundary accessible as a part of your HTTP 'Content-Type' header for your server end-point.
+        /// 
+        ///     If you create a 'multipart/something' type of request, you can also nest multiparts. If you nest multiparts, then you can choose
+        ///     to instead of providing the multipart's content as a value of its [content] node, supply the inner mime entities as children nodes of
+        ///     the multipart's [content] node.
+        /// 
+        ///     Example that will create a nested MIME multipart HTTP request;
+        /// 
+        ///     <pre>pf.net.create-request:"http://127.0.0.1:8080/echo"
+        ///   method:post
+        ///   headers
+        ///     Content-Type:multipart/mixed
+        ///   content:Howdy world
+        ///     Content-Type:text/plain
+        ///   content
+        ///     Content-Type:multipart/form-data
+        ///     content:foo
+        ///       Content-Type:text/plain
+        ///     content:bar
+        ///       Content-Type:application/foo-bar
+        ///   content:Yo World!
+        ///     Content-Type:text/plain</pre>
+        /// 
+        ///     If you create a 'multipart/something', then unless you explicitly give it a boundary parameter, through its 'Content-Type' header,
+        ///     it will have a highly unique boundary automatically assigned to it.
+        /// 
+        ///     If you load a 'multipart/something' from a file, by using a [file] parameter, then unless you explicitly set its boundary parameter,
+        ///     in its 'Content-Type' header, then its 'Content-Type', including its 'boundary' parameter, will be loaded from the file you supply, which
+        ///     is the only sane way of making sure your multipart is correctly loaded from your file.
+        /// 
+        ///     Example that creates a multipart request, where the multipart is in its entirety loaded from disc;
+        /// 
+        ///     <pre>pf.net.create-request:"http://127.0.0.1:8080/echo"
+        ///   method:post
+        ///   headers
+        ///     Content-Type:multipart/mixed
+        ///   file:multipart.txt
+        ///     Content-Type:multipart/mixed</pre>
         /// </summary>
         [ActiveEvent (Name = "pf.net.create-request")]
         private static void pf_net_create_request (ApplicationContext context, ActiveEventArgs e)
@@ -106,7 +143,7 @@ namespace phosphorus.net
                 return; // nothing to do here
 
             // checking if this is our guy
-            string method = XUtil.Single<string> (e.Args.GetChildValue ("method", context, "get"), e.Args ["method"], context).ToLower ();
+            string method = XUtil.Single (e.Args.GetChildValue<object> ("method", context, null), e.Args ["method"], context, "get").ToLower ();
             if (method != "get" && method != "post" && method != "put" && method != "delete")
                 return;
 

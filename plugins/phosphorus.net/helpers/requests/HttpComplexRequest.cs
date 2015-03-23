@@ -14,22 +14,35 @@ using phosphorus.core;
 using phosphorus.expressions;
 using MimeKit;
 
-namespace phosphorus.web.helpers
+/// <summary>
+///     Namespace wrapping helpers for creating requests.
+/// 
+///     Primary helpers for creating HTTP requests can be found in this namespace.
+/// </summary>
+namespace phosphorus.net.helpers
 {
+    /// <summary>
+    ///     Class responsible for creating a POST or PUT HTTP request.
+    /// 
+    ///     Encapsulates the necessary methods and functionality for creating HTTP POST and PUT requests.
+    /// </summary>
     public class HttpComplexRequest : HttpRequest
     {
+        /*
+         * override of base class method that creates either a multipart, text part, URL-encoded or binary http POST or PUT request.
+         */
         protected override void Decorate (ApplicationContext context, Node node, HttpWebRequest request, ContentType type)
         {
             switch (type.MediaType) {
             case "multipart":
-                WriteMultipart (context, node, request, type);
+                TransmitMultipart (context, node, request, type);
                 break;
             case "text":
-                WriteText (context, node, request);
+                TransmitText (context, node, request);
                 break;
             default:
                 if (type.MediaType == "application" && type.MediaSubtype == "x-www-form-urlencoded") {
-                    WriteUrlEncodedRequest (context, node, request);
+                    TransmitUrlEncodedRequest (context, node, request);
                 } else {
                     WriteBinary (context, node, request);
                 }
@@ -37,13 +50,60 @@ namespace phosphorus.web.helpers
             }
         }
 
-        private void WriteMultipart (ApplicationContext context, Node node, HttpWebRequest request, ContentType type)
+        /*
+         * creates a multipart HTTP request, and transmits over the given HttpWebRequest
+         */
+        private void TransmitMultipart (
+            ApplicationContext context, 
+            Node node, 
+            HttpWebRequest request, 
+            ContentType type)
+        {
+            if (node.CountWhere (ix => ix.Name == "content" || ix.Name == "file") == 1 && node ["file"] != null) {
+
+                // loads a Multipart from disc, and transmits over the wire
+                TransmitMultipartFromFile (context, node ["file"].Get<string> (context), request, type);
+            } else {
+                
+                // parses a Multipart from the given args, and transmits over the wire
+                TransmitMultipartFromArgs (context, node, request, type);
+            }
+        }
+
+        /*
+         * loads a Multipart from disc, and transmits over the given HttpWebRequest
+         */
+        private void TransmitMultipartFromFile (
+            ApplicationContext context, 
+            string filename, 
+            HttpWebRequest request, 
+            ContentType type)
+        {
+            using (Stream stream = File.OpenRead (GetBasePath (context) + filename)) {
+                Multipart multipart = (Multipart)Multipart.Load (stream);
+
+                // making sure we update the HTTTP header to contain the boundary, before we write our Multipart
+                multipart.ContentType.MediaSubtype = type.MediaSubtype;
+                request.ContentType = multipart.ContentType.MimeType + multipart.ContentType.Parameters;
+                multipart.WriteTo (request.GetRequestStream ());
+            }
+        }
+
+        /*
+         * traverses the given arguments, and creates a Multipart from it, which it transmits over the given HttpWebRequest
+         */
+        private void TransmitMultipartFromArgs (
+            ApplicationContext context,
+            Node node,
+            HttpWebRequest request,
+            ContentType type)
         {
             List<Stream> streams = new List<Stream> ();
             try {
-
                 // creating root Multipart and iterating through children adding MimeEntities
                 Multipart multipart = new Multipart (type.MediaSubtype);
+                if (!string.IsNullOrEmpty (type.Boundary))
+                    multipart.Boundary = type.Boundary;
                 foreach (var idxParam in node.FindAll (idx => idx.Name == "content" || idx.Name == "file")) {
 
                     // creating our MIME entity, and adding to root Multipart
@@ -64,6 +124,9 @@ namespace phosphorus.web.helpers
             }
         }
 
+        /*
+         * creates a single MimeEntity from the given node
+         */
         private MimeEntity CreateMimeEntity (ApplicationContext context, Node node, List<Stream> streams)
         {
             var entityType = ContentType.Parse (
@@ -76,7 +139,7 @@ namespace phosphorus.web.helpers
             MimeEntity retVal;
             switch (entityType.MediaType) {
             case "multipart":
-                retVal = CreateMultipartEntity (context, node, entityType, streams);
+                retVal = CreateMultipart (context, node, entityType, streams);
                 break;
             case "text":
                 retVal = CreateTextEntity (context, node, entityType);
@@ -91,11 +154,11 @@ namespace phosphorus.web.helpers
                 if (idxHeader.Name == "content" || idxHeader.Name == "file")
                     continue; // probably a Multipart child content node
                 if (idxHeader.Name == "Content-Type" && retVal is Multipart)
-                    continue; // header already set other placees
+                    continue; // header already set
                 retVal.Headers.Replace (idxHeader.Name, XUtil.Single<string> (idxHeader.Value, idxHeader, context));
             }
             
-            // defaulting Content-Disposition header, unless explicitly given
+            // defaulting Content-Disposition header, unless explicitly given, if entity is a "file type" of entity
             if (node.Name == "file" && retVal.ContentDisposition == null) {
                 retVal.ContentDisposition = new ContentDisposition ("attachment");
                 retVal.ContentDisposition.Parameters.Add ("filename", node.Get<string> (context));
@@ -103,7 +166,10 @@ namespace phosphorus.web.helpers
             return retVal;
         }
 
-        private Multipart CreateMultipartEntity (
+        /*
+         * creates a Multipart from the given node
+         */
+        private Multipart CreateMultipart (
             ApplicationContext context, 
             Node node, 
             ContentType type, 
@@ -112,46 +178,94 @@ namespace phosphorus.web.helpers
             var value = XUtil.Single<object> (node.Value, node, context, null);
             if (value == null) {
 
-                // individual parts of Multipart are probably children of current node
-                Multipart multipart = new Multipart (type.MediaSubtype);
-                foreach (var idxParam in node.FindAll (idx => idx.Name == "content" || idx.Name == "file")) {
+                // individual parts of Multipart are children of current node
+                return CreateMultipartFromChildren (context, node, type, streams);
+            } else if (node.Name == "content") {
 
-                    // creating our MIME entity, and adding to root Multipart
-                    MimeEntity entity = CreateMimeEntity (context, idxParam, streams);
-                    if (entity != null)
-                        multipart.Add (entity);
-                }
-                return multipart;
+                // individual parts of Multipart are somehow in the node's value
+                return CreateMultipartFromValue (context, value, type, streams);
+            } else if (node.Name == "file") {
+
+                // individual parts of Multipart are somehow in the node's value
+                return LoadMultipartFromValue (context, (string)value, type, streams);
             } else {
-
-                // somehow, multipart is contained in "value" of node
-                Stream stream;
-                if (value is byte[]) {
-
-                    // multipart in binary format
-                    stream = new MemoryStream ((byte[])value);
-                } else if (value is string) {
-                    if (node.Name == "content") {
-
-                        // multipart in text format
-                        stream = new MemoryStream (Encoding.UTF8.GetBytes ((string)value));
-                    } else {
-
-                        // multipart exists in file on disc, loading file, making sure we store stream, such that it can be disposed
-                        stream = File.OpenRead (GetBasePath (context) + value);
-                        streams.Add (stream);
-                    }
-                } else {
-
-                    // only byte[] and strings can create Multiparts
-                    throw new ArgumentException ("Sorry, I don't know how to create a Multipart from the given argument");
-                }
-
-                // loading Multipart from stream, which is now wrapping its contents, and returning to caller
-                return (Multipart)Multipart.Load (type, stream);
+                throw new ArgumentException ("Don't know how to create a Multipart from the given argument.");
             }
         }
         
+        /*
+         * creates a Multipart from the given node's childre
+         */
+        private Multipart CreateMultipartFromChildren (
+            ApplicationContext context, 
+            Node node, 
+            ContentType type, 
+            List<Stream> streams)
+        {
+            Multipart multipart = new Multipart (type.MediaSubtype);
+            if (!string.IsNullOrEmpty (type.Boundary))
+                multipart.ContentType.Boundary = type.Parameters ["boundary"];
+            foreach (var idxParam in node.FindAll (idx => idx.Name == "content" || idx.Name == "file")) {
+
+                // creating our MIME entity, and adding to root Multipart
+                MimeEntity entity = CreateMimeEntity (context, idxParam, streams);
+                if (entity != null)
+                    multipart.Add (entity);
+            }
+            return multipart;
+        }
+
+        /*
+         * creates a Multipart from value of node, somehow
+         */
+        private Multipart CreateMultipartFromValue (
+            ApplicationContext context,
+            object value,
+            ContentType type,
+            List<Stream>streams)
+        {
+            Stream stream;
+            if (value is byte[]) {
+
+                // multipart in binary format
+                stream = new MemoryStream ((byte[])value);
+            } else if (value is string) {
+
+                // multipart in text format, or somehow something that can be converted into text (hopefully!)
+                stream = new MemoryStream (Encoding.UTF8.GetBytes (Utilities.Convert<string> (value, context)));
+            } else {
+                throw new ArgumentException ("Sorry, I don't know how to create a Multipart from that argument.");
+            }
+
+            // loading Multipart from stream, which is now wrapping its contents, and returning to caller
+            if (type == null)
+                return (Multipart)Multipart.Load (stream);
+            else
+                return (Multipart)Multipart.Load (type, stream);
+        }
+        
+        /*
+         * creates a Multipart from value of node, somehow
+         */
+        private Multipart LoadMultipartFromValue (
+            ApplicationContext context,
+            string filename,
+            ContentType type,
+            List<Stream>streams)
+        {
+            // multipart exists in file on disc, loading file, making sure we store stream, such that it can be disposed
+            Stream stream = File.OpenRead (GetBasePath (context) + filename);
+            streams.Add (stream);
+            if (string.IsNullOrEmpty (type.Boundary)) {
+                return (Multipart)Multipart.Load (stream);
+            } else {
+                return (Multipart)Multipart.Load (type, stream);
+            }
+        }
+
+        /*
+         * creates a TextPart by traversing the given node
+         */
         private TextPart CreateTextEntity (
             ApplicationContext context, 
             Node node, 
@@ -184,7 +298,10 @@ namespace phosphorus.web.helpers
             }
             return retVal;
         }
-        
+
+        /*
+         * creates a MimePart that is neither a TextPart nor a Multipart, but "anything else"
+         */
         private MimePart CreateBinaryEntity (
             ApplicationContext context, 
             Node node, 
@@ -223,14 +340,15 @@ namespace phosphorus.web.helpers
             return retVal;
         }
 
-        private void WriteText (ApplicationContext context, Node node, HttpWebRequest request)
+        /*
+         * transmits a "text/xxx" type of request. Notice that this guy will make sure each text part are separated by CR/LF.
+         */
+        private void TransmitText (ApplicationContext context, Node node, HttpWebRequest request)
         {
             // putting all parameters into body of request, as text, with CR/LF between all entities
             using (StreamWriter writer = new StreamWriter (request.GetRequestStream ()) { AutoFlush = true }) {
                 bool first = true;
                 foreach (var idxParam in node.FindAll (idx => idx.Name == "content" || idx.Name == "file")) {
-                    if (idxParam.Count != 0)
-                        throw new ArgumentException ("You cannot supply parameters to content when creating a text request");
                     var value = XUtil.Single<object> (idxParam.Value, idxParam, context, null);
                     if (value == null)
                         continue;
@@ -250,7 +368,10 @@ namespace phosphorus.web.helpers
             }
         }
 
-        private static void WriteUrlEncodedRequest (ApplicationContext context, Node node, HttpWebRequest request)
+        /*
+         * transmits an "application/x-www-form-urlencoded" type of request
+         */
+        private static void TransmitUrlEncodedRequest (ApplicationContext context, Node node, HttpWebRequest request)
         {
             // creating a stream writer wrapping the "request content stream"
             using (StreamWriter writer = new StreamWriter (request.GetRequestStream ())) {
@@ -265,7 +386,10 @@ namespace phosphorus.web.helpers
                 }
             }
         }
-        
+
+        /*
+         * transmits a request that is neither x-www-form-urlencoded, multipart nor text/xxx type of request. this is our default fallback
+         */
         private void WriteBinary (ApplicationContext context, Node node, HttpWebRequest request)
         {
             // putting all parameters into body of request, as binary

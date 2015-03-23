@@ -8,25 +8,28 @@ using System.IO;
 using System.Net;
 using phosphorus.core;
 
-namespace phosphorus.web.helpers
+namespace phosphorus.net.helpers
 {
+    /// <summary>
+    ///     Class encapsulating a text/xxx type of response.
+    /// </summary>
     public class TextResponse : HttpResponse
     {
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="phosphorus.net.helpers.TextResponse"/> class.
+        /// </summary>
+        /// <param name="response">The wrapped HTTP response.</param>
         public TextResponse (HttpWebResponse response)
             : base (response)
         { }
 
         public override void Parse (ApplicationContext context, Node node)
         {
+            base.Parse (context, node);
             using (var reader = new StreamReader (Response.GetResponseStream ())) {
-                Node current = node.Add ("result", Response.ResponseUri.ToString ()).LastChild;
-
-                // HTTP headers and cookies
-                ParseHeaders (context, current);
-                ParseCookies (context, current);
 
                 // then response text
-                current.Add ("content", reader.ReadToEnd ());
+                node.LastChild.Add ("content", reader.ReadToEnd ());
             }
         }
     }

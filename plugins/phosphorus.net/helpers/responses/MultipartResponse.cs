@@ -10,27 +10,30 @@ using System.Text;
 using phosphorus.core;
 using MimeKit;
 
-namespace phosphorus.web.helpers
+namespace phosphorus.net.helpers
 {
+    /// <summary>
+    ///     Class wrapping a multipart/xxx type of HTTP response.
+    /// </summary>
     public class MultipartResponse : HttpResponse
     {
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="phosphorus.net.helpers.MultipartResponse"/> class.
+        /// </summary>
+        /// <param name="response">Wrapped HTTP response.</param>
         public MultipartResponse (HttpWebResponse response)
             : base (response)
         { }
 
         public override void Parse (ApplicationContext context, Node node)
         {
+            base.Parse (context, node);
             using (var stream = Response.GetResponseStream ()) {
                 var multipart = (Multipart)Multipart.Load (stream);
                 if (multipart.Count > 0) {
-                    Node current = node.Add ("result", Response.ResponseUri.ToString ()).LastChild;
-
-                    // HTTP headers and cookies
-                    ParseHeaders (context, current);
-                    ParseCookies (context, current);
 
                     // parsing actual Multipart
-                    ParseMultipart (multipart, current);
+                    ParseMultipart (multipart, node.LastChild);
                 }
             }
         }
