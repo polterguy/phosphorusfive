@@ -5,6 +5,7 @@
 
 using System;
 using System.IO;
+using System.Web;
 using System.Net;
 using System.Text;
 using System.Collections.Generic;
@@ -27,7 +28,11 @@ namespace phosphorus.web.helpers
                 WriteText (context, node, request);
                 break;
             default:
-                WriteBinary (context, node, request);
+                if (type.MediaType == "application" && type.MediaSubtype == "x-www-form-urlencoded") {
+                    WriteUrlEncodedRequest (context, node, request);
+                } else {
+                    WriteBinary (context, node, request);
+                }
                 break;
             }
         }
@@ -88,6 +93,12 @@ namespace phosphorus.web.helpers
                 if (idxHeader.Name == "Content-Type" && retVal is Multipart)
                     continue; // header already set other placees
                 retVal.Headers.Replace (idxHeader.Name, XUtil.Single<string> (idxHeader.Value, idxHeader, context));
+            }
+            
+            // defaulting Content-Disposition header, unless explicitly given
+            if (node.Name == "file" && retVal.ContentDisposition == null) {
+                retVal.ContentDisposition = new ContentDisposition ("attachment");
+                retVal.ContentDisposition.Parameters.Add ("filename", node.Get<string> (context));
             }
             return retVal;
         }
@@ -218,7 +229,9 @@ namespace phosphorus.web.helpers
             using (StreamWriter writer = new StreamWriter (request.GetRequestStream ()) { AutoFlush = true }) {
                 bool first = true;
                 foreach (var idxParam in node.FindAll (idx => idx.Name == "content" || idx.Name == "file")) {
-                    var value = XUtil.Single<object> (idxParam.Value, idxParam, context);
+                    if (idxParam.Count != 0)
+                        throw new ArgumentException ("You cannot supply parameters to content when creating a text request");
+                    var value = XUtil.Single<object> (idxParam.Value, idxParam, context, null);
                     if (value == null)
                         continue;
                     if (first)
@@ -236,13 +249,31 @@ namespace phosphorus.web.helpers
                 }
             }
         }
+
+        private static void WriteUrlEncodedRequest (ApplicationContext context, Node node, HttpWebRequest request)
+        {
+            // creating a stream writer wrapping the "request content stream"
+            using (StreamWriter writer = new StreamWriter (request.GetRequestStream ())) {
+                bool first = true;
+                foreach (var idxArg in node.FindAll (ix => ix.Name != "headers" && ix.Name != "cookies" && ix.Name != "method" && ix.Value != null)) {
+                    if (first)
+                        first = false; // first parameter
+                    else
+                        writer.Write ("&"); // second, third, or fourth, etc, parameter, making sure we separate our parameters correctly
+                    string value = XUtil.Single<string> (idxArg.Value, idxArg, context);
+                    writer.Write (string.Format ("{0}={1}", idxArg.Name, HttpUtility.UrlEncode (value)));
+                }
+            }
+        }
         
         private void WriteBinary (ApplicationContext context, Node node, HttpWebRequest request)
         {
             // putting all parameters into body of request, as binary
             using (Stream stream = request.GetRequestStream ()) {
                 foreach (var idxParam in node.FindAll (idx => idx.Name == "content" || idx.Name == "file")) {
-                    var value = XUtil.Single<object> (idxParam.Value, idxParam, context);
+                    if (idxParam.Count != 0)
+                        throw new ArgumentException ("You cannot supply parameters to content when creating a text request");
+                    var value = XUtil.Single<object> (idxParam.Value, idxParam, context, null);
                     if (value == null)
                         continue;
                     if (value is byte[]) {

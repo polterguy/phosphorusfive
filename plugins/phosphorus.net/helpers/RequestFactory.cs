@@ -11,9 +11,9 @@ namespace phosphorus.web.helpers
 {
     public static class RequestFactory
     {
-        public static IRequest CreateRequest (ApplicationContext context, Node node)
+        public static IRequest CreateRequest (ApplicationContext context, Node node, string method)
         {
-            switch (XUtil.Single<string> (node.GetChildValue ("method", context, "get"), node ["method"], context).ToLower ()) {
+            switch (method) {
             case "get":
                 return new HttpGetRequest ();
             case "post":

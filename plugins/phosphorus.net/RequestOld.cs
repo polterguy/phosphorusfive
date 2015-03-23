@@ -121,7 +121,7 @@ namespace phosphorus.web
         /// 
         ///     Since this Active Event does not necessarily rely upon encoding binary objects, and/or binary files as base64, in addition to that it does neither
         ///     temporary store files in memory when transmitting files to the server end-point, while still being able to send multiple documents
-        ///     to its server end-point, it should significantly outperform other alternative ways of invoking Web Services, such as for instance SOAP, while
+        ///     to its server end-point, it should significantly outperform most alternative ways of invoking Web Services, such as for instance SOAP, while
         ///     still being 100% SOAP compatible, since you can just as well transfer XML. At the same time, it is not in any ways 'breaking' the philosophy
         ///     of REST in any ways, since it 100% perfectly relies upon REST at its core. All other things set aside, this should outperform traditional
         ///     Web Services significantly. Both in bandwidth usage, and in resource usage, for both the client, and the server.

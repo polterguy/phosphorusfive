@@ -24,7 +24,7 @@ namespace phosphorus.web.helpers
                     node.GetChildValue<object> ("allow-auto-redirect", context, null), node ["allow-auto-redirect"], context, true);
             AddHeaders (context, node, _request);
             if (_request.ContentType == null)
-                _request.ContentType = "text/plain; charset=utf-8";
+                _request.ContentType = "application/x-www-form-urlencoded; charset=utf-8";
             AddCookies (context, node, _request);
             Decorate (context, node, _request, ContentType.Parse (_request.ContentType));
             return GetResponse (_request);
