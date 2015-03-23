@@ -19,6 +19,9 @@ namespace phosphorus.web.helpers
         public virtual IResponse Execute (ApplicationContext context, Node node, string url)
         {
             _request = (HttpWebRequest)WebRequest.Create (GetUri (context, node, url));
+            _request.AllowAutoRedirect = 
+                XUtil.Single (
+                    node.GetChildValue<object> ("allow-auto-redirect", context, null), node ["allow-auto-redirect"], context, true);
             AddHeaders (context, node, _request);
             if (_request.ContentType == null)
                 _request.ContentType = "text/plain; charset=utf-8";

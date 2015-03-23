@@ -39,33 +39,24 @@ namespace phosphorus.web.helpers
         {
             // looping through each MIME part, trying to figure out a nice name for it
             foreach (var idxEntity in multipart) {
-                Node current = node.Add (GetPartName (idxEntity)).LastChild;
+                Node current = node.Add ("content").LastChild;
 
                 // MIME headers
-                current.Add ("headers");
                 foreach (var idxHeader in idxEntity.Headers) {
-                    current.LastChild.Add (idxHeader.Field, idxHeader.Value);
+                    current.Add (idxHeader.Field, idxHeader.Value);
                 }
 
                 // actual MIME part, which depend upon what type of part we're talking about
                 if (idxEntity is TextPart) {
-                    current.Add ("value", ((TextPart)idxEntity).GetText (Encoding.UTF8));
+                    current.Value = ((TextPart)idxEntity).GetText (Encoding.UTF8);
                 } else if (idxEntity is Multipart) {
                     ParseMultipart ((Multipart)idxEntity, current);
                 } else if (idxEntity is MimePart) {
                     MemoryStream stream = new MemoryStream ();
                     ((MimePart)idxEntity).ContentObject.DecodeTo (stream);
-                    current.Add ("value", stream.ToArray ());
+                    current.Value = stream.ToArray ();
                 }
             }
-        }
-
-        private string GetPartName (MimeEntity entity)
-        {
-            if (entity.ContentDisposition != null && 
-                entity.ContentDisposition.Parameters.Contains ("name"))
-                return entity.ContentDisposition.Parameters ["name"];
-            return "part";
         }
     }
 }

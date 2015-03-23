@@ -169,9 +169,9 @@
       <Project>{0F68BFA7-1CF7-4737-9058-CED4A9ED3427}</Project>
       <Name>phosphorus.web.ui</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\plugins\phosphorus.web\phosphorus.web.csproj">
+    <ProjectReference Include="..\..\plugins\phosphorus.net\phosphorus.net.csproj">
       <Project>{378663D4-1FC1-4109-8896-F72440C6C269}</Project>
-      <Name>phosphorus.web</Name>
+      <Name>phosphorus.net</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

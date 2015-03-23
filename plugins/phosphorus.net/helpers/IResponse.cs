@@ -4,19 +4,12 @@
  */
 
 using System;
-using System.Net;
 using phosphorus.core;
 
 namespace phosphorus.web.helpers
 {
-    public class TextResponse : HttpResponse
+    public interface IResponse : IDisposable
     {
-        public TextResponse (HttpWebResponse response)
-            : base (response)
-        { }
-
-        public override void Parse (ApplicationContext context, Node node)
-        {
-        }
+        void Parse (ApplicationContext context, Node node);
     }
 }

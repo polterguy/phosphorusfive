@@ -1062,6 +1062,17 @@ set:@/..?value
         }
 
         /// <summary>
+        ///     verifies escaped iterators works
+        /// </summary>
+        [Test]
+        public void ConvertBytesToString ()
+        {
+            var node = new Node ("@?value.string", System.Text.Encoding.UTF8.GetBytes ("success"));
+            string value = XUtil.Single<string> (node.Name, node, Context);
+            Assert.AreEqual ("success", value);
+        }
+
+        /// <summary>
         ///     verifies expressions can span multiple lines, with muliple white spaces
         /// </summary>
         [Test]

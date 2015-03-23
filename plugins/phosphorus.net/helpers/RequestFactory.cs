@@ -14,17 +14,13 @@ namespace phosphorus.web.helpers
         public static IRequest CreateRequest (ApplicationContext context, Node node)
         {
             switch (XUtil.Single<string> (node.GetChildValue ("method", context, "get"), node ["method"], context).ToLower ()) {
-            case "http-get":
-            case "https-get":
+            case "get":
                 return new HttpGetRequest ();
-            case "http-post":
-            case "https-post":
+            case "post":
                 return new HttpPostRequest ();
-            case "http-put":
-            case "https-put":
+            case "put":
                 return new HttpPutRequest ();
-            case "http-delete":
-            case "https-delete":
+            case "delete":
                 return new HttpDeleteRequest ();
             default:
                 return null;

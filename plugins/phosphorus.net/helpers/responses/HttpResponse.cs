@@ -20,12 +20,18 @@ namespace phosphorus.web.helpers
             _response = response;
         }
 
+        public abstract void Parse (ApplicationContext context, Node node);
+
+        public void Close ()
+        {
+            Dispose (true);
+            GC.SuppressFinalize (this);
+        }
+
         protected HttpWebResponse Response {
             get { return _response; }
         }
         
-        public abstract void Parse (ApplicationContext context, Node node);
-
         protected void ParseHeaders (ApplicationContext context, Node node)
         {
             node.Add ("headers");
@@ -48,6 +54,19 @@ namespace phosphorus.web.helpers
                     node.LastChild.LastChild.Add ("value", HttpUtility.UrlDecode (idxCookie.Value));
                 }
             }
+        }
+        
+        protected virtual void Dispose (bool disposing)
+        {
+            if (disposing && _response != null) {
+                _response.Dispose ();
+                _response = null;
+            }
+        }
+
+        void IDisposable.Dispose ()
+        {
+            Close ();
         }
     }
 }

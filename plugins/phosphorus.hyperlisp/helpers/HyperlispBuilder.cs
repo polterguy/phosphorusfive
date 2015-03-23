@@ -111,7 +111,7 @@ namespace phosphorus.hyperlisp.helpers
             if (node.Value == null)
                 return; // nothing to append here
 
-            var value = node.Get<string> (_context);
+            var value = node.StringEncodeValue (_context, true);
             if (value.Contains ("\n")) {
                 builder.Append (string.Format (@":@""{0}""", value.Replace (@"""", @"""""")));
             } else if (value.Contains (":") || value.Trim () != value) {

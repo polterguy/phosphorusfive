@@ -33,11 +33,13 @@ namespace phosphorus.core
         /// <param name="value">Value to convert.</param>
         /// <param name="context">Application context. Needed since it might potentially have to raise "conversion Active Events" to convert your value.</param>
         /// <param name="defaultValue">Default value to return, if no conversion is possible.</param>
+        /// <param name="encode">If true, then the value will be encoded as base64, if necessary, and value is byte[].</param>
         /// <typeparam name="T">Type to convert your value to.</typeparam>
         public static T Convert<T> (
             object value,
             ApplicationContext context,
-            T defaultValue = default (T))
+            T defaultValue = default (T),
+            bool encode = false)
         {
             // no possible conversion exists
             if (value == null)
@@ -50,16 +52,13 @@ namespace phosphorus.core
 
             // trying installed converters from ApplicationContext
             if (typeof (T) == typeof (string)) {
-                var retVal = Convert2String (value, context);
+                var retVal = Convert2String (value, context, encode);
                 if (retVal != null)
                     return (T) (object) retVal;
             } else {
-                var sValue = value as string;
-                if (sValue != null) {
-                    var retVal = Convert2Object<T> (sValue, context);
-                    if (retVal != null && !retVal.Equals (default (T)))
-                        return retVal;
-                }
+                var retVal = Convert2Object<T> (value, context);
+                if (retVal != null && !retVal.Equals (default (T)))
+                    return retVal;
             }
 
             // checking if type is IConvertible
@@ -215,7 +214,7 @@ namespace phosphorus.core
         /*
          * converts value to string using conversion Active Events
          */
-        private static string Convert2String (object value, ApplicationContext context)
+        private static string Convert2String (object value, ApplicationContext context, bool encode)
         {
             var nodes = value as IEnumerable<Node>;
             if (nodes != null) {
@@ -233,15 +232,18 @@ namespace phosphorus.core
                 }
                 return builder.ToString ();
             }
+            Node node = new Node (string.Empty, value);
+            if (encode && value is byte[])
+                node.Add ("encode", true);
             return context.Raise (
                 "pf.hyperlisp.get-string-value." +
-                value.GetType ().FullName, new Node (string.Empty, value)).Value as string;
+                value.GetType ().FullName, node).Value as string;
         }
 
         /*
          * converts string to object using conversion Active Events
          */
-        private static T Convert2Object<T> (string value, ApplicationContext context, T defaultValue = default (T))
+        private static T Convert2Object<T> (object value, ApplicationContext context, T defaultValue = default (T))
         {
             var typeName = context.Raise (
                 "pf.hyperlisp.get-type-name." + typeof (T).FullName).Get<string> (context);

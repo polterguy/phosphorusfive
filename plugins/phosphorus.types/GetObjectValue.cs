@@ -35,6 +35,7 @@ namespace phosphorus.types
          * Active Event
          */
 
+
         /// <summary>
         ///     Creates a <see cref="phosphorus.core.Node">Node</see> list from its string representation.
         /// 

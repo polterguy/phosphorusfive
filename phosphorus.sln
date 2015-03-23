@@ -34,7 +34,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.meta", "plugins\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.threading", "plugins\phosphorus.threading\phosphorus.threading.csproj", "{EF65C1FB-FCC8-43F0-90AC-39DA931268E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.web", "plugins\phosphorus.web\phosphorus.web.csproj", "{378663D4-1FC1-4109-8896-F72440C6C269}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phosphorus.net", "plugins\phosphorus.net\phosphorus.net.csproj", "{378663D4-1FC1-4109-8896-F72440C6C269}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "core", "core", "{65EAD177-7108-4766-9B7D-5C20378DD4BE}"
 EndProject

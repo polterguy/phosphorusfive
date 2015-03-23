@@ -13,13 +13,18 @@ using phosphorus.web.helpers;
 
 namespace phosphorus.web
 {
-    public static class Request
+    public static class CreateRequest
     {
-        [ActiveEvent (Name = "pf.web.create-request")]
-        private static void pf_web_create_request (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "pf.net.create-request")]
+        private static void pf_net_create_request (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value == null)
                 return; // nothing to do here
+
+            // checking what type of request this is, to see if we should handle it, or let another guy handle it
+            string type = XUtil.Single<string> (e.Args.GetChildValue ("type", context, "http"), e.Args ["type"], context);
+            if (type != "http" && type != "https")
+                return; // not our guy ...
 
             // iterating through every URL requested by caller
             foreach (var idxUrl in XUtil.Iterate<string> (e.Args.Value, e.Args, context)) {
@@ -27,8 +32,9 @@ namespace phosphorus.web
                 // creating our request
                 IRequest request = RequestFactory.CreateRequest (context, e.Args);
                 if (request != null) {
-                    IResponse response = request.Execute (context, e.Args, idxUrl);
-                    response.Parse (context, e.Args);
+                    using (IResponse response = request.Execute (context, e.Args, idxUrl)) {
+                        response.Parse (context, e.Args);
+                    }
                 }
             }
         }

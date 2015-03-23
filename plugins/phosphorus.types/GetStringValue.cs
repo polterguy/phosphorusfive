@@ -4,6 +4,7 @@
  */
 
 using System;
+using System.Text;
 using System.Globalization;
 using phosphorus.core;
 
@@ -98,15 +99,18 @@ namespace phosphorus.types
         /// <summary>
         ///     Creates a string from a byte array.
         /// 
-        ///     Will convert the given System.Byte[] to its string representation. The string representation of a byte array, is its 
-        ///     BASE64 encoded bytes.
+        ///     Will convert the given System.Byte[] to a string. If [encode] is true, then it will base64 encode the
+        ///     string, otherwise it will use Encoding.UTF8.GetString to create a string from the byte array.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "pf.hyperlisp.get-string-value.System.Byte[]")]
         private static void pf_hyperlisp_get_string_value_System_ByteBlob (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = Convert.ToBase64String (e.Args.Get<byte[]> (context));
+            if (e.Args.GetChildValue ("encode", context, false))
+                e.Args.Value = Convert.ToBase64String (e.Args.Get<byte[]> (context));
+            else
+                e.Args.Value = Encoding.UTF8.GetString (e.Args.Get<byte[]> (context));
         }
     }
 }

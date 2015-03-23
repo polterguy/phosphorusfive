@@ -4,6 +4,7 @@
  */
 
 using System;
+using System.IO;
 using System.Net;
 using phosphorus.core;
 
@@ -17,6 +18,16 @@ namespace phosphorus.web.helpers
         
         public override void Parse (ApplicationContext context, Node node)
         {
+            Node current = node.Add ("result", Response.ResponseUri.ToString ()).LastChild;
+
+            // HTTP headers and cookies
+            ParseHeaders (context, current);
+            ParseCookies (context, current);
+
+            // then response content
+            MemoryStream stream = new MemoryStream ();
+            Response.GetResponseStream ().CopyTo (stream);
+            current.Add ("content", stream.ToArray ());
         }
     }
 }

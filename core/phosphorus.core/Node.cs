@@ -474,6 +474,20 @@ namespace phosphorus.core
         }
 
         /// <summary>
+        ///     Returns the string value of the value of the node.
+        /// 
+        ///     Will convert the node's value if necessary to an encoded string, and return that string. For a byte[] value,
+        ///     this means base64 encode its value.
+        /// </summary>
+        /// <returns>The string value of the node's value.</returns>
+        /// <param name="context">Application context.</param>
+        /// <param name="encode">If set to <c>true</c> then string will be base64 encoded if necessary.</param>
+        public string StringEncodeValue (ApplicationContext context, bool encode)
+        {
+            return Utilities.Convert<string> (Value, context, null, encode);
+        }
+
+        /// <summary>
         ///     Returns the children of this instance.
         /// </summary>
         /// <value>Its children nodes.</value>

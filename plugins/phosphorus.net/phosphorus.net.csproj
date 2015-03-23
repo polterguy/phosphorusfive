@@ -7,8 +7,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{378663D4-1FC1-4109-8896-F72440C6C269}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>phosphorus.web</RootNamespace>
-    <AssemblyName>phosphorus.web</AssemblyName>
+    <RootNamespace>phosphorus.net</RootNamespace>
+    <AssemblyName>phosphorus.net</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -58,7 +58,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Request.cs" />
     <Compile Include="RequestOld.cs" />
     <Compile Include="helpers\RequestFactory.cs" />
     <Compile Include="helpers\IRequest.cs" />
@@ -74,6 +73,7 @@
     <Compile Include="helpers\requests\HttpUriFormattedRequest.cs" />
     <Compile Include="helpers\requests\HttpComplexRequest.cs" />
     <Compile Include="helpers\responses\HttpResponse.cs" />
+    <Compile Include="CreateRequest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

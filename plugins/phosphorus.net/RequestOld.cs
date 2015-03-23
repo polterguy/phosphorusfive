@@ -25,9 +25,9 @@ using MimeKit;
 namespace phosphorus.web
 {
     /// <summary>
-    ///     Class wrapping [pf.web.create-request] Active Event.
+    ///     Class wrapping [pf.net.create-request] Active Event.
     /// 
-    ///     Contains the [pf.web.create-request] Active Event, and its associated helper methods.
+    ///     Contains the [pf.net.create-request] Active Event, and its associated helper methods.
     /// </summary>
     public static class RequestOld
     {
@@ -65,7 +65,7 @@ namespace phosphorus.web
         /// 
         ///     Example that will create a MIME multipart HTTP request;
         /// 
-        ///     <pre>pf.web.create-request:"http://127.0.0.1:8080/echo"
+        ///     <pre>pf.net.create-request:"http://127.0.0.1:8080/echo"
         ///   method:post
         ///   headers
         ///     Content-Type:multipart/mixed
@@ -84,7 +84,7 @@ namespace phosphorus.web
         /// 
         ///     Example that will create a 'application/x-www-form-urlencoded' type of request;
         /// 
-        ///     <pre>pf.web.create-request:"http://127.0.0.1:8080/echo"
+        ///     <pre>pf.net.create-request:"http://127.0.0.1:8080/echo"
         ///   method:post
         ///   content
         ///     foo-arg:Howdy world
@@ -132,7 +132,7 @@ namespace phosphorus.web
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "pf.web.create-request-OLD")]
+        [ActiveEvent (Name = "pf.net.create-request-OLD")]
         private static void pf_web_create_request (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value == null)

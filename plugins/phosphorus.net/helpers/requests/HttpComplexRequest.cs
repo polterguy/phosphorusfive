@@ -39,14 +39,12 @@ namespace phosphorus.web.helpers
 
                 // creating root Multipart and iterating through children adding MimeEntities
                 Multipart multipart = new Multipart (type.MediaSubtype);
-                foreach (var idxParamWrapper in node.FindAll (idx => idx.Name == "content" || idx.Name == "files")) {
-                    foreach (var idxParam in idxParamWrapper.Children) {
+                foreach (var idxParam in node.FindAll (idx => idx.Name == "content" || idx.Name == "file")) {
 
-                        // creating our MIME entity, and adding to root Multipart
-                        MimeEntity entity = CreateMimeEntity (context, idxParam, streams);
-                        if (entity != null)
-                            multipart.Add (entity);
-                    }
+                    // creating our MIME entity, and adding to root Multipart
+                    MimeEntity entity = CreateMimeEntity (context, idxParam, streams);
+                    if (entity != null)
+                        multipart.Add (entity);
                 }
 
                 // making sure we update the HTTTP header to contain the boundary, before we write our Multipart
@@ -64,7 +62,11 @@ namespace phosphorus.web.helpers
         private MimeEntity CreateMimeEntity (ApplicationContext context, Node node, List<Stream> streams)
         {
             var entityType = ContentType.Parse (
-                XUtil.Single<string> (node.GetChildValue<object> ("Content-Type", context, null), node ["Content-Type"], context, "text/plain"));
+                XUtil.Single<string> (
+                    node.GetChildValue<object> ("Content-Type", context, null), 
+                    node ["Content-Type"], 
+                    context, 
+                    "text/plain"));
 
             MimeEntity retVal;
             switch (entityType.MediaType) {
@@ -81,7 +83,7 @@ namespace phosphorus.web.helpers
             
             // decorating MimeEntity with headers
             foreach (var idxHeader in node.Children) {
-                if (idxHeader.Name == "content" || idxHeader.Name == "files")
+                if (idxHeader.Name == "content" || idxHeader.Name == "file")
                     continue; // probably a Multipart child content node
                 if (idxHeader.Name == "Content-Type" && retVal is Multipart)
                     continue; // header already set other placees
@@ -101,14 +103,12 @@ namespace phosphorus.web.helpers
 
                 // individual parts of Multipart are probably children of current node
                 Multipart multipart = new Multipart (type.MediaSubtype);
-                foreach (var idxParamWrapper in node.FindAll (idx => idx.Name == "content" || idx.Name == "files")) {
-                    foreach (var idxParam in idxParamWrapper.Children) {
+                foreach (var idxParam in node.FindAll (idx => idx.Name == "content" || idx.Name == "file")) {
 
-                        // creating our MIME entity, and adding to root Multipart
-                        MimeEntity entity = CreateMimeEntity (context, idxParam, streams);
-                        if (entity != null)
-                            multipart.Add (entity);
-                    }
+                    // creating our MIME entity, and adding to root Multipart
+                    MimeEntity entity = CreateMimeEntity (context, idxParam, streams);
+                    if (entity != null)
+                        multipart.Add (entity);
                 }
                 return multipart;
             } else {
@@ -120,7 +120,7 @@ namespace phosphorus.web.helpers
                     // multipart in binary format
                     stream = new MemoryStream ((byte[])value);
                 } else if (value is string) {
-                    if (node.Parent.Name == "content") {
+                    if (node.Name == "content") {
 
                         // multipart in text format
                         stream = new MemoryStream (Encoding.UTF8.GetBytes ((string)value));
@@ -132,7 +132,7 @@ namespace phosphorus.web.helpers
                     }
                 } else {
 
-                    // Guids, booleans, integers and so on, don't make for nice Multiparts ...
+                    // only byte[] and strings can create Multiparts
                     throw new ArgumentException ("Sorry, I don't know how to create a Multipart from the given argument");
                 }
 
@@ -155,7 +155,7 @@ namespace phosphorus.web.helpers
                 // converting from byte[] to string
                 retVal.SetText (Encoding.UTF8, Encoding.UTF8.GetString ((byte[])value));
             } else if (value is string) {
-                if (node.Parent.Name == "content") {
+                if (node.Name == "content") {
 
                     // content is already string
                     retVal.SetText (Encoding.UTF8, (string)value);
@@ -191,7 +191,7 @@ namespace phosphorus.web.helpers
                 // wrapping byte[] in memory stream
                 stream = new MemoryStream ((byte[])value);
             } else if (value is string) {
-                if (node.Parent.Name == "content") {
+                if (node.Name == "content") {
 
                     // content is string, wrapping in memory stream, converting to bytes
                     stream = new MemoryStream (Encoding.UTF8.GetBytes ((string)value));
@@ -217,23 +217,21 @@ namespace phosphorus.web.helpers
             // putting all parameters into body of request, as text, with CR/LF between all entities
             using (StreamWriter writer = new StreamWriter (request.GetRequestStream ()) { AutoFlush = true }) {
                 bool first = true;
-                foreach (var idxParamsWrapper in node.FindAll (idx => idx.Name == "content" || idx.Name == "files")) {
-                    foreach (var idxParam in idxParamsWrapper.Children) {
-                        var value = XUtil.Single<object> (idxParam.Value, idxParam, context);
-                        if (value == null)
-                            continue;
-                        if (first)
-                            first = false;
-                        else
-                            writer.Write ("\r\n");
-                        if (idxParamsWrapper.Name == "files") {
-                            using (FileStream stream = File.OpenRead (GetBasePath (context) + Utilities.Convert<string> (value, context))) {
-                                // assuming file is "text file"
-                                stream.CopyTo (writer.BaseStream);
-                            }
-                        } else {
-                            writer.Write (Utilities.Convert<string> (value, context));
+                foreach (var idxParam in node.FindAll (idx => idx.Name == "content" || idx.Name == "file")) {
+                    var value = XUtil.Single<object> (idxParam.Value, idxParam, context);
+                    if (value == null)
+                        continue;
+                    if (first)
+                        first = false;
+                    else
+                        writer.Write ("\r\n");
+                    if (idxParam.Name == "file") {
+                        using (FileStream stream = File.OpenRead (GetBasePath (context) + Utilities.Convert<string> (value, context))) {
+                            // assuming file is "text file"
+                            stream.CopyTo (writer.BaseStream);
                         }
+                    } else {
+                        writer.Write (Utilities.Convert<string> (value, context));
                     }
                 }
             }
@@ -243,28 +241,26 @@ namespace phosphorus.web.helpers
         {
             // putting all parameters into body of request, as binary
             using (Stream stream = request.GetRequestStream ()) {
-                foreach (var idxParamsWrapper in node.FindAll (idx => idx.Name == "content" || idx.Name == "files")) {
-                    foreach (var idxParam in idxParamsWrapper.Children) {
-                        var value = XUtil.Single<object> (idxParam.Value, idxParam, context);
-                        if (value == null)
-                            continue;
-                        if (value is byte[]) {
-                            byte[] byteValue = (byte[])value;
-                            stream.Write (byteValue, 0, byteValue.Length);
-                        } else if (value is string) {
-                            if (idxParamsWrapper.Name == "files") {
-                                using (FileStream fileStream = File.OpenRead (GetBasePath (context) + Utilities.Convert<string> (value, context))) {
-                                    fileStream.CopyTo (stream);
-                                }
-                            } else {
-                                byte[] byteValue = Encoding.UTF8.GetBytes ((string)value);
-                                stream.Write (byteValue, 0, byteValue.Length);
+                foreach (var idxParam in node.FindAll (idx => idx.Name == "content" || idx.Name == "file")) {
+                    var value = XUtil.Single<object> (idxParam.Value, idxParam, context);
+                    if (value == null)
+                        continue;
+                    if (value is byte[]) {
+                        byte[] byteValue = (byte[])value;
+                        stream.Write (byteValue, 0, byteValue.Length);
+                    } else if (value is string) {
+                        if (idxParam.Name == "file") {
+                            using (FileStream fileStream = File.OpenRead (GetBasePath (context) + Utilities.Convert<string> (value, context))) {
+                                fileStream.CopyTo (stream);
                             }
                         } else {
-                            // defaulting to Binary formatter
-                            BinaryFormatter formatter = new BinaryFormatter ();
-                            formatter.Serialize (stream, value);
+                            byte[] byteValue = Encoding.UTF8.GetBytes ((string)value);
+                            stream.Write (byteValue, 0, byteValue.Length);
                         }
+                    } else {
+                        // defaulting to Binary formatter
+                        BinaryFormatter formatter = new BinaryFormatter ();
+                        formatter.Serialize (stream, value);
                     }
                 }
             }
