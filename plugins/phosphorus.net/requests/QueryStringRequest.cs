@@ -37,12 +37,9 @@ namespace phosphorus.net.requests
                     builder.Append ("&");
                 }
 
-                // getting Content-Disposition, if there is any
-                var cntDisp = GetDisposition (context, idxArg);
-
-                builder.Append (HttpUtility.UrlEncode (GetName (context, idxArg, cntDisp)));
+                builder.Append (HttpUtility.UrlEncode (idxArg.Name));
                 builder.Append ("=");
-                builder.Append (HttpUtility.UrlEncode (GetContent (context, idxArg, cntDisp)));
+                builder.Append (HttpUtility.UrlEncode (GetContent (context, idxArg)));
             }
 
             // returning Url to caller
@@ -50,42 +47,12 @@ namespace phosphorus.net.requests
         }
 
         /*
-         * returns the ContentDisposition, if there is any
-         */
-        private ContentDisposition GetDisposition (ApplicationContext context, Node node)
-        {
-            var cntNode = node ["Content-Disposition"];
-            if (cntNode != null)
-                return ContentDisposition.Parse (XUtil.Single<string> (cntNode.Value, cntNode, (context)));
-            return null;
-        }
-
-        /*
-         * returns the name of our parameter, which unless there's a ContentDisposition with a "name" parameter, 
-         * will default to the node's name
-         */
-        private string GetName (ApplicationContext context, Node node, ContentDisposition cntDisp)
-        {
-            if (cntDisp != null && cntDisp.Parameters ["name"] != null)
-                return cntDisp.Parameters ["name"];
-            return node.Name;
-        }
-
-        /*
          * retrieves content of parameter, which if this is a file attachment, will be the content of that file, otherwise
          * it will be the value of the parameter node given
          */
-        private byte[] GetContent (ApplicationContext context, Node node, ContentDisposition cntDisp)
+        private byte[] GetContent (ApplicationContext context, Node node)
         {
-            if (cntDisp != null && !string.IsNullOrEmpty (cntDisp.FileName)) {
-
-                // this is a file attachment, which is weird for this type of request, but who are we to judge ...
-                if (node.Value != null)
-                    throw new ArgumentException ("Sorry, I got confused, both a 'value' and a 'filename' was given, please decide where your content is.");
-                return File.ReadAllBytes (GetBasePath (context) + cntDisp.FileName);
-            }
-
-            // this is not a file attachment, converting content to byte array if necessary, and returning to caller
+            // converting content to byte array if necessary, and returning to caller
             var content = XUtil.Single<object> (node.Value, node, context, null);
             if (content == null)
                 return new byte [] { }; // no value

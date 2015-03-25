@@ -19,6 +19,6 @@ namespace phosphorus.net
     /// </summary>
     public interface ISerializer
     {
-        void Serialize (ApplicationContext context, Node node, Stream stream, HttpWebRequest request);
+        void Serialize (ApplicationContext context, Node node, HttpWebRequest request);
     }
 }

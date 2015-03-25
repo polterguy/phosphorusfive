@@ -27,8 +27,9 @@ namespace phosphorus.net.requests
 
         public override IResponse Execute (ApplicationContext context, Node node)
         {
-            using (Stream stream = Request.GetRequestStream ()) {
-                _serializer.Serialize (context, node, stream, Request);
+            // making sure our stream is disposed when done ...
+            using (var str = Request.GetRequestStream ()) {
+                _serializer.Serialize (context, node, Request);
             }
             return base.Execute (context, node);
         }

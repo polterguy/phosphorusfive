@@ -28,21 +28,15 @@ namespace phosphorus.net.requests.serializers
         public override void Serialize (
             ApplicationContext context, 
             Node node, 
-            Stream stream,
             HttpWebRequest request)
         {
             List<Stream> streams = new List<Stream> ();
             try {
                 // creating root Multipart, making sure sub-type is passed on
-                Multipart multipart = new Multipart (_contentType.MediaSubtype);
-
-                // adding all parameters from 'Content-Type'
-                foreach (var idxHeader in _contentType.Parameters) {
-                    multipart.ContentType.Parameters [idxHeader.Name] = idxHeader.Value;
-                }
+                Multipart multipart = CreateMultipart ();
 
                 // looping through all arguments, creating a MimeEntity, adding to Multipart
-                foreach (var idxArg in node.FindAll (ix => ix.Name != "headers" && ix.Name != "cookies" && ix.Name != "method")) {
+                foreach (var idxArg in GetArguments (node)) {
 
                     // creating our MIME entity, and adding to root Multipart
                     multipart.Add (CreateMimeEntity (context, idxArg, streams));
@@ -52,7 +46,7 @@ namespace phosphorus.net.requests.serializers
                 request.ContentType = multipart.ContentType.MimeType + multipart.ContentType.Parameters;
 
                 // writing Multipart to HTTTP request stream
-                multipart.WriteTo (stream);
+                multipart.WriteTo (request.GetRequestStream ());
             } finally {
 
                 // cleaning up
@@ -60,6 +54,18 @@ namespace phosphorus.net.requests.serializers
                     idxStream.Dispose ();
                 }
             }
+        }
+
+        private Multipart CreateMultipart ()
+        {
+            // making sure we pass in the MediaSubtype
+            Multipart multipart = new Multipart (_contentType.MediaSubtype);
+
+            // adding all existing parameters from 'Content-Type'
+            foreach (var idxHeader in _contentType.Parameters) {
+                multipart.ContentType.Parameters [idxHeader.Name] = idxHeader.Value;
+            }
+            return multipart;
         }
 
         /*
@@ -133,6 +139,28 @@ namespace phosphorus.net.requests.serializers
                 part.Headers.Replace (idxHeader.Name, XUtil.Single<string> (idxHeader.Value, idxHeader, context));
             }
             return part;
+        }
+        
+        /*
+         * returns the ContentDisposition for the given node, if there is any
+         */
+        protected static ContentDisposition GetDisposition (ApplicationContext context, Node node)
+        {
+            var cntNode = node ["Content-Disposition"];
+            if (cntNode != null)
+                return ContentDisposition.Parse (XUtil.Single<string> (cntNode.Value, cntNode, (context)));
+            return null;
+        }
+
+        /*
+         * returns the ContentDisposition for the given node, if there is any
+         */
+        protected static ContentType GetContentType (ApplicationContext context, Node node)
+        {
+            var cntNode = node ["Content-Type"];
+            if (cntNode != null)
+                return ContentType.Parse (XUtil.Single<string> (cntNode.Value, cntNode, (context)));
+            return null;
         }
     }
 }

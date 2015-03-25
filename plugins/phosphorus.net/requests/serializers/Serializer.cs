@@ -18,7 +18,7 @@ namespace phosphorus.net.requests.serializers
 {
     public abstract class Serializer : ISerializer
     {
-        public abstract void Serialize (ApplicationContext context, Node node, Stream stream, HttpWebRequest request);
+        public abstract void Serialize (ApplicationContext context, Node node, HttpWebRequest request);
 
         private static string _basePath;
         protected static string GetBasePath (ApplicationContext context)
@@ -31,26 +31,9 @@ namespace phosphorus.net.requests.serializers
             return _basePath;
         }
 
-        /*
-         * returns the ContentDisposition for the given node, if there is any
-         */
-        protected ContentDisposition GetDisposition (ApplicationContext context, Node node)
+        protected IEnumerable<Node> GetArguments (Node node)
         {
-            var cntNode = node ["Content-Disposition"];
-            if (cntNode != null)
-                return ContentDisposition.Parse (XUtil.Single<string> (cntNode.Value, cntNode, (context)));
-            return null;
-        }
-        
-        /*
-         * returns the ContentDisposition for the given node, if there is any
-         */
-        protected ContentType GetContentType (ApplicationContext context, Node node)
-        {
-            var cntNode = node ["Content-Type"];
-            if (cntNode != null)
-                return ContentType.Parse (XUtil.Single<string> (cntNode.Value, cntNode, (context)));
-            return null;
+            return node.FindAll (ix => ix.Name != "headers" && ix.Name != "cookies" && ix.Name != "method");
         }
     }
 }

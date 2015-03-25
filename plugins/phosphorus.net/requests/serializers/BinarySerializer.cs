@@ -21,43 +21,33 @@ namespace phosphorus.net.requests.serializers
         public override void Serialize (
             ApplicationContext context, 
             Node node, 
-            Stream stream,
             HttpWebRequest request)
         {
-            // putting all parameters into body of request, as binary content
-            foreach (var idxArg in node.FindAll (ix => ix.Name != "headers" && ix.Name != "cookies" && ix.Name != "method")) {
+            List<Node> args = new List<Node> (GetArguments (node));
+            if (args.Count != 1)
+                throw new ArgumentException ("The binary serializer can only handle exactly one argument.");
 
-                // getting Content-Disposition, if there is any
-                var cntDisp = GetDisposition (context, idxArg);
+            var objValue = XUtil.Single<object> (args [0].Value, args [0], context, null);
+            if (objValue == null)
+                throw new ArgumentException ("The binary serializer was given a void expression, or a null argument.");
 
-                if (cntDisp != null && !string.IsNullOrEmpty (cntDisp.FileName) && idxArg.Value == null) {
+            var byteValue = objValue as byte [];
+            if (byteValue != null) {
 
-                    // this is a file attachment
-                    using (var fileStream = File.OpenRead (GetBasePath (context) + cntDisp.FileName)) {
-                        fileStream.CopyTo (stream);
-                    }
-                } else if (idxArg.Value != null) {
+                // content is byte array
+                request.GetRequestStream ().Write (byteValue, 0, byteValue.Length);
+            } else {
+                var strValue = objValue as string;
+                if (strValue != null) {
 
-                    // content is (supposed to be) in value of node, somehow
-                    var byteValue = idxArg.Value as byte [];
-                    if (byteValue != null) {
+                    // content is string
+                    StreamWriter writer = new StreamWriter (request.GetRequestStream ());
+                    writer.Write (strValue); 
+                } else {
 
-                        // content is byte array
-                        stream.Write (byteValue, 0, byteValue.Length);
-                    } else {
-                        var strValue = idxArg.Value as string;
-                        if (strValue != null) {
-
-                            // content is string, making sure we support expressions
-                            StreamWriter writer = new StreamWriter (stream);
-                            writer.Write (XUtil.Single <string> (strValue, idxArg, context)); 
-                        } else {
-
-                            // defaulting to binary formatter
-                            BinaryFormatter formatter = new BinaryFormatter ();
-                            formatter.Serialize (stream, idxArg.Value);
-                        }
-                    }
+                    // defaulting to binary formatter
+                    BinaryFormatter formatter = new BinaryFormatter ();
+                    formatter.Serialize (request.GetRequestStream (), objValue);
                 }
             }
         }

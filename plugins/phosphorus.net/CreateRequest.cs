@@ -31,109 +31,31 @@ namespace phosphorus.net
         ///     value of [method], if you ommit it, is 'get'. You can add HTTP headers to your request as a key/value collection beneath [headers].
         ///     In addition you can transfer cookies to the server through [cookie] as key/value pair nodes.
         /// 
-        ///     You can supply any number of arguments as [content] and/or [file], which will be transferred to the server end-point. If you create
-        ///     a "multipart/xxx" request, signified by setting the 'Content-Type' header to "multipart/something", then you can supply MIME headers
-        ///     for your [content] or [file] entities, directly beneath your [content] or [file] node, as a key/value pair of collection. If you 
-        ///     supply a [file] to be transferred, then the filename and relative path is expected to be the value of your [file] node. If you supply
-        ///     a [content] node, then the content you wish to transmit, is expected to be found as the value of your [content] node. All MIME headers 
-        ///     set this way, will be correctly handled by this Active Event. This means that you can for instance choose a transfer encoding for your 
-        ///     argument(s) and/or file(s) as 'Content-Transfer-Encoding', and content type as 'Content-Type', etc. You can for instance set the 
-        ///     'Content-Transfer-Encoding' to 'binary', 'base64', or any of the other transfer encoding values supported by MimeKit, and this Active Event
-        ///     will automatically encode your argument(s) correctly according to their headers.
+        ///     You can supply any number of arguments and/or files if you wish. Any nodes beneath the main node that's not [headers], [cookies]
+        ///     or [method], will be assumed to be an argument you wish to transfer to the server somehow.
         /// 
-        ///     Any files passed in through [file], will not be loaded into memory, but directly transferred over the HTTP request, preserving 
-        ///     memory on your client.
+        ///     If your request is either a 'GET' or a 'DELETE' request, then all arguments will be passed as key/values according to the node's
+        ///     name and its value. The arguments will then be passed as a part of your query string, correctly URL-encoded. You cannot transfer
+        ///     any files with a query string request, and all children nodes of your arguments will be ignored.
         /// 
-        ///     If you do not set the 'Content-Type' header, and your request is either a 'POST' or 'PUT' type of request, then its default value will be 
-        ///     'application/x-www-form-urlencoded', and the request create will be url-encoded. If your request is url-encoded, then each child node
-        ///     will be considered a URL-encoded key/value pair, transmitted to the server end-point with the name being the name of your node, and
-        ///     its value being the URL-encoded value of your node. Each child node of your main [pf.net.create-request] node, except [headers], [method],
-        ///     and [cookies] will then be considered an argument, and serialized this way to your server end-point, as long as it has a value.
+        ///     If your request is either a 'PUT' or 'POST' type of request, then you have several options in regards to how you wish to 
+        ///     transfer your arguments to the server end-point. If your request has a 'Content-Type' header of 'multipart/xxx-something', 
+        ///     then your request will be transferred as a MIME message. If your 'Content-Type' is of type 'text/xxx', then your request will 
+        ///     be transferred as a plain text message, having a carriage-return/line-feed injected between all your arguments. If your 
+        ///     'Content-Type' is 'application/x-www-form-urlencoded', then your request will be transferred as a URL encoded form request, 
+        ///     the same way a browser would serialize its form arguments. If your 'Content-Type' is neither of the previously mentioned values, 
+        ///     then your request will be transferred using a binary serializer. The default value for the 'Content-Type' header for a 'POST' 
+        ///     or 'PUT' request, is 'application/x-www-form-urlencoded'.
         /// 
-        ///     If you create an 'application/x-www-form-urlencoded' request, either implicitly or explicitly, then you cannot directly pass in files,
-        ///     unless you load them first, and put their values into an argument node's value.
+        ///     If you choose to serialize your request as a MIME/multipart, then you can add any MIME headers you wish, for each part you wish
+        ///     to transfer. If you set the 'Content-Disposition' header to something, and its 'filename' argument to anything, and you do not
+        ///     supply a value for your MIME part, then the file you supply as its 'filename' parameter, will be serialized as a MIME part, 
+        ///     directly from disc, without being loaded into the memory of your client. The only way you can serialize files, without loading 
+        ///     them into memory first, is by serializing your request as a 'multipart/something', and setting its 'Content-Disposition' header
+        ///     correctly.
         /// 
-        ///     If your request is of type 'GET' or 'DELETE', then all arguments will be sent in using the HTTP URL, meaning they will be a part of 
-        ///     the URL of your request.
-        /// 
-        ///     Example that will create a MIME multipart HTTP request;
-        /// 
-        ///     <pre>pf.net.create-request:"http://127.0.0.1:8080/echo"
-        ///   method:post
-        ///   headers
-        ///     Content-Type:multipart/mixed
-        ///     foo-header:foo header value
-        ///   cookies
-        ///     foo-cookie:foo cookie value
-        ///   file:application-startup.hl
-        ///     Content-Type:text/Hyperlisp
-        ///   content:Howdy world
-        ///     Content-Type:text/plain
-        ///     Content-Disposition:form-data; name=foo-world
-        ///   file:media/css/src/grid.png
-        ///     Content-Type:image/png
-        ///     Content-Transfer-Encoding:base64</pre>
-        /// 
-        ///     Example that will create an 'application/x-www-form-urlencoded' type of request;
-        /// 
-        ///     <pre>pf.net.create-request:"http://127.0.0.1:8080/echo"
-        ///   method:post
-        ///   foo-arg:Howdy world
-        ///     this-bugger:will be ignored!!!
-        ///   bar-arg:Yo Dude!</pre>
-        /// 
-        ///     Please notice that in a 'application/x-www-form-urlencoded' type of request, any children nodes of your arguments will be ignored. 
-        ///     You can still supply [cookies] and/or [headers]. The same is true for any type of 'GET' or 'DELETE' request.
-        /// 
-        ///     Also notice, that this Active Event will automatically parse any multipart (MIME) messages returned from the server end point.
-        /// 
-        ///     If you create a request with the HTTP header 'Content-Type' being some sort of 'text/xxx' type, then this Active Event will append a CR/LF
-        ///     sequence between all your arguments and/or files, but still pass them in as 'one object'. This allows you to for instance, create complex
-        ///     Hyperlisp graph objects, by combining [files], and/or [content] together, having them concatenated into one piece of Hyperlisp, before 
-        ///     sending the combined result to your server end-point.
-        /// 
-        ///     If you supply a [file], and your request is of type 'multipart/something', then unless you supply a 'Content-Disposition' header for your
-        ///     file object yourself, then the default value of 'Content-Disposition' for your MIME entity, will be 'attachment; filename="your-file.ext"'.
-        /// 
-        ///     If you create a 'multipart/something' request, then the boundary of your mime message will be appended as an argument to your 'Content-Type'
-        ///     header of your request, making the boundary accessible as a part of your HTTP 'Content-Type' header for your server end-point.
-        /// 
-        ///     If you create a 'multipart/something' type of request, you can also nest multiparts. If you nest multiparts, then you can choose
-        ///     to instead of providing the multipart's content as a value of its [content] node, supply the inner mime entities as children nodes of
-        ///     the multipart's [content] node.
-        /// 
-        ///     Example that will create a nested MIME multipart HTTP request;
-        /// 
-        ///     <pre>pf.net.create-request:"http://127.0.0.1:8080/echo"
-        ///   method:post
-        ///   headers
-        ///     Content-Type:multipart/mixed
-        ///   content:Howdy world
-        ///     Content-Type:text/plain
-        ///   content
-        ///     Content-Type:multipart/form-data
-        ///     content:foo
-        ///       Content-Type:text/plain
-        ///     content:bar
-        ///       Content-Type:application/foo-bar
-        ///   content:Yo World!
-        ///     Content-Type:text/plain</pre>
-        /// 
-        ///     If you create a 'multipart/something', then unless you explicitly give it a boundary parameter, through its 'Content-Type' header,
-        ///     it will have a highly unique boundary automatically assigned to it.
-        /// 
-        ///     If you load a 'multipart/something' from a file, by using a [file] parameter, then unless you explicitly set its boundary parameter,
-        ///     in its 'Content-Type' header, then its 'Content-Type', including its 'boundary' parameter, will be loaded from the file you supply, which
-        ///     is the only sane way of making sure your multipart is correctly loaded from your file.
-        /// 
-        ///     Example that creates a multipart request, where the multipart is in its entirety loaded from disc;
-        /// 
-        ///     <pre>pf.net.create-request:"http://127.0.0.1:8080/echo"
-        ///   method:post
-        ///   headers
-        ///     Content-Type:multipart/mixed
-        ///   file:multipart.txt
-        ///     Content-Type:multipart/mixed</pre>
+        ///     If you wish, you can change the transfer encoding for your MIME part(s), by setting its 'Content-Transfer-Encoding' MIME header to
+        ///     for instance 'binary' or 'base64'.
         /// </summary>
         [ActiveEvent (Name = "pf.net.create-request")]
         private static void pf_net_create_request (ApplicationContext context, ActiveEventArgs e)

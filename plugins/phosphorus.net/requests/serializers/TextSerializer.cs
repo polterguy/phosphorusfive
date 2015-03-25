@@ -21,34 +21,21 @@ namespace phosphorus.net.requests.serializers
         public override void Serialize (
             ApplicationContext context, 
             Node node, 
-            Stream stream,
             HttpWebRequest request)
         {
             // putting all parameters into body of request, as text, with CR/LF between all entities
-            StreamWriter writer = new StreamWriter (stream) { AutoFlush = true };
+            StreamWriter writer = new StreamWriter (request.GetRequestStream ()) { AutoFlush = true };
             bool first = true;
-            foreach (var idxArg in node.FindAll (ix => ix.Name != "headers" && ix.Name != "cookies" && ix.Name != "method")) {
+            foreach (var idxArg in GetArguments (node)) {
 
                 // making sure we have a CR/LF between all entities
                 if (first)
                     first = false;
                 else
                     writer.Write ("\r\n");
-                
-                // getting Content-Disposition, if there is any
-                var cntDisp = GetDisposition (context, idxArg);
-                
-                if (cntDisp != null && !string.IsNullOrEmpty (cntDisp.FileName) && idxArg.Value == null) {
 
-                    // this is a file attachment, assuming file is text
-                    using (var fileStream = File.OpenRead (GetBasePath (context) + cntDisp.FileName)) {
-                        fileStream.CopyTo (stream);
-                    }
-                } else {
-                    
-                    // content is (supposed to be) in value of node, somehow
-                    writer.Write (idxArg.Get<string> (context, ""));
-                }
+                // content is (supposed to be) in value of node, somehow
+                writer.Write (XUtil.Single<string> (idxArg.Value, idxArg, context));
             }
         }
     }

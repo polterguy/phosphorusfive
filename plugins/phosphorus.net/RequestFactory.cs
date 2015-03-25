@@ -16,25 +16,15 @@ namespace phosphorus.net
     {
         public static IRequest CreateRequest (ApplicationContext context, Node node, string method, string url)
         {
-            switch (method.ToLower ()) {
+            switch (method) {
             case "get":
                 return new HttpGetRequest (context, node, url);
             case "delete":
                 return new HttpDeleteRequest (context, node, url);
             case "post":
+                return new HttpPostRequest (context, node, url, GetSerializer (context, node));
             case "put":
-
-                // defaulting 'Content-Type' to "application/x-www-form-urlencoded", unless explicitly given
-                ContentType contentType = new ContentType ("application", "x-www-form-urlencoded");
-                if (node ["headers"] != null && node ["headers"] ["Content-Type"] != null)
-                    contentType = ContentType.Parse (
-                        XUtil.Single<string> (
-                        node ["headers"] ["Content-Type"].Value, 
-                        node ["headers"] ["Content-Type"], context));
-                if (method == "post")
-                    return new HttpPostRequest (context, node, url, GetSerializer (contentType));
-                else
-                    return new HttpPutRequest (context, node, url, GetSerializer (contentType));
+                return new HttpPutRequest (context, node, url, GetSerializer (context, node));
             default:
                 return null;
             }
@@ -43,8 +33,16 @@ namespace phosphorus.net
         /*
          * figures out what type of serializer to use, according to the 'Content-Type' given
          */
-        private static ISerializer GetSerializer (ContentType contentType)
+        private static ISerializer GetSerializer (ApplicationContext context, Node node)
         {
+            // figuring out 'Content-Type'. defaulting to "application/x-www-form-urlencoded", unless caller specifies something else
+            ContentType contentType = new ContentType ("application", "x-www-form-urlencoded");
+            if (node ["headers"] != null && node ["headers"] ["Content-Type"] != null)
+                contentType = ContentType.Parse (
+                    XUtil.Single<string> (
+                    node ["headers"] ["Content-Type"].Value, 
+                    node ["headers"] ["Content-Type"], context));
+
             // checking what type of serializer we should use for our request
             if (contentType.MediaType == "multipart") {
 
