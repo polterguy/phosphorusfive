@@ -6,7 +6,6 @@
 using System;
 using phosphorus.core;
 using phosphorus.expressions;
-using phosphorus.net.helpers;
 
 // ReSharper disable UnusedMember.Local
 // ReSharper disable UnusedMember.Global
@@ -142,8 +141,12 @@ namespace phosphorus.net
             if (e.Args.Value == null)
                 return; // nothing to do here
 
-            // checking if this is our guy
-            string method = XUtil.Single (e.Args.GetChildValue<object> ("method", context, null), e.Args ["method"], context, "get").ToLower ();
+            // figuring out which method to use, defaulting to 'GET'
+            string method = XUtil.Single<string> (
+                e.Args.GetChildValue<object> ("method", context, null), 
+                e.Args ["method"], context, "get").ToLower ();
+
+            // checking to see if this is our guy
             if (method != "get" && method != "post" && method != "put" && method != "delete")
                 return;
 
@@ -151,11 +154,10 @@ namespace phosphorus.net
             foreach (var idxUrl in XUtil.Iterate<string> (e.Args.Value, e.Args, context)) {
 
                 // creating our request
-                IRequest request = RequestFactory.CreateRequest (context, e.Args, method);
-                if (request != null) {
-                    using (IResponse response = request.Execute (context, e.Args, idxUrl)) {
+                IRequest request = RequestFactory.CreateRequest (context, e.Args, method, idxUrl);
+                using (IResponse response = request.Execute (context, e.Args)) {
+                    if (response != null)
                         response.Parse (context, e.Args);
-                    }
                 }
             }
         }

@@ -10,17 +10,10 @@ using System.Text;
 using phosphorus.core;
 using MimeKit;
 
-namespace phosphorus.net.helpers
+namespace phosphorus.net.response
 {
-    /// <summary>
-    ///     Class wrapping a multipart/xxx type of HTTP response.
-    /// </summary>
     public class MultipartResponse : HttpResponse
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="phosphorus.net.helpers.MultipartResponse"/> class.
-        /// </summary>
-        /// <param name="response">Wrapped HTTP response.</param>
         public MultipartResponse (HttpWebResponse response)
             : base (response)
         { }
@@ -41,25 +34,32 @@ namespace phosphorus.net.helpers
         private void ParseMultipart (Multipart multipart, Node node)
         {
             // looping through each MIME part, trying to figure out a nice name for it
-            foreach (var idxEntity in multipart) {
-                Node current = node.Add ("content").LastChild;
+            foreach (var idxEntityNode in multipart) {
+                Node current = node.Add (GetName (idxEntityNode)).LastChild;
 
                 // MIME headers
-                foreach (var idxHeader in idxEntity.Headers) {
+                foreach (var idxHeader in idxEntityNode.Headers) {
                     current.Add (idxHeader.Field, idxHeader.Value);
                 }
 
                 // actual MIME part, which depend upon what type of part we're talking about
-                if (idxEntity is TextPart) {
-                    current.Value = ((TextPart)idxEntity).GetText (Encoding.UTF8);
-                } else if (idxEntity is Multipart) {
-                    ParseMultipart ((Multipart)idxEntity, current);
-                } else if (idxEntity is MimePart) {
+                if (idxEntityNode is TextPart) {
+                    current.Value = ((TextPart)idxEntityNode).GetText (Encoding.UTF8);
+                } else if (idxEntityNode is Multipart) {
+                    ParseMultipart ((Multipart)idxEntityNode, current);
+                } else if (idxEntityNode is MimePart) {
                     MemoryStream stream = new MemoryStream ();
-                    ((MimePart)idxEntity).ContentObject.DecodeTo (stream);
+                    ((MimePart)idxEntityNode).ContentObject.DecodeTo (stream);
                     current.Value = stream.ToArray ();
                 }
             }
+        }
+
+        private string GetName (MimeEntity entity)
+        {
+            if (entity.ContentDisposition != null && entity.ContentDisposition.Parameters ["name"] != null)
+                return entity.ContentDisposition.Parameters ["name"];
+            return "content";
         }
     }
 }

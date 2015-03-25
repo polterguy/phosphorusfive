@@ -8,17 +8,10 @@ using System.IO;
 using System.Net;
 using phosphorus.core;
 
-namespace phosphorus.net.helpers
+namespace phosphorus.net.response
 {
-    /// <summary>
-    ///     Class encapsulating a text/xxx type of response.
-    /// </summary>
     public class TextResponse : HttpResponse
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="phosphorus.net.helpers.TextResponse"/> class.
-        /// </summary>
-        /// <param name="response">The wrapped HTTP response.</param>
         public TextResponse (HttpWebResponse response)
             : base (response)
         { }

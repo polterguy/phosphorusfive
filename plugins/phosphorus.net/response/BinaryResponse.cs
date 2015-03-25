@@ -8,13 +8,8 @@ using System.IO;
 using System.Net;
 using phosphorus.core;
 
-namespace phosphorus.net.helpers
+namespace phosphorus.net.response
 {
-    /// <summary>
-    ///     Class encapsulating a 'binary' HTTP response.
-    /// 
-    ///     Class encapsulating anything not 'text/xxx', 'multipart/xxx', and so on. Basically, defaults response to 'binary', returning raw bytes.
-    /// </summary>
     public class BinaryResponse : HttpResponse
     {
         public BinaryResponse (HttpWebResponse response)

@@ -40,7 +40,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Web" />
     <Reference Include="BouncyCastle">
       <HintPath>..\..\packages\MimeKit.1.0.10.0\lib\net40\BouncyCastle.dll</HintPath>
     </Reference>
@@ -50,29 +49,29 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Security" />
-    <Reference Include="RestSharp">
-      <HintPath>..\..\packages\RestSharp.105.0.1\lib\net4\RestSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="HtmlAgilityPack">
-      <HintPath>..\..\packages\HtmlAgilityPack.1.4.9\lib\Net40\HtmlAgilityPack.dll</HintPath>
-    </Reference>
+    <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="helpers\RequestFactory.cs" />
-    <Compile Include="helpers\IRequest.cs" />
-    <Compile Include="helpers\IResponse.cs" />
-    <Compile Include="helpers\requests\HttpRequest.cs" />
-    <Compile Include="helpers\requests\HttpDeleteRequest.cs" />
-    <Compile Include="helpers\requests\HttpGetRequest.cs" />
-    <Compile Include="helpers\requests\HttpPostRequest.cs" />
-    <Compile Include="helpers\requests\HttpPutRequest.cs" />
-    <Compile Include="helpers\responses\BinaryResponse.cs" />
-    <Compile Include="helpers\responses\MultipartResponse.cs" />
-    <Compile Include="helpers\responses\TextResponse.cs" />
-    <Compile Include="helpers\requests\HttpComplexRequest.cs" />
-    <Compile Include="helpers\responses\HttpResponse.cs" />
     <Compile Include="CreateRequest.cs" />
-    <Compile Include="helpers\requests\HttpUrlFormattedRequest.cs" />
+    <Compile Include="IRequest.cs" />
+    <Compile Include="IResponse.cs" />
+    <Compile Include="ISerializer.cs" />
+    <Compile Include="RequestFactory.cs" />
+    <Compile Include="requests\HttpGetRequest.cs" />
+    <Compile Include="requests\HttpRequest.cs" />
+    <Compile Include="requests\QueryStringRequest.cs" />
+    <Compile Include="requests\HttpDeleteRequest.cs" />
+    <Compile Include="requests\serializers\BinarySerializer.cs" />
+    <Compile Include="requests\HttpPostRequest.cs" />
+    <Compile Include="requests\serializers\Serializer.cs" />
+    <Compile Include="requests\serializers\TextSerializer.cs" />
+    <Compile Include="requests\serializers\UrlEncodedSerializer.cs" />
+    <Compile Include="requests\serializers\MIMESerializer.cs" />
+    <Compile Include="requests\HttpPutRequest.cs" />
+    <Compile Include="response\TextResponse.cs" />
+    <Compile Include="response\HttpResponse.cs" />
+    <Compile Include="response\BinaryResponse.cs" />
+    <Compile Include="response\MultipartResponse.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -100,8 +99,8 @@
     </MonoDevelop>
   </ProjectExtensions>
   <ItemGroup>
-    <Folder Include="helpers\" />
-    <Folder Include="helpers\requests\" />
-    <Folder Include="helpers\responses\" />
+    <Folder Include="requests\" />
+    <Folder Include="requests\serializers\" />
+    <Folder Include="response\" />
   </ItemGroup>
 </Project>

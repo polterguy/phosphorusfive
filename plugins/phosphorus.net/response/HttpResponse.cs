@@ -9,21 +9,12 @@ using System.Web;
 using phosphorus.core;
 using MimeKit;
 
-namespace phosphorus.net.helpers
+namespace phosphorus.net.response
 {
-    /// <summary>
-    ///     Base class for all HTTP types of responses.
-    /// 
-    ///     Abstract base class for all HTTP types of responses.
-    /// </summary>
     public abstract class HttpResponse : IResponse
     {
         private HttpWebResponse _response;
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="phosphorus.net.helpers.HttpResponse"/> class.
-        /// </summary>
-        /// <param name="response">Response.</param>
         public HttpResponse (HttpWebResponse response)
         {
             _response = response;
@@ -38,28 +29,16 @@ namespace phosphorus.net.helpers
             ParseCookies (context, current);
         }
 
-        /// <summary>
-        ///     Closes the response, and frees up all resources.
-        /// </summary>
         public void Close ()
         {
             Dispose (true);
             GC.SuppressFinalize (this);
         }
 
-        /// <summary>
-        ///     Returns the wrappedd HTTP web response.
-        /// </summary>
-        /// <value>The response.</value>
         protected HttpWebResponse Response {
             get { return _response; }
         }
 
-        /// <summary>
-        ///     Parses any HTTP headers, and puts them into the given node.
-        /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="node">Node.</param>
         protected void ParseHeaders (ApplicationContext context, Node node)
         {
             node.Add ("headers");
@@ -68,11 +47,6 @@ namespace phosphorus.net.helpers
             }
         }
         
-        /// <summary>
-        ///     Parses any HTTP cookies, and puts them into the given node.
-        /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="node">Node.</param>
         protected void ParseCookies (ApplicationContext context, Node node)
         {
             foreach (Cookie idxCookie in _response.Cookies) {
@@ -89,10 +63,6 @@ namespace phosphorus.net.helpers
             }
         }
 
-        /// <summary>
-        ///     Disposes this instance.
-        /// </summary>
-        /// <param name="disposing">If set to <c>true</c> disposing of resources will be done.</param>
         protected virtual void Dispose (bool disposing)
         {
             if (disposing && _response != null) {
