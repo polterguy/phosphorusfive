@@ -24,33 +24,17 @@ namespace phosphorus.net.requests.serializers
             HttpWebRequest request)
         {
             // creating a stream writer wrapping the "request content stream"
-            StreamWriter writer = new StreamWriter (request.GetRequestStream ());
-            bool first = true;
-            foreach (var idxArg in GetArguments (node)) {
-                if (first)
-                    first = false; // first parameter
-                else
-                    writer.Write ("&"); // second, third, or fourth, etc, parameter, making sure we separate our parameters correctly
-                writer.Write (string.Format ("{0}={1}", idxArg.Name, HttpUtility.UrlEncode (GetContent (context, idxArg))));
+            using (StreamWriter writer = new StreamWriter (request.GetRequestStream ())) {
+                bool first = true;
+                foreach (var idxArg in GetArguments (node)) {
+                    if (first)
+                        first = false; // first parameter
+                    else
+                        writer.Write ("&"); // second, third, or fourth, etc, parameter, making sure we separate our parameters correctly
+                    writer.Write (string.Format ("{0}=", idxArg.Name));
+                    writer.Write (HttpUtility.UrlEncode (XUtil.Single<string> (idxArg.Value, idxArg, context)));
+                }
             }
-        }
-
-        /*
-         * retrieves content of parameter
-         */
-        private byte[] GetContent (ApplicationContext context, Node node)
-        {
-            // this is not a file attachment, converting content to byte array if necessary, and returning to caller
-            var content = XUtil.Single<object> (node.Value, node, context, null);
-            if (content == null)
-                return new byte [] { }; // no value, avoid returning null
-
-            var byteContent = content as byte [];
-            if (byteContent != null)
-                return byteContent; // content is already byte array
-
-            // converting value to string if necessary, before retrieving byte [], and returning to caller
-            return Encoding.UTF8.GetBytes (Utilities.Convert<string> (content, context));
         }
     }
 }

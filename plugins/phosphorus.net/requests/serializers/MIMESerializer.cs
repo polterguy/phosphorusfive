@@ -30,26 +30,25 @@ namespace phosphorus.net.requests.serializers
             Node node, 
             HttpWebRequest request)
         {
+            // we have to track all of our FileStream objects, such that we can dispose them when we're done
             List<Stream> streams = new List<Stream> ();
-            try {
-                // creating root Multipart, making sure sub-type is passed on
+            try
+            {
+                // creating root Multipart, making sure sub-type and parameters from 'Content-Type' is passed on
                 Multipart multipart = CreateMultipart ();
 
                 // looping through all arguments, creating a MimeEntity, adding to Multipart
                 foreach (var idxArg in GetArguments (node)) {
-
-                    // creating our MIME entity, and adding to root Multipart
                     multipart.Add (CreateMimeEntity (context, idxArg, streams));
                 }
 
-                // updating request HTTTP header 'Content-Type' to reflect "boundary"
-                request.ContentType = multipart.ContentType.MimeType + multipart.ContentType.Parameters;
+                // writing Multipart to request stream
+                WriteMultipartToRequest (multipart, request);
 
-                // writing Multipart to HTTTP request stream
-                multipart.WriteTo (request.GetRequestStream ());
-            } finally {
-
-                // cleaning up
+            }
+            finally
+            {
+                // cleaning up, to make sure all open FileStreams are released
                 foreach (var idxStream in streams) {
                     idxStream.Dispose ();
                 }
@@ -65,6 +64,9 @@ namespace phosphorus.net.requests.serializers
             foreach (var idxHeader in _contentType.Parameters) {
                 multipart.ContentType.Parameters [idxHeader.Name] = idxHeader.Value;
             }
+
+            // returning a Multipart that now should have the exact same 'Content-Type' as the HTTP request header
+            // except that it might have an automatically generated 'boundary' parameter though of course ...
             return multipart;
         }
 
@@ -79,6 +81,7 @@ namespace phosphorus.net.requests.serializers
             // figuring out Content-Type
             ContentType cntType = GetContentType (context, node);
 
+            // TODO: cleanup ...
             MimePart part = new MimePart ();
             Stream stream;
             if (cntDisp != null && !string.IsNullOrEmpty (cntDisp.FileName) && node.Value == null) {
@@ -141,6 +144,17 @@ namespace phosphorus.net.requests.serializers
             return part;
         }
         
+        private void WriteMultipartToRequest (Multipart multipart, HttpWebRequest request)
+        {
+            // updating request HTTTP header 'Content-Type' to reflect "boundary"
+            request.ContentType = multipart.ContentType.MimeType + multipart.ContentType.Parameters;
+
+            // writing Multipart to HTTTP request stream
+            using (var stream = request.GetRequestStream ()) {
+                multipart.WriteTo (stream);
+            }
+        }
+
         /*
          * returns the ContentDisposition for the given node, if there is any
          */

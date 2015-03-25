@@ -23,19 +23,11 @@ namespace phosphorus.net.requests.serializers
             Node node, 
             HttpWebRequest request)
         {
-            // putting all parameters into body of request, as text, with CR/LF between all entities
-            StreamWriter writer = new StreamWriter (request.GetRequestStream ()) { AutoFlush = true };
-            bool first = true;
-            foreach (var idxArg in GetArguments (node)) {
-
-                // making sure we have a CR/LF between all entities
-                if (first)
-                    first = false;
-                else
-                    writer.Write ("\r\n");
-
-                // content is (supposed to be) in value of node, somehow
-                writer.Write (XUtil.Single<string> (idxArg.Value, idxArg, context));
+            // putting all parameters into body of request, as text
+            using (StreamWriter writer = new StreamWriter (request.GetRequestStream ())) {
+                foreach (var idxArg in GetArguments (node)) {
+                    writer.Write (XUtil.Single<string> (idxArg.Value, idxArg, context));
+                }
             }
         }
     }

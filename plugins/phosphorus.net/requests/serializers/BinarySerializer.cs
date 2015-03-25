@@ -23,31 +23,11 @@ namespace phosphorus.net.requests.serializers
             Node node, 
             HttpWebRequest request)
         {
-            List<Node> args = new List<Node> (GetArguments (node));
-            if (args.Count != 1)
-                throw new ArgumentException ("The binary serializer can only handle exactly one argument.");
-
-            var objValue = XUtil.Single<object> (args [0].Value, args [0], context, null);
-            if (objValue == null)
-                throw new ArgumentException ("The binary serializer was given a void expression, or a null argument.");
-
-            var byteValue = objValue as byte [];
-            if (byteValue != null) {
-
-                // content is byte array
-                request.GetRequestStream ().Write (byteValue, 0, byteValue.Length);
-            } else {
-                var strValue = objValue as string;
-                if (strValue != null) {
-
-                    // content is string
-                    StreamWriter writer = new StreamWriter (request.GetRequestStream ());
-                    writer.Write (strValue); 
-                } else {
-
-                    // defaulting to binary formatter
-                    BinaryFormatter formatter = new BinaryFormatter ();
-                    formatter.Serialize (request.GetRequestStream (), objValue);
+            // putting all parameters into body of request, as binary object
+            using (var stream = request.GetRequestStream ()) {
+                foreach (var idxArg in GetArguments (node)) {
+                    var value = XUtil.Single<byte[]> (idxArg.Value, idxArg, context);
+                    stream.Write (value, 0, value.Length);
                 }
             }
         }
