@@ -112,10 +112,8 @@ namespace phosphorus.hyperlisp.helpers
          */
         private void HandleContentOrTypeToken (Node node, Token token, Token previousToken)
         {
-            if (previousToken.Type != Token.TokenType.Separator)
-
-                // syntax error, should never come here, but for clarity, and to make sure, we still handle
-                throw new ArgumentException ("syntax error in hyperlisp file, missing ':' before; '" + token.Value + "'");
+            // if there's no existing value for node, then there's not any type information associated with object neither,
+            // hence we don't have to attempt to convert token's value before setting the value of the node
             node.Value = node.Value == null ? token.Value : ConvertStringValue (token.Value, node.Get<string> (_context));
         }
 

@@ -56,7 +56,7 @@ lambda.fork
     append:@/./-/#?node
       source
         bar:thread
-sleep:1
+sleep:100
 lock:foo
   append:@/../""*""/_foo?node
     source

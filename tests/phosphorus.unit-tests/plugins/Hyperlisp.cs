@@ -22,7 +22,7 @@ namespace phosphorus.unittests.plugins
         ///     parses simple name/value Hyperlisp
         /// </summary>
         [Test]
-        public void ParseHyperlisp1 ()
+        public void ParseHyperlisp01 ()
         {
             var tmp = new Node (string.Empty, "x:y");
             Context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
@@ -34,7 +34,7 @@ namespace phosphorus.unittests.plugins
         ///     parses name/value Hyperlisp with lots of spacing in front and at end
         /// </summary>
         [Test]
-        public void ParseHyperlisp2 ()
+        public void ParseHyperlisp02 ()
         {
             var tmp = new Node (string.Empty, @"
 
@@ -51,7 +51,7 @@ x:y
         ///     parses Hyperlisp where there's no name but only value
         /// </summary>
         [Test]
-        public void ParseHyperlisp3 ()
+        public void ParseHyperlisp03 ()
         {
             var tmp = new Node (string.Empty, ":y");
             Context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
@@ -63,7 +63,7 @@ x:y
         ///     parses Hyperlisp where there's no name but only value prepended by some spacing
         /// </summary>
         [Test]
-        public void ParseHyperlisp4 ()
+        public void ParseHyperlisp04 ()
         {
             var tmp = new Node (string.Empty, @"
 
@@ -77,7 +77,7 @@ x:y
         ///     parses Hyperlisp where value is a string literal
         /// </summary>
         [Test]
-        public void ParseHyperlisp5 ()
+        public void ParseHyperlisp05 ()
         {
             var tmp = new Node {Value = @"x:""y"""};
             Context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
@@ -88,7 +88,7 @@ x:y
         ///     parses Hyperlisp where value is a string literal containing CR/LF
         /// </summary>
         [Test]
-        public void ParseHyperlisp6 ()
+        public void ParseHyperlisp06 ()
         {
             var tmp = new Node {Value = @"x:""\ny\\\r\n\"""""};
             Context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
@@ -99,7 +99,7 @@ x:y
         ///     parses Hyperlisp where value is a multiline string literal
         /// </summary>
         [Test]
-        public void ParseHyperlisp7 ()
+        public void ParseHyperlisp07 ()
         {
             var tmp = new Node {Value = @"x:@""y"""};
             Context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);
@@ -111,7 +111,7 @@ x:y
         ///     so on in different configurations
         /// </summary>
         [Test]
-        public void ParseHyperlisp8 ()
+        public void ParseHyperlisp08 ()
         {
             var tmp = new Node {Value = string.Format (@"x:@""mumbo
 jumbo""""howdy\r\n{0}""", "\n")};
@@ -123,7 +123,7 @@ jumbo""""howdy\r\n{0}""", "\n")};
         ///     parses Hyperlisp where value is an empty string literal
         /// </summary>
         [Test]
-        public void ParseHyperlisp9 ()
+        public void ParseHyperlisp09 ()
         {
             var tmp = new Node {Value = @"x:"""""};
             Context.Raise ("pf.hyperlisp.hyperlisp2lambda", tmp);

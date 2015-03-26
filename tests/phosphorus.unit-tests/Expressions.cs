@@ -982,7 +982,7 @@ set:@/..?value
         ///     verifies creating expressions converting the result from string to integer works
         /// </summary>
         [Test]
-        public void ConvertExpression1 ()
+        public void ConvertExpression01 ()
         {
             var node = ExecuteLambda (@"_data:567
 set:@/..?value
@@ -994,12 +994,285 @@ set:@/..?value
         ///     verifies creating expressions converting the result from integer to string works
         /// </summary>
         [Test]
-        public void ConvertExpression2 ()
+        public void ConvertExpression02 ()
         {
             var node = ExecuteLambda (@"_data:int:567
 set:@/..?value
   source:@/../*/_data?value.string");
             Assert.AreEqual ("567", node.Value);
+        }
+
+        /// <summary>
+        ///     verifies creating expressions converting the result to and from byte[] works
+        /// </summary>
+        [Test]
+        public void ConvertExpression03 ()
+        {
+            var node = ExecuteLambda (@"_data:abcde
+set:@/../3?value
+  source:@/../*/_data?value.blob
+set:@/../4?value
+  source:@/../3?value.string
+_byte
+_string");
+            Assert.AreEqual (System.Text.Encoding.UTF8.GetBytes ("abcde"), node [3].Value);
+            Assert.AreEqual ("abcde", node [4].Value);
+        }
+
+        /// <summary>
+        ///     verifies creating expressions converting the result from integer to string works
+        /// </summary>
+        [Test]
+        public void ConvertExpression04 ()
+        {
+            var node = ExecuteLambda (@"_data:int:123
+set:@/../3?value
+  source:@/../*/_data?value.blob
+set:@/../4?value
+  source:@/../3?value.int
+_byte
+_int");
+            Assert.AreEqual (123, node [4].Value);
+        }
+        
+        /// <summary>
+        ///     verifies creating expressions converting the result from guid to string works
+        /// </summary>
+        [Test]
+        public void ConvertExpression05 ()
+        {
+            var node = ExecuteLambda (@"_data:guid:b91c9121-0a17-4b26-a09d-d5980eb532db
+set:@/../3?value
+  source:@/../*/_data?value.blob
+set:@/../4?value
+  source:@/../3?value.guid
+_byte
+_guid");
+            Assert.AreEqual (Guid.Parse ("b91c9121-0a17-4b26-a09d-d5980eb532db"), node [4].Value);
+        }
+        
+        /// <summary>
+        ///     verifies creating expressions converting the result from long to string works
+        /// </summary>
+        [Test]
+        public void ConvertExpression06 ()
+        {
+            var node = ExecuteLambda (@"_data:long:345543543
+set:@/../3?value
+  source:@/../*/_data?value.blob
+set:@/../4?value
+  source:@/../3?value.long
+_byte
+_long");
+            Assert.AreEqual ((long)345543543, node [4].Value);
+        }
+
+        /// <summary>
+        ///     verifies creating expressions converting the result from ulong to string works
+        /// </summary>
+        [Test]
+        public void ConvertExpression07 ()
+        {
+            var node = ExecuteLambda (@"_data:ulong:345543543
+set:@/../3?value
+  source:@/../*/_data?value.blob
+set:@/../4?value
+  source:@/../3?value.ulong
+_byte
+_ulong");
+            Assert.AreEqual ((ulong)345543543, node [4].Value);
+        }
+        
+        /// <summary>
+        ///     verifies creating expressions converting the result from ulong to string works
+        /// </summary>
+        [Test]
+        public void ConvertExpression08 ()
+        {
+            var node = ExecuteLambda (@"_data:int:12345
+set:@/../3?value
+  source:@/../*/_data?value.blob
+set:@/../4?value
+  source:@/../3?value.int
+_byte
+_int");
+            Assert.AreEqual (12345, node [4].Value);
+        }
+        
+        /// <summary>
+        ///     verifies creating expressions converting the result from ulong to string works
+        /// </summary>
+        [Test]
+        public void ConvertExpression09 ()
+        {
+            var node = ExecuteLambda (@"_data:uint:12345
+set:@/../3?value
+  source:@/../*/_data?value.blob
+set:@/../4?value
+  source:@/../3?value.uint
+_byte
+_uint");
+            Assert.AreEqual (12345, node [4].Value);
+        }
+
+        /// <summary>
+        ///     verifies creating expressions converting the result from ulong to string works
+        /// </summary>
+        [Test]
+        public void ConvertExpression10 ()
+        {
+            var node = ExecuteLambda (@"_data:short:145
+set:@/../3?value
+  source:@/../*/_data?value.blob
+set:@/../4?value
+  source:@/../3?value.short
+_byte
+_short");
+            Assert.AreEqual (145, node [4].Value);
+        }
+        
+        /// <summary>
+        ///     verifies creating expressions converting the result from ulong to string works
+        /// </summary>
+        [Test]
+        public void ConvertExpression11 ()
+        {
+            var node = ExecuteLambda (@"_data:float:145.45
+set:@/../3?value
+  source:@/../*/_data?value.blob
+set:@/../4?value
+  source:@/../3?value.float
+_byte
+_short");
+            Assert.AreEqual (145.45F, node [4].Value);
+        }
+        
+        /// <summary>
+        ///     verifies creating expressions converting the result from ulong to string works
+        /// </summary>
+        [Test]
+        public void ConvertExpression12 ()
+        {
+            var node = ExecuteLambda (@"_data:double:145.45
+set:@/../3?value
+  source:@/../*/_data?value.blob
+set:@/../4?value
+  source:@/../3?value.double
+_byte
+_short");
+            Assert.AreEqual (145.45D, node [4].Value);
+        }
+        
+        /// <summary>
+        ///     verifies creating expressions converting the result from ulong to string works
+        /// </summary>
+        [Test]
+        public void ConvertExpression13 ()
+        {
+            var node = ExecuteLambda (@"_data:decimal:145.45
+set:@/../3?value
+  source:@/../*/_data?value.blob
+set:@/../4?value
+  source:@/../3?value.decimal
+_byte
+_decimal");
+            Assert.AreEqual (145.45D, node [4].Value);
+        }
+        
+        /// <summary>
+        ///     verifies creating expressions converting the result from ulong to string works
+        /// </summary>
+        [Test]
+        public void ConvertExpression14 ()
+        {
+            var node = ExecuteLambda (@"_data:bool:true
+set:@/../3?value
+  source:@/../*/_data?value.blob
+set:@/../4?value
+  source:@/../3?value.bool
+_byte
+_bool");
+            Assert.AreEqual (true, node [4].Value);
+        }
+
+        /// <summary>
+        ///     verifies creating expressions converting the result from ulong to string works
+        /// </summary>
+        [Test]
+        public void ConvertExpression15 ()
+        {
+            var node = ExecuteLambda (@"_data:byte:128
+set:@/../3?value
+  source:@/../*/_data?value.blob
+set:@/../4?value
+  source:@/../3?value.byte
+_bytes
+_byte");
+            Assert.AreEqual (128, node [4].Value);
+        }
+        
+        /// <summary>
+        ///     verifies creating expressions converting the result from ulong to string works
+        /// </summary>
+        [Test]
+        public void ConvertExpression16 ()
+        {
+            var node = ExecuteLambda (@"_data:sbyte:125
+set:@/../3?value
+  source:@/../*/_data?value.blob
+set:@/../4?value
+  source:@/../3?value.sbyte
+_bytes
+_sbyte");
+            Assert.AreEqual (125, node [4].Value);
+        }
+        
+        /// <summary>
+        ///     verifies creating expressions converting the result from ulong to string works
+        /// </summary>
+        [Test]
+        public void ConvertExpression17 ()
+        {
+            var node = ExecuteLambda (@"_data:char:x
+set:@/../3?value
+  source:@/../*/_data?value.blob
+set:@/../4?value
+  source:@/../3?value.char
+_bytes
+_sbyte");
+            Assert.AreEqual ('x', node [4].Value);
+        }
+        
+        /// <summary>
+        ///     verifies creating expressions converting the result from ulong to string works
+        /// </summary>
+        [Test]
+        public void ConvertExpression18 ()
+        {
+            var node = ExecuteLambda (@"_data:date:""2015-01-25T23:59:57""
+set:@/../3?value
+  source:@/../*/_data?value.blob
+set:@/../4?value
+  source:@/../3?value.date
+_bytes
+_date");
+            Assert.AreEqual (node [0].Value, node [4].Value);
+        }
+        
+        /// <summary>
+        ///     verifies creating expressions converting the result from ulong to string works
+        /// </summary>
+        [Test]
+        public void ConvertExpression19 ()
+        {
+            var node = ExecuteLambda (@"_data:time:""99.23:59:59.9990000""
+set:@/../3?value
+  source:@/../*/_data?value.blob
+set:@/../4?value
+  source:@/../3?value.time
+_bytes
+_time");
+            Assert.AreEqual (node [0].Value, node [4].Value);
         }
 
         /// <summary>
