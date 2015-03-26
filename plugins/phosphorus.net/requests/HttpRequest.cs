@@ -24,6 +24,13 @@ namespace phosphorus.net.requests
     {
         private static string _basePath;
 
+        static HttpRequest ()
+        {
+            ServicePointManager.ServerCertificateValidationCallback += delegate {
+                return true;
+            };
+        }
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="phosphorus.net.requests.HttpRequest"/> class.
         /// </summary>

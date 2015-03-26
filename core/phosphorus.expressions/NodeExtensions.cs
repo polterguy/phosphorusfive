@@ -30,7 +30,7 @@ namespace phosphorus.expressions
         {
             if (node [name] == null || node [name].Value == null)
                 return defaultValue;
-            return XUtil.Single<T> (node.Value, node, context, defaultValue);
+            return XUtil.Single<T> (node [name].Value, node [name], context, defaultValue);
         }
 
         /// <summary>

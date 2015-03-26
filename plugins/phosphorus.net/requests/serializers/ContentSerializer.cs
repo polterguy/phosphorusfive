@@ -30,13 +30,13 @@ namespace phosphorus.net.requests.serializers
     {
         public void Serialize (ApplicationContext context, Node node, HttpWebRequest request)
         {
-            // putting all parameters into body of request, as binary object
+            // putting all parameters into body of request, as a single object
             using (var stream = request.GetRequestStream ()) {
                 foreach (var idxArg in HttpRequest.GetParameters (node)) {
                     if (idxArg.GetExChildValue ("is-file", context, false)) {
 
                         // item is a file
-                        using (FileStream fileStream = File.OpenRead (HttpRequest.GetBasePath (context) +  idxArg.GetExValue<string> (context))) {
+                        using (FileStream fileStream = File.OpenRead (HttpRequest.GetBasePath (context) + idxArg.GetExValue<string> (context))) {
                             fileStream.CopyTo (stream);
                         }
                     } else {

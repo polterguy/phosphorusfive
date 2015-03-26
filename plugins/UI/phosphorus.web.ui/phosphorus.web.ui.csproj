@@ -67,6 +67,10 @@
     <Compile Include="request\Request.cs" />
     <Compile Include="response\Cookies.cs" />
     <Compile Include="request\ParseMime.cs" />
+    <Compile Include="response\echo\EchoResponse.cs" />
+    <Compile Include="response\echo\EchoResponseMultipart.cs" />
+    <Compile Include="response\echo\IEchoResponse.cs" />
+    <Compile Include="response\echo\EchoResponseContent.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
@@ -100,5 +104,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="request\" />
+    <Folder Include="response\echo\" />
   </ItemGroup>
 </Project>

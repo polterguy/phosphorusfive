@@ -1,52 +1,31 @@
 /*
  * Phosphorus.Five, copyright 2014 - 2015, Mother Earth, Jannah, Gaia - YOU!
- * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
+ * Phosphorus.Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details.
  */
 
 using System;
 using System.IO;
-using System.Net;
-using System.Text;
+using System.Web;
 using System.Collections.Generic;
 using phosphorus.core;
 using phosphorus.expressions;
 using MimeKit;
 
-namespace phosphorus.net.requests.serializers
+namespace phosphorus.web.ui.response.echo
 {
-    /// <summary>
-    ///     Responsible for serializing MIME HTTP requests.
-    /// 
-    ///     This serializer is used when you create an HTTP/POST or PUT request, and you choose to send your request as a 'multipart' type
-    ///     of request. Internally it uses MimeKit to create a MIME message, which then will be serialized over the HttpWebResponse.
-    /// 
-    ///     Supports all features from MimeKit, and allows for adding any MIME header as children nodes beneath every value you choose 
-    ///     to serialize. If your MIME 'Content-Type' is 'multipart/something', and you have no value as your content, then it will traverse
-    ///     all [children] nodes, expecting these to be MIME entities by themselves, wrapped inside the multipart they exists within. This
-    ///     allows you to create MIME tree messages, where you can nest multipart messages inside of other multipart messages.
-    /// 
-    ///     If your MIME entities have the 'Content-Disposition' header set, with a 'filename' parameter, and no value in their main node,
-    ///     then this file will be transferred without being loaded into memory as your MIME entity.
-    /// 
-    ///     All children nodes of your MIME entities that have a value, will be assumed to be a MIME header, and used as such.
-    /// 
-    ///     This serializer supports most features of MimeKit, such as serializing content encoded as base64, by setting the 
-    ///     'Content-Transfer-Encoding' MIME header for your MIME entity, etc.
-    /// </summary>
-    public class MultipartSerializer : ISerializer
+    /// \todo put the stuff that's common between this class and MultipartSerializer from phosphorus.net into a shared common class
+    /// which is actually almost EVERYTHING ...!
+    /// possibly create a common "Parse Mime" class or something, which allows serializing a Multipart to any stream ...?
+    public class EchoResponseMultipart : EchoResponse, IEchoResponse
     {
         private ContentType _contentType;
 
-        /*
-         * we must store the ContentType, since Multipart's constructor will create a Content-Type itself, such that we can
-         * pass in any arguments given, in addition to keeping our automatically generated boundary, unless an explicit boundary is given.
-         */
-        public MultipartSerializer (ContentType contentType)
+        public EchoResponseMultipart (ContentType contentType)
         {
             _contentType = contentType;
         }
 
-        public void Serialize (ApplicationContext context, Node node, HttpWebRequest request)
+        public void Echo (ApplicationContext context, Node node, HttpResponse response)
         {
             // we have to track all of our FileStream objects, such that we can dispose them when we're done
             List<Stream> streams = new List<Stream> ();
@@ -56,12 +35,12 @@ namespace phosphorus.net.requests.serializers
                 Multipart multipart = CreateRootMultipart ();
 
                 // looping through all arguments, creating a MimeEntity, adding to Multipart
-                foreach (var idxArg in HttpRequest.GetParameters (node)) {
+                foreach (var idxArg in GetParameters (node)) {
                     multipart.Add (CreateMimeEntity (context, idxArg, streams));
                 }
 
                 // writing Multipart to request stream
-                WriteMultipartToRequest (multipart, request);
+                WriteMultipartToResponse (multipart, response);
             }
             finally
             {
@@ -71,7 +50,7 @@ namespace phosphorus.net.requests.serializers
                 }
             }
         }
-
+        
         /*
          * creates the "root" Multipart MimeEntity
          */
@@ -131,7 +110,7 @@ namespace phosphorus.net.requests.serializers
          */
         private MimeEntity CreateMimeEntityFromFile (ApplicationContext context, ContentDisposition cntDisp, List<Stream> streams)
         {
-            Stream stream = File.OpenRead (HttpRequest.GetBasePath (context) + cntDisp.FileName);
+            Stream stream = File.OpenRead (GetBasePath (context) + cntDisp.FileName);
             streams.Add (stream); // adding stream to list of streams to dispose when we're done
             MimePart retVal = new MimePart ();
             retVal.ContentObject = new ContentObject (stream);
@@ -168,21 +147,19 @@ namespace phosphorus.net.requests.serializers
         /*
          * writes the roor Multipart to the Request stream
          */
-        private void WriteMultipartToRequest (Multipart multipart, HttpWebRequest request)
+        private void WriteMultipartToResponse (Multipart multipart, HttpResponse response)
         {
             // updating request HTTP header 'Content-Type' to reflect "boundary"
-            request.ContentType = multipart.ContentType.MimeType + multipart.ContentType.Parameters;
+            response.ContentType = multipart.ContentType.MimeType + multipart.ContentType.Parameters;
 
-            // writing Multipart to HTTP request stream
-            using (var stream = request.GetRequestStream ()) {
-                multipart.WriteTo (stream);
-            }
+            // writing Multipart to HTTTP request stream
+            multipart.WriteTo (response.OutputStream);
         }
 
         /*
          * returns the ContentDisposition for the given node, if there is any
          */
-        private static ContentDisposition GetDisposition (ApplicationContext context, Node node)
+        protected static ContentDisposition GetDisposition (ApplicationContext context, Node node)
         {
             var cntNode = node ["Content-Disposition"];
             if (cntNode != null)
