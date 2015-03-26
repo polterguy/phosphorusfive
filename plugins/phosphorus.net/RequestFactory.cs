@@ -12,8 +12,25 @@ using MimeKit;
 
 namespace phosphorus.net
 {
+    /// <summary>
+    ///     Request factory class.
+    /// 
+    ///     Will create one HTTP request for you, according to the given parameters. Supports 'get', 'post', 'put' and 'delete'. 
+    ///     Will also instantiate the correct serializer for your request, according to the type of request, and the 'Content-Type'
+    ///     header of your request.
+    /// </summary>
     public static class RequestFactory
     {
+        /// <summary>
+        ///     Creates an HTTP request and returns to caller.
+        /// 
+        ///     Will create the correct HTTP request, according to the parameters given, and return back to caller.
+        /// </summary>
+        /// <returns>The request created.</returns>
+        /// <param name="context">Application context.</param>
+        /// <param name="node">Node where parameters can be found.</param>
+        /// <param name="method">Method to use for HTTP operation, such as 'get', 'post', 'put' or 'delete'.</param>
+        /// <param name="url">URL for request.</param>
         public static IRequest CreateRequest (ApplicationContext context, Node node, string method, string url)
         {
             switch (method) {

@@ -10,6 +10,11 @@ using phosphorus.core;
 
 namespace phosphorus.net.response
 {
+    /// <summary>
+    ///     Responsible for de-serializing a text-based HTTP response.
+    /// 
+    ///     Will de-serialize an HTTP response as a string, and return as [content].
+    /// </summary>
     public class TextResponse : HttpResponse
     {
         public TextResponse (HttpWebResponse response)

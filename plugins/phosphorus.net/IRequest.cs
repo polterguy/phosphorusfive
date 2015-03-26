@@ -9,10 +9,17 @@ using phosphorus.core;
 namespace phosphorus.net
 {
     /// <summary>
-    ///     Common interface for all types of requests phosphorus.net can create.
+    ///     Common interface for all types of requests Phosphorus.Net can create out of the box.
     /// </summary>
     public interface IRequest
     {
+        /// <summary>
+        ///     Executes the current request, and returns the response.
+        /// 
+        ///     Will transmit the current HTTP request, and return a response back to caller.
+        /// </summary>
+        /// <param name="context">Application context.</param>
+        /// <param name="node">Node to put results into.</param>
         IResponse Execute (ApplicationContext context, Node node);
     }
 }

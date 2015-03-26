@@ -7,11 +7,6 @@ using System.IO;
 using System.Net;
 using phosphorus.core;
 
-/// <summary>
-///     Namespace wrapping helpers for serializing requests.
-/// 
-///     Primary helpers for serializing requests can be found in this namespace.
-/// </summary>
 namespace phosphorus.net
 {
     /// <summary>
@@ -19,6 +14,14 @@ namespace phosphorus.net
     /// </summary>
     public interface ISerializer
     {
+        /// <summary>
+        ///     Will serialize the current request.
+        /// 
+        ///     Will serialize the current HTTP request and its parameters over the given HttpWebRequest, and its request stream.
+        /// </summary>
+        /// <param name="context">Application context.</param>
+        /// <param name="node">Node that contains parameters to serialize.</param>
+        /// <param name="request">Request to serialize parameters into.</param>
         void Serialize (ApplicationContext context, Node node, HttpWebRequest request);
     }
 }

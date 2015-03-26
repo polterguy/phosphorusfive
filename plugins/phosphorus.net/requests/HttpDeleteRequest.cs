@@ -9,6 +9,9 @@ using phosphorus.core;
 using phosphorus.expressions;
 using MimeKit;
 
+/// <summary>
+///     Main namespace for all HTTP requests in Phosphorus.Net.
+/// </summary>
 namespace phosphorus.net.requests
 {
     /// <summary>
