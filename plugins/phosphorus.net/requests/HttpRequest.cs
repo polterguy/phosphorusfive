@@ -15,8 +15,22 @@ using MimeKit;
 
 namespace phosphorus.net.requests
 {
+    /// <summary>
+    ///     Common base class for all HTTP requests supported by Phosphorus.Five.
+    /// 
+    ///     This is the common base class for all HTTP requests supported by Phosphorus.Five. Such as 'GET', 'POST', 'PUT' and 'DELETE'.
+    /// </summary>
     public abstract class HttpRequest : IRequest
     {
+        private static string _basePath;
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="phosphorus.net.requests.HttpRequest"/> class.
+        /// </summary>
+        /// <param name="context">Application context.</param>
+        /// <param name="node">Node wrapping the request parameters.</param>
+        /// <param name="url">URL for request.</param>
+        /// <param name="method">HTTP method to use for request.</param>
         public HttpRequest (ApplicationContext context, Node node, string url, string method)
         {
             Request = (HttpWebRequest)WebRequest.Create (GetURL (context, node, url));
@@ -25,6 +39,13 @@ namespace phosphorus.net.requests
             AddCookies (context, node);
         }
 
+        /// <summary>
+        ///     Executes the request, and returns the response.
+        /// 
+        ///     Will execute and transmit the request to the server end-point, and return the response.
+        /// </summary>
+        /// <param name="context">Application context.</param>
+        /// <param name="node">Node wrapping the request.</param>
         public virtual IResponse Execute (ApplicationContext context, Node node)
         {
             HttpWebResponse response = (HttpWebResponse)Request.GetResponse ();
@@ -45,16 +66,32 @@ namespace phosphorus.net.requests
             return new BinaryResponse (response);
         }
 
+        /// <summary>
+        ///     Returns the HTTPWebRequest wrapped by this instance.
+        /// </summary>
+        /// <value>The request.</value>
         protected HttpWebRequest Request {
             get;
             private set;
         }
 
+        /// <summary>
+        ///     Returns the URL for your request.
+        /// 
+        ///     Override this method to modify or validate the request URL.
+        /// </summary>
+        /// <returns>The URL for the request.</returns>
+        /// <param name="context">Application context.</param>
+        /// <param name="node">Node wrapping request.</param>
+        /// <param name="url">Original URL, before any modifications occurs.</param>
         protected virtual string GetURL (ApplicationContext context, Node node, string url)
         {
             return url;
         }
-        
+
+        /*
+         * adds up all HTTP headers for request
+         */
         private void AddHeaders (ApplicationContext context, Node node)
         {
             // looping through each header in our [headers] collection, and adding to request
@@ -111,6 +148,9 @@ namespace phosphorus.net.requests
                     node.GetChildValue<object> ("allow-auto-redirect", context, null), node ["allow-auto-redirect"], context, true);
         }
 
+        /*
+         * adds up all HTTP cookies for request
+         */
         private void AddCookies (ApplicationContext context, Node node)
         {
             // making sure we've got our Cookie Container
@@ -125,8 +165,12 @@ namespace phosphorus.net.requests
             }
         }
 
-        private static string _basePath;
-        protected static string GetBasePath (ApplicationContext context)
+        /// <summary>
+        ///     Returns base filepath for your application pool.
+        /// </summary>
+        /// <returns>The base path for your app.</returns>
+        /// <param name="context">Application context.</param>
+        public static string GetBasePath (ApplicationContext context)
         {
             if (_basePath == null) {
                 Node node = new Node ();
@@ -135,8 +179,13 @@ namespace phosphorus.net.requests
             }
             return _basePath;
         }
-        
-        public static IEnumerable<Node> GetArguments (Node node)
+
+        /// <summary>
+        ///     Returns all parameters for request.
+        /// </summary>
+        /// <returns>The parameters.</returns>
+        /// <param name="node">Node to traverse for parameters.</param>
+        public static IEnumerable<Node> GetParameters (Node node)
         {
             return node.FindAll (ix => ix.Name != "headers" && ix.Name != "cookies" && ix.Name != "method");
         }

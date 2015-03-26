@@ -13,10 +13,22 @@ using MimeKit;
 
 namespace phosphorus.net.requests
 {
+    /// <summary>
+    ///     Wraps an HTTP POST request.
+    /// 
+    ///     Class needs an ISerializer instance, to serialize its content over the HTTP request stream.
+    /// </summary>
     public class HttpPostRequest : HttpRequest
     {
         private ISerializer _serializer;
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="phosphorus.net.requests.HttpPostRequest"/> class.
+        /// </summary>
+        /// <param name="context">Application context.</param>
+        /// <param name="node">Node wrapping the request parameters.</param>
+        /// <param name="url">URL for request.</param>
+        /// <param name="serializer">Serializer to use to serialize content over request stream.</param>
         public HttpPostRequest (ApplicationContext context, Node node, string url, ISerializer serializer)
             : base (context, node, url, "POST")
         {

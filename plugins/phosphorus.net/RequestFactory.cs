@@ -48,10 +48,6 @@ namespace phosphorus.net
 
                 // using MIME serializer
                 return new MultipartSerializer (contentType);
-            } else if (contentType.MediaType == "text") {
-
-                // using text serializer
-                return new TextSerializer ();
             } else if (contentType.MediaType == "application" && contentType.MediaSubtype == "x-www-form-urlencoded") {
 
                 // using x-www-form-urlencoded serializer
@@ -59,7 +55,7 @@ namespace phosphorus.net
             }
 
             // using the default/fallback serializer
-            return new BinarySerializer ();
+            return new ContentSerializer ();
         }
     }
 }

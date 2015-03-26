@@ -62,16 +62,14 @@
     <Compile Include="requests\QueryStringRequest.cs" />
     <Compile Include="requests\HttpDeleteRequest.cs" />
     <Compile Include="requests\HttpPostRequest.cs" />
-    <Compile Include="requests\serializers\Serializer.cs" />
-    <Compile Include="requests\serializers\TextSerializer.cs" />
     <Compile Include="requests\serializers\UrlEncodedSerializer.cs" />
-    <Compile Include="requests\serializers\MIMESerializer.cs" />
     <Compile Include="requests\HttpPutRequest.cs" />
     <Compile Include="response\TextResponse.cs" />
     <Compile Include="response\HttpResponse.cs" />
     <Compile Include="response\BinaryResponse.cs" />
     <Compile Include="response\MultipartResponse.cs" />
-    <Compile Include="requests\serializers\BinarySerializer.cs" />
+    <Compile Include="requests\serializers\MultipartSerializer.cs" />
+    <Compile Include="requests\serializers\ContentSerializer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

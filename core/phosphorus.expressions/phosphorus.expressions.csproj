@@ -71,6 +71,7 @@
     <Compile Include="exceptions\LambdaException.cs" />
     <Compile Include="iterators\IteratorValuedRegex.cs" />
     <Compile Include="iterators\IteratorRegex.cs" />
+    <Compile Include="NodeExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

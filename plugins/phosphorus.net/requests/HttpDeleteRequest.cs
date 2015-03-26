@@ -11,8 +11,17 @@ using MimeKit;
 
 namespace phosphorus.net.requests
 {
+    /// <summary>
+    ///     Wraps an HTTP DELETE request.
+    /// </summary>
     public class HttpDeleteRequest : QueryStringRequest
     {
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="phosphorus.net.requests.HttpDeleteRequest"/> class.
+        /// </summary>
+        /// <param name="context">Application context.</param>
+        /// <param name="node">Node wrapping the request parameters.</param>
+        /// <param name="url">URL for request.</param>
         public HttpDeleteRequest (ApplicationContext context, Node node, string url)
             : base (context, node, url, "DELETE")
         { }

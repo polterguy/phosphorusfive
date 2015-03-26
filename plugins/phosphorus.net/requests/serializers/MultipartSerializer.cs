@@ -14,10 +14,33 @@ using MimeKit;
 
 namespace phosphorus.net.requests.serializers
 {
-    public class MultipartSerializer : Serializer, ISerializer
+    /// <summary>
+    ///     Responsible for serializing MIME HTTP requests.
+    /// 
+    ///     This serializer is used when you create an HTTP/POST or PUT request, and you choose to send your request as a 'multipart' type
+    ///     of request. Internally it uses MimeKit to create a MIME message, which then will be serialized over the HttpWebResponse.
+    /// 
+    ///     Supports all features from MimeKit, and allows for adding any MIME header as children nodes beneath every value you choose 
+    ///     to serialize. If your MIME 'Content-Type' is 'multipart/something', and you have no value as your content, then it will traverse
+    ///     all [children] nodes, expecting these to be MIME entities by themselves, wrapped inside the multipart they exists within. This
+    ///     allows you to create MIME tree messages, where you can nest multipart messages inside of other multipart messages.
+    /// 
+    ///     If your MIME entities have the 'Content-Disposition' header set, with a 'filename' parameter, and no value in their main node,
+    ///     then this file will be transferred without being loaded into memory as your MIME entity.
+    /// 
+    ///     All children nodes of your MIME entities that have a value, will be assumed to be a MIME header, and used as such.
+    /// 
+    ///     This serializer supports most features of MimeKit, such as serializing content encoded as base64, by setting the 
+    ///     'Content-Transfer-Encoding' MIME header for your MIME entity, etc.
+    /// </summary>
+    public class MultipartSerializer : ISerializer
     {
         private ContentType _contentType;
 
+        /*
+         * we must store the ContentType, since Multipart's constructor will create a Content-Type itself, such that we can
+         * pass in any arguments given, in addition to keeping our automatically generated boundary, unless an explicit boundary is given.
+         */
         public MultipartSerializer (ContentType contentType)
         {
             _contentType = contentType;
@@ -33,7 +56,7 @@ namespace phosphorus.net.requests.serializers
                 Multipart multipart = CreateRootMultipart ();
 
                 // looping through all arguments, creating a MimeEntity, adding to Multipart
-                foreach (var idxArg in HttpRequest.GetArguments (node)) {
+                foreach (var idxArg in HttpRequest.GetParameters (node)) {
                     multipart.Add (CreateMimeEntity (context, idxArg, streams));
                 }
 
@@ -50,6 +73,9 @@ namespace phosphorus.net.requests.serializers
             }
         }
 
+        /*
+         * creates the "root" Multipart MimeEntity
+         */
         private Multipart CreateRootMultipart ()
         {
             // making sure we pass in the MediaSubtype
@@ -93,22 +119,29 @@ namespace phosphorus.net.requests.serializers
                 throw new ArgumentException ("Don't know how to create a MimeEntity from the given arguments");
             }
 
-            // decorating MimeEntity with headers, making sure we only use children node's that has a value
+            // decorating MimeEntity with headers, making sure we only use children node's with a value, to avoid nodes
+            // such as [children]
             foreach (var idxHeader in node.FindAll (ix => ix.Value != null)) {
                 part.Headers.Replace (idxHeader.Name, XUtil.Single<string> (idxHeader.Value, idxHeader, context));
             }
             return part;
         }
 
+        /*
+         * creates a MIME entity from file
+         */
         private MimeEntity CreateMimeEntityFromFile (ApplicationContext context, ContentDisposition cntDisp, List<Stream> streams)
         {
-            Stream stream = File.OpenRead (GetBasePath (context) + cntDisp.FileName);
+            Stream stream = File.OpenRead (HttpRequest.GetBasePath (context) + cntDisp.FileName);
             streams.Add (stream); // adding stream to list of streams to dispose when we're done
             MimePart retVal = new MimePart ();
             retVal.ContentObject = new ContentObject (stream);
             return retVal;
         }
 
+        /*
+         * creates a nested Multipart MIME entity
+         */
         private MimeEntity CreateNestedMultipart (ApplicationContext context, Node node, ContentType cntType, List<Stream> streams)
         {
             Multipart multipart = new Multipart (cntType.MediaSubtype);
@@ -119,6 +152,9 @@ namespace phosphorus.net.requests.serializers
             return multipart;
         }
 
+        /*
+         * creates a MIME entity from the value of the node
+         */
         private MimeEntity CreateMimeEntityFromValue (ApplicationContext context, Node node, List<Stream> streams)
         {
             // parts content is in its value somehow
@@ -129,7 +165,10 @@ namespace phosphorus.net.requests.serializers
             retVal.ContentObject = new ContentObject (stream);
             return retVal;
         }
-        
+
+        /*
+         * writes the roor Multipart to the Request stream
+         */
         private void WriteMultipartToRequest (Multipart multipart, HttpWebRequest request)
         {
             // updating request HTTTP header 'Content-Type' to reflect "boundary"
