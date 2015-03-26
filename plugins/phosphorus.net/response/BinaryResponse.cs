@@ -21,9 +21,10 @@ namespace phosphorus.net.response
             base.Parse (context, node);
 
             // then response content
-            MemoryStream stream = new MemoryStream ();
-            Response.GetResponseStream ().CopyTo (stream);
-            node.LastChild.Add ("content", stream.ToArray ());
+            using (MemoryStream stream = new MemoryStream ()) {
+                Response.GetResponseStream ().CopyTo (stream);
+                node.LastChild.Add ("content", stream.ToArray ());
+            }
         }
     }
 }

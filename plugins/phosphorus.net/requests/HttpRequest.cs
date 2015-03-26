@@ -7,6 +7,7 @@ using System;
 using System.IO;
 using System.Net;
 using System.Web;
+using System.Collections.Generic;
 using phosphorus.core;
 using phosphorus.expressions;
 using phosphorus.net.response;
@@ -133,6 +134,11 @@ namespace phosphorus.net.requests
                 _basePath = node.Get<string> (context);
             }
             return _basePath;
+        }
+        
+        public static IEnumerable<Node> GetArguments (Node node)
+        {
+            return node.FindAll (ix => ix.Name != "headers" && ix.Name != "cookies" && ix.Name != "method");
         }
     }
 }

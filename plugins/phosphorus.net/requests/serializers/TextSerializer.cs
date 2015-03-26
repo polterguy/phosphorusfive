@@ -5,27 +5,22 @@
 
 using System;
 using System.IO;
-using System.Web;
 using System.Net;
-using System.Text;
-using System.Collections.Generic;
-using System.Runtime.Serialization.Formatters.Binary;
 using phosphorus.core;
 using phosphorus.expressions;
-using MimeKit;
 
 namespace phosphorus.net.requests.serializers
 {
-    public class TextSerializer : Serializer
+    public class TextSerializer : Serializer, ISerializer
     {
-        public override void Serialize (
+        public void Serialize (
             ApplicationContext context, 
             Node node, 
             HttpWebRequest request)
         {
             // putting all parameters into body of request, as text
-            using (StreamWriter writer = new StreamWriter (request.GetRequestStream ())) {
-                foreach (var idxArg in GetArguments (node)) {
+            using (var writer = new StreamWriter (request.GetRequestStream ())) {
+                foreach (var idxArg in HttpRequest.GetArguments (node)) {
                     writer.Write (XUtil.Single<string> (idxArg.Value, idxArg, context));
                 }
             }

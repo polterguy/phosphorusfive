@@ -1274,6 +1274,86 @@ _bytes
 _time");
             Assert.AreEqual (node [0].Value, node [4].Value);
         }
+        
+        /// <summary>
+        ///     verifies creating expressions converting the result from ulong to string works
+        /// </summary>
+        [Test]
+        public void ConvertExpression20 ()
+        {
+            var node = ExecuteLambda (@"_data:time:""99.23:59:59.9990000""
+set:@/../3?value
+  source:@/../*/_data?value.string
+set:@/../4?value
+  source:@/../3?value.time
+_bytes
+_time");
+            Assert.AreEqual (node [0].Value, node [4].Value);
+        }
+        
+        /// <summary>
+        ///     verifies creating expressions converting the result from ulong to string works
+        /// </summary>
+        [Test]
+        public void ConvertExpression21 ()
+        {
+            var node = ExecuteLambda (@"_data:date:""2015-11-23T22:47:55.987""
+set:@/../3?value
+  source:@/../*/_data?value.string
+set:@/../4?value
+  source:@/../3?value.date
+_bytes
+_res");
+            Assert.AreEqual (node [0].Value, node [4].Value);
+        }
+        
+        /// <summary>
+        ///     verifies creating expressions converting the result from ulong to string works
+        /// </summary>
+        [Test]
+        public void ConvertExpression22 ()
+        {
+            var node = ExecuteLambda (@"_data:date:""2015-11-23T22:47:55""
+set:@/../3?value
+  source:@/../*/_data?value.string
+set:@/../4?value
+  source:@/../3?value.date
+_bytes
+_res");
+            Assert.AreEqual (node [0].Value, node [4].Value);
+        }
+        
+        /// <summary>
+        ///     verifies creating expressions converting the result from ulong to string works
+        /// </summary>
+        [Test]
+        public void ConvertExpression23 ()
+        {
+            var node = ExecuteLambda (@"_data:date:""2015-11-23""
+set:@/../3?value
+  source:@/../*/_data?value.string
+set:@/../4?value
+  source:@/../3?value.date
+_bytes
+_res");
+            Assert.AreEqual (node [0].Value, node [4].Value);
+        }
+        
+        /// <summary>
+        ///     verifies creating expressions converting the result from ulong to string works
+        /// </summary>
+        [Test]
+        public void ConvertExpression24 ()
+        {
+            var node = ExecuteLambda (@"_data:decimal:2344.43
+set:@/../3?value
+  source:@/../*/_data?value.string
+set:@/../4?value
+  source:@/../3?value.decimal
+_bytes
+_res");
+            Assert.AreEqual (node [0].Value, node [4].Value);
+        }
 
         /// <summary>
         ///     converts a Node to its string representation

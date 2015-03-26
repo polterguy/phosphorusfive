@@ -27,7 +27,7 @@ namespace phosphorus.net.requests
 
             // looping through everything that's neither [cookies], nor [headers] nor [method], and has a value, and using name of
             // node as name of parameter and value of node as value, constructing a URL-Encoded URL, returning to caller
-            foreach (var idxArg in node.FindAll (ix => ix.Name != "headers" && ix.Name != "cookies" && ix.Name != "method")) {
+            foreach (var idxArg in GetArguments (node)) {
 
                 // making sure our first argument starts with a "?", and all other arguments have "&" prepended in front of them
                 if (first) {

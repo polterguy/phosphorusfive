@@ -19,11 +19,10 @@ namespace phosphorus.net.response
         public override void Parse (ApplicationContext context, Node node)
         {
             base.Parse (context, node);
-            using (var reader = new StreamReader (Response.GetResponseStream ())) {
+            var reader = new StreamReader (Response.GetResponseStream ());
 
-                // then response text
-                node.LastChild.Add ("content", reader.ReadToEnd ());
-            }
+            // then response text
+            node.LastChild.Add ("content", reader.ReadToEnd ());
         }
     }
 }

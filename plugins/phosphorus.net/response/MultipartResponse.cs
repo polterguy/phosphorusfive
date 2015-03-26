@@ -21,14 +21,8 @@ namespace phosphorus.net.response
         public override void Parse (ApplicationContext context, Node node)
         {
             base.Parse (context, node);
-            using (var stream = Response.GetResponseStream ()) {
-                var multipart = (Multipart)Multipart.Load (stream);
-                if (multipart.Count > 0) {
-
-                    // parsing actual Multipart
-                    ParseMultipart (multipart, node.LastChild);
-                }
-            }
+            var stream = Response.GetResponseStream ();
+            ParseMultipart ((Multipart)Multipart.Load (stream), node.LastChild);
         }
 
         private void ParseMultipart (Multipart multipart, Node node)
@@ -44,13 +38,20 @@ namespace phosphorus.net.response
 
                 // actual MIME part, which depend upon what type of part we're talking about
                 if (idxEntityNode is TextPart) {
+
+                    // text part
                     current.Value = ((TextPart)idxEntityNode).GetText (Encoding.UTF8);
                 } else if (idxEntityNode is Multipart) {
+
+                    // nested Multipart
                     ParseMultipart ((Multipart)idxEntityNode, current);
                 } else if (idxEntityNode is MimePart) {
-                    MemoryStream stream = new MemoryStream ();
-                    ((MimePart)idxEntityNode).ContentObject.DecodeTo (stream);
-                    current.Value = stream.ToArray ();
+
+                    // "anything else", which we're treating as binary content
+                    using (MemoryStream stream = new MemoryStream ()) {
+                        ((MimePart)idxEntityNode).ContentObject.DecodeTo (stream);
+                        current.Value = stream.ToArray ();
+                    }
                 }
             }
         }

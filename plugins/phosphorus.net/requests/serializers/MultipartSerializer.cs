@@ -5,40 +5,35 @@
 
 using System;
 using System.IO;
-using System.Web;
 using System.Net;
 using System.Text;
 using System.Collections.Generic;
-using System.Runtime.Serialization.Formatters.Binary;
 using phosphorus.core;
 using phosphorus.expressions;
 using MimeKit;
 
 namespace phosphorus.net.requests.serializers
 {
-    public class MIMESerializer : Serializer
+    public class MultipartSerializer : Serializer, ISerializer
     {
         private ContentType _contentType;
 
-        public MIMESerializer (ContentType contentType)
+        public MultipartSerializer (ContentType contentType)
         {
             _contentType = contentType;
         }
 
-        public override void Serialize (
-            ApplicationContext context, 
-            Node node, 
-            HttpWebRequest request)
+        public void Serialize (ApplicationContext context, Node node, HttpWebRequest request)
         {
             // we have to track all of our FileStream objects, such that we can dispose them when we're done
             List<Stream> streams = new List<Stream> ();
             try
             {
                 // creating root Multipart, making sure sub-type and parameters from 'Content-Type' is passed on
-                Multipart multipart = CreateMultipart ();
+                Multipart multipart = CreateRootMultipart ();
 
                 // looping through all arguments, creating a MimeEntity, adding to Multipart
-                foreach (var idxArg in GetArguments (node)) {
+                foreach (var idxArg in HttpRequest.GetArguments (node)) {
                     multipart.Add (CreateMimeEntity (context, idxArg, streams));
                 }
 
@@ -55,7 +50,7 @@ namespace phosphorus.net.requests.serializers
             }
         }
 
-        private Multipart CreateMultipart ()
+        private Multipart CreateRootMultipart ()
         {
             // making sure we pass in the MediaSubtype
             Multipart multipart = new Multipart (_contentType.MediaSubtype);
@@ -81,67 +76,58 @@ namespace phosphorus.net.requests.serializers
             // figuring out Content-Type
             ContentType cntType = GetContentType (context, node);
 
-            // TODO: cleanup ...
-            MimePart part = new MimePart ();
-            Stream stream;
+            MimeEntity part;
             if (cntDisp != null && !string.IsNullOrEmpty (cntDisp.FileName) && node.Value == null) {
 
                 // part's content is in a file
-                stream = File.OpenRead (GetBasePath (context) + cntDisp.FileName);
-                streams.Add (stream); // adding stream to list of streams to dispose when we're done
-            } else if (cntType.MediaType == "multipart" && node.Value == null && node ["children"] != null && node ["children"].Count > 0) {
+                part = CreateMimeEntityFromFile (context, cntDisp, streams);
+            } else if (cntType.MediaType == "multipart" && node.Value == null && node ["children"] != null) {
 
-                // part is a Multipart in itself, and individual items are in children nodes
-                Multipart multipart = new Multipart (cntType.MediaSubtype);
-                foreach (var idxChild in node ["children"].Children) {
-                    MimeEntity entity = CreateMimeEntity (context, idxChild, streams);
-                    if (entity != null)
-                        multipart.Add (entity);
-                }
-                // decorating MimeEntity with headers, making sure we don't get "child" mime entities
-                foreach (var idxHeader in node.FindAll (ix => ix.Name != "children")) {
-                    if (idxHeader.Name == "Content-Type")
-                        continue; // already set
-                    multipart.Headers.Replace (idxHeader.Name, XUtil.Single<string> (idxHeader.Value, idxHeader, context));
-                }
-                return multipart.Count == 0 ? null : multipart;
+                // part is a nested Multipart, with MimeEntity items in [children] node
+                part = CreateNestedMultipart (context, node, cntType, streams);
+            } else if (node.Value != null) {
+
+                // part is in value of node, somehow
+                part = CreateMimeEntityFromValue (context, node, streams);
             } else {
-
-                // parts content is in its value somehow
-                var objValue = XUtil.Single<object> (node.Value, node, context, null);
-                if (objValue == null)
-                    return null;
-                var byteValue = objValue as byte [];
-                if (byteValue != null) {
-
-                    // value is already byte array
-                    stream = new MemoryStream (byteValue);
-                } else {
-
-                    if (cntType.MediaType == "text" || objValue is string) {
-
-                        // value is string value, or Content-Type is "text" something,
-                        // stuffing contents of string as byte array into MemoryStream for ContentObject, posssibly converting to string
-                        // before we create byte array
-                        stream = new MemoryStream (Encoding.UTF8.GetBytes (Utilities.Convert<string> (objValue, context, "")));
-                    } else {
-
-                        // defaulting to BinaryFormatter
-                        stream = new MemoryStream ();
-                        BinaryFormatter formatter = new BinaryFormatter ();
-                        formatter.Serialize (stream, objValue);
-                    }
-                }
-                if (stream.Length == 0)
-                    return null;
+                throw new ArgumentException ("Don't know how to create a MimeEntity from the given arguments");
             }
-            part.ContentObject = new ContentObject (stream);
 
-            // decorating MimeEntity with headers
-            foreach (var idxHeader in node.Children) {
+            // decorating MimeEntity with headers, making sure we only use children node's that has a value
+            foreach (var idxHeader in node.FindAll (ix => ix.Value != null)) {
                 part.Headers.Replace (idxHeader.Name, XUtil.Single<string> (idxHeader.Value, idxHeader, context));
             }
             return part;
+        }
+
+        private MimeEntity CreateMimeEntityFromFile (ApplicationContext context, ContentDisposition cntDisp, List<Stream> streams)
+        {
+            Stream stream = File.OpenRead (GetBasePath (context) + cntDisp.FileName);
+            streams.Add (stream); // adding stream to list of streams to dispose when we're done
+            MimePart retVal = new MimePart ();
+            retVal.ContentObject = new ContentObject (stream);
+            return retVal;
+        }
+
+        private MimeEntity CreateNestedMultipart (ApplicationContext context, Node node, ContentType cntType, List<Stream> streams)
+        {
+            Multipart multipart = new Multipart (cntType.MediaSubtype);
+            foreach (var idxChild in node ["children"].Children) {
+                MimeEntity entity = CreateMimeEntity (context, idxChild, streams);
+                multipart.Add (entity);
+            }
+            return multipart;
+        }
+
+        private MimeEntity CreateMimeEntityFromValue (ApplicationContext context, Node node, List<Stream> streams)
+        {
+            // parts content is in its value somehow
+            var byteValue = XUtil.Single<byte[]> (node.Value, node, context, null);
+            Stream stream = new MemoryStream (byteValue);
+            streams.Add (stream);
+            MimePart retVal = new MimePart ();
+            retVal.ContentObject = new ContentObject (stream);
+            return retVal;
         }
         
         private void WriteMultipartToRequest (Multipart multipart, HttpWebRequest request)

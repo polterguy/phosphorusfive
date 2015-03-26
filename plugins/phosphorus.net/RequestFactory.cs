@@ -47,7 +47,7 @@ namespace phosphorus.net
             if (contentType.MediaType == "multipart") {
 
                 // using MIME serializer
-                return new MIMESerializer (contentType);
+                return new MultipartSerializer (contentType);
             } else if (contentType.MediaType == "text") {
 
                 // using text serializer
