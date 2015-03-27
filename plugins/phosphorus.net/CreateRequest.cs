@@ -50,31 +50,6 @@ namespace phosphorus.net
         ///     would serialize its form arguments. If your 'Content-Type' is neither of the previously mentioned values, then your request will 
         ///     be transferred using the default content serializer, which will simply transfer whatever parameters you supply 'raw'.
         /// 
-        ///     In addition, you can choose to encrypt, and/or sign, your HTTP requests, using PGP and GnuPG, if your message is a multipart message. 
-        ///     The way you'd digitally sign a multipart message, is by adding a [sign] parameter, and set its value to the email address of the private 
-        ///     key you wish to use for signing your multipart message. If your GnuPG storage requires a password for releasing the private key you wish
-        ///     to use for signing, then you can add this as a [password] parameter beneath your [sign] parameter.
-        /// 
-        ///     To encrypt your multipart messages, add up an [encrypt] parameter, and add up one child node for each encryption certificate you wish 
-        ///     to encrypt your message with, where the value of these nodes are the email address of the certificates you wish to use for encrypting
-        ///     your multipart message.
-        /// 
-        ///     Example of how to create a signed and encrypted MIME HTTP request;
-        /// 
-        ///     <pre>pf.net.create-request:"http://127.0.0.1:8080/echo"
-        ///   sign:thomas@magixilluminate.com
-        ///     password:_your_password_
-        ///   encrypt
-        ///     :jane@doe.com
-        ///     :john@doe.com
-        ///   method:post
-        ///   headers
-        ///     Content-Type:multipart/mixed
-        ///   item1:foo
-        ///   item2:foo bar
-        ///   file
-        ///     Content-Disposition:attachment; filename=application-startup.hl</pre>
-        /// 
         ///     Example of how to create a url-encoded HTTP POST request passing in 'q1' and 'q2' with the values of 'foo' and 'bar';
         ///     <pre>pf.net.create-request:"http://127.0.0.1:8080/echo"
         ///   method:post
@@ -112,6 +87,44 @@ namespace phosphorus.net
         ///     when creating a multipart request, you do not have to serialize files or binary content as base64, you can also choose to serialize
         ///     your content as 'binary' type, which means that compared to traditional XML/SOAP based web services, you'll save a lot of both
         ///     bandwidth and client resources when creating your HTTP requests.
+        /// 
+        ///     In addition, you can choose to encrypt, and/or sign, your HTTP requests, using PGP and GnuPG, if your message is a multipart message. 
+        ///     The way you'd digitally sign a multipart message, is by adding a [sign] parameter, and set its value to the email address of the private 
+        ///     key you wish to use for signing your multipart message. If your GnuPG storage requires a password for releasing the private key you wish
+        ///     to use for signing, then you can add this as a [password] parameter beneath your [sign] parameter.
+        /// 
+        ///     To encrypt your multipart messages, add up an [encrypt] parameter, and add up one child node for each encryption certificate you wish 
+        ///     to encrypt your message with, where the value of these nodes are the email address of the certificates you wish to use for encrypting
+        ///     your multipart message.
+        /// 
+        ///     Example of how to create a signed and encrypted MIME HTTP request;
+        /// 
+        ///     <pre>pf.net.create-request:"http://127.0.0.1:8080/echo"
+        ///   sign:thomas@magixilluminate.com
+        ///     password:your_password
+        ///   encrypt
+        ///     :jane@doe.com
+        ///     :john@doe.com
+        ///   method:post
+        ///   headers
+        ///     Content-Type:multipart/mixed
+        ///   item1:foo
+        ///   item2:foo bar
+        ///   file
+        ///     Content-Disposition:attachment; filename=application-startup.hl</pre>
+        /// 
+        ///     In the above example the HTTP multipart request will be signed with the private key belonging to 'thomas@magixilluminate.com', and
+        ///     the key will be requested from the GnuPG PGP storage with 'your_password' as the password. The multipart message will then 
+        ///     be encrypted using the public certificates belonging to 'jane@doe.com' and 'john@doe.com'. Please notice, that when you sign and/or
+        ///     encrypt your multipart messages, then your entire multipart entity will be put into another multipart. A 'multipart that is encrypted,
+        ///     will contain exactly 2 parts. The first MIME entity is the version information, typically saying something like; 'Version: 1', while
+        ///     the second part will be your entire original multipart, in its encrypted form. The same is true for a signed multipart. If you choose
+        ///     to sign your multipart, then a new multipart that is signed will be constructed, wrapping your original multipart. This new multipart
+        ///     will contain exactly 2 MIME entities. The first MIME entity, will be your entire original multipart, while the second entity, will be
+        ///     your detached signature.
+        /// 
+        ///     To decrypt and verify a that a multipart is signed on the server side, you can use [pf.crypto.pgp.decrypt] and 
+        ///     [pf.crypto.pgp.verify-signature] on for instance the results of a [pf.web.request.get-body] invocation.
         /// 
         ///     The response from the server, will be treated according to what 'Content-Type' header the server returns. If the server returns a
         ///     'multipart/something' in its 'Content-Type' header, then the response will be assumed to be a multipart, and parsed using MimeKit.

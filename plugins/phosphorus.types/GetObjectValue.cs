@@ -374,17 +374,25 @@ namespace phosphorus.types
                     e.Args.Value = Encoding.UTF8.GetBytes (strValue);
             } else {
 
-                if (e.Args.Value is DateTime)
-                    e.Args.Value = ((DateTime)e.Args.Value).ToBinary ();
+                var nodeValue = e.Args.Value as Node;
+                if (nodeValue != null) {
+                    strValue = e.Args.Get<string> (context);
+                    e.Args.Value = Encoding.UTF8.GetBytes (strValue);
+                } else {
 
-                // marshalling raw bytes
-                var size = Marshal.SizeOf (e.Args.Value);
-                var ptr = Marshal.AllocHGlobal (size);
-                Marshal.StructureToPtr (e.Args.Value, ptr, false);
-                var bytes = new byte [size];
-                Marshal.Copy (ptr, bytes, 0, size);
-                Marshal.FreeHGlobal (ptr);
-                e.Args.Value = bytes;
+                    // DateTime cannot be marshalled
+                    if (e.Args.Value is DateTime)
+                        e.Args.Value = ((DateTime)e.Args.Value).ToBinary ();
+
+                    // marshalling raw bytes
+                    var size = Marshal.SizeOf (e.Args.Value);
+                    var ptr = Marshal.AllocHGlobal (size);
+                    Marshal.StructureToPtr (e.Args.Value, ptr, false);
+                    var bytes = new byte [size];
+                    Marshal.Copy (ptr, bytes, 0, size);
+                    Marshal.FreeHGlobal (ptr);
+                    e.Args.Value = bytes;
+                }
             }
         }
 

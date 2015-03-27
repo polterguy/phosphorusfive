@@ -197,7 +197,8 @@ namespace phosphorus.net.requests
                 ix.Name != "cookies" && 
                 ix.Name != "method" && 
                 ix.Name != "sign" && 
-                ix.Name != "encrypt");
+                ix.Name != "encrypt" &&
+                ix.Name != "allow-auto-redirect");
         }
     }
 }

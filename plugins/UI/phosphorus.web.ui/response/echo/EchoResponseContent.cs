@@ -26,14 +26,18 @@ namespace phosphorus.web.ui.response.echo
                 if (idxArg.GetExChildValue ("is-file", context, false)) {
 
                     // item is a file
-                    using (FileStream fileStream = File.OpenRead (EchoResponse.GetBasePath (context) + idxArg.GetExValue<string> (context))) {
-                        fileStream.CopyTo (response.OutputStream);
+                    var fileName = idxArg.GetExValue<string> (context);
+                    if (fileName != null) {
+                        using (FileStream fileStream = File.OpenRead (EchoResponse.GetBasePath (context) + fileName)) {
+                            fileStream.CopyTo (response.OutputStream);
+                        }
                     }
                 } else {
 
                     // serializing value of node
                     var byteValue =  idxArg.GetExValue<byte[]> (context);
-                    response.OutputStream.Write (byteValue, 0, byteValue.Length);
+                    if (byteValue != null)
+                        response.OutputStream.Write (byteValue, 0, byteValue.Length);
                 }
             }
         }

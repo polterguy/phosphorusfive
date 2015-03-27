@@ -30,7 +30,7 @@ namespace phosphorus.expressions
         {
             if (node [name] == null || node [name].Value == null)
                 return defaultValue;
-            return XUtil.Single<T> (node [name].Value, node [name], context, defaultValue);
+            return XUtil.Single<T> (node [name], node [name], context, defaultValue);
         }
 
         /// <summary>
@@ -45,7 +45,9 @@ namespace phosphorus.expressions
         /// <typeparam name="T">The type to return the evaluated result as.</typeparam>
         public static T GetExValue<T> (this Node node, ApplicationContext context, T defaultValue = default(T))
         {
-            return XUtil.Single<T> (node.Value, node, context, defaultValue);
+            if (node.Value == null)
+                return defaultValue;
+            return XUtil.Single<T> (node, node, context, defaultValue);
         }
     }
 }

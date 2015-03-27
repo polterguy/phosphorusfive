@@ -76,9 +76,9 @@ namespace phosphorus.web.ui.request
          */
         private static bool RequestIsText (Node node, ApplicationContext context)
         {
-            if (node.GetChildValue ("force-text", context, false))
+            if (node.GetExChildValue ("force-text", context, false))
                 return true;
-            if (node.GetChildValue ("force-binary", context, false))
+            if (node.GetExChildValue ("force-binary", context, false))
                 return false;
             if (ContentType.Parse (HttpContext.Current.Request.ContentType).MediaType == "text")
                 return true;
