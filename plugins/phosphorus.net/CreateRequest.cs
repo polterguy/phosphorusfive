@@ -25,7 +25,7 @@ namespace phosphorus.net
     public static class CreateRequest
     {
         /// <summary>
-        ///     Creates a new HTTP MIME/URL-Encoded/REST request.
+        ///     Creates a new HTTP Encrypted/Signed/MIME/URL-Encoded/REST request.
         /// 
         ///     Choose which type of request you wish to create as [method], which can be either 'get', 'put', 'post' or 'delete'. The default
         ///     value of [method], if you ommit it, is 'get'. You can add HTTP headers to your request as a key/value collection beneath [headers].
@@ -44,11 +44,36 @@ namespace phosphorus.net
         ///     name and its value. The arguments will then be passed as a part of your query string, correctly URL-encoded.
         /// 
         ///     If your request is either a 'put' or 'post' type of request, then you have several options in regards to how you wish to 
-        ///     transfer your arguments to the server end-point. If your request has a 'Content-Type' header of 'multipart/xxx-something', 
-        ///     then your request will be transferred as a MIME message. If your 'Content-Type' is 'application/x-www-form-urlencoded', 
-        ///     then your request will be transferred as a URL encoded form request, the same way a browser would serialize its form arguments. 
-        ///     If your 'Content-Type' is neither of the previously mentioned values, then your request will be transferred using the default
-        ///     content serializer, which will simply transfer whatever parameters you supply 'raw'.
+        ///     transfer your arguments to the server end-point, including signing and encryption. If your request has a 'Content-Type' header 
+        ///     of 'multipart/xxx-something', then your request will be transferred as a MIME message. If your 'Content-Type' is 
+        ///     'application/x-www-form-urlencoded', then your request will be transferred as a URL encoded form request, the same way a browser 
+        ///     would serialize its form arguments. If your 'Content-Type' is neither of the previously mentioned values, then your request will 
+        ///     be transferred using the default content serializer, which will simply transfer whatever parameters you supply 'raw'.
+        /// 
+        ///     In addition, you can choose to encrypt, and/or sign, your HTTP requests, using PGP and GnuPG, if your message is a multipart message. 
+        ///     The way you'd digitally sign a multipart message, is by adding a [sign] parameter, and set its value to the email address of the private 
+        ///     key you wish to use for signing your multipart message. If your GnuPG storage requires a password for releasing the private key you wish
+        ///     to use for signing, then you can add this as a [password] parameter beneath your [sign] parameter.
+        /// 
+        ///     To encrypt your multipart messages, add up an [encrypt] parameter, and add up one child node for each encryption certificate you wish 
+        ///     to encrypt your message with, where the value of these nodes are the email address of the certificates you wish to use for encrypting
+        ///     your multipart message.
+        /// 
+        ///     Example of how to create a signed and encrypted MIME HTTP request;
+        /// 
+        ///     <pre>pf.net.create-request:"http://127.0.0.1:8080/echo"
+        ///   sign:thomas@magixilluminate.com
+        ///     password:_your_password_
+        ///   encrypt
+        ///     :jane@doe.com
+        ///     :john@doe.com
+        ///   method:post
+        ///   headers
+        ///     Content-Type:multipart/mixed
+        ///   item1:foo
+        ///   item2:foo bar
+        ///   file
+        ///     Content-Disposition:attachment; filename=application-startup.hl</pre>
         /// 
         ///     Example of how to create a url-encoded HTTP POST request passing in 'q1' and 'q2' with the values of 'foo' and 'bar';
         ///     <pre>pf.net.create-request:"http://127.0.0.1:8080/echo"
@@ -133,6 +158,9 @@ namespace phosphorus.net
         ///     of the DateTime object is being sent. Using this approach, you can probably simulate most types of HTTP request you wish, by combining any types
         ///     of values and/or files you wish.
         /// 
+        ///     Unless you pass in [allow-auto-redirect] and set its value to 'false', then this Active Event will automatically redirect
+        ///     the HTTP request if necessary, such as when the server you're requesting a document from redirects with a 301 redirect response.
+        /// 
         ///     By combining this Active Event with [pf.web.response.echo], you can both consume and create web services, without breaking the
         ///     foundation the web was built on, which is REST.
         /// </summary>
@@ -143,9 +171,7 @@ namespace phosphorus.net
                 return; // nothing to do here
 
             // figuring out which method to use, defaulting to 'GET'
-            string method = XUtil.Single<string> (
-                e.Args.GetChildValue<object> ("method", context, null), 
-                e.Args ["method"], context, "get").ToLower ();
+            string method = e.Args.GetExChildValue ("method", context, "get").ToLower ();
 
             // checking to see if this is our guy
             if (method != "get" && method != "post" && method != "put" && method != "delete")

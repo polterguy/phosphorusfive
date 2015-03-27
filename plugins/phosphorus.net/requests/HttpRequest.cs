@@ -150,9 +150,7 @@ namespace phosphorus.net.requests
                 Request.ContentType = "application/x-www-form-urlencoded; charset=utf-8";
 
             // if no AllowAutoRedirect is provided
-            Request.AllowAutoRedirect = 
-                XUtil.Single (
-                    node.GetChildValue<object> ("allow-auto-redirect", context, null), node ["allow-auto-redirect"], context, true);
+            Request.AllowAutoRedirect = node.GetExChildValue ("allow-auto-redirect", context, true);
         }
 
         /*
@@ -166,7 +164,7 @@ namespace phosphorus.net.requests
             // looping through all request cookies passed in by caller
             foreach (var idxCookie in XUtil.Iterate<Node> (node ["cookies"], context)) {
                 Request.CookieContainer.Add (
-                    new Cookie (idxCookie.Name, HttpUtility.UrlEncode (XUtil.Single<string> (idxCookie, context))) { 
+                    new Cookie (idxCookie.Name, HttpUtility.UrlEncode (idxCookie.GetExValue<string> (context))) { 
                     Domain = Request.RequestUri.Host
                 });
             }
@@ -194,7 +192,12 @@ namespace phosphorus.net.requests
         /// <param name="node">Node to traverse for parameters.</param>
         public static IEnumerable<Node> GetParameters (Node node)
         {
-            return node.FindAll (ix => ix.Name != "headers" && ix.Name != "cookies" && ix.Name != "method");
+            return node.FindAll (
+                ix => ix.Name != "headers" && 
+                ix.Name != "cookies" && 
+                ix.Name != "method" && 
+                ix.Name != "sign" && 
+                ix.Name != "encrypt");
         }
     }
 }

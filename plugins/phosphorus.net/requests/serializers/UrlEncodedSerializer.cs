@@ -34,7 +34,7 @@ namespace phosphorus.net.requests.serializers
                     else
                         writer.Write ("&"); // second, third, or fourth, etc, parameter, making sure we separate our parameters correctly
                     writer.Write (string.Format ("{0}=", idxArg.Name));
-                    writer.Write (HttpUtility.UrlEncode (XUtil.Single<string> (idxArg.Value, idxArg, context)));
+                    writer.Write (HttpUtility.UrlEncode (idxArg.GetExValue<string> (context)));
                 }
             }
         }

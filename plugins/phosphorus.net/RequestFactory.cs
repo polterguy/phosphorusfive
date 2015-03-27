@@ -55,10 +55,7 @@ namespace phosphorus.net
             // figuring out 'Content-Type'. defaulting to "application/x-www-form-urlencoded", unless caller specifies something else
             ContentType contentType = new ContentType ("application", "x-www-form-urlencoded");
             if (node ["headers"] != null && node ["headers"] ["Content-Type"] != null)
-                contentType = ContentType.Parse (
-                    XUtil.Single<string> (
-                    node ["headers"] ["Content-Type"].Value, 
-                    node ["headers"] ["Content-Type"], context));
+                contentType = ContentType.Parse (node ["headers"] ["Content-Type"].GetExValue<string> (context));
 
             // checking what type of serializer we should use for our request
             if (contentType.MediaType == "multipart") {

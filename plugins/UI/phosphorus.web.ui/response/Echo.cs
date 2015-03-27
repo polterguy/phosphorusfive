@@ -60,6 +60,10 @@ namespace phosphorus.web.ui.response
         /// 
         ///     This Active Event, effectively allows you to create Web Services in your web apps, which you again can invoke from other
         ///     clients by using [pf.net.create-request].
+        /// 
+        ///     By default, this Active Event will abandon the current session when executed. If this is not the behavior you wish for, 
+        ///     you can set [keep-session] to 'true'. Unless you set [keep-session] to 'false', it will also remove the ASP.NET session cookie
+        ///     for you.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>

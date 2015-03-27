@@ -41,15 +41,15 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Web" />
-    <Reference Include="BouncyCastle">
-      <HintPath>..\..\..\packages\MimeKit.1.0.10.0\lib\net40\BouncyCastle.dll</HintPath>
-    </Reference>
-    <Reference Include="MimeKit">
-      <HintPath>..\..\..\packages\MimeKit.1.0.10.0\lib\net40\MimeKit.dll</HintPath>
-    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Security" />
+    <Reference Include="BouncyCastle">
+      <HintPath>..\..\..\packages\MimeKit.1.0.11.0\lib\net40\BouncyCastle.dll</HintPath>
+    </Reference>
+    <Reference Include="MimeKit">
+      <HintPath>..\..\..\packages\MimeKit.1.0.11.0\lib\net40\MimeKit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Session.cs" />
@@ -100,10 +100,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="request\" />
     <Folder Include="response\echo\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

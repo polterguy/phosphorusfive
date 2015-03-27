@@ -60,8 +60,11 @@ namespace phosphorus.net.requests.serializers
                     multipart.Add (CreateMimeEntity (context, idxArg, streams));
                 }
 
+                // checking if we should sign and/or encrypt message, and which signing key and/or encryption certificate we should use
+                MimeEntity processed = SignAndEncryptEntity (context, node, multipart);
+
                 // writing Multipart to request stream
-                WriteMultipartToRequest (multipart, request);
+                WriteMultipartToRequest (processed, request);
             }
             finally
             {
@@ -121,7 +124,7 @@ namespace phosphorus.net.requests.serializers
             // decorating MimeEntity with headers, making sure we only use children node's with a value, to avoid nodes
             // such as [children]
             foreach (var idxHeader in node.FindAll (ix => ix.Value != null)) {
-                part.Headers.Replace (idxHeader.Name, XUtil.Single<string> (idxHeader.Value, idxHeader, context));
+                part.Headers.Replace (idxHeader.Name, idxHeader.GetExValue<string> (context));
             }
             return part;
         }
@@ -157,7 +160,7 @@ namespace phosphorus.net.requests.serializers
         private MimeEntity CreateMimeEntityFromValue (ApplicationContext context, Node node, List<Stream> streams)
         {
             // parts content is in its value somehow
-            var byteValue = XUtil.Single<byte[]> (node.Value, node, context, null);
+            var byteValue = node.GetExValue<byte[]> (context, null);
             Stream stream = new MemoryStream (byteValue);
             streams.Add (stream);
             MimePart retVal = new MimePart ();
@@ -166,16 +169,56 @@ namespace phosphorus.net.requests.serializers
         }
 
         /*
-         * writes the roor Multipart to the Request stream
+         * signs and encrypts MimeEntity if caller requests it, otherwise returning entity given
          */
-        private void WriteMultipartToRequest (Multipart multipart, HttpWebRequest request)
+        private MimeEntity SignAndEncryptEntity (ApplicationContext context, Node node, MimeEntity entity)
+        {
+            string signingKey = node.GetExChildValue<string> ("sign", context);
+            bool encryptionCert = node ["encrypt"] != null;
+            if (!string.IsNullOrEmpty (signingKey) && encryptionCert) {
+
+                // both signing and encrypting
+                Node signEncrNode = new Node (string.Empty, entity);
+                signEncrNode.Add ("sign", signingKey);
+                if (node ["sign"] ["password"] != null)
+                    signEncrNode.LastChild.Add ("password", node ["sign"].GetExChildValue<string> ("password", context));
+                signEncrNode.Add ("encrypt");
+                foreach (var idxEncrNode in node ["encrypt"].Children) {
+                    signEncrNode.LastChild.Add (string.Empty, idxEncrNode.GetExValue<string> (context));
+                }
+                entity = context.Raise ("_pf.crypto.pgp.sign-and-encrypt", signEncrNode).Get<MimeEntity> (context);
+            } else if (!string.IsNullOrEmpty (signingKey)) {
+
+                // only signing
+                Node signEncrNode = new Node (string.Empty, entity);
+                signEncrNode.Add ("sign", signingKey);
+                if (node ["sign"] ["password"] != null)
+                    signEncrNode.LastChild.Add ("password", node ["sign"].GetExChildValue<string> ("password", context));
+                entity = context.Raise ("_pf.crypto.pgp.sign", signEncrNode).Get<MimeEntity> (context);
+            } else if (encryptionCert) {
+
+                // only encrypting
+                Node signEncrNode = new Node (string.Empty, entity);
+                signEncrNode.Add ("encrypt");
+                foreach (var idxEncrNode in node ["encrypt"].Children) {
+                    signEncrNode.LastChild.Add (string.Empty, idxEncrNode.GetExValue<string> (context));
+                }
+                entity = context.Raise ("_pf.crypto.pgp.encrypt", signEncrNode).Get<MimeEntity> (context);
+            }
+            return entity;
+        }
+
+        /*
+         * writes the given MimeEntity to the Request stream
+         */
+        private void WriteMultipartToRequest (MimeEntity entity, HttpWebRequest request)
         {
             // updating request HTTP header 'Content-Type' to reflect "boundary"
-            request.ContentType = multipart.ContentType.MimeType + multipart.ContentType.Parameters;
+            request.ContentType = entity.ContentType.MimeType + entity.ContentType.Parameters;
 
             // writing Multipart to HTTP request stream
             using (var stream = request.GetRequestStream ()) {
-                multipart.WriteTo (stream);
+                entity.WriteTo (stream);
             }
         }
 
@@ -186,7 +229,7 @@ namespace phosphorus.net.requests.serializers
         {
             var cntNode = node ["Content-Disposition"];
             if (cntNode != null)
-                return ContentDisposition.Parse (XUtil.Single<string> (cntNode.Value, cntNode, (context)));
+                return ContentDisposition.Parse (cntNode.GetExValue<string> (context));
             return null;
         }
 
@@ -197,7 +240,7 @@ namespace phosphorus.net.requests.serializers
         {
             var cntNode = node ["Content-Type"];
             if (cntNode != null)
-                return ContentType.Parse (XUtil.Single<string> (cntNode.Value, cntNode, (context)));
+                return ContentType.Parse (cntNode.GetExValue<string> (context));
             return null;
         }
     }

@@ -12,6 +12,11 @@ using MimeKit;
 
 namespace phosphorus.web.ui.response.echo
 {
+    /// <summary>
+    ///     Content echo response.
+    /// 
+    ///     This echo response will simply concatenate all parameters in order, and transfer back to the client over the current HTTP response.
+    /// </summary>
     public class EchoResponseContent : EchoResponse, IEchoResponse
     {
         public void Echo (ApplicationContext context, Node node, HttpResponse response)

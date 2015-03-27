@@ -13,13 +13,23 @@ using MimeKit;
 
 namespace phosphorus.web.ui.response.echo
 {
-    /// \todo put the stuff that's common between this class and MultipartSerializer from phosphorus.net into a shared common class
-    /// which is actually almost EVERYTHING ...!
-    /// possibly create a common "Parse Mime" class or something, which allows serializing a Multipart to any stream ...?
+    // \todo put the stuff that's common between this class and MultipartSerializer from phosphorus.net into a shared common class
+    // which is actually almost EVERYTHING ...!
+    // possibly create a common "Parse Mime" class or something, which allows serializing a Multipart to any stream ...?
+
+    /// <summary>
+    ///     Multipart echo response.
+    /// 
+    ///     Will echo a multipart back to client over the current HTTP response.
+    /// </summary>
     public class EchoResponseMultipart : EchoResponse, IEchoResponse
     {
         private ContentType _contentType;
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="phosphorus.web.ui.response.echo.EchoResponseMultipart"/> class.
+        /// </summary>
+        /// <param name="contentType">Content type.</param>
         public EchoResponseMultipart (ContentType contentType)
         {
             _contentType = contentType;
@@ -100,7 +110,7 @@ namespace phosphorus.web.ui.response.echo
             // decorating MimeEntity with headers, making sure we only use children node's with a value, to avoid nodes
             // such as [children]
             foreach (var idxHeader in node.FindAll (ix => ix.Value != null)) {
-                part.Headers.Replace (idxHeader.Name, XUtil.Single<string> (idxHeader.Value, idxHeader, context));
+                part.Headers.Replace (idxHeader.Name, idxHeader.GetExValue<string> (context));
             }
             return part;
         }
@@ -136,7 +146,7 @@ namespace phosphorus.web.ui.response.echo
         private MimeEntity CreateMimeEntityFromValue (ApplicationContext context, Node node, List<Stream> streams)
         {
             // parts content is in its value somehow
-            var byteValue = XUtil.Single<byte[]> (node.Value, node, context, null);
+            var byteValue = node.GetExValue<byte[]> (context);
             Stream stream = new MemoryStream (byteValue);
             streams.Add (stream);
             MimePart retVal = new MimePart ();
@@ -159,22 +169,22 @@ namespace phosphorus.web.ui.response.echo
         /*
          * returns the ContentDisposition for the given node, if there is any
          */
-        protected static ContentDisposition GetDisposition (ApplicationContext context, Node node)
+        private static ContentDisposition GetDisposition (ApplicationContext context, Node node)
         {
             var cntNode = node ["Content-Disposition"];
             if (cntNode != null)
-                return ContentDisposition.Parse (XUtil.Single<string> (cntNode.Value, cntNode, (context)));
+                return ContentDisposition.Parse (cntNode.GetExValue<string> (context));
             return null;
         }
 
         /*
          * returns the ContentDisposition for the given node, if there is any
          */
-        protected static ContentType GetContentType (ApplicationContext context, Node node)
+        private static ContentType GetContentType (ApplicationContext context, Node node)
         {
             var cntNode = node ["Content-Type"];
             if (cntNode != null)
-                return ContentType.Parse (XUtil.Single<string> (cntNode.Value, cntNode, (context)));
+                return ContentType.Parse (cntNode.GetExValue<string> (context));
             return null;
         }
     }
