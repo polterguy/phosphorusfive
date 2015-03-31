@@ -1,14 +1,14 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>10.0.0</ProductVersion>
+    <ProductVersion>12.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{46D8DEF8-01ED-4058-B2D5-689890865494}</ProjectGuid>
+    <ProjectGuid>{F8850AC4-49EB-4BD1-AD18-0F3FB7EC6E75}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>phosphorus.crypto</RootNamespace>
-    <AssemblyName>phosphorus.crypto</AssemblyName>
+    <RootNamespace>phosphorus.mime</RootNamespace>
+    <AssemblyName>phosphorus.mime</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -16,6 +16,14 @@
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
     <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -30,14 +38,6 @@
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="BouncyCastle">
@@ -51,21 +51,10 @@
     <Reference Include="System.Security" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Hash.cs" />
-    <Compile Include="PfGnuPGContext.cs" />
-    <Compile Include="Pgp.cs" />
+    <Compile Include="ParseMime.cs" />
+    <Compile Include="CreateMime.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <ProjectReference Include="..\..\core\phosphorus.core\phosphorus.core.csproj">
-      <Project>{C783FEDB-C973-4F38-8EBB-55A0163612F5}</Project>
-      <Name>phosphorus.core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\core\phosphorus.expressions\phosphorus.expressions.csproj">
-      <Project>{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}</Project>
-      <Name>phosphorus.expressions</Name>
-    </ProjectReference>
-  </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>
@@ -77,6 +66,16 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
+  <ItemGroup>
+    <ProjectReference Include="..\..\core\phosphorus.core\phosphorus.core.csproj">
+      <Project>{C783FEDB-C973-4F38-8EBB-55A0163612F5}</Project>
+      <Name>phosphorus.core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\core\phosphorus.expressions\phosphorus.expressions.csproj">
+      <Project>{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}</Project>
+      <Name>phosphorus.expressions</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>

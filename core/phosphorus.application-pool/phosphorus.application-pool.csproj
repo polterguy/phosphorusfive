@@ -63,6 +63,7 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
   <ProjectExtensions>
     <MonoDevelop>
       <Properties VerifyCodeBehindFields="True" VerifyCodeBehindEvents="True">
@@ -172,6 +173,10 @@
     <ProjectReference Include="..\..\plugins\phosphorus.net\phosphorus.net.csproj">
       <Project>{378663D4-1FC1-4109-8896-F72440C6C269}</Project>
       <Name>phosphorus.net</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\phosphorus.mime\phosphorus.mime.csproj">
+      <Project>{F8850AC4-49EB-4BD1-AD18-0F3FB7EC6E75}</Project>
+      <Name>phosphorus.mime</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

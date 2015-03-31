@@ -24,7 +24,7 @@ namespace phosphorus.web.ui.response.echo
         /// <param name="node">Node where to extract the parameters from.</param>
         protected IEnumerable<Node> GetParameters (Node node)
         {
-            return node.FindAll (ix => ix.Name != "keep-session");
+            return node.FindAll (ix => ix.Name != "keep-session" && ix.Name != "encrypt" && ix.Name != "sign" && ix.Name != string.Empty);
         }
 
         /// <summary>

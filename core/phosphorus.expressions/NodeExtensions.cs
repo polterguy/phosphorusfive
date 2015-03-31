@@ -42,12 +42,13 @@ namespace phosphorus.expressions
         /// <param name="node">Node to evaluate.</param>
         /// <param name="context">Application context.</param>
         /// <param name="defaultValue">Default value to return.</param>
+        /// <param name="inject">String to inject between entities of expression.</param>
         /// <typeparam name="T">The type to return the evaluated result as.</typeparam>
-        public static T GetExValue<T> (this Node node, ApplicationContext context, T defaultValue = default(T))
+        public static T GetExValue<T> (this Node node, ApplicationContext context, T defaultValue = default(T), string inject = null)
         {
             if (node.Value == null)
                 return defaultValue;
-            return XUtil.Single<T> (node, node, context, defaultValue);
+            return XUtil.Single<T> (node, node, context, defaultValue, inject);
         }
     }
 }

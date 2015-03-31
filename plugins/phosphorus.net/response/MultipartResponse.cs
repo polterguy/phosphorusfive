@@ -8,7 +8,9 @@ using System.IO;
 using System.Net;
 using System.Text;
 using phosphorus.core;
+using phosphorus.expressions;
 using MimeKit;
+using MimeKit.Cryptography;
 
 namespace phosphorus.net.response
 {
@@ -41,14 +43,17 @@ namespace phosphorus.net.response
         {
             base.Parse (context, node);
             var stream = Response.GetResponseStream ();
-            ParseMultipart ((Multipart)Multipart.Load (stream), node.LastChild);
+            ParseMultipart (context, (Multipart)Multipart.Load (stream), node.LastChild);
         }
 
         /*
          * parses one Multipart
          */
-        private void ParseMultipart (Multipart multipart, Node node)
+        private void ParseMultipart (ApplicationContext context, Multipart multipart, Node node)
         {
+            // checking to see if 
+            multipart = PreProcessMultipart (context, multipart, node);
+
             // looping through each MIME part, trying to figure out a nice name for it
             foreach (var idxEntityNode in multipart) {
                 Node current = node.Add (GetName (idxEntityNode)).LastChild;
@@ -67,7 +72,7 @@ namespace phosphorus.net.response
 
                     // nested Multipart
                     current.Add ("children");
-                    ParseMultipart ((Multipart)idxEntityNode, current.LastChild);
+                    ParseMultipart (context, (Multipart)idxEntityNode, current.LastChild);
                 } else if (idxEntityNode is MimePart) {
 
                     // "anything else", which we're treating as binary content
@@ -77,6 +82,32 @@ namespace phosphorus.net.response
                     }
                 }
             }
+        }
+
+        /*
+         * responsible for checking to see if multipart is encrypted, and if it is, and if it is, and caller supplied
+         * a [decrypt] parameter, we will decrypt the multipart, and return the decrypted version. In addition, it will
+         * check to see if multipart was signed, and if it was, it will validate the signature, and make sure caller
+         * gets to know the state about the signature, such that it can validate the multipart's integrity.
+         */
+        private Multipart PreProcessMultipart (ApplicationContext context, Multipart entity, Node node)
+        {
+            if (entity is MultipartEncrypted && node.Parent ["decryption-password"] != null) {
+
+                // multipart was encrypted, and caller supplied a [decryption-password] parameter
+                var encrNode = new Node (string.Empty, entity);
+                encrNode.Add ("password", node.Parent.GetExChildValue<string> ("decryption-password", context));
+                entity = context.Raise ("_pf.crypto.pgp.decrypt", encrNode).Get<Multipart> (context);
+                node.Add ("encrypted", true);
+            }
+            if (entity is MultipartSigned) {
+
+                // entity is signed, verifying signature and returning signature data to caller
+                var signatureResult = context.Raise ("_pf.crypto.pgp.verify-signature", new Node (string.Empty, entity)).Get<Node> (context);
+                node.Add ("signed", signatureResult.Get<bool> (context));
+                node ["signed"].AddRange (signatureResult.Children);
+            }
+            return entity;
         }
 
         /*

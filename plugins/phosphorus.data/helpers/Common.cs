@@ -86,7 +86,6 @@ namespace phosphorus.data.helpers
             }
         }
 
-        /// \todo Cleanup these parts to create better API.
         /// <summary>
         ///     Adds the file node to changes.
         /// 

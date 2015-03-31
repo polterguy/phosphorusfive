@@ -57,6 +57,9 @@ namespace phosphorus.web.ui.request
         [ActiveEvent (Name = "pf.web.request.get-body")]
         private static void pf_web_request_get_body (ApplicationContext context, ActiveEventArgs e)
         {
+            if (HttpContext.Current.Request.InputStream.Length == 0)
+                return; // nothing to do here ...
+
             if (RequestIsText (e.Args, context)) {
                 
                 // some sort of "textual" based type of request
@@ -65,9 +68,9 @@ namespace phosphorus.web.ui.request
             } else {
                 
                 // some sort of "binary" type of request, we assume
-                MemoryStream stream = new MemoryStream ();
-                HttpContext.Current.Request.InputStream.CopyTo (stream);
-                e.Args.Add ("result", stream.GetBuffer ());
+                var rawBytes = new byte [HttpContext.Current.Request.InputStream.Length];
+                HttpContext.Current.Request.InputStream.Read (rawBytes, 0, rawBytes.Length);
+                e.Args.Add ("result", rawBytes);
             }
         }
 

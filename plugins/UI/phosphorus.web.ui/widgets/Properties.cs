@@ -113,22 +113,22 @@ namespace phosphorus.web.ui.widgets
                         case "":
                             continue; // formatting parameter to expression in main node
                         case "visible":
-                            widget.Visible = valueNode.Get<bool> (context);
+                            widget.Visible = valueNode.GetExValue<bool> (context);
                             break;
                         case "invisible-element":
-                            widget.InvisibleElement = valueNode.Get<string> (context);
+                            widget.InvisibleElement = valueNode.GetExValue<string> (context);
                             break;
                         case "element":
-                            widget.ElementType = valueNode.Get<string> (context);
+                            widget.ElementType = valueNode.GetExValue<string> (context);
                             break;
                         case "has-id":
-                            widget.NoIdAttribute = valueNode.Get<bool> (context);
+                            widget.NoIdAttribute = valueNode.GetExValue<bool> (context);
                             break;
                         case "render-type":
-                            widget.RenderType = (Widget.RenderingType) Enum.Parse (typeof (Widget.RenderingType), valueNode.Get<string> (context));
+                            widget.RenderType = (Widget.RenderingType) Enum.Parse (typeof (Widget.RenderingType), valueNode.GetExValue<string> (context));
                             break;
                         default:
-                            widget [valueNode.Name] = valueNode.Get<string> (context);
+                            widget [valueNode.Name] = valueNode.GetExValue<string> (context);
                             break;
                     }
                 }

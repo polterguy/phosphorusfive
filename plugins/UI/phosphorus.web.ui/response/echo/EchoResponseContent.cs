@@ -35,7 +35,7 @@ namespace phosphorus.web.ui.response.echo
                 } else {
 
                     // serializing value of node
-                    var byteValue =  idxArg.GetExValue<byte[]> (context);
+                    var byteValue =  idxArg.GetExValue<byte[]> (context, null);
                     if (byteValue != null)
                         response.OutputStream.Write (byteValue, 0, byteValue.Length);
                 }

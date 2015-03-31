@@ -288,6 +288,9 @@ namespace phosphorus.ajax.widgets
             get { return base.Visible; }
             set
             {
+                if (value == Visible)
+                    return; // nothing to do here ...
+
                 if (!base.Visible && value && IsTrackingViewState && IsPhosphorusRequest) {
                     // this control was made visible during this request and should be rendered as html
                     // unless any of its ancestors are invisible
