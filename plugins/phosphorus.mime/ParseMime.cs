@@ -9,6 +9,7 @@ using System.Text;
 using phosphorus.core;
 using phosphorus.expressions;
 using MimeKit;
+using MimeKit.Cryptography;
 
 /// <summary>
 ///     Main namespace for everything related to MIME.
@@ -37,7 +38,7 @@ namespace phosphorus.mime
         {
             foreach (var idxByteValue in XUtil.Iterate<byte[]> (e.Args, context)) {
                 using (var memStream = new MemoryStream (idxByteValue)) {
-                    ParseMultipart ((Multipart)Multipart.Load (memStream), e.Args);
+                    ParseMultipart (context, (Multipart)Multipart.Load (memStream), e.Args);
                 }
             }
         }
@@ -45,8 +46,11 @@ namespace phosphorus.mime
         /*
          * parses one Multipart
          */
-        private static void ParseMultipart (Multipart multipart, Node node)
+        private static void ParseMultipart (ApplicationContext context, Multipart multipart, Node node)
         {
+            // checking to see if multipart is signed and encrypted, and if caller wants to decrypt it
+            multipart = PreProcessMultipart (context, multipart, node);
+
             // looping through each MIME part, trying to figure out a nice name for it
             foreach (var idxEntityNode in multipart) {
                 Node current = node.Add (GetName (idxEntityNode)).LastChild;
@@ -65,7 +69,7 @@ namespace phosphorus.mime
 
                     // nested Multipart
                     current.Add ("children");
-                    ParseMultipart ((Multipart)idxEntityNode, current.LastChild);
+                    ParseMultipart (context, (Multipart)idxEntityNode, current.LastChild);
                 } else if (idxEntityNode is MimePart) {
 
                     // "anything else", which we're treating as binary content
@@ -75,6 +79,51 @@ namespace phosphorus.mime
                     }
                 }
             }
+        }
+        
+        /*
+         * responsible for checking to see if multipart is encrypted, and if it is, and caller supplied
+         * a [decryption-password] parameter, we will decrypt the multipart, and return the decrypted version. In addition, it will
+         * check to see if multipart was signed, and if it was, it will validate the signature, and make sure caller
+         * gets to know the state about the signature, such that it can validate the multipart's integrity.
+         */
+        private static Multipart PreProcessMultipart (ApplicationContext context, Multipart multipart, Node node)
+        {
+            // adding headers from given multipart
+            node.Add ("headers");
+            foreach (var idxHeader in multipart.Headers) {
+                node.LastChild.Add (idxHeader.Field, idxHeader.Value);
+            }
+
+            if (multipart is MultipartEncrypted) {
+
+                // checking to see if caller supplied a decryption-password. Notice that there are two different types of consumers of
+                // this method, one has the encryption password in its parent node [pf.net.create-request], and the other in its child collection
+                // which is [pf.mime.parse-mime] invoked directly
+                if (node.Parent != null && node.Parent ["decryption-password"] != null) {
+
+                    // multipart was encrypted, and caller supplied a [decryption-password] parameter
+                    var encrNode = new Node (string.Empty, multipart);
+                    encrNode.Add ("password", node.Parent.GetExChildValue<string> ("decryption-password", context));
+                    multipart = context.Raise ("_pf.crypto.pgp.decrypt", encrNode).Get<Multipart> (context);
+                }
+                else if (node ["decryption-password"] != null) {
+
+                    // multipart was encrypted, and caller supplied a [decryption-password] parameter
+                    var encrNode = new Node (string.Empty, multipart);
+                    encrNode.Add ("password", node.GetExChildValue<string> ("decryption-password", context));
+                    multipart = context.Raise ("_pf.crypto.pgp.decrypt", encrNode).Get<Multipart> (context);
+                }
+                node.Add ("encrypted", true);
+            }
+            if (multipart is MultipartSigned) {
+
+                // entity is signed, verifying signature and returning signature data to caller
+                var signatureResult = context.Raise ("_pf.crypto.pgp.verify-signature", new Node (string.Empty, multipart)).Get<Node> (context);
+                node.Add ("signed", signatureResult.Get<bool> (context));
+                node ["signed"].AddRange (signatureResult.Children);
+            }
+            return multipart;
         }
 
         /*

@@ -41,83 +41,25 @@ namespace phosphorus.net.response
         /// <param name="node">Node to put the results into.</param>
         public override void Parse (ApplicationContext context, Node node)
         {
+            // calling base, and reading in raw bytes from response stream
             base.Parse (context, node);
-            var stream = Response.GetResponseStream ();
-            ParseMultipart (context, (Multipart)Multipart.Load (stream), node.LastChild);
-        }
+            var responseStream = Response.GetResponseStream ();
+            using (MemoryStream stream = new MemoryStream ()) {
 
-        /*
-         * parses one Multipart
-         */
-        private void ParseMultipart (ApplicationContext context, Multipart multipart, Node node)
-        {
-            // checking to see if 
-            multipart = PreProcessMultipart (context, multipart, node);
-
-            // looping through each MIME part, trying to figure out a nice name for it
-            foreach (var idxEntityNode in multipart) {
-                Node current = node.Add (GetName (idxEntityNode)).LastChild;
-
-                // MIME headers
-                foreach (var idxHeader in idxEntityNode.Headers) {
-                    current.Add (idxHeader.Field, idxHeader.Value);
+                // parsing raw bytes as Multipart, and putting result into given node structure
+                // making sure we set value of node back to what it was before Active Event invocation
+                responseStream.CopyTo (stream);
+                var oldValue = node.Value;
+                try
+                {
+                    node.LastChild.Value = stream.ToArray ();
+                    context.Raise ("pf.mime.parse-mime", node.LastChild);
                 }
-
-                // actual MIME part, which depend upon what type of part we're talking about
-                if (idxEntityNode is TextPart) {
-
-                    // text part
-                    current.Value = ((TextPart)idxEntityNode).GetText (Encoding.UTF8);
-                } else if (idxEntityNode is Multipart) {
-
-                    // nested Multipart
-                    current.Add ("children");
-                    ParseMultipart (context, (Multipart)idxEntityNode, current.LastChild);
-                } else if (idxEntityNode is MimePart) {
-
-                    // "anything else", which we're treating as binary content
-                    using (MemoryStream stream = new MemoryStream ()) {
-                        ((MimePart)idxEntityNode).ContentObject.DecodeTo (stream);
-                        current.Value = stream.ToArray ();
-                    }
+                finally
+                {
+                    node.LastChild.Value = oldValue;
                 }
             }
-        }
-
-        /*
-         * responsible for checking to see if multipart is encrypted, and if it is, and if it is, and caller supplied
-         * a [decrypt] parameter, we will decrypt the multipart, and return the decrypted version. In addition, it will
-         * check to see if multipart was signed, and if it was, it will validate the signature, and make sure caller
-         * gets to know the state about the signature, such that it can validate the multipart's integrity.
-         */
-        private Multipart PreProcessMultipart (ApplicationContext context, Multipart entity, Node node)
-        {
-            if (entity is MultipartEncrypted && node.Parent ["decryption-password"] != null) {
-
-                // multipart was encrypted, and caller supplied a [decryption-password] parameter
-                var encrNode = new Node (string.Empty, entity);
-                encrNode.Add ("password", node.Parent.GetExChildValue<string> ("decryption-password", context));
-                entity = context.Raise ("_pf.crypto.pgp.decrypt", encrNode).Get<Multipart> (context);
-                node.Add ("encrypted", true);
-            }
-            if (entity is MultipartSigned) {
-
-                // entity is signed, verifying signature and returning signature data to caller
-                var signatureResult = context.Raise ("_pf.crypto.pgp.verify-signature", new Node (string.Empty, entity)).Get<Node> (context);
-                node.Add ("signed", signatureResult.Get<bool> (context));
-                node ["signed"].AddRange (signatureResult.Children);
-            }
-            return entity;
-        }
-
-        /*
-         * returns the name to use for the node wrapping one MIME entity
-         */
-        private string GetName (MimeEntity entity)
-        {
-            if (entity.ContentDisposition != null && entity.ContentDisposition.Parameters ["name"] != null)
-                return entity.ContentDisposition.Parameters ["name"];
-            return "content";
         }
     }
 }

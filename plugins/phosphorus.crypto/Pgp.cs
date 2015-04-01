@@ -219,14 +219,17 @@ namespace phosphorus.crypto
 
         private static MimeEntity SignMimeEntity (ApplicationContext context, Node node)
         {
+            var password = node.GetExChildValue<string> ("password", context);
+            if (string.IsNullOrEmpty (password))
+                throw new ArgumentException ("No [password] supplied for signing operation.");
             MimeEntity entity = node.GetExValue<MimeEntity> (context);
             using (var ctx = new PfGnuPGContext ()) {
-                ctx.Password = node.GetExChildValue<string> ("password", context);
+                ctx.Password = password;
                 MailboxAddress secureMail = new MailboxAddress ("", node.GetExChildValue<string> ("email", context));
                 return MultipartSigned.Create (
                     ctx, 
                     secureMail,
-                    DigestAlgorithm.Sha1,
+                    (DigestAlgorithm)Enum.Parse (typeof (DigestAlgorithm), node.GetExChildValue<string> ("algo", context, "Sha1")),
                     entity);
             }
         }

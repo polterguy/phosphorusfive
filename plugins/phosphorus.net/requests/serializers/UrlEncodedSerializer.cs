@@ -25,6 +25,9 @@ namespace phosphorus.net.requests.serializers
             Node node, 
             HttpWebRequest request)
         {
+            if (node ["sign"] != null || node ["encrypt"] != null)
+                throw new ArgumentException ("You can only sign and/or encrypt a multipart request. Set the 'Content-Type' header to 'multipart/xxx' to allow for signing and/or encryption");
+
             // creating a stream writer wrapping the "request content stream"
             using (StreamWriter writer = new StreamWriter (request.GetRequestStream ())) {
                 bool first = true;

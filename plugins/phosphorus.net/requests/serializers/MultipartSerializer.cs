@@ -53,7 +53,9 @@ namespace phosphorus.net.requests.serializers
             try
             {
                 // retreiving parameters
-                var entities = HttpRequest.GetParameters (node);
+                var entities = new List<Node> (HttpRequest.GetParameters (node));
+                if (entities.Count == 0)
+                    throw new ArgumentException ("You must add at least one parameter to your MIME request");
 
                 // creating Multipart
                 var multipartNode = new Node ();

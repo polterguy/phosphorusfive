@@ -64,7 +64,11 @@ namespace phosphorus.net
         ///     If you choose to serialize your request as a 'multipart/xxx', then you can add any MIME headers you wish, for each part you wish
         ///     to transfer. If you set the 'Content-Disposition' header to something, and its 'filename' argument to anything, and you do not
         ///     supply a value for your MIME part, then the file you supply as its 'filename' parameter, will be serialized as a MIME part, 
-        ///     directly from disc, without being loaded into the memory of your client.
+        ///     directly from disc, without being loaded into the memory of your client. Unless you also set the [strip-path] child node of your
+        ///     [Content-Disposition] to 'false', then the path from where your file was loaded locally from your system, will be automatically
+        ///     stripped away when creating the MIME entity.
+        /// 
+        ///     If you don't set the 'Content-Type' header for a MIME entity in a multipart, then its default value will be 'application/octet-stream'.
         /// 
         ///     Example of transmitting one text parameter, and one png file, as a multipart, using base64 encoding for the png file;
         /// 
@@ -90,8 +94,10 @@ namespace phosphorus.net
         /// 
         ///     In addition, you can choose to encrypt, and/or sign, your HTTP requests, using PGP and GnuPG, if your message is a multipart message. 
         ///     The way you'd digitally sign a multipart message, is by adding a [sign] parameter, and set its value to the email address of the private 
-        ///     key you wish to use for signing your multipart message. If your GnuPG storage requires a password for releasing the private key you wish
-        ///     to use for signing, then you can add this as a [password] parameter beneath your [sign] parameter.
+        ///     key you wish to use for signing your multipart message. You must add a [password] parameter beneath your [sign] parameter, to allow for your
+        ///     GnuPG storage to release the private key for using it to encrypt your message. In addition, you can choose the digest algorithm to sign
+        ///     your multipart by adding a [algo] parameter beneath your [sign] parameter. The algorithms that are available for you here are 'MD5', 'Sha1',
+        ///     'RipeMD160', 'DoubleSha', 'MD2', 'Tiger192', 'Haval5160', 'Sha256', 'Sha384', 'Sha512', 'Sha224' and 'MD4'. The default algorithm is 'Sha1'.
         /// 
         ///     To encrypt your multipart messages, add up an [encrypt] parameter, and add up one child node for each encryption certificate you wish 
         ///     to encrypt your message with, where the value of these nodes are the email address of the certificates you wish to use for encrypting

@@ -30,6 +30,9 @@ namespace phosphorus.net.requests.serializers
     {
         public void Serialize (ApplicationContext context, Node node, HttpWebRequest request)
         {
+            if (node ["sign"] != null || node ["encrypt"] != null)
+                throw new ArgumentException ("You can only sign and/or encrypt a multipart request. Set the 'Content-Type' header to 'multipart/xxx' to allow for signing and/or encryption");
+
             // putting all parameters into body of request, as a single object
             using (var stream = request.GetRequestStream ()) {
                 foreach (var idxArg in HttpRequest.GetParameters (node)) {

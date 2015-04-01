@@ -18,8 +18,61 @@ namespace phosphorus.mime
     {
         /// <summary>
         ///     Creates a MIME Multipart from the given arguments.
+        /// </summary>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
+        [ActiveEvent (Name = "pf.mime.create-multipart")]
+        private static void pf_mime_create_multipart (ApplicationContext context, ActiveEventArgs e)
+        {
+            // needed to be able to dispose streams created during creation
+            List<Stream> streams = new List<Stream> ();
+
+            // finding all parameters
+            var nodes = e.Args.FindAll (ix => ix.Name != "headers" && ix.Name != "sign" && ix.Name != "encrypt" && ix.Name != "decryption-password");
+
+            // figuring out Content-Type, defaulting to "multipart/mixed"
+            ContentType contentType = new ContentType ("multipart", "mixed");
+            if (e.Args ["headers"] != null && e.Args ["headers"] ["Content-Type"] != null) {
+                contentType = ContentType.Parse (e.Args ["headers"] ["Content-Type"].GetExValue<string> (context));
+                if (contentType.MediaType != "multipart")
+                    throw new ArgumentException ("You cannot create a Multipart with a MIME header that's not of 'multipart/xxx' something.");
+            }
+
+            try
+            {
+                // creating Multipart
+                Multipart multipart = CreateRootMultipart (contentType);
+                if (e.Args ["headers"] != null) {
+                    foreach (var idxHeader in e.Args ["headers"].FindAll (ix => ix.Name != "Content-Type")) {
+                        multipart.Headers.Replace (idxHeader.Name, idxHeader.GetExValue<string> (context));
+                    }
+                }
+                foreach (var idxArg in nodes) {
+                    multipart.Add (CreateMimeEntity (context, idxArg, streams));
+                }
+
+                // checking if we should sign and/or encrypt message, and which signing key and/or encryption certificate we should use
+                // before we return Multipart to caller
+                var resultMultipart = SignAndEncryptEntity (context, e.Args, multipart);
+
+                // returning Multipart as value of main node
+                using (MemoryStream stream = new MemoryStream ()) {
+                    resultMultipart.WriteTo (stream);
+                    e.Args.Value = stream.ToArray ();
+                }
+            }
+            finally
+            {
+                foreach (var idxStream in streams) {
+                    idxStream.Dispose ();
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Creates a MIME Multipart from the given arguments.
         /// 
-        ///     Not intended to be invoked from pf.lambda. Constructs a MimeKit Multipart from the given arguments.
+        ///     Not intended to be invoked directly from pf.lambda. Constructs a MimeKit Multipart from the given arguments.
         ///     Arguments that must be present is [ContentType] which is the ContentType of the multipart, [streams] which
         ///     is a List&lt;Stream&gt; which will be populated with all streams creating during the process, [entities] which
         ///     is an IEnumerable&lt;Node&gt; which are arguments or individual Mime entities to be constructed, and [main-node]
@@ -43,7 +96,7 @@ namespace phosphorus.mime
             foreach (var idxArg in nodes) {
                 multipart.Add (CreateMimeEntity (context, idxArg, streams));
             }
-            
+
             // checking if we should sign and/or encrypt message, and which signing key and/or encryption certificate we should use
             // before we return Multipart to caller
             e.Args.Value = SignAndEncryptEntity (context, node, multipart);
@@ -78,10 +131,12 @@ namespace phosphorus.mime
             ContentType cntType = GetContentType (context, node);
 
             MimeEntity part;
+            bool isFile = false;
             if (cntDisp != null && !string.IsNullOrEmpty (cntDisp.FileName) && node.Value == null) {
 
                 // part's content is in a file
                 part = CreateMimeEntityFromFile (context, cntDisp, streams);
+                isFile = true;
             } else if (cntType != null && cntType.MediaType == "multipart" && node.Value == null && node ["children"] != null) {
 
                 // part is a nested Multipart, with MimeEntity items in [children] node
@@ -98,6 +153,11 @@ namespace phosphorus.mime
             // such as [children] and formatting parameters
             foreach (var idxHeader in node.FindAll (ix => ix.Value != null && ix.Name != string.Empty)) {
                 part.Headers.Replace (idxHeader.Name, idxHeader.GetExValue<string> (context));
+            }
+            
+            // checking to see if we should strip path from filename argument
+            if (isFile && node ["Content-Disposition"].GetExChildValue ("strip-path", context, true)) {
+                part.ContentDisposition.Parameters ["filename"] = Path.GetFileName (part.ContentDisposition.Parameters ["filename"]);
             }
             return part;
         }
@@ -155,6 +215,8 @@ namespace phosphorus.mime
                 signEncrNode.Add ("email", signatureEmail);
                 if (node ["sign"] ["password"] != null)
                     signEncrNode.Add ("password", node ["sign"].GetExChildValue<string> ("password", context));
+                if (node ["sign"] ["algo"] != null)
+                    signEncrNode.Add ("algo", node ["sign"].GetExChildValue<string> ("algo", context));
                 entity = context.Raise ("_pf.crypto.pgp.sign", signEncrNode).Get<MimeEntity> (context);
             }
             if (encrypt) {
