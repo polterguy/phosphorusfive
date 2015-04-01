@@ -19,12 +19,12 @@ namespace phosphorus.unittests.plugins
     public class Files : TestBase
     {
         public Files ()
-            : base ("phosphorus.file", "phosphorus.hyperlisp", "phosphorus.lambda") { }
+            : base ("phosphorus.file", "phosphorus.hyperlisp", "phosphorus.lambda")
+        { }
 
         /*
          * necessary to return "root folder" of executing Assembly
          */
-
         [ActiveEvent (Name = "pf.core.application-folder")]
         private static void GetRootFolder (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = GetBasePath (); }
 

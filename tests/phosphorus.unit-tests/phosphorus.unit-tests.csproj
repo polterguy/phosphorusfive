@@ -108,6 +108,7 @@
     <Compile Include="lambda\Threading.cs" />
     <Compile Include="plugins\Html.cs" />
     <Compile Include="tutorials\Tutorials01.cs" />
+    <Compile Include="plugins\Math.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

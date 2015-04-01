@@ -15,7 +15,7 @@ namespace phosphorus.unittests.lambda
     public class Set : TestBase
     {
         public Set ()
-            : base ("phosphorus.lambda", "phosphorus.hyperlisp", "phosphorus.types") { }
+            : base ("phosphorus.lambda", "phosphorus.hyperlisp", "phosphorus.types", "phosphorus.math") { }
 
         /// <summary>
         ///     verifies [set] works with a static constant source
@@ -780,6 +780,39 @@ _set:@/-/?value
             Assert.AreEqual (2, node [1].Get<string[]> (Context).Length);
             Assert.AreEqual ("howdy", node [1].Get<string[]> (Context) [0]);
             Assert.AreEqual ("world", node [1].Get<string[]> (Context) [1]);
+        }
+        
+        /// <summary>
+        ///     Verifies that setting a 'value' to the results of an Active Event works correctly.
+        /// </summary>
+        [Test]
+        public void Set46 ()
+        {
+            // easy way to create a node
+            var node = ExecuteLambda (@"event:test.set46
+  lambda
+    set:@/./.?value
+      source:howdy world
+_destination
+set:@/-/?value
+  test.set46");
+
+            Assert.AreEqual ("howdy world", node [1].Value);
+        }
+        
+        /// <summary>
+        ///     Verifies that setting a 'value' to the results of a math hierarchy works correctly.
+        /// </summary>
+        [Test]
+        public void Set47 ()
+        {
+            // easy way to create a node
+            var node = ExecuteLambda (@"_destination
+set:@/-/?value
+  +:int:2
+    _:2");
+
+            Assert.AreEqual (4, node [0].Value);
         }
     }
 }
