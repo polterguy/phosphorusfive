@@ -47,7 +47,7 @@ namespace phosphorus.math
         ///     Subtracts zero or more objects to another object.
         /// 
         ///     Will traverse all children of the given node, change the type of its underlaying values to
-        ///     the type of the object in the value of main node, and subtract these two objects together.
+        ///     the type of the object in the value of main node, and subtract these two objects from each other.
         /// </summary>
         /// <param name="context">Context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -91,7 +91,7 @@ namespace phosphorus.math
         ///     Divides zero or more objects with another object.
         /// 
         ///     Will traverse all children of the given node, change the type of its underlaying values to
-        ///     the type of the object in the value of main node, and divide these objects together.
+        ///     the type of the object in the value of main node, and divide this object with the value from the main node.
         /// </summary>
         /// <param name="context">Context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -105,6 +105,28 @@ namespace phosphorus.math
                     continue; // formatting parameter ...
                 dynamic nextValue = context.Raise (idxChild.Name, idxChild).GetExValue<object> (context, (object)0);
                 result /= Convert.ChangeType (nextValue, resultType);
+            }
+            e.Args.Value = result;
+        }
+        
+        /// <summary>
+        ///     Returns the modulo of zero or more objects.
+        /// 
+        ///     Will traverse all children of the given node, change the type of its underlaying values to
+        ///     the type of the object in the value of main node, and return the modulo of the two objects.
+        /// </summary>
+        /// <param name="context">Context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
+        [ActiveEvent (Name = "%")]
+        private static void math_modulo (ApplicationContext context, ActiveEventArgs e)
+        {
+            dynamic result = e.Args.GetExValue<object> (context);
+            Type resultType = result.GetType ();
+            foreach (var idxChild in e.Args.Children) {
+                if (idxChild.Name == string.Empty)
+                    continue; // formatting parameter ...
+                dynamic nextValue = context.Raise (idxChild.Name, idxChild).GetExValue<object> (context, (object)0);
+                result %= Convert.ChangeType (nextValue, resultType);
             }
             e.Args.Value = result;
         }
