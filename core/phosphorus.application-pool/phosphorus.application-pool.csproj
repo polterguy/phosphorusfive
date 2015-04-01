@@ -110,10 +110,6 @@
     <Compile Include="code\ActiveEventAssemblies.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\tests\phosphorus.unit-tests\phosphorus.unit-tests.csproj">
-      <Project>{D709ED7D-C599-4703-B192-613F0EFF7D97}</Project>
-      <Name>phosphorus.unit-tests</Name>
-    </ProjectReference>
     <ProjectReference Include="..\phosphorus.ajax\phosphorus.ajax.csproj">
       <Project>{11644924-3367-4812-BE60-7DA41FC9E4AE}</Project>
       <Name>phosphorus.ajax</Name>
@@ -177,6 +173,10 @@
     <ProjectReference Include="..\..\plugins\phosphorus.mime\phosphorus.mime.csproj">
       <Project>{F8850AC4-49EB-4BD1-AD18-0F3FB7EC6E75}</Project>
       <Name>phosphorus.mime</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\phosphorus.math\phosphorus.math.csproj">
+      <Project>{E7026921-524B-4B2E-A549-251A5AEB4D89}</Project>
+      <Name>phosphorus.math</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

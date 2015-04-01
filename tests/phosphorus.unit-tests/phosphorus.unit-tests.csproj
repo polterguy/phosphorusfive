@@ -85,6 +85,10 @@
       <Project>{68EE106A-06BF-431B-9671-DF328666E03E}</Project>
       <Name>phosphorus.html</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\plugins\phosphorus.math\phosphorus.math.csproj">
+      <Project>{E7026921-524B-4B2E-A549-251A5AEB4D89}</Project>
+      <Name>phosphorus.math</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Expressions.cs" />

@@ -18,6 +18,18 @@ namespace phosphorus.mime
     {
         /// <summary>
         ///     Creates a MIME Multipart from the given arguments.
+        /// 
+        ///     Allows you to create a MIME Multipart from the arguments given. You can set any MIME header as [headers], which is a key/value collection,
+        ///     where the name of your child node becomes the header name, and its value its value. To sign your multipart, supply a [sign] node, with
+        ///     the private key reference as value, and password to release private key from your GnuPG storage as [password] beneath your [sign] node.
+        ///     If you wish, you can override the algorithm used to sign your message with any of the given algorithms; 'MD5', 'Sha1',
+        ///     'RipeMD160', 'DoubleSha', 'MD2', 'Tiger192', 'Haval5160', 'Sha256', 'Sha384', 'Sha512', 'Sha224' and 'MD4'. The default algorithm is 'Sha1'.
+        /// 
+        ///     If you wish to encrypt your multipart, then you can add up a public key collection beneath an [encrypt] node, declaring which certificates
+        ///     you wish to use as values of children beneath [encrypt]. If you choose to both sign and encrypt your message, then your multipart will first
+        ///     be signed, for then to be encrypted.
+        /// 
+        ///     Your multipart will be returned as the value of the main node after creation.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -28,7 +40,7 @@ namespace phosphorus.mime
             List<Stream> streams = new List<Stream> ();
 
             // finding all parameters
-            var nodes = e.Args.FindAll (ix => ix.Name != "headers" && ix.Name != "sign" && ix.Name != "encrypt" && ix.Name != "decryption-password");
+            var nodes = e.Args.FindAll (ix => ix.Name != "headers" && ix.Name != "sign" && ix.Name != "encrypt");
 
             // figuring out Content-Type, defaulting to "multipart/mixed"
             ContentType contentType = new ContentType ("multipart", "mixed");
@@ -60,6 +72,12 @@ namespace phosphorus.mime
                     resultMultipart.WriteTo (stream);
                     e.Args.Value = stream.ToArray ();
                 }
+
+                // adding headers created during creation of multipart
+                e.Args.Add ("headers");
+                foreach (var idxHeader in resultMultipart.Headers) {
+                    e.Args.LastChild.Add (idxHeader.Field, idxHeader.Value);
+                }
             }
             finally
             {
@@ -79,6 +97,9 @@ namespace phosphorus.mime
         ///     necessary to deduct if Multipart should be signed, encrypted, and so on.
         /// 
         ///     Will return the constructed Multipart (which might be both signed and encrypted) to caller as value of main node.
+        /// 
+        ///     This Active event will use less resources for you if you use it from C#, then the version wwith the same name, without the underscore,
+        ///     since it does not require you to store the created Multipart in memory, allowing you to directly serialize it to a stream during creation.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -93,6 +114,11 @@ namespace phosphorus.mime
 
             // creating Multipart
             Multipart multipart = CreateRootMultipart (contentType);
+            if (e.Args ["headers"] != null) {
+                foreach (var idxHeader in e.Args ["headers"].FindAll (ix => ix.Name != "Content-Type")) {
+                    multipart.Headers.Replace (idxHeader.Name, idxHeader.GetExValue<string> (context));
+                }
+            }
             foreach (var idxArg in nodes) {
                 multipart.Add (CreateMimeEntity (context, idxArg, streams));
             }

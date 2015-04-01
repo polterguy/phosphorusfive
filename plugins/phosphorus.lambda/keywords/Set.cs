@@ -107,13 +107,25 @@ namespace phosphorus.lambda.keywords
                     // our destination nodes, on each iteration, passing in destination node as data source
                     idxDestination.Value = XUtil.SourceSingle (e.Args, idxDestination.Node, context);
                 }
-            } else {
+            } else if (e.Args.Count > 0 && (e.Args.LastChild.Name == "source" || e.Args.LastChild.Name == "src")) {
                 // static source, hence retrieving source before iteration starts
                 var source = XUtil.SourceSingle (e.Args, context);
 
                 // iterating through all destinations, updating with source
                 foreach (var idxDestination in XUtil.Iterate (e.Args, context)) {
                     idxDestination.Value = source;
+                }
+            } else if (e.Args.Count == 0 || e.Args.LastChild.Name == "") {
+                // "null source", iterating through all destinations, updating with null
+                foreach (var idxDestination in XUtil.Iterate (e.Args, context)) {
+                    idxDestination.Value = null;
+                }
+            } else {
+                // Active Event invocation source, iterating through all destinations, after invocting Active event, updating
+                // with result from Active Event invocation
+                context.Raise (e.Args.LastChild.Name, e.Args.LastChild);
+                foreach (var idxDestination in XUtil.Iterate (e.Args, context)) {
+                    idxDestination.Value = e.Args.LastChild.Value;
                 }
             }
         }
