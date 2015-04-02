@@ -51,18 +51,6 @@
       <Project>{C783FEDB-C973-4F38-8EBB-55A0163612F5}</Project>
       <Name>phosphorus.core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\plugins\phosphorus.lambda\phosphorus.lambda.csproj">
-      <Project>{8EB5FDEA-D073-4147-AE65-376A01B463DF}</Project>
-      <Name>phosphorus.lambda</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\plugins\phosphorus.hyperlisp\phosphorus.hyperlisp.csproj">
-      <Project>{C02D30A6-7DA2-4045-8644-9710AB40B629}</Project>
-      <Name>phosphorus.hyperlisp</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\plugins\phosphorus.file\phosphorus.file.csproj">
-      <Project>{89C744BE-B583-4C6D-84B9-941E0C7CEBF4}</Project>
-      <Name>phosphorus.file</Name>
-    </ProjectReference>
     <ProjectReference Include="..\phosphorus.expressions\phosphorus.expressions.csproj">
       <Project>{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}</Project>
       <Name>phosphorus.expressions</Name>

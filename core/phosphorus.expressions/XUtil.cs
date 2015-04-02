@@ -1,123 +1,28 @@
 /*
- * Phosphorus.Five, copyright 2014 - 2015, Mother Earth, Jannah, Gaia - YOU!
- * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
+ * Phosphorus.Five, Copyright 2014 - 2015, Thomas Hansen - thomas@magixilluminate.com
+ * Phosphorus.Five is licensed under the terms of the MIT license.
+ * See the enclosed LICENSE file for details.
  */
 
 using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using phosphorus.core;
 using phosphorus.expressions.exceptions;
-// ReSharper disable MemberCanBePrivate.Global
-
-// ReSharper disable CoVariantArrayConversion
 
 namespace phosphorus.expressions
 {
-    /// \todo Cleanup all of these comments, in addition to rethinking the name of the "dataSource" parameters, since they're highly unintuitive for the moment
-    /// <summary>
-    ///     Helper class for handling pf.lambda Expression objects.
-    /// 
-    ///     This is the class you'd normally use when consuming expressions. Contains many useful helper methods for
-    ///     iterating expression result-sets, retrieve single compund values from expressions, etc.
-    /// </summary>
     public static class XUtil
     {
-        /// <summary>
-        ///     Returns true if value is an Expression.
-        /// 
-        ///     If given value is an Expression, then this method will return true.
-        /// </summary>
-        /// <returns><c>true</c> if value is an Expression; otherwise, <c>false</c>.</returns>
-        /// <param name="value">Value to check.</param>
         public static bool IsExpression (object value)
         {
             return IsExpression (value as string);
         }
 
-        /// <summary>
-        ///     Returns true if value is an Expression.
-        /// 
-        ///     If given value is an Expression, then this method will return true.
-        /// </summary>
-        /// <returns><c>true</c> if value is an Expression; otherwise, <c>false</c>.</returns>
-        /// <param name="value">String value to check.</param>
         public static bool IsExpression (string value)
         {
-            /// \todo simplify, needs support for expressions on multiple lines, having first iterator on second line
-            return value != null &&
-                   value.StartsWith ("@") &&
-                   value.Length >= 4 && // "@{0}" is the shortest possible expression, and has 4 characters
-                   // an expression must have an iterator, referenced expression, string formatter, 
-                   // or a type declaration as its second character
-                   (value [1] == '?' || value [1] == '/' || value [1] == '{' || value [1] == '@');
+            return value != null && value.StartsWith ("@");
         }
 
-        /// \todo refactor, too complex, also contains overlapping functionality with Expression.cs
-        /// <summary>
-        ///     Returns type of Expression.
-        /// 
-        ///     Will parse and figure out what type of Expression we're dealing with, and return that to caller.
-        /// </summary>
-        /// <returns>Type of Expression.</returns>
-        /// <param name="expressionNode">Node containing expression to check, will be formatted if necessary.</param>
-        /// <param name="context">Application context. Necessary to perform conversions.</param>
-        public static Match.MatchType ExpressionType (
-            Node expressionNode,
-            ApplicationContext context)
-        {
-            // checking if we're actually given an expression
-            if (!IsExpression (expressionNode.Value))
-                throw new ExpressionException (
-                    expressionNode.Value as string,
-                    "ExpressionType must be given an actual expression",
-                    expressionNode,
-                    context);
-
-            var exp = TryFormat<string> (expressionNode, context);
-            var type = exp.Substring (exp.LastIndexOf ('?') + 1);
-            if (type.Contains ("."))
-                type = type.Substring (0, type.IndexOf ('.'));
-
-            // some additional code, to be able to provide intelligent errors back to caller, if something goes wrong ...
-            Match.MatchType matchType;
-            switch (type) {
-                case "node":
-                case "value":
-                case "count":
-                case "name":
-                case "path":
-                    matchType = (Match.MatchType) Enum.Parse (typeof (Match.MatchType), type);
-                    break;
-                default:
-                    throw new ExpressionException (
-                        exp,
-                        string.Format ("'{0}' is an unknown type declaration for your expression", type),
-                        expressionNode,
-                        context);
-            }
-
-            // returning type back to caller
-            return matchType;
-        }
-
-        /// <summary>
-        ///     Returns true if given node's value is formatted.
-        /// 
-        ///     A formatted value of a <see cref="phosphorus.code.Node">Node</see>, means that the node has at least one 
-        ///     child node, with an empty name. If it does, then the node is assumed to be "formatted", meaning its value 
-        ///     should not be interpreted in isolation, but be formatted according to the values of all children nodes, who's
-        ///     names are string,Empty (""), using similar type of logic as can be found in for instance string.Format from C#.
-        /// 
-        ///     An example of a formatted node;
-        /// 
-        ///     <pre>
-        /// foo:bar {0}
-        ///   :some-value</pre>
-        /// </summary>
-        /// <returns><c>true</c> if node contains formatting parameters; otherwise, <c>false</c>.</returns>
-        /// <param name="node">Node to check.</param>
         public static bool IsFormatted (Node node)
         {
             // a formatted node is defined as having one or more children with string.Empty as name
@@ -125,15 +30,6 @@ namespace phosphorus.expressions
             return node.Value is string && node.FindAll (string.Empty).GetEnumerator ().MoveNext ();
         }
 
-        /// <summary>
-        ///     Formats the given node, and returns the formatted value.
-        /// 
-        ///     Basically enumerates all children nodes of given node, and uses all child node with an empty name as
-        ///     a formatting parameter, which combined yields the "true" value of the node.
-        /// </summary>
-        /// <returns>Formatted string value.</returns>
-        /// <param name="node">Node containing formatting expression, and formatting children nodes.</param>
-        /// <param name="context">Application context.</param>
         public static string FormatNode (
             Node node,
             ApplicationContext context)
@@ -141,16 +37,6 @@ namespace phosphorus.expressions
             return FormatNode (node, node, context);
         }
 
-        /// <summary>
-        ///     Formats the given node, and returns the formatted value.
-        /// 
-        ///     Basically enumerates all children nodes of given node, and uses all child node with an empty name as
-        ///     a formatting parameter, which combined yields the "true" value of the node.
-        /// </summary>
-        /// <returns>Formatted string value.</returns>
-        /// <param name="node">Node containing formatting expression, and formatting children nodes.</param>
-        /// <param name="dataSource">Node to use as data-source for any expressions within formatting parameters.</param>
-        /// <param name="context">Application context.</param>
         public static string FormatNode (
             Node node,
             Node dataSource,
