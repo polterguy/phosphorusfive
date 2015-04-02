@@ -6,8 +6,8 @@
 
 using System;
 using System.Linq;
+using System.Collections.Generic;
 using phosphorus.core;
-using phosphorus.expressions.exceptions;
 
 namespace phosphorus.expressions
 {
@@ -25,34 +25,27 @@ namespace phosphorus.expressions
 
         public static bool IsFormatted (Node node)
         {
-            // a formatted node is defined as having one or more children with string.Empty as name
-            // and a value which is of type string
-            return node.Value is string && node.FindAll (string.Empty).GetEnumerator ().MoveNext ();
+            // a formatted node is defined as having one or more children with {x} as name, and a value which is of type string
+            return node.Value is string && 
+                node.Children.FindAll (ix => ix.Name.StartsWith ("{") && ix.Name.EndsWith ("}")).GetEnumerator ().MoveNext ();
         }
 
-        public static string FormatNode (
-            Node node,
-            ApplicationContext context)
+        public static string FormatNode (Node node, ApplicationContext context)
         {
             return FormatNode (node, node, context);
         }
 
-        public static string FormatNode (
-            Node node,
-            Node dataSource,
-            ApplicationContext context)
+        public static string FormatNode (Node node, Node dataSource, ApplicationContext context)
         {
             // making sure node contains formatting values
             if (!IsFormatted (node))
-                throw new ExpressionException (
-                    (node.Value ?? "").ToString (),
-                    "Cannot format node, no formatting nodes exists, or node's value is not a string",
-                    node,
-                    context);
+                throw new ExpressionException (string.Format ("Cannot format node '{0}', no formatting children exists, or node's value is not a string.", node));
 
             // retrieving all "formatting values"
-            var childrenValues = new List<string> (node.ConvertChildren (
-                delegate (Node idx) {
+            var childrenValues = new List<Node> (node.Children.FindAll (ix => ix.Name.StartsWith ("{") && ix.Name.EndsWith ("}")));
+
+            //node.ConvertChildren (
+                /*delegate (Node idx) {
                     // we only use nodes who's names are empty as "formatting nodes"
                     if (idx.Name == string.Empty) {
                         // recursively format and evaluate expressions of children nodes
@@ -63,7 +56,7 @@ namespace phosphorus.expressions
                     // since it doesn't have an empty name, hence we return null, to signal to 
                     // ConvertChildren that this is to be excluded from list
                     return null;
-                }));
+                }));*/
 
             // returning node's value, after being formatted, according to its children node's values
             // PS, at this point all childrenValues have already been converted by the engine itself to string values

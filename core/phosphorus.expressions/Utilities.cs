@@ -11,7 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace phosphorus.core
+namespace phosphorus.expressions
 {
     public static class Utilities
     {

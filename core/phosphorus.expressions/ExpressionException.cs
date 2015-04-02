@@ -9,11 +9,13 @@ using phosphorus.core;
 
 namespace phosphorus.expressions
 {
-    public static class NodeExtensions
+    public class ExpressionException : Exception
     {
-        public static T GetExChildValue<T> (this Node node, string name, ApplicationContext context, T defaultValue = default(T))
-        {
-            return defaultValue;
-        }
+        public ExpressionException ()
+        { }
+        
+        public ExpressionException (string message)
+            : base (message)
+        { }
     }
 }

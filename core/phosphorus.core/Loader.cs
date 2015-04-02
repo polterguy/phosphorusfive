@@ -5,10 +5,10 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Collections.Generic;
 
 namespace phosphorus.core
 {
@@ -75,7 +75,7 @@ namespace phosphorus.core
                 name += ".dll";
 
             // checking to see if assembly is already loaded
-            if (_assemblies.Exists (idx => String.Equals (idx.ManifestModule.Name, name, StringComparison.Ordinal)))
+            if (_assemblies.Exists (idx => string.Equals (idx.ManifestModule.Name, name, StringComparison.Ordinal)))
                 return;
 
             // checking our current AppDomain to see if assembly is already a part of our AppDomain
@@ -126,6 +126,7 @@ namespace phosphorus.core
         {
             // looping through all types in assembly
             foreach (var idxType in assembly.GetTypes ()) {
+
                 // adding instance Active Events
                 var instanceMethods = idxType.GetMethods (
                     BindingFlags.FlattenHierarchy |
@@ -164,6 +165,12 @@ namespace phosphorus.core
                     // checking if Active Event has a valid signature
                     VerifyActiveEventSignature (idxMethod);
 
+                    // verifying validity of name of Active Event
+                    foreach (var idxAtr in atrs) {
+                        if (idxAtr.Name.StartsWith ("@") || idxAtr.Name.Contains (" "))
+                            throw new CoreException (string.Format ("An Active event cannot start with '@' or contain a space. Active Event '{0}' in '{1}' is a violation of rules.", idxAtr.Name, type.FullName));
+                    }
+
                     // adding all Active Event attributes such that they become associate with our MethodInfo, to our list of Active Events
                     activeEvents.AddRange (atrs.Select (idxAtr => new Tuple<ActiveEventAttribute, MethodInfo> (idxAtr, idxMethod)));
                 }
@@ -178,12 +185,9 @@ namespace phosphorus.core
         {
             var pars = method.GetParameters ();
             if (pars.Length != 2 ||
-                pars [0].ParameterType != typeof (ApplicationContext) ||
-                pars [1].ParameterType != typeof (ActiveEventArgs))
-                throw new ArgumentException (
-                    string.Format ("method '{0}.{1}' is not a valid active event, parameters of method is wrong. all Active Events must take an ApplicationContext and an ActiveEventArgs object",
-                        method.DeclaringType.FullName,
-                        method.Name));
+                (pars [0].ParameterType != typeof (ApplicationContext) && pars [0].ParameterType != typeof (object)) ||
+                (pars [1].ParameterType != typeof (ActiveEventArgs) && pars [1].ParameterType != typeof (EventArgs)))
+                throw new CoreException (string.Format ("Method '{0}.{1}' is not a valid active event.", method.DeclaringType.FullName, method.Name));
         }
     }
 }

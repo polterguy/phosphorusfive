@@ -1,6 +1,7 @@
 /*
- * Phosphorus.Five, copyright 2014 - 2015, Mother Earth, Jannah, Gaia - YOU!
- * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
+ * Phosphorus.Five, Copyright 2014 - 2015, Thomas Hansen - thomas@magixilluminate.com
+ * Phosphorus.Five is licensed under the terms of the MIT license.
+ * See the enclosed LICENSE file for details.
  */
 
 using System.Collections.Generic;
@@ -8,28 +9,15 @@ using phosphorus.core;
 
 namespace phosphorus.expressions.iterators
 {
-    /// <summary>
-    ///     Returns all nodes within the specified range.
-    /// 
-    ///     Returns all nodes within the given range from previous result-set.
-    /// 
-    ///     Example, will return the second and third node from previous result-set;
-    ///     <pre>/[1,3]</pre>
-    /// </summary>
     public class IteratorRange : Iterator
     {
         private readonly int _from;
         private readonly int _to;
 
-        /// <summary>
-        ///     initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorRange" /> class
-        /// </summary>
-        /// <param name="from">start position, from</param>
-        /// <param name="to">end position, to</param>
         public IteratorRange (int from, int to)
         {
-            _to = from;
             _from = to;
+            _to = from;
         }
 
         public override IEnumerable<Node> Evaluate
@@ -38,9 +26,9 @@ namespace phosphorus.expressions.iterators
             {
                 var idxNo = 0;
                 foreach (var idxCurrent in Left.Evaluate) {
-                    if (idxNo++ >= _to)
+                    if (idxNo++ >= _from)
                         yield return idxCurrent;
-                    if (_from != -1 && idxNo >= _from)
+                    if (_to != -1 && idxNo >= _to)
                         yield break;
                 }
             }

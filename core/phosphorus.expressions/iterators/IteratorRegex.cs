@@ -1,31 +1,17 @@
 /*
- * Phosphorus.Five, copyright 2014 - 2015, Mother Earth, Jannah, Gaia - YOU!
- * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
+ * Phosphorus.Five, Copyright 2014 - 2015, Thomas Hansen - thomas@magixilluminate.com
+ * Phosphorus.Five is licensed under the terms of the MIT license.
+ * See the enclosed LICENSE file for details.
  */
 
 using System.Text.RegularExpressions;
 using phosphorus.core;
-using phosphorus.expressions.exceptions;
 
 namespace phosphorus.expressions.iterators
 {
-    /// <summary>
-    ///     Base class for all regular expression iterators.
-    /// 
-    ///     Not to be consumed directly by your code, but indirectly accessible through IteratorNamedRegex and IteratorValuedRegex.
-    ///     Contains helper methods for previously mentioned iterators, such as extracting regex options, etc.
-    /// </summary>
     public abstract class IteratorRegex : Iterator
     {
-        /// <summary>
-        ///     Returns regular expression engine options for regex iterator.
-        /// </summary>
-        /// <returns>Regex options.</returns>
-        /// <param name="optionsString">String containing textual representation of all options.</param>
-        /// <param name="expression">Necessary in case an exception needs to be raised, to provide contextual information.</param>
-        /// <param name="node">Necessary to provide contextual information in case an exception occurs.</param>
-        /// <param name="context">Application context</param>
-        protected RegexOptions GetOptions (string optionsString, string expression, Node node, ApplicationContext context)
+        protected RegexOptions GetOptions (string optionsString)
         {
             // default options is invariant culture
             var options = RegexOptions.CultureInvariant;
@@ -57,11 +43,7 @@ namespace phosphorus.expressions.iterators
                     case 'd':
                         break; // handled outside of this method ... (distinct option)
                     default:
-                        throw new ExpressionException (
-                            expression,
-                            string.Format ("'{0}' is not a recognized option for regular expression iterator", idx),
-                            node,
-                            context);
+                        throw new ExpressionException (string.Format ("'{0}' is not a recognized option for a regular expression iterator.", idx));
                 }
             }
             return options;

@@ -4,24 +4,23 @@
  * See the enclosed LICENSE file for details.
  */
 
-using System.Linq;
 using System.Collections.Generic;
 using phosphorus.core;
 
 namespace phosphorus.expressions.iterators
 {
-    public class IteratorNumbered : Iterator
+    public class IteratorGroupParent : Iterator
     {
-        private readonly int _number;
+        private readonly Iterator _leftParent;
 
-        public IteratorNumbered (int number)
+        public IteratorGroupParent (Iterator leftParent)
         {
-            _number = number;
+            _leftParent = leftParent;
         }
 
         public override IEnumerable<Node> Evaluate
         {
-            get { return from idxCurrent in Left.Evaluate where idxCurrent.Children.Count > _number select idxCurrent [_number]; }
+            get { return _leftParent.Evaluate; }
         }
     }
 }

@@ -5,8 +5,8 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace phosphorus.core
 {
@@ -48,7 +48,7 @@ namespace phosphorus.core
             }
             set {
                 if (value == null)
-                    throw new ArgumentException ("you cannot set a node's name to 'null'");
+                    throw new CoreException ("You cannot set a node's name to 'null'.");
                 _name = value;
             }
         }

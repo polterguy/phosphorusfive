@@ -5,9 +5,9 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Collections.Generic;
 
 namespace phosphorus.core
 {
@@ -40,10 +40,10 @@ namespace phosphorus.core
         public void RegisterListeningObject (object instance)
         {
             if (instance == null)
-                throw new ArgumentNullException ("instance");
+                throw new CoreException ("Tried to register a 'null' object as Active Event instance listener.");
 
-            // recursively iterating the Type of the object given, until we reach an object where we know there won't exist
-            // any Active Events
+            // recursively iterating the Type of the object given, until we reach a type we know there won't exist
+            // any Active Events for
             var type = instance.GetType ();
             while (!type.FullName.StartsWith ("System.")) {
 
@@ -74,7 +74,7 @@ namespace phosphorus.core
         public void UnregisterListeningObject (object instance)
         {
             if (instance == null)
-                throw new ArgumentNullException ("instance");
+                throw new CoreException ("Tried to unregister a 'null' object as instance listener.");
 
             // iterating over the Type until we find a type we know for a fact won't contains Active Events
             var type = instance.GetType ();
@@ -187,7 +187,7 @@ namespace phosphorus.core
             }
 
             // raising "initialize" Active Event
-            Raise ("pf.core.initialize-application-context");
+            Raise ("pf.core.init-context");
         }
 
         private void RaiseImplementation (ActiveEventArgs e)

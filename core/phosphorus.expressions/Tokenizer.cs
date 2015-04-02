@@ -1,43 +1,28 @@
 /*
- * Phosphorus.Five, copyright 2014 - 2015, Mother Earth, Jannah, Gaia - YOU!
- * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
+ * Phosphorus.Five, Copyright 2014 - 2015, Thomas Hansen - thomas@magixilluminate.com
+ * Phosphorus.Five is licensed under the terms of the MIT license.
+ * See the enclosed LICENSE file for details.
  */
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Collections.Generic;
 using phosphorus.core;
 
 namespace phosphorus.expressions
 {
-    /// <summary>
-    ///     Tokenizer for the Expression class.
-    /// 
-    ///     Responsible for tokenizing expressions, by breaking them up into tokens. Not something you'd normally fiddle
-    ///     with yourself.
-    /// </summary>
     public sealed class Tokenizer : IDisposable
     {
         private readonly StringReader _reader;
         private bool _disposed;
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="phosphorus.expressions.Tokenizer" /> class.
-        /// </summary>
-        /// <param name="expression">Expression to tokenize.</param>
         public Tokenizer (string expression)
         {
             // removing first "@" character, since it's not a part of our iterators
             _reader = new StringReader (expression.Substring (1));
         }
 
-        /// <summary>
-        ///     Returns all tokens in expression.
-        /// 
-        ///     Iterates through all tokens in your Expression.
-        /// </summary>
-        /// <value>The tokens consisting your Expression.</value>
         public IEnumerable<string> Tokens
         {
             get
@@ -53,15 +38,8 @@ namespace phosphorus.expressions
             }
         }
 
-        /*
-         * private implementation of IDisposable interface
-         */
         void IDisposable.Dispose () { Dispose (true); }
 
-        /// \todo refactor, too complex
-        /*
-         * finds next token and returns to caller, returns null if there are no more tokens in expression
-         */
         private string GetNextToken (string previousToken)
         {
             var nextChar = _reader.Read ();
@@ -104,14 +82,11 @@ namespace phosphorus.expressions
             return builder.ToString ().TrimEnd (' ', '\r', '\n', '\t');
         }
 
-        /*
-         * disposes the tokenizer
-         */
         private void Dispose (bool disposing)
         {
-            if (!_disposed && disposing) {
-                _disposed = true;
+            if (disposing && _reader != null) {
                 _reader.Dispose ();
+                _reader = null;
             }
         }
     }

@@ -1,6 +1,7 @@
 /*
- * Phosphorus.Five, copyright 2014 - 2015, Mother Earth, Jannah, Gaia - YOU!
- * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
+ * Phosphorus.Five, Copyright 2014 - 2015, Thomas Hansen - thomas@magixilluminate.com
+ * Phosphorus.Five is licensed under the terms of the MIT license.
+ * See the enclosed LICENSE file for details.
  */
 
 using System.Collections.Generic;
@@ -8,40 +9,27 @@ using phosphorus.core;
 
 namespace phosphorus.expressions.iterators
 {
-    /// <summary>
-    ///     Returns all nodes, and descendants, of previous iterator.
-    /// 
-    ///     This Iterator will return ALL nodes from its previous result, including all children, children's children, and 
-    ///     so on, from its previous iterator.
-    /// 
-    ///     Warning! This might be a very, very large result set for large node trees!
-    /// 
-    ///     Example;
-    ///     <pre>/**</pre>
-    /// </summary>
     public class IteratorFlatten : Iterator
     {
         public override IEnumerable<Node> Evaluate
         {
             get
             {
-                var retVal = new List<Node> ();
                 foreach (var idxCurrent in Left.Evaluate) {
-                    retVal.Add (idxCurrent);
-                    ReturnChildren (idxCurrent, retVal);
+                    foreach (var idxChild in ReturnDescendants (idxCurrent)) {
+                        yield return idxChild;
+                    }
                 }
-                return retVal;
             }
         }
 
-        /*
-         * recursively invoked for all descendant nodes
-         */
-        private static void ReturnChildren (Node idx, List<Node> retVal)
+        private static IEnumerable<Node> ReturnDescendants (Node idx)
         {
             foreach (var idxChild in idx.Children) {
-                retVal.Add (idxChild);
-                ReturnChildren (idxChild, retVal);
+                yield return idxChild;
+                foreach (var idxGrandChild in ReturnDescendants (idxChild)) {
+                    yield return idxGrandChild;
+                }
             }
         }
     }

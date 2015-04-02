@@ -1,6 +1,7 @@
 /*
- * Phosphorus.Five, copyright 2014 - 2015, Mother Earth, Jannah, Gaia - YOU!
- * phosphorus five is licensed as mit, see the enclosed LICENSE file for details
+ * Phosphorus.Five, Copyright 2014 - 2015, Thomas Hansen - thomas@magixilluminate.com
+ * Phosphorus.Five is licensed under the terms of the MIT license.
+ * See the enclosed LICENSE file for details.
  */
 
 using System.Collections.Generic;
@@ -8,25 +9,14 @@ using phosphorus.core;
 
 namespace phosphorus.expressions.iterators
 {
-    /// <summary>
-    ///     Returns an offset sibling node from previous result-set.
-    /// 
-    ///     Can start with either "+" or "-", depending upon whether or not you'd like to retrieve a "younger sibling"
-    ///     or an "older sibling" from the previous result-set. Next comes an integer value, defining how many siblings
-    ///     you wish to "jump".
-    /// 
-    ///     Example, that returns the sibling which is "two generations older" than your current result-set node's;
-    ///     <pre>/+2</pre>
-    /// </summary>
     public class IteratorSibling : Iterator
     {
         private readonly int _offset;
 
-        /// <summary>
-        ///     initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorSibling" /> class
-        /// </summary>
-        /// <param name="offset">offset siblings from current nodes</param>
-        public IteratorSibling (int offset) { _offset = offset; }
+        public IteratorSibling (int offset)
+        {
+            _offset = offset;
+        }
 
         public override IEnumerable<Node> Evaluate
         {
