@@ -1,0 +1,1 @@
+<%@ Application Codebehind="Global.asax.cs" Inherits="phosphorus.applicationpool.Global" Language="C#" %>

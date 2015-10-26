@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>pf.exp</RootNamespace>
+    <AssemblyName>pf.exp</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release-Linux|AnyCPU' ">
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release-Linux</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="AfterBuild" command="cp ${TargetFile} ${SolutionDir}/lib" />
+      </CustomCommands>
+    </CustomCommands>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Expression.cs" />
+    <Compile Include="Logical.cs" />
+    <Compile Include="Match.cs" />
+    <Compile Include="Tokenizer.cs" />
+    <Compile Include="iterators\Iterator.cs" />
+    <Compile Include="iterators\IteratorChildren.cs" />
+    <Compile Include="iterators\IteratorFlatten.cs" />
+    <Compile Include="iterators\IteratorGroup.cs" />
+    <Compile Include="iterators\IteratorLeftParent.cs" />
+    <Compile Include="iterators\IteratorModulo.cs" />
+    <Compile Include="iterators\IteratorNamed.cs" />
+    <Compile Include="iterators\IteratorNamedAncestor.cs" />
+    <Compile Include="iterators\IteratorNode.cs" />
+    <Compile Include="iterators\IteratorNumbered.cs" />
+    <Compile Include="iterators\IteratorParent.cs" />
+    <Compile Include="iterators\IteratorRange.cs" />
+    <Compile Include="iterators\IteratorReference.cs" />
+    <Compile Include="iterators\IteratorRoot.cs" />
+    <Compile Include="iterators\IteratorShiftLeft.cs" />
+    <Compile Include="iterators\IteratorShiftRight.cs" />
+    <Compile Include="iterators\IteratorSibling.cs" />
+    <Compile Include="iterators\IteratorValued.cs" />
+    <Compile Include="XUtil.cs" />
+    <Compile Include="MatchEntity.cs" />
+    <Compile Include="exceptions\ExpressionException.cs" />
+    <Compile Include="exceptions\LambdaException.cs" />
+    <Compile Include="NodeExtensions.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\pf.core\pf.core.csproj">
+      <Project>{C783FEDB-C973-4F38-8EBB-55A0163612F5}</Project>
+      <Name>pf.core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <TextStylePolicy inheritsSet="null" scope="text/x-csharp" />
+          <CSharpFormattingPolicy ElseIfNewLinePlacement="SameLine" AfterDelegateDeclarationParameterComma="True" inheritsSet="Mono" inheritsScope="text/x-csharp" scope="text/x-csharp" />
+          <TextStylePolicy FileWidth="120" EolMarker="Windows" inheritsSet="VisualStudio" inheritsScope="text/plain" scope="text/plain" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
+  <ItemGroup>
+    <Folder Include="exceptions\" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,340 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{8FAEDF6F-8F53-441B-ACE1-5E8330F8CE00}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
+		README.md = README.md
+		todo = todo
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plugins", "plugins", "{4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pf.hyperlisp", "plugins\pf.hyperlisp\pf.hyperlisp.csproj", "{C02D30A6-7DA2-4045-8644-9710AB40B629}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pf.io", "plugins\pf.io\pf.io.csproj", "{89C744BE-B583-4C6D-84B9-941E0C7CEBF4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pf.lambda", "plugins\pf.lambda\pf.lambda.csproj", "{8EB5FDEA-D073-4147-AE65-376A01B463DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pf.data", "plugins\pf.data\pf.data.csproj", "{CA83A3ED-BD5D-4557-AA1B-A7C04ABD4D4F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pf.mongodb", "plugins\pf.mongodb\pf.mongodb.csproj", "{CB706162-9ED3-4CAB-863C-B8F960EC5AC6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pf.html", "plugins\pf.html\pf.html.csproj", "{68EE106A-06BF-431B-9671-DF328666E03E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pf.types", "plugins\pf.types\pf.types.csproj", "{5B8D14D0-854E-4143-AE48-C62583F49F49}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pf.threading", "plugins\pf.threading\pf.threading.csproj", "{EF65C1FB-FCC8-43F0-90AC-39DA931268E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pf.net", "plugins\pf.net\pf.net.csproj", "{378663D4-1FC1-4109-8896-F72440C6C269}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pf.math", "plugins\pf.math\pf.math.csproj", "{E7026921-524B-4B2E-A549-251A5AEB4D89}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pf.web", "plugins\pf.web\pf.web.csproj", "{0F68BFA7-1CF7-4737-9058-CED4A9ED3427}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "core", "core", "{65EAD177-7108-4766-9B7D-5C20378DD4BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pf.ajax", "core\pf.ajax\pf.ajax.csproj", "{11644924-3367-4812-BE60-7DA41FC9E4AE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pf.webapp", "core\pf.webapp\pf.webapp.csproj", "{B6F3798D-ADBE-4033-A2CD-E01F3B2BF16A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pf.core", "core\pf.core\pf.core.csproj", "{C783FEDB-C973-4F38-8EBB-55A0163612F5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "lambda.exe", "core\lambda.exe\lambda.exe.csproj", "{6C5F05C3-5480-42D0-8FA3-00B8749EAC5C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pf.exp", "core\pf.exp\pf.exp.csproj", "{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{548E6881-A758-4DE6-B860-CFFB6BB57518}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pf.tests", "pf.tests\pf.tests.csproj", "{D709ED7D-C599-4703-B192-613F0EFF7D97}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{D324EDB9-E389-4183-B7E9-B4C4D281C238}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pf.ajax-samples", "samples\pf.ajax-samples\pf.ajax-samples.csproj", "{344B4C0F-683B-4B29-B559-D31170EA6B96}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+		Release-Linux|Any CPU = Release-Linux|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0F68BFA7-1CF7-4737-9058-CED4A9ED3427}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F68BFA7-1CF7-4737-9058-CED4A9ED3427}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F68BFA7-1CF7-4737-9058-CED4A9ED3427}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F68BFA7-1CF7-4737-9058-CED4A9ED3427}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F68BFA7-1CF7-4737-9058-CED4A9ED3427}.Release-Linux|Any CPU.ActiveCfg = Release-Linux|Any CPU
+		{0F68BFA7-1CF7-4737-9058-CED4A9ED3427}.Release-Linux|Any CPU.Build.0 = Release-Linux|Any CPU
+		{11644924-3367-4812-BE60-7DA41FC9E4AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11644924-3367-4812-BE60-7DA41FC9E4AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11644924-3367-4812-BE60-7DA41FC9E4AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11644924-3367-4812-BE60-7DA41FC9E4AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11644924-3367-4812-BE60-7DA41FC9E4AE}.Release-Linux|Any CPU.ActiveCfg = Release-Linux|Any CPU
+		{11644924-3367-4812-BE60-7DA41FC9E4AE}.Release-Linux|Any CPU.Build.0 = Release-Linux|Any CPU
+		{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}.Release-Linux|Any CPU.ActiveCfg = Release-Linux|Any CPU
+		{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}.Release-Linux|Any CPU.Build.0 = Release-Linux|Any CPU
+		{344B4C0F-683B-4B29-B559-D31170EA6B96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{344B4C0F-683B-4B29-B559-D31170EA6B96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{344B4C0F-683B-4B29-B559-D31170EA6B96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{344B4C0F-683B-4B29-B559-D31170EA6B96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{344B4C0F-683B-4B29-B559-D31170EA6B96}.Release-Linux|Any CPU.ActiveCfg = Release|Any CPU
+		{344B4C0F-683B-4B29-B559-D31170EA6B96}.Release-Linux|Any CPU.Build.0 = Release|Any CPU
+		{378663D4-1FC1-4109-8896-F72440C6C269}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{378663D4-1FC1-4109-8896-F72440C6C269}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{378663D4-1FC1-4109-8896-F72440C6C269}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{378663D4-1FC1-4109-8896-F72440C6C269}.Release|Any CPU.Build.0 = Release|Any CPU
+		{378663D4-1FC1-4109-8896-F72440C6C269}.Release-Linux|Any CPU.ActiveCfg = Release-Linux|Any CPU
+		{378663D4-1FC1-4109-8896-F72440C6C269}.Release-Linux|Any CPU.Build.0 = Release-Linux|Any CPU
+		{5B8D14D0-854E-4143-AE48-C62583F49F49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B8D14D0-854E-4143-AE48-C62583F49F49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B8D14D0-854E-4143-AE48-C62583F49F49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B8D14D0-854E-4143-AE48-C62583F49F49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B8D14D0-854E-4143-AE48-C62583F49F49}.Release-Linux|Any CPU.ActiveCfg = Release-Linux|Any CPU
+		{5B8D14D0-854E-4143-AE48-C62583F49F49}.Release-Linux|Any CPU.Build.0 = Release-Linux|Any CPU
+		{68EE106A-06BF-431B-9671-DF328666E03E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68EE106A-06BF-431B-9671-DF328666E03E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68EE106A-06BF-431B-9671-DF328666E03E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68EE106A-06BF-431B-9671-DF328666E03E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68EE106A-06BF-431B-9671-DF328666E03E}.Release-Linux|Any CPU.ActiveCfg = Release-Linux|Any CPU
+		{68EE106A-06BF-431B-9671-DF328666E03E}.Release-Linux|Any CPU.Build.0 = Release-Linux|Any CPU
+		{6C5F05C3-5480-42D0-8FA3-00B8749EAC5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C5F05C3-5480-42D0-8FA3-00B8749EAC5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C5F05C3-5480-42D0-8FA3-00B8749EAC5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C5F05C3-5480-42D0-8FA3-00B8749EAC5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C5F05C3-5480-42D0-8FA3-00B8749EAC5C}.Release-Linux|Any CPU.ActiveCfg = Release-Linux|Any CPU
+		{6C5F05C3-5480-42D0-8FA3-00B8749EAC5C}.Release-Linux|Any CPU.Build.0 = Release-Linux|Any CPU
+		{89C744BE-B583-4C6D-84B9-941E0C7CEBF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89C744BE-B583-4C6D-84B9-941E0C7CEBF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89C744BE-B583-4C6D-84B9-941E0C7CEBF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89C744BE-B583-4C6D-84B9-941E0C7CEBF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89C744BE-B583-4C6D-84B9-941E0C7CEBF4}.Release-Linux|Any CPU.ActiveCfg = Release-Linux|Any CPU
+		{89C744BE-B583-4C6D-84B9-941E0C7CEBF4}.Release-Linux|Any CPU.Build.0 = Release-Linux|Any CPU
+		{8EB5FDEA-D073-4147-AE65-376A01B463DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EB5FDEA-D073-4147-AE65-376A01B463DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EB5FDEA-D073-4147-AE65-376A01B463DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EB5FDEA-D073-4147-AE65-376A01B463DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EB5FDEA-D073-4147-AE65-376A01B463DF}.Release-Linux|Any CPU.ActiveCfg = Release-Linux|Any CPU
+		{8EB5FDEA-D073-4147-AE65-376A01B463DF}.Release-Linux|Any CPU.Build.0 = Release-Linux|Any CPU
+		{B6F3798D-ADBE-4033-A2CD-E01F3B2BF16A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6F3798D-ADBE-4033-A2CD-E01F3B2BF16A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6F3798D-ADBE-4033-A2CD-E01F3B2BF16A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6F3798D-ADBE-4033-A2CD-E01F3B2BF16A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6F3798D-ADBE-4033-A2CD-E01F3B2BF16A}.Release-Linux|Any CPU.ActiveCfg = Release|Any CPU
+		{B6F3798D-ADBE-4033-A2CD-E01F3B2BF16A}.Release-Linux|Any CPU.Build.0 = Release|Any CPU
+		{C02D30A6-7DA2-4045-8644-9710AB40B629}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C02D30A6-7DA2-4045-8644-9710AB40B629}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C02D30A6-7DA2-4045-8644-9710AB40B629}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C02D30A6-7DA2-4045-8644-9710AB40B629}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C02D30A6-7DA2-4045-8644-9710AB40B629}.Release-Linux|Any CPU.ActiveCfg = Release-Linux|Any CPU
+		{C02D30A6-7DA2-4045-8644-9710AB40B629}.Release-Linux|Any CPU.Build.0 = Release-Linux|Any CPU
+		{C783FEDB-C973-4F38-8EBB-55A0163612F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C783FEDB-C973-4F38-8EBB-55A0163612F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C783FEDB-C973-4F38-8EBB-55A0163612F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C783FEDB-C973-4F38-8EBB-55A0163612F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C783FEDB-C973-4F38-8EBB-55A0163612F5}.Release-Linux|Any CPU.ActiveCfg = Release-Linux|Any CPU
+		{C783FEDB-C973-4F38-8EBB-55A0163612F5}.Release-Linux|Any CPU.Build.0 = Release-Linux|Any CPU
+		{CA83A3ED-BD5D-4557-AA1B-A7C04ABD4D4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA83A3ED-BD5D-4557-AA1B-A7C04ABD4D4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA83A3ED-BD5D-4557-AA1B-A7C04ABD4D4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA83A3ED-BD5D-4557-AA1B-A7C04ABD4D4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA83A3ED-BD5D-4557-AA1B-A7C04ABD4D4F}.Release-Linux|Any CPU.ActiveCfg = Release-Linux|Any CPU
+		{CA83A3ED-BD5D-4557-AA1B-A7C04ABD4D4F}.Release-Linux|Any CPU.Build.0 = Release-Linux|Any CPU
+		{CB706162-9ED3-4CAB-863C-B8F960EC5AC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB706162-9ED3-4CAB-863C-B8F960EC5AC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB706162-9ED3-4CAB-863C-B8F960EC5AC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB706162-9ED3-4CAB-863C-B8F960EC5AC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB706162-9ED3-4CAB-863C-B8F960EC5AC6}.Release-Linux|Any CPU.ActiveCfg = Release-Linux|Any CPU
+		{CB706162-9ED3-4CAB-863C-B8F960EC5AC6}.Release-Linux|Any CPU.Build.0 = Release-Linux|Any CPU
+		{D709ED7D-C599-4703-B192-613F0EFF7D97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D709ED7D-C599-4703-B192-613F0EFF7D97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D709ED7D-C599-4703-B192-613F0EFF7D97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D709ED7D-C599-4703-B192-613F0EFF7D97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D709ED7D-C599-4703-B192-613F0EFF7D97}.Release-Linux|Any CPU.ActiveCfg = Release|Any CPU
+		{D709ED7D-C599-4703-B192-613F0EFF7D97}.Release-Linux|Any CPU.Build.0 = Release|Any CPU
+		{E7026921-524B-4B2E-A549-251A5AEB4D89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7026921-524B-4B2E-A549-251A5AEB4D89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7026921-524B-4B2E-A549-251A5AEB4D89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7026921-524B-4B2E-A549-251A5AEB4D89}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7026921-524B-4B2E-A549-251A5AEB4D89}.Release-Linux|Any CPU.ActiveCfg = Release-Linux|Any CPU
+		{E7026921-524B-4B2E-A549-251A5AEB4D89}.Release-Linux|Any CPU.Build.0 = Release-Linux|Any CPU
+		{EF65C1FB-FCC8-43F0-90AC-39DA931268E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF65C1FB-FCC8-43F0-90AC-39DA931268E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF65C1FB-FCC8-43F0-90AC-39DA931268E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF65C1FB-FCC8-43F0-90AC-39DA931268E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF65C1FB-FCC8-43F0-90AC-39DA931268E4}.Release-Linux|Any CPU.ActiveCfg = Release-Linux|Any CPU
+		{EF65C1FB-FCC8-43F0-90AC-39DA931268E4}.Release-Linux|Any CPU.Build.0 = Release-Linux|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C02D30A6-7DA2-4045-8644-9710AB40B629} = {4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}
+		{89C744BE-B583-4C6D-84B9-941E0C7CEBF4} = {4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}
+		{8EB5FDEA-D073-4147-AE65-376A01B463DF} = {4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}
+		{CA83A3ED-BD5D-4557-AA1B-A7C04ABD4D4F} = {4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}
+		{CB706162-9ED3-4CAB-863C-B8F960EC5AC6} = {4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}
+		{68EE106A-06BF-431B-9671-DF328666E03E} = {4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}
+		{5B8D14D0-854E-4143-AE48-C62583F49F49} = {4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}
+		{EF65C1FB-FCC8-43F0-90AC-39DA931268E4} = {4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}
+		{378663D4-1FC1-4109-8896-F72440C6C269} = {4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}
+		{E7026921-524B-4B2E-A549-251A5AEB4D89} = {4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}
+		{0F68BFA7-1CF7-4737-9058-CED4A9ED3427} = {4A1BA74D-89F7-4D8F-A4A9-2C7CF544FA53}
+		{11644924-3367-4812-BE60-7DA41FC9E4AE} = {65EAD177-7108-4766-9B7D-5C20378DD4BE}
+		{B6F3798D-ADBE-4033-A2CD-E01F3B2BF16A} = {65EAD177-7108-4766-9B7D-5C20378DD4BE}
+		{C783FEDB-C973-4F38-8EBB-55A0163612F5} = {65EAD177-7108-4766-9B7D-5C20378DD4BE}
+		{6C5F05C3-5480-42D0-8FA3-00B8749EAC5C} = {65EAD177-7108-4766-9B7D-5C20378DD4BE}
+		{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C} = {65EAD177-7108-4766-9B7D-5C20378DD4BE}
+		{D709ED7D-C599-4703-B192-613F0EFF7D97} = {548E6881-A758-4DE6-B860-CFFB6BB57518}
+		{344B4C0F-683B-4B29-B559-D31170EA6B96} = {D324EDB9-E389-4183-B7E9-B4C4D281C238}
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = core\pf.webapp\pf.webapp.csproj
+		Policies = $0
+		$0.DotNetNamingPolicy = $1
+		$1.DirectoryNamespaceAssociation = None
+		$1.ResourceNamePolicy = FileFormatDefault
+		$0.TextStylePolicy = $2
+		$2.FileWidth = 120
+		$2.TabsToSpaces = False
+		$2.inheritsSet = VisualStudio
+		$2.inheritsScope = text/plain
+		$0.StandardHeader = $3
+		$3.Text = 
+		$3.IncludeInNewFiles = True
+		$0.NameConventionPolicy = $4
+		$4.Rules = $5
+		$5.NamingRule = $6
+		$6.Name = Namespaces
+		$6.AffectedEntity = Namespace
+		$6.VisibilityMask = VisibilityMask
+		$6.NamingStyle = PascalCase
+		$6.IncludeInstanceMembers = True
+		$6.IncludeStaticEntities = True
+		$5.NamingRule = $7
+		$7.Name = Types
+		$7.AffectedEntity = Class, Struct, Enum, Delegate
+		$7.VisibilityMask = Public
+		$7.NamingStyle = PascalCase
+		$7.IncludeInstanceMembers = True
+		$7.IncludeStaticEntities = True
+		$5.NamingRule = $8
+		$8.Name = Interfaces
+		$8.RequiredPrefixes = $9
+		$9.String = I
+		$8.AffectedEntity = Interface
+		$8.VisibilityMask = Public
+		$8.NamingStyle = PascalCase
+		$8.IncludeInstanceMembers = True
+		$8.IncludeStaticEntities = True
+		$5.NamingRule = $10
+		$10.Name = Attributes
+		$10.RequiredSuffixes = $11
+		$11.String = Attribute
+		$10.AffectedEntity = CustomAttributes
+		$10.VisibilityMask = Public
+		$10.NamingStyle = PascalCase
+		$10.IncludeInstanceMembers = True
+		$10.IncludeStaticEntities = True
+		$5.NamingRule = $12
+		$12.Name = Event Arguments
+		$12.RequiredSuffixes = $13
+		$13.String = EventArgs
+		$12.AffectedEntity = CustomEventArgs
+		$12.VisibilityMask = Public
+		$12.NamingStyle = PascalCase
+		$12.IncludeInstanceMembers = True
+		$12.IncludeStaticEntities = True
+		$5.NamingRule = $14
+		$14.Name = Exceptions
+		$14.RequiredSuffixes = $15
+		$15.String = Exception
+		$14.AffectedEntity = CustomExceptions
+		$14.VisibilityMask = VisibilityMask
+		$14.NamingStyle = PascalCase
+		$14.IncludeInstanceMembers = True
+		$14.IncludeStaticEntities = True
+		$5.NamingRule = $16
+		$16.Name = Methods
+		$16.AffectedEntity = Methods
+		$16.VisibilityMask = Protected, Public
+		$16.NamingStyle = PascalCase
+		$16.IncludeInstanceMembers = True
+		$16.IncludeStaticEntities = True
+		$5.NamingRule = $17
+		$17.Name = Static Readonly Fields
+		$17.AffectedEntity = ReadonlyField
+		$17.VisibilityMask = Protected, Public
+		$17.NamingStyle = PascalCase
+		$17.IncludeInstanceMembers = False
+		$17.IncludeStaticEntities = True
+		$5.NamingRule = $18
+		$18.Name = Fields
+		$18.AffectedEntity = Field
+		$18.VisibilityMask = Protected, Public
+		$18.NamingStyle = PascalCase
+		$18.IncludeInstanceMembers = True
+		$18.IncludeStaticEntities = True
+		$5.NamingRule = $19
+		$19.Name = ReadOnly Fields
+		$19.AffectedEntity = ReadonlyField
+		$19.VisibilityMask = Protected, Public
+		$19.NamingStyle = PascalCase
+		$19.IncludeInstanceMembers = True
+		$19.IncludeStaticEntities = False
+		$5.NamingRule = $20
+		$20.Name = Constant Fields
+		$20.AffectedEntity = ConstantField
+		$20.VisibilityMask = Protected, Public
+		$20.NamingStyle = PascalCase
+		$20.IncludeInstanceMembers = True
+		$20.IncludeStaticEntities = True
+		$5.NamingRule = $21
+		$21.Name = Properties
+		$21.AffectedEntity = Property
+		$21.VisibilityMask = Protected, Public
+		$21.NamingStyle = PascalCase
+		$21.IncludeInstanceMembers = True
+		$21.IncludeStaticEntities = True
+		$5.NamingRule = $22
+		$22.Name = Events
+		$22.AffectedEntity = Event
+		$22.VisibilityMask = Protected, Public
+		$22.NamingStyle = PascalCase
+		$22.IncludeInstanceMembers = True
+		$22.IncludeStaticEntities = True
+		$5.NamingRule = $23
+		$23.Name = Enum Members
+		$23.AffectedEntity = EnumMember
+		$23.VisibilityMask = VisibilityMask
+		$23.NamingStyle = PascalCase
+		$23.IncludeInstanceMembers = True
+		$23.IncludeStaticEntities = True
+		$5.NamingRule = $24
+		$24.Name = Parameters
+		$24.AffectedEntity = Parameter
+		$24.VisibilityMask = VisibilityMask
+		$24.NamingStyle = CamelCase
+		$24.IncludeInstanceMembers = True
+		$24.IncludeStaticEntities = True
+		$5.NamingRule = $25
+		$25.Name = Type Parameters
+		$25.RequiredPrefixes = $26
+		$26.String = T
+		$25.AffectedEntity = TypeParameter
+		$25.VisibilityMask = VisibilityMask
+		$25.NamingStyle = PascalCase
+		$25.IncludeInstanceMembers = True
+		$25.IncludeStaticEntities = True
+		$0.VersionControlPolicy = $27
+		$27.inheritsSet = Mono
+		$0.ChangeLogPolicy = $28
+		$28.UpdateMode = None
+		$28.MessageStyle = $29
+		$29.LineAlign = 0
+		$28.inheritsSet = Mono
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

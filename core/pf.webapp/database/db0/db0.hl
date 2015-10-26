@@ -1,0 +1,194 @@
+pf.page:/
+  type:html
+  name:home
+  template:system42/templates/main.hl
+  header:welcome to system42
+  content:@"<p>system42 is an open source content management system, and web application development platform,
+built on top of <a href=""github.com/polterguy/phosphorus-five"">phosphorus.five</a>. its purpose is to be a minimalistic
+CMS, while at the same time allowing you to create your own web apps easily, without forcing you to learn advanced
+programming constructs</p>
+
+<p>this allows you to build more complex functionality than a normal CMS would allow you to. with system42 you can create
+your own web applications, easily, without having to dive into complex constructs, such as C#, OOP, advanced programming,
+and so on. while still retaining the possibility of doing such, if you wish</p>
+
+<p>through pf.lambda, you can orchestrate your web application together, using a high-level abstraction language, that doesn't
+require from you to know programming, but instead allows you to focus on your domain problem. this creates
+opportunities for non-developers to create complex web applications, while at the same time retaining the possibility to
+dive into programming for system developers, to further enrich its features</p>
+
+<p>this way your developers can focus on what they should focus on, allowing your non-technical staff to orchestrate
+together what your developers create. system42 is the fusion between system-development, web-design, and non-technical
+solution architecture, allowing your people to do what they should do</p>
+
+<h2>username/password</h2>
+
+<p>when you start system42 for the first time, then a default user with the username/password combination of
+<em>admin/admin</em> is created for you</p>"
+pf.page:/about
+  type:html
+  name:about
+  template:system42/templates/main.hl
+  header:about system42
+  content:@"<p>system42 is maintained and developed by <a href=""http://magixilluminate.com"">Magix Illuminate</a>. you can
+reach its main developers either through <a href=""github.com/polterguy/phosphorus-five"">GitHub</a> or directly on
+email at <a href=""mailto:thomas@magixilluminate.com"">thomas@magixilluminate.com</a></p>
+
+<p>to teach yourself system42 and phosphorus.five, please visit our <a href=""http://youtube.com/MareMara13"">YouYube Channel</a>, or
+check out our <a href=""http://magixilluminate.com/category/phosphorus/"">blog</a></p>"
+pf.page:/templates
+  type:html
+  name:templates
+  template:system42/templates/main.hl
+  header:the template system
+  content:@"<p>system42 is built on a template system, which allows you to easily modify the design of all your
+web pages, by editing one simple template. this allows you to exchange the design of all your dynamically created CMS pages, by
+simply editing one template</p>
+
+<p>this file can be found underneath the <em>""templates""</em> directory, and is written in pf.lambda, creating server-side controls, 
+which injects the actual content of your pages, into parts of this template dynamically, according to which page is actually being requested</p>
+
+<p>your actual pages are stored in the database of your installation, and can be found underneath the <em>""database""</em> folder on disc.
+your content can easily be edited with a WYSIWYG editor, or something similar, to create and edit existing pages</p>"
+pf.page:/restricted
+  type:html
+  role:admin
+  name:restricted sample
+  template:system42/templates/main.hl
+  header:restricted page
+  content:@"<p>this page has restricted access, just to show the restriction authorization parts of system42. this means the
+page will only be visible, and legal to access, if you're logged in with a user belonging to the admin role</p>"
+pf.page:/hello-world
+  type:controls
+  name:controls example
+  controls:@"
+
+/*
+ * this is an example of a 'controls page', which contains a hierarchy of phosphorus.ajax web controls,
+ * which allows you to declare your page entirely, controlling every aspect of it, through a declarative
+ * syntax
+ */
+
+// this becomes the header of your page
+literal:header
+  element:h1
+  innerValue:""hello world application""
+  class:span-20 last header prepend-top prepend-4
+
+// then we create a container, to hold child controls
+container:content
+  element:div
+  class:span-16 prepend-4 content
+  widgets
+    literal
+      element:p
+      innerValue:@""this is an example of how you can create applications as an integral part of your website content,
+and have them run side-by-side your CMS pages, as a web page with a list of server-side controls, making it possible to declaratively create your
+applications, as a list of server-side web controls, capable of executing pf.lambda Active Events as a response to ajax events on the client-side""
+    literal
+      element:p
+      innerValue:@""this type of application can easily be created with a visual interface, or an IDE, without requiring complex concepts,
+such as code or programming, by dragging and dropping objects into your design surface of your form. the limitation is that the server controls
+must be known in advance, since you cannot inject server-side web controls easily, besides as the result of pf.lambda Active Events. in this type
+of application, you have complete control over the rendering of your page, and there are no pre-existing objects, such as ads or menus for you. 
+<a href=""""/"""">go back</a>""
+    literal
+      element:button
+      class:span-2
+      innerValue:click me!
+      onclick
+        pf.web.create-widget
+
+          // 'main-controls-surface' is the ID for the main container widget your entire hierarchy will be added into
+          parent:main-controls-surface
+          class:prepend-4 span-8 clear prepend-top
+          widgets
+            literal
+              innerValue:@""this widget was <strong>dynamically</strong> created as a consequence of you clicking the button :)""
+              onclick
+                set:@/+/?value
+                  :@/../*/_widget/?value
+                pf.web.remove-widget"
+pf.page:/lambda-world
+  type:lambda
+  name:lambda example
+  lambda:@"
+
+/*
+ * this is an example of a 'lambda page', which allows you to control every aspect of your page in its entirety, by executing
+ * pf.lambda code as a consequence of your page being loaded
+ */
+
+pf.web.create-widget:main-script-surface
+  class:span-24 last
+  widgets
+    literal
+      element:h1
+      class:span-16 last header prepend-top prepend-4
+      innerValue:""hello world, script version""
+    literal
+      class:span-16 last prepend-top prepend-4
+      innerValue:@""this is an example of how you can create an application as a lambda object, that executes as the result of a page
+being requested, and have it run side-by-side with your CMS pages, making it possible to create any amount of complexity your website requires
+within a page""
+    literal
+      class:span-16 last prepend-4
+      innerValue:@""in this type of application, you are in complete control over the entire rendering of the page, which you
+must do by resorting to pf.lambda scripts, and you can entirely dynamically create your page, having full control over every aspect of it
+yourself. <a href=""""/"""">go back</a>""
+    container
+      class:prepend-4 span-4 clear
+      widgets
+        literal
+          element:button
+          class:span-2
+          innerValue:click me!
+          onclick
+            pf.web.create-widget
+              parent:main-script-surface
+              class:prepend-4 span-8 clear prepend-top
+              widgets
+                literal
+                  innerValue:@""this widget was <strong>dynamically</strong> created as a consequence of you clicking the button :)""
+                  onclick
+                    set:@/+/?value
+                      :@/../*/_widget/?value
+                    pf.web.remove-widget"
+pf.page:/editor
+  type:lambda
+  name:pf.page editor
+  role:admin
+  lambda:@"
+
+/*
+ * simply executes the file that loads up the 'page editor'
+ */
+sys42.execute-lambda-file:system42/admin/page-editor/page-editor.hl
+"
+pf.page:/executor
+  type:lambda
+  name:pf.lambda executor
+  role:admin
+  lambda:@"
+
+/*
+ * simply executes the file that loads up the 'executor'
+ */
+sys42.execute-lambda-file:system42/admin/executor.hl
+"
+pf.user:admin user
+  username:admin
+  password:admin
+  role:admin
+pf.page:/web-service-1
+  name:web-service-1
+  template:system42/templates/main.hl
+  type:lambda
+  lambda:@"/*
+ * [lambda] page sample code
+ */
+
+pf.web.set-response-header
+  Content-Type:application/octet-stream
+pf.web.echo-file:media/css/src/grid.png
+"
