@@ -1,7 +1,7 @@
-Phosphorus.Five
+Phosphorus-Five
 ===============
 
-Phosphorus.Five is a web application framework for Mono and ASP.NET. Phosphorus 
+Phosphorus-Five is a web application framework for Mono and ASP.NET. Phosphorus 
 adds the fun back into creating web apps, and allows you to build software that 
 can run unchanged for millenniums. Phosphorus is;
 
@@ -72,8 +72,8 @@ Then modify your web.config, and make sure it has something like this inside its
   <pages>
     <controls>
       <add 
-        assembly="phosphorus.ajax" 
-        namespace="phosphorus.ajax.widgets" 
+        assembly="pf.ajax" 
+        namespace="pf.ajax.widgets" 
         tagPrefix="pf" />
     </controls>
   </pages>
@@ -96,8 +96,8 @@ before you create a literal widget, by adding the code below in your .aspx marku
 Then add the following code in your codebehind
 
 ```csharp
-using phosphorus.ajax.core;
-using pf = phosphorus.ajax.widgets;
+using pf.ajax.core;
+using pf = pf.ajax.widgets;
 
 /* ... rest of class ... */
 
@@ -211,7 +211,7 @@ dependencies.
 Below is an example of how you can create a static Active Event;
 
 ```csharp
-using phosphorus.core;
+using pf.core;
 
 [ActiveEvent (Name = "foo")]
 protected static void foo_method (ApplicationContext literal, ActiveEventArgs e)
@@ -326,7 +326,7 @@ pf.web.create-widget:foo
       innerValue:"I was created dynamically. Click me too!"
       after:foo
       onclick
-        pf.web.widgets.set-property:@/../*/_widget?value
+        pf.web.set-widget-property:@/../*/_widget?value
           style:"background-color:LightBlue"
 ```
 
