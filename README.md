@@ -72,9 +72,9 @@ Then modify your web.config, and make sure it has something like this inside its
   <pages>
     <controls>
       <add 
-        assembly="pf.ajax" 
-        namespace="pf.ajax.widgets" 
-        tagPrefix="pf" />
+        assembly="p5.ajax" 
+        namespace="p5.ajax.widgets" 
+        tagPrefix="p5" />
     </controls>
   </pages>
 </system.web>
@@ -84,25 +84,25 @@ Then either inherit your page from AjaxPage, or implement the IAjaxPage interfac
 before you create a literal widget, by adding the code below in your .aspx markup.
 
 ```xml
-<pf:Literal
+<p5:Literal
     runat="server"
     id="hello"
     Tag="strong"
     onclick="hello_onclick">
     click me
-</pf:Literal>
+</p5:Literal>
 ```
 
 Then add the following code in your codebehind
 
 ```csharp
-using pf.ajax.core;
-using pf = pf.ajax.widgets;
+using p5.ajax.core;
+using p5 = p5.ajax.widgets;
 
 /* ... rest of class ... */
 
 [WebMethod]
-protected void hello_onclick (pf.Literal sender, EventArgs e)
+protected void hello_onclick (p5.Literal sender, EventArgs e)
 {
     // notice how you save a cast operation here ...
     sender.innerHTML = "hello world";
@@ -166,7 +166,7 @@ serialized this way.
 Below is an example of how to create a video html5 element using a literal widget;
 
 ```xml
-<pf:Literal
+<p5:Literal
     runat="server"
     id="video"
     Tag="video"
@@ -177,7 +177,7 @@ Below is an example of how to create a video html5 element using a literal widge
         src="http://download.blender.org/peach/trailer/trailer_1080p.ogg" 
         type="video/ogg" />
     your browser blows!
-</pf:Literal>
+</p5:Literal>
 ```
 
 You can modify or add any attribute you wish in the codebehind by using something 
@@ -211,7 +211,7 @@ dependencies.
 Below is an example of how you can create a static Active Event;
 
 ```csharp
-using pf.core;
+using p5.core;
 
 [ActiveEvent (Name = "foo")]
 protected static void foo_method (ApplicationContext literal, ActiveEventArgs e)
@@ -254,23 +254,23 @@ If you have an instance Active Event (not static method), then you need to use t
 *"RegisterListeningObject"* method on your *"ApplicationContext"* object for each 
 instance of your class you wish to have notified when the Active Event is raised.
 
-## About pf.lambda
+## About p5.lambda
 
-pf.lambda is a *"programming language"* created on top of Active Events. At its core,
+p5.lambda is a *"programming language"* created on top of Active Events. At its core,
 it is really nothing but loosely coupled Active Events, capable of executing
 rudimentary programming language constructs, such as *"while"*, *"for-each"*, *"if"*
-and so on. This makes pf.lambda extremely extendible, and allows for you to change
+and so on. This makes p5.lambda extremely extendible, and allows for you to change
 and add any keyword(s) you wish to the language, by creating your own Active Events.
 
-pf.lambda is very easy to learn, since it doesn't contain more than ~15 keywords, 
+p5.lambda is very easy to learn, since it doesn't contain more than ~15 keywords, 
 and should be used in symbiosis with your own Active Events, to provide an environment
 where you can *"orchestrate"* your applications together, by combining existing C#
 logic together, to form an *"application"* based upon loosely coupled plugins and
 modules.
 
-pf.lambda can use any file format capable of constructing key/value/children nodes
+p5.lambda can use any file format capable of constructing key/value/children nodes
 as its *"language"*, such as XML or JSON, but by default, a file format called
-*"Hyperlisp"* is being used. Below is a simple pf.lambda program written in Hyperlisp;
+*"Hyperlisp"* is being used. Below is a simple p5.lambda program written in Hyperlisp;
 
 ```
 _x
@@ -278,17 +278,17 @@ _x
   foo2:bar
   foo3:bar
 for-each:@/./_x/*/?node
-  pf.console.write-line:"{0}:{1}"
+  p5.console.write-line:"{0}:{1}"
     :@/././__dp/#/?name
     :@/././__dp/#/?value
 ```
 
-The above example assumes a handler for *"pf.console.write-line"*, which is implemented
-in the lambda.exe file (phoshorus.exe project), which allows for executing pf.lambda 
+The above example assumes a handler for *"p5.console.write-line"*, which is implemented
+in the lambda.exe file (phoshorus.exe project), which allows for executing p5.lambda 
 files and code directly from a command line shell.
 
 Notice how each consecutive double-space in front of a line creates a new children
-collection of nodes beneath the node above itself. For instance, the *"pf.console.write-line"*
+collection of nodes beneath the node above itself. For instance, the *"p5.console.write-line"*
 statement above is a child node of the *"for-each"* Node. The above code perfectly 
 translates into a Node structure with all *"foox"* being children nodes of the *"_x"*
 Node, and so on.
@@ -306,27 +306,27 @@ right-clicking "phosphorus.application-pool". To create a release, you must make
 you have "uglifyjs" installed on your system, since the Linux Release configuration 
 of phosphorus.ajax depends upon uglifyjs to minify its javascript.
 
-## Creating an Ajax widget hierarchy with pf.lambda
+## Creating an Ajax widget hierarchy with p5.lambda
 
-Below is an example of a piece of pf.lambda code that allows you to create an
+Below is an example of a piece of p5.lambda code that allows you to create an
 Ajax widget, which once clicked, creates another Ajax widget, and injects it below
 your first widget.
 
 ```
-pf.web.create-widget:foo
+p5.web.create-widget:foo
   class:span-24 last
   widget:literal
   element:h1
   innerValue:"click me!"
   onclick
-    pf.web.create-widget
+    p5.web.create-widget
       widget:literal
       element:p
       class:span-18 prepend-6 last
       innerValue:"I was created dynamically. Click me too!"
       after:foo
       onclick
-        pf.web.set-widget-property:@/../*/_widget?value
+        p5.web.set-widget-property:@/../*/_widget?value
           style:"background-color:LightBlue"
 ```
 

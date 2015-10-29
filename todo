@@ -11,25 +11,25 @@
 
 * modify readme to have fully functioning complete example of Default.aspx page, with complete codebehind, and complete .aspx markup
 
-* create support for "array" pf.lambda type, which allows to be used as an expression for Expression.Iterate, such that
-  users may submit a static array of values to stuff such as "for-each", "pf.web.set-session", etc
+* create support for "array" p5.lambda type, which allows to be used as an expression for Expression.Iterate, such that
+  users may submit a static array of values to stuff such as "for-each", "p5.web.set-session", etc
 
 * create "plugin" support for "for-each", "set", "add" etc, to allow iterating for instance Widgets, and change their properties
   directly to create less verbose code
 
-* [flatten] keyword in pf.lambda, to create a string representation of a list of nodes, with optional "separator string"
+* [flatten] keyword in p5.lambda, to create a string representation of a list of nodes, with optional "separator string"
   between node values/names, possibly as a "formatting expression" defined e.g. like this; "{name}:{value};" to allow for both
   name of node and value of node to become part of string representation
 
-* [split] keyword in pf.lambda, to create node list representation of a string, according to some "split character", 
+* [split] keyword in p5.lambda, to create node list representation of a string, according to some "split character", 
   and optionally a "name split character" to allow for both name and value of node to be set according to the original 
   string, in addition to optionally also "type information"
 
 * store timezone (GTM+x) in DateTime when serializing and de-serializing from Hyperlisp
 
-* Active Event to zip many CSS/JavaScript files back to client as one, relying on [pf.web.response.echo]
+* Active Event to zip many CSS/JavaScript files back to client as one, relying on [p5.web.response.echo]
 
-* create support for "style" property setters/getters in widgets through pf.lambda optionally can take a list of style names/values, instead
+* create support for "style" property setters/getters in widgets through p5.lambda optionally can take a list of style names/values, instead
   of like it is now where it's "just a string"
 
 * "math" Active Events, taking expressions, evaluating these, and [add], [subtract], [multiply] and [divide]'ing these
@@ -49,7 +49,7 @@
 
 * Comet (LazyHttp) support
 
-* "indent", "de-indent" and "quote string" helper buttons in pf.lambda executor in System42
+* "indent", "de-indent" and "quote string" helper buttons in p5.lambda executor in System42
 
 * [lambda2html] Active Event
 
@@ -69,7 +69,7 @@
 
 * make sure [set] can set 'value' and 'name' when source leads to multiple nodes, and create unit test for it
 
-* [rel-source] on [pf.web.set-session] and friends
+* [rel-source] on [p5.web.set-session] and friends
 
 * more unit tests for [rel-source] on set and friends
 
@@ -78,16 +78,16 @@
 * make sure [sys42.show-tree] can "append more results" to itself, such that it keeps the same dialogue for multiple invocations
   during the same, and consecutive request
 
-* make support for [rel-source] in [pf.web.return-response-value]
+* make support for [rel-source] in [p5.web.return-response-value]
 
-* plugin architecture for creating custom iterators, both using C# and in pf.lambda
+* plugin architecture for creating custom iterators, both using C# and in p5.lambda
 
 * "-1" property for ViewStateInSession property, to allow "infinite" number of ViewState keys in Session object, with a BIG warning
   to user that this posess a security risk though!
 
 * "sockets" Active Events library, for creating Daemons to listen to ports, and react accordingly
 
-* create support for trapping and throwing exceptions in pf.lambda
+* create support for trapping and throwing exceptions in p5.lambda
 
 * make it possible to create "User Controls Widgets", which are widgets that exists in files, and make it possible to pass in parameters
 
@@ -95,9 +95,9 @@
 
 * create support for using ASP.NET Cache object, such as we already have for Session and Application
 
-* sys42 - "New wizard page ..." feature, for creating a pf.page through a wizard.
+* sys42 - "New wizard page ..." feature, for creating a p5.page through a wizard.
 
-* support multipart data in [pf.web.post] through MimeKit
+* support multipart data in [p5.web.post] through MimeKit
 
 
 
