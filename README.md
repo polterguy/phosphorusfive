@@ -19,11 +19,14 @@ All these building blocks combined, just so happens to largely solve all of your
 web application software problems, making all the *"boring"* parts just happen,
 leaving the fun parts to you. The end result being an extremely Agile software 
 solution, facilitating for interchanging any building block as you maintain,
-which results in you *"orchestrating"* or *"growing"* your software as a conductor
+which results in you *"orchestrating"* or *"growing"* your software, as a conductor
 or a gardener, rather than having to do all the nitty stuff yourself by hand. In
-addition it facilitattes for you becoming extremely capable of *"reusing"* your
+addition it facilitates for you to become extremely capable of *"reusing"* your
 code, at an entirely new level, highly unlikely matched in any other frameworks
-out there.
+out there you've seen previously.
+
+If you wish to use marketing words, then maybe *"fifth generation programming 
+non-language"* might apply ...
 
 ## Getting started with p5.lambda
 
@@ -47,18 +50,24 @@ as its *"language"*, such as XML or JSON, but by default, a file format called
 
 ```
 _x
-  foo1:bar1
-  foo2:bar
-  foo3:bar
-for-each:@/./_x/*/?node
+  foo1:hello
+  foo2:there
+  foo3:stranger
+  foo4:do you wish to become my friend?
+for-each:x:/./_x/*/?node
   p5.console.write-line:"{0}:{1}"
-    :@/././__dp/#/?name
-    :@/././__dp/#/?value
+    :x:/././__dp/#/?name
+    :x:/././__dp/#/?value
 ```
 
 The above example assumes a handler for *"p5.console.write-line"*, which is implemented
 in the lambda.exe file (phoshorus.exe project), which allows for executing p5.lambda 
 files and code directly from a command line shell.
+
+If you create a file called *"hello.hl"* which you save in the same directory as you
+have your *"lambda.exe"* file (your p5/lib folder), you can execute the above application
+using *"mono lambda.exe -f hello.hl"* from a command line shell on linux or OSX. Drop 
+the *"mono"* parts if you're on windows and you're using .Net.
 
 Notice how each consecutive double-space in front of a line creates a new children
 collection of nodes beneath the node above itself. For instance, the *"p5.console.write-line"*
@@ -85,8 +94,84 @@ there are no *"design patterns"* in pf.lambda, and neither are any design patter
 necessary. All existing design patterns are no longer necessary once you start
 using pf.lambda.
 
+## Getting started with Active Events
+
+Active Events are an alternative to OOP which facilitates for better encapsulation
+and plugable software than traditional inheritance through its classes and interfaces.
+
+Instead of inheriting from a class, and override methods from the base class, you
+can directly override and replace any Active Event with any other Active Event.
+This makes it easier for you to create plugins and modules that have no 
+dependencies.
+
+Below is an example of how you can create a static Active Event;
+
+```csharp
+using p5.core;
+
+[ActiveEvent (Name = "foo")]
+protected static void foo_method (ApplicationContext literal, ActiveEventArgs e)
+{
+    /* Do stuff with e.Args here.
+       Notice that e.Args contains a reference to a Node, which
+       allows you to pass in and return any number and/or types 
+       of arguments you wish */
+}
+```
+
+With Active Events you don't invoke the method directly, but rather indirectly,
+through its *"Name"* property declared in your *"ActiveEvent"* attribute. This
+means that you never have dependencies between the caller and the implementor of
+your functions/methods/Active Events. This allows you to dynamically easily 
+replace any functionality in your system, with other modules and pieces of 
+functionality, without needing the caller and invoker to know anything about 
+each other.
+
+In addition, it allows you to change a method invocation the same way you'd 
+change a simple C# string. This means you can store *"method hooks"* in your 
+database, config file, allowing the user to type them in through a GUI, etc.
+
+This feature just so happens to largely replace most features from Object 
+Oriented Programming, with a much better alternative for acomplishing the 
+same things, such as encapsulation and polymorphism. In addition, Active 
+Events is at the core of pf.lambda, allowing for creation of a 
+*"non-programming language"*, largely replacing 98% of all your code, with 
+a much more flexible, maintainable and easy to understand construct, than 
+your *"code"* such as C# and Java. Hyperlisp and pf.lambda is basically 
+nothing but a thin abstraction on top of Active Events in fact.
+
+To raise an Active Event, you use the *"Raise"* method on your ApplicationContext
+object, passing in a Node, which will become the arguments passed into your Active
+Event.
+
+```csharp
+ApplicationContext ctx = Loader.Instance.CreateApplicationContext ();
+Node node = new Node ();
+ctx.Raise ("foo", node);
+```
+
+Then from inside your Active Event, you can either extract arguments passed in
+to your method, or return arguments, by modifying and retrieving values from your
+Node. The Node class is actually a tree structure, capable of passing in any type
+of argument you wish.
+
+You can dynamically load assemblies into your application, through the
+*"Loader.Instance.LoadAssembly"* method to *inject* new Active Event handlers into
+your application.
+
+If you have an instance Active Event (not static method), then you need to use the
+*"RegisterListeningObject"* method on your *"ApplicationContext"* object for each 
+instance of your class you wish to have notified when the Active Event is raised.
+
+Although P5 is largely focused on web application development, there is nothing
+stopping you from using pf.core, pf.exp, pf.lambda, and the rest of the plugins
+in for instance a WinForms application, or any other type of app you can build using
+Mono and/or .Net. Which allows you to use Active Events in for instance desktop
+applications.
+
 ## Getting started with phosphorus.ajax
 
+If you wish, you can of course use only p5.ajax in existing or new web forms apps.
 Create a reference to *"lib/phosphorus.ajax.dll"* in your asp.net web application
 
 Then modify your web.config, and make sure it has something like this inside its 
@@ -225,81 +310,6 @@ p5.ajax will automatically keep track of what needs to be sent from the
 server to the client. Use the *"RemoveAttribute"* method to remove an attribute,
 since setting an attribute value to null will not remove it, but keep the attribute
 with a null value.
-
-## Getting started with Active Events
-
-Active Events are an alternative to OOP which facilitates for better encapsulation
-and plugable software than traditional inheritance through its classes and interfaces.
-
-Instead of inheriting from a class, and override methods from the base class, you
-can directly override and replace any Active Event with any other Active Event.
-This makes it easier for you to create plugins and modules that have no 
-dependencies.
-
-Below is an example of how you can create a static Active Event;
-
-```csharp
-using p5.core;
-
-[ActiveEvent (Name = "foo")]
-protected static void foo_method (ApplicationContext literal, ActiveEventArgs e)
-{
-    /* Do stuff with e.Args here.
-       Notice that e.Args contains a reference to a Node, which
-       allows you to pass in and return any number and/or types 
-       of arguments you wish */
-}
-```
-
-With Active Events you don't invoke the method directly, but rather indirectly,
-through its *"Name"* property declared in your *"ActiveEvent"* attribute. This
-means that you never have dependencies between the caller and the implementor of
-your functions/methods/Active Events. This allows you to dynamically easily 
-replace any functionality in your system, with other modules and pieces of 
-functionality, without needing the caller and invoker to know anything about 
-each other.
-
-In addition, it allows you to change a method invocation the same way you'd 
-change a simple C# string. This means you can store *"method hooks"* in your 
-database, config file, allowing the user to type them in through a GUI, etc.
-
-This feature just so happens to largely replace most features from Object 
-Oriented Programming, with a much better alternative for acomplishing the 
-same things, such as encapsulation and polymorphism. In addition, Active 
-Events is at the core of pf.lambda, allowing for creation of a 
-*"non-programming language"*, largely replacing 98% of all your code, with 
-a much more flexible, maintainable and easy to understand construct, than 
-your *"code"* such as C# and Java. Hyperlisp and pf.lambda is basically 
-nothing but a thin abstraction on top of Active Events in fact.
-
-To raise an Active Event, you use the *"Raise"* method on your ApplicationContext
-object, passing in a Node, which will become the arguments passed into your Active
-Event.
-
-```csharp
-ApplicationContext ctx = Loader.Instance.CreateApplicationContext ();
-Node node = new Node ();
-ctx.Raise ("foo", node);
-```
-
-Then from inside your Active Event, you can either extract arguments passed in
-to your method, or return arguments, by modifying and retrieving values from your
-Node. The Node class is actually a tree structure, capable of passing in any type
-of argument you wish.
-
-You can dynamically load assemblies into your application, through the
-*"Loader.Instance.LoadAssembly"* method to *inject* new Active Event handlers into
-your application.
-
-If you have an instance Active Event (not static method), then you need to use the
-*"RegisterListeningObject"* method on your *"ApplicationContext"* object for each 
-instance of your class you wish to have notified when the Active Event is raised.
-
-Although P5 is largely focused on web application development, there is nothing
-stopping you from using pf.core, pf.exp, pf.lambda, and the rest of the plugins
-in for instance a WinForms application, or any other type of app you can build using
-Mono and/or .Net. Which allows you to use Active Events in for instance desktop
-applications.
 
 ## Building your own release
 
