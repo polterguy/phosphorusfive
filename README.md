@@ -3,24 +3,27 @@ Phosphorus Five
 
 Phosphorus Five is a web application framework for Mono and ASP.NET. Phosphorus 
 is built around an entirely new axiom for system development based upon a new
-design patter called *"Active Events"*. Active Events, and its off spring;
+design patter called *"Active Events"*. Active Events, and its off spring,
 pf.lambda, a natural consequence of Active Events, opens up an entirely new 
 doorway to architecting your software solutions.
 
-P5 contains a managed Ajax library, allowing you to automatically map up the
+p5 contains a managed Ajax library, allowing you to automatically map up the
 bridge between the server and the client. It also contains pf.lambda, a 
 *"non-programming language"*, allowing you to orchestrate your applications
-building blocks together, in an extremely loosely manner. In addition, P5 contains
+building blocks together, in an extremely loosely manner. In addition, p5 contains
 Hyperlisp, which is a tree structure file-format, allowing you to easily create
 pf.lambda execution trees, and combine building blocks together, to form your 
 end software.
 
 All these building blocks combined, just so happens to largely solve all of your
-web application software problems, making all the *"borring"* parts just happen,
+web application software problems, making all the *"boring"* parts just happen,
 leaving the fun parts to you. The end result being an extremely Agile software 
 solution, facilitating for interchanging any building block as you maintain,
 which results in you *"orchestrating"* or *"growing"* your software as a conductor
-or a gardener, rather than having to do all the nitty stuff yourself by hand.
+or a gardener, rather than having to do all the nitty stuff yourself by hand. In
+addition it facilitattes for you becoming extremely capable of *"reusing"* your
+code, at an entirely new level, highly unlikely matched in any other frameworks
+out there.
 
 ## Getting started with p5.lambda
 
@@ -67,6 +70,20 @@ Hyperlisp also supports most *"System.x"* types from .Net, such as *"_x:int:5"*
 turning the *_x* Node into having the integer value of "5", instead of its string 
 representation. Hyperlisp is also extendible in its type system, allowing you to 
 create handlers for your own types to be serialized into Hyperlisp.
+
+Notice how there is no difference between *"data"* and *"code"* from a semantic point
+of view in p5.lambda and Hyperlisp. There is also no difference between *"methods"* 
+and *"keywords"* in p5.lambda. This might for the experienced developer seem like
+a disadvantage, likely leading to unmaintainable code, and cluttered software 
+solutions, but actually the exact opposite is true.
+
+By unlearning everything you think you knew about software, and attack it from an
+entirely new angle, you will actually discover how the *"everything is one"* 
+approach in p5, opens up an entirely new doorway to thinking about software, far
+superior to all previously learned conventions and best practice. For instance,
+there are no *"design patterns"* in pf.lambda, and neither are any design patterns
+necessary. All existing design patterns are no longer necessary once you start
+using pf.lambda.
 
 ## Getting started with phosphorus.ajax
 
