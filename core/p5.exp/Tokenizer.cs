@@ -1,5 +1,5 @@
 /*
- * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, isa.lightbringer@gmail.com
+ * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, phosphorusfive@gmail.com
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
@@ -28,8 +28,11 @@ namespace p5.exp
         /// <param name="expression">Expression to tokenize.</param>
         public Tokenizer (string expression)
         {
-            // removing first "@" character, since it's not a part of our iterators
-            _reader = new StringReader (expression.Substring (1));
+            // removing first "@" character, if existing, since it's not a part of our iterators
+            if (expression [0] == '@')
+                _reader = new StringReader (expression.Substring (1));
+            else
+                _reader = new StringReader (expression);
         }
 
         /// <summary>

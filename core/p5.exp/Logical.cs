@@ -1,10 +1,11 @@
 /*
- * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, isa.lightbringer@gmail.com
+ * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, phosphorusfive@gmail.com
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
-using System.Collections.Generic;
+using System;
 using System.Linq;
+using System.Collections.Generic;
 using p5.core;
 using p5.exp.iterators;
 
@@ -44,6 +45,7 @@ namespace p5.exp
     ///     is evaluated on its parent group's result-set. This allows you to avoid repetition when combining logicals together, to perform
     ///     Boolean algebra, to create your own dimensional extraction from your p5.lambda node-set.
     /// </summary>
+    [Serializable]
     public class Logical
     {
         /// <summary>
@@ -117,9 +119,9 @@ namespace p5.exp
             Iterator = iterator;
         }
 
-        internal List<Node> EvaluateNodes (List<Node> nodes)
+        internal List<Node> EvaluateNodes (List<Node> nodes, ApplicationContext context)
         {
-            var rhs = new List<Node> (Iterator.Evaluate);
+            var rhs = new List<Node> (Iterator.Evaluate (context));
             var retVal = new List<Node> ();
             switch (TypeOfLogical) {
                 case LogicalType.Or:

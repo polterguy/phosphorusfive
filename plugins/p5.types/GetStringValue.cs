@@ -1,5 +1,5 @@
 /*
- * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, isa.lightbringer@gmail.com
+ * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, phosphorusfive@gmail.com
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
@@ -7,6 +7,7 @@ using System;
 using System.Text;
 using System.Globalization;
 using p5.core;
+using p5.exp;
 
 namespace p5.types
 {
@@ -44,6 +45,19 @@ namespace p5.types
             var tmp = new Node ("", e.Args.Value);
             context.Raise ("p5.hyperlisp.lambda2hyperlisp", tmp);
             e.Args.Value = tmp.Value;
+        }
+
+        /// <summary>
+        ///     Creates a string from an Expression.
+        /// 
+        ///     Will convert the given <see cref="p5.exp.Expression">Node</see> to its string representation.
+        /// </summary>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
+        [ActiveEvent (Name = "p5.hyperlisp.get-string-value.p5.exp.Expression")]
+        private static void p5_hyperlisp_get_string_value_p5_exp_Expression (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = e.Args.Get<Expression> (context).Value;
         }
 
         /// <summary>

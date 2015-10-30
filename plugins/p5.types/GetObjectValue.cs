@@ -1,5 +1,5 @@
 /*
- * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, isa.lightbringer@gmail.com
+ * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, phosphorusfive@gmail.com
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
@@ -9,6 +9,7 @@ using System.Text;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using p5.core;
+using p5.exp;
 
 /// <summary>
 ///     Main namespace for types and type-conversions in Phosphorus Five.
@@ -93,6 +94,19 @@ namespace p5.types
         private static void p5_hyperlisp_get_object_value_path (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = new Node.Dna (e.Args.Get<string> (context));
+        }
+        
+        /// <summary>
+        ///     Creates a <see cref="p5.exp.Expression">Expression</see> from its string representation.
+        /// 
+        ///     Returns an Expression
+        /// </summary>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.x")]
+        private static void p5_hyperlisp_get_object_value_x (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = Expression.Create (e.Args.Get<string> (context), context);
         }
 
         /// <summary>

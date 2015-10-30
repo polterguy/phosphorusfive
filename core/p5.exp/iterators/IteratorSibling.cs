@@ -1,8 +1,9 @@
 /*
- * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, isa.lightbringer@gmail.com
+ * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, phosphorusfive@gmail.com
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
+using System;
 using System.Collections.Generic;
 using p5.core;
 
@@ -18,6 +19,7 @@ namespace p5.exp.iterators
     ///     Example, that returns the sibling which is "two generations older" than your current result-set node's;
     ///     <pre>/+2</pre>
     /// </summary>
+    [Serializable]
     public class IteratorSibling : Iterator
     {
         private readonly int _offset;
@@ -26,27 +28,27 @@ namespace p5.exp.iterators
         ///     initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorSibling" /> class
         /// </summary>
         /// <param name="offset">offset siblings from current nodes</param>
-        public IteratorSibling (int offset) { _offset = offset; }
-
-        public override IEnumerable<Node> Evaluate
+        public IteratorSibling (int offset)
         {
-            get
-            {
-                foreach (var idxCurrent in Left.Evaluate) {
-                    var offset = _offset;
-                    var tmpIdx = idxCurrent;
-                    while (offset != 0 && tmpIdx != null) {
-                        if (offset < 0) {
-                            offset += 1;
-                            tmpIdx = tmpIdx.PreviousSibling;
-                        } else {
-                            offset -= 1;
-                            tmpIdx = tmpIdx.NextSibling;
-                        }
+            _offset = offset;
+        }
+
+        public override IEnumerable<Node> Evaluate (ApplicationContext context)
+        {
+            foreach (var idxCurrent in Left.Evaluate (context)) {
+                var offset = _offset;
+                var tmpIdx = idxCurrent;
+                while (offset != 0 && tmpIdx != null) {
+                    if (offset < 0) {
+                        offset += 1;
+                        tmpIdx = tmpIdx.PreviousSibling;
+                    } else {
+                        offset -= 1;
+                        tmpIdx = tmpIdx.NextSibling;
                     }
-                    if (tmpIdx != null)
-                        yield return tmpIdx;
                 }
+                if (tmpIdx != null)
+                    yield return tmpIdx;
             }
         }
     }

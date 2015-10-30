@@ -1,5 +1,5 @@
 /*
- * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, isa.lightbringer@gmail.com
+ * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, phosphorusfive@gmail.com
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
@@ -71,7 +71,7 @@ namespace p5.exp
     ///     <pre>@/../"**"(/=foo!/bar&/0/.)?name</pre>
     /// 
     ///     To understand the powers of p5.lambda expressions might be difficult when you start using Phosphorus Five. However, it might
-    ///     help to think of them as an alternative to algorithms, or a dynamica version of LINQ from C#, or stored IEnumerables, if you wish.
+    ///     help to think of them as an alternative to algorithms, or a dynamic version of LINQ from C#, or stored IEnumerables, if you wish.
     ///     But if you can imagine a result you wish to extract from a p5.lambda node tree, you can probably create an expression that can extract
     ///     that node-set for you. For instance, imagine trying to set the value of all intelligent animals main value node to "yes", except
     ///     Homo-Sapien, in the below data structure;
@@ -168,17 +168,16 @@ namespace p5.exp
     ///     places where we use the "*" iterator, and the "**" iterator, must be escaped inside of double-quotes for the documentation
     ///     of Phosphorus Five. This is not necessary when you create your own expressions, but a restriction of our documentation generator.
     /// </summary>
+    [Serializable]
     public class Expression
     {
         // contains actual expression we're evaluating
         private readonly string _expression;
-        private ApplicationContext _context;
         private IteratorGroup _rootGroup;
         private IteratorGroup _lastIterator;
         private string _typeOfExpression;
 
         // this next bugger is kept around to provide contextual information for exceptions,
-        // among other things, and to make conversions possible
         private Node _evaluatedNode;
 
         /*
@@ -187,7 +186,6 @@ namespace p5.exp
         private Expression (string expression, ApplicationContext context)
         {
             _expression = expression;
-            _context = context;
 
             // creating our "root group iterator"
             _rootGroup = new IteratorGroup ();
@@ -207,7 +205,7 @@ namespace p5.exp
                         // ignoring "?", handled in next iteration
 
                         // building expression tree
-                        current = AppendToken (current, idxToken, previousToken);
+                        current = AppendToken (context, current, idxToken, previousToken);
                     }
 
                     // storing previous token, since some iterators are dependent upon knowing it
@@ -222,9 +220,15 @@ namespace p5.exp
         ///     Initializes a new instance of the <see cref="phosphorus.expressions.Expression" /> class.
         /// </summary>
         /// <param name="expression">Expression to evaluate</param>
+        /// <param name="context">Application context, necessary to convert types value iterators, among other things</param>
         public static Expression Create (string expression, ApplicationContext context)
         {
             return new Expression (expression, context);
+        }
+
+        public string Value
+        {
+            get { return _expression; }
         }
 
         /// <summary>
@@ -237,20 +241,23 @@ namespace p5.exp
         ///     use one of the helper methods in the XUtil class, which takes care of creating expressions, and evaluating
         ///     then automatically for you.
         /// </summary>
-        public Match Evaluate (Node node)
+        /// <param name="node">Node to evaluate expression for</param>
+        /// <param name="context">Application context</param>
+        public Match Evaluate (Node node, ApplicationContext context)
         {
             // storing these bugger for later references, used in exceptions, among other things
             _evaluatedNode = node;
 
             // creating a Match object, and returning to caller
             _rootGroup.GroupRootNode = _evaluatedNode;
-            return CreateMatchFromIterator (_lastIterator, _typeOfExpression);
+            return CreateMatchFromIterator (context, _lastIterator, _typeOfExpression);
         }
 
         /*
          * handles an expression iterator token
          */
         private IteratorGroup AppendToken (
+            ApplicationContext context,
             IteratorGroup current,
             string token,
             string previousToken)
@@ -266,9 +273,7 @@ namespace p5.exp
                     if (current.ParentGroup == null) // making sure there's actually an open group first
                         throw new ExpressionException (
                             _expression,
-                            "Closing parenthesis ')' has no matching '(' in expression.",
-                            _evaluatedNode,
-                            _context);
+                            "Closing parenthesis ')' has no matching '(' in expression.");
                     return current.ParentGroup;
                 case "/":
 
@@ -291,14 +296,12 @@ namespace p5.exp
 
                     // reference expression, but only if it is the first token in expression
                     if (previousToken != null) {
-                        DefaultToken (current, token, previousToken, _context);
+                        DefaultToken (current, token, previousToken, context);
                     } else if (current.IsReference) {
 // making sure reference expressions can only be declared once
                         throw new ExpressionException (
                             _expression,
-                            "You cannot declare your expression to be a reference expression more than once.",
-                            _evaluatedNode,
-                            _context);
+                            "You cannot declare your expression to be a reference expression more than once.");
                     }
                     current.IsReference = true;
                     break;
@@ -325,7 +328,7 @@ namespace p5.exp
                 case "#":
 
                     // reference node token
-                    current.AddIterator (new IteratorReference (_context));
+                    current.AddIterator (new IteratorReference ());
                     break;
                 case "<":
 
@@ -340,7 +343,7 @@ namespace p5.exp
                 default:
 
                     // handles everything else
-                    DefaultToken (current, token, previousToken, _context);
+                    DefaultToken (current, token, previousToken, context);
                     break;
             }
 
@@ -388,7 +391,7 @@ namespace p5.exp
         {
             if (token.StartsWith ("=")) {
                 // some type of value token, either normal value, or regex value
-                ValueTokenNormal (current, token);
+                ValueTokenNormal (context, current, token);
             } else if (token.StartsWith ("[")) {
                 // range iterator token
                 RangeToken (current, token);
@@ -415,7 +418,7 @@ namespace p5.exp
         /*
          * creates a valued token
          */
-        private void ValueTokenNormal (IteratorGroup current, string token)
+        private void ValueTokenNormal (ApplicationContext context, IteratorGroup current, string token)
         {
             token = token.Substring (1); // removing equal sign (=)
             string type = null; // defaulting to "no type", meaning "string" type basically
@@ -431,7 +434,7 @@ namespace p5.exp
                     token = token.Substring (type.Length + 2);
                 }
             }
-            current.AddIterator (new IteratorValued (token, type, _context));
+            current.AddIterator (new IteratorValued (token, type));
         }
 
         /// \todo cleanup, too long ...
@@ -444,9 +447,7 @@ namespace p5.exp
             if (token [token.Length - 1] != ']')
                 throw new ExpressionException (
                     _expression,
-                    string.Format ("Syntax error in range token '{0}', no ']' at end of token", token),
-                    _evaluatedNode,
-                    _context);
+                    string.Format ("Syntax error in range token '{0}', no ']' at end of token", token));
 
             if (token.IndexOf (',') != -1) {
                 token = token.Substring (1, token.Length - 2);
@@ -456,9 +457,7 @@ namespace p5.exp
                 if (values.Length != 2)
                     throw new ExpressionException (
                         _expression,
-                        string.Format ("Syntax error in range token '[{0}]', ranged iterator takes two integer values, separated by ','", token),
-                        _evaluatedNode,
-                        _context);
+                        string.Format ("Syntax error in range token '[{0}]', ranged iterator takes two integer values, separated by ','", token));
                 var start = -1;
                 var end = -1;
                 var startStr = values [0].Trim ();
@@ -467,33 +466,25 @@ namespace p5.exp
                     if (!Utilities.IsNumber (startStr))
                         throw new ExpressionException (
                             _expression,
-                            string.Format ("Syntax error in range token '[{0}]', expected number, found string", token),
-                            _evaluatedNode,
-                            _context);
+                            string.Format ("Syntax error in range token '[{0}]', expected number, found string", token));
                     start = int.Parse (startStr, CultureInfo.InvariantCulture);
                 }
                 if (endStr.Length > 0) {
                     if (!Utilities.IsNumber (endStr))
                         throw new ExpressionException (
                             _expression,
-                            string.Format ("Syntax error in range token '[{0}]', expected number, found string", token),
-                            _evaluatedNode,
-                            _context);
+                            string.Format ("Syntax error in range token '[{0}]', expected number, found string", token));
                     end = int.Parse (endStr, CultureInfo.InvariantCulture);
                     if (end <= start)
                         throw new ExpressionException (
                             _expression,
-                            string.Format ("Syntax error in range token '[{0}]', end must be larger than start", token),
-                            _evaluatedNode,
-                            _context);
+                            string.Format ("Syntax error in range token '[{0}]', end must be larger than start", token));
                 }
                 current.AddIterator (new IteratorRange (start, end));
             } else {
                 throw new ExpressionException (
                     _expression,
-                    string.Format ("Syntax error in range token '{0}', expected two values, found one", token),
-                    _evaluatedNode,
-                    _context);
+                    string.Format ("Syntax error in range token '{0}', expected two values, found one", token));
             }
         }
 
@@ -509,9 +500,7 @@ namespace p5.exp
             if (!Utilities.IsNumber (token))
                 throw new ExpressionException (
                     _expression,
-                    string.Format ("Syntax error in modulo token '{0}', expected integer value, found string", token),
-                    _evaluatedNode,
-                    _context);
+                    string.Format ("Syntax error in modulo token '{0}', expected integer value, found string", token));
             current.AddIterator (new IteratorModulo (int.Parse (token)));
         }
 
@@ -526,9 +515,7 @@ namespace p5.exp
             if (intValue.Length > 0 && !Utilities.IsNumber (intValue))
                 throw new ExpressionException (
                     _expression,
-                    string.Format ("Syntax error in sibling token '{0}', expected integer value, found string", token),
-                    _evaluatedNode,
-                    _context);
+                    string.Format ("Syntax error in sibling token '{0}', expected integer value, found string", token));
             if (intValue.Length > 0)
                 value = int.Parse (intValue);
             current.AddIterator (new IteratorSibling (value*(oper == '+' ? 1 : -1)));
@@ -537,11 +524,11 @@ namespace p5.exp
         /*
          * create a Match object from an Iterator group
          */
-        private Match CreateMatchFromIterator (IteratorGroup group, string type)
+        private Match CreateMatchFromIterator (ApplicationContext context, IteratorGroup group, string type)
         {
             // checking to see if we have open groups, which is an error
             if (group.ParentGroup != null)
-                throw new ExpressionException (_expression, "Group in expression was not closed.", _evaluatedNode, _context);
+                throw new ExpressionException (_expression, "Group in expression was not closed.");
 
             // parsing type of match
             /// \todo shares a lot of functionality with XUtil.ExpressionType, try to refactor
@@ -562,21 +549,19 @@ namespace p5.exp
                 default:
                     throw new ExpressionException (
                         _expression,
-                        string.Format ("'{0}' is an unknown type declaration for your expression", type),
-                        _evaluatedNode,
-                        _context);
+                        string.Format ("'{0}' is an unknown type declaration for your expression", type));
             }
 
             // checking if expression is a reference expression, 
             // at which point we'll have to evaluate all referenced expressions
-            if (group.IsReference) {
+            if (group.IsReference || convert == "x") {
                 // expression is a "reference expression", 
                 // meaning we'll have to evaluate all referenced expressions
-                var match = new Match (group.Evaluate, matchType, _context, convert);
-                return EvaluateReferenceExpression (match, _context, convert);
+                var match = new Match (group.Evaluate (context), matchType, context, convert);
+                return EvaluateReferenceExpression (match, context, convert);
             }
             // returning simple match object
-            return new Match (@group.Evaluate, matchType, _context, convert);
+            return new Match (@group.Evaluate (context), matchType, context, convert);
         }
 
         /*
@@ -590,9 +575,7 @@ namespace p5.exp
                 // as reference expressions
                 throw new ExpressionException (
                     _expression,
-                    "Only 'value' and 'name' expressions can be reference expressions",
-                    _evaluatedNode,
-                    context);
+                    "Only 'value' and 'name' expressions can be reference expressions");
             }
 
             // looping through referenced expressions, yielding result from these referenced expression(s)
@@ -610,7 +593,7 @@ namespace p5.exp
                     /// \todo support formatting expressions through delegate callbacks, such that XUtil.Iterate
                     // and similar constructs can handle reference expressions, through callback, where referenced
                     // expression contains formatting parameters
-                    var innerMatch = Create (Utilities.Convert<string> (idxMatch.Value, context), context).Evaluate (idxMatch.Node);
+                    var innerMatch = Create (Utilities.Convert<string> (idxMatch.Value, context), context).Evaluate (idxMatch.Node, context);
                     foreach (var idxInner in innerMatch) {
                         retVal.Entities.Add (idxInner);
                     }

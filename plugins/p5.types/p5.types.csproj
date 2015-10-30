@@ -52,5 +52,9 @@
       <Project>{C783FEDB-C973-4F38-8EBB-55A0163612F5}</Project>
       <Name>p5.core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\core\p5.exp\p5.exp.csproj">
+      <Project>{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}</Project>
+      <Name>p5.exp</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

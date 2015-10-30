@@ -1,8 +1,9 @@
 /*
- * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, isa.lightbringer@gmail.com
+ * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, phosphorusfive@gmail.com
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
+using System;
 using System.Collections.Generic;
 using p5.core;
 
@@ -16,16 +17,14 @@ namespace p5.exp.iterators
     ///     Example;
     ///     <pre>/..</pre>
     /// </summary>
+    [Serializable]
     public class IteratorRoot : Iterator
     {
-        public override IEnumerable<Node> Evaluate
+        public override IEnumerable<Node> Evaluate (ApplicationContext context)
         {
-            get
-            {
-                var enumerator = Left.Evaluate.GetEnumerator ();
-                if (enumerator.MoveNext ())
-                    yield return enumerator.Current.Root;
-            }
+            var enumerator = Left.Evaluate (context).GetEnumerator ();
+            if (enumerator.MoveNext ())
+                yield return enumerator.Current.Root;
         }
     }
 }

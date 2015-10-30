@@ -1,8 +1,9 @@
 /*
- * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, isa.lightbringer@gmail.com
+ * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, phosphorusfive@gmail.com
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
+using System;
 using System.Collections.Generic;
 using p5.core;
 
@@ -39,6 +40,7 @@ namespace p5.exp.iterators
     ///     which means it will extract the 'value' of its resulting nodes. Effectively extracting all value properties, from all children nodes,
     ///     of the root node of your expression's execution tree.
     /// </summary>
+    [Serializable]
     public abstract class Iterator
     {
         /// <summary>
@@ -55,7 +57,7 @@ namespace p5.exp.iterators
         ///     Will evaluate your expression, and return a list of nodes, matching your Expression.
         /// </summary>
         /// <value>The evaluated result, returning a list of <see cref="phosphorus.core.Node" />s.</value>
-        public abstract IEnumerable<Node> Evaluate { get; }
+        public abstract IEnumerable<Node> Evaluate (ApplicationContext context);
 
         /// <summary>
         ///     Returns true if this is a "reference expression".

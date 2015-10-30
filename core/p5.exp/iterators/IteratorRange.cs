@@ -1,8 +1,9 @@
 /*
- * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, isa.lightbringer@gmail.com
+ * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, phosphorusfive@gmail.com
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
+using System;
 using System.Collections.Generic;
 using p5.core;
 
@@ -16,6 +17,7 @@ namespace p5.exp.iterators
     ///     Example, will return the second and third node from previous result-set;
     ///     <pre>/[1,3]</pre>
     /// </summary>
+    [Serializable]
     public class IteratorRange : Iterator
     {
         private readonly int _from;
@@ -32,17 +34,14 @@ namespace p5.exp.iterators
             _from = to;
         }
 
-        public override IEnumerable<Node> Evaluate
+        public override IEnumerable<Node> Evaluate (ApplicationContext context)
         {
-            get
-            {
-                var idxNo = 0;
-                foreach (var idxCurrent in Left.Evaluate) {
-                    if (idxNo++ >= _to)
-                        yield return idxCurrent;
-                    if (_from != -1 && idxNo >= _from)
-                        yield break;
-                }
+            var idxNo = 0;
+            foreach (var idxCurrent in Left.Evaluate (context)) {
+                if (idxNo++ >= _to)
+                    yield return idxCurrent;
+                if (_from != -1 && idxNo >= _from)
+                    yield break;
             }
         }
     }

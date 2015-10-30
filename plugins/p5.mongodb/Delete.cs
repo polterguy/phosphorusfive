@@ -1,5 +1,5 @@
 /*
- * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, isa.lightbringer@gmail.com
+ * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, phosphorusfive@gmail.com
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  * MongoDB is licensed as Affero GPL, see the enclosed README.md file for details, 
  * since this file is linking towards the MongoDB .net driver, it hence needs to
@@ -33,7 +33,7 @@ namespace p5.mongodb
 
             if (XUtil.IsExpression (table)) {
                 // table name is given as an expression
-                var match = Expression.Create (table, context).Evaluate (e.Args);
+                var match = Expression.Create (table, context).Evaluate (e.Args, context);
                 table = match [0].Value as string;
                 //if (!match.IsSingleLiteral || string.IsNullOrEmpty (table))
                 //    throw new ArgumentException ("if [p5.mongo.delete] is given an expression, the expression needs to return only one value that can be converted into a string somehow");

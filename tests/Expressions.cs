@@ -1,5 +1,5 @@
 /*
- * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, isa.lightbringer@gmail.com
+ * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, phosphorusfive@gmail.com
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
@@ -41,7 +41,7 @@ namespace p5.unittests
         public void ValueExpression ()
         {
             var node = new Node ("root", "success");
-            var match = Expression.Create ("@?value", Context).Evaluate (node);
+            var match = Expression.Create ("@?value", Context).Evaluate (node, Context);
             Assert.AreEqual (1, match.Count);
             Assert.AreEqual ("success", match [0].Value);
         }
@@ -53,7 +53,7 @@ namespace p5.unittests
         public void NameExpression ()
         {
             var node = new Node ("success");
-            var match = Expression.Create ("@?name", Context).Evaluate (node);
+            var match = Expression.Create ("@?name", Context).Evaluate (node, Context);
             Assert.AreEqual (match.Count, 1);
             Assert.AreEqual ("success", match [0].Value);
         }
@@ -65,7 +65,7 @@ namespace p5.unittests
         public void CountExpression ()
         {
             var node = new Node ("root");
-            var match = Expression.Create ("@?count", Context).Evaluate (node);
+            var match = Expression.Create ("@?count", Context).Evaluate (node, Context);
             Assert.AreEqual (1, match.Count);
             Assert.AreEqual (Match.MatchType.count, match.TypeOfMatch);
         }
@@ -77,7 +77,7 @@ namespace p5.unittests
         public void PathExpression ()
         {
             var node = new Node ("root");
-            var match = Expression.Create ("@?path", Context).Evaluate (node);
+            var match = Expression.Create ("@?path", Context).Evaluate (node, Context);
             Assert.AreEqual (1, match.Count);
             Assert.AreEqual (new Node.Dna (""), match [0].Value);
         }
@@ -89,7 +89,7 @@ namespace p5.unittests
         public void NodeExpression ()
         {
             var node = new Node ("root");
-            var match = Expression.Create ("@?node", Context).Evaluate (node);
+            var match = Expression.Create ("@?node", Context).Evaluate (node, Context);
             Assert.AreEqual (1, match.Count);
             Assert.AreEqual (node, match [0].Value);
         }

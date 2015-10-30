@@ -1,10 +1,11 @@
 /*
- * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, isa.lightbringer@gmail.com
+ * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, phosphorusfive@gmail.com
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
-using System.Collections.Generic;
+using System;
 using System.Linq;
+using System.Collections.Generic;
 using p5.core;
 
 namespace p5.exp.iterators
@@ -23,32 +24,28 @@ namespace p5.exp.iterators
     /// 
     ///     <pre>/=:int:5</pre>
     /// </summary>
+    [Serializable]
     public class IteratorValued : Iterator
     {
-        private readonly ApplicationContext _context;
         private readonly string _type;
         private readonly string _value;
 
-        public IteratorValued (string value, string type, ApplicationContext context)
+        public IteratorValued (string value, string type)
         {
             _value = value;
             _type = type;
-            _context = context;
         }
 
-        public override IEnumerable<Node> Evaluate
+        public override IEnumerable<Node> Evaluate (ApplicationContext context)
         {
-            get
-            {
-                object value = _value;
-                if (!string.IsNullOrEmpty (_type)) {
-                    // converting given value to specified type
-                    value = _context.Raise ("p5.hyperlisp.get-object-value." + _type, new Node (string.Empty, value)).Value;
-                }
-
-                // filtering away all previous matches that does not match the specified value
-                return Left.Evaluate.Where (idxCurrent => value.Equals (idxCurrent.Value));
+            object value = _value;
+            if (!string.IsNullOrEmpty (_type)) {
+                // converting given value to specified type
+                value = context.Raise ("p5.hyperlisp.get-object-value." + _type, new Node (string.Empty, value)).Value;
             }
+
+            // filtering away all previous matches that does not match the specified value
+            return Left.Evaluate (context).Where (idxCurrent => value.Equals (idxCurrent.Value));
         }
     }
 }

@@ -1,8 +1,9 @@
 /*
- * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, isa.lightbringer@gmail.com
+ * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, phosphorusfive@gmail.com
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
+using System;
 using System.Collections.Generic;
 using p5.core;
 
@@ -18,6 +19,7 @@ namespace p5.exp.iterators
     ///     This iterator is never directly consumed in your code, but automatically created for you when you create an IteratorGroup
     ///     Iterator.
     /// </summary>
+    [Serializable]
     public class IteratorLeftParent : Iterator
     {
         private readonly Iterator _leftParent;
@@ -31,9 +33,9 @@ namespace p5.exp.iterators
             _leftParent = leftParent;
         }
 
-        public override IEnumerable<Node> Evaluate
+        public override IEnumerable<Node> Evaluate (ApplicationContext context)
         {
-            get { return _leftParent.Evaluate; }
+            return _leftParent.Evaluate (context);
         }
     }
 }

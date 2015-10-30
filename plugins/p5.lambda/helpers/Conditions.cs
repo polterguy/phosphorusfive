@@ -1,5 +1,5 @@
 /*
- * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, isa.lightbringer@gmail.com
+ * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, phosphorusfive@gmail.com
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
@@ -275,7 +275,7 @@ namespace p5.lambda.helpers
             var exp = XUtil.IsFormatted (currentStatement) ? XUtil.FormatNode (currentStatement, _context) : currentStatement.Get<string> (_context);
 
             // creating a Match object
-            var match = Expression.Create (exp, _context).Evaluate (currentStatement);
+            var match = Expression.Create (exp, _context).Evaluate (currentStatement, _context);
 
             // easy versions
             if (match.TypeOfMatch == Match.MatchType.count ||

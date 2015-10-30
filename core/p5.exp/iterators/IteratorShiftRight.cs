@@ -1,10 +1,11 @@
 /*
- * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, isa.lightbringer@gmail.com
+ * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, phosphorusfive@gmail.com
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
-using System.Collections.Generic;
+using System;
 using System.Linq;
+using System.Collections.Generic;
 using p5.core;
 
 namespace p5.exp.iterators
@@ -18,11 +19,12 @@ namespace p5.exp.iterators
     ///     Example;
     ///     <pre>/&gt;</pre>
     /// </summary>
+    [Serializable]
     public class IteratorShiftRight : Iterator
     {
-        public override IEnumerable<Node> Evaluate
+        public override IEnumerable<Node> Evaluate (ApplicationContext context)
         {
-            get { return Left.Evaluate.Select (idxCurrent => idxCurrent.NextNode).Where (next => next != null); }
+            return Left.Evaluate (context).Select (idxCurrent => idxCurrent.NextNode).Where (next => next != null);
         }
     }
 }

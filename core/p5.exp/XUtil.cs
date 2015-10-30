@@ -1,5 +1,5 @@
 /*
- * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, isa.lightbringer@gmail.com
+ * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, phosphorusfive@gmail.com
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
@@ -30,7 +30,7 @@ namespace p5.exp
         /// <param name="value">Value to check.</param>
         public static bool IsExpression (object value)
         {
-            return IsExpression (value as string);
+            return value is Expression || IsExpression (value as string);
         }
 
         /// <summary>
@@ -68,9 +68,7 @@ namespace p5.exp
             if (!IsExpression (expressionNode.Value))
                 throw new ExpressionException (
                     expressionNode.Value as string,
-                    "ExpressionType must be given an actual expression",
-                    expressionNode,
-                    context);
+                    "ExpressionType must be given an actual expression");
 
             var exp = TryFormat<string> (expressionNode, context);
             var type = exp.Substring (exp.LastIndexOf ('?') + 1);
@@ -90,9 +88,7 @@ namespace p5.exp
                 default:
                     throw new ExpressionException (
                         exp,
-                        string.Format ("'{0}' is an unknown type declaration for your expression", type),
-                        expressionNode,
-                        context);
+                        string.Format ("'{0}' is an unknown type declaration for your expression", type));
             }
 
             // returning type back to caller
@@ -157,9 +153,7 @@ namespace p5.exp
             if (!IsFormatted (node))
                 throw new ExpressionException (
                     (node.Value ?? "").ToString (),
-                    "Cannot format node, no formatting nodes exists, or node's value is not a string",
-                    node,
-                    context);
+                    "Cannot format node, no formatting nodes exists, or node's value is not a string");
 
             // retrieving all "formatting values"
             var childrenValues = new List<string> (node.ConvertChildren (
@@ -380,8 +374,13 @@ namespace p5.exp
             // checking if node's value is an expression
             if (IsExpression (expressionOrConstant)) {
 
-                // we have an expression, making sure our expression iterator overload is invoked
-                return Iterate<T> (Utilities.Convert<string> (expressionOrConstant, context), dataSource, context, iterateChildren);
+                if (expressionOrConstant is Expression) {
+                    // we have an expression in object form, making sure our expression iterator overload is invoked
+                    return Iterate<T> (Utilities.Convert<Expression> (expressionOrConstant, context), dataSource, context, iterateChildren);
+                } else {
+                    // we have an expression in string form, making sure our expression iterator overload is invoked
+                    return Iterate<T> (Utilities.Convert<string> (expressionOrConstant, context), dataSource, context, iterateChildren);
+                }
             }
 
             // checking to see if user requests "children of conversions"
@@ -412,10 +411,57 @@ namespace p5.exp
             bool iterateChildren = false)
         {
             if (!IsExpression (expression))
-                throw new ExpressionException (expression, "Iterate was not given a valid expression", dataSource, context);
+                throw new ExpressionException (expression, "Iterate was not given a valid expression");
 
             // we have an expression, creating a match object
-            var match = Expression.Create (expression, context).Evaluate (dataSource);
+            var match = Expression.Create (expression, context).Evaluate (dataSource, context);
+
+            // checking type of match
+            if (match.TypeOfMatch == Match.MatchType.count) {
+                // if expression is of type 'count', we return 'count', possibly triggering
+                // a conversion, returning count as type T, hence only iterating once
+                yield return Utilities.Convert<T> (match.Count, context);
+            } else {
+                // caller requested anything but 'count', we return it as type T, possibly triggering
+                // a conversion
+                foreach (var idx in match) {
+                    if (iterateChildren && typeof (T) == typeof (Node)) {
+                        // user requested to iterateChildren, and since current match triggers a conversion,
+                        // we iterate the children of that conversion, and not the automatically generated
+                        // root node
+                        foreach (var idxInner in Utilities.Convert<Node> (idx.Value, context).Children) {
+                            yield return Utilities.Convert<T> (idxInner, context);
+                        }
+                    } else {
+                        yield return Utilities.Convert<T> (idx.Value, context);
+                    }
+                }
+            }
+        }
+        
+        /// <summary>
+        ///     Iterates the given Expression.
+        /// 
+        ///     This expression will be evaluated, on the given dataSource node, and all results converted to T, 
+        ///     before returned to caller.
+        /// </summary>
+        /// <param name="expression">expression to run on dataSource</param>
+        /// <param name="dataSource">Node to use as data source if expressionOrConstant given is an Expression.</param>
+        /// <param name="context">Application context.</param>
+        /// <param name="iterateChildren">If true, then the children nodes of the evaluated node  will be iterated, 
+        /// and not the actual node itself.</param>
+        /// <typeparam name="T">Type of object you wish to retrieve.</typeparam>
+        public static IEnumerable<T> Iterate<T> (
+            Expression expression,
+            Node dataSource,
+            ApplicationContext context,
+            bool iterateChildren = false)
+        {
+            if (!IsExpression (expression))
+                throw new ExpressionException (expression.Value, "Iterate was not given a valid expression");
+
+            // we have an expression, creating a match object
+            var match = expression.Evaluate (dataSource, context);
 
             // checking type of match
             if (match.TypeOfMatch == Match.MatchType.count) {
@@ -510,10 +556,10 @@ namespace p5.exp
         {
             // syntax checking
             if (!IsExpression (expression))
-                throw new ExpressionException (expression, dataSource, context);
+                throw new ExpressionException (expression);
 
             // creating a match to iterate over
-            var match = Expression.Create (expression, context).Evaluate (dataSource);
+            var match = Expression.Create (expression, context).Evaluate (dataSource, context);
 
             // iterating over each MatchEntity in Match
             return match;
