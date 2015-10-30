@@ -5,11 +5,11 @@ Phosphorus Five is a web application framework for Mono and ASP.NET. Phosphorus
 is built around an entirely new axiom for system development based upon a new
 design patter called *"Active Events"*. Active Events, and its off spring;
 pf.lambda, a natural consequence of Active Events, opens up an entirely new 
-doorway to architecture for your software solutions.
+doorway to architecting your software solutions.
 
 P5 contains a managed Ajax library, allowing you to automatically map up the
 bridge between the server and the client. It also contains pf.lambda, a 
-*"non"*-programming language, allowing you to orchestrate your applications
+*"non-programming language"*, allowing you to orchestrate your applications
 building blocks together, in an extremely loosely manner. In addition, P5 contains
 Hyperlisp, which is a tree structure file-format, allowing you to easily create
 pf.lambda execution trees, and combine building blocks together, to form your 
@@ -21,6 +21,52 @@ leaving the fun parts to you. The end result being an extremely Agile software
 solution, facilitating for interchanging any building block as you maintain,
 which results in you *"orchestrating"* or *"growing"* your software as a conductor
 or a gardener, rather than having to do all the nitty stuff yourself by hand.
+
+## Getting started with p5.lambda
+
+p5.lambda is a *"non-programming language"* created on top of Active Events. At its core,
+it is really nothing but loosely coupled Active Events, capable of executing
+rudimentary programming language constructs, such as *"while"*, *"for-each"*, *"if"*
+and so on. This makes p5.lambda extremely extendible, and allows for you to change
+and/or add any keyword(s) you wish to the language, by creating your own Active Events.
+This creates an excellent encironment for you to create your own *"domain-specific
+language"* for your own applications.
+
+p5.lambda is very easy to learn, since it doesn't contain more than ~15 keywords, 
+and should be used in symbiosis with your own Active Events, to provide an environment
+where you can *"orchestrate"* your applications together, by combining existing C#
+logic together, to form an *"application"* based upon loosely coupled plugins and
+modules.
+
+p5.lambda can use any file format capable of constructing key/value/children nodes
+as its *"language"*, such as XML or JSON, but by default, a file format called
+*"Hyperlisp"* is being used. Below is a simple p5.lambda program written in Hyperlisp;
+
+```
+_x
+  foo1:bar1
+  foo2:bar
+  foo3:bar
+for-each:@/./_x/*/?node
+  p5.console.write-line:"{0}:{1}"
+    :@/././__dp/#/?name
+    :@/././__dp/#/?value
+```
+
+The above example assumes a handler for *"p5.console.write-line"*, which is implemented
+in the lambda.exe file (phoshorus.exe project), which allows for executing p5.lambda 
+files and code directly from a command line shell.
+
+Notice how each consecutive double-space in front of a line creates a new children
+collection of nodes beneath the node above itself. For instance, the *"p5.console.write-line"*
+statement above is a child node of the *"for-each"* Node. The above code perfectly 
+translates into a Node structure with all *"foox"* being children nodes of the *"_x"*
+Node, and so on.
+
+Hyperlisp also supports most *"System.x"* types from .Net, such as *"_x:int:5"* 
+turning the *_x* Node into having the integer value of "5", instead of its string 
+representation. Hyperlisp is also extendible in its type system, allowing you to 
+create handlers for your own types to be serialized into Hyperlisp.
 
 ## Getting started with phosphorus.ajax
 
@@ -74,9 +120,9 @@ protected void hello_onclick (p5.Literal sender, EventArgs e)
 ```
 
 If you wish to have more samples for how to use phosphorus.ajax, you can check out the 
-*"phosphorus.ajax.samples"* project by opening up the *"phosphorus.sln"* file.
+*"p5.ajax-samples"* project by opening up the *"p5.sln"* file.
 
-## The literal and container widgets
+## The literal, container and void widgets
 
 In phosphorus.ajax there is only two types of web controls. There is the *"Literal"* 
 class, and the *"Container"* class. By cleverly combining these two classes however, 
@@ -95,8 +141,11 @@ markup as controls, and possible to reference on the server side, and modify
 in your server side code through its *"Controls"* collection. Everything inside of 
 the beginning and the end of your container widget in your .aspx markup, will be 
 treated as web controls. A Container widget will automatically keep track of controls
-dynamically added to it during execution of your page, and add these back up dynamically
-during execution.
+dynamically added to it during execution of your page, and add these back up 
+automatically during execution.
+
+The **Void** widget cannot have neither content nor child controls, and is for HTML
+elements such as *"input"* for instance, which has no content at all.
 
 Altough the comparison does not do justify the features of the phosphorus widgets, 
 you can think of the Literal widget as the *"Label"* equivalent, and the Container 
@@ -109,9 +158,9 @@ controls, you should use the **Container** control.
 The first thing you have to decide when creating a widget, is what html tag you wish 
 to render it with. This is set through the *"Tag"* property of your widget. You can 
 render any widget with any html tag you wish, but remember that you have to make sure 
-what you're rendering is html compliant. Phosphorus.ajax supports the html5 standard 
+what you're rendering is html compliant. p5.ajax supports the html5 standard 
 100%, but it also supports the html500 standard, even though nobody knows how that 
-looks like today. It is probably wise to stick to the html5 standard for now.
+looks like today.
 
 Adding attributes to your widgets is easily done by simply adding any attribute you 
 wish, either directly in the markup of your .aspx page, or by using the index operator 
@@ -155,7 +204,7 @@ protected void video_click (Literal literal, EventArgs e)
 ```
 
 You can modify any attribute you wish on your widgets, by using the index operator.  
-Phosphorus.ajax will automatically keep track of what needs to be sent from the 
+p5.ajax will automatically keep track of what needs to be sent from the 
 server to the client. Use the *"RemoveAttribute"* method to remove an attribute,
 since setting an attribute value to null will not remove it, but keep the attribute
 with a null value.
@@ -193,6 +242,19 @@ replace any functionality in your system, with other modules and pieces of
 functionality, without needing the caller and invoker to know anything about 
 each other.
 
+In addition, it allows you to change a method invocation the same way you'd 
+change a simple C# string. This means you can store *"method hooks"* in your 
+database, config file, allowing the user to type them in through a GUI, etc.
+
+This feature just so happens to largely replace most features from Object 
+Oriented Programming, with a much better alternative for acomplishing the 
+same things, such as encapsulation and polymorphism. In addition, Active 
+Events is at the core of pf.lambda, allowing for creation of a 
+*"non-programming language"*, largely replacing 98% of all your code, with 
+a much more flexible, maintainable and easy to understand construct, than 
+your *"code"* such as C# and Java. Hyperlisp and pf.lambda is basically 
+nothing but a thin abstraction on top of Active Events in fact.
+
 To raise an Active Event, you use the *"Raise"* method on your ApplicationContext
 object, passing in a Node, which will become the arguments passed into your Active
 Event.
@@ -210,55 +272,17 @@ of argument you wish.
 
 You can dynamically load assemblies into your application, through the
 *"Loader.Instance.LoadAssembly"* method to *inject* new Active Event handlers into
-your application pool.
+your application.
 
 If you have an instance Active Event (not static method), then you need to use the
 *"RegisterListeningObject"* method on your *"ApplicationContext"* object for each 
 instance of your class you wish to have notified when the Active Event is raised.
 
-## About p5.lambda
-
-p5.lambda is a *"programming language"* created on top of Active Events. At its core,
-it is really nothing but loosely coupled Active Events, capable of executing
-rudimentary programming language constructs, such as *"while"*, *"for-each"*, *"if"*
-and so on. This makes p5.lambda extremely extendible, and allows for you to change
-and add any keyword(s) you wish to the language, by creating your own Active Events.
-
-p5.lambda is very easy to learn, since it doesn't contain more than ~15 keywords, 
-and should be used in symbiosis with your own Active Events, to provide an environment
-where you can *"orchestrate"* your applications together, by combining existing C#
-logic together, to form an *"application"* based upon loosely coupled plugins and
-modules.
-
-p5.lambda can use any file format capable of constructing key/value/children nodes
-as its *"language"*, such as XML or JSON, but by default, a file format called
-*"Hyperlisp"* is being used. Below is a simple p5.lambda program written in Hyperlisp;
-
-```
-_x
-  foo1:bar1
-  foo2:bar
-  foo3:bar
-for-each:@/./_x/*/?node
-  p5.console.write-line:"{0}:{1}"
-    :@/././__dp/#/?name
-    :@/././__dp/#/?value
-```
-
-The above example assumes a handler for *"p5.console.write-line"*, which is implemented
-in the lambda.exe file (phoshorus.exe project), which allows for executing p5.lambda 
-files and code directly from a command line shell.
-
-Notice how each consecutive double-space in front of a line creates a new children
-collection of nodes beneath the node above itself. For instance, the *"p5.console.write-line"*
-statement above is a child node of the *"for-each"* Node. The above code perfectly 
-translates into a Node structure with all *"foox"* being children nodes of the *"_x"*
-Node, and so on.
-
-Hyperlisp also supports most *"System.x"* types from .Net, such as *"_x:int:5"* 
-turning the *_x* Node into having the integer value of "5", instead of its string 
-representation. Hyperlisp is also extendible in its type system, allowing you to 
-create handlers for your own types to be serialized into Hyperlisp.
+Although P5 is largely focused on web application development, there is nothing
+stopping you from using pf.core, pf.exp, pf.lambda, and the rest of the plugins
+in for instance a WinForms application, or any other type of app you can build using
+Mono and/or .Net. Which allows you to use Active Events in for instance desktop
+applications.
 
 ## Building your own release
 
