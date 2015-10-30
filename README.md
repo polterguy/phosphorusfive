@@ -1,64 +1,26 @@
-Phosphorus-Five
+Phosphorus Five
 ===============
 
-Phosphorus-Five is a web application framework for Mono and ASP.NET. Phosphorus 
-adds the fun back into creating web apps, and allows you to build software that 
-can run unchanged for millenniums. Phosphorus is;
+Phosphorus Five is a web application framework for Mono and ASP.NET. Phosphorus 
+is built around an entirely new axiom for system development based upon a new
+design patter called *"Active Events"*. Active Events, and its off spring;
+pf.lambda, a natural consequence of Active Events, opens up an entirely new 
+doorway to architecture for your software solutions.
 
-* Secure
-* Lightweight
-* Beautiful
-* Flexible
-* Intuitive
+P5 contains a managed Ajax library, allowing you to automatically map up the
+bridge between the server and the client. It also contains pf.lambda, a 
+*"non"*-programming language, allowing you to orchestrate your applications
+building blocks together, in an extremely loosely manner. In addition, P5 contains
+Hyperlisp, which is a tree structure file-format, allowing you to easily create
+pf.lambda execution trees, and combine building blocks together, to form your 
+end software.
 
-#### Secure
-
-The web, and especially javascript, is insecure by design. Phosphorus fixes this, 
-by making sure all your business logic stays on your server, where it is safe from 
-hackers. Phosphorus also ties everything down by default, and makes your systems 
-safe against intrusions. Phosphorus also implements all security measures out of
-the box, such as encryption of REST web service invocations, and allowing you to
-send encrypted emails, etc.
-
-*"Phosphorus makes you sleep like a baby"*
-
-#### Lightweight
-
-Phosphorus is lightweight in all regards. The javascript sent to the client is 
-tiny, there is no unnecessary html rendered, the http traffic is tiny, and the 
-server is not clogged with resource intensive functionality. Phosphorus solves 
-the repetetive tasks you need to solve when you create software, nothing more.
-Phosphorus is medicine against bloatware. This is the reason why it is named 
-after a Homeopathic medicine in fact.
-
-*"With Phosphorus, your solutions scales to the stars"*
-
-#### Beautiful
-
-Phosphorus features beautiful code, and allows you to create beautiful code yourself.  
-The class hierarchy is easy to understand. The javascript and html rendered is easy 
-to read, and conforms to all known standards. Phosphorus facilitates for you 
-creating beautiful end results.
-
-*"With Phosphorus, you create beautiful babies"*
-
-#### Flexible
-
-Phosphorus is highly flexible. It allows you to easily create your own logic, 
-overriding what you need to override, and not worry about the rest. With Phosphorus, 
-you decide what html and javascript is being rendered back to the client, and how 
-your class hierarchy is designed.
-
-*"With phosphorus, you are in charge"*
-
-#### Intuitive
-
-Phosphorus is easy to understand, and contains few things you do not already know how 
-to use. It builds on top of ASP.NET, C#, html, javascript and json.  if you know C#, 
-ASP.NET, and have used libraries such as jQuery or prototype.js before, then you 
-really don't need to learn much new things to get started.
-
-*"With phosphorus, your first hunch is probably right"*
+All these building blocks combined, just so happens to largely solve all of your
+web application software problems, making all the *"borring"* parts just happen,
+leaving the fun parts to you. The end result being an extremely Agile software 
+solution, facilitating for interchanging any building block as you maintain,
+which results in you *"orchestrating"* or *"growing"* your software as a conductor
+or a gardener, rather than having to do all the nitty stuff yourself by hand.
 
 ## Getting started with phosphorus.ajax
 
