@@ -31,7 +31,7 @@ namespace p5.exp.iterators
     [Serializable]
     public class IteratorNamed : Iterator
     {
-        private readonly string _name;
+        internal readonly string Name;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorNamed" /> class.
@@ -39,14 +39,14 @@ namespace p5.exp.iterators
         /// <param name="name">name to match</param>
         public IteratorNamed (string name)
         {
-            if (name.StartsWith ("\\"))
+            if (name.Length != 0 && name [0] == '\\')
                 name = name.Substring (1);
-            _name = name;
+            Name = name;
         }
 
         public override IEnumerable<Node> Evaluate (ApplicationContext context)
         {
-            return Left.Evaluate (context).Where (idxCurrent => idxCurrent.Name == _name);
+            return Left.Evaluate (context).Where (idxCurrent => idxCurrent.Name == Name);
         }
     }
 }

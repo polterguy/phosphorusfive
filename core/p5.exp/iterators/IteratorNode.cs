@@ -21,15 +21,6 @@ namespace p5.exp.iterators
     {
         private Node _node;
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorNode" /> class.
-        /// </summary>
-        /// <param name="node">the node to start iterating upon</param>
-        public IteratorNode (Node node)
-        {
-            _node = node;
-        }
-
         internal Node RootNode {
             get { return _node; }
             set { _node = value; }

@@ -25,22 +25,11 @@ namespace p5.exp.iterators
     {
         public override IEnumerable<Node> Evaluate (ApplicationContext context)
         {
-            var retVal = new List<Node> ();
             foreach (var idxCurrent in Left.Evaluate (context)) {
-                retVal.Add (idxCurrent);
-                ReturnChildren (idxCurrent, retVal);
-            }
-            return retVal;
-        }
-
-        /*
-         * recursively invoked for all descendant nodes
-         */
-        private static void ReturnChildren (Node idx, List<Node> retVal)
-        {
-            foreach (var idxChild in idx.Children) {
-                retVal.Add (idxChild);
-                ReturnChildren (idxChild, retVal);
+                var stop = idxCurrent.NextNode;
+                for (var idxNext = idxCurrent; !idxNext.Equals (stop) && idxNext != null; idxNext = idxNext.NextNode) {
+                    yield return idxNext;
+                }
             }
         }
     }

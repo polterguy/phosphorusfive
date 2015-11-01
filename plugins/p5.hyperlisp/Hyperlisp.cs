@@ -150,8 +150,6 @@ using p5.hyperlisp.helpers;
 ///     comes to the concept of web-services, and sending data back and forth between what you'd normally use an XML Web Service for. Among other
 ///     things, because of its significantly smaller size, than that of XML.
 /// 
-///     \htmlonly<iframe width="560" height="315" src="https://www.youtube.com/embed/yptjGVYOhu4" frameborder="0" allowfullscreen></iframe>\endhtmlonly
-/// 
 /// Hyperlisp is also extremely convenient when it comes to storing p5.lambda objects in files on disc. To load a Hyperlisp file, transform it
 ///     to p5.lambda, for then to execute the transformed p5.lambda object, can be done with three lines of code;
 /// 
@@ -186,11 +184,7 @@ namespace p5.hyperlisp
         [ActiveEvent (Name = "p5.hyperlisp.hyperlisp2lambda")]
         private static void p5_hyperlisp_hyperlisp2lambda (ApplicationContext context, ActiveEventArgs e)
         {
-            var builder = new StringBuilder ();
-            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
-                builder.Append (idx + "\r\n");
-            }
-            e.Args.AddRange (new NodeBuilder (context, builder.ToString ().TrimEnd ('\r', '\n', ' ')).Nodes);
+            e.Args.AddRange (new NodeBuilder (context, e.Args.Get<string> (context)).Nodes);
         }
 
         /// <summary>
@@ -199,23 +193,17 @@ namespace p5.hyperlisp
         ///     Active Event will transform the given p5.lambda node structure to Hyperlisp.
         /// 
         ///     Example;
-        /// <pre>_data
+        /// <pre>p5.hyperlisp.lambda2hyperlisp
         ///   foo1:bar1
         ///   foo2:bar2
-        /// p5.hyperlisp.lambda2hyperlisp:@/-?node</pre>
+        /// </pre>
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.lambda2hyperlisp")]
         private static void p5_code_lambda2hyperlisp (ApplicationContext context, ActiveEventArgs e)
         {
-            if (XUtil.IsExpression (e.Args.Value)) {
-                var nodeList = XUtil.Iterate<Node> (e.Args, context).ToList ();
-                e.Args.Value = new HyperlispBuilder (context, nodeList).Hyperlisp;
-            } else {
-                var node = e.Args.Value as Node;
-                e.Args.Value = node != null ? new HyperlispBuilder (context, new[] {node}).Hyperlisp : new HyperlispBuilder (context, e.Args.Children).Hyperlisp;
-            }
+            e.Args.Value = new HyperlispBuilder (context, e.Args.Children).Hyperlisp;
         }
     }
 }

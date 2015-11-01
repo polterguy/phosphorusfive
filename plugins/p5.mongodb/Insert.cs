@@ -128,7 +128,7 @@ namespace p5.mongodb
             // in addition to static expressions
             var expression = node.Get<string> (context);
             if (node.Count > 0)
-                expression = XUtil.FormatNode (node, node, context);
+                ;//expression = XUtil.FormatNode (node, node, context);
             var match = Expression.Create (expression, context).Evaluate (node, context);
             if (match.Count == 0)
                 throw new ArgumentException ("expression expected to return 'node' in [p5.mongo.xxx] returned nothing");

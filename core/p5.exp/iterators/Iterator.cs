@@ -58,16 +58,5 @@ namespace p5.exp.iterators
         /// </summary>
         /// <value>The evaluated result, returning a list of <see cref="phosphorus.core.Node" />s.</value>
         public abstract IEnumerable<Node> Evaluate (ApplicationContext context);
-
-        /// <summary>
-        ///     Returns true if this is a "reference expression".
-        /// 
-        ///     A reference expression is normally defined by having two consecutive @ characters in its beginning. This
-        ///     signals to the Expression engine that the expression is not necessarily to be directly evaluated, but that it
-        ///     might point to another expression, and if it does, then that Expression will be evaluated, and the results of
-        ///     that evaluation process returned back to caller.
-        /// </summary>
-        /// <value>true if this is a reference expression, otherwise false.</value>
-        public virtual bool IsReference { get; set; }
     }
 }

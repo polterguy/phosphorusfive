@@ -35,11 +35,15 @@ namespace p5.exp.iterators
 
         public override IEnumerable<Node> Evaluate (ApplicationContext context)
         {
+            List<Node> retVal = new List<Node> ();
             foreach (var idxAncestor in Left.Evaluate (context).Select (idxCurrent => idxCurrent.Parent)) {
                 var curAncestor = idxAncestor;
                 while (curAncestor != null) {
-                    if (curAncestor.Name == _name) {
+                    if (curAncestor.Name == _name && !retVal.Exists (delegate (Node idxNode) {
+                        return idxNode != curAncestor;
+                    })) {
                         yield return curAncestor;
+                        retVal.Add (curAncestor);
                         break;
                     }
                     curAncestor = curAncestor.Parent;

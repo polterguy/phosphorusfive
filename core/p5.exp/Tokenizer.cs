@@ -15,7 +15,7 @@ namespace p5.exp
     ///     Tokenizer for the Expression class.
     /// 
     ///     Responsible for tokenizing expressions, by breaking them up into tokens. Not something you'd normally fiddle
-    ///     with yourself.
+    ///     with yourself, but heavily in use by the p5.lambda expression engine.
     /// </summary>
     public sealed class Tokenizer : IDisposable
     {
@@ -28,11 +28,7 @@ namespace p5.exp
         /// <param name="expression">Expression to tokenize.</param>
         public Tokenizer (string expression)
         {
-            // removing first "@" character, if existing, since it's not a part of our iterators
-            if (expression [0] == '@')
-                _reader = new StringReader (expression.Substring (1));
-            else
-                _reader = new StringReader (expression);
+            _reader = new StringReader (expression);
         }
 
         /// <summary>
@@ -59,54 +55,11 @@ namespace p5.exp
         /*
          * private implementation of IDisposable interface
          */
-        void IDisposable.Dispose () { Dispose (true); }
-
-        /// \todo refactor, too complex
-        /*
-         * finds next token and returns to caller, returns null if there are no more tokens in expression
-         */
-        private string GetNextToken (string previousToken)
+        void IDisposable.Dispose ()
         {
-            var nextChar = _reader.Read ();
-
-            // left trimming white spaces
-            while (nextChar != -1 && "\r\n \t".IndexOf ((char) nextChar) != -1) {
-                if (nextChar == -1)
-                    return null;
-                nextChar = _reader.Read ();
-            }
-
-            // buffer to keep our token in
-            var builder = new StringBuilder ();
-            builder.Append ((char) nextChar);
-
-            // returning token immediately, if it's a single character token,
-            // or "@" character as first token, in stream of tokens
-            if ("/|&^!()?".IndexOf ((char) nextChar) != -1 ||
-                ("@".IndexOf ((char) nextChar) != -1 && previousToken == null && _reader.Peek () != '"')) {
-                return builder.ToString (); // single character token, or "@" as first token, and not multi line string
-            }
-
-            // checking to see if this token is a "string literal", either single line, or multiline
-            if (nextChar == '"')
-                return Utilities.ReadSingleLineStringLiteral (_reader);
-            if (nextChar == '@' && _reader.Peek () == '"') {
-                _reader.Read (); // skipping opening '"'
-                return Utilities.ReadMultiLineStringLiteral (_reader);
-            }
-
-            // looping until "end of token", which is defined as either "/" or "end of stream"
-            nextChar = _reader.Peek ();
-            while (nextChar != -1 && "/|&^!()?".IndexOf ((char) nextChar) == -1) {
-                builder.Append ((char) _reader.Read ());
-                nextChar = _reader.Peek ();
-            }
-
-            // returning token back to caller, making sure we trim any white space characters away,
-            // to support nicely formatted expressions spanning multiple lines
-            return builder.ToString ().TrimEnd (' ', '\r', '\n', '\t');
+            Dispose (true);
         }
-
+        
         /*
          * disposes the tokenizer
          */
@@ -116,6 +69,39 @@ namespace p5.exp
                 _disposed = true;
                 _reader.Dispose ();
             }
+        }
+
+        /*
+         * finds next token and returns to caller, returns null if there are no more tokens in expression
+         */
+        private string GetNextToken (string previousToken)
+        {
+            // left trimming white spaces from StringReader, and putting first non-white-space character in "buffer"
+            var nextChar = _reader.Read ();
+            for (; nextChar != -1 && "\r\n \t".IndexOf ((char) nextChar) != -1; nextChar = _reader.Read ())
+            { }
+            if (nextChar == -1)
+                return null;
+            var builder = new StringBuilder ();
+            builder.Append ((char)nextChar);
+
+            if ("/|&^!()?".IndexOf ((char)nextChar) != -1) {
+                return builder.ToString (); // single character token
+            } else if (nextChar == '"') {
+                return Utilities.ReadSingleLineStringLiteral (_reader); // singleline string literal token
+            } else if (nextChar == '@' && _reader.Peek () == '"') {
+                _reader.Read (); // skipping opening '"'
+                return Utilities.ReadMultiLineStringLiteral (_reader); // multiline string literal token
+            }
+
+            // looping until "end of token", which is defined as either "/|&^!()?" or "end of stream"
+            for (nextChar = _reader.Peek (); nextChar != -1 && "/|&^!()?".IndexOf ((char) nextChar) == -1; nextChar = _reader.Peek ()) {
+                builder.Append ((char) _reader.Read ());
+            }
+
+            // returning token back to caller, making sure we trim any white space characters away,
+            // to support nicely formatted expressions spanning multiple lines
+            return builder.ToString ().TrimEnd (' ', '\r', '\n', '\t');
         }
     }
 }

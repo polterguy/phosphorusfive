@@ -110,13 +110,13 @@ namespace p5.core
                         break;
                     case '\n':
                     case '\r':
-                        throw new ArgumentException ("syntax error in hyperlisp, single line string literal contains new line");
+                        throw new ArgumentException ("Syntax error in hyperlisp, single line string literal contains new line");
                     default:
                         builder.Append ((char) c);
                         break;
                 }
             }
-            throw new ArgumentException ("syntax error in hyperlisp, single line string literal not closed before end of input");
+            throw new ArgumentException ("Syntax error in hyperlisp, single line string literal not closed before end of input");
         }
 
         /// <summary>

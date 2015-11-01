@@ -64,11 +64,15 @@
     <Compile Include="iterators\IteratorShiftRight.cs" />
     <Compile Include="iterators\IteratorSibling.cs" />
     <Compile Include="iterators\IteratorValued.cs" />
-    <Compile Include="XUtil.cs" />
-    <Compile Include="MatchEntity.cs" />
     <Compile Include="exceptions\ExpressionException.cs" />
     <Compile Include="exceptions\LambdaException.cs" />
-    <Compile Include="NodeExtensions.cs" />
+    <Compile Include="matchentities\MatchEntity.cs" />
+    <Compile Include="matchentities\MatchNameEntity.cs" />
+    <Compile Include="matchentities\MatchPathEntity.cs" />
+    <Compile Include="matchentities\MatchValueEntity.cs" />
+    <Compile Include="matchentities\MatchNodeEntity.cs" />
+    <Compile Include="matchentities\MatchCountEntity.cs" />
+    <Compile Include="XUtil.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
@@ -84,6 +88,7 @@
   </ProjectExtensions>
   <ItemGroup>
     <Folder Include="exceptions\" />
+    <Folder Include="matchentities\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\p5.core\p5.core.csproj">

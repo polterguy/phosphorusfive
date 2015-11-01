@@ -134,8 +134,9 @@ namespace p5.lambda
             if (e.Args.Name == "lambda" && e.Args.Value != null) {
                 // executing a value object, converting to node, before we pass into execution method,
                 // making sure we pass in children of [lambda] as "arguments" or "parameters" to [lambda] statement
-                foreach (var idxSource in XUtil.Iterate<Node> (e.Args, context)) {
-                    ExecuteBlockNormal (context, idxSource, e.Args.Children);
+                var match = Expression.Create (e.Args.Get<string> (context), context).Evaluate (e.Args, context);
+                foreach (var idxSource in match) {
+                    ExecuteBlockNormal (context, Utilities.Convert<Node> (idxSource, context), e.Args.Children);
                 }
             } else {
                 // executing current scope
@@ -171,8 +172,9 @@ namespace p5.lambda
             if (e.Args.Name == "lambda.immutable" && e.Args.Value != null) {
                 // executing a value object, converting to node, before we pass into execution method,
                 // making sure we pass in children of [lambda] as "arguments" or "parameters" to [lambda] statement
-                foreach (var idxSource in XUtil.Iterate<Node> (e.Args, context)) {
-                    ExecuteBlockImmutable (context, idxSource, e.Args.Children);
+                var match = Expression.Create (e.Args.Get<string> (context), context).Evaluate (e.Args, context);
+                foreach (var idxSource in match) {
+                    ExecuteBlockImmutable (context, Utilities.Convert<Node> (idxSource.Value, context), e.Args.Children);
                 }
             } else {
                 // executing current scope
@@ -214,8 +216,9 @@ namespace p5.lambda
             if (e.Args.Name == "lambda.copy" && e.Args.Value != null) {
                 // executing a value object, converting to node, before we pass into execution method,
                 // making sure we pass in children of [lambda] as "arguments" or "parameters" to [lambda] statement
-                foreach (var idxSource in XUtil.Iterate<Node> (e.Args, context)) {
-                    ExecuteBlockCopy (context, idxSource, e.Args.Children);
+                var match = Expression.Create (e.Args.Get<string> (context), context).Evaluate (e.Args, context);
+                foreach (var idxSource in match) {
+                    ExecuteBlockCopy (context, Utilities.Convert<Node> (idxSource.Value, context), e.Args.Children);
                 }
             } else {
                 // executing current scope
@@ -241,13 +244,14 @@ namespace p5.lambda
         [ActiveEvent (Name = "lambda.single")]
         private static void lambda_single (ApplicationContext context, ActiveEventArgs e)
         {
-            if (string.IsNullOrEmpty (e.Args.Get<string> (context)))
+            if (e.Args.Value == null)
                 throw new LambdaException ("nothing was given to [lambda.single] for execution", e.Args, context);
 
             // executing a value object, converting to node, before we pass into execution method,
             // making sure we pass in children of [lambda] as "arguments" or "parameters" to [lambda] statement
-            foreach (var idxSource in XUtil.Iterate<Node> (e.Args, context)) {
-                ExecuteStatement (idxSource, context, true);
+            var match = Expression.Create (e.Args.Get<string> (context), context).Evaluate (e.Args, context);
+            foreach (var idxSource in match) {
+                ExecuteStatement (Utilities.Convert<Node> (idxSource.Value, context), context, true);
             }
         }
 

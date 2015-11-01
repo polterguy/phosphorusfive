@@ -30,12 +30,12 @@ namespace p5.exp.iterators
         /// <summary>
         ///     Initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorGroup" /> class.
         ///
-        ///     This constructor is for creating the "outer most iterator", or "root iterator", of your hyperlisp expressions, 
+        ///     This constructor is for creating the "outer most iterator", or "root iterator", of your p5.lambda expressions, 
         ///     and is normally exclusively used as the main root iterator for your entire Expression.
         /// </summary>
         internal IteratorGroup ()
         {
-            _groupRoot = new IteratorNode (null);
+            _groupRoot = new IteratorNode ();
             AddLogical (new Logical (Logical.LogicalType.Or));
         }
 
@@ -73,28 +73,11 @@ namespace p5.exp.iterators
         ///     This is where you append a new Iterator, when constructing your chain of iterators.
         /// </summary>
         /// <value>the last iterator</value>
-        private Iterator LastIterator
+        internal Iterator LastIterator
         {
             get { return _logicals [_logicals.Count - 1].Iterator; }
         }
 
-        /// <summary>
-        ///     Returns true if this is a "reference expression".
-        /// 
-        ///     A reference Expression is normally delcared by starting your expression with two "@@" characters. This
-        ///     signals to the expression engine, that instead of directly evaluating that expression, evaluate what the expression
-        ///     refers to. This allows you to pass around expressions as arguments to Active Events, where your Active Events evaluates
-        ///     the expressions you pass into them, instead of evaluating them directly.
-        /// 
-        ///     Think of a reference expression as a "pointer" from C/C++, or a "reference object" in C#.
-        /// </summary>
-        /// <value>true if this is a reference expression, otherwise false</value>
-        public override bool IsReference
-        {
-            get { return _groupRoot.IsReference; }
-            set { _groupRoot.IsReference = value; }
-        }
-        
         /// <summary>
         ///     Adds a Logical to the list of logicals in the group.
         ///

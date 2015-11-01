@@ -4,16 +4,22 @@ Phosphorus Five
 Phosphorus Five is a web application framework for Mono and ASP.NET. Phosphorus 
 is built around an entirely new axiom for system development based upon a new
 design patter called *"Active Events"*. Active Events, and its off spring,
-pf.lambda, a natural consequence of Active Events, opens up an entirely new 
+p5.lambda, a natural consequence of Active Events, opens up an entirely new 
 doorway to architecting your software solutions.
 
 p5 contains a managed Ajax library, allowing you to automatically map up the
-bridge between the server and the client. It also contains pf.lambda, a 
+bridge between the server and the client. It also contains p5.lambda, a 
 *"non-programming language"*, allowing you to orchestrate your applications
 building blocks together, in an extremely loosely manner. In addition, p5 contains
 Hyperlisp, which is a tree structure file-format, allowing you to easily create
-pf.lambda execution trees, and combine building blocks together, to form your 
+p5.lambda execution trees, and combine building blocks together, to form your 
 end software.
+
+The last and fifth piece in p5, is p5.lambda expressions, allowing for you to
+extract and modify tree structures (such as p5.lambda nodes) using a 
+Hyperdimensional Boolean Algebraic Graph Object Expression query language. The
+above definition might be a mouthful for you, however, think; *"SQL for Tree 
+Structures"*, and you've got the point.
 
 All these building blocks combined, just so happens to largely solve all of your
 web application software problems, making all the *"boring"* parts just happen,
@@ -25,10 +31,10 @@ addition it facilitates for you to become extremely capable of *"reusing"* your
 code, at an entirely new level, highly unlikely matched in any other frameworks
 out there you've seen previously.
 
-If you wish to use marketing words, then maybe *"fifth generation programming 
-non-language"* might apply ...
+If you wish to use buzz words, and go all hype, then maybe *"fifth generation 
+non-programming language"* might apply ... ;)
 
-## Getting started with p5.lambda
+## Getting started with p5.lambda and Hyperlisp
 
 p5.lambda is a *"non-programming language"* created on top of Active Events. At its core,
 it is really nothing but loosely coupled Active Events, capable of executing
@@ -73,12 +79,17 @@ Notice how each consecutive double-space in front of a line creates a new childr
 collection of nodes beneath the node above itself. For instance, the *"p5.console.write-line"*
 statement above is a child node of the *"for-each"* Node. The above code perfectly 
 translates into a Node structure with all *"foox"* being children nodes of the *"_x"*
-Node, and so on.
+Node, and so on. This just so happens to become a tree structure once parsed by the 
+Hyperlisp parser. At the same time, it is also a linear/sequential data structure, due
+to each new node, starting on a new line. This allows us to *"map"* a tree structure
+out for the p5.lambda execution engine, using a linear and human readable approach,
+far easier to read and maintain than for instance both XML and JSON.
 
 Hyperlisp also supports most *"System.x"* types from .Net, such as *"_x:int:5"* 
 turning the *_x* Node into having the integer value of "5", instead of its string 
 representation. Hyperlisp is also extendible in its type system, allowing you to 
-create handlers for your own types to be serialized into Hyperlisp.
+create handlers for your own types to be serialized into Hyperlisp. Which makes
+Hyperlisp a *"better BSON than BSON"* one might argue.
 
 Notice how there is no difference between *"data"* and *"code"* from a semantic point
 of view in p5.lambda and Hyperlisp. There is also no difference between *"methods"* 
@@ -90,9 +101,8 @@ By unlearning everything you think you knew about software, and attack it from a
 entirely new angle, you will actually discover how the *"everything is one"* 
 approach in p5, opens up an entirely new doorway to thinking about software, far
 superior to all previously learned conventions and best practice. For instance,
-there are no *"design patterns"* in pf.lambda, and neither are any design patterns
-necessary. All existing design patterns are no longer necessary once you start
-using pf.lambda.
+there are no *"design patterns"* in p5.lambda, and neither are any design patterns
+necessary.
 
 ## Getting started with Active Events
 
@@ -134,10 +144,10 @@ database, config file, allowing the user to type them in through a GUI, etc.
 This feature just so happens to largely replace most features from Object 
 Oriented Programming, with a much better alternative for acomplishing the 
 same things, such as encapsulation and polymorphism. In addition, Active 
-Events is at the core of pf.lambda, allowing for creation of a 
+Events is at the core of p5.lambda, allowing for creation of a 
 *"non-programming language"*, largely replacing 98% of all your code, with 
 a much more flexible, maintainable and easy to understand construct, than 
-your *"code"* such as C# and Java. Hyperlisp and pf.lambda is basically 
+your *"code"* such as C# and Java. Hyperlisp and p5.lambda is basically 
 nothing but a thin abstraction on top of Active Events in fact.
 
 To raise an Active Event, you use the *"Raise"* method on your ApplicationContext
@@ -164,7 +174,7 @@ If you have an instance Active Event (not static method), then you need to use t
 instance of your class you wish to have notified when the Active Event is raised.
 
 Although P5 is largely focused on web application development, there is nothing
-stopping you from using pf.core, pf.exp, pf.lambda, and the rest of the plugins
+stopping you from using p5.core, p5.exp, p5.lambda, and the rest of the plugins
 in for instance a WinForms application, or any other type of app you can build using
 Mono and/or .Net. Which allows you to use Active Events in for instance desktop
 applications.

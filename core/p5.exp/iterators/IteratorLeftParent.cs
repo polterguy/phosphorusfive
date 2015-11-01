@@ -9,7 +9,6 @@ using p5.core;
 
 namespace p5.exp.iterators
 {
-    // \todo Do we really need this class at all ...?
     /// <summary>
     ///     Root iterators for nested IteratorGroup iterators.
     ///

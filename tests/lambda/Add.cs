@@ -5,17 +5,19 @@
 
 using NUnit.Framework;
 using p5.core;
+using p5.exp;
 
 namespace p5.unittests.lambda
 {
     /// <summary>
-    ///     unit tests for testing the [append] lambda keyword
+    ///     unit tests for testing the [add] lambda keyword
     /// </summary>
     [TestFixture]
-    public class Append : TestBase
+    public class Add : TestBase
     {
-        public Append ()
-            : base ("p5.lambda", "p5.types", "p5.hyperlisp") { }
+        public Add ()
+            : base ("p5.lambda", "p5.types", "p5.hyperlisp")
+        { }
 
         /// <summary>
         ///     appends a static constant source node to destination
@@ -25,13 +27,13 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_data")
-                .Add ("append", "@/-/?node").LastChild
-                .Add ("source").LastChild
-                .Add ("foo1", "success1")
-                .Add ("foo2", "success2").Root;
-            Context.Raise ("append", node [1]);
+                .Add ("add", Expression.Create ("/-/?node", Context)).LastChild
+                    .Add ("source").LastChild
+                        .Add ("foo1", "success1")
+                        .Add ("foo2", "success2").Root;
+            Context.Raise ("add", node [1]);
 
-            // verifying [append] works as it should
+            // verifying [add] works as it should
             Assert.AreEqual (2, node [0].Count);
             Assert.AreEqual ("foo1", node [0] [0].Name);
             Assert.AreEqual ("success1", node [0] [0].Value);
@@ -48,12 +50,12 @@ namespace p5.unittests.lambda
             var node = new Node ()
                 .Add ("_data")
                 .Add ("source").LastChild
-                .Add ("foo", "success").Parent
-                .Add ("append", "@/-2/?node").LastChild
-                .Add ("source", "@/./-/?node").Root;
-            Context.Raise ("append", node [2]);
+                    .Add ("foo", "success").Parent
+                .Add ("add", Expression.Create ("/-2/?node", Context)).LastChild
+                    .Add ("source", Expression.Create ("/./-/?node", Context)).Root;
+            Context.Raise ("add", node [2]);
 
-            // verifying [append] works as it should
+            // verifying [add] works as it should
             Assert.AreEqual (1, node [0].Count);
             Assert.AreEqual ("source", node [0] [0].Name);
             Assert.IsNull (node [0] [0].Value);
@@ -71,14 +73,14 @@ namespace p5.unittests.lambda
             var node = new Node ()
                 .Add ("_data")
                 .Add ("source").LastChild
-                .Add ("foo", "success").Parent
-                .Add ("append", "@/{0}/?node").LastChild
-                .Add (string.Empty, "-2")
-                .Add ("source", "@/./{0}/?node").LastChild
-                .Add (string.Empty, "-").Root;
-            Context.Raise ("append", node [2]);
+                    .Add ("foo", "success").Parent
+                .Add ("add", Expression.Create ("/{0}/?node", Context)).LastChild
+                    .Add (string.Empty, "-2")
+                    .Add ("source", Expression.Create ("/./{0}/?node", Context)).LastChild
+                        .Add (string.Empty, "-").Root;
+            Context.Raise ("add", node [2]);
 
-            // verifying [append] works as it should
+            // verifying [add] works as it should
             Assert.AreEqual (1, node [0].Count);
             Assert.AreEqual ("source", node [0] [0].Name);
             Assert.IsNull (node [0] [0].Value);
@@ -94,11 +96,11 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_data")
-                .Add ("append", "@/-/?node").LastChild
-                .Add ("source", "foo1:success\r\n  bar1:int:5").Root;
-            Context.Raise ("append", node [1]);
+                .Add ("add", Expression.Create ("/-/?node", Context)).LastChild
+                    .Add ("source", "foo1:success\r\n  bar1:int:5").Root;
+            Context.Raise ("add", node [1]);
 
-            // verifying [append] works as it should
+            // verifying [add] works as it should
             Assert.AreEqual (1, node [0].Count);
             Assert.AreEqual ("foo1", node [0] [0].Name);
             Assert.AreEqual ("success", node [0] [0].Value);
@@ -115,11 +117,11 @@ namespace p5.unittests.lambda
             var node = new Node ()
                 .Add ("_data")
                 .Add ("_source", "success-name:success-value")
-                .Add ("append", "@/-2/?node").LastChild
-                .Add ("source", "@/../*/_source/?value").Root;
-            Context.Raise ("append", node [2]);
+                .Add ("add", Expression.Create ("/-2/?node", Context)).LastChild
+                    .Add ("source", Expression.Create ("/../*/_source?value", Context)).Root;
+            Context.Raise ("add", node [2]);
 
-            // verifying [append] works as it should
+            // verifying [add] works as it should
             Assert.AreEqual (1, node [0].Count);
             Assert.AreEqual ("success-name", node [0] [0].Name);
             Assert.AreEqual ("success-value", node [0] [0].Value);
@@ -134,11 +136,11 @@ namespace p5.unittests.lambda
             var node = new Node ()
                 .Add ("_data")
                 .Add ("_source", new Node ("success", 5))
-                .Add ("append", "@/-2/?node").LastChild
-                .Add ("source", "@/../*/_source/?value").Root;
-            Context.Raise ("append", node [2]);
+                .Add ("add", Expression.Create ("/-2/?node", Context)).LastChild
+                    .Add ("source", Expression.Create ("/../*/_source?value", Context)).Root;
+            Context.Raise ("add", node [2]);
 
-            // verifying [append] works as it should
+            // verifying [add] works as it should
             Assert.AreEqual (1, node [0].Count);
             Assert.AreEqual ("success", node [0] [0].Name);
             Assert.AreEqual (5, node [0] [0].Value);
@@ -152,11 +154,11 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_data")
-                .Add ("append", "@/-/?node").LastChild
-                .Add ("source", new Node ("success", 5)).Root;
-            Context.Raise ("append", node [1]);
+                .Add ("add", Expression.Create ("/-?node", Context)).LastChild
+                    .Add ("source", new Node ("success", 5)).Root;
+            Context.Raise ("add", node [1]);
 
-            // verifying [append] works as it should
+            // verifying [add] works as it should
             Assert.AreEqual (1, node [0].Count);
             Assert.AreEqual ("success", node [0] [0].Name);
             Assert.AreEqual (5, node [0] [0].Value);
@@ -170,12 +172,12 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_source").LastChild
-                .Add ("_destination").Parent
-                .Add ("append", "@/-/0/?node").LastChild
-                .Add ("source", "@/./-/?node").Root;
-            Context.Raise ("append", node [1]);
+                    .Add ("_destination").Parent
+                .Add ("add", Expression.Create ("/-/0?node", Context)).LastChild
+                    .Add ("source", Expression.Create ("/./-?node", Context)).Root;
+            Context.Raise ("add", node [1]);
 
-            // verifying [append] works as it should
+            // verifying [add] works as it should
             Assert.AreEqual (1, node [0].Count);
             Assert.AreEqual (1, node [0] [0].Count);
             Assert.AreEqual ("_source", node [0] [0] [0].Name);
@@ -191,12 +193,12 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_destination").LastChild
-                .Add ("_source").Parent
-                .Add ("append", "@/-/?node").LastChild
-                .Add ("source", "@/./-/0/?node").Root;
-            Context.Raise ("append", node [1]);
+                    .Add ("_source").Parent
+                .Add ("add", Expression.Create ("/-?node", Context)).LastChild
+                    .Add ("source", Expression.Create ("/./-/0?node", Context)).Root;
+            Context.Raise ("add", node [1]);
 
-            // verifying [append] works as it should
+            // verifying [add] works as it should
             Assert.AreEqual (2, node [0].Count);
             Assert.AreEqual (0, node [0] [0].Count);
             Assert.AreEqual ("_source", node [0] [0].Name);
@@ -212,14 +214,14 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_destination1").LastChild
-                .Add ("_source1").Parent
+                    .Add ("_source1").Parent
                 .Add ("_destination2").LastChild
-                .Add ("_source2").Parent
-                .Add ("append", "@/-1/|/-2/?node").LastChild
-                .Add ("rel-source", "@/0/?node").Root;
-            Context.Raise ("append", node [2]);
+                    .Add ("_source2").Parent
+                .Add ("add", Expression.Create ("/-1|/-2?node", Context)).LastChild
+                    .Add ("rel-source", Expression.Create ("/0?node", Context)).Root;
+            Context.Raise ("add", node [2]);
 
-            // verifying [append] works as it should
+            // verifying [add] works as it should
             Assert.AreEqual (2, node [0].Count);
             Assert.AreEqual ("_source1", node [0] [0].Name);
             Assert.AreEqual ("_source1", node [0] [1].Name);
@@ -236,14 +238,14 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_source1").LastChild
-                .Add ("_destination1").Parent
-                .Add ("_source2").LastChild
-                .Add ("_destination2").Parent
-                .Add ("append", "@/-1/*/|/-2/*/?node").LastChild
-                .Add ("rel-source", "@/./?node").Root;
-            Context.Raise ("append", node [2]);
+                    .Add ("_destination1").Parent
+                    .Add ("_source2").LastChild
+                    .Add ("_destination2").Parent
+                    .Add ("add", "@/-1/*/|/-2/*/?node").LastChild
+                    .Add ("rel-source", "@/./?node").Root;
+            Context.Raise ("add", node [2]);
 
-            // verifying [append] works as it should
+            // verifying [add] works as it should
             Assert.AreEqual (1, node [0].Count);
             Assert.AreEqual ("_destination1", node [0] [0].Name);
             Assert.AreEqual (1, node [0] [0].Count);
@@ -266,12 +268,12 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_source1")
-                .Add ("_source2")
-                .Add ("append", "@/-1/|/-2/?node").LastChild
-                .Add ("rel-source", "@?node").Root;
-            Context.Raise ("append", node [2]);
+                    .Add ("_source2")
+                    .Add ("add", "@/-1/|/-2/?node").LastChild
+                    .Add ("rel-source", "@?node").Root;
+            Context.Raise ("add", node [2]);
 
-            // verifying [append] works as it should
+            // verifying [add] works as it should
             Assert.AreEqual (1, node [0].Count);
             Assert.AreEqual (0, node [0] [0].Count);
             Assert.AreEqual ("_source1", node [0] [0].Name);
@@ -289,12 +291,12 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_source", new Node ("success", 5))
-                .Add ("_destination")
-                .Add ("append", "@/-/?node").LastChild
-                .Add ("source", "@/./-2/?value").Root;
-            Context.Raise ("append", node [2]);
+                    .Add ("_destination")
+                    .Add ("add", "@/-/?node").LastChild
+                    .Add ("source", "@/./-2/?value").Root;
+            Context.Raise ("add", node [2]);
 
-            // verifying [append] works as it should
+            // verifying [add] works as it should
             Assert.AreEqual (1, node [1].Count);
             Assert.AreEqual ("success", node [1] [0].Name);
             Assert.AreEqual (5, node [1] [0].Value);
@@ -309,12 +311,12 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_destination-parent", new Node ("_destination"))
-                .Add ("success", 5)
-                .Add ("append", "@/-2/?value").LastChild
-                .Add ("source", "@/./-/?node").Root;
-            Context.Raise ("append", node [2]);
+                    .Add ("success", 5)
+                    .Add ("add", "@/-2/?value").LastChild
+                    .Add ("source", "@/./-/?node").Root;
+            Context.Raise ("add", node [2]);
 
-            // verifying [append] works as it should
+            // verifying [add] works as it should
             Assert.AreEqual (1, node [0].Get<Node> (Context).Count);
             Assert.AreEqual ("success", node [0].Get<Node> (Context) [0].Name);
             Assert.AreEqual (5, node [0].Get<Node> (Context) [0].Value);
@@ -328,11 +330,11 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_destination")
-                .Add ("append", "@/-/?node").LastChild
-                .Add ("source", "@/mumbo/?node").Root;
-            Context.Raise ("append", node [1]);
+                    .Add ("add", "@/-/?node").LastChild
+                    .Add ("source", "@/mumbo/?node").Root;
+            Context.Raise ("add", node [1]);
 
-            // verifying [append] works as it should
+            // verifying [add] works as it should
             Assert.AreEqual (0, node [0].Count);
         }
 
@@ -346,10 +348,10 @@ namespace p5.unittests.lambda
             var node = ExecuteLambda (@"_data
   foo:bar
 _exp:@/-/?node
-append:@/+/?node
+add:@/+/?node
   source:@@/./-/?value
 _out");
-            // verifying [append] works as it should
+            // verifying [add] works as it should
             Assert.AreEqual (1, node [3].Count);
             Assert.AreEqual ("_data", node [3] [0].Name);
             Assert.AreEqual ("foo", node [3] [0] [0].Name);
@@ -363,10 +365,10 @@ _out");
         [Test]
         public void Append17 ()
         {
-            var node = ExecuteLambda (@"append:@/+/?node
+            var node = ExecuteLambda (@"add:@/+/?node
   source:int:500
 _out");
-            // verifying [append] works as it should
+            // verifying [add] works as it should
             Assert.AreEqual (1, node [1].Count);
             Assert.AreEqual (string.Empty, node [1] [0].Name);
             Assert.AreEqual (500, node [1] [0].Value);
@@ -381,11 +383,11 @@ _out");
         {
             var node = new Node ()
                 .Add ("_data")
-                .Add ("append", "@/-/?node").LastChild
-                .Add ("source", "foo1:success\r\nbar1:int:5").Root;
-            Context.Raise ("append", node [1]);
+                    .Add ("add", "@/-/?node").LastChild
+                    .Add ("source", "foo1:success\r\nbar1:int:5").Root;
+            Context.Raise ("add", node [1]);
 
-            // verifying [append] works as it should
+            // verifying [add] works as it should
             Assert.AreEqual (2, node [0].Count);
             Assert.AreEqual ("foo1", node [0] [0].Name);
             Assert.AreEqual ("success", node [0] [0].Value);
@@ -400,16 +402,16 @@ _out");
         [Test]
         public void Append19 ()
         {
-            var node = ExecuteLambda (@"append:@/+/?node
+            var node = ExecuteLambda (@"add:@/+/?node
   src:success
 _out");
-            // verifying [append] works as it should
+            // verifying [add] works as it should
             Assert.AreEqual (1, node [1].Count);
             Assert.AreEqual ("success", node [1] [0].Name);
         }
 
         /// <summary>
-        ///     tries to append into 'value' destination, where value is not a Node
+        ///     tries to add into 'value' destination, where value is not a Node
         /// </summary>
         [Test]
         [ExpectedException]
@@ -417,10 +419,10 @@ _out");
         {
             var node = new Node ()
                 .Add ("_destination", "foo")
-                .Add ("error")
-                .Add ("append", "@/-2/?value").LastChild
-                .Add ("source", "@/./-/?node").Root;
-            Context.Raise ("append", node [2]);
+                    .Add ("error")
+                    .Add ("add", "@/-2/?value").LastChild
+                    .Add ("source", "@/./-/?node").Root;
+            Context.Raise ("add", node [2]);
         }
 
         /// <summary>
@@ -432,10 +434,10 @@ _out");
         {
             var node = new Node ()
                 .Add ("_destination", "foo")
-                .Add ("error")
-                .Add ("append", "@/-2/?value").LastChild
-                .Add ("rel-source", "@/../*/error/?node").Root;
-            Context.Raise ("append", node [2]);
+                    .Add ("error")
+                    .Add ("add", "@/-2/?value").LastChild
+                    .Add ("rel-source", "@/../*/error/?node").Root;
+            Context.Raise ("add", node [2]);
         }
 
         /// <summary>
@@ -447,10 +449,10 @@ _out");
         {
             var node = new Node ()
                 .Add ("_destination")
-                .Add ("error")
-                .Add ("append", "@/-2/?value").LastChild
-                .Add ("rel-source", "@/../*/error/?node").Root;
-            Context.Raise ("append", node [2]);
+                    .Add ("error")
+                    .Add ("add", "@/-2/?value").LastChild
+                    .Add ("rel-source", "@/../*/error/?node").Root;
+            Context.Raise ("add", node [2]);
         }
     }
 }

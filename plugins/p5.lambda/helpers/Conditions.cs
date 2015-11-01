@@ -275,7 +275,9 @@ namespace p5.lambda.helpers
             var exp = XUtil.IsFormatted (currentStatement) ? XUtil.FormatNode (currentStatement, _context) : currentStatement.Get<string> (_context);
 
             // creating a Match object
-            var match = Expression.Create (exp, _context).Evaluate (currentStatement, _context);
+            var match = exp is string ? 
+                Expression.Create (exp.ToString (), _context).Evaluate (currentStatement, _context) : 
+                    (exp as Expression).Evaluate (currentStatement, _context);
 
             // easy versions
             if (match.TypeOfMatch == Match.MatchType.count ||

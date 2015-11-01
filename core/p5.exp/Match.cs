@@ -6,17 +6,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using p5.core;
+using p5.exp.matchentities;
 
 namespace p5.exp
 {
     /// <summary>
     ///     Expression result class.
     /// 
-    ///     When you evaluate a p5.lambda expression, then this is the result you end up with as your result.
-    /// 
-    ///     PS!<br/>
-    ///     Normally you don't want to use this class directly yourself, but rather use one of the helper methods from
-    ///     XUtil, that abstracts away this class, in addition to the Expression class itself.
+    ///     When you evaluate a p5.lambda expression, then you end upo with a Match object.
     /// </summary>
     public class Match : IEnumerable<MatchEntity>
     {
@@ -25,9 +22,18 @@ namespace p5.exp
         /// 
         ///     Can be either 'name', 'value', 'count', 'path' or 'node'. This is the part that you define when you create 
         ///     your type declaration within your p5.lambda Expression. For instance '?name', creates a 'name' type of Expression.
+        ///     If no type is explicitly specified, then 'node' will be assumed.
         /// </summary>
         public enum MatchType
         {
+            
+            /// <summary>
+            ///     Returns <see cref="phosphorus.core.Node">count</see> themselves.
+            /// 
+            ///     Declared through the type declaration of '?node'.
+            /// </summary>
+            node,
+
             /// <summary>
             ///     Returns <see cref="phosphorus.core.Node.Name">name</see> property of matched nodes.
             /// 
@@ -54,50 +60,53 @@ namespace p5.exp
             /// 
             ///     Declared through the type declaration of '?path'.
             /// </summary>
-            path,
-
-            /// <summary>
-            ///     Returns <see cref="phosphorus.core.Node">count</see> themselves.
-            /// 
-            ///     Declared through the type declaration of '?node'.
-            /// </summary>
-            node
+            path
         }
 
         /*
          * kept around, to allow conversion of node values
          */
         private readonly ApplicationContext _context;
-        private readonly string _convert;
 
         /*
          * contains all matched entities
          */
-        private readonly List<MatchEntity> _matchEntities;
+        private readonly List<MatchEntity> _matchEntities = new List<MatchEntity> ();
 
         /*
          * internal ctor, to make sure only Expression class can instantiate instances of Match class
          */
-        internal Match (IEnumerable<Node> nodes, MatchType type, ApplicationContext context, string convert)
+        internal Match (IEnumerable<Node> nodes, MatchType type, ApplicationContext context, string convert, bool reference)
         {
             TypeOfMatch = type;
-            _matchEntities = new List<MatchEntity> ();
             _context = context;
-            _convert = convert;
+            Convert = convert;
             foreach (var idx in nodes) {
-                _matchEntities.Add (new MatchEntity (idx, this, null));
+                switch (type) {
+                case MatchType.name:
+                    _matchEntities.Add (new MatchNameEntity (idx, this));
+                    break;
+                case MatchType.value:
+                    if (reference && idx.Value is Expression) {
+                        var innerMatch = (idx.Value as Expression).Evaluate (idx, context, idx);
+                        foreach (var idxInner in innerMatch) {
+                            _matchEntities.Add (idxInner);
+                        }
+                    } else {
+                        _matchEntities.Add (new MatchValueEntity (idx, this));
+                    }
+                    break;
+                case MatchType.node:
+                    _matchEntities.Add (new MatchNodeEntity (idx, this));
+                    break;
+                case MatchType.path:
+                    _matchEntities.Add (new MatchPathEntity (idx, this));
+                    break;
+                case MatchType.count:
+                    _matchEntities.Add (new MatchCountEntity (idx, this));
+                    break;
+                }
             }
-        }
-
-        /*
-         * internal ctor, to make sure only Expression class can instantiate instances of Match class
-         */
-        internal Match (MatchType type, ApplicationContext context, string convert)
-        {
-            _matchEntities = new List<MatchEntity> ();
-            _convert = convert;
-            TypeOfMatch = type;
-            _context = context;
         }
 
         /// <summary>
@@ -137,7 +146,8 @@ namespace p5.exp
         /// Active Events.</value>
         public string Convert
         {
-            get { return _convert; }
+            get; 
+            private set;
         }
 
         /// <summary>
@@ -161,14 +171,6 @@ namespace p5.exp
         internal ApplicationContext Context
         {
             get { return _context; }
-        }
-
-        /*
-         * used by expressions to build Match object
-         */
-        internal List<MatchEntity> Entities
-        {
-            get { return _matchEntities; }
         }
 
         /// <summary>

@@ -797,16 +797,6 @@ namespace p5.core
         }
 
         /// <summary>
-        ///     Iterates every single node, invoking the given functor, and if functor does not return
-        ///     default (T), it will yield that T value, as a result back to caller.
-        /// </summary>
-        /// <param name="functor">Match delegate</param>
-        /// <typeparam name="T">The type of object you wish to construct from node iterator.</typeparam>
-        public IEnumerable<T> ConvertChildren<T> (NodeIterator<T> functor) {
-            return _children.Select (idx => functor (idx)).Where (retVal => retVal != null && !retVal.Equals (default (T)));
-        }
-
-        /// <summary>
         ///     Finds, or creates, the first node having the given name.
         /// 
         ///     If no node exists with given name, then a new node with the given name will be created, and returned to caller.
@@ -1138,6 +1128,26 @@ namespace p5.core
                 retVal += ", Path=" + Path;
             retVal = retVal.Trim (',', ' ');
             return retVal;
+        }
+        
+        /// <summary>
+        ///     Iterates every single node, invoking the given functor, and if functor does not return
+        ///     default (T), it will yield that T value, as a result back to caller.
+        /// </summary>
+        /// <param name="functor">Match delegate</param>
+        /// <typeparam name="T">The type of object you wish to construct from node iterator.</typeparam>
+        public IEnumerable<T> ConvertChildren<T> (NodeIterator<T> functor) {
+            return _children.Select (idx => functor (idx)).Where (retVal => retVal != null && !retVal.Equals (default (T)));
+        }
+
+        public override bool Equals (object obj)
+        {
+            return CompareTo (obj) == 0;
+        }
+
+        public override int GetHashCode ()
+        {
+            return Path.GetHashCode ();
         }
 
         /*

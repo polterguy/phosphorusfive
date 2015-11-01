@@ -18,13 +18,19 @@ namespace p5.unittests
         ///     verifies loading an assembly works
         /// </summary>
         [Test]
-        public void LoadAssembly1 () { Loader.Instance.LoadAssembly ("p5.lambda"); }
+        public void LoadAssembly1 ()
+        {
+            Loader.Instance.LoadAssembly ("p5.lambda");
+        }
 
         /// <summary>
         ///     verifies loading an assembly with extension works
         /// </summary>
         [Test]
-        public void LoadAssembly2 () { Loader.Instance.LoadAssembly ("p5.lambda.dll"); }
+        public void LoadAssembly2 ()
+        {
+            Loader.Instance.LoadAssembly ("p5.lambda.dll");
+        }
 
         /// <summary>
         ///     verifying loading the same assembly twice works
@@ -50,13 +56,19 @@ namespace p5.unittests
         ///     verifying loading the currently executing assembly works
         /// </summary>
         [Test]
-        public void LoadAssembly5 () { Loader.Instance.LoadAssembly (GetType ()); }
+        public void LoadAssembly5 ()
+        {
+            Loader.Instance.LoadAssembly (GetType ());
+        }
 
         /// <summary>
         ///     verifyi loading an assembly by type works
         /// </summary>
         [Test]
-        public void LoadAssembly6 () { Loader.Instance.LoadAssembly (typeof (Core)); }
+        public void LoadAssembly6 ()
+        {
+            Loader.Instance.LoadAssembly (typeof (Core));
+        }
 
         /// <summary>
         ///     verify creating an application context works
@@ -69,7 +81,10 @@ namespace p5.unittests
         }
 
         [ActiveEvent (Name = "foo")]
-        private static void Foo (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = "success"; }
+        private static void Foo (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "success";
+        }
 
         /// <summary>
         ///     verifying raising an Active Event with a single static event handler works
@@ -89,7 +104,10 @@ namespace p5.unittests
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "foo2")]
-        private static void foo2_1 (ApplicationContext context, ActiveEventArgs e) { e.Args.Value += "success"; }
+        private static void foo2_1 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value += "success";
+        }
 
         /// <summary>
         ///     used in ApplicationContext3 Unit Test
@@ -97,7 +115,10 @@ namespace p5.unittests
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "foo2")]
-        private static void foo2_2 (ApplicationContext context, ActiveEventArgs e) { e.Args.Value += "success"; }
+        private static void foo2_2 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value += "success";
+        }
 
         /// <summary>
         ///     verifying raising an Active Event with two static event handlers works
@@ -117,7 +138,10 @@ namespace p5.unittests
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "foo3")]
-        private void Foo3 (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = "success"; }
+        private void Foo3 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "success";
+        }
 
         /// <summary>
         ///     verifying raising an Active Event with a single instance event handler works
@@ -138,7 +162,10 @@ namespace p5.unittests
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "foo4")]
-        private void foo4_1 (ApplicationContext context, ActiveEventArgs e) { e.Args.Value += "success"; }
+        private void foo4_1 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value += "success";
+        }
 
         /// <summary>
         ///     used in ApplicationContext5 Unit Test
@@ -146,7 +173,10 @@ namespace p5.unittests
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "foo4")]
-        private void foo4_2 (ApplicationContext context, ActiveEventArgs e) { e.Args.Value += "success"; }
+        private void foo4_2 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value += "success";
+        }
 
         /// <summary>
         ///     verifying raising an Active Event with two instance event handlers works
@@ -167,7 +197,10 @@ namespace p5.unittests
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "foo5")]
-        private void foo5_1 (ApplicationContext context, ActiveEventArgs e) { e.Args.Value += "success"; }
+        private void foo5_1 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value += "success";
+        }
 
         /// <summary>
         ///     used in ApplicationContext6 Unit Test
@@ -175,7 +208,10 @@ namespace p5.unittests
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "foo5")]
-        private static void foo5_2 (ApplicationContext context, ActiveEventArgs e) { e.Args.Value += "success"; }
+        private static void foo5_2 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value += "success";
+        }
 
         /// <summary>
         ///     verifying raising an Active Event with one static event handler, and another instance event handler,
@@ -197,7 +233,10 @@ namespace p5.unittests
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "foo6")]
-        private static void Foo6 (ApplicationContext context, ActiveEventArgs e) { e.Args.Value += "success"; }
+        private static void Foo6 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value += "success";
+        }
 
         /// <summary>
         ///     verifying that when discarding an Application Context and creating a new, no "garbage" from previous
@@ -225,7 +264,10 @@ namespace p5.unittests
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "foo7")]
-        private static void Foo7 (ApplicationContext context, ActiveEventArgs e) { e.Args.Value += "success"; }
+        private static void Foo7 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value += "success";
+        }
 
         /// <summary>
         ///     verifying that registering the same object as instance listener twice
@@ -248,7 +290,10 @@ namespace p5.unittests
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "foo8")]
-        private void Foo8 (ApplicationContext context, ActiveEventArgs e) { e.Args.Value += "success"; }
+        private void Foo8 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value += "success";
+        }
 
         /// <summary>
         ///     verifying that unregistering in instance listener, removes the event handler
@@ -272,7 +317,10 @@ namespace p5.unittests
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "foo9")]
-        private void foo9_1 (ApplicationContext context, ActiveEventArgs e) { e.Args.Value += "success"; }
+        private void foo9_1 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value += "success";
+        }
 
         /// <summary>
         ///     used in ApplicationContext10 Unit Test
@@ -280,7 +328,10 @@ namespace p5.unittests
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "foo9")]
-        private static void foo9_2 (ApplicationContext context, ActiveEventArgs e) { e.Args.Value += "success"; }
+        private static void foo9_2 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value += "success";
+        }
 
         /// <summary>
         ///     verifying that unregistering an instance listener, still kicks in a static listener
@@ -329,7 +380,10 @@ namespace p5.unittests
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "foo11")]
-        private void Foo11 (ApplicationContext context, ActiveEventArgs e) { e.Args.Value += "success"; }
+        private void Foo11 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value += "success";
+        }
 
         /// <summary>
         ///     verifying unloading a dll and then re-create application context, removes instance listener
@@ -362,11 +416,17 @@ namespace p5.unittests
         }
 
         [ActiveEvent (Name = "foo24")]
-        private void Foo24 (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = "failure"; }
+        private void Foo24 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "failure";
+        }
 
         [ActiveEvent (Name = "foo54")]
         [ActiveEvent (Name = "foo54")]
-        private static void Foo54 (ApplicationContext context, ActiveEventArgs e) { e.Args.Value += "success"; }
+        private static void Foo54 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value += "success";
+        }
 
         [Test]
         public void ApplicationContext32 ()

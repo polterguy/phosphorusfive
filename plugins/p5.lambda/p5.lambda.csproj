@@ -43,16 +43,8 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Add.cs" />
     <Compile Include="Lambda.cs" />
-    <Compile Include="Append.cs" />
-    <Compile Include="Branching.cs" />
-    <Compile Include="EventsCommon.cs" />
-    <Compile Include="ForEach.cs" />
-    <Compile Include="PFEvent.cs" />
-    <Compile Include="RemoveEvent.cs" />
-    <Compile Include="Set.cs" />
-    <Compile Include="While.cs" />
-    <Compile Include="helpers\Conditions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
@@ -76,5 +68,8 @@
       <Project>{C783FEDB-C973-4F38-8EBB-55A0163612F5}</Project>
       <Name>p5.core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="helpers\" />
   </ItemGroup>
 </Project>

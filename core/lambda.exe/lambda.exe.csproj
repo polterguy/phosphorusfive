@@ -66,14 +66,6 @@
       <Project>{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}</Project>
       <Name>p5.exp</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\plugins\p5.hyperlisp\p5.hyperlisp.csproj">
-      <Project>{C02D30A6-7DA2-4045-8644-9710AB40B629}</Project>
-      <Name>p5.hyperlisp</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\plugins\p5.io\p5.io.csproj">
-      <Project>{89C744BE-B583-4C6D-84B9-941E0C7CEBF4}</Project>
-      <Name>p5.io</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\plugins\p5.lambda\p5.lambda.csproj">
       <Project>{8EB5FDEA-D073-4147-AE65-376A01B463DF}</Project>
       <Name>p5.lambda</Name>
