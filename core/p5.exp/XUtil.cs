@@ -267,7 +267,9 @@ namespace p5.exp
             bool iterateChildren = false)
         {
             return evaluatedNode != null && dataSource != null && evaluatedNode.Value != null ? 
-                Iterate<T> (FormatNode (evaluatedNode, context), dataSource, context, iterateChildren) : 
+                (IsExpression (evaluatedNode.Value) ? 
+                     Iterate<T> (evaluatedNode.Get<Expression> (context).Build (evaluatedNode, context), dataSource, context, iterateChildren) : 
+                     Iterate<T> (FormatNode (evaluatedNode, context), dataSource, context, iterateChildren)) : 
                 IterateChildren<T> (evaluatedNode, context);
         }
 
@@ -376,7 +378,7 @@ namespace p5.exp
         /// <param name="context">Application context.</param>
         public static object Source (Node evaluatedNode, ApplicationContext context)
         {
-            return Source (evaluatedNode, evaluatedNode.LastChild, context);
+            return Source (evaluatedNode, evaluatedNode, context);
         }
 
         /// \todo refactor these next buggers, they're too complex
@@ -397,47 +399,43 @@ namespace p5.exp
         private static object Source (Node evaluatedNode, Node dataSource, ApplicationContext context)
         {
             object source = null;
-            if (evaluatedNode.LastChild != null &&
-                (evaluatedNode.LastChild.Name == "source" || evaluatedNode.LastChild.Name == "src" ||
-             evaluatedNode.LastChild.Name == "rel-source" || evaluatedNode.LastChild.Name == "rel-src")) {
 
-                // we have a [source] or [src] parameter here, figuring out what it points to, or contains
-                if (IsExpression (evaluatedNode.LastChild.Value)) {
+            // we have a [source] or [src] parameter here, figuring out what it points to, or contains
+            if (IsExpression (evaluatedNode.Value)) {
 
-                    // this is an expression which might lead to multiple results, trying to return one result,
-                    // but will resort to returning List of objects if necssary
-                    var tmpList = new List<object> (Iterate<object> (evaluatedNode.LastChild.Get<Expression> (context), dataSource, context));
-                    switch (tmpList.Count) {
-                        case 0:
-                            // no source values
-                            break;
-                        case 1:
-                            // one single object in list, returning only that single object
-                            source = tmpList [0];
-                            break;
-                        default:
-                            source = tmpList;
-                            break;
-                    }
-                } else if (evaluatedNode.LastChild.Value != null) {
+                // this is an expression which might lead to multiple results, trying to return one result,
+                // but will resort to returning List of objects if necssary
+                var tmpList = new List<object> (Iterate<object> (evaluatedNode.Get<Expression> (context), dataSource, context));
+                switch (tmpList.Count) {
+                    case 0:
+                        // no source values
+                        break;
+                    case 1:
+                        // one single object in list, returning only that single object
+                        source = tmpList [0];
+                        break;
+                    default:
+                        source = tmpList;
+                        break;
+                }
+            } else if (evaluatedNode.Value != null) {
 
-                    // source is a constant, might still be formatted
-                    source = FormatNode (evaluatedNode.LastChild, context);
+                // source is a constant, might still be formatted
+                source = FormatNode (evaluatedNode, context);
 
-                    if (source is Node)
-                        source = (source as Node).Clone ();
+                if (source is Node)
+                    source = (source as Node).Clone ();
+            } else {
+
+                // there are no value in [src] node, trying to create source out of [src]'s children
+                if (evaluatedNode.Count == 1) {
+
+                    // source is a constant node, making sure we clone it, in case source and destination overlaps
+                    source = evaluatedNode.FirstChild.Clone ();
                 } else {
 
-                    // there are no value in [src] node, trying to create source out of [src]'s children
-                    if (evaluatedNode.LastChild.Count == 1) {
-
-                        // source is a constant node, making sure we clone it, in case source and destination overlaps
-                        source = evaluatedNode.LastChild.FirstChild.Clone ();
-                    } else {
-
-                        // more than one source, making sure we clone them, before we return the clones
-                        source = new List<Node> (evaluatedNode.LastChild.Clone ().UnTieChildren ());
-                    }
+                    // more than one source, making sure we clone them, before we return the clones
+                    source = new List<Node> (evaluatedNode.Clone ().UnTieChildren ());
                 }
             }
 
@@ -454,7 +452,7 @@ namespace p5.exp
         /// <param name="context">Application context.</param>
         public static object SourceSingle (Node evaluatedNode, ApplicationContext context)
         {
-            return SourceSingle (evaluatedNode, evaluatedNode.LastChild, context);
+            return SourceSingle (evaluatedNode, evaluatedNode, context);
         }
 
         /// <summary>
@@ -468,31 +466,23 @@ namespace p5.exp
         public static object SourceSingle (Node evaluatedNode, Node dataSource, ApplicationContext context)
         {
             object source = null;
-            if (evaluatedNode.LastChild != null &&
-                (evaluatedNode.LastChild.Name == "source" || evaluatedNode.LastChild.Name == "src" ||
-             evaluatedNode.LastChild.Name == "rel-source" || evaluatedNode.LastChild.Name == "rel-source")) {
 
-                // we have a [source] or [src] parameter here, figuring out what it points to, or contains
-                if (evaluatedNode.LastChild.Value != null) {
+            // we have a [source] or [src] parameter here, figuring out what it points to, or contains
+            if (evaluatedNode.Value != null) {
 
-                    // this might be an expression, or a constant, converting value to single object, somehow
-                    source = Single<object> (evaluatedNode.LastChild.Value, dataSource, context);
+                // this might be an expression, or a constant, converting value to single object, somehow
+                source = Single<object> (evaluatedNode, dataSource, context);
+            } else {
 
-                    // making sure we support "escaped expressions"
-                    if (source is string && (source as string).StartsWith ("\\"))
-                        source = (source as string).Substring (1);
+                // there are no values in [src] node, trying to create source out of [src]'s children
+                if (evaluatedNode.Count == 1) {
+
+                    // source is a constant node, making sure we clone it, in case source and destination overlaps
+                    source = evaluatedNode.FirstChild.Clone ();
                 } else {
 
-                    // there are no values in [src] node, trying to create source out of [src]'s children
-                    if (evaluatedNode.LastChild.Count == 1) {
-
-                        // source is a constant node, making sure we clone it, in case source and destination overlaps
-                        source = evaluatedNode.LastChild.FirstChild.Clone ();
-                    } else {
-
-                        // more than one source, making sure we convert it into one single value, meaning a 'string'
-                        source = Utilities.Convert<string> (evaluatedNode.LastChild.Children, context);
-                    }
+                    // more than one source, making sure we convert it into one single value, meaning a 'string'
+                    source = Utilities.Convert<string> (evaluatedNode.Children, context);
                 }
             }
 
@@ -509,7 +499,7 @@ namespace p5.exp
         /// <param name="context">Application context.</param>
         public static List<Node> SourceNodes (Node evaluatedNode, ApplicationContext context)
         {
-            return SourceNodes (evaluatedNode, evaluatedNode.LastChild, context);
+            return SourceNodes (evaluatedNode, evaluatedNode, context);
         }
 
         /// <summary>
@@ -525,19 +515,11 @@ namespace p5.exp
             // return value
             var sourceNodes = new List<Node> ();
 
-            // checking if any source exists
-            if (node.LastChild == null ||
-                (node.LastChild.Name != "source" &&
-             node.LastChild.Name != "src" &&
-             node.LastChild.Name != "rel-source" &&
-             node.LastChild.Name != "rel-src"))
-                return null; // no source was given
-
             // checking to see if we're given an expression
-            if (IsExpression (node.LastChild.Value)) {
+            if (IsExpression (node.Value)) {
 
                 // [source] or [src] is an expression somehow
-                foreach (var idx in node.LastChild.Get<Expression> (context).Evaluate (dataSource, context, node.LastChild)) {
+                foreach (var idx in node.Get<Expression> (context).Evaluate (dataSource, context, node)) {
                     if (idx.Value == null)
                         continue;
                     if (idx.TypeOfMatch != Match.MatchType.node && !(idx.Value is Node)) {
@@ -555,27 +537,27 @@ namespace p5.exp
                     }
                 }
             } else {
-                var nodeValue = node.LastChild.Value as Node;
+                var nodeValue = node.Value as Node;
                 if (nodeValue != null) {
 
                     // value of source is a node, adding this node
                     sourceNodes.Add (nodeValue.Clone ());
-                } else if (node.LastChild.Value is string) {
+                } else if (node.Value is string) {
 
                     // source is not an expression, but a string value. this will trigger a conversion
                     // from string, to node, creating a "root node" during conversion. we are discarding this 
                     // "root" node, and only adding children of that automatically generated root node
-                    sourceNodes.AddRange (Utilities.Convert<Node> (node.LastChild.Value, context).Children.Select (idx => idx.Clone ()));
-                } else if (node.LastChild.Value == null) {
+                    sourceNodes.AddRange (Utilities.Convert<Node> (node.Value, context).Children.Select (idx => idx.Clone ()));
+                } else if (node.Value == null) {
 
                     // source has no value, neither static string values, nor expressions
                     // adding all children of source node, if any
-                    sourceNodes.AddRange (node.LastChild.Children.Select (idx => idx.Clone ()));
+                    sourceNodes.AddRange (node.Children.Select (idx => idx.Clone ()));
                 } else {
 
                     // source is not an expression, but has a non-string value. making sure we create a node
                     // out of that value, returning that node back to caller
-                    sourceNodes.Add (new Node (string.Empty, node.LastChild.Value));
+                    sourceNodes.Add (new Node (string.Empty, node.Value));
                 }
             }
 

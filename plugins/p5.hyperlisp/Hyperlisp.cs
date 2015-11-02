@@ -203,7 +203,7 @@ namespace p5.hyperlisp
         [ActiveEvent (Name = "p5.hyperlisp.lambda2hyperlisp")]
         private static void p5_code_lambda2hyperlisp (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = new HyperlispBuilder (context, e.Args.Children).Hyperlisp;
+            e.Args.Value = new HyperlispBuilder (context, e.Args.Value is Node ? new Node [] { e.Args.Get<Node> (context) } : e.Args.Children).Hyperlisp;
         }
     }
 }

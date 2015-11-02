@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Add.cs" />
     <Compile Include="Lambda.cs" />
+    <Compile Include="Set.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

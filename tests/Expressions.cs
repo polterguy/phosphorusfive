@@ -104,20 +104,55 @@ namespace p5.unittests
         }
         
         [Test]
-        [ExpectedException (typeof (p5.exp.exceptions.ExpressionException))]
         public void IteratorDeclarationAtEnd ()
         {
-            Expression.Create ("/foo/?value", Context);
+            var exp = Expression.Create ("/*/_foo/*/?value", Context);
+            var node = CreateNode (@"_foo
+  :success");
+            var match = exp.Evaluate (node, Context);
+            Assert.AreEqual (Match.MatchType.value, match.TypeOfMatch);
+            Assert.AreEqual (1, match.Count);
+            Assert.AreEqual ("success", match [0].Value);
         }
 
         [Test]
-        public void EmptyNameIterator ()
+        public void IteratorDeclarationBeforeLogical ()
         {
-            Expression.Create ("/foo//?value", Context);
-            Expression.Create ("//?value", Context);
-            Expression.Create ("//howdy?value", Context);
-            Expression.Create ("/foo////?value", Context);
-            Expression.Create ("/foo///?value", Context);
+            var exp = Expression.Create ("/*/_foo/*/|/*/_bar/*/?value", Context);
+            var node = CreateNode (@"_foo
+  :success1
+_bar
+  :success2");
+            var match = exp.Evaluate (node, Context);
+            Assert.AreEqual (2, match.Count);
+            Assert.AreEqual ("success1", match [0].Value);
+            Assert.AreEqual ("success2", match [1].Value);
+        }
+
+        [Test]
+        public void IteratorDeclarationBeforeGroup ()
+        {
+            var exp = Expression.Create ("/*/_foo/*/(!/=error)?value", Context);
+            var node = CreateNode (@"_foo
+  :success
+  :error");
+            var match = exp.Evaluate (node, Context);
+            Assert.AreEqual (1, match.Count);
+            Assert.AreEqual ("success", match [0].Value);
+        }
+
+        [Test]
+        public void MultipleConsecutiveEmptyNames ()
+        {
+            var exp = Expression.Create ("/*/_foo/*//*/?value", Context);
+            var node = CreateNode (@"_foo
+  :error
+    :success
+  _not-empty:error2
+    :error");
+            var match = exp.Evaluate (node, Context);
+            Assert.AreEqual (1, match.Count);
+            Assert.AreEqual ("success", match [0].Value);
         }
 
         [Test]
@@ -194,8 +229,8 @@ namespace p5.unittests
             var match = exp.Evaluate (node, Context);
             Assert.AreEqual (Match.MatchType.node, match.TypeOfMatch);
             Assert.AreEqual (2, match.Count);
-            Assert.AreEqual (new Node ("x", "x1"), match [0].Value);
-            Assert.AreEqual (new Node ("y", "y1"), match [1].Value);
+            Assert.AreSame (node [0] [0], match [0].Value);
+            Assert.AreSame (node [0] [1], match [1].Value);
         }
 
         [Test]
@@ -435,7 +470,7 @@ _error2");
         [Test]
         public void SetExpressionNodeResult ()
         {
-            var exp = Expression.Create ("/../*/?node", Context);
+            var exp = Expression.Create ("/../*?node", Context);
             var node = CreateNode (@"_error1
 _error2");
             var match = exp.Evaluate (node, Context);
@@ -449,14 +484,14 @@ _error2");
                     idxMatch.Value = new Node ("_foo2", "_success2");
                 }
             }
-            Assert.AreEqual (new Node ("_foo1", "_success1"), node [0]);
-            Assert.AreEqual (new Node ("_foo2", "_success2"), node [1]);
+            Assert.IsTrue (new Node ("_foo1", "_success1").CompareTo (node [0]) == 0);
+            Assert.IsTrue (new Node ("_foo2", "_success2").CompareTo (node [1]) == 0);
         }
         
         [Test]
         public void ConvertExpressionNameResult ()
         {
-            var exp = Expression.Create ("/../*/?name.int", Context);
+            var exp = Expression.Create ("/../*?name.int", Context);
             var node = CreateNode (@"1
 2");
             var match = exp.Evaluate (node, Context);
@@ -468,7 +503,7 @@ _error2");
         [Test]
         public void ConvertExpressionValueResult ()
         {
-            var exp = Expression.Create ("/../*/?value.string", Context);
+            var exp = Expression.Create ("/../*?value.string", Context);
             var node = CreateNode (@"_x:date:""2012-12-23T21:21:21""
 _x:date:""2012-12-23T21:21:22""");
             var match = exp.Evaluate (node, Context);
@@ -480,7 +515,7 @@ _x:date:""2012-12-23T21:21:22""");
         [Test]
         public void DoNotConvertExpressionValueResult ()
         {
-            var exp = Expression.Create ("/../*/?value", Context);
+            var exp = Expression.Create ("/../*?value", Context);
             var node = CreateNode (@"_x:date:""2012-12-23T21:21:21""
 _x:date:""2012-12-23T21:21:22""");
             var match = exp.Evaluate (node, Context);

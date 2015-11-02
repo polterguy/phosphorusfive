@@ -49,6 +49,7 @@
     <Compile Include="TestBase.cs" />
     <Compile Include="Core.cs" />
     <Compile Include="lambda\Add.cs" />
+    <Compile Include="lambda\Set.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

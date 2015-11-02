@@ -1140,16 +1140,6 @@ namespace p5.core
             return _children.Select (idx => functor (idx)).Where (retVal => retVal != null && !retVal.Equals (default (T)));
         }
 
-        public override bool Equals (object obj)
-        {
-            return CompareTo (obj) == 0;
-        }
-
-        public override int GetHashCode ()
-        {
-            return Path.GetHashCode ();
-        }
-
         /*
          * does actual comparison of two non-null Node values
          */

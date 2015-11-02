@@ -1,44 +1,28 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="tests/Expressions.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="tests/lambda/Add.cs">
     <Files>
-      <File FileName="plugins/p5.lambda/Add.cs" Line="1" Column="1" />
-      <File FileName="core/p5.core/Node.cs" Line="1" Column="1" />
-      <File FileName="tests/TestBase.cs" Line="1" Column="1" />
-      <File FileName="tests/Core.cs" Line="1" Column="1" />
-      <File FileName="tests/Expressions.cs" Line="495" Column="1" />
-      <File FileName="core/p5.exp/Tokenizer.cs" Line="1" Column="1" />
-      <File FileName="core/p5.exp/iterators/Iterator.cs" Line="59" Column="1" />
-      <File FileName="core/p5.exp/iterators/IteratorGroup.cs" Line="1" Column="1" />
-      <File FileName="core/p5.exp/iterators/IteratorNamed.cs" Line="1" Column="1" />
-      <File FileName="core/p5.exp/Match.cs" Line="1" Column="1" />
-      <File FileName="plugins/p5.lambda/Lambda.cs" Line="1" Column="1" />
-      <File FileName="core/p5.core/Utilities.cs" Line="1" Column="1" />
-      <File FileName="tests/lambda/Add.cs" Line="1" Column="1" />
-      <File FileName="core/p5.exp/Expression.cs" Line="170" Column="1" />
-      <File FileName="core/p5.exp/iterators/IteratorModulo.cs" Line="39" Column="1" />
-      <File FileName="core/p5.exp/iterators/IteratorNumbered.cs" Line="37" Column="124" />
+      <File FileName="tests/lambda/Add.cs" Line="405" Column="49" />
+      <File FileName="plugins/p5.lambda/Add.cs" Line="117" Column="17" />
+      <File FileName="core/p5.exp/XUtil.cs" Line="396" Column="1" />
+      <File FileName="core/p5.core/Node.cs" Line="1142" Column="1" />
+      <File FileName="core/p5.exp/Expression.cs" Line="239" Column="1" />
+      <File FileName="tests/Expressions.cs" Line="127" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="core" expanded="True">
-            <Node name="p5.core" expanded="True" />
-            <Node name="p5.exp" expanded="True">
-              <Node name="iterators" expanded="True" />
-            </Node>
+            <Node name="p5.exp" expanded="True" />
           </Node>
           <Node name="plugins" expanded="True">
-            <Node name="p5.hyperlisp" expanded="True" />
-            <Node name="p5.types" expanded="True">
-              <Node name="References" expanded="True" />
-            </Node>
+            <Node name="p5.lambda" expanded="True" />
           </Node>
           <Node name="tests" expanded="True">
             <Node name="p5.tests" expanded="True">
-              <Node name="References" expanded="True" />
-              <Node name="lambda" expanded="True" />
-              <Node name="Expressions.cs" selected="True" />
+              <Node name="lambda" expanded="True">
+                <Node name="Add.cs" selected="True" />
+              </Node>
             </Node>
           </Node>
         </State>
@@ -55,7 +39,7 @@
             <Node name="p5.tests" expanded="True">
               <Node name="p5" expanded="True">
                 <Node name="unittests" expanded="True">
-                  <Node name="Expressions" expanded="True" />
+                  <Node name="lambda" expanded="True" />
                 </Node>
               </Node>
             </Node>

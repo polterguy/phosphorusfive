@@ -5,6 +5,7 @@
 
 using NUnit.Framework;
 using p5.core;
+using p5.exp;
 
 namespace p5.unittests.lambda
 {
@@ -25,8 +26,8 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_data")
-                .Add ("set", "@/-/?value").LastChild
-                .Add ("source", "success").Root;
+                .Add ("set", Expression.Create ("/-?value", Context)).LastChild
+                    .Add ("src", "success").Root;
             Context.Raise ("set", node [1]);
 
             // verifying [set] works as it should
@@ -42,8 +43,8 @@ namespace p5.unittests.lambda
             var node = new Node ()
                 .Add ("_data")
                 .Add ("success")
-                .Add ("set", "@/-2/?value").LastChild
-                .Add ("source", "@/./-/?name").Root;
+                .Add ("set", Expression.Create ("/-2?value", Context)).LastChild
+                    .Add ("src", Expression.Create ("/./-?name", Context)).Root;
             Context.Raise ("set", node [2]);
 
             // verifying [set] works as it should
@@ -58,9 +59,9 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_data")
-                .Add ("set", "@/-/?{0}").LastChild
-                .Add (string.Empty, "value")
-                .Add ("source", "success").Root;
+                .Add ("set", Expression.Create ("/-?{0}", Context)).LastChild
+                    .Add (string.Empty, "value")
+                    .Add ("src", "success").Root;
             Context.Raise ("set", node [1]);
 
             // verifying [set] works as it should
@@ -75,11 +76,11 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_data")
-                .Add ("set", "@/-/?value").LastChild
-                .Add ("source", "{0}{1}{2}").LastChild
-                .Add (string.Empty, "su")
-                .Add (string.Empty, "cc")
-                .Add (string.Empty, "ess").Root;
+                .Add ("set", Expression.Create ("/-?value", Context)).LastChild
+                    .Add ("src", "{0}{1}{2}").LastChild
+                        .Add (string.Empty, "su")
+                        .Add (string.Empty, "cc")
+                        .Add (string.Empty, "ess").Root;
             Context.Raise ("set", node [1]);
 
             // verifying [set] works as it should
@@ -95,9 +96,9 @@ namespace p5.unittests.lambda
             var node = new Node ()
                 .Add ("_data")
                 .Add ("success")
-                .Add ("set", "@/-2/?value").LastChild
-                .Add ("source", "@{0}?name").LastChild
-                .Add (string.Empty, "/./-/").Root;
+                .Add ("set", Expression.Create ("/-2?value", Context)).LastChild
+                    .Add ("src", Expression.Create ("{0}?name", Context)).LastChild
+                        .Add (string.Empty, "/./-").Root;
             Context.Raise ("set", node [2]);
 
             // verifying [set] works as it should
@@ -112,8 +113,8 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_data")
-                .Add ("set", "@/-/?name").LastChild
-                .Add ("source", "success").Root;
+                .Add ("set", Expression.Create ("/-?name", Context)).LastChild
+                    .Add ("src", "success").Root;
             Context.Raise ("set", node [1]);
 
             // verifying [set] works as it should
@@ -129,8 +130,8 @@ namespace p5.unittests.lambda
             var node = new Node ()
                 .Add ("_data")
                 .Add ("_data2", "success")
-                .Add ("set", "@/-2/?node").LastChild
-                .Add ("source", "@/./-/?node").Root;
+                .Add ("set", Expression.Create ("/-2", Context)).LastChild
+                    .Add ("src", Expression.Create ("/./-", Context)).Root;
             Context.Raise ("set", node [2]);
 
             // verifying [set] works as it should
@@ -150,9 +151,9 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_data")
-                .Add ("set", "@/-/?node").LastChild
-                .Add ("source").LastChild
-                .Add ("_data2", "success").Root;
+                .Add ("set", Expression.Create ("/-", Context)).LastChild
+                    .Add ("src").LastChild
+                        .Add ("_data2", "success").Root;
             Context.Raise ("set", node [1]);
 
             // verifying [set] works as it should
@@ -172,8 +173,8 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_data")
-                .Add ("set", "@/-/?node").LastChild
-                .Add ("source", new Node ("_data2", "success")).Root;
+                .Add ("set", Expression.Create ("/-", Context)).LastChild
+                    .Add ("src", new Node ("_data2", "success")).Root;
             Context.Raise ("set", node [1]);
 
             // verifying [set] works as it should
@@ -193,8 +194,8 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_data")
-                .Add ("set", "@/-/?value").LastChild
-                .Add ("source", 5).Root;
+                .Add ("set", Expression.Create ("/-?value", Context)).LastChild
+                    .Add ("src", 5).Root;
             Context.Raise ("set", node [1]);
 
             // verifying [set] works as it should
@@ -209,8 +210,8 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_data")
-                .Add ("set", "@/-/?name").LastChild
-                .Add ("source", 5).Root;
+                .Add ("set", Expression.Create ("/-?name", Context)).LastChild
+                    .Add ("src", 5).Root;
             Context.Raise ("set", node [1]);
 
             // verifying [set] works as it should
@@ -225,7 +226,7 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_data", "error")
-                .Add ("set", "@/-/?value").Root;
+                .Add ("set", Expression.Create ("/-?value", Context)).Root;
             Context.Raise ("set", node [1]);
 
             // verifying [set] works as it should
@@ -240,7 +241,7 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("error")
-                .Add ("set", "@/-/?name").Root;
+                .Add ("set", Expression.Create ("/-?name", Context)).Root;
             Context.Raise ("set", node [1]);
 
             // verifying [set] works as it should
@@ -255,7 +256,7 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("error")
-                .Add ("set", "@/-/?node").Root;
+                .Add ("set", Expression.Create ("/-", Context)).Root;
             Context.Raise ("set", node [1]);
 
             // verifying [set] works as it should
@@ -270,8 +271,8 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_data")
-                .Add ("set", "@/-/?value").LastChild
-                .Add ("source", "@/../**/?count").Root;
+                .Add ("set", Expression.Create ("/-?value", Context)).LastChild
+                    .Add ("src", Expression.Create ("/../**?count", Context)).Root;
             Context.Raise ("set", node [1]);
 
             // verifying [set] works as it should
@@ -286,8 +287,8 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_data")
-                .Add ("set", "@/-/?name").LastChild
-                .Add ("source", "@/../**/?count").Root;
+                .Add ("set", Expression.Create ("/-?name", Context)).LastChild
+                    .Add ("src", Expression.Create ("/../**?count", Context)).Root;
             Context.Raise ("set", node [1]);
 
             // verifying [set] works as it should
@@ -303,10 +304,10 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_data").LastChild
-                .Add ("succ")
-                .Add ("ess").Parent
-                .Add ("set", "@/-/?value").LastChild
-                .Add ("source", "@/./-/*/?name").Root;
+                    .Add ("succ")
+                    .Add ("ess").Parent
+                .Add ("set", Expression.Create ("/-?value", Context)).LastChild
+                    .Add ("src", Expression.Create ("/./-/*?name", Context)).Root;
             Context.Raise ("set", node [1]);
 
             // verifying [set] works as it should
@@ -323,11 +324,11 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_data").LastChild
-                .Add (string.Empty, "succ")
-                .Add (string.Empty, 5)
-                .Add (string.Empty, "ess").Parent
-                .Add ("set", "@/-/?value").LastChild
-                .Add ("source", "@/./-/*/?value").Root;
+                    .Add (string.Empty, "succ")
+                    .Add (string.Empty, 5)
+                    .Add (string.Empty, "ess").Parent
+                .Add ("set", Expression.Create ("/-?value", Context)).LastChild
+                    .Add ("src", Expression.Create ("/./-/*?value", Context)).Root;
             Context.Raise ("set", node [1]);
 
             // verifying [set] works as it should
@@ -344,11 +345,11 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_data").LastChild
-                .Add (string.Empty, "succ")
-                .Add (string.Empty, 5)
-                .Add (string.Empty, "ess").Parent
-                .Add ("set", "@/-/?name").LastChild
-                .Add ("source", "@/./-/*/?value").Root;
+                    .Add (string.Empty, "succ")
+                    .Add (string.Empty, 5)
+                    .Add (string.Empty, "ess").Parent
+                .Add ("set", Expression.Create ("/-?name", Context)).LastChild
+                    .Add ("src", Expression.Create ("/./-/*?value", Context)).Root;
             Context.Raise ("set", node [1]);
 
             // verifying [set] works as it should
@@ -364,10 +365,10 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_data").LastChild
-                .Add ("succ")
-                .Add ("ess").Parent
-                .Add ("set", "@/-/?value").LastChild
-                .Add ("source", "@/./-/?node").Root;
+                    .Add ("succ")
+                    .Add ("ess").Parent
+                .Add ("set", Expression.Create ("/-?value", Context)).LastChild
+                    .Add ("src", Expression.Create ("/./-?node", Context)).Root;
             Context.Raise ("set", node [1]);
 
             // verifying [set] works as it should
@@ -385,10 +386,10 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_data").LastChild
-                .Add ("succ")
-                .Add ("ess").Parent
-                .Add ("set", "@/-/?name").LastChild
-                .Add ("source", "@/./-/?node").Root;
+                    .Add ("succ")
+                    .Add ("ess").Parent
+                .Add ("set", Expression.Create ("/-?name", Context)).LastChild
+                    .Add ("src", Expression.Create ("/./-", Context)).Root;
             Context.Raise ("set", node [1]);
 
             // verifying [set] works as it should
@@ -404,8 +405,8 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_data")
-                .Add ("set", "@/-/?value").LastChild
-                .Add ("source", "@/mumbo/?value").Root;
+                .Add ("set", Expression.Create ("/-?value", Context)).LastChild
+                    .Add ("src", Expression.Create ("/mumbo?value", Context)).Root;
             Context.Raise ("set", node [1]);
 
             // verifying [set] works as it should
@@ -421,10 +422,10 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_data").LastChild
-                .Add ("_1", "success1")
-                .Add ("_2", "success2").Parent
-                .Add ("set", "@/-/*/?name").LastChild
-                .Add ("rel-source", "@?value").Root;
+                    .Add ("_1", "success1")
+                    .Add ("_2", "success2").Parent
+                .Add ("set", Expression.Create ("/-/*?name", Context)).LastChild
+                    .Add ("rel-src", Expression.Create ("?value", Context)).Root;
             Context.Raise ("set", node [1]);
 
             // verifying [set] works as it should
@@ -441,10 +442,10 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_data").LastChild
-                .Add ("success1")
-                .Add ("success2").Parent
-                .Add ("set", "@/-/*/?value").LastChild
-                .Add ("rel-source", "@?name").Root;
+                    .Add ("success1")
+                    .Add ("success2").Parent
+                .Add ("set", Expression.Create ("/-/*?value", Context)).LastChild
+                    .Add ("rel-src", Expression.Create ("?name", Context)).Root;
             Context.Raise ("set", node [1]);
 
             // verifying [set] works as it should
@@ -461,12 +462,12 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_data").LastChild
-                .Add (string.Empty).LastChild
-                .Add ("_1", "success1").Parent
-                .Add (string.Empty).LastChild
-                .Add ("_2", "success2").Parent.Parent
-                .Add ("set", "@/-/*/?node").LastChild
-                .Add ("rel-source", "@/0/?node").Root;
+                    .Add (string.Empty).LastChild
+                        .Add ("_1", "success1").Parent
+                    .Add (string.Empty).LastChild
+                        .Add ("_2", "success2").Parent.Parent
+                .Add ("set", Expression.Create ("/-/*", Context)).LastChild
+                    .Add ("rel-src", Expression.Create ("/0", Context)).Root;
             Context.Raise ("set", node [1]);
 
             // verifying [set] works as it should
@@ -487,14 +488,14 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_data").LastChild
-                .Add ("_1").LastChild
-                .Add ("_1", "success1").Parent
-                .Add ("_2").LastChild
-                .Add ("_2", "success2").Parent.Parent
-                .Add ("set", "@/-/*/?node").LastChild
-                .Add ("rel-source", "@/{0}/{1}/?node").LastChild
-                .Add (string.Empty, "*")
-                .Add (string.Empty, "@?name").Root;
+                    .Add ("_1").LastChild
+                        .Add ("_1", "success1").Parent
+                    .Add ("_2").LastChild
+                        .Add ("_2", "success2").Parent.Parent
+                .Add ("set", Expression.Create ("/-/*", Context)).LastChild
+                    .Add ("rel-src", Expression.Create ("/{0}/{1}", Context)).LastChild
+                        .Add (string.Empty, "*")
+                        .Add (string.Empty, Expression.Create ("?name", Context)).Root;
             Context.Raise ("set", node [1]);
 
             // verifying [set] works as it should
@@ -512,24 +513,28 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_data").LastChild
-                .Add ("_1").LastChild
-                .Add ("_1", "success1").Parent
-                .Add ("_2").LastChild
-                .Add ("_2", "success2").Parent
-                .Add ("_3").LastChild
-                .Add ("_ERROR2").Parent.Parent // intentionally returns "null" to verify [_3] is deleted
-                .Add ("set", "@/{0}/*/?node").LastChild
-                .Add (string.Empty, "-")
-                .Add ("rel-source", "@/{0}/{1}/?node").LastChild
-                .Add (string.Empty, "*")
-                .Add (string.Empty, "@?{0}").LastChild
-                .Add (string.Empty, "name").Root; // recursive formatting expression
+                    .Add ("_1").LastChild
+                        .Add ("_1", "success1").Parent
+                    .Add ("_2").LastChild
+                        .Add ("_2", "success2").Parent
+                    .Add ("_3").LastChild
+                        .Add ("_ERROR2").Parent.Parent // intentionally returns "null" to verify [_3] is deleted
+                .Add ("set", Expression.Create ("/{0}/*", Context)).LastChild
+                    .Add (string.Empty, "-")
+                    .Add ("rel-src", Expression.Create ("/{0}{1}", Context)).LastChild
+                        .Add (string.Empty, "*")
+                        .Add (string.Empty, Expression.Create ("?{0}", Context)).LastChild
+                            .Add (string.Empty, "value").Root; // recursive formatting expression
             Context.Raise ("set", node [1]);
 
             // verifying [set] works as it should
             Assert.AreEqual (2, node [0].Count);
-            Assert.AreEqual ("success1", node [0] [0].Value);
-            Assert.AreEqual ("success2", node [0] [1].Value);
+            Assert.AreEqual ("success1", node [0] [0].Name);
+            Assert.IsNull (node [0] [0].Value);
+            Assert.AreEqual (0, node [0] [0].Count);
+            Assert.AreEqual ("success2", node [0] [1].Name);
+            Assert.IsNull (node [0] [1].Value);
+            Assert.AreEqual (0, node [0] [1].Count);
         }
 
         /// <summary>
@@ -541,12 +546,12 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_data").LastChild
-                .Add ("success1").LastChild
-                .Add ("success11").Parent
-                .Add ("success2").LastChild
-                .Add ("success21").Parent.Parent
-                .Add ("set", "@/-/*/*/?node").LastChild
-                .Add ("rel-source", "@/./?node").Root;
+                    .Add ("success1").LastChild
+                        .Add ("success11").Parent
+                    .Add ("success2").LastChild
+                        .Add ("success21").Parent.Parent
+                .Add ("set", Expression.Create ("/-/*/*", Context)).LastChild
+                    .Add ("rel-src", Expression.Create ("/.", Context)).Root;
             Context.Raise ("set", node [1]);
 
             // verifying [set] works as it should
@@ -568,12 +573,12 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_data").LastChild
-                .Add ("success1").LastChild
-                .Add ("_val1:success1").Parent
-                .Add ("success2").LastChild
-                .Add ("_val2:success2").Parent.Parent
-                .Add ("set", "@/-/*/?node").LastChild
-                .Add ("rel-source", "@/0/?name").Root;
+                    .Add ("success1").LastChild
+                        .Add ("_val1:success1").Parent
+                    .Add ("success2").LastChild
+                        .Add ("_val2:success2").Parent.Parent
+                .Add ("set", Expression.Create ("/-/*", Context)).LastChild
+                    .Add ("rel-src", Expression.Create ("/0?name", Context)).Root;
             Context.Raise ("set", node [1]);
 
             // verifying [set] works as it should
@@ -596,14 +601,14 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_data").LastChild
-                .Add ("success1").LastChild
-                .Add ("foo1", 5).Parent // making sure types works
-                .Add ("success2").LastChild
-                .Add ("foo2", new Node ("bar2", "x")).Parent // making sure recursive nodes works
-                .Add ("success3").LastChild
-                .Add ("foo3", "test1\r\ntest2").Parent.Parent // making sure CR/LF works
-                .Add ("set", "@/-/*/?name").LastChild
-                .Add ("rel-source", "@?node").Root;
+                    .Add ("success1").LastChild
+                        .Add ("foo1", 5).Parent // making sure types works
+                    .Add ("success2").LastChild
+                        .Add ("foo2", new Node ("bar2", "x")).Parent // making sure recursive nodes works
+                    .Add ("success3").LastChild
+                        .Add ("foo3", "test1\r\ntest2").Parent.Parent // making sure CR/LF works
+                .Add ("set", Expression.Create ("/-/*?name", Context)).LastChild
+                    .Add ("rel-src", Expression.Create ("", Context)).Root;
             Context.Raise ("set", node [1]);
 
             // verifying [set] works as it should
@@ -624,10 +629,10 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_data").LastChild
-                .Add ("_1")
-                .Add ("_2").Parent
-                .Add ("set", "@/-/**/?value").LastChild
-                .Add ("source", "success").Root;
+                    .Add ("_1")
+                    .Add ("_2").Parent
+                .Add ("set", Expression.Create ("/-/**?value", Context)).LastChild
+                    .Add ("src", "success").Root;
             Context.Raise ("set", node [1]);
 
             // verifying [set] works as it should
@@ -644,11 +649,11 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_data").LastChild
-                .Add ("_1")
-                .Add ("_2").Parent
-                .Add ("set", "@/-/*/?value").LastChild
-                .Add ("rel-source", "{0}").LastChild
-                .Add ("", "@?name").Root;
+                    .Add ("_1")
+                    .Add ("_2").Parent
+                .Add ("set", Expression.Create ("/-/*?value", Context)).LastChild
+                    .Add ("rel-src", Expression.Create ("{0}", Context)).LastChild
+                        .Add ("", "?name").Root;
             Context.Raise ("set", node [1]);
 
             // verifying [set] works as it should
@@ -660,7 +665,7 @@ namespace p5.unittests.lambda
         public void Set37 ()
         {
             var node = ExecuteLambda (@"_result
-set:@/-/?node
+set:x:/-
   source:@""success-name:success-value""");
             Assert.AreEqual (0, node [0].Count);
             Assert.AreEqual ("success-name", node [0].Name);
@@ -676,24 +681,11 @@ set:@/-/?node
         {
             var node = ExecuteLambda (@"_result
 _out
-set:@/-2/?value
-  source:@/./-?node
-set:@/-3/#?value
-  source:foo");
+set:x:/-2?value
+  src:x:/./-
+set:x:/-3/#?value
+  src:foo");
             Assert.AreEqual ("foo", node [1].Value);
-        }
-
-        /// <summary>
-        ///     verifies that using escaped expressions as constant source works
-        /// </summary>
-        [Test]
-        public void Set40 ()
-        {
-            var node = ExecuteLambda (@"_result
-set:@/-/?value
-  source:\@?node");
-            Assert.AreEqual (0, node [0].Count);
-            Assert.AreEqual ("@?node", node [0].Value);
         }
 
         /// <summary>
@@ -703,7 +695,7 @@ set:@/-/?value
         public void Set41 ()
         {
             var node = ExecuteLambda (@"_result
-set:@/-/?value
+set:x:/-?value
   src:success");
             Assert.AreEqual (0, node [0].Count);
             Assert.AreEqual ("success", node [0].Value);
@@ -716,7 +708,7 @@ set:@/-/?value
         public void Set42 ()
         {
             var node = ExecuteLambda (@"_result
-set:@/-/?value
+set:x:/-?value
   src
     foo1:bar1
     foo2:bar2");
@@ -732,7 +724,7 @@ set:@/-/?value
         public void Set43 ()
         {
             var node = ExecuteLambda (@"_result
-set:@/-/?name
+set:x:/-?name
   src
     foo1:bar1
     foo2:bar2");
@@ -751,8 +743,8 @@ set:@/-/?name
 _data
   foo1:bar1
   foo2:bar2
-set:@/-2/?value
-  src:@/./-/*?node");
+set:x:/-2?value
+  src:x:/./-/*");
             Assert.AreEqual (0, node [0].Count);
             Assert.AreEqual ("foo1:bar1\r\nfoo2:bar2", node [0].Value);
         }
@@ -765,21 +757,26 @@ set:@/-2/?value
         public void Set45 ()
         {
             // easy way to create a node
-            var node = ExecuteLambda (@"_source
+            var node = CreateNode (@"_source
 _destination
-_set:@/-/?value
-  src:@/./-2?value");
+set:x:/-?value
+  src:x:/./-2?value");
 
             // discarding previous execution, setting a node to string[], for then to re-execute again, after renaming our 
             // [_set] node to actually do something
             node [0].Value = new[] {"howdy", "world"};
-            node [2].Name = "set";
 
             // executing again
             Context.Raise ("lambda", node);
             Assert.AreEqual (2, node [1].Get<string[]> (Context).Length);
             Assert.AreEqual ("howdy", node [1].Get<string[]> (Context) [0]);
             Assert.AreEqual ("world", node [1].Get<string[]> (Context) [1]);
+        }
+
+        [ActiveEvent (Name = "test.set46")]
+        private static void test_set46 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "howdy world";
         }
         
         /// <summary>
@@ -789,30 +786,11 @@ _set:@/-/?value
         public void Set46 ()
         {
             // easy way to create a node
-            var node = ExecuteLambda (@"event:test.set46
-  lambda
-    set:@/./.?value
-      source:howdy world
-_destination
-set:@/-/?value
+            var node = ExecuteLambda (@"_destination
+set:x:/-?value
   test.set46");
 
-            Assert.AreEqual ("howdy world", node [1].Value);
-        }
-        
-        /// <summary>
-        ///     Verifies that setting a 'value' to the results of a math hierarchy works correctly.
-        /// </summary>
-        [Test]
-        public void Set47 ()
-        {
-            // easy way to create a node
-            var node = ExecuteLambda (@"_destination
-set:@/-/?value
-  +:int:2
-    _:2");
-
-            Assert.AreEqual (4, node [0].Value);
+            Assert.AreEqual ("howdy world", node [0].Value);
         }
     }
 }

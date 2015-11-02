@@ -110,15 +110,20 @@ namespace p5.lambda
         [ActiveEvent (Name = "add")]
         private static void lambda_add (ApplicationContext context, ActiveEventArgs e)
         {
-            // figuring out source type, for then to execute the corresponding logic
+            // figuring out source type, for then to execute the corresponding logic, but first asserting destination is expression
+            if (!(e.Args.Value is Expression))
+                throw new LambdaException ("Not a valid destination expression given, make sure you set [add]'s value to an expression using :x:", e.Args, context);
+
             if (e.Args.Count > 0 && e.Args.LastChild.Name == "rel-src") {
 
                 // relative source
                 AppendRelativeSource (e.Args, context);
-            } else {
+            } else if (e.Args.Count > 0 && e.Args.LastChild.Name == "src") {
 
                 // static source
                 AppendStaticSource (e.Args, context);
+            } else {
+                throw new LambdaException ("No [src] or [rel-src] given to [add]", e.Args, context);
             }
         }
         
@@ -129,7 +134,7 @@ namespace p5.lambda
         {
             // retrieving source before we start iterating destination,
             // in case destination and source overlaps
-            var sourceNodes = XUtil.SourceNodes (addNode, context);
+            var sourceNodes = XUtil.SourceNodes (addNode.LastChild, context);
 
             // making sure there is a source
             if (sourceNodes == null)
@@ -138,6 +143,7 @@ namespace p5.lambda
             // looping through every destination node
             var isFirst = true; // since source is already cloned, we avoid cloning on our first run
             foreach (var idxDestination in addNode.Get<Expression> (context).Evaluate (addNode, context, addNode)) {
+
                 // verifying destination actually is a node
                 var curDest = idxDestination.Value as Node;
                 if (curDest == null)
@@ -169,7 +175,7 @@ namespace p5.lambda
                 if (curDest == null)
                     throw new LambdaException ("cannot [add] into something that's not a node", node, context);
 
-                foreach (var idxSource in XUtil.SourceNodes (node, idxDestination.Node, context)) {
+                foreach (var idxSource in XUtil.SourceNodes (node.LastChild, idxDestination.Node, context)) {
                     curDest.Add (idxSource.Clone ());
                 }
             }

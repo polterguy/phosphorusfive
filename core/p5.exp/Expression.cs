@@ -104,6 +104,14 @@ namespace p5.exp
             get { return _rootGroup == null; }
         }
 
+        public Expression Build (Node expressionNode, ApplicationContext context)
+        {
+            // checking to see if we're in lazy build mode, and if so, forcing build process
+            if (_rootGroup == null)
+                BuildExpression (context, expressionNode);
+            return this;
+        }
+
         /// <summary>
         ///     Evaluates expression for given <see cref="phosphorus.core.Node">node</see>.
         /// 
@@ -162,10 +170,8 @@ namespace p5.exp
                         current = AppendToken (context, current, idxToken, previousToken);
                     } else if (previousToken == "/") {
 
-                        // checking for '/' at end of token, before type declaration, which is a syntax error
-                        IteratorNamed namedIter = current.LastIterator as IteratorNamed;
-                        if (namedIter == null || (namedIter != null && namedIter.Name != string.Empty))
-                            throw new ExpressionException (_expression, "Syntax error in expression, found '/' before group type declaration token '?'.");
+                        // checking for '/' at end of token, before type declaration, which means we have an empty name iterator
+                        current.AddIterator (new IteratorNamed (string.Empty));
                     }
 
                     // storing previous token, since some iterators are dependent upon knowing it
@@ -234,19 +240,19 @@ namespace p5.exp
             switch (token) {
                 case "(":
 
-                    // opening new group
+                    // opening new group, checking for empty name iterator first
                     if (previousToken == "/")
-                        throw new ExpressionException (_expression, "Syntax error in expression, found '/' before group opening token '('.");
+                        current.AddIterator (new IteratorNamed (string.Empty));
                     return new IteratorGroup (current);
                 case ")":
 
-                    // closing group
+                    // closing group, checking for empty name iterator first and missing group opening first
                     if (current.ParentGroup == null) // making sure there's actually an open group first
                         throw new ExpressionException (
                             _expression,
                             "Closing parenthesis ')' has no matching '(' in expression.");
                     if (previousToken == "/")
-                        throw new ExpressionException (_expression, "Syntax error in expression, found '/' before group closing token ')'.");
+                        current.AddIterator (new IteratorNamed (string.Empty));
                     return current.ParentGroup;
                 case "/":
 
@@ -262,9 +268,9 @@ namespace p5.exp
                 case "^":
                 case "!":
 
-                    // boolean algebraic operator, opening up a new sub-expression
+                    // boolean algebraic operator, opening up a new sub-expression, checking for empty name iterator first
                     if (previousToken == "/")
-                        throw new ExpressionException (_expression, string.Format ("Syntax error in expression, found '/' before logical operator token '{0}'.", token));
+                        current.AddIterator (new IteratorNamed (string.Empty));
                     LogicalToken (current, token, previousToken);
                     break;
                 case "..":

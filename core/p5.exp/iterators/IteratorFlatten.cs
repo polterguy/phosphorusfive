@@ -26,8 +26,8 @@ namespace p5.exp.iterators
         public override IEnumerable<Node> Evaluate (ApplicationContext context)
         {
             foreach (var idxCurrent in Left.Evaluate (context)) {
-                var stop = idxCurrent.NextNode;
-                for (var idxNext = idxCurrent; !idxNext.Equals (stop) && idxNext != null; idxNext = idxNext.NextNode) {
+                var stop = idxCurrent.NextSibling;
+                for (var idxNext = idxCurrent; idxNext != null && !idxNext.Equals (stop); idxNext = idxNext.NextNode) {
                     yield return idxNext;
                 }
             }

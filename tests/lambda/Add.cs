@@ -23,12 +23,12 @@ namespace p5.unittests.lambda
         ///     appends a static constant source node to destination
         /// </summary>
         [Test]
-        public void Append01 ()
+        public void Add01 ()
         {
             var node = new Node ()
                 .Add ("_data")
-                .Add ("add", Expression.Create ("/-/?node", Context)).LastChild
-                    .Add ("source").LastChild
+                .Add ("add", Expression.Create ("/-?node", Context)).LastChild
+                    .Add ("src").LastChild
                         .Add ("foo1", "success1")
                         .Add ("foo2", "success2").Root;
             Context.Raise ("add", node [1]);
@@ -45,14 +45,14 @@ namespace p5.unittests.lambda
         ///     appends a static expression source node to destination
         /// </summary>
         [Test]
-        public void Append02 ()
+        public void Add02 ()
         {
             var node = new Node ()
                 .Add ("_data")
                 .Add ("source").LastChild
                     .Add ("foo", "success").Parent
-                .Add ("add", Expression.Create ("/-2/?node", Context)).LastChild
-                    .Add ("source", Expression.Create ("/./-/?node", Context)).Root;
+                .Add ("add", Expression.Create ("/-2?node", Context)).LastChild
+                    .Add ("src", Expression.Create ("/./-?node", Context)).Root;
             Context.Raise ("add", node [2]);
 
             // verifying [add] works as it should
@@ -68,15 +68,15 @@ namespace p5.unittests.lambda
         ///     expressions have formatting values
         /// </summary>
         [Test]
-        public void Append03 ()
+        public void Add03 ()
         {
             var node = new Node ()
                 .Add ("_data")
                 .Add ("source").LastChild
                     .Add ("foo", "success").Parent
-                .Add ("add", Expression.Create ("/{0}/?node", Context)).LastChild
+                .Add ("add", Expression.Create ("/{0}?node", Context)).LastChild
                     .Add (string.Empty, "-2")
-                    .Add ("source", Expression.Create ("/./{0}/?node", Context)).LastChild
+                    .Add ("src", Expression.Create ("/./{0}?node", Context)).LastChild
                         .Add (string.Empty, "-").Root;
             Context.Raise ("add", node [2]);
 
@@ -92,12 +92,12 @@ namespace p5.unittests.lambda
         ///     appends a static string source, which is converted into node
         /// </summary>
         [Test]
-        public void Append04 ()
+        public void Add04 ()
         {
             var node = new Node ()
                 .Add ("_data")
-                .Add ("add", Expression.Create ("/-/?node", Context)).LastChild
-                    .Add ("source", "foo1:success\r\n  bar1:int:5").Root;
+                .Add ("add", Expression.Create ("/-?node", Context)).LastChild
+                    .Add ("src", "foo1:success\r\n  bar1:int:5").Root;
             Context.Raise ("add", node [1]);
 
             // verifying [add] works as it should
@@ -112,13 +112,13 @@ namespace p5.unittests.lambda
         ///     appends an expression result, yielding string, which is converted into node
         /// </summary>
         [Test]
-        public void Append05 ()
+        public void Add05 ()
         {
             var node = new Node ()
                 .Add ("_data")
                 .Add ("_source", "success-name:success-value")
-                .Add ("add", Expression.Create ("/-2/?node", Context)).LastChild
-                    .Add ("source", Expression.Create ("/../*/_source?value", Context)).Root;
+                .Add ("add", Expression.Create ("/-2?node", Context)).LastChild
+                    .Add ("src", Expression.Create ("/../*/_source?value", Context)).Root;
             Context.Raise ("add", node [2]);
 
             // verifying [add] works as it should
@@ -131,13 +131,13 @@ namespace p5.unittests.lambda
         ///     appends an expression result, being 'value' expression, where value is a node
         /// </summary>
         [Test]
-        public void Append06 ()
+        public void Add06 ()
         {
             var node = new Node ()
                 .Add ("_data")
                 .Add ("_source", new Node ("success", 5))
-                .Add ("add", Expression.Create ("/-2/?node", Context)).LastChild
-                    .Add ("source", Expression.Create ("/../*/_source?value", Context)).Root;
+                .Add ("add", Expression.Create ("/-2?node", Context)).LastChild
+                    .Add ("src", Expression.Create ("/../*/_source?value", Context)).Root;
             Context.Raise ("add", node [2]);
 
             // verifying [add] works as it should
@@ -150,12 +150,12 @@ namespace p5.unittests.lambda
         ///     appends a static source, where source is a node itself
         /// </summary>
         [Test]
-        public void Append07 ()
+        public void Add07 ()
         {
             var node = new Node ()
                 .Add ("_data")
                 .Add ("add", Expression.Create ("/-?node", Context)).LastChild
-                    .Add ("source", new Node ("success", 5)).Root;
+                    .Add ("src", new Node ("success", 5)).Root;
             Context.Raise ("add", node [1]);
 
             // verifying [add] works as it should
@@ -168,13 +168,13 @@ namespace p5.unittests.lambda
         ///     appends an expression source, where destination is a child of source
         /// </summary>
         [Test]
-        public void Append08 ()
+        public void Add08 ()
         {
             var node = new Node ()
                 .Add ("_source").LastChild
                     .Add ("_destination").Parent
                 .Add ("add", Expression.Create ("/-/0?node", Context)).LastChild
-                    .Add ("source", Expression.Create ("/./-?node", Context)).Root;
+                    .Add ("src", Expression.Create ("/./-?node", Context)).Root;
             Context.Raise ("add", node [1]);
 
             // verifying [add] works as it should
@@ -189,13 +189,13 @@ namespace p5.unittests.lambda
         ///     appends an expression source, where source is a child of destination
         /// </summary>
         [Test]
-        public void Append09 ()
+        public void Add09 ()
         {
             var node = new Node ()
                 .Add ("_destination").LastChild
                     .Add ("_source").Parent
                 .Add ("add", Expression.Create ("/-?node", Context)).LastChild
-                    .Add ("source", Expression.Create ("/./-/0?node", Context)).Root;
+                    .Add ("src", Expression.Create ("/./-/0?node", Context)).Root;
             Context.Raise ("add", node [1]);
 
             // verifying [add] works as it should
@@ -210,7 +210,7 @@ namespace p5.unittests.lambda
         ///     appends a relative source, where source is child of destination
         /// </summary>
         [Test]
-        public void Append10 ()
+        public void Add10 ()
         {
             var node = new Node ()
                 .Add ("_destination1").LastChild
@@ -218,7 +218,7 @@ namespace p5.unittests.lambda
                 .Add ("_destination2").LastChild
                     .Add ("_source2").Parent
                 .Add ("add", Expression.Create ("/-1|/-2?node", Context)).LastChild
-                    .Add ("rel-source", Expression.Create ("/0?node", Context)).Root;
+                    .Add ("rel-src", Expression.Create ("/0?node", Context)).Root;
             Context.Raise ("add", node [2]);
 
             // verifying [add] works as it should
@@ -234,15 +234,15 @@ namespace p5.unittests.lambda
         ///     appends a relative source, where source is parent of destination
         /// </summary>
         [Test]
-        public void Append11 ()
+        public void Add11 ()
         {
             var node = new Node ()
                 .Add ("_source1").LastChild
                     .Add ("_destination1").Parent
-                    .Add ("_source2").LastChild
+                .Add ("_source2").LastChild
                     .Add ("_destination2").Parent
-                    .Add ("add", "@/-1/*/|/-2/*/?node").LastChild
-                    .Add ("rel-source", "@/./?node").Root;
+                .Add ("add", Expression.Create ("/-1/*|/-2/*?node", Context)).LastChild
+                    .Add ("rel-src", Expression.Create ("/.?node", Context)).Root;
             Context.Raise ("add", node [2]);
 
             // verifying [add] works as it should
@@ -264,13 +264,13 @@ namespace p5.unittests.lambda
         ///     appends a relative source, where destination equals source
         /// </summary>
         [Test]
-        public void Append12 ()
+        public void Add12 ()
         {
             var node = new Node ()
                 .Add ("_source1")
-                    .Add ("_source2")
-                    .Add ("add", "@/-1/|/-2/?node").LastChild
-                    .Add ("rel-source", "@?node").Root;
+                .Add ("_source2")
+                .Add ("add", Expression.Create ("/-1|/-2?node", Context)).LastChild
+                    .Add ("rel-src", Expression.Create ("?node", Context)).Root;
             Context.Raise ("add", node [2]);
 
             // verifying [add] works as it should
@@ -287,13 +287,13 @@ namespace p5.unittests.lambda
         ///     where value is a reference node
         /// </summary>
         [Test]
-        public void Append13 ()
+        public void Add13 ()
         {
             var node = new Node ()
                 .Add ("_source", new Node ("success", 5))
-                    .Add ("_destination")
-                    .Add ("add", "@/-/?node").LastChild
-                    .Add ("source", "@/./-2/?value").Root;
+                .Add ("_destination")
+                .Add ("add", Expression.Create ("/-?node", Context)).LastChild
+                    .Add ("src", Expression.Create ("/./-2?value", Context)).Root;
             Context.Raise ("add", node [2]);
 
             // verifying [add] works as it should
@@ -307,13 +307,13 @@ namespace p5.unittests.lambda
         ///     where value is a reference node
         /// </summary>
         [Test]
-        public void Append14 ()
+        public void Add14 ()
         {
             var node = new Node ()
                 .Add ("_destination-parent", new Node ("_destination"))
-                    .Add ("success", 5)
-                    .Add ("add", "@/-2/?value").LastChild
-                    .Add ("source", "@/./-/?node").Root;
+                .Add ("success", 5)
+                .Add ("add", Expression.Create ("/-2?value", Context)).LastChild
+                    .Add ("src", Expression.Create ("/./-?node", Context)).Root;
             Context.Raise ("add", node [2]);
 
             // verifying [add] works as it should
@@ -326,12 +326,12 @@ namespace p5.unittests.lambda
         ///     appends a a static source, where source has no result
         /// </summary>
         [Test]
-        public void Append15 ()
+        public void Add15 ()
         {
             var node = new Node ()
                 .Add ("_destination")
-                    .Add ("add", "@/-/?node").LastChild
-                    .Add ("source", "@/mumbo/?node").Root;
+                .Add ("add", Expression.Create ("/-?node", Context)).LastChild
+                    .Add ("src", Expression.Create ("/mumbo?node", Context)).Root;
             Context.Raise ("add", node [1]);
 
             // verifying [add] works as it should
@@ -340,16 +340,16 @@ namespace p5.unittests.lambda
 
         /// <summary>
         ///     appends a a static source, where source has no values
-        ///     where value is a reference node
+        ///     and value is a reference node
         /// </summary>
         [Test]
-        public void Append16 ()
+        public void Add16 ()
         {
             var node = ExecuteLambda (@"_data
   foo:bar
-_exp:@/-/?node
-add:@/+/?node
-  source:@@/./-/?value
+_exp:x:/-?node
+add:x:/+?node
+  src:x:@/./-?value
 _out");
             // verifying [add] works as it should
             Assert.AreEqual (1, node [3].Count);
@@ -363,10 +363,10 @@ _out");
         ///     where value is a reference node
         /// </summary>
         [Test]
-        public void Append17 ()
+        public void Add17 ()
         {
-            var node = ExecuteLambda (@"add:@/+/?node
-  source:int:500
+            var node = ExecuteLambda (@"add:x:/+?node
+  src:int:500
 _out");
             // verifying [add] works as it should
             Assert.AreEqual (1, node [1].Count);
@@ -379,12 +379,12 @@ _out");
         ///     where conversion yields multiple result nodes
         /// </summary>
         [Test]
-        public void Append18 ()
+        public void Add18 ()
         {
             var node = new Node ()
                 .Add ("_data")
-                    .Add ("add", "@/-/?node").LastChild
-                    .Add ("source", "foo1:success\r\nbar1:int:5").Root;
+                .Add ("add", Expression.Create ("/-?node", Context)).LastChild
+                    .Add ("src", "foo1:success\r\nbar1:int:5").Root;
             Context.Raise ("add", node [1]);
 
             // verifying [add] works as it should
@@ -400,9 +400,9 @@ _out");
         ///     sure [append] works as it should
         /// </summary>
         [Test]
-        public void Append19 ()
+        public void Add19 ()
         {
-            var node = ExecuteLambda (@"add:@/+/?node
+            var node = ExecuteLambda (@"add:x:/+?node
   src:success
 _out");
             // verifying [add] works as it should
@@ -419,9 +419,9 @@ _out");
         {
             var node = new Node ()
                 .Add ("_destination", "foo")
-                    .Add ("error")
-                    .Add ("add", "@/-2/?value").LastChild
-                    .Add ("source", "@/./-/?node").Root;
+                .Add ("error")
+                .Add ("add", Expression.Create ("/-2?value", Context)).LastChild
+                    .Add ("src", Expression.Create ("/./-?node", Context)).Root;
             Context.Raise ("add", node [2]);
         }
 
@@ -434,9 +434,9 @@ _out");
         {
             var node = new Node ()
                 .Add ("_destination", "foo")
-                    .Add ("error")
-                    .Add ("add", "@/-2/?value").LastChild
-                    .Add ("rel-source", "@/../*/error/?node").Root;
+                .Add ("error")
+                .Add ("add", Expression.Create ("/-2?value", Context)).LastChild
+                    .Add ("rel-src", "@/./-?node").Root;
             Context.Raise ("add", node [2]);
         }
 
@@ -449,9 +449,24 @@ _out");
         {
             var node = new Node ()
                 .Add ("_destination")
-                    .Add ("error")
-                    .Add ("add", "@/-2/?value").LastChild
-                    .Add ("rel-source", "@/../*/error/?node").Root;
+                .Add ("error")
+                .Add ("add", Expression.Create ("/-2?value", Context)).LastChild
+                    .Add ("rel-src", "@/./-?node").Root;
+            Context.Raise ("add", node [2]);
+        }
+        
+        /// <summary>
+        ///     tries to use something that's not an expression in destination
+        /// </summary>
+        [Test]
+        [ExpectedException]
+        public void SyntaxError4 ()
+        {
+            var node = new Node ()
+                .Add ("_destination")
+                .Add ("error")
+                .Add ("add", "@/-2/?node").LastChild
+                    .Add ("src", "@/./-?node").Root;
             Context.Raise ("add", node [2]);
         }
     }
