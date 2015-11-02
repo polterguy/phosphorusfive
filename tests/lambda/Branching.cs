@@ -23,8 +23,8 @@ namespace p5.unittests.lambda
         public void If01 ()
         {
             var result = ExecuteLambda (@"if:foo
-  set:@/../?value
-    source:success");
+  set:x:/..?value
+    src:success");
             Assert.AreEqual ("success", result.Value);
         }
 
@@ -37,8 +37,8 @@ namespace p5.unittests.lambda
             var result = ExecuteLambda (@"if:foo
   =:foo
   lambda
-    set:@/../?value
-      source:success");
+    set:x:/..?value
+      src:success");
             Assert.AreEqual ("success", result.Value);
         }
 
@@ -53,7 +53,7 @@ if:foo
   =:bar
   lambda
     set:@/../*/_result/?value
-      source:error");
+      src:error");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -65,11 +65,11 @@ if:foo
         public void If04 ()
         {
             var result = ExecuteLambda (@"_result:foo
-if:@/../*/_result/?value
+if:x:/../*/_result?value
   =:foo
   lambda
-    set:@/../*/_result/?value
-      source:success");
+    set:x:/../*/_result?value
+      src:success");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -85,7 +85,7 @@ if:@/../*/_result/?value
   =:foo
   lambda
     set:@/../*/_result/?value
-      source:error");
+      src:error");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -99,10 +99,10 @@ if:@/../*/_result/?value
         {
             var result = ExecuteLambda (@"_result:error
 if:error
-  =:@/../*/_result/?value
+  =:x:/../*/_result?value
   lambda
-    set:@/../*/_result/?value
-      source:success");
+    set:x:/../*/_result?value
+      src:success");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -119,7 +119,7 @@ if:foo
   =:@/../*/_result/?value
   lambda
     set:@/../*/_result/?value
-      source:error");
+      src:error");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -132,11 +132,11 @@ if:foo
         {
             var result = ExecuteLambda (@"_result1:foo
 _result2:foo
-if:@/../*/_result1/?value
-  =:@/../*/_result2/?value
+if:x:/../*/_result1?value
+  =:x:/../*/_result2?value
   lambda
-    set:@/../*/_result1/?value
-      source:success");
+    set:x:/../*/_result1?value
+      src:success");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -153,7 +153,7 @@ if:@/../*/_result1/?value
   =:@/../*/_result2/?value
   lambda
     set:@/../*/_result1/?value
-      source:error");
+      src:error");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -170,7 +170,7 @@ if:@/../*/_result1/?value
   =:@/../*/_result2/?value
   lambda
     set:@/../*/_result1/?value
-      source:error");
+      src:error");
             Assert.AreEqual (5, result [0].Value);
         }
 
@@ -183,11 +183,11 @@ if:@/../*/_result1/?value
         {
             var result = ExecuteLambda (@"_result1:int:5
 _result2:int:5
-if:@/../*/_result1/?value
-  =:@/../*/_result2/?value
+if:x:/../*/_result1?value
+  =:x:/../*/_result2?value
   lambda
-    set:@/../*/_result1/?value
-      source:success");
+    set:x:/../*/_result1?value
+      src:success");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -204,7 +204,7 @@ if:@/../*/_result1/?value
   =:@/../*/_result2/?value
   lambda
     set:@/../*/_result1/?value
-      source:error");
+      src:error");
             Assert.AreEqual (5, result [0].Value);
         }
 
@@ -221,11 +221,11 @@ if:@/../*/_result1/?value
 _result2
   foo1:bar1
   foo2:bar2
-if:@/../*/_result1/*/?value
-  =:@/../*/_result2/*/?value
+if:x:/../*/_result1/*?value
+  =:x:/../*/_result2/*?value
   lambda
-    set:@/../*/_result1/?value
-      source:success");
+    set:x:/../*/_result1?value
+      src:success");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -246,7 +246,7 @@ if:@/../*/_result1/*/?value
   =:@/../*/_result2/*/?value
   lambda
     set:@/../*/_result1/?value
-      source:error");
+      src:error");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -264,11 +264,11 @@ if:@/../*/_result1/*/?value
 _result2
   foo1:bar1
   foo2:int:5
-if:@/../*/_result1/*/?value
-  =:@/../*/_result2/*/?value
+if:x:/../*/_result1/*?value
+  =:x:/../*/_result2/*?value
   lambda
-    set:@/../*/_result1/?value
-      source:success");
+    set:x:/../*/_result1?value
+      src:success");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -290,7 +290,7 @@ if:@/../*/_result1/*/?value
   =:@/../*/_result2/*/?value
   lambda
     set:@/../*/_result1/?value
-      source:error");
+      src:error");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -313,7 +313,7 @@ if:@/../*/_result1/*/?node
   =:@/../*/_result2/*/?node
   lambda
     set:@/../*/_result1/?value
-      source:error");
+      src:error");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -332,11 +332,11 @@ _result2
   foo1:bar1
   foo2:int:5
     error
-if:@/../*/_result1/*/?value
-  =:@/../*/_result2/*/?value
+if:x:/../*/_result1/*?value
+  =:x:/../*/_result2/*?value
   lambda
-    set:@/../*/_result1/?value
-      source:success");
+    set:x:/../*/_result1?value
+      src:success");
 
             // note, this comparison should yield true, since we're comparing the node's 'values',
             // which should be similar, since our [error] node above in [_result2] has no value
@@ -359,11 +359,11 @@ _result2
   empty:
   foo2:int:5
     error:
-if:@/../*/_result1/*/?value
-  =:@/../*/_result2/*/?value
+if:x:/../*/_result1/*?value
+  =:x:/../*/_result2/*?value
   lambda
-    set:@/../*/_result1/?value
-      source:success");
+    set:x:/../*/_result1?value
+      src:success");
 
             // note, this comparison should yield true, since we're comparing the node's 'values',
             // which should be similar, since our [error] node above in [_result2] has no value
@@ -379,11 +379,11 @@ if:@/../*/_result1/*/?value
             var result = ExecuteLambda (@"_result
   foo1:bar1
   foo2:int:5
-if:@/../*/_result/*/?count
+if:x:/../*/_result/*?count
   =:int:2
   lambda
-    set:@/../*/_result/?value
-      source:success");
+    set:x:/../*/_result?value
+      src:success");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -397,13 +397,13 @@ if:@/../*/_result/*/?count
             var result = ExecuteLambda (@"_result
   foo1:bar1
   foo2:int:5
-if:@/../*/_result/?node
+if:x:/../*/_result
   =:node:@""_result
   foo1:bar1
   foo2:int:5""
   lambda
-    set:@/../*/_result/?value
-      source:success");
+    set:x:/../*/_result?value
+      src:success");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -418,7 +418,7 @@ if:@/../*/_result/?value
   =
   lambda
     set:@/../*/_result/?value
-      source:error");
+      src:error");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -433,7 +433,7 @@ if:foo
   =
   lambda
     set:@/../*/_result/?value
-      source:error");
+      src:error");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -449,8 +449,8 @@ if:{0}o
   =:{0}o
     :fo
   lambda
-    set:@/../*/_result/?value
-      source:success");
+    set:x:/../*/_result?value
+      src:success");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -461,14 +461,14 @@ if:{0}o
         public void If25 ()
         {
             var result = ExecuteLambda (@"_result:error
-if:@/../{0}/?value
+if:x:/../{0}?value
   :0
-  =:@/../{0}/?value
+  =:x:/../{0}?value
     :*/{0}
-      :@/../0/?name
+      :x:/../0?name
   lambda
-    set:@/../*/_result/?value
-      source:success");
+    set:x:/../*/_result?value
+      src:success");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -482,8 +482,8 @@ if:@/../{0}/?value
 if:int:5
   >=:int:4
   lambda
-    set:@/../*/_result/?value
-      source:success");
+    set:x:/../*/_result?value
+      src:success");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -498,7 +498,7 @@ if:int:4
   >=:int:5
   lambda
     set:@/../*/_result/?value
-      source:error");
+      src:error");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -512,8 +512,8 @@ if:int:4
 if:b
   >=:a
   lambda
-    set:@/../*/_result/?value
-      source:success");
+    set:x:/../*/_result?value
+      src:success");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -528,7 +528,7 @@ if:a
   >=:b
   lambda
     set:@/../*/_result/?value
-      source:error");
+      src:error");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -542,8 +542,8 @@ if:a
 if:a
   <=:b
   lambda
-    set:@/../*/_result/?value
-      source:success");
+    set:x:/../*/_result?value
+      src:success");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -557,8 +557,8 @@ if:a
 if:b
   <=:a
   lambda
-    set:@/../*/_result/?value
-      source:error");
+    set:x:/../*/_result?value
+      src:error");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -572,8 +572,8 @@ if:b
 if:abba
   !=:abca
   lambda
-    set:@/../*/_result/?value
-      source:success");
+    set:x:/../*/_result?value
+      src:success");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -588,7 +588,7 @@ if:abba
   !=:abba
   lambda
     set:@/../*/_result/?value
-      source:error");
+      src:error");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -602,8 +602,8 @@ if:abba
 if:b
   >:abba
   lambda
-    set:@/../*/_result/?value
-      source:success");
+    set:x:/../*/_result?value
+      src:success");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -617,8 +617,8 @@ if:b
 if:abba
   <:bce
   lambda
-    set:@/../*/_result/?value
-      source:success");
+    set:x:/../*/_result?value
+      src:success");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -630,10 +630,10 @@ if:abba
         {
             var result = ExecuteLambda (@"_result:error
 if:!
-  :@/../*/foo/?node
+  :x:/../*/foo
   lambda
-    set:@/../*/_result/?value
-      source:success");
+    set:x:/../*/_result?value
+      src:success");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -648,7 +648,7 @@ if:!
   :@/../*/_result/?node
   lambda
     set:@/../*/_result/?value
-      source:error");
+      src:error");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -660,13 +660,13 @@ if:!
         {
             var result = ExecuteLambda (@"_result
 if:!
-  :@/../*/_result/?node
+  :x:/../*/_result
   lambda
-    set:@/../*/_result/?value
-      source:error
+    set:x:/../*/_result?value
+      src:error
 else
-  set:@/../*/_result/?value
-    source:success");
+  set:x:/../*/_result?value
+    src:success");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -678,13 +678,13 @@ else
         {
             var result = ExecuteLambda (@"_result
 if:!
-  :@/../*/_result/?node
+  :x:/../*/_result
   lambda
-    set:@/../*/_result/?value
-      source:error
-else-if:@/../*/_result/?node
-  set:@/../*/_result/?value
-    source:success");
+    set:x:/../*/_result?value
+      src:error
+else-if:x:/../*/_result
+  set:x:/../*/_result?value
+    src:success");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -696,16 +696,16 @@ else-if:@/../*/_result/?node
         {
             var result = ExecuteLambda (@"_result
 if:!
-  :@/../*/_result/?node
+  :x:/../*/_result
   lambda
-    set:@/../*/_result/?value
-      source:error
-else-if:@/../*/_resultXX/?node
-  set:@/../*/_result/?value
-    source:error
+    set:x:/../*/_result?value
+      src:error
+else-if:x:/../*/_resultXX
+  set:x:/../*/_result?value
+    src:error
 else
-  set:@/../*/_result/?value
-    source:success");
+  set:x:/../*/_result?value
+    src:success");
             Assert.AreEqual ("success", result [0].Value);
         }
     }

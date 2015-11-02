@@ -5,8 +5,9 @@
 
 using p5.core;
 using p5.exp;
+using p5.exp.exceptions;
 
-namespace p5.lambda
+namespace p5.lambda.keywords
 {
     /// <summary>
     ///     Class wrapping the p5.lambda [for-each] keyword.
@@ -79,7 +80,9 @@ namespace p5.lambda
                     IterateForEach (context, idxSource, e.Args);
                 }
             } else {
-                foreach (var idxSource in XUtil.Iterate (e.Args, context)) {
+                if (!(e.Args.Value is Expression))
+                    throw new LambdaException ("[for-each] was neither given a node nor a valid expression", e.Args, context);
+                foreach (var idxSource in e.Args.Get<Expression> (context).Evaluate (e.Args, context, e.Args)) {
                     IterateForEach (context, idxSource.Value, e.Args);
                 }
             }

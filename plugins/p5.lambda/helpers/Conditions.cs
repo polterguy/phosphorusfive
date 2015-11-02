@@ -162,9 +162,11 @@ namespace p5.lambda.helpers
 
         // application context needed to create expressions, in case expressions have typed values
         private readonly ApplicationContext _context;
+
         // root node for our condition object
         private readonly Node _statementNode;
         private bool _hasEvaluated;
+
         // for simple exist statements, there's no need for a [lambda] execution object since everything
         // inside of condition object automatically becomes a "lambda"
         private bool _isSimpleExist;

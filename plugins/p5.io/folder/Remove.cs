@@ -37,11 +37,13 @@ namespace p5.file.folder
             // iterating through each folder caller wants to create
             foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
                 if (Directory.Exists (rootFolder + idx)) {
+
                     // folder exists, removing it recursively,
                     // and returning success back to caller
                     Directory.Delete (rootFolder + idx, true);
                     e.Args.Add (new Node (idx, true));
                 } else {
+
                     // folder didn't exist, returning that fact back to caller
                     e.Args.Add (new Node (idx, false));
                 }

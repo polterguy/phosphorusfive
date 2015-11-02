@@ -36,10 +36,12 @@ namespace p5.file.file
             // iterating through each path given
             foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
                 if (File.Exists (rootFolder + idx)) {
+
                     // file exists, removing file and signaling caller
                     File.Delete (rootFolder + idx);
                     e.Args.Add (new Node (idx, true));
                 } else {
+
                     // file does not exist, signaling caller
                     e.Args.Add (new Node (idx, false));
                 }

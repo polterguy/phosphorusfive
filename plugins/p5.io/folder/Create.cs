@@ -41,11 +41,14 @@ namespace p5.file.folder
 
             // iterating through each folder caller wants to create
             foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+
                 // checking to see if folder already exists, and if it does, return "false" to caller
                 if (Directory.Exists (rootFolder + idx)) {
-                    // folder already exists, returning that fact back to caller
+
+                    // folder already exists, returning back to caller that creation was unsuccessful
                     e.Args.Add (new Node (idx, false));
                 } else {
+
                     // folder didn't exist, creating it, and returning "true" back to caller, meaning "success"
                     Directory.CreateDirectory (rootFolder + idx);
                     e.Args.Add (new Node (idx, true));

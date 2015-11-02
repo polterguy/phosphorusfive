@@ -7,7 +7,7 @@ using p5.core;
 using p5.exp;
 using p5.exp.exceptions;
 
-namespace p5.lambda
+namespace p5.lambda.keywords
 {
     /// \todo [set] should probably be allowed to create new nodes, think about it ...?
     /// <summary>

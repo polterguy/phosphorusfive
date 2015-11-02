@@ -6,6 +6,7 @@
 using System.IO;
 using NUnit.Framework;
 using p5.core;
+using p5.exp;
 
 namespace p5.unittests.plugins
 {
@@ -54,7 +55,7 @@ namespace p5.unittests.plugins
             }
 
             // creating folder using "phosphorus.file"
-            var node = new Node (string.Empty, "@/*/?name")
+            var node = new Node (string.Empty, Expression.Create ("/*?name", Context))
                 .Add ("test1")
                 .Add ("test2");
             Context.Raise ("p5.folder.create", node);
@@ -83,7 +84,7 @@ namespace p5.unittests.plugins
             }
 
             // creating folder using "phosphorus.file"
-            var node = new Node (string.Empty, "@/*/!/0/?{0}")
+            var node = new Node (string.Empty, Expression.Create ("/*!/0?{0}", Context))
                 .Add (string.Empty, "name")
                 .Add ("test1")
                 .Add ("test2");
@@ -118,7 +119,7 @@ namespace p5.unittests.plugins
             }
 
             // creating folder using "phosphorus.file"
-            var node = new Node (string.Empty, "@/*/?name")
+            var node = new Node (string.Empty, Expression.Create ("/*?name", Context))
                 .Add ("test1")
                 .Add ("test2")
                 .Add ("test3");
@@ -168,7 +169,7 @@ namespace p5.unittests.plugins
             }
 
             // checking to see if folder exists using "phosphorus.file"
-            var node = new Node (string.Empty, "@/*/?name")
+            var node = new Node (string.Empty, Expression.Create ("/*?name", Context))
                 .Add ("test1")
                 .Add ("test2");
             Context.Raise ("p5.folder.exists", node);
@@ -195,7 +196,7 @@ namespace p5.unittests.plugins
             }
 
             // checking to see if folder exists using "phosphorus.file"
-            var node = new Node (string.Empty, "@/*/!/0/?{0}")
+            var node = new Node (string.Empty, Expression.Create ("/*!/0?{0}", Context))
                 .Add (string.Empty, "name")
                 .Add ("test1")
                 .Add ("test2");
@@ -226,7 +227,7 @@ namespace p5.unittests.plugins
             }
 
             // checking to see if folder exists using "phosphorus.file"
-            var node = new Node (string.Empty, "@/*/?name")
+            var node = new Node (string.Empty, Expression.Create ("/*?name", Context))
                 .Add ("test1")
                 .Add ("test2")
                 .Add ("test3");
@@ -253,11 +254,17 @@ namespace p5.unittests.plugins
             }
 
             // creating files within folder
-            var node = new Node (string.Empty, "@/*/!/*/source/?name")
+            var node = new Node (string.Empty, Expression.Create ("/0?name", Context))
                 .Add ("test1/test1.txt")
+                    .Add ("src", "success");
+            Context.Raise ("p5.file.save", node);
+            node = new Node (string.Empty, Expression.Create ("/0?name", Context))
                 .Add ("test1/test2.txt")
+                    .Add ("src", "success");
+            Context.Raise ("p5.file.save", node);
+            node = new Node (string.Empty, Expression.Create ("/0?name", Context))
                 .Add ("test1/test3.txt")
-                .Add ("source", "success");
+                    .Add ("src", "success");
             Context.Raise ("p5.file.save", node);
 
             // listing files within folder
@@ -287,15 +294,18 @@ namespace p5.unittests.plugins
             Directory.CreateDirectory (GetBasePath () + "test2");
 
             // creating files within folder
-            var node = new Node (string.Empty, "@/*/!/*/source/?name")
-                .Add ("test1/test1.txt")
-                .Add ("test2/test2.txt")
-                .Add ("test1/test3.txt")
-                .Add ("source", "success");
+            var node = new Node (string.Empty, "test1/test1.txt")
+                .Add ("src", "success");
+            Context.Raise ("p5.file.save", node);
+            node = new Node (string.Empty, "test2/test2.txt")
+                .Add ("src", "success");
+            Context.Raise ("p5.file.save", node);
+            node = new Node (string.Empty, "test1/test3.txt")
+                .Add ("src", "success");
             Context.Raise ("p5.file.save", node);
 
             // listing files within folder
-            node = new Node (string.Empty, "@/*/?name")
+            node = new Node (string.Empty, Expression.Create ("/*?name", Context))
                 .Add ("test1")
                 .Add ("test2");
             Context.Raise ("p5.folder.list-files", node);
@@ -323,15 +333,18 @@ namespace p5.unittests.plugins
             Directory.CreateDirectory (GetBasePath () + "test2");
 
             // creating files within folder
-            var node = new Node (string.Empty, "@/*/!/*/source/?name")
-                .Add ("test1/test1.txt")
-                .Add ("test2/test2.txt")
-                .Add ("test1/test3.txt")
-                .Add ("source", "success");
+            var node = new Node (string.Empty, "test1/test1.txt")
+                .Add ("src", "success");
+            Context.Raise ("p5.file.save", node);
+            node = new Node (string.Empty, "test2/test2.txt")
+                .Add ("src", "success");
+            Context.Raise ("p5.file.save", node);
+            node = new Node (string.Empty, "test1/test3.txt")
+                .Add ("src", "success");
             Context.Raise ("p5.file.save", node);
 
             // listing files within folder
-            node = new Node (string.Empty, "@/*/!/*//?{0}")
+            node = new Node (string.Empty, Expression.Create ("/*!/*/?{0}", Context))
                 .Add (string.Empty, "name")
                 .Add ("test1")
                 .Add ("test2");
@@ -356,11 +369,14 @@ namespace p5.unittests.plugins
             Directory.CreateDirectory (GetBasePath () + "test1");
 
             // creating files within folder
-            var node = new Node (string.Empty, "@/*/!/*/source/?name")
-                .Add ("test1/test1.txt")
-                .Add ("test1/test2.txt")
-                .Add ("test1/test3.txt")
-                .Add ("source", "success");
+            var node = new Node (string.Empty, "test1/test1.txt")
+                .Add ("src", "success");
+            Context.Raise ("p5.file.save", node);
+            node = new Node (string.Empty, "test1/test2.txt")
+                .Add ("src", "success");
+            Context.Raise ("p5.file.save", node);
+            node = new Node (string.Empty, "test1/test3.txt")
+                .Add ("src", "success");
             Context.Raise ("p5.file.save", node);
 
             // listing files within folder
@@ -416,7 +432,7 @@ namespace p5.unittests.plugins
             Directory.CreateDirectory (GetBasePath () + "test2/yyy");
 
             // listing folders within folder
-            var node = new Node (string.Empty, "@/*/?name")
+            var node = new Node (string.Empty, Expression.Create ("/*?name", Context))
                 .Add ("test1")
                 .Add ("test2");
             Context.Raise ("p5.folder.list-folders", node);
@@ -445,8 +461,8 @@ namespace p5.unittests.plugins
             Directory.CreateDirectory (GetBasePath () + "test2/yyy");
 
             // listing folders within folder
-            var node = new Node (string.Empty, "@{0}?name")
-                .Add (string.Empty, "/*/!/*//")
+            var node = new Node (string.Empty, Expression.Create ("{0}?name", Context))
+                .Add (string.Empty, "/*!/*/")
                 .Add ("test1")
                 .Add ("test2");
             Context.Raise ("p5.folder.list-folders", node);
@@ -484,7 +500,7 @@ namespace p5.unittests.plugins
         ///     verifies [p5.folder.remove] works as it should
         /// </summary>
         [Test]
-        public void Remove1 ()
+        public void RemoveFolder1 ()
         {
             // creating directory to remove
             if (!Directory.Exists (GetBasePath () + "test1")) {
@@ -505,7 +521,7 @@ namespace p5.unittests.plugins
         ///     verifies [p5.folder.remove] works as it should
         /// </summary>
         [Test]
-        public void Remove2 ()
+        public void RemoveFolder2 ()
         {
             // creating directory to remove
             if (!Directory.Exists (GetBasePath () + "test1")) {
@@ -513,7 +529,7 @@ namespace p5.unittests.plugins
 
                 // creating a file within directory, to verify remove removes recursively
                 var createFile = new Node (string.Empty, "test1/test1.txt")
-                    .Add ("source", "this is a test");
+                    .Add ("src", "this is a test");
                 Context.Raise ("p5.file.save", createFile);
             }
 
@@ -531,7 +547,7 @@ namespace p5.unittests.plugins
         ///     verifies [p5.folder.remove] works as it should
         /// </summary>
         [Test]
-        public void RemoveExpression1 ()
+        public void RemoveFolder3 ()
         {
             // creating directories to remove
             if (!Directory.Exists (GetBasePath () + "test1")) {
@@ -542,7 +558,7 @@ namespace p5.unittests.plugins
             }
 
             // removing directory using "phosphorus.file"
-            var node = new Node (string.Empty, "@/*/?name")
+            var node = new Node (string.Empty, Expression.Create ("/*?name", Context))
                 .Add ("test1")
                 .Add ("test2");
             Context.Raise ("p5.folder.remove", node);
@@ -560,7 +576,7 @@ namespace p5.unittests.plugins
         ///     verifies [p5.folder.remove] works as it should
         /// </summary>
         [Test]
-        public void RemoveExpression2 ()
+        public void RemoveFolder42 ()
         {
             // creating directories to remove
             if (!Directory.Exists (GetBasePath () + "test1")) {
@@ -571,7 +587,7 @@ namespace p5.unittests.plugins
             }
 
             // removing directory using "phosphorus.file"
-            var node = new Node (string.Empty, "@/*/!/*//?{0}")
+            var node = new Node (string.Empty, Expression.Create ("/*!/*/?{0}", Context))
                 .Add (string.Empty, "name")
                 .Add ("test1")
                 .Add ("test2");

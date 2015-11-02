@@ -6,7 +6,7 @@
 using p5.core;
 using p5.lambda.helpers;
 
-namespace p5.lambda
+namespace p5.lambda.keywords
 {
     /// <summary>
     ///     Class wrapping the [while] keyword in p5.lambda.

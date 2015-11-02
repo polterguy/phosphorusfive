@@ -197,6 +197,11 @@ namespace p5.exp
                     foreach (var idxMatch in match) {
                         val += Utilities.Convert<string> (idxMatch.Value, context);
                     }
+                } else {
+                    var strVal = val as string;
+                    if (strVal != null) {
+                        val = XUtil.FormatNode (formatNodes [idx], context);
+                    }
                 }
                 _expression = _expression.Replace ("{" + idx + "}", Utilities.Convert<string> (val, context));
             }

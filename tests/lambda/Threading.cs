@@ -5,7 +5,7 @@
 
 using NUnit.Framework;
 
-namespace p5.unittests.lambda
+namespace p5.unittests.threading
 {
     /// <summary>
     ///     unit tests for testing the threading features of p5.lambda
@@ -14,7 +14,7 @@ namespace p5.unittests.lambda
     public class Threading : TestBase
     {
         public Threading ()
-            : base ("p5.io", "p5.types", "p5.hyperlisp", "p5.threading") { }
+            : base ("p5.types", "p5.hyperlisp", "p5.threading") { }
 
         /// <summary>
         ///     forks [multiple] threads using [lambda.fork], using a [wait] and a [lock] inside of thread lambda,
@@ -25,16 +25,16 @@ namespace p5.unittests.lambda
         {
             var node = ExecuteLambda (@"_exe
   lock:job
-    append:@/././*/_wait/#/*/_foos?node
-      source:@/../*(/foo1|/foo2|/foo3|/foo4)?node
+    add:x:/././*/_wait/#/*/_foos?node
+      src:x:/../*(/foo1|/foo2|/foo3|/foo4)?node
 wait
-  lambda.fork:@/../*/_exe?node
+  lambda.fork:x:/../*/_exe?node
     foo1:bar1
-  lambda.fork:@/../*/_exe?node
+  lambda.fork:x:/../*/_exe?node
     foo2:bar2
-  lambda.fork:@/../*/_exe?node
+  lambda.fork:x:/../*/_exe?node
     foo3:bar3
-  lambda.fork:@/../*/_exe?node
+  lambda.fork:x:/../*/_exe?node
     foo4:bar4
   _foos");
             Assert.AreEqual (4, node [1] [4].Count);
@@ -48,18 +48,18 @@ wait
         public void Threading02 ()
         {
             var node = ExecuteLambda (@"_foo
-set:@/+/0?value
-  source:@/./-?node
+set:x:/+/0?value
+  src:x:/./-?node
 lambda.fork
   _foo
   lock:foo
-    append:@/./-/#?node
-      source
+    add:x:/./-/#?node
+      src
         bar:thread
 sleep:100
 lock:foo
-  append:@/../""*""/_foo?node
-    source
+  add:x:/../""*""/_foo?node
+    src
       bar:main");
             Assert.AreEqual (2, node [0].Count);
         }

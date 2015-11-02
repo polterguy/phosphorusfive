@@ -35,8 +35,10 @@ namespace p5.file.folder
 
             // iterating through each folder passed in by caller
             foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+
                 // iterating all folders in current directory, and returning as nodes beneath args given
                 foreach (var idxFolder in Directory.GetDirectories (rootFolder + idx)) {
+
                     // normalizing file path delimiters for both Linux and Windows
                     var folderName = idxFolder.Replace ("\\", "/");
                     folderName = folderName.Replace (rootFolder, "");

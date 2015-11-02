@@ -41,6 +41,7 @@ namespace p5.file.folder
 
             // iterating through each folder the caller requests knowledge about
             foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+
                 // appending whether or not the folder exists back to caller
                 e.Args.Add (new Node (idx, Directory.Exists (rootFolder + idx)));
             }

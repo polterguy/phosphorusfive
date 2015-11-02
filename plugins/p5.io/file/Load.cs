@@ -43,14 +43,17 @@ namespace p5.file.file
 
             // iterating through each file path given
             foreach (var idxFilename in XUtil.Iterate<string> (e.Args, context)) {
+
                 // checking to see if file exists
                 if (File.Exists (rootFolder + idxFilename)) {
+
                     // file exists, loading it as text file, and appending text into node
                     // with filename as name, and content as value
                     using (TextReader reader = File.OpenText (rootFolder + idxFilename)) {
                         e.Args.Add (new Node (idxFilename, reader.ReadToEnd ()));
                     }
                 } else {
+
                     // file didn't exist, making sure we signal caller, by return a "false" node,
                     // where name of node is filename, and value is boolean false
                     e.Args.Add (new Node (idxFilename, false));
@@ -78,8 +81,10 @@ namespace p5.file.file
 
             // iterating through each file path given
             foreach (var idxFilename in XUtil.Iterate<string> (e.Args, context)) {
+
                 // checking to see if file exists
                 if (File.Exists (rootFolder + idxFilename)) {
+
                     // file exists, loading it as text file, and appending text into node
                     // with filename as name, and content as value
                     using (FileStream stream = File.OpenRead (rootFolder + idxFilename)) {
@@ -88,6 +93,7 @@ namespace p5.file.file
                         e.Args.Add (new Node (idxFilename, buffer));
                     }
                 } else {
+
                     // file didn't exist, making sure we signal caller, by return a "false" node,
                     // where name of node is filename, and value is boolean false
                     e.Args.Add (new Node (idxFilename, false));

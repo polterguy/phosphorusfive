@@ -6,6 +6,7 @@
 using System.IO;
 using NUnit.Framework;
 using p5.core;
+using p5.exp;
 
 namespace p5.unittests.plugins
 {
@@ -16,14 +17,17 @@ namespace p5.unittests.plugins
     public class Files : TestBase
     {
         public Files ()
-            : base ("p5.io", "p5.hyperlisp", "p5.lambda")
+            : base ("p5.io", "p5.hyperlisp", "p5.lambda", "p5.types")
         { }
 
         /*
          * necessary to return "root folder" of executing Assembly
          */
         [ActiveEvent (Name = "p5.core.application-folder")]
-        private static void GetRootFolder (ApplicationContext context, ActiveEventArgs e) { e.Args.Value = GetBasePath (); }
+        private static void GetRootFolder (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = GetBasePath ();
+        }
 
         /// <summary>
         ///     verifies [p5.file.exists] works correctly
@@ -33,7 +37,7 @@ namespace p5.unittests.plugins
         {
             // creating file using p5.file
             var node = new Node (string.Empty, "test1.txt")
-                .Add ("source", "this is a test");
+                .Add ("src", "this is a test");
             Context.Raise ("p5.file.save", node);
 
             // checking to see if file exists
@@ -53,14 +57,14 @@ namespace p5.unittests.plugins
         {
             // creating files using p5.file
             var node = new Node (string.Empty, "test1.txt")
-                .Add ("source", "this is a test");
+                .Add ("src", "this is test 1");
             Context.Raise ("p5.file.save", node);
             node = new Node (string.Empty, "test2.txt")
-                .Add ("source", "this is a test");
+                .Add ("src", "this is test 2");
             Context.Raise ("p5.file.save", node);
 
             // checking to see if files exists
-            node = new Node (string.Empty, "@/*/?name")
+            node = new Node (string.Empty, Expression.Create ("/*?name", Context))
                 .Add ("test1.txt")
                 .Add ("test2.txt");
             Context.Raise ("p5.file.exists", node);
@@ -80,14 +84,14 @@ namespace p5.unittests.plugins
         {
             // creating files using p5.file
             var node = new Node (string.Empty, "test1.txt")
-                .Add ("source", "this is a test");
+                .Add ("src", "this is test 1");
             Context.Raise ("p5.file.save", node);
             node = new Node (string.Empty, "test1.txt")
-                .Add ("source", "this is a test");
+                .Add ("src", "this is test 2");
             Context.Raise ("p5.file.save", node);
 
             // checking to see if files exists
-            node = new Node (string.Empty, "@/*/!/0/?{0}")
+            node = new Node (string.Empty, Expression.Create ("/*!/0?{0}", Context))
                 .Add (string.Empty, "name")
                 .Add ("test1.txt")
                 .Add ("test2.txt");
@@ -108,7 +112,7 @@ namespace p5.unittests.plugins
         {
             // creating files using p5.file
             var node = new Node (string.Empty, "test1.txt")
-                .Add ("source", "this is a test");
+                .Add ("src", "this is a test");
             Context.Raise ("p5.file.save", node);
 
             // checking to see if files exists
@@ -129,7 +133,7 @@ namespace p5.unittests.plugins
         {
             // creating file using p5.file
             var node = new Node (string.Empty, "test1.txt")
-                .Add ("source", "this is a test");
+                .Add ("src", "this is a test");
             Context.Raise ("p5.file.save", node);
 
             // removing file using Phosphorus Five
@@ -148,15 +152,15 @@ namespace p5.unittests.plugins
         {
             // creating files using p5.file
             var node = new Node (string.Empty, "test1.txt")
-                .Add ("source", "this is a test");
+                .Add ("src", "this is test 1");
             Context.Raise ("p5.file.save", node);
 
             node = new Node (string.Empty, "test2.txt")
-                .Add ("source", "this is a test");
+                .Add ("src", "this is test 2");
             Context.Raise ("p5.file.save", node);
 
             // removing files using Phosphorus Five
-            node = new Node (string.Empty, "@/0/|/1/?name")
+            node = new Node (string.Empty, Expression.Create ("/0|/1?name", Context))
                 .Add ("test1.txt")
                 .Add ("test2.txt");
             Context.Raise ("p5.file.remove", node);
@@ -174,16 +178,16 @@ namespace p5.unittests.plugins
         {
             // creating files using p5.file
             var node = new Node (string.Empty, "test1.txt")
-                .Add ("source", "this is a test");
+                .Add ("src", "this is test 1");
             Context.Raise ("p5.file.save", node);
 
             node = new Node (string.Empty, "test2.txt")
-                .Add ("source", "this is a test");
+                .Add ("src", "this is test 2");
             Context.Raise ("p5.file.save", node);
 
             // removing files using Phosphorus Five
-            node = new Node (string.Empty, "@/1/|{0}?name")
-                .Add (string.Empty, "/2/")
+            node = new Node (string.Empty, Expression.Create ("/1|{0}?name", Context))
+                .Add (string.Empty, "/2")
                 .Add ("test1.txt")
                 .Add ("test2.txt");
             Context.Raise ("p5.file.remove", node);
@@ -201,7 +205,7 @@ namespace p5.unittests.plugins
         {
             // creating files using p5.file
             var node = new Node (string.Empty, "test1.txt")
-                .Add ("source", "this is a test");
+                .Add ("src", "this is a test");
             Context.Raise ("p5.file.save", node);
 
             // removing files using Phosphorus Five
@@ -226,7 +230,7 @@ namespace p5.unittests.plugins
 
             // creating file using p5.file
             var node = new Node (string.Empty, "test1.txt")
-                .Add ("source", "this is a test");
+                .Add ("src", "this is a test");
             Context.Raise ("p5.file.save", node);
 
             // verifying creation of file was done correctly
@@ -247,24 +251,16 @@ namespace p5.unittests.plugins
             if (File.Exists (GetBasePath () + "test1.txt")) {
                 File.Delete (GetBasePath () + "test1.txt");
             }
-            if (File.Exists (GetBasePath () + "test2.txt")) {
-                File.Delete (GetBasePath () + "test2.txt");
-            }
 
             // creating file using p5.file
-            var node = new Node (string.Empty, "@/0/|/1/?name")
+            var node = new Node (string.Empty, Expression.Create ("/0?name", Context))
                 .Add ("test1.txt")
-                .Add ("test2.txt")
-                .Add ("source", "this is a test");
+                .Add ("src", "this is a test");
             Context.Raise ("p5.file.save", node);
 
             // verifying creation of file was done correctly
             Assert.AreEqual (true, File.Exists (GetBasePath () + "test1.txt"));
             using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
-                Assert.AreEqual ("this is a test", reader.ReadToEnd ());
-            }
-            Assert.AreEqual (true, File.Exists (GetBasePath () + "test2.txt"));
-            using (TextReader reader = File.OpenText (GetBasePath () + "test2.txt")) {
                 Assert.AreEqual ("this is a test", reader.ReadToEnd ());
             }
         }
@@ -280,25 +276,18 @@ namespace p5.unittests.plugins
             if (File.Exists (GetBasePath () + "test1.txt")) {
                 File.Delete (GetBasePath () + "test1.txt");
             }
-            if (File.Exists (GetBasePath () + "test2.txt")) {
-                File.Delete (GetBasePath () + "test2.txt");
-            }
 
             // creating file using p5.file
-            var node = new Node (string.Empty, "@/1/|/2/?{0}")
+            var node = new Node (string.Empty, Expression.Create ("/1|/2?{0}", Context))
                 .Add (string.Empty, "name")
-                .Add ("test1.txt")
-                .Add ("test2.txt")
-                .Add ("source", "this is a test");
+                .Add ("test1")
+                .Add (".txt")
+                .Add ("src", "this is a test");
             Context.Raise ("p5.file.save", node);
 
             // verifying creation of file was done correctly
             Assert.AreEqual (true, File.Exists (GetBasePath () + "test1.txt"));
             using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
-                Assert.AreEqual ("this is a test", reader.ReadToEnd ());
-            }
-            Assert.AreEqual (true, File.Exists (GetBasePath () + "test2.txt"));
-            using (TextReader reader = File.OpenText (GetBasePath () + "test2.txt")) {
                 Assert.AreEqual ("this is a test", reader.ReadToEnd ());
             }
         }
@@ -318,7 +307,7 @@ namespace p5.unittests.plugins
             // creating file using p5.file
             var node = new Node (string.Empty, "te{0}")
                 .Add (string.Empty, "st1.txt")
-                .Add ("source", "this is a test");
+                .Add ("src", "this is a test");
             Context.Raise ("p5.file.save", node);
 
             // verifying creation of file was done correctly
@@ -343,7 +332,7 @@ namespace p5.unittests.plugins
             // creating file using p5.file
             var node = new Node (string.Empty, "test1.txt")
                 .Add ("success")
-                .Add ("source", "@/-/?name");
+                .Add ("src", Expression.Create ("/-?name", Context));
             Context.Raise ("p5.file.save", node);
 
             // verifying creation of file was done correctly
@@ -369,7 +358,7 @@ namespace p5.unittests.plugins
             var node = new Node (string.Empty, "test1.txt")
                 .Add ("succ")
                 .Add ("ess")
-                .Add ("source", "@/-2/|/-1/?name");
+                .Add ("src", Expression.Create ("/-2|/-1?name", Context));
             Context.Raise ("p5.file.save", node);
 
             // verifying creation of file was done correctly
@@ -395,7 +384,7 @@ namespace p5.unittests.plugins
             var node = new Node (string.Empty, "te{0}1.txt")
                 .Add (string.Empty, "st")
                 .Add ("success")
-                .Add ("source", "@/-/?name");
+                .Add ("src", Expression.Create ("/-?name", Context));
             Context.Raise ("p5.file.save", node);
 
             // verifying creation of file was done correctly
@@ -420,7 +409,7 @@ namespace p5.unittests.plugins
             // creating file using p5.file
             var node = new Node (string.Empty, "test1.txt")
                 .Add ("success")
-                .Add ("source", "@/{0}/?name").LastChild
+                .Add ("src", Expression.Create ("/{0}?name", Context)).LastChild
                 .Add (string.Empty, "-").Root;
             Context.Raise ("p5.file.save", node);
 
@@ -428,115 +417,6 @@ namespace p5.unittests.plugins
             Assert.AreEqual (true, File.Exists (GetBasePath () + "test1.txt"));
             using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
                 Assert.AreEqual ("success", reader.ReadToEnd ());
-            }
-        }
-
-        /// <summary>
-        ///     verifies [p5.file.save] works correctly when given a relative source, and [rel-source] is
-        ///     a child of file path expression, and [rel-source] expression points to one single 'name'
-        /// </summary>
-        [Test]
-        public void SaveExpression08 ()
-        {
-            // deleting file if it already exists
-            if (File.Exists (GetBasePath () + "test1.txt")) {
-                File.Delete (GetBasePath () + "test1.txt");
-            }
-            if (File.Exists (GetBasePath () + "test2.txt")) {
-                File.Delete (GetBasePath () + "test2.txt");
-            }
-
-            // creating file using p5.file
-            var node = new Node (string.Empty, "@/0/|/1/?name")
-                .Add ("test1.txt").LastChild
-                .Add ("success1").Parent
-                .Add ("test2.txt").LastChild
-                .Add ("success2").Parent
-                .Add ("rel-source", "@/0/?name");
-            Context.Raise ("p5.file.save", node);
-
-            // verifying creation of files was done correctly
-            Assert.AreEqual (true, File.Exists (GetBasePath () + "test1.txt"));
-            using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
-                Assert.AreEqual ("success1", reader.ReadToEnd ());
-            }
-            Assert.AreEqual (true, File.Exists (GetBasePath () + "test2.txt"));
-            using (TextReader reader = File.OpenText (GetBasePath () + "test2.txt")) {
-                Assert.AreEqual ("success2", reader.ReadToEnd ());
-            }
-        }
-
-        /// <summary>
-        ///     verifies [p5.file.save] works correctly when given a relative source, and [rel-source] is also
-        ///     formatted, with a constant formatting value
-        /// </summary>
-        [Test]
-        public void SaveExpression09 ()
-        {
-            // deleting file if it already exists
-            if (File.Exists (GetBasePath () + "test1.txt")) {
-                File.Delete (GetBasePath () + "test1.txt");
-            }
-            if (File.Exists (GetBasePath () + "test2.txt")) {
-                File.Delete (GetBasePath () + "test2.txt");
-            }
-
-            // creating file using p5.file
-            var node = new Node (string.Empty, "@/0/|/1/?name")
-                .Add ("test1.txt").LastChild
-                .Add ("success1").Parent
-                .Add ("test2.txt").LastChild
-                .Add ("success2").Parent
-                .Add ("rel-source", "@/0/?{0}").LastChild
-                .Add (string.Empty, "name").Parent;
-            Context.Raise ("p5.file.save", node);
-
-            // verifying creation of files was done correctly
-            Assert.AreEqual (true, File.Exists (GetBasePath () + "test1.txt"));
-            using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
-                Assert.AreEqual ("success1", reader.ReadToEnd ());
-            }
-            Assert.AreEqual (true, File.Exists (GetBasePath () + "test2.txt"));
-            using (TextReader reader = File.OpenText (GetBasePath () + "test2.txt")) {
-                Assert.AreEqual ("success2", reader.ReadToEnd ());
-            }
-        }
-
-        /// <summary>
-        ///     verifies [p5.file.save] works correctly when given a relative source, and [rel-source]
-        ///     is a formatted expression, where one of its formatting values is an expression, making
-        ///     sure also formatting values as expressions use the correct data source node when evaluating
-        ///     their expressions
-        /// </summary>
-        [Test]
-        public void SaveExpression10 ()
-        {
-            // deleting file if it already exists
-            if (File.Exists (GetBasePath () + "test1.txt")) {
-                File.Delete (GetBasePath () + "test1.txt");
-            }
-            if (File.Exists (GetBasePath () + "test2.txt")) {
-                File.Delete (GetBasePath () + "test2.txt");
-            }
-
-            // creating file using p5.file
-            var node = new Node (string.Empty, "@/0/|/1/?name")
-                .Add ("test1.txt").LastChild
-                .Add ("success1", "name").Parent
-                .Add ("test2.txt").LastChild
-                .Add ("success2", "name").Parent
-                .Add ("rel-source", "@/0/?{0}").LastChild
-                .Add (string.Empty, "@/0/?value").Root;
-            Context.Raise ("p5.file.save", node);
-
-            // verifying creation of files was done correctly
-            Assert.AreEqual (true, File.Exists (GetBasePath () + "test1.txt"));
-            using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
-                Assert.AreEqual ("success1", reader.ReadToEnd ());
-            }
-            Assert.AreEqual (true, File.Exists (GetBasePath () + "test2.txt"));
-            using (TextReader reader = File.OpenText (GetBasePath () + "test2.txt")) {
-                Assert.AreEqual ("success2", reader.ReadToEnd ());
             }
         }
 
@@ -551,7 +431,7 @@ namespace p5.unittests.plugins
   foo1:bar1
   foo2:bar2
 p5.file.save:test1.txt
-  source:@/../*/_data/*/?node");
+  src:x:/../*/_data/*");
             using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
                 Assert.AreEqual ("foo1:bar1\r\nfoo2:bar2", reader.ReadToEnd ());
             }
@@ -568,7 +448,7 @@ p5.file.save:test1.txt
   foo1:bar1
   foo2:bar2
 p5.file.save:test1.txt
-  source:@/../*/_data/?node");
+  src:x:/../*/_data");
             using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
                 Assert.AreEqual ("_data\r\n  foo1:bar1\r\n  foo2:bar2", reader.ReadToEnd ());
             }
@@ -587,11 +467,11 @@ p5.file.save:test1.txt
 
             // creating file using p5.file
             var node = new Node (string.Empty, "test1.txt")
-                .Add ("source", "this is a LONGER test");
+                .Add ("src", "this is a LONGER test");
             Context.Raise ("p5.file.save", node);
 
             node = new Node (string.Empty, "test1.txt")
-                .Add ("source", "this is a test");
+                .Add ("src", "this is a test");
             Context.Raise ("p5.file.save", node);
 
             // verifying creation of file was done correctly
@@ -614,7 +494,7 @@ p5.file.save:test1.txt
 
             // creating file using p5.file
             var node = new Node (string.Empty, "test1.txt")
-                .Add ("source", "success");
+                .Add ("src", "success");
             Context.Raise ("p5.file.save", node);
 
             // loading file using Phosphorus Five
@@ -642,15 +522,15 @@ p5.file.save:test1.txt
 
             // creating files using p5.file
             var node = new Node (string.Empty, "test1.txt")
-                .Add ("source", "success1");
+                .Add ("src", "success1");
             Context.Raise ("p5.file.save", node);
 
             node = new Node (string.Empty, "test2.txt")
-                .Add ("source", "success2");
+                .Add ("src", "success2");
             Context.Raise ("p5.file.save", node);
 
             // loading file using Phosphorus Five
-            node = new Node (string.Empty, "@/0/|/1/?name")
+            node = new Node (string.Empty, Expression.Create ("/0|/1?name", Context))
                 .Add ("test1.txt")
                 .Add ("test2.txt");
             Context.Raise ("p5.file.load", node);
@@ -674,7 +554,7 @@ p5.file.save:test1.txt
 
             // creating files using p5.file
             var node = new Node (string.Empty, "test1.txt")
-                .Add ("source", "success");
+                .Add ("src", "success");
             Context.Raise ("p5.file.save", node);
 
             // loading file using Phosphorus Five
@@ -699,11 +579,11 @@ p5.file.save:test1.txt
 
             // creating files using p5.file
             var node = new Node (string.Empty, "test1.txt")
-                .Add ("source", "success");
+                .Add ("src", "success");
             Context.Raise ("p5.file.save", node);
 
             // loading file using Phosphorus Five
-            node = new Node (string.Empty, "@/{0}/?name")
+            node = new Node (string.Empty, Expression.Create ("/{0}?name", Context))
                 .Add (string.Empty, "1")
                 .Add ("test1.txt");
             Context.Raise ("p5.file.load", node);

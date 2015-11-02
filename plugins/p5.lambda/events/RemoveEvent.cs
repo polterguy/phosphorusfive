@@ -6,7 +6,7 @@
 using p5.core;
 using p5.exp;
 
-namespace p5.lambda
+namespace p5.lambda.events
 {
     /// <summary>
     ///     Class wrapping [remove-event] keyword.

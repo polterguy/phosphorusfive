@@ -13,7 +13,8 @@ namespace p5.unittests.lambda
     public class Events : TestBase
     {
         public Events ()
-            : base ("p5.hyperlisp", "p5.lambda", "p5.types") { }
+            : base ("p5.hyperlisp", "p5.lambda", "p5.types")
+        { }
 
         /// <summary>
         ///     creates a simple event, and invokes it, to verify events works as they should
@@ -23,8 +24,8 @@ namespace p5.unittests.lambda
         {
             var node = ExecuteLambda (@"event:test.foo1
   lambda
-    set:@/././*/_out/?value
-      source:success
+    set:x:/././*/_out?value
+      src:success
 test.foo1
   _out");
             Assert.AreEqual ("success", node [1] [0].Value);
@@ -40,9 +41,9 @@ test.foo1
         {
             var node = ExecuteLambda (@"event:test.foo2
   lambda
-    set:@@/././?value
-      source:success
-test.foo2:@/+/?value
+    set:x:@/./.?value
+      src:success
+test.foo2:x:/+?value
 _out");
             Assert.AreEqual ("success", node [2].Value);
         }
@@ -57,14 +58,14 @@ _out");
             var node = ExecuteLambda (@"remove-event:test.foo3
 event:test.foo3
   lambda
-    set:@/././*/_out/?value
-      source:{0}{1}
+    set:x:/././*/_out?value
+      src:{0}{1}
         :succ
-        :@/././././*/_out/?value
+        :x:/././././*/_out?value
   lambda
-    set:@/././*/_out/?value
-      source:{0}{1}
-        :@/././././*/_out/?value
+    set:x:/././*/_out?value
+      src:{0}{1}
+        :x:/././././*/_out?value
         :ess
 test.foo3
   _out");
@@ -80,8 +81,8 @@ test.foo3
         {
             var node = ExecuteLambda (@"event:test.foo4
   lambda.copy
-    set:@/././*/_out/?value
-      source:error
+    set:x:/././*/_out?value
+      src:error
 test.foo4
   _out:success");
             Assert.AreEqual ("success", node [1] [0].Value);
@@ -96,8 +97,8 @@ test.foo4
         {
             ExecuteLambda (@"event:test.foo5
   lambda
-    set:@/././*/_out/?value
-      source:success");
+    set:x:/././*/_out?value
+      src:success");
 
             // creating new Application Context
             Context = Loader.Instance.CreateApplicationContext ();
@@ -114,13 +115,13 @@ test.foo4
         {
             var node = ExecuteLambda (@"event:test.foo6
   lambda
-    set:@/././*/_out/?value
-      source:succ
+    set:x:/././*/_out?value
+      src:succ
 event:test.foo6
   lambda
-    set:@/././*/_out/?value
-      source:{0}{1}
-        :@/././././*/_out/?value
+    set:x:/././*/_out?value
+      src:{0}{1}
+        :x:/././././*/_out?value
         :ess
 test.foo6
   _out");
@@ -136,8 +137,8 @@ test.foo6
             ExecuteLambda (@"event:test.f{0}
   :oo7
   lambda
-    set:@/././*/_out/?value
-      source:success");
+    set:x:/././*/_out?value
+      src:success");
             var node = ExecuteLambda (@"test.foo7
   _out");
             Assert.AreEqual ("success", node [0] [0].Value);
@@ -186,13 +187,13 @@ test.foo9
         {
             var node = ExecuteLambda (@"event:test.foo10
   lambda
-    set:@/././*/_out/?value
-      source:error
+    set:x:/././*/_out?value
+      src:error
 event:test.foo11
   lambda
-    set:@/././*/_out/?value
-      source:error
-event-remove:@/../*/(/test.foo10|test.foo11)?name
+    set:x:/././*/_out?value
+      src:error
+event-remove:x:/../*(/test.foo10|test.foo11)?name
 test.foo10
   _out:success
 test.foo11
@@ -210,10 +211,10 @@ test.foo11
             var node = ExecuteLambda (@"_evts
   test.foo12
   test.foo13
-event:@/-/*/?name
+event:x:/-/*?name
   lambda
-    set:@/././*/_out/?value
-      source:success
+    set:x:/././*/_out?value
+      src:success
 test.foo12
   _out
 test.foo13
@@ -237,9 +238,9 @@ test.foo13
         {
             var node = ExecuteLambda (@"event:test.hardcoded
   lambda
-    set:@/././?value
-      source:{0}ess
-        :@/./././.?value
+    set:x:/./.?value
+      src:{0}ess
+        :x:/./././.?value
 test.hardcoded");
             Assert.AreEqual ("success", node [1].Value);
         }
@@ -253,11 +254,11 @@ test.hardcoded");
         {
             var node = ExecuteLambda (@"event:test.foo14
   lambda
-    set:@/././?value
-      source:@/./+/#/?name
+    set:x:/./.?value
+      src:x:/./+/#?name
     _foo:node:
-    set:@/-/#/?name
-      source:success
+    set:x:/-/#?name
+      src:success
 test.foo14
 test.foo14");
             Assert.AreEqual ("", node [1].Value);
@@ -302,7 +303,7 @@ test.foo14");
         public void Events16 ()
         {
             var node = ExecuteLambda (@"_filter:test.static.event-
-list-events:@/-?value");
+list-events:x:/-?value");
             Assert.AreEqual (2, node [1].Count);
             Assert.IsTrue (node [1].Children.SingleOrDefault (idx => "test.static.event-1".Equals (idx.Value)) != null);
             Assert.IsTrue (node [1].Children.SingleOrDefault (idx => "test.static.event-2".Equals (idx.Value)) != null);
@@ -317,7 +318,7 @@ list-events:@/-?value");
         public void Events17 ()
         {
             var node = ExecuteLambda (@"_filter:node:""test.static.event-""
-list-events:@/-?value");
+list-events:x:/-?value");
             Assert.AreEqual (2, node [1].Count);
             Assert.IsTrue (node [1].Children.SingleOrDefault (idx => "test.static.event-1".Equals (idx.Value)) != null);
             Assert.IsTrue (node [1].Children.SingleOrDefault (idx => "test.static.event-2".Equals (idx.Value)) != null);
@@ -331,10 +332,10 @@ list-events:@/-?value");
         [Test]
         public void Events18 ()
         {
-            var node = ExecuteLambda (@"_filter:@/*?value
+            var node = ExecuteLambda (@"_filter:x:/*?value
   :test.static.event-1
   :test.static.event-2
-list-events:@@/-?value");
+list-events:x:@/-?value");
             Assert.AreEqual (2, node [1].Count);
             Assert.IsTrue (node [1].Children.SingleOrDefault (idx => "test.static.event-1".Equals (idx.Value)) != null);
             Assert.IsTrue (node [1].Children.SingleOrDefault (idx => "test.static.event-2".Equals (idx.Value)) != null);
@@ -359,9 +360,9 @@ list-events:@@/-?value");
         [Test]
         public void Events20 ()
         {
-            var node = ExecuteLambda (@"_filter:@/*?value
+            var node = ExecuteLambda (@"_filter:x:/*?value
   :test.static.event-
-list-events:@@/-?value");
+list-events:x:@/-?value");
             Assert.AreEqual (2, node [1].Count);
             Assert.IsTrue (node [1].Children.SingleOrDefault (idx => "test.static.event-1".Equals (idx.Value)) != null);
             Assert.IsTrue (node [1].Children.SingleOrDefault (idx => "test.static.event-2".Equals (idx.Value)) != null);
@@ -375,9 +376,9 @@ list-events:@@/-?value");
         [Test]
         public void Events21 ()
         {
-            var node = ExecuteLambda (@"_filter:@/*?value
+            var node = ExecuteLambda (@"_filter:x:/*?value
   :test.static.event-1
-list-events:@@/-?value");
+list-events:x:@/-?value");
             Assert.AreEqual (1, node [1].Count);
             Assert.IsTrue (node [1].Children.SingleOrDefault (idx => "test.static.event-1".Equals (idx.Value)) != null);
         }
@@ -394,15 +395,15 @@ list-events:@@/-?value");
         }
 
         /// <summary>
-        ///     creates an event that returns a new node by using [append], verifying events work as they should
+        ///     creates an event that returns a new node by using [add], verifying events work as they should
         /// </summary>
         [Test]
         public void Events23 ()
         {
             var node = ExecuteLambda (@"event:test.foo15
   lambda
-    append:@/./.?node
-      source
+    add:x:/./.?node
+      src
         _result:success
 test.foo15");
             Assert.AreEqual (1, node [1].Count);

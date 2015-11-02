@@ -6,6 +6,7 @@
 using System.IO;
 using p5.core;
 using p5.exp;
+using p5.exp.exceptions;
 
 namespace p5.file.file
 {
@@ -46,28 +47,18 @@ namespace p5.file.file
             // getting root folder
             var rootFolder = Common.GetRootFolder (context);
 
-            if (e.Args.LastChild.Name == "source" || e.Args.LastChild.Name == "src") {
+            if (e.Args.LastChild.Name != "src")
+                throw new LambdaException ("No [src] given to [p5.file.save]", e.Args, context);
 
-                // static source
-                var source = Utilities.Convert<string> (XUtil.SourceSingle (e.Args, context), context);
+            // getting source
+            var source = Utilities.Convert<string> (XUtil.SourceSingle (e.Args.LastChild, context), context);
 
-                // iterating through each file path given
-                foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
-                    // saving source to currenly iterated file
-                    using (TextWriter writer = File.CreateText (rootFolder + idx)) {
-                        writer.Write (source);
-                    }
-                }
-            } else if (e.Args.LastChild.Name == "rel-source" || e.Args.LastChild.Name == "rel-src") {
+            // getting filename
+            string fileName = XUtil.Single<string> (e.Args, context);
 
-                // relative source
-                foreach (var idx in XUtil.Iterate (e.Args, context)) {
-                    using (TextWriter writer = File.CreateText (rootFolder + idx.Value)) {
-                        // finding source relative to destination
-                        var source = Utilities.Convert<string> (XUtil.SourceSingle (e.Args, idx.Node, context), context);
-                        writer.Write (source);
-                    }
-                }
+            // saving file
+            using (TextWriter writer = File.CreateText (rootFolder + fileName)) {
+                writer.Write (source);
             }
         }
 
@@ -95,28 +86,18 @@ namespace p5.file.file
             // getting root folder
             var rootFolder = Common.GetRootFolder (context);
 
-            if (e.Args.LastChild.Name == "source" || e.Args.LastChild.Name == "src") {
+            if (e.Args.LastChild.Name != "src")
+                throw new LambdaException ("No [src] given to [p5.file.save]", e.Args, context);
 
-                // static source
-                var source = Utilities.Convert<byte[]> (XUtil.SourceSingle (e.Args, context), context);
+            // getting source
+            var source = Utilities.Convert<byte[]> (XUtil.SourceSingle (e.Args, context), context);
 
-                // iterating through each file path given
-                foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
-                    // saving source to currenly iterated file
-                    using (FileStream stream = File.Create (rootFolder + idx)) {
-                        stream.Write (source, 0, source.Length);
-                    }
-                }
-            } else if (e.Args.LastChild.Name == "rel-source" || e.Args.LastChild.Name == "rel-src") {
+            // getting filename
+            string fileName = XUtil.Single<string> (e.Args, context);
 
-                // relative source
-                foreach (var idx in XUtil.Iterate (e.Args, context)) {
-                    using (FileStream stream = File.Create (rootFolder + idx)) {
-                        // finding source relative to destination
-                        var source = Utilities.Convert<byte[]> (XUtil.SourceSingle (e.Args, idx.Node, context), context);
-                        stream.Write (source, 0, source.Length);
-                    }
-                }
+            // saving file
+            using (FileStream stream = File.Create (rootFolder + fileName)) {
+                stream.Write (source, 0, source.Length);
             }
         }
     }

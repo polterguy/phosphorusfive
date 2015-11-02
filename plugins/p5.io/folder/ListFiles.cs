@@ -35,10 +35,13 @@ namespace p5.file.folder
 
             // iterating through each folder given by caller
             foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+
                 // iterating all files in current directory, and returning as nodes beneath args given
                 foreach (var idxFile in Directory.GetFiles (rootFolder + idx)) {
+
                     // intentionally dropping "invisible linux 'backup' files"
                     if (!idxFile.EndsWith ("~")) {
+
                         // file is not a backup file on Linux
                         // normalizing file path delimiters for both Linux and Windows, before we return it 
                         // back to caller

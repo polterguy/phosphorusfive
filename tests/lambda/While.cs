@@ -4,6 +4,7 @@
  */
 
 using NUnit.Framework;
+using p5.exp;
 using p5.core;
 
 namespace p5.unittests.lambda
@@ -26,16 +27,16 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_data").LastChild
-                .Add ("su")
-                .Add ("cc")
-                .Add ("ess").Parent
+                    .Add ("su")
+                    .Add ("cc")
+                    .Add ("ess").Parent
                 .Add ("_result")
-                .Add ("while", "@/-2/*/?node").LastChild
-                .Add ("set", "@/./-/?value").LastChild
-                .Add ("source", "{0}{1}").LastChild
-                .Add (string.Empty, "@/../*/_result/?value")
-                .Add (string.Empty, "@/../*/_data/0/?name").Parent.Parent
-                .Add ("set", "@/../*/_data/0/?node").Root;
+                .Add ("while", Expression.Create ("/-2/*", Context)).LastChild
+                    .Add ("set", Expression.Create ("/./-?value", Context)).LastChild
+                        .Add ("src", "{0}{1}").LastChild
+                            .Add (string.Empty, Expression.Create ("/../*/_result?value", Context))
+                            .Add (string.Empty, Expression.Create ("/../*/_data/0?name", Context)).Parent.Parent
+                    .Add ("set", Expression.Create ("/../*/_data/0", Context)).Root;
             Context.Raise ("while", node [2]);
             Assert.AreEqual ("success", node [1].Value);
         }
@@ -49,19 +50,19 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_data").LastChild
-                .Add ("su")
-                .Add ("cc")
-                .Add ("ess")
-                .Add ("error").Parent
+                    .Add ("su")
+                    .Add ("cc")
+                    .Add ("ess")
+                    .Add ("error").Parent
                 .Add ("_result")
-                .Add ("while", "@/-2/*/?count").LastChild
-                .Add (">", 1)
-                .Add ("lambda").LastChild
-                .Add ("set", "@/././-/?value").LastChild
-                .Add ("source", "{0}{1}").LastChild
-                .Add (string.Empty, "@/../*/_result/?value")
-                .Add (string.Empty, "@/../*/_data/0/?name").Parent.Parent
-                .Add ("set", "@/../*/_data/0/?node").Root;
+                .Add ("while", Expression.Create ("/-2/*?count", Context)).LastChild
+                    .Add (">", 1)
+                    .Add ("lambda").LastChild
+                        .Add ("set", Expression.Create ("/././-?value", Context)).LastChild
+                            .Add ("src", "{0}{1}").LastChild
+                                .Add (string.Empty, Expression.Create ("/../*/_result?value", Context))
+                                .Add (string.Empty, Expression.Create ("/../*/_data/0?name", Context)).Parent.Parent
+                        .Add ("set", Expression.Create ("/../*/_data/0", Context)).Root;
             Context.Raise ("while", node [2]);
             Assert.AreEqual ("success", node [1].Value);
         }
@@ -75,19 +76,19 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_data").LastChild
-                .Add ("su")
-                .Add ("cc")
-                .Add ("ess")
-                .Add ("error").Parent
+                    .Add ("su")
+                    .Add ("cc")
+                    .Add ("ess")
+                    .Add ("error").Parent
                 .Add ("_result")
-                .Add ("while", "@/-2/0/?name").LastChild
-                .Add ("!=", "error")
-                .Add ("lambda").LastChild
-                .Add ("set", "@/././-/?value").LastChild
-                .Add ("source", "{0}{1}").LastChild
-                .Add (string.Empty, "@/../*/_result/?value")
-                .Add (string.Empty, "@/../*/_data/0/?name").Parent.Parent
-                .Add ("set", "@/../*/_data/0/?node").Root;
+                .Add ("while", Expression.Create ("/-2/0?name", Context)).LastChild
+                    .Add ("!=", "error")
+                    .Add ("lambda").LastChild
+                        .Add ("set", Expression.Create ("/././-?value", Context)).LastChild
+                            .Add ("src", "{0}{1}").LastChild
+                                .Add (string.Empty, Expression.Create ("/../*/_result?value", Context))
+                                .Add (string.Empty, Expression.Create ("/../*/_data/0?name", Context)).Parent.Parent
+                        .Add ("set", Expression.Create ("/../*/_data/0", Context)).Root;
             Context.Raise ("while", node [2]);
             Assert.AreEqual ("success", node [1].Value);
         }
@@ -101,20 +102,20 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_data").LastChild
-                .Add ("su")
-                .Add ("cc")
-                .Add ("ess")
-                .Add ("error", 5).Parent
+                    .Add ("su")
+                    .Add ("cc")
+                    .Add ("ess")
+                    .Add ("error", 5).Parent
                 .Add ("_result")
-                .Add ("while", "@/{0}/0/?value").LastChild
-                .Add (string.Empty, "-2")
-                .Add ("!=", 5)
-                .Add ("lambda").LastChild
-                .Add ("set", "@/././-/?value").LastChild
-                .Add ("source", "{0}{1}").LastChild
-                .Add (string.Empty, "@/../*/_result/?value")
-                .Add (string.Empty, "@/../*/_data/0/?name").Parent.Parent
-                .Add ("set", "@/../*/_data/0/?node").Root;
+                .Add ("while", Expression.Create ("/{0}/0?value", Context)).LastChild
+                    .Add (string.Empty, "-2")
+                    .Add ("!=", 5)
+                    .Add ("lambda").LastChild
+                        .Add ("set", Expression.Create ("/././-?value", Context)).LastChild
+                            .Add ("src", "{0}{1}").LastChild
+                                .Add (string.Empty, Expression.Create ("/../*/_result?value", Context))
+                                .Add (string.Empty, Expression.Create ("/../*/_data/0?name", Context)).Parent.Parent
+                        .Add ("set", Expression.Create ("/../*/_data/0", Context)).Root;
             Context.Raise ("while", node [2]);
             Assert.AreEqual ("success", node [1].Value);
         }
@@ -127,17 +128,17 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_data").LastChild
-                .Add ("success", "foo")
-                .Add ("error").Parent
+                    .Add ("success", "foo")
+                    .Add ("error").Parent
                 .Add ("_result")
-                .Add ("while", "@/-2/0/?value").LastChild
-                .Add ("set", "@/./-/?value").LastChild
-                .Add ("source", "@/../*/_data/0/?name").Parent
-                .Add ("set", "@/../*/_data/0/?node")
-                .Add ("set", "@?node").Root; // this node should be deleted, and reinserted afterwards again
+                .Add ("while", Expression.Create ("/-2/0?value", Context)).LastChild
+                    .Add ("set", Expression.Create ("/./-?value", Context)).LastChild
+                        .Add ("src", Expression.Create ("/../*/_data/0?name", Context)).Parent
+                    .Add ("set", Expression.Create ("/../*/_data/0", Context))
+                    .Add ("set", Expression.Create ("", Context)).Root; // this node should be deleted, and reinserted afterwards again
             Context.Raise ("while", node [2]);
             Assert.AreEqual ("success", node [1].Value);
-            Assert.AreEqual ("@?node", node [2] [2].Value);
+            Assert.AreEqual ("set", node [2] [2].Name);
         }
 
         /// <summary>
@@ -148,15 +149,15 @@ namespace p5.unittests.lambda
         {
             var node = new Node ()
                 .Add ("_data").LastChild
-                .Add ("success", "foo")
-                .Add ("error").Parent
+                    .Add ("success", "foo")
+                    .Add ("error").Parent
                 .Add ("_result")
-                .Add ("while", "@/-2/0/?value").LastChild
-                .Add ("lambda").LastChild
-                .Add ("set", "@/././-/?value").LastChild
-                .Add ("source", "@/../*/_data/0/?name").Parent
-                .Add ("set", "@/../*/_data/0/?node")
-                .Add ("set", "@?node").Root; // this node should be deleted, and never reinserted
+                .Add ("while", Expression.Create ("/-2/0?value", Context)).LastChild
+                    .Add ("lambda").LastChild
+                        .Add ("set", Expression.Create ("/././-?value", Context)).LastChild
+                            .Add ("src", Expression.Create ("/../*/_data/0?name", Context)).Parent
+                        .Add ("set", Expression.Create ("/../*/_data/0", Context))
+                        .Add ("set", Expression.Create ("", Context)).Root; // this node should be deleted, and never reinserted
             Context.Raise ("while", node [2]);
             Assert.AreEqual ("success", node [1].Value);
             Assert.AreEqual (2, node [2] [0].Count);
@@ -172,10 +173,10 @@ namespace p5.unittests.lambda
             var node = new Node ()
                 .Add ("_result")
                 .Add ("while", "tjobing").LastChild
-                .Add ("lambda").LastChild
-                .Add ("set", "@/././-/?value").LastChild
-                .Add ("source", "success").Parent
-                .Add ("set", "@/../*/while/?value").Root; // at this point we [set] [while]'s value to null
+                    .Add ("lambda").LastChild
+                        .Add ("set", Expression.Create ("/././-?value", Context)).LastChild
+                            .Add ("src", "success").Parent
+                        .Add ("set", Expression.Create ("/../*/while?value", Context)).Root; // at this point we [set] [while]'s value to null
             Context.Raise ("while", node [1]);
             Assert.AreEqual ("success", node [0].Value);
         }

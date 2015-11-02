@@ -43,9 +43,16 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Add.cs" />
     <Compile Include="Lambda.cs" />
-    <Compile Include="Set.cs" />
+    <Compile Include="helpers\Conditions.cs" />
+    <Compile Include="keywords\Add.cs" />
+    <Compile Include="keywords\Branching.cs" />
+    <Compile Include="keywords\Set.cs" />
+    <Compile Include="keywords\While.cs" />
+    <Compile Include="keywords\ForEach.cs" />
+    <Compile Include="events\EventsCommon.cs" />
+    <Compile Include="events\PFEvent.cs" />
+    <Compile Include="events\RemoveEvent.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
@@ -72,5 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="helpers\" />
+    <Folder Include="keywords\" />
+    <Folder Include="events\" />
   </ItemGroup>
 </Project>

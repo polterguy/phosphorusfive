@@ -9,7 +9,7 @@ using System.Linq;
 using p5.core;
 using p5.exp;
 
-namespace p5.lambda
+namespace p5.lambda.events
 {
     /// <summary>
     ///     Common helper methods for dynamically created Active Events.

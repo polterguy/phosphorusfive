@@ -50,6 +50,13 @@
     <Compile Include="Core.cs" />
     <Compile Include="lambda\Add.cs" />
     <Compile Include="lambda\Set.cs" />
+    <Compile Include="lambda\ForEach.cs" />
+    <Compile Include="lambda\While.cs" />
+    <Compile Include="lambda\Branching.cs" />
+    <Compile Include="lambda\Events.cs" />
+    <Compile Include="lambda\Threading.cs" />
+    <Compile Include="plugins\Files.cs" />
+    <Compile Include="plugins\Folders.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
@@ -86,6 +93,14 @@
     <ProjectReference Include="..\plugins\p5.types\p5.types.csproj">
       <Project>{5B8D14D0-854E-4143-AE48-C62583F49F49}</Project>
       <Name>p5.types</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\plugins\p5.threading\p5.threading.csproj">
+      <Project>{EF65C1FB-FCC8-43F0-90AC-39DA931268E4}</Project>
+      <Name>p5.threading</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\plugins\p5.io\p5.io.csproj">
+      <Project>{89C744BE-B583-4C6D-84B9-941E0C7CEBF4}</Project>
+      <Name>p5.io</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

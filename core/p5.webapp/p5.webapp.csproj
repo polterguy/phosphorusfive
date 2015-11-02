@@ -127,5 +127,17 @@
       <Project>{8EB5FDEA-D073-4147-AE65-376A01B463DF}</Project>
       <Name>p5.lambda</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\plugins\p5.hyperlisp\p5.hyperlisp.csproj">
+      <Project>{C02D30A6-7DA2-4045-8644-9710AB40B629}</Project>
+      <Name>p5.hyperlisp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\p5.threading\p5.threading.csproj">
+      <Project>{EF65C1FB-FCC8-43F0-90AC-39DA931268E4}</Project>
+      <Name>p5.threading</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\p5.types\p5.types.csproj">
+      <Project>{5B8D14D0-854E-4143-AE48-C62583F49F49}</Project>
+      <Name>p5.types</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>
