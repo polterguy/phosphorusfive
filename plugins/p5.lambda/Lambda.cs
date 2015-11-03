@@ -57,6 +57,31 @@ namespace p5.lambda
     /// </summary>
     public static class Lambda
     {
+        private delegate void ExecuteFunctor (ApplicationContext context, Node exe, IEnumerable<Node> args);
+
+        private static void Executor (ExecuteFunctor functor, ApplicationContext context, Node args, string lambdaEvent)
+        {
+            if (args.Name == lambdaEvent && args.Value != null) {
+
+                if (XUtil.IsExpression (args.Value)) {
+
+                    // executing a value object, converting to node, before we pass into execution method,
+                    // making sure we pass in children of [lambda] as "arguments" or "parameters" to [lambda] statement
+                    var match = (args.Value as Expression).Evaluate (args, context);
+                    foreach (var idxSource in match) {
+                        functor (context, Utilities.Convert<Node> (idxSource.Value, context), args.Children);
+                    }
+                } else {
+                    var lambda = context.Raise ("p5.hyperlisp.hyperlisp2lambda", new Node (string.Empty, args.Get<string> (context))).Get<Node> (context);
+                    functor (context, lambda, args.Children);
+                }
+            } else {
+
+                // executing current scope
+                functor (context, args, new Node[] {});
+            }
+        }
+
         /// <summary>
         ///     Executes a specified piece of p5.lambda block.
         /// 
@@ -131,17 +156,7 @@ namespace p5.lambda
         [ActiveEvent (Name = "lambda")]
         private static void lambda_lambda (ApplicationContext context, ActiveEventArgs e)
         {
-            if (e.Args.Name == "lambda" && e.Args.Value != null) {
-                // executing a value object, converting to node, before we pass into execution method,
-                // making sure we pass in children of [lambda] as "arguments" or "parameters" to [lambda] statement
-                var match = Expression.Create (e.Args.Get<string> (context), context).Evaluate (e.Args, context);
-                foreach (var idxSource in match) {
-                    ExecuteBlockNormal (context, Utilities.Convert<Node> (idxSource, context), e.Args.Children);
-                }
-            } else {
-                // executing current scope
-                ExecuteBlockNormal (context, e.Args, new Node[] {});
-            }
+            Executor (ExecuteBlockNormal, context, e.Args, "lambda");
         }
 
         /// <summary>
@@ -169,17 +184,7 @@ namespace p5.lambda
         [ActiveEvent (Name = "lambda.immutable")]
         private static void lambda_immutable (ApplicationContext context, ActiveEventArgs e)
         {
-            if (e.Args.Name == "lambda.immutable" && e.Args.Value != null) {
-                // executing a value object, converting to node, before we pass into execution method,
-                // making sure we pass in children of [lambda] as "arguments" or "parameters" to [lambda] statement
-                var match = Expression.Create (e.Args.Get<string> (context), context).Evaluate (e.Args, context);
-                foreach (var idxSource in match) {
-                    ExecuteBlockImmutable (context, Utilities.Convert<Node> (idxSource.Value, context), e.Args.Children);
-                }
-            } else {
-                // executing current scope
-                ExecuteBlockImmutable (context, e.Args, new Node[] {});
-            }
+            Executor (ExecuteBlockImmutable, context, e.Args, "lambda.immutable");
         }
 
         /// <summary>
@@ -213,17 +218,7 @@ namespace p5.lambda
         [ActiveEvent (Name = "lambda.copy")]
         private static void lambda_copy (ApplicationContext context, ActiveEventArgs e)
         {
-            if (e.Args.Name == "lambda.copy" && e.Args.Value != null) {
-                // executing a value object, converting to node, before we pass into execution method,
-                // making sure we pass in children of [lambda] as "arguments" or "parameters" to [lambda] statement
-                var match = Expression.Create (e.Args.Get<string> (context), context).Evaluate (e.Args, context);
-                foreach (var idxSource in match) {
-                    ExecuteBlockCopy (context, Utilities.Convert<Node> (idxSource.Value, context), e.Args.Children);
-                }
-            } else {
-                // executing current scope
-                ExecuteBlockCopy (context, e.Args, new Node[] {});
-            }
+            Executor (ExecuteBlockCopy, context, e.Args, "lambda.copy");
         }
 
         /// <summary>

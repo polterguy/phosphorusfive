@@ -25,9 +25,6 @@ namespace p5.exp
     [Serializable]
     public class Expression : IComparable
     {
-        // holds the actual expression
-        private string _expression;
-
         // holds the root group iterator of expression
         private IteratorGroup _rootGroup;
 
@@ -36,15 +33,12 @@ namespace p5.exp
          */
         private Expression (string expression, ApplicationContext context)
         {
-            if (expression.StartsWith ("@")) {
-                _expression = expression.Substring (1);
-                Reference = true;
-            } else {
-                _expression = expression;
-            }
+            Value = expression;
 
             // checking to see if we should lazy build expression
-            if (!_expression.Contains ("{0}"))
+            if (Value.Contains ("{0}"))
+                Lazy = true;
+            else
                 BuildExpression (context); // building immediately, since there are no formatting parameters
         }
 
@@ -63,53 +57,45 @@ namespace p5.exp
         ///     be returned as expression objects.
         /// </summary>
         /// <value><c>true</c> if reference; otherwise, <c>false</c>.</value>
-        public bool Reference {
+        private bool Reference {
             get;
-            private set;
+            set;
         }
 
         /// <summary>
         ///     Returns actual expression in string format.
         /// </summary>
         /// <value>The expression value.</value>
-        public string Value
-        {
-            get { return Reference ? "@" + _expression : _expression; }
+        public string Value {
+            get;
+            private set;
         }
 
         /// <summary>
         ///     Returns the type of the expression.
         /// </summary>
         /// <value>The type of the expression.</value>
-        public Match.MatchType ExpressionType {
+        private Match.MatchType ExpressionType {
             get;
-            private set;
+            set;
         }
 
         /// <summary>
         ///     Returns the type the expression value should be converted to before returned to caller during evaluation.
         /// </summary>
         /// <value>The casting type.</value>
-        public string Casting {
+        private string Casting {
             get;
-            private set;
+            set;
         }
 
         /// <summary>
         ///     Returns true if Expression is lazy binded.
         /// </summary>
         /// <value>The value.</value>
-        public bool Lazy
-        {
-            get { return _rootGroup == null; }
-        }
-
-        public Expression Build (Node expressionNode, ApplicationContext context)
-        {
-            // checking to see if we're in lazy build mode, and if so, forcing build process
-            if (_rootGroup == null)
-                BuildExpression (context, expressionNode);
-            return this;
+        public bool Lazy {
+            get;
+            private set;
         }
 
         /// <summary>
@@ -127,7 +113,7 @@ namespace p5.exp
                 throw new ArgumentException ("No actual node given to evaluate.", "node");
 
             // checking to see if we're in lazy build mode ...
-            if (_rootGroup == null)
+            if (Lazy)
                 BuildExpression (context, exNode);
 
             // creating a Match object, and returning to caller
@@ -143,15 +129,21 @@ namespace p5.exp
         private void BuildExpression (ApplicationContext context, Node exNode = null)
         {
             // checking to see if we should run formatting logic on expression before parsing iterators
-            if (exNode != null)
-                FormatExpression (context, exNode); // Lazy building, needs to apply formatting parameters
+            var expression = Value;
+            if (Lazy)
+                expression = FormatExpression (context, exNode); // Lazy building, needs to apply formatting parameters
+
+            if (expression.StartsWith ("@")) {
+                expression = expression.Substring (1);
+                Reference = true;
+            }
 
             _rootGroup = new IteratorGroup ();
             string previousToken = null; // needed to keep track of previous token
             var current = _rootGroup; // used as index iterator during tokenizing process
 
             // Tokenizer uses StringReader to tokenize, making sure tokenizer is disposed when finished
-            using (var tokenizer = new Tokenizer (_expression)) {
+            using (var tokenizer = new Tokenizer (expression)) {
 
                 // looping through every token in espression, building up our Iterator tree hierarchy
                 foreach (var idxToken in tokenizer.Tokens) {
@@ -163,7 +155,7 @@ namespace p5.exp
                     } else if (previousToken == null && idxToken != "/" && idxToken != "?") {
 
                         // missing '/' before iterator
-                        throw new ExpressionException (_expression, "Syntax error in expression, missing iterator declaration");
+                        throw new ExpressionException (Value, "Syntax error in expression, missing iterator declaration, after evaluation expression yields; " + expression);
                     } else if (idxToken != "?") {
 
                         // '?' token is handled in next iteration
@@ -180,11 +172,12 @@ namespace p5.exp
             }
             // checking to see if we have open groups, which is an error
             if (current.ParentGroup != null)
-                throw new ExpressionException (_expression, "Group in expression was not closed. Probably missing ')' token.");
+                throw new ExpressionException (Value, "Group in expression was not closed. Probably missing ')' token, after evaluation expression yields; " + expression);
         }
 
-        private void FormatExpression (ApplicationContext context, Node exNode)
+        private string FormatExpression (ApplicationContext context, Node exNode)
         {
+            var retVal = Value;
             var formatNodes = new List<Node> (from idxNode in exNode.Children where idxNode.Name == string.Empty select idxNode);
 
             // iterating all formatting parameters
@@ -198,13 +191,11 @@ namespace p5.exp
                         val += Utilities.Convert<string> (idxMatch.Value, context);
                     }
                 } else {
-                    var strVal = val as string;
-                    if (strVal != null) {
-                        val = XUtil.FormatNode (formatNodes [idx], context);
-                    }
+                    val = XUtil.FormatNode (formatNodes [idx], context);
                 }
-                _expression = _expression.Replace ("{" + idx + "}", Utilities.Convert<string> (val, context));
+                retVal = retVal.Replace ("{" + idx + "}", Utilities.Convert<string> (val, context));
             }
+            return retVal;
         }
 
         /*
@@ -228,7 +219,7 @@ namespace p5.exp
                 case "path":
                     break;
                 default:
-                    throw new ExpressionException (_expression, "Type declaration of expression was not valid");
+                    throw new ExpressionException (Value, "Type declaration of expression was not valid");
             }
             ExpressionType = (Match.MatchType)Enum.Parse (typeof(Match.MatchType), typeOfExpression);
         }
@@ -254,7 +245,7 @@ namespace p5.exp
                     // closing group, checking for empty name iterator first and missing group opening first
                     if (current.ParentGroup == null) // making sure there's actually an open group first
                         throw new ExpressionException (
-                            _expression,
+                            Value,
                             "Closing parenthesis ')' has no matching '(' in expression.");
                     if (previousToken == "/")
                         current.AddIterator (new IteratorNamed (string.Empty));
@@ -403,14 +394,14 @@ namespace p5.exp
             token = token.TrimEnd ();
             if (token [token.Length - 1] != ']')
                 throw new ExpressionException (
-                    _expression,
+                    Value,
                     string.Format ("Syntax error in range token '{0}', no ']' at end of token", token));
 
             token = token.Substring (1, token.Length - 2); // removing [] square brackets
 
             if (token.IndexOf (',') == -1)
                 throw new ExpressionException (
-                    _expression,
+                    Value,
                     string.Format ("Syntax error in range token '{0}', range token must have at the very least a ',' character.", token));
 
             var values = token.Split (',');
@@ -418,7 +409,7 @@ namespace p5.exp
             // verifying token has only two integer values, separated by ","
             if (values.Length != 2)
                 throw new ExpressionException (
-                    _expression,
+                    Value,
                     string.Format ("Syntax error in range token '[{0}]', ranged iterator takes two integer values, separated by ','", token));
             var start = -1;
             var end = -1;
@@ -427,19 +418,19 @@ namespace p5.exp
             if (startStr.Length > 0) { // start index was explicitly given
                 if (!Utilities.IsNumber (startStr))
                     throw new ExpressionException (
-                        _expression,
+                        Value,
                         string.Format ("Syntax error in range token '[{0}]', expected number, found string", token));
                 start = int.Parse (startStr, CultureInfo.InvariantCulture);
             }
             if (endStr.Length > 0) { // end index was explicitly given
                 if (!Utilities.IsNumber (endStr))
                     throw new ExpressionException (
-                        _expression,
+                        Value,
                         string.Format ("Syntax error in range token '[{0}]', expected number, found string", token));
                 end = int.Parse (endStr, CultureInfo.InvariantCulture);
                 if (end <= start)
                     throw new ExpressionException (
-                        _expression,
+                        Value,
                         string.Format ("Syntax error in range token '[{0}]', end must be larger than start", token));
             }
             current.AddIterator (new IteratorRange (start, end));
@@ -456,7 +447,7 @@ namespace p5.exp
             // making sure we're given a number
             if (!Utilities.IsNumber (token))
                 throw new ExpressionException (
-                    _expression,
+                    Value,
                     string.Format ("Syntax error in modulo token '{0}', expected integer value, found string", token));
             current.AddIterator (new IteratorModulo (int.Parse (token)));
         }
@@ -471,7 +462,7 @@ namespace p5.exp
             var value = 1;
             if (intValue.Length > 0 && !Utilities.IsNumber (intValue))
                 throw new ExpressionException (
-                    _expression,
+                    Value,
                     string.Format ("Syntax error in sibling token '{0}', expected integer value, found string", token));
             if (intValue.Length > 0)
                 value = int.Parse (intValue);

@@ -62,7 +62,7 @@ namespace p5.data
                         Common.AddNodeToChanges (idxDestination.Node, changed);
 
                         // source is relative to destination
-                        idxDestination.Value = XUtil.SourceSingle (e.Args.LastChild, idxDestination.Node, context, true);
+                        idxDestination.Value = XUtil.SourceSingle (e.Args.LastChild, idxDestination.Node, context);
                     }
                 } else if (e.Args.Count > 0 && e.Args.LastChild.Name == "src") {
 

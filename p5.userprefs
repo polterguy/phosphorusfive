@@ -1,26 +1,41 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="plugins/p5.crypto/Hash.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="plugins/p5.data/Insert.cs">
     <Files>
-      <File FileName="../system42/templates/main.hl" Line="151" Column="17" />
-      <File FileName="../system42/startup-files/users/sys42.login-user.hl" Line="12" Column="52" />
-      <File FileName="plugins/p5.data/Select.cs" Line="50" Column="1" />
-      <File FileName="../system42/startup-files/users/sys42.get-logged-in-user.hl" Line="12" Column="14" />
-      <File FileName="plugins/p5.web/request/Cookies.cs" Line="37" Column="1" />
-      <File FileName="plugins/p5.web/common/CollectionBase.cs" Line="61" Column="1" />
-      <File FileName="plugins/p5.web/response/Cookies.cs" Line="64" Column="15" />
-      <File FileName="plugins/p5.crypto/Hash.cs" Line="10" Column="13" />
+      <File FileName="tests/lambda/Set.cs" Line="527" Column="92" />
+      <File FileName="plugins/p5.lambda/keywords/Set.cs" Line="109" Column="1" />
+      <File FileName="core/p5.exp/XUtil.cs" Line="176" Column="113" />
+      <File FileName="core/p5.exp/Expression.cs" Line="138" Column="1" />
+      <File FileName="tests/plugins/Database.cs" Line="351" Column="1" />
+      <File FileName="tests/Expressions.cs" Line="512" Column="67" />
+      <File FileName="plugins/p5.data/Select.cs" Line="75" Column="1" />
+      <File FileName="plugins/p5.data/Insert.cs" Line="96" Column="17" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="core" expanded="True" />
-          <Node name="plugins" expanded="True">
-            <Node name="p5.crypto" expanded="True" selected="True">
-              <Node name="References" expanded="True" />
+          <Node name="core" expanded="True">
+            <Node name="p5.core" expanded="True" />
+            <Node name="p5.exp" expanded="True">
+              <Node name="matchentities" expanded="True" />
             </Node>
           </Node>
-          <Node name="tests" expanded="True" />
+          <Node name="plugins" expanded="True">
+            <Node name="p5.data" expanded="True">
+              <Node name="Insert.cs" selected="True" />
+            </Node>
+            <Node name="p5.lambda" expanded="True">
+              <Node name="helpers" expanded="True" />
+              <Node name="keywords" expanded="True" />
+            </Node>
+          </Node>
+          <Node name="tests" expanded="True">
+            <Node name="p5.tests" expanded="True">
+              <Node name="References" expanded="True" />
+              <Node name="lambda" expanded="True" />
+              <Node name="plugins" expanded="True" />
+            </Node>
+          </Node>
         </State>
       </Pad>
       <Pad Id="ClassPad">
@@ -28,18 +43,31 @@
       </Pad>
       <Pad Id="MonoDevelop.Debugger.WatchPad">
         <State>
-          <Value>e.Args.Value</Value>
+          <Value>retVal</Value>
+          <Value>this.Value</Value>
         </State>
       </Pad>
       <Pad Id="MonoDevelop.NUnit.TestPad">
-        <State expanded="True" selected="True" />
+        <State expanded="True">
+          <Node name="tests" expanded="True">
+            <Node name="p5.tests" expanded="True">
+              <Node name="p5" expanded="True">
+                <Node name="unittests" expanded="True">
+                  <Node name="plugins" expanded="True">
+                    <Node name="Database" expanded="True" />
+                  </Node>
+                </Node>
+              </Node>
+            </Node>
+          </Node>
+        </State>
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
-      <Breakpoint file="/home/polterguy/projects/software/p5/plugins/p5.web/common/CollectionBase.cs" line="61" column="65" />
-      <Breakpoint file="/home/polterguy/projects/software/p5/plugins/p5.web/response/Cookies.cs" line="42" column="28" />
+      <Breakpoint file="/home/polterguy/projects/software/p5/plugins/p5.data/Insert.cs" line="84" column="33" />
+      <Breakpoint file="/home/polterguy/projects/software/p5/tests/plugins/Database.cs" line="350" column="1" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />

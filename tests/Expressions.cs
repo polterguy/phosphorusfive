@@ -19,7 +19,7 @@ namespace p5.unittests
     public class Expressions : TestBase
     {
         public Expressions ()
-            : base ("p5.types", "p5.hyperlisp")
+            : base ("p5.types", "p5.hyperlisp", "p5.lambda")
         { }
         
         [Test]
@@ -27,9 +27,7 @@ namespace p5.unittests
         {
             var exp = Expression.Create ("/foo?value", Context);
             Assert.IsNotNull (exp);
-            Assert.AreEqual (Match.MatchType.value, exp.ExpressionType);
             Assert.AreEqual ("/foo?value", exp.Value);
-            Assert.IsNull (exp.Casting);
         }
         
         [Test]
@@ -37,9 +35,7 @@ namespace p5.unittests
         {
             var exp = Expression.Create ("/foo?name", Context);
             Assert.IsNotNull (exp);
-            Assert.AreEqual (Match.MatchType.name, exp.ExpressionType);
             Assert.AreEqual ("/foo?name", exp.Value);
-            Assert.IsNull (exp.Casting);
         }
         
         [Test]
@@ -47,9 +43,7 @@ namespace p5.unittests
         {
             var exp = Expression.Create ("/foo?count", Context);
             Assert.IsNotNull (exp);
-            Assert.AreEqual (Match.MatchType.count, exp.ExpressionType);
             Assert.AreEqual ("/foo?count", exp.Value);
-            Assert.IsNull (exp.Casting);
         }
         
         [Test]
@@ -57,9 +51,7 @@ namespace p5.unittests
         {
             var exp = Expression.Create ("/foo?path", Context);
             Assert.IsNotNull (exp);
-            Assert.AreEqual (Match.MatchType.path, exp.ExpressionType);
             Assert.AreEqual ("/foo?path", exp.Value);
-            Assert.IsNull (exp.Casting);
         }
         
         [Test]
@@ -67,9 +59,7 @@ namespace p5.unittests
         {
             var exp = Expression.Create ("/foo?node", Context);
             Assert.IsNotNull (exp);
-            Assert.AreEqual (Match.MatchType.node, exp.ExpressionType);
             Assert.AreEqual ("/foo?node", exp.Value);
-            Assert.IsNull (exp.Casting);
         }
 
         [Test]
@@ -77,9 +67,7 @@ namespace p5.unittests
         {
             var exp = Expression.Create ("/foo", Context);
             Assert.IsNotNull (exp);
-            Assert.AreEqual (Match.MatchType.node, exp.ExpressionType);
             Assert.AreEqual ("/foo", exp.Value);
-            Assert.IsNull (exp.Casting);
         }
 
         [Test]
@@ -160,9 +148,7 @@ _bar
         {
             var exp = Expression.Create ("", Context);
             Assert.IsNotNull (exp);
-            Assert.AreEqual (Match.MatchType.node, exp.ExpressionType);
             Assert.AreEqual ("", exp.Value);
-            Assert.IsNull (exp.Casting);
         }
         
         [Test]
@@ -170,9 +156,7 @@ _bar
         {
             var exp = Expression.Create ("?value", Context);
             Assert.IsNotNull (exp);
-            Assert.AreEqual (Match.MatchType.value, exp.ExpressionType);
             Assert.AreEqual ("?value", exp.Value);
-            Assert.IsNull (exp.Casting);
         }
         
         [Test]
@@ -180,9 +164,7 @@ _bar
         {
             var exp = Expression.Create ("?value.x", Context);
             Assert.IsNotNull (exp);
-            Assert.AreEqual (Match.MatchType.value, exp.ExpressionType);
             Assert.AreEqual ("?value.x", exp.Value);
-            Assert.AreEqual ("x", exp.Casting);
         }
         
         [Test]
@@ -584,6 +566,30 @@ _nest:x:/../*/_1?name");
             var match = exp.Evaluate (node, Context);
             Assert.AreEqual (1, match.Count);
             Assert.AreEqual ("success", match [0].Value);
+        }
+        
+        [Test]
+        public void ExpressionMadnessObfuscatedCodeOlympics ()
+        {
+            var node = ExecuteLambda (@"_result
+set:x:/-?value
+  src:x:/{0}/{1}{2}value
+    :.{0}
+      :x:/../3?{0}
+        :val{0}
+          :x:{0}..{0}4?name
+            :x:@/{0}./{1}?value
+              :.
+              :5
+    :2
+    :x:@/../6?value
+_x:success
+_x:.
+ue
+_:/
+_y:x:/+?value
+:?");
+            Assert.AreEqual ("success", node [0].Value);
         }
     }
 }

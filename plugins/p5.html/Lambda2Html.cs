@@ -34,7 +34,7 @@ namespace p5.html
         {
             StringBuilder builder = new StringBuilder ();
             if (e.Args.Value != null) {
-                Convert (XUtil.Iterate<Node> (e.Args.Value, e.Args, context, false), builder, 0, context);
+                Convert (XUtil.Iterate<Node> (e.Args, e.Args, context, false), builder, 0, context);
             } else {
                 Convert (e.Args.Children, builder, 0, context);
             }

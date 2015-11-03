@@ -24,8 +24,8 @@ namespace p5.unittests.lambda
         public void Lambda01 ()
         {
             var result = ExecuteLambda (@"_data
-set:@/-/?value
-  source:success");
+set:x:/-?value
+  src:success");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -36,8 +36,8 @@ set:@/-/?value
         public void Lambda02 ()
         {
             var result = ExecuteLambda (@"_data:success
-set:@/-/?value
-  source:error", "lambda.immutable");
+set:x:/-?value
+  src:error", "lambda.immutable");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -48,8 +48,8 @@ set:@/-/?value
         public void Lambda03 ()
         {
             var result = ExecuteLambda (@"_data:success
-set:@/-/?value
-  source:error", "lambda.copy");
+set:x:/-?value
+  src:error", "lambda.copy");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -61,8 +61,8 @@ set:@/-/?value
         {
             var result = ExecuteLambda (@"_data:success
 lambda.copy
-  set:@/../*/_data/?value
-    source:error");
+  set:x:/../*/_data?value
+    src:error");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -74,8 +74,8 @@ lambda.copy
         {
             var result = ExecuteLambda (@"_data:error
 lambda.immutable
-  set:@/../*/_data/?value
-    source:success");
+  set:x:/../*/_data?value
+    src:success");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -86,9 +86,9 @@ lambda.immutable
         public void Lambda06 ()
         {
             var result = ExecuteLambda (@"_exe
-  set:@/./?value
-    source:success
-lambda:@/-/?node");
+  set:x:/.?value
+    src:success
+lambda:x:/-");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -99,9 +99,9 @@ lambda:@/-/?node");
         public void Lambda07 ()
         {
             var result = ExecuteLambda (@"_exe:node:@""_exe
-  set:@/./?value
-    source:success""
-lambda:@/-/?value");
+  set:x:/.?value
+    src:success""
+lambda:x:/-?value");
             Assert.AreEqual ("success", result [0].Get<Node> (Context).Value);
         }
 
@@ -112,9 +112,9 @@ lambda:@/-/?value");
         public void Lambda08 ()
         {
             var result = ExecuteLambda (@"_exe
-  set:@/./?value
-    source:@/././*/_result/?value
-lambda:@/-/?node
+  set:x:/.?value
+    src:x:/././*/_result?value
+lambda:x:/-
   _result:success");
             Assert.AreEqual ("success", result [0].Value);
         }
@@ -125,28 +125,29 @@ lambda:@/-/?node
         [Test]
         public void Lambda09 ()
         {
-            var result = ExecuteLambda (@"_exe:@""set:@/../*/_result/#/?value
-  source:success""
-lambda:@/-/?value
+            var result = ExecuteLambda (@"_exe:@""set:x:/../*/_result/#?value
+  src:success""
+lambda:x:/-?value
   _result:node:_result"); // passing in reference node, to be able to retrieve values from lambda invocation
             Assert.AreEqual ("success", result [1] [0].Get<Node> (Context).Value);
         }
 
         /// <summary>
-        ///     verifies that [lambda] can execute expression yielding multiple results
+        ///     verifies that [lambda] can execute expression yielding multiple results, and that it does so consecutively in
+        ///     order expression returns matches
         /// </summary>
         [Test]
         public void Lambda10 ()
         {
             var result = ExecuteLambda (@"_exe1
-  set:@/../?value
-    source:succ
+  set:x:/..?value
+    src:succ
 _exe1
-  set:@/../?value
-    source:{0}{1}
-      :@/../?value
+  set:x:/..?value
+    src:{0}{1}
+      :x:/..?value
       :ess
-lambda:@/-2/|/-1/?node");
+lambda:x:/-2|/-1");
             Assert.AreEqual ("success", result.Value);
         }
 
@@ -157,9 +158,9 @@ lambda:@/-2/|/-1/?node");
         public void Lambda11 ()
         {
             var result = ExecuteLambda (@"_exe1
-  set:@/../?value
-    source:success
-lambda.single:@/-/0/?node");
+  set:x:/..?value
+    src:success
+lambda.single:x:/-/0");
             Assert.AreEqual ("success", result.Value);
         }
 
@@ -171,14 +172,14 @@ lambda.single:@/-/0/?node");
         public void Lambda12 ()
         {
             var result = ExecuteLambda (@"_exe1
-  set:@/../?value
-    source:succ
+  set:x:/..?value
+    src:succ
 _exe1
-  set:@/../?value
-    source:{0}{1}
-      :@/../?value
+  set:x:/..?value
+    src:{0}{1}
+      :x:/..?value
       :ess
-lambda.single:@/-2/*/|/-1/*/?node");
+lambda.single:x:/-2/*|/-1/*");
             Assert.AreEqual ("success", result.Value);
         }
 
@@ -190,17 +191,17 @@ lambda.single:@/-2/*/|/-1/*/?node");
         public void Lambda13 ()
         {
             var result = ExecuteLambda (@"_exe1
-  set:@/../?value
-    source:succ
+  set:x:/..?value
+    src:succ
 _exe1:error
-  set:@/../?value
-    source:error
+  set:x:/..?value
+    src:error
 _exe1
-  set:@/../?value
-    source:{0}{1}
-      :@/../?value
+  set:x:/..?value
+    src:{0}{1}
+      :x:/..?value
       :ess
-lambda.single:@/../*/(/_exe1/!/=error/)/*/?node");
+lambda.single:x:/../*(/_exe1!/=error)/*");
             Assert.AreEqual ("success", result.Value);
         }
 
@@ -211,9 +212,9 @@ lambda.single:@/../*/(/_exe1/!/=error/)/*/?node");
         public void Lambda14 ()
         {
             var result = ExecuteLambda (@"_exe1:success
-  set:@/./?value
-    source:error
-lambda.single:@/-/?node");
+  set:x:/.?value
+    src:error
+lambda.single:x:/-");
             Assert.AreEqual ("success", result [0].Value);
         }
 
@@ -225,10 +226,10 @@ lambda.single:@/-/?node");
         public void Lambda15 ()
         {
             var result = ExecuteLambda (@"_exe1
-  set:@/./?node
-lambda:@/-/?node
-set:@/../?value
-  source:success");
+  set:x:/.
+lambda:x:/-
+set:x:/..?value
+  src:success");
             Assert.AreEqual ("success", result.Value);
         }
 
@@ -240,11 +241,11 @@ set:@/../?value
         public void Lambda16 ()
         {
             var result = ExecuteLambda (@"_exe1
-  append:@/../?node
-    source
-      set:@/../?value
-        source:success
-lambda:@/-/?node");
+  add:x:/..
+    src
+      set:x:/..?value
+        src:success
+lambda:x:/-");
             Assert.AreEqual ("success", result.Value);
         }
 
@@ -254,8 +255,8 @@ lambda:@/-/?node");
         [Test]
         public void Lambda17 ()
         {
-            var result = ExecuteLambda (@"lambda:@""set:@/../*/_result/#/?value
-  source:success""
+            var result = ExecuteLambda (@"lambda:@""set:x:/../*/_result/#?value
+  src:success""
   _result:node:_result"); // passing in reference node, to be able to retrieve values from lambda invocation
             Assert.AreEqual ("success", result [0] [0].Get<Node> (Context).Value);
         }

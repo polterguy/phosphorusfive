@@ -60,6 +60,7 @@
     <Compile Include="plugins\Database.cs" />
     <Compile Include="plugins\Html.cs" />
     <Compile Include="plugins\Math.cs" />
+    <Compile Include="lambda\Lambda.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

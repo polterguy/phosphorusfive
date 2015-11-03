@@ -184,7 +184,7 @@ namespace p5.hyperlisp
         [ActiveEvent (Name = "p5.hyperlisp.hyperlisp2lambda")]
         private static void p5_hyperlisp_hyperlisp2lambda (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.AddRange (new NodeBuilder (context, e.Args.Get<string> (context)).Nodes);
+            e.Args.AddRange (new NodeBuilder (context, e.Args.GetExValue<string> (context)).Nodes);
         }
 
         /// <summary>

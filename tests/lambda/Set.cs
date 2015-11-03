@@ -512,7 +512,7 @@ namespace p5.unittests.lambda
         public void Set31 ()
         {
             var node = new Node ()
-                .Add ("_data").LastChild
+                .Add ("_data", "value").LastChild
                     .Add ("_1").LastChild
                         .Add ("_1", "success1").Parent
                     .Add ("_2").LastChild
@@ -523,8 +523,8 @@ namespace p5.unittests.lambda
                     .Add (string.Empty, "-")
                     .Add ("rel-src", Expression.Create ("/{0}{1}", Context)).LastChild
                         .Add (string.Empty, "*")
-                        .Add (string.Empty, Expression.Create ("?{0}", Context)).LastChild
-                            .Add (string.Empty, "value").Root; // recursive formatting expression
+                        .Add (string.Empty, "?{0}").LastChild
+                            .Add (string.Empty, Expression.Create ("/../0?value", Context)).Root; // recursive formatting expression
             Context.Raise ("set", node [1]);
 
             // verifying [set] works as it should
@@ -785,12 +785,31 @@ set:x:/-?value
         [Test]
         public void Set46 ()
         {
-            // easy way to create a node
             var node = ExecuteLambda (@"_destination
 set:x:/-?value
   test.set46");
 
             Assert.AreEqual ("howdy world", node [0].Value);
+        }
+        
+        /// <summary>
+        ///     Verifies that executing an expression twice with formatting parameters that changes, 
+        ///     reflects the changes during each iteration, and that expression is entirely rebuilt during each iteration
+        /// </summary>
+        [Test]
+        public void Set47 ()
+        {
+            var node = ExecuteLambda (@"_data
+  foo1:bar1
+  foo2:bar2
+for-each:x:/-/*?name
+  lambda
+    set:x:/../0/*/{0}?value
+      :x:/./././*/__dp?value
+      src:success");
+
+            Assert.AreEqual ("success", node [0] [0].Value);
+            Assert.AreEqual ("success", node [0] [1].Value);
         }
     }
 }

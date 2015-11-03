@@ -295,40 +295,40 @@ namespace p5.net
                      args.Children.Where (idxArg => idxArg.Name != "content" && idxArg.Name != "Content-Type" && idxArg.Name != "all-headers")) {
                 switch (idxHeader.Name) {
                 case "Accept":
-                    request.Accept = XUtil.Single<string> (idxHeader.Value, idxHeader, context);
+                    request.Accept = XUtil.Single<string> (idxHeader, idxHeader, context);
                     break;
                 case "Connection":
-                    request.Connection = XUtil.Single<string> (idxHeader.Value, idxHeader, context);
+                    request.Connection = XUtil.Single<string> (idxHeader, idxHeader, context);
                     break;
                 case "Content-Length":
-                    request.ContentLength = XUtil.Single<long> (idxHeader.Value, idxHeader, context);
+                    request.ContentLength = XUtil.Single<long> (idxHeader, idxHeader, context);
                     break;
                 case "Content-Type":
-                    request.ContentType = XUtil.Single<string> (idxHeader.Value, idxHeader, context);
+                    request.ContentType = XUtil.Single<string> (idxHeader, idxHeader, context);
                     break;
                 case "Date":
-                    request.Date = XUtil.Single<DateTime> (idxHeader.Value, idxHeader, context);
+                    request.Date = XUtil.Single<DateTime> (idxHeader, idxHeader, context);
                     break;
                 case "Expect":
-                    request.Expect = XUtil.Single<string> (idxHeader.Value, idxHeader, context);
+                    request.Expect = XUtil.Single<string> (idxHeader, idxHeader, context);
                     break;
                 case "Host":
-                    request.Host = XUtil.Single<string> (idxHeader.Value, idxHeader, context);
+                    request.Host = XUtil.Single<string> (idxHeader, idxHeader, context);
                     break;
                 case "If-Modifies-Since":
-                    request.IfModifiedSince = XUtil.Single<DateTime> (idxHeader.Value, idxHeader, context);
+                    request.IfModifiedSince = XUtil.Single<DateTime> (idxHeader, idxHeader, context);
                     break;
                 case "Referer":
-                    request.Referer = XUtil.Single<string> (idxHeader.Value, idxHeader, context);
+                    request.Referer = XUtil.Single<string> (idxHeader, idxHeader, context);
                     break;
                 case "Transfer-Encoding":
-                    request.TransferEncoding = XUtil.Single<string> (idxHeader.Value, idxHeader, context);
+                    request.TransferEncoding = XUtil.Single<string> (idxHeader, idxHeader, context);
                     break;
                 case "User-Agent":
-                    request.UserAgent = XUtil.Single<string> (idxHeader.Value, idxHeader, context);
+                    request.UserAgent = XUtil.Single<string> (idxHeader, idxHeader, context);
                     break;
                 default:
-                    request.Headers.Add (idxHeader.Name, XUtil.Single<string> (idxHeader.Value, idxHeader, context));
+                    request.Headers.Add (idxHeader.Name, XUtil.Single<string> (idxHeader, idxHeader, context));
                     break;
                 }
             }

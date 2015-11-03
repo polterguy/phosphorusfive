@@ -23,6 +23,10 @@ namespace p5.exp.matchentities
         public abstract Match.MatchType TypeOfMatch {
             get;
         }
+
+        public Match Match {
+            get { return _match; }
+        }
         
         public abstract object Value {
             get;

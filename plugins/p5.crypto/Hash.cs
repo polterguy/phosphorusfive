@@ -9,9 +9,6 @@ using System.Text;
 using p5.core;
 using p5.exp;
 
-// ReSharper disable UnusedMember.Local
-// ReSharper disable UnusedMember.Global
-
 /// <summary>
 ///     Main namespace for everything related to cryptographic services.
 /// 

@@ -98,7 +98,8 @@ namespace p5.lambda.keywords
         private static void lambda_set (ApplicationContext context, ActiveEventArgs e)
         {
             // asserting destination is expression
-            if (!(e.Args.Value is Expression))
+            var destEx = e.Args.Value as Expression;
+            if (destEx == null)
                 throw new LambdaException ("Not a valid destination expression given, make sure you set [set]'s value to an expression using :x:", e.Args, context);
 
             // figuring out source type, for then to execute the corresponding logic
@@ -109,11 +110,11 @@ namespace p5.lambda.keywords
                     throw new LambdaException ("Not a valid relative source expression given, make sure you set [rel-src]'s value to an expression using :x:", e.Args, context);
 
                 // iterating through all destinations, figuring out source relative to each destinations
-                foreach (var idxDestination in e.Args.Get<Expression> (context).Evaluate (e.Args, context, e.Args)) {
+                foreach (var idxDestination in destEx.Evaluate (e.Args, context, e.Args)) {
 
                     // source is relative to destination, postponing figuring it out, until we're inside 
                     // our destination nodes, on each iteration, passing in destination node as data source
-                    idxDestination.Value = XUtil.SourceSingle (e.Args.LastChild, Utilities.Convert<Node> (idxDestination.Node, context), context);
+                    idxDestination.Value = XUtil.SourceSingle (e.Args.LastChild, idxDestination.Node, context);
                 }
             } else if (e.Args.Count > 0 && e.Args.LastChild.Name == "src") {
 
@@ -121,13 +122,13 @@ namespace p5.lambda.keywords
                 var source = XUtil.SourceSingle (e.Args.LastChild, context);
 
                 // iterating through all destinations, updating with source
-                foreach (var idxDestination in e.Args.Get<Expression> (context).Evaluate (e.Args, context, e.Args)) {
+                foreach (var idxDestination in destEx.Evaluate (e.Args, context, e.Args)) {
                     idxDestination.Value = source;
                 }
             } else if (e.Args.Count == 0 || e.Args.LastChild.Name == "") {
 
                 // "null source", iterating through all destinations, updating with null
-                foreach (var idxDestination in e.Args.Get<Expression> (context).Evaluate (e.Args, context, e.Args)) {
+                foreach (var idxDestination in destEx.Evaluate (e.Args, context, e.Args)) {
                     idxDestination.Value = null;
                 }
             } else {
@@ -135,7 +136,7 @@ namespace p5.lambda.keywords
                 // Active Event invocation source, iterating through all destinations, after invocting Active event, updating
                 // with result from Active Event invocation
                 context.Raise (e.Args.LastChild.Name, e.Args.LastChild);
-                foreach (var idxDestination in e.Args.Get<Expression> (context).Evaluate (e.Args, context, e.Args)) {
+                foreach (var idxDestination in destEx.Evaluate (e.Args, context, e.Args)) {
                     idxDestination.Value = e.Args.LastChild.Value;
                 }
             }

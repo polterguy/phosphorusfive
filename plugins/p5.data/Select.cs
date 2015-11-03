@@ -53,17 +53,17 @@ namespace p5.data
                 // making sure database is initialized
                 Common.Initialize (context);
 
-                var ex = e.Args.Get<Expression> (context);
-                if (ex.ExpressionType == Match.MatchType.count) {
-
-                    // Expression is for 'count' type
-                    var match = ex.Evaluate (Common.Database, context, e.Args);
-                    e.Args.Add (new Node (string.Empty, match.Count));
-                    return;
-                }
+                var ex = e.Args.Value as Expression;
 
                 // iterating through each result from database node tree
                 foreach (var idxMatch in ex.Evaluate (Common.Database, context, e.Args)) {
+
+                    if (idxMatch.Match.TypeOfMatch == Match.MatchType.count) {
+
+                        // Expression is for 'count' type, ending iteration
+                        e.Args.Add (new Node (string.Empty, idxMatch.Match.Count));
+                        return;
+                    }
 
                     // dependent upon type of expression, we either return a bunch of nodes, flat, with
                     // name being string.Empty, and value being matched value, or we append node itself back
