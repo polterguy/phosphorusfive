@@ -61,6 +61,7 @@
     <Compile Include="plugins\Html.cs" />
     <Compile Include="plugins\Math.cs" />
     <Compile Include="lambda\Lambda.cs" />
+    <Compile Include="plugins\Hyperlisp.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

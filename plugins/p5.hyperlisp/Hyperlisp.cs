@@ -184,7 +184,7 @@ namespace p5.hyperlisp
         [ActiveEvent (Name = "p5.hyperlisp.hyperlisp2lambda")]
         private static void p5_hyperlisp_hyperlisp2lambda (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.AddRange (new NodeBuilder (context, e.Args.GetExValue<string> (context)).Nodes);
+            e.Args.AddRange (new NodeBuilder (context, XUtil.Single<string> (e.Args, context, "", "\r\n")).Nodes);
         }
 
         /// <summary>
@@ -203,7 +203,7 @@ namespace p5.hyperlisp
         [ActiveEvent (Name = "p5.hyperlisp.lambda2hyperlisp")]
         private static void p5_code_lambda2hyperlisp (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = new HyperlispBuilder (context, e.Args.Value is Node ? new Node [] { e.Args.Get<Node> (context) } : e.Args.Children).Hyperlisp;
+            e.Args.Value = new HyperlispBuilder (context, XUtil.Iterate<Node> (e.Args, context)).Hyperlisp;
         }
     }
 }

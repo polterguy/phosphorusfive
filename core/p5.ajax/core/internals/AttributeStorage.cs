@@ -306,6 +306,7 @@ namespace p5.ajax.core.internals
 
             // adding up our changes
             foreach (var idx in _dynamicallyAddedThisRequest) {
+
                 // finding old value, if any
                 var oldAtr = FindAttribute (_originalValue, idx.Name);
                 if (oldAtr != null) {

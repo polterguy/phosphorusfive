@@ -91,7 +91,7 @@ applications, as a list of server-side web controls, capable of executing p5.lam
 such as code or programming, by dragging and dropping objects into your design surface of your form. the limitation is that the server controls
 must be known in advance, since you cannot inject server-side web controls easily, besides as the result of p5.lambda Active Events. in this type
 of application, you have complete control over the rendering of your page, and there are no pre-existing objects, such as ads or menus for you. 
-<a href=""""/"""">go back</a>""
+<a href='/'>go back</a>""
     literal
       element:button
       class:span-2
@@ -135,7 +135,7 @@ within a page""
       class:span-16 last prepend-4
       innerValue:@""in this type of application, you are in complete control over the entire rendering of the page, which you
 must do by resorting to p5.lambda scripts, and you can entirely dynamically create your page, having full control over every aspect of it
-yourself. <a href=""""/"""">go back</a>""
+yourself. <a href='/'>go back</a>""
     container
       class:prepend-4 span-4 clear
       widgets

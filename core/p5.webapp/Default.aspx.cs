@@ -149,18 +149,16 @@ namespace p5.webapp
         }
 
         /// <summary>
-        ///     Creates a web widget.
+        ///     Creates a container web widget.
         /// 
-        ///     Optionally declare the type of widget you wish to create as [widget], and which parent 
-        ///     widget it should have, as [parent].
+        ///     [p5.web.create-widget] is an alias for [p5.web.create-container-widget]
         /// 
-        ///     You can also optionally declare where you wish to position your widget, by using either [before] or [after], to 
+        ///     You can optionally declare where you wish to position your widget, by using either [before] or [after], to 
         ///     make sure your widget becomes either before some specific widget, or after it. Internally, this Active Event uses 
         ///     the [p5.web.widgets.xxx] Active Events to actually create your widget. See any of those Active Events to understand 
-        ///     what types of properties you can further decorate your widget with, which varies according to what type of [widget] 
-        ///     you are creating.
+        ///     what types of properties you can further decorate your widget with.
         /// 
-        ///     [widget] defaults to "container", and [parent] defaults to "container", which is your main root widget on your page.
+        ///     [parent] defaults to "container", which is your main root widget on your page.
         /// 
         ///     If neither [before] nor [after] is given, widget will be appended into controls collection at the end of whatever
         ///     [parent] widget you choose to use. You can also optionally declare local widget Active Events, by passing in an [events] 
@@ -169,47 +167,132 @@ namespace p5.webapp
         ///     Example;
         /// 
         ///     <pre>p5.web.create-widget:foo
-        ///   widget:literal
-        ///   element:h1
-        ///   innerValue:Click me!
-        ///   class:span-24 prepend-top info
-        ///   onclick
-        ///     p5.web.create-widget
-        ///       after:foo
-        ///       widget:literal
-        ///       innerValue:I was dynamically created!
-        ///       class:span-24 success
+        ///   widgets
+        ///     literal
+        ///       element:h1
+        ///       innerValue:Click me!
+        ///       class:span-24 prepend-top info
         ///       onclick
-        ///         p5.web.remove-widget:@/./"*"/_event?value</pre>
+        ///         p5.web.create-widget
+        ///           after:foo
+        ///           widget:literal
+        ///           innerValue:I was dynamically created!
+        ///           class:span-24 success
+        ///           onclick
+        ///             p5.web.remove-widget:@/./"*"/_event?value</pre>
         /// 
-        ///     Using [p5.web.create-widget], in combination with the other Active Events for manipulating Ajax Web Widgets, you can take 100%
+        ///     Using [p5.web.create-widget], in combination with the other Active Events for manipulating and creating Ajax Web Widgets, you can take 100%
         ///     complete control over the HTML your site is rendered, while still retaining all your widget creation code on the server-side, in
         ///     a managed environment, through p5.lambda.
         /// </summary>
         /// <param name="context">Context for current request</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.web.create-widget")]
+        [ActiveEvent (Name = "p5.web.create-container-widget")]
         private void p5_web_create_widget (ApplicationContext context, ActiveEventArgs e)
         {
+            CreateWidget (context, e.Args, "container");
+        }
+
+        
+        /// <summary>
+        ///     Creates a literal web widget.
+        /// 
+        ///     You can optionally declare where you wish to position your widget, by using either [before] or [after], to 
+        ///     make sure your widget becomes either before some specific widget, or after it. Internally, this Active Event uses 
+        ///     the [p5.web.widgets.xxx] Active Events to actually create your widget. See any of those Active Events to understand 
+        ///     what types of properties you can further decorate your widget with.
+        /// 
+        ///     [parent] defaults to "container", which is your main root widget on your page.
+        /// 
+        ///     If neither [before] nor [after] is given, widget will be appended into controls collection at the end of whatever
+        ///     [parent] widget you choose to use. You can also optionally declare local widget Active Events, by passing in an [events] 
+        ///     node, which will be locally declared Active Events for your widget, only active, as long as Widget exists on page.
+        /// 
+        ///     Example;
+        /// 
+        ///     <pre>p5.web.create-literal-widget:foo
+        ///   element:h1
+        ///   innerValue:Click me!
+        ///   class:span-24 prepend-top info
+        ///   onclick
+        ///     p5.web.create-literal-widget
+        ///       after:foo
+        ///       innerValue:I was dynamically created!
+        ///       class:span-24 success
+        ///       onclick
+        ///         p5.web.remove-widget:@/./"*"/_event?value</pre>
+        /// 
+        ///     Using [p5.web.create-literal-widget], in combination with the other Active Events for manipulating Ajax Web Widgets, you can take 100%
+        ///     complete control over the HTML your site is rendered, while still retaining all your widget creation code on the server-side, in
+        ///     a managed environment, through p5.lambda.
+        /// </summary>
+        /// <param name="context">Context for current request</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.web.create-literal-widget")]
+        private void p5_web_create_literal_widget (ApplicationContext context, ActiveEventArgs e)
+        {
+            CreateWidget (context, e.Args, "literal");
+        }
+
+        /// <summary>
+        ///     Creates a void web widget.
+        /// 
+        ///     You can optionally declare where you wish to position your widget, by using either [before] or [after], to 
+        ///     make sure your widget becomes either before some specific widget, or after it. Internally, this Active Event uses 
+        ///     the [p5.web.widgets.xxx] Active Events to actually create your widget. See any of those Active Events to understand 
+        ///     what types of properties you can further decorate your widget with.
+        /// 
+        ///     [parent] defaults to "container", which is your main root widget on your page.
+        /// 
+        ///     If neither [before] nor [after] is given, widget will be appended into controls collection at the end of whatever
+        ///     [parent] widget you choose to use. You can also optionally declare local widget Active Events, by passing in an [events] 
+        ///     node, which will be locally declared Active Events for your widget, only active, as long as Widget exists on page.
+        /// 
+        ///     Example;
+        /// 
+        ///     <pre>p5.web.create-void-widget:foo
+        ///   element:input
+        ///   placeholder:Click me!
+        ///   class:span-12 prepend-top
+        ///   onclick
+        ///     p5.web.create-literal-widget
+        ///       after:foo
+        ///       innerValue:I was dynamically created!
+        ///       class:span-24 success
+        ///       onclick
+        ///         p5.web.remove-widget:@/./"*"/_event?value</pre>
+        /// 
+        ///     Using [p5.web.create-void-widget], in combination with the other Active Events for manipulating Ajax Web Widgets, you can take 100%
+        ///     complete control over the HTML your site is rendered, while still retaining all your widget creation code on the server-side, in
+        ///     a managed environment, through p5.lambda.
+        /// </summary>
+        /// <param name="context">Context for current request</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.web.create-void-widget")]
+        private void p5_web_create_void_widget (ApplicationContext context, ActiveEventArgs e)
+        {
+            CreateWidget (context, e.Args, "void");
+        }
+
+        /*
+         * common helper method for creating widgets
+         */
+        private void CreateWidget (ApplicationContext context, Node args, string type)
+        {
             // finding parent widget first, which defaults to "container" widget, if no parent is given
-            var parentNode = e.Args.Find (idx => idx.Name == "parent" && idx.Value != null);
+            var parentNode = args.Find (idx => idx.Name == "parent" && idx.Value != null);
             var parent = (parentNode != null ? FindControl<p5.Container> (XUtil.Single<string> (parentNode, context), Page) : container) ?? container;
 
             // finding position in parent control's list, defaulting to "-1", meaning "append at end"
-            int position = GetWidgetPosition (e.Args, context, parent);
-
-            // finding type of widget
-            string type = "container";
-            var widgetType = e.Args.Find (idx => idx.Name == "widget" && idx.Value != null);
-            if (widgetType != null)
-                type = XUtil.Single<string> (widgetType, context);
+            int position = GetWidgetPosition (args, context, parent);
 
             // creating widget. since CreateForm modifies node given, by e.g. adding the parent widget as [_parent],
             // we need to make sure the nodes are set back to wwhat they were before the invocation of our Active Event
-            var widget = CreateWidget (context, e.Args, parent, position, type);
+            var widget = CreateWidget (context, args, parent, position, type);
 
             // initializing Active Events for widget, if there are any given
-            var eventNode = e.Args.Find (idx => idx.Name == "events");
+            var eventNode = args.Find (idx => idx.Name == "events");
             if (eventNode != null)
                 CreateWidgetEvents (widget, eventNode, context);
         }

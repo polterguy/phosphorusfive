@@ -53,16 +53,6 @@ namespace p5.exp
         }
 
         /// <summary>
-        ///     Returns true if referenced expressions should be evaluated, false if they should 
-        ///     be returned as expression objects.
-        /// </summary>
-        /// <value><c>true</c> if reference; otherwise, <c>false</c>.</value>
-        private bool Reference {
-            get;
-            set;
-        }
-
-        /// <summary>
         ///     Returns actual expression in string format.
         /// </summary>
         /// <value>The expression value.</value>
@@ -72,30 +62,27 @@ namespace p5.exp
         }
 
         /// <summary>
-        ///     Returns the type of the expression.
-        /// </summary>
-        /// <value>The type of the expression.</value>
-        private Match.MatchType ExpressionType {
-            get;
-            set;
-        }
-
-        /// <summary>
-        ///     Returns the type the expression value should be converted to before returned to caller during evaluation.
-        /// </summary>
-        /// <value>The casting type.</value>
-        private string Casting {
-            get;
-            set;
-        }
-
-        /// <summary>
         ///     Returns true if Expression is lazy binded.
         /// </summary>
         /// <value>The value.</value>
         public bool Lazy {
             get;
             private set;
+        }
+
+        private bool Reference {
+            get;
+            set;
+        }
+
+        private Match.MatchType ExpressionType {
+            get;
+            set;
+        }
+
+        private string Casting {
+            get;
+            set;
         }
 
         /// <summary>

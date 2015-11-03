@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Html2Lambda.cs" />
     <Compile Include="Lambda2Html.cs" />
+    <Compile Include="HtmlEncoder.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

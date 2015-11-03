@@ -16,7 +16,8 @@ namespace p5.unittests.plugins
     public class Hyperlisp : TestBase
     {
         public Hyperlisp ()
-            : base ("p5.hyperlisp", "p5.types") { }
+            : base ("p5.hyperlisp", "p5.types", "p5.lambda")
+        { }
 
         /// <summary>
         ///     parses simple name/value Hyperlisp
@@ -212,6 +213,54 @@ _time:time:""15.23:57:53.567"""};
             Context.Raise ("p5.hyperlisp.hyperlisp2lambda", tmp);
             Assert.AreEqual (new byte[] {134, 254, 12}, tmp [0].Value, "wrong value of node after parsing of hyperlisp");
         }
+        
+        /// <summary>
+        ///     parses Hyperlisp where parsing is done through an expression
+        /// </summary>
+        [Test]
+        public void ParseHyperlisp13 ()
+        {
+            Node node = ExecuteLambda (@"_exe
+  foo:bar
+p5.hyperlisp.lambda2hyperlisp:x:/-");
+            Assert.AreEqual (@"_exe
+  foo:bar", node [1].Value);
+        }
+        
+        /// <summary>
+        ///     parses Hyperlisp where parsing is done through an expression leading to several nodes
+        /// </summary>
+        [Test]
+        public void ParseHyperlisp14 ()
+        {
+            Node node = ExecuteLambda (@"_exe1
+  foo1:bar1
+_exe2
+  foo2:bar2
+p5.hyperlisp.lambda2hyperlisp:x:/-2|/-");
+            Assert.AreEqual (@"_exe1
+  foo1:bar1
+_exe2
+  foo2:bar2", node [2].Value);
+        }
+        
+        /// <summary>
+        ///     parses Hyperlisp where parsing is done through an expression leading to several nodes and
+        ///     expression returns nodes in "reverse mode"
+        /// </summary>
+        [Test]
+        public void ParseHyperlisp15 ()
+        {
+            Node node = ExecuteLambda (@"_exe1
+  foo1:bar1
+_exe2
+  foo2:bar2
+p5.hyperlisp.lambda2hyperlisp:x:/-|/-2");
+            Assert.AreEqual (@"_exe2
+  foo2:bar2
+_exe1
+  foo1:bar1", node [2].Value);
+        }
 
         /// <summary>
         ///     parses Hyperlisp containing one empty comment and no nodes
@@ -283,6 +332,70 @@ jo:dude
 hello");
             Context.Raise ("p5.hyperlisp.hyperlisp2lambda", tmp);
             Assert.AreEqual (2, tmp.Count, "wrong value of node after parsing of hyperlisp");
+        }
+        
+        /// <summary>
+        ///     parses Hyperlisp where parsing is done through an expression leading to several nodes and
+        ///     expression returns nodes in "reverse mode"
+        /// </summary>
+        [Test]
+        public void Hyperlisp2Lambda01 ()
+        {
+            Node node = ExecuteLambda (@"_res:@""_exe1
+  foo1:bar1
+_exe2
+  foo2:bar2""
+p5.hyperlisp.hyperlisp2lambda:x:/-?value");
+            Assert.AreEqual (2, node [1].Count);
+            Assert.AreEqual ("_exe1", node [1] [0].Name);
+            Assert.AreEqual (1, node [1] [0].Count);
+            Assert.AreEqual ("bar1", node [1] [0] [0].Value);
+            Assert.AreEqual ("_exe2", node [1] [1].Name);
+            Assert.AreEqual (1, node [1] [1].Count);
+            Assert.AreEqual ("bar2", node [1] [1] [0].Value);
+        }
+        
+        /// <summary>
+        ///     parses Hyperlisp where parsing is done through an expression leading to several nodes z
+        /// </summary>
+        [Test]
+        public void Hyperlisp2Lambda02 ()
+        {
+            Node node = ExecuteLambda (@"_res1:@""_exe1
+  foo1:bar1""
+_res2:@""
+_exe2
+  foo2:bar2""
+p5.hyperlisp.hyperlisp2lambda:x:/-2|/-?value");
+            Assert.AreEqual (2, node [2].Count);
+            Assert.AreEqual ("_exe1", node [2] [0].Name);
+            Assert.AreEqual (1, node [2] [0].Count);
+            Assert.AreEqual ("bar1", node [2] [0] [0].Value);
+            Assert.AreEqual ("_exe2", node [2] [1].Name);
+            Assert.AreEqual (1, node [2] [1].Count);
+            Assert.AreEqual ("bar2", node [2] [1] [0].Value);
+        }
+        
+        /// <summary>
+        ///     parses Hyperlisp where parsing is done through an expression leading to several nodes and
+        ///     expression returns nodes in "reverse mode"
+        /// </summary>
+        [Test]
+        public void Hyperlisp2Lambda03 ()
+        {
+            Node node = ExecuteLambda (@"_res2:@""_exe2
+  foo2:bar2""
+_res1:@""
+_exe1
+  foo1:bar1""
+p5.hyperlisp.hyperlisp2lambda:x:/-|/-2?value");
+            Assert.AreEqual (2, node [2].Count);
+            Assert.AreEqual ("_exe1", node [2] [0].Name);
+            Assert.AreEqual (1, node [2] [0].Count);
+            Assert.AreEqual ("bar1", node [2] [0] [0].Value);
+            Assert.AreEqual ("_exe2", node [2] [1].Name);
+            Assert.AreEqual (1, node [2] [1].Count);
+            Assert.AreEqual ("bar2", node [2] [1] [0].Value);
         }
 
         /// <summary>

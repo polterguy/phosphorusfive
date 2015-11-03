@@ -255,7 +255,7 @@ namespace p5.web.ui.widgets
             var formId = XUtil.Single<string> (node.Find (idx => idx.Name == "_widget"), context);
 
             var widget = parent.CreatePersistentControl<T> (
-                XUtil.Single<string> (node, node, context),
+                node.GetExValue<string> (context),
                 position,
                 delegate (object sender, EventArgs e) {
                     if (onInitialLoad == null)

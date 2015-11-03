@@ -95,7 +95,10 @@ namespace p5.ajax.core
         /// </summary>
         /// <param name="id">ID of object, must be unique for request.</param>
         /// <param name="value">Object to serialize back as JSON.</param>
-        public void SendObject (string id, object value) { _changes [id] = value; }
+        public void SendObject (string id, object value)
+        {
+            _changes [id] = value;
+        }
 
         internal void RegisterWidgetChanges (string id, string name, string newValue, string oldValue = null)
         {

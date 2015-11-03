@@ -530,26 +530,33 @@ namespace p5.ajax.widgets
                 if (Visible) {
                     if (IsPhosphorusRequest && !ancestorReRendering) {
                         if (RenderMode == RenderingMode.ReRender) {
+
                             // re-rendering entire widget
                             (Page as IAjaxPage).Manager.RegisterWidgetChanges (ClientID, "outerHTML", GetWidgetHtml ());
                         } else if (RenderMode == RenderingMode.ReRenderChildren) {
+
                             // re-rendering all children controls
                             RenderChildrenWidgetsAsJson (writer);
                         } else {
+
                             // only pass changes back to client as json
                             _attributes.RegisterChanges ((Page as IAjaxPage).Manager, ClientID);
                             RenderChildren (writer);
                         }
                     } else {
+
                         // not ajax request, or ancestors are re-rendering
                         RenderHtmlResponse (writer);
                     }
                 } else {
+
                     // invisible widget
                     if (IsPhosphorusRequest && RenderMode == RenderingMode.RenderInvisible && !ancestorReRendering) {
+
                         // re-rendering widget's invisible markup
                         (Page as IAjaxPage).Manager.RegisterWidgetChanges (ClientID, "outerHTML", GetWidgetInvisibleHtml ());
                     } else if (!IsPhosphorusRequest || ancestorReRendering) {
+
                         // rendering invisible markup
                         writer.Write (GetWidgetInvisibleHtml ());
                     } // else, nothing to render since widget is in-visible, and this was an ajaxx request
