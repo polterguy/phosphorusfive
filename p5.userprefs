@@ -1,55 +1,46 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="tests/lambda/Add.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="plugins/p5.crypto/Hash.cs">
     <Files>
-      <File FileName="tests/lambda/Add.cs" Line="405" Column="49" />
-      <File FileName="plugins/p5.lambda/Add.cs" Line="117" Column="17" />
-      <File FileName="core/p5.exp/XUtil.cs" Line="396" Column="1" />
-      <File FileName="core/p5.core/Node.cs" Line="1142" Column="1" />
-      <File FileName="core/p5.exp/Expression.cs" Line="239" Column="1" />
-      <File FileName="tests/Expressions.cs" Line="127" Column="1" />
+      <File FileName="../system42/templates/main.hl" Line="151" Column="17" />
+      <File FileName="../system42/startup-files/users/sys42.login-user.hl" Line="12" Column="52" />
+      <File FileName="plugins/p5.data/Select.cs" Line="50" Column="1" />
+      <File FileName="../system42/startup-files/users/sys42.get-logged-in-user.hl" Line="12" Column="14" />
+      <File FileName="plugins/p5.web/request/Cookies.cs" Line="37" Column="1" />
+      <File FileName="plugins/p5.web/common/CollectionBase.cs" Line="61" Column="1" />
+      <File FileName="plugins/p5.web/response/Cookies.cs" Line="64" Column="15" />
+      <File FileName="plugins/p5.crypto/Hash.cs" Line="10" Column="13" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="core" expanded="True">
-            <Node name="p5.exp" expanded="True" />
-          </Node>
+          <Node name="core" expanded="True" />
           <Node name="plugins" expanded="True">
-            <Node name="p5.lambda" expanded="True" />
-          </Node>
-          <Node name="tests" expanded="True">
-            <Node name="p5.tests" expanded="True">
-              <Node name="lambda" expanded="True">
-                <Node name="Add.cs" selected="True" />
-              </Node>
+            <Node name="p5.crypto" expanded="True" selected="True">
+              <Node name="References" expanded="True" />
             </Node>
           </Node>
+          <Node name="tests" expanded="True" />
         </State>
       </Pad>
       <Pad Id="ClassPad">
         <State expanded="True" selected="True" />
       </Pad>
       <Pad Id="MonoDevelop.Debugger.WatchPad">
-        <State />
+        <State>
+          <Value>e.Args.Value</Value>
+        </State>
       </Pad>
       <Pad Id="MonoDevelop.NUnit.TestPad">
-        <State expanded="True" selected="True">
-          <Node name="tests" expanded="True">
-            <Node name="p5.tests" expanded="True">
-              <Node name="p5" expanded="True">
-                <Node name="unittests" expanded="True">
-                  <Node name="lambda" expanded="True" />
-                </Node>
-              </Node>
-            </Node>
-          </Node>
-        </State>
+        <State expanded="True" selected="True" />
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="/home/polterguy/projects/software/p5/plugins/p5.web/common/CollectionBase.cs" line="61" column="65" />
+      <Breakpoint file="/home/polterguy/projects/software/p5/plugins/p5.web/response/Cookies.cs" line="42" column="28" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>

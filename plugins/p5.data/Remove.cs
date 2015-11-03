@@ -48,12 +48,14 @@ namespace p5.data
 
             // acquiring lock on database
             lock (Common.Lock) {
+
                 // making sure database is initialized
                 Common.Initialize (context);
 
                 // looping through database matches and removing nodes while storing which files have been changed
                 var changed = new List<Node> ();
-                foreach (var idxDest in XUtil.Iterate (e.Args, Common.Database, e.Args, context)) {
+                foreach (var idxDest in e.Args.Get<Expression> (context).Evaluate (Common.Database, context, e.Args)) {
+
                     // making sure "file nodes" and "root node" cannot be remove
                     if (idxDest.Node.Path.Count < 2)
                         throw new ArgumentException ("You cannot remove the actual file node, or root node from your database");

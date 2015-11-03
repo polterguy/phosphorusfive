@@ -53,23 +53,25 @@ namespace p5.data
                 var changed = new List<Node> ();
 
                 // figuring out source, and executing the corresponding logic
-                if (e.Args.Count > 0 && (e.Args.LastChild.Name == "rel-source" || e.Args.LastChild.Name == "rel-src")) {
+                if (e.Args.Count > 0 && e.Args.LastChild.Name == "rel-src") {
 
                     // iterating through all destinations, figuring out source relative to each destinations
-                    foreach (var idxDestination in XUtil.Iterate (e.Args, Common.Database, context)) {
+                    foreach (var idxDestination in e.Args.Get<Expression> (context).Evaluate (Common.Database, context, e.Args)) {
+
                         // figuring out which file Node updated belongs to, and storing in changed list
                         Common.AddNodeToChanges (idxDestination.Node, changed);
 
                         // source is relative to destination
-                        idxDestination.Value = XUtil.SourceSingle (e.Args, idxDestination.Node, context);
+                        idxDestination.Value = XUtil.SourceSingle (e.Args.LastChild, idxDestination.Node, context, true);
                     }
-                } else if (e.Args.Count > 0 && (e.Args.LastChild.Name == "source" || e.Args.LastChild.Name == "src")) {
+                } else if (e.Args.Count > 0 && e.Args.LastChild.Name == "src") {
 
                     // figuring out source
-                    var source = XUtil.SourceSingle (e.Args, context);
+                    var source = XUtil.SourceSingle (e.Args.LastChild, context);
 
                     // iterating through all destinations, updating with source
-                    foreach (var idxDestination in XUtil.Iterate (e.Args, Common.Database, e.Args, context)) {
+                    foreach (var idxDestination in e.Args.Get<Expression> (context).Evaluate (Common.Database, context, e.Args)) {
+
                         // figuring out which file Node updated belongs to, and storing in changed list
                         Common.AddNodeToChanges (idxDestination.Node, changed);
 
@@ -77,8 +79,9 @@ namespace p5.data
                         idxDestination.Value = source;
                     }
                 } else {
+
                     // syntax error
-                    throw new ArgumentException ("No [source] or [rel-source] was given to [p5.data.update].");
+                    throw new ArgumentException ("No [src] or [rel-src] was given to [p5.data.update].");
                 }
                 
                 // saving all affected files

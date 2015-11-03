@@ -40,10 +40,12 @@ namespace p5.web.ui.response
         {
             CollectionBase.Set (e.Args, context, delegate (string key, object value) {
                 if (value == null) {
+
                     // removing existing cookie
                     var httpCookie = HttpContext.Current.Response.Cookies [key];
                     if (httpCookie != null) httpCookie.Expires = DateTime.Now.Date.AddDays (-1);
                 } else {
+
                     // creating cookie
                     HttpContext.Current.Response.Cookies.Add (CreateCookieFromNode (e.Args, context, key, value));
                 }

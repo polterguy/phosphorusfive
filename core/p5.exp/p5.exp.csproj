@@ -73,6 +73,7 @@
     <Compile Include="matchentities\MatchNodeEntity.cs" />
     <Compile Include="matchentities\MatchCountEntity.cs" />
     <Compile Include="XUtil.cs" />
+    <Compile Include="NodeExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

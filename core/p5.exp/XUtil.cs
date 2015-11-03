@@ -68,7 +68,8 @@ namespace p5.exp
         /// <param name="context">Application context.</param>
         public static object FormatNode (
             Node node,
-            ApplicationContext context)
+            ApplicationContext context,
+            Node dataSource = null)
         {
             // making sure node contains formatting values
             if (!IsFormatted (node))
@@ -77,16 +78,17 @@ namespace p5.exp
             // retrieving all "formatting values"
             var childrenValues = new List<object> (node.ConvertChildren (
                 delegate (Node idx) {
-                // we only use nodes who's names are empty as "formatting nodes"
-                if (idx.Name == string.Empty) {
-                    // recursively format and evaluate expressions of children nodes
-                    return FormatNodeRecursively (idx, context) ?? "";
-                }
 
-                // this is not a part of the formatting values for our formating expression,
-                // since it doesn't have an empty name, hence we return null, to signal to 
-                // ConvertChildren that this is to be excluded from list
-                return null;
+                    // we only use nodes who's names are empty as "formatting nodes"
+                    if (idx.Name == string.Empty) {
+                        // recursively format and evaluate expressions of children nodes
+                        return FormatNodeRecursively (idx, context, dataSource) ?? "";
+                    }
+
+                    // this is not a part of the formatting values for our formating expression,
+                    // since it doesn't have an empty name, hence we return null, to signal to 
+                    // ConvertChildren that this is to be excluded from list
+                    return null;
             }));
 
             // returning node's value, after being formatted, according to its children node's values
@@ -144,9 +146,10 @@ namespace p5.exp
             Node dataSource,
             ApplicationContext context,
             T defaultValue = default (T),
-            string inject = null)
+            string inject = null,
+            bool useDataSourceForFormatting = false)
         {
-            return SingleImplementation (() => Iterate<T> (evaluatedNode, dataSource, context), context, defaultValue, inject);
+            return SingleImplementation (() => Iterate<T> (evaluatedNode, dataSource, context, false, useDataSourceForFormatting), context, defaultValue, inject);
         }
 
         /// <summary>
@@ -264,12 +267,13 @@ namespace p5.exp
             Node evaluatedNode,
             Node dataSource,
             ApplicationContext context,
-            bool iterateChildren = false)
+            bool iterateChildren = false,
+            bool useDataSourceForFormatting = false)
         {
             return evaluatedNode != null && dataSource != null && evaluatedNode.Value != null ? 
                 (IsExpression (evaluatedNode.Value) ? 
                      Iterate<T> (evaluatedNode.Get<Expression> (context).Build (evaluatedNode, context), dataSource, context, iterateChildren) : 
-                     Iterate<T> (FormatNode (evaluatedNode, context), dataSource, context, iterateChildren)) : 
+                     Iterate<T> (FormatNode (evaluatedNode, context, useDataSourceForFormatting ? dataSource : null), dataSource, context, iterateChildren)) : 
                 IterateChildren<T> (evaluatedNode, context);
         }
 
@@ -463,7 +467,11 @@ namespace p5.exp
         /// <param name="node">Node where [source], [rel-source], [rel-src] or [src] is expected to be a child.</param>
         /// <param name="dataSource">Node which will be used as data source node if node's parameter's value is an Expression.</param>
         /// <param name="context">Application context.</param>
-        public static object SourceSingle (Node evaluatedNode, Node dataSource, ApplicationContext context)
+        public static object SourceSingle (
+            Node evaluatedNode, 
+            Node dataSource, 
+            ApplicationContext context, 
+            bool useDataSourceForFormatting = false)
         {
             object source = null;
 
@@ -471,7 +479,7 @@ namespace p5.exp
             if (evaluatedNode.Value != null) {
 
                 // this might be an expression, or a constant, converting value to single object, somehow
-                source = Single<object> (evaluatedNode, dataSource, context);
+                source = Single<object> (evaluatedNode, dataSource, context, null, null, useDataSourceForFormatting);
             } else {
 
                 // there are no values in [src] node, trying to create source out of [src]'s children
@@ -570,7 +578,8 @@ namespace p5.exp
          */
         private static object FormatNodeRecursively (
             Node node,
-            ApplicationContext context)
+            ApplicationContext context,
+            Node dataSource = null)
         {
             var isFormatted = IsFormatted (node);
             var isExpression = IsExpression (node.Value);
@@ -580,16 +589,14 @@ namespace p5.exp
                 // node is recursively formatted, and also an expression
                 // formating node first, then evaluating expression
                 // PS, we cannot return null here, in case expression yields null
-                return Single (node, context, "");
+                return Single (node, dataSource ?? node, context, "", null, true);
             }
             if (isFormatted) {
 
                 // node is formatted recursively, but not an expression
-                return FormatNode (node, context);
+                return FormatNode (node, context, dataSource);
             }
-            return isExpression ?
-                Single (node.Value, node, context, "") :
-                    node.Value ?? "";
+            return node.Value ?? "";
         }
 
         /*

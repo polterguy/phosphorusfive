@@ -50,6 +50,7 @@ namespace p5.html
         {
             // loops through all documents we're supposed to transform
             foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+
                 var doc = new HtmlDocument ();
                 doc.LoadHtml (idx);
                 e.Args.Add (new Node ());

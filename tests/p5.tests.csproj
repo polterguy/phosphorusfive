@@ -57,6 +57,9 @@
     <Compile Include="lambda\Threading.cs" />
     <Compile Include="plugins\Files.cs" />
     <Compile Include="plugins\Folders.cs" />
+    <Compile Include="plugins\Database.cs" />
+    <Compile Include="plugins\Html.cs" />
+    <Compile Include="plugins\Math.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
@@ -101,6 +104,18 @@
     <ProjectReference Include="..\plugins\p5.io\p5.io.csproj">
       <Project>{89C744BE-B583-4C6D-84B9-941E0C7CEBF4}</Project>
       <Name>p5.io</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\plugins\p5.data\p5.data.csproj">
+      <Project>{CA83A3ED-BD5D-4557-AA1B-A7C04ABD4D4F}</Project>
+      <Name>p5.data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\plugins\p5.net\p5.net.csproj">
+      <Project>{378663D4-1FC1-4109-8896-F72440C6C269}</Project>
+      <Name>p5.net</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\plugins\p5.html\p5.html.csproj">
+      <Project>{68EE106A-06BF-431B-9671-DF328666E03E}</Project>
+      <Name>p5.html</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

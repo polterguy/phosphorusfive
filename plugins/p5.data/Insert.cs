@@ -86,6 +86,7 @@ namespace p5.data
 
             // acquiring lock on database
             lock (Common.Lock) {
+
                 // making sure database is initialized
                 Common.Initialize (context);
 
@@ -93,6 +94,7 @@ namespace p5.data
                 var changed = new List<Node> ();
                 foreach (var idx in XUtil.Iterate<Node> (e.Args, context)) {
                     if (e.Args.Value is string && !XUtil.IsExpression (e.Args.Value)) {
+
                         // source is a string, but not an expression, making sure we add children of converted
                         // string, since conversion routine creates a root node wrapping actual nodes in string
                         foreach (var idxInner in idx.Children) {
@@ -140,12 +142,13 @@ namespace p5.data
             if (node.Value == null) {
                 node.Value = Guid.NewGuid ();
             } else {
+
                 // an ID was given, making sure it doesn't exist from before
                 var tmpId = node.Get<string> (context);
-                if (XUtil.Iterate (
-                    string.Format (@"@/*/*/""=\\{0}""/?node", tmpId),
-                    Common.Database,
-                    context).GetEnumerator ().MoveNext ()) {
+                if (Expression.Create (string.Format (@"/*/*/""={0}""", tmpId), context)
+                    .Evaluate (Common.Database, context)
+                    .GetEnumerator ()
+                    .MoveNext ()) {
                     throw new ArgumentException ("ID exists from before in database");
                 }
             }

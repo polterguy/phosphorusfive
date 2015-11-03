@@ -15,7 +15,7 @@ namespace p5.exp.matchentities
         { }
         
         public override Match.MatchType TypeOfMatch {
-            get { return Match.MatchType.count; }
+            get { return Match.MatchType.node; }
         }
         
         public override object Value

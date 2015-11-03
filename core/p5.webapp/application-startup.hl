@@ -4,8 +4,8 @@
  */
 event:p5.remove-additional-hello
   lambda
-    set:@/+/?value
-      source:@/./././?value
+    set:x:/+?value
+      src:x:/././.?value
     p5.web.remove-widget
 
 /*
@@ -19,8 +19,8 @@ event:p5.create-additional-hello
         literal
           innerValue:"hello again :) - click me 2!"
           onclick
-            set:@/+/?value
-              source:@/../*/_widget/?value
+            set:x:/+?value
+              src:x:/../*/_widget?value
             p5.remove-additional-hello
 
 /*

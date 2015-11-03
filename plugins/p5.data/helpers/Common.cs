@@ -64,6 +64,7 @@ namespace p5.data.helpers
         {
             // verifying database is not already initialized from before
             if (string.IsNullOrEmpty (_dbPath)) {
+
                 // need to initialize database
                 Database = new Node ();
 
@@ -156,7 +157,7 @@ namespace p5.data.helpers
 
             // making sure fil exists on disc, for future new creations of files before save operation occurs
             var createFile = new Node (string.Empty, newFileName);
-            createFile.Add (new Node ("source", ""));
+            createFile.Add (new Node ("src", ""));
             context.Raise ("p5.file.save", createFile);
 
             // returning available file node back to caller
@@ -191,7 +192,7 @@ namespace p5.data.helpers
 
                 // saves code
                 var saveNode = new Node (string.Empty, fileNode.Value);
-                saveNode.Add (new Node ("source", convertNode.Value));
+                saveNode.Add (new Node ("src", convertNode.Value));
                 context.Raise ("p5.file.save", saveNode);
             }
         }

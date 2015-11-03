@@ -58,11 +58,12 @@ namespace p5.web.ui.common
         public static void Set (Node node, ApplicationContext context, SetDelegate functor)
         {
             // retrieving source
-            var source = XUtil.Source (node, context);
+            var source = XUtil.Source (node.LastChild, context);
 
             // looping through each destination, creating an object, or removing an existing
             // object, for each destination
             foreach (var idx in XUtil.Iterate<string> (node, context)) {
+
                 // single object
                 functor (idx, source);
             }
@@ -81,27 +82,33 @@ namespace p5.web.ui.common
         {
             // iterating through each "key"
             foreach (var idx in XUtil.Iterate<string> (node, context)) {
+
                 // retrieving object from key
                 var value = functor (idx);
                 if (value != null) {
+
                     // adding key node, and value as object, if value is not node, otherwise
                     // appending value nodes beneath key node
                     var resultNode = node.Add (idx).LastChild;
                     if (value is Node) {
+
                         // value is Node
                         resultNode.Add ((value as Node).Clone ());
                     } else if (value is IEnumerable<Node>) {
+
                         // value is a bunch of nodes
                         foreach (var idxValue in value as IEnumerable<Node>) {
                             resultNode.Add (idxValue.Clone ());
                         }
                     }
                     else if (value is IEnumerable<object>) {
+
                         // value is a bunch of object values
                         foreach (var idxValue in value as IEnumerable<object>) {
                             resultNode.Add (string.Empty, idxValue);
                         }
                     } else {
+
                         // value is any "other type of value", returning it anyway, even though it
                         // cannot possibly have come from p5.lambda, to allow user to retrieve "any values"
                         // that exists

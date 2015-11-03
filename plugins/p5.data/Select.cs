@@ -45,6 +45,7 @@ namespace p5.data
 
             // acquiring lock on database
             lock (Common.Lock) {
+
                 // verifying syntax
                 if (!XUtil.IsExpression (e.Args.Value))
                     throw new ArgumentException ("[p5.data.select] requires an expression to select items from database");
@@ -52,30 +53,24 @@ namespace p5.data
                 // making sure database is initialized
                 Common.Initialize (context);
 
-                // used to signal if we performed any iterations 
-                var foundHit = false;
+                var ex = e.Args.Get<Expression> (context);
+                if (ex.ExpressionType == Match.MatchType.count) {
+
+                    // Expression is for 'count' type
+                    var match = ex.Evaluate (Common.Database, context, e.Args);
+                    e.Args.Add (new Node (string.Empty, match.Count));
+                    return;
+                }
 
                 // iterating through each result from database node tree
-                foreach (var idxMatch in XUtil.Iterate (e.Args, Common.Database, e.Args, context)) {
-                    // signaling we've been here
-                    foundHit = true;
-
-                    // aborting iteration early if it is a 'count' expression
-                    if (idxMatch.TypeOfMatch == Match.MatchType.count) {
-                        e.Args.Add (new Node (string.Empty, idxMatch.Match.Count));
-                        return;
-                    }
+                foreach (var idxMatch in ex.Evaluate (Common.Database, context, e.Args)) {
 
                     // dependent upon type of expression, we either return a bunch of nodes, flat, with
                     // name being string.Empty, and value being matched value, or we append node itself back
                     // to caller. this allows us to select using expressions which are not of type 'node'
-                    e.Args.Add (idxMatch.TypeOfMatch != Match.MatchType.node ? new Node (string.Empty, idxMatch.Value) : idxMatch.Node.Clone ());
-                }
-
-                // special case for 'count' expression where there are no matches
-                if (!foundHit && XUtil.ExpressionType (e.Args, context) == Match.MatchType.count) {
-                    // no hits, returning ZERO
-                    e.Args.Add (new Node (string.Empty, 0));
+                    e.Args.Add (idxMatch.TypeOfMatch != Match.MatchType.node ? 
+                                new Node (string.Empty, idxMatch.Value) : 
+                                idxMatch.Node.Clone ());
                 }
             }
         }

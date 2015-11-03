@@ -82,22 +82,28 @@ namespace p5.net
             // figuring out which method to use
             string method = e.Args.Name.Substring (e.Args.Name.LastIndexOf (".") + 1).ToUpper ();
 
-            // Figuring out URL to create request towards
-            var url = XUtil.Single<string> (e.Args, context);
-            if (string.IsNullOrEmpty (url))
-                return; // nothing to do here, probably expression leading into oblivion
+            // iterating through each request URL given
+            foreach (var idxUrl in XUtil.Iterate<string> (e.Args, context)) {
 
-            // Creating actual request
-            HttpWebRequest request = WebRequest.Create (url) as HttpWebRequest;
-            if (request == null)
-                throw new ArgumentException (string.Format ("'{0}' did not create a valid HTTP request URL", url));
-            request.Method = method;
+                if (string.IsNullOrEmpty (idxUrl))
+                    continue; // nothing to do here, probably expression leading into oblivion
 
-            // writing content to request, if any
-            RenderRequest (context, request, e.Args, method);
+                // Creating actual request
+                try {
+                    HttpWebRequest request = WebRequest.Create (idxUrl) as HttpWebRequest;
+                    if (request == null)
+                        throw new ArgumentException (string.Format ("'{0}' did not create a valid HTTP request URL", idxUrl));
+                    request.Method = method;
 
-            // returning response to caller
-            RenderResponse (context, request, e.Args);
+                    // writing content to request, if any
+                    RenderRequest (context, request, e.Args, method);
+
+                    // returning response to caller
+                    RenderResponse (context, request, e.Args.Add (idxUrl));
+                } catch (Exception err) {
+                    e.Args.Add (idxUrl, string.Format ("Something went wrong with request, error message was; '{0}'", err.Message));
+                }
+            }
         }
 
         /// <summary>
@@ -119,22 +125,28 @@ namespace p5.net
             string method = e.Args.Name.Substring (e.Args.Name.LastIndexOf (".") + 1).ToUpper ();
             method = method.Substring (0, method.IndexOf ("-"));
 
-            // Figuring out URL to create request towards
-            var url = XUtil.Single<string> (e.Args, context);
-            if (string.IsNullOrEmpty (url))
-                return; // nothing to do here, probably expression leading into oblivion
+            // iterating through each request URL given
+            foreach (var idxUrl in XUtil.Iterate<string> (e.Args, context)) {
 
-            // Creating actual request
-            HttpWebRequest request = WebRequest.Create (url) as HttpWebRequest;
-            if (request == null)
-                throw new ArgumentException (string.Format ("'{0}' did not create a valid HTTP request URL", url));
-            request.Method = method;
+                if (string.IsNullOrEmpty (idxUrl))
+                    continue; // nothing to do here, probably expression leading into oblivion
 
-            // writing file to request
-            RenderFileRequest (context, request, e.Args, method);
+                // Creating actual request
+                try {
+                    HttpWebRequest request = WebRequest.Create (idxUrl) as HttpWebRequest;
+                    if (request == null)
+                        throw new ArgumentException (string.Format ("'{0}' did not create a valid HTTP request URL", idxUrl));
+                    request.Method = method;
 
-            // returning response to caller
-            RenderResponse (context, request, e.Args);
+                    // writing file to request
+                    RenderFileRequest (context, request, e.Args, method);
+
+                    // returning response to caller
+                    RenderResponse (context, request, e.Args);
+                } catch (Exception err) {
+                    e.Args.Add (idxUrl, string.Format ("Something went wrong with request, error message was; '{0}'", err.Message));
+                }
+            }
         }
         
         /// <summary>
@@ -195,7 +207,10 @@ namespace p5.net
                         if (byteContent != null) {
 
                             // setting our Content-Type header, defaulting to "application/octet-stream", in addition to other headers
-                            request.ContentType = args.GetExChildValue ("Content-Type", context, "application/octet-stream");
+                            request.ContentType = args.GetExChildValue (
+                                "Content-Type", 
+                                context, 
+                                "application/octet-stream");
                             SetRequestHeaders (request, context, args);
 
                             // binary content
@@ -203,7 +218,10 @@ namespace p5.net
                         } else {
 
                             // setting our Content-Type header, defaulting to "text/plain" unless Hyperlisp is given, in addition to other headers
-                            request.ContentType = args.GetExChildValue ("Content-Type", context, isHyperlisp ? "application/Hyperlisp" : "text/plain");
+                            request.ContentType = args.GetExChildValue (
+                                "Content-Type", 
+                                context, 
+                                isHyperlisp ? "application/Hyperlisp" : "text/plain");
                             SetRequestHeaders (request, context, args);
 
                             // any other type of content, such as string/integer/boolean etc. Converting to string beffore we write.

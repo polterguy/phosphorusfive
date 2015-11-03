@@ -90,7 +90,7 @@ namespace p5.unittests.plugins
         <p>success2</p>
     </body>
 </html>""
-p5.html.lambda2html:@/-/*/*?node");
+p5.html.lambda2html:x:/-/*/*");
             Assert.AreEqual (node [0].Value, node [1].Value);
         }
         
@@ -167,7 +167,7 @@ p5.html.lambda2html:@/-/*/*?node");
         <p>success2</p>
     </body>
 </html>""
-p5.html.lambda2html:@/-/*/*?node");
+p5.html.lambda2html:x:/-/*/*");
             Assert.AreEqual (node [0].Value, node [1].Value);
         }
     }

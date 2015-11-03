@@ -26,11 +26,16 @@ namespace p5.exp
         /// <param name="context">Application context.</param>
         /// <param name="defaultValue">Default value to return.</param>
         /// <typeparam name="T">The type to return the evaluated result as.</typeparam>
-        public static T GetExChildValue<T> (this Node node, string name, ApplicationContext context, T defaultValue = default(T))
+        public static T GetExChildValue<T> (
+            this Node node, 
+            string name, 
+            ApplicationContext context, 
+            T defaultValue = default(T),
+            string inject = null)
         {
             if (node [name] == null || node [name].Value == null)
                 return defaultValue;
-            return XUtil.Single<T> (node [name], node [name], context, defaultValue);
+            return XUtil.Single<T> (node [name], node [name], context, defaultValue, inject);
         }
 
         /// <summary>
@@ -44,7 +49,11 @@ namespace p5.exp
         /// <param name="defaultValue">Default value to return.</param>
         /// <param name="inject">String to inject between entities of expression.</param>
         /// <typeparam name="T">The type to return the evaluated result as.</typeparam>
-        public static T GetExValue<T> (this Node node, ApplicationContext context, T defaultValue = default(T), string inject = null)
+        public static T GetExValue<T> (
+            this Node node, 
+            ApplicationContext context, 
+            T defaultValue = default(T), 
+            string inject = null)
         {
             if (node.Value == null)
                 return defaultValue;

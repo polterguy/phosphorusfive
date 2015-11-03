@@ -106,8 +106,8 @@ of application, you have complete control over the rendering of your page, and t
             literal
               innerValue:@""this widget was <strong>dynamically</strong> created as a consequence of you clicking the button :)""
               onclick
-                set:@/+/?value
-                  :@/../*/_widget/?value
+                set:x:/+?value
+                  :x:/../*/_widget?value
                 p5.web.remove-widget"
 p5.page:/lambda-world
   type:lambda
@@ -151,8 +151,8 @@ yourself. <a href=""""/"""">go back</a>""
                 literal
                   innerValue:@""this widget was <strong>dynamically</strong> created as a consequence of you clicking the button :)""
                   onclick
-                    set:@/+/?value
-                      :@/../*/_widget/?value
+                    set:x:/+?value
+                      :x:/../*/_widget?value
                     p5.web.remove-widget"
 p5.page:/editor
   type:lambda
@@ -180,15 +180,3 @@ p5.user:admin user
   username:admin
   password:admin
   role:admin
-p5.page:/web-service-1
-  name:web-service-1
-  template:system42/templates/main.hl
-  type:lambda
-  lambda:@"/*
- * [lambda] page sample code
- */
-
-p5.web.set-response-header
-  Content-Type:application/octet-stream
-p5.web.echo-file:media/css/src/grid.png
-"
