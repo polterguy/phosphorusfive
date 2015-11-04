@@ -288,7 +288,7 @@ namespace p5.web.ui.widgets
                 return null;
 
             // finding lambda object(s) referred to by [oninitialload], and creating our lambda node structure
-            var evtLambdas = new List<Node> (XUtil.Iterate<Node> (onInitialLoad, context, true));
+            var evtLambdas = new List<Node> (XUtil.Iterate<Node> (onInitialLoad, context));
             var evtNode = new Node ("oninitialload");
             foreach (var idxLambda in evtLambdas) {
                 evtNode.Add (idxLambda.Clone ());
@@ -404,7 +404,7 @@ namespace p5.web.ui.widgets
          */
         private static void CreateChildWidgets (ApplicationContext context, Widget widget, Node children)
         {
-            foreach (var idxChild in XUtil.Iterate<Node> (children, context, true)) {
+            foreach (var idxChild in XUtil.Iterate<Node> (children, context)) {
                 idxChild.Insert (0, new Node ("__parent", widget));
                 idxChild.Insert (1, new Node ("_widget", XUtil.Single<string> (children.Parent.Find (idx => idx.Name == "_widget"), context)));
                 context.Raise ("p5.web.widgets." + idxChild.Name, idxChild);
@@ -436,7 +436,7 @@ namespace p5.web.ui.widgets
                 widget [node.Name.Replace ("-script", "")] = XUtil.Single<string> (node, context);
             } else {
                 // finding lambda object(s) referred to by [event], and creating our lambda node structure
-                var evtLambdas = new List<Node> (XUtil.Iterate<Node> (node, context, true));
+                var evtLambdas = new List<Node> (XUtil.Iterate<Node> (node, context));
                 var evtNode = new Node (node.Name);
                 foreach (var idxLambda in evtLambdas) {
                     evtNode.Add (idxLambda.Clone ());

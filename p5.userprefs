@@ -1,41 +1,19 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="plugins/p5.data/Insert.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="plugins/p5.html/HtmlEncoder.cs">
     <Files>
-      <File FileName="tests/lambda/Set.cs" Line="527" Column="92" />
-      <File FileName="plugins/p5.lambda/keywords/Set.cs" Line="109" Column="1" />
-      <File FileName="core/p5.exp/XUtil.cs" Line="176" Column="113" />
-      <File FileName="core/p5.exp/Expression.cs" Line="138" Column="1" />
-      <File FileName="tests/plugins/Database.cs" Line="351" Column="1" />
-      <File FileName="tests/Expressions.cs" Line="512" Column="67" />
-      <File FileName="plugins/p5.data/Select.cs" Line="75" Column="1" />
-      <File FileName="plugins/p5.data/Insert.cs" Line="96" Column="17" />
+      <File FileName="plugins/p5.html/HtmlEncoder.cs" Line="58" Column="17" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="core" expanded="True">
-            <Node name="p5.core" expanded="True" />
-            <Node name="p5.exp" expanded="True">
-              <Node name="matchentities" expanded="True" />
-            </Node>
-          </Node>
+          <Node name="core" expanded="True" />
           <Node name="plugins" expanded="True">
-            <Node name="p5.data" expanded="True">
-              <Node name="Insert.cs" selected="True" />
-            </Node>
-            <Node name="p5.lambda" expanded="True">
-              <Node name="helpers" expanded="True" />
-              <Node name="keywords" expanded="True" />
+            <Node name="p5.html" expanded="True">
+              <Node name="HtmlEncoder.cs" selected="True" />
             </Node>
           </Node>
-          <Node name="tests" expanded="True">
-            <Node name="p5.tests" expanded="True">
-              <Node name="References" expanded="True" />
-              <Node name="lambda" expanded="True" />
-              <Node name="plugins" expanded="True" />
-            </Node>
-          </Node>
+          <Node name="tests" expanded="True" />
         </State>
       </Pad>
       <Pad Id="ClassPad">
@@ -43,19 +21,16 @@
       </Pad>
       <Pad Id="MonoDevelop.Debugger.WatchPad">
         <State>
-          <Value>retVal</Value>
-          <Value>this.Value</Value>
+          <Value>widget.ID</Value>
         </State>
       </Pad>
       <Pad Id="MonoDevelop.NUnit.TestPad">
-        <State expanded="True">
+        <State expanded="True" selected="True">
           <Node name="tests" expanded="True">
             <Node name="p5.tests" expanded="True">
               <Node name="p5" expanded="True">
                 <Node name="unittests" expanded="True">
-                  <Node name="plugins" expanded="True">
-                    <Node name="Database" expanded="True" />
-                  </Node>
+                  <Node name="plugins" expanded="True" />
                 </Node>
               </Node>
             </Node>
@@ -65,10 +40,7 @@
     </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore>
-      <Breakpoint file="/home/polterguy/projects/software/p5/plugins/p5.data/Insert.cs" line="84" column="33" />
-      <Breakpoint file="/home/polterguy/projects/software/p5/tests/plugins/Database.cs" line="350" column="1" />
-    </BreakpointStore>
+    <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>

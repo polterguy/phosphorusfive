@@ -32,9 +32,11 @@ namespace p5.web.ui
         {
             CollectionBase.Set (e.Args, context, delegate (string key, object value) {
                 if (value == null) {
+
                     // removing object, if it exists
                     HttpContext.Current.Session.Remove (key);
                 } else {
+
                     // adding object
                     HttpContext.Current.Session [key] = value;
                 }

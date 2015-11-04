@@ -923,7 +923,7 @@ namespace p5.webapp
          */
         private void CreateWidgetEvents (Control widget, Node eventNode, ApplicationContext context)
         {
-            foreach (var idxEvt in XUtil.Iterate<Node> (eventNode, context, true)) {
+            foreach (var idxEvt in XUtil.Iterate<Node> (eventNode, context)) {
 
                 // checking to see if there's already an existing event with the given name
                 if (!PageActiveEvents.ContainsKey (idxEvt.Name)) {

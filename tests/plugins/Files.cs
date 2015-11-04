@@ -410,7 +410,7 @@ namespace p5.unittests.plugins
             var node = new Node (string.Empty, "test1.txt")
                 .Add ("success")
                 .Add ("src", Expression.Create ("/{0}?name", Context)).LastChild
-                .Add (string.Empty, "-").Root;
+                    .Add (string.Empty, "-").Root;
             Context.Raise ("p5.file.save", node);
 
             // verifying creation of file was done correctly
@@ -451,6 +451,47 @@ p5.file.save:test1.txt
   src:x:/../*/_data");
             using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
                 Assert.AreEqual ("_data\r\n  foo1:bar1\r\n  foo2:bar2", reader.ReadToEnd ());
+            }
+        }
+
+        [ActiveEvent (Name = "test.save.av1")]
+        private static void test_save_av1 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "success";
+        }
+        
+        /// <summary>
+        ///     making sure [p5.file.save] works when given a constant as a filepath, and an 
+        ///     Active Event invocation as [src]
+        /// </summary>
+        [Test]
+        public void SaveActiveEvent01 ()
+        {
+            ExecuteLambda (@"p5.file.save:test1.txt
+  test.save.av1");
+            using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
+                Assert.AreEqual ("success", reader.ReadToEnd ());
+            }
+        }
+        
+        [ActiveEvent (Name = "test.save.av2")]
+        private static void test_save_av2 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Add ("foo1", "bar1");
+            e.Args.Add ("foo2", "bar2");
+        }
+
+        /// <summary>
+        ///     making sure [p5.file.save] works when given a constant as a filepath, and an 
+        ///     Active Event invocation as [src]
+        /// </summary>
+        [Test]
+        public void SaveActiveEvent02 ()
+        {
+            ExecuteLambda (@"p5.file.save:test1.txt
+  test.save.av2");
+            using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
+                Assert.AreEqual ("foo1:bar1\r\nfoo2:bar2", reader.ReadToEnd ());
             }
         }
 

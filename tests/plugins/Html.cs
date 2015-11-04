@@ -170,5 +170,42 @@ p5.html.lambda2html:x:/-/*/*");
 p5.html.lambda2html:x:/-/*/*");
             Assert.AreEqual (node [0].Value, node [1].Value);
         }
+        
+        /// <summary>
+        ///     Converts some HTML to p5.lambda and back again, containing special characters,
+        ///     verifying the results are what we started with.
+        /// </summary>
+        [Test]
+        public void Html2Lambda05 ()
+        {
+            Node node = ExecuteLambda (@"_html:@""<html>
+    <head>
+        <title>foo&lt;&amp;&gt;bar</title>
+    </head>
+    <body>
+        <form>
+            <input type=""""text"""" id=""""foobar""""></input>
+            <textarea id=""""barfoo"""">success textarea</textarea>
+            <div id=""""div1"""">
+                <p id=""""par1"""">success 1</p>
+            </div>
+        </form>
+        <p>success2</p>
+    </body>
+</html>""
+p5.html.html2lambda:x:/-?value
+p5.html.lambda2html:x:/-/0/0");
+            Assert.AreEqual (node [0].Value, node [2].Value);
+        }
+
+        [Test]
+        public void HtmlEncodeDecode ()
+        {
+            Node node = ExecuteLambda (@"_html:this is < than and this is > than
+p5.html.html-encode:x:/-?value
+p5.html.html-decode:x:/-?value");
+            Assert.AreEqual (node [0].Value, node [2].Value);
+            Assert.AreEqual ("this is &lt; than and this is &gt; than", node [1].Value);
+        }
     }
 }

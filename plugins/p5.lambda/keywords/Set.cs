@@ -116,7 +116,7 @@ namespace p5.lambda.keywords
                     // our destination nodes, on each iteration, passing in destination node as data source
                     idxDestination.Value = XUtil.SourceSingle (e.Args.LastChild, idxDestination.Node, context);
                 }
-            } else if (e.Args.Count > 0 && e.Args.LastChild.Name == "src") {
+            } else {
 
                 // static source, hence retrieving source before iteration starts
                 var source = XUtil.SourceSingle (e.Args.LastChild, context);
@@ -124,20 +124,6 @@ namespace p5.lambda.keywords
                 // iterating through all destinations, updating with source
                 foreach (var idxDestination in destEx.Evaluate (e.Args, context, e.Args)) {
                     idxDestination.Value = source;
-                }
-            } else if (e.Args.Count == 0 || e.Args.LastChild.Name == "") {
-
-                // "null source", iterating through all destinations, updating with null
-                foreach (var idxDestination in destEx.Evaluate (e.Args, context, e.Args)) {
-                    idxDestination.Value = null;
-                }
-            } else {
-
-                // Active Event invocation source, iterating through all destinations, after invocting Active event, updating
-                // with result from Active Event invocation
-                context.Raise (e.Args.LastChild.Name, e.Args.LastChild);
-                foreach (var idxDestination in destEx.Evaluate (e.Args, context, e.Args)) {
-                    idxDestination.Value = e.Args.LastChild.Value;
                 }
             }
         }

@@ -58,7 +58,7 @@ namespace p5.web.ui.common
         public static void Set (Node node, ApplicationContext context, SetDelegate functor)
         {
             // retrieving source
-            var source = XUtil.Source (node.LastChild, context);
+            var source = Source (node.LastChild, context);
 
             // looping through each destination, creating an object, or removing an existing
             // object, for each destination
@@ -146,6 +146,55 @@ namespace p5.web.ui.common
                     }
                 }
             }
+        }
+        
+        private static object Source (Node evaluatedNode, ApplicationContext context)
+        {
+            object source = null;
+
+            // we have a [source] or [src] parameter here, figuring out what it points to, or contains
+            if (evaluatedNode == null) {
+                return null;
+            } else if (XUtil.IsExpression (evaluatedNode.Value)) {
+
+                // this is an expression which might lead to multiple results, trying to return one result,
+                // but will resort to returning List of objects if necssary
+                var tmpList = new List<object> (XUtil.Iterate<object> (evaluatedNode, evaluatedNode, context));
+                switch (tmpList.Count) {
+                    case 0:
+                        // no source values
+                        break;
+                    case 1:
+                        // one single object in list, returning only that single object
+                        source = tmpList [0];
+                        break;
+                    default:
+                        source = tmpList;
+                        break;
+                }
+            } else if (evaluatedNode.Value != null) {
+
+                // source is a constant, might still be formatted
+                source = XUtil.FormatNode (evaluatedNode, evaluatedNode, context);
+
+                if (source is Node)
+                    source = (source as Node).Clone ();
+            } else {
+
+                // there are no value in [src] node, trying to create source out of [src]'s children
+                if (evaluatedNode.Count == 1) {
+
+                    // source is a constant node, making sure we clone it, in case source and destination overlaps
+                    source = evaluatedNode.FirstChild.Clone ();
+                } else {
+
+                    // more than one source, making sure we clone them, before we return the clones
+                    source = new List<Node> (evaluatedNode.Clone ().UnTieChildren ());
+                }
+            }
+
+            // returning source
+            return source;
         }
     }
 }

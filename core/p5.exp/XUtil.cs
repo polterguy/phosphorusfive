@@ -13,13 +13,28 @@ using p5.exp.matchentities;
 
 namespace p5.exp
 {
+    /// <summary>
+    ///     Helper class encapsulating common operations for p5.lambda expressions
+    /// 
+    ///     Contains helpers to iterate expressions, convert expressions to single values, and so on
+    /// </summary>
     public static class XUtil
     {
+        /// <summary>
+        ///     Returns true if given object is an expression
+        /// </summary>
+        /// <returns><c>true</c> if is expression the specified value; otherwise, <c>false</c>.</returns>
+        /// <param name="value">Value.</param>
         public static bool IsExpression (object value)
         {
             return value is Expression;
         }
 
+        /// <summary>
+        ///     Returns true if given node contains formatting parameters
+        /// </summary>
+        /// <returns><c>true</c> if is formatted the specified evaluatedNode; otherwise, <c>false</c>.</returns>
+        /// <param name="evaluatedNode">Evaluated node.</param>
         public static bool IsFormatted (Node evaluatedNode)
         {
             // a formatted node is defined as having one or more children with string.Empty as name
@@ -29,13 +44,29 @@ namespace p5.exp
                 evaluatedNode.FindAll (string.Empty).GetEnumerator ().MoveNext ();
         }
 
+        /// <summary>
+        ///     Formats the node according to values returned by its children
+        /// </summary>
+        /// <returns>The node.</returns>
+        /// <param name="evaluatedNode">Evaluated node.</param>
+        /// <param name="context">Context.</param>
         public static object FormatNode (
             Node evaluatedNode,
             ApplicationContext context)
         {
             return FormatNode (evaluatedNode, evaluatedNode, context);
         }
-        
+
+        /// <summary>
+        ///     Formats the node according to values returned by its children
+        /// 
+        ///     Uses dataSource as source to evaluate expressions in formatting parameters, unless
+        ///     dataSource is the same as evaluatedNode
+        /// </summary>
+        /// <returns>The node.</returns>
+        /// <param name="evaluatedNode">Evaluated node.</param>
+        /// <param name="dataSource">Data source.</param>
+        /// <param name="context">Context.</param>
         public static object FormatNode (
             Node evaluatedNode,
             Node dataSource,
@@ -93,6 +124,17 @@ namespace p5.exp
             return evaluatedNode.Value ?? "";
         }
 
+        /// <summary>
+        ///     Returns one single value by evaluating evaluatedNode
+        /// 
+        ///     Will either evaluate node's expression, or iterate its children, value, and so on, and return
+        ///     one single value of type (T) back to caller
+        /// </summary>
+        /// <param name="evaluatedNode">Evaluated node.</param>
+        /// <param name="context">Context.</param>
+        /// <param name="defaultValue">Default value.</param>
+        /// <param name="inject">Inject.</param>
+        /// <typeparam name="T">The 1st type parameter.</typeparam>
         public static T Single<T> (
             Node evaluatedNode,
             ApplicationContext context,
@@ -102,6 +144,19 @@ namespace p5.exp
             return Single<T> (evaluatedNode, evaluatedNode, context, defaultValue, inject);
         }
 
+        /// <summary>
+        ///     Returns one single value by evaluating evaluatedNode
+        /// 
+        ///     Will either evaluate node's expression, or iterate its children, value, and so on, and return
+        ///     one single value of type (T) back to caller. Uses dataSource as source to evaluate any expressions
+        ///     in evaluateddNode's value
+        /// </summary>
+        /// <param name="evaluatedNode">Evaluated node.</param>
+        /// <param name="dataSource">Data source.</param>
+        /// <param name="context">Context.</param>
+        /// <param name="defaultValue">Default value.</param>
+        /// <param name="inject">Inject.</param>
+        /// <typeparam name="T">The 1st type parameter.</typeparam>
         public static T Single<T> (
             Node evaluatedNode,
             Node dataSource,
@@ -152,19 +207,38 @@ namespace p5.exp
         /*
          * common implementation for Single<T> methods
          */
+        /// <summary>
+        ///     Iterates the given node, and returns multiple values
+        /// 
+        ///     If node contains an expression, then this expression will be evaluated. Otherwise, node's value
+        ///     will be converted if possible. If no value in node, then children nodes of evaluates node will
+        ///     be returned during iteration
+        /// </summary>
+        /// <param name="evaluatedNode">Evaluated node.</param>
+        /// <param name="context">Context.</param>
+        /// <typeparam name="T">The 1st type parameter.</typeparam>
         public static IEnumerable<T> Iterate<T> (
             Node evaluatedNode, 
-            ApplicationContext context, 
-            bool iterateChildren = false)
+            ApplicationContext context)
         {
-            return Iterate<T> (evaluatedNode, evaluatedNode, context, iterateChildren);
+            return Iterate<T> (evaluatedNode, evaluatedNode, context);
         }
 
+        /// <summary>
+        ///     Iterates the given node, and returns multiple values
+        /// 
+        ///     If node contains an expression, then this expression will be evaluated. Otherwise, node's value
+        ///     will be converted if possible. If no value in node, then children nodes of evaluates node will
+        ///     be returned during iteration. Uses dataSource to evaluate any expressions in evaluatedNode
+        /// </summary>
+        /// <param name="evaluatedNode">Evaluated node.</param>
+        /// <param name="dataSource">Data source.</param>
+        /// <param name="context">Context.</param>
+        /// <typeparam name="T">The 1st type parameter.</typeparam>
         public static IEnumerable<T> Iterate<T> (
             Node evaluatedNode,
             Node dataSource,
-            ApplicationContext context,
-            bool iterateChildren = false)
+            ApplicationContext context)
         {
             if (evaluatedNode.Value != null) {
 
@@ -186,17 +260,7 @@ namespace p5.exp
                         // caller requested anything but 'count', we return it as type T, possibly triggering
                         // a conversion
                         foreach (var idx in match) {
-                            if (iterateChildren && typeof(T) == typeof(Node)) {
-
-                                // user requested to iterateChildren, and since current match triggers a conversion,
-                                // we iterate the children of that conversion, and not the automatically generated
-                                // root node
-                                foreach (var idxInner in Utilities.Convert<Node> (idx.Value, context).Children) {
-                                    yield return Utilities.Convert<T> (idxInner, context);
-                                }
-                            } else {
-                                yield return Utilities.Convert<T> (idx.Value, context);
-                            }
+                            yield return Utilities.Convert<T> (idx.Value, context);
                         }
                     }
                 } else {
@@ -224,63 +288,33 @@ namespace p5.exp
             }
         }
 
-        public static object Source (Node evaluatedNode, ApplicationContext context)
-        {
-            return Source (evaluatedNode, evaluatedNode, context);
-        }
-
-        private static object Source (Node evaluatedNode, Node dataSource, ApplicationContext context)
-        {
-            object source = null;
-
-            // we have a [source] or [src] parameter here, figuring out what it points to, or contains
-            if (IsExpression (evaluatedNode.Value)) {
-
-                // this is an expression which might lead to multiple results, trying to return one result,
-                // but will resort to returning List of objects if necssary
-                var tmpList = new List<object> (Iterate<object> (evaluatedNode, dataSource, context));
-                switch (tmpList.Count) {
-                    case 0:
-                        // no source values
-                        break;
-                    case 1:
-                        // one single object in list, returning only that single object
-                        source = tmpList [0];
-                        break;
-                    default:
-                        source = tmpList;
-                        break;
-                }
-            } else if (evaluatedNode.Value != null) {
-
-                // source is a constant, might still be formatted
-                source = FormatNode (evaluatedNode, dataSource, context);
-
-                if (source is Node)
-                    source = (source as Node).Clone ();
-            } else {
-
-                // there are no value in [src] node, trying to create source out of [src]'s children
-                if (evaluatedNode.Count == 1) {
-
-                    // source is a constant node, making sure we clone it, in case source and destination overlaps
-                    source = evaluatedNode.FirstChild.Clone ();
-                } else {
-
-                    // more than one source, making sure we clone them, before we return the clones
-                    source = new List<Node> (evaluatedNode.Clone ().UnTieChildren ());
-                }
-            }
-
-            // returning source
-            return source;
-        }
-
+        /*
+         * In use in [set] [p5.file.save] and [p5.data.update]
+         */
+        /// <summary>
+        ///     Will return one single source value from evaluatedNode
+        /// 
+        ///     Useful for operations where you need one single [src] value, such as when saving a file, [set]'ing 
+        ///     a node's value/name, etc.
+        /// </summary>
+        /// <returns>The single.</returns>
+        /// <param name="evaluatedNode">Evaluated node.</param>
+        /// <param name="context">Context.</param>
         public static object SourceSingle (Node evaluatedNode, ApplicationContext context)
         {
             return SourceSingle (evaluatedNode, evaluatedNode, context);
         }
 
+        /// <summary>
+        ///     Will return one single source value from evaluatedNode
+        /// 
+        ///     Useful for operations where you need one single [src] value, such as when saving a file, [set]'ing 
+        ///     a node's value/name, etc. Uses dataSource to evaluate any expressions in evaluatedNode's value
+        /// </summary>
+        /// <returns>The single.</returns>
+        /// <param name="evaluatedNode">Evaluated node.</param>
+        /// <param name="dataSource">Data source.</param>
+        /// <param name="context">Context.</param>
         public static object SourceSingle (
             Node evaluatedNode, 
             Node dataSource, 
@@ -288,34 +322,72 @@ namespace p5.exp
         {
             object source = null;
 
-            // we have a [source] or [src] parameter here, figuring out what it points to, or contains
-            if (evaluatedNode.Value != null) {
+            if (evaluatedNode == null || evaluatedNode.Name == string.Empty)
+                return null; // no source!
 
-                // this might be an expression, or a constant, converting value to single object, somehow
-                source = Single<object> (evaluatedNode, dataSource, context);
+            if (evaluatedNode.Name != "src" && evaluatedNode.Name != "rel-src") {
+
+                // Active Event invocation source, iterating through all destinations, after invocting Active 
+                // event, updating with result from Active Event invocation
+                context.Raise (evaluatedNode.Name, evaluatedNode);
+                source = SourceImplementation (evaluatedNode, dataSource, context);
             } else {
 
-                // there are no values in [src] node, trying to create source out of [src]'s children
-                if (evaluatedNode.Count == 1) {
-
-                    // source is a constant node, making sure we clone it, in case source and destination overlaps
-                    source = evaluatedNode.FirstChild.Clone ();
-                } else {
-
-                    // more than one source, making sure we convert it into one single value, meaning a 'string'
-                    source = Utilities.Convert<string> (evaluatedNode.Children, context);
-                }
+                // simple source
+                source = SourceImplementation (evaluatedNode, dataSource, context);
             }
 
             // returning source
             return source;
         }
 
+        private static object SourceImplementation (Node evaluatedNode, Node dataSource, ApplicationContext context)
+        {
+            if (evaluatedNode.Value != null) {
+
+                // this might be an expression, or a constant, converting value to single object, somehow
+                return Single<object> (evaluatedNode, dataSource, context);
+            } else {
+
+                // there are no values in [src] node, trying to create source out of [src]'s children
+                if (evaluatedNode.Count == 1) {
+
+                    // source is a constant node, making sure we clone it, in case source and destination overlaps
+                    return evaluatedNode.FirstChild.Clone ();
+                } else {
+
+                    // more than one source, making sure we convert it into one single value, meaning a 'string'
+                    return Utilities.Convert<string> (evaluatedNode.Children, context);
+                }
+            }
+        }
+
+        /*
+         * In use in [add], and to be used in [insert-before] and [insert-after]
+         */
+        /// <summary>
+        ///    Will return multiple values if feasable
+        /// 
+        ///    Useful for operations such as [add] and [insert-before], that expects multiple values or a list of nodes
+        /// </summary>
+        /// <returns>The nodes.</returns>
+        /// <param name="evaluatedNode">Evaluated node.</param>
+        /// <param name="context">Context.</param>
         public static List<Node> SourceNodes (Node evaluatedNode, ApplicationContext context)
         {
             return SourceNodes (evaluatedNode, evaluatedNode, context);
         }
 
+        /// <summary>
+        ///     Will return multiple values if feasable
+        /// 
+        ///     Useful for operations such as [add] and [insert-before], that expects multiple values or a list of nodes.
+        ///     Uses dataSource to evaluate any expressions in evaluatedNode
+        /// </summary>
+        /// <returns>The nodes.</returns>
+        /// <param name="evaluatedNode">Evaluated node.</param>
+        /// <param name="dataSource">Data source.</param>
+        /// <param name="context">Context.</param>
         public static List<Node> SourceNodes (Node evaluatedNode, Node dataSource, ApplicationContext context)
         {
             // return value
@@ -370,8 +442,5 @@ namespace p5.exp
             // returning node list back to caller
             return sourceNodes.Count > 0 ? sourceNodes : null;
         }
-
-        // used to retrieve items in Single<T> methods
-        private delegate IEnumerable<T> SingleDelegate<out T> ();
     }
 }

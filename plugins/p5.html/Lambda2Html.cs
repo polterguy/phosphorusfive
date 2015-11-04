@@ -33,11 +33,7 @@ namespace p5.html
         private static void p5_html_lambda2html (ApplicationContext context, ActiveEventArgs e)
         {
             StringBuilder builder = new StringBuilder ();
-            if (e.Args.Value != null) {
-                Convert (XUtil.Iterate<Node> (e.Args, e.Args, context, false), builder, 0, context);
-            } else {
-                Convert (e.Args.Children, builder, 0, context);
-            }
+            Convert (XUtil.Iterate<Node> (e.Args, e.Args, context), builder, 0, context);
             e.Args.Value = builder.ToString ().Trim ();
         }
 

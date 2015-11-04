@@ -112,9 +112,7 @@ of application, you have complete control over the rendering of your page, and t
 p5.page:/lambda-world
   type:lambda
   name:lambda example
-  lambda:@"
-
-/*
+  lambda:@"/*
  * this is an example of a 'lambda page', which allows you to control every aspect of your page in its entirety, by executing
  * p5.lambda code as a consequence of your page being loaded
  */
@@ -151,9 +149,7 @@ yourself. <a href='/'>go back</a>""
                 literal
                   innerValue:@""this widget was <strong>dynamically</strong> created as a consequence of you clicking the button :)""
                   onclick
-                    set:x:/+?value
-                      :x:/../*/_widget?value
-                    p5.web.remove-widget"
+                    p5.web.remove-widget:x:/../*/_widget?value"
 p5.page:/editor
   type:lambda
   name:p5.page editor

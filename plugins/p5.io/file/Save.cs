@@ -47,9 +47,6 @@ namespace p5.file.file
             // getting root folder
             var rootFolder = Common.GetRootFolder (context);
 
-            if (e.Args.LastChild.Name != "src")
-                throw new LambdaException ("No [src] given to [p5.file.save]", e.Args, context);
-
             // getting source
             var source = Utilities.Convert<string> (XUtil.SourceSingle (e.Args.LastChild, context), context);
 
