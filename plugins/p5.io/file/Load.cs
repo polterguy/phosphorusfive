@@ -36,6 +36,7 @@ namespace p5.file.file
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "load-file")]
+        [ActiveEvent (Name = "load-text-file")]
         private static void file_load (ApplicationContext context, ActiveEventArgs e)
         {
             // retrieving root folder of app
