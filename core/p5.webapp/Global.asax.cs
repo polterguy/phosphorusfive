@@ -55,6 +55,7 @@ namespace p5
                     throw new ConfigurationErrorsException ("No activeEventAssemblies section found in web.config");
 
                 foreach (ActiveEventAssembly idxAssembly in configuration.Assemblies) {
+
                     Loader.Instance.LoadAssembly (Server.MapPath (configuration.PluginDirectory), idxAssembly.Assembly);
                 }
 
@@ -64,6 +65,7 @@ namespace p5
 
                 // for then to execute our "startup file", if there exists any
                 if (!string.IsNullOrEmpty (ConfigurationManager.AppSettings ["application-startup-file"])) {
+
                     // there is an application-startup-file declared in app.config file, executing it as a p5.lambda file
                     var appStartFilePath = ConfigurationManager.AppSettings ["application-startup-file"];
                     ExecuteLambdaFile (context, appStartFilePath);
@@ -80,7 +82,7 @@ namespace p5
                 context.Raise ("load-file", loadFileNode);
 
                 // raising file as p5.lambda object
-                context.Raise ("lambda", Utilities.Convert<Node> (loadFileNode [0].Value, context));
+                context.Raise ("lambda", loadFileNode [0].UnTie ()); // making sure file node becomes root node ...
             }
 
             /*

@@ -22,11 +22,11 @@ namespace p5.lambda.events
         /// 
         ///     Example;
         /// 
-        ///     <pre>event-remove:foo</pre>
+        ///     <pre>remove-event:foo</pre>
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "event-remove")]
+        [ActiveEvent (Name = "remove-event")]
         private static void event_remove (ApplicationContext context, ActiveEventArgs e)
         {
             // iterating through all events to delete

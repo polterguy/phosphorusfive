@@ -18,7 +18,7 @@ using p5.exp;
 namespace p5.net
 {
     /// <summary>
-    ///     Class wrapping the [p5.net.get/post/put/delete] Active Events.
+    ///     Class wrapping the [p5.net.http-get/post/put/delete] Active Events.
     /// 
     ///     Contains the Active Events necessary to create REST HTTP requests. Use either [p5.net.post], [p5.net.get], [p5.net.put] or
     ///     [p5.net.delete] to create request. Request type is determined according to what Active Event you're using.
@@ -70,17 +70,17 @@ namespace p5.net
         ///     As previously said, if you add [all-headers] and set its value to true, then all HTTP headers will be returned after execution is
         ///     done.
         /// </summary>
-        [ActiveEvent (Name = "p5.net.get")]
-        [ActiveEvent (Name = "p5.net.post")]
-        [ActiveEvent (Name = "p5.net.put")]
-        [ActiveEvent (Name = "p5.net.delete")]
+        [ActiveEvent (Name = "p5.net.http-get")]
+        [ActiveEvent (Name = "p5.net.http-post")]
+        [ActiveEvent (Name = "p5.net.http-put")]
+        [ActiveEvent (Name = "p5.net.http-delete")]
         private static void p5_net_http_request (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value == null)
                 return; // nothing to do here
 
             // figuring out which method to use
-            string method = e.Args.Name.Substring (e.Args.Name.LastIndexOf (".") + 1).ToUpper ();
+            string method = e.Args.Name.Substring (e.Args.Name.IndexOf ("-") + 1).ToUpper ();
 
             // iterating through each request URL given
             foreach (var idxUrl in XUtil.Iterate<string> (e.Args, context)) {
@@ -101,6 +101,7 @@ namespace p5.net
                     // returning response to caller
                     RenderResponse (context, request, e.Args.Add (idxUrl));
                 } catch (Exception err) {
+
                     e.Args.Add (idxUrl, string.Format ("Something went wrong with request, error message was; '{0}'", err.Message));
                 }
             }

@@ -22,7 +22,7 @@ namespace p5.unittests.lambda
         [Test]
         public void Events01 ()
         {
-            var node = ExecuteLambda (@"event:test.foo1
+            var node = ExecuteLambda (@"set-event:test.foo1
   lambda
     set:x:/././*/_out?value
       src:success
@@ -39,7 +39,7 @@ test.foo1
         [Test]
         public void Events02 ()
         {
-            var node = ExecuteLambda (@"event:test.foo2
+            var node = ExecuteLambda (@"set-event:test.foo2
   lambda
     set:x:@/./.?value
       src:success
@@ -56,7 +56,7 @@ _out");
         public void Events03 ()
         {
             var node = ExecuteLambda (@"remove-event:test.foo3
-event:test.foo3
+set-event:test.foo3
   lambda
     set:x:/././*/_out?value
       src:{0}{1}
@@ -73,14 +73,14 @@ test.foo3
         }
 
         /// <summary>
-        ///     creates an event with a [lambda.copy] statement as child, making sure lambda objects are
+        ///     creates an event with a [lambda-copy] statement as child, making sure lambda objects are
         ///     invoket correctly from events
         /// </summary>
         [Test]
         public void Events04 ()
         {
-            var node = ExecuteLambda (@"event:test.foo4
-  lambda.copy
+            var node = ExecuteLambda (@"set-event:test.foo4
+  lambda-copy
     set:x:/././*/_out?value
       src:error
 test.foo4
@@ -95,7 +95,7 @@ test.foo4
         [Test]
         public void Events05 ()
         {
-            ExecuteLambda (@"event:test.foo5
+            ExecuteLambda (@"set-event:test.foo5
   lambda
     set:x:/././*/_out?value
       src:success");
@@ -108,33 +108,12 @@ test.foo4
         }
 
         /// <summary>
-        ///     creates an event twice, to make sure both invocations are invoked, in order of creation
-        /// </summary>
-        [Test]
-        public void Events06 ()
-        {
-            var node = ExecuteLambda (@"event:test.foo6
-  lambda
-    set:x:/././*/_out?value
-      src:succ
-event:test.foo6
-  lambda
-    set:x:/././*/_out?value
-      src:{0}{1}
-        :x:/././././*/_out?value
-        :ess
-test.foo6
-  _out");
-            Assert.AreEqual ("success", node [2] [0].Value);
-        }
-
-        /// <summary>
         ///     creates an event using a formatting expression, making sure events works as they should
         /// </summary>
         [Test]
         public void Events07 ()
         {
-            ExecuteLambda (@"event:test.f{0}
+            ExecuteLambda (@"set-event:test.f{0}
   :oo7
   lambda
     set:x:/././*/_out?value
@@ -150,11 +129,11 @@ test.foo6
         [Test]
         public void Events08 ()
         {
-            var node = ExecuteLambda (@"event:test.foo8
+            var node = ExecuteLambda (@"set-event:test.foo8
   lambda
     set:@/././*/_out/?value
       source:error
-event-remove:test.foo8
+remove-event:test.foo8
 test.foo8
   _out:success");
             Assert.AreEqual ("success", node [2] [0].Value);
@@ -167,11 +146,11 @@ test.foo8
         [Test]
         public void Events09 ()
         {
-            var node = ExecuteLambda (@"event:test.foo9
+            var node = ExecuteLambda (@"set-event:test.foo9
   lambda
     set:@/././*/_out/?value
       source:error
-event-remove:test.{0}
+remove-event:test.{0}
   :foo9
 test.foo9
   _out:success");
@@ -185,15 +164,15 @@ test.foo9
         [Test]
         public void Events10 ()
         {
-            var node = ExecuteLambda (@"event:test.foo10
+            var node = ExecuteLambda (@"set-event:test.foo10
   lambda
     set:x:/././*/_out?value
       src:error
-event:test.foo11
+set-event:test.foo11
   lambda
     set:x:/././*/_out?value
       src:error
-event-remove:x:/../*(/test.foo10|test.foo11)?name
+remove-event:x:/../*(/test.foo10|test.foo11)?name
 test.foo10
   _out:success
 test.foo11
@@ -211,7 +190,7 @@ test.foo11
             var node = ExecuteLambda (@"_evts
   test.foo12
   test.foo13
-event:x:/-/*?name
+set-event:x:/-/*?name
   lambda
     set:x:/././*/_out?value
       src:success
@@ -236,7 +215,7 @@ test.foo13
         [Test]
         public void Events12 ()
         {
-            var node = ExecuteLambda (@"event:test.hardcoded
+            var node = ExecuteLambda (@"set-event:test.hardcoded
   lambda
     set:x:/./.?value
       src:{0}ess
@@ -252,7 +231,7 @@ test.hardcoded");
         [Test]
         public void Events13 ()
         {
-            var node = ExecuteLambda (@"event:test.foo14
+            var node = ExecuteLambda (@"set-event:test.foo14
   lambda
     set:x:/./.?value
       src:x:/./+/#?name
@@ -400,7 +379,7 @@ list-events:x:@/-?value");
         [Test]
         public void Events23 ()
         {
-            var node = ExecuteLambda (@"event:test.foo15
+            var node = ExecuteLambda (@"set-event:test.foo15
   lambda
     add:x:/./.?node
       src

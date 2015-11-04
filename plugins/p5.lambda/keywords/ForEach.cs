@@ -104,7 +104,7 @@ namespace p5.lambda.keywords
             // if there were no [lambda.xxx] children, we default to executing everything
             // inside of [for-each] as immutable
             if (!executed)
-                context.Raise ("lambda.immutable", args);
+                context.Raise ("lambda-immutable", args);
             args [0].UnTie ();
         }
     }

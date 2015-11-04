@@ -686,5 +686,32 @@ save-file:test1.txt
             Assert.AreEqual ("success", node.LastChild.Value);
             Assert.AreEqual ("test1.txt", node.LastChild.Name);
         }
+        
+        /// <summary>
+        ///     verifies [load-file] works correctly when loading Hyperlisp
+        /// </summary>
+        [Test]
+        public void LoadHyperlisp ()
+        {
+            // deleting file if it already exists
+            if (File.Exists (GetBasePath () + "test1.hl")) {
+                File.Delete (GetBasePath () + "test1.hl");
+            }
+
+            // creating files using p5.file
+            var node = new Node (string.Empty, "test1.hl")
+                .Add ("src", @"foo1:bar1
+foo2:bar2");
+            Context.Raise ("save-file", node);
+
+            // loading file using Phosphorus Five
+            node = new Node ("load-file", "test1.hl");
+            Context.Raise ("load-file", node);
+
+            Assert.AreEqual ("foo1", node.LastChild [0].Name);
+            Assert.AreEqual ("bar1", node.LastChild [0].Value);
+            Assert.AreEqual ("foo2", node.LastChild [1].Name);
+            Assert.AreEqual ("bar2", node.LastChild [1].Value);
+        }
     }
 }

@@ -914,7 +914,7 @@ set:x:/-?value
         {
             var node = ExecuteLambda (@"_result
 set:x:/-?value
-  lambda.copy
+  lambda-copy
     add:x:/.
       src
         result

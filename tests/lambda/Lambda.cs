@@ -30,50 +30,50 @@ set:x:/-?value
         }
 
         /// <summary>
-        ///     verifies that [lambda.immutable] is not mutable
+        ///     verifies that [lambda-immutable] is not mutable
         /// </summary>
         [Test]
         public void Lambda02 ()
         {
             var result = ExecuteLambda (@"_data:success
 set:x:/-?value
-  src:error", "lambda.immutable");
+  src:error", "lambda-immutable");
             Assert.AreEqual ("success", result [0].Value);
         }
 
         /// <summary>
-        ///     verifies that [lambda.copy] is not mutable
+        ///     verifies that [lambda-copy] is not mutable
         /// </summary>
         [Test]
         public void Lambda03 ()
         {
             var result = ExecuteLambda (@"_data:success
 set:x:/-?value
-  src:error", "lambda.copy");
+  src:error", "lambda-copy");
             Assert.AreEqual ("success", result [0].Value);
         }
 
         /// <summary>
-        ///     verifies that [lambda.copy] does not have access to nodes outside if itself
+        ///     verifies that [lambda-copy] does not have access to nodes outside if itself
         /// </summary>
         [Test]
         public void Lambda04 ()
         {
             var result = ExecuteLambda (@"_data:success
-lambda.copy
+lambda-copy
   set:x:/../*/_data?value
     src:error");
             Assert.AreEqual ("success", result [0].Value);
         }
 
         /// <summary>
-        ///     verifies that [lambda.immutable] has access to nodes outside if itself
+        ///     verifies that [lambda-immutable] has access to nodes outside if itself
         /// </summary>
         [Test]
         public void Lambda05 ()
         {
             var result = ExecuteLambda (@"_data:error
-lambda.immutable
+lambda-immutable
   set:x:/../*/_data?value
     src:success");
             Assert.AreEqual ("success", result [0].Value);
@@ -152,7 +152,7 @@ lambda:x:/-2|/-1");
         }
 
         /// <summary>
-        ///     verifies that [lambda.single] can execute one single node
+        ///     verifies that [lambda-single] can execute one single node
         /// </summary>
         [Test]
         public void Lambda11 ()
@@ -160,12 +160,12 @@ lambda:x:/-2|/-1");
             var result = ExecuteLambda (@"_exe1
   set:x:/..?value
     src:success
-lambda.single:x:/-/0");
+lambda-single:x:/-/0");
             Assert.AreEqual ("success", result.Value);
         }
 
         /// <summary>
-        ///     verifies that [lambda.single] can execute single nodes when given an
+        ///     verifies that [lambda-single] can execute single nodes when given an
         ///     expression that returns multiple results
         /// </summary>
         [Test]
@@ -179,12 +179,12 @@ _exe1
     src:{0}{1}
       :x:/..?value
       :ess
-lambda.single:x:/-2/*|/-1/*");
+lambda-single:x:/-2/*|/-1/*");
             Assert.AreEqual ("success", result.Value);
         }
 
         /// <summary>
-        ///     verifies that [lambda.single] can execute single nodes when given an
+        ///     verifies that [lambda-single] can execute single nodes when given an
         ///     expression that returns multiple results, where some nodes are NOT'ed away
         /// </summary>
         [Test]
@@ -201,12 +201,12 @@ _exe1
     src:{0}{1}
       :x:/..?value
       :ess
-lambda.single:x:/../*(/_exe1!/=error)/*");
+lambda-single:x:/../*(/_exe1!/=error)/*");
             Assert.AreEqual ("success", result.Value);
         }
 
         /// <summary>
-        ///     verifies that [lambda.single] will not execute anything when given a block of code
+        ///     verifies that [lambda-single] will not execute anything when given a block of code
         /// </summary>
         [Test]
         public void Lambda14 ()
@@ -214,7 +214,7 @@ lambda.single:x:/../*(/_exe1!/=error)/*");
             var result = ExecuteLambda (@"_exe1:success
   set:x:/.?value
     src:error
-lambda.single:x:/-");
+lambda-single:x:/-");
             Assert.AreEqual ("success", result [0].Value);
         }
 

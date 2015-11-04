@@ -50,7 +50,17 @@ namespace p5.file.file
                     // file exists, loading it as text file, and appending text into node
                     // with filename as name, and content as value
                     using (TextReader reader = File.OpenText (rootFolder + idxFilename)) {
-                        e.Args.Add (new Node (idxFilename, reader.ReadToEnd ()));
+                        string fileContent = reader.ReadToEnd ();
+                        if (idxFilename.EndsWith (".hl")) {
+
+                            // automatically converting to Hyperlisp before returning
+                            var convertNode = new Node (string.Empty, fileContent);
+                            e.Args.Add (new Node (idxFilename, null, context.Raise ("lisp2lambda", convertNode).Children));
+                        } else {
+
+                            // adding file content as string
+                            e.Args.Add (new Node (idxFilename, fileContent));
+                        }
                     }
                 } else {
 
@@ -73,8 +83,8 @@ namespace p5.file.file
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "p5.file.binary.load")]
-        private static void p5_file_binary_load (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "load-binary-file")]
+        private static void load_binary_file (ApplicationContext context, ActiveEventArgs e)
         {
             // retrieving root folder of app
             var rootFolder = Common.GetRootFolder (context);

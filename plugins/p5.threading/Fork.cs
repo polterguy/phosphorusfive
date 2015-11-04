@@ -30,7 +30,7 @@ namespace p5.threading
         ///     as when downloading multiple files over HTTP, where you do not want to wait for the file(s) to be downloaded, before continuing
         ///     the execution of your main thread.
         /// 
-        ///     [fork] works roughly the same way as [lambda.copy], since it executes the thread on a copied instance of its own
+        ///     [fork] works roughly the same way as [lambda-copy], since it executes the thread on a copied instance of its own
         ///     execution tree, except of course that [fork] creates a new thread, where it executes its code.
         /// 
         ///     If [fork] has a <see cref="phosphorus.threading.Wait.lambda_wait">[wait]</see> node as its parent, then the [wait] node will 

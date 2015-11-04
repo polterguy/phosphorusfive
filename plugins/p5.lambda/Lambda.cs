@@ -162,36 +162,36 @@ namespace p5.lambda
         /// <summary>
         ///     Executes a specified piece of p5.lambda block.
         /// 
-        ///     The [lambda.immutable] keyword, works similar to the [lambda] keyword, except that whatever code you start out with, will also
-        ///     be the code you end up with, since [lambda.immutable] will set the code block it executes back, to whatever it contained before
+        ///     The [lambda-immutable] keyword, works similar to the [lambda] keyword, except that whatever code you start out with, will also
+        ///     be the code you end up with, since [lambda-immutable] will set the code block it executes back, to whatever it contained before
         ///     execution. This allows you to create code-blocks that after execution will be apparently unchanged. Consider the following code;
         /// 
         ///     <pre>
-        /// lambda.immutable
+        /// lambda-immutable
         ///   _foo
         ///   set:@/./0?value
         ///     src:Howdy World</pre>
         /// 
-        ///     If you change the above [lambda.immutable] statement, to become a [lambda] statement, then the value of [_foo] will become 
-        ///     <em>"Hello World"</em> after execution. But since we're using [lambda.immutable], then the code block executed, will be set back
+        ///     If you change the above [lambda-immutable] statement, to become a [lambda] statement, then the value of [_foo] will become 
+        ///     <em>"Hello World"</em> after execution. But since we're using [lambda-immutable], then the code block executed, will be set back
         ///     to its original state, after execution.
         /// 
-        ///     Besides from that, [lambda.immutable] is identical to [lambda]. See the <see cref="p5.lambda.Lambda.lambda_lambda">[lambda]</see>
-        ///     keyword's documentation, to understand what more features you can use with [lambda.immutable].
+        ///     Besides from that, [lambda-immutable] is identical to [lambda]. See the <see cref="p5.lambda.Lambda.lambda_lambda">[lambda]</see>
+        ///     keyword's documentation, to understand what more features you can use with [lambda-immutable].
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "lambda.immutable")]
+        [ActiveEvent (Name = "lambda-immutable")]
         private static void lambda_immutable (ApplicationContext context, ActiveEventArgs e)
         {
-            Executor (ExecuteBlockImmutable, context, e.Args, "lambda.immutable");
+            Executor (ExecuteBlockImmutable, context, e.Args, "lambda-immutable");
         }
 
         /// <summary>
         ///     Executes a specified piece of p5.lambda block.
         /// 
-        ///     The [lambda.copy] keyword, works similar to the [lambda] keyword, except that [lambda.copy] will create a copy of whatever p5.lambda
-        ///     execution blocks you executes, with the execution blocks becoming the root nodes of you [lambda.copy] statement. Consider the 
+        ///     The [lambda-copy] keyword, works similar to the [lambda] keyword, except that [lambda-copy] will create a copy of whatever p5.lambda
+        ///     execution blocks you executes, with the execution blocks becoming the root nodes of you [lambda-copy] statement. Consider the 
         ///     following code;
         /// 
         ///     <pre>_out:error
@@ -199,48 +199,48 @@ namespace p5.lambda
         ///   _out:success
         ///   set:@/./"*"/_input/#?name
         ///     source:@/../"*"/_out?value
-        /// lambda.copy:@/-?node
+        /// lambda-copy:@/-?node
         ///   _input:node:</pre>
         /// 
-        ///     If you change the above [lambda.copy] statement, to become a [lambda] statement, then the name of the [_input] reference node 
-        ///     will become <em>"error"</em> after execution. But since we're using [lambda.copy], then the root node iterator, in the [source]
+        ///     If you change the above [lambda-copy] statement, to become a [lambda] statement, then the name of the [_input] reference node 
+        ///     will become <em>"error"</em> after execution. But since we're using [lambda-copy], then the root node iterator, in the [source]
         ///     parameter above, will actually access the [_exe] node, and not the root node for the entire execution tree, and hence the [_input]'s
         ///     reference node's name will be set to <em>"success"</em> and not <em>"error"</em>.
         /// 
-        ///     Another thing you'll notice, is that since we're executing the [lambda.copy] on a copy of the executedd nodes, then the execution
-        ///     tree will not be modified, the same way it is not modified when using [lambda.immutable], though for different reasons obviously.
+        ///     Another thing you'll notice, is that since we're executing the [lambda-copy] on a copy of the executedd nodes, then the execution
+        ///     tree will not be modified, the same way it is not modified when using [lambda-immutable], though for different reasons obviously.
         /// 
-        ///     Besides from that, [lambda.copy] is identical to [lambda]. See the <see cref="p5.lambda.Lambda.lambda_lambda">[lambda]</see>
-        ///     keyword's documentation, to understand what more features you can use with [lambda.immutable].
+        ///     Besides from that, [lambda-copy] is identical to [lambda]. See the <see cref="p5.lambda.Lambda.lambda_lambda">[lambda]</see>
+        ///     keyword's documentation, to understand what more features you can use with [lambda-immutable].
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "lambda.copy")]
+        [ActiveEvent (Name = "lambda-copy")]
         private static void lambda_copy (ApplicationContext context, ActiveEventArgs e)
         {
-            Executor (ExecuteBlockCopy, context, e.Args, "lambda.copy");
+            Executor (ExecuteBlockCopy, context, e.Args, "lambda-copy");
         }
 
         /// <summary>
         ///     Executes a specified piece of p5.lambda statement.
         /// 
-        ///     The [lambda.single] keyword, works similar to the [lambda] keyword, except that [lambda.single] will execute one single statement,
+        ///     The [lambda-single] keyword, works similar to the [lambda] keyword, except that [lambda-single] will execute one single statement,
         ///     and not a block of code. Consider the following code, and notice how we're not executing the block, but the actual [set] node as 
         ///     a <em>"single"</em> statement;
         /// 
         ///     <pre>_exe
         ///   set:\@/.?value
         ///     source:Hello World
-        /// lambda.single:\@/-/0?node</pre>
+        /// lambda-single:\@/-/0?node</pre>
         /// 
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "lambda.single")]
+        [ActiveEvent (Name = "lambda-single")]
         private static void lambda_single (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value == null)
-                throw new LambdaException ("nothing was given to [lambda.single] for execution", e.Args, context);
+                throw new LambdaException ("nothing was given to [lambda-single] for execution", e.Args, context);
 
             // executing a value object, converting to node, before we pass into execution method,
             // making sure we pass in children of [lambda] as "arguments" or "parameters" to [lambda] statement
@@ -314,6 +314,7 @@ namespace p5.lambda
             // iterating through all nodes in execution scope, and raising these as Active Events
             var idxExe = exe.FirstChild;
             while (idxExe != null) {
+
                 // executing current statement and retrieving next execution statement
                 idxExe = ExecuteStatement (idxExe, context);
             }

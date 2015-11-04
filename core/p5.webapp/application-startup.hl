@@ -2,7 +2,7 @@
 /*
  * removes one of our "hello" widgets
  */
-event:p5.remove-additional-hello
+set-event:p5.remove-additional-hello
   lambda
     set:x:/+?value
       src:x:/././.?value
@@ -11,7 +11,7 @@ event:p5.remove-additional-hello
 /*
  * creates one "hello" widget
  */
-event:p5.create-additional-hello
+set-event:p5.create-additional-hello
   lambda
     create-widget
       parent:main
@@ -27,7 +27,7 @@ event:p5.create-additional-hello
  * sink invoked from main framework, creates a widget that
  * once clicked creates another widget
  */
-event:p5.web.load-ui
+set-event:p5.web.load-ui
   lambda
     include-stylesheet-file:/media/css/main.css
     create-widget:main

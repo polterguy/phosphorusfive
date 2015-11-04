@@ -67,8 +67,8 @@ namespace p5.web.ui
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "p5.web.list-application")]
-        private static void p5_web_application_list (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "list-app-values")]
+        private static void list_app_values (ApplicationContext context, ActiveEventArgs e)
         {
             CollectionBase.List (e.Args, context, () => HttpContext.Current.Application.AllKeys);
         }

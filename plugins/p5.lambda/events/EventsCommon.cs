@@ -106,6 +106,9 @@ namespace p5.lambda.events
                 if (!Events.ContainsKey (name))
                     Events [name] = new Node ();
 
+                // Clearing any previous events defined
+                Events [name].Clear ();
+
                 // looping through each "lambda.xxx" node inside of event creation node, appending these
                 // into our event node
                 foreach (var idxLambda in lambdas) {
