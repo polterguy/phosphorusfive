@@ -26,7 +26,7 @@ namespace p5.file.file
     /// <summary>
     ///     Class to help check if a file exists.
     /// 
-    ///     Contains the [p5.file.exists] Active Event, and its associated helper methods.
+    ///     Contains the [Value] Active Event, and its associated helper methods.
     /// </summary>
     public static class Exists
     {
@@ -36,12 +36,12 @@ namespace p5.file.file
         ///     Will return the value "true" if file(s) exists, otherwise false.
         /// 
         ///     Example;
-        ///     <pre>p5.file.exists:foo.txt</pre>
+        ///     <pre>Value:foo.txt</pre>
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "p5.file.exists")]
-        private static void p5_file_exists (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "file-exist")]
+        private static void file_exist (ApplicationContext context, ActiveEventArgs e)
         {
             // finding root folder
             var rootFolder = Common.GetRootFolder (context);

@@ -113,7 +113,7 @@ namespace p5.lambda.helpers
     ///     both yield <em>"success"</em>, the condition will evaluate to true, and p5.lambda code inside the [lambda] node will be executed.
     /// 
     ///     Instead of using [lambda], you can also use any other [lambda.xxx] Active Events you wish, as the nodes to be executed when 
-    ///     your expressions yields true. You can also use [lambda.copy], [lambda.immutable], [lambda.single], or for that matter [lambda.fork] 
+    ///     your expressions yields true. You can also use [lambda.copy], [lambda.immutable], [lambda.single], or for that matter [fork] 
     ///     if you wish. Any Active Event starting with the text <em>"lambda"</em>, can be used as the conditional p5.lambda code to execute 
     ///     upon success of evaluation of your conditions. For instance, consider this code, evaluating two integers, to see if one of them is larger
     ///     than the other, and if so, invokes a [lambda.single] statement.

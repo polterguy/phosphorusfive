@@ -70,6 +70,13 @@ namespace p5.exp
             private set;
         }
 
+        public Match.MatchType EvaluateExpressionType (ApplicationContext context, Node exNode)
+        {
+            if (Lazy)
+                BuildExpression (context, exNode);
+            return ExpressionType;
+        }
+
         private bool Reference {
             get;
             set;

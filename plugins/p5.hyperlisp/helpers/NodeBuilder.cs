@@ -12,7 +12,7 @@ namespace p5.hyperlisp.helpers
     /// <summary>
     ///     Class encapsulating internals of parsing of Hyperlisp.
     /// 
-    ///     Class containing actual implementation of logic behind the [p5.hyperlisp.hyperlisp2lambda] Active Event.
+    ///     Class containing actual implementation of logic behind the [lisp2lambda] Active Event.
     /// </summary>
     public class NodeBuilder
     {

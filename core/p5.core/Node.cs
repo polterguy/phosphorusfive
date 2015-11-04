@@ -443,6 +443,18 @@ namespace p5.core
         }
 
         /// <summary>
+        ///     Returns the index of the given node in children collection.
+        /// 
+        ///     Returns -1 if node is not in collection
+        /// </summary>
+        /// <returns>The of.</returns>
+        /// <param name="node">Node.</param>
+        public int IndexOf (Node node)
+        {
+            return _children.IndexOf (node);
+        }
+
+        /// <summary>
         ///     Returns the number of children nodes matching the given predicate.
         /// </summary>
         /// <param name="functor">Predicate nodes must match to be counted.</param>

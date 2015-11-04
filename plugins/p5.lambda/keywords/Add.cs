@@ -118,12 +118,10 @@ namespace p5.lambda.keywords
 
                 // relative source
                 AppendRelativeSource (e.Args, context);
-            } else if (e.Args.Count > 0 && e.Args.LastChild.Name == "src") {
+            } else {
 
                 // static source
                 AppendStaticSource (e.Args, context);
-            } else {
-                throw new LambdaException ("No [src] or [rel-src] given to [add]", e.Args, context);
             }
         }
         
@@ -134,7 +132,7 @@ namespace p5.lambda.keywords
         {
             // retrieving source before we start iterating destination,
             // in case destination and source overlaps
-            var sourceNodes = XUtil.SourceNodes (addNode.LastChild, context);
+            var sourceNodes = XUtil.SourceNodes (addNode, context);
 
             // making sure there is a source
             if (sourceNodes == null)
@@ -175,7 +173,7 @@ namespace p5.lambda.keywords
                 if (curDest == null)
                     throw new LambdaException ("cannot [add] into something that's not a node", node, context);
 
-                foreach (var idxSource in XUtil.SourceNodes (node.LastChild, idxDestination.Node, context)) {
+                foreach (var idxSource in XUtil.SourceNodes (node, idxDestination.Node, context)) {
                     curDest.Add (idxSource.Clone ());
                 }
             }

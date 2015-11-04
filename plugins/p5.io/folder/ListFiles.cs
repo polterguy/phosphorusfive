@@ -12,7 +12,7 @@ namespace p5.file.folder
     /// <summary>
     ///     Class to help list all files within folder(s).
     /// 
-    ///     Contains [p5.folder.list-files], and its associated helper methods.
+    ///     Contains [list-files], and its associated helper methods.
     /// </summary>
     public static class ListFiles
     {
@@ -23,12 +23,12 @@ namespace p5.file.folder
         /// 
         ///     Example that lists all files within root folder of your system;
         /// 
-        ///     <pre>p5.folder.list-files:</pre>
+        ///     <pre>list-files:</pre>
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "p5.folder.list-files")]
-        private static void p5_folder_list_files (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "list-files")]
+        private static void list_files (ApplicationContext context, ActiveEventArgs e)
         {
             // retrieving root folder
             var rootFolder = Common.GetRootFolder (context);

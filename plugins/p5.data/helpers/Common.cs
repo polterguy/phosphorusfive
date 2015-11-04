@@ -19,7 +19,7 @@ namespace p5.data.helpers
     /// <summary>
     ///     Helper class for common operations.
     /// 
-    ///     Contains helper methods for common operations shared among for instance the [p5.data.select] and [p5.data.remove]
+    ///     Contains helper methods for common operations shared among for instance the [select-data] and [delete-data]
     ///     Active Events.
     /// </summary>
     public static class Common
@@ -73,9 +73,9 @@ namespace p5.data.helpers
 
                 // checking to see if database directory exist
                 var dbPath = new Node (string.Empty, _dbPath);
-                context.Raise ("p5.folder.exists", dbPath);
+                context.Raise ("folder-exist", dbPath);
                 if (!dbPath [0].Get<bool> (context)) {
-                    context.Raise ("p5.folder.create", dbPath);
+                    context.Raise ("create-folder", dbPath);
                 }
 
                 // iterating through all folders inside of database directory and loading all files in all folders inside of database directory
@@ -158,7 +158,7 @@ namespace p5.data.helpers
             // making sure fil exists on disc, for future new creations of files before save operation occurs
             var createFile = new Node (string.Empty, newFileName);
             createFile.Add (new Node ("src", ""));
-            context.Raise ("p5.file.save", createFile);
+            context.Raise ("save-file", createFile);
 
             // returning available file node back to caller
             return newNode;
@@ -171,7 +171,7 @@ namespace p5.data.helpers
         {
             if (fileNode.Count == 0) {
                 // removing file entirely since it no longer has any data
-                context.Raise ("p5.file.remove", new Node (string.Empty, fileNode.Value));
+                context.Raise ("delete-file", new Node (string.Empty, fileNode.Value));
 
                 // checking to see if we should remove folder entirely
                 var folderNode = new Node (
@@ -180,7 +180,7 @@ namespace p5.data.helpers
                         .Substring (0, fileNode.Get<string> (context).LastIndexOf ("/", StringComparison.Ordinal)));
                 context.Raise ("p5.file.list-files", folderNode);
                 if (folderNode.Count == 0) {
-                    context.Raise ("p5.folder.remove", folderNode);
+                    context.Raise ("delete-folder", folderNode);
                 }
             } else {
                 // converts node to code
@@ -188,12 +188,12 @@ namespace p5.data.helpers
                 foreach (var idx in fileNode.Children) {
                     convertNode.Add (idx.Clone ());
                 }
-                context.Raise ("p5.hyperlisp.lambda2hyperlisp", convertNode);
+                context.Raise ("lambda2lisp", convertNode);
 
                 // saves code
                 var saveNode = new Node (string.Empty, fileNode.Value);
                 saveNode.Add (new Node ("src", convertNode.Value));
-                context.Raise ("p5.file.save", saveNode);
+                context.Raise ("save-file", saveNode);
             }
         }
 
@@ -204,11 +204,11 @@ namespace p5.data.helpers
         {
             // loading file
             var loadFileNode = new Node (string.Empty, path);
-            context.Raise ("p5.file.load", loadFileNode);
+            context.Raise ("load-file", loadFileNode);
 
             // converting file to Node
             var convertNode = new Node (string.Empty, loadFileNode [0].Value);
-            context.Raise ("p5.hyperlisp.hyperlisp2lambda", convertNode);
+            context.Raise ("lisp2lambda", convertNode);
 
             // returning Node with node value being path, and content being children
             var retVal = new Node (string.Empty, path);
@@ -222,7 +222,7 @@ namespace p5.data.helpers
         private static IEnumerable<string> GetDirectories (ApplicationContext context, string folder)
         {
             var dbFoldersNode = new Node (string.Empty, folder);
-            context.Raise ("p5.folder.list-folders", dbFoldersNode);
+            context.Raise ("list-folders", dbFoldersNode);
 
             dbFoldersNode.Sort (
                 delegate (Node left, Node right) {
@@ -240,7 +240,7 @@ namespace p5.data.helpers
         private static IEnumerable<string> GetFiles (ApplicationContext context, string directory)
         {
             var dbFoldersNode = new Node (string.Empty, directory);
-            context.Raise ("p5.folder.list-files", dbFoldersNode);
+            context.Raise ("list-files", dbFoldersNode);
 
             dbFoldersNode.Sort (
                 delegate (Node left, Node right) {
@@ -292,7 +292,7 @@ namespace p5.data.helpers
         private static void CreateNewDirectory (ApplicationContext context, string directory)
         {
             var createDirectoryNode = new Node (string.Empty, directory);
-            context.Raise ("p5.folder.create", createDirectoryNode);
+            context.Raise ("create-folder", createDirectoryNode);
         }
     }
 }

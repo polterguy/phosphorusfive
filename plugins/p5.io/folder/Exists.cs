@@ -12,7 +12,7 @@ namespace p5.file.folder
     /// <summary>
     ///     Class to check if a folder exists on disc.
     /// 
-    ///     Encapsulates the [p5.folder.exists] Active Event, and its associated helper methods.
+    ///     Encapsulates the [folder-exist] Active Event, and its associated helper methods.
     /// </summary>
     public static class Exists
     {
@@ -22,19 +22,19 @@ namespace p5.file.folder
         ///     Will return "true" if folder exists, otherwise false.
         /// 
         ///     Example;
-        ///     <pre>p5.folder.exists:foo</pre>
+        ///     <pre>folder-exist:foo</pre>
         /// 
         ///     Example checking for existence of multiple folders, "foo1" and "foo2";
         /// 
         ///     <pre>_data
         ///   foo1
         ///   foo2
-        /// p5.folder.exists:@/-?name</pre>
+        /// folder-exist:@/-?name</pre>
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "p5.folder.exists")]
-        private static void p5_folder_exists (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "folder-exist")]
+        private static void folder_exist (ApplicationContext context, ActiveEventArgs e)
         {
             // retrieving root folder first
             var rootFolder = Common.GetRootFolder (context);

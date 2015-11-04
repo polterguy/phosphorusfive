@@ -62,6 +62,8 @@
     <Compile Include="plugins\Math.cs" />
     <Compile Include="lambda\Lambda.cs" />
     <Compile Include="plugins\Hyperlisp.cs" />
+    <Compile Include="plugins\Combination.cs" />
+    <Compile Include="lambda\Insert.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
@@ -110,14 +112,6 @@
     <ProjectReference Include="..\plugins\p5.data\p5.data.csproj">
       <Project>{CA83A3ED-BD5D-4557-AA1B-A7C04ABD4D4F}</Project>
       <Name>p5.data</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\plugins\p5.net\p5.net.csproj">
-      <Project>{378663D4-1FC1-4109-8896-F72440C6C269}</Project>
-      <Name>p5.net</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\plugins\p5.html\p5.html.csproj">
-      <Project>{68EE106A-06BF-431B-9671-DF328666E03E}</Project>
-      <Name>p5.html</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

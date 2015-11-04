@@ -27,7 +27,7 @@ namespace p5.unittests.plugins
         public void SetUp ()
         {
             // deleting entire database, in case there already are items in it
-            ExecuteLambda (@"p5.data.remove:x:/*/*");
+            ExecuteLambda (@"delete-data:x:/*/*");
         }
 
         /*
@@ -43,7 +43,7 @@ namespace p5.unittests.plugins
         [Test]
         public void Select01 ()
         {
-            var tmp = ExecuteLambda (@"p5.data.select:x:/*/*/_mumbo_field/=jumbo_value");
+            var tmp = ExecuteLambda (@"select-data:x:/*/*/_mumbo_field/=jumbo_value");
             Assert.AreEqual (0, tmp [0].Count);
         }
 
@@ -54,12 +54,12 @@ namespace p5.unittests.plugins
         [Test]
         public void Select02 ()
         {
-            var tmp = ExecuteLambda (@"p5.data.insert
+            var tmp = ExecuteLambda (@"insert-data
   _test1
     howdy:world
-p5.data.select:x:/*/*/_test1
-p5.data.remove:x:/*/*/_test1
-p5.data.select:x:/*/*/_test1");
+select-data:x:/*/*/_test1
+delete-data:x:/*/*/_test1
+select-data:x:/*/*/_test1");
             Assert.AreEqual (1, tmp [1].Count);
             Assert.AreEqual ("_test1", tmp [1] [0].Name);
             Assert.AreEqual (typeof (Guid), tmp [1] [0].Value.GetType ());
@@ -74,10 +74,10 @@ p5.data.select:x:/*/*/_test1");
         [Test]
         public void Select03 ()
         {
-            var tmp = ExecuteLambda (@"p5.data.insert
+            var tmp = ExecuteLambda (@"insert-data
   _testX
     howdy:world
-p5.data.select:x:/*/*/_testX/0?name");
+select-data:x:/*/*/_testX/0?name");
             Assert.AreEqual (1, tmp [1].Count);
             Assert.AreEqual (string.Empty, tmp [1] [0].Name);
             Assert.AreEqual ("howdy", tmp [1] [0].Value);
@@ -89,10 +89,10 @@ p5.data.select:x:/*/*/_testX/0?name");
         [Test]
         public void Select04 ()
         {
-            var tmp = ExecuteLambda (@"p5.data.insert
+            var tmp = ExecuteLambda (@"insert-data
   _testX
     howdy:world
-p5.data.select:x:/*/*/_testX/0?value");
+select-data:x:/*/*/_testX/0?value");
             Assert.AreEqual (1, tmp [1].Count);
             Assert.AreEqual (string.Empty, tmp [1] [0].Name);
             Assert.AreEqual ("world", tmp [1] [0].Value);
@@ -104,10 +104,10 @@ p5.data.select:x:/*/*/_testX/0?value");
         [Test]
         public void Select05 ()
         {
-            var tmp = ExecuteLambda (@"p5.data.insert
+            var tmp = ExecuteLambda (@"insert-data
   _testX
     howdy:world
-p5.data.select:x:/*/*/_testX/0?count");
+select-data:x:/*/*/_testX/0?count");
             Assert.AreEqual (1, tmp [1].Count);
             Assert.AreEqual (string.Empty, tmp [1] [0].Name);
             Assert.AreEqual (1, tmp [1] [0].Value);
@@ -119,10 +119,10 @@ p5.data.select:x:/*/*/_testX/0?count");
         [Test]
         public void Select06 ()
         {
-            var tmp = ExecuteLambda (@"p5.data.insert
+            var tmp = ExecuteLambda (@"insert-data
   _testX
     howdy:world
-p5.data.select:x:/*/*/_testX/0?path");
+select-data:x:/*/*/_testX/0?path");
             Assert.AreEqual (1, tmp [1].Count);
             Assert.AreEqual (string.Empty, tmp [1] [0].Name);
             Assert.IsTrue (tmp [1] [0].Value is Node.Dna);
@@ -135,12 +135,12 @@ p5.data.select:x:/*/*/_testX/0?path");
         [Test]
         public void Select07 ()
         {
-            var tmp = ExecuteLambda (@"p5.data.insert
+            var tmp = ExecuteLambda (@"insert-data
   _testX
     howdy1:world1
   _testX
     howdy2:world2
-p5.data.select:x:/*/*/_testX/0?name");
+select-data:x:/*/*/_testX/0?name");
             Assert.AreEqual (2, tmp [1].Count);
             Assert.AreEqual (string.Empty, tmp [1] [0].Name);
             Assert.AreEqual ("howdy1", tmp [1] [0].Value);
@@ -155,12 +155,12 @@ p5.data.select:x:/*/*/_testX/0?name");
         [Test]
         public void Select08 ()
         {
-            var tmp = ExecuteLambda (@"p5.data.insert
+            var tmp = ExecuteLambda (@"insert-data
   _testX
     howdy1:world1
   _testX
     howdy2:world2
-p5.data.select:x:/*/*/_testX/0?value");
+select-data:x:/*/*/_testX/0?value");
             Assert.AreEqual (2, tmp [1].Count);
             Assert.AreEqual (string.Empty, tmp [1] [0].Name);
             Assert.AreEqual ("world1", tmp [1] [0].Value);
@@ -175,12 +175,12 @@ p5.data.select:x:/*/*/_testX/0?value");
         [Test]
         public void Select09 ()
         {
-            var tmp = ExecuteLambda (@"p5.data.insert
+            var tmp = ExecuteLambda (@"insert-data
   _testX
     howdy1:world1
   _testX
     howdy2:world2
-p5.data.select:x:/*/*/_testX/0?path");
+select-data:x:/*/*/_testX/0?path");
             Assert.AreEqual (2, tmp [1].Count);
             Assert.AreEqual (string.Empty, tmp [1] [0].Name);
             Assert.AreEqual (string.Empty, tmp [1] [1].Name);
@@ -195,12 +195,12 @@ p5.data.select:x:/*/*/_testX/0?path");
         [Test]
         public void Select10 ()
         {
-            var tmp = ExecuteLambda (@"p5.data.insert
+            var tmp = ExecuteLambda (@"insert-data
   _testX
     howdy1:world1
   _testX
     howdy2:world2
-p5.data.select:x:/*/*/_testX?count");
+select-data:x:/*/*/_testX?count");
             Assert.AreEqual (1, tmp [1].Count);
             Assert.AreEqual (string.Empty, tmp [1] [0].Name);
             Assert.AreEqual (2, tmp [1] [0].Value);
@@ -213,7 +213,7 @@ p5.data.select:x:/*/*/_testX?count");
         [Test]
         public void Select11 ()
         {
-            var tmp = ExecuteLambda (@"p5.data.insert
+            var tmp = ExecuteLambda (@"insert-data
   _test4
     howdy:world
   _test4
@@ -222,7 +222,7 @@ p5.data.select:x:/*/*/_testX?count");
       x:y
   _test4
     howdy:world3
-p5.data.select:x:/*/*/_test4/*/query_field/*/x/=y/./.");
+select-data:x:/*/*/_test4/*/query_field/*/x/=y/./.");
             Assert.AreEqual (1, tmp [1].Count);
             Assert.AreEqual ("_test4", tmp [1] [0].Name);
             Assert.AreEqual ("world2", tmp [1] [0] [0].Value);
@@ -237,15 +237,29 @@ p5.data.select:x:/*/*/_test4/*/query_field/*/x/=y/./.");
         [Test]
         public void Select12 ()
         {
-            var tmp = ExecuteLambda (@"p5.data.insert
+            var tmp = ExecuteLambda (@"insert-data
   _test4
     howdy:world
-p5.data.select:x:/*/*/{0}
+select-data:x:/*/*/{0}
   :x:/../0/0?name");
             Assert.AreEqual (2, tmp [1].Count);
             Assert.AreEqual ("_test4", tmp [1] [1].Name);
             Assert.AreEqual ("howdy", tmp [1] [1] [0].Name);
             Assert.AreEqual ("world", tmp [1] [1] [0].Value);
+        }
+        
+        /// <summary>
+        ///     inserts into database, for then to select 'count' to verify select works as it should
+        ///     when counting items that there are zero matches of
+        /// </summary>
+        [Test]
+        public void Select13 ()
+        {
+            var tmp = ExecuteLambda (@"insert-data
+  _testX
+    howdy:world
+select-data:x:/*/*/_testY?count");
+            Assert.AreEqual (0, tmp [1] [0].Value);
         }
 
         /// <summary>
@@ -255,12 +269,12 @@ p5.data.select:x:/*/*/{0}
         [Test]
         public void Delete01 ()
         {
-            var tmp = ExecuteLambda (@"p5.data.insert
+            var tmp = ExecuteLambda (@"insert-data
   _test4
     howdy:world
-p5.data.remove:x:/*/*/{0}
+delete-data:x:/*/*/{0}
   :x:/../0/0?name
-p5.data.select:x:/*/*/_test4");
+select-data:x:/*/*/_test4");
             Assert.AreEqual (0, tmp [2].Count);
         }
 
@@ -270,10 +284,10 @@ p5.data.select:x:/*/*/_test4");
         [Test]
         public void Insert01 ()
         {
-            var tmp = ExecuteLambda (@"p5.data.insert:x:/+
+            var tmp = ExecuteLambda (@"insert-data:x:/+
 _testX
   howdy:world
-p5.data.select:x:/*/*/_testX");
+select-data:x:/*/*/_testX");
             Assert.AreEqual (1, tmp [2].Count);
             Assert.AreEqual ("_testX", tmp [2] [0].Name);
             Assert.AreEqual (typeof (Guid), tmp [2] [0].Value.GetType ());
@@ -287,12 +301,12 @@ p5.data.select:x:/*/*/_testX");
         [Test]
         public void Insert02 ()
         {
-            var tmp = ExecuteLambda (@"p5.data.insert:x:/+|/+/+
+            var tmp = ExecuteLambda (@"insert-data:x:/+|/+/+
 _testX
   howdy:world
 _testX
   howdy:world
-p5.data.select:x:/*/*/_testX");
+select-data:x:/*/*/_testX");
             Assert.AreEqual (2, tmp [3].Count);
             Assert.AreEqual ("_testX", tmp [3] [0].Name);
             Assert.AreEqual (typeof (Guid), tmp [3] [0].Value.GetType ());
@@ -311,9 +325,9 @@ p5.data.select:x:/*/*/_testX");
         [Test]
         public void Insert03 ()
         {
-            var tmp = ExecuteLambda (@"p5.data.insert:node:@""_testX
+            var tmp = ExecuteLambda (@"insert-data:node:@""_testX
   howdy:world""
-p5.data.select:x:/*/*/_testX");
+select-data:x:/*/*/_testX");
             Assert.AreEqual (1, tmp [1].Count);
             Assert.AreEqual ("_testX", tmp [1] [0].Name);
             Assert.AreEqual (typeof (Guid), tmp [1] [0].Value.GetType ());
@@ -328,11 +342,11 @@ p5.data.select:x:/*/*/_testX");
         [Test]
         public void Insert04 ()
         {
-            var tmp = ExecuteLambda (@"p5.data.insert:@""_testX
+            var tmp = ExecuteLambda (@"insert-data:@""_testX
   howdy:world
 _testX
   howdy:world""
-p5.data.select:x:/*/*/_testX");
+select-data:x:/*/*/_testX");
             Assert.AreEqual (2, tmp [1].Count);
             Assert.AreEqual ("_testX", tmp [1] [0].Name);
             Assert.AreEqual (typeof (Guid), tmp [1] [0].Value.GetType ());
@@ -347,9 +361,9 @@ p5.data.select:x:/*/*/_testX");
         [Test]
         public void Insert05 ()
         {
-            var tmp = ExecuteLambda (@"p5.data.insert
+            var tmp = ExecuteLambda (@"insert-data
   foo:bar
-p5.data.select:x:/*/*/foo?value");
+select-data:x:/*/*/foo?value");
             Assert.AreEqual (1, tmp [1].Count);
             Assert.AreEqual (string.Empty, tmp [1] [0].Name);
             Assert.AreEqual ("bar", tmp [1] [0].Value);
@@ -362,7 +376,7 @@ p5.data.select:x:/*/*/foo?value");
         [ExpectedException]
         public void InsertError01 ()
         {
-            ExecuteLambda (@"p5.data.insert
+            ExecuteLambda (@"insert-data
   foo1:bar_x
   foo2:bar_x");
         }
@@ -374,7 +388,7 @@ p5.data.select:x:/*/*/foo?value");
         [Test]
         public void Update01 ()
         {
-            var tmp = ExecuteLambda (@"p5.data.insert
+            var tmp = ExecuteLambda (@"insert-data
   _test5
     howdy:world
   _test5
@@ -383,11 +397,11 @@ p5.data.select:x:/*/*/foo?value");
       x:y
   _test5
     howdy:world3
-p5.data.update:x:/*/*/_test5/*/query_field
+update-data:x:/*/*/_test5/*/query_field
   src
     query_field2
       x:zz
-p5.data.select:x:/*/*/_test5/*/query_field2/*/x/=zz/./.");
+select-data:x:/*/*/_test5/*/query_field2/*/x/=zz/./.");
             Assert.AreEqual (1, tmp [2].Count);
             Assert.AreEqual ("_test5", tmp [2] [0].Name);
             Assert.AreEqual ("world2", tmp [2] [0] [0].Value);
@@ -402,19 +416,19 @@ p5.data.select:x:/*/*/_test5/*/query_field2/*/x/=zz/./.");
         [Test]
         public void Update02 ()
         {
-            var tmp = ExecuteLambda (@"p5.data.insert
+            var tmp = ExecuteLambda (@"insert-data
   _test6
     howdy:world
   _test6
     howdy:world2
   _test6
     howdy:world3
-p5.data.update:x:/*/*/_test6
+update-data:x:/*/*/_test6
   src
     _test6_update
       howdy:worldZZ
-p5.data.select:x:/*/*/_test6_update
-p5.data.select:x:/*/*/_test6");
+select-data:x:/*/*/_test6_update
+select-data:x:/*/*/_test6");
             Assert.AreEqual (3, tmp [2].Count);
             Assert.AreEqual ("_test6_update", tmp [2] [0].Name);
             Assert.AreEqual ("worldZZ", tmp [2] [0] [0].Value);
@@ -430,13 +444,13 @@ p5.data.select:x:/*/*/_test6");
         [Test]
         public void Update03 ()
         {
-            var tmp = ExecuteLambda (@"p5.data.insert
+            var tmp = ExecuteLambda (@"insert-data
   _testX
-p5.data.update:x:/*/*/_testX?value
+update-data:x:/*/*/_testX?value
   src:{0}{1}
     :hello
     :world
-p5.data.select:x:/*/*/_testX");
+select-data:x:/*/*/_testX");
             Assert.AreEqual (1, tmp [2].Count);
             Assert.AreEqual ("_testX", tmp [2] [0].Name);
             Assert.AreEqual ("helloworld", tmp [2] [0].Value);
@@ -449,15 +463,15 @@ p5.data.select:x:/*/*/_testX");
         [Test]
         public void Update04 ()
         {
-            var tmp = ExecuteLambda (@"p5.data.insert
+            var tmp = ExecuteLambda (@"insert-data
   _test7
     howdy:world
-p5.data.update:x:/*/*/_test7
+update-data:x:/*/*/_test7
   src:x:/./+
 _test7_update
   howdy2:world2
-p5.data.select:x:/*/*/_test7_update
-p5.data.select:x:/*/*/_test7");
+select-data:x:/*/*/_test7_update
+select-data:x:/*/*/_test7");
             Assert.AreEqual (1, tmp [3].Count);
             Assert.AreEqual ("_test7_update", tmp [3] [0].Name);
             Assert.AreEqual ("howdy2", tmp [3] [0] [0].Name);
@@ -472,13 +486,13 @@ p5.data.select:x:/*/*/_test7");
         [Test]
         public void Update05 ()
         {
-            var tmp = ExecuteLambda (@"p5.data.insert
+            var tmp = ExecuteLambda (@"insert-data
   _test9
     howdy:world
-p5.data.update:x:/*/*/_test9/*/howdy?value
+update-data:x:/*/*/_test9/*/howdy?value
   src:x:/./+
 _howdy:world
-p5.data.select:x:/*/*/_test9");
+select-data:x:/*/*/_test9");
             Assert.AreEqual (1, tmp [3].Count);
             Assert.AreEqual ("_test9", tmp [3] [0].Name);
             Assert.AreEqual ("howdy", tmp [3] [0] [0].Name);
@@ -494,12 +508,12 @@ p5.data.select:x:/*/*/_test9");
         [Test]
         public void Update06 ()
         {
-            var tmp = ExecuteLambda (@"p5.data.insert
+            var tmp = ExecuteLambda (@"insert-data
   _test9
     howdy:world
-p5.data.update:x:/*/*/_test9/*/howdy?value
+update-data:x:/*/*/_test9/*/howdy?value
   rel-src:x:/.?name
-p5.data.select:x:/*/*/_test9");
+select-data:x:/*/*/_test9");
             Assert.AreEqual (1, tmp [2].Count);
             Assert.AreEqual ("_test9", tmp [2] [0].Name);
             Assert.AreEqual ("howdy", tmp [2] [0] [0].Name);
@@ -513,14 +527,14 @@ p5.data.select:x:/*/*/_test9");
         [Test]
         public void Update07 ()
         {
-            var tmp = ExecuteLambda (@"p5.data.insert
+            var tmp = ExecuteLambda (@"insert-data
   _test9
     howdy:world
-p5.data.update:x:/*/*/_test9/*/howdy?value
+update-data:x:/*/*/_test9/*/howdy?value
   rel-src:{0}{1}
     :x:/.?name
     :x:?value
-p5.data.select:x:/*/*/_test9");
+select-data:x:/*/*/_test9");
             Assert.AreEqual (1, tmp [2].Count);
             Assert.AreEqual ("_test9", tmp [2] [0].Name);
             Assert.AreEqual ("howdy", tmp [2] [0] [0].Name);
@@ -534,14 +548,14 @@ p5.data.select:x:/*/*/_test9");
         [Test]
         public void Update08 ()
         {
-            var tmp = ExecuteLambda (@"p5.data.insert
+            var tmp = ExecuteLambda (@"insert-data
   _test9
     _1:""howdy ""
     _2:world
     _dest
-p5.data.update:x:/*/*/_test9/*/_dest?value
+update-data:x:/*/*/_test9/*/_dest?value
   rel-src:x:/./*(/_1|/_2)?value
-p5.data.select:x:/*/*/_test9");
+select-data:x:/*/*/_test9");
             Assert.AreEqual (1, tmp [2].Count);
             Assert.AreEqual ("_test9", tmp [2] [0].Name);
             Assert.AreEqual ("howdy ", tmp [2] [0] [0].Value);
@@ -557,12 +571,12 @@ p5.data.select:x:/*/*/_test9");
         [Test]
         public void Update09 ()
         {
-            var tmp = ExecuteLambda (@"p5.data.insert
+            var tmp = ExecuteLambda (@"insert-data
   howdy
-p5.data.update:x:/*/*/howdy
+update-data:x:/*/*/howdy
   src
     howdy2:foo
-p5.data.select:x:/*/*/howdy2");
+select-data:x:/*/*/howdy2");
             Assert.AreEqual (typeof (Guid), tmp [0] [0].Value.GetType ());
             Assert.AreEqual ("foo", tmp [2] [0].Value);
         }
@@ -572,7 +586,7 @@ p5.data.select:x:/*/*/howdy2");
         /// </summary>
         [Test]
         [ExpectedException]
-        public void SyntaxError01 () { ExecuteLambda (@"p5.data.insert
+        public void SyntaxError01 () { ExecuteLambda (@"insert-data
   :bar1"); }
 
         /// <summary>
@@ -582,9 +596,9 @@ p5.data.select:x:/*/*/howdy2");
         [ExpectedException]
         public void SyntaxError02 ()
         {
-            ExecuteLambda (@"p5.data.insert
+            ExecuteLambda (@"insert-data
   foo1:bar1");
-            ExecuteLambda (@"p5.data.update:@/*/*/foo1/?value
+            ExecuteLambda (@"update-data:@/*/*/foo1/?value
   bar2");
         }
     }

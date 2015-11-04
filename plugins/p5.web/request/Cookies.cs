@@ -27,8 +27,8 @@ namespace p5.web.ui.request
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.get-request-cookie")]
-        private static void p5_web_get_request_cookie (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "get-cookie")]
+        private static void get_cookie (ApplicationContext context, ActiveEventArgs e)
         {
             CollectionBase.Get (e.Args, context, delegate (string key) {
                 //fetching cookie
@@ -49,7 +49,7 @@ namespace p5.web.ui.request
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "p5.web.list-request-cookies")]
+        [ActiveEvent (Name = "list-cookies")]
         private static void p5_web_list_request_cookies (ApplicationContext context, ActiveEventArgs e)
         {
             CollectionBase.List (e.Args, context, () => HttpContext.Current.Request.Cookies.AllKeys);

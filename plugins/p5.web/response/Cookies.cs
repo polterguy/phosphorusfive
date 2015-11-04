@@ -35,8 +35,8 @@ namespace p5.web.ui.response
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "p5.web.set-response-cookie")]
-        private static void p5_web_set_response_cookie (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "set-cookie")]
+        private static void set_cookie (ApplicationContext context, ActiveEventArgs e)
         {
             CollectionBase.Set (e.Args, context, delegate (string key, object value) {
                 if (value == null) {

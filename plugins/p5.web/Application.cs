@@ -33,8 +33,8 @@ namespace p5.web.ui
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "p5.web.set-application")]
-        private static void p5_web_set_application (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "set-app-value")]
+        private static void set_app_value (ApplicationContext context, ActiveEventArgs e)
         {
             CollectionBase.Set (e.Args, context, delegate (string key, object value) {
                 if (value == null) {
@@ -54,8 +54,8 @@ namespace p5.web.ui
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "p5.web.get-application")]
-        private static void p5_web_get_application (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "get-app-value")]
+        private static void get_app_value (ApplicationContext context, ActiveEventArgs e)
         {
             CollectionBase.Get (e.Args, context, key => HttpContext.Current.Application [key]);
         }

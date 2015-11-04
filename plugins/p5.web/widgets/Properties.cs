@@ -33,8 +33,8 @@ namespace p5.web.ui.widgets
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "p5.web.widgets.get-property")]
-        private static void p5_web_widgets_get_property (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "get-widget-property")]
+        private static void get_widget_property (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value == null || e.Args.Count == 0)
                 return; // nothing to do here ...
@@ -90,8 +90,8 @@ namespace p5.web.ui.widgets
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "p5.web.widgets.set-property")]
-        private static void p5_web_widgets_set_property (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "set-widget-property")]
+        private static void set_widget_property (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value == null || e.Args.Count == 0)
                 return; // nothing to do here ...
@@ -140,8 +140,8 @@ namespace p5.web.ui.widgets
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "p5.web.widgets.remove-property")]
-        private static void p5_web_widgets_remove_property (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "delete-widget-property")]
+        private static void delete_widget_property (ApplicationContext context, ActiveEventArgs e)
         {
             // looping through all widgets
             foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
@@ -180,8 +180,8 @@ namespace p5.web.ui.widgets
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "p5.web.widgets.list-properties")]
-        private static void p5_web_widgets_list_properties (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "list-widget-properties")]
+        private static void list_widget_properties (ApplicationContext context, ActiveEventArgs e)
         {
             // looping through all widgets
             foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
@@ -209,7 +209,7 @@ namespace p5.web.ui.widgets
         }
 
         /*
-         * helper for [p5.web.widgets.get-property], creates a return value for one property
+         * helper for [get-widget-property], creates a return value for one property
          */
         private static void CreatePropertyReturn (Node node, Node nameNode, Widget widget, object value = null)
         {

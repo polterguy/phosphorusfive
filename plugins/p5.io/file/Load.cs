@@ -12,7 +12,7 @@ namespace p5.file.file
     /// <summary>
     ///     Class to help load files.
     /// 
-    ///     Contains [p5.file.load], [p5.file.binary.load], and their associated helper methods.
+    ///     Contains [load-file], [p5.file.binary.load], and their associated helper methods.
     /// </summary>
     public static class Load
     {
@@ -24,19 +24,19 @@ namespace p5.file.file
         ///     Example that loads the file "foo.txt" from your "phosphorus.application-folder" if you run it through the main
         ///     web application;
         /// 
-        ///     <pre>p5.file.load:foo.txt</pre>
+        ///     <pre>load-file:foo.txt</pre>
         /// 
         ///     Example that loads the file "foo1.txt" and "foo2.txt" from main folder;
         /// 
         ///     <pre>_data
         ///   foo1.txt
         ///   foo2.txt
-        /// p5.file.load:@/-/*name</pre>
+        /// load-file:@/-/*name</pre>
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "p5.file.load")]
-        private static void p5_file_load (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "load-file")]
+        private static void file_load (ApplicationContext context, ActiveEventArgs e)
         {
             // retrieving root folder of app
             var rootFolder = Common.GetRootFolder (context);

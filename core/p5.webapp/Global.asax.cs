@@ -77,7 +77,7 @@ namespace p5
             {
                 // loading file
                 var loadFileNode = new Node (string.Empty, filePath);
-                context.Raise ("p5.file.load", loadFileNode);
+                context.Raise ("load-file", loadFileNode);
 
                 // raising file as p5.lambda object
                 context.Raise ("lambda", Utilities.Convert<Node> (loadFileNode [0].Value, context));

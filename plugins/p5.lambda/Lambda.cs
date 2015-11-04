@@ -46,7 +46,7 @@ using p5.exp.exceptions;
 ///     nothing but loosely coupled Active Events in itself. For instance the [for-each] keyword, or the [if] keyword in p5.lambda, are actually
 ///     Active Events, that knows nothing about each other. This allows you to easily extend p5.lambda with your own keywords, as you see fit.
 /// 
-///     And in fact, there are no semantic differences between any Active Event, such as [p5.file.load], and a <em>"keyword"</em> in p5.lambda.
+///     And in fact, there are no semantic differences between any Active Event, such as [load-file], and a <em>"keyword"</em> in p5.lambda.
 /// </summary>
 namespace p5.lambda
 {
@@ -72,7 +72,7 @@ namespace p5.lambda
                         functor (context, Utilities.Convert<Node> (idxSource.Value, context), args.Children);
                     }
                 } else {
-                    var lambda = context.Raise ("p5.hyperlisp.hyperlisp2lambda", new Node (string.Empty, args.Get<string> (context))).Get<Node> (context);
+                    var lambda = context.Raise ("lisp2lambda", new Node (string.Empty, args.Get<string> (context))).Get<Node> (context);
                     functor (context, lambda, args.Children);
                 }
             } else {
@@ -138,7 +138,7 @@ namespace p5.lambda
         ///     A highly useful example of why you'd like to use constructs such as the above, is to realize you can use the above logic to
         ///     load p5.lambda files, for then to pass in arguments to the execution of those p5.lambda files. Consider the following code;
         /// 
-        ///     <pre>p5.file.load:some-hyperlisp-file.hl
+        ///     <pre>load-file:some-hyperlisp-file.hl
         /// lambda:@/./0?value
         ///   some-input-parameter:foo
         ///   some-return-value:node:</pre>

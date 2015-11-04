@@ -151,7 +151,7 @@ namespace p5.webapp
         /// <summary>
         ///     Creates a container web widget.
         /// 
-        ///     [p5.web.create-widget] is an alias for [p5.web.create-container-widget]
+        ///     [create-widget] is an alias for [create-container-widget]
         /// 
         ///     You can optionally declare where you wish to position your widget, by using either [before] or [after], to 
         ///     make sure your widget becomes either before some specific widget, or after it. Internally, this Active Event uses 
@@ -166,30 +166,30 @@ namespace p5.webapp
         /// 
         ///     Example;
         /// 
-        ///     <pre>p5.web.create-widget:foo
+        ///     <pre>create-widget:foo
         ///   widgets
         ///     literal
         ///       element:h1
         ///       innerValue:Click me!
         ///       class:span-24 prepend-top info
         ///       onclick
-        ///         p5.web.create-widget
+        ///         create-widget
         ///           after:foo
         ///           widget:literal
         ///           innerValue:I was dynamically created!
         ///           class:span-24 success
         ///           onclick
-        ///             p5.web.remove-widget:@/./"*"/_event?value</pre>
+        ///             delete-widget:@/./"*"/_event?value</pre>
         /// 
-        ///     Using [p5.web.create-widget], in combination with the other Active Events for manipulating and creating Ajax Web Widgets, you can take 100%
+        ///     Using [create-widget], in combination with the other Active Events for manipulating and creating Ajax Web Widgets, you can take 100%
         ///     complete control over the HTML your site is rendered, while still retaining all your widget creation code on the server-side, in
         ///     a managed environment, through p5.lambda.
         /// </summary>
         /// <param name="context">Context for current request</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.create-widget")]
-        [ActiveEvent (Name = "p5.web.create-container-widget")]
-        private void p5_web_create_widget (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "create-widget")]
+        [ActiveEvent (Name = "create-container-widget")]
+        private void create_widget (ApplicationContext context, ActiveEventArgs e)
         {
             CreateWidget (context, e.Args, "container");
         }
@@ -211,26 +211,26 @@ namespace p5.webapp
         /// 
         ///     Example;
         /// 
-        ///     <pre>p5.web.create-literal-widget:foo
+        ///     <pre>create-literal-widget:foo
         ///   element:h1
         ///   innerValue:Click me!
         ///   class:span-24 prepend-top info
         ///   onclick
-        ///     p5.web.create-literal-widget
+        ///     create-literal-widget
         ///       after:foo
         ///       innerValue:I was dynamically created!
         ///       class:span-24 success
         ///       onclick
-        ///         p5.web.remove-widget:@/./"*"/_event?value</pre>
+        ///         delete-widget:@/./"*"/_event?value</pre>
         /// 
-        ///     Using [p5.web.create-literal-widget], in combination with the other Active Events for manipulating Ajax Web Widgets, you can take 100%
+        ///     Using [create-literal-widget], in combination with the other Active Events for manipulating Ajax Web Widgets, you can take 100%
         ///     complete control over the HTML your site is rendered, while still retaining all your widget creation code on the server-side, in
         ///     a managed environment, through p5.lambda.
         /// </summary>
         /// <param name="context">Context for current request</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.create-literal-widget")]
-        private void p5_web_create_literal_widget (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "create-literal-widget")]
+        private void create_literal_widget (ApplicationContext context, ActiveEventArgs e)
         {
             CreateWidget (context, e.Args, "literal");
         }
@@ -251,26 +251,26 @@ namespace p5.webapp
         /// 
         ///     Example;
         /// 
-        ///     <pre>p5.web.create-void-widget:foo
+        ///     <pre>create-void-widget:foo
         ///   element:input
         ///   placeholder:Click me!
         ///   class:span-12 prepend-top
         ///   onclick
-        ///     p5.web.create-literal-widget
+        ///     create-literal-widget
         ///       after:foo
         ///       innerValue:I was dynamically created!
         ///       class:span-24 success
         ///       onclick
-        ///         p5.web.remove-widget:@/./"*"/_event?value</pre>
+        ///         delete-widget:@/./"*"/_event?value</pre>
         /// 
-        ///     Using [p5.web.create-void-widget], in combination with the other Active Events for manipulating Ajax Web Widgets, you can take 100%
+        ///     Using [create-void-widget], in combination with the other Active Events for manipulating Ajax Web Widgets, you can take 100%
         ///     complete control over the HTML your site is rendered, while still retaining all your widget creation code on the server-side, in
         ///     a managed environment, through p5.lambda.
         /// </summary>
         /// <param name="context">Context for current request</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.create-void-widget")]
-        private void p5_web_create_void_widget (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "create-void-widget")]
+        private void create_void_widget (ApplicationContext context, ActiveEventArgs e)
         {
             CreateWidget (context, e.Args, "void");
         }
@@ -305,8 +305,8 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.clear-widget")]
-        private void p5_web_clear_widget (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "clear-widget")]
+        private void clear_widget (ApplicationContext context, ActiveEventArgs e)
         {
             // syntax checking
             if (e.Args.Value == null)
@@ -339,8 +339,8 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.remove-widget")]
-        private void p5_web_remove_widget (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "delete-widget")]
+        private void delete_widget (ApplicationContext context, ActiveEventArgs e)
         {
             // syntax checking
             if (e.Args.Value == null)
@@ -375,8 +375,8 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.list-widgets")]
-        private void p5_web_list_widgets (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "list-widgets")]
+        private void list_widgets (ApplicationContext context, ActiveEventArgs e)
         {
             // retrieving filter, if any
             var filter = new List<string> (XUtil.Iterate<string> (e.Args, context));
@@ -399,8 +399,8 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.widgets.set-info")]
-        private void p5_web_widgets_set_info (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "set-widget-info")]
+        private void set_widget_info (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value == null || e.Args.Count == 0)
                 return; // nothing to do here ...
@@ -443,8 +443,8 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.widgets.get-info")]
-        private void p5_web_widgets_get_info (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "get-widget-info")]
+        private void get_widget_info (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value == null || e.Args.Count == 0)
                 return; // nothing to do here ...
@@ -485,8 +485,8 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.widgets.remove-info")]
-        private void p5_web_widgets_remove_info (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "delete-widget-info")]
+        private void delete_widget_info (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value == null || e.Args.Count == 0)
                 return; // nothing to do here ...
@@ -523,8 +523,8 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.widgets.list-info")]
-        private void p5_web_widgets_list_info (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "list-widget-info")]
+        private void list_widget_info (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value == null)
                 return; // nothing to do here ...
@@ -560,8 +560,8 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.widgets.get-event")]
-        private void p5_web_widgets_get_event (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "get-widget-event")]
+        private void get_widget_event (ApplicationContext context, ActiveEventArgs e)
         {
             // syntax checking
             if (e.Args.Value == null)
@@ -600,8 +600,8 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.widgets.set-event")]
-        private void p5_web_widgets_set_event (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "set-widget-event")]
+        private void set_widget_event (ApplicationContext context, ActiveEventArgs e)
         {
             // syntax checking
             if (e.Args.Value == null)
@@ -635,8 +635,8 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.widgets.remove-event")]
-        private void p5_web_widgets_remove_event (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "remove-widget-event")]
+        private void remove_widget_event (ApplicationContext context, ActiveEventArgs e)
         {
             // syntax checking
             if (e.Args.Value == null)
@@ -669,8 +669,8 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.widgets.list-events")]
-        private void p5_web_widgets_list_events (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "list-widget-events")]
+        private void list_widget_events (ApplicationContext context, ActiveEventArgs e)
         {
             // looping through all widgets
             foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
@@ -699,8 +699,8 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.include-javascript")]
-        private void p5_web_include_javascript (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "include-javascript")]
+        private void include_javascript (ApplicationContext context, ActiveEventArgs e)
         {
             var js = XUtil.Single<string> (e.Args, context);
             Manager.SendJavaScriptToClient (js);
@@ -720,8 +720,8 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.include-javascript-file")]
-        private void p5_web_include_javascript_file (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "include-javascript-file")]
+        private void include_javascript_file (ApplicationContext context, ActiveEventArgs e)
         {
             foreach (var idxFile in XUtil.Iterate<string> (e.Args, context)) {
                 RegisterJavaScriptFile (idxFile);
@@ -740,8 +740,8 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.include-stylesheet-file")]
-        private void p5_web_include_stylesheet_file (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "include-stylesheet-file")]
+        private void include_stylesheet_file (ApplicationContext context, ActiveEventArgs e)
         {
             foreach (var idxFile in XUtil.Iterate<string> (e.Args, context)) {
                 RegisterStylesheetFile (idxFile);
@@ -756,8 +756,8 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.set-page-title")]
-        private void p5_web_set_page_title (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "set-page-title")]
+        private void set_page_title (ApplicationContext context, ActiveEventArgs e)
         {
             if (Manager.IsPhosphorusRequest)
                 throw new Exception ("You cannot set the title of your page in an Ajax Request, only during post requests, or initial loading of page");
@@ -773,8 +773,8 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.return-response-value")]
-        private void p5_web_return_response_value (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "return-response-value")]
+        private void return_response_value (ApplicationContext context, ActiveEventArgs e)
         {
             var key = XUtil.Single<string> (e.Args, context);
             var str = XUtil.Single<string> (e.Args.LastChild, context);
@@ -919,7 +919,7 @@ namespace p5.webapp
         }
 
         /*
-         * creates local widget events for web widgets created through [p5.web.create-widget]
+         * creates local widget events for web widgets created through [create-widget]
          */
         private void CreateWidgetEvents (Control widget, Node eventNode, ApplicationContext context)
         {

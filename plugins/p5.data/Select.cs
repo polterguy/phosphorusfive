@@ -11,9 +11,9 @@ using p5.data.helpers;
 namespace p5.data
 {
     /// <summary>
-    ///     Class wrapping [p5.data.select].
+    ///     Class wrapping [select-data].
     /// 
-    ///     Encapsulates the [p5.data.select] Active Event, and its associated supporting methods.
+    ///     Encapsulates the [select-data] Active Event, and its associated supporting methods.
     /// </summary>
     public static class Select
     {
@@ -27,35 +27,31 @@ namespace p5.data
         ///     all file nodes. This means that your expressions should start with; <em>@/*/*</em>, before the rest of
         ///     your expression, referring to your actual data nodes.
         /// 
-        ///     The node used as the "root node" for most database expressions, except [p5.data.insert] though, is the 
+        ///     The node used as the "root node" for most database expressions, except [insert-data] though, is the 
         ///     root node of your database, and not your execution tree root node.
         /// 
         ///     Example that will select all items from your database, having a type, containing the string "foo";
         /// 
         ///     <pre>
-        /// p5.data.select:@/*/*/"/foo/"?node</pre>
+        /// select-data:@/*/*/"/foo/"?node</pre>
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.data.select")]
-        private static void p5_data_select (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "select-data")]
+        private static void select_data (ApplicationContext context, ActiveEventArgs e)
         {
-            if (e.Args.Value == null)
-                return; // nothing to do here ...
+            var ex = e.Args.Value as Expression;
+            if (ex == null)
+                throw new ArgumentException ("[select-data] requires an expression to select items from database");
 
             // acquiring lock on database
             lock (Common.Lock) {
 
-                // verifying syntax
-                if (!XUtil.IsExpression (e.Args.Value))
-                    throw new ArgumentException ("[p5.data.select] requires an expression to select items from database");
-
                 // making sure database is initialized
                 Common.Initialize (context);
 
-                var ex = e.Args.Value as Expression;
-
                 // iterating through each result from database node tree
+                bool foundResults = false;
                 foreach (var idxMatch in ex.Evaluate (Common.Database, context, e.Args)) {
 
                     if (idxMatch.Match.TypeOfMatch == Match.MatchType.count) {
@@ -64,6 +60,7 @@ namespace p5.data
                         e.Args.Add (new Node (string.Empty, idxMatch.Match.Count));
                         return;
                     }
+                    foundResults = true;
 
                     // dependent upon type of expression, we either return a bunch of nodes, flat, with
                     // name being string.Empty, and value being matched value, or we append node itself back
@@ -72,6 +69,8 @@ namespace p5.data
                                 new Node (string.Empty, idxMatch.Value) : 
                                 idxMatch.Node.Clone ());
                 }
+                if (!foundResults && ex.EvaluateExpressionType (context, e.Args) == Match.MatchType.count)
+                    e.Args.Add (new Node (string.Empty, 0));
             }
         }
     }

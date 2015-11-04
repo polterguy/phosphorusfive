@@ -3,12 +3,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>10.0.0</ProductVersion>
+    <ProductVersion>12.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{68EE106A-06BF-431B-9671-DF328666E03E}</ProjectGuid>
+    <ProjectGuid>{378663D4-1FC1-4109-8896-F72440C6C269}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>p5.html</RootNamespace>
-    <AssemblyName>p5.html</AssemblyName>
+    <RootNamespace>p5.net</RootNamespace>
+    <AssemblyName>p5.net</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -40,15 +40,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="HtmlAgilityPack">
-      <HintPath>..\..\packages\HtmlAgilityPack.1.4.9\lib\Net40\HtmlAgilityPack.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Html2Lambda.cs" />
-    <Compile Include="Lambda2Html.cs" />
-    <Compile Include="HtmlEncoder.cs" />
+    <Compile Include="HttpRequest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
@@ -63,16 +57,13 @@
     </MonoDevelop>
   </ProjectExtensions>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\core\p5.exp\p5.exp.csproj">
-      <Project>{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}</Project>
-      <Name>p5.exp</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\core\p5.core\p5.core.csproj">
+    <ProjectReference Include="..\..\..\core\p5.core\p5.core.csproj">
       <Project>{C783FEDB-C973-4F38-8EBB-55A0163612F5}</Project>
       <Name>p5.core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\core\p5.exp\p5.exp.csproj">
+      <Project>{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}</Project>
+      <Name>p5.exp</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

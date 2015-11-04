@@ -24,8 +24,8 @@ namespace p5.web.ui.response
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "p5.web.set-response-header")]
-        private static void p5_web_set_response_header (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "set-http-header")]
+        private static void set_http_header (ApplicationContext context, ActiveEventArgs e)
         {
             foreach (var idxMatch in XUtil.Iterate<Node> (e.Args, context)) {
                 if (idxMatch.Value == null) {

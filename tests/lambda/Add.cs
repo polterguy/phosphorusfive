@@ -409,6 +409,84 @@ _out");
             Assert.AreEqual (1, node [1].Count);
             Assert.AreEqual ("success", node [1] [0].Name);
         }
+        
+        [ActiveEvent (Name = "test.add.20")]
+        private static void test_add_20 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Add ("foo", "bar");
+        }
+
+        /// <summary>
+        ///     making sure [save-file] works when given a constant as a filepath, and an 
+        ///     Active Event invocation as [src]
+        /// </summary>
+        [Test]
+        public void Add20 ()
+        {
+            var node = ExecuteLambda (@"_result
+add:x:/-
+  test.add.20");
+
+            Assert.AreEqual ("foo", node [0] [0].Name);
+            Assert.AreEqual ("bar", node [0] [0].Value);
+        }
+        
+        [ActiveEvent (Name = "test.add.21")]
+        private static void test_add_21 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "foo:bar";
+        }
+
+        /// <summary>
+        ///     making sure [save-file] works when given a constant as a filepath, and an 
+        ///     Active Event invocation as [src]
+        /// </summary>
+        [Test]
+        public void Add21 ()
+        {
+            var node = ExecuteLambda (@"_result
+add:x:/-
+  test.add.21");
+
+            Assert.AreEqual ("foo", node [0] [0].Name);
+            Assert.AreEqual ("bar", node [0] [0].Value);
+        }
+        
+        [ActiveEvent (Name = "test.add.22")]
+        private static void test_add_22 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = new Node ("foo", "bar");
+        }
+
+        /// <summary>
+        ///     making sure [save-file] works when given a constant as a filepath, and an 
+        ///     Active Event invocation as [src]
+        /// </summary>
+        [Test]
+        public void Add22 ()
+        {
+            var node = ExecuteLambda (@"_result
+add:x:/-
+  test.add.22");
+
+            Assert.AreEqual ("foo", node [0] [0].Name);
+            Assert.AreEqual ("bar", node [0] [0].Value);
+        }
+        
+        /// <summary>
+        ///     making sure [save-file] works when given a constant as a filepath, and an 
+        ///     Active Event invocation as [src]
+        /// </summary>
+        [Test]
+        public void Add23 ()
+        {
+            var node = ExecuteLambda (@"_result
+add:x:/-
+  test.add.22:error"); // making sure "children" has presedence unless "value" is changed!
+
+            Assert.AreEqual ("foo", node [0] [0].Name);
+            Assert.AreEqual ("bar", node [0] [0].Value);
+        }
 
         /// <summary>
         ///     tries to add into 'value' destination, where value is not a Node

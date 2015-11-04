@@ -417,10 +417,10 @@ for-each:@/../*/_data/*(!/""=Error \r\nHansen"")?value
       innerValue
   set:@/./*/_literal/*/literal/*/innerValue?value
     source:@/././*/__dp?value
-  append:@/../*/p5.web.create-widget/*/controls?node
+  append:@/../*/create-widget/*/controls?node
     source:@/././*/_literal/*?node
 
-p5.web.create-widget:example1
+create-widget:example1
   class:span-24
   controls
     literal
@@ -441,9 +441,9 @@ for-each:@/../*/_data/*(!/""=Error \r\nHansen"")?value
       innerValue
   set:@/./*/_literal/*/literal/*/innerValue?value
     source:@/././*/__dp?value
-  append:@/../*/p5.web.create-widget/*/controls?node
+  append:@/../*/create-widget/*/controls?node
     source:@/././*/_literal/*?node
-p5.web.create-widget:example1
+create-widget:example1
   class:span-24
   controls
     literal

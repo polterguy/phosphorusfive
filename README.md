@@ -336,13 +336,13 @@ Ajax widget, which once clicked, creates another Ajax widget, and injects it bel
 your first widget.
 
 ```
-p5.web.create-widget:foo
+create-widget:foo
   class:span-24 last
   widget:literal
   element:h1
   innerValue:"click me!"
   onclick
-    p5.web.create-widget
+    create-widget
       widget:literal
       element:p
       class:span-18 prepend-6 last

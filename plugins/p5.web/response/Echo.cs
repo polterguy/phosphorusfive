@@ -28,8 +28,8 @@ namespace p5.web.ui.response
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "p5.web.echo")]
-        private static void p5_web_echo (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "echo")]
+        private static void echo (ApplicationContext context, ActiveEventArgs e)
         {
             // discarding current response, and removing session cookie, unless caller explicitly said he wanted to keep it
             HttpContext.Current.Response.Filter = null;
@@ -65,8 +65,8 @@ namespace p5.web.ui.response
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "p5.web.echo-file")]
-        private static void p5_web_echo_file (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "echo-file")]
+        private static void echo_file (ApplicationContext context, ActiveEventArgs e)
         {
             // discarding current response, and removing session cookie, unless caller explicitly said he wanted to keep it
             HttpContext.Current.Response.Filter = null;

@@ -12,7 +12,7 @@ namespace p5.file.file
     /// <summary>
     ///     Class to help remove files.
     /// 
-    ///     Contains the [p5.file.remove] Active Event, and its associated helper methods.
+    ///     Contains the [delete-file] Active Event, and its associated helper methods.
     /// </summary>
     public static class Remove
     {
@@ -23,12 +23,12 @@ namespace p5.file.file
         /// 
         ///     Example;
         /// 
-        ///     <pre>p5.file.remove:foo.txt</pre>
+        ///     <pre>delete-file:foo.txt</pre>
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "p5.file.remove")]
-        private static void p5_file_remove (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "delete-file")]
+        private static void delete_file (ApplicationContext context, ActiveEventArgs e)
         {
             // getting root folder
             var rootFolder = Common.GetRootFolder (context);

@@ -666,7 +666,7 @@ namespace p5.unittests.lambda
         {
             var node = ExecuteLambda (@"_result
 set:x:/-
-  source:@""success-name:success-value""");
+  src:@""success-name:success-value""");
             Assert.AreEqual (0, node [0].Count);
             Assert.AreEqual ("success-name", node [0].Name);
             Assert.AreEqual ("success-value", node [0].Value);
@@ -810,6 +810,160 @@ for-each:x:/-/*?name
 
             Assert.AreEqual ("success", node [0] [0].Value);
             Assert.AreEqual ("success", node [0] [1].Value);
+        }
+        
+        [ActiveEvent (Name = "test.set.av1_1")]
+        private static void test_set_av1_1 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "succ";
+        }
+
+        [ActiveEvent (Name = "test.set.av1_2")]
+        private static void test_set_av1_2 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Add ("foo", "bar");
+        }
+        
+        [ActiveEvent (Name = "test.set.av1_3")]
+        private static void test_set_av1_3 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value += "ess";
+        }
+
+        /// <summary>
+        ///     making sure [save-file] works when given a constant as a filepath, and an 
+        ///     Active Event invocation as [src]
+        /// </summary>
+        [Test]
+        public void Set48 ()
+        {
+            var node = ExecuteLambda (@"_result
+set:x:/-?value
+  test.set.av1_1
+  test.set.av1_2
+  test.set.av1_3");
+            Assert.AreEqual ("success", node [0].Value);
+        }
+        
+        /// <summary>
+        ///     making sure [save-file] works when given a constant as a filepath, and an 
+        ///     Active Event invocation as [src]
+        /// </summary>
+        [Test]
+        public void Set49 ()
+        {
+            var node = ExecuteLambda (@"_result
+set:x:/-?value
+  lambda
+    set:x:/.?value
+      src:success");
+            Assert.AreEqual ("success", node [0].Value);
+        }
+        
+        /// <summary>
+        ///     making sure [save-file] works when given a constant as a filepath, and an 
+        ///     Active Event invocation as [src]
+        /// </summary>
+        [Test]
+        public void Set50 ()
+        {
+            var node = ExecuteLambda (@"_result
+set:x:/-?value
+  lambda
+    add:x:/.
+      src
+        foo1:bar1
+        foo2:bar2
+    set:x:/-|/");
+            Assert.AreEqual ("foo1:bar1\r\nfoo2:bar2", node [0].Value);
+        }
+        
+        /// <summary>
+        ///     making sure [save-file] works when given a constant as a filepath, and an 
+        ///     Active Event invocation as [src]
+        /// </summary>
+        [Test]
+        public void Set51 ()
+        {
+            var node = ExecuteLambda (@"_result
+set:x:/-?value
+  lambda
+    add:x:/.
+      src
+        result
+          foo1:bar1
+          foo2:bar2
+    set:x:/-|/");
+            Assert.AreEqual ("result", node [0].Get<Node> (Context).Name);
+            Assert.AreEqual (null, node [0].Get<Node> (Context).Value);
+            Assert.AreEqual (2, node [0].Get<Node> (Context).Count);
+            Assert.AreEqual ("foo1", node [0].Get<Node> (Context) [0].Name);
+            Assert.AreEqual ("bar1", node [0].Get<Node> (Context) [0].Value);
+            Assert.AreEqual (0, node [0].Get<Node> (Context) [0].Count);
+            Assert.AreEqual ("foo2", node [0].Get<Node> (Context) [1].Name);
+            Assert.AreEqual ("bar2", node [0].Get<Node> (Context) [1].Value);
+            Assert.AreEqual (0, node [0].Get<Node> (Context) [1].Count);
+        }
+        
+        /// <summary>
+        ///     making sure [save-file] works when given a constant as a filepath, and an 
+        ///     Active Event invocation as [src]
+        /// </summary>
+        [Test]
+        public void Set52 ()
+        {
+            var node = ExecuteLambda (@"_result
+set:x:/-?value
+  lambda.copy
+    add:x:/.
+      src
+        result
+          foo1:bar1
+          foo2:bar2
+    set:x:/-|/");
+            Assert.AreEqual (@"add:x:/.
+  src
+    result
+      foo1:bar1
+      foo2:bar2
+set:x:/-|/", node [0].Value);
+        }
+
+        [ActiveEvent (Name = "test.set.53")]
+        private static void test_set_53 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "success";
+            e.Args.Add ("error1", "error2"); // assuming children nodes are entirely ditched since "value" changed ...
+        }
+        
+        /// <summary>
+        ///     making sure [save-file] works when given a constant as a filepath, and an 
+        ///     Active Event invocation as [src]
+        /// </summary>
+        [Test]
+        public void Set53 ()
+        {
+            var node = ExecuteLambda (@"_result
+set:x:/-?value
+  test.set.53:error");
+            Assert.AreEqual ("success", node [0].Value);
+        }
+        
+        /// <summary>
+        ///     making sure [save-file] works when given a constant as a filepath, and an 
+        ///     Active Event invocation as [src]
+        /// </summary>
+        [Test]
+        public void Set54 ()
+        {
+            var node = ExecuteLambda (@"_result
+set:x:/-?value
+  test.set.53:success");
+
+            // notice, even though Active Event sets "value" of node, it never actually CHANGES
+            // hence the "source" being used should be the children nodes of the active event invocation!
+            Assert.AreEqual ("error1", node [0].Get<Node> (Context).Name);
+            Assert.AreEqual ("error2", node [0].Get<Node> (Context).Value);
         }
     }
 }

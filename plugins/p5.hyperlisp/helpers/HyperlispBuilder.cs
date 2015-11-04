@@ -17,7 +17,7 @@ namespace p5.hyperlisp.helpers
     /// <summary>
     ///     Class encapsulating internals of creation of Hyperlisp.
     /// 
-    ///     Class containing actual implementation of logic behind the [p5.hyperlisp.lambda2hyperlisp] Active Event.
+    ///     Class containing actual implementation of logic behind the [lambda2lisp] Active Event.
     /// </summary>
     public class HyperlispBuilder
     {

@@ -12,7 +12,7 @@ namespace p5.file.folder
     /// <summary>
     ///     Class to help list all folders within folder(s).
     /// 
-    ///     Contains [p5.folder.list-folders], and its associated helper methods.
+    ///     Contains [list-folders], and its associated helper methods.
     /// </summary>
     public static class ListFolders
     {
@@ -23,11 +23,11 @@ namespace p5.file.folder
         /// 
         ///     Example that lists all folders within root folder of your system;
         /// 
-        ///     <pre>p5.folder.list-folders:</pre>
+        ///     <pre>list-folders:</pre>
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "p5.folder.list-folders")]
+        [ActiveEvent (Name = "list-folders")]
         private static void p5_folder_list_folders (ApplicationContext context, ActiveEventArgs e)
         {
             // retrieving root folder

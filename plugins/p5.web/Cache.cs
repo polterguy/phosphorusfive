@@ -29,8 +29,8 @@ namespace p5.web.ui
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "p5.web.set-cache")]
-        private static void p5_web_set_cache (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "set-cache-value")]
+        private static void set_cache_value (ApplicationContext context, ActiveEventArgs e)
         {
             p5.web.ui.common.CollectionBase.Set (e.Args, context, delegate (string key, object value) {
                 if (value == null) {
@@ -50,7 +50,7 @@ namespace p5.web.ui
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.get-cache")]
+        [ActiveEvent (Name = "get-cache-value")]
         private static void p5_web_get_cache (ApplicationContext context, ActiveEventArgs e)
         {
             p5.web.ui.common.CollectionBase.Get (e.Args, context, key => HttpContext.Current.Cache [key]);
@@ -63,8 +63,8 @@ namespace p5.web.ui
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "p5.web.list-cache")]
-        private static void p5_web_list_cache (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "list-cache-values")]
+        private static void list_cache_values (ApplicationContext context, ActiveEventArgs e)
         {
             List<string> retVal = new List<string> ();
             foreach (IDictionaryEnumerator idx in HttpContext.Current.Cache) {

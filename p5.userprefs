@@ -1,18 +1,13 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="plugins/p5.html/HtmlEncoder.cs">
-    <Files>
-      <File FileName="plugins/p5.html/HtmlEncoder.cs" Line="58" Column="17" />
-    </Files>
+  <MonoDevelop.Ide.Workbench>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="core" expanded="True" />
-          <Node name="plugins" expanded="True">
-            <Node name="p5.html" expanded="True">
-              <Node name="HtmlEncoder.cs" selected="True" />
-            </Node>
+          <Node name="core" expanded="True">
+            <Node name="p5.exp" selected="True" />
           </Node>
+          <Node name="plugins" expanded="True" />
           <Node name="tests" expanded="True" />
         </State>
       </Pad>
@@ -21,7 +16,7 @@
       </Pad>
       <Pad Id="MonoDevelop.Debugger.WatchPad">
         <State>
-          <Value>widget.ID</Value>
+          <Value>e.Args.Value</Value>
         </State>
       </Pad>
       <Pad Id="MonoDevelop.NUnit.TestPad">
@@ -30,6 +25,9 @@
             <Node name="p5.tests" expanded="True">
               <Node name="p5" expanded="True">
                 <Node name="unittests" expanded="True">
+                  <Node name="lambda" expanded="True">
+                    <Node name="Insert" expanded="True" />
+                  </Node>
                   <Node name="plugins" expanded="True" />
                 </Node>
               </Node>

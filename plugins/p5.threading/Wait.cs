@@ -16,11 +16,11 @@ namespace p5.threading
     public static class Wait
     {
         /// <summary>
-        ///     Waits for all [lambda.fork] children to finish, before execution passes on.
+        ///     Waits for all [fork] children to finish, before execution passes on.
         /// 
         ///     The [wait] keyword, allows you to create multiple threads beneath itself, where each thread must finish, before execution passes onwards,
         ///     past the [wait] keyword. In addition, when you create a [wait] statement, then the [wait] node itself, will be passed into all threads
-        ///     created through <see cref="phosphorus.threading.LambdaFork.lambda_fork">[lambda.fork]</see> by reference. This allows you to pass in and return 
+        ///     created through <see cref="phosphorus.threading.LambdaFork.lambda_fork">[fork]</see> by reference. This allows you to pass in and return 
         ///     parameters to and from your threads.
         /// 
         ///     If you access the [wait] parameter from inside your threads, or you access other shared objects, then it is crucial that you do so, by
@@ -36,7 +36,7 @@ namespace p5.threading
         /// 
         ///     <pre>wait
         ///   _titles
-        ///   lambda.fork
+        ///   fork
         ///     p5.web.get:"http://digg.com"
         ///     p5.html.html2lambda:@/-/*?value
         ///     lock:downloader
@@ -45,7 +45,7 @@ namespace p5.threading
         ///           title
         ///       set:@/../"*"/_wait/#/"*"/_titles/+/<?value
         ///         source:@/././-/"**"/title?value
-        ///   lambda.fork
+        ///   fork
         ///     p5.web.get:"http://stackoverflow.com"
         ///     p5.html.html2lambda:@/-/*?value
         ///     lock:downloader
@@ -57,9 +57,9 @@ namespace p5.threading
         /// 
         /// Notice how the above code uses the [lock] statement to lock access to [_titles], before it starts appending to its children nodes.
         /// 
-        /// Notice also how the [lambda.fork] statement is the root node of both threads, and access to the [wait] node, must go through the
-        ///     automatically injected children node of [lambda.fork], called [_wait], which is a reference to the outer [wait] node. This is because
-        ///     whenever you create a new thread, then the [lambda.fork] node will be the root node of your execution tree, inside of your thread.
+        /// Notice also how the [fork] statement is the root node of both threads, and access to the [wait] node, must go through the
+        ///     automatically injected children node of [fork], called [_wait], which is a reference to the outer [wait] node. This is because
+        ///     whenever you create a new thread, then the [fork] node will be the root node of your execution tree, inside of your thread.
         /// 
         /// The above example is a great example of where you'd greatly benefit from multiple threads, since to download a page over HTTP, will normally
         ///     require your code to wait for the download to finish. Most of this wait time though, is spent waiting for the network to return your data,

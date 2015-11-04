@@ -18,6 +18,7 @@ namespace p5.threading
     {
         // wraps a single lock object
         private static readonly Dictionary<string, object> Lockers = new Dictionary<string, object> ();
+
         // locks access to above dictionary, to make sure logic is thread safe in itself
         private static readonly object GlobalLocker = new object ();
 
@@ -35,7 +36,7 @@ namespace p5.threading
         ///     <pre>_foo
         /// set:@/+/0?value
         ///   source:@/./-?node
-        /// lambda.fork
+        /// fork
         ///   _foo
         ///   lock:foo
         ///     append:@/./-/#?node
@@ -47,11 +48,11 @@ namespace p5.threading
         ///     source
         ///       bar:main</pre>
         /// 
-        ///     The above piece of code, will deny the main thread to enter the [lock] code-block, before the other thread, created through [lambda.fork],
-        ///     is finished executing its work. This prevents a race-condition between the main thread, and the [lambda.fork] thread, when accessing and
+        ///     The above piece of code, will deny the main thread to enter the [lock] code-block, before the other thread, created through [fork],
+        ///     is finished executing its work. This prevents a race-condition between the main thread, and the [fork] thread, when accessing and
         ///     modifying the [_foo] node.
         /// 
-        ///     The [sleep] statement above, is simply there to ensure that the [lambda.fork] thread starts its work, before the
+        ///     The [sleep] statement above, is simply there to ensure that the [fork] thread starts its work, before the
         ///     main thread enters its [lock]. Without the [sleep] statement above, the main thread might theoretically have entered its [lock], before
         ///     the worker thread, which would result in that you wouldn't have access to whatever the worker thread did, before the code was finished executing.
         /// 

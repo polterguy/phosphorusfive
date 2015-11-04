@@ -51,7 +51,7 @@ namespace p5.types
         {
             var code = e.Args.Get<string> (context);
             var tmp = new Node (string.Empty, code);
-            context.Raise ("p5.hyperlisp.hyperlisp2lambda", tmp);
+            context.Raise ("lisp2lambda", tmp);
             e.Args.Value = tmp.Count > 0 ? new Node (string.Empty, null, tmp.Children) : null;
         }
 
@@ -70,7 +70,7 @@ namespace p5.types
         {
             var code = e.Args.Get<string> (context);
             var tmp = new Node (string.Empty, code);
-            context.Raise ("p5.hyperlisp.hyperlisp2lambda", tmp);
+            context.Raise ("lisp2lambda", tmp);
             if (tmp.Count == 1) {
                 // if there's only one node, we return that as result
                 e.Args.Value = tmp [0].Clone ();

@@ -135,9 +135,9 @@ namespace lambda_exe
 
                         // loads and convert file to lambda nodes
                         var convertExeFile = 
-                            context.Raise ("p5.hyperlisp.hyperlisp2lambda", 
+                            context.Raise ("lisp2lambda", 
                                            new Node (string.Empty, 
-                                           context.Raise ("p5.file.load", 
+                                           context.Raise ("load-file", 
                                                new Node (string.Empty, exeNode.Value)) [0].Get<string> (context)));
 
                         // appending nodes from lambda file into execution objects, and execute lambda file given through command-line arguments
@@ -180,7 +180,7 @@ namespace lambda_exe
                 } else if (hyperlisp.Trim () == string.Empty) {
                     Console.WriteLine ("nothing to do here");
                 } else {
-                    Node convert = context.Raise ("p5.hyperlisp.hyperlisp2lambda", new Node (string.Empty, hyperlisp));
+                    Node convert = context.Raise ("lisp2lambda", new Node (string.Empty, hyperlisp));
                     context.Raise ("lambda", convert);
                     Console.WriteLine ();
                 }

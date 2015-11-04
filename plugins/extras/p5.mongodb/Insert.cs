@@ -88,7 +88,7 @@ namespace p5.mongodb
             if (node.Value != null) {
                 if (node.Value is Node) {
                     var convert = new Node (string.Empty, node.Value);
-                    context.Raise ("p5.hyperlisp.lambda2hyperlisp", convert);
+                    context.Raise ("lambda2lisp", convert);
                     retVal.Add ("value", BsonValue.Create (convert.Value));
                 } else {
                     retVal.Add ("value", BsonValue.Create (node.Value));

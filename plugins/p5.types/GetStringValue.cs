@@ -43,7 +43,7 @@ namespace p5.types
         private static void p5_hyperlisp_get_string_value_p5_core_Node (ApplicationContext context, ActiveEventArgs e)
         {
             var tmp = new Node ("", e.Args.Value);
-            context.Raise ("p5.hyperlisp.lambda2hyperlisp", tmp);
+            context.Raise ("lambda2lisp", tmp);
             e.Args.Value = tmp.Value;
         }
 

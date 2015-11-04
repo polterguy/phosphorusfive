@@ -18,7 +18,7 @@ namespace p5.file.folder
     /// <summary>
     ///     Class to help create folders on disc.
     /// 
-    ///     Encapsulates the [p5.folder.create] Active Event, and its associated helper methods.
+    ///     Encapsulates the [create-folder] Active Event, and its associated helper methods.
     /// </summary>
     public static class Create
     {
@@ -29,12 +29,12 @@ namespace p5.file.folder
         /// 
         ///     Example that creates a "foo" folder, on root of your application;
         /// 
-        ///     <pre>p5.folder.create:foo</pre>
+        ///     <pre>create-folder:foo</pre>
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "p5.folder.create")]
-        private static void p5_folder_create (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "create-folder")]
+        private static void create_folder (ApplicationContext context, ActiveEventArgs e)
         {
             // retrieving root folder
             var rootFolder = Common.GetRootFolder (context);

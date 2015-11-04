@@ -114,12 +114,12 @@ namespace p5.lambda.keywords
 
                     // source is relative to destination, postponing figuring it out, until we're inside 
                     // our destination nodes, on each iteration, passing in destination node as data source
-                    idxDestination.Value = XUtil.SourceSingle (e.Args.LastChild, idxDestination.Node, context);
+                    idxDestination.Value = XUtil.SourceSingle (e.Args, idxDestination.Node, context);
                 }
             } else {
 
                 // static source, hence retrieving source before iteration starts
-                var source = XUtil.SourceSingle (e.Args.LastChild, context);
+                var source = XUtil.SourceSingle (e.Args, context);
 
                 // iterating through all destinations, updating with source
                 foreach (var idxDestination in destEx.Evaluate (e.Args, context, e.Args)) {

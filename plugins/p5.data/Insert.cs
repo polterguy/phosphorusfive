@@ -37,9 +37,9 @@ using p5.data.helpers;
 namespace p5.data
 {
     /// <summary>
-    ///     Class wrapping [p5.data.insert].
+    ///     Class wrapping [insert-data].
     /// 
-    ///     Contains the Active Events [p5.data.insert], and its associated helper methods.
+    ///     Contains the Active Events [insert-data], and its associated helper methods.
     /// </summary>
     public static class Insert
     {
@@ -52,7 +52,7 @@ namespace p5.data
         ///     Example;
         /// 
         ///     <pre>
-        /// p5.data.insert
+        /// insert-data
         ///   foo-bar
         ///     name:Thomas Hansen
         ///     age:1000 years</pre>
@@ -74,12 +74,12 @@ namespace p5.data
         ///     name:John Doe
         ///   foo2
         ///     name:Jane Doe
-        /// p5.data.insert:@/-/*?node</pre>
+        /// insert-data:@/-/*?node</pre>
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "p5.data.insert")]
-        private static void p5_data_insert (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "insert-data")]
+        private static void insert_data (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Count == 0 && e.Args.Value == null)
                 return; // nothing to do here
@@ -136,7 +136,7 @@ namespace p5.data
         {
             // making sure it is impossible to insert items without a name into database
             if (string.IsNullOrEmpty (node.Name))
-                throw new ArgumentException ("[p5.data.insert] requires that each item you insert has a name");
+                throw new ArgumentException ("[insert-data] requires that each item you insert has a name");
 
             // making sure insert node gets an ID, unless one is explicitly given
             if (node.Value == null) {

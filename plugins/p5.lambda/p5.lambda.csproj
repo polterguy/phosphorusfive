@@ -53,6 +53,7 @@
     <Compile Include="events\EventsCommon.cs" />
     <Compile Include="events\PFEvent.cs" />
     <Compile Include="events\RemoveEvent.cs" />
+    <Compile Include="keywords\Insert.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

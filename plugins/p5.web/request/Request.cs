@@ -33,8 +33,8 @@ namespace p5.web.ui.request
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "p5.web.get-request-method")]
-        private static void p5_web_get_request_method (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "get-http-method")]
+        private static void get_http_method (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = HttpContext.Current.Request.HttpMethod;
         }
@@ -50,8 +50,8 @@ namespace p5.web.ui.request
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "p5.web.get-request-body")]
-        private static void p5_web_get_request_body (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "get-request-body")]
+        private static void get_request_body (ApplicationContext context, ActiveEventArgs e)
         {
             if (HttpContext.Current.Request.InputStream.Length == 0)
                 return; // nothing to do here ...

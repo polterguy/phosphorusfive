@@ -12,7 +12,7 @@
 * modify readme to have fully functioning complete example of Default.aspx page, with complete codebehind, and complete .aspx markup
 
 * create support for "array" p5.lambda type, which allows to be used as an expression for Expression.Iterate, such that
-  users may submit a static array of values to stuff such as "for-each", "p5.web.set-session", etc
+  users may submit a static array of values to stuff such as "for-each", "set-session-value", etc
 
 * create "plugin" support for "for-each", "set", "add" etc, to allow iterating for instance Widgets, and change their properties
   directly to create less verbose code
@@ -69,7 +69,7 @@
 
 * make sure [set] can set 'value' and 'name' when source leads to multiple nodes, and create unit test for it
 
-* [rel-source] on [p5.web.set-session] and friends
+* [rel-source] on [set-session-value] and friends
 
 * more unit tests for [rel-source] on set and friends
 
@@ -78,7 +78,7 @@
 * make sure [sys42.show-tree] can "append more results" to itself, such that it keeps the same dialogue for multiple invocations
   during the same, and consecutive request
 
-* make support for [rel-source] in [p5.web.return-response-value]
+* make support for [rel-source] in [return-response-value]
 
 * plugin architecture for creating custom iterators, both using C# and in p5.lambda
 

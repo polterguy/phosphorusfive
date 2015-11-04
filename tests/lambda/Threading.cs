@@ -17,7 +17,7 @@ namespace p5.unittests.threading
             : base ("p5.types", "p5.hyperlisp", "p5.threading") { }
 
         /// <summary>
-        ///     forks [multiple] threads using [lambda.fork], using a [wait] and a [lock] inside of thread lambda,
+        ///     forks [multiple] threads using [fork], using a [wait] and a [lock] inside of thread lambda,
         ///     making sure all threads are capable of returning values through the [_wait] reference node
         /// </summary>
         [Test]
@@ -28,20 +28,20 @@ namespace p5.unittests.threading
     add:x:/././*/_wait/#/*/_foos?node
       src:x:/../*(/foo1|/foo2|/foo3|/foo4)?node
 wait
-  lambda.fork:x:/../*/_exe?node
+  fork:x:/../*/_exe?node
     foo1:bar1
-  lambda.fork:x:/../*/_exe?node
+  fork:x:/../*/_exe?node
     foo2:bar2
-  lambda.fork:x:/../*/_exe?node
+  fork:x:/../*/_exe?node
     foo3:bar3
-  lambda.fork:x:/../*/_exe?node
+  fork:x:/../*/_exe?node
     foo4:bar4
   _foos");
             Assert.AreEqual (4, node [1] [4].Count);
         }
         
         /// <summary>
-        ///     Forks a single thread, accessing shared object, making sure [lambda.fork] works as it should, and
+        ///     Forks a single thread, accessing shared object, making sure [fork] works as it should, and
         ///     passing by reference into threads works as it should.
         /// </summary>
         [Test]
@@ -50,7 +50,7 @@ wait
             var node = ExecuteLambda (@"_foo
 set:x:/+/0?value
   src:x:/./-?node
-lambda.fork
+fork
   _foo
   lock:foo
     add:x:/./-/#?node

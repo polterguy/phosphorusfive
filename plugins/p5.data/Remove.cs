@@ -12,9 +12,9 @@ using p5.data.helpers;
 namespace p5.data
 {
     /// <summary>
-    ///     Class wrapping [p5.data.remove].
+    ///     Class wrapping [delete-data].
     /// 
-    ///     Class containing the [p5.data.remove] Active Event, and its associated helper methods.
+    ///     Class containing the [delete-data] Active Event, and its associated helper methods.
     /// </summary>
     public static class Remove
     {
@@ -28,23 +28,23 @@ namespace p5.data
         ///     all file nodes. This means that your expressions should start with; <em>@/*/*</em>, before the rest of
         ///     your expression, referring to your actual data nodes.
         /// 
-        ///     The node used as the "root node" for most database expressions, except [p5.data.insert] though, is the 
+        ///     The node used as the "root node" for most database expressions, except [insert-data] though, is the 
         ///     root node of your database, and not your execution tree root node.
         /// 
         ///     Example that will remove all items from your database, having a type, containing the string "foo";
         /// 
         ///     <pre>
-        /// p5.data.remove:@/*/*/"/foo/"?node</pre>
+        /// delete-data:@/*/*/"/foo/"?node</pre>
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "p5.data.remove")]
-        private static void p5_data_remove (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "delete-data")]
+        private static void delete_data (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value == null)
                 return;
             if (!XUtil.IsExpression (e.Args.Value))
-                throw new ArgumentException ("[p5.data.remove] requires an expression as its value");
+                throw new ArgumentException ("[delete-data] requires an expression as its value");
 
             // acquiring lock on database
             lock (Common.Lock) {

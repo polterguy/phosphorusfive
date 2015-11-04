@@ -40,7 +40,7 @@ namespace p5.unittests
         protected Node ExecuteLambda (string hyperlisp, string lambdaActiveEvent = "lambda")
         {
             var node = new Node { Value = hyperlisp };
-            Context.Raise ("p5.hyperlisp.hyperlisp2lambda", node);
+            Context.Raise ("lisp2lambda", node);
             node.Value = null;
             return Context.Raise (lambdaActiveEvent, node);
         }
@@ -53,7 +53,7 @@ namespace p5.unittests
         protected Node CreateNode (string hyperlisp)
         {
             var node = new Node { Value = hyperlisp };
-            Context.Raise ("p5.hyperlisp.hyperlisp2lambda", node);
+            Context.Raise ("lisp2lambda", node);
             return node;
         }
 

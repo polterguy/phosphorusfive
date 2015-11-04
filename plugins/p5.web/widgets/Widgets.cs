@@ -25,7 +25,7 @@ namespace p5.web.ui.widgets
         /// 
         ///     Creates a generic container type of Widget, that can contain children widgets of itself.
         /// 
-        ///     Active Event is not meant to be raised directly, but through the [p5.web.create-widget] Active Event, since it 
+        ///     Active Event is not meant to be raised directly, but through the [create-widget] Active Event, since it 
         ///     needs a reference to its parent control directly, among other things.
         /// 
         ///     Pass in [element] to override the HTML element rendered. 
@@ -54,7 +54,7 @@ namespace p5.web.ui.widgets
         /// 
         ///     Any nodes starting with "on", will be assumed to be server-side p5.lambda event handlers. Every time a p5.lambda
         ///     server side event is raised then both [_widget] and [_event] will be passed in to the event handler as root nodes.
-        ///     [_widget] is the id of the main widget that is the root widget of the Active Event [p5.web.create-widget], while
+        ///     [_widget] is the id of the main widget that is the root widget of the Active Event [create-widget], while
         ///     [_event] is the id of the actual widget that raised the event. This feature is useful for widgets that are dynamically
         ///     created, without an explicitly given id.
         /// 
@@ -67,13 +67,13 @@ namespace p5.web.ui.widgets
         /// 
         ///     Example of usage;
         ///     <pre>
-        /// p5.web.create-widget:foo
+        /// create-widget:foo
         ///   widget:container
         ///   class:span-24 prepend-top info
         ///   onclick
-        ///     p5.web.widgets.set-property:foo
+        ///     set-widget-property:foo
         ///       class:span-24 prepend-top success
-        ///     p5.web.widgets.set-property:bar
+        ///     set-widget-property:bar
         ///       innerValue:I was clicked!
         ///   controls
         ///     literal:bar
@@ -81,7 +81,7 @@ namespace p5.web.ui.widgets
         ///       element:h1</pre>
         /// 
         ///     You would rarely, if ever, consume this Active Event directly, but instead consume it indirectly, through the 
-        ///     <see cref="phosphorus.applicationpool.Default.p5_web_widgets_create">[p5.web.create-widget]</see> Active Event.
+        ///     <see cref="phosphorus.applicationpool.Default.p5_web_widgets_create">[create-widget]</see> Active Event.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -101,7 +101,7 @@ namespace p5.web.ui.widgets
         ///     Creates a generic literal type of Widget, that cannot contain children widgets, but instead has the [innerValue] 
         ///     property, allowing to change its inner value as text or HTML.
         /// 
-        ///     Active Event is not meant to be raised directly, but through the [p5.web.create-widget] Active Event, since it 
+        ///     Active Event is not meant to be raised directly, but through the [create-widget] Active Event, since it 
         ///     needs a reference to its parent control directly, among other things.
         /// 
         ///     Pass in [element] to override the HTML element rendered. 
@@ -127,7 +127,7 @@ namespace p5.web.ui.widgets
         /// 
         ///     Any nodes starting with "on", will be assumed to be server-side p5.lambda event handlers. Every time a p5.lambda
         ///     server side event is raised then both [_widget] and [_event] will be passed in to the event handler as root nodes.
-        ///     [_widget] is the id of the main widget that is the root widget of the Active Event [p5.web.create-widget], while
+        ///     [_widget] is the id of the main widget that is the root widget of the Active Event [create-widget], while
         ///     [_event] is the id of the actual widget that raised the event. This feature is useful for widgets that are dynamically
         ///     created, without an explicitly given id.
         /// 
@@ -141,18 +141,18 @@ namespace p5.web.ui.widgets
         /// 
         ///     Example of usage;
         ///     <pre>
-        /// p5.web.create-widget:foo
+        /// create-widget:foo
         ///   widget:literal
         ///   class:span-24 prepend-top info
         ///   innerValue:Click me!
         ///   element:h1
         ///   onclick
-        ///     p5.web.widgets.set-property:foo
+        ///     set-widget-property:foo
         ///       class:span-24 prepend-top success
         ///       innerValue:I was clicked!</pre>
         /// 
         ///     You would rarely, if ever, consume this Active Event directly, but instead consume it indirectly, through the 
-        ///     <see cref="phosphorus.applicationpool.Default.p5_web_widgets_create">[p5.web.create-widget]</see> Active Event.
+        ///     <see cref="phosphorus.applicationpool.Default.p5_web_widgets_create">[create-widget]</see> Active Event.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -173,7 +173,7 @@ namespace p5.web.ui.widgets
         ///     property. This type of widget is useful for HTML elements that does not have neither a value, nor children widgets.
         ///     Examples uncludes for instance <em>"input"</em> html elements of type <em>"button"</em>.
         /// 
-        ///     Active Event is not meant to be raised directly, but through the [p5.web.create-widget] Active Event, since it 
+        ///     Active Event is not meant to be raised directly, but through the [create-widget] Active Event, since it 
         ///     needs a reference to its parent control directly, among other things.
         /// 
         ///     Pass in [element] to override the HTML element rendered. 
@@ -197,7 +197,7 @@ namespace p5.web.ui.widgets
         /// 
         ///     Any nodes starting with "on", will be assumed to be server-side p5.lambda event handlers. Every time a p5.lambda
         ///     server side event is raised then both [_widget] and [_event] will be passed in to the event handler as root nodes.
-        ///     [_widget] is the id of the main widget that is the root widget of the Active Event [p5.web.create-widget], while
+        ///     [_widget] is the id of the main widget that is the root widget of the Active Event [create-widget], while
         ///     [_event] is the id of the actual widget that raised the event. This feature is useful for widgets that are dynamically
         ///     created, without an explicitly given id.
         /// 
@@ -210,17 +210,17 @@ namespace p5.web.ui.widgets
         /// 
         ///     Example of usage;
         ///     <pre>
-        /// p5.web.create-widget:foo
+        /// create-widget:foo
         ///   widget:void
         ///   placeholder:Change my text ...
         ///   element:input
         ///   type:text
         ///   onchange
-        ///     p5.web.widgets.set-property:foo
+        ///     set-widget-property:foo
         ///       value:I had my text changed!</pre>
         /// 
         ///     You would rarely, if ever, consume this Active Event directly, but instead consume it indirectly, through the 
-        ///     <see cref="phosphorus.applicationpool.Default.p5_web_widgets_create">[p5.web.create-widget]</see> Active Event.
+        ///     <see cref="phosphorus.applicationpool.Default.p5_web_widgets_create">[create-widget]</see> Active Event.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>

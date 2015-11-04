@@ -24,11 +24,12 @@ namespace p5.web.ui.request
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "p5.web.get-request-parameter")]
-        private static void p5_web_get_request_parameter (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "get-http-param")]
+        private static void get_http_param (ApplicationContext context, ActiveEventArgs e)
         {
             // looping through each parameter requested by caller
             foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+
                 // adding parameter's name/value as Node return value
                 if (HttpContext.Current.Request.Params [idx] != null)
                     e.Args.Add (idx, HttpContext.Current.Request.Params [idx]);
@@ -42,8 +43,8 @@ namespace p5.web.ui.request
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "p5.web.list-request-parameters")]
-        private static void p5_web_request_parameters_list (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "list-http-params")]
+        private static void list_http_params (ApplicationContext context, ActiveEventArgs e)
         {
             CollectionBase.List (e.Args, context, () => HttpContext.Current.Request.Params.AllKeys);
         }

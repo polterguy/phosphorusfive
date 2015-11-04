@@ -13,7 +13,7 @@ namespace p5.file.file
     /// <summary>
     ///     Class to help save files.
     /// 
-    ///     Contains [p5.file.save], [p5.file.binary.save], and their associated helper methods.
+    ///     Contains [save-file], [save-binary-file], and their associated helper methods.
     /// </summary>
     public static class Save
     {
@@ -27,7 +27,7 @@ namespace p5.file.file
         /// 
         ///     Example that saves a file with the name of "foo.txt" and the contents of "Howdy World";
         /// 
-        ///     <pre>p5.file.save:foo.txt
+        ///     <pre>save-file:foo.txt
         ///   source:Howdy World</pre>
         /// 
         ///     Example that saves two files; "foo1.txt" and "foo2.txt", with the contents of "Hello World 1.0" and "Hello World 2.0";
@@ -36,19 +36,20 @@ namespace p5.file.file
         /// _data
         ///   foo1.txt:Howdy World 1.0
         ///   foo2.txt:Howdy World 2.0
-        /// p5.file.save:@/-/*?name
+        /// save-file:@/-/*?name
         ///   rel-source:@?value</pre>
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.file.save")]
-        private static void p5_file_save (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "save-file")]
+        [ActiveEvent (Name = "save-text-file")]
+        private static void save_file (ApplicationContext context, ActiveEventArgs e)
         {
             // getting root folder
             var rootFolder = Common.GetRootFolder (context);
 
             // getting source
-            var source = Utilities.Convert<string> (XUtil.SourceSingle (e.Args.LastChild, context), context);
+            var source = Utilities.Convert<string> (XUtil.SourceSingle (e.Args, context), context);
 
             // getting filename
             string fileName = XUtil.Single<string> (e.Args, context);
@@ -73,18 +74,18 @@ namespace p5.file.file
         ///   _1:iVBORw0KGgoAAAANSUhEUgAAAAUAAAAICAYAAAAx8TU7AAAABmJLR0QAAAAAAAD5Q7t/
         ///   _2:AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3wMRESMW1yBFBwAAADBJREFUCNeNjj
         ///   _3:EKACAQw1Lx/1+Og9wJ4mC2BloaQC4mgB6fZMsKxeBBS7Vn/ut5XVoUIQsTo7AhfAAAAABJRU5ErkJggg==
-        /// p5.file.binary.save:foo.png
+        /// save-binary-file:foo.png
         ///   source:@/./-/*?value</pre>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.file.binary.save")]
-        private static void p5_file_binary_save (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "save-binary-file")]
+        private static void save_binary_file (ApplicationContext context, ActiveEventArgs e)
         {
             // getting root folder
             var rootFolder = Common.GetRootFolder (context);
 
             if (e.Args.LastChild.Name != "src")
-                throw new LambdaException ("No [src] given to [p5.file.save]", e.Args, context);
+                throw new LambdaException ("No [src] given to [save-file]", e.Args, context);
 
             // getting source
             var source = Utilities.Convert<byte[]> (XUtil.SourceSingle (e.Args, context), context);

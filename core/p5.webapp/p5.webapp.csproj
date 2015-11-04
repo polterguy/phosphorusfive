@@ -143,10 +143,6 @@
       <Project>{CA83A3ED-BD5D-4557-AA1B-A7C04ABD4D4F}</Project>
       <Name>p5.data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\plugins\p5.html\p5.html.csproj">
-      <Project>{68EE106A-06BF-431B-9671-DF328666E03E}</Project>
-      <Name>p5.html</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\plugins\p5.io\p5.io.csproj">
       <Project>{89C744BE-B583-4C6D-84B9-941E0C7CEBF4}</Project>
       <Name>p5.io</Name>
@@ -155,17 +151,21 @@
       <Project>{E7026921-524B-4B2E-A549-251A5AEB4D89}</Project>
       <Name>p5.math</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\plugins\p5.net\p5.net.csproj">
-      <Project>{378663D4-1FC1-4109-8896-F72440C6C269}</Project>
-      <Name>p5.net</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\plugins\p5.web\p5.web.csproj">
       <Project>{0F68BFA7-1CF7-4737-9058-CED4A9ED3427}</Project>
       <Name>p5.web</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\plugins\p5.crypto\p5.crypto.csproj">
+    <ProjectReference Include="..\..\plugins\extras\p5.crypto\p5.crypto.csproj">
       <Project>{46D8DEF8-01ED-4058-B2D5-689890865494}</Project>
       <Name>p5.crypto</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\extras\p5.html\p5.html.csproj">
+      <Project>{68EE106A-06BF-431B-9671-DF328666E03E}</Project>
+      <Name>p5.html</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\extras\p5.net\p5.net.csproj">
+      <Project>{378663D4-1FC1-4109-8896-F72440C6C269}</Project>
+      <Name>p5.net</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

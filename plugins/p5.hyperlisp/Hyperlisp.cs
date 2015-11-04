@@ -153,8 +153,8 @@ using p5.hyperlisp.helpers;
 /// Hyperlisp is also extremely convenient when it comes to storing p5.lambda objects in files on disc. To load a Hyperlisp file, transform it
 ///     to p5.lambda, for then to execute the transformed p5.lambda object, can be done with three lines of code;
 /// 
-///     <pre>p5.file.load:foo.hl
-/// p5.hyperlisp.hyperlisp2lambda:@/-/0?value
+///     <pre>load-file:foo.hl
+/// lisp2lambda:@/-/0?value
 /// lambda.copy:@/-?node</pre>
 /// </summary>
 namespace p5.hyperlisp
@@ -162,7 +162,7 @@ namespace p5.hyperlisp
     /// <summary>
     ///     Class to help transform between Hyperlisp and <see cref="phosphorus.core.Node">Nodes</see>.
     /// 
-    ///     Contains the [p5.hyperlisp.hyperlisp2lambda] and the [p5.hyperlisp.lambda2hyperlisp] Active Events,
+    ///     Contains the [lisp2lambda] and the [lambda2lisp] Active Events,
     ///     necessary to be able to parse Hyperlisp from p5.lambda nodes, and vice versa.
     /// </summary>
     public static class PFHyperlisp
@@ -174,15 +174,15 @@ namespace p5.hyperlisp
         /// 
         ///     Example;
         /// 
-        ///     <pre>p5.hyperlisp.hyperlisp2lambda:\@"foo:bar
+        ///     <pre>lisp2lambda:\@"foo:bar
         ///   foo-child-1:"" Howdy World! ""
         ///   foo-child-2:int:234
         ///   foo-date:date:2014-05-16"</pre>
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "p5.hyperlisp.hyperlisp2lambda")]
-        private static void p5_hyperlisp_hyperlisp2lambda (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "lisp2lambda")]
+        private static void lisp2lambda (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.AddRange (new NodeBuilder (context, XUtil.Single<string> (e.Args, context, "", "\r\n")).Nodes);
         }
@@ -193,15 +193,15 @@ namespace p5.hyperlisp
         ///     Active Event will transform the given p5.lambda node structure to Hyperlisp.
         /// 
         ///     Example;
-        /// <pre>p5.hyperlisp.lambda2hyperlisp
+        /// <pre>lambda2lisp
         ///   foo1:bar1
         ///   foo2:bar2
         /// </pre>
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.lambda2hyperlisp")]
-        private static void p5_code_lambda2hyperlisp (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "lambda2lisp")]
+        private static void lambda2lisp (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = new HyperlispBuilder (context, XUtil.Iterate<Node> (e.Args, context)).Hyperlisp;
         }

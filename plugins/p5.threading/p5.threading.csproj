@@ -43,9 +43,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Lock.cs" />
-    <Compile Include="LambdaFork.cs" />
     <Compile Include="Sleep.cs" />
     <Compile Include="Wait.cs" />
+    <Compile Include="Fork.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

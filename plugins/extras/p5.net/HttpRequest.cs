@@ -281,7 +281,7 @@ namespace p5.net
                 return XUtil.Single<object> (content, context);
             } else {
                 var cloned = content.Clone ();
-                context.Raise ("p5.hyperlisp.lambda2hyperlisp", cloned);
+                context.Raise ("lambda2lisp", cloned);
                 return cloned.Value;
             }
         }
@@ -348,7 +348,7 @@ namespace p5.net
                     // Hyperlisp, special treatment
                     using (TextReader reader = new StreamReader (stream)) {
                         Node convert = new Node ("content", reader.ReadToEnd ());
-                        context.Raise ("p5.hyperlisp.hyperlisp2lambda", convert);
+                        context.Raise ("lisp2lambda", convert);
                         convert.Value = null;
                         result.Add (convert);
                     }

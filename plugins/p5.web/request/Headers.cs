@@ -24,8 +24,8 @@ namespace p5.web.ui.request
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "p5.web.get-request-header")]
-        private static void p5_web_get_request_header (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "get-http-header")]
+        private static void get_http_header (ApplicationContext context, ActiveEventArgs e)
         {
             // looping through each parameter requested by caller
             foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
@@ -42,8 +42,8 @@ namespace p5.web.ui.request
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "p5.web.list-request-headers")]
-        private static void p5_web_list_request_headers (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "list-http-headers")]
+        private static void list_http_headers (ApplicationContext context, ActiveEventArgs e)
         {
             CollectionBase.List (e.Args, context, () => HttpContext.Current.Request.Headers.AllKeys);
         }

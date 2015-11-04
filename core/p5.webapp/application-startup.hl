@@ -6,14 +6,14 @@ event:p5.remove-additional-hello
   lambda
     set:x:/+?value
       src:x:/././.?value
-    p5.web.remove-widget
+    delete-widget
 
 /*
  * creates one "hello" widget
  */
 event:p5.create-additional-hello
   lambda
-    p5.web.create-widget
+    create-widget
       parent:main
       widgets
         literal
@@ -29,8 +29,8 @@ event:p5.create-additional-hello
  */
 event:p5.web.load-ui
   lambda
-    p5.web.include-stylesheet-file:/media/css/main.css
-    p5.web.create-widget:main
+    include-stylesheet-file:/media/css/main.css
+    create-widget:main
       widgets
         literal
           element:h1

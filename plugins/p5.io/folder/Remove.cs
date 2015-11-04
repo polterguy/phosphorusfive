@@ -12,7 +12,7 @@ namespace p5.file.folder
     /// <summary>
     ///     Class to help remove folders from disc.
     /// 
-    ///     Contains [p5.folder.remove], and its associated helper methods.
+    ///     Contains [delete-folder], and its associated helper methods.
     /// </summary>
     public static class Remove
     {
@@ -24,12 +24,12 @@ namespace p5.file.folder
         /// 
         ///     Example that removes the folder "foo" from root;
         /// 
-        ///     <pre>p5.folder.remove:foo</pre>
+        ///     <pre>delete-folder:foo</pre>
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "p5.folder.remove")]
-        private static void p5_folder_remove (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "delete-folder")]
+        private static void delete_folder (ApplicationContext context, ActiveEventArgs e)
         {
             // retrieving root folder
             var rootFolder = Common.GetRootFolder (context);

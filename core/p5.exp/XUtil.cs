@@ -289,7 +289,7 @@ namespace p5.exp
         }
 
         /*
-         * In use in [set] [p5.file.save] and [p5.data.update]
+         * In use in [set] [save-file] and [update-data]
          */
         /// <summary>
         ///     Will return one single source value from evaluatedNode
@@ -320,25 +320,48 @@ namespace p5.exp
             Node dataSource, 
             ApplicationContext context)
         {
-            object source = null;
-
-            if (evaluatedNode == null || evaluatedNode.Name == string.Empty)
+            if (evaluatedNode.LastChild == null || evaluatedNode.LastChild.Name == string.Empty)
                 return null; // no source!
 
-            if (evaluatedNode.Name != "src" && evaluatedNode.Name != "rel-src") {
+            if (evaluatedNode.LastChild.Name != "src" && evaluatedNode.LastChild.Name != "rel-src") {
 
-                // Active Event invocation source, iterating through all destinations, after invocting Active 
+                // Active Event invocation source, iterating through all source events, invoking Active 
                 // event, updating with result from Active Event invocation
-                context.Raise (evaluatedNode.Name, evaluatedNode);
-                source = SourceImplementation (evaluatedNode, dataSource, context);
+                // Logic here is that if value of executed node changes, and is not null, then value has presedence,
+                // otherwise children nodes of executed node will be used as source
+                // Note, if ONE of the executed Active Events returns something as "value", then no nodes
+                // returned from Active Events as children will be even evaluated as source candidates
+                Node tmpRetVal = new Node ();
+                foreach (var idxSrcNode in evaluatedNode.Children.Where (idx => idx.Name != string.Empty)) {
+
+                    // Raising currently iterated Active Event source, but storing value to see if it changes
+                    var oldValue = idxSrcNode.Value;
+                    context.Raise (idxSrcNode.Name, idxSrcNode);
+
+                    if (oldValue == null && idxSrcNode.Value != null || 
+                        (oldValue != null && !oldValue.Equals (idxSrcNode.Value))) {
+
+                        // value has presedence
+                        if (tmpRetVal.Value == null)
+                            tmpRetVal.Value = idxSrcNode.Value;
+                        else
+                            tmpRetVal.Value = tmpRetVal.Get<string> (context) + idxSrcNode.Value; // concatenating as strings
+                        tmpRetVal.Clear (); // dropping all other potential candidates!
+                    } else {
+
+                        // Children nodes are used
+                        tmpRetVal.AddRange (idxSrcNode.Clone ().Children);
+                    }
+                }
+                return SourceImplementation (tmpRetVal, tmpRetVal, context);
             } else {
 
                 // simple source
-                source = SourceImplementation (evaluatedNode, dataSource, context);
+                return SourceImplementation (
+                    evaluatedNode.LastChild, 
+                    dataSource == evaluatedNode ? evaluatedNode.LastChild : dataSource, 
+                    context);
             }
-
-            // returning source
-            return source;
         }
 
         private static object SourceImplementation (Node evaluatedNode, Node dataSource, ApplicationContext context)
@@ -363,7 +386,7 @@ namespace p5.exp
         }
 
         /*
-         * In use in [add], and to be used in [insert-before] and [insert-after]
+         * In use in [add], [insert-before] and [insert-after]
          */
         /// <summary>
         ///    Will return multiple values if feasable
@@ -390,7 +413,57 @@ namespace p5.exp
         /// <param name="context">Context.</param>
         public static List<Node> SourceNodes (Node evaluatedNode, Node dataSource, ApplicationContext context)
         {
-            // return value
+            if (evaluatedNode.LastChild == null || evaluatedNode.LastChild.Name == string.Empty)
+                return null; // no source!
+
+            if (evaluatedNode.LastChild.Name != "src" && evaluatedNode.LastChild.Name != "rel-src") {
+
+                // Active Event invocation source, iterating through all source events, invoking Active 
+                // event, updating with result from Active Event invocation
+                // Logic here is that if value of executed node changes, and is not null, then value has presedence,
+                // otherwise children nodes of executed node will be used as source
+                // Note, if ONE of the executed Active Events returns something as "value", then no nodes
+                // returned from Active Events as children will be even evaluated as source candidates
+                Node tmpRetVal = new Node ();
+                foreach (var idxSrcNode in evaluatedNode.Children.Where (idx => idx.Name != string.Empty)) {
+
+                    // Raising currently iterated Active Event source, but storing value to see if it changes
+                    var oldValue = idxSrcNode.Value;
+                    context.Raise (idxSrcNode.Name, idxSrcNode);
+
+                    if (oldValue == null && idxSrcNode.Value != null || 
+                        (oldValue != null && !oldValue.Equals (idxSrcNode.Value))) {
+
+                        // value has presedence
+                        if (idxSrcNode.Value is Node) {
+
+                            // Value is node
+                            tmpRetVal.Add (idxSrcNode.Get<Node> (context).Clone ());
+                        } else {
+
+                            // Value is NOT node, converting to node list before adding
+                            Node convert = new Node (string.Empty, idxSrcNode.Get<string> (context));
+                            tmpRetVal.AddRange (context.Raise ("lisp2lambda", convert).Children);
+                        }
+                    } else {
+
+                        // Children nodes are used
+                        tmpRetVal.AddRange (idxSrcNode.Clone ().Children);
+                    }
+                }
+                return SourceNodesImplementation (tmpRetVal, tmpRetVal, context);
+            } else {
+
+                // simple source
+                return SourceNodesImplementation (
+                    evaluatedNode.LastChild, 
+                    dataSource == evaluatedNode ? evaluatedNode.LastChild : dataSource, 
+                    context);
+            }
+        }
+
+        private static List<Node> SourceNodesImplementation (Node evaluatedNode, Node dataSource, ApplicationContext context)
+        {
             var sourceNodes = new List<Node> ();
 
             // checking to see if we're given an expression
@@ -440,7 +513,6 @@ namespace p5.exp
             }
 
             // returning node list back to caller
-            return sourceNodes.Count > 0 ? sourceNodes : null;
-        }
+            return sourceNodes.Count > 0 ? sourceNodes : null;        }
     }
 }
