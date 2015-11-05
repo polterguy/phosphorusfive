@@ -1,13 +1,18 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench ActiveDocument="../system42/codemirror/hyperlisp-mode.js">
+    <Files>
+      <File FileName="../system42/codemirror/hyperlisp-mode.js" Line="364" Column="20" />
+      <File FileName="../system42/application-startup.hl" Line="15" Column="20" />
+      <File FileName="../system42/codemirror/theme/blackboard.css" Line="11" Column="1" />
+    </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="core" expanded="True">
-            <Node name="p5.exp" selected="True" />
+          <Node name="core" expanded="True" />
+          <Node name="plugins" expanded="True">
+            <Node name="p5.io" selected="True" />
           </Node>
-          <Node name="plugins" expanded="True" />
           <Node name="tests" expanded="True" />
         </State>
       </Pad>
@@ -25,9 +30,7 @@
             <Node name="p5.tests" expanded="True">
               <Node name="p5" expanded="True">
                 <Node name="unittests" expanded="True">
-                  <Node name="lambda" expanded="True">
-                    <Node name="Insert" expanded="True" />
-                  </Node>
+                  <Node name="lambda" expanded="True" />
                   <Node name="plugins" expanded="True" />
                 </Node>
               </Node>

@@ -26,7 +26,7 @@ using p5.exp;
 /// </summary>
 namespace p5.webapp
 {
-    using p5 = p5.ajax.widgets;
+    using pf = p5.ajax.widgets;
 
     /// <summary>
     ///     Main .aspx web page for your Application Pool.
@@ -41,7 +41,7 @@ namespace p5.webapp
         private ApplicationContext _context;
 
         // main container for all widgets
-        protected p5.Container container;
+        protected pf.Container container;
 
         /*
          * Contains all ajax events, and their associated p5.lambda code, for all controls on page. Please notice that
@@ -282,7 +282,7 @@ namespace p5.webapp
         {
             // finding parent widget first, which defaults to "container" widget, if no parent is given
             var parentNode = args.Find (idx => idx.Name == "parent" && idx.Value != null);
-            var parent = (parentNode != null ? FindControl<p5.Container> (XUtil.Single<string> (parentNode, context), Page) : container) ?? container;
+            var parent = (parentNode != null ? FindControl<pf.Container> (XUtil.Single<string> (parentNode, context), Page) : container) ?? container;
 
             // finding position in parent control's list, defaulting to "-1", meaning "append at end"
             int position = GetWidgetPosition (args, context, parent);
@@ -313,7 +313,7 @@ namespace p5.webapp
                 return; // nothing to do here
 
             // loping through all control ID's given
-            foreach (var ctrl in XUtil.Iterate<string> (e.Args, context).Select (idxCtrlId => FindControl<p5.Container> (idxCtrlId, Page))) {
+            foreach (var ctrl in XUtil.Iterate<string> (e.Args, context).Select (idxCtrlId => FindControl<pf.Container> (idxCtrlId, Page))) {
 
                 // checking if widget exists
                 if (ctrl == null)
@@ -347,7 +347,7 @@ namespace p5.webapp
                 return; // nothing to do here
 
             // loping through all control ID's given
-            foreach (var widget in XUtil.Iterate<string> (e.Args, context).Select (idxCtrlId => FindControl<p5.Widget> (idxCtrlId, Page))) {
+            foreach (var widget in XUtil.Iterate<string> (e.Args, context).Select (idxCtrlId => FindControl<pf.Widget> (idxCtrlId, Page))) {
 
                 // checking if widget exists
                 if (widget == null)
@@ -363,7 +363,7 @@ namespace p5.webapp
                 RemoveData (widget);
 
                 // actually removing widget from Page control collection, and persisting our change
-                var parent = (p5.Container)widget.Parent;
+                var parent = (pf.Container)widget.Parent;
                 parent.RemoveControlPersistent (widget);
             }
         }
@@ -748,7 +748,6 @@ namespace p5.webapp
             }
         }
 
-        /// \todo implement support for changing the title during Ajax requests
         /// <summary>
         ///     Changes the title of your web page.
         /// 
@@ -756,15 +755,60 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-page-title")]
-        private void set_page_title (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "set-title")]
+        private void set_title (ApplicationContext context, ActiveEventArgs e)
         {
-            if (Manager.IsPhosphorusRequest)
-                throw new Exception ("You cannot set the title of your page in an Ajax Request, only during post requests, or initial loading of page");
-            Title = XUtil.Single<string> (e.Args, context);
+            if (Manager.IsPhosphorusRequest) {
+                Manager.SendJavaScriptToClient (string.Format ("document.title='{0}';", XUtil.Single<string>(e.Args, context).Replace ("'", "\\'")));
+            }
+            Title = XUtil.Single<string>(e.Args, context);
+            ViewState["P5-Title"] = Title;
         }
 
-        /// \todo support [rel-source], the same way we do in [set] in this guy
+        /// <summary>
+        ///     Returns the title of your web page.
+        /// 
+        ///     Returns the "title" HTML element's content.
+        /// </summary>
+        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "get-title")]
+        private void get_title (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = ViewState ["P5-Title"] ?? Title;
+        }
+
+        /// <summary>
+        ///     Changes the URL/location of your web page.
+        /// 
+        ///     Changes the "location" of your web page. This will load another document for you.
+        /// </summary>
+        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "set-location")]
+        private void set_location (ApplicationContext context, ActiveEventArgs e)
+        {
+            if (Manager.IsPhosphorusRequest) {
+                Manager.SendJavaScriptToClient (string.Format ("window.location='{0}';", XUtil.Single<string> (e.Args, context)));
+            } else {
+                Page.Response.Redirect (XUtil.Single<string> (e.Args, context));
+            }
+        }
+
+        /// <summary>
+        ///     Returns the URL/location of your web page.
+        /// 
+        ///     Returns the URL of your page.
+        /// </summary>
+        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "get-location")]
+        private void get_location (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = Request.Url.ToString ();
+        }
+
+        /// \todo use XUtil.SourceSingle
         /// <summary>
         ///     Returns the given Node back to client as JSON.
         /// 
@@ -773,8 +817,8 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "return-response-value")]
-        private void return_response_value (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "return-value")]
+        private void return_value (ApplicationContext context, ActiveEventArgs e)
         {
             var key = XUtil.Single<string> (e.Args, context);
             var str = XUtil.Single<string> (e.Args.LastChild, context);
@@ -793,7 +837,7 @@ namespace p5.webapp
         private void _p5_web_add_widget_event (ApplicationContext context, ActiveEventArgs e)
         {
             // retrieving widget id, and creating an event collection for the given widget
-            var widget = e.Args.Get<p5.Widget> (context);
+            var widget = e.Args.Get<pf.Widget> (context);
             if (!AjaxEvents.ContainsKey (widget.ID))
                 AjaxEvents [widget.ID] = new Dictionary<string, List<Node>> ();
 
@@ -876,12 +920,12 @@ namespace p5.webapp
             int position = -1;
             var beforeNode = node.Find (idx => idx.Name == "before" && idx.Value != null);
             if (beforeNode != null) {
-                var beforeControl = FindControl<p5.Widget> (XUtil.Single<string> (beforeNode, context), parent);
+                var beforeControl = FindControl<pf.Widget> (XUtil.Single<string> (beforeNode, context), parent);
                 position = parent.Controls.IndexOf (beforeControl);
             } else {
                 var afterNode = node.Find (idx => idx.Name == "after" && idx.Value != null);
                 if (afterNode != null) {
-                    var afterControl = FindControl<p5.Widget> (XUtil.Single<string> (afterNode, context), parent);
+                    var afterControl = FindControl<pf.Widget> (XUtil.Single<string> (afterNode, context), parent);
                     position = parent.Controls.IndexOf (afterControl) + 1;
                 }
             }
@@ -894,7 +938,7 @@ namespace p5.webapp
         private static Widget CreateWidget (
             ApplicationContext context, 
             Node node, 
-            p5.Container parent, 
+            pf.Container parent, 
             int position, 
             string type)
         {
@@ -1027,7 +1071,7 @@ namespace p5.webapp
          * common ajax event handler for all widget's events on page
          */
         [WebMethod]
-        protected void common_event_handler (p5.Widget sender, p5.Widget.AjaxEventArgs e)
+        protected void common_event_handler (pf.Widget sender, pf.Widget.AjaxEventArgs e)
         {
             var id = sender.ID;
             var eventName = e.Name;

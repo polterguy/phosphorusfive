@@ -8,7 +8,7 @@
 <html>
     <head runat="server">
         <meta charset="utf-8">
-        <title>phosphorus five application pool</title>
+        <title>phosphorus five</title>
     </head>
     <body>
         <form id="form1" runat="server" autocomplete="off">

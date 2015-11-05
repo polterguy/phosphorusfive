@@ -64,6 +64,8 @@
     <Compile Include="plugins\Hyperlisp.cs" />
     <Compile Include="plugins\Combination.cs" />
     <Compile Include="lambda\Insert.cs" />
+    <Compile Include="lambda\Split.cs" />
+    <Compile Include="lambda\Join.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

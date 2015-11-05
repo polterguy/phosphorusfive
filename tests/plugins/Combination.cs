@@ -40,7 +40,7 @@ save-file:test1.txt
 foo2:bar2", reader.ReadToEnd ());
             }
         }
-        
+
         /// <summary>
         ///     making sure [save-file] works when given a constant as a filepath, and an 
         ///     Active Event invocation as [src]
@@ -63,6 +63,41 @@ add:x:/../0
             Assert.AreEqual ("bar-child", node [0] [0] [0].Value);
             Assert.AreEqual ("foo2", node [0] [1].Name);
             Assert.AreEqual ("bar2", node [0] [1].Value);
+        }
+        
+        /// <summary>
+        ///     making sure [save-file] works when given a constant as a filepath, and an 
+        ///     Active Event invocation as [src]
+        /// </summary>
+        [Test]
+        public void AddSplitResults ()
+        {
+            var node = ExecuteLambda (@"_result
+add:x:/-
+  split:x:/./+?value
+    =:"" ""
+_data:howdy world");
+            Assert.AreEqual (2, node [0].Count);
+            Assert.AreEqual ("howdy", node [0] [0].Name);
+            Assert.AreEqual ("world", node [0] [1].Name);
+        }
+        
+        /// <summary>
+        ///     making sure [save-file] works when given a constant as a filepath, and an 
+        ///     Active Event invocation as [src]
+        /// </summary>
+        [Test]
+        public void SetJoinResults ()
+        {
+            var node = ExecuteLambda (@"_result
+set:x:/-?value
+  join:x:/./+/*
+    =:,
+    ==:-
+_data
+  foo1:bar1
+  foo2:bar2");
+            Assert.AreEqual ("foo1-bar1,foo2-bar2", node [0].Value);
         }
     }
 }

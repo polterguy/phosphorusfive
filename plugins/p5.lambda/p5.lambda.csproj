@@ -54,6 +54,8 @@
     <Compile Include="events\PFEvent.cs" />
     <Compile Include="events\RemoveEvent.cs" />
     <Compile Include="keywords\Insert.cs" />
+    <Compile Include="keywords\Split.cs" />
+    <Compile Include="keywords\Join.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
