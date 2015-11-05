@@ -84,29 +84,33 @@ namespace p5.data
             if (e.Args.Count == 0 && e.Args.Value == null)
                 return; // nothing to do here
 
-            // acquiring lock on database
-            lock (Common.Lock) {
+            // making sure we clean up and remove all arguments passed in after execution
+            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args, true, true)) {
 
-                // making sure database is initialized
-                Common.Initialize (context);
+                // acquiring lock on database
+                lock (Common.Lock) {
 
-                // looping through all nodes given as children and saving them to database
-                var changed = new List<Node> ();
-                foreach (var idx in XUtil.Iterate<Node> (e.Args, context)) {
-                    if (e.Args.Value is string && !XUtil.IsExpression (e.Args.Value)) {
+                    // making sure database is initialized
+                    Common.Initialize (context);
 
-                        // source is a string, but not an expression, making sure we add children of converted
-                        // string, since conversion routine creates a root node wrapping actual nodes in string
-                        foreach (var idxInner in idx.Children) {
-                            InsertNode (idxInner, context, changed);
+                    // looping through all nodes given as children and saving them to database
+                    var changed = new List<Node> ();
+                    foreach (var idx in XUtil.Iterate<Node> (e.Args, context)) {
+                        if (e.Args.Value is string && !XUtil.IsExpression (e.Args.Value)) {
+
+                            // source is a string, but not an expression, making sure we add children of converted
+                            // string, since conversion routine creates a root node wrapping actual nodes in string
+                            foreach (var idxInner in idx.Children) {
+                                InsertNode (idxInner, context, changed);
+                            }
+                        } else {
+                            InsertNode (idx, context, changed);
                         }
-                    } else {
-                        InsertNode (idx, context, changed);
                     }
-                }
 
-                // saving all affected files
-                Common.SaveAffectedFiles (context, changed);
+                    // saving all affected files
+                    Common.SaveAffectedFiles (context, changed);
+                }
             }
         }
 

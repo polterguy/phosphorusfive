@@ -36,14 +36,18 @@ namespace p5.file.folder
         [ActiveEvent (Name = "folder-exist")]
         private static void folder_exist (ApplicationContext context, ActiveEventArgs e)
         {
-            // retrieving root folder first
-            var rootFolder = Common.GetRootFolder (context);
+            // making sure we clean up and remove all arguments passed in after execution
+            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args, true)) {
 
-            // iterating through each folder the caller requests knowledge about
-            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+                // retrieving root folder first
+                var rootFolder = Common.GetRootFolder (context);
 
-                // appending whether or not the folder exists back to caller
-                e.Args.Add (new Node (idx, Directory.Exists (rootFolder + idx)));
+                // iterating through each folder the caller requests knowledge about
+                foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+
+                    // appending whether or not the folder exists back to caller
+                    e.Args.Add (new Node (idx, Directory.Exists (rootFolder + idx)));
+                }
             }
         }
     }

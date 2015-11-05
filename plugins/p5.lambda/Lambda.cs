@@ -72,7 +72,7 @@ namespace p5.lambda
                         functor (context, Utilities.Convert<Node> (idxSource.Value, context), args.Children);
                     }
                 } else {
-                    var lambda = context.Raise ("lisp2lambda", new Node (string.Empty, args.Get<string> (context))).Get<Node> (context);
+                    var lambda = context.Raise ("lisp2lambda", new Node (string.Empty, args.Get<string> (context)));
                     functor (context, lambda, args.Children);
                 }
             } else {

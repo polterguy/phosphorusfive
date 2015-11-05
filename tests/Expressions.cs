@@ -128,6 +128,18 @@ _bar
             Assert.AreEqual (1, match.Count);
             Assert.AreEqual ("success", match [0].Value);
         }
+        
+        [Test]
+        public void StartingWithGroupDeclaration ()
+        {
+            var exp = Expression.Create ("(/../*(!(/_result|/_content)))?value", Context);
+            var node = CreateNode (@"_foo:success
+_result:error
+_content:error");
+            var match = exp.Evaluate (node, Context);
+            Assert.AreEqual (1, match.Count);
+            Assert.AreEqual ("success", match [0].Value);
+        }
 
         [Test]
         public void MultipleConsecutiveEmptyNames ()

@@ -44,33 +44,37 @@ namespace p5.data
             if (ex == null)
                 throw new ArgumentException ("[select-data] requires an expression to select items from database");
 
-            // acquiring lock on database
-            lock (Common.Lock) {
+            // making sure we clean up and remove all arguments passed in after execution
+            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args, true)) {
 
-                // making sure database is initialized
-                Common.Initialize (context);
+                // acquiring lock on database
+                lock (Common.Lock) {
 
-                // iterating through each result from database node tree
-                bool foundResults = false;
-                foreach (var idxMatch in ex.Evaluate (Common.Database, context, e.Args)) {
+                    // making sure database is initialized
+                    Common.Initialize (context);
 
-                    if (idxMatch.Match.TypeOfMatch == Match.MatchType.count) {
+                    // iterating through each result from database node tree
+                    bool foundResults = false;
+                    foreach (var idxMatch in ex.Evaluate (Common.Database, context, e.Args)) {
 
-                        // Expression is for 'count' type, ending iteration
-                        e.Args.Add (new Node (string.Empty, idxMatch.Match.Count));
-                        return;
-                    }
-                    foundResults = true;
+                        if (idxMatch.Match.TypeOfMatch == Match.MatchType.count) {
 
-                    // dependent upon type of expression, we either return a bunch of nodes, flat, with
-                    // name being string.Empty, and value being matched value, or we append node itself back
-                    // to caller. this allows us to select using expressions which are not of type 'node'
-                    e.Args.Add (idxMatch.TypeOfMatch != Match.MatchType.node ? 
+                            // Expression is for 'count' type, ending iteration
+                            e.Args.Add (new Node (string.Empty, idxMatch.Match.Count));
+                            return;
+                        }
+                        foundResults = true;
+
+                        // dependent upon type of expression, we either return a bunch of nodes, flat, with
+                        // name being string.Empty, and value being matched value, or we append node itself back
+                        // to caller. this allows us to select using expressions which are not of type 'node'
+                        e.Args.Add (idxMatch.TypeOfMatch != Match.MatchType.node ? 
                                 new Node (string.Empty, idxMatch.Value) : 
                                 idxMatch.Node.Clone ());
+                    }
+                    if (!foundResults && ex.EvaluateExpressionType (context, e.Args) == Match.MatchType.count)
+                        e.Args.Add (new Node (string.Empty, 0));
                 }
-                if (!foundResults && ex.EvaluateExpressionType (context, e.Args) == Match.MatchType.count)
-                    e.Args.Add (new Node (string.Empty, 0));
             }
         }
     }

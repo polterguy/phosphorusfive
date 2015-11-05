@@ -22,6 +22,34 @@ namespace p5.core
     public static class Utilities
     {
         /// <summary>
+        ///     Helper to remove all arguments passed into active events after invocation
+        /// </summary>
+        public class ArgsRemover : IDisposable
+        {
+            private List<Node> _nodes;
+            private Node _args;
+
+            public ArgsRemover (Node node, bool removeValue = false, bool onlyEmptyNames = false)
+            {
+                if (onlyEmptyNames)
+                    _nodes = new List<Node> (node.Children.Where (idx => idx.Name == string.Empty));
+                else
+                    _nodes = new List<Node> (node.Children);
+                if (removeValue)
+                    _args = node;
+            }
+
+            void IDisposable.Dispose ()
+            {
+                foreach (var idx in _nodes) {
+                    idx.UnTie ();
+                }
+                if (_args != null)
+                    _args.Value = null;
+            }
+        }
+
+        /// <summary>
         ///     Converts the given value to type T.
         /// 
         ///     Will convert the given value to an object of type T for you, either by checking to see if the object

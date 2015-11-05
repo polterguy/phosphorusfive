@@ -146,7 +146,7 @@ namespace p5.exp
                         // last token, initializing type of expression and conversion type, if given
                         InitializeType (idxToken);
                         break; // finished
-                    } else if (previousToken == null && idxToken != "/" && idxToken != "?") {
+                    } else if (previousToken == null && idxToken != "/" && idxToken != "?" && idxToken != "(") {
 
                         // missing '/' before iterator
                         throw new ExpressionException (Value, "Syntax error in expression, missing iterator declaration, after evaluation expression yields; " + expression);

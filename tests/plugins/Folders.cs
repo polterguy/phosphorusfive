@@ -61,10 +61,10 @@ namespace p5.unittests.plugins
             Context.Raise ("create-folder", node);
 
             // verifying create functioned as is should
-            Assert.AreEqual ("test1", node [2].Name);
-            Assert.AreEqual (true, node [2].Value);
-            Assert.AreEqual ("test2", node [3].Name);
-            Assert.AreEqual (true, node [3].Value);
+            Assert.AreEqual ("test1", node [0].Name);
+            Assert.AreEqual (true, node [0].Value);
+            Assert.AreEqual ("test2", node [1].Name);
+            Assert.AreEqual (true, node [1].Value);
             Assert.AreEqual (true, Directory.Exists (GetBasePath () + "test1"));
             Assert.AreEqual (true, Directory.Exists (GetBasePath () + "test2"));
         }
@@ -91,10 +91,10 @@ namespace p5.unittests.plugins
             Context.Raise ("create-folder", node);
 
             // verifying create functioned as is should
-            Assert.AreEqual ("test1", node [3].Name);
-            Assert.AreEqual (true, node [3].Value);
-            Assert.AreEqual ("test2", node [4].Name);
-            Assert.AreEqual (true, node [4].Value);
+            Assert.AreEqual ("test1", node [0].Name);
+            Assert.AreEqual (true, node [0].Value);
+            Assert.AreEqual ("test2", node [1].Name);
+            Assert.AreEqual (true, node [1].Value);
             Assert.AreEqual (true, Directory.Exists (GetBasePath () + "test1"));
             Assert.AreEqual (true, Directory.Exists (GetBasePath () + "test2"));
         }
@@ -126,12 +126,12 @@ namespace p5.unittests.plugins
             Context.Raise ("create-folder", node);
 
             // verifying create functioned as is should
-            Assert.AreEqual ("test1", node [3].Name);
-            Assert.AreEqual (true, node [3].Value);
-            Assert.AreEqual ("test2", node [4].Name);
-            Assert.AreEqual (true, node [4].Value);
-            Assert.AreEqual ("test3", node [5].Name);
-            Assert.AreEqual (false, node [5].Value); // supposed to return false!
+            Assert.AreEqual ("test1", node [0].Name);
+            Assert.AreEqual (true, node [0].Value);
+            Assert.AreEqual ("test2", node [1].Name);
+            Assert.AreEqual (true, node [1].Value);
+            Assert.AreEqual ("test3", node [2].Name);
+            Assert.AreEqual (false, node [2].Value); // supposed to return false!
         }
 
         /// <summary>
@@ -175,10 +175,10 @@ namespace p5.unittests.plugins
             Context.Raise ("folder-exist", node);
 
             // verifying exists returned true as it should
-            Assert.AreEqual ("test1", node [2].Name);
-            Assert.AreEqual (true, node [2].Value);
-            Assert.AreEqual ("test2", node [3].Name);
-            Assert.AreEqual (true, node [3].Value);
+            Assert.AreEqual ("test1", node [0].Name);
+            Assert.AreEqual (true, node [0].Value);
+            Assert.AreEqual ("test2", node [1].Name);
+            Assert.AreEqual (true, node [1].Value);
         }
 
         /// <summary>
@@ -203,10 +203,10 @@ namespace p5.unittests.plugins
             Context.Raise ("folder-exist", node);
 
             // verifying exists returned true as it should
-            Assert.AreEqual ("test1", node [3].Name);
-            Assert.AreEqual (true, node [3].Value);
-            Assert.AreEqual ("test2", node [4].Name);
-            Assert.AreEqual (true, node [4].Value);
+            Assert.AreEqual ("test1", node [0].Name);
+            Assert.AreEqual (true, node [0].Value);
+            Assert.AreEqual ("test2", node [1].Name);
+            Assert.AreEqual (true, node [1].Value);
         }
 
         /// <summary>
@@ -234,12 +234,12 @@ namespace p5.unittests.plugins
             Context.Raise ("folder-exist", node);
 
             // verifying exists returned true as it should
-            Assert.AreEqual ("test1", node [3].Name);
-            Assert.AreEqual (true, node [3].Value);
-            Assert.AreEqual ("test2", node [4].Name);
-            Assert.AreEqual (true, node [4].Value);
-            Assert.AreEqual ("test3", node [5].Name);
-            Assert.AreEqual (false, node [5].Value); // this bugger doesn't exist
+            Assert.AreEqual ("test1", node [0].Name);
+            Assert.AreEqual (true, node [0].Value);
+            Assert.AreEqual ("test2", node [1].Name);
+            Assert.AreEqual (true, node [1].Value);
+            Assert.AreEqual ("test3", node [2].Name);
+            Assert.AreEqual (false, node [2].Value); // this bugger doesn't exist
         }
 
         /// <summary>
@@ -311,9 +311,9 @@ namespace p5.unittests.plugins
             Context.Raise ("list-files", node);
 
             // verifying list-files returned true as it should
-            Assert.AreEqual ("test1/test1.txt", node [2].Value);
-            Assert.AreEqual ("test1/test3.txt", node [3].Value);
-            Assert.AreEqual ("test2/test2.txt", node [4].Value);
+            Assert.AreEqual ("test1/test1.txt", node [0].Value);
+            Assert.AreEqual ("test1/test3.txt", node [1].Value);
+            Assert.AreEqual ("test2/test2.txt", node [2].Value);
         }
 
         /// <summary>
@@ -351,9 +351,9 @@ namespace p5.unittests.plugins
             Context.Raise ("list-files", node);
 
             // verifying list-files returned true as it should
-            Assert.AreEqual ("test1/test1.txt", node [3].Value);
-            Assert.AreEqual ("test1/test3.txt", node [4].Value);
-            Assert.AreEqual ("test2/test2.txt", node [5].Value);
+            Assert.AreEqual ("test1/test1.txt", node [0].Value);
+            Assert.AreEqual ("test1/test3.txt", node [1].Value);
+            Assert.AreEqual ("test2/test2.txt", node [2].Value);
         }
 
         /// <summary>
@@ -385,9 +385,9 @@ namespace p5.unittests.plugins
             Context.Raise ("list-files", node);
 
             // verifying list-files returned true as it should
-            Assert.AreEqual ("test1/test1.txt", node [1].Value);
-            Assert.AreEqual ("test1/test2.txt", node [2].Value);
-            Assert.AreEqual ("test1/test3.txt", node [3].Value);
+            Assert.AreEqual ("test1/test1.txt", node [0].Value);
+            Assert.AreEqual ("test1/test2.txt", node [1].Value);
+            Assert.AreEqual ("test1/test3.txt", node [2].Value);
         }
 
         /// <summary>
@@ -438,8 +438,8 @@ namespace p5.unittests.plugins
             Context.Raise ("list-folders", node);
 
             // verifying list-files returned true as it should
-            Assert.AreEqual ("test1/xxx", node [2].Value);
-            Assert.AreEqual ("test2/yyy", node [3].Value);
+            Assert.AreEqual ("test1/xxx", node [0].Value);
+            Assert.AreEqual ("test2/yyy", node [1].Value);
         }
 
         /// <summary>
@@ -468,8 +468,8 @@ namespace p5.unittests.plugins
             Context.Raise ("list-folders", node);
 
             // verifying list-files returned true as it should
-            Assert.AreEqual ("test1/xxx", node [3].Value);
-            Assert.AreEqual ("test2/yyy", node [4].Value);
+            Assert.AreEqual ("test1/xxx", node [0].Value);
+            Assert.AreEqual ("test2/yyy", node [1].Value);
         }
 
         /// <summary>
@@ -492,8 +492,8 @@ namespace p5.unittests.plugins
             Context.Raise ("list-folders", node);
 
             // verifying list-files returned true as it should
-            Assert.AreEqual ("test1/xxx", node [1].Value);
-            Assert.AreEqual ("test1/yyy", node [2].Value);
+            Assert.AreEqual ("test1/xxx", node [0].Value);
+            Assert.AreEqual ("test1/yyy", node [1].Value);
         }
 
         /// <summary>
@@ -566,10 +566,10 @@ namespace p5.unittests.plugins
             // verifying remove works as it should
             Assert.AreEqual (false, Directory.Exists (GetBasePath () + "test1"));
             Assert.AreEqual (false, Directory.Exists (GetBasePath () + "test2"));
-            Assert.AreEqual (true, node [2].Value);
-            Assert.AreEqual ("test1", node [2].Name);
-            Assert.AreEqual (true, node [3].Value);
-            Assert.AreEqual ("test2", node [3].Name);
+            Assert.AreEqual (true, node [0].Value);
+            Assert.AreEqual ("test1", node [0].Name);
+            Assert.AreEqual (true, node [1].Value);
+            Assert.AreEqual ("test2", node [1].Name);
         }
 
         /// <summary>
@@ -596,10 +596,10 @@ namespace p5.unittests.plugins
             // verifying remove works as it should
             Assert.AreEqual (false, Directory.Exists (GetBasePath () + "test1"));
             Assert.AreEqual (false, Directory.Exists (GetBasePath () + "test2"));
-            Assert.AreEqual (true, node [3].Value);
-            Assert.AreEqual ("test1", node [3].Name);
-            Assert.AreEqual (true, node [4].Value);
-            Assert.AreEqual ("test2", node [4].Name);
+            Assert.AreEqual (true, node [0].Value);
+            Assert.AreEqual ("test1", node [0].Name);
+            Assert.AreEqual (true, node [1].Value);
+            Assert.AreEqual ("test2", node [1].Name);
         }
 
         /// <summary>
@@ -620,8 +620,8 @@ namespace p5.unittests.plugins
 
             // verifying remove works as it should
             Assert.AreEqual (false, Directory.Exists (GetBasePath () + "test1"));
-            Assert.AreEqual (true, node [1].Value);
-            Assert.AreEqual ("test1", node [1].Name);
+            Assert.AreEqual (true, node [0].Value);
+            Assert.AreEqual ("test1", node [0].Name);
         }
     }
 }

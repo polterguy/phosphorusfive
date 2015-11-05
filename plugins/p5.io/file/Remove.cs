@@ -30,20 +30,24 @@ namespace p5.file.file
         [ActiveEvent (Name = "delete-file")]
         private static void delete_file (ApplicationContext context, ActiveEventArgs e)
         {
-            // getting root folder
-            var rootFolder = Common.GetRootFolder (context);
+            // making sure we clean up and remove all arguments passed in after execution
+            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args, true)) {
 
-            // iterating through each path given
-            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
-                if (File.Exists (rootFolder + idx)) {
+                // getting root folder
+                var rootFolder = Common.GetRootFolder (context);
 
-                    // file exists, removing file and signaling caller
-                    File.Delete (rootFolder + idx);
-                    e.Args.Add (new Node (idx, true));
-                } else {
+                // iterating through each path given
+                foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+                    if (File.Exists (rootFolder + idx)) {
 
-                    // file does not exist, signaling caller
-                    e.Args.Add (new Node (idx, false));
+                        // file exists, removing file and signaling caller
+                        File.Delete (rootFolder + idx);
+                        e.Args.Add (new Node (idx, true));
+                    } else {
+
+                        // file does not exist, signaling caller
+                        e.Args.Add (new Node (idx, false));
+                    }
                 }
             }
         }

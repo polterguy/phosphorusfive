@@ -3,6 +3,7 @@
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details.
  */
 
+using System;
 using HtmlAgilityPack;
 using p5.core;
 using p5.exp;
@@ -48,13 +49,19 @@ namespace p5.html
         [ActiveEvent (Name = "p5.html.html2lambda")]
         private static void p5_html_html2lambda (ApplicationContext context, ActiveEventArgs e)
         {
-            // loops through all documents we're supposed to transform
-            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+            if (e.Args.Value == null)
+                throw new ArgumentException ("No value supplied to [p5.html.html2lambda]");
+            
+            // making sure we clean up and remove all arguments passed in after execution
+            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args, true)) {
 
-                var doc = new HtmlDocument ();
-                doc.LoadHtml (idx);
-                e.Args.Add (new Node ());
-                ParseHtmlDocument (e.Args.LastChild, doc.DocumentNode);
+                // loops through all documents we're supposed to transform
+                foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+
+                    var doc = new HtmlDocument ();
+                    doc.LoadHtml (idx);
+                    ParseHtmlDocument (e.Args, doc.DocumentNode);
+                }
             }
         }
 
@@ -63,18 +70,22 @@ namespace p5.html
          */
         private static void ParseHtmlDocument (Node resultNode, HtmlNode htmlNode)
         {
-            // looping through each attribute
-            foreach (var idxAtr in htmlNode.Attributes) {
-                resultNode.Add (new Node ("@" + idxAtr.Name, idxAtr.Value));
-            }
+            // skipping document node
+            if (htmlNode.Name != "#document") {
 
-            // then the name of HTML element
-            resultNode.Name = htmlNode.Name == "#document" ? "doc" : htmlNode.Name;
-            if (htmlNode.ChildNodes.Count == 1 && htmlNode.ChildNodes [0].Name == "#text") {
+                // looping through each attribute
+                foreach (var idxAtr in htmlNode.Attributes) {
+                    resultNode.Add (new Node ("@" + idxAtr.Name, idxAtr.Value));
+                }
 
-                // this is a "simple node", with no children, only HTML content
-                resultNode.Value = htmlNode.InnerText.Replace ("&lt;", "<").Replace ("&gt;", ">").Replace ("&amp;", "&");
-                return; // don't care about children
+                // then the name of HTML element
+                resultNode.Name = htmlNode.Name;
+                if (htmlNode.ChildNodes.Count == 1 && htmlNode.ChildNodes [0].Name == "#text") {
+
+                    // this is a "simple node", with no children, only HTML content
+                    resultNode.Value = htmlNode.InnerText.Replace ("&lt;", "<").Replace ("&gt;", ">").Replace ("&amp;", "&");
+                    return; // don't care about children
+                }
             }
 
             // then looping through each child HTML element

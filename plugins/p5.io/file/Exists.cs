@@ -43,13 +43,18 @@ namespace p5.file.file
         [ActiveEvent (Name = "file-exist")]
         private static void file_exist (ApplicationContext context, ActiveEventArgs e)
         {
-            // finding root folder
-            var rootFolder = Common.GetRootFolder (context);
+            // making sure we clean up and remove all arguments passed in after execution
+            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args)) {
 
-            // iterating through each filepath given
-            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
-                // letting caller know whether or not this file exists
-                e.Args.Add (new Node (idx, File.Exists (rootFolder + idx)));
+                // finding root folder
+                var rootFolder = Common.GetRootFolder (context);
+
+                // iterating through each filepath given
+                foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+
+                    // letting caller know whether or not this file exists
+                    e.Args.Add (new Node (idx, File.Exists (rootFolder + idx)));
+                }
             }
         }
     }

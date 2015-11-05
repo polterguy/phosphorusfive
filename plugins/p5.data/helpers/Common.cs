@@ -80,6 +80,7 @@ namespace p5.data.helpers
 
                 // iterating through all folders inside of database directory and loading all files in all folders inside of database directory
                 foreach (var idxDirectory in GetDirectories (context, _dbPath)) {
+
                     foreach (var idxFile in GetFiles (context, idxDirectory)) {
                         Database.Add (LoadFile (context, idxFile));
                     }
@@ -170,6 +171,7 @@ namespace p5.data.helpers
         private static void SaveFileNode (ApplicationContext context, Node fileNode)
         {
             if (fileNode.Count == 0) {
+
                 // removing file entirely since it no longer has any data
                 context.Raise ("delete-file", new Node (string.Empty, fileNode.Value));
 
@@ -183,6 +185,7 @@ namespace p5.data.helpers
                     context.Raise ("delete-folder", folderNode);
                 }
             } else {
+
                 // converts node to code
                 var convertNode = new Node ();
                 foreach (var idx in fileNode.Children) {
@@ -202,18 +205,11 @@ namespace p5.data.helpers
          */
         private static Node LoadFile (ApplicationContext context, string path)
         {
-            // loading file
-            var loadFileNode = new Node (string.Empty, path);
-            context.Raise ("load-file", loadFileNode);
-
-            // converting file to Node
-            var convertNode = new Node (string.Empty, loadFileNode [0].Value);
-            context.Raise ("lisp2lambda", convertNode);
-
             // returning Node with node value being path, and content being children
             var retVal = new Node (string.Empty, path);
-            retVal.AddRange (convertNode.Children);
-            return retVal;
+            context.Raise ("load-file", retVal);
+            retVal.LastChild.Value = path;
+            return retVal.LastChild.UnTie ();
         }
 
         /*

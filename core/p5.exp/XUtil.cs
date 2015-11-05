@@ -338,8 +338,8 @@ namespace p5.exp
                     var oldValue = idxSrcNode.Value;
                     context.Raise (idxSrcNode.Name, idxSrcNode);
 
-                    if (oldValue == null && idxSrcNode.Value != null || 
-                        (oldValue != null && !oldValue.Equals (idxSrcNode.Value))) {
+                    if ((oldValue == null && idxSrcNode.Value != null) || 
+                        (oldValue != null && idxSrcNode.Value != null && !oldValue.Equals (idxSrcNode.Value))) {
 
                         // value has presedence
                         if (tmpRetVal.Value == null)
@@ -353,18 +353,21 @@ namespace p5.exp
                         tmpRetVal.AddRange (idxSrcNode.Clone ().Children);
                     }
                 }
-                return SourceImplementation (tmpRetVal, tmpRetVal, context);
+                return SourceSingleImplementation (tmpRetVal, tmpRetVal, context);
             } else {
 
                 // simple source
-                return SourceImplementation (
+                return SourceSingleImplementation (
                     evaluatedNode.LastChild, 
                     dataSource == evaluatedNode ? evaluatedNode.LastChild : dataSource, 
                     context);
             }
         }
 
-        private static object SourceImplementation (Node evaluatedNode, Node dataSource, ApplicationContext context)
+        private static object SourceSingleImplementation (
+            Node evaluatedNode, 
+            Node dataSource, 
+            ApplicationContext context)
         {
             if (evaluatedNode.Value != null) {
 
@@ -431,8 +434,8 @@ namespace p5.exp
                     var oldValue = idxSrcNode.Value;
                     context.Raise (idxSrcNode.Name, idxSrcNode);
 
-                    if (oldValue == null && idxSrcNode.Value != null || 
-                        (oldValue != null && !oldValue.Equals (idxSrcNode.Value))) {
+                    if ((oldValue == null && idxSrcNode.Value != null) || 
+                        (oldValue != null && idxSrcNode.Value != null && !oldValue.Equals (idxSrcNode.Value))) {
 
                         // value has presedence
                         if (idxSrcNode.Value is Node) {

@@ -1,4 +1,3 @@
-""
 p5.page:/
   type:html
   name:home
@@ -26,48 +25,13 @@ solution architecture, allowing your people to do what they should do</p>
 
 <p>when you start system42 for the first time, then a default user with the username/password combination of
 <em>admin/admin</em> is created for you</p>"
-p5.page:/about
-  type:html
-  name:about
-  template:system42/templates/main.hl
-  header:about system42
-  content:@"<p>system42 is maintained and developed by <a href=""http://magixilluminate.com"">Magix Illuminate</a>. you can
-reach its main developers either through <a href=""github.com/polterguy/phosphorus-five"">GitHub</a> or directly on
-email at <a href=""mailto:thomas@magixilluminate.com"">thomas@magixilluminate.com</a></p>
-
-<p>to teach yourself system42 and phosphorus.five, please visit our <a href=""http://youtube.com/MareMara13"">YouYube Channel</a>, or
-check out our <a href=""http://magixilluminate.com/category/phosphorus/"">blog</a></p>"
-p5.page:/templates
-  type:html
-  name:templates
-  template:system42/templates/main.hl
-  header:the template system
-  content:@"<p>system42 is built on a template system, which allows you to easily modify the design of all your
-web pages, by editing one simple template. this allows you to exchange the design of all your dynamically created CMS pages, by
-simply editing one template</p>
-
-<p>this file can be found underneath the <em>""templates""</em> directory, and is written in p5.lambda, creating server-side controls, 
-which injects the actual content of your pages, into parts of this template dynamically, according to which page is actually being requested</p>
-
-<p>your actual pages are stored in the database of your installation, and can be found underneath the <em>""database""</em> folder on disc.
-your content can easily be edited with a WYSIWYG editor, or something similar, to create and edit existing pages</p>"
-p5.page:/restricted
-  type:html
-  role:admin
-  name:restricted sample
-  template:system42/templates/main.hl
-  header:restricted page
-  content:@"<p>this page has restricted access, just to show the restriction authorization parts of system42. this means the
-page will only be visible, and legal to access, if you're logged in with a user belonging to the admin role</p>"
 p5.page:/hello-world
   type:controls
   name:controls example
-  controls:@"
-
-/*
- * this is an example of a 'controls page', which contains a hierarchy of phosphorus.ajax web controls,
- * which allows you to declare your page entirely, controlling every aspect of it, through a declarative
- * syntax
+  controls:@"/*
+ * this is an example of a 'controls page', which contains a hierarchy of phosphorus.ajax 
+ * web controls, that allows you to declare your page entirely, controlling every aspect 
+ * of it, through a declarative syntax
  */
 
 // this becomes the header of your page
@@ -83,16 +47,22 @@ container:content
   widgets
     literal
       element:p
-      innerValue:@""this is an example of how you can create applications as an integral part of your website content,
-and have them run side-by-side your CMS pages, as a web page with a list of server-side controls, making it possible to declaratively create your
-applications, as a list of server-side web controls, capable of executing p5.lambda Active Events as a response to ajax events on the client-side""
+      innerValue:@""This is an example of how you can create applications as an integral part 
+of your website content, and have them run side-by-side your CMS pages, 
+as a web page with a list of server-side controls, making it possible 
+to declaratively create your applications, as a list of server-side web 
+controls, capable of executing p5.lambda Active Events as a response to 
+ajax events on the client-side""
     literal
       element:p
-      innerValue:@""this type of application can easily be created with a visual interface, or an IDE, without requiring complex concepts,
-such as code or programming, by dragging and dropping objects into your design surface of your form. the limitation is that the server controls
-must be known in advance, since you cannot inject server-side web controls easily, besides as the result of p5.lambda Active Events. in this type
-of application, you have complete control over the rendering of your page, and there are no pre-existing objects, such as ads or menus for you. 
-<a href='/'>go back</a>""
+      innerValue:@""This type of application can easily be created with a visual interface, or 
+an IDE, without requiring complex concepts, such as code or programming, 
+by dragging and dropping objects into your design surface of your form. 
+The limitation is that the server controls must be known in advance, 
+since you cannot inject server-side web controls easily, besides as 
+the result of p5.lambda Active Events. Tn this type of application, you 
+have complete control over the rendering of your page, and there are no 
+pre-existing objects, such as ads or menus for you. <a href='/'>go back</a>""
     literal
       element:button
       class:span-2
@@ -100,12 +70,14 @@ of application, you have complete control over the rendering of your page, and t
       onclick
         create-widget
 
-          // 'main-controls-surface' is the ID for the main container widget your entire hierarchy will be added into
+          // 'main-controls-surface' is the ID for the main 
+          // container widget your entire hierarchy will be added into
           parent:main-controls-surface
           class:prepend-4 span-8 clear prepend-top
           widgets
             literal
-              innerValue:@""this widget was <strong>dynamically</strong> created as a consequence of you clicking the button :)""
+              innerValue:@""this widget was <strong>dynamically</strong> 
+created as a consequence of you clicking the button. Try clicking it!""
               onclick
                 delete-widget:x:/../*/_widget?value"
 p5.page:/lambda-world
@@ -114,8 +86,9 @@ p5.page:/lambda-world
   lambda:@"
 
 /*
- * this is an example of a 'lambda page', which allows you to control every aspect of your page in its entirety, by executing
- * p5.lambda code as a consequence of your page being loaded
+ * this is an example of a 'lambda page', which allows you to control every aspect 
+ * of your page in its entirety, by executing p5.lambda code as a consequence of 
+ * your page being loaded
  */
 
 create-widget:main-script-surface
@@ -127,14 +100,16 @@ create-widget:main-script-surface
       innerValue:""hello world, script version""
     literal
       class:span-16 last prepend-top prepend-4
-      innerValue:@""this is an example of how you can create an application as a lambda object, that executes as the result of a page
-being requested, and have it run side-by-side with your CMS pages, making it possible to create any amount of complexity your website requires
-within a page""
+      innerValue:@""this is an example of how you can create an application as a lambda object, 
+that executes as the result of a page being requested, and have it run 
+side-by-side with your CMS pages, making it possible to create any amount 
+of complexity your website requires within a page""
     literal
       class:span-16 last prepend-4
-      innerValue:@""in this type of application, you are in complete control over the entire rendering of the page, which you
-must do by resorting to p5.lambda scripts, and you can entirely dynamically create your page, having full control over every aspect of it
-yourself. <a href='/'>go back</a>""
+      innerValue:@""in this type of application, you are in complete control over the entire
+rendering of the page, which you must do by resorting to p5.lambda scripts, 
+and you can entirely dynamically create your page, having full control over 
+every aspect of it yourself. <a href='/'>go back</a>""
     container
       class:prepend-4 span-4 clear
       widgets
@@ -148,23 +123,22 @@ yourself. <a href='/'>go back</a>""
               class:prepend-4 span-8 clear prepend-top
               widgets
                 literal
-                  innerValue:@""this widget was <strong>dynamically</strong> created as a consequence of you clicking the button :)""
+                  innerValue:@""this widget was <strong>dynamically</strong>
+created as a consequence of you clicking the button. Try clicking it!""
                   onclick
                     delete-widget:x:/../*/_widget?value"
 p5.page:/editor
   type:lambda
-  name:p5.page editor
+  name:page editor
   role:admin
-  lambda:@"
-
-/*
+  lambda:@"/*
  * simply executes the file that loads up the 'page editor'
  */
 sys42.execute-lambda-file:system42/admin/page-editor/page-editor.hl
 "
 p5.page:/executor
   type:lambda
-  name:p5.lambda executor
+  name:lambda executor
   role:admin
   lambda:@"
 
@@ -177,3 +151,13 @@ p5.user:admin user
   username:admin
   password:admin
   role:admin
+p5.page:/ws
+  name:Web Service 1
+  template:system42/templates/main.hl
+  type:lambda
+  lambda:@"set-http-header
+  Content-Type:application/Hyperlisp
+
+// testing comment
+echo:@""foo1:bar1
+  foo2:bar2"""

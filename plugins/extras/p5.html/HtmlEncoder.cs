@@ -7,11 +7,6 @@ using HtmlAgilityPack;
 using p5.core;
 using p5.exp;
 
-/// <summary>
-///     Main namespace for handling HTML.
-/// 
-///     Contains all Active Events related to the process of parsing, and creating HTML.
-/// </summary>
 namespace p5.html
 {
     /// <summary>
@@ -30,14 +25,20 @@ namespace p5.html
         [ActiveEvent (Name = "p5.html.html-encode")]
         private static void p5_html_html_encode (ApplicationContext context, ActiveEventArgs e)
         {
-            // loops through all documents we're supposed to transform
-            bool first = true;
-            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+            // making sure we clean up and remove all arguments passed in after execution
+            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args)) {
 
-                // changing to 'safe HTML'
-                if (first)
-                    e.Args.Value = "";
-                e.Args.Value = e.Args.Get<string> (context) + idx.Replace ("<", "&lt;").Replace (">", "&gt;");
+                // loops through all documents/fragments we're supposed to encode and adding them into value
+                bool first = true;
+                foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+
+                    // changing to 'safe HTML'
+                    if (first) {
+                        e.Args.Value = "";
+                        first = false;
+                    }
+                    e.Args.Value = e.Args.Get<string> (context) + idx.Replace ("<", "&lt;").Replace (">", "&gt;");
+                }
             }
         }
 
@@ -52,14 +53,18 @@ namespace p5.html
         [ActiveEvent (Name = "p5.html.html-decode")]
         private static void p5_html_html_decode (ApplicationContext context, ActiveEventArgs e)
         {
-            // loops through all documents we're supposed to transform
-            bool first = true;
-            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+            // making sure we clean up and remove all arguments passed in after execution
+            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args)) {
 
-                // changing to 'safe HTML'
-                if (first)
-                    e.Args.Value = "";
-                e.Args.Value = e.Args.Get<string> (context) + idx.Replace ("&lt;", "<").Replace ("&gt;", ">");
+                // loops through all documents we're supposed to transform
+                bool first = true;
+                foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+
+                    // changing to 'safe HTML'
+                    if (first)
+                        e.Args.Value = "";
+                    e.Args.Value += e.Args.Get<string> (context) + idx.Replace ("&lt;", "<").Replace ("&gt;", ">");
+                }
             }
         }
     }

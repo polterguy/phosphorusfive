@@ -36,22 +36,26 @@ namespace p5.file.folder
         [ActiveEvent (Name = "create-folder")]
         private static void create_folder (ApplicationContext context, ActiveEventArgs e)
         {
-            // retrieving root folder
-            var rootFolder = Common.GetRootFolder (context);
+            // making sure we clean up and remove all arguments passed in after execution
+            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args, true)) {
 
-            // iterating through each folder caller wants to create
-            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+                // retrieving root folder
+                var rootFolder = Common.GetRootFolder (context);
 
-                // checking to see if folder already exists, and if it does, return "false" to caller
-                if (Directory.Exists (rootFolder + idx)) {
+                // iterating through each folder caller wants to create
+                foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
 
-                    // folder already exists, returning back to caller that creation was unsuccessful
-                    e.Args.Add (new Node (idx, false));
-                } else {
+                    // checking to see if folder already exists, and if it does, return "false" to caller
+                    if (Directory.Exists (rootFolder + idx)) {
 
-                    // folder didn't exist, creating it, and returning "true" back to caller, meaning "success"
-                    Directory.CreateDirectory (rootFolder + idx);
-                    e.Args.Add (new Node (idx, true));
+                        // folder already exists, returning back to caller that creation was unsuccessful
+                        e.Args.Add (new Node (idx, false));
+                    } else {
+
+                        // folder didn't exist, creating it, and returning "true" back to caller, meaning "success"
+                        Directory.CreateDirectory (rootFolder + idx);
+                        e.Args.Add (new Node (idx, true));
+                    }
                 }
             }
         }

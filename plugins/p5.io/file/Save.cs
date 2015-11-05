@@ -45,18 +45,22 @@ namespace p5.file.file
         [ActiveEvent (Name = "save-text-file")]
         private static void save_file (ApplicationContext context, ActiveEventArgs e)
         {
-            // getting root folder
-            var rootFolder = Common.GetRootFolder (context);
+            // making sure we clean up and remove all arguments passed in after execution
+            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args, true)) {
 
-            // getting source
-            var source = Utilities.Convert<string> (XUtil.SourceSingle (e.Args, context), context);
+                // getting root folder
+                var rootFolder = Common.GetRootFolder (context);
 
-            // getting filename
-            string fileName = XUtil.Single<string> (e.Args, context);
+                // getting source
+                var source = Utilities.Convert<string> (XUtil.SourceSingle (e.Args, context), context);
 
-            // saving file
-            using (TextWriter writer = File.CreateText (rootFolder + fileName)) {
-                writer.Write (source);
+                // getting filename
+                string fileName = XUtil.Single<string> (e.Args, context);
+
+                // saving file
+                using (TextWriter writer = File.CreateText (rootFolder + fileName)) {
+                    writer.Write (source);
+                }
             }
         }
 
@@ -81,21 +85,25 @@ namespace p5.file.file
         [ActiveEvent (Name = "save-binary-file")]
         private static void save_binary_file (ApplicationContext context, ActiveEventArgs e)
         {
-            // getting root folder
-            var rootFolder = Common.GetRootFolder (context);
+            // making sure we clean up and remove all arguments passed in after execution
+            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args, true)) {
 
-            if (e.Args.LastChild.Name != "src")
-                throw new LambdaException ("No [src] given to [save-file]", e.Args, context);
+                // getting root folder
+                var rootFolder = Common.GetRootFolder (context);
 
-            // getting source
-            var source = Utilities.Convert<byte[]> (XUtil.SourceSingle (e.Args, context), context);
+                if (e.Args.LastChild.Name != "src")
+                    throw new LambdaException ("No [src] given to [save-file]", e.Args, context);
 
-            // getting filename
-            string fileName = XUtil.Single<string> (e.Args, context);
+                // getting source
+                var source = Utilities.Convert<byte[]> (XUtil.SourceSingle (e.Args, context), context);
 
-            // saving file
-            using (FileStream stream = File.Create (rootFolder + fileName)) {
-                stream.Write (source, 0, source.Length);
+                // getting filename
+                string fileName = XUtil.Single<string> (e.Args, context);
+
+                // saving file
+                using (FileStream stream = File.Create (rootFolder + fileName)) {
+                    stream.Write (source, 0, source.Length);
+                }
             }
         }
     }

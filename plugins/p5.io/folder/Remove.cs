@@ -31,21 +31,25 @@ namespace p5.file.folder
         [ActiveEvent (Name = "delete-folder")]
         private static void delete_folder (ApplicationContext context, ActiveEventArgs e)
         {
-            // retrieving root folder
-            var rootFolder = Common.GetRootFolder (context);
+            // making sure we clean up and remove all arguments passed in after execution
+            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args, true)) {
 
-            // iterating through each folder caller wants to create
-            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
-                if (Directory.Exists (rootFolder + idx)) {
+                // retrieving root folder
+                var rootFolder = Common.GetRootFolder (context);
 
-                    // folder exists, removing it recursively,
-                    // and returning success back to caller
-                    Directory.Delete (rootFolder + idx, true);
-                    e.Args.Add (new Node (idx, true));
-                } else {
+                // iterating through each folder caller wants to create
+                foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+                    if (Directory.Exists (rootFolder + idx)) {
 
-                    // folder didn't exist, returning that fact back to caller
-                    e.Args.Add (new Node (idx, false));
+                        // folder exists, removing it recursively,
+                        // and returning success back to caller
+                        Directory.Delete (rootFolder + idx, true);
+                        e.Args.Add (new Node (idx, true));
+                    } else {
+
+                        // folder didn't exist, returning that fact back to caller
+                        e.Args.Add (new Node (idx, false));
+                    }
                 }
             }
         }

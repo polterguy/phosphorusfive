@@ -242,10 +242,10 @@ select-data:x:/*/*/_test4/*/query_field/*/x/=y/./.");
     howdy:world
 select-data:x:/*/*/{0}
   :x:/../0/0?name");
-            Assert.AreEqual (2, tmp [1].Count);
-            Assert.AreEqual ("_test4", tmp [1] [1].Name);
-            Assert.AreEqual ("howdy", tmp [1] [1] [0].Name);
-            Assert.AreEqual ("world", tmp [1] [1] [0].Value);
+            Assert.AreEqual (1, tmp [1].Count);
+            Assert.AreEqual ("_test4", tmp [1] [0].Name);
+            Assert.AreEqual ("howdy", tmp [1] [0] [0].Name);
+            Assert.AreEqual ("world", tmp [1] [0] [0].Value);
         }
         
         /// <summary>

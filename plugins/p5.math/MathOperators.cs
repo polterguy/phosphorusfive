@@ -23,7 +23,7 @@ namespace p5.math
     {
         private delegate dynamic CalculateFunctor (dynamic sum, dynamic input);
 
-        private static dynamic Calculate (
+        private static void Calculate (
             CalculateFunctor functor, 
             Node args, 
             ApplicationContext context)
@@ -44,9 +44,9 @@ namespace p5.math
                     // Active Event invocation to retrieve value to use
                     nextValue = context.Raise (idxChild.Name, idxChild).Get<object> (context, 0);
                 }
-                result = Convert.ChangeType (functor (result, nextValue), resultType);
+                result = functor (result, Convert.ChangeType (nextValue, resultType));
             }
-            return result;
+            args.Value = result;
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace p5.math
         [ActiveEvent (Name = "+")]
         private static void math_plus (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = Calculate (delegate (dynamic sum, dynamic input) {
+            Calculate (delegate (dynamic sum, dynamic input) {
                 return sum + input;
             }, e.Args, context);
         }
@@ -76,7 +76,7 @@ namespace p5.math
         [ActiveEvent (Name = "-")]
         private static void math_minus (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = Calculate (delegate (dynamic sum, dynamic input) {
+            Calculate (delegate (dynamic sum, dynamic input) {
                 return sum - input;
             }, e.Args, context);
         }
@@ -92,7 +92,7 @@ namespace p5.math
         [ActiveEvent (Name = "*")]
         private static void math_multiply (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = Calculate (delegate (dynamic sum, dynamic input) {
+            Calculate (delegate (dynamic sum, dynamic input) {
                 return sum * input;
             }, e.Args, context);
         }
@@ -108,7 +108,7 @@ namespace p5.math
         [ActiveEvent (Name = "/")]
         private static void math_divide (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = Calculate (delegate (dynamic sum, dynamic input) {
+            Calculate (delegate (dynamic sum, dynamic input) {
                 return sum / input;
             }, e.Args, context);
         }
@@ -124,7 +124,7 @@ namespace p5.math
         [ActiveEvent (Name = "%")]
         private static void math_modulo (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = Calculate (delegate (dynamic sum, dynamic input) {
+            Calculate (delegate (dynamic sum, dynamic input) {
                 return sum % input;
             }, e.Args, context);
         }

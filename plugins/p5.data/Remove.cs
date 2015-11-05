@@ -43,32 +43,37 @@ namespace p5.data
         {
             if (e.Args.Value == null)
                 return;
+
             if (!XUtil.IsExpression (e.Args.Value))
                 throw new ArgumentException ("[delete-data] requires an expression as its value");
 
-            // acquiring lock on database
-            lock (Common.Lock) {
+            // making sure we clean up and remove all arguments passed in after execution
+            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args, true)) {
 
-                // making sure database is initialized
-                Common.Initialize (context);
+                // acquiring lock on database
+                lock (Common.Lock) {
 
-                // looping through database matches and removing nodes while storing which files have been changed
-                var changed = new List<Node> ();
-                foreach (var idxDest in e.Args.Get<Expression> (context).Evaluate (Common.Database, context, e.Args)) {
+                    // making sure database is initialized
+                    Common.Initialize (context);
 
-                    // making sure "file nodes" and "root node" cannot be remove
-                    if (idxDest.Node.Path.Count < 2)
-                        throw new ArgumentException ("You cannot remove the actual file node, or root node from your database");
+                    // looping through database matches and removing nodes while storing which files have been changed
+                    var changed = new List<Node> ();
+                    foreach (var idxDest in e.Args.Get<Expression> (context).Evaluate (Common.Database, context, e.Args)) {
 
-                    // figuring out which file Node updated belongs to, and storing in changed list
-                    Common.AddNodeToChanges (idxDest.Node, changed);
+                        // making sure "file nodes" and "root node" cannot be remove
+                        if (idxDest.Node.Path.Count < 2)
+                            throw new ArgumentException ("You cannot remove the actual file node, or root node from your database");
 
-                    // setting value to null, which works if user chooses to remove "value", "name" and/or "node"
-                    idxDest.Value = null;
+                        // figuring out which file Node updated belongs to, and storing in changed list
+                        Common.AddNodeToChanges (idxDest.Node, changed);
+
+                        // setting value to null, which works if user chooses to remove "value", "name" and/or "node"
+                        idxDest.Value = null;
+                    }
+
+                    // saving all affected files
+                    Common.SaveAffectedFiles (context, changed);
                 }
-
-                // saving all affected files
-                Common.SaveAffectedFiles (context, changed);
             }
         }
     }

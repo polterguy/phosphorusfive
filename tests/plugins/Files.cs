@@ -59,6 +59,7 @@ namespace p5.unittests.plugins
             var node = new Node (string.Empty, "test1.txt")
                 .Add ("src", "this is test 1");
             Context.Raise ("save-file", node);
+
             node = new Node (string.Empty, "test2.txt")
                 .Add ("src", "this is test 2");
             Context.Raise ("save-file", node);
@@ -70,10 +71,10 @@ namespace p5.unittests.plugins
             Context.Raise ("file-exist", node);
 
             // verifying [file-exist] returned valid values
-            Assert.AreEqual ("test1.txt", node [2].Name);
-            Assert.AreEqual (true, node [2].Value);
-            Assert.AreEqual ("test2.txt", node [3].Name);
-            Assert.AreEqual (true, node [3].Value);
+            Assert.AreEqual ("test1.txt", node [0].Name);
+            Assert.AreEqual (true, node [0].Value);
+            Assert.AreEqual ("test2.txt", node [1].Name);
+            Assert.AreEqual (true, node [1].Value);
         }
 
         /// <summary>
@@ -98,10 +99,10 @@ namespace p5.unittests.plugins
             Context.Raise ("file-exist", node);
 
             // verifying [file-exist] returned valid values
-            Assert.AreEqual ("test1.txt", node [3].Name);
-            Assert.AreEqual (true, node [3].Value);
-            Assert.AreEqual ("test2.txt", node [4].Name);
-            Assert.AreEqual (true, node [4].Value);
+            Assert.AreEqual ("test1.txt", node [0].Name);
+            Assert.AreEqual (true, node [0].Value);
+            Assert.AreEqual ("test2.txt", node [1].Name);
+            Assert.AreEqual (true, node [1].Value);
         }
 
         /// <summary>
@@ -121,8 +122,8 @@ namespace p5.unittests.plugins
             Context.Raise ("file-exist", node);
 
             // verifying [file-exist] returned valid values
-            Assert.AreEqual ("test1.txt", node [1].Name);
-            Assert.AreEqual (true, node [1].Value);
+            Assert.AreEqual ("test1.txt", node [0].Name);
+            Assert.AreEqual (true, node [0].Value);
         }
 
         /// <summary>

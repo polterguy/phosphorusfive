@@ -30,24 +30,28 @@ namespace p5.file.folder
         [ActiveEvent (Name = "list-files")]
         private static void list_files (ApplicationContext context, ActiveEventArgs e)
         {
-            // retrieving root folder
-            var rootFolder = Common.GetRootFolder (context);
+            // making sure we clean up and remove all arguments passed in after execution
+            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args, true)) {
 
-            // iterating through each folder given by caller
-            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+                // retrieving root folder
+                var rootFolder = Common.GetRootFolder (context);
 
-                // iterating all files in current directory, and returning as nodes beneath args given
-                foreach (var idxFile in Directory.GetFiles (rootFolder + idx)) {
+                // iterating through each folder given by caller
+                foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
 
-                    // intentionally dropping "invisible linux 'backup' files"
-                    if (!idxFile.EndsWith ("~")) {
+                    // iterating all files in current directory, and returning as nodes beneath args given
+                    foreach (var idxFile in Directory.GetFiles (rootFolder + idx)) {
 
-                        // file is not a backup file on Linux
-                        // normalizing file path delimiters for both Linux and Windows, before we return it 
-                        // back to caller
-                        var fileName = idxFile.Replace ("\\", "/");
-                        fileName = fileName.Replace (rootFolder, "");
-                        e.Args.Add (new Node (string.Empty, fileName));
+                        // intentionally dropping "invisible linux 'backup' files"
+                        if (!idxFile.EndsWith ("~")) {
+
+                            // file is not a backup file on Linux
+                            // normalizing file path delimiters for both Linux and Windows, before we return it 
+                            // back to caller
+                            var fileName = idxFile.Replace ("\\", "/");
+                            fileName = fileName.Replace (rootFolder, "");
+                            e.Args.Add (new Node (string.Empty, fileName));
+                        }
                     }
                 }
             }

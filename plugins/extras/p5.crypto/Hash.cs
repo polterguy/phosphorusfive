@@ -32,21 +32,24 @@ namespace phosphorus.crypto
         /// <summary>
         ///     Creates an MD5 hash-string.
         /// 
-        ///     Creates an MD5 hash from the given string, node or value, somehow. Will return the hashed value as [value] node,
-        ///     beneath the main node of your Active Event invocation.
+        ///     Creates an MD5 hash from the given value.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "p5.crypto.hash-string")]
         private static void p5_crypto_hash_string (ApplicationContext context, ActiveEventArgs e)
         {
-            var whatToHash = XUtil.Single<string> (e.Args, context);
-            if (whatToHash == null)
-                return; // nothing to hash here ...
+            // making sure we clean up and remove all arguments passed in after execution
+            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args)) {
 
-            using (var md5 = MD5.Create ()) {
-                var hashValue = Convert.ToBase64String (md5.ComputeHash (Encoding.UTF8.GetBytes (whatToHash)));
-                e.Args.Add (new Node ("value", hashValue));
+                var whatToHash = XUtil.Single<string> (e.Args, context);
+                if (whatToHash == null)
+                    return; // nothing to hash here ...
+
+                using (var md5 = MD5.Create ()) {
+                    var hashValue = Convert.ToBase64String (md5.ComputeHash (Encoding.UTF8.GetBytes (whatToHash)));
+                    e.Args.Value = hashValue;
+                }
             }
         }
     }

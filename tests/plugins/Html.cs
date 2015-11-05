@@ -41,32 +41,30 @@ namespace p5.unittests.plugins
     </body>
 </html>""");
             Assert.AreEqual (1, node [0].Count);
-            Assert.AreEqual ("doc", node [0] [0].Name);
-            Assert.AreEqual (1, node [0] [0].Count);
-            Assert.AreEqual ("html", node [0] [0] [0].Name);
-            Assert.AreEqual (2, node [0] [0] [0].Count);
-            Assert.AreEqual ("head", node [0] [0] [0] [0].Name);
-            Assert.AreEqual ("title", node [0] [0] [0] [0] [0].Name);
-            Assert.AreEqual ("foo bar", node [0] [0] [0] [0] [0].Value);
-            Assert.AreEqual ("body", node [0] [0] [0] [1].Name);
-            Assert.AreEqual ("form", node [0] [0] [0] [1] [0].Name);
-            Assert.AreEqual ("input", node [0] [0] [0] [1] [0] [0].Name);
-            Assert.AreEqual ("@type", node [0] [0] [0] [1] [0] [0] [0].Name);
-            Assert.AreEqual ("text", node [0] [0] [0] [1] [0] [0] [0].Value);
-            Assert.AreEqual ("@id", node [0] [0] [0] [1] [0] [0] [1].Name);
-            Assert.AreEqual ("foobar", node [0] [0] [0] [1] [0] [0] [1].Value);
-            Assert.AreEqual ("textarea", node [0] [0] [0] [1] [0] [1].Name);
-            Assert.AreEqual ("success textarea", node [0] [0] [0] [1] [0] [1].Value);
-            Assert.AreEqual ("@id", node [0] [0] [0] [1] [0] [1] [0].Name);
-            Assert.AreEqual ("div", node [0] [0] [0] [1] [0] [2].Name);
-            Assert.AreEqual ("@id", node [0] [0] [0] [1] [0] [2] [0].Name);
-            Assert.AreEqual ("div1", node [0] [0] [0] [1] [0] [2] [0].Value);
-            Assert.AreEqual ("p", node [0] [0] [0] [1] [0] [2] [1].Name);
-            Assert.AreEqual ("success 1", node [0] [0] [0] [1] [0] [2] [1].Value);
-            Assert.AreEqual ("@id", node [0] [0] [0] [1] [0] [2] [1] [0].Name);
-            Assert.AreEqual ("par1", node [0] [0] [0] [1] [0] [2] [1] [0].Value);
-            Assert.AreEqual ("p", node [0] [0] [0] [1] [1].Name);
-            Assert.AreEqual ("success2", node [0] [0] [0] [1] [1].Value);
+            Assert.AreEqual ("html", node [0] [0].Name);
+            Assert.AreEqual (2, node [0] [0].Count);
+            Assert.AreEqual ("head", node [0] [0] [0].Name);
+            Assert.AreEqual ("title", node [0] [0] [0] [0].Name);
+            Assert.AreEqual ("foo bar", node [0] [0] [0] [0].Value);
+            Assert.AreEqual ("body", node [0] [0] [1].Name);
+            Assert.AreEqual ("form", node [0] [0] [1] [0].Name);
+            Assert.AreEqual ("input", node [0] [0] [1] [0] [0].Name);
+            Assert.AreEqual ("@type", node [0] [0] [1] [0] [0] [0].Name);
+            Assert.AreEqual ("text", node [0] [0] [1] [0] [0] [0].Value);
+            Assert.AreEqual ("@id", node [0] [0] [1] [0] [0] [1].Name);
+            Assert.AreEqual ("foobar", node [0] [0] [1] [0] [0] [1].Value);
+            Assert.AreEqual ("textarea", node [0] [0] [1] [0] [1].Name);
+            Assert.AreEqual ("success textarea", node [0] [0] [1] [0] [1].Value);
+            Assert.AreEqual ("@id", node [0] [0] [1] [0] [1] [0].Name);
+            Assert.AreEqual ("div", node [0] [0] [1] [0] [2].Name);
+            Assert.AreEqual ("@id", node [0] [0] [1] [0] [2] [0].Name);
+            Assert.AreEqual ("div1", node [0] [0] [1] [0] [2] [0].Value);
+            Assert.AreEqual ("p", node [0] [0] [1] [0] [2] [1].Name);
+            Assert.AreEqual ("success 1", node [0] [0] [1] [0] [2] [1].Value);
+            Assert.AreEqual ("@id", node [0] [0] [1] [0] [2] [1] [0].Name);
+            Assert.AreEqual ("par1", node [0] [0] [1] [0] [2] [1] [0].Value);
+            Assert.AreEqual ("p", node [0] [0] [1] [1].Name);
+            Assert.AreEqual ("success2", node [0] [0] [1] [1].Value);
         }
         
         /// <summary>
@@ -90,8 +88,22 @@ namespace p5.unittests.plugins
         <p>success2</p>
     </body>
 </html>""
-p5.html.lambda2html:x:/-/*/*");
-            Assert.AreEqual (node [0].Value, node [1].Value);
+p5.html.lambda2html:x:/-/*");
+            Assert.AreEqual (@"<html>
+    <head>
+        <title>foo bar</title>
+    </head>
+    <body>
+        <form>
+            <input type=""text"" id=""foobar""></input>
+            <textarea id=""barfoo"">success textarea</textarea>
+            <div id=""div1"">
+                <p id=""par1"">success 1</p>
+            </div>
+        </form>
+        <p>success2</p>
+    </body>
+</html>", node [1].Value);
         }
         
         /// <summary>
@@ -116,33 +128,31 @@ p5.html.lambda2html:x:/-/*/*");
         <p>success2</p>
     </body>
 </html>""");
-            Assert.AreEqual (1, node [0].Count);
-            Assert.AreEqual ("doc", node [0] [0].Name);
-            Assert.AreEqual (1, node [0] [0].Count);
-            Assert.AreEqual ("html", node [0] [0] [0].Name);
-            Assert.AreEqual (2, node [0] [0] [0].Count);
-            Assert.AreEqual ("head", node [0] [0] [0] [0].Name);
-            Assert.AreEqual ("title", node [0] [0] [0] [0] [0].Name);
-            Assert.AreEqual ("foo <bar", node [0] [0] [0] [0] [0].Value);
-            Assert.AreEqual ("body", node [0] [0] [0] [1].Name);
-            Assert.AreEqual ("form", node [0] [0] [0] [1] [0].Name);
-            Assert.AreEqual ("input", node [0] [0] [0] [1] [0] [0].Name);
-            Assert.AreEqual ("@type", node [0] [0] [0] [1] [0] [0] [0].Name);
-            Assert.AreEqual ("text", node [0] [0] [0] [1] [0] [0] [0].Value);
-            Assert.AreEqual ("@id", node [0] [0] [0] [1] [0] [0] [1].Name);
-            Assert.AreEqual ("foobar", node [0] [0] [0] [1] [0] [0] [1].Value);
-            Assert.AreEqual ("textarea", node [0] [0] [0] [1] [0] [1].Name);
-            Assert.AreEqual ("success>textarea", node [0] [0] [0] [1] [0] [1].Value);
-            Assert.AreEqual ("@id", node [0] [0] [0] [1] [0] [1] [0].Name);
-            Assert.AreEqual ("div", node [0] [0] [0] [1] [0] [2].Name);
-            Assert.AreEqual ("@id", node [0] [0] [0] [1] [0] [2] [0].Name);
-            Assert.AreEqual ("div1", node [0] [0] [0] [1] [0] [2] [0].Value);
-            Assert.AreEqual ("p", node [0] [0] [0] [1] [0] [2] [1].Name);
-            Assert.AreEqual ("success&1", node [0] [0] [0] [1] [0] [2] [1].Value);
-            Assert.AreEqual ("@id", node [0] [0] [0] [1] [0] [2] [1] [0].Name);
-            Assert.AreEqual ("par1", node [0] [0] [0] [1] [0] [2] [1] [0].Value);
-            Assert.AreEqual ("p", node [0] [0] [0] [1] [1].Name);
-            Assert.AreEqual ("success2", node [0] [0] [0] [1] [1].Value);
+            Assert.AreEqual (1, node.Count);
+            Assert.AreEqual ("html", node [0] [0].Name);
+            Assert.AreEqual (2, node [0] [0].Count);
+            Assert.AreEqual ("head", node [0] [0] [0].Name);
+            Assert.AreEqual ("title", node [0] [0] [0] [0].Name);
+            Assert.AreEqual ("foo <bar", node [0] [0] [0] [0].Value);
+            Assert.AreEqual ("body", node [0] [0] [1].Name);
+            Assert.AreEqual ("form", node [0] [0] [1] [0].Name);
+            Assert.AreEqual ("input", node [0] [0] [1] [0] [0].Name);
+            Assert.AreEqual ("@type", node [0] [0] [1] [0] [0] [0].Name);
+            Assert.AreEqual ("text", node [0] [0] [1] [0] [0] [0].Value);
+            Assert.AreEqual ("@id", node [0] [0] [1] [0] [0] [1].Name);
+            Assert.AreEqual ("foobar", node [0] [0] [1] [0] [0] [1].Value);
+            Assert.AreEqual ("textarea", node [0] [0] [1] [0] [1].Name);
+            Assert.AreEqual ("success>textarea", node [0] [0] [1] [0] [1].Value);
+            Assert.AreEqual ("@id", node [0] [0] [1] [0] [1] [0].Name);
+            Assert.AreEqual ("div", node [0] [0] [1] [0] [2].Name);
+            Assert.AreEqual ("@id", node [0] [0] [1] [0] [2] [0].Name);
+            Assert.AreEqual ("div1", node [0] [0] [1] [0] [2] [0].Value);
+            Assert.AreEqual ("p", node [0] [0] [1] [0] [2] [1].Name);
+            Assert.AreEqual ("success&1", node [0] [0] [1] [0] [2] [1].Value);
+            Assert.AreEqual ("@id", node [0] [0] [1] [0] [2] [1] [0].Name);
+            Assert.AreEqual ("par1", node [0] [0] [1] [0] [2] [1] [0].Value);
+            Assert.AreEqual ("p", node [0] [0] [1] [1].Name);
+            Assert.AreEqual ("success2", node [0] [0] [1] [1].Value);
         }
         
         /// <summary>
@@ -167,8 +177,22 @@ p5.html.lambda2html:x:/-/*/*");
         <p>success2</p>
     </body>
 </html>""
-p5.html.lambda2html:x:/-/*/*");
-            Assert.AreEqual (node [0].Value, node [1].Value);
+p5.html.lambda2html:x:/-/*");
+            Assert.AreEqual (@"<html>
+    <head>
+        <title>foo&lt;&amp;&gt;bar</title>
+    </head>
+    <body>
+        <form>
+            <input type=""text"" id=""foobar""></input>
+            <textarea id=""barfoo"">success textarea</textarea>
+            <div id=""div1"">
+                <p id=""par1"">success 1</p>
+            </div>
+        </form>
+        <p>success2</p>
+    </body>
+</html>", node [1].Value);
         }
         
         /// <summary>
@@ -194,8 +218,37 @@ p5.html.lambda2html:x:/-/*/*");
     </body>
 </html>""
 p5.html.html2lambda:x:/-?value
-p5.html.lambda2html:x:/-/0/0");
-            Assert.AreEqual (node [0].Value, node [2].Value);
+p5.html.lambda2html:x:/-/0");
+            Assert.AreEqual (@"<html>
+    <head>
+        <title>foo&lt;&amp;&gt;bar</title>
+    </head>
+    <body>
+        <form>
+            <input type=""text"" id=""foobar""></input>
+            <textarea id=""barfoo"">success textarea</textarea>
+            <div id=""div1"">
+                <p id=""par1"">success 1</p>
+            </div>
+        </form>
+        <p>success2</p>
+    </body>
+</html>", node [2].Value);
+        }
+        
+        /// <summary>
+        /// </summary>
+        [Test]
+        public void Html2Lambda06 ()
+        {
+            Node node = ExecuteLambda (@"_html1:@""<head><title>foo1 bar1</title></head>""
+_html2:@""<span>howdy world</span>""
+p5.html.html2lambda:x:/-2|/-?value
+p5.html.lambda2html:x:/-/*");
+            Assert.AreEqual (@"<head>
+    <title>foo1 bar1</title>
+</head>
+<span>howdy world</span>", node [3].Value);
         }
 
         [Test]
@@ -206,6 +259,16 @@ p5.html.html-encode:x:/-?value
 p5.html.html-decode:x:/-?value");
             Assert.AreEqual (node [0].Value, node [2].Value);
             Assert.AreEqual ("this is &lt; than and this is &gt; than", node [1].Value);
+        }
+        
+        [Test]
+        public void HtmlEncodeDecodeMultipleFragments ()
+        {
+            Node node = ExecuteLambda (@"_html:""this is < than and this is > than, ""
+_html:this too is < than and this is > than
+p5.html.html-encode:x:/-2|/-?value
+p5.html.html-decode:x:/-?value");
+            Assert.AreEqual ("this is < than and this is > than, this too is < than and this is > than", node [3].Value);
         }
     }
 }
