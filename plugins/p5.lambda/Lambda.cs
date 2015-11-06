@@ -63,17 +63,9 @@ namespace p5.lambda
         {
             if (args.Name == lambdaEvent && args.Value != null) {
 
-                if (XUtil.IsExpression (args.Value)) {
-
-                    // executing a value object, converting to node, before we pass into execution method,
-                    // making sure we pass in children of [lambda] as "arguments" or "parameters" to [lambda] statement
-                    var match = (args.Value as Expression).Evaluate (args, context);
-                    foreach (var idxSource in match) {
-                        functor (context, Utilities.Convert<Node> (idxSource.Value, context), args.Children);
-                    }
-                } else {
-                    var lambda = context.Raise ("lisp2lambda", new Node (string.Empty, args.Get<string> (context)));
-                    functor (context, lambda, args.Children);
+                // executing a value object or an expression
+                foreach (var idxSource in XUtil.Iterate<Node> (args, context)) {
+                    functor (context, idxSource, args.Children);
                 }
             } else {
 

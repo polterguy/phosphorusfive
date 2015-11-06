@@ -27,11 +27,16 @@ namespace p5.web.ui.request
         [ActiveEvent (Name = "get-http-header")]
         private static void get_http_header (ApplicationContext context, ActiveEventArgs e)
         {
-            // looping through each parameter requested by caller
-            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
-                // adding parameter's name/value as Node return value
-                if (HttpContext.Current.Request.Headers [idx] != null)
-                    e.Args.Add (idx, HttpContext.Current.Request.Headers [idx]);
+            // making sure we clean up and remove all arguments passed in after execution
+            using (Utilities.ArgsRemover remover = new Utilities.ArgsRemover (e.Args, true)) {
+
+                // looping through each parameter requested by caller
+                foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+
+                    // adding parameter's name/value as Node return value
+                    if (HttpContext.Current.Request.Headers [idx] != null)
+                        e.Args.Add (idx, HttpContext.Current.Request.Headers [idx]);
+                }
             }
         }
 

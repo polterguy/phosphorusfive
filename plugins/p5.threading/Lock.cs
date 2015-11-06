@@ -65,9 +65,7 @@ namespace p5.threading
         private static void lambda_lock (ApplicationContext context, ActiveEventArgs e)
         {
             var lockers = new List<string> (XUtil.Iterate<string> (e.Args, context));
-            LockNext (
-                lockers,
-                delegate { context.Raise ("lambda", e.Args); });
+            LockNext (lockers, delegate { context.Raise ("lambda", e.Args); });
         }
 
         /*
@@ -77,8 +75,10 @@ namespace p5.threading
         private static void LockNext (List<string> lockers, LockFunctor functor)
         {
             if (lockers.Count == 0) {
+
                 functor ();
             } else {
+
                 lock (GetLocker (lockers [0])) {
                     lockers.RemoveAt (0);
                     LockNext (lockers, functor);

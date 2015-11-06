@@ -27,12 +27,16 @@ namespace p5.web.ui.request
         [ActiveEvent (Name = "get-http-param")]
         private static void get_http_param (ApplicationContext context, ActiveEventArgs e)
         {
-            // looping through each parameter requested by caller
-            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+            // making sure we clean up and remove all arguments passed in after execution
+            using (Utilities.ArgsRemover remover = new Utilities.ArgsRemover (e.Args, true)) {
 
-                // adding parameter's name/value as Node return value
-                if (HttpContext.Current.Request.Params [idx] != null)
-                    e.Args.Add (idx, HttpContext.Current.Request.Params [idx]);
+                // looping through each parameter requested by caller
+                foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+
+                    // adding parameter's name/value as Node return value
+                    if (HttpContext.Current.Request.Params [idx] != null)
+                        e.Args.Add (idx, HttpContext.Current.Request.Params [idx]);
+                }
             }
         }
 

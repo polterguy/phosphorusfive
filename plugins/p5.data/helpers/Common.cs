@@ -75,7 +75,7 @@ namespace p5.data.helpers
                 var dbPath = new Node (string.Empty, _dbPath);
                 context.Raise ("folder-exist", dbPath);
                 if (!dbPath [0].Get<bool> (context)) {
-                    context.Raise ("create-folder", dbPath);
+                    context.Raise ("create-folder", new Node (string.Empty, _dbPath));
                 }
 
                 // iterating through all folders inside of database directory and loading all files in all folders inside of database directory

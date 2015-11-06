@@ -31,6 +31,7 @@ namespace p5.lambda.events
         {
             // iterating through all events to delete
             foreach (var idxName in XUtil.Iterate<string> (e.Args, context)) {
+
                 // deleting event
                 EventsCommon.RemoveEvent (idxName);
             }

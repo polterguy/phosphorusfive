@@ -274,14 +274,14 @@ namespace p5.exp
 
                     // node's value is null, caller requests nodes, 
                     // iterating through children of node, yielding results back to caller
-                    foreach (var idx in evaluatedNode.Children) {
+                    foreach (var idx in new List<Node> (evaluatedNode.Children)) {
                         yield return Utilities.Convert<T> (idx, context);
                     }
                 } else {
 
                     // caller requests anything but node, iterating children, yielding
                     // values of children, converted to type back to caller
-                    foreach (var idx in evaluatedNode.Children) {
+                    foreach (var idx in new List<Node> (evaluatedNode.Children)) {
                         yield return idx.Get<T> (context);
                     }
                 }
@@ -445,8 +445,7 @@ namespace p5.exp
                         } else {
 
                             // Value is NOT node, converting to node list before adding
-                            Node convert = new Node (string.Empty, idxSrcNode.Get<string> (context));
-                            tmpRetVal.AddRange (context.Raise ("lisp2lambda", convert).Children);
+                            tmpRetVal.AddRange (idxSrcNode.Get<Node> (context).Children);
                         }
                     } else {
 

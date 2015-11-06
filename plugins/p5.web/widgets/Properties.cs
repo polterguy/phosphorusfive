@@ -36,25 +36,28 @@ namespace p5.web.ui.widgets
         [ActiveEvent (Name = "get-widget-property")]
         private static void get_widget_property (ApplicationContext context, ActiveEventArgs e)
         {
-            if (e.Args.Value == null || e.Args.Count == 0)
-                return; // nothing to do here ...
+            // making sure we clean up and remove all arguments passed in after execution
+            using (Utilities.ArgsRemover remover = new Utilities.ArgsRemover (e.Args, true)) {
 
-            // need to store original children nodes, since method might create new children nodes, during enumeration
-            var origNodeList = new List<Node> (e.Args.Children);
+                if (e.Args.Value == null || e.Args.Count == 0)
+                    return; // nothing to do here ...
 
-            // looping through all widget IDs given by caller
-            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+                // need to store original children nodes, since method might create new children nodes, during enumeration
+                var origNodeList = new List<Node> (e.Args.Children);
 
-                // finding widget
-                var widget = FindWidget (context, idx);
-                if (widget == null)
-                    continue;
+                // looping through all widget IDs given by caller
+                foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
 
-                // looping through all properties requested by caller
-                foreach (var nameNode in origNodeList) {
+                    // finding widget
+                    var widget = FindWidget (context, idx);
+                    if (widget == null)
+                        continue;
 
-                    // checking if this is a generic attribute, or a specific property
-                    switch (nameNode.Name) {
+                    // looping through all properties requested by caller
+                    foreach (var nameNode in origNodeList) {
+
+                        // checking if this is a generic attribute, or a specific property
+                        switch (nameNode.Name) {
                         case "":
                             continue; // formatting parameter to expression in main node
                         case "visible":
@@ -76,6 +79,7 @@ namespace p5.web.ui.widgets
                             if (!string.IsNullOrEmpty (nameNode.Name))
                                 CreatePropertyReturn (e.Args, nameNode, widget);
                             break;
+                        }
                     }
                 }
             }
@@ -183,27 +187,31 @@ namespace p5.web.ui.widgets
         [ActiveEvent (Name = "list-widget-properties")]
         private static void list_widget_properties (ApplicationContext context, ActiveEventArgs e)
         {
-            // looping through all widgets
-            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+            // making sure we clean up and remove all arguments passed in after execution
+            using (Utilities.ArgsRemover remover = new Utilities.ArgsRemover (e.Args, true)) {
 
-                // finding widget
-                var widget = FindWidget (context, idx);
-                if (widget == null)
-                    continue;
+                // looping through all widgets
+                foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
 
-                // creating our "return node" for currently handled widget
-                Node curNode = e.Args.Add (widget.ID).LastChild;
-
-                // first listing "static properties"
-                curNode.Add ("visible");
-                curNode.Add ("invisible-element");
-                curNode.Add ("element");
-                curNode.Add ("has-id");
-                curNode.Add ("render-type");
-                foreach (var idxAtr in widget.AttributeKeys) {
-                    if (idxAtr == "Tag" || idxAtr.StartsWith ("on"))
+                    // finding widget
+                    var widget = FindWidget (context, idx);
+                    if (widget == null)
                         continue;
-                    curNode.Add (idxAtr);
+
+                    // creating our "return node" for currently handled widget
+                    Node curNode = e.Args.Add (widget.ID).LastChild;
+
+                    // first listing "static properties"
+                    curNode.Add ("visible");
+                    curNode.Add ("invisible-element");
+                    curNode.Add ("element");
+                    curNode.Add ("has-id");
+                    curNode.Add ("render-type");
+                    foreach (var idxAtr in widget.AttributeKeys) {
+                        if (idxAtr == "Tag" || idxAtr.StartsWith ("on"))
+                            continue;
+                        curNode.Add (idxAtr);
+                    }
                 }
             }
         }

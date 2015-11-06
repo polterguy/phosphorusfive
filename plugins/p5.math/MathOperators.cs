@@ -28,25 +28,39 @@ namespace p5.math
             Node args, 
             ApplicationContext context)
         {
-            dynamic result = args.GetExValue<object> (context, "");
-            Type resultType = result.GetType ();
-            foreach (var idxChild in args.FindAll (delegate(Node idx) {
-                return idx.Name != string.Empty;
-            })) {
+            // making sure we clean up and remove all arguments passed in after execution
+            using (Utilities.ArgsRemover remover = new Utilities.ArgsRemover (args)) {
 
-                dynamic nextValue;
-                if (idxChild.Name.StartsWith ("_")) {
+                dynamic result = args.GetExValue<object> (context, "");
+                Type resultType = null;
+                if (args ["__pf_type"] == null) {
 
-                    // Simple value, or expression yielding value to use
-                    nextValue = idxChild.GetExValue<object> (context, (object)0);
+                    // Using left most type as guiding type for result
+                    resultType = result.GetType ();
                 } else {
 
-                    // Active Event invocation to retrieve value to use
-                    nextValue = context.Raise (idxChild.Name, idxChild).Get<object> (context, 0);
+                    // type was explicitly passed in due to recursive invocations
+                    resultType = args ["__pf_type"].Get<Type> (context);
+                    result = Convert.ChangeType (result, resultType);
                 }
-                result = functor (result, Convert.ChangeType (nextValue, resultType));
+
+                foreach (var idxChild in args.FindAll (delegate(Node idx) {return idx.Name != string.Empty && idx.Name != "__pf_type";})) {
+
+                    dynamic nextValue;
+                    if (idxChild.Name.StartsWith ("_")) {
+
+                        // Simple value, or expression yielding value to use
+                        nextValue = idxChild.GetExValue<object> (context, (object)0);
+                    } else {
+
+                        // Active Event invocation to retrieve value to use
+                        idxChild.FindOrCreate ("__pf_type").Value = resultType;
+                        nextValue = context.Raise (idxChild.Name, idxChild).Get<object> (context, 0);
+                    }
+                    result = functor (result, Convert.ChangeType (nextValue, resultType));
+                }
+                args.Value = result;
             }
-            args.Value = result;
         }
 
         /// <summary>

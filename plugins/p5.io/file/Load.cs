@@ -58,8 +58,7 @@ namespace p5.file.file
                             if (idxFilename.EndsWith (".hl")) {
 
                                 // automatically converting to Hyperlisp before returning
-                                var convertNode = new Node (string.Empty, fileContent);
-                                e.Args.Add (new Node (idxFilename, null, context.Raise ("lisp2lambda", convertNode).Children));
+                                e.Args.Add (new Node (idxFilename, null, new Node (string.Empty, fileContent).Get<Node> (context).Children));
                             } else {
 
                                 // adding file content as string

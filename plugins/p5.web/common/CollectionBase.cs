@@ -80,39 +80,42 @@ namespace p5.web.ui.common
         /// <param name="functor">Callback functor, will be invoked once for each key.</param>
         public static void Get (Node node, ApplicationContext context, GetDelegate functor)
         {
-            // iterating through each "key"
-            foreach (var idx in XUtil.Iterate<string> (node, context)) {
+            // making sure we clean up and remove all arguments passed in after execution
+            using (Utilities.ArgsRemover remover = new Utilities.ArgsRemover (node, true)) {
 
-                // retrieving object from key
-                var value = functor (idx);
-                if (value != null) {
+                // iterating through each "key"
+                foreach (var idx in XUtil.Iterate<string> (node, context)) {
 
-                    // adding key node, and value as object, if value is not node, otherwise
-                    // appending value nodes beneath key node
-                    var resultNode = node.Add (idx).LastChild;
-                    if (value is Node) {
+                    // retrieving object from key
+                    var value = functor (idx);
+                    if (value != null) {
 
-                        // value is Node
-                        resultNode.Add ((value as Node).Clone ());
-                    } else if (value is IEnumerable<Node>) {
+                        // adding key node, and value as object, if value is not node, otherwise
+                        // appending value nodes beneath key node
+                        var resultNode = node.Add (idx).LastChild;
+                        if (value is Node) {
 
-                        // value is a bunch of nodes
-                        foreach (var idxValue in value as IEnumerable<Node>) {
-                            resultNode.Add (idxValue.Clone ());
+                            // value is Node
+                            resultNode.Add ((value as Node).Clone ());
+                        } else if (value is IEnumerable<Node>) {
+
+                            // value is a bunch of nodes
+                            foreach (var idxValue in value as IEnumerable<Node>) {
+                                resultNode.Add (idxValue.Clone ());
+                            }
+                        } else if (value is IEnumerable<object>) {
+
+                            // value is a bunch of object values
+                            foreach (var idxValue in value as IEnumerable<object>) {
+                                resultNode.Add (string.Empty, idxValue);
+                            }
+                        } else {
+
+                            // value is any "other type of value", returning it anyway, even though it
+                            // cannot possibly have come from p5.lambda, to allow user to retrieve "any values"
+                            // that exists
+                            resultNode.Value = value;
                         }
-                    }
-                    else if (value is IEnumerable<object>) {
-
-                        // value is a bunch of object values
-                        foreach (var idxValue in value as IEnumerable<object>) {
-                            resultNode.Add (string.Empty, idxValue);
-                        }
-                    } else {
-
-                        // value is any "other type of value", returning it anyway, even though it
-                        // cannot possibly have come from p5.lambda, to allow user to retrieve "any values"
-                        // that exists
-                        resultNode.Value = value;
                     }
                 }
             }
@@ -130,19 +133,26 @@ namespace p5.web.ui.common
         /// <param name="functor">Callback functor, will be invoked once to retrieve all keys from collection.</param>
         public static void List (Node node, ApplicationContext context, ListDelegate functor)
         {
-            // retrieving filters, if any
-            var filter = new List<string> (XUtil.Iterate<string> (node, context));
+            // making sure we clean up and remove all arguments passed in after execution
+            using (Utilities.ArgsRemover remover = new Utilities.ArgsRemover (node, true)) {
 
-            // looping through each existing key in collection
-            foreach (var idxKey in functor ()) {
-                // returning current key, if it matches our filter, or filter is not given
-                if (filter.Count == 0) {
-                    // no filter was given
-                    node.Add (idxKey);
-                } else {
-                    // filter was given, checking if key matches one of our filters
-                    if (filter.Any (idxFilter => idxKey.IndexOf (idxFilter, StringComparison.Ordinal) != -1)) {
+                // retrieving filters, if any
+                var filter = new List<string> (XUtil.Iterate<string> (node, context));
+
+                // looping through each existing key in collection
+                foreach (var idxKey in functor ()) {
+
+                    // returning current key, if it matches our filter, or filter is not given
+                    if (filter.Count == 0) {
+
+                        // no filter was given
                         node.Add (idxKey);
+                    } else {
+
+                        // filter was given, checking if key matches one of our filters
+                        if (filter.Any (idxFilter => idxKey.IndexOf (idxFilter, StringComparison.Ordinal) != -1)) {
+                            node.Add (idxKey);
+                        }
                     }
                 }
             }

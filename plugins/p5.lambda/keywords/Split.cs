@@ -35,46 +35,43 @@ namespace p5.lambda.keywords
             if (sepNode == null)
                 throw new LambdaException ("No [=] given to [split]", e.Args, context);
 
-            Node valueSepNode = e.Args ["=="];
-            Node trimNode = e.Args ["trim"];
+            // making sure we clean up and remove all arguments passed in after execution
+            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args, true)) {
 
-            string whatToSplit = XUtil.Single<string> (e.Args, context);
-            string separator = XUtil.Single<string> (sepNode, context);
-            string valueSep = valueSepNode == null ? null : XUtil.Single<string> (valueSepNode, context);
-            bool trim = trimNode == null ? false : trimNode.GetExValue (context, false);
+                Node valueSepNode = e.Args ["=="];
+                Node trimNode = e.Args ["trim"];
 
-            string[] entities = whatToSplit.Split (new string[] { separator }, System.StringSplitOptions.RemoveEmptyEntries);
-            foreach (var idx in entities) {
+                string whatToSplit = XUtil.Single<string> (e.Args, context);
+                string separator = XUtil.Single<string> (sepNode, context);
+                string valueSep = valueSepNode == null ? null : XUtil.Single<string> (valueSepNode, context);
+                bool trim = trimNode == null ? false : trimNode.GetExValue (context, false);
 
-                if (valueSep == null) {
+                string[] entities = whatToSplit.Split (new string[] { separator }, System.StringSplitOptions.RemoveEmptyEntries);
+                foreach (var idx in entities) {
 
-                    // no name/value separator given or found
-                    e.Args.Add (trim ? idx.Trim () : idx);
-                } else {
+                    if (valueSep == null) {
 
-                    // caller requests to split further into name/value
-                    string[] valueNameEntities = idx.Split (new string[] { valueSep }, System.StringSplitOptions.RemoveEmptyEntries);
-                    if (valueNameEntities.Length > 2)
-                        throw new LambdaException ("Value/Name separator found more than 2 instances in; " + idx, e.Args, context);
-
-                    if (valueNameEntities.Length == 2) {
-
-                        // both name and value where found
-                        e.Args.Add (trim ? valueNameEntities [0].Trim () : valueNameEntities [0], trim ? valueNameEntities [1].Trim () : valueNameEntities [1]);
+                        // no name/value separator given or found
+                        e.Args.Add (trim ? idx.Trim () : idx);
                     } else {
 
-                        // only value was found
-                        e.Args.Add (trim ? idx.Trim () : idx); // couldn't split string into name/value, no value separator found
+                        // caller requests to split further into name/value
+                        string[] valueNameEntities = idx.Split (new string[] { valueSep }, System.StringSplitOptions.RemoveEmptyEntries);
+                        if (valueNameEntities.Length > 2)
+                            throw new LambdaException ("Value/Name separator found more than 2 instances in; " + idx, e.Args, context);
+
+                        if (valueNameEntities.Length == 2) {
+
+                            // both name and value where found
+                            e.Args.Add (trim ? valueNameEntities [0].Trim () : valueNameEntities [0], trim ? valueNameEntities [1].Trim () : valueNameEntities [1]);
+                        } else {
+
+                            // only value was found
+                            e.Args.Add (trim ? idx.Trim () : idx); // couldn't split string into name/value, no value separator found
+                        }
                     }
                 }
             }
-
-            // cleaning up
-            sepNode.UnTie ();
-            if (trimNode != null)
-                trimNode.UnTie ();
-            if (valueSepNode != null)
-                valueSepNode.UnTie ();
         }
     }
 }

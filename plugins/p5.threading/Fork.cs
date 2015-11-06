@@ -73,9 +73,11 @@ namespace p5.threading
             IEnumerable<Node> exe;
             IEnumerable<Node> args = null;
             if (e.Args.Value == null) {
+
                 // executing children nodes
                 exe = new[] {e.Args.Clone ()};
             } else {
+
                 // executing expression, or nodes, somehow
                 var exeList = XUtil.Iterate<Node> (e.Args, context).Select (idxExe => idxExe.Clone ()).ToList ();
                 exe = exeList;
@@ -84,6 +86,7 @@ namespace p5.threading
 
             Node wait = null;
             if (e.Args.Parent != null && e.Args.Parent.Name == "wait") {
+
                 // waiting for all threads to finish, hence we'll need a reference to our [wait] node
                 // inside our thread
                 wait = e.Args.Parent;
@@ -95,6 +98,7 @@ namespace p5.threading
 
             // checking to see if we should wait
             if (wait != null) {
+
                 // we have a [wait] statement as parent
                 if (wait ["__threads"] == null) {
                     wait.Add ("__threads");

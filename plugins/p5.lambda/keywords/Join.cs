@@ -30,48 +30,44 @@ namespace p5.lambda.keywords
         [ActiveEvent (Name = "join")]
         private static void lambda_join (ApplicationContext context, ActiveEventArgs e)
         {
-            var ex = e.Args.Value as Expression;
-            if (ex == null)
-                throw new LambdaException ("No expression supplied to [join], join needs an expression to evaluate", e.Args, context);
+            // making sure we clean up and remove all arguments passed in after execution
+            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args)) {
 
-            Node sepNode = e.Args ["="];
-            Node valueSepNode = e.Args ["=="];
-            Node trimNode = e.Args ["trim"];
+                var ex = e.Args.Value as Expression;
+                if (ex == null)
+                    throw new LambdaException ("No expression supplied to [join], join needs an expression to evaluate", e.Args, context);
 
-            string insertBetweenNodes = sepNode == null ? "" : XUtil.Single<string> (sepNode, context);
-            string insertBetweenNameValue = valueSepNode == null ? "" : XUtil.Single<string> (valueSepNode, context);
-            bool trim = trimNode == null ? false : trimNode.GetExValue (context, false);
+                Node sepNode = e.Args ["="];
+                Node valueSepNode = e.Args ["=="];
+                Node trimNode = e.Args ["trim"];
 
-            StringBuilder result = new StringBuilder ();
-            foreach (var idx in ex.Evaluate (e.Args, context)) {
+                string insertBetweenNodes = sepNode == null ? "" : XUtil.Single<string> (sepNode, context);
+                string insertBetweenNameValue = valueSepNode == null ? "" : XUtil.Single<string> (valueSepNode, context);
+                bool trim = trimNode == null ? false : trimNode.GetExValue (context, false);
 
-                if (result.Length != 0)
-                    result.Append (insertBetweenNodes);
+                StringBuilder result = new StringBuilder ();
+                foreach (var idx in ex.Evaluate (e.Args, context)) {
 
-                if (idx.TypeOfMatch == Match.MatchType.node) {
+                    if (result.Length != 0)
+                        result.Append (insertBetweenNodes);
 
-                    // adding both name and value
-                    result.Append (trim ? idx.Node.Name.Trim () : idx.Node.Name);
-                    if (idx.Node.Value != null)
-                        result.Append (insertBetweenNameValue)
+                    if (idx.TypeOfMatch == Match.MatchType.node) {
+
+                        // adding both name and value
+                        result.Append (trim ? idx.Node.Name.Trim () : idx.Node.Name);
+                        if (idx.Node.Value != null)
+                            result.Append (insertBetweenNameValue)
                             .Append (trim ? idx.Node.Get<string> (context, "").Trim () : idx.Node.Value);
-                } else {
+                    } else {
 
-                    // adding only result of MatchEntity
-                    result.Append (idx.Value);
+                        // adding only result of MatchEntity
+                        result.Append (idx.Value);
+                    }
                 }
+
+                // returning result
+                e.Args.Value = result.ToString ();
             }
-
-            // returning result
-            e.Args.Value = result.ToString ();
-
-            // cleaning up
-            if (sepNode != null)
-                sepNode.UnTie ();
-            if (valueSepNode != null)
-                valueSepNode.UnTie ();
-            if (trimNode != null)
-                trimNode.UnTie ();
         }
     }
 }

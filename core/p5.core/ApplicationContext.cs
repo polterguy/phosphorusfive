@@ -191,6 +191,7 @@ namespace p5.core
         {
             // checking if we have any handlers
             if (_registeredActiveEvents.ContainsKey (e.Name)) {
+
                 // looping through all Active Events handlers for the given Active Event name, and invoking them
                 foreach (var idxMethod in _registeredActiveEvents [e.Name]) {
                     idxMethod.Item1.Invoke (idxMethod.Item2, new object[] { this, e });

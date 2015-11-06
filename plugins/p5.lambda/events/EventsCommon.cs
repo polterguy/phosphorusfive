@@ -41,25 +41,30 @@ namespace p5.lambda.events
         [ActiveEvent (Name = "get-event")]
         private static void get_event (ApplicationContext context, ActiveEventArgs e)
         {
-            // syntax checking
-            if (e.Args.Value == null)
-                return; // nothing to do here
+            // making sure we clean up and remove all arguments passed in after execution
+            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args, true)) {
 
-            // looping through all events caller wish to retrieve
-            foreach (var idxEventName in XUtil.Iterate<string> (e.Args, context)) {
-                foreach (var idxKey in Events.Keys) {
-                    Node appendNode = null;
-                    if (idxKey.Contains (idxEventName)) {
+                // syntax checking
+                if (e.Args.Value == null)
+                    return; // nothing to do here
 
-                        // current Active Event contains current filter value in its name, and we have a match
-                        if (!e.Args.Children.Any (idxExisting => idxExisting.Get<string> (context) == idxKey)) {
+                // looping through all events caller wish to retrieve
+                foreach (var idxEventName in XUtil.Iterate<string> (e.Args, context)) {
 
-                            // no previous filter matched Active Event name
-                            foreach (Node idxLambda in Events [idxKey].Children) {
-                                if (appendNode == null) {
-                                    appendNode = e.Args.Add ("event", idxKey).LastChild;
+                    foreach (var idxKey in Events.Keys) {
+                        Node appendNode = null;
+                        if (idxKey.Contains (idxEventName)) {
+
+                            // current Active Event contains current filter value in its name, and we have a match
+                            if (!e.Args.Children.Any (idxExisting => idxExisting.Get<string> (context) == idxKey)) {
+
+                                // no previous filter matched Active Event name
+                                foreach (Node idxLambda in Events [idxKey].Children) {
+                                    if (appendNode == null) {
+                                        appendNode = e.Args.Add ("event", idxKey).LastChild;
+                                    }
+                                    appendNode.Add (idxLambda.Clone ());
                                 }
-                                appendNode.Add (idxLambda.Clone ());
                             }
                         }
                     }
@@ -82,16 +87,20 @@ namespace p5.lambda.events
         [ActiveEvent (Name = "list-events")]
         private static void list_events (ApplicationContext context, ActiveEventArgs e)
         {
-            // retrieving filter, if any
-            var filter = new List<string> (XUtil.Iterate<string> (e.Args, context));
-            if (e.Args.Value != null && filter.Count == 0)
-                return; // possibly a filter expression, leading into oblivion
+            // making sure we clean up and remove all arguments passed in after execution
+            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args, true)) {
 
-            // Getting all dynamic Active Events
-            GetActiveEvents (Events.Keys, e.Args, filter, "dynamic");
+                // retrieving filter, if any
+                var filter = new List<string> (XUtil.Iterate<string> (e.Args, context));
+                if (e.Args.Value != null && filter.Count == 0)
+                    return; // possibly a filter expression, leading into oblivion
+
+                // Getting all dynamic Active Events
+                GetActiveEvents (Events.Keys, e.Args, filter, "dynamic");
             
-            // Getting all core Active Events
-            GetActiveEvents (context.ActiveEvents, e.Args, filter, "static");
+                // Getting all core Active Events
+                GetActiveEvents (context.ActiveEvents, e.Args, filter, "static");
+            }
         }
 
         /*
