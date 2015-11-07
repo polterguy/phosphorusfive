@@ -56,6 +56,7 @@
     <Compile Include="keywords\Insert.cs" />
     <Compile Include="keywords\Split.cs" />
     <Compile Include="keywords\Join.cs" />
+    <Compile Include="Operators.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

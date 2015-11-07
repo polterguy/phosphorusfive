@@ -56,13 +56,12 @@ namespace p5.unittests.lambda
                     .Add ("error").Parent
                 .Add ("_result")
                 .Add ("while", Expression.Create ("/-2/*?count", Context)).LastChild
-                    .Add (">", 1)
-                    .Add ("lambda").LastChild
-                        .Add ("set", Expression.Create ("/././-?value", Context)).LastChild
-                            .Add ("src", "{0}{1}").LastChild
-                                .Add (string.Empty, Expression.Create ("/../*/_result?value", Context))
-                                .Add (string.Empty, Expression.Create ("/../*/_data/0?name", Context)).Parent.Parent
-                        .Add ("set", Expression.Create ("/../*/_data/0", Context)).Root;
+                    .Add ("more-than", 1)
+                    .Add ("set", Expression.Create ("/./-?value", Context)).LastChild
+                        .Add ("src", "{0}{1}").LastChild
+                            .Add (string.Empty, Expression.Create ("/../*/_result?value", Context))
+                            .Add (string.Empty, Expression.Create ("/../*/_data/0?name", Context)).Parent.Parent
+                    .Add ("set", Expression.Create ("/../*/_data/0", Context)).Root;
             Context.Raise ("while", node [2]);
             Assert.AreEqual ("success", node [1].Value);
         }
@@ -82,13 +81,12 @@ namespace p5.unittests.lambda
                     .Add ("error").Parent
                 .Add ("_result")
                 .Add ("while", Expression.Create ("/-2/0?name", Context)).LastChild
-                    .Add ("!=", "error")
-                    .Add ("lambda").LastChild
-                        .Add ("set", Expression.Create ("/././-?value", Context)).LastChild
-                            .Add ("src", "{0}{1}").LastChild
-                                .Add (string.Empty, Expression.Create ("/../*/_result?value", Context))
-                                .Add (string.Empty, Expression.Create ("/../*/_data/0?name", Context)).Parent.Parent
-                        .Add ("set", Expression.Create ("/../*/_data/0", Context)).Root;
+                    .Add ("not-equals", "error")
+                    .Add ("set", Expression.Create ("/./-?value", Context)).LastChild
+                        .Add ("src", "{0}{1}").LastChild
+                            .Add (string.Empty, Expression.Create ("/../*/_result?value", Context))
+                            .Add (string.Empty, Expression.Create ("/../*/_data/0?name", Context)).Parent.Parent
+                    .Add ("set", Expression.Create ("/../*/_data/0", Context)).Root;
             Context.Raise ("while", node [2]);
             Assert.AreEqual ("success", node [1].Value);
         }
@@ -109,13 +107,12 @@ namespace p5.unittests.lambda
                 .Add ("_result")
                 .Add ("while", Expression.Create ("/{0}/0?value", Context)).LastChild
                     .Add (string.Empty, "-2")
-                    .Add ("!=", 5)
-                    .Add ("lambda").LastChild
-                        .Add ("set", Expression.Create ("/././-?value", Context)).LastChild
-                            .Add ("src", "{0}{1}").LastChild
-                                .Add (string.Empty, Expression.Create ("/../*/_result?value", Context))
-                                .Add (string.Empty, Expression.Create ("/../*/_data/0?name", Context)).Parent.Parent
-                        .Add ("set", Expression.Create ("/../*/_data/0", Context)).Root;
+                    .Add ("not-equals", 5)
+                    .Add ("set", Expression.Create ("/./-?value", Context)).LastChild
+                        .Add ("src", "{0}{1}").LastChild
+                            .Add (string.Empty, Expression.Create ("/../*/_result?value", Context))
+                            .Add (string.Empty, Expression.Create ("/../*/_data/0?name", Context)).Parent.Parent
+                    .Add ("set", Expression.Create ("/../*/_data/0", Context)).Root;
             Context.Raise ("while", node [2]);
             Assert.AreEqual ("success", node [1].Value);
         }
@@ -139,28 +136,6 @@ namespace p5.unittests.lambda
             Context.Raise ("while", node [2]);
             Assert.AreEqual ("success", node [1].Value);
             Assert.AreEqual ("set", node [2] [2].Name);
-        }
-
-        /// <summary>
-        ///     verifies that [while] is not immutable, if it is overridden with "lambda" child
-        /// </summary>
-        [Test]
-        public void While6 ()
-        {
-            var node = new Node ()
-                .Add ("_data").LastChild
-                    .Add ("success", "foo")
-                    .Add ("error").Parent
-                .Add ("_result")
-                .Add ("while", Expression.Create ("/-2/0?value", Context)).LastChild
-                    .Add ("lambda").LastChild
-                        .Add ("set", Expression.Create ("/././-?value", Context)).LastChild
-                            .Add ("src", Expression.Create ("/../*/_data/0?name", Context)).Parent
-                        .Add ("set", Expression.Create ("/../*/_data/0", Context))
-                        .Add ("set", Expression.Create ("", Context)).Root; // this node should be deleted, and never reinserted
-            Context.Raise ("while", node [2]);
-            Assert.AreEqual ("success", node [1].Value);
-            Assert.AreEqual (2, node [2] [0].Count);
         }
 
         /// <summary>

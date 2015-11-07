@@ -30,16 +30,10 @@ namespace p5.lambda.events
         [ActiveEvent (Name = "set-event")]
         private static void lambda_set_event (ApplicationContext context, ActiveEventArgs e)
         {
-            // making sure there's at least one actual [lambda] object within Active Event creation statement
-            var lambdas = new List<Node> (e.Args.FindAll (idx => idx.Name.StartsWith ("lambda")));
-            if (lambdas.Count == 0)
-                throw new LambdaException ("[event] requires at least one [lambda.xxx] child", e.Args, context);
+            // creating event(s)
+            foreach (var idxEvt in XUtil.Iterate<string> (e.Args, context)) {
 
-            // iterating through each name for new Active Event(s)
-            foreach (var idxName in XUtil.Iterate<string> (e.Args, context)) {
-
-                // creating event
-                EventsCommon.CreateEvent (idxName, lambdas);
+                EventsCommon.CreateEvent (idxEvt, e.Args.Clone ());
             }
         }
     }

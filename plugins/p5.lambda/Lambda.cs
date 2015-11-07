@@ -80,72 +80,11 @@ namespace p5.lambda
         ///     The [lambda] keyword can either take a list of children nodes, or an 
         ///     <see cref="phosphorus.expressions.Expression">Expression</see> as its source, or both. If you have no value in your
         ///     [lambda] node, then the children nodes of your [lambda] node will be executed as p5.lambda nodes. For instance;
-        /// 
-        ///     <pre>lambda
-        ///   set:@/.?value
-        ///     source:success</pre>
-        /// 
-        ///     You can alternatively invoke [lambda] by giving it an expression, instead of a list of children nodes. If you do, then
-        ///     the result of that expression will be executed instead of its children nodes, passing in any children as <em>"arguments"</em>
-        ///     to your p5.lambda execution. For instance;
-        /// 
-        ///     <pre>_exe
-        ///   set:@/.?value
-        ///     source:Hello {0}
-        ///       :@/./././"*"/_input?value
-        /// lambda:@/-?node
-        ///   _input:Thomas</pre>
-        /// 
-        ///     Please notice in the above code, that you do not supply an expression leading directly to the nodes that you wish to execute, 
-        ///     but instead the expression leads to the node that <em>"wraps"</em> your p5.lambda nodes to be executed. Meaning, [_exe] for the
-        ///     above example. You can also of course supply an expression yielding multiple results, for instance;
-        /// 
-        ///     <pre>_exe1
-        ///   set:@/.?value
-        ///     source:Hello {0}
-        ///       :@/./././"*"/_input?value
-        /// _exe2
-        ///   set:@/.?value
-        ///     source:Howdy {0}
-        ///       :@/./././"*"/_input?value
-        /// lambda:@/-|/-2?node
-        ///   _input:Thomas</pre>
-        /// 
-        ///     Anything you submit to [lambda] that is not a node-set, will be converted into a node-set, before executed. Consider the 
-        ///     following code;
-        /// 
-        ///     <pre>lambda:\@"set:@/./""*""/_result/#?name
-        ///   source:Hello there {0}
-        ///     :@/./././""*""/_input?value"
-        ///   _result:node:
-        ///   _input:Thomas Hansen</pre>
-        /// 
-        ///     The above code might be difficult to understand when you start out with p5.lambda. However, to explain it, it basically passes in
-        ///     the [_result] node by reference to the p5.lambda block executed by the [lambda] statement. The [lambda] block itself, will be 
-        ///     created from the string, which is the value of the above [lambda] node, converted into a p5.lambda node-set. In addition it 
-        ///     passes in the [_input] parameter. Since we are executing our p5.lambda block, which is converted from text above, the only way 
-        ///     to return values from that [lambda] block, is to pass in nodes by reference, for then to have the [lambda] block modify the 
-        ///     contents of that node, and/or node hierarchy.
-        /// 
-        ///     A highly useful example of why you'd like to use constructs such as the above, is to realize you can use the above logic to
-        ///     load p5.lambda files, for then to pass in arguments to the execution of those p5.lambda files. Consider the following code;
-        /// 
-        ///     <pre>load-file:some-hyperlisp-file.hl
-        /// lambda:@/./0?value
-        ///   some-input-parameter:foo
-        ///   some-return-value:node:</pre>
-        /// 
-        ///     The above construct allows you to perceive files as <em>"functions"</em>, and pass in and return arguments to and from these files.
-        ///     This is a pattern often used when you use p5.lambda and Phosphorus Five. In fact, that's where the name p5.lambda comes from, since
-        ///     in p5.lambda, everything is a potential executable piece of <em>"code"</em>.
-        /// 
-        ///     Another highly useful trait of constructs such as the above, is that you can pass code across HTTP requests, and boundaries where
-        ///     execution-trees normally don't travel easily, which facilitates for passing pieces of code from one server on your intranet, to
-        ///     another server, which creates better scaling-out capabilities for your end solutions.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "lambda")]
+        [ActiveEvent (Name = "lambda-children")] // used while executing events, forces children evaluation and not expression evaluation
         private static void lambda_lambda (ApplicationContext context, ActiveEventArgs e)
         {
             Executor (ExecuteBlockNormal, context, e.Args, "lambda");
@@ -238,6 +177,7 @@ namespace p5.lambda
             // making sure we pass in children of [lambda] as "arguments" or "parameters" to [lambda] statement
             var match = Expression.Create (e.Args.Get<string> (context), context).Evaluate (e.Args, context);
             foreach (var idxSource in match) {
+
                 ExecuteStatement (Utilities.Convert<Node> (idxSource.Value, context), context, true);
             }
         }
@@ -256,6 +196,7 @@ namespace p5.lambda
             // iterating through all nodes in execution scope, and raising these as Active Events
             var idxExe = exe.FirstChild;
             while (idxExe != null) {
+
                 // executing current statement and retrieving next execution statement
                 idxExe = ExecuteStatement (idxExe, context, false);
             }
@@ -279,6 +220,7 @@ namespace p5.lambda
             // iterating through all nodes in execution scope, and raising these as Active Events
             var idxExe = exe.FirstChild;
             while (idxExe != null) {
+
                 // executing current statement and retrieving next execution statement
                 idxExe = ExecuteStatement (idxExe, context);
             }
@@ -322,7 +264,9 @@ namespace p5.lambda
 
             // we don't execute nodes that start with an underscore "_" since these are considered "data segments"
             // also we don't execute nodes with no name, since these interfers with "null Active Event handlers"
+            // In addition, none of the "conditional operators" are executed neither
             if (force || (!exe.Name.StartsWith ("_") && exe.Name != string.Empty)) {
+
                 // raising the given Active Event normally, taking inheritance chain into account
                 context.Raise (exe.Name, exe);
             }

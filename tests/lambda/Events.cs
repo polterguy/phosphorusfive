@@ -23,9 +23,8 @@ namespace p5.unittests.lambda
         public void Events01 ()
         {
             var node = ExecuteLambda (@"set-event:test.foo1
-  lambda
-    set:x:/././*/_out?value
-      src:success
+  set:x:/./*/_out?value
+    src:success
 test.foo1
   _out");
             Assert.AreEqual ("success", node [1] [0].Value);
@@ -40,9 +39,8 @@ test.foo1
         public void Events02 ()
         {
             var node = ExecuteLambda (@"set-event:test.foo2
-  lambda
-    set:x:@/./.?value
-      src:success
+  set:x:@/.?value
+    src:success
 test.foo2:x:/+?value
 _out");
             Assert.AreEqual ("success", node [2].Value);
@@ -73,22 +71,6 @@ test.foo3
         }
 
         /// <summary>
-        ///     creates an event with a [lambda-copy] statement as child, making sure lambda objects are
-        ///     invoket correctly from events
-        /// </summary>
-        [Test]
-        public void Events04 ()
-        {
-            var node = ExecuteLambda (@"set-event:test.foo4
-  lambda-copy
-    set:x:/././*/_out?value
-      src:error
-test.foo4
-  _out:success");
-            Assert.AreEqual ("success", node [1] [0].Value);
-        }
-
-        /// <summary>
         ///     creates an event in one Application Context, to invoke it in a different, making sure
         ///     events works the way they should
         /// </summary>
@@ -96,9 +78,8 @@ test.foo4
         public void Events05 ()
         {
             ExecuteLambda (@"set-event:test.foo5
-  lambda
-    set:x:/././*/_out?value
-      src:success");
+  set:x:/./*/_out?value
+    src:success");
 
             // creating new Application Context
             Context = Loader.Instance.CreateApplicationContext ();
@@ -115,9 +96,8 @@ test.foo4
         {
             ExecuteLambda (@"set-event:test.f{0}
   :oo7
-  lambda
-    set:x:/././*/_out?value
-      src:success");
+  set:x:/./*/_out?value
+    src:success");
             var node = ExecuteLambda (@"test.foo7
   _out");
             Assert.AreEqual ("success", node [0] [0].Value);
@@ -130,9 +110,8 @@ test.foo4
         public void Events08 ()
         {
             var node = ExecuteLambda (@"set-event:test.foo8
-  lambda
-    set:@/././*/_out/?value
-      source:error
+  set:@/./*/_out/?value
+    src:error
 remove-event:test.foo8
 test.foo8
   _out:success");
@@ -147,9 +126,8 @@ test.foo8
         public void Events09 ()
         {
             var node = ExecuteLambda (@"set-event:test.foo9
-  lambda
-    set:@/././*/_out/?value
-      source:error
+  set:@/./*/_out/?value
+    src:error
 remove-event:test.{0}
   :foo9
 test.foo9
@@ -165,13 +143,11 @@ test.foo9
         public void Events10 ()
         {
             var node = ExecuteLambda (@"set-event:test.foo10
-  lambda
-    set:x:/././*/_out?value
-      src:error
+  set:x:/./*/_out?value
+    src:error
 set-event:test.foo11
-  lambda
-    set:x:/././*/_out?value
-      src:error
+  set:x:/./*/_out?value
+    src:error
 remove-event:x:/../*(/test.foo10|test.foo11)?name
 test.foo10
   _out:success
@@ -191,9 +167,8 @@ test.foo11
   test.foo12
   test.foo13
 set-event:x:/-/*?name
-  lambda
-    set:x:/././*/_out?value
-      src:success
+  set:x:/./*/_out?value
+    src:success
 test.foo12
   _out
 test.foo13
@@ -216,10 +191,9 @@ test.foo13
         public void Events12 ()
         {
             var node = ExecuteLambda (@"set-event:test.hardcoded
-  lambda
-    set:x:/./.?value
-      src:{0}ess
-        :x:/./././.?value
+  set:x:/.?value
+    src:{0}ess
+      :x:/././.?value
 test.hardcoded");
             Assert.AreEqual ("success", node [1].Value);
         }
@@ -232,12 +206,11 @@ test.hardcoded");
         public void Events13 ()
         {
             var node = ExecuteLambda (@"set-event:test.foo14
-  lambda
-    set:x:/./.?value
-      src:x:/./+/#?name
-    _foo:node:
-    set:x:/-/#?name
-      src:success
+  set:x:/.?value
+    src:x:/./+/#?name
+  _foo:node:
+  set:x:/-/#?name
+    src:success
 test.foo14
 test.foo14");
             Assert.AreEqual ("", node [1].Value);
@@ -380,10 +353,9 @@ list-events:x:@/-?value");
         public void Events23 ()
         {
             var node = ExecuteLambda (@"set-event:test.foo15
-  lambda
-    add:x:/./.?node
-      src
-        _result:success
+  add:x:/.?node
+    src
+      _result:success
 test.foo15");
             Assert.AreEqual (1, node [1].Count);
             Assert.AreEqual ("_result", node [1] [0].Name);

@@ -25,7 +25,10 @@ namespace p5.lambda.events
         private static readonly object Lock;
 
         // necessary to make sure we have a global "lock" object
-        static EventsCommon () { Lock = new object (); }
+        static EventsCommon ()
+        {
+            Lock = new object ();
+        }
 
         /// <summary>
         ///     Retrieves one or more dynamically created Active Events.
@@ -51,20 +54,18 @@ namespace p5.lambda.events
                 // looping through all events caller wish to retrieve
                 foreach (var idxEventName in XUtil.Iterate<string> (e.Args, context)) {
 
+                    // looping through all existing event keys
                     foreach (var idxKey in Events.Keys) {
-                        Node appendNode = null;
+
+                        // checking is current event name contains current filter
                         if (idxKey.Contains (idxEventName)) {
 
                             // current Active Event contains current filter value in its name, and we have a match
+                            // checking if event is already returned by a previous filter
                             if (!e.Args.Children.Any (idxExisting => idxExisting.Get<string> (context) == idxKey)) {
 
                                 // no previous filter matched Active Event name
-                                foreach (Node idxLambda in Events [idxKey].Children) {
-                                    if (appendNode == null) {
-                                        appendNode = e.Args.Add ("event", idxKey).LastChild;
-                                    }
-                                    appendNode.Add (idxLambda.Clone ());
-                                }
+                                e.Args.Add (idxKey).LastChild.AddRange (Events [idxKey].Clone ().Children);
                             }
                         }
                     }
@@ -107,22 +108,16 @@ namespace p5.lambda.events
          * Creates a new, or appends to an existing, Active Event the given [lambda.xxx] objects,
          * to be executed when event is raised.
          */
-        internal static void CreateEvent (string name, IEnumerable<Node> lambdas)
+        internal static void CreateEvent (string name, Node lambda)
         {
             // acquiring lock since we're consuming object shared amongst more than one thread (_events)
             lock (Lock) {
+
                 // making sure we have a key for Active Event name
-                if (!Events.ContainsKey (name))
-                    Events [name] = new Node ();
+                Events [name] = new Node ();
 
-                // Clearing any previous events defined
-                Events [name].Clear ();
-
-                // looping through each "lambda.xxx" node inside of event creation node, appending these
-                // into our event node
-                foreach (var idxLambda in lambdas) {
-                    Events [name].Add (idxLambda.Clone ());
-                }
+                // adding event to dictionary
+                Events [name].AddRange (lambda.Children);
             }
         }
 
@@ -133,6 +128,7 @@ namespace p5.lambda.events
         {
             // acquiring lock since we're consuming object shared amongst more than one thread (_events)
             lock (Lock) {
+
                 // removing event, if it exists
                 if (Events.ContainsKey (name))
                     Events.Remove (name);
@@ -150,11 +146,14 @@ namespace p5.lambda.events
         {
             // looping through each Active Event from IEnumerable
             foreach (var idx in source) {
+
                 // checking to see if we have any filter
                 if (filter.Count == 0) {
+
                     // no filter(s) given, slurping up everything
                     node.Add (new Node (name, idx));
                 } else {
+
                     // we have filter(s), checking to see if Active Event name matches at least one of our filters
                     if (filter.Any (idxFilter => idx.IndexOf (idxFilter, StringComparison.Ordinal) != -1)) {
                         node.Add (new Node (name, idx));
@@ -174,41 +173,40 @@ namespace p5.lambda.events
             // here, first checking for existance of key, then to create lock, for then to re-check again, which
             // should significantly improve performance of event invocations in system
             if (Events.ContainsKey (e.Name)) {
+
                 // keep a reference to all lambda objects in current event, such that we can later delete them
-                var lambdas = new List<Node> ();
+                Node lambda = null;
 
                 // acquiring lock to make sure we're thread safe,
                 // this lock must be released before event is invoked, and is only here since we're consuming
                 // an object shared among different threads (_events)
                 lock (Lock) {
+
                     // then re-checking after lock is acquired, to make sure event is still around
                     // note, we could acquire lock before checking first time, but that would impose
                     // a significant overhead on all Active Event invocations, since "" (null Active Events)
                     // are invoked for every single Active Event raised in system
                     if (Events.ContainsKey (e.Name)) {
-                        // looping through all [lambda.xxx] objects in current event, concatenating these into
-                        // event invocation statement, storing a reference to each lambda object,
-                        // before we release lock, and execute event invocation node
-                        var idxLambdaParent = Events [e.Name];
-                        foreach (var idxLambda in idxLambdaParent.Children) {
-                            // appending lambda nodes into current Active Event node, and storing lambda such that we can
-                            // later remove it from current node
-                            var tmp = idxLambda.Clone ();
-                            e.Args.Add (tmp);
-                            lambdas.Add (tmp);
-                        }
+
+                        // adding event into execution lambda
+                        lambda = Events [e.Name].Clone ();
                     }
                 }
 
-                // invoking each [lambda.xxx] object from event
-                foreach (var idxLambda in lambdas) {
-                    context.Raise (idxLambda.Name, idxLambda);
-                }
+                // executing if lambda is around
+                if (lambda != null) {
 
-                // cleaning up after ourselves, deleting only the lambda objects that came
-                // from our dynamically created event
-                foreach (var idxLambda in lambdas) {
-                    idxLambda.UnTie ();
+                    // copying all nodes from beneath event node into currently executed scope
+                    var list = new List<Node> (lambda.Children);
+                    e.Args.AddRange (list);
+
+                    // executing lambda children, and not evaluating any expression in evaluated node!
+                    context.Raise ("lambda-children", e.Args);
+
+                    // cleaning up after ourselves, deleting entire lambda that was added above
+                    foreach (var idxLambda in list) {
+                        idxLambda.UnTie ();
+                    }
                 }
             }
         }
