@@ -37,8 +37,14 @@ namespace p5.exp.iterators
             _value = value;
             _type = type;
             if (_value.StartsWith ("~")) {
+
+                // "like" equality
                 _value = _value.Substring (1);
                 _like = true;
+            } else if (_value.StartsWith ("\\~")) {
+
+                // escaped "like operator"
+                _value = _value.Substring (1);
             }
         }
 
@@ -47,15 +53,19 @@ namespace p5.exp.iterators
             object value = _value;
             if (!string.IsNullOrEmpty (_type) && _type != "string") {
 
-                // converting given value to specified type
-                value = context.Raise ("p5.hyperlisp.get-object-value." + _type, new Node (string.Empty, value)).Value;
-
+                // verifying caller only supplies "lie" to string types!
                 if (_like)
                     throw new ExpressionException ("Cannot use 'like' addition to value iterator when value is not of type string");
+
+                // converting given value to specified type
+                value = context.Raise ("p5.hyperlisp.get-object-value." + _type, new Node (string.Empty, value)).Value;
             }
 
             // filtering away all previous matches that does not match the specified value
-            return Left.Evaluate (context).Where (idxCurrent => _like ? idxCurrent.Get<string> (context).Contains (_value) : value.Equals (idxCurrent.Value));
+            if (_like)
+                return Left.Evaluate (context).Where (idxCurrent => idxCurrent.Get<string> (context).Contains (_value));
+            else
+                return Left.Evaluate (context).Where (idxCurrent => value.Equals (idxCurrent.Value));
         }
     }
 }

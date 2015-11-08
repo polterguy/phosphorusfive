@@ -16,7 +16,7 @@ namespace p5.lambda.events
     /// 
     ///     Contains helper methods for creating and manipulating dynamically created Active Events.
     /// </summary>
-    public static class EventsCommon
+    public static class LambdaEvents
     {
         // contains our list of dynamically created Active Events
         private static readonly Dictionary<string, Node> Events = new Dictionary<string, Node> ();
@@ -25,9 +25,50 @@ namespace p5.lambda.events
         private static readonly object Lock;
 
         // necessary to make sure we have a global "lock" object
-        static EventsCommon ()
+        static LambdaEvents ()
         {
             Lock = new object ();
+        }
+
+        /// <summary>
+        ///     Creates zero or more active events.
+        /// 
+        ///     Will create zero or more dynamic Active Events, where each [lambda.xxx] node beneath the [event] keyword,
+        ///     becomes the p5.lambda code executed when the event is raised. The name(s) of your Active Events,
+        ///     are given as the value of the main [event] node.
+        /// </summary>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
+        [ActiveEvent (Name = "set-event")]
+        private static void lambda_set_event (ApplicationContext context, ActiveEventArgs e)
+        {
+            // creating event(s)
+            foreach (var idxEvt in XUtil.Iterate<string> (e.Args, context)) {
+
+                CreateEvent (idxEvt, e.Args.Clone ());
+            }
+        }
+
+        /// <summary>
+        ///     Removes zero or more dynamically created Active Events.
+        /// 
+        ///     Will remove all dynamically created Active Events with the given name(s).
+        /// 
+        ///     Example;
+        /// 
+        ///     <pre>remove-event:foo</pre>
+        /// </summary>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "remove-event")]
+        private static void event_remove (ApplicationContext context, ActiveEventArgs e)
+        {
+            // iterating through all events to delete
+            foreach (var idxName in XUtil.Iterate<string> (e.Args, context)) {
+
+                // deleting event
+                RemoveEvent (idxName);
+            }
         }
 
         /// <summary>

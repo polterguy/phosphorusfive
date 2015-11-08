@@ -50,13 +50,11 @@
     <Compile Include="keywords\Set.cs" />
     <Compile Include="keywords\While.cs" />
     <Compile Include="keywords\ForEach.cs" />
-    <Compile Include="events\EventsCommon.cs" />
-    <Compile Include="events\PFEvent.cs" />
-    <Compile Include="events\RemoveEvent.cs" />
     <Compile Include="keywords\Insert.cs" />
     <Compile Include="keywords\Split.cs" />
     <Compile Include="keywords\Join.cs" />
     <Compile Include="Operators.cs" />
+    <Compile Include="keywords\LambdaEvents.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
@@ -84,6 +82,5 @@
   <ItemGroup>
     <Folder Include="helpers\" />
     <Folder Include="keywords\" />
-    <Folder Include="events\" />
   </ItemGroup>
 </Project>

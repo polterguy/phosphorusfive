@@ -91,34 +91,58 @@ namespace p5.lambda
          */
         private static int CompareValues (List<object> lhs, List<object> rhs)
         {
+            // checking for "null items" (which logically are equal)
+            // This means that an expression yielding exclusively "null values" will be equal to anything else that somehow
+            // yields only "null values"
+            if (lhs.Count (ix => ix != null) == 0 && rhs.Count (ix => ix != null) == 0)
+                return 0;
+            if (rhs.Count (ix => ix != null) == 0 && lhs.Count (ix => ix != null) == 0)
+                return 0;
+
+            // checking count of both sides
             if (lhs.Count < rhs.Count)
                 return -1;
             if (lhs.Count > rhs.Count)
                 return 1;
+
+            // looping through each item on both sides
             for (int idx = 0; idx < lhs.Count; idx++) {
+
+                // checking both sides for "null"
                 if (lhs [idx] == null && rhs [idx] != null)
                     return -1;
                 if (lhs [idx] != null && rhs [idx] == null)
                     return 1;
                 if (lhs [idx] == null && rhs [idx] == null)
                     continue;
+
+                // checking to see if types match
                 if (lhs [idx].GetType () != rhs [idx].GetType ())
                     return lhs [idx].GetType ().FullName.CompareTo (rhs [idx].GetType ().FullName);
+
+                // running through IComparable
                 int retVal = ((IComparable)lhs [idx]).CompareTo (rhs [idx]);
+
+                // returning value if they were not the same, otherwise iterating to next item in lists
                 if (retVal != 0)
                     return retVal;
             }
-            return 0; // equals
+
+            return 0; // both sides are identical to each other
         }
-        
+
+        /*
+         * returns two lists containing the object values of both sides being compared to each other
+         */
         private static Tuple<List<object>, List<object>> GetBothSides (Node args, ApplicationContext context)
         {
+            // left-hand side
             List<object> lhs = new List<object> (XUtil.Iterate<object> (args.Parent, context));
-            if (args.Parent.Value == null)
-                lhs.Add (null);
+
+            // right-hand side
             List<object> rhs = new List<object> (XUtil.Iterate<object> (args, context));
-            if (args.Value == null)
-                rhs.Add (null);
+
+            // returning both sides to caller
             return new Tuple<List<object>, List<object>> (lhs, rhs);
         }
     }

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using p5.core;
 using p5.exp;
+using p5.exp.exceptions;
 
 /// <summary>
 ///     Contains helper classes for p5.lambda conditional active events.
@@ -24,6 +25,55 @@ namespace p5.lambda.helpers
     /// </summary>
     public class Conditions
     {
+        /*
+         * recursively run through conditions
+         */
+        public static void LoopThrough (ApplicationContext context, Node args)
+        {
+            // looping through all conditional children nodes
+            foreach (var idx in GetConditionalEventNodes (args)) {
+
+                switch (idx.Name) {
+
+                case "or":
+                    TryEvaluateSimpleExist (context, args);
+                    if (args.Get<bool> (context))
+                        return; // since previous conditions evaluated to true, there is no need to evaluate any further
+                    LoopThrough (context, idx); // recursively loop through, if previous condition did NOT evaluate to true!
+                    args.Value = idx.Get<bool> (context);
+                    break;
+
+                case "and":
+                    TryEvaluateSimpleExist (context, args);
+                    if (args.Get<bool> (context)) {
+                        LoopThrough (context, idx); // recursively loop through, but only if previous statements are true!
+                        args.Value = idx.Get<bool> (context);
+                    }
+                    break;
+
+                case "xor":
+                    TryEvaluateSimpleExist (context, args);
+                    LoopThrough (context, idx);
+                    args.Value = args.Get<bool> (context) != idx.Get<bool> (context); // only evaluates to true if nodes are NOT EQUAL
+                    break;
+
+                case "not":
+                    TryEvaluateSimpleExist (context, args);
+                    if (idx.Value != null || idx.Count != 0)
+                        throw new LambdaException ("Operator [not] cannot have neither any value, nor any children", idx, context);
+                    args.Value = !args.Get<bool> (context);
+                    break;
+
+                default:
+                    context.Raise (idx.Name, idx);
+                    break;
+                }
+            }
+
+            // if condition had no operator active event children, then we must evaluate a "simple exist" condition
+            TryEvaluateSimpleExist (context, args);
+        }
+
         /*
          * executes current scope, after cleaning up all conditional nodes, 
          * but only if root node's value has evaluated to true!
@@ -51,19 +101,21 @@ namespace p5.lambda.helpers
         /*
          * will evaluate the given condition to true if it is anything but a boolean or a null value
          */
-        public static void TryEvaluateSimpleExist (ApplicationContext context, Node args)
+        private static void TryEvaluateSimpleExist (ApplicationContext context, Node args)
         {
+            // if value is not boolean type, we evaluate value, and set its value to true if evaluation did not
+            // result in "null"
             if (!(args.Value is bool)) {
+
                 var obj = XUtil.Single<object> (args, context, null);
                 args.Value = obj != null;
             }
         }
 
-        //\todo implement active event sinks to create ability to extend logic with your own user specified conditions
         /*
          * returns all nodes that are part of evaluating conditional statements
          */
-        public static List<Node> GetConditionalEventNodes (Node args)
+        private static List<Node> GetConditionalEventNodes (Node args)
         {
             List<Node> retVal = new List<Node> ();
             foreach (var idx in args.Children) {
@@ -83,48 +135,6 @@ namespace p5.lambda.helpers
                 }
             }
             return retVal;
-        }
-
-        /*
-         * recursively run through conditions
-         */
-        public static void LoopThrough (ApplicationContext context, Node args)
-        {
-            // looping through all conditional children nodes
-            foreach (var idx in GetConditionalEventNodes (args)) {
-                switch (idx.Name) {
-                case "or":
-                    TryEvaluateSimpleExist (context, args);
-                    if (args.Get<bool> (context))
-                        break; // since previous conditions evaluated to true, there is no need to evaluate any further
-                    LoopThrough (context, idx); // recursively loop through, if previous condition did NOT evaluate to true!
-                    args.Value = idx.Get<bool> (context);
-                    break;
-                case "and":
-                    TryEvaluateSimpleExist (context, args);
-                    if (args.Get<bool> (context)) {
-                        LoopThrough (context, idx); // recursively loop through, but only if previous statements are true!
-                        args.Value = idx.Get<bool> (context);
-                    }
-                    break;
-                case "xor":
-                    TryEvaluateSimpleExist (context, args);
-                    LoopThrough (context, idx);
-                    args.Value = args.Get<bool> (context) != idx.Get<bool> (context); // only evaluates to true if nodes are NOT EQUAL
-                    break;
-                case "not":
-                    TryEvaluateSimpleExist (context, args);
-                    LoopThrough (context, idx);
-                    args.Value = !idx.Get<bool> (context);
-                    break;
-                default:
-                    context.Raise (idx.Name, idx);
-                    break;
-                }
-            }
-
-            // if condition had no operator active event children, then we must evaluate a "simple exist" condition
-            TryEvaluateSimpleExist (context, args);
         }
     }
 }

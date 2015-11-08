@@ -466,6 +466,142 @@ if:x:/../*/_result?value
     src:success");
             Assert.AreEqual ("success", result [0].Value);
         }
+        
+        /// <summary>
+        ///     verifies [if] works when comparing an expression with 'null'
+        /// </summary>
+        [Test]
+        public void If22_2 ()
+        {
+            var result = ExecuteLambda (@"_result:error
+  _foo1
+  _foo2
+if:x:/../*/_result/*?value
+  equals
+  set:x:/../*/_result?value
+    src:success");
+            Assert.AreEqual ("success", result [0].Value);
+        }
+        
+        /// <summary>
+        ///     verifies [if] works when comparing an expression with 'null'
+        /// </summary>
+        [Test]
+        public void If22_3 ()
+        {
+            var result = ExecuteLambda (@"_result1:error
+  _foo1
+  _foo2
+_result2
+  _foo1
+  _foo2
+  _foo3
+if:x:/../*/_result1/*?value
+  equals:x:/../*/_result2/*?value
+  set:x:/../*/_result1?value
+    src:success");
+            Assert.AreEqual ("success", result [0].Value);
+        }
+        
+        /// <summary>
+        ///     verifies [if] works when comparing an expression with 'null'
+        /// </summary>
+        [Test]
+        public void If22_4 ()
+        {
+            var result = ExecuteLambda (@"_result1:success
+  _foo1
+  _foo2
+_result2:error
+  _foo1
+  _foo2
+  _foo3:oops
+if:x:/../*/_result1/*?value
+  equals:x:/../*/_result2?value
+  set:x:/../*/_result?value
+    src:error");
+            Assert.AreEqual ("success", result [0].Value);
+        }
+        
+        /// <summary>
+        ///     verifies [if] works when comparing an expression with 'null'
+        /// </summary>
+        [Test]
+        public void If22_5 ()
+        {
+            var result = ExecuteLambda (@"_result1:error
+  _foo1
+  _foo2
+if:x:/../*/_result1/*?value
+  equals:x:/../*/_NON-EXISTING?value
+  set:x:/../*/_result1?value
+    src:success");
+            Assert.AreEqual ("success", result [0].Value);
+        }
+        
+        /// <summary>
+        ///     verifies [if] works when comparing an expression with 'null'
+        /// </summary>
+        [Test]
+        public void If22_6 ()
+        {
+            var result = ExecuteLambda (@"_result1:error
+  _foo1:bar1
+  _foo2:bar2
+if:x:/../*/_result1/*/=~bar?count
+  equals:int:2
+  set:x:/../*/_result1?value
+    src:success");
+            Assert.AreEqual ("success", result [0].Value);
+        }
+        
+        /// <summary>
+        ///     verifies [if] works when comparing an expression with 'null'
+        /// </summary>
+        [Test]
+        public void If22_7 ()
+        {
+            var result = ExecuteLambda (@"_result1:error
+  _foo1:~bar
+  _foo2:bar
+if:x:/../*/_result1/*/=\~bar?count
+  equals:int:1
+  set:x:/../*/_result1?value
+    src:success");
+            Assert.AreEqual ("success", result [0].Value);
+        }
+        
+        /// <summary>
+        ///     verifies [if] works when comparing an expression with 'null'
+        /// </summary>
+        [Test]
+        public void If22_8 ()
+        {
+            var result = ExecuteLambda (@"_result1:success
+  _foo1:bar
+  _foo2:bar
+if:x:/../*/_result1/*/=bar?name
+  not
+  set:x:/../*/_result1?value
+    src:error");
+            Assert.AreEqual ("success", result [0].Value);
+        }
+        
+        /// <summary>
+        ///     verifies [if] works when comparing an expression with 'null'
+        /// </summary>
+        [Test]
+        public void If22_10 ()
+        {
+            var result = ExecuteLambda (@"_result1:error
+  _foo1:bar-not
+  _foo2:bar-not
+if:x:/../*/_result1/*/=non-existing?value
+  not
+  set:x:/../*/_result1?value
+    src:success");
+            Assert.AreEqual ("success", result [0].Value);
+        }
 
         /// <summary>
         ///     verifies [if] works when comparing a constant with 'null'
