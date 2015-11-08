@@ -23,7 +23,7 @@ if:x:/../*/_args/*/showgrid?value
  * checking to see if user is logged in, and if so, we remove the login widget from the page, and replace
  * it with a logout widget
  */
-sys42.get-logged-in-user
+sys42.get-user
 if:x:/-/*?count
   more-than:int:0
 
@@ -51,7 +51,7 @@ for-each:x:/-/*
   _go:bool:true
   if:x:/./*/__dp/#/*/role?value
     if:x:/..for-each/*/__dp/#/*/role?value
-      not-equals:x:/../*/sys42.get-logged-in-user/*/role?value
+      not-equals:x:/../*/sys42.get-user/*/role?value
       set:x:/..for-each/*/_go?value
         src:bool:false
 
@@ -143,7 +143,7 @@ create-widget:template
                 set:x:/+2/*/username?value
                   src:x:/././*/get-widget-property/[0,1]/+/<?value
                 set:x:/+1/*/password?value
-                  src:x:/././*/get-widget-property/[0,1]/+/<?value
+                  src:x:/././*/get-widget-property/[1,2]/+/<?value
                 sys42.login-user
                   username
                   password

@@ -16,9 +16,9 @@ set-event:sys42.login-user
 
     // username/password combination existed in database, storing username in plain, and password hashed
     p5.crypto.hash-string:x:/..sys42.login-user/*/select-data/*/*/password?value
-    set:x:/+2/*/source/*/password?value
+    set:x:/+2/*/src/*/password?value
       src:x:/./-?value
-    set:x:/+1/*/src/*/username?value
+    set:x:/+/*/src/*/username?value
       src:x:/..sys42.login-user/*/select-data/*/*/username?value
     set-cookie:system42-user
       duration:int:365

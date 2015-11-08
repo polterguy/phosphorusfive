@@ -52,6 +52,8 @@
     <Content Include="Global.asax" />
     <Content Include="media\css\main.css" />
     <Content Include="media\css\src\grid.png" />
+    <Content Include="system42\codemirror\hyperlisp-mode.js" />
+    <Content Include="system42\codemirror\theme\blackboard.css" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -107,9 +109,6 @@
     <Compile Include="code\ActiveEventAssemblies.cs" />
   </ItemGroup>
   <ItemGroup />
-  <ItemGroup>
-    <None Include="application-startup.hl" />
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\p5.ajax\p5.ajax.csproj">
       <Project>{11644924-3367-4812-BE60-7DA41FC9E4AE}</Project>
@@ -167,5 +166,31 @@
       <Project>{378663D4-1FC1-4109-8896-F72440C6C269}</Project>
       <Name>p5.net</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="system42\application-startup.hl" />
+    <None Include="system42\admin\executor.hl" />
+    <None Include="system42\admin\page-editor\page-editor.hl" />
+    <None Include="system42\admin\page-editor\editor-types\controls-editor.hl" />
+    <None Include="system42\admin\page-editor\editor-types\html-editor.hl" />
+    <None Include="system42\admin\page-editor\editor-types\lambda-editor.hl" />
+    <None Include="system42\page-types\special-page\pf.no-access.hl" />
+    <None Include="system42\startup-files\pages\create-default-pages.hl" />
+    <None Include="system42\startup-files\users\create-default-user.hl" />
+    <None Include="system42\startup-files\users\sys42.login-user.hl" />
+    <None Include="system42\startup-files\users\sys42.logout-user.hl" />
+    <None Include="system42\templates\main.hl" />
+    <None Include="system42\README.md" />
+    <None Include="system42\startup-files\debug\sys42.show-lisp.hl" />
+    <None Include="system42\page-types\controls.hl" />
+    <None Include="system42\page-types\html.hl" />
+    <None Include="system42\page-types\lambda.hl" />
+    <None Include="system42\startup-files\users\sys42.get-user.hl" />
+    <None Include="system42\startup-files\pf.web.load-ui.hl" />
+    <None Include="system42\startup-files\pages\sys42.create-page.hl" />
+    <None Include="system42\startup-files\pages\sys42.edit-page.hl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="system42\startup-files\debug\" />
   </ItemGroup>
 </Project>

@@ -43,7 +43,7 @@ create-widget:editor
     get-session-value:page-editor.current-page
     if:x:/-/*?count
       more-than:int:0
-      sys42.page-editor.edit-page
+      sys42.edit-page
   widgets
     literal:header
       class:span-15
@@ -54,7 +54,7 @@ create-widget:editor
       element:select
       class:span-3 prepend-top
       onchange
-        sys42.page-editor.create-page
+        sys42.create-page
       widgets
         literal
           element:option

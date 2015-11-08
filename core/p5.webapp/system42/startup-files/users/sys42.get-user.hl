@@ -4,13 +4,14 @@
  * by reference
  */
 
-set-event:sys42.get-logged-in-user
+set-event:sys42.get-user
 
   // read "system42-user" cookie, if existing
   get-cookie:system42-user
   if:x:/-/*
 
-    // cookie existed, now checking to see if credentials (username and hashed password) is correct, but first converting cookie to Node
+    // cookie existed, now checking to see if credentials (username and hashed password) is correct, 
+    // but first converting cookie to Node
     lisp2lambda:x:/./-/*?value
     select-data:x:/*/*/p5.user/*/username/"={0}"/.
       :x:/./-/*/username?value
@@ -19,6 +20,6 @@ set-event:sys42.get-logged-in-user
       equals:x:/./-3/*/password?value
 
       // hashed password value from cookie matches the hashed password from database
-      add:x:/..sys42.get-logged-in-user
-        src:x:/..sys42.get-logged-in-user/**/select-data/*/*
+      add:x:/..sys42.get-user
+        src:x:/./././**/select-data/*/*
 

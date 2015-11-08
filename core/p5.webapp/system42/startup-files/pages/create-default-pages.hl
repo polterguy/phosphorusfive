@@ -159,7 +159,7 @@ created as a consequence of you clicking the button. Try clicking it!""
 /*
  * simply executes the file that loads up the 'page editor'
  */
-sys42.execute-lambda-file:system42/admin/page-editor/page-editor.hl
+sys42.execute-lisp-file:system42/admin/page-editor/page-editor.hl
 "
 
     p5.page:/executor
@@ -171,5 +171,5 @@ sys42.execute-lambda-file:system42/admin/page-editor/page-editor.hl
 /*
  * simply executes the file that loads up the 'executor'
  */
-sys42.execute-lambda-file:system42/admin/executor.hl
+sys42.execute-lisp-file:system42/admin/executor.hl
 "

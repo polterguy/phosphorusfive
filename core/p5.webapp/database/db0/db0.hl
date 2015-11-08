@@ -3,21 +3,16 @@ p5.page:/
   name:Home
   template:system42/templates/main.hl
   header:Welcome to System42
-  content:@"<p>System42 is an example minimalistic content management system, 
-built on top of <a href=""github.com/polterguy/phosphorus-five"">phosphorus.five</a>. Its purpose is to be an example
-CMS, while at the same time giving you some useful tools to get started with Phosphorus Five.</p>
+  content:@"<p>System42 is an example minimalistic content management system, built on top of <a href=""github.com/polterguy/phosphorus-five"">phosphorus.five</a>. Its purpose is to be an example CMS, while at the same time giving you some useful tools to get started with Phosphorus Five.</p>
 
-<p>Through p5.lambda, you can orchestrate your web application together, using a high-level abstraction language, that doesn't
-require much pre-existing programming skills from you. This creates opportunities for non-developers to create complex web applications, 
-while at the same time retaining the possibility to dive into <em>real</em> programming for system developers.</p>
+<p>Through p5.lambda, you can orchestrate your web application together, using a high-level abstraction language, that doesn&#39;t require much pre-existing programming skills from you. This creates opportunities for non-developers to create complex web applications, while at the same time retaining the possibility to dive into <em>real</em> programming for system developers.</p>
 
-<p>This way your developers can focus on what they should focus on, allowing your non-technical staff to orchestrate
-together what your developers create.</p>
+<p>This way your developers can focus on what they should focus on, allowing your non-technical staff to orchestrate together what your developers create.</p>
 
 <h2>Username/password</h2>
 
-<p>When you start system42 for the first time, then a default user with the username/password combination of
-<em>admin/admin</em> is created for you</p>"
+<p>When you start system42 for the first time, then a default user with the username/password combination of <em>admin/admin</em> is created for you</p>
+"
 p5.page:/hello-world
   type:controls
   name:Controls example
@@ -84,7 +79,6 @@ p5.page:/lambda-world
   type:lambda
   name:Lambda example
   lambda:@"
-
 /*
  * this is an example of a 'lambda page', which allows you to control every aspect 
  * of your page in its entirety, by executing p5.lambda code as a consequence of 
@@ -141,18 +135,16 @@ p5.page:/editor
 /*
  * simply executes the file that loads up the 'page editor'
  */
-sys42.execute-lambda-file:system42/admin/page-editor/page-editor.hl
+sys42.execute-lisp-file:system42/admin/page-editor/page-editor.hl
 "
 p5.page:/executor
   type:lambda
   name:Lambda executor
   role:admin
-  lambda:@"
-
-/*
+  lambda:@"/*
  * simply executes the file that loads up the 'executor'
  */
-sys42.execute-lambda-file:system42/admin/executor.hl
+sys42.execute-lisp-file:system42/admin/executor.hl
 "
 p5.user:admin user
   username:admin

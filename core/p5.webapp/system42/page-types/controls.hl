@@ -9,7 +9,7 @@
 // checking to see if user has access to object first
 _go:bool:true
 if:x:/../*/_args/*/role
-  sys42.get-logged-in-user
+  sys42.get-user
   if:x:/-/*/role?value
     not-equals:x:/../*/_args/*/role?value
     set:x:/../*/_go?value
@@ -27,4 +27,4 @@ if:x:/../*/_go?value
     class:span-24 last
     widgets
 else
-  sys42.execute-lambda-file:system42/page-types/special-page/p5.no-access.hl
+  sys42.execute-lisp-file:system42/page-types/special-page/p5.no-access.hl

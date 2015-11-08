@@ -13,8 +13,8 @@ set-event:p5.web.load-ui
   add:x:/+2/*/_args
     src:x:/././*/_args/*
   set:x:/+1?value
-    src:system42/page-types/sys42.page.{0}.hl
+    src:system42/page-types/{0}.hl
       :x:/././-3/*/*/type?value
-  sys42.execute-lambda-file
+  sys42.execute-lisp-file
     _args
 
