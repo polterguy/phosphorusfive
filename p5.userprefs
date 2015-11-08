@@ -1,22 +1,32 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="plugins/p5.io/folder/Remove.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="tests/lambda/Branching.cs">
     <Files>
-      <File FileName="plugins/p5.io/folder/Remove.cs" Line="43" Column="25" />
+      <File FileName="plugins/p5.lambda/helpers/Conditions.cs" Line="117" Column="60" />
+      <File FileName="plugins/p5.lambda/Operators.cs" Line="26" Column="1" />
+      <File FileName="tests/lambda/Branching.cs" Line="583" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="core" expanded="True" />
+          <Node name="core" expanded="True">
+            <Node name="p5.exp" expanded="True">
+              <Node name="iterators" expanded="True" />
+            </Node>
+          </Node>
           <Node name="plugins" expanded="True">
             <Node name="extras" expanded="True" />
-            <Node name="p5.io" expanded="True">
-              <Node name="folder" expanded="True">
-                <Node name="Remove.cs" selected="True" />
+            <Node name="p5.lambda" expanded="True">
+              <Node name="helpers" expanded="True" />
+            </Node>
+          </Node>
+          <Node name="tests" expanded="True">
+            <Node name="p5.tests" expanded="True">
+              <Node name="lambda" expanded="True">
+                <Node name="Branching.cs" selected="True" />
               </Node>
             </Node>
           </Node>
-          <Node name="tests" expanded="True" />
         </State>
       </Pad>
       <Pad Id="ClassPad">
@@ -24,18 +34,19 @@
       </Pad>
       <Pad Id="MonoDevelop.Debugger.WatchPad">
         <State>
-          <Value>e.Args.Value</Value>
-          <Value>e.Args.Root</Value>
+          <Value>lhs[idx]</Value>
+          <Value>rhs[idx]</Value>
         </State>
       </Pad>
       <Pad Id="MonoDevelop.NUnit.TestPad">
-        <State expanded="True" selected="True">
+        <State expanded="True">
           <Node name="tests" expanded="True">
             <Node name="p5.tests" expanded="True">
               <Node name="p5" expanded="True">
                 <Node name="unittests" expanded="True">
-                  <Node name="lambda" expanded="True" />
-                  <Node name="plugins" expanded="True" />
+                  <Node name="lambda" expanded="True">
+                    <Node name="Branching" selected="True" />
+                  </Node>
                 </Node>
               </Node>
             </Node>
