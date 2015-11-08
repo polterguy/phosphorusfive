@@ -181,17 +181,11 @@ UpgradeLog*.htm
 # Microsoft Fakes
 FakesAssemblies/
 
-# phosphorus five custom
-!lib/phosphorus.ajax.dll
-
 # ignoring unit tests output directory
 test-results/
-phosphorus.userprefs
+p5.userprefs
 
-#ignoring "system42" folder and other project folders, usually linked into application pool folder
-system42
-wikipublish
-core/phosphorus.application-pool/database/*
+core/p5.webapp/database/*
 
 #ignoring doxygen output folder
-doxygen-output
+dox/doxygen-output
