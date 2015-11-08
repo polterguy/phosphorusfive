@@ -1,0 +1,89 @@
+
+/*
+ * allows the user to browse the file system on his system
+ */
+
+// creating actual form to show file system
+create-widget:main-folders
+  class:span-24 prepend-top
+  oninitialload
+    sys42.list-folders-files
+  widgets
+    literal
+      element:h1
+      class:span-23
+      innerValue:File browser
+    literal
+      class:span-1 last
+      element:a
+      href:/
+      innerValue:back
+    container:files-folders
+  events
+    sys42.list-folders-files
+
+      // clearing previous controls
+      clear-widget:files-folders
+
+      // checking if we've got a session value for "current folder"
+      get-session-value:sys42.current-folder
+      if:x:/-/*
+        set:x:/./+?value
+          src:x:/././-/*?value
+
+      // listing folders and looping through creating one widget for each folder
+      list-folders:/
+      for-each:x:/-/*
+        _lit
+          literal
+            innerValue
+            class:span-4
+            onclick
+              set-session-value:sys42.current-folder
+                src
+              include-javascript:"location.reload();"
+        set:x:/-/**/innerValue?value
+          src:x:/././*/__dp/#?value
+        set:x:/-2/**/set-session-value/*/src?value
+          src:x:/././*/__dp/#?value
+        add:x:/././*/create-widget/*/widgets
+          src:x:/././*/_lit/*
+
+      if:x:/../*/get-session-value?value
+        set:x:/./+?value
+          src:x:/././-/*?value
+
+      // listing folders and looping through creating one widget for each folder
+      list-files:/
+      for-each:x:/-/*
+        _lit
+          literal
+            innerValue
+            class:span-4
+            onclick
+              sys42.show-lisp
+        set:x:/-/**/innerValue?value
+          src:x:/././*/__dp/#?value
+        set:x:/-2/**/set-session-value/*/src?value
+          src:x:/././*/__dp/#?value
+        add:x:/././*/create-widget/*/widgets
+          src:x:/././*/_lit/*
+      set:x:/+/*/widgets/*/%6/*/class?value
+        rel-src:{0} last
+          :x:?value
+      create-widget
+        class:span-24
+        parent:folders
+        class:span-24
+        widgets
+      sys42.show-lisp
+
+
+
+
+
+
+
+
+
+

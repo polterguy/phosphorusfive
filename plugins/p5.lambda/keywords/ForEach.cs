@@ -76,12 +76,15 @@ namespace p5.lambda.keywords
         {
             var nodeValue = e.Args.Value as Node;
             if (nodeValue != null) {
+
                 foreach (var idxSource in nodeValue.Children) {
                     IterateForEach (context, idxSource, e.Args);
                 }
             } else {
+
                 if (!(e.Args.Value is Expression))
                     throw new LambdaException ("[for-each] was neither given a node nor a valid expression", e.Args, context);
+
                 foreach (var idxSource in e.Args.Get<Expression> (context).Evaluate (e.Args, context, e.Args)) {
                     IterateForEach (context, idxSource.Value, e.Args);
                 }

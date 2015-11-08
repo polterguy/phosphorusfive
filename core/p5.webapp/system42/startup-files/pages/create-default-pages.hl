@@ -173,3 +173,15 @@ sys42.execute-lisp-file:system42/admin/page-editor/page-editor.hl
  */
 sys42.execute-lisp-file:system42/admin/executor.hl
 "
+
+    p5.page:/files
+      type:lambda
+      name:File system
+      role:admin
+      lambda:@"
+
+/*
+ * simply executes the file that loads up the 'file browser'
+ */
+sys42.execute-lisp-file:system42/admin/files.hl
+"

@@ -105,10 +105,6 @@ namespace p5.lambda.keywords
             // figuring out source type, for then to execute the corresponding logic
             if (e.Args.Count > 0 && e.Args.LastChild.Name == "rel-src") {
 
-                // asserting destination is expression
-                if (!(e.Args.LastChild.Value is Expression))
-                    throw new LambdaException ("Not a valid relative source expression given, make sure you set [rel-src]'s value to an expression using :x:", e.Args, context);
-
                 // iterating through all destinations, figuring out source relative to each destinations
                 foreach (var idxDestination in destEx.Evaluate (e.Args, context, e.Args)) {
 

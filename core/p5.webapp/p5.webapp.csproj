@@ -189,6 +189,7 @@
     <None Include="system42\startup-files\pf.web.load-ui.hl" />
     <None Include="system42\startup-files\pages\sys42.create-page.hl" />
     <None Include="system42\startup-files\pages\sys42.edit-page.hl" />
+    <None Include="system42\admin\files.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="system42\startup-files\debug\" />
