@@ -1,0 +1,37 @@
+
+/*
+ * creates the Active Event that allows you to execute Hyperlisp p5.lambda files. the Hyperlisp
+ * file you wish to execute is given as value of [sys42.execute-lambda-file], and all nodes benath
+ * [sys42.execute-lambda-file] will be passed into your p5.lambda file, underneath [_args], and
+ * accessible as parameters from inside your file. file to exeute can be given either as an
+ * expression, or a constant. multiple files can be executed at the same time, by providing an
+ * expression that leads to multiple results
+ */
+set-event:sys42.execute-lambda-file
+  lambda
+    load-file:x:@/./.?value
+    add:x:/+
+      src:x:/..sys42.execute-lambda-file/*/_args
+    lambda-copy:x:/-2/*
+
+
+/*
+ * executes all files within given directory recursively, assuming they're Hyperlisp p5.lambda files. the directory
+ * you wish to execute the files within, is given through the value of the [sys42.execute-all-files-in-folder-recursively] node,
+ * which might be either an expression or a constant
+ */
+set-event:sys42.execute-all-files-in-folder-recursively
+  lambda
+    list-files:x:@/./.?value
+    sys42.execute-lambda-file:x:/-/*?value
+    list-folders:x:@/./.?value
+    if:x:/-/*
+      sys42.execute-all-files-in-folder-recursively:x:/./-/*?value
+
+
+/*
+ * after creation of the above Active Events, this file will execute all
+ * files in the "system42/startup-files" folder recursively, by using the Active
+ * Events above
+ */
+sys42.execute-all-files-in-folder-recursively:system42/startup-files

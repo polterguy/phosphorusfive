@@ -1,0 +1,25 @@
+
+.cm-s-blackboard { font-size:15px; }
+.cm-s-blackboard .CodeMirror { background: #fafaff; color: #555; }
+.cm-s-blackboard .CodeMirror-selected { background: #d0d0e0 !important; }
+.cm-s-blackboard .CodeMirror-gutters { background: #f0f0f0; border-right: 0; }
+.cm-s-blackboard .CodeMirror-guttermarker { color: #ff00ff; }
+.cm-s-blackboard .CodeMirror-guttermarker-subtle { color: #888; }
+.cm-s-blackboard .CodeMirror-linenumber { color: #aaaaaa; }
+.cm-s-blackboard .CodeMirror-cursor { border-left: 1px solid #000 !important; }
+
+.cm-s-blackboard .cm-keyword { color: #0E1EaF; }
+.cm-s-blackboard .cm-lesser_keyword { color: #5E6EeF; }
+.cm-s-blackboard .cm-active-event { color: #555; }
+.cm-s-blackboard .cm-operator { color: #aa0000; }
+.cm-s-blackboard .cm-string { color: #282; }
+.cm-s-blackboard .cm-mstring { color: #282; }
+.cm-s-blackboard .cm-comment { color: #888888; }
+.cm-s-blackboard .cm-mcomment { color: #888888; }
+.cm-s-blackboard .cm-expression { color: #982A2D; }
+.cm-s-blackboard .cm-variable { color: #5F928F; }
+.cm-s-blackboard .cm-type { color: #282A0C; }
+.cm-s-blackboard .cm-value { color: #282; }
+.cm-s-blackboard .cm-error { background: #9D1E15; color: #F8F8F8; }
+
+.cm-s-blackboard .CodeMirror-activeline-background {background: #eeeefa !important;}

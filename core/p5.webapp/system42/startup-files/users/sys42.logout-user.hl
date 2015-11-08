@@ -1,0 +1,11 @@
+
+/*
+ * logs in the user, creating a persistent cookie on disc for the current session. pass in [_username]
+ * and [_password] as the credentials you wish to check
+ */
+
+set-event:sys42.logout-user
+
+  // destroying persistent cookie, and reloading location
+  set-cookie:system42-user
+  include-javascript:"location.reload();"

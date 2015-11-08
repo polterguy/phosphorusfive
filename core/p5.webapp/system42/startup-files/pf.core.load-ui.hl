@@ -1,0 +1,20 @@
+
+/*
+ * responsible for loading up the user interface. called by the framework when the UI is needed
+ * please notice that the URL of the page is the value of the [p5.page] object in the database 
+ */
+
+set-event:p5.web.load-ui
+  include-stylesheet-file:/media/css/main.css
+  select-data:x:/*/*/p5.page/"={0}"
+    :x:/././*/_form?value
+  add:x:/+3/*/_args
+    src:x:/./-/*/*
+  add:x:/+2/*/_args
+    src:x:/././*/_args/*
+  set:x:/+1?value
+    src:system42/page-types/sys42.page.{0}.hl
+      :x:/././-3/*/*/type?value
+  sys42.execute-lambda-file
+    _args
+

@@ -1,0 +1,17 @@
+
+/*
+ * creates the default user for system42, with a username/password combination of admin/admin
+ */
+
+// checking to see if there exists any [p5.user] objects in database from before
+select-data:x:/*/*/"p5.user"?count
+if:x:/-/0?value
+  equals:int:0
+
+  // there were no [p5.user] objects in database, creating our default admin user
+  insert-data
+
+    p5.user:"admin user"
+      username:admin
+      password:admin
+      role:admin

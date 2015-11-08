@@ -1,0 +1,104 @@
+
+/*
+ * creates the "edit page" page, which allows for editing pages in the database
+ */
+
+
+// populating the "select page" drop down list, with all [p5.page] objects from the database, making sure we select the right one,
+// if we should select a specific page
+get-session-value:page-editor.current-page
+select-data:x:/*/*/p5.page
+for-each:x:/-/*
+  _option
+    literal
+      element:option
+      value
+      innerValue
+  set:x:/-/0/*/value?value
+    src:x:/..for-each/*/__dp/#?value
+  set:x:/-2/0/*/innerValue?value
+    src:{0} - [{1}]
+      :x:/..for-each/*/__dp/#/*/name?value
+      :x:/..for-each/*/__dp/#/*/type?value
+  if:x:/../*/get-session-value/0?value
+    equals:x:/..for-each/*/__dp/#?value
+    add:x:/..for-each/*/_option/0
+      src
+        selected
+  add:x:/../*/create-widget/*/widgets/*/container/=select-page/*/widgets
+    src:x:/..for-each/*/_option/0
+
+
+// since CKEditor requires the BASEPATH variable to be set before the JavaScript is loaded,
+// and phosphorus.ajax loads JavaScript files before it executes JavaScript, we need to set
+// the BASEPATH variable for CKEditor HERE, to make sure it is set before we load the CKEditor 
+// JavaScript file
+include-javascript:"window.CKEDITOR_BASEPATH='/system42/ckeditor/';"
+
+
+// creating the actual "edit page" widget
+create-widget:editor
+  class:span-24
+  oninitialload
+    get-session-value:page-editor.current-page
+    if:x:/-/*?count
+      more-than:int:0
+      sys42.page-editor.edit-page
+  widgets
+    literal:header
+      class:span-15
+      style:"margin-top:18px;"
+      element:h1
+      innerValue:page editor
+    container:new-page
+      element:select
+      class:span-3 prepend-top
+      onchange
+        sys42.page-editor.create-page
+      widgets
+        literal
+          element:option
+          value:_default
+          innerValue:new page ...
+        literal
+          element:option
+          value:html
+          innerValue:html
+        literal
+          element:option
+          value:controls
+          innerValue:controls
+        literal
+          element:option
+          value:lambda
+          innerValue:lambda
+    container:select-page
+      element:select
+      class:span-4 prepend-top
+      onchange
+        get-widget-property:select-page
+          value
+        if:x:/../*/get-widget-property/+/<?value
+          not-equals:_default
+          set:x:/+/*/src?value
+            src:x:/../*/get-widget-property/+/<?value
+          set-session-value:page-editor.current-page
+            src
+        else
+          set-session-value:page-editor.current-page
+        include-javascript:"location.reload();"
+      widgets
+        literal
+          element:option
+          value:_default
+          innerValue:Choose page ...
+    literal:back-link
+      class:span-2 last prepend-top
+      element:a
+      href:/
+      innerValue:back
+    container:editor-toolbar
+      class:span-24
+    container:editor-main-surface
+      class:span-24
+

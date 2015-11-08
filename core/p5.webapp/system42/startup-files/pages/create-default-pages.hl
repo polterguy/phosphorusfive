@@ -1,0 +1,175 @@
+
+/*
+ * creates the default pages for our CMS if no pages exists in our database
+ * will create 5 pages, three of type [html] and one each of [lambda] and [controls]
+ * that will serve as examples of how to create pages in your system
+ */
+
+// checking to see if there exists any [p5.page] objects in database from before
+select-data:x:/*/*/p5.page?count
+if:x:/-/0?value
+  equals:int:0
+
+  // there were no [p5.page] objects in database, creating 5 default pages, just to show some features from system42
+  insert-data
+
+    p5.page:/
+      type:html
+      name:Home
+      template:system42/templates/main.hl
+      header:Welcome to System42
+      content:@"<p>System42 is an example minimalistic content management system, 
+built on top of <a href=""github.com/polterguy/phosphorus-five"">phosphorus.five</a>. Its purpose is to be an example
+CMS, while at the same time giving you some useful tools to get started with Phosphorus Five.</p>
+
+<p>Through p5.lambda, you can orchestrate your web application together, using a high-level abstraction language, that doesn't
+require much pre-existing programming skills from you. This creates opportunities for non-developers to create complex web applications, 
+while at the same time retaining the possibility to dive into <em>real</em> programming for system developers.</p>
+
+<p>This way your developers can focus on what they should focus on, allowing your non-technical staff to orchestrate
+together what your developers create.</p>
+
+<h2>Username/password</h2>
+
+<p>When you start system42 for the first time, then a default user with the username/password combination of
+<em>admin/admin</em> is created for you</p>"
+
+    p5.page:/hello-world
+      type:controls
+      name:Controls example
+      controls:@"
+
+/*
+ * this is an example of a 'controls page', which contains a hierarchy of phosphorus.ajax 
+ * web controls, that allows you to declare your page entirely, controlling every aspect 
+ * of it, through a declarative syntax
+ */
+
+// this becomes the header of your page
+literal:header
+  element:h1
+  innerValue:""Hello World application""
+  class:span-20 last header prepend-top prepend-4
+
+// then we create a container, to hold child controls
+container:content
+  element:div
+  class:span-16 prepend-4 content
+  widgets
+    literal
+      element:p
+      innerValue:@""This is an example of how you can create applications as an integral part 
+of your website content, and have them run side-by-side your CMS pages, 
+as a web page with a list of server-side controls, making it possible 
+to declaratively create your applications, as a list of server-side web 
+controls, capable of executing p5.lambda Active Events as a response to 
+ajax events on the client-side.""
+    literal
+      element:p
+      innerValue:@""This type of application can easily be created with a visual interface, or 
+an IDE, without requiring complex concepts, such as code or programming, 
+by dragging and dropping objects into your design surface of your form. 
+The limitation is that the server controls must be known in advance, 
+since you cannot inject server-side web controls easily, besides as 
+the result of p5.lambda Active Events. In this type of application, you 
+have complete control over the rendering of your page, and there are no 
+pre-existing objects, such as ads or menus for you.""
+    literal
+      element:a
+      class:span-2
+      href:/
+      innerValue:Go back
+    literal
+      element:button
+      class:span-2 clear prepend-top
+      innerValue:click me!
+      onclick
+        create-widget
+
+          // 'main-controls-surface' is the ID for the main 
+          // container widget your entire hierarchy will be added into
+          parent:main-controls-surface
+          class:prepend-4 span-8 clear prepend-top
+          widgets
+            literal
+              innerValue:@""this widget was <strong>dynamically</strong> 
+created as a consequence of you clicking the button. Try clicking it!""
+              onclick
+                delete-widget:x:/../*/_widget?value"
+
+    p5.page:/lambda-world
+      type:lambda
+      name:Lambda example
+      lambda:@"
+
+/*
+ * this is an example of a 'lambda page', which allows you to control every aspect 
+ * of your page in its entirety, by executing p5.lambda code as a consequence of 
+ * your page being loaded
+ */
+
+create-widget:main-script-surface
+  class:span-24 last
+  widgets
+    literal
+      element:h1
+      class:span-16 last header prepend-top prepend-4
+      innerValue:""Hello World, lambda version""
+    literal
+      class:span-16 last prepend-top prepend-4
+      innerValue:@""This is an example of how you can create an application as a lambda object, 
+that executes as the result of a page being requested, and have it run 
+side-by-side with your CMS pages, making it possible to create any amount 
+of complexity your website requires within a page.""
+    literal
+      class:span-16 last prepend-4
+      innerValue:@""In this type of application, you are in complete control over the entire
+rendering of the page, which you must do by resorting to p5.lambda scripts, 
+and you can entirely dynamically create your page, having full control over 
+every aspect of it yourself.""
+    literal
+      element:a
+      class:span-2 clear prepend-4
+      href:/
+      innerValue:Go back
+    container
+      class:prepend-4 span-4 clear
+      widgets
+        literal
+          element:button
+          class:span-2 prepend-top
+          innerValue:click me!
+          onclick
+            create-widget
+              parent:main-script-surface
+              class:prepend-4 span-8 clear prepend-top
+              widgets
+                literal
+                  innerValue:@""this widget was <strong>dynamically</strong>
+created as a consequence of you clicking the button. Try clicking it!""
+                  onclick
+                    delete-widget:x:/../*/_widget?value"
+
+    p5.page:/editor
+      type:lambda
+      name:Page editor
+      role:admin
+      lambda:@"
+
+/*
+ * simply executes the file that loads up the 'page editor'
+ */
+sys42.execute-lambda-file:system42/admin/page-editor/page-editor.hl
+"
+
+    p5.page:/executor
+      type:lambda
+      name:Lambda executor
+      role:admin
+      lambda:@"
+
+/*
+ * simply executes the file that loads up the 'executor'
+ */
+sys42.execute-lambda-file:system42/admin/executor.hl
+"
