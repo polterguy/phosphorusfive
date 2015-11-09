@@ -27,14 +27,14 @@ if:x:/-/0
     src:x:/../*/get-session-value/[0,1]/0?value
 
 // creating actual form to show the executor
-create-widget
+create-widget:executor
   class:span-24 prepend-top
   widgets
-    literal
+    literal:header
       element:h1
       class:span-23
       innerValue:p5.lambda executor
-    literal
+    literal:back
       class:span-1 last
       element:a
       href:/
@@ -43,7 +43,7 @@ create-widget
     /*
      * input textarea element, transformed into a CodeMirror widget later
      */
-    container
+    container:input-wrp
       class:span-24
       widgets
         literal:input
@@ -54,7 +54,7 @@ create-widget
     /*
      * "execute" widget, executes input, and puts the resulting code into output
      */
-    container
+    container:exe-wrp
       class:span-4 prepend-20
       widgets
         literal:execute
@@ -103,13 +103,13 @@ create-widget
     /*
      * output textarea element, transformed into a CodeMirror widget later
      */
-    container
+    container:output-wrp
       class:span-24 prepend-top
       widgets
         literal:output
           element:textarea
           placeholder:after execution, resulting Hyperlisp code will end up here ...
-    container
+    container:clear-wrp
       class:span-4 prepend-20 last
       widgets
         literal:clear

@@ -4,8 +4,9 @@
  */
 
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Web.UI;
+using System.Collections.Generic;
 using p5.ajax.widgets;
 using p5.core;
 using p5.exp;
@@ -22,259 +23,73 @@ namespace p5.web.ui.widgets
     {
         /// <summary>
         ///     Creates an Ajax Container Web Widget.
-        /// 
-        ///     Creates a generic container type of Widget, that can contain children widgets of itself.
-        /// 
-        ///     Active Event is not meant to be raised directly, but through the [create-widget] Active Event, since it 
-        ///     needs a reference to its parent control directly, among other things.
-        /// 
-        ///     Pass in [element] to override the HTML element rendered. 
-        /// 
-        ///     Pass  in [has-id] with "false" to remove the rendering of its HTML ID element.
-        /// 
-        ///     Pass in [controls] as a list of child controls that will be rendered in its children controls collection.
-        /// 
-        ///     Pass in [oninitialload] to have some server-side piece of p5.lambda code execute during its initial loading.
-        /// 
-        ///     Pass in [render-type], to override how the widget is rendered, by supplying either "immediate", "open" or "normal" 
-        ///     as values, overriding how the element is closed, if at all.
-        /// 
-        ///     Use [visible] to change the initial visibility of widget when created.
-        /// 
-        ///     Use [invisible-element] to change the HTML element type your widget is rendered with when it is rendered ass invisible.
-        /// 
-        ///     Use [events] as a wrapper for <em>"local widget Active Events"</em>, which are Active Events only existing for as long
-        ///     as your widget exists.
-        /// 
-        ///     Use [has-name] to override whether or not a widget should have an automatically asssigned name attribute, if it makes sense.
-        ///     Legal values are "true" and "false".
-        /// 
-        ///     Anything within the [widgets] node passed in, will have <em>"p5.web.widgets."</em> appended in front of it,
-        ///     and raised as an Active Event, adding the results of that Active Event into its [widgets] collection automatically.
-        /// 
-        ///     Any nodes starting with "on", will be assumed to be server-side p5.lambda event handlers. Every time a p5.lambda
-        ///     server side event is raised then both [_widget] and [_event] will be passed in to the event handler as root nodes.
-        ///     [_widget] is the id of the main widget that is the root widget of the Active Event [create-widget], while
-        ///     [_event] is the id of the actual widget that raised the event. This feature is useful for widgets that are dynamically
-        ///     created, without an explicitly given id.
-        /// 
-        ///     If your events ends with "-script", they will however be rendered back to client as JavaScript events. If they end 
-        ///     with anything else but "-script", they will be assumed to be DOM events, and your node assumed to be containing 
-        ///     p5.lambda code, supposed to execute when that DOM event is raised, on the server-side, as p5.lambda code.
-        /// 
-        ///     Any other nodes, are automatically added as HTML attributes, with their given values, and rendered as such back to 
-        ///     the client.
-        /// 
-        ///     Example of usage;
-        ///     <pre>
-        /// create-widget:foo
-        ///   widget:container
-        ///   class:span-24 prepend-top info
-        ///   onclick
-        ///     set-widget-property:foo
-        ///       class:span-24 prepend-top success
-        ///     set-widget-property:bar
-        ///       innerValue:I was clicked!
-        ///   controls
-        ///     literal:bar
-        ///       innerValue:Yo World!
-        ///       element:h1</pre>
-        /// 
-        ///     You would rarely, if ever, consume this Active Event directly, but instead consume it indirectly, through the 
-        ///     <see cref="phosphorus.applicationpool.Default.p5_web_widgets_create">[create-widget]</see> Active Event.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "p5.web.widgets.container")]
         private static void p5_web_controls_container (ApplicationContext context, ActiveEventArgs e)
         {
-            var widget = CreateControl<Container> (context, e.Args, "div");
-            var formId = e.Args.Find (idx => idx.Name == "_widget");
-            if (formId != null && formId.Value == null)
-                formId.Value = widget.ClientID;
-            e.Args.Value = DecorateWidget (context, widget, e.Args);
+            CreateWidget<Container> (context, e.Args, "div");
         }
 
         /// <summary>
         ///     Creates an Ajax Literal Web Widget.
-        /// 
-        ///     Creates a generic literal type of Widget, that cannot contain children widgets, but instead has the [innerValue] 
-        ///     property, allowing to change its inner value as text or HTML.
-        /// 
-        ///     Active Event is not meant to be raised directly, but through the [create-widget] Active Event, since it 
-        ///     needs a reference to its parent control directly, among other things.
-        /// 
-        ///     Pass in [element] to override the HTML element rendered. 
-        /// 
-        ///     Pass  in [has-id] with "false" to remove the rendering of its HTML ID element.
-        /// 
-        ///     Pass in [innerValue] to change its inner text or HTML.
-        /// 
-        ///     Pass in [oninitialload] to have some server-side piece of p5.lambda code execute during its initial loading.
-        /// 
-        ///     Pass in [render-type], to override how the widget is rendered, by supplying either "immediate", "open" or "normal" 
-        ///     as values, overriding how the element is closed, if at all.
-        /// 
-        ///     Use [visible] to change the initial visibility of widget when created.
-        /// 
-        ///     Use [invisible-element] to change the HTML element type your widget is rendered with when it is rendered ass invisible.
-        /// 
-        ///     Use [events] as a wrapper for <em>"local widget Active Events"</em>, which are Active Events only existing for as long
-        ///     as your widget exists.
-        /// 
-        ///     Use [has-name] to override whether or not a widget should have an automatically asssigned name attribute, if it makes sense.
-        ///     Legal values are "true" and "false".
-        /// 
-        ///     Any nodes starting with "on", will be assumed to be server-side p5.lambda event handlers. Every time a p5.lambda
-        ///     server side event is raised then both [_widget] and [_event] will be passed in to the event handler as root nodes.
-        ///     [_widget] is the id of the main widget that is the root widget of the Active Event [create-widget], while
-        ///     [_event] is the id of the actual widget that raised the event. This feature is useful for widgets that are dynamically
-        ///     created, without an explicitly given id.
-        /// 
-        ///     If your events ends with "-script", they will however be rendered back to client as JavaScript events without the 
-        ///     "-script" parts. If they end with anything else but "-script", but start with "on", they will be assumed to be DOM 
-        ///     events, and your node assumed to be containing p5.lambda code, supposed to execute when that DOM event is raised, 
-        ///     on the server-side, as p5.lambda code.
-        /// 
-        ///     Any other nodes, are automatically added as HTML attributes, with their given values, and rendered as such back to 
-        ///     the client.
-        /// 
-        ///     Example of usage;
-        ///     <pre>
-        /// create-widget:foo
-        ///   widget:literal
-        ///   class:span-24 prepend-top info
-        ///   innerValue:Click me!
-        ///   element:h1
-        ///   onclick
-        ///     set-widget-property:foo
-        ///       class:span-24 prepend-top success
-        ///       innerValue:I was clicked!</pre>
-        /// 
-        ///     You would rarely, if ever, consume this Active Event directly, but instead consume it indirectly, through the 
-        ///     <see cref="phosphorus.applicationpool.Default.p5_web_widgets_create">[create-widget]</see> Active Event.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "p5.web.widgets.literal")]
         private static void p5_web_controls_literal (ApplicationContext context, ActiveEventArgs e)
         {
-            var widget = CreateControl<Literal> (context, e.Args, "p");
-            var formId = e.Args.Find (idx => idx.Name == "_widget");
-            if (formId != null && formId.Value == null)
-                formId.Value = widget.ClientID;
-            e.Args.Value = DecorateWidget (context, widget, e.Args);
+            CreateWidget<Literal> (context, e.Args, "p");
         }
 
         /// <summary>
         ///     Creates an Ajax Void Web Widget.
-        /// 
-        ///     Creates a generic void type of Widget, that cannot contain neither children widgets, nor has the [innerValue] 
-        ///     property. This type of widget is useful for HTML elements that does not have neither a value, nor children widgets.
-        ///     Examples uncludes for instance <em>"input"</em> html elements of type <em>"button"</em>.
-        /// 
-        ///     Active Event is not meant to be raised directly, but through the [create-widget] Active Event, since it 
-        ///     needs a reference to its parent control directly, among other things.
-        /// 
-        ///     Pass in [element] to override the HTML element rendered. 
-        /// 
-        ///     Pass  in [has-id] with "false" to remove the rendering of its HTML ID element.
-        /// 
-        ///     Pass in [oninitialload] to have some server-side piece of p5.lambda code execute during its initial loading.
-        /// 
-        ///     Pass in [render-type], to override how the widget is rendered, by supplying either "immediate", "open" or "normal" 
-        ///     as values, overriding how the element is closed, if at all.
-        /// 
-        ///     Use [visible] to change the initial visibility of widget when created.
-        /// 
-        ///     Use [invisible-element] to change the HTML element type your widget is rendered with when it is rendered ass invisible.
-        /// 
-        ///     Use [events] as a wrapper for <em>"local widget Active Events"</em>, which are Active Events only existing for as long
-        ///     as your widget exists.
-        /// 
-        ///     Use [has-name] to override whether or not a widget should have an automatically asssigned name attribute, if it makes sense.
-        ///     Legal values are "true" and "false".
-        /// 
-        ///     Any nodes starting with "on", will be assumed to be server-side p5.lambda event handlers. Every time a p5.lambda
-        ///     server side event is raised then both [_widget] and [_event] will be passed in to the event handler as root nodes.
-        ///     [_widget] is the id of the main widget that is the root widget of the Active Event [create-widget], while
-        ///     [_event] is the id of the actual widget that raised the event. This feature is useful for widgets that are dynamically
-        ///     created, without an explicitly given id.
-        /// 
-        ///     If your events ends with "-script", they will however be rendered back to client as JavaScript events. If they end 
-        ///     with anything else but "-script", they will be assumed to be DOM events, and your node assumed to be containing 
-        ///     p5.lambda code, supposed to execute when that DOM event is raised, on the server-side, as p5.lambda code.
-        /// 
-        ///     Any other nodes, are automatically added as HTML attributes, with their given values, and rendered as such back to 
-        ///     the client.
-        /// 
-        ///     Example of usage;
-        ///     <pre>
-        /// create-widget:foo
-        ///   widget:void
-        ///   placeholder:Change my text ...
-        ///   element:input
-        ///   type:text
-        ///   onchange
-        ///     set-widget-property:foo
-        ///       value:I had my text changed!</pre>
-        /// 
-        ///     You would rarely, if ever, consume this Active Event directly, but instead consume it indirectly, through the 
-        ///     <see cref="phosphorus.applicationpool.Default.p5_web_widgets_create">[create-widget]</see> Active Event.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "p5.web.widgets.void")]
         private static void p5_web_controls_void (ApplicationContext context, ActiveEventArgs e)
         {
-            var widget = CreateControl<Void> (context, e.Args, "input");
-            var formId = e.Args.Find (idx => idx.Name == "_widget");
-            if (formId != null && formId.Value == null)
-                formId.Value = widget.ClientID;
-            e.Args.Value = DecorateWidget (context, widget, e.Args);
+            CreateWidget<Void> (context, e.Args, "input");
         }
 
         /*
          * creates a widget from the given node
          */
-        private static T CreateControl<T> (
+        private static void CreateWidget<T> (
             ApplicationContext context, 
-            Node node, 
-            string elementType, 
-            Widget.RenderingType type = Widget.RenderingType.normal) where T : Widget, new ()
+            Node args, 
+            string elementType) where T : Widget, new ()
         {
             // creating widget as persistent control
-            var parent = node.Find (idx => idx.Name == "__parent").Get<Container> (context);
-            var position = -1;
-            var posNode = node.Find (idx => idx.Name == "_position");
-            if (posNode != null)
-                position = posNode.Get<int> (context);
+            var parent = args.GetChildValue<Container> ("__parent", context);
+            var position = args.GetChildValue ("position", context, -1);
 
             // getting [oninitialload], if any
-            var onInitialLoad = CreateLoadingEvents (context, node);
-            var formId = XUtil.Single<string> (node.Find (idx => idx.Name == "_widget"), context);
-
-            var widget = parent.CreatePersistentControl<T> (
-                node.GetExValue<string> (context),
-                position,
-                delegate (object sender, EventArgs e) {
-                    if (onInitialLoad == null)
-                        return;
-
-                    onInitialLoad.Insert (0, new Node ("_widget", formId));
-                    onInitialLoad.Insert (1, new Node ("_event", ((Control)sender).ID));
+            var onInitialLoad = CreateLoadingEvents (context, args);
+            EventHandler handler = null;
+            if (onInitialLoad != null) {
+                handler = delegate (object sender, EventArgs e) {
+                    onInitialLoad.Insert (0, new Node ("_event", ((Control)sender).ID));
                     context.Raise ("lambda", onInitialLoad);
-                });
+                };
+            }
+
+            // creating control as persistent control
+            var widget = parent.CreatePersistentControl<T> (
+                args.Get<string> (context),
+                position,
+                handler);
 
             // setting ElementType (html element) of Widget
             widget.ElementType = elementType;
 
-            // setting rendering type (no closing element, void or default)
-            if (type != Widget.RenderingType.normal)
-                widget.RenderType = type;
+            // making sure main widget ID is passed into decoration process
+            DecorateWidget (context, widget, args);
 
-            // returning widget to caller
-            return widget;
+            // making sure we return Widget to caller
+            args.Value = widget;
         }
 
         /*
@@ -283,19 +98,12 @@ namespace p5.web.ui.widgets
         private static Node CreateLoadingEvents (ApplicationContext context, Node node)
         {
             // checking to see if we've got an "initialload" Active Event for widget, and if so, handle it
-            var onInitialLoad = node.Find (idx => idx.Name == "oninitialload");
+            var onInitialLoad = node.Find ("oninitialload");
             if (onInitialLoad == null)
                 return null;
 
-            // finding lambda object(s) referred to by [oninitialload], and creating our lambda node structure
-            var evtLambdas = new List<Node> (XUtil.Iterate<Node> (onInitialLoad, context));
-            var evtNode = new Node ("oninitialload");
-            foreach (var idxLambda in evtLambdas) {
-                evtNode.Add (idxLambda.Clone ());
-            }
-
             // returning p5.lambda node
-            return evtNode;
+            return onInitialLoad.Clone ();
         }
 
         /*
@@ -305,28 +113,28 @@ namespace p5.web.ui.widgets
         {
             // looping through all children nodes of Widget's node to decorate Widget
             foreach (var idxArg in args.Children) {
+
                 switch (idxArg.Name) {
                     case "visible":
-                        widget.Visible = XUtil.Single<bool> (idxArg, context);
+                        widget.Visible = idxArg.Get<bool> (context);
                         break;
                     case "invisible-element":
-                        widget.InvisibleElement = XUtil.Single<string> (idxArg, context);
+                        widget.InvisibleElement = idxArg.Get<string> (context);
                         break;
                     case "element":
-                        widget.ElementType = XUtil.Single<string> (idxArg, context);
+                        widget.ElementType = idxArg.Get<string> (context);
                         break;
                     case "has-id":
-                        widget.NoIdAttribute = !XUtil.Single<bool> (idxArg, context);
+                        widget.NoIdAttribute = !idxArg.Get<bool> (context);
                         break;
                     case "render-type":
-                        widget.RenderType = (Widget.RenderingType) Enum.Parse (typeof (Widget.RenderingType), XUtil.Single<string> (idxArg, context));
+                        widget.RenderType = (Widget.RenderingType) Enum.Parse (typeof (Widget.RenderingType), idxArg.Get<string> (context));
                         break;
                     case "widgets":
                         CreateChildWidgets (context, widget, idxArg);
                         break;
-                    case "widget":
-                    case "before":
-                    case "after":
+                    case "__parent":
+                    case "position":
                     case "parent":
                     case "events":
                     case "has-name":
@@ -375,9 +183,7 @@ namespace p5.web.ui.widgets
             if (widget.HasAttribute ("name"))
                 return; // caller already explicitly added name attribute
 
-            if (node.FindAll (delegate(Node idx) {
-                return idx.Name == "has-name" && !idx.Get<bool> (context);
-            }).GetEnumerator ().MoveNext ()) {
+            if (!node.GetChildValue ("has-name", context, true)) {
                 return; // caller explicitly told us he didn't want no name
             }
 
@@ -394,9 +200,8 @@ namespace p5.web.ui.widgets
                     addName = true;
                     break;
             }
-            if (addName) {
+            if (addName)
                 widget ["name"] = widget.ID;
-            }
         }
 
         /*
@@ -404,9 +209,9 @@ namespace p5.web.ui.widgets
          */
         private static void CreateChildWidgets (ApplicationContext context, Widget widget, Node children)
         {
-            foreach (var idxChild in XUtil.Iterate<Node> (children, context)) {
+            foreach (var idxChild in children.Children) {
+
                 idxChild.Insert (0, new Node ("__parent", widget));
-                idxChild.Insert (1, new Node ("_widget", XUtil.Single<string> (children.Parent.Find (idx => idx.Name == "_widget"), context)));
                 context.Raise ("p5.web.widgets." + idxChild.Name, idxChild);
             }
         }
@@ -420,7 +225,7 @@ namespace p5.web.ui.widgets
                 if (node.Name != "oninitialload")
                     CreateEventHandler (context, widget, node);
             } else if (!node.Name.StartsWith ("_")) {
-                widget [node.Name] = XUtil.Single<string> (node, context);
+                widget [node.Name] = node.Get<string> (context);
             }
         }
 
@@ -432,17 +237,15 @@ namespace p5.web.ui.widgets
         private static void CreateEventHandler (ApplicationContext context, Widget widget, Node node)
         {
             if (node.Name.EndsWith ("-script")) {
+
                 // javascript code to be executed
-                widget [node.Name.Replace ("-script", "")] = XUtil.Single<string> (node, context);
+                widget [node.Name.Replace ("-script", "")] = node.Get<string> (context);
             } else {
+
                 // finding lambda object(s) referred to by [event], and creating our lambda node structure
-                var evtLambdas = new List<Node> (XUtil.Iterate<Node> (node, context));
-                var evtNode = new Node (node.Name);
-                foreach (var idxLambda in evtLambdas) {
-                    evtNode.Add (idxLambda.Clone ());
-                }
-                evtNode.Insert (0, new Node ("_widget", XUtil.Single<string> (node.Parent.Find (idx => idx.Name == "_widget"), context)));
-                evtNode.Insert (1, new Node ("_event", widget.ID));
+                var evtNode = new Node (node.Name)
+                    .Add (new Node ("_event", widget.ID))
+                    .AddRange (node.Clone ().Children);
 
                 // raising the Active Event that actually creates our ajax event handler for our p5.lambda object
                 var eventNode = new Node (string.Empty, widget);

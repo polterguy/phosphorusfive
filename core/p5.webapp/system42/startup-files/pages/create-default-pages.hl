@@ -95,7 +95,8 @@ pre-existing objects, such as ads or menus for you.""
               innerValue:@""this widget was <strong>dynamically</strong> 
 created as a consequence of you clicking the button. Try clicking it!""
               onclick
-                delete-widget:x:/../*/_widget?value"
+                get-parent-widget:x:/../*/_event?value
+                delete-widget:x:/-/*?value"
 
     p5.page:/lambda-world
       type:lambda
@@ -148,7 +149,8 @@ every aspect of it yourself.""
                   innerValue:@""this widget was <strong>dynamically</strong>
 created as a consequence of you clicking the button. Try clicking it!""
                   onclick
-                    delete-widget:x:/../*/_widget?value"
+                    get-parent-widget:x:/../*/_event?value
+                    delete-widget:x:/-/*?value"
 
     p5.page:/editor
       type:lambda

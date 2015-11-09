@@ -28,6 +28,23 @@ create-widget:main-folders
   events
 
     /*
+     * opens up the given file
+     */
+    sys42.show-file
+      split:x:/.?value
+        =:.
+      if:x:/<?name
+        equals:png
+        or:x:/./<?value
+          equals:gif
+        or:x:/./<?value
+          equals:jpg
+        or:x:/./<?value
+          equals:jpeg
+        include-javascript:"window.open('{0}');"
+          :x:/././.?value
+
+    /*
      * creates a list of all folders and files for user to browse through
      */
     sys42.list-folders-files
@@ -130,6 +147,8 @@ create-widget:main-folders
           _lit
             container
               class:span-3 image-file
+              onclick
+                sys42.show-file
               widgets
                 void
                   element:img
@@ -144,6 +163,8 @@ create-widget:main-folders
             src:x:/./<?name
           set:x:/./*/_lit/**/src?value
             src:x:/./././*/__dp/#?value
+          set:x:/./*/_lit/**/sys42.show-file?value
+            src:x:/./././*/__dp/#?value
           add:x:/./././*/create-widget/*/widgets
             src:x:/././*/_lit/*
         else
@@ -154,16 +175,21 @@ create-widget:main-folders
               innerValue
               class:span-3 file
               onclick
-                sys42.show-lisp
+                sys42.show-file
           split:x:/././*/__dp/#?value
             =:/
           set:x:/-2/**/innerValue?value
             src:x:/./<?name
+          set:x:/./*/_lit/**/sys42.show-file?value
+            src:x:/./././*/__dp/#?value
           add:x:/./././*/create-widget/*/widgets
             src:x:/././*/_lit/*
 
       // updating each 6'th item with "last" class addition
-      for-each:x:/+/*/widgets/*/(/literal|/container)/%8/*/class
+      set:x:/+2/*/widgets/*(/literal|/container)/%8/*/class?value
+        rel-src:{0} last
+          :x:?value
+      _for-each:x:/+/*/widgets/*(/literal|/container)/%8/*/class
         set:x:/./*/__dp/#?value
           src:{0} {1}
             :x:/./././*/__dp/#?value

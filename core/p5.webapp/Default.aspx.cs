@@ -4,15 +4,16 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
 using System.Web;
+using System.Linq;
 using System.Web.UI;
+using System.Collections;
+using System.Configuration;
+using System.Collections.Generic;
+using p5.exp;
+using p5.core;
 using p5.ajax.core;
 using p5.ajax.widgets;
-using p5.core;
-using p5.exp;
 
 /// <summary>
 ///     Main namespace for your Application Pool.
@@ -41,7 +42,7 @@ namespace p5.webapp
         private ApplicationContext _context;
 
         // main container for all widgets
-        protected pf.Container container;
+        protected pf.Container cnt;
 
         /*
          * Contains all ajax events, and their associated p5.lambda code, for all controls on page. Please notice that
@@ -137,6 +138,7 @@ namespace p5.webapp
 
             // making sure we pass in any HTTP GET parameters
             if (Request.QueryString.Keys.Count > 0) {
+
                 // retrieving all GET parameters and passing in as [_args]
                 args.Add (new Node ("_args"));
                 foreach (var idxArg in Request.QueryString.AllKeys) {
@@ -150,40 +152,6 @@ namespace p5.webapp
 
         /// <summary>
         ///     Creates a container web widget.
-        /// 
-        ///     [create-widget] is an alias for [create-container-widget]
-        /// 
-        ///     You can optionally declare where you wish to position your widget, by using either [before] or [after], to 
-        ///     make sure your widget becomes either before some specific widget, or after it. Internally, this Active Event uses 
-        ///     the [p5.web.widgets.xxx] Active Events to actually create your widget. See any of those Active Events to understand 
-        ///     what types of properties you can further decorate your widget with.
-        /// 
-        ///     [parent] defaults to "container", which is your main root widget on your page.
-        /// 
-        ///     If neither [before] nor [after] is given, widget will be appended into controls collection at the end of whatever
-        ///     [parent] widget you choose to use. You can also optionally declare local widget Active Events, by passing in an [events] 
-        ///     node, which will be locally declared Active Events for your widget, only active, as long as Widget exists on page.
-        /// 
-        ///     Example;
-        /// 
-        ///     <pre>create-widget:foo
-        ///   widgets
-        ///     literal
-        ///       element:h1
-        ///       innerValue:Click me!
-        ///       class:span-24 prepend-top info
-        ///       onclick
-        ///         create-widget
-        ///           after:foo
-        ///           widget:literal
-        ///           innerValue:I was dynamically created!
-        ///           class:span-24 success
-        ///           onclick
-        ///             delete-widget:@/./"*"/_event?value</pre>
-        /// 
-        ///     Using [create-widget], in combination with the other Active Events for manipulating and creating Ajax Web Widgets, you can take 100%
-        ///     complete control over the HTML your site is rendered, while still retaining all your widget creation code on the server-side, in
-        ///     a managed environment, through p5.lambda.
         /// </summary>
         /// <param name="context">Context for current request</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -197,35 +165,6 @@ namespace p5.webapp
         
         /// <summary>
         ///     Creates a literal web widget.
-        /// 
-        ///     You can optionally declare where you wish to position your widget, by using either [before] or [after], to 
-        ///     make sure your widget becomes either before some specific widget, or after it. Internally, this Active Event uses 
-        ///     the [p5.web.widgets.xxx] Active Events to actually create your widget. See any of those Active Events to understand 
-        ///     what types of properties you can further decorate your widget with.
-        /// 
-        ///     [parent] defaults to "container", which is your main root widget on your page.
-        /// 
-        ///     If neither [before] nor [after] is given, widget will be appended into controls collection at the end of whatever
-        ///     [parent] widget you choose to use. You can also optionally declare local widget Active Events, by passing in an [events] 
-        ///     node, which will be locally declared Active Events for your widget, only active, as long as Widget exists on page.
-        /// 
-        ///     Example;
-        /// 
-        ///     <pre>create-literal-widget:foo
-        ///   element:h1
-        ///   innerValue:Click me!
-        ///   class:span-24 prepend-top info
-        ///   onclick
-        ///     create-literal-widget
-        ///       after:foo
-        ///       innerValue:I was dynamically created!
-        ///       class:span-24 success
-        ///       onclick
-        ///         delete-widget:@/./"*"/_event?value</pre>
-        /// 
-        ///     Using [create-literal-widget], in combination with the other Active Events for manipulating Ajax Web Widgets, you can take 100%
-        ///     complete control over the HTML your site is rendered, while still retaining all your widget creation code on the server-side, in
-        ///     a managed environment, through p5.lambda.
         /// </summary>
         /// <param name="context">Context for current request</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -237,35 +176,6 @@ namespace p5.webapp
 
         /// <summary>
         ///     Creates a void web widget.
-        /// 
-        ///     You can optionally declare where you wish to position your widget, by using either [before] or [after], to 
-        ///     make sure your widget becomes either before some specific widget, or after it. Internally, this Active Event uses 
-        ///     the [p5.web.widgets.xxx] Active Events to actually create your widget. See any of those Active Events to understand 
-        ///     what types of properties you can further decorate your widget with.
-        /// 
-        ///     [parent] defaults to "container", which is your main root widget on your page.
-        /// 
-        ///     If neither [before] nor [after] is given, widget will be appended into controls collection at the end of whatever
-        ///     [parent] widget you choose to use. You can also optionally declare local widget Active Events, by passing in an [events] 
-        ///     node, which will be locally declared Active Events for your widget, only active, as long as Widget exists on page.
-        /// 
-        ///     Example;
-        /// 
-        ///     <pre>create-void-widget:foo
-        ///   element:input
-        ///   placeholder:Click me!
-        ///   class:span-12 prepend-top
-        ///   onclick
-        ///     create-literal-widget
-        ///       after:foo
-        ///       innerValue:I was dynamically created!
-        ///       class:span-24 success
-        ///       onclick
-        ///         delete-widget:@/./"*"/_event?value</pre>
-        /// 
-        ///     Using [create-void-widget], in combination with the other Active Events for manipulating Ajax Web Widgets, you can take 100%
-        ///     complete control over the HTML your site is rendered, while still retaining all your widget creation code on the server-side, in
-        ///     a managed environment, through p5.lambda.
         /// </summary>
         /// <param name="context">Context for current request</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -273,63 +183,6 @@ namespace p5.webapp
         private void create_void_widget (ApplicationContext context, ActiveEventArgs e)
         {
             CreateWidget (context, e.Args, "void");
-        }
-
-        /*
-         * common helper method for creating widgets
-         */
-        private void CreateWidget (ApplicationContext context, Node args, string type)
-        {
-            // finding parent widget first, which defaults to "container" widget, if no parent is given
-            var parentNode = args.Find (idx => idx.Name == "parent" && idx.Value != null);
-            var parent = (parentNode != null ? FindControl<pf.Container> (XUtil.Single<string> (parentNode, context), Page) : container) ?? container;
-
-            // finding position in parent control's list, defaulting to "-1", meaning "append at end"
-            int position = GetWidgetPosition (args, context, parent);
-
-            // creating widget. since CreateForm modifies node given, by e.g. adding the parent widget as [_parent],
-            // we need to make sure the nodes are set back to wwhat they were before the invocation of our Active Event
-            var widget = CreateWidget (context, args, parent, position, type);
-
-            // initializing Active Events for widget, if there are any given
-            var eventNode = args.Find (idx => idx.Name == "events");
-            if (eventNode != null)
-                CreateWidgetEvents (widget, eventNode, context);
-        }
-
-        /// <summary>
-        ///     Clears the given widget, removing all its children widgets.
-        ///
-        ///     Empties your Widget's Controls collection entirely, but leaving the widget itself. Useful entirely emptiyng 
-        ///     your widget, removing all of its children widgets.
-        /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "clear-widget")]
-        private void clear_widget (ApplicationContext context, ActiveEventArgs e)
-        {
-            // syntax checking
-            if (e.Args.Value == null)
-                return; // nothing to do here
-
-            // loping through all control ID's given
-            foreach (var ctrl in XUtil.Iterate<string> (e.Args, context).Select (idxCtrlId => FindControl<pf.Container> (idxCtrlId, Page))) {
-
-                // checking if widget exists
-                if (ctrl == null)
-                    continue;
-
-                // then looping through all of its children controls
-                foreach (Control innerCtrl in ctrl.Controls) {
-                    RemoveActiveEvents (innerCtrl);
-                    RemoveEvents (innerCtrl);
-                    RemoveData (innerCtrl);
-                }
-
-                // clearing child controls, and re-rendering widget
-                ctrl.Controls.Clear ();
-                ctrl.ReRenderChildren ();
-            }
         }
 
         /// <summary>
@@ -369,6 +222,90 @@ namespace p5.webapp
         }
         
         /// <summary>
+        ///     Clears the given widget, removing all its children widgets.
+        ///
+        ///     Empties your Widget's Controls collection entirely, but leaving the widget itself. Useful for entirely emptying 
+        ///     your widget, removing all of its children widgets.
+        /// </summary>
+        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "clear-widget")]
+        private void clear_widget (ApplicationContext context, ActiveEventArgs e)
+        {
+            // syntax checking
+            if (e.Args.Value == null)
+                return; // nothing to do here
+
+            // loping through all control ID's given
+            foreach (var ctrl in XUtil.Iterate<string> (e.Args, context).Select (idxCtrlId => FindControl<pf.Container> (idxCtrlId, Page))) {
+
+                // checking if widget exists
+                if (ctrl == null)
+                    continue;
+
+                // then looping through all of its children controls
+                var list = new List<Control>();
+                foreach (var idx in ctrl.Controls) {
+                    list.Add((Control)idx);
+                }
+                foreach (Control innerCtrl in list) {
+                    RemoveActiveEvents (innerCtrl);
+                    RemoveEvents (innerCtrl);
+                    RemoveData (innerCtrl);
+
+                    // actually removing widget from Page control collection, and persisting our change
+                    ctrl.RemoveControlPersistent (innerCtrl);
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Returns the ID and type of the given widget's parent.
+        /// </summary>
+        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "get-parent-widget")]
+        private void get_parent_widget (ApplicationContext context, ActiveEventArgs e)
+        {
+            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+
+                var ctrl = FindControl<pf.Widget>(idx, Page);
+                if (ctrl == null)
+                    continue;
+                ctrl = ctrl.Parent as Widget;
+                if (ctrl == null)
+                    continue;
+                string type = ctrl.GetType().FullName;
+                type = type.Substring(type.LastIndexOf(".") + 1).ToLower();
+                e.Args.Add (type, ctrl.ID);
+            }
+        }
+
+        /// <summary>
+        ///     Returns the ID and type of the given widget's children.
+        /// </summary>
+        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "get-children-widgets")]
+        private void get_children_widgets (ApplicationContext context, ActiveEventArgs e)
+        {
+            foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+
+                var ctrl = FindControl<pf.Container>(idx, Page);
+                if (ctrl == null)
+                    continue;
+                e.Args.Add(ctrl.ID);
+                foreach (Control idxCtrl in ctrl.Controls) {
+
+                    // looping through all children of currently iterated widget
+                    string type = idxCtrl.GetType().FullName;
+                    type = type.Substring(type.LastIndexOf(".") + 1).ToLower();
+                    e.Args.LastChild.Add(type, idxCtrl.ID);
+                }
+            }
+        }
+
+        /// <summary>
         ///     Lists all widgets on page.
         ///
         ///     Alternatively supply a filter as argument. If you do, then only widgets matching your filter will be returned.
@@ -384,7 +321,7 @@ namespace p5.webapp
                 return; // possibly a filter expression, leading into oblivion
 
             // recursively retrieving all widgets on page
-            ListWidgets (filter, e.Args, Page);
+            ListWidgets (filter, e.Args, cnt);
         }
         
         /// <summary>
@@ -897,6 +834,7 @@ namespace p5.webapp
 
             // looping through each Active Event handler for current event
             foreach (var tmp in from idxEvt in PageActiveEvents [e.Name] from idxEvtContent in idxEvt.Item2 select idxEvtContent.Clone()) {
+                tmp.Value = e.Args.Value;
                 e.Args.Add(tmp);
                 lambdas.Add(tmp);
             }
@@ -912,57 +850,25 @@ namespace p5.webapp
                 idxLambda.UnTie ();
             }
         }
-
+        
         /*
-         * Helper for above. Retrieves the position user requested widget to be inserted at
+         * common helper method for creating widgets
          */
-        private int GetWidgetPosition (Node node, ApplicationContext context, Widget parent)
+        private void CreateWidget (ApplicationContext context, Node args, string type)
         {
-            int position = -1;
-            var beforeNode = node.Find (idx => idx.Name == "before" && idx.Value != null);
-            if (beforeNode != null) {
-                var beforeControl = FindControl<pf.Widget> (XUtil.Single<string> (beforeNode, context), parent);
-                position = parent.Controls.IndexOf (beforeControl);
-            } else {
-                var afterNode = node.Find (idx => idx.Name == "after" && idx.Value != null);
-                if (afterNode != null) {
-                    var afterControl = FindControl<pf.Widget> (XUtil.Single<string> (afterNode, context), parent);
-                    position = parent.Controls.IndexOf (afterControl) + 1;
-                }
-            }
-            return position;
-        }
+            // finding parent widget first, which defaults to "main container" widget, if no parent is given
+            var parent = FindControl<pf.Container>(args.GetChildValue ("parent", context, "cnt"), Page);
 
-        /*
-         * creates widget according to node given, and returns to caller
-         */
-        private static Widget CreateWidget (
-            ApplicationContext context, 
-            Node node, 
-            pf.Container parent, 
-            int position, 
-            string type)
-        {
-            // making sure the original node hierarchy is reset back to what it was after creation
-            // since the creation Active Events changes the node hierarchy in all sorts of different ways
-            var originalChildren = node.Clone();
-            try
-            {
-                node.Insert (0, new Node ("__parent", parent));
-                node.Insert (1, new Node ("_widget", node.Value));
-                node.Insert (2, new Node ("_position", position));
+            // creating our widget by raising the active event responsible for creating it
+            var createNode = args.Clone ();
+            createNode.Insert (0, new Node ("__parent", parent));
+            context.Raise ("p5.web.widgets." + type, createNode);
+            var widget = createNode.Get<Widget> (context);
 
-                // raising the Active Event that actually creates our widget, and retrieving the created widget afterwards
-                context.Raise ("p5.web.widgets." + type, node);
-                return node.Get<Widget> (context);
-            }
-            finally
-            {
-                // cleaning up our node structure afterwards
-                node.Clear();
-                node.AddRange(originalChildren.Children);
-                node.Value = originalChildren.Value;
-            }
+            // initializing Active Events for widget, if there are any given
+            var eventNode = args.Find (idx => idx.Name == "events");
+            if (eventNode != null)
+                CreateWidgetEvents (widget, eventNode, context);
         }
 
         /*
@@ -1052,7 +958,11 @@ namespace p5.webapp
             if (!shouldAdd)
                 return; // didn't match filter
 
-            resultNode.Add (current.GetType ().FullName, current.ID);
+            string typeString = current.GetType().FullName;
+            if (current is Widget)
+                typeString = typeString.Substring(typeString.LastIndexOf(".") + 1).ToLower ();
+
+            resultNode.Add (typeString, current.ID);
             foreach (Control idxChild in current.Controls) {
                 ListWidgets (filter, resultNode, idxChild);
             }

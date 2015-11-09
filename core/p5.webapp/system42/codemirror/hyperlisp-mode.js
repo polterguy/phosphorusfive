@@ -213,6 +213,8 @@ CodeMirror.defineMode("hyperlisp", function() {
         // keywords not needing indentation
         case 'clear-widget':
         case 'delete-widget':
+        case 'get-parent-widget':
+        case 'get-children-widgets':
         case 'list-widgets':
         case 'get-widget-info':
         case 'delete-widget-info':

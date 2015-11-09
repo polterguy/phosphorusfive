@@ -15,7 +15,7 @@
             <p5:Container
                 runat="server"
                 class="container"
-                id="container"/>
+                id="cnt"/>
         </form>
     </body>
 </html>
