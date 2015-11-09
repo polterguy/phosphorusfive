@@ -888,7 +888,8 @@ namespace p5.webapp
         private void null_handler (ApplicationContext context, ActiveEventArgs e)
         {
             // checking to see if the currently raised Active Event has a handler on our page
-            if (!PageActiveEvents.ContainsKey (e.Name)) return;
+            if (!PageActiveEvents.ContainsKey (e.Name))
+                return;
 
             // keeping a reference to what we add to the current Active Event "root node"
             // such that we can clean up after ourselves afterwards
@@ -902,7 +903,7 @@ namespace p5.webapp
 
             // invoking each [lambda.xxx] object from event
             foreach (var idxLambda in lambdas) {
-                context.Raise (idxLambda.Name, idxLambda);
+                context.Raise ("lambda-copy", idxLambda);
             }
 
             // cleaning up after ourselves, deleting only the lambda objects that came
@@ -945,21 +946,23 @@ namespace p5.webapp
             // making sure the original node hierarchy is reset back to what it was after creation
             // since the creation Active Events changes the node hierarchy in all sorts of different ways
             var originalChildren = node.Clone();
-            node.Insert (0, new Node ("__parent", parent));
-            node.Insert (1, new Node ("_widget", node.Value));
-            node.Insert (2, new Node ("_position", position));
+            try
+            {
+                node.Insert (0, new Node ("__parent", parent));
+                node.Insert (1, new Node ("_widget", node.Value));
+                node.Insert (2, new Node ("_position", position));
 
-            // raising the Active Event that actually creates our widget, and retrieving the created widget afterwards
-            context.Raise ("p5.web.widgets." + type, node);
-            var widget = node.Get<Widget> (context);
-
-            // cleaning up our node structure afterwards
-            node.Clear ();
-            node.AddRange (originalChildren.Children);
-            node.Value = originalChildren.Value;
-
-            // returning widget back to caller
-            return widget;
+                // raising the Active Event that actually creates our widget, and retrieving the created widget afterwards
+                context.Raise ("p5.web.widgets." + type, node);
+                return node.Get<Widget> (context);
+            }
+            finally
+            {
+                // cleaning up our node structure afterwards
+                node.Clear();
+                node.AddRange(originalChildren.Children);
+                node.Value = originalChildren.Value;
+            }
         }
 
         /*
@@ -976,9 +979,7 @@ namespace p5.webapp
 
                 // adding event, cloning node
                 var tpl = new Tuple<string, List<Node>> (widget.ID, new List<Node> ());
-                foreach (var idxLambda in idxEvt.FindAll (idxEvtChild => idxEvtChild.Name.StartsWith ("lambda", StringComparison.Ordinal))) {
-                    tpl.Item2.Add (idxLambda.Clone ());
-                }
+                tpl.Item2.Add(idxEvt.Clone ());
                 PageActiveEvents[idxEvt.Name].Add(tpl);
             }
         }

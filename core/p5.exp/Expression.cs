@@ -301,26 +301,34 @@ namespace p5.exp
                 default:
 
                     // handles everything else
-                    if (token [0] == '=') {
+                    if (token.StartsWith ("=")) {
+
                         // some type of value token, either normal value, or regex value
                         ValueToken (context, current, token);
-                    } else if (token [0] == '[') {
+                    } else if (token.StartsWith ("[")) {
+
                         // range iterator token
                         RangeToken (current, token);
                     } else if (token.StartsWith ("..") && token.Length > 2) {
+
                         // named ancestor token
                         current.AddIterator (new IteratorNamedAncestor (token.Substring (2)));
                     } else if (token.StartsWith ("%")) {
+
                         // modulo token
                         ModuloToken (current, token);
                     } else if (token.StartsWith ("-") || token.StartsWith ("+")) {
-                        // modulo token
+
+                        // sibling offset
                         SiblingToken (current, token);
                     } else {
+
                         if (Utilities.IsNumber (token)) {
+
                             // numbered child token
                             current.AddIterator (new IteratorNumbered (int.Parse (token)));
                         } else {
+
                             // defaulting to "named iterator"
                             current.AddIterator (new IteratorNamed (token));
                         }

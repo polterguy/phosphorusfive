@@ -54,6 +54,7 @@
     <Content Include="media\css\src\grid.png" />
     <Content Include="system42\codemirror\hyperlisp-mode.js" />
     <Content Include="system42\codemirror\theme\blackboard.css" />
+    <Content Include="system42\admin\files\files.css" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -189,9 +190,10 @@
     <None Include="system42\startup-files\pf.web.load-ui.hl" />
     <None Include="system42\startup-files\pages\sys42.create-page.hl" />
     <None Include="system42\startup-files\pages\sys42.edit-page.hl" />
-    <None Include="system42\admin\files.hl" />
+    <None Include="system42\admin\files\files.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="system42\startup-files\debug\" />
+    <Folder Include="system42\admin\files\" />
   </ItemGroup>
 </Project>

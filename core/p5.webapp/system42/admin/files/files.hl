@@ -1,0 +1,184 @@
+
+/*
+ * allows the user to browse the file system on his system
+ */
+
+// including CSS for file browser
+include-stylesheet-file:system42/admin/files/files.css
+
+// creating actual form to show file system
+create-widget:main-folders
+  class:span-24 prepend-top
+  oninitialload
+    sys42.list-folders-files
+  widgets
+    literal
+      element:h1
+      class:span-23
+      innerValue:File browser
+    literal
+      class:span-1 last
+      element:a
+      href:/
+      innerValue:back
+    container:bread-crumb
+      class:span-24
+    container:files-folders
+      class:span-24
+  events
+
+    /*
+     * creates a list of all folders and files for user to browse through
+     */
+    sys42.list-folders-files
+
+      // clearing previous widgets
+      clear-widget:files-folders
+      clear-widget:bread-crumb
+
+      // checking if we've got a session value for "current folder"
+      get-session-value:sys42.current-folder
+      if:x:/-/*
+        set:x:/./+2?value
+          src:x:/././-/*?value
+        set:x:/./+/*/widgets/*/void/*/disabled
+
+        // creating bread-crumb bar
+        _cur
+        split:x:/../*/get-session-value/*?value
+          =:/
+        for-each:x:/-/*?name
+          if:x:/./-2?value
+            set:x:/././-2?value
+              src:{0}/
+                :x:/././././-2?value
+          set:x:/./-2?value
+            src:{0}{1}
+              :x:/./././-2?value
+              :x:/./././*/__dp?value
+          _lit
+            void
+              element:input
+              type:button
+              value
+              onclick
+                set-session-value:sys42.current-folder
+                  src
+                sys42.list-folders-files
+          set:x:/-/*/*/value?value
+            src:x:/././*/__dp?value
+          set:x:/./*/_lit/*/void/*/onclick/0/*/src?value
+            src:x:/./././*/_cur?value
+          add:x:/././+/*/widgets
+            src:x:/././*/_lit/*
+        add:x:/./+2/</..void
+          src
+            disabled
+      create-widget
+        parent:bread-crumb
+        class:bread-crumb span-24
+        widgets
+          void
+            disabled
+            element:input
+            type:button
+            value:home
+            onclick
+              set-session-value:sys42.current-folder
+              sys42.list-folders-files
+
+      // listing folders and looping through creating one widget for each folder
+      list-folders:/
+      for-each:x:/-/*
+        _lit
+          literal
+            innerValue
+            class:span-3 folder
+            onclick
+              set-session-value:sys42.current-folder
+                src
+              sys42.list-folders-files
+        split:x:/./*/__dp/#?value
+          =:/
+        set:x:/-2/**/innerValue?value
+          src:x:/./<?name
+        set:x:/-3/**/set-session-value/*/src?value
+          src:x:/././*/__dp/#?value
+        add:x:/././*/create-widget/*/widgets
+          src:x:/././*/_lit/*
+
+      // making sure we list files from "current folder"
+      if:x:/../*/get-session-value/*?value
+        set:x:/./+?value
+          src:x:/../*/get-session-value/*?value
+
+      // listing files and looping through creating one widget for each file
+      list-files:/
+      for-each:x:/-/*
+        split:x:/./*/__dp/#?value
+          =:.
+        if:x:/<?name
+          equals:png
+          or:x:/./<?value
+            equals:gif
+          or:x:/./<?value
+            equals:jpg
+          or:x:/./<?value
+            equals:jpeg
+
+          // image file
+          _lit
+            container
+              class:span-3 image-file
+              widgets
+                void
+                  element:img
+                  class:image-file-image
+                  src
+                literal
+                  innerValue
+                  class:span-3
+          split:x:/././*/__dp/#?value
+            =:/
+          set:x:/-2/**/innerValue?value
+            src:x:/./<?name
+          set:x:/./*/_lit/**/src?value
+            src:x:/./././*/__dp/#?value
+          add:x:/./././*/create-widget/*/widgets
+            src:x:/././*/_lit/*
+        else
+
+          // anything else but image file
+          _lit
+            literal
+              innerValue
+              class:span-3 file
+              onclick
+                sys42.show-lisp
+          split:x:/././*/__dp/#?value
+            =:/
+          set:x:/-2/**/innerValue?value
+            src:x:/./<?name
+          add:x:/./././*/create-widget/*/widgets
+            src:x:/././*/_lit/*
+
+      // updating each 6'th item with "last" class addition
+      for-each:x:/+/*/widgets/*/(/literal|/container)/%8/*/class
+        set:x:/./*/__dp/#?value
+          src:{0} {1}
+            :x:/./././*/__dp/#?value
+            :last
+      create-widget
+        class:span-24 prepend-top
+        parent:files-folders
+        widgets
+
+
+
+
+
+
+
+
+
+

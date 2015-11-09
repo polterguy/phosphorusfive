@@ -394,7 +394,7 @@ namespace p5.ajax.widgets
         /// </summary>
         protected virtual void LoadFormData ()
         {
-            if (this ["disabled"] == null) {
+            if (!HasAttribute ("disabled")) {
                 if (!string.IsNullOrEmpty (this ["name"]) || ElementType == "option") {
                     switch (ElementType) {
                         case "input":
