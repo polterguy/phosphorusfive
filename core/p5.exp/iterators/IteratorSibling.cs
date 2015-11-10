@@ -36,15 +36,23 @@ namespace p5.exp.iterators
         public override IEnumerable<Node> Evaluate (ApplicationContext context)
         {
             foreach (var idxCurrent in Left.Evaluate (context)) {
+
                 var offset = _offset;
                 var tmpIdx = idxCurrent;
+
                 while (offset != 0 && tmpIdx != null) {
                     if (offset < 0) {
                         offset += 1;
-                        tmpIdx = tmpIdx.PreviousSibling;
+                        if (tmpIdx.PreviousSibling == null)
+                            tmpIdx = tmpIdx.Parent.LastChild;
+                        else
+                            tmpIdx = tmpIdx.PreviousSibling;
                     } else {
                         offset -= 1;
-                        tmpIdx = tmpIdx.NextSibling;
+                        if (tmpIdx.NextSibling == null)
+                            tmpIdx = tmpIdx.Parent.FirstChild;
+                        else
+                            tmpIdx = tmpIdx.NextSibling;
                     }
                 }
                 if (tmpIdx != null)

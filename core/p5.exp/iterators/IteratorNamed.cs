@@ -32,6 +32,7 @@ namespace p5.exp.iterators
     public class IteratorNamed : Iterator
     {
         internal readonly string Name;
+        private bool _like;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorNamed" /> class.
@@ -39,14 +40,28 @@ namespace p5.exp.iterators
         /// <param name="name">name to match</param>
         public IteratorNamed (string name)
         {
-            if (name.Length != 0 && name [0] == '\\')
-                name = name.Substring (1);
-            Name = name;
+            if (name.StartsWith ("~")) {
+
+                // "like" equality
+                Name = name.Substring (1);
+                _like = true;
+            } else if (name.StartsWith ("\\")) {
+
+                // escaped "like operator"
+                Name = name.Substring (1);
+            } else {
+
+                // plain and simple
+                Name = name;
+            }
         }
 
         public override IEnumerable<Node> Evaluate (ApplicationContext context)
         {
-            return Left.Evaluate (context).Where (idxCurrent => idxCurrent.Name == Name);
+            if (_like)
+                return Left.Evaluate (context).Where (idxCurrent => idxCurrent.Name.Contains (Name));
+            else
+                return Left.Evaluate (context).Where (idxCurrent => idxCurrent.Name == Name);
         }
     }
 }

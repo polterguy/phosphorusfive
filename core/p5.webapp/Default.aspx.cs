@@ -506,23 +506,37 @@ namespace p5.webapp
 
             // looping through all widgets
             foreach (var idxCtrlId in XUtil.Iterate<string> (e.Args, context)) {
-
+                
                 // finding widget
-                var widget = FindControl<Widget> (idxCtrlId, Page);
-                if (widget == null || !AjaxEvents.ContainsKey (widget.ID))
-                    continue; // widget doesn't exist, or has no events
+                var widget = FindControl<Widget>(idxCtrlId, Page);
+                if (widget == null)
+                    continue;
 
-                // checking if event exists for widget, and removing it if it does
-                Node nodeToAdd = null;
+                // looping through events requested by caller
                 foreach (var idxEventNameNode in new List<Node> (e.Args.Children)) {
-                    if (AjaxEvents [widget.ID].ContainsKey (idxEventNameNode.Name)) {
-                        if (nodeToAdd == null)
-                            nodeToAdd = e.Args.Add (widget.ID).LastChild;
-                        Node evtNode = nodeToAdd.Add (idxEventNameNode.Name).LastChild;
-                        foreach (var idx in AjaxEvents [widget.ID] [idxEventNameNode.Name]) {
-                            evtNode.AddRange (idx.Clone ().Children);
+
+                    Node nodeToAdd = new Node(widget.ID);
+                    if (!AjaxEvents.ContainsKey(widget.ID)) {
+
+                        // no server-side events, checking for javascript events!
+                        if (widget.HasAttribute(idxEventNameNode.Name)) {
+
+                            nodeToAdd.Add(idxEventNameNode.Name + "-script", widget[idxEventNameNode.Name]); // javascript!
+                        }
+                    } else {
+
+                        // checking if current child name is an event for current widget
+                        if (AjaxEvents[widget.ID].ContainsKey(idxEventNameNode.Name)) {
+
+                            Node evtNode = nodeToAdd.Add(idxEventNameNode.Name).LastChild;
+                            foreach (var idx in AjaxEvents [widget.ID] [idxEventNameNode.Name]) {
+
+                                evtNode.AddRange(idx.Clone().Children);
+                            }
                         }
                     }
+                    if (nodeToAdd.Count > 0)
+                        e.Args.Add(nodeToAdd);
                 }
             }
         }
@@ -618,14 +632,14 @@ namespace p5.webapp
                     continue;
 
                 // then looping through all attribute keys, filtering everything out that does not start with "on"
-                Node curNode = null;
+                Node curNode = new Node (widget.ID);
                 foreach (var idxAtr in widget.AttributeKeys) {
                     if (!idxAtr.StartsWith ("on"))
                         continue;
-                    if (curNode == null)
-                        curNode = e.Args.Add (widget.ID).LastChild;
                     curNode.Add (idxAtr);
                 }
+                if (curNode.Count > 0)
+                    e.Args.Add(curNode);
             }
         }
 
@@ -955,14 +969,14 @@ namespace p5.webapp
                     }
                 }
             }
-            if (!shouldAdd)
-                return; // didn't match filter
+            if (shouldAdd) {
 
-            string typeString = current.GetType().FullName;
-            if (current is Widget)
-                typeString = typeString.Substring(typeString.LastIndexOf(".") + 1).ToLower ();
+                string typeString = current.GetType().FullName;
+                if (current is Widget)
+                    typeString = typeString.Substring(typeString.LastIndexOf(".") + 1).ToLower();
 
-            resultNode.Add (typeString, current.ID);
+                resultNode.Add(typeString, current.ID);
+            }
             foreach (Control idxChild in current.Controls) {
                 ListWidgets (filter, resultNode, idxChild);
             }

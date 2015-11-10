@@ -41,7 +41,7 @@ namespace p5.exp.iterators
                 // "like" equality
                 _value = _value.Substring (1);
                 _like = true;
-            } else if (_value.StartsWith ("\\~")) {
+            } else if (_value.StartsWith ("\\")) {
 
                 // escaped "like operator"
                 _value = _value.Substring (1);
@@ -63,7 +63,7 @@ namespace p5.exp.iterators
 
             // filtering away all previous matches that does not match the specified value
             if (_like)
-                return Left.Evaluate (context).Where (idxCurrent => idxCurrent.Get<string> (context).Contains (_value));
+                return Left.Evaluate (context).Where (idxCurrent => idxCurrent.Get (context, "").Contains (_value));
             else
                 return Left.Evaluate (context).Where (idxCurrent => value.Equals (idxCurrent.Value));
         }

@@ -45,29 +45,37 @@ namespace p5.lambda.keywords
                 string separator = XUtil.Single<string> (sepNode, context);
                 string valueSep = valueSepNode == null ? null : XUtil.Single<string> (valueSepNode, context);
                 bool trim = trimNode == null ? false : trimNode.GetExValue (context, false);
+                if (separator == "" && !trim && valueSep == null) {
 
-                string[] entities = whatToSplit.Split (new string[] { separator }, System.StringSplitOptions.RemoveEmptyEntries);
-                foreach (var idx in entities) {
+                    // special case, splitting into each character in string
+                    foreach (var idxCh in whatToSplit) {
+                        e.Args.Add (idxCh.ToString ());
+                    }
+                } else {
 
-                    if (valueSep == null) {
+                    string[] entities = whatToSplit.Split (new string[] { separator }, System.StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var idx in entities) {
 
-                        // no name/value separator given or found
-                        e.Args.Add (trim ? idx.Trim () : idx);
-                    } else {
+                        if (valueSep == null) {
 
-                        // caller requests to split further into name/value
-                        string[] valueNameEntities = idx.Split (new string[] { valueSep }, System.StringSplitOptions.RemoveEmptyEntries);
-                        if (valueNameEntities.Length > 2)
-                            throw new LambdaException ("Value/Name separator found more than 2 instances in; " + idx, e.Args, context);
-
-                        if (valueNameEntities.Length == 2) {
-
-                            // both name and value where found
-                            e.Args.Add (trim ? valueNameEntities [0].Trim () : valueNameEntities [0], trim ? valueNameEntities [1].Trim () : valueNameEntities [1]);
+                            // no name/value separator given or found
+                            e.Args.Add (trim ? idx.Trim () : idx);
                         } else {
 
-                            // only value was found
-                            e.Args.Add (trim ? idx.Trim () : idx); // couldn't split string into name/value, no value separator found
+                            // caller requests to split further into name/value
+                            string[] valueNameEntities = idx.Split (new string[] { valueSep }, System.StringSplitOptions.RemoveEmptyEntries);
+                            if (valueNameEntities.Length > 2)
+                                throw new LambdaException ("Value/Name separator found more than 2 instances in; " + idx, e.Args, context);
+
+                            if (valueNameEntities.Length == 2) {
+
+                                // both name and value where found
+                                e.Args.Add (trim ? valueNameEntities [0].Trim () : valueNameEntities [0], trim ? valueNameEntities [1].Trim () : valueNameEntities [1]);
+                            } else {
+
+                                // only value was found
+                                e.Args.Add (trim ? idx.Trim () : idx); // couldn't split string into name/value, no value separator found
+                            }
                         }
                     }
                 }

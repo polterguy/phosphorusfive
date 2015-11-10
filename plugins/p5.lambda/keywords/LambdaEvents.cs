@@ -188,6 +188,10 @@ namespace p5.lambda.events
             // looping through each Active Event from IEnumerable
             foreach (var idx in source) {
 
+                // checking to see if this is "private" active event
+                if (idx.StartsWith ("_"))
+                    continue;
+
                 // checking to see if we have any filter
                 if (filter.Count == 0) {
 

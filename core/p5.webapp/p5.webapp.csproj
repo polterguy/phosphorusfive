@@ -191,6 +191,7 @@
     <None Include="system42\startup-files\pages\sys42.create-page.hl" />
     <None Include="system42\startup-files\pages\sys42.edit-page.hl" />
     <None Include="system42\admin\files\files.hl" />
+    <None Include="system42\startup-files\debug\sys42.show-widgets.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="system42\startup-files\debug\" />

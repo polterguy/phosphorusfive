@@ -202,15 +202,16 @@ namespace p5.web.ui.widgets
                     Node curNode = e.Args.Add (widget.ID).LastChild;
 
                     // first listing "static properties"
-                    curNode.Add ("visible");
-                    curNode.Add ("invisible-element");
-                    curNode.Add ("element");
-                    curNode.Add ("has-id");
-                    curNode.Add ("render-type");
+                    if (!widget.Visible)
+                        curNode.Add ("visible", widget.Visible);
+                    if ((widget is Container && widget.ElementType != "div") || (widget is Literal && widget.ElementType != "p"))
+                        curNode.Add ("element", widget.ElementType);
+                    if (widget.NoIdAttribute)
+                        curNode.Add ("has-id", !widget.NoIdAttribute);
                     foreach (var idxAtr in widget.AttributeKeys) {
                         if (idxAtr == "Tag" || idxAtr.StartsWith ("on"))
                             continue;
-                        curNode.Add (idxAtr);
+                        curNode.Add (idxAtr, widget [idxAtr]);
                     }
                 }
             }
