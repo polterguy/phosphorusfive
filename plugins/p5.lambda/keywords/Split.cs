@@ -38,10 +38,12 @@ namespace p5.lambda.keywords
             // making sure we clean up and remove all arguments passed in after execution
             using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args, true)) {
 
+                string whatToSplit = XUtil.Single<string> (e.Args, context);
+                if (whatToSplit == null)
+                    return; // nothing to split
+
                 Node valueSepNode = e.Args ["=="];
                 Node trimNode = e.Args ["trim"];
-
-                string whatToSplit = XUtil.Single<string> (e.Args, context);
                 string separator = XUtil.Single<string> (sepNode, context);
                 string valueSep = valueSepNode == null ? null : XUtil.Single<string> (valueSepNode, context);
                 bool trim = trimNode == null ? false : trimNode.GetExValue (context, false);

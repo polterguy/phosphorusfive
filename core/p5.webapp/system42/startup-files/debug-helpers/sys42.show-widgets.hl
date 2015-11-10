@@ -1,0 +1,67 @@
+
+/*
+ * responsible for creating the Active Event that shows a dialogue containing the entire
+ * Hyperlisp needed to create a specific widget
+ */
+
+set-event:sys42.show-widgets
+
+  // figuring out type of widget
+  list-widgets:x:/..sys42.show-widgets?value
+
+
+  // in case there are widgets which contains the same name as the requested widget
+  set:x:/-/*(!/={0})
+    :x:/..sys42.show-widgets?value
+
+
+  // adding widget to root active event node as "return value"
+  add:x:/..sys42.show-widgets
+    src:x:/..sys42.show-widgets/*/list-widgets/*
+
+
+  // checking if this was an automatically generated ID
+  // and if it was, we remove the automatically assigned ID
+  split:x:/..sys42.show-widgets/*/list-widgets/*?value
+    =:
+  if:x:/-/*(!/\0!/\1!/\2!/\3!/\4!/\5!/\6!/\7!/\8!/\9!/a!/b!/c!/d!/e!/f!/x)?name
+    not
+    and:x:/./-/0?name
+      equals:x
+    and:x:/./-/*?count
+      equals:int:8
+    set:x:/..sys42.show-widgets/0/-?value
+
+
+  // fetching properties
+  list-widget-properties:x:/..sys42.show-widgets/*/list-widgets/*?value
+  add:x:/..sys42.show-widgets/0/-
+    src:x:/..sys42.show-widgets/*/list-widget-properties/*/*
+
+
+  // widget events
+  list-widget-events:x:/..sys42.show-widgets/*/list-widgets/*?value
+  add:x:/+
+    src:x:/..sys42.show-widgets/*/list-widget-events/*/*
+  get-widget-event:x:/..sys42.show-widgets/*/list-widget-events/*?name
+
+  // removing all root node children of events who's names are "_event"
+  set:x:/..sys42.show-widgets/*/get-widget-event/**/~on/*/_event
+  add:x:/..sys42.show-widgets/0/-
+    src:x:/..sys42.show-widgets/*/get-widget-event/*/*
+
+
+  // looping through all children, recursively invoking self
+  get-children-widgets:x:/..sys42.show-widgets?value
+  if:x:/-/*/*
+    add:x:/..sys42.show-widgets/0/-
+      src
+        widgets
+  for-each:x:/..sys42.show-widgets/*/get-children-widgets/*/*?value
+    set:x:/+?value
+      src:x:/..for-each/*/__dp?value
+    sys42.show-widgets
+    add:x:/+/*/src
+      src:x:/..for-each/*/sys42.show-widgets/0
+    add:x:/..sys42.show-widgets/0/-/*/widgets
+      src

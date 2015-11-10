@@ -55,7 +55,7 @@ namespace p5.file.file
                         // with filename as name, and content as value
                         using (TextReader reader = File.OpenText (rootFolder + idxFilename)) {
                             string fileContent = reader.ReadToEnd ();
-                            if (idxFilename.EndsWith (".hl")) {
+                            if (idxFilename.EndsWith (".hl") && e.Args.GetExChildValue ("convert", context, true)) {
 
                                 // automatically converting to Hyperlisp before returning
                                 e.Args.Add (new Node (idxFilename, null, new Node (string.Empty, fileContent).Get<Node> (context).Children));

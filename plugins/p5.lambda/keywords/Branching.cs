@@ -52,7 +52,7 @@ namespace p5.lambda.keywords
             VerifyElseSyntax (e.Args, context, "else-if");
 
             // checking if previous [if] or [else-if] returned true, and if not, evaluating current node
-            if (PreviousConditionEvaluatedTrue (e.Args))
+            if (PreviousConditionEvaluatedTrue (e.Args, context))
                 return;
 
             // evaluating current scope
@@ -77,7 +77,7 @@ namespace p5.lambda.keywords
             VerifyElseSyntax (e.Args, context, "else");
             
             // checking if previous [if] or [else-if] returned true, and if not, evaluating current node
-            if (PreviousConditionEvaluatedTrue (e.Args))
+            if (PreviousConditionEvaluatedTrue (e.Args, context))
                 return;
 
             // since no previous conditions evaluated to true, we simply execute this scope, 
@@ -90,14 +90,15 @@ namespace p5.lambda.keywords
          * checks if previous conditional statement ([if] or [else-if]) evaluated to true, and if so
          * return true, else returns false to caller
          */
-        private static bool PreviousConditionEvaluatedTrue (Node args)
+        private static bool PreviousConditionEvaluatedTrue (Node args, ApplicationContext context)
         {
             Node curIdx = args.PreviousSibling;
             while (curIdx != null) { // we can safely assume this is a conditional node at this point!
 
-                if (curIdx.Value is bool && (bool)curIdx.Value)
-                    return true; // no need to evaluate this block any further!
-
+                if (curIdx.Name == "if")
+                    return curIdx.Value is bool ? (bool)curIdx.Value : false;
+                else if (curIdx.Name == "else-if" && (curIdx.Value is bool ? (bool)curIdx.Value : false))
+                    return true;
                 curIdx = curIdx.PreviousSibling;
             }
             return false;

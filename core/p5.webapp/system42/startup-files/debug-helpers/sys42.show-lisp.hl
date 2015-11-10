@@ -1,0 +1,58 @@
+
+/*
+ * responsible for creating the Active Event that shows a dialogue containing either the
+ * current root node, or the given node's expression as a "debug window"
+ */
+
+set-event:sys42.show-lisp
+
+  // hack to be able to remove function invocation content in case user runs "get-event" for sys42.show-lisp
+  // This effectively removes all instances of "sys42.show-lisp" which HAS executed
+  _is-executing-instance:false
+  set:x:/-?value
+    src:true
+
+  // defaulting to "entire tree" unless an expression is explicitly given
+  if:x:/.?value
+    equals
+    add:x:/././*/lambda2lisp
+      src:x:/../*
+  else
+
+    // adds the nodes given for conversion to text
+    add:x:/././*/lambda2lisp
+      src:x:@/././.?value
+
+  // here we remove the content dynamically created by our active event invocation
+  // to [sys42.show-lisp], which means that this Active Event will not be a
+  // part of what is shown to the end user, since it would defeat the purpose of
+  // this Active Event. See comment to "_is-executing-instance" at top of event
+  set:x:/+/**/sys42.show-lisp/*/_is-executing-instance/=true/./*
+  lambda2lisp
+
+  // HTML-encoding HTML
+  p5.html.html-encode:x:/-?value
+
+  // setting the literal content to the nodes converted to Hyperlisp (or default code)
+  set:x:/./**/literal/=code/*/innerValue?value
+    src:x:/./-?value
+
+  // making sure close button has focus
+  include-javascript:"window.p5.$('close').el.focus();"
+
+  // creating a widget showing the Hyperlisp code created from the given p5.lambda tree
+  create-widget
+    class:info
+    style:"position:absolute;top:0;left:0;z-index:1000;"
+    widgets
+      literal:code
+        element:pre
+        class:span-24
+        innerValue
+      literal:close
+        element:button
+        class:span-4 right last
+        innerValue:close
+        onclick
+          get-parent-widget:x:/../*/_event?value
+          delete-widget:x:/-/*?value

@@ -6,10 +6,15 @@
 // including CSS for file browser
 include-stylesheet-file:system42/admin/files/files.css
 
-// creating actual form to show file system
+/*
+ * creating main file system browser widget
+ */
 create-widget:main-folders
   class:span-24 prepend-top
   oninitialload
+
+    // creating folders and files according to what
+    // our current directory is
     sys42.list-folders-files
   widgets
     literal
@@ -25,6 +30,8 @@ create-widget:main-folders
       class:span-24
     container:files-folders
       class:span-24
+    container:editor-wrapper
+      class:span-24
   events
 
     /*
@@ -34,13 +41,32 @@ create-widget:main-folders
       split:x:/.?value
         =:.
       if:x:/<?name
-        equals:png
-        or:x:/./<?value
-          equals:gif
-        or:x:/./<?value
-          equals:jpg
-        or:x:/./<?value
-          equals:jpeg
+        equals:hl
+
+        // Hyperlisp editor, starting "in-place"
+        clear-widget:editor-wrapper
+        set:x:/+/*/0?value
+          src:x:/..sys42.show-file?value
+        sys42.execute-lisp-file:system42/admin/file-editor/hyperlisp-editor.hl
+          _args
+            file
+            parent:editor-wrapper
+            no-header:true
+      else-if:x:/-/<?name
+        equals:html
+        or:x:/./-/<?name
+          equals:htm
+
+        // HTML editor
+      else-if:x:/-2/<?name
+        equals:css
+
+        // CSS editor
+      else-if:x:/-3/<?name
+        equals:js
+
+        // JavaScript editor
+      else
         include-javascript:"window.open('{0}');"
           :x:/././.?value
 
@@ -60,11 +86,13 @@ create-widget:main-folders
           src:x:/././-/*?value
         set:x:/./+/*/widgets/*/void/*/disabled
 
-        // creating bread-crumb bar
+        // adding all folders up to current into bread-crumb
         _cur
         split:x:/../*/get-session-value/*?value
           =:/
         for-each:x:/-/*?name
+
+          // looping through each folder in "current folder"
           if:x:/./-2?value
             set:x:/././-2?value
               src:{0}/
@@ -88,9 +116,14 @@ create-widget:main-folders
             src:x:/./././*/_cur?value
           add:x:/././+/*/widgets
             src:x:/././*/_lit/*
+
+        // making sure our "last folder" is disabled, 
+        // since this is the folder we're currently inside of
         add:x:/./+2/</..void
           src
             disabled
+
+      // bread-crumb widget
       create-widget
         parent:bread-crumb
         class:bread-crumb span-24
@@ -101,11 +134,14 @@ create-widget:main-folders
             type:button
             value:home
             onclick
+
+              // just removing session key for "current folder"
+              // and reloading our files
               set-session-value:sys42.current-folder
               sys42.list-folders-files
 
       // listing folders and looping through creating one widget for each folder
-      list-folders:/
+      list-folders:
       for-each:x:/-/*
         _lit
           literal
@@ -132,11 +168,13 @@ create-widget:main-folders
         set:x:/./+?value
           src:x:/../*/get-session-value/*?value
 
-      // listing files and looping through creating one widget for each file
-      list-files:/
+      // looping through files creating one widget for each file
+      list-files:
       for-each:x:/-/*
         split:x:/./*/__dp/#?value
           =:.
+
+        // checking if this is an image file (png, gif, jpeg)
         if:x:/<?name
           equals:png
           or:x:/./<?value
@@ -194,15 +232,12 @@ create-widget:main-folders
           add:x:/./././*/create-widget/*/widgets
             src:x:/././*/_lit/*
 
-      // updating each 6'th item with "last" class addition
+      // updating each 8'th item with "last" class addition
       set:x:/+2/*/widgets/*(/literal|/container)/%8/*/class?value
         rel-src:{0} last
           :x:?value
-      _for-each:x:/+/*/widgets/*(/literal|/container)/%8/*/class
-        set:x:/./*/__dp/#?value
-          src:{0} {1}
-            :x:/./././*/__dp/#?value
-            :last
+
+      // creating widget containing all folders and files
       create-widget
         class:span-24 prepend-top
         parent:files-folders

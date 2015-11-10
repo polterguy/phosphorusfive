@@ -34,9 +34,6 @@ create-widget:executor
       element:h1
       class:span-23
       innerValue:p5.lambda executor
-      onclick
-        foo
-        bar:asddsa
     literal:back
       class:span-1 last
       element:a
@@ -85,10 +82,10 @@ create-widget:executor
             lisp2lambda:x:/<?value
 
             // then storing current code in session for simplicity
-            set:x:/../*/set-session-value/*/source?value
+            set:x:/../*/set-session-value/*/src?value
               src:x:/../*/get-widget-property/+/<?value
             set-session-value:executor.current-code
-              source
+              src
 
             // then executing p5.lambda nodes, in such a way that our converted hyperlisp becomes the "root node"
             // while still reachable after execution is done!

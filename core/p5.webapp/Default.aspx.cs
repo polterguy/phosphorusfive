@@ -516,14 +516,7 @@ namespace p5.webapp
                 foreach (var idxEventNameNode in new List<Node> (e.Args.Children)) {
 
                     Node nodeToAdd = new Node(widget.ID);
-                    if (!AjaxEvents.ContainsKey(widget.ID)) {
-
-                        // no server-side events, checking for javascript events!
-                        if (widget.HasAttribute(idxEventNameNode.Name)) {
-
-                            nodeToAdd.Add(idxEventNameNode.Name + "-script", widget[idxEventNameNode.Name]); // javascript!
-                        }
-                    } else {
+                    if (AjaxEvents.ContainsKey(widget.ID) && AjaxEvents[widget.ID].ContainsKey(idxEventNameNode.Name)) {
 
                         // checking if current child name is an event for current widget
                         if (AjaxEvents[widget.ID].ContainsKey(idxEventNameNode.Name)) {
@@ -534,6 +527,8 @@ namespace p5.webapp
                                 evtNode.AddRange(idx.Clone().Children);
                             }
                         }
+                    } else if (widget.HasAttribute(idxEventNameNode.Name)) {
+                        nodeToAdd.Add(idxEventNameNode.Name + "-script", widget[idxEventNameNode.Name]); // javascript!*/
                     }
                     if (nodeToAdd.Count > 0)
                         e.Args.Add(nodeToAdd);
@@ -871,7 +866,7 @@ namespace p5.webapp
         private void CreateWidget (ApplicationContext context, Node args, string type)
         {
             // finding parent widget first, which defaults to "main container" widget, if no parent is given
-            var parent = FindControl<pf.Container>(args.GetChildValue ("parent", context, "cnt"), Page);
+            var parent = FindControl<pf.Widget>(args.GetChildValue ("parent", context, "cnt"), Page);
 
             // creating our widget by raising the active event responsible for creating it
             var createNode = args.Clone ();

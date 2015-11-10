@@ -182,7 +182,6 @@
     <None Include="system42\startup-files\users\sys42.logout-user.hl" />
     <None Include="system42\templates\main.hl" />
     <None Include="system42\README.md" />
-    <None Include="system42\startup-files\debug\sys42.show-lisp.hl" />
     <None Include="system42\page-types\controls.hl" />
     <None Include="system42\page-types\html.hl" />
     <None Include="system42\page-types\lambda.hl" />
@@ -191,10 +190,13 @@
     <None Include="system42\startup-files\pages\sys42.create-page.hl" />
     <None Include="system42\startup-files\pages\sys42.edit-page.hl" />
     <None Include="system42\admin\files\files.hl" />
-    <None Include="system42\startup-files\debug\sys42.show-widgets.hl" />
+    <None Include="system42\startup-files\debug-helpers\sys42.show-lisp.hl" />
+    <None Include="system42\startup-files\debug-helpers\sys42.show-widgets.hl" />
+    <None Include="system42\admin\file-editor\hyperlisp-editor.hl" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="system42\startup-files\debug\" />
     <Folder Include="system42\admin\files\" />
+    <Folder Include="system42\startup-files\debug-helpers\" />
+    <Folder Include="system42\admin\file-editor\" />
   </ItemGroup>
 </Project>

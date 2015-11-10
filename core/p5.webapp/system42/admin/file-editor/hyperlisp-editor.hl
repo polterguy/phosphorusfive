@@ -1,0 +1,114 @@
+
+/*
+ * file editor for Hyperlisp files
+ */
+
+
+// making sure necessary JavaScript files are included
+include-javascript-file:system42/codemirror/lib/codemirror.js
+include-javascript-file:system42/codemirror/addon/selection/active-line.js
+include-javascript-file:system42/codemirror/addon/display/placeholder.js
+include-javascript-file:system42/codemirror/addon/display/fullscreen.js
+include-javascript-file:system42/codemirror/hyperlisp-mode.js
+
+
+// making sure necessary Stylesheet files are included
+include-stylesheet-file:system42/codemirror/lib/codemirror.css
+include-stylesheet-file:system42/codemirror/theme/blackboard.css
+include-stylesheet-file:system42/codemirror/addon/display/fullscreen.css
+
+
+// making sure we update "current editing Hyperlisp file"
+// if we're given an input argument
+if:x:/./*/_args/*/file?value
+  set-session-value:sys42.current-editing-hyperlisp-file
+    src:x:/./././*/_args/*/file?value
+
+
+// checking if we're given an explicit parent widget here
+if:x:/./*/_args/*/parent?value
+  set:x:/+/*/*?value
+    src:x:/./././*/_args/*/parent?value
+  insert-before:x:/././*/create-widget/*/class
+    src
+      parent
+
+
+// checking if we're told to NOT create header
+if:x:/./*/_args/*/no-header?value.bool
+  equals:bool:true
+  set:x:/././*/create-widget/*/widgets/*/literal(/=file-editor-header|/=file-editor-back)
+
+
+// then checking to see if we've got some code stored in 
+// session, and if so, we stuff it into our editor
+get-session-value:sys42.current-editing-hyperlisp-file
+if:x:/-/0
+  load-file:x:/../*/get-session-value/[0,1]/0?value
+    convert:false
+  set:x:/././*/create-widget/**/literal/=file-editor-content/*/innerValue?value
+    src:x:/./-/0?value
+
+// creating actual form to show the executor
+create-widget:file-editor
+  class:span-24 prepend-top
+  widgets
+    literal:file-editor-header
+      element:h1
+      class:span-23
+      innerValue:Hyperlisp editor
+    literal:file-editor-back
+      class:span-1 last
+      element:a
+      href:/
+      innerValue:back
+
+    /*
+     * file textarea element, transformed into a CodeMirror widget later
+     */
+    container:file-editor-wrapper
+      class:span-24
+      widgets
+        literal:file-editor-content
+          element:textarea
+          innerValue
+          placeholder:type Hyperlisp code here ...
+
+
+/*
+ * making sure our "textarea" file HTML elements are 
+ * replaced with the codemirror editor
+ */
+include-javascript:@"
+
+if (window._inputCode) {
+  window._inputCode.toTextArea();
+  var el = window._inputCode.getTextArea();
+  el.parentNode.removeChild(el);
+}
+
+window._inputCode = CodeMirror.fromTextArea(document.getElementById('file-editor-content'), {
+  mode:'hyperlisp',
+  theme:'blackboard',
+  lineNumbers:true,
+  styleActiveLine:true,
+  path:'system42/codemirror/',
+  autofocus:true,
+  extraKeys: {
+    Tab: function(cm) {
+      var spaces = Array(cm.getOption('indentUnit') + 1).join(' ');
+      cm.replaceSelection(spaces);
+    },
+    F11: function(cm) {
+      cm.setOption('fullScreen', !cm.getOption('fullScreen'));
+    },
+    Esc: function(cm) {
+      if (cm.getOption('fullScreen')) cm.setOption('fullScreen', false);
+    }
+  }
+});
+window._inputCode.setSize (950, 600);
+window._inputCode.on('change',function (cMirror) {
+  p5.$('file-editor-content').el.value = cMirror.getValue();
+});
+"
