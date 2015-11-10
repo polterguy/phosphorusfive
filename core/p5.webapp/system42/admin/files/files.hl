@@ -110,6 +110,7 @@ create-widget:main-folders
         _lit
           literal
             innerValue
+            title
             class:span-3 folder
             onclick
               set-session-value:sys42.current-folder
@@ -120,6 +121,8 @@ create-widget:main-folders
         set:x:/-2/**/innerValue?value
           src:x:/./<?name
         set:x:/-3/**/set-session-value/*/src?value
+          src:x:/././*/__dp/#?value
+        set:x:/-4/*/*/title?value
           src:x:/././*/__dp/#?value
         add:x:/././*/create-widget/*/widgets
           src:x:/././*/_lit/*
@@ -147,6 +150,7 @@ create-widget:main-folders
           _lit
             container
               class:span-3 image-file
+              title
               onclick
                 sys42.show-file
               widgets
@@ -165,6 +169,8 @@ create-widget:main-folders
             src:x:/./././*/__dp/#?value
           set:x:/./*/_lit/**/sys42.show-file?value
             src:x:/./././*/__dp/#?value
+          set:x:/./*/_lit/*/container/*/title?value
+            src:x:/./././*/__dp/#?value
           add:x:/./././*/create-widget/*/widgets
             src:x:/././*/_lit/*
         else
@@ -173,6 +179,7 @@ create-widget:main-folders
           _lit
             literal
               innerValue
+              title
               class:span-3 file
               onclick
                 sys42.show-file
@@ -181,6 +188,8 @@ create-widget:main-folders
           set:x:/-2/**/innerValue?value
             src:x:/./<?name
           set:x:/./*/_lit/**/sys42.show-file?value
+            src:x:/./././*/__dp/#?value
+          set:x:/./*/_lit/*/literal/*/title?value
             src:x:/./././*/__dp/#?value
           add:x:/./././*/create-widget/*/widgets
             src:x:/././*/_lit/*
@@ -198,13 +207,3 @@ create-widget:main-folders
         class:span-24 prepend-top
         parent:files-folders
         widgets
-
-
-
-
-
-
-
-
-
-
