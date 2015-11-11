@@ -11,7 +11,7 @@ set-event:sys42.execute-lisp-file
   load-file:x:@/.?value
   add:x:/+
     src:x:/..sys42.execute-lisp-file/*/_args
-  lambda-copy:x:/-2/*
+  lambda:x:/-2/*
 
 
 /*

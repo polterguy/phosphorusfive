@@ -850,7 +850,7 @@ namespace p5.webapp
 
             // invoking each [lambda.xxx] object from event
             foreach (var idxLambda in lambdas) {
-                context.Raise ("lambda-copy", idxLambda);
+                context.Raise ("lambda-children", idxLambda);
             }
 
             // cleaning up after ourselves, deleting only the lambda objects that came

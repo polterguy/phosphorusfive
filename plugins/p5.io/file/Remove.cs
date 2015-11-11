@@ -37,7 +37,7 @@ namespace p5.file.file
                 var rootFolder = Common.GetRootFolder (context);
 
                 // iterating through each path given
-                foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+                foreach (var idx in Common.GetSource (e.Args, context)) {
                     if (File.Exists (rootFolder + idx)) {
 
                         // file exists, removing file and signaling caller

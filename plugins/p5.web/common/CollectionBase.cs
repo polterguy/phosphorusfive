@@ -81,40 +81,88 @@ namespace p5.web.ui.common
         public static void Get (Node node, ApplicationContext context, GetDelegate functor)
         {
             // making sure we clean up and remove all arguments passed in after execution
-            using (Utilities.ArgsRemover remover = new Utilities.ArgsRemover (node, true)) {
+            using (Utilities.ArgsRemover remover = new Utilities.ArgsRemover (node, false)) {
 
                 // iterating through each "key"
-                foreach (var idx in XUtil.Iterate<string> (node, context)) {
+                List<string> keys = new List<string> (XUtil.Iterate<string> (node, context));
+                if (keys.Count == 1) {
 
-                    // retrieving object from key
-                    var value = functor (idx);
+                    // single key
+                    var value = functor (keys [0]);
                     if (value != null) {
 
-                        // adding key node, and value as object, if value is not node, otherwise
-                        // appending value nodes beneath key node
-                        var resultNode = node.Add (idx).LastChild;
+                        // adding value as value into root active event node
                         if (value is Node) {
 
                             // value is Node
-                            resultNode.Add ((value as Node).Clone ());
+                            node.Value = (value as Node).Clone ();
                         } else if (value is IEnumerable<Node>) {
 
                             // value is a bunch of nodes
+                            Node resultNode = new Node ();
                             foreach (var idxValue in value as IEnumerable<Node>) {
                                 resultNode.Add (idxValue.Clone ());
                             }
+                            node.Value = resultNode;
                         } else if (value is IEnumerable<object>) {
 
                             // value is a bunch of object values
+                            Node resultNode = new Node ();
                             foreach (var idxValue in value as IEnumerable<object>) {
                                 resultNode.Add (string.Empty, idxValue);
                             }
+                            node.Value = resultNode;
                         } else {
 
                             // value is any "other type of value", returning it anyway, even though it
                             // cannot possibly have come from p5.lambda, to allow user to retrieve "any values"
                             // that exists
-                            resultNode.Value = value;
+                            node.Value = value;
+                        }
+                    } else {
+
+                        // there was no value in session
+                        node.Value = null;
+                    }
+                } else {
+
+                    // multiple keys
+                    foreach (var idx in keys) {
+
+                        // retrieving object from key
+                        var value = functor (idx);
+                        if (value != null) {
+
+                            // adding key node, and value as object, if value is not node, otherwise
+                            // appending value nodes beneath key node
+                            var resultNode = node.Add (idx).LastChild;
+                            if (value is Node) {
+
+                                // value is Node
+                                resultNode.Add ((value as Node).Clone ());
+                            } else if (value is IEnumerable<Node>) {
+
+                                // value is a bunch of nodes
+                                foreach (var idxValue in value as IEnumerable<Node>) {
+                                    resultNode.Add (idxValue.Clone ());
+                                }
+                            } else if (value is IEnumerable<object>) {
+
+                                // value is a bunch of object values
+                                foreach (var idxValue in value as IEnumerable<object>) {
+                                    resultNode.Add (string.Empty, idxValue);
+                                }
+                            } else {
+
+                                // value is any "other type of value", returning it anyway, even though it
+                                // cannot possibly have come from p5.lambda, to allow user to retrieve "any values"
+                                // that exists
+                                resultNode.Value = value;
+                            }
+                        } else {
+
+                            // there was no value in session for key
+                            var resultNode = node.Add (idx, null);
                         }
                     }
                 }

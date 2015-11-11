@@ -6,7 +6,7 @@
 
 set-event:sys42.show-lisp
 
-  // hack to be able to remove function invocation content in case user runs "get-event" for sys42.show-lisp
+  // hack to be able to remove function invocation content in case user runs "get-events" for sys42.show-lisp
   // This effectively removes all instances of "sys42.show-lisp" which HAS executed
   _is-executing-instance:false
   set:x:/-?value

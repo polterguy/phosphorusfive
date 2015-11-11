@@ -8,11 +8,11 @@ set-event:sys42.get-user
 
   // read "system42-user" cookie, if existing
   get-cookie:system42-user
-  if:x:/-/*
+  if:x:/-?value
 
     // cookie existed, now checking to see if credentials (username and hashed password) is correct, 
     // but first converting cookie to Node
-    lisp2lambda:x:/./-/*?value
+    lisp2lambda:x:/./-?value
     select-data:x:/*/*/p5.user/*/username/"={0}"/.
       :x:/./-/*/username?value
     p5.crypto.hash-string:x:/-/*/*/password?value

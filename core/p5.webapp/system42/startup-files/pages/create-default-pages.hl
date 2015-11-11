@@ -187,15 +187,3 @@ sys42.execute-lisp-file:system42/admin/executor.hl
  */
 sys42.execute-lisp-file:system42/admin/files/files.hl
 "
-
-    p5.page:/hyperlisp-file-editor
-      type:lambda
-      name:Hyperlisp file editor
-      role:admin
-      lambda:@"
-
-/*
- * simply executes the file that loads up the 'Hyperlisp file editor'
- */
-sys42.execute-lisp-file:system42/admin/file-editor/hyperlisp-editor.hl
-"

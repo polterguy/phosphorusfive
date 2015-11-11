@@ -30,56 +30,6 @@ set:x:/-?value
         }
 
         /// <summary>
-        ///     verifies that [lambda-immutable] is not mutable
-        /// </summary>
-        [Test]
-        public void Lambda02 ()
-        {
-            var result = ExecuteLambda (@"_data:success
-set:x:/-?value
-  src:error", "lambda-immutable");
-            Assert.AreEqual ("success", result [0].Value);
-        }
-
-        /// <summary>
-        ///     verifies that [lambda-copy] is not mutable
-        /// </summary>
-        [Test]
-        public void Lambda03 ()
-        {
-            var result = ExecuteLambda (@"_data:success
-set:x:/-?value
-  src:error", "lambda-copy");
-            Assert.AreEqual ("success", result [0].Value);
-        }
-
-        /// <summary>
-        ///     verifies that [lambda-copy] does not have access to nodes outside if itself
-        /// </summary>
-        [Test]
-        public void Lambda04 ()
-        {
-            var result = ExecuteLambda (@"_data:success
-lambda-copy
-  set:x:/../*/_data?value
-    src:error");
-            Assert.AreEqual ("success", result [0].Value);
-        }
-
-        /// <summary>
-        ///     verifies that [lambda-immutable] has access to nodes outside if itself
-        /// </summary>
-        [Test]
-        public void Lambda05 ()
-        {
-            var result = ExecuteLambda (@"_data:error
-lambda-immutable
-  set:x:/../*/_data?value
-    src:success");
-            Assert.AreEqual ("success", result [0].Value);
-        }
-
-        /// <summary>
         ///     verifies that [lambda] can invoke lambda objects through expressions leading to nodes
         /// </summary>
         [Test]

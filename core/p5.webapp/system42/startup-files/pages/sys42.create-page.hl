@@ -56,7 +56,7 @@ create-widget
         template:system42/templates/main.hl
     set:x:/+/*/src?value
       src:x:/./-/0?value
-    set-session-value:page-editor.current-page
+    set-session:page-editor.current-page
       src
     include-javascript:"location.reload();"
 

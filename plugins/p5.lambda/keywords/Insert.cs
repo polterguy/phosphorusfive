@@ -13,10 +13,6 @@ namespace p5.lambda.keywords
 {
     /// <summary>
     ///     Class wrapping execution engine keyword [insert-before] and [insert-after].
-    /// 
-    ///     The [insert-before] and [insert-after] keywords, allows you to insert nodes at a specified position.
-    ///     Either by using expressions, or constants as your source. Destination must be an 
-    ///     <see cref="phosphorus.expressions.Expression">Expression</see>.
     /// </summary>
     public static class Insert
     {
@@ -28,19 +24,7 @@ namespace p5.lambda.keywords
         [ActiveEvent (Name = "insert-before")]
         private static void lambda_insert_before (ApplicationContext context, ActiveEventArgs e)
         {
-            // figuring out source type, for then to execute the corresponding logic, but first asserting destination is expression
-            if (!(e.Args.Value is Expression))
-                throw new LambdaException ("Not a valid destination expression given, make sure you set [insert-before]'s value to an expression using :x:", e.Args, context);
-
-            if (e.Args.Count > 0 && e.Args.LastChild.Name == "rel-src") {
-
-                // relative source
-                AppendRelativeSource (e.Args, context, false);
-            } else {
-
-                // static source
-                AppendStaticSource (e.Args, context, false);
-            }
+            InsertNodes (e.Args, context, false);
         }
         
         /// <summary>
@@ -51,57 +35,54 @@ namespace p5.lambda.keywords
         [ActiveEvent (Name = "insert-after")]
         private static void lambda_insert_after (ApplicationContext context, ActiveEventArgs e)
         {
-            // figuring out source type, for then to execute the corresponding logic, but first asserting destination is expression
-            if (!(e.Args.Value is Expression))
-                throw new LambdaException ("Not a valid destination expression given, make sure you set [insert-before]'s value to an expression using :x:", e.Args, context);
+            InsertNodes (e.Args, context, true);
+        }
 
-            if (e.Args.Count > 0 && e.Args.LastChild.Name == "rel-src") {
+        /*
+         * commonalities for both Active Events
+         */
+        private static void InsertNodes (Node args, ApplicationContext context, bool after)
+        {
+            if (!(args.Value is Expression))
+                throw new LambdaException ("Not a valid destination expression given, make sure you set [" + args.Name + "]'s value to an expression using :x:", args, context);
+
+            if (args.Count > 0 && args.LastChild.Name == "rel-src") {
 
                 // relative source
-                AppendRelativeSource (e.Args, context, true);
+                InsertRelativeSource (args, context, after);
             } else {
 
                 // static source
-                AppendStaticSource (e.Args, context, true);
+                InsertStaticSource (args, context, after);
             }
         }
 
         /*
          * source is static
          */
-        private static void AppendStaticSource (Node addNode, ApplicationContext context, bool after)
+        private static void InsertStaticSource (Node args, ApplicationContext context, bool after)
         {
             // retrieving source before we start iterating destination,
             // in case destination and source overlaps
-            var sourceNodes = XUtil.SourceNodes (addNode, context);
+            var sourceNodes = XUtil.SourceNodes (args, context);
 
             // making sure there is a source
             if (sourceNodes == null)
                 return;
 
             // looping through every destination node
-            var isFirst = true; // since source is already cloned, we avoid cloning on our first run
-            foreach (var idxDestination in addNode.Get<Expression> (context).Evaluate (addNode, context, addNode)) {
+            foreach (var idxDestination in args.Get<Expression> (context).Evaluate (args, context, args)) {
 
                 // verifying destination actually is a node
                 var curDest = idxDestination.Value as Node;
                 if (curDest == null)
-                    throw new LambdaException ("cannot [insert-before] or [insert-after] into something that's not a node", addNode, context);
+                    throw new LambdaException ("cannot [insert-before] or [insert-after] into something that's not a node", args, context);
 
-                // minor optimization trick, since source already is cloned upon first run
-                if (isFirst) {
+                // looping through each node in source
+                foreach (var idxSourceNode in sourceNodes) {
 
-                    // we don't clone on the first run-through, since node-set is already cloned
-                    foreach (var idxSourceNode in sourceNodes) {
-                        curDest.Parent.Insert (curDest.Parent.IndexOf (curDest) + (after ? 1 : 0), idxSourceNode);
-                    }
-                    isFirst = false;
-                } else {
-
-                    // cloning on all consecutive run-throughs
-                    foreach (var idxSourceNode in sourceNodes) {
-                        curDest.Parent.Insert (curDest.Parent.IndexOf (curDest) + (after ? 1 : 0), idxSourceNode.Clone ());
-                    }
+                    // inserting copy into currently iterated destination
+                    curDest.Parent.Insert (curDest.Parent.IndexOf (curDest) + (after ? 1 : 0), idxSourceNode.Clone ());
                 }
             }
         }
@@ -109,16 +90,20 @@ namespace p5.lambda.keywords
         /*
          * relative source
          */
-        private static void AppendRelativeSource (Node node, ApplicationContext context, bool after)
+        private static void InsertRelativeSource (Node args, ApplicationContext context, bool after)
         {
-            foreach (var idxDestination in node.Get<Expression> (context).Evaluate (node, context, node)) {
+            // looping through each destination first, since source is relative to destination
+            foreach (var idxDestination in args.Get<Expression> (context).Evaluate (args, context, args)) {
 
                 // verifying destination actually is a node
                 var curDest = idxDestination.Value as Node;
                 if (curDest == null)
-                    throw new LambdaException ("cannot [insert-before] or [insert-after] into something that's not a node", node, context);
+                    throw new LambdaException ("cannot [insert-before] or [insert-after] into something that's not a node", args, context);
 
-                foreach (var idxSource in XUtil.SourceNodes (node, idxDestination.Node, context)) {
+                // evaluating source relative to destination, and iterating over each relative source
+                foreach (var idxSource in XUtil.SourceNodes (args, idxDestination.Node, context)) {
+
+                    // inserting copy of source into currently iterated destination
                     curDest.Parent.Insert (curDest.Parent.IndexOf (curDest) + (after ? 1 : 0), idxSource.Clone ());
                 }
             }

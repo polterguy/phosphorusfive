@@ -43,7 +43,7 @@ namespace p5.file.folder
                 var rootFolder = Common.GetRootFolder (context);
 
                 // iterating through each folder caller wants to create
-                foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+                foreach (var idx in Common.GetSource (e.Args, context)) {
 
                     // checking to see if folder already exists, and if it does, return "false" to caller
                     if (Directory.Exists (rootFolder + idx)) {

@@ -37,7 +37,7 @@ namespace p5.file.folder
                 var rootFolder = Common.GetRootFolder (context);
 
                 // iterating through each folder passed in by caller
-                foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+                foreach (var idx in Common.GetSource (e.Args, context)) {
 
                     // iterating all folders in current directory, and returning as nodes beneath args given
                     foreach (var idxFolder in Directory.GetDirectories (rootFolder + idx)) {

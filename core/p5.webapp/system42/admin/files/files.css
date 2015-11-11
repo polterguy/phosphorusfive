@@ -42,5 +42,10 @@
 .folder:hover,
 .file:hover,
 .image-file:hover {
+    background-color:rgba(220,220,255,0.5);
+}
+
+.active-file {
     background-color:rgba(220,255,220,0.5);
 }
+

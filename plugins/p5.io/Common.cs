@@ -3,6 +3,8 @@
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
+using System.Collections.Generic;
+using p5.exp;
 using p5.core;
 
 /// <summary>
@@ -51,6 +53,15 @@ namespace p5.file
                 _rootFolder = _rootFolder.Replace ("\\", "/");
             }
             return _rootFolder;
+        }
+
+        public static IEnumerable<string> GetSource (Node args, ApplicationContext context)
+        {
+            if (args.Value != null) {
+                return XUtil.Iterate<string> (args, context);
+            } else {
+                return new string[] { XUtil.SourceSingle (args, context) as string ?? "" };
+            }
         }
     }
 }

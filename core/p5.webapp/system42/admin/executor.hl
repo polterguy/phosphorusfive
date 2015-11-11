@@ -21,10 +21,10 @@ include-stylesheet-file:system42/codemirror/addon/display/fullscreen.css
 
 
 // then checking to see if we've got some code stored in session, and if so, we stuff it into our editor
-get-session-value:executor.current-code
-if:x:/-/0
+get-session:executor.current-code
+if:x:/-?value
   set:x:/../**/literal/=input/*/innerValue?value
-    src:x:/../*/get-session-value/[0,1]/0?value
+    src:x:/../*/get-session/[0,1]?value
 
 // creating actual form to show the executor
 create-widget:executor
@@ -82,9 +82,9 @@ create-widget:executor
             lisp2lambda:x:/<?value
 
             // then storing current code in session for simplicity
-            set:x:/../*/set-session-value/*/src?value
+            set:x:/../*/set-session/*/src?value
               src:x:/../*/get-widget-property/+/<?value
-            set-session-value:executor.current-code
+            set-session:executor.current-code
               src
 
             // then executing p5.lambda nodes, in such a way that our converted hyperlisp becomes the "root node"

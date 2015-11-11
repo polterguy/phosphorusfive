@@ -27,8 +27,8 @@ namespace p5.web.ui
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "set-session-value")]
-        private static void set_session_value (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "set-session")]
+        private static void set_session (ApplicationContext context, ActiveEventArgs e)
         {
             CollectionBase.Set (e.Args, context, delegate (string key, object value) {
                 if (value == null) {
@@ -50,8 +50,8 @@ namespace p5.web.ui
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "get-session-value")]
-        private static void get_session_value (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "get-session")]
+        private static void get_session (ApplicationContext context, ActiveEventArgs e)
         {
             CollectionBase.Get (e.Args, context, key => HttpContext.Current.Session [key]);
         }
@@ -63,8 +63,8 @@ namespace p5.web.ui
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "list-session-values")]
-        private static void list_session_values (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "list-session")]
+        private static void list_session (ApplicationContext context, ActiveEventArgs e)
         {
             CollectionBase.List (e.Args, context, () => (from object idx in HttpContext.Current.Session.Keys select idx.ToString ()).ToList ());
         }

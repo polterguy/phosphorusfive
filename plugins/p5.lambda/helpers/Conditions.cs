@@ -28,7 +28,7 @@ namespace p5.lambda.helpers
         /*
          * recursively run through conditions
          */
-        public static void LoopThrough (ApplicationContext context, Node args)
+        public static bool Evaluate (ApplicationContext context, Node args)
         {
             // looping through all conditional children nodes
             foreach (var idx in GetConditionalEventNodes (args)) {
@@ -37,34 +37,45 @@ namespace p5.lambda.helpers
 
                 case "or":
                     TryEvaluateSimpleExist (context, args);
-                    if (args.Get<bool> (context))
-                        return; // since previous conditions evaluated to true, there is no need to evaluate any further
-                    LoopThrough (context, idx); // recursively loop through, if previous condition did NOT evaluate to true!
-                    args.Value = idx.Get<bool> (context);
+                    if (args.Get<bool> (context)) {
+
+                        // evaluated to true!
+                        // since previous conditions evaluated to true, there is no need to evaluate any further
+                        // hence, cleaning up, and returning true "early"
+                        RemoveConditionalOperators (context, args);
+                        return true;
+                    }
+
+                    // recursively loop through, if previous condition did NOT evaluate to true!
+                    args.Value = Evaluate (context, idx);
                     break;
 
                 case "and":
                     TryEvaluateSimpleExist (context, args);
-                    if (args.Get<bool> (context)) {
-                        LoopThrough (context, idx); // recursively loop through, but only if previous statements are true!
-                        args.Value = idx.Get<bool> (context);
-                    }
+
+                    // recursively loop through, but only if previous statements are true!
+                    args.Value = args.Get<bool> (context) && Evaluate (context, idx);
                     break;
 
                 case "xor":
                     TryEvaluateSimpleExist (context, args);
-                    LoopThrough (context, idx);
-                    args.Value = args.Get<bool> (context) != idx.Get<bool> (context); // only evaluates to true if nodes are NOT EQUAL
+
+                    // only evaluates to true if conditions are NOT EQUAL
+                    args.Value = args.Get<bool> (context) != Evaluate (context, idx);
                     break;
 
                 case "not":
                     TryEvaluateSimpleExist (context, args);
                     if (idx.Value != null || idx.Count != 0)
                         throw new LambdaException ("Operator [not] cannot have neither any value, nor any children", idx, context);
+
+                    // simply "nots" the previously evaluated conditional value
                     args.Value = !args.Get<bool> (context);
                     break;
 
                 default:
+
+                    // raising comparison operator Active Event
                     context.Raise (idx.Name, idx);
                     break;
                 }
@@ -72,6 +83,26 @@ namespace p5.lambda.helpers
 
             // if condition had no operator active event children, then we must evaluate a "simple exist" condition
             TryEvaluateSimpleExist (context, args);
+
+            if (args.Get<bool> (context)) {
+
+                // success, evaluated to true
+                RemoveConditionalOperators (context, args);
+                return true;
+            } else {
+
+                // condition evaluated to false, returning false, removing entire execution scope
+                args.Clear ();
+                return false;
+            }
+        }
+
+        private static void RemoveConditionalOperators (ApplicationContext context, Node args)
+        {
+            var removeList = GetConditionalEventNodes (args);
+            foreach (var idxOperators in removeList) {
+                idxOperators.UnTie ();
+            }
         }
 
         /*
@@ -79,23 +110,10 @@ namespace p5.lambda.helpers
          * but only if root node's value has evaluated to true!
          * Returns true if scope was successfully executed!
          */
-        public static bool TryExecuteCurrentScope (ApplicationContext context, Node args)
+        public static void ExecuteCurrentScope (ApplicationContext context, Node args)
         {
-            // checking if condition evaluated to true
-            if (args.Get<bool> (context)) {
-
-                // we should execute current scope!
-                // but first we remove everything used to evaluate current condition
-                var removeList = GetConditionalEventNodes (args);
-                foreach (var idx in removeList) {
-                    idx.UnTie (); // removing, since it's already evaluated, to not confuse execution engine
-                }
-
-                // executing current scope
-                context.Raise ("lambda-children", args);
-                return true;
-            }
-            return false;
+            // executing current scope
+            context.Raise ("lambda-mutable", args);
         }
 
         /*

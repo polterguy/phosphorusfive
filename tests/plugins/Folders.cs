@@ -17,7 +17,7 @@ namespace p5.unittests.plugins
     public class Folders : TestBase
     {
         public Folders ()
-            : base ("p5.io") { }
+            : base ("p5.io", "p5.hyperlisp", "p5.lambda") { }
 
         /// <summary>
         ///     verifies [create-folder] works correctly
@@ -494,6 +494,33 @@ namespace p5.unittests.plugins
             // verifying list-files returned true as it should
             Assert.AreEqual ("test1/xxx", node [0].Value);
             Assert.AreEqual ("test1/yyy", node [1].Value);
+        }
+
+        [ActiveEvent (Name = "test.list-folders-1")]
+        private static void ListFolderEvent (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "test1";
+        }
+        
+        /// <summary>
+        ///     verifies [list-folders] works correctly
+        /// </summary>
+        [Test]
+        public void ListFoldersExpression4 ()
+        {
+            // deleting and re-creating folders to make sure they're empty and don't contain "garbage"
+            if (Directory.Exists (GetBasePath () + "test1")) {
+                Directory.Delete (GetBasePath () + "test1", true);
+            }
+            Directory.CreateDirectory (GetBasePath () + "test1");
+            Directory.CreateDirectory (GetBasePath () + "test1/test-folder");
+
+            // listing folders within folder
+            var node = ExecuteLambda (@"list-folders
+  test.list-folders-1");
+
+            // verifying list-files returned true as it should
+            Assert.AreEqual ("test1/test-folder", node [0] [0].Value);
         }
 
         /// <summary>

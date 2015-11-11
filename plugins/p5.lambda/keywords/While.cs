@@ -31,15 +31,10 @@ namespace p5.lambda.keywords
             // storing old while "body"
             Node oldWhile = e.Args.Clone ();
 
-            // evaluating condition
-            Conditions.LoopThrough (context, e.Args);
-
-            while (true) {
+            while (Conditions.Evaluate (context, e.Args)) {
 
                 // executing current scope as long as while evaluates to true
-                bool executed = Conditions.TryExecuteCurrentScope (context, e.Args);
-                if (!executed)
-                    break; // ending while
+                Conditions.ExecuteCurrentScope (context, e.Args);
 
                 // making sure each iteration is immutable
                 // do NOT copy back old value unless it is an expression, to allow for things such as "while:foo-bar"
@@ -47,9 +42,6 @@ namespace p5.lambda.keywords
                     e.Args.Value = oldWhile.Value;
                 e.Args.Clear ();
                 e.Args.AddRange (oldWhile.Clone ().Children);
-                
-                // evaluating condition, again
-                Conditions.LoopThrough (context, e.Args);
             }
         }
     }

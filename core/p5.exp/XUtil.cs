@@ -500,7 +500,7 @@ namespace p5.exp
                     // source is not an expression, but a string value. this will trigger a conversion
                     // from string, to node, creating a "root node" during conversion. we are discarding this 
                     // "root" node, and only adding children of that automatically generated root node
-                    sourceNodes.AddRange (Utilities.Convert<Node> (evaluatedNode.Value, context).Children.Select (idx => idx.Clone ()));
+                    sourceNodes.AddRange (Utilities.Convert<Node> (FormatNode(evaluatedNode, context), context).Children.Select (idx => idx.Clone ()));
                 } else if (evaluatedNode.Value == null) {
 
                     // source has no value, neither static string values, nor expressions

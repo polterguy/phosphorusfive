@@ -12,18 +12,11 @@ namespace p5.lambda.keywords
 {
     /// <summary>
     ///     Class wrapping the [join] keyword in p5.lambda.
-    /// 
-    ///     The [join] keyword allows you to join multiple nodes into a single string
     /// </summary>
     public static class Join
     {
         /// <summary>
         ///     The [join] keyword, allows you to join multiple nodes/names/values into a single string
-        /// 
-        ///     Optionally use [=] to declare what string you wish to join upon. The value of [=] will be inserted between 
-        ///     each node result into the resulting string. Optionally declare what to separate name and values with using [==].
-        /// 
-        ///     Optionally declare [trim] and set its value to true to trim name/values before they are concatenated into result.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -31,8 +24,9 @@ namespace p5.lambda.keywords
         private static void lambda_join (ApplicationContext context, ActiveEventArgs e)
         {
             // making sure we clean up and remove all arguments passed in after execution
-            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args)) {
+            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args, true)) {
 
+                // verifying syntax of statement
                 var ex = e.Args.Value as Expression;
                 if (ex == null)
                     throw new LambdaException ("No expression supplied to [join], join needs an expression to evaluate", e.Args, context);

@@ -50,7 +50,7 @@ namespace p5.file.file
                 var rootFolder = Common.GetRootFolder (context);
 
                 // iterating through each filepath given
-                foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+                foreach (var idx in Common.GetSource (e.Args, context)) {
 
                     // letting caller know whether or not this file exists
                     e.Args.Add (new Node (idx, File.Exists (rootFolder + idx)));

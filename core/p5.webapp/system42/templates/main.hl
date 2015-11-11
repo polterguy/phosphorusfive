@@ -159,7 +159,7 @@ create-widget:template
           element:p
           has-id:false
           innerValue:@"System42 is a <a href=""http://phosphorusfive.wordpress.com"">Phosphorus Five</a>
-MIT/Free Software production, and copyright © Thomas Hansen - phosphorusfive@gmail.com"
+Open Source/Free Software production, licensed under the terms of the MIT license, and copyright © Thomas Hansen - phosphorusfive@gmail.com"
           class:prepend-4 span-20 last quiet small
 
 

@@ -155,7 +155,7 @@ using p5.hyperlisp.helpers;
 /// 
 ///     <pre>load-file:foo.hl
 /// lisp2lambda:@/-/0?value
-/// lambda-copy:@/-?node</pre>
+/// lambda:@/-?node</pre>
 /// </summary>
 namespace p5.hyperlisp
 {

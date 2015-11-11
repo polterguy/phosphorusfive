@@ -21,7 +21,7 @@ include-stylesheet-file:system42/codemirror/addon/display/fullscreen.css
 // making sure we update "current editing Hyperlisp file"
 // if we're given an input argument
 if:x:/./*/_args/*/file?value
-  set-session-value:sys42.current-editing-hyperlisp-file
+  set-session:sys42.current-editing-hyperlisp-file
     src:x:/./././*/_args/*/file?value
 
 
@@ -42,12 +42,20 @@ if:x:/./*/_args/*/no-header?value.bool
 
 // then checking to see if we've got some code stored in 
 // session, and if so, we stuff it into our editor
-get-session-value:sys42.current-editing-hyperlisp-file
+get-session:sys42.current-editing-hyperlisp-file
 if:x:/-/0
-  load-file:x:/../*/get-session-value/[0,1]/0?value
+  load-file:x:/../*/get-session/[0,1]?value
     convert:false
   set:x:/././*/create-widget/**/literal/=file-editor-content/*/innerValue?value
     src:x:/./-/0?value
+
+
+// checking if caller explicitly declared height
+_height:600
+if:x:/./*/_args/*/height?value
+  set:x:/./-?value
+    src:x:/./././*/_args/*/height?value
+
 
 // creating actual form to show the executor
 create-widget:file-editor
@@ -81,34 +89,34 @@ create-widget:file-editor
  */
 include-javascript:@"
 
-if (window._inputCode) {
+if (window._inputCode) {{
   window._inputCode.toTextArea();
   var el = window._inputCode.getTextArea();
   el.parentNode.removeChild(el);
-}
+}}
 
-window._inputCode = CodeMirror.fromTextArea(document.getElementById('file-editor-content'), {
+window._inputCode = CodeMirror.fromTextArea(document.getElementById('file-editor-content'), {{
   mode:'hyperlisp',
   theme:'blackboard',
   lineNumbers:true,
   styleActiveLine:true,
   path:'system42/codemirror/',
   autofocus:true,
-  extraKeys: {
-    Tab: function(cm) {
+  extraKeys: {{
+    Tab: function(cm) {{
       var spaces = Array(cm.getOption('indentUnit') + 1).join(' ');
       cm.replaceSelection(spaces);
-    },
-    F11: function(cm) {
+    }},
+    F11: function(cm) {{
       cm.setOption('fullScreen', !cm.getOption('fullScreen'));
-    },
-    Esc: function(cm) {
+    }},
+    Esc: function(cm) {{
       if (cm.getOption('fullScreen')) cm.setOption('fullScreen', false);
-    }
-  }
-});
-window._inputCode.setSize (950, 600);
-window._inputCode.on('change',function (cMirror) {
+    }}
+  }}
+}});
+window._inputCode.setSize (950, {0});
+window._inputCode.on('change',function (cMirror) {{
   p5.$('file-editor-content').el.value = cMirror.getValue();
-});
-"
+}});"
+  :x:/././*/_height?value

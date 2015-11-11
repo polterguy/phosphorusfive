@@ -112,7 +112,7 @@ create-widget
               value
             delete-data:x:/*/*/p5.page/"={0}"
               :x:/../*/get-widget-property/+/<?value
-            set-session-value:page-editor.current-page
+            set-session:page-editor.current-page
             include-javascript:"location.reload();"
         literal:save-button
           element:button
@@ -177,7 +177,7 @@ create-widget
             // reloading location after having updated session variable to reflect URL of page edited
             set:x:/+/0?value
               src:x:/../*/select-data/*?value
-            set-session-value:page-editor.current-page
+            set-session:page-editor.current-page
               src
             include-javascript:"location.reload();"
         void:page-id

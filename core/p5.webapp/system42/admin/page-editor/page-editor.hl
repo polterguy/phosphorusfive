@@ -6,7 +6,7 @@
 
 // populating the "select page" drop down list, with all [p5.page] objects from the database, making sure we select the right one,
 // if we should select a specific page
-get-session-value:page-editor.current-page
+get-session:page-editor.current-page
 select-data:x:/*/*/p5.page
 for-each:x:/-/*
   _option
@@ -20,7 +20,7 @@ for-each:x:/-/*
     src:{0} - [{1}]
       :x:/..for-each/*/__dp/#/*/name?value
       :x:/..for-each/*/__dp/#/*/type?value
-  if:x:/../*/get-session-value/0?value
+  if:x:/../*/get-session?value
     equals:x:/..for-each/*/__dp/#?value
     add:x:/..for-each/*/_option/0
       src
@@ -40,9 +40,8 @@ include-javascript:"window.CKEDITOR_BASEPATH='/system42/ckeditor/';"
 create-widget:editor
   class:span-24
   oninitialload
-    get-session-value:page-editor.current-page
-    if:x:/-/*?count
-      more-than:int:0
+    get-session:page-editor.current-page
+    if:x:/-?value
       sys42.edit-page
   widgets
     literal:header
@@ -82,10 +81,10 @@ create-widget:editor
           not-equals:_default
           set:x:/+/*/src?value
             src:x:/../*/get-widget-property/+/<?value
-          set-session-value:page-editor.current-page
+          set-session:page-editor.current-page
             src
         else
-          set-session-value:page-editor.current-page
+          set-session:page-editor.current-page
         include-javascript:"location.reload();"
       widgets
         literal

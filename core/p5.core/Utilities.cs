@@ -29,14 +29,14 @@ namespace p5.core
             private List<Node> _nodes;
             private Node _args;
 
-            public ArgsRemover (Node node, bool removeValue = false, bool onlyEmptyNames = false)
+            public ArgsRemover (Node args, bool removeValue = false, bool onlyEmptyNames = false)
             {
                 if (onlyEmptyNames)
-                    _nodes = new List<Node> (node.Children.Where (idx => idx.Name == string.Empty));
+                    _nodes = new List<Node> (args.Children.Where (idx => idx.Name == string.Empty));
                 else
-                    _nodes = new List<Node> (node.Children);
+                    _nodes = new List<Node> (args.Children);
                 if (removeValue)
-                    _args = node;
+                    _args = args;
             }
 
             void IDisposable.Dispose ()

@@ -21,9 +21,6 @@ namespace p5.lambda.keywords
     {
         /// <summary>
         ///     The [if] keyword allows for conditional execution of p5.lambda nodes.
-        /// 
-        ///     Will evaluate some <see cref="p5.lambda.keywords.helpers.Conditions">Condition</see>, and if the condition evaluates 
-        ///     to true, it will execute the blocks of p5.lambda code inside of itself.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -31,17 +28,15 @@ namespace p5.lambda.keywords
         private static void lambda_if (ApplicationContext context, ActiveEventArgs e)
         {
             // evaluating condition
-            Conditions.LoopThrough (context, e.Args);
+            if (Conditions.Evaluate (context, e.Args)) {
 
-            // executing current scope
-            Conditions.TryExecuteCurrentScope (context, e.Args);
+                // executing current scope
+                Conditions.ExecuteCurrentScope (context, e.Args);
+            }
         }
 
         /// <summary>
         ///     The [else-if] keyword allows for conditional execution of p5.lambda nodes.
-        /// 
-        ///     The [else-if] statement must be coupled with a preceeding [if] statement. To understand how the [else-if] keywords
-        ///     works, see the documentation for <see cref="p5.lambda.keywords.Branching.lambda_if">[if]</see>.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -52,21 +47,22 @@ namespace p5.lambda.keywords
             VerifyElseSyntax (e.Args, context, "else-if");
 
             // checking if previous [if] or [else-if] returned true, and if not, evaluating current node
-            if (PreviousConditionEvaluatedTrue (e.Args, context))
+            if (PreviousConditionEvaluatedTrue (e.Args, context)) {
+                e.Args.Clear ();
+                e.Args.Value = false;
                 return;
+            }
 
             // evaluating current scope
-            Conditions.LoopThrough (context, e.Args);
+            if (Conditions.Evaluate (context, e.Args)) {
 
-            // executing current scope (maybe)
-            Conditions.TryExecuteCurrentScope (context, e.Args);
+                // executing current scope (maybe)
+                Conditions.ExecuteCurrentScope (context, e.Args);
+            }
         }
 
         /// <summary>
         ///     The [else] keyword allows for conditional execution of p5.lambda nodes.
-        /// 
-        ///     The [else] statement must be coupled with a preceeding [if] statement. To understand how the [else] keywords
-        ///     works, see the documentation for <see cref="p5.lambda.keywords.Branching.lambda_if">[if]</see>.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -77,13 +73,16 @@ namespace p5.lambda.keywords
             VerifyElseSyntax (e.Args, context, "else");
             
             // checking if previous [if] or [else-if] returned true, and if not, evaluating current node
-            if (PreviousConditionEvaluatedTrue (e.Args, context))
+            if (PreviousConditionEvaluatedTrue (e.Args, context)) {
+                e.Args.Clear ();
+                e.Args.Value = false;
                 return;
+            }
 
             // since no previous conditions evaluated to true, we simply execute this scope, 
             // without checking any conditions, since there are none!
             e.Args.Value = true;
-            Conditions.TryExecuteCurrentScope (context, e.Args);
+            Conditions.ExecuteCurrentScope (context, e.Args);
         }
 
         /*
@@ -93,15 +92,19 @@ namespace p5.lambda.keywords
         private static bool PreviousConditionEvaluatedTrue (Node args, ApplicationContext context)
         {
             Node curIdx = args.PreviousSibling;
-            while (curIdx != null) { // we can safely assume this is a conditional node at this point!
+            while (true) {
 
-                if (curIdx.Name == "if")
-                    return curIdx.Value is bool ? (bool)curIdx.Value : false;
-                else if (curIdx.Name == "else-if" && (curIdx.Value is bool ? (bool)curIdx.Value : false))
-                    return true;
+                if (curIdx.Name == "if" || curIdx.Name == "else-if") {
+                    var val = curIdx.Get<bool> (context);
+                    if (val)
+                        return true;
+                } else {
+
+                    // no previous condition has evaluated to true
+                    return false;
+                }
                 curIdx = curIdx.PreviousSibling;
             }
-            return false;
         }
 
         /*
@@ -110,8 +113,13 @@ namespace p5.lambda.keywords
         private static void VerifyElseSyntax (Node node, ApplicationContext context, string statement)
         {
             var previous = node.PreviousSibling;
-            if (previous == null || (previous.Name != "if" && previous.Name != "else-if"))
-                throw new LambdaException ("you cannot have an [" + statement + "] without a matching [if] or [else-if] as its previous sibling", node, context);
+            while (true) {
+
+                if (previous == null || (previous.Name != "if" && previous.Name != "else-if"))
+                    throw new LambdaException ("you cannot have an [" + statement + "] without a matching [if] and/or [else-if] as its previous sibling", node, context);
+                if (previous.Name == "if")
+                    break;
+            }
         }
     }
 }

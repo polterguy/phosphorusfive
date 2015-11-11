@@ -162,9 +162,6 @@ CodeMirror.defineMode("hyperlisp", function() {
 
         // first p5.lambda keywords
         case 'lambda':
-        case 'lambda-immutable':
-        case 'lambda-copy':
-        case 'lambda-single':
         case 'add':
         case 'if':
         case 'else-if':
@@ -194,11 +191,11 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'save-binary-file':
         case 'update-data':
         case 'insert-data':
-        case 'set-session-value':
-        case 'set-app-value':
+        case 'set-session':
+        case 'set-application':
         case 'set-http-header':
         case 'set-widget-property':
-        case 'set-cache-value':
+        case 'set-cache':
         case 'set-cookie':
         case 'create-container-widget':
         case 'create-widget':
@@ -229,7 +226,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'get-title':
         case 'set-location':
         case 'get-location':
-        case 'get-event':
+        case 'get-events':
         case 'lisp2lambda':
         case 'lambda2lisp':
         case 'file-exist':
@@ -244,17 +241,17 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'delete-folder':
         case 'select-data':
         case 'delete-data':
-        case 'get-session-value':
-        case 'list-session-values':
-        case 'get-app-value':
-        case 'list-app-values':
+        case 'get-session':
+        case 'list-session':
+        case 'get-application':
+        case 'list-application':
         case 'echo':
         case 'echo-file':
         case 'get-widget-property':
         case 'delete-widget-property':
         case 'list-widget-properties':
-        case 'get-cache-value':
-        case 'list-cache-values':
+        case 'get-cache':
+        case 'list-cache':
         case 'get-cookie':
         case 'list-cookies':
         case 'get-http-header':
@@ -263,7 +260,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'list-http-params':
         case 'get-http-method':
         case 'get-request-body':
-        case 'remove-event':
+        case 'delete-events':
         case 'list-events':
           return this.styles.lesser_keyword;
 

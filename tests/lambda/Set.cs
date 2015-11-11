@@ -905,28 +905,21 @@ set:x:/-?value
             Assert.AreEqual (0, node [0].Get<Node> (Context) [1].Count);
         }
         
-        /// <summary>
-        ///     making sure [save-file] works when given a constant as a filepath, and an 
-        ///     Active Event invocation as [src]
-        /// </summary>
         [Test]
         public void Set52 ()
         {
             var node = ExecuteLambda (@"_result
 set:x:/-?value
-  lambda-copy
+  lambda
     add:x:/.
       src
         result
           foo1:bar1
           foo2:bar2
     set:x:/-|/");
-            Assert.AreEqual (@"add:x:/.
-  src
-    result
-      foo1:bar1
-      foo2:bar2
-set:x:/-|/", node [0].Value);
+            Assert.AreEqual (@"result
+  foo1:bar1
+  foo2:bar2", node [0].Get<string> (Context));
         }
 
         [ActiveEvent (Name = "test.set.53")]

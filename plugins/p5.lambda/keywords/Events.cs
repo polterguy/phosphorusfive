@@ -13,90 +13,65 @@ namespace p5.lambda.events
 {
     /// <summary>
     ///     Common helper methods for dynamically created Active Events.
-    /// 
-    ///     Contains helper methods for creating and manipulating dynamically created Active Events.
     /// </summary>
-    public static class LambdaEvents
+    public static class Events
     {
         // contains our list of dynamically created Active Events
-        private static readonly Dictionary<string, Node> Events = new Dictionary<string, Node> ();
+        private static readonly Dictionary<string, Node> _events = new Dictionary<string, Node> ();
 
         // used to create lock when creating, deleting and consuming events
         private static readonly object Lock;
 
         // necessary to make sure we have a global "lock" object
-        static LambdaEvents ()
+        static Events ()
         {
             Lock = new object ();
         }
 
         /// <summary>
-        ///     Creates zero or more active events.
-        /// 
-        ///     Will create zero or more dynamic Active Events, where each [lambda.xxx] node beneath the [event] keyword,
-        ///     becomes the p5.lambda code executed when the event is raised. The name(s) of your Active Events,
-        ///     are given as the value of the main [event] node.
+        ///     Creates one Active Event
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "set-event")]
-        private static void lambda_set_event (ApplicationContext context, ActiveEventArgs e)
+        private static void set_event (ApplicationContext context, ActiveEventArgs e)
         {
-            // creating event(s)
-            foreach (var idxEvt in XUtil.Iterate<string> (e.Args, context)) {
-
-                CreateEvent (idxEvt, e.Args.Clone ());
-            }
+            // creating event
+            CreateEvent (XUtil.Single<string> (e.Args, context), e.Args.Clone ());
         }
 
         /// <summary>
-        ///     Removes zero or more dynamically created Active Events.
-        /// 
-        ///     Will remove all dynamically created Active Events with the given name(s).
-        /// 
-        ///     Example;
-        /// 
-        ///     <pre>remove-event:foo</pre>
+        ///     Removes dynamically created Active Events
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "remove-event")]
-        private static void event_remove (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "delete-events")]
+        private static void delete_events (ApplicationContext context, ActiveEventArgs e)
         {
             // iterating through all events to delete
             foreach (var idxName in XUtil.Iterate<string> (e.Args, context)) {
 
                 // deleting event
-                RemoveEvent (idxName);
+                DeleteEvent (idxName);
             }
         }
 
         /// <summary>
-        ///     Retrieves one or more dynamically created Active Events.
-        /// 
-        ///     Will return all [lambda.xxx] objects for the specified dynamically created Active Event(s).
-        /// 
-        ///     Example;
-        /// 
-        ///     <pre>get-event:foo</pre>
+        ///     Retrieves dynamically created Active Events
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "get-event")]
+        [ActiveEvent (Name = "get-events")]
         private static void get_event (ApplicationContext context, ActiveEventArgs e)
         {
             // making sure we clean up and remove all arguments passed in after execution
             using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args, true)) {
 
-                // syntax checking
-                if (e.Args.Value == null)
-                    return; // nothing to do here
-
                 // looping through all events caller wish to retrieve
                 foreach (var idxEventName in XUtil.Iterate<string> (e.Args, context)) {
 
                     // looping through all existing event keys
-                    foreach (var idxKey in Events.Keys) {
+                    foreach (var idxKey in _events.Keys) {
 
                         // checking is current event name contains current filter
                         if (idxKey.Contains (idxEventName)) {
@@ -106,7 +81,7 @@ namespace p5.lambda.events
                             if (!e.Args.Children.Any (idxExisting => idxExisting.Get<string> (context) == idxKey)) {
 
                                 // no previous filter matched Active Event name
-                                e.Args.Add (idxKey).LastChild.AddRange (Events [idxKey].Clone ().Children);
+                                e.Args.Add (idxKey).LastChild.AddRange (_events [idxKey].Clone ().Children);
                             }
                         }
                     }
@@ -116,13 +91,6 @@ namespace p5.lambda.events
 
         /// <summary>
         ///     Lists all dynamically created Active Events.
-        /// 
-        ///     Returns the names of all dynamically created Active Events, created through the [event] keyword.
-        ///     Optionally, pass in a filter as the value of the main node.
-        /// 
-        ///     Example;
-        /// 
-        ///     <pre>list-events:foo</pre>
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -135,19 +103,18 @@ namespace p5.lambda.events
                 // retrieving filter, if any
                 var filter = new List<string> (XUtil.Iterate<string> (e.Args, context));
                 if (e.Args.Value != null && filter.Count == 0)
-                    return; // possibly a filter expression, leading into oblivion
+                    return; // possibly a filter expression, leading into oblivion, since filter still was given, we return "nothing"
 
                 // Getting all dynamic Active Events
-                GetActiveEvents (Events.Keys, e.Args, filter, "dynamic");
-            
+                ListActiveEvents (_events.Keys, e.Args, filter, "dynamic");
+
                 // Getting all core Active Events
-                GetActiveEvents (context.ActiveEvents, e.Args, filter, "static");
+                ListActiveEvents (context.ActiveEvents, e.Args, filter, "static");
             }
         }
 
         /*
-         * Creates a new, or appends to an existing, Active Event the given [lambda.xxx] objects,
-         * to be executed when event is raised.
+         * Creates a new Active Event
          */
         internal static void CreateEvent (string name, Node lambda)
         {
@@ -155,31 +122,31 @@ namespace p5.lambda.events
             lock (Lock) {
 
                 // making sure we have a key for Active Event name
-                Events [name] = new Node ();
+                _events [name] = new Node ();
 
                 // adding event to dictionary
-                Events [name].AddRange (lambda.Children);
+                _events [name].AddRange (lambda.Children);
             }
         }
 
         /*
          * removes the given dynamically created Active Event(s)
          */
-        internal static void RemoveEvent (string name)
+        internal static void DeleteEvent (string name)
         {
             // acquiring lock since we're consuming object shared amongst more than one thread (_events)
             lock (Lock) {
 
                 // removing event, if it exists
-                if (Events.ContainsKey (name))
-                    Events.Remove (name);
+                if (_events.ContainsKey (name))
+                    _events.Remove (name);
             }
         }
 
         /*
          * Returns Active Events from source given, using name as type of Active Event
          */
-        private static void GetActiveEvents (
+        private static void ListActiveEvents (
             IEnumerable<string> source, 
             Node node, 
             List<string> filter,
@@ -200,7 +167,7 @@ namespace p5.lambda.events
                 } else {
 
                     // we have filter(s), checking to see if Active Event name matches at least one of our filters
-                    if (filter.Any (idxFilter => idx.IndexOf (idxFilter, StringComparison.Ordinal) != -1)) {
+                    if (filter.Any (ix => idx.IndexOf (ix) != -1)) {
                         node.Add (new Node (name, idx));
                     }
                 }
@@ -216,8 +183,8 @@ namespace p5.lambda.events
             // checking if there's an event with given name in dynamically created events
             // to avoid creating a lock on every single event invocation in system, we create a "double check"
             // here, first checking for existance of key, then to create lock, for then to re-check again, which
-            // should significantly improve performance of event invocations in system
-            if (Events.ContainsKey (e.Name)) {
+            // should significantly improve performance of event invocations in the system
+            if (_events.ContainsKey (e.Name)) {
 
                 // keep a reference to all lambda objects in current event, such that we can later delete them
                 Node lambda = null;
@@ -231,27 +198,21 @@ namespace p5.lambda.events
                     // note, we could acquire lock before checking first time, but that would impose
                     // a significant overhead on all Active Event invocations, since "" (null Active Events)
                     // are invoked for every single Active Event raised in system
-                    if (Events.ContainsKey (e.Name)) {
+                    // In addition, by releasing the lock before we invoke the Active Event, we further
+                    // avoid deadlocks by dynamically created Active Events invoking other dynamically
+                    // created Active Events
+                    if (_events.ContainsKey (e.Name)) {
 
                         // adding event into execution lambda
-                        lambda = Events [e.Name].Clone ();
+                        lambda = _events [e.Name].Clone ();
                     }
                 }
 
                 // executing if lambda is around
                 if (lambda != null) {
 
-                    // copying all nodes from beneath event node into currently executed scope
-                    var list = new List<Node> (lambda.Children);
-                    e.Args.AddRange (list);
-
                     // executing lambda children, and not evaluating any expression in evaluated node!
-                    context.Raise ("lambda-children", e.Args);
-
-                    // cleaning up after ourselves, deleting entire lambda that was added above
-                    foreach (var idxLambda in list) {
-                        idxLambda.UnTie ();
-                    }
+                    context.Raise ("eval", lambda);
                 }
             }
         }

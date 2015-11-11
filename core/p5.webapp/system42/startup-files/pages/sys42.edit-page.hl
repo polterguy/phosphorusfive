@@ -12,7 +12,7 @@ set-event:sys42.edit-page
     equals:_default
     clear-widget:editor-main-surface
     clear-widget:editor-toolbar
-    set-session-value:page-editor.current-page
+    set-session:page-editor.current-page
   else
     select-data:x:/*/*/p5.page/"={0}"
       :x:/..sys42.edit-page/*/get-widget-property/+/<?value
@@ -26,5 +26,5 @@ set-event:sys42.edit-page
         _page
     set:x:/+/*/src?value
       src:x:/././*/select-data/*?value
-    set-session-value:page-editor.current-page
+    set-session:page-editor.current-page
       src

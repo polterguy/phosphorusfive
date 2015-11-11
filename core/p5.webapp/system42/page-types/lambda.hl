@@ -15,13 +15,13 @@ if:x:/../*/_args/*/role
     set:x:/../*/_go?value
       src:bool:false
 
-// adding the [lambda] object from page into lambda-copy execution
+// adding the [lambda] object from page into lambda execution
 // but only if user has access to object, or object has no access restrictions
 if:x:/../*/_go?value
   equals:bool:true
   // executing the [lambda] given
   add:x:/+
     src:x:/../*/_args/*/lambda?value
-  lambda-copy
+  lambda
 else
   sys42.execute-lisp-file:system42/page-types/special-page/p5.no-access.hl

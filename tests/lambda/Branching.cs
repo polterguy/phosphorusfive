@@ -23,7 +23,7 @@ namespace p5.unittests.lambda
         public void If01 ()
         {
             var result = ExecuteLambda (@"if:foo
-  set:x:/..?value
+  add:x:/..
     src:success");
             Assert.AreEqual ("success", result.Value);
         }
@@ -38,7 +38,7 @@ namespace p5.unittests.lambda
   equals:foo
   set:x:/..?value
     src:success");
-            Assert.AreEqual ("success", result.Value);
+            Assert.AreEqual ("success", result.Name);
         }
 
         /// <summary>
