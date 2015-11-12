@@ -4,10 +4,10 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using p5.core;
+using System.Collections.Generic;
 using p5.exp;
+using p5.core;
 
 namespace p5.lambda.events
 {
@@ -211,8 +211,43 @@ namespace p5.lambda.events
                 // executing if lambda is around
                 if (lambda != null) {
 
+                    // adding up arguments, no need to clone, they should be gone after execution anyway
+                    lambda.AddRange (e.Args.Children);
+                    
+                    // storing lambda block and value, such that we can "diff" after execution, 
+                    // and only return the nodes added during execution, and the value if it was changed
+                    var oldLambdaNode = new List<Node> (lambda.Children);
+                    var oldValue = e.Args.Value;
+
+                    if (e.Args.Value != null) {
+
+                        // evaluating node, and stuffing results into arguments
+                        foreach (var idx in XUtil.Iterate<object> (e.Args, context)) {
+
+                            // adding currently iterated results into execution object
+                            var idxNode = idx as Node;
+                            if (idxNode != null) {
+
+                                // appending node into execution object
+                                lambda.Add (idxNode.Clone ());
+                            } else {
+
+                                // appending simple value into execution object with empty name
+                                lambda.Add (string.Empty, idx);
+                            }
+                        }
+                    }
+
                     // executing lambda children, and not evaluating any expression in evaluated node!
-                    context.Raise ("eval", lambda);
+                    context.Raise ("eval-mutable", lambda);
+
+                    // making sure we return all nodes that was created during execution of event back to caller
+                    // in addition to value, but only if it was changed
+                    e.Args.AddRange (lambda.Children.Where (ix => oldLambdaNode.IndexOf (ix) == -1));
+                    if (oldValue != lambda.Value)
+                        e.Args.Value = lambda.Value;
+                    else
+                        e.Args.Value = null; // removing value, since it was not changed, and hence is not part of the result
                 }
             }
         }

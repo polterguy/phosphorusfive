@@ -1,34 +1,9 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="plugins/p5.lambda/keywords/Events.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="tests/lambda/Eval.cs">
     <Files>
-      <File FileName="core/p5.webapp/system42/admin/files/files.hl" Line="1" Column="1" />
-      <File FileName="plugins/p5.lambda/keywords/Add.cs" Line="1" Column="1" />
-      <File FileName="core/p5.exp/XUtil.cs" Line="1" Column="1" />
-      <File FileName="plugins/p5.lambda/Lambda.cs" Line="1" Column="1" />
-      <File FileName="tests/lambda/Set.cs" Line="1" Column="1" />
-      <File FileName="tests/lambda/Lambda.cs" Line="1" Column="1" />
-      <File FileName="plugins/p5.data/Select.cs" Line="1" Column="1" />
-      <File FileName="core/p5.webapp/system42/startup-files/pages/sys42.create-page.hl" Line="1" Column="1" />
-      <File FileName="core/p5.webapp/system42/application-startup.hl" Line="1" Column="1" />
-      <File FileName="plugins/p5.lambda/helpers/Conditions.cs" Line="1" Column="1" />
-      <File FileName="plugins/p5.lambda/keywords/ForEach.cs" Line="1" Column="1" />
-      <File FileName="core/p5.webapp/system42/codemirror/hyperlisp-mode.js" Line="1" Column="1" />
-      <File FileName="plugins/p5.hyperlisp/Hyperlisp.cs" Line="1" Column="1" />
-      <File FileName="plugins/p5.threading/Fork.cs" Line="1" Column="1" />
-      <File FileName="core/p5.webapp/Default.aspx.cs" Line="1" Column="1" />
-      <File FileName="core/p5.webapp/system42/page-types/lambda.hl" Line="1" Column="1" />
-      <File FileName="tests/Expressions.cs" Line="1" Column="1" />
-      <File FileName="tests/TestBase.cs" Line="1" Column="1" />
-      <File FileName="tests/lambda/Branching.cs" Line="1" Column="1" />
-      <File FileName="plugins/p5.lambda/keywords/Branching.cs" Line="1" Column="1" />
-      <File FileName="plugins/p5.lambda/keywords/While.cs" Line="1" Column="1" />
-      <File FileName="core/p5.core/Utilities.cs" Line="38" Column="1" />
-      <File FileName="plugins/p5.types/GetObjectValue.cs" Line="1" Column="1" />
-      <File FileName="plugins/p5.lambda/keywords/Set.cs" Line="1" Column="1" />
-      <File FileName="plugins/p5.lambda/keywords/Insert.cs" Line="1" Column="1" />
-      <File FileName="plugins/p5.lambda/keywords/Join.cs" Line="16" Column="25" />
-      <File FileName="plugins/p5.lambda/keywords/Events.cs" Line="21" Column="9" />
+      <File FileName="tests/lambda/Eval.cs" Line="85" Column="45" />
+      <File FileName="plugins/p5.lambda/Eval.cs" Line="47" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -36,15 +11,17 @@
           <Node name="core" expanded="True" />
           <Node name="plugins" expanded="True">
             <Node name="extras" expanded="True" />
-            <Node name="p5.lambda" expanded="True" selected="True">
-              <Node name="helpers" expanded="True" />
+            <Node name="p5.lambda" expanded="True">
               <Node name="keywords" expanded="True" />
             </Node>
-            <Node name="p5.types" expanded="True" />
           </Node>
           <Node name="samples" expanded="True" />
           <Node name="tests" expanded="True">
-            <Node name="p5.tests" expanded="True" />
+            <Node name="p5.tests" expanded="True">
+              <Node name="lambda" expanded="True">
+                <Node name="Eval.cs" selected="True" />
+              </Node>
+            </Node>
           </Node>
         </State>
       </Pad>
@@ -58,15 +35,23 @@
       </Pad>
       <Pad Id="MonoDevelop.NUnit.TestPad">
         <State expanded="True" selected="True">
-          <Node name="tests" expanded="True" />
+          <Node name="tests" expanded="True">
+            <Node name="p5.tests" expanded="True">
+              <Node name="p5" expanded="True">
+                <Node name="unittests" expanded="True">
+                  <Node name="lambda" expanded="True">
+                    <Node name="Eval" expanded="True" />
+                  </Node>
+                </Node>
+              </Node>
+            </Node>
+          </Node>
         </State>
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore>
-      <Breakpoint file="/home/polterguy/projects/software/p5/tests/lambda/Branching.cs" line="25" column="1" />
-    </BreakpointStore>
+    <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>

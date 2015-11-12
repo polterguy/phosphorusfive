@@ -37,7 +37,7 @@ namespace p5.unittests
         /// <returns>p5.lambda result nodes</returns>
         /// <param name="hyperlisp">Hyperlisp you wish to execute</param>
         /// <param name="lambdaActiveEvent">what type of lambda event to raise</param>
-        protected Node ExecuteLambda (string hyperlisp, string lambdaActiveEvent = "lambda")
+        protected Node ExecuteLambda (string hyperlisp, string lambdaActiveEvent = "eval")
         {
             var node = new Node { Value = hyperlisp };
             Context.Raise ("lisp2lambda", node);

@@ -5,7 +5,6 @@
 
 using NUnit.Framework;
 using p5.core;
-using p5.exp;
 
 namespace p5.unittests.lambda
 {
@@ -22,941 +21,142 @@ namespace p5.unittests.lambda
         ///     verifies [set] works with a static constant source
         /// </summary>
         [Test]
-        public void Set01 ()
+        public void SetStaticSource ()
         {
-            var node = new Node ()
-                .Add ("_data")
-                .Add ("set", Expression.Create ("/-?value", Context)).LastChild
-                    .Add ("src", "success").Root;
-            Context.Raise ("set", node [1]);
-
-            // verifying [set] works as it should
-            Assert.AreEqual ("success", node [0].Value);
-        }
-
-        /// <summary>
-        ///     verifies [set] works with a static expression source
-        /// </summary>
-        [Test]
-        public void Set02 ()
-        {
-            var node = new Node ()
-                .Add ("_data")
-                .Add ("success")
-                .Add ("set", Expression.Create ("/-2?value", Context)).LastChild
-                    .Add ("src", Expression.Create ("/./-?name", Context)).Root;
-            Context.Raise ("set", node [2]);
-
-            // verifying [set] works as it should
-            Assert.AreEqual ("success", node [0].Value);
-        }
-
-        /// <summary>
-        ///     verifies [set] works with a formatted destination and a static constant source
-        /// </summary>
-        [Test]
-        public void Set03 ()
-        {
-            var node = new Node ()
-                .Add ("_data")
-                .Add ("set", Expression.Create ("/-?{0}", Context)).LastChild
-                    .Add (string.Empty, "value")
-                    .Add ("src", "success").Root;
-            Context.Raise ("set", node [1]);
-
-            // verifying [set] works as it should
-            Assert.AreEqual ("success", node [0].Value);
-        }
-
-        /// <summary>
-        ///     verifies [set] works with a formatted static constant source
-        /// </summary>
-        [Test]
-        public void Set04 ()
-        {
-            var node = new Node ()
-                .Add ("_data")
-                .Add ("set", Expression.Create ("/-?value", Context)).LastChild
-                    .Add ("src", "{0}{1}{2}").LastChild
-                        .Add (string.Empty, "su")
-                        .Add (string.Empty, "cc")
-                        .Add (string.Empty, "ess").Root;
-            Context.Raise ("set", node [1]);
-
-            // verifying [set] works as it should
-            Assert.AreEqual ("success", node [0].Value);
-        }
-
-        /// <summary>
-        ///     verifies [set] works with a formatted static expression source
-        /// </summary>
-        [Test]
-        public void Set05 ()
-        {
-            var node = new Node ()
-                .Add ("_data")
-                .Add ("success")
-                .Add ("set", Expression.Create ("/-2?value", Context)).LastChild
-                    .Add ("src", Expression.Create ("{0}?name", Context)).LastChild
-                        .Add (string.Empty, "/./-").Root;
-            Context.Raise ("set", node [2]);
-
-            // verifying [set] works as it should
-            Assert.AreEqual ("success", node [0].Value);
-        }
-
-        /// <summary>
-        ///     verifies [set] works when destination is 'name'
-        /// </summary>
-        [Test]
-        public void Set06 ()
-        {
-            var node = new Node ()
-                .Add ("_data")
-                .Add ("set", Expression.Create ("/-?name", Context)).LastChild
-                    .Add ("src", "success").Root;
-            Context.Raise ("set", node [1]);
-
-            // verifying [set] works as it should
-            Assert.AreEqual ("success", node [0].Name);
-        }
-
-        /// <summary>
-        ///     verifies [set] works when destination is 'node' and source is static expression
-        /// </summary>
-        [Test]
-        public void Set07 ()
-        {
-            var node = new Node ()
-                .Add ("_data")
-                .Add ("_data2", "success")
-                .Add ("set", Expression.Create ("/-2", Context)).LastChild
-                    .Add ("src", Expression.Create ("/./-", Context)).Root;
-            Context.Raise ("set", node [2]);
-
-            // verifying [set] works as it should
-            Assert.AreEqual ("_data2", node [0].Name);
-            Assert.AreEqual ("success", node [0].Value);
-
-            // verifying [source] is still around
-            Assert.AreEqual ("_data2", node [1].Name);
-            Assert.AreEqual ("success", node [1].Value);
-        }
-
-        /// <summary>
-        ///     verifies [set] works when destination is 'node' and source is static constant
-        /// </summary>
-        [Test]
-        public void Set08 ()
-        {
-            var node = new Node ()
-                .Add ("_data")
-                .Add ("set", Expression.Create ("/-", Context)).LastChild
-                    .Add ("src").LastChild
-                        .Add ("_data2", "success").Root;
-            Context.Raise ("set", node [1]);
-
-            // verifying [set] works as it should
-            Assert.AreEqual ("_data2", node [0].Name);
-            Assert.AreEqual ("success", node [0].Value);
-
-            // verifying [source] is still around
-            Assert.AreEqual ("_data2", node [1] [0] [0].Name);
-            Assert.AreEqual ("success", node [1] [0] [0].Value);
-        }
-
-        /// <summary>
-        ///     verifies [set] works when destination is 'node' and source is static constant as reference node
-        /// </summary>
-        [Test]
-        public void Set09 ()
-        {
-            var node = new Node ()
-                .Add ("_data")
-                .Add ("set", Expression.Create ("/-", Context)).LastChild
-                    .Add ("src", new Node ("_data2", "success")).Root;
-            Context.Raise ("set", node [1]);
-
-            // verifying [set] works as it should
-            Assert.AreEqual ("_data2", node [0].Name);
-            Assert.AreEqual ("success", node [0].Value);
-
-            // verifying [source] is still around
-            Assert.AreEqual ("_data2", node [1] [0].Get<Node> (Context).Name);
-            Assert.AreEqual ("success", node [1] [0].Get<Node> (Context).Value);
-        }
-
-        /// <summary>
-        ///     verifies [set] works when source is static constant integer
-        /// </summary>
-        [Test]
-        public void Set10 ()
-        {
-            var node = new Node ()
-                .Add ("_data")
-                .Add ("set", Expression.Create ("/-?value", Context)).LastChild
-                    .Add ("src", 5).Root;
-            Context.Raise ("set", node [1]);
-
-            // verifying [set] works as it should
-            Assert.AreEqual (5, node [0].Value);
-        }
-
-        /// <summary>
-        ///     verifies [set] works when source is static constant integer and destination is 'name'
-        /// </summary>
-        [Test]
-        public void Set11 ()
-        {
-            var node = new Node ()
-                .Add ("_data")
-                .Add ("set", Expression.Create ("/-?name", Context)).LastChild
-                    .Add ("src", 5).Root;
-            Context.Raise ("set", node [1]);
-
-            // verifying [set] works as it should
-            Assert.AreEqual ("5", node [0].Name);
-        }
-
-        /// <summary>
-        ///     verifies [set] works when destination is value and there is no source
-        /// </summary>
-        [Test]
-        public void Set12 ()
-        {
-            var node = new Node ()
-                .Add ("_data", "error")
-                .Add ("set", Expression.Create ("/-?value", Context)).Root;
-            Context.Raise ("set", node [1]);
-
-            // verifying [set] works as it should
-            Assert.IsNull (node [0].Value);
-        }
-
-        /// <summary>
-        ///     verifies [set] works when destination is name and there is no source
-        /// </summary>
-        [Test]
-        public void Set13 ()
-        {
-            var node = new Node ()
-                .Add ("error")
-                .Add ("set", Expression.Create ("/-?name", Context)).Root;
-            Context.Raise ("set", node [1]);
-
-            // verifying [set] works as it should
-            Assert.AreEqual (string.Empty, node [0].Name);
-        }
-
-        /// <summary>
-        ///     verifies [set] works when destination is node and there is no source
-        /// </summary>
-        [Test]
-        public void Set14 ()
-        {
-            var node = new Node ()
-                .Add ("error")
-                .Add ("set", Expression.Create ("/-", Context)).Root;
-            Context.Raise ("set", node [1]);
-
-            // verifying [set] works as it should
-            Assert.AreEqual (1, node.Count);
-        }
-
-        /// <summary>
-        ///     verifies [set] works when destination is value and source is 'count' expression
-        /// </summary>
-        [Test]
-        public void Set18 ()
-        {
-            var node = new Node ()
-                .Add ("_data")
-                .Add ("set", Expression.Create ("/-?value", Context)).LastChild
-                    .Add ("src", Expression.Create ("/../**?count", Context)).Root;
-            Context.Raise ("set", node [1]);
-
-            // verifying [set] works as it should
-            Assert.AreEqual (4, node [0].Value);
-        }
-
-        /// <summary>
-        ///     verifies [set] works when destination is name and source is 'count' expression
-        /// </summary>
-        [Test]
-        public void Set19 ()
-        {
-            var node = new Node ()
-                .Add ("_data")
-                .Add ("set", Expression.Create ("/-?name", Context)).LastChild
-                    .Add ("src", Expression.Create ("/../**?count", Context)).Root;
-            Context.Raise ("set", node [1]);
-
-            // verifying [set] works as it should
-            Assert.AreEqual ("4", node [0].Name);
-        }
-
-        /// <summary>
-        ///     verifies [set] works when destination is value,
-        ///     and source is static expression yielding multiple values
-        /// </summary>
-        [Test]
-        public void Set20 ()
-        {
-            var node = new Node ()
-                .Add ("_data").LastChild
-                    .Add ("succ")
-                    .Add ("ess").Parent
-                .Add ("set", Expression.Create ("/-?value", Context)).LastChild
-                    .Add ("src", Expression.Create ("/./-/*?name", Context)).Root;
-            Context.Raise ("set", node [1]);
-
-            // verifying [set] works as it should
-            Assert.AreEqual ("success", node [0].Value);
-        }
-
-        /// <summary>
-        ///     verifies [set] works when destination is value,
-        ///     and source is static expression yielding multiple
-        ///     values with different types
-        /// </summary>
-        [Test]
-        public void Set21 ()
-        {
-            var node = new Node ()
-                .Add ("_data").LastChild
-                    .Add (string.Empty, "succ")
-                    .Add (string.Empty, 5)
-                    .Add (string.Empty, "ess").Parent
-                .Add ("set", Expression.Create ("/-?value", Context)).LastChild
-                    .Add ("src", Expression.Create ("/./-/*?value", Context)).Root;
-            Context.Raise ("set", node [1]);
-
-            // verifying [set] works as it should
-            Assert.AreEqual ("succ5ess", node [0].Value);
-        }
-
-        /// <summary>
-        ///     verifies [set] works when destination is name,
-        ///     and source is static expression yielding multiple
-        ///     values with different types
-        /// </summary>
-        [Test]
-        public void Set22 ()
-        {
-            var node = new Node ()
-                .Add ("_data").LastChild
-                    .Add (string.Empty, "succ")
-                    .Add (string.Empty, 5)
-                    .Add (string.Empty, "ess").Parent
-                .Add ("set", Expression.Create ("/-?name", Context)).LastChild
-                    .Add ("src", Expression.Create ("/./-/*?value", Context)).Root;
-            Context.Raise ("set", node [1]);
-
-            // verifying [set] works as it should
-            Assert.AreEqual ("succ5ess", node [0].Name);
-        }
-
-        /// <summary>
-        ///     verifies [set] works when destination is value,
-        ///     and source is static expression yielding 'node'
-        /// </summary>
-        [Test]
-        public void Set23 ()
-        {
-            var node = new Node ()
-                .Add ("_data").LastChild
-                    .Add ("succ")
-                    .Add ("ess").Parent
-                .Add ("set", Expression.Create ("/-?value", Context)).LastChild
-                    .Add ("src", Expression.Create ("/./-?node", Context)).Root;
-            Context.Raise ("set", node [1]);
-
-            // verifying [set] works as it should
-            Assert.AreEqual ("_data", node [0].Get<Node> (Context).Name);
-            Assert.AreEqual ("succ", node [0].Get<Node> (Context) [0].Name);
-            Assert.AreEqual ("ess", node [0].Get<Node> (Context) [1].Name);
-        }
-
-        /// <summary>
-        ///     verifies [set] works when destination is name,
-        ///     and source is static node
-        /// </summary>
-        [Test]
-        public void Set24 ()
-        {
-            var node = new Node ()
-                .Add ("_data").LastChild
-                    .Add ("succ")
-                    .Add ("ess").Parent
-                .Add ("set", Expression.Create ("/-?name", Context)).LastChild
-                    .Add ("src", Expression.Create ("/./-", Context)).Root;
-            Context.Raise ("set", node [1]);
-
-            // verifying [set] works as it should
-            Assert.AreEqual ("_data\r\n  succ\r\n  ess", node [0].Name);
-        }
-
-        /// <summary>
-        ///     verifies [set] works when destination is value,
-        ///     and source is static expression yielding no results
-        /// </summary>
-        [Test]
-        public void Set25 ()
-        {
-            var node = new Node ()
-                .Add ("_data")
-                .Add ("set", Expression.Create ("/-?value", Context)).LastChild
-                    .Add ("src", Expression.Create ("/mumbo?value", Context)).Root;
-            Context.Raise ("set", node [1]);
-
-            // verifying [set] works as it should
-            Assert.IsNull (node [0].Value);
-        }
-
-        /// <summary>
-        ///     verifies [set] works when destination is name,
-        ///     and source is relative expression
-        /// </summary>
-        [Test]
-        public void Set26 ()
-        {
-            var node = new Node ()
-                .Add ("_data").LastChild
-                    .Add ("_1", "success1")
-                    .Add ("_2", "success2").Parent
-                .Add ("set", Expression.Create ("/-/*?name", Context)).LastChild
-                    .Add ("rel-src", Expression.Create ("?value", Context)).Root;
-            Context.Raise ("set", node [1]);
-
-            // verifying [set] works as it should
-            Assert.AreEqual ("success1", node [0] [0].Name);
-            Assert.AreEqual ("success2", node [0] [1].Name);
-        }
-
-        /// <summary>
-        ///     verifies [set] works when destination is value,
-        ///     and source is relative expression
-        /// </summary>
-        [Test]
-        public void Set27 ()
-        {
-            var node = new Node ()
-                .Add ("_data").LastChild
-                    .Add ("success1")
-                    .Add ("success2").Parent
-                .Add ("set", Expression.Create ("/-/*?value", Context)).LastChild
-                    .Add ("rel-src", Expression.Create ("?name", Context)).Root;
-            Context.Raise ("set", node [1]);
-
-            // verifying [set] works as it should
-            Assert.AreEqual ("success1", node [0] [0].Value);
-            Assert.AreEqual ("success2", node [0] [1].Value);
-        }
-
-        /// <summary>
-        ///     verifies [set] works when destination is node,
-        ///     and source is relative expression, where source is child of destination
-        /// </summary>
-        [Test]
-        public void Set28 ()
-        {
-            var node = new Node ()
-                .Add ("_data").LastChild
-                    .Add (string.Empty).LastChild
-                        .Add ("_1", "success1").Parent
-                    .Add (string.Empty).LastChild
-                        .Add ("_2", "success2").Parent.Parent
-                .Add ("set", Expression.Create ("/-/*", Context)).LastChild
-                    .Add ("rel-src", Expression.Create ("/0", Context)).Root;
-            Context.Raise ("set", node [1]);
-
-            // verifying [set] works as it should
-            Assert.AreEqual (0, node [0] [0].Count);
-            Assert.AreEqual ("_1", node [0] [0].Name);
-            Assert.AreEqual ("success1", node [0] [0].Value);
-            Assert.AreEqual (0, node [0] [1].Count);
-            Assert.AreEqual ("_2", node [0] [1].Name);
-            Assert.AreEqual ("success2", node [0] [1].Value);
-        }
-
-        /// <summary>
-        ///     verifies [set] works when destination is node,
-        ///     and source is relative formatted expression
-        /// </summary>
-        [Test]
-        public void Set29 ()
-        {
-            var node = new Node ()
-                .Add ("_data").LastChild
-                    .Add ("_1").LastChild
-                        .Add ("_1", "success1").Parent
-                    .Add ("_2").LastChild
-                        .Add ("_2", "success2").Parent.Parent
-                .Add ("set", Expression.Create ("/-/*", Context)).LastChild
-                    .Add ("rel-src", Expression.Create ("/{0}/{1}", Context)).LastChild
-                        .Add (string.Empty, "*")
-                        .Add (string.Empty, Expression.Create ("?name", Context)).Root;
-            Context.Raise ("set", node [1]);
-
-            // verifying [set] works as it should
-            Assert.AreEqual ("success1", node [0] [0].Value);
-            Assert.AreEqual ("success2", node [0] [1].Value);
-        }
-
-        /// <summary>
-        ///     verifies [set] works when destination is formatted node expression,
-        ///     and source is relative source, which is a formatted expression,
-        ///     and one of sources yields no result
-        /// </summary>
-        [Test]
-        public void Set31 ()
-        {
-            var node = new Node ()
-                .Add ("_data", "value").LastChild
-                    .Add ("_1").LastChild
-                        .Add ("_1", "success1").Parent
-                    .Add ("_2").LastChild
-                        .Add ("_2", "success2").Parent
-                    .Add ("_3").LastChild
-                        .Add ("_ERROR2").Parent.Parent // intentionally returns "null" to verify [_3] is deleted
-                .Add ("set", Expression.Create ("/{0}/*", Context)).LastChild
-                    .Add (string.Empty, "-")
-                    .Add ("rel-src", Expression.Create ("/{0}{1}", Context)).LastChild
-                        .Add (string.Empty, "*")
-                        .Add (string.Empty, "?{0}").LastChild
-                            .Add (string.Empty, Expression.Create ("/../0?value", Context)).Root; // recursive formatting expression
-            Context.Raise ("set", node [1]);
-
-            // verifying [set] works as it should
-            Assert.AreEqual (2, node [0].Count);
-            Assert.AreEqual ("success1", node [0] [0].Name);
-            Assert.IsNull (node [0] [0].Value);
-            Assert.AreEqual (0, node [0] [0].Count);
-            Assert.AreEqual ("success2", node [0] [1].Name);
-            Assert.IsNull (node [0] [1].Value);
-            Assert.AreEqual (0, node [0] [1].Count);
-        }
-
-        /// <summary>
-        ///     verifies [set] works when destination is node,
-        ///     and source is relative expression, where source is parent of destination
-        /// </summary>
-        [Test]
-        public void Set32 ()
-        {
-            var node = new Node ()
-                .Add ("_data").LastChild
-                    .Add ("success1").LastChild
-                        .Add ("success11").Parent
-                    .Add ("success2").LastChild
-                        .Add ("success21").Parent.Parent
-                .Add ("set", Expression.Create ("/-/*/*", Context)).LastChild
-                    .Add ("rel-src", Expression.Create ("/.", Context)).Root;
-            Context.Raise ("set", node [1]);
-
-            // verifying [set] works as it should
-            Assert.AreEqual ("success1", node [0] [0].Name);
-            Assert.AreEqual ("success1", node [0] [0] [0].Name);
-            Assert.AreEqual ("success11", node [0] [0] [0] [0].Name);
-            Assert.AreEqual ("success2", node [0] [1].Name);
-            Assert.AreEqual ("success2", node [0] [1] [0].Name);
-            Assert.AreEqual ("success21", node [0] [1] [0] [0].Name);
-        }
-
-        /// <summary>
-        ///     verifies [set] works when destination is node,
-        ///     and source is relative expression, leading to a string, which should
-        ///     be converted into a node
-        /// </summary>
-        [Test]
-        public void Set33 ()
-        {
-            var node = new Node ()
-                .Add ("_data").LastChild
-                    .Add ("success1").LastChild
-                        .Add ("_val1:success1").Parent
-                    .Add ("success2").LastChild
-                        .Add ("_val2:success2").Parent.Parent
-                .Add ("set", Expression.Create ("/-/*", Context)).LastChild
-                    .Add ("rel-src", Expression.Create ("/0?name", Context)).Root;
-            Context.Raise ("set", node [1]);
-
-            // verifying [set] works as it should
-            Assert.AreEqual (2, node [0].Count);
-            Assert.AreEqual (0, node [0] [0].Count);
-            Assert.AreEqual ("_val1", node [0] [0].Name);
-            Assert.AreEqual ("success1", node [0] [0].Value);
-            Assert.AreEqual (0, node [0] [1].Count);
-            Assert.AreEqual ("_val2", node [0] [1].Name);
-            Assert.AreEqual ("success2", node [0] [1].Value);
-        }
-
-        /// <summary>
-        ///     verifies [set] works when destination is name,
-        ///     and source is relative expression, leading to a node, which should
-        ///     be converted into a string
-        /// </summary>
-        [Test]
-        public void Set34 ()
-        {
-            var node = new Node ()
-                .Add ("_data").LastChild
-                    .Add ("success1").LastChild
-                        .Add ("foo1", 5).Parent // making sure types works
-                    .Add ("success2").LastChild
-                        .Add ("foo2", new Node ("bar2", "x")).Parent // making sure recursive nodes works
-                    .Add ("success3").LastChild
-                        .Add ("foo3", "test1\r\ntest2").Parent.Parent // making sure CR/LF works
-                .Add ("set", Expression.Create ("/-/*?name", Context)).LastChild
-                    .Add ("rel-src", Expression.Create ("", Context)).Root;
-            Context.Raise ("set", node [1]);
-
-            // verifying [set] works as it should
-            Assert.AreEqual (3, node [0].Count);
-            Assert.AreEqual (1, node [0] [0].Count); // making sure source is still around
-            Assert.AreEqual ("success1\r\n  foo1:int:5", node [0] [0].Name);
-            Assert.AreEqual (1, node [0] [1].Count); // making sure source is still around
-            Assert.AreEqual ("success2\r\n  foo2:node:\"bar2:x\"", node [0] [1].Name);
-            Assert.AreEqual (1, node [0] [2].Count); // making sure source is still around
-            Assert.AreEqual ("success3\r\n  foo3:@\"test1\r\ntest2\"", node [0] [2].Name);
-        }
-
-        /// <summary>
-        ///     verifies [set] works when there are more than one destination
-        /// </summary>
-        [Test]
-        public void Set35 ()
-        {
-            var node = new Node ()
-                .Add ("_data").LastChild
-                    .Add ("_1")
-                    .Add ("_2").Parent
-                .Add ("set", Expression.Create ("/-/**?value", Context)).LastChild
-                    .Add ("src", "success").Root;
-            Context.Raise ("set", node [1]);
-
-            // verifying [set] works as it should
-            Assert.AreEqual ("success", node [0].Value);
-            Assert.AreEqual ("success", node [0] [0].Value);
-            Assert.AreEqual ("success", node [0] [1].Value);
-        }
-
-        /// <summary>
-        ///     verifies [set] works when [rel-source] is a formatting expression
-        /// </summary>
-        [Test]
-        public void Set36 ()
-        {
-            var node = new Node ()
-                .Add ("_data").LastChild
-                    .Add ("_1")
-                    .Add ("_2").Parent
-                .Add ("set", Expression.Create ("/-/*?value", Context)).LastChild
-                    .Add ("rel-src", Expression.Create ("{0}", Context)).LastChild
-                        .Add ("", "?name").Root;
-            Context.Raise ("set", node [1]);
-
-            // verifying [set] works as it should
-            Assert.AreEqual ("_1", node [0] [0].Value);
-            Assert.AreEqual ("_2", node [0] [1].Value);
-        }
-
-        [Test]
-        public void Set37 ()
-        {
-            var node = ExecuteLambda (@"_result
-set:x:/-
-  src:@""success-name:success-value""");
-            Assert.AreEqual (0, node [0].Count);
-            Assert.AreEqual ("success-name", node [0].Name);
-            Assert.AreEqual ("success-value", node [0].Value);
-        }
-
-        /// <summary>
-        ///     Verifies that setting a node's value to another node, does not clone the original node, allowing
-        ///     for nodes to be passed by reference.
-        /// </summary>
-        [Test]
-        public void Set38 ()
-        {
-            var node = ExecuteLambda (@"_result
-_out
-set:x:/-2?value
-  src:x:/./-
-set:x:/-3/#?value
-  src:foo");
-            Assert.AreEqual ("foo", node [1].Value);
-        }
-
-        /// <summary>
-        ///     verifies that using [src] instead of [source] works
-        /// </summary>
-        [Test]
-        public void Set41 ()
-        {
-            var node = ExecuteLambda (@"_result
-set:x:/-?value
-  src:success");
-            Assert.AreEqual (0, node [0].Count);
-            Assert.AreEqual ("success", node [0].Value);
-        }
-
-        /// <summary>
-        ///     verifies that setting a 'value' to a bunch of static nodes works
-        /// </summary>
-        [Test]
-        public void Set42 ()
-        {
-            var node = ExecuteLambda (@"_result
-set:x:/-?value
-  src
-    foo1:bar1
-    foo2:bar2");
-            Assert.AreEqual (0, node [0].Count);
-            Assert.AreEqual (2, node [1] [0].Count);
-            Assert.AreEqual ("foo1:bar1\r\nfoo2:bar2", node [0].Value);
-        }
-
-        /// <summary>
-        ///     verifies that setting a 'name' to a bunch of static nodes works
-        /// </summary>
-        [Test]
-        public void Set43 ()
-        {
-            var node = ExecuteLambda (@"_result
-set:x:/-?name
-  src
-    foo1:bar1
-    foo2:bar2");
-            Assert.AreEqual (0, node [0].Count);
-            Assert.AreEqual (2, node [1] [0].Count);
-            Assert.AreEqual ("foo1:bar1\r\nfoo2:bar2", node [0].Name);
-        }
-
-        /// <summary>
-        ///     verifies that setting a 'value' to an expression returning multiple nodes works
-        /// </summary>
-        [Test]
-        public void Set44 ()
-        {
-            var node = ExecuteLambda (@"_result
-_data
-  foo1:bar1
-  foo2:bar2
-set:x:/-2?value
-  src:x:/./-/*");
-            Assert.AreEqual (0, node [0].Count);
-            Assert.AreEqual ("foo1:bar1\r\nfoo2:bar2", node [0].Value);
-        }
-
-        /// <summary>
-        ///     verifies that setting a 'value' to an expression leading to an IEnumerable single value,
-        ///     does not tamper with the original object in any ways
-        /// </summary>
-        [Test]
-        public void Set45 ()
-        {
-            // easy way to create a node
-            var node = CreateNode (@"_source
-_destination
-set:x:/-?value
-  src:x:/./-2?value");
-
-            // discarding previous execution, setting a node to string[], for then to re-execute again, after renaming our 
-            // [_set] node to actually do something
-            node [0].Value = new[] {"howdy", "world"};
-
-            // executing again
-            Context.Raise ("lambda", node);
-            Assert.AreEqual (2, node [1].Get<string[]> (Context).Length);
-            Assert.AreEqual ("howdy", node [1].Get<string[]> (Context) [0]);
-            Assert.AreEqual ("world", node [1].Get<string[]> (Context) [1]);
-        }
-
-        [ActiveEvent (Name = "test.set46")]
-        private static void test_set46 (ApplicationContext context, ActiveEventArgs e)
-        {
-            e.Args.Value = "howdy world";
+            var result = ExecuteLambda (@"_x
+  _foo1
+set:x:/-/0?value
+  src:success
+add:x:/..
+  src:x:/./-2/*");
+            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual ("_foo1", result [0].Name);
+            Assert.AreEqual ("success", result [0].Value);
         }
         
         /// <summary>
-        ///     Verifies that setting a 'value' to the results of an Active Event works correctly.
+        ///     verifies [set] works with an expression source
         /// </summary>
         [Test]
-        public void Set46 ()
+        public void SetExpressionSource ()
         {
-            var node = ExecuteLambda (@"_destination
-set:x:/-?value
-  test.set46");
-
-            Assert.AreEqual ("howdy world", node [0].Value);
+            var result = ExecuteLambda (@"_x
+  _dest
+  _source:success
+set:x:/-/0?value
+  src:x:/./-/1?value
+add:x:/..
+  src:x:/./-2/0");
+            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual ("_dest", result [0].Name);
+            Assert.AreEqual ("success", result [0].Value);
         }
         
-        /// <summary>
-        ///     Verifies that executing an expression twice with formatting parameters that changes, 
-        ///     reflects the changes during each iteration, and that expression is entirely rebuilt during each iteration
-        /// </summary>
-        [Test]
-        public void Set47 ()
-        {
-            var node = ExecuteLambda (@"_data
-  foo1:bar1
-  foo2:bar2
-for-each:x:/-/*?name
-  lambda
-    set:x:/../0/*/{0}?value
-      :x:/./././*/__dp?value
-      src:success");
-
-            Assert.AreEqual ("success", node [0] [0].Value);
-            Assert.AreEqual ("success", node [0] [1].Value);
-        }
-        
-        [ActiveEvent (Name = "test.set.av1_1")]
-        private static void test_set_av1_1 (ApplicationContext context, ActiveEventArgs e)
-        {
-            e.Args.Value = "succ";
-        }
-
-        [ActiveEvent (Name = "test.set.av1_2")]
-        private static void test_set_av1_2 (ApplicationContext context, ActiveEventArgs e)
-        {
-            e.Args.Add ("foo", "bar");
-        }
-        
-        [ActiveEvent (Name = "test.set.av1_3")]
-        private static void test_set_av1_3 (ApplicationContext context, ActiveEventArgs e)
-        {
-            e.Args.Value += "ess";
-        }
-
-        /// <summary>
-        ///     making sure [save-file] works when given a constant as a filepath, and an 
-        ///     Active Event invocation as [src]
-        /// </summary>
-        [Test]
-        public void Set48 ()
-        {
-            var node = ExecuteLambda (@"_result
-set:x:/-?value
-  test.set.av1_1
-  test.set.av1_2
-  test.set.av1_3");
-            Assert.AreEqual ("success", node [0].Value);
-        }
-        
-        /// <summary>
-        ///     making sure [save-file] works when given a constant as a filepath, and an 
-        ///     Active Event invocation as [src]
-        /// </summary>
-        [Test]
-        public void Set49 ()
-        {
-            var node = ExecuteLambda (@"_result
-set:x:/-?value
-  lambda
-    set:x:/.?value
-      src:success");
-            Assert.AreEqual ("success", node [0].Value);
-        }
-        
-        /// <summary>
-        ///     making sure [save-file] works when given a constant as a filepath, and an 
-        ///     Active Event invocation as [src]
-        /// </summary>
-        [Test]
-        public void Set50 ()
-        {
-            var node = ExecuteLambda (@"_result
-set:x:/-?value
-  lambda
-    add:x:/.
-      src
-        foo1:bar1
-        foo2:bar2
-    set:x:/-|/");
-            Assert.AreEqual ("foo1:bar1\r\nfoo2:bar2", node [0].Value);
-        }
-        
-        /// <summary>
-        ///     making sure [save-file] works when given a constant as a filepath, and an 
-        ///     Active Event invocation as [src]
-        /// </summary>
-        [Test]
-        public void Set51 ()
-        {
-            var node = ExecuteLambda (@"_result
-set:x:/-?value
-  lambda
-    add:x:/.
-      src
-        result
-          foo1:bar1
-          foo2:bar2
-    set:x:/-|/");
-            Assert.AreEqual ("result", node [0].Get<Node> (Context).Name);
-            Assert.AreEqual (null, node [0].Get<Node> (Context).Value);
-            Assert.AreEqual (2, node [0].Get<Node> (Context).Count);
-            Assert.AreEqual ("foo1", node [0].Get<Node> (Context) [0].Name);
-            Assert.AreEqual ("bar1", node [0].Get<Node> (Context) [0].Value);
-            Assert.AreEqual (0, node [0].Get<Node> (Context) [0].Count);
-            Assert.AreEqual ("foo2", node [0].Get<Node> (Context) [1].Name);
-            Assert.AreEqual ("bar2", node [0].Get<Node> (Context) [1].Value);
-            Assert.AreEqual (0, node [0].Get<Node> (Context) [1].Count);
-        }
-        
-        [Test]
-        public void Set52 ()
-        {
-            var node = ExecuteLambda (@"_result
-set:x:/-?value
-  lambda
-    add:x:/.
-      src
-        result
-          foo1:bar1
-          foo2:bar2
-    set:x:/-|/");
-            Assert.AreEqual (@"result
-  foo1:bar1
-  foo2:bar2", node [0].Get<string> (Context));
-        }
-
-        [ActiveEvent (Name = "test.set.53")]
-        private static void test_set_53 (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "set.test1")]
+        private static void set_test1 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "success";
-            e.Args.Add ("error1", "error2"); // assuming children nodes are entirely ditched since "value" changed ...
         }
         
         /// <summary>
-        ///     making sure [save-file] works when given a constant as a filepath, and an 
-        ///     Active Event invocation as [src]
+        ///     verifies [set] works with an Active Event source
         /// </summary>
         [Test]
-        public void Set53 ()
+        public void SetActiveEventSource ()
         {
-            var node = ExecuteLambda (@"_result
+            var result = ExecuteLambda (@"_dest
 set:x:/-?value
-  test.set.53:error");
-            Assert.AreEqual ("success", node [0].Value);
+  set.test1
+add:x:/..
+  src:x:/./-2");
+            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual ("_dest", result [0].Name);
+            Assert.AreEqual ("success", result [0].Value);
         }
         
-        /// <summary>
-        ///     making sure [save-file] works when given a constant as a filepath, and an 
-        ///     Active Event invocation as [src]
-        /// </summary>
-        [Test]
-        public void Set54 ()
+        [ActiveEvent (Name = "set.test2")]
+        private static void set_test2 (ApplicationContext context, ActiveEventArgs e)
         {
-            var node = ExecuteLambda (@"_result
-set:x:/-?value
-  test.set.53:success");
+            e.Args.Add (new Node ("_foo1", "bar1"));
+            e.Args.Add (new Node ("_foo2", "bar2"));
+        }
 
-            // notice, even though Active Event sets "value" of node, it never actually CHANGES
-            // hence the "source" being used should be the children nodes of the active event invocation!
-            Assert.AreEqual ("error1", node [0].Get<Node> (Context).Name);
-            Assert.AreEqual ("error2", node [0].Get<Node> (Context).Value);
+        /// <summary>
+        ///     verifies [set] works with an Active Event source that returns nodes
+        /// </summary>
+        [Test]
+        public void SetActiveEventSourceReturningNodes ()
+        {
+            var result = ExecuteLambda (@"_dest
+set:x:/-?value
+  set.test2
+add:x:/..
+  src:x:/./-2");
+            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual ("_dest", result [0].Name);
+            Assert.AreEqual ("_foo1:bar1\r\n_foo2:bar2", result [0].Value);
+        }
+        
+        [ActiveEvent (Name = "set.test3")]
+        private static void set_test3 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Add (new Node ("_foo1", "bar1"));
+            e.Args [0].Add ("_foo2", "bar2");
+        }
+
+        /// <summary>
+        ///     verifies [set] works with an Active Event source that returns a single node
+        /// </summary>
+        [Test]
+        public void SetActiveEventSourceReturningSingleNode ()
+        {
+            var result = ExecuteLambda (@"_dest
+set:x:/-?value
+  set.test3
+add:x:/..
+  src:x:/./-2");
+            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual ("_dest", result [0].Name);
+            Assert.IsTrue (result [0].Value is Node);
+            Assert.AreEqual ("_foo1", result [0].Get<Node> (Context).Name);
+            Assert.AreEqual ("bar1", result [0].Get<Node> (Context).Value);
+            Assert.AreEqual ("_foo2", result [0].Get<Node> (Context) [0].Name);
+            Assert.AreEqual ("bar2", result [0].Get<Node> (Context) [0].Value);
+        }
+        
+        /// <summary>
+        ///     verifies [set] works with src being math results
+        /// </summary>
+        [Test]
+        public void SetMathResult ()
+        {
+            var result = ExecuteLambda (@"_dest
+set:x:/-?value
+  +:int:5
+    _:5
+add:x:/..
+  src:x:/./-2");
+            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual ("_dest", result [0].Name);
+            Assert.AreEqual (10, result [0].Value);
+        }
+        
+        /// <summary>
+        ///     verifies [set] works with src being math results containing expressions
+        /// </summary>
+        [Test]
+        public void SetMathResultContainingExpressions ()
+        {
+            var result = ExecuteLambda (@"_src:5
+_dest
+set:x:/-?value
+  +:x:/../0?value.int
+    _:5
+add:x:/..
+  src:x:/./-2");
+            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual ("_dest", result [0].Name);
+            Assert.AreEqual (10, result [0].Value);
         }
     }
 }

@@ -14,8 +14,6 @@ namespace p5.lambda.keywords
 {
     /// <summary>
     ///     Class wrapping conditional p5.lambda keywords, such as [if], [else-if] and [else].
-    /// 
-    ///     Class wrapping p5.lambda keywords [if], [else-if] and [else], which allows for branching, or conditional execution of p5.lambda nodes.
     /// </summary>
     public static class Branching
     {

@@ -43,7 +43,6 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Lambda.cs" />
     <Compile Include="helpers\Conditions.cs" />
     <Compile Include="keywords\Add.cs" />
     <Compile Include="keywords\Branching.cs" />
@@ -55,6 +54,7 @@
     <Compile Include="keywords\Join.cs" />
     <Compile Include="Operators.cs" />
     <Compile Include="keywords\Events.cs" />
+    <Compile Include="Eval.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

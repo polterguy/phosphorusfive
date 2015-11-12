@@ -40,6 +40,7 @@ namespace p5.lambda.keywords
                 // do NOT copy back old value unless it is an expression, to allow for things such as "while:foo-bar"
                 if (oldWhile.Value is Expression)
                     e.Args.Value = oldWhile.Value;
+
                 e.Args.Clear ();
                 e.Args.AddRange (oldWhile.Clone ().Children);
             }

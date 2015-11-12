@@ -11,20 +11,11 @@ namespace p5.lambda.keywords
 {
     /// <summary>
     ///     Class wrapping the [split] keyword in p5.lambda.
-    /// 
-    ///     The [split] keyword allows you to split any single string value into multiple nodes.
     /// </summary>
     public static class Split
     {
         /// <summary>
         ///     The [split] keyword, allows you to split a single string into multiple values.
-        /// 
-        ///     Use [=] to declare what string you wish to split upon. The separated values will be returned as values of
-        ///     children nodes. Optionally declare [==] to separate the separated values into name and value of result nodes.
-        /// 
-        ///     Add [trim] with a value of 'true' if you wish to trim your entities before adding them as result.
-        /// 
-        ///     Both [=] and [==] if given, will be removed from the children collection after evaluation.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>

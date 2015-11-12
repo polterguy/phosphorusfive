@@ -113,7 +113,7 @@ namespace p5.lambda.helpers
         public static void ExecuteCurrentScope (ApplicationContext context, Node args)
         {
             // executing current scope
-            context.Raise ("lambda-mutable", args);
+            context.Raise ("eval-mutable", args);
         }
 
         /*

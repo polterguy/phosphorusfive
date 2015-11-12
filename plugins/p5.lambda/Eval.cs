@@ -15,31 +15,29 @@ using p5.exp.exceptions;
 namespace p5.lambda
 {
     /// <summary>
-    ///     Class wrapping all [lambda.xxx] keywords in p5.lambda.
-    /// 
-    ///     The [lambda.xxx] keywords allows you to execute some specific piece of p5.lambda code.
+    ///     Class wrapping all [eval] keywords in p5.lambda.
     /// </summary>
-    public static class Lambda
+    public static class Eval
     {
-        private delegate void ExecuteFunctor (ApplicationContext context, Node exe, IEnumerable<Node> args);
+        private delegate void ExecuteFunctor (ApplicationContext context, Node exe, Node evalNode, IEnumerable<Node> args);
 
         private static void Executor (ExecuteFunctor functor, ApplicationContext context, Node args, bool forceChildren)
         {
-            if (forceChildren || args.Value != null) {
+            if (forceChildren || args.Value == null) {
                 
                 // executing current scope
-                functor (context, args, new Node[] {});
+                functor (context, args, args, new Node[] {});
             } else {
                 
                 // executing a value object or an expression
                 foreach (var idxSource in XUtil.Iterate<Node> (args, context)) {
-                    functor (context, idxSource, args.Children);
+                    functor (context, idxSource, args, args.Children);
                 }
             }
         }
 
         /// <summary>
-        ///     Executes a specified piece of p5.lambda block.
+        ///     Executes a specified piece of p5.lambda block as a copied lambda object
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -50,7 +48,7 @@ namespace p5.lambda
         }
         
         /// <summary>
-        ///     Executes a specified piece of p5.lambda block.
+        ///     Executes a specified piece of p5.lambda block mutably
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -64,7 +62,7 @@ namespace p5.lambda
          * executes a block of nodes by copying the nodes executed, and executing the copy, 
          * returning anything created inside of the block back to caller
          */
-        private static void ExecuteBlockCopy (ApplicationContext context, Node exe, IEnumerable<Node> args)
+        private static void ExecuteBlockCopy (ApplicationContext context, Node exe, Node evalNode, IEnumerable<Node> args)
         {
             // making sure lambda is executed on copy of execution nodes,
             // without access to nodes outside of its own scope
@@ -83,14 +81,14 @@ namespace p5.lambda
             ExecuteAll (exeCopy, context);
 
             // returning all nodes created inside of execution block, and ONLY these nodes, plus value of lambda block
-            exe.Clear ().AddRange (exeCopy.Children.Where (ix => originalNodes.IndexOf (ix) == -1));
-            exe.Value = exeCopy.Value;
+            evalNode.Clear ().AddRange (exeCopy.Children.Where (ix => originalNodes.IndexOf (ix) == -1));
+            evalNode.Value = exeCopy.Value;
         }
         
         /*
          * executes a block of nodes in mutable state
          */
-        private static void ExecuteBlockMutable (ApplicationContext context, Node exe, IEnumerable<Node> args)
+        private static void ExecuteBlockMutable (ApplicationContext context, Node exe, Node evalNode, IEnumerable<Node> args)
         {
             // passing in arguments, if there are any
             foreach (var idx in args) {
@@ -113,20 +111,20 @@ namespace p5.lambda
             while (idxExe != null) {
 
                 // storing "next execution node" as fallback, to support "delete this node" logic
-                var nextFallback = exe.NextSibling;
+                var nextFallback = idxExe.NextSibling;
 
                 // we don't execute nodes that start with an underscore "_" since these are considered "data segments"
                 // also we don't execute nodes with no name, since these interfers with "null Active Event handlers"
-                if (!exe.Name.StartsWith ("_") && exe.Name != string.Empty) {
+                if (!idxExe.Name.StartsWith ("_") && idxExe.Name != string.Empty) {
 
                     // raising the given Active Event normally, taking inheritance chain into account
-                    context.Raise (exe.Name, exe);
+                    context.Raise (idxExe.Name, idxExe);
                 }
 
                 // prioritizing "NextSibling", in case this node created new nodes, while having
                 // nextFallback as "fallback node", in case current execution node removed current execution node,
                 // but in case nextFallback alaso was removed, we set idxExe to null, breaking the while loop
-                idxExe = exe.NextSibling ?? (nextFallback.Parent != null ? nextFallback : null);
+                idxExe = idxExe.NextSibling ?? (nextFallback != null && nextFallback.Parent != null ? nextFallback : null);
             }
         }
     }

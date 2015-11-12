@@ -18,9 +18,6 @@ namespace p5.lambda.keywords
     {
         /// <summary>
         ///     The [set] keyword, allows you to change nodes through p5.lambda.
-        /// 
-        ///     The [set] keyword is your main mechanism to change nodes, values and names of nodes, and allows you to change
-        ///     nodes through clever usage of <see cref="phosphorus.expressions.Expression">Expressions</see>.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
