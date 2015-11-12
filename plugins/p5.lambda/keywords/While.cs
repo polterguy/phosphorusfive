@@ -11,17 +11,11 @@ namespace p5.lambda.keywords
 {
     /// <summary>
     ///     Class wrapping the [while] keyword in p5.lambda.
-    /// 
-    ///     The [while] keyword allows you to loop for as long as some condition is true.
     /// </summary>
     public static class While
     {
         /// <summary>
         ///     The [while] keyword allows you to loop for as long as some condition is true.
-        /// 
-        ///     The [while] keyword is an alternative to [for-each] to create loops. However, where the 
-        ///     [for-each] loops for each item in a result-set, [while] loops as long as some 
-        ///     condition is true.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -31,16 +25,18 @@ namespace p5.lambda.keywords
             // storing old while "body"
             Node oldWhile = e.Args.Clone ();
 
+            // storing old while value, since Evaluate changes it to either true or false
+            var oldWhileValue = e.Args.Value;
+
             while (Conditions.Evaluate (context, e.Args)) {
+
+                // changing value back to what it was, to support things like "while:int:5" and so on
+                e.Args.Value = oldWhileValue;
 
                 // executing current scope as long as while evaluates to true
                 Conditions.ExecuteCurrentScope (context, e.Args);
 
                 // making sure each iteration is immutable
-                // do NOT copy back old value unless it is an expression, to allow for things such as "while:foo-bar"
-                if (oldWhile.Value is Expression)
-                    e.Args.Value = oldWhile.Value;
-
                 e.Args.Clear ();
                 e.Args.AddRange (oldWhile.Clone ().Children);
             }

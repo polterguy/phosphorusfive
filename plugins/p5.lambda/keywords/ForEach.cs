@@ -13,8 +13,6 @@ namespace p5.lambda.keywords
 {
     /// <summary>
     ///     Class wrapping the p5.lambda [for-each] keyword.
-    /// 
-    ///     The [for-each] keyword allows you to iterate of the results of an expression.
     /// </summary>
     public static class ForEach
     {
@@ -79,12 +77,23 @@ namespace p5.lambda.keywords
                                 // raising that node's name as Active Event, and iterating on the resulting
                                 // children from that Event invocation
                                 Node sourceNode = e.Args.FirstChildNotOf (string.Empty);
-                                context.Raise ("eval", sourceNode);
+                                var oldSourceValue = sourceNode.Value;
+                                context.Raise (sourceNode.Name, sourceNode);
                                 sourceNode.UnTie (); // removing node that was used as source
-                                foreach (var idxSource in sourceNode.Children) {
 
-                                    // iterating on the values returned from Active Event invocation
-                                    IterateForEach (context, idxSource, e.Args, oldForEach);
+                                // value has presedence
+                                if (sourceNode.Value == null || oldSourceValue == sourceNode.Value) {
+
+                                    // source was returned as nodes
+                                    foreach (var idxSource in sourceNode.Children) {
+
+                                        // iterating on the values returned from Active Event invocation
+                                        IterateForEach (context, idxSource, e.Args, oldForEach);
+                                    }
+                                } else {
+
+                                    // source was returned as object in value of Active Event invocation
+                                    IterateForEach (context, sourceNode.Value, e.Args, oldForEach);
                                 }
                             }
                         }

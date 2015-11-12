@@ -122,11 +122,67 @@ namespace p5.lambda.helpers
         private static void TryEvaluateSimpleExist (ApplicationContext context, Node args)
         {
             // if value is not boolean type, we evaluate value, and set its value to true if evaluation did not
-            // result in "null"
-            if (!(args.Value is bool)) {
+            // result in "null", otherwiswe we set it to false
+            if (args.Value == null) {
 
-                var obj = XUtil.Single<object> (args, context, null);
-                args.Value = obj != null;
+                args.Value = false;
+            } else {
+                if (!(args.Value is bool)) {
+
+                    var obj = XUtil.Single<object> (args, context, null);
+                    if (obj is int) {
+
+                        args.Value = (int)obj != 0;
+                    } else if (obj is uint) {
+
+                        args.Value = (uint)obj != 0;
+                    } else if (obj is decimal) {
+
+                        args.Value = (decimal)obj != 0M;
+                    } else if (obj is float) {
+
+                        args.Value = (float)obj != 0F;
+                    } else if (obj is double) {
+
+                        args.Value = (double)obj != 0F;
+                    } else if (obj is long) {
+
+                        args.Value = (long)obj != 0L;
+                    } else if (obj is ulong) {
+
+                        args.Value = (ulong)obj != 0L;
+                    } else if (obj is short) {
+
+                        args.Value = (short)obj != 0;
+                    } else if (obj is ushort) {
+
+                        args.Value = (ushort)obj != 0;
+                    } else if (obj is byte) {
+
+                        args.Value = (byte)obj != 0;
+                    } else if (obj is sbyte) {
+
+                        args.Value = (sbyte)obj != 0;
+                    } else if (obj is char) {
+
+                        args.Value = (char)obj != 0;
+                    } else if (obj is byte[]) {
+
+                        args.Value = ((byte[])obj).Length != 0;
+                    } else if (obj is Guid) {
+
+                        args.Value = (Guid)obj != Guid.Empty;
+                    } else if (obj is DateTime) {
+
+                        args.Value = (DateTime)obj != DateTime.MinValue;
+                    } else if (obj is TimeSpan) {
+
+                        args.Value = (TimeSpan)obj != TimeSpan.MinValue;
+                    } else {
+
+                        args.Value = obj != null;
+                    }
+                }
             }
         }
 

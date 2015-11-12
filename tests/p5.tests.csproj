@@ -45,6 +45,12 @@
     <Compile Include="lambda\Add.cs" />
     <Compile Include="lambda\Set.cs" />
     <Compile Include="lambda\Branching.cs" />
+    <Compile Include="lambda\ForEach.cs" />
+    <Compile Include="lambda\While.cs" />
+    <Compile Include="lambda\Events.cs" />
+    <Compile Include="lambda\Insert.cs" />
+    <Compile Include="lambda\Join.cs" />
+    <Compile Include="lambda\Split.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

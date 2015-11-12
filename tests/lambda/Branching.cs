@@ -63,7 +63,7 @@ namespace p5.unittests.lambda
         }
         
         /// <summary>
-        ///     verifies [if] works when given two constant strings to compare
+        ///     verifies [if] works when given two constants of different types to compare
         /// </summary>
         [Test]
         public void IfConstantTwoDifferentTypes ()
@@ -77,7 +77,7 @@ namespace p5.unittests.lambda
         }
         
         /// <summary>
-        ///     verifies [if] works when given two constant strings to compare
+        ///     verifies [if] works when given two expressions to compare
         /// </summary>
         [Test]
         public void IfExpressionsTwoString ()
@@ -95,7 +95,7 @@ if:x:/-2?value
         }
         
         /// <summary>
-        ///     verifies [if] works when given two constant strings to compare
+        ///     verifies [if] works when given two expressions returning different types to compare
         /// </summary>
         [Test]
         public void IfExpressionsTwoDifferentTypes ()
@@ -108,6 +108,70 @@ if:x:/-2?value
     src
       _foo1:bar1");
             Assert.AreEqual (0, result.Count);
+        }
+        
+        /// <summary>
+        ///     verifies [if] works when anding results of one comparison
+        /// </summary>
+        [Test]
+        public void IfAndingResults ()
+        {
+            var result = ExecuteLambda (@"_foo1:int:5
+_foo2:5
+if:x:/-2?value
+  equals:int:5
+  and:x:/./-?value
+    =:5
+  add:x:/..
+    src
+      _foo1:bar1");
+            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual ("_foo1", result [0].Name);
+            Assert.AreEqual ("bar1", result [0].Value);
+        }
+        
+        /// <summary>
+        ///     verifies [if] works when oring results of one comparison
+        /// </summary>
+        [Test]
+        public void IfOringResults ()
+        {
+            var result = ExecuteLambda (@"_foo1:int:5
+_foo2:5
+if:x:/-2?value
+  equals:int:6
+  or:x:/./-?value
+    =:5
+  add:x:/..
+    src
+      _foo1:bar1");
+            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual ("_foo1", result [0].Name);
+            Assert.AreEqual ("bar1", result [0].Value);
+        }
+        
+        /// <summary>
+        ///     verifies [if] works when anding yielding false, for then to or results of another comparison
+        /// </summary>
+        [Test]
+        public void IfOringAndedResults ()
+        {
+            var result = ExecuteLambda (@"_foo1:int:5
+_foo2:5
+if:x:/-2?value
+  equals:int:6
+  and:x:/./-?value
+    equals:6
+  or:x:/./-?value
+    =:5
+    and:x:/././-2?value
+      equals:int:5
+  add:x:/..
+    src
+      _foo1:bar1");
+            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual ("_foo1", result [0].Name);
+            Assert.AreEqual ("bar1", result [0].Value);
         }
     }
 }

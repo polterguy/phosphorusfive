@@ -16,144 +16,98 @@ namespace p5.unittests.lambda
     public class While : TestBase
     {
         public While ()
-            : base ("p5.lambda", "p5.hyperlisp", "p5.types") { }
+            : base ("p5.lambda", "p5.hyperlisp", "p5.types", "p5.math") { }
 
         /// <summary>
-        ///     verifies that [while] works when source is 'node' expression, and condition
-        ///     is 'exists'
+        ///     verifies that [while] works when source is a constant string
         /// </summary>
         [Test]
-        public void While1 ()
+        public void WhileConstantString ()
         {
-            var node = new Node ()
-                .Add ("_data").LastChild
-                    .Add ("su")
-                    .Add ("cc")
-                    .Add ("ess").Parent
-                .Add ("_result")
-                .Add ("while", Expression.Create ("/-2/*", Context)).LastChild
-                    .Add ("set", Expression.Create ("/./-?value", Context)).LastChild
-                        .Add ("src", "{0}{1}").LastChild
-                            .Add (string.Empty, Expression.Create ("/../*/_result?value", Context))
-                            .Add (string.Empty, Expression.Create ("/../*/_data/0?name", Context)).Parent.Parent
-                    .Add ("set", Expression.Create ("/../*/_data/0", Context)).Root;
-            Context.Raise ("while", node [2]);
-            Assert.AreEqual ("success", node [1].Value);
+            var result = ExecuteLambda (@"while:foo
+  add:x:/..
+    src:_foo1
+  set:x:/.?value");
+            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual ("_foo1", result [0].Name);
+            Assert.IsNull (result [0].Value);
         }
-
+        
         /// <summary>
-        ///     verifies that [while] works when source is 'node' expression, comparison is 'more-than',
-        ///     and comparison runs towards a 'count' expression
+        ///     verifies that [while] works when source is an expression which leads to a constant integer decremented to zero
         /// </summary>
         [Test]
-        public void While2 ()
+        public void WhileExpressionInteger ()
         {
-            var node = new Node ()
-                .Add ("_data").LastChild
-                    .Add ("su")
-                    .Add ("cc")
-                    .Add ("ess")
-                    .Add ("error").Parent
-                .Add ("_result")
-                .Add ("while", Expression.Create ("/-2/*?count", Context)).LastChild
-                    .Add ("more-than", 1)
-                    .Add ("set", Expression.Create ("/./-?value", Context)).LastChild
-                        .Add ("src", "{0}{1}").LastChild
-                            .Add (string.Empty, Expression.Create ("/../*/_result?value", Context))
-                            .Add (string.Empty, Expression.Create ("/../*/_data/0?name", Context)).Parent.Parent
-                    .Add ("set", Expression.Create ("/../*/_data/0", Context)).Root;
-            Context.Raise ("while", node [2]);
-            Assert.AreEqual ("success", node [1].Value);
+            var result = ExecuteLambda (@"_data:int:1
+while:x:/-?value
+  add:x:/..
+    src:_foo1
+  set:x:/./-?value
+    -:x:/././-?value
+      _:1");
+            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual ("_foo1", result [0].Name);
+            Assert.IsNull (result [0].Value);
         }
-
+        
         /// <summary>
-        ///     verifies that [while] works when source is 'name' expression, comparison is 'not-equals',
-        ///     and comparison runs towards a node expression of type 'name'
+        ///     verifies that [while] works when source is a constant integer decremented to zero
         /// </summary>
         [Test]
-        public void While3 ()
+        public void WhileConstantInteger ()
         {
-            var node = new Node ()
-                .Add ("_data").LastChild
-                    .Add ("su")
-                    .Add ("cc")
-                    .Add ("ess")
-                    .Add ("error").Parent
-                .Add ("_result")
-                .Add ("while", Expression.Create ("/-2/0?name", Context)).LastChild
-                    .Add ("not-equals", "error")
-                    .Add ("set", Expression.Create ("/./-?value", Context)).LastChild
-                        .Add ("src", "{0}{1}").LastChild
-                            .Add (string.Empty, Expression.Create ("/../*/_result?value", Context))
-                            .Add (string.Empty, Expression.Create ("/../*/_data/0?name", Context)).Parent.Parent
-                    .Add ("set", Expression.Create ("/../*/_data/0", Context)).Root;
-            Context.Raise ("while", node [2]);
-            Assert.AreEqual ("success", node [1].Value);
+            var result = ExecuteLambda (@"while:int:1
+  add:x:/..
+    src:_foo1
+  set:x:/.?value
+    -:x:/./.?value
+      _:1");
+            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual ("_foo1", result [0].Name);
+            Assert.IsNull (result [0].Value);
         }
-
+        
         /// <summary>
-        ///     verifies that [while] works with formatting expressions, doing a 'not-equals' on 'value',
-        ///     where rhs is of type integer
+        ///     verifies that [while] works when source is a constant boolean yielding false
         /// </summary>
         [Test]
-        public void While4 ()
+        public void WhileConstantBooleanFalse ()
         {
-            var node = new Node ()
-                .Add ("_data").LastChild
-                    .Add ("su")
-                    .Add ("cc")
-                    .Add ("ess")
-                    .Add ("error", 5).Parent
-                .Add ("_result")
-                .Add ("while", Expression.Create ("/{0}/0?value", Context)).LastChild
-                    .Add (string.Empty, "-2")
-                    .Add ("not-equals", 5)
-                    .Add ("set", Expression.Create ("/./-?value", Context)).LastChild
-                        .Add ("src", "{0}{1}").LastChild
-                            .Add (string.Empty, Expression.Create ("/../*/_result?value", Context))
-                            .Add (string.Empty, Expression.Create ("/../*/_data/0?name", Context)).Parent.Parent
-                    .Add ("set", Expression.Create ("/../*/_data/0", Context)).Root;
-            Context.Raise ("while", node [2]);
-            Assert.AreEqual ("success", node [1].Value);
+            var result = ExecuteLambda (@"while:bool:false
+  add:x:/..
+    src:_foo1");
+            Assert.AreEqual (0, result.Count);
         }
-
+        
         /// <summary>
-        ///     verifies that [while] is immutable by default
+        ///     verifies that [while] works when source is a constant boolean yielding true
         /// </summary>
         [Test]
-        public void While5 ()
+        public void WhileConstantBooleanTrue ()
         {
-            var node = new Node ()
-                .Add ("_data").LastChild
-                    .Add ("success", "foo")
-                    .Add ("error").Parent
-                .Add ("_result")
-                .Add ("while", Expression.Create ("/-2/0?value", Context)).LastChild
-                    .Add ("set", Expression.Create ("/./-?value", Context)).LastChild
-                        .Add ("src", Expression.Create ("/../*/_data/0?name", Context)).Parent
-                    .Add ("set", Expression.Create ("/../*/_data/0", Context))
-                    .Add ("set", Expression.Create ("", Context)).Root; // this node should be deleted, and reinserted afterwards again
-            Context.Raise ("while", node [2]);
-            Assert.AreEqual ("success", node [1].Value);
-            Assert.AreEqual ("set", node [2] [2].Name);
+            var result = ExecuteLambda (@"while:bool:true
+  add:x:/..
+    src:_foo1
+  set:x:/.?value
+    src:bool:false");
+            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual ("_foo1", result [0].Name);
+            Assert.IsNull (result [0].Value);
         }
-
+        
         /// <summary>
-        ///     verifies that [while] condition can be manipulated from inside the [while] itself, if [while]
-        ///     if not of type "immutable"
+        ///     verifies that [while] works when source is a constant null value
         /// </summary>
         [Test]
-        public void While7 ()
+        public void WhileConstantNull ()
         {
-            var node = new Node ()
-                .Add ("_result")
-                .Add ("while", "tjobing").LastChild
-                    .Add ("lambda").LastChild
-                        .Add ("set", Expression.Create ("/././-?value", Context)).LastChild
-                            .Add ("src", "success").Parent
-                        .Add ("set", Expression.Create ("/../*/while?value", Context)).Root; // at this point we [set] [while]'s value to null
-            Context.Raise ("while", node [1]);
-            Assert.AreEqual ("success", node [0].Value);
+            var result = ExecuteLambda (@"while
+  add:x:/..
+    src:_foo1
+  set:x:/.?value
+    src:bool:false");
+            Assert.AreEqual (0, result.Count);
         }
     }
 }

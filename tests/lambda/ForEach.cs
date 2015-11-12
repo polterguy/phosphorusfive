@@ -19,130 +19,184 @@ namespace p5.unittests.lambda
         : base ("p5.lambda", "p5.types", "p5.hyperlisp") { }
 
         /// <summary>
+        ///     verifies that [for-each] works when expression is of type 'node'
+        /// </summary>
+        [Test]
+        public void ForEachNode ()
+        {
+            var result = ExecuteLambda (@"_data
+  _foo1:bar1
+  _foo2:bar2
+for-each:x:/-/*
+  add:x:/..
+    src:x:/././*/__dp/#");
+            Assert.AreEqual (2, result.Count);
+            Assert.AreEqual ("_foo1", result [0].Name);
+            Assert.AreEqual ("bar1", result [0].Value);
+            Assert.AreEqual ("_foo2", result [1].Name);
+            Assert.AreEqual ("bar2", result [1].Value);
+        }
+        
+        /// <summary>
         ///     verifies that [for-each] works when expression is of type 'name'
         /// </summary>
         [Test]
-        public void ForEach01 ()
-        {
-            var node = new Node ()
-                .Add ("_data").LastChild
-                    .Add ("su")
-                    .Add ("cc")
-                    .Add ("ess").Parent
-                .Add ("_result")
-                .Add ("for-each", Expression.Create ("/-2/*?name", Context)).LastChild
-                    .Add ("set", Expression.Create ("/./-?value", Context)).LastChild
-                        .Add ("src", "{0}{1}").LastChild
-                            .Add (string.Empty, Expression.Create ("/../*/_result?value", Context))
-                            .Add (string.Empty, Expression.Create ("/./././*/__dp?value", Context)).Root;
-            Context.Raise ("for-each", node [2]);
-            Assert.AreEqual ("success", node [1].Value);
-        }
-
-        /// <summary>
-        ///     verifies that [for-each] works when expression is of type 'value',
-        ///     and there are different types in some nodes
-        /// </summary>
-        [Test]
-        public void ForEach02 ()
-        {
-            var node = new Node ()
-                .Add ("_data").LastChild
-                    .Add (string.Empty, "succ")
-                    .Add (string.Empty, 5)
-                    .Add (string.Empty, "ess").Parent
-                .Add ("_result")
-                .Add ("for-each", Expression.Create ("/-2/*?value", Context)).LastChild
-                    .Add ("set", Expression.Create ("/./-?value", Context)).LastChild
-                        .Add ("src", "{0}{1}").LastChild
-                            .Add (string.Empty, Expression.Create ("/../*/_result?value", Context))
-                            .Add (string.Empty, Expression.Create ("/..for-each/*/__dp?value", Context)).Root;
-            Context.Raise ("for-each", node [2]);
-            Assert.AreEqual ("succ5ess", node [1].Value);
-        }
-
-        /// <summary>
-        ///     verifies that [for-each] works when expression is of type 'node',
-        ///     and there are different types in some nodes
-        /// </summary>
-        [Test]
-        public void ForEach03 ()
-        {
-            var node = new Node ()
-                .Add ("_data").LastChild
-                    .Add (string.Empty, "succ")
-                    .Add (string.Empty, 5)
-                    .Add (string.Empty, "ess").Parent
-                .Add ("_result")
-                .Add ("for-each", Expression.Create ("/-2/*", Context)).LastChild
-                    .Add ("set", Expression.Create ("/./-?value", Context)).LastChild
-                        .Add ("src", "{0}{1}").LastChild
-                            .Add (string.Empty, Expression.Create ("/../*/_result?value", Context))
-                            .Add (string.Empty, Expression.Create ("/..for-each/*/__dp/#?value", Context)).Root;
-            Context.Raise ("for-each", node [2]);
-            Assert.AreEqual ("succ5ess", node [1].Value);
-        }
-
-        /// <summary>
-        ///     verifies that [for-each] is immutable by default
-        /// </summary>
-        [Test]
-        public void ForEach04 ()
-        {
-            var node = new Node ()
-                .Add ("_data")
-                .Add ("for-each", Expression.Create ("/-", Context)).LastChild
-                    .Add ("set", Expression.Create ("", Context)).Root;
-            Context.Raise ("for-each", node [1]);
-            Assert.AreEqual ("set", node [1] [0].Name);
-        }
-
-        /// <summary>
-        ///     verifies that [for-each] is not immutable, if overridden with lambda child
-        /// </summary>
-        [Test]
-        public void ForEach05 ()
-        {
-            var node = new Node ()
-                .Add ("_data")
-                .Add ("for-each", Expression.Create ("/-", Context)).LastChild
-                    .Add ("lambda").LastChild
-                        .Add ("set", Expression.Create ("", Context)).Root;
-            Context.Raise ("for-each", node [1]);
-            Assert.AreEqual (0, node [1] [0].Count);
-        }
-        
-        /// <summary>
-        ///     Verifies that [for-each] works with value being Node instead of expression
-        /// </summary>
-        [Test]
-        public void ForEach06 ()
+        public void ForEachName ()
         {
             var result = ExecuteLambda (@"_data
-for-each:node:@""_data
-  foo:succ
-  bar:ess""
-  set:x:/../0?value
-    src:{0}{1}
-      :x:/../0?value
-      :x:/./././*/__dp/#?value");
-            Assert.AreEqual ("success", result [0].Value);
+  _foo1:bar1
+  _foo2:bar2
+for-each:x:/-/*?name
+  add:x:/..
+    src:x:/././*/__dp?value");
+            Assert.AreEqual (2, result.Count);
+            Assert.AreEqual ("_foo1", result [0].Name);
+            Assert.IsNull (result [0].Value);
+            Assert.AreEqual ("_foo2", result [1].Name);
+            Assert.IsNull (result [1].Value);
         }
         
         /// <summary>
-        ///     Verifies that [for-each] works with value being Node instead of expression and
-        ///     node is modified during execution
+        ///     verifies that [for-each] works when expression is of type 'value'
         /// </summary>
         [Test]
-        public void ForEach07 ()
+        public void ForEachValue ()
+        {
+            var result = ExecuteLambda (@"_data
+  _foo1:bar1
+  _foo2:bar2
+for-each:x:/-/*?value
+  add:x:/..
+    src:x:/././*/__dp?value");
+            Assert.AreEqual (2, result.Count);
+            Assert.AreEqual ("bar1", result [0].Name);
+            Assert.IsNull (result [0].Value);
+            Assert.AreEqual ("bar2", result [1].Name);
+            Assert.IsNull (result [1].Value);
+        }
+        
+        /// <summary>
+        ///     verifies that [for-each] works when given a constant node with two children
+        /// </summary>
+        [Test]
+        public void ForEachValueIsNode ()
         {
             var result = ExecuteLambda (@"for-each:node:@""_data
-  foo:failure
-  bar:failure""
-  set:x:/./*/__dp/#?value
-    src:success");
-            Assert.AreEqual ("success", result [0].Get<Node> (Context) [0].Value);
-            Assert.AreEqual ("success", result [0].Get<Node> (Context) [1].Value);
+  _foo1:bar1
+  _foo2:bar2""
+  add:x:/..
+    src:x:/././*/__dp/#");
+            Assert.AreEqual (2, result.Count);
+            Assert.AreEqual ("_foo1", result [0].Name);
+            Assert.AreEqual ("bar1", result [0].Value);
+            Assert.AreEqual ("_foo2", result [1].Name);
+            Assert.AreEqual ("bar2", result [1].Value);
+        }
+        
+        /// <summary>
+        ///     verifies that [for-each] works when given a constant string that turns into two nodes
+        /// </summary>
+        [Test]
+        public void ForEachValueIsString ()
+        {
+            var result = ExecuteLambda (@"for-each:@""_foo1:bar1
+_foo2:bar2""
+  add:x:/..
+    src:x:/././*/__dp/#");
+            Assert.AreEqual (2, result.Count);
+            Assert.AreEqual ("_foo1", result [0].Name);
+            Assert.AreEqual ("bar1", result [0].Value);
+            Assert.AreEqual ("_foo2", result [1].Name);
+            Assert.AreEqual ("bar2", result [1].Value);
+        }
+        
+        [ActiveEvent (Name = "for-each.test1")]
+        private static void for_each_test1 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Add ("_foo1", "bar1");
+            e.Args.Add ("_foo2", "bar2");
+        }
+
+        /// <summary>
+        ///     verifies that [for-each] works when given a source that is an Active Event invocation
+        /// </summary>
+        [Test]
+        public void ForEachSourceIsActiveEvent ()
+        {
+            var result = ExecuteLambda (@"for-each
+  for-each.test1
+  add:x:/..
+    src:x:/././*/__dp/#");
+            Assert.AreEqual (2, result.Count);
+            Assert.AreEqual ("_foo1", result [0].Name);
+            Assert.AreEqual ("bar1", result [0].Value);
+            Assert.AreEqual ("_foo2", result [1].Name);
+            Assert.AreEqual ("bar2", result [1].Value);
+        }
+        
+        /// <summary>
+        ///     verifies that [for-each] works when given a source that is a dynamically created Active Event invocation
+        /// </summary>
+        [Test]
+        public void ForEachSourceIsDynamicActiveEvent ()
+        {
+            var result = ExecuteLambda (@"set-event:for-each.test2
+  add:x:/..
+    src
+      _foo1:bar1
+      _foo2:bar2
+for-each
+  for-each.test2
+  add:x:/..
+    src:x:/././*/__dp/#");
+            Assert.AreEqual (2, result.Count);
+            Assert.AreEqual ("_foo1", result [0].Name);
+            Assert.AreEqual ("bar1", result [0].Value);
+            Assert.AreEqual ("_foo2", result [1].Name);
+            Assert.AreEqual ("bar2", result [1].Value);
+        }
+        
+        /// <summary>
+        ///     verifies that [for-each] works when given a source that is a dynamically created Active Event invocation
+        ///     that returns a string as value
+        /// </summary>
+        [Test]
+        public void ForEachSourceIsActiveEventReturningString ()
+        {
+            var result = ExecuteLambda (@"set-event:for-each.test3
+  set:x:/..?value
+    src:@""_foo1:bar1
+_foo2:bar2""
+for-each
+  for-each.test3
+  add:x:/..
+    src:x:/././*/__dp?value");
+            Assert.AreEqual (2, result.Count);
+            Assert.AreEqual ("_foo1", result [0].Name);
+            Assert.AreEqual ("bar1", result [0].Value);
+            Assert.AreEqual ("_foo2", result [1].Name);
+            Assert.AreEqual ("bar2", result [1].Value);
+        }
+        
+        /// <summary>
+        ///     verifies that [for-each] has access to nodes outside of itself
+        /// </summary>
+        [Test]
+        public void ForEachIsNotRoot ()
+        {
+            var result = ExecuteLambda (@"_data
+  foo1
+  foo2
+for-each:x:/-/*?name
+  set:x:/./-?value
+    src:{0}{1}
+      :x:/../0?value
+      :x:/..for-each/*/__dp?value
+add:x:/..
+  src:x:/../0?value");
+            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual ("foo1foo2", result [0].Name);
+            Assert.IsNull (result [0].Value);
         }
     }
 }

@@ -10,7 +10,7 @@ using p5.exp;
 namespace p5.unittests.lambda
 {
     /// <summary>
-    ///     unit tests for testing the [add] lambda keyword
+    ///     unit tests for testing the [insert-before] and [insert-after] lambda keywords
     /// </summary>
     [TestFixture]
     public class Insert : TestBase
@@ -20,53 +20,25 @@ namespace p5.unittests.lambda
         { }
 
         [Test]
-        public void Insert01 ()
+        public void InsertBefore ()
         {
-            var node = ExecuteLambda (@"_result
-  _x1
-insert-before:x:/-/0
+            var result = ExecuteLambda (@"insert-before:x:/../0
   src
-    foo:bar");
-
-            Assert.AreEqual ("foo", node [0] [0].Name);
-            Assert.AreEqual ("bar", node [0] [0].Value);
+    foo1:bar1");
+            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual ("foo1", result [0].Name);
+            Assert.AreEqual ("bar1", result [0].Value);
         }
         
         [Test]
-        public void Insert02 ()
+        public void InsertAfter ()
         {
-            var node = ExecuteLambda (@"_result
-insert-after:x:/-
+            var result = ExecuteLambda (@"insert-after:x:/../0
   src
-    foo:bar");
-
-            Assert.AreEqual ("foo", node [1].Name);
-            Assert.AreEqual ("bar", node [1].Value);
-        }
-        
-        [Test]
-        public void Insert03 ()
-        {
-            var node = ExecuteLambda (@"_result
-insert-after:x:
-  src
-    set:x:/../0?value
-      src:success");
-
-            Assert.AreEqual ("success", node [0].Value);
-        }
-        
-        [Test]
-        public void Insert04 ()
-        {
-            var node = ExecuteLambda (@"_result:success
-insert-before:x:
-  src
-    set:x:/../0?value
-      src:error");
-
-            Assert.AreEqual ("success", node [0].Value);
-            Assert.AreEqual ("set", node [1].Name);
+    _foo1:bar1");
+            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual ("_foo1", result [0].Name);
+            Assert.AreEqual ("bar1", result [0].Value);
         }
     }
 }
