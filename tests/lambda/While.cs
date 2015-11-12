@@ -25,6 +25,7 @@ namespace p5.unittests.lambda
         public void WhileConstantString ()
         {
             var result = ExecuteLambda (@"while:foo
+  _foo:bool:false
   add:x:/..
     src:_foo1
   set:x:/.?value");
@@ -97,12 +98,14 @@ while:x:/-?value
         }
         
         /// <summary>
-        ///     verifies that [while] works when source is a constant null value
+        ///     verifies that [while] works when source is a constant null value, 
+        ///     and first child is evaluated instead
         /// </summary>
         [Test]
         public void WhileConstantNull ()
         {
             var result = ExecuteLambda (@"while
+  _foo:bool:false
   add:x:/..
     src:_foo1
   set:x:/.?value

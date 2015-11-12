@@ -170,5 +170,40 @@ add:x:/..
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.IsNull (result [0].Value);
         }
+        
+        /// <summary>
+        ///     verifies that [eval] can take an expression returning multiple results,
+        ///     and execute them correctly in order
+        /// </summary>
+        [Test]
+        public void EvalCanExecuteMultiExpression ()
+        {
+            var result = ExecuteLambda (@"_x1
+  add:x:/..
+    src:succ
+_x2
+  add:x:/..
+    src:ess
+set:x:/..?value
+  eval:x:/./-2|/./-1");
+            Assert.AreEqual ("succ\r\ness", result.Value);
+            Assert.AreEqual (0, result.Count);
+        }
+        
+        /// <summary>
+        ///     verifies that [eval] can take an expression returning multiple results,
+        ///     and execute them correctly in order
+        /// </summary>
+        [Test]
+        public void EvalCanExecuteExpressionStringAndReturnNodes ()
+        {
+            var result = ExecuteLambda (@"_x:@""add:x:/..
+  src:success""
+set:x:/..?value
+  eval:x:/./-1?value");
+            Assert.IsTrue (result.Value is Node);
+            Assert.AreEqual ("success", result.Get<Node> (Context).Name);
+            Assert.AreEqual (0, result.Count);
+        }
     }
 }

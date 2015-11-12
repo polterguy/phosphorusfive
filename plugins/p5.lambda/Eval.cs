@@ -19,19 +19,28 @@ namespace p5.lambda
     /// </summary>
     public static class Eval
     {
-        private delegate void ExecuteFunctor (ApplicationContext context, Node exe, Node evalNode, IEnumerable<Node> args);
+        private delegate void ExecuteFunctor (
+            ApplicationContext context, 
+            Node exe, 
+            Node evalNode, 
+            IEnumerable<Node> args,
+            bool isFirst);
 
         private static void Executor (ExecuteFunctor functor, ApplicationContext context, Node args, bool forceChildren)
         {
             if (forceChildren || args.Value == null) {
-                
+
                 // executing current scope
-                functor (context, args, args, new Node[] {});
+                functor (context, args, args, new Node[] {}, true);
             } else {
                 
-                // executing a value object or an expression
+                // executing a value object or an expression, making sure we let functor know which
+                // was the first invocation
+                bool isFirst = true;
                 foreach (var idxSource in XUtil.Iterate<Node> (args, context)) {
-                    functor (context, idxSource, args, args.Children);
+
+                    functor (context, idxSource, args, args.Children, isFirst);
+                    isFirst = false;
                 }
             }
         }
@@ -62,7 +71,12 @@ namespace p5.lambda
          * executes a block of nodes by copying the nodes executed, and executing the copy, 
          * returning anything created inside of the block back to caller
          */
-        private static void ExecuteBlockCopy (ApplicationContext context, Node exe, Node evalNode, IEnumerable<Node> args)
+        private static void ExecuteBlockCopy (
+            ApplicationContext context, 
+            Node exe, 
+            Node evalNode, 
+            IEnumerable<Node> args,
+            bool isFirst)
         {
             // making sure lambda is executed on copy of execution nodes,
             // without access to nodes outside of its own scope
@@ -81,14 +95,22 @@ namespace p5.lambda
             ExecuteAll (exeCopy, context);
 
             // returning all nodes created inside of execution block, and ONLY these nodes, plus value of lambda block
-            evalNode.Clear ().AddRange (exeCopy.Children.Where (ix => originalNodes.IndexOf (ix) == -1));
+            // notice, this means clearing the evalNode's children collection ONLY the first time we execute it
+            if (isFirst)
+                evalNode.Clear ();
+            evalNode.AddRange (exeCopy.Children.Where (ix => originalNodes.IndexOf (ix) == -1));
             evalNode.Value = exeCopy.Value;
         }
         
         /*
          * executes a block of nodes in mutable state
          */
-        private static void ExecuteBlockMutable (ApplicationContext context, Node exe, Node evalNode, IEnumerable<Node> args)
+        private static void ExecuteBlockMutable (
+            ApplicationContext context, 
+            Node exe, 
+            Node evalNode, 
+            IEnumerable<Node> args,
+            bool isFirst)
         {
             // passing in arguments, if there are any
             foreach (var idx in args) {

@@ -51,6 +51,7 @@
     <Compile Include="lambda\Insert.cs" />
     <Compile Include="lambda\Join.cs" />
     <Compile Include="lambda\Split.cs" />
+    <Compile Include="lambda\Threading.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

@@ -4,6 +4,7 @@
  */
 
 using System.IO;
+using System.Collections.Generic;
 using p5.core;
 using p5.exp;
 
@@ -25,18 +26,11 @@ namespace p5.file.file
 {
     /// <summary>
     ///     Class to help check if a file exists.
-    /// 
-    ///     Contains the [Value] Active Event, and its associated helper methods.
     /// </summary>
     public static class Exists
     {
         /// <summary>
         ///     Returns true if file(s) exists.
-        /// 
-        ///     Will return the value "true" if file(s) exists, otherwise false.
-        /// 
-        ///     Example;
-        ///     <pre>Value:foo.txt</pre>
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -49,11 +43,26 @@ namespace p5.file.file
                 // finding root folder
                 var rootFolder = Common.GetRootFolder (context);
 
-                // iterating through each filepath given
-                foreach (var idx in Common.GetSource (e.Args, context)) {
+                // retrieving source
+                var source = new List<string> (Common.GetSource (e.Args, context));
+                if (source.Count > 0) {
 
-                    // letting caller know whether or not this file exists
-                    e.Args.Add (new Node (idx, File.Exists (rootFolder + idx)));
+                    // multiple filename source, returning existence of each file as children nodes of args
+                    // plus existence of all files as value of args
+                    bool seenFalse = false;
+                    foreach (var idx in source) {
+
+                        // letting caller know whether or not this file exists
+                        var fileExist = File.Exists (rootFolder + idx);
+                        if (!fileExist)
+                            seenFalse = true;
+                        e.Args.Add (new Node (idx, fileExist));
+                    }
+                    e.Args.Value = !seenFalse;
+                } else {
+
+                    // probably expression leading into oblivian
+                    e.Args.Value = false;
                 }
             }
         }

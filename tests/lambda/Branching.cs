@@ -4,6 +4,7 @@
  */
 
 using NUnit.Framework;
+using p5.core;
 
 namespace p5.unittests.lambda
 {
@@ -172,6 +173,76 @@ if:x:/-2?value
             Assert.AreEqual (1, result.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
+        }
+
+        [ActiveEvent (Name = "if.test1")]
+        private static void if_test1 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = true;
+        }
+        
+        /// <summary>
+        ///     verifies [if] works when anding yielding true for an Active Event invocation conditional statement
+        /// </summary>
+        [Test]
+        public void IfActiveEventConditionalInvocation ()
+        {
+            var result = ExecuteLambda (@"if
+  if.test1
+  add:x:/..
+    src
+      _foo1:bar1");
+            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual ("_foo1", result [0].Name);
+            Assert.AreEqual ("bar1", result [0].Value);
+        }
+        
+        [ActiveEvent (Name = "if.test2")]
+        private static void if_test2 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = true;
+        }
+
+        /// <summary>
+        ///     verifies [if] works when anding yielding true for two anded Active Event invocation 
+        ///     conditional statements
+        /// </summary>
+        [Test]
+        public void IfTwoAndedActiveEventConditionalInvocations ()
+        {
+            var result = ExecuteLambda (@"if
+  if.test1
+  and
+    if.test2
+  add:x:/..
+    src
+      _foo1:bar1");
+            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual ("_foo1", result [0].Name);
+            Assert.AreEqual ("bar1", result [0].Value);
+        }
+        
+        [ActiveEvent (Name = "if.test3")]
+        private static void if_test3 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = false;
+        }
+
+        /// <summary>
+        ///     verifies [if] works when anding yielding false for two anded Active Event invocation 
+        ///     conditional statements, when only one of those Active Events yields true
+        /// </summary>
+        [Test]
+        public void IfTwoAndedActiveEventConditionalInvocationsFalse ()
+        {
+            var result = ExecuteLambda (@"if
+  if.test1
+  and
+    if.test3
+  add:x:/..
+    src
+      _foo1:bar1");
+            Assert.AreEqual (0, result.Count);
         }
     }
 }

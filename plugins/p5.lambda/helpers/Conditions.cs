@@ -75,8 +75,10 @@ namespace p5.lambda.helpers
 
                 default:
 
-                    // raising comparison operator Active Event
+                    // raising comparison operator Active Event, or any other Active Event currently part of conditional operators
                     context.Raise (idx.Name, idx);
+                    if (args.Value == null)
+                        args.Value = idx.Value;
                     break;
                 }
             }
@@ -130,7 +132,10 @@ namespace p5.lambda.helpers
                 if (!(args.Value is bool)) {
 
                     var obj = XUtil.Single<object> (args, context, null);
-                    if (obj is int) {
+                    if (obj is bool) {
+
+                        args.Value = obj;
+                    } else if (obj is int) {
 
                         args.Value = (int)obj != 0;
                     } else if (obj is uint) {
@@ -192,6 +197,11 @@ namespace p5.lambda.helpers
         private static List<Node> GetConditionalEventNodes (Node args)
         {
             List<Node> retVal = new List<Node> ();
+            if (args.Value == null && args.Count > 0) {
+
+                // first child node is an Active Event invocation, being part of conditional operators
+                retVal.Add (args.FirstChild);
+            }
             foreach (var idx in args.Children) {
                 switch (idx.Name) {
                 case "and":
