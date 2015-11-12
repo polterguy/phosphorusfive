@@ -47,7 +47,7 @@
     <Compile Include="Update.cs" />
     <Compile Include="Insert.cs" />
     <Compile Include="helpers\Common.cs" />
-    <Compile Include="Remove.cs" />
+    <Compile Include="Delete.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

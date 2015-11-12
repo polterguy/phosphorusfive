@@ -139,10 +139,6 @@
       <Project>{5B8D14D0-854E-4143-AE48-C62583F49F49}</Project>
       <Name>p5.types</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\plugins\p5.data\p5.data.csproj">
-      <Project>{CA83A3ED-BD5D-4557-AA1B-A7C04ABD4D4F}</Project>
-      <Name>p5.data</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\plugins\p5.io\p5.io.csproj">
       <Project>{89C744BE-B583-4C6D-84B9-941E0C7CEBF4}</Project>
       <Name>p5.io</Name>

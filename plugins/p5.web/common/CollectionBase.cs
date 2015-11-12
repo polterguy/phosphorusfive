@@ -162,7 +162,7 @@ namespace p5.web.ui.common
                         } else {
 
                             // there was no value in session for key
-                            var resultNode = node.Add (idx, null);
+                            node.Add (idx, null);
                         }
                     }
                 }

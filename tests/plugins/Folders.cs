@@ -11,13 +11,13 @@ using p5.exp;
 namespace p5.unittests.plugins
 {
     /// <summary>
-    ///     unit tests for testing the [p5.file.xxx] namespace
+    ///     unit tests for testing the p5.io folders logic
     /// </summary>
     [TestFixture]
     public class Folders : TestBase
     {
         public Folders ()
-            : base ("p5.io", "p5.hyperlisp", "p5.lambda") { }
+            : base ("p5.io", "p5.hyperlisp", "p5.lambda", "p5.types") { }
 
         /// <summary>
         ///     verifies [create-folder] works correctly
@@ -152,6 +152,7 @@ namespace p5.unittests.plugins
             // verifying exists returned true as it should
             Assert.AreEqual ("test1", node [0].Name);
             Assert.AreEqual (true, node [0].Value);
+            Assert.AreEqual (true, node.Value);
         }
 
         /// <summary>
@@ -517,7 +518,9 @@ namespace p5.unittests.plugins
 
             // listing folders within folder
             var node = ExecuteLambda (@"list-folders
-  test.list-folders-1");
+  test.list-folders-1
+insert-before:x:/../0
+  src:x:/../*");
 
             // verifying list-files returned true as it should
             Assert.AreEqual ("test1/test-folder", node [0] [0].Value);

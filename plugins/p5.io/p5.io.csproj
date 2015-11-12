@@ -48,13 +48,13 @@
     <Compile Include="Common.cs" />
     <Compile Include="file\Exists.cs" />
     <Compile Include="file\Load.cs" />
-    <Compile Include="file\Remove.cs" />
     <Compile Include="file\Save.cs" />
     <Compile Include="folder\Create.cs" />
     <Compile Include="folder\Exists.cs" />
     <Compile Include="folder\ListFiles.cs" />
     <Compile Include="folder\ListFolders.cs" />
     <Compile Include="folder\Remove.cs" />
+    <Compile Include="file\Delete.cs" />
   </ItemGroup>
   <ItemGroup />
   <ProjectExtensions>

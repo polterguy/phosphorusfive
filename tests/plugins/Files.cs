@@ -11,7 +11,7 @@ using p5.exp;
 namespace p5.unittests.plugins
 {
     /// <summary>
-    ///     unit tests for testing the [p5.file.xxx] namespace
+    ///     unit tests for testing the p5.io file logic
     /// </summary>
     [TestFixture]
     public class Files : TestBase
@@ -22,6 +22,7 @@ namespace p5.unittests.plugins
 
         /*
          * necessary to return "root folder" of executing Assembly
+         * p5.io relies on this Active Event as a sink
          */
         [ActiveEvent (Name = "p5.core.application-folder")]
         private static void GetRootFolder (ApplicationContext context, ActiveEventArgs e)
@@ -30,10 +31,10 @@ namespace p5.unittests.plugins
         }
 
         /// <summary>
-        ///     verifies [file-exist] works correctly
+        ///     saves a file for then to check if it exist
         /// </summary>
         [Test]
-        public void Exists ()
+        public void SaveFileFileExist ()
         {
             // creating file using p5.file
             var node = new Node (string.Empty, "test1.txt")
@@ -45,15 +46,16 @@ namespace p5.unittests.plugins
             Context.Raise ("file-exist", node);
 
             // verifying [file-exist] returned valid values
+            Assert.AreEqual (true, node.Value);
             Assert.AreEqual ("test1.txt", node [0].Name);
             Assert.AreEqual (true, node [0].Value);
         }
 
         /// <summary>
-        ///     verifies [file-exist] works correctly
+        ///     saves two files, for the to check if they both exist
         /// </summary>
         [Test]
-        public void ExistsExpression1 ()
+        public void SaveTwoFilesFileExist ()
         {
             // creating files using p5.file
             var node = new Node (string.Empty, "test1.txt")
@@ -71,6 +73,7 @@ namespace p5.unittests.plugins
             Context.Raise ("file-exist", node);
 
             // verifying [file-exist] returned valid values
+            Assert.AreEqual (true, node.Value);
             Assert.AreEqual ("test1.txt", node [0].Name);
             Assert.AreEqual (true, node [0].Value);
             Assert.AreEqual ("test2.txt", node [1].Name);
@@ -78,10 +81,10 @@ namespace p5.unittests.plugins
         }
 
         /// <summary>
-        ///     verifies [file-exist] works correctly
+        ///     saves two files, for then to invoke file-exist with a formatted expression
         /// </summary>
         [Test]
-        public void ExistsExpression2 ()
+        public void SaveTwoFilesFormattedExpressionExist ()
         {
             // creating files using p5.file
             var node = new Node (string.Empty, "test1.txt")
@@ -106,10 +109,10 @@ namespace p5.unittests.plugins
         }
 
         /// <summary>
-        ///     verifies [file-exist] works correctly
+        ///     saves one file, for then to check if it exist using a formatted string
         /// </summary>
         [Test]
-        public void ExistsExpression3 ()
+        public void SaveFileFormattedStringExist ()
         {
             // creating files using p5.file
             var node = new Node (string.Empty, "test1.txt")
@@ -127,10 +130,10 @@ namespace p5.unittests.plugins
         }
 
         /// <summary>
-        ///     verifies [delete-file] works correctly
+        ///     saves a file, for then to delete it
         /// </summary>
         [Test]
-        public void Remove ()
+        public void DeleteFile ()
         {
             // creating file using p5.file
             var node = new Node (string.Empty, "test1.txt")
@@ -143,13 +146,14 @@ namespace p5.unittests.plugins
 
             // verifying removal of file was done correctly
             Assert.AreEqual (false, File.Exists (GetBasePath () + "test1.txt"));
+            Assert.AreEqual (true, node.Value);
         }
 
         /// <summary>
         ///     verifies [delete-file] works correctly when given an expression
         /// </summary>
         [Test]
-        public void RemoveExpression1 ()
+        public void DeleteTwoFilesExpression ()
         {
             // creating files using p5.file
             var node = new Node (string.Empty, "test1.txt")
@@ -169,13 +173,18 @@ namespace p5.unittests.plugins
             // verifying removal of files was done correctly
             Assert.AreEqual (false, File.Exists (GetBasePath () + "test1.txt"));
             Assert.AreEqual (false, File.Exists (GetBasePath () + "test2.txt"));
+            Assert.AreEqual (true, node.Value);
+            Assert.AreEqual (true, node [0].Value);
+            Assert.AreEqual (true, node [1].Value);
+            Assert.AreEqual ("test1.txt", node [0].Name);
+            Assert.AreEqual ("test2.txt", node [1].Name);
         }
 
         /// <summary>
-        ///     verifies [delete-file] works correctly when given an expression
+        ///     saves two files, for the to use file-exist with a formatted expression
         /// </summary>
         [Test]
-        public void RemoveExpression2 ()
+        public void DeleteTwoFilesFormattedExpression ()
         {
             // creating files using p5.file
             var node = new Node (string.Empty, "test1.txt")
@@ -196,13 +205,18 @@ namespace p5.unittests.plugins
             // verifying removal of files was done correctly
             Assert.AreEqual (false, File.Exists (GetBasePath () + "test1.txt"));
             Assert.AreEqual (false, File.Exists (GetBasePath () + "test2.txt"));
+            Assert.AreEqual (true, node.Value);
+            Assert.AreEqual (true, node [0].Value);
+            Assert.AreEqual (true, node [1].Value);
+            Assert.AreEqual ("test1.txt", node [0].Name);
+            Assert.AreEqual ("test2.txt", node [1].Name);
         }
 
         /// <summary>
-        ///     verifies [delete-file] works correctly when given an expression
+        ///     saves one file, then deletes it with a formatted string
         /// </summary>
         [Test]
-        public void RemoveExpression3 ()
+        public void DeleteFileFormattedString ()
         {
             // creating files using p5.file
             var node = new Node (string.Empty, "test1.txt")
@@ -216,37 +230,16 @@ namespace p5.unittests.plugins
 
             // verifying removal of files was done correctly
             Assert.AreEqual (false, File.Exists (GetBasePath () + "test1.txt"));
+            Assert.AreEqual (true, node.Value);
+            Assert.AreEqual (true, node [0].Value);
+            Assert.AreEqual ("test1.txt", node [0].Name);
         }
 
         /// <summary>
-        ///     verifies [save-file] works correctly
+        ///     Saves a file using a formatted file path expression
         /// </summary>
         [Test]
-        public void Save ()
-        {
-            // deleting file if it already exists
-            if (File.Exists (GetBasePath () + "test1.txt")) {
-                File.Delete (GetBasePath () + "test1.txt");
-            }
-
-            // creating file using p5.file
-            var node = new Node (string.Empty, "test1.txt")
-                .Add ("src", "this is a test");
-            Context.Raise ("save-file", node);
-
-            // verifying creation of file was done correctly
-            Assert.AreEqual (true, File.Exists (GetBasePath () + "test1.txt"));
-            using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
-                Assert.AreEqual ("this is a test", reader.ReadToEnd ());
-            }
-        }
-
-        /// <summary>
-        ///     verifies [save-file] works correctly when given an expression, leading to
-        ///     multiple different files being saved at the same time, with the same static content
-        /// </summary>
-        [Test]
-        public void SaveExpression01 ()
+        public void SaveExpressionFilePath ()
         {
             // deleting file if it already exists
             if (File.Exists (GetBasePath () + "test1.txt")) {
@@ -267,11 +260,10 @@ namespace p5.unittests.plugins
         }
 
         /// <summary>
-        ///     verifies [save-file] works correctly when given a formatted expression as path, leading
-        ///     to multiple file names, where files contains same static content
+        ///     Saves a file using a formatted expression, leading to multiple results, building a path
         /// </summary>
         [Test]
-        public void SaveExpression02 ()
+        public void SaveFormattedExpressionFilePathYieldingMultipleValues ()
         {
             // deleting file if it already exists
             if (File.Exists (GetBasePath () + "test1.txt")) {
@@ -294,11 +286,10 @@ namespace p5.unittests.plugins
         }
 
         /// <summary>
-        ///     verifies [save-file] works correctly when given a formatted expression, which is
-        ///     not a p5.lambda expression, saving one file, with static content
+        ///     Saves a file using a formatted string as filepath
         /// </summary>
         [Test]
-        public void SaveExpression03 ()
+        public void SaveFormattedString ()
         {
             // deleting file if it already exists
             if (File.Exists (GetBasePath () + "test1.txt")) {
@@ -319,11 +310,10 @@ namespace p5.unittests.plugins
         }
 
         /// <summary>
-        ///     verifies [save-file] works correctly when given an expression, where [source] is an expression,
-        ///     pointing to one 'name'
+        ///     Saves a file where src is an expression yielding a single result
         /// </summary>
         [Test]
-        public void SaveExpression04 ()
+        public void SaveSrcIsExpression ()
         {
             // deleting file if it already exists
             if (File.Exists (GetBasePath () + "test1.txt")) {
@@ -344,11 +334,10 @@ namespace p5.unittests.plugins
         }
 
         /// <summary>
-        ///     verifies [save-file] works correctly when given an expression, where [source] is an expression,
-        ///     pointing to two 'name' values
+        ///     Saves a file where src is an expression yielding multiple results
         /// </summary>
         [Test]
-        public void SaveExpression05 ()
+        public void SaveSrcIsExpressionMultiResult ()
         {
             // deleting file if it already exists
             if (File.Exists (GetBasePath () + "test1.txt")) {
@@ -370,37 +359,10 @@ namespace p5.unittests.plugins
         }
 
         /// <summary>
-        ///     verifies [save-file] works correctly when given a formatted expression as path,
-        ///     which is not a p5.lambda expression, and [source] is an expression, leading to one 'name'
+        ///     Saves a file using a formatted expression as src
         /// </summary>
         [Test]
-        public void SaveExpression06 ()
-        {
-            // deleting file if it already exists
-            if (File.Exists (GetBasePath () + "test1.txt")) {
-                File.Delete (GetBasePath () + "test1.txt");
-            }
-
-            // creating file using p5.file
-            var node = new Node (string.Empty, "te{0}1.txt")
-                .Add (string.Empty, "st")
-                .Add ("success")
-                .Add ("src", Expression.Create ("/-?name", Context));
-            Context.Raise ("save-file", node);
-
-            // verifying creation of file was done correctly
-            Assert.AreEqual (true, File.Exists (GetBasePath () + "test1.txt"));
-            using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
-                Assert.AreEqual ("success", reader.ReadToEnd ());
-            }
-        }
-
-        /// <summary>
-        ///     verifies [save-file] works correctly when given a constant as file name, and [source] is
-        ///     a formatted p5.lambda expression, pointing to one 'name'
-        /// </summary>
-        [Test]
-        public void SaveExpression07 ()
+        public void SaveSrcIsFormattedExpression ()
         {
             // deleting file if it already exists
             if (File.Exists (GetBasePath () + "test1.txt")) {
@@ -422,11 +384,10 @@ namespace p5.unittests.plugins
         }
 
         /// <summary>
-        ///     making sure [save-file] works when given a constant as a filepath, and an expression as
-        ///     a [source], where the expression is of type 'node', and points to multiple nodes
+        ///     Saves a file where src is expression yielding multiple nodes
         /// </summary>
         [Test]
-        public void SaveExpression11 ()
+        public void SaveExpressionMultipleNodes ()
         {
             ExecuteLambda (@"_data
   foo1:bar1
@@ -439,11 +400,10 @@ save-file:test1.txt
         }
 
         /// <summary>
-        ///     making sure [save-file] works when given a constant as a filepath, and an expression as
-        ///     a [source], where the expression is of type 'node', and points to one node
+        ///     Saves a file using an expression as src, yielding a single node result
         /// </summary>
         [Test]
-        public void SaveExpression12 ()
+        public void SaveExpressionSingleNodeResult ()
         {
             ExecuteLambda (@"_data
   foo1:bar1
@@ -462,11 +422,10 @@ save-file:test1.txt
         }
         
         /// <summary>
-        ///     making sure [save-file] works when given a constant as a filepath, and an 
-        ///     Active Event invocation as [src]
+        ///     Saves a file where src is an Active Event invocation returning a single value
         /// </summary>
         [Test]
-        public void SaveActiveEvent01 ()
+        public void SaveSrcActiveEventReturningValue ()
         {
             ExecuteLambda (@"save-file:test1.txt
   test.save.av1");
@@ -483,8 +442,7 @@ save-file:test1.txt
         }
 
         /// <summary>
-        ///     making sure [save-file] works when given a constant as a filepath, and an 
-        ///     Active Event invocation as [src]
+        ///     Saves a file where src is an Active Event invocation returning multiple nodes
         /// </summary>
         [Test]
         public void SaveActiveEvent02 ()
@@ -509,11 +467,10 @@ save-file:test1.txt
         }
 
         /// <summary>
-        ///     making sure [save-file] works when given a constant as a filepath, and an 
-        ///     Active Event invocation as [src]
+        ///     Saves a file where src is two Active Event invocations, returning a single node each
         /// </summary>
         [Test]
-        public void SaveActiveEvent03 ()
+        public void SaveSrcIsTwoActiveEventsReturningNodes ()
         {
             ExecuteLambda (@"save-file:test1.txt
   test.save.av3_1
@@ -536,11 +493,10 @@ save-file:test1.txt
         }
 
         /// <summary>
-        ///     making sure [save-file] works when given a constant as a filepath, and an 
-        ///     Active Event invocation as [src]
+        ///     Saves a file where src is two Active Event invocations, returning a single value each
         /// </summary>
         [Test]
-        public void SaveActiveEvent04 ()
+        public void SaveSrcIsTwwoActiveEventsReturningSingleValue ()
         {
             ExecuteLambda (@"save-file:test1.txt
   test.save.av4_1
@@ -551,10 +507,10 @@ save-file:test1.txt
         }
 
         /// <summary>
-        ///     verifies [save-file] works correctly when overwriting an existing file
+        ///     Saves a file twice, second time with shorter text, to verify file is overwritten
         /// </summary>
         [Test]
-        public void Overwrite ()
+        public void OverwriteFile ()
         {
             // deleting file if it already exists
             if (File.Exists (GetBasePath () + "test1.txt")) {
@@ -578,34 +534,10 @@ save-file:test1.txt
         }
 
         /// <summary>
-        ///     verifies [load-file] works correctly
+        ///     Load two files using expressions
         /// </summary>
         [Test]
-        public void Load ()
-        {
-            // deleting file if it already exists
-            if (File.Exists (GetBasePath () + "test1.txt")) {
-                File.Delete (GetBasePath () + "test1.txt");
-            }
-
-            // creating file using p5.file
-            var node = new Node (string.Empty, "test1.txt")
-                .Add ("src", "success");
-            Context.Raise ("save-file", node);
-
-            // loading file using Phosphorus Five
-            node = new Node (string.Empty, "test1.txt");
-            Context.Raise ("load-file", node);
-
-            Assert.AreEqual ("success", node.LastChild.Value);
-            Assert.AreEqual ("test1.txt", node.LastChild.Name);
-        }
-
-        /// <summary>
-        ///     verifies [load-file] works correctly when given an expression
-        /// </summary>
-        [Test]
-        public void LoadExpression1 ()
+        public void LoadTwoFilesUsingExpression ()
         {
             // deleting file if it already exists
             if (File.Exists (GetBasePath () + "test1.txt")) {
@@ -638,10 +570,10 @@ save-file:test1.txt
         }
 
         /// <summary>
-        ///     verifies [load-file] works correctly when given an expression
+        ///     Loads a single file using a formatted string
         /// </summary>
         [Test]
-        public void LoadExpression2 ()
+        public void LoadFormattedString ()
         {
             // deleting file if it already exists
             if (File.Exists (GetBasePath () + "test1.txt")) {
@@ -658,15 +590,14 @@ save-file:test1.txt
                 .Add (string.Empty, "st");
             Context.Raise ("load-file", node);
 
-            Assert.AreEqual ("success", node.LastChild.Value);
-            Assert.AreEqual ("test1.txt", node.LastChild.Name);
+            Assert.AreEqual ("success", node.Value);
         }
 
         /// <summary>
-        ///     verifies [load-file] works correctly when given an expression
+        ///     Loads a file using a formatted expression
         /// </summary>
         [Test]
-        public void LoadExpression3 ()
+        public void LoadFormattedExpression ()
         {
             // deleting file if it already exists
             if (File.Exists (GetBasePath () + "test1.txt")) {
@@ -684,12 +615,11 @@ save-file:test1.txt
                 .Add ("test1.txt");
             Context.Raise ("load-file", node);
 
-            Assert.AreEqual ("success", node.LastChild.Value);
-            Assert.AreEqual ("test1.txt", node.LastChild.Name);
+            Assert.AreEqual ("success", node.Value);
         }
         
         /// <summary>
-        ///     verifies [load-file] works correctly when loading Hyperlisp
+        ///     Loads a hyperlisp file
         /// </summary>
         [Test]
         public void LoadHyperlisp ()
@@ -709,10 +639,10 @@ foo2:bar2");
             node = new Node ("load-file", "test1.hl");
             Context.Raise ("load-file", node);
 
-            Assert.AreEqual ("foo1", node.LastChild [0].Name);
-            Assert.AreEqual ("bar1", node.LastChild [0].Value);
-            Assert.AreEqual ("foo2", node.LastChild [1].Name);
-            Assert.AreEqual ("bar2", node.LastChild [1].Value);
+            Assert.AreEqual ("foo1", node [0].Name);
+            Assert.AreEqual ("bar1", node [0].Value);
+            Assert.AreEqual ("foo2", node [1].Name);
+            Assert.AreEqual ("bar2", node [1].Value);
         }
     }
 }

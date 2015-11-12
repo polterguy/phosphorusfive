@@ -52,6 +52,9 @@
     <Compile Include="lambda\Join.cs" />
     <Compile Include="lambda\Split.cs" />
     <Compile Include="lambda\Threading.cs" />
+    <Compile Include="plugins\Database.cs" />
+    <Compile Include="plugins\Files.cs" />
+    <Compile Include="plugins\Folders.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
@@ -80,10 +83,6 @@
     <ProjectReference Include="..\plugins\extras\p5.crypto\p5.crypto.csproj">
       <Project>{46D8DEF8-01ED-4058-B2D5-689890865494}</Project>
       <Name>p5.crypto</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\plugins\p5.data\p5.data.csproj">
-      <Project>{CA83A3ED-BD5D-4557-AA1B-A7C04ABD4D4F}</Project>
-      <Name>p5.data</Name>
     </ProjectReference>
     <ProjectReference Include="..\core\p5.exp\p5.exp.csproj">
       <Project>{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}</Project>
@@ -120,6 +119,10 @@
     <ProjectReference Include="..\plugins\p5.types\p5.types.csproj">
       <Project>{5B8D14D0-854E-4143-AE48-C62583F49F49}</Project>
       <Name>p5.types</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\plugins\p5.data\p5.data.csproj">
+      <Project>{CA83A3ED-BD5D-4557-AA1B-A7C04ABD4D4F}</Project>
+      <Name>p5.data</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

@@ -13,28 +13,11 @@ namespace p5.data
 {
     /// <summary>
     ///     Class wrapping [delete-data].
-    /// 
-    ///     Class containing the [delete-data] Active Event, and its associated helper methods.
     /// </summary>
     public static class Remove
     {
         /// <summary>
         ///     Removes nodes from your database.
-        /// 
-        ///     Removes all nodes matching your given <see cref="phosphorus.expressions.Expression">Expression</see>
-        ///     from your database.
-        /// 
-        ///     The database stores its nodes as the root node being the database itself, and beneath the root node, are
-        ///     all file nodes. This means that your expressions should start with; <em>@/*/*</em>, before the rest of
-        ///     your expression, referring to your actual data nodes.
-        /// 
-        ///     The node used as the "root node" for most database expressions, except [insert-data] though, is the 
-        ///     root node of your database, and not your execution tree root node.
-        /// 
-        ///     Example that will remove all items from your database, having a type, containing the string "foo";
-        /// 
-        ///     <pre>
-        /// delete-data:@/*/*/"/foo/"?node</pre>
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>

@@ -11,19 +11,11 @@ namespace p5.file.folder
 {
     /// <summary>
     ///     Class to help list all folders within folder(s).
-    /// 
-    ///     Contains [list-folders], and its associated helper methods.
     /// </summary>
     public static class ListFolders
     {
         /// <summary>
         ///     List all folders in folder(s).
-        /// 
-        ///     Will list all folders within the specified folder(s).
-        /// 
-        ///     Example that lists all folders within root folder of your system;
-        /// 
-        ///     <pre>list-folders:</pre>
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>

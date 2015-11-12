@@ -12,32 +12,11 @@ namespace p5.file.file
 {
     /// <summary>
     ///     Class to help save files.
-    /// 
-    ///     Contains [save-file], [save-binary-file], and their associated helper methods.
     /// </summary>
     public static class Save
     {
         /// <summary>
-        ///     Saves zero or more text files to disc.
-        /// 
-        ///     The files to save, should be given as either [source], [src], [rel-source] or [rel-src]. If 
-        ///     you save one file, using a constant as the file path, then you must use [source] or [src], which
-        ///     are synonyms btw. If you use an expression pointing to your file path(s), then you can use a relative
-        ///     source, if you wish, by either using [rel-source] or [rel-src] pointing to the actual contents to be saved.
-        /// 
-        ///     Example that saves a file with the name of "foo.txt" and the contents of "Howdy World";
-        /// 
-        ///     <pre>save-file:foo.txt
-        ///   source:Howdy World</pre>
-        /// 
-        ///     Example that saves two files; "foo1.txt" and "foo2.txt", with the contents of "Hello World 1.0" and "Hello World 2.0";
-        /// 
-        ///     <pre>
-        /// _data
-        ///   foo1.txt:Howdy World 1.0
-        ///   foo2.txt:Howdy World 2.0
-        /// save-file:@/-/*?name
-        ///   rel-source:@?value</pre>
+        ///     Saves a file to disc
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>

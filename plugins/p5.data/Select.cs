@@ -12,28 +12,11 @@ namespace p5.data
 {
     /// <summary>
     ///     Class wrapping [select-data].
-    /// 
-    ///     Encapsulates the [select-data] Active Event, and its associated supporting methods.
     /// </summary>
     public static class Select
     {
         /// <summary>
         ///     Selects nodes from your database.
-        /// 
-        ///     Selects items from your database, according to expression given as value of node, and returns the matches
-        ///     as children nodes.
-        /// 
-        ///     The database stores its nodes as the root node being the database itself, and beneath the root node, are
-        ///     all file nodes. This means that your expressions should start with; <em>@/*/*</em>, before the rest of
-        ///     your expression, referring to your actual data nodes.
-        /// 
-        ///     The node used as the "root node" for most database expressions, except [insert-data] though, is the 
-        ///     root node of your database, and not your execution tree root node.
-        /// 
-        ///     Example that will select all items from your database, having a type, containing the string "foo";
-        /// 
-        ///     <pre>
-        /// select-data:@/*/*/"/foo/"?node</pre>
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -45,7 +28,7 @@ namespace p5.data
                 throw new ArgumentException ("[select-data] requires an expression to select items from database");
 
             // making sure we clean up and remove all arguments passed in after execution
-            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args, true)) {
+            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args)) {
 
                 // acquiring lock on database
                 lock (Common.Lock) {
@@ -60,7 +43,7 @@ namespace p5.data
                         if (idxMatch.Match.TypeOfMatch == Match.MatchType.count) {
 
                             // Expression is for 'count' type, ending iteration
-                            e.Args.Add (new Node (string.Empty, idxMatch.Match.Count));
+                            e.Args.Value = idxMatch.Match.Count;
                             return;
                         }
                         foundResults = true;
@@ -73,7 +56,9 @@ namespace p5.data
                                 idxMatch.Node.Clone ());
                     }
                     if (!foundResults && ex.EvaluateExpressionType (context, e.Args) == Match.MatchType.count)
-                        e.Args.Add (new Node (string.Empty, 0));
+                        e.Args.Value = 0;
+                    else
+                        e.Args.Value = null;
                 }
             }
         }
