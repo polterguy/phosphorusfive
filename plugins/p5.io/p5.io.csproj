@@ -53,8 +53,8 @@
     <Compile Include="folder\Exists.cs" />
     <Compile Include="folder\ListFiles.cs" />
     <Compile Include="folder\ListFolders.cs" />
-    <Compile Include="folder\Remove.cs" />
     <Compile Include="file\Delete.cs" />
+    <Compile Include="folder\Delete.cs" />
   </ItemGroup>
   <ItemGroup />
   <ProjectExtensions>

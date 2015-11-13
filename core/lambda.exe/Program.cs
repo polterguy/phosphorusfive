@@ -6,54 +6,21 @@
 using System;
 using System.Text;
 using System.Reflection;
-using p5.core;
 using p5.exp;
+using p5.core;
 
 /// <summary>
 ///     Main namespace for the <em>"lambda.exe"</em> console program.
-/// 
-///     This namespace contains the <em>"lambda.exe"</em> program, which allows for executing p5.lambda code, either in immediate mode, or
-///     as Hyperlisp files through the console.
-/// 
-///     Although Phosphorus Five is targeted towards web development, it is still easy to create console applications and
-///     scripts in Hyperlisp which you execute locally using the lambda.exe console program.
-/// 
-///     Example of using the lambda.exe console p5.lambda executor.
-/// 
-///     Save the code below in a file called "hello.hl" in the same directory as your lambda.exe program is.
-/// 
-///     <pre>_data
-///   x1:hello
-///   x2:" "
-///   x3:world
-/// for-each:@/-/*?value
-///   p5.console.write:@/./*/__dp?value
-/// p5.console.write-line</pre>
-/// 
-/// Then open up a console and go to the directory of your newly saved file, and write <em>"lambda.exe -f hello.hl"</em> to
-///     see the results. On Linux and non-Windows systems you'll have to prepend the lambda.exe parts with mono, e.g.;
-///     <em>mono lambda.exe -f hello.hl</em>
-/// 
-///     You can of course put the path to lambda.exe in your environment variables, and such allow for executing Hyperlisp
-///     files residing anywhere on disc on your system.
 /// </summary>
 namespace lambda_exe
 {
     /// <summary>
     ///     Main class for the p5.lambda console executor.
-    /// 
-    ///     This is the main entry class for the "lambda.exe" console program, that allows for eexecuting Hyperlisp and p5.lambda code through
-    ///     the console, either directly using its <em>"immediate mode"</em>, or indirectly through Hyperlisp files.
-    /// 
-    ///     Class exposes two Active Events of its own, [p5.console.write] and [p5.console.write-line]. These two Active Events simply
-    ///     writes to the standard output, using the Console.Write/WriteLine from .Net and Mono.
     /// </summary>
     internal static class Program
     {
         /// <summary>
         ///     Returns the application base path as value of given args node.
-        /// 
-        ///     Necessary to make for instance our [p5.file.xxx] namespace work correctly.
         /// </summary>
         /// <param name="context">Application context Active Event is raised within.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -68,8 +35,6 @@ namespace lambda_exe
 
         /// <summary>
         ///     Allows you to write one line of text back to the console.
-        /// 
-        ///     Automatically appends Carriage Returns and Line Feeds (CR/LF) at the end of your output.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Active event arguments.</param>
@@ -82,8 +47,6 @@ namespace lambda_exe
 
         /// <summary>
         ///     Allows you to write any text back to the console.
-        /// 
-        ///     Will not append neither Carriage Return nor Line Feeds (CR/LF) at the end of your text.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Active event arguments.</param>
@@ -96,9 +59,6 @@ namespace lambda_exe
 
         /// <summary>
         ///     The entry point of the program, where the program control starts and ends
-        /// 
-        ///     Parses any arguments given, which may include "-i", "-p" and/or "-f". Execute the program
-        ///     without arguments to see all the different arguments possible to pass into it.
         /// </summary>
         /// <param name="args">Command-line arguments.</param>
         public static void Main (string[] args)

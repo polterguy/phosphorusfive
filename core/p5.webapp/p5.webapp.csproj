@@ -55,6 +55,8 @@
     <Content Include="system42\codemirror\hyperlisp-mode.js" />
     <Content Include="system42\codemirror\theme\blackboard.css" />
     <Content Include="system42\admin\files\files.css" />
+    <Content Include="system42\admin\files\file.png" />
+    <Content Include="system42\admin\files\folder.png" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

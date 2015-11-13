@@ -2,46 +2,20 @@
 
 * gzip javascript files through pre-build step on Release-Linux
 
-* create cache of MethodInfo to use in InvokeEventHandler to optimize use of reflection, and investigate if we can get completely rid 
-  of reflection, since it requires "partial trust" on server, which is not supplied by all web hotels for instance
-
-* move all public methods at the top, then all protected, then all private methods, in all classes, and check up the dox for all methods
-
-* make sure script inclusions by default don't mess up spacing in html filter
-
-* modify readme to have fully functioning complete example of Default.aspx page, with complete codebehind, and complete .aspx markup
-
 * create support for "array" p5.lambda type, which allows to be used as an expression for Expression.Iterate, such that
   users may submit a static array of values to stuff such as "for-each", "set-session-value", etc
 
-* create "plugin" support for "for-each", "set", "add" etc, to allow iterating for instance Widgets, and change their properties
-  directly to create less verbose code
-
-* [flatten] keyword in p5.lambda, to create a string representation of a list of nodes, with optional "separator string"
-  between node values/names, possibly as a "formatting expression" defined e.g. like this; "{name}:{value};" to allow for both
-  name of node and value of node to become part of string representation
-
-* [split] keyword in p5.lambda, to create node list representation of a string, according to some "split character", 
-  and optionally a "name split character" to allow for both name and value of node to be set according to the original 
-  string, in addition to optionally also "type information"
-
 * store timezone (GTM+x) in DateTime when serializing and de-serializing from Hyperlisp
-
-* Active Event to zip many CSS/JavaScript files back to client as one, relying on [p5.web.response.echo]
 
 * create support for "style" property setters/getters in widgets through p5.lambda optionally can take a list of style names/values, instead
   of like it is now where it's "just a string"
-
-* "math" Active Events, taking expressions, evaluating these, and [add], [subtract], [multiply] and [divide]'ing these
-
-* create [insert] keyword that allows inserting nodes at a specific position in tree
 
 * Exception hierarchy
 
 * reference nodes in Hyperlisp, where value is an expression, leading to a node, such that values of nodes, can reference
   another node in Hyperlisp as an expression, allowing for "late binding" after Nodes are created, maybe ...?
 
-* finish up comments on Unit Tests, class "Core" for instance
+* finish up comments and documentation
 
 * clean up comments on all Active Events and the rest of the library
 
@@ -49,36 +23,16 @@
 
 * Comet (LazyHttp) support
 
-* "indent", "de-indent" and "quote string" helper buttons in p5.lambda executor in System42
-
-* [lambda2html] Active Event
-
-* support for loading and saving binary files
-
 * [zip] and [unzip] Active Events
 
-* more [crypto] features, using BouncyCastle for instance
+* more [crypto] features, using BouncyCastle
 
-* [MIME] wrapper, for being able to transmit and read MIME messages to other servers
-
-* make it possible to store both Session, and ViewState, in MongoDB, and/or other database implementations
-
-* create META support for retrieving XML comments from Active Events
-
-* finish up [pw.web.post] to POST requests towards URLs
-
-* make sure [set] can set 'value' and 'name' when source leads to multiple nodes, and create unit test for it
+* Email send receive support through MimeKit
 
 * [rel-source] on [set-session-value] and friends
 
-* more unit tests for [rel-source] on set and friends
-
-* make sure none of the iterators are throwing null reference exceptions, trying to access a null object, but instead ends iteration
-
 * make sure [sys42.show-tree] can "append more results" to itself, such that it keeps the same dialogue for multiple invocations
   during the same, and consecutive request
-
-* make support for [rel-source] in [return-value]
 
 * plugin architecture for creating custom iterators, both using C# and in p5.lambda
 
@@ -89,18 +43,11 @@
 
 * create support for trapping and throwing exceptions in p5.lambda
 
-* make it possible to create "User Controls Widgets", which are widgets that exists in files, and make it possible to pass in parameters
+* make it possible to create "User Controls Widgets", which are widgets that exists in files, 
+  and makes it possible to pass in parameters
 
 * make it possible to get/set/remove/list etc, also JavaScript events, and not only Active Events, like it is now
 
-* create support for using ASP.NET Cache object, such as we already have for Session and Application
-
 * sys42 - "New wizard page ..." feature, for creating a p5.page through a wizard.
 
-* support multipart data in [p5.web.post] through MimeKit
-
-
-
-
-
-
+* cryptography support for encrypting and decrypting "anything"
