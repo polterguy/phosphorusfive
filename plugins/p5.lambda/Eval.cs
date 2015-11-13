@@ -53,7 +53,7 @@ namespace p5.lambda
         [ActiveEvent (Name = "eval")]
         private static void eval (ApplicationContext context, ActiveEventArgs e)
         {
-            Executor (ExecuteBlockCopy, context, e.Args, false);
+            Executor (ExecuteBlockCopy, context, e.Args, e.Args.Name != "eval");
         }
         
         /// <summary>

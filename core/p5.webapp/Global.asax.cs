@@ -12,14 +12,6 @@ using p5.webapp.code;
 
 /// <summary>
 ///     Main namespace for the Phosphorus Five core functionality.
-/// 
-///     This is where you'll find the <em>"core functionality"</em> from Phosphorus Five. This namespace should not be
-///     used for your own plugins and modules. If you wish to create Phosphorus Five plugins, then you should neither use
-///     this namespace, nor the [p5.xxx] namespace in your Active Events. A good advice, is to use the name of your company as
-///     your namespace, such as "acme." for C# classes, and [acme.xxx] for your Active Events, if your company's name is <em>"Acme"</em>.
-/// 
-///     This way you avoid namespace clashing with other people's code and functionality, and can easily intermix your code, with other
-///     people and companies' code. 
 /// </summary>
 namespace p5
 {
@@ -27,11 +19,6 @@ namespace p5
     {
         /// <summary>
         ///     The HttpApplication object for your web application.
-        /// 
-        ///     Takes care of URL re-writing logic, in addition to containing some helper methods to return
-        ///     base folder of application, etc.
-        /// 
-        ///     Normally not a place you'll need to fiddle too much with.
         /// </summary>
         public class Global : HttpApplication
         {
@@ -82,7 +69,7 @@ namespace p5
                 context.Raise ("load-file", loadFileNode);
 
                 // raising file as p5.lambda object
-                context.Raise ("lambda", loadFileNode [0].UnTie ()); // making sure file node becomes root node ...
+                context.Raise ("eval", loadFileNode);
             }
 
             /*
@@ -97,6 +84,7 @@ namespace p5
                 // and store the original URL in the HttpContext.Item collection for later references
                 /// \todo Support paths with "." in them, since now we don't support folders and paths with "." within their names
                 if (localPath.ToLower ().Trim ('/') == "default.aspx" || !localPath.Contains (".")) {
+
                     // if file requested is Default.aspx, we change it to simply "?file=/"
                     if (localPath == "/Default.aspx")
                         localPath = "/";
@@ -111,9 +99,6 @@ namespace p5
 
             /// <summary>
             ///     Returns the Application base folder.
-            /// 
-            ///     Returns the application base folder as value of given args node. Necessary to make for instance
-            ///     our [p5.file.xxx] namespace to work correctly.
             /// </summary>
             /// <param name="context">Application context Active Event is raised within</param>
             /// <param name="e">Parameters passed into Active Event</param>

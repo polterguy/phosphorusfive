@@ -212,38 +212,52 @@ namespace p5.lambda.events
                 if (lambda != null) {
 
                     // adding up arguments, no need to clone, they should be gone after execution anyway
-                    lambda.AddRange (e.Args.Children);
+                    // but skipping all "empty name" arguments, since they're probably formatting parameters
+                    lambda.AddRange (e.Args.Children.Where (ix => ix.Name != string.Empty));
+                    lambda.Name = e.Name;
+
+                    if (e.Args.Value is Expression) {
+
+                        // evaluating node, and stuffing results into arguments
+                        List<object> args = new List<object> (XUtil.Iterate<object> (e.Args, context));
+                        if (args.Count == 1 && !(args [0] is Node)) {
+
+                            // expression created a single argument that was not a node
+                            lambda.Value = args [0];
+                        } else {
+
+                            // expression created multiple arguments
+                            foreach (var idx in args) {
+
+                                // adding currently iterated results into execution object
+                                var idxNode = idx as Node;
+                                if (idxNode != null) {
+
+                                    // appending node into execution object
+                                    lambda.Add (idxNode.Clone ());
+                                } else {
+
+                                    // appending simple value into execution object with [_arg] name
+                                    lambda.Add ("_arg", idx);
+                                }
+                            }
+                        }
+                    } else {
+
+                        lambda.Value = XUtil.FormatNode (e.Args, context);
+                    }
                     
                     // storing lambda block and value, such that we can "diff" after execution, 
                     // and only return the nodes added during execution, and the value if it was changed
                     var oldLambdaNode = new List<Node> (lambda.Children);
                     var oldValue = e.Args.Value;
 
-                    if (e.Args.Value != null) {
-
-                        // evaluating node, and stuffing results into arguments
-                        foreach (var idx in XUtil.Iterate<object> (e.Args, context)) {
-
-                            // adding currently iterated results into execution object
-                            var idxNode = idx as Node;
-                            if (idxNode != null) {
-
-                                // appending node into execution object
-                                lambda.Add (idxNode.Clone ());
-                            } else {
-
-                                // appending simple value into execution object with empty name
-                                lambda.Add (string.Empty, idx);
-                            }
-                        }
-                    }
-
                     // executing lambda children, and not evaluating any expression in evaluated node!
                     context.Raise ("eval-mutable", lambda);
 
                     // making sure we return all nodes that was created during execution of event back to caller
                     // in addition to value, but only if it was changed
-                    e.Args.AddRange (lambda.Children.Where (ix => oldLambdaNode.IndexOf (ix) == -1));
+                    e.Args.Clear ().AddRange (lambda.Children.Where (ix => oldLambdaNode.IndexOf (ix) == -1));
                     if (oldValue != lambda.Value)
                         e.Args.Value = lambda.Value;
                     else
