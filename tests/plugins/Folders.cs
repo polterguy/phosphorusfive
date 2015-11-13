@@ -20,10 +20,10 @@ namespace p5.unittests.plugins
             : base ("p5.io", "p5.hyperlisp", "p5.lambda", "p5.types") { }
 
         /// <summary>
-        ///     verifies [create-folder] works correctly
+        ///     Creates a folder
         /// </summary>
         [Test]
-        public void Create ()
+        public void CreateFolder ()
         {
             // deleting folder if it already exists
             if (Directory.Exists (GetBasePath () + "test1")) {
@@ -41,10 +41,10 @@ namespace p5.unittests.plugins
         }
 
         /// <summary>
-        ///     verifies [create-folder] works correctly
+        ///     Creates two folders using an expression
         /// </summary>
         [Test]
-        public void CreateExpression1 ()
+        public void CreateTwoFoldersExpression ()
         {
             // deleting folder if it already exists
             if (Directory.Exists (GetBasePath () + "test1")) {
@@ -70,10 +70,10 @@ namespace p5.unittests.plugins
         }
 
         /// <summary>
-        ///     verifies [create-folder] works correctly
+        ///     Creates two folders using a formatted expression
         /// </summary>
         [Test]
-        public void CreateExpression2 ()
+        public void CreateFolderFormattedExpression ()
         {
             // deleting folder if it already exists
             if (Directory.Exists (GetBasePath () + "test1")) {
@@ -100,10 +100,10 @@ namespace p5.unittests.plugins
         }
 
         /// <summary>
-        ///     verifies [create-folder] works correctly
+        ///     Creates three folders using an expression, where one folder exist from before
         /// </summary>
         [Test]
-        public void CreateExpression3 ()
+        public void CreateThreeFoldersExpressionOneExist ()
         {
             // deleting folder if it already exists
             if (Directory.Exists (GetBasePath () + "test1")) {
@@ -135,10 +135,10 @@ namespace p5.unittests.plugins
         }
 
         /// <summary>
-        ///     verifies [folder-exist] works correctly
+        ///     Checks if an existing folder exist using folder-exist
         /// </summary>
         [Test]
-        public void Exists ()
+        public void FolderExist ()
         {
             // creating folder if it doesn't already exists
             if (!Directory.Exists (GetBasePath () + "test1")) {
@@ -156,10 +156,10 @@ namespace p5.unittests.plugins
         }
 
         /// <summary>
-        ///     verifies [folder-exist] works correctly
+        ///     Checks if two folders exist using an expression
         /// </summary>
         [Test]
-        public void ExistsExpression1 ()
+        public void TwoFolderExistExpression ()
         {
             // creating folder if it doesn't already exists
             if (!Directory.Exists (GetBasePath () + "test1")) {
@@ -183,10 +183,10 @@ namespace p5.unittests.plugins
         }
 
         /// <summary>
-        ///     verifies [folder-exist] works correctly
+        ///     Checks if two folders exist using a formatted expression
         /// </summary>
         [Test]
-        public void ExistsExpression2 ()
+        public void TwoFoldersExistFormattedExpression ()
         {
             // creating folder if it doesn't already exists
             if (!Directory.Exists (GetBasePath () + "test1")) {
@@ -211,10 +211,10 @@ namespace p5.unittests.plugins
         }
 
         /// <summary>
-        ///     verifies [folder-exist] works correctly
+        ///     Checks if three folders exist using an expression, where one does not exist
         /// </summary>
         [Test]
-        public void ExistsExpression3 ()
+        public void ThreeFolderExistExpressionOneFails ()
         {
             // creating folder if it doesn't already exists
             if (!Directory.Exists (GetBasePath () + "test1")) {
@@ -244,10 +244,10 @@ namespace p5.unittests.plugins
         }
 
         /// <summary>
-        ///     verifies [folder-exist] works correctly
+        ///     List files within a folder using a filter
         /// </summary>
         [Test]
-        public void ListFiles ()
+        public void ListFilesStringFilter ()
         {
             // creating folder if it doesn't already exists
             if (!Directory.Exists (GetBasePath () + "test1")) {
@@ -279,10 +279,10 @@ namespace p5.unittests.plugins
         }
 
         /// <summary>
-        ///     verifies [folder-exist] works correctly
+        ///     List files using an expression leading to a filter
         /// </summary>
         [Test]
-        public void ListFilesExpression1 ()
+        public void ListFilesExpressionFilter ()
         {
             // deleting and re-creating folders to make sure they're empty and don't contain "garbage"
             if (Directory.Exists (GetBasePath () + "test1")) {
@@ -318,10 +318,10 @@ namespace p5.unittests.plugins
         }
 
         /// <summary>
-        ///     verifies [folder-exist] works correctly
+        ///     List files using a formatted expression
         /// </summary>
         [Test]
-        public void ListFilesExpression2 ()
+        public void ListFilesFormattedExpression ()
         {
             // deleting and re-creating folders to make sure they're empty and don't contain "garbage"
             if (Directory.Exists (GetBasePath () + "test1")) {
@@ -358,10 +358,10 @@ namespace p5.unittests.plugins
         }
 
         /// <summary>
-        ///     verifies [folder-exist] works correctly
+        ///     List files using a formatted string as filter
         /// </summary>
         [Test]
-        public void ListFilesExpression3 ()
+        public void ListFilesFormattedStringFilter ()
         {
             // deleting and re-creating folders to make sure they're empty and don't contain "garbage"
             if (Directory.Exists (GetBasePath () + "test1")) {
@@ -392,10 +392,10 @@ namespace p5.unittests.plugins
         }
 
         /// <summary>
-        ///     verifies [list-folders] works correctly
+        ///     List folders using a constant string as filter
         /// </summary>
         [Test]
-        public void ListFolders ()
+        public void ListFoldersStringFilter ()
         {
             // deleting and re-creating folders to make sure they're empty and don't contain "garbage"
             if (Directory.Exists (GetBasePath () + "test1")) {
@@ -415,10 +415,10 @@ namespace p5.unittests.plugins
         }
 
         /// <summary>
-        ///     verifies [list-folders] works correctly
+        ///     List folders using an expression as filter
         /// </summary>
         [Test]
-        public void ListFoldersExpression1 ()
+        public void ListFoldersExpressionFilter ()
         {
             // deleting and re-creating folders to make sure they're empty and don't contain "garbage"
             if (Directory.Exists (GetBasePath () + "test1")) {
@@ -444,10 +444,10 @@ namespace p5.unittests.plugins
         }
 
         /// <summary>
-        ///     verifies [list-folders] works correctly
+        ///     List folders using a formatted expression as filter
         /// </summary>
         [Test]
-        public void ListFoldersExpression2 ()
+        public void ListFoldersFormattedExpression ()
         {
             // deleting and re-creating folders to make sure they're empty and don't contain "garbage"
             if (Directory.Exists (GetBasePath () + "test1")) {
@@ -474,10 +474,10 @@ namespace p5.unittests.plugins
         }
 
         /// <summary>
-        ///     verifies [list-folders] works correctly
+        ///     List folders using a formatted string as filter
         /// </summary>
         [Test]
-        public void ListFoldersExpression3 ()
+        public void ListFoldersFormattedStringFilter ()
         {
             // deleting and re-creating folders to make sure they're empty and don't contain "garbage"
             if (Directory.Exists (GetBasePath () + "test1")) {
@@ -504,10 +504,10 @@ namespace p5.unittests.plugins
         }
         
         /// <summary>
-        ///     verifies [list-folders] works correctly
+        ///     List folders using as Active Event result as filter
         /// </summary>
         [Test]
-        public void ListFoldersExpression4 ()
+        public void ListFoldersActiveEventFilter ()
         {
             // deleting and re-creating folders to make sure they're empty and don't contain "garbage"
             if (Directory.Exists (GetBasePath () + "test1")) {
@@ -527,10 +527,10 @@ insert-before:x:/../0
         }
 
         /// <summary>
-        ///     verifies [delete-folder] works as it should
+        ///     Deletes a single folder
         /// </summary>
         [Test]
-        public void RemoveFolder1 ()
+        public void DeleteFolder ()
         {
             // creating directory to remove
             if (!Directory.Exists (GetBasePath () + "test1")) {
@@ -548,20 +548,19 @@ insert-before:x:/../0
         }
 
         /// <summary>
-        ///     verifies [delete-folder] works as it should
+        ///     Deletes a folder with a file inside of it
         /// </summary>
         [Test]
-        public void RemoveFolder2 ()
+        public void DeleteFolderWithFile ()
         {
             // creating directory to remove
-            if (!Directory.Exists (GetBasePath () + "test1")) {
+            if (!Directory.Exists (GetBasePath () + "test1"))
                 Directory.CreateDirectory (GetBasePath () + "test1");
 
-                // creating a file within directory, to verify remove removes recursively
-                var createFile = new Node (string.Empty, "test1/test1.txt")
-                    .Add ("src", "this is a test");
-                Context.Raise ("save-file", createFile);
-            }
+            // creating a file within directory, to verify remove removes recursively
+            var createFile = new Node (string.Empty, "test1/test1.txt")
+                .Add ("src", "this is a test");
+            Context.Raise ("save-file", createFile);
 
             // removing directory using "phosphorus.file"
             var node = new Node (string.Empty, "test1");
@@ -574,10 +573,10 @@ insert-before:x:/../0
         }
 
         /// <summary>
-        ///     verifies [delete-folder] works as it should
+        ///     Deletes two folder using an expression
         /// </summary>
         [Test]
-        public void RemoveFolder3 ()
+        public void DeleteTwoFoldersExpression ()
         {
             // creating directories to remove
             if (!Directory.Exists (GetBasePath () + "test1")) {
@@ -603,10 +602,10 @@ insert-before:x:/../0
         }
 
         /// <summary>
-        ///     verifies [delete-folder] works as it should
+        ///     Deletes two folders using a formatted expression
         /// </summary>
         [Test]
-        public void RemoveFolder42 ()
+        public void DeleteTwoFoldersFormattedExpression ()
         {
             // creating directories to remove
             if (!Directory.Exists (GetBasePath () + "test1")) {
@@ -633,10 +632,10 @@ insert-before:x:/../0
         }
 
         /// <summary>
-        ///     verifies [delete-folder] works as it should
+        ///     Deletes a folder using a formatted string
         /// </summary>
         [Test]
-        public void RemoveExpression3 ()
+        public void DeleteFolderFormattedString ()
         {
             // creating directories to remove
             if (!Directory.Exists (GetBasePath () + "test1")) {

@@ -12,7 +12,7 @@ using p5.exp;
 namespace p5.unittests
 {
     /// <summary>
-    ///     expressions unit tests, tests all sorts of different expressions
+    ///     Expressions unit tests, tests all sorts of different expressions
     ///     and verify they work as expected
     /// </summary>
     [TestFixture]
@@ -581,7 +581,7 @@ _nest:x:/../*/_1?name");
         }
         
         [Test]
-        public void ExpressionMadnessObfuscatedCodeOlympics ()
+        public void ExpressionMadnessObfuscatedCodeOlympicsWinner ()
         {
             var node = ExecuteLambda (@"_result
 set:x:/-?value
@@ -600,7 +600,9 @@ _x:.
 ue
 _:/
 _y:x:/+?value
-:?");
+:?
+insert-before:x:/../0
+  src:x:/../*(!/insert-before)");
             Assert.AreEqual ("success", node [0].Value);
         }
     }

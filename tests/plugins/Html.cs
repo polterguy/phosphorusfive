@@ -10,7 +10,7 @@ using p5.core;
 namespace p5.unittests.plugins
 {
     /// <summary>
-    ///     [p5.html.xxx] unit tests
+    ///     Unit tests for p5.html
     /// </summary>
     [TestFixture]
     public class Html : TestBase
@@ -23,7 +23,7 @@ namespace p5.unittests.plugins
         ///     Converts some HTML to p5.lambda, verifying [p5.html.html2lambda] works as it should.
         /// </summary>
         [Test]
-        public void Html2Lambda01 ()
+        public void Html2Lambda ()
         {
             Node node = ExecuteLambda (@"p5.html.html2lambda:@""<html>
     <head>
@@ -39,7 +39,9 @@ namespace p5.unittests.plugins
         </form>
         <p>success2</p>
     </body>
-</html>""");
+</html>""
+insert-before:x:/../0
+  src:x:/../*");
             Assert.AreEqual (1, node [0].Count);
             Assert.AreEqual ("html", node [0] [0].Name);
             Assert.AreEqual (2, node [0] [0].Count);
@@ -71,7 +73,7 @@ namespace p5.unittests.plugins
         ///     Converts some HTML to p5.lambda and back again, verifying the results are what we started with.
         /// </summary>
         [Test]
-        public void Html2Lambda02 ()
+        public void Html2Lambda2Html ()
         {
             Node node = ExecuteLambda (@"p5.html.html2lambda:@""<html>
     <head>
@@ -88,7 +90,9 @@ namespace p5.unittests.plugins
         <p>success2</p>
     </body>
 </html>""
-p5.html.lambda2html:x:/-/*");
+p5.html.lambda2html:x:/-/*
+insert-before:x:/../0
+  src:x:/../*");
             Assert.AreEqual (@"<html>
     <head>
         <title>foo bar</title>
@@ -111,7 +115,7 @@ p5.html.lambda2html:x:/-/*");
         ///     verifying [p5.html.html2lambda] works as it should.
         /// </summary>
         [Test]
-        public void Html2Lambda03 ()
+        public void Html2LambdaSpecialCharacters ()
         {
             Node node = ExecuteLambda (@"p5.html.html2lambda:@""<html>
     <head>
@@ -127,7 +131,9 @@ p5.html.lambda2html:x:/-/*");
         </form>
         <p>success2</p>
     </body>
-</html>""");
+</html>""
+insert-before:x:/../0
+  src:x:/../*(!/insert-before)");
             Assert.AreEqual (1, node.Count);
             Assert.AreEqual ("html", node [0] [0].Name);
             Assert.AreEqual (2, node [0] [0].Count);
@@ -160,7 +166,7 @@ p5.html.lambda2html:x:/-/*");
         ///     verifying the results are what we started with.
         /// </summary>
         [Test]
-        public void Html2Lambda04 ()
+        public void Html2Lambda2HtmlSpecialCharacters ()
         {
             Node node = ExecuteLambda (@"p5.html.html2lambda:@""<html>
     <head>
@@ -177,7 +183,9 @@ p5.html.lambda2html:x:/-/*");
         <p>success2</p>
     </body>
 </html>""
-p5.html.lambda2html:x:/-/*");
+p5.html.lambda2html:x:/-/*
+insert-before:x:/../0
+  src:x:/../*");
             Assert.AreEqual (@"<html>
     <head>
         <title>foo&lt;&amp;&gt;bar</title>
@@ -200,7 +208,7 @@ p5.html.lambda2html:x:/-/*");
         ///     verifying the results are what we started with.
         /// </summary>
         [Test]
-        public void Html2Lambda05 ()
+        public void Html2Lambda2HtmlSpecialCharactersExpressions ()
         {
             Node node = ExecuteLambda (@"_html:@""<html>
     <head>
@@ -218,7 +226,9 @@ p5.html.lambda2html:x:/-/*");
     </body>
 </html>""
 p5.html.html2lambda:x:/-?value
-p5.html.lambda2html:x:/-/0");
+p5.html.lambda2html:x:/-/0
+insert-before:x:/../0
+  src:x:/../*");
             Assert.AreEqual (@"<html>
     <head>
         <title>foo&lt;&amp;&gt;bar</title>
@@ -237,14 +247,17 @@ p5.html.lambda2html:x:/-/0");
         }
         
         /// <summary>
+        ///     Converts a snipped of HTML to lambda, and back to html again
         /// </summary>
         [Test]
-        public void Html2Lambda06 ()
+        public void HtmlSnipped2Lambda2Html ()
         {
             Node node = ExecuteLambda (@"_html1:@""<head><title>foo1 bar1</title></head>""
 _html2:@""<span>howdy world</span>""
 p5.html.html2lambda:x:/-2|/-?value
-p5.html.lambda2html:x:/-/*");
+p5.html.lambda2html:x:/-/*
+insert-before:x:/../0
+  src:x:/../*");
             Assert.AreEqual (@"<head>
     <title>foo1 bar1</title>
 </head>
@@ -256,18 +269,22 @@ p5.html.lambda2html:x:/-/*");
         {
             Node node = ExecuteLambda (@"_html:this is < than and this is > than
 p5.html.html-encode:x:/-?value
-p5.html.html-decode:x:/-?value");
+p5.html.html-decode:x:/-?value
+insert-before:x:/../0
+  src:x:/../*");
             Assert.AreEqual (node [0].Value, node [2].Value);
             Assert.AreEqual ("this is &lt; than and this is &gt; than", node [1].Value);
         }
         
         [Test]
-        public void HtmlEncodeDecodeMultipleFragments ()
+        public void HtmlEncodeDecodeMultipleFragmentsExpressions ()
         {
             Node node = ExecuteLambda (@"_html:""this is < than and this is > than, ""
 _html:this too is < than and this is > than
 p5.html.html-encode:x:/-2|/-?value
-p5.html.html-decode:x:/-?value");
+p5.html.html-decode:x:/-?value
+insert-before:x:/../0
+  src:x:/../*");
             Assert.AreEqual ("this is < than and this is > than, this too is < than and this is > than", node [3].Value);
         }
     }

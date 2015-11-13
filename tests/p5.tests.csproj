@@ -55,6 +55,11 @@
     <Compile Include="plugins\Database.cs" />
     <Compile Include="plugins\Files.cs" />
     <Compile Include="plugins\Folders.cs" />
+    <Compile Include="plugins\Html.cs" />
+    <Compile Include="plugins\Hyperlisp.cs" />
+    <Compile Include="plugins\Math.cs" />
+    <Compile Include="plugins\Combination.cs" />
+    <Compile Include="Expressions.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

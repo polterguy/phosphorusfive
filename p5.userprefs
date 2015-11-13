@@ -1,9 +1,8 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="tests/lambda/Eval.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="tests/plugins/Folders.cs">
     <Files>
-      <File FileName="tests/lambda/Eval.cs" Line="85" Column="45" />
-      <File FileName="plugins/p5.lambda/Eval.cs" Line="47" Column="1" />
+      <File FileName="tests/plugins/Folders.cs" Line="26" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -11,16 +10,12 @@
           <Node name="core" expanded="True" />
           <Node name="plugins" expanded="True">
             <Node name="extras" expanded="True" />
-            <Node name="p5.lambda" expanded="True">
-              <Node name="keywords" expanded="True" />
-            </Node>
+            <Node name="p5.lambda" selected="True" />
           </Node>
           <Node name="samples" expanded="True" />
           <Node name="tests" expanded="True">
             <Node name="p5.tests" expanded="True">
-              <Node name="lambda" expanded="True">
-                <Node name="Eval.cs" selected="True" />
-              </Node>
+              <Node name="plugins" expanded="True" />
             </Node>
           </Node>
         </State>
@@ -34,13 +29,15 @@
         </State>
       </Pad>
       <Pad Id="MonoDevelop.NUnit.TestPad">
-        <State expanded="True" selected="True">
+        <State expanded="True">
           <Node name="tests" expanded="True">
             <Node name="p5.tests" expanded="True">
               <Node name="p5" expanded="True">
                 <Node name="unittests" expanded="True">
-                  <Node name="lambda" expanded="True">
-                    <Node name="Eval" expanded="True" />
+                  <Node name="plugins" expanded="True">
+                    <Node name="Database" expanded="True" selected="True" />
+                    <Node name="Files" expanded="True" />
+                    <Node name="Folders" expanded="True" />
                   </Node>
                 </Node>
               </Node>
