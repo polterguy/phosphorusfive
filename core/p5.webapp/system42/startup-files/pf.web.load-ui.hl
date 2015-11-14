@@ -1,17 +1,29 @@
 
 /*
- * responsible for loading up the user interface. called by the framework when the UI is needed
- * please notice that the URL of the page is the value of the [p5.page] object in the database 
+ * Responsible for loading up the user interface. Called by the framework when the UI is needed.
+ * Notice that the URL of the page is the value of the [p5.page] object in the database 
  */
 
 set-event:p5.web.load-ui
+
+  // including blueprint.css
   include-stylesheet-file:/media/css/main.css
+
+  // figuring out which page to load according to arguments supplied [_form]
   select-data:x:/*/*/p5.page/"={0}"
     :x:/../*/_form?value
+
+  // adding up all nodes from results of select-data into [execute-lisp-file]
   add:x:/+2/*/_args
     src:x:/./-/*/*
+
+  // Setting value of [execute-lisp-file] to type of page we're loading
+  // If you look in "system42/page-types/" folder, you will see all the
+  // different tyoes of pages that exist in the system
   set:x:/+?value
     src:system42/page-types/{0}.hl
       :x:/././-2/*/*/type?value
   sys42.execute-lisp-file
     _args
+
+

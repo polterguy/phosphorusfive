@@ -25,16 +25,13 @@ namespace p5.file.file
         private static void file_load (ApplicationContext context, ActiveEventArgs e)
         {
             // making sure we clean up and remove all arguments passed in after execution
-            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args, false)) {
+            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args, true)) {
 
                 // retrieving root folder of app
                 var rootFolder = Common.GetRootFolder (context);
 
                 // iterating through each file path given
-                List<string> source = new List<string> (Common.GetSource (e.Args, context));
-                if (source.Count == 0)
-                    e.Args.Value = false;
-                foreach (var idxFilename in source) {
+                foreach (var idxFilename in Common.GetSource (e.Args, context)) {
 
                     // checking to see if file exists
                     if (File.Exists (rootFolder + idxFilename)) {
@@ -49,12 +46,10 @@ namespace p5.file.file
 
                                 // automatically converting to Hyperlisp before returning
                                 e.Args.Add (new Node (idxFilename, null, Utilities.Convert<Node> (fileContent, context).Children));
-                                e.Args.Value = null;
                             } else {
 
                                 // adding file content as string
                                 e.Args.Add (new Node (idxFilename, fileContent));
-                                e.Args.Value = null;
                             }
                         }
                     } else {

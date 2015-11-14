@@ -1,25 +1,23 @@
 
 /*
- * template for showing [content] types of pages from the database'
- * if you pass in ?showgrid=true as HTTP GET parameter, this template will
- * show the blueprint.css grid to help you align your objects correctly
+ * Template for showing [content] types of pages from the database.
  */
 
 // setting the [header] and [content] of our page object from our database
-set:x:/../*/"create-widget"/*/widgets/**/={header}?value
+set:x:/../*/create-widget/*/widgets/**/={header}?value
   src:x:/../*/_args/*/header?value
-set:x:/../*/"create-widget"/*/widgets/**/={content}?value
+set:x:/../*/create-widget/*/widgets/**/={content}?value
   src:x:/../*/_args/*/content?value
 
 /*
- * checking to see if user is logged in, and if so, we remove the login widget from the page, and replace
- * it with a logout widget
+ * Checking to see if user is logged in, and if so, we remove the login 
+ * widget from the page, and replace it with a logout widget.
  */
 sys42.get-user
 if:x:/-/*?count
   more-than:int:0
 
-  // user is logged in with persistent cookie, removing "login widget", and replacing it with "logout widget"
+  // User is logged in with persistent cookie
   set:x:/../**/container/=rhs/*/widgets/*
   _logout-controls
     literal:logout
@@ -33,19 +31,20 @@ if:x:/-/*?count
 
 
 /*
- * creating our menu, from all pages in CMS, and adding into the [container:menu] parts of our create-widget Active Event below,
- * but only the pages the user has access to according to his role
+ * Creating our menu, from all pages in database, and adding into the 
+ * [container:menu] parts of our create-widget Active Event below.
+ * But only the pages the user has access to according to his role
  */
 select-data:x:/*/*/p5.page
 for-each:x:/-/*
 
-  // checking to see if user has access to page
-  _go:bool:true
+  // Checking to see if user has access to page
+  _go:true
   if:x:/./*/__dp/#/*/role?value
     if:x:/..for-each/*/__dp/#/*/role?value
       not-equals:x:/../*/sys42.get-user/*/role?value
       set:x:/..for-each/*/_go?value
-        src:bool:false
+        src:false
 
   // menu item "template"
   _menu-item
@@ -57,8 +56,7 @@ for-each:x:/-/*
       href
 
   // adding menu item, if we're supposed to
-  if:x:/./*/_go?value
-    equals:bool:true
+  if:x:/./*/_go?value.bool
     set:x:/./-/*/literal/*/innerValue?value
       src:x:/..for-each/*/__dp/#/*/name?value
     set:x:/./-/*/literal/*/href?value

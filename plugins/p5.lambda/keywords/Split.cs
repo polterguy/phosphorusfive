@@ -22,10 +22,6 @@ namespace p5.lambda.keywords
         [ActiveEvent (Name = "split")]
         private static void lambda_split (ApplicationContext context, ActiveEventArgs e)
         {
-            Node sepNode = e.Args ["="];
-            if (sepNode == null)
-                throw new LambdaException ("No [=] given to [split]", e.Args, context);
-
             // making sure we clean up and remove all arguments passed in after execution
             using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args, true)) {
 
@@ -33,12 +29,15 @@ namespace p5.lambda.keywords
                 if (whatToSplit == null)
                     return; // nothing to split
 
+                Node sepNode = e.Args ["="];
+                string separator = sepNode == null ? null : XUtil.Single<string> (sepNode, context);
+
                 Node valueSepNode = e.Args ["=="];
-                Node trimNode = e.Args ["trim"];
-                string separator = XUtil.Single<string> (sepNode, context);
                 string valueSep = valueSepNode == null ? null : XUtil.Single<string> (valueSepNode, context);
+
+                Node trimNode = e.Args ["trim"];
                 bool trim = trimNode == null ? false : trimNode.GetExValue (context, false);
-                if (separator == "" && !trim && valueSep == null) {
+                if (string.IsNullOrEmpty (separator) && !trim && valueSep == null) {
 
                     // special case, splitting into each character in string
                     foreach (var idxCh in whatToSplit) {

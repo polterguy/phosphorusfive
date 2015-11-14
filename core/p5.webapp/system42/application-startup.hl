@@ -1,28 +1,43 @@
 
 /*
  * Creates the Active Event that allows you to execute Hyperlisp p5.lambda files. the Hyperlisp
- * file you wish to execute is given as value of [sys42.execute-lisp-file], and all nodes benath
- * [sys42.execute-lisp-file] will be passed into your p5.lambda file, underneath [_args], and
- * accessible as parameters from inside your file. File to exeute can be given either as an
- * expression, or a constant. Multiple files can be executed at the same time, by providing an
- * expression that leads to multiple results.
+ * file(s) you wish to execute is given as value of [sys42.execute-lisp-file], and all nodes benath
+ * [sys42.execute-lisp-file] when invoked, will be passed into your p5.lambda file execution. File 
+ * to exeute can be given either as an expression, or a constant. Multiple files can be executed at 
+ * the same time, by providing an expression that leads to multiple results.
  */
 set-event:sys42.execute-lisp-file
+
+  // loading up all files given as arguments
   load-file:x:/../*/_arg?value
+
+  // Adding everything as arguments to file evaluation that we're given ourselves as arguments
   add:x:/+
-    src:x:/../*/_args
+    src:x:/../*(!/load-file!/add!/eval!/_arg)
+
+  // Executing results of [load-file], now possibly with arguments inside of eval
   eval:x:/-2/*
 
 
 /*
- * Executes all files within given directory recursively, assuming they're Hyperlisp p5.lambda files. 
- * The directory you wish to execute the files within, is given through the value of the 
- * [sys42.execute-lisp-folder] node, which might be either an expression or a constant.
+ * Executes all files within given directory recursively, assuming they're Hyperlisp p5.lambda 
+ * files. The directory you wish to execute the files within, is given through the value of the 
+ * [sys42.execute-lisp-folder] node, which might be either an expression or a constant. You can
+ * pass in multiple folders by using expressions as an argument.
  */
 set-event:sys42.execute-lisp-folder
+
+  // listing all files in directories we're given
   list-files:x:/../*/_arg?value
+    filter:hl
+
+  // executing all files listed from that folder
   sys42.execute-lisp-file:x:/-/*?value
+
+  // listing all folders in all folders this Active Event is given
   list-folders:x:/../*/_arg?value
+
+  // if above [list-folder] could find folders, we recursively invoke self
   if:x:/-/*
     sys42.execute-lisp-folder:x:/./-/*?value
 

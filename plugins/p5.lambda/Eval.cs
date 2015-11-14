@@ -64,7 +64,7 @@ namespace p5.lambda
         [ActiveEvent (Name = "eval-mutable")]
         private static void eval_mutable (ApplicationContext context, ActiveEventArgs e)
         {
-            Executor (ExecuteBlockMutable, context, e.Args, true);
+            Executor (ExecuteBlockMutable, context, e.Args, e.Args.Name != "eval-mutable");
         }
 
         /*

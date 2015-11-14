@@ -1,18 +1,18 @@
 
 /*
- * checks to see if the user is logged in, and returns user as [_value], which must be passed in
- * by reference
+ * Checks to see if the user is logged in, and returns user object if user is found
+ * in cookies
  */
 
 set-event:sys42.get-user
 
   // read "system42-user" cookie, if existing
   get-cookie:system42-user
-  if:x:/-?value
+  if:x:/-/0
 
     // cookie existed, now checking to see if credentials (username and hashed password) is correct, 
     // but first converting cookie to Node
-    lisp2lambda:x:/./-?value
+    lisp2lambda:x:/./-/0?value
     select-data:x:/*/*/p5.user/*/username/"={0}"/.
       :x:/./-/*/username?value
     p5.crypto.hash-string:x:/-/*/*/password?value
@@ -20,6 +20,7 @@ set-event:sys42.get-user
       equals:x:/./-3/*/password?value
 
       // hashed password value from cookie matches the hashed password from database
-      add:x:/..sys42.get-user
+      // hence we are successful, and therefor we return user to caller
+      add:x:/..
         src:x:/./././*/select-data/*/*
 

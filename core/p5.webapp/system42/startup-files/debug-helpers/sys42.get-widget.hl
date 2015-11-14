@@ -1,0 +1,67 @@
+
+/*
+ * Responsible for creating the Active Event that returns the code necessary to create
+ * a specific widget existing on page.
+ */
+
+set-event:sys42.get-widget
+
+  // Figuring out type of widget
+  list-widgets:x:/../*/_arg?value
+
+  // Looping through all widgets requested by caller
+  while:x:/-/0
+
+    // Adding widget to root active event node as "return value"
+    add:x:/..
+      src:x:/../*/list-widgets/0
+
+    // Checking if this was an automatically generated ID
+    // and if it was, we remove the automatically assigned ID
+    split:x:/../*/list-widgets/0?value
+    if:x:/-/*(!/\0!/\1!/\2!/\3!/\4!/\5!/\6!/\7!/\8!/\9!/a!/b!/c!/d!/e!/f!/x)?name
+      not
+      and:x:/./-/0?name
+        equals:x
+      and:x:/./-/*?count
+        equals:int:8
+      set:x:/../0/-?value
+
+    // Fetching properties
+    list-widget-properties:x:/../*/list-widgets/0?value
+    add:x:/../0/-
+      src:x:/./-/*/*
+
+
+    // Widget events
+    list-widget-events:x:/../*/list-widgets/0?value
+    add:x:/+
+      src:x:/./-/*/*
+    get-widget-event:x:/-2/*?name
+
+    // Removing all root node children of event nodes who's names are "_event"
+    set:x:/-/**/~on/*/_event
+    add:x:/../0/-
+      src:x:/./-2/*/*
+
+
+    // Looping through all children, recursively invoking self
+    get-children-widgets:x:/../*/list-widgets/0?value
+    if:x:/-/*/*
+      add:x:/../0/-
+        src
+          widgets
+    for-each:x:/-2/*/*?value
+      set:x:/+?value
+        src:x:/..for-each/*/__dp?value
+      sys42.get-widget
+      add:x:/+/*/src
+        src:x:/..for-each/*/sys42.get-widget/*
+      add:x:/../0/-/*/widgets
+        src
+
+    // Removing zeroth item of list-widget, to decrement while loop condition
+    set:x:/../*/list-widgets/0
+
+
+

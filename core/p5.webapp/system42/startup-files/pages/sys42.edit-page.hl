@@ -1,30 +1,47 @@
 
 /*
- * creates the Active Events necessary to edit a page
+ * Creates the Active Events necessary to edit a page
  */
 
 
-// event for editing a [p5.page]
+// event for editing a page object
 set-event:sys42.edit-page
+
+  // clearing any previous editors out from DOM
+  clear-widget:editor-main-surface
+  clear-widget:editor-toolbar
+
   get-widget-property:select-page
     value
-  if:x:/./*/get-widget-property/+/<?value
+  if:x:/<?value
+
+    // user did not select any page, but in fact "Choose Page ..." item
     equals:_default
-    clear-widget:editor-main-surface
-    clear-widget:editor-toolbar
     set-session:page-editor.current-page
+
   else
+
+    // Retrieving page from database
     select-data:x:/*/*/p5.page/"={0}"
-      :x:/..sys42.edit-page/*/get-widget-property/+/<?value
+      :x:/../*/get-widget-property/+/<?value
+
+    // Passing in arguments to the editor
     set:x:/+2/*/_args/*/_page?value
       src:x:/./-/*?value
+
+    // Making sure we start the correct editor
     set:x:/+?value
       src:system42/admin/page-editor/editor-types/{0}-editor.hl
         :x:/././-2/*/*/type?value
     sys42.execute-lisp-file
       _args
         _page
+        
+    // Storing which page we're currently editing in session such
+    // that which page we're editing will be remembered
     set:x:/+/*/src?value
       src:x:/././*/select-data/*?value
     set-session:page-editor.current-page
       src
+
+

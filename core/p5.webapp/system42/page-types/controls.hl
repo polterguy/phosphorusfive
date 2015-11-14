@@ -1,24 +1,23 @@
 
 /*
- * responsible for loading up page of type [application]. an [application] type of [p5.page] object,
- * is normally a list of controls, declared as a [controls] collection, allowing for declaratively
+ * Responsible for loading up page of type [controls]. A [controls] type of page object,
+ * is normally a list of controls, declared as a [controls] collection, allowing to declaratively
  * load up a widget, from a list of controls passed in as [_args][controls]
  */
 
 
-// checking to see if user has access to object first
-_go:bool:true
+// Checking to see if user has access to object first
+_go:true
 if:x:/../*/_args/*/role
   sys42.get-user
   if:x:/-/*/role?value
     not-equals:x:/../*/_args/*/role?value
     set:x:/../*/_go?value
-      src:bool:false
+      src:false
 
-// adding the controls from page object into create-widget Active Event [controls] collection
+// Adding the controls from page object into create-widget Active Event [controls] collection
 // but only if user has access to object, or object has no access restrictions
-if:x:/../*/_go?value
-  equals:bool:true
+if:x:/../*/_go?value.bool
   add:x:/+/*/widgets
     src:x:/../*/_args/*/controls?value
 

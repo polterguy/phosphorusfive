@@ -51,3 +51,8 @@
 * sys42 - "New wizard page ..." feature, for creating a p5.page through a wizard.
 
 * cryptography support for encrypting and decrypting "anything"
+
+* verify all Active Events handles arguments the same way (session, cookies, etc)
+
+* make sure widget events works the same way as dynamically created global events in regards to arguments passed in and so on
+

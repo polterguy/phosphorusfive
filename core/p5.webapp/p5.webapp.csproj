@@ -163,12 +163,14 @@
       <Project>{378663D4-1FC1-4109-8896-F72440C6C269}</Project>
       <Name>p5.net</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\plugins\p5.data\p5.data.csproj">
+      <Project>{CA83A3ED-BD5D-4557-AA1B-A7C04ABD4D4F}</Project>
+      <Name>p5.data</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="system42\application-startup.hl" />
     <None Include="system42\startup-files\pf.web.load-ui.hl" />
-    <None Include="system42\startup-files\debug-helpers\sys42.show-lisp.hl" />
-    <None Include="system42\startup-files\debug-helpers\sys42.show-widgets.hl" />
     <None Include="system42\startup-files\pages\create-default-pages.hl" />
     <None Include="system42\startup-files\pages\sys42.create-page.hl" />
     <None Include="system42\startup-files\pages\sys42.edit-page.hl" />
@@ -188,5 +190,7 @@
     <None Include="system42\admin\page-editor\editor-types\controls-editor.hl" />
     <None Include="system42\admin\page-editor\editor-types\html-editor.hl" />
     <None Include="system42\admin\page-editor\editor-types\lambda-editor.hl" />
+    <None Include="system42\startup-files\debug-helpers\sys42.show-code.hl" />
+    <None Include="system42\startup-files\debug-helpers\sys42.get-widget.hl" />
   </ItemGroup>
 </Project>

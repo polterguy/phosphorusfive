@@ -1,24 +1,22 @@
 
 /*
- * responsible for loading up page of type [html]. basically just passes in the given properties
+ * Responsible for loading up page of type [html]. Basically just passes in the given properties
  * from the given [_args] node into a template, defined as [_args][template], and executes the [template],
- * as any other p5.lambda Hyperlisp file
+ * as any other p5.lambda Hyperlisp file.
  */
 
-
-// checking to see if user has access to object first
-_go:bool:true
+// Checking to see if user has access to object first
+_go:true
 if:x:/../*/_args/*/role
   sys42.get-user
   if:x:/-/*/role?value
     not-equals:x:/../*/_args/*/role?value
     set:x:/../*/_go?value
-      src:bool:false
+      src:false
 
 // adding the controls from page object into create-widget Active Event [controls} collection
 // but only if user has access to object, or object has no access restrictions
-if:x:/../*/_go?value
-  equals:bool:true
+if:x:/../*/_go?value.bool
 
   // passing in the [_args] given, and setting the correct value of our [template] as the file to execute
   set:x:/+2?value
@@ -31,4 +29,5 @@ if:x:/../*/_go?value
     _args
 else
   sys42.execute-lisp-file:system42/page-types/special-page/p5.no-access.hl
+
 

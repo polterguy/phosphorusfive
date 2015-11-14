@@ -12,16 +12,11 @@ using p5.exp.exceptions;
 
 /// <summary>
 ///     Contains helper classes for p5.lambda conditional active events.
-/// 
-///     Contains common helper classes for p5.lambda conditional statements, such as [if] and [while].
 /// </summary>
 namespace p5.lambda.helpers
 {
     /// <summary>
     ///     Class wrapping commonalities between conditional statements.
-    /// 
-    ///     This class is used in for instance [while], [if] and [else-if], and wraps the conditions used to
-    ///     figure out if statement yields true or not.
     /// </summary>
     public class Conditions
     {

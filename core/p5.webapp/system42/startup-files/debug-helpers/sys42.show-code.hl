@@ -1,18 +1,19 @@
 
 /*
- * responsible for creating the Active Event that shows a dialogue containing either the
- * current root node, or the given node's expression as a "debug window"
+ * Responsible for creating the Active Event that allows the user to view a piece of
+ * lambda code in a "debug window" during execution. Pass in an expression leading to
+ * whatever piece of code you'd like to study.
  */
 
-set-event:sys42.show-lisp
+set-event:sys42.show-code
 
+  // Checking if user supplied an expression, and if not, showing error message
   if:x:/../*/_arg
     not
 
     // informing used he has to submit a lambda expression or add nodes himself
     set:x:/../**/literal/=code/*/innerValue?value
-      src:@"No input given to {0}. Either supply an expression as value of event invocation, or explicitly 
-add nodes to invocation as [_arg] children nodes."
+      src:No input given to {0}. Supply an expression as value of event invocation
         :x:/..?name
   else
 
@@ -23,25 +24,31 @@ add nodes to invocation as [_arg] children nodes."
     p5.html.html-encode:x:/-?value
 
     // setting the literal content to the nodes converted to Hyperlisp (or default code)
-    set:x:/../**/literal/=code/*/innerValue?value
+    set:x:/../**/literal/*/element/=pre/./*/innerValue?value
       src:x:/./-?value
-
-    // making sure close button has focus
-    include-javascript:"window.p5.$('close').el.focus();"
 
   // creating a widget showing the Hyperlisp code created from the given p5.lambda tree
   create-widget
-    class:info
-    style:"position:absolute;top:0;left:0;z-index:1000;"
+    class:info span-24
+    position:0
     widgets
-      literal:code
+      literal
         element:pre
         class:span-24
         innerValue
-      literal:close
+      literal
+        oninitialload
+
+          // making sure close button has focus
+          include-javascript:"window.p5.$('{0}').el.focus();"
+            :x:/../*/_event?value
         element:button
         class:span-4 right last
         innerValue:close
         onclick
+
+          // removing entire debug window
           get-parent-widget:x:/../*/_event?value
           delete-widget:x:/-/*?value
+
+

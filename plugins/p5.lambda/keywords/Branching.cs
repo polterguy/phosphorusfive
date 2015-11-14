@@ -96,6 +96,8 @@ namespace p5.lambda.keywords
                     var val = curIdx.Get<bool> (context);
                     if (val)
                         return true;
+                    if (curIdx.Name == "if")
+                        return false;
                 } else {
 
                     // no previous condition has evaluated to true

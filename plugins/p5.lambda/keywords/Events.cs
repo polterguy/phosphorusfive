@@ -248,7 +248,6 @@ namespace p5.lambda.events
                     // storing lambda block and value, such that we can "diff" after execution, 
                     // and only return the nodes added during execution, and the value if it was changed
                     var oldLambdaNode = new List<Node> (exeLambda.Children);
-                    var oldValue = e.Args.Value;
                     e.Args.Value = null; // to make sure we don't return what we came in with!
 
                     // executing lambda children, and not evaluating any expression in evaluated node!

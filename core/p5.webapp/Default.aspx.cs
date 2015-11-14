@@ -947,7 +947,7 @@ namespace p5.webapp
             bool shouldAdd = filter.Count == 0;
             if (!shouldAdd) {
                 foreach (var idxFilter in filter) {
-                    if (current.ID.IndexOf (idxFilter) != -1 || current.GetType ().FullName.IndexOf (idxFilter) != -1) {
+                    if (current.ID == idxFilter) {
                         shouldAdd = true;
                         break;
                     }

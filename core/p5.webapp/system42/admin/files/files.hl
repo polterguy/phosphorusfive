@@ -75,7 +75,7 @@ create-widget:main-folders
       lambda:x:/./*/_x
         _objects
         _class:folder
-      sys42.show-lisp
+      sys42.show-code
 
       // creating widget containing all folders and files
       create-widget:all-files-and-folders

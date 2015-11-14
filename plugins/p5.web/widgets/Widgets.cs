@@ -16,8 +16,6 @@ namespace p5.web.ui.widgets
 {
     /// <summary>
     ///     Class for creating web widgets.
-    /// 
-    ///     Class wrapping the Active Events necessary to create Ajax Web Widgets.
     /// </summary>
     public static class Widgets
     {
@@ -72,7 +70,7 @@ namespace p5.web.ui.widgets
             if (onInitialLoad != null) {
                 handler = delegate (object sender, EventArgs e) {
                     onInitialLoad.Insert (0, new Node ("_event", ((Control)sender).ID));
-                    context.Raise ("lambda", onInitialLoad);
+                    context.Raise ("eval", onInitialLoad);
                 };
             }
 

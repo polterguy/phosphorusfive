@@ -1,12 +1,15 @@
 
 /*
- * creates the "edit page" page, which allows for editing pages in the database
+ * Creates the "Page editor" page, which allows for editing pages in the database
  */
 
 
-// populating the "select page" drop down list, with all [p5.page] objects from the database, making sure we select the right one,
-// if we should select a specific page
+// Checking if user has previously chosen a page to edit
 get-session:page-editor.current-page
+
+
+// Populating the "select page" drop down list, with all [p5.page] objects from the database, 
+// making sure we select the right one, if we should select a specific page.
 select-data:x:/*/*/p5.page
 for-each:x:/-/*
   _option
@@ -20,7 +23,9 @@ for-each:x:/-/*
     src:{0} - [{1}]
       :x:/..for-each/*/__dp/#/*/name?value
       :x:/..for-each/*/__dp/#/*/type?value
-  if:x:/../*/get-session?value
+      
+  // Checking if this is the currently selected page
+  if:x:/../*/get-session/0?value
     equals:x:/..for-each/*/__dp/#?value
     add:x:/..for-each/*/_option/0
       src
@@ -29,11 +34,24 @@ for-each:x:/-/*
     src:x:/..for-each/*/_option/0
 
 
-// since CKEditor requires the BASEPATH variable to be set before the JavaScript is loaded,
+// Since CKEditor requires the BASEPATH variable to be set before the JavaScript is loaded,
 // and phosphorus.ajax loads JavaScript files before it executes JavaScript, we need to set
 // the BASEPATH variable for CKEditor HERE, to make sure it is set before we load the CKEditor 
 // JavaScript file
 include-javascript:"window.CKEDITOR_BASEPATH='/system42/ckeditor/';"
+
+
+// And just to be sure, we also load up CodeMirror javascript and CSS files here ...
+// Besides switching between pages when editing goes WAAAAY faster when we do it this way ...
+include-javascript-file:system42/codemirror/lib/codemirror.js
+include-javascript-file:system42/codemirror/hyperlisp-mode.js
+include-javascript-file:system42/codemirror/addon/selection/active-line.js
+include-javascript-file:system42/codemirror/addon/display/placeholder.js
+include-javascript-file:system42/codemirror/addon/display/fullscreen.js
+
+include-stylesheet-file:system42/codemirror/lib/codemirror.css
+include-stylesheet-file:system42/codemirror/theme/blackboard.css
+include-stylesheet-file:system42/codemirror/addon/display/fullscreen.css
 
 
 // creating the actual "edit page" widget
@@ -41,7 +59,7 @@ create-widget:editor
   class:span-24
   oninitialload
     get-session:page-editor.current-page
-    if:x:/-?value
+    if:x:/-/0?value
       sys42.edit-page
   widgets
     literal:header
@@ -49,6 +67,8 @@ create-widget:editor
       style:"margin-top:18px;"
       element:h1
       innerValue:page editor
+
+    // The "new page ..." drop down list
     container:new-page
       element:select
       class:span-3 prepend-top
@@ -71,21 +91,31 @@ create-widget:editor
           element:option
           value:lambda
           innerValue:lambda
+
+    // The select existing page to edit drop down
     container:select-page
       element:select
       class:span-4 prepend-top
       onchange
+
+        // Figuring out which page user wants to edit
         get-widget-property:select-page
           value
-        if:x:/../*/get-widget-property/+/<?value
+        if:x:/<?value
           not-equals:_default
+
+          // User did choose an actual page
           set:x:/+/*/src?value
             src:x:/../*/get-widget-property/+/<?value
           set-session:page-editor.current-page
             src
         else
+
+          // User did choose the "Choose page ..." item
           set-session:page-editor.current-page
-        include-javascript:"location.reload();"
+
+        // Editing page
+        sys42.edit-page
       widgets
         literal
           element:option

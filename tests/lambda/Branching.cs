@@ -244,5 +244,23 @@ if:x:/-2?value
       _foo1:bar1");
             Assert.AreEqual (0, result.Count);
         }
+        
+        /// <summary>
+        ///     Verifies [if] works when there are two if's following each other, the first evaluates to
+        ///     true, and the second evaluates to false, where the second if has an else statement.
+        /// </summary>
+        [Test]
+        public void IfTwoIfsFollowedByElse ()
+        {
+            var result = ExecuteLambda (@"if:bool:true
+if:bool:false
+else
+  add:x:/..
+    src
+      _foo1:bar1");
+            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual ("_foo1", result [0].Name);
+            Assert.AreEqual ("bar1", result [0].Value);
+        }
     }
 }

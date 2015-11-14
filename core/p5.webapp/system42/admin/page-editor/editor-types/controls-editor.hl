@@ -4,20 +4,6 @@
  */
 
 
-// making sure necessary JavaScript and Stylesheet files are included
-include-javascript-file:system42/codemirror/lib/codemirror.js
-include-javascript-file:system42/codemirror/hyperlisp-mode.js
-include-javascript-file:system42/codemirror/addon/selection/active-line.js
-include-javascript-file:system42/codemirror/addon/display/placeholder.js
-include-javascript-file:system42/codemirror/addon/display/rulers.js
-include-javascript-file:system42/codemirror/addon/display/fullscreen.js
-
-
-// making sure necessary Stylesheet files are included
-include-stylesheet-file:system42/codemirror/lib/codemirror.css
-include-stylesheet-file:system42/codemirror/theme/blackboard.css
-include-stylesheet-file:system42/codemirror/addon/display/fullscreen.css
-
 // retrieving the [p5.page] controls, and other properties from database
 select-data:x:/*/*/p5.page/"={0}"
   :x:/../*/_args/*/_page?value

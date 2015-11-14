@@ -19,7 +19,7 @@ if:x:/-?value
       template:system42/templates/main.hl
       header:Welcome to System42
       content:@"<p>System42 is an example minimalistic content management system, 
-built on top of <a href=""github.com/polterguy/phosphorus-five"">phosphorus.five</a>. Its purpose is to be an example
+built on top of <a href=""http://github.com/polterguy/phosphorus-five"">phosphorus.five</a>. Its purpose is to be an example
 CMS, while at the same time giving you some useful tools to get started with Phosphorus Five.</p>
 
 <p>Through p5.lambda, you can orchestrate your web application together, using a high-level abstraction language, that doesn't
@@ -166,7 +166,7 @@ sys42.execute-lisp-file:system42/admin/page-editor/page-editor.hl
 
     p5.page:/executor
       type:lambda
-      name:Lambda executor
+      name:P5 Lambda Evaluator
       role:admin
       lambda:@"
 

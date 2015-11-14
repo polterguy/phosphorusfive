@@ -1,6 +1,6 @@
 
 /*
- * shows the "no access" page
+ * Shows the "no access" page
  */
 
 create-widget
@@ -12,4 +12,4 @@ create-widget
       innerValue:no access!
     literal:content
       class:span-18 prepent-6 last prepend-top
-      innerValue:"you don't have access to this page"
+      innerValue:"You don't have access to this page"

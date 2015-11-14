@@ -1,39 +1,39 @@
 
 /*
- * allows the user to execute p5.lambda given through a textarea widget,
- * seeing the results in another textarea result widget, relies upon CodeMirror
+ * Allows the user to execute p5.lambda given through a syntax highlighted textarea widget,
+ * seeing the results in another textarea result widget, relies upon CodeMirror.
  */
 
 
-// making sure necessary JavaScript files are included
+// Making sure necessary JavaScript files are included
 include-javascript-file:system42/codemirror/lib/codemirror.js
 include-javascript-file:system42/codemirror/addon/selection/active-line.js
 include-javascript-file:system42/codemirror/addon/display/placeholder.js
-include-javascript-file:system42/codemirror/addon/display/rulers.js
 include-javascript-file:system42/codemirror/addon/display/fullscreen.js
 include-javascript-file:system42/codemirror/hyperlisp-mode.js
 
 
-// making sure necessary Stylesheet files are included
+// Making sure necessary Stylesheet files are included
 include-stylesheet-file:system42/codemirror/lib/codemirror.css
 include-stylesheet-file:system42/codemirror/theme/blackboard.css
 include-stylesheet-file:system42/codemirror/addon/display/fullscreen.css
 
 
-// then checking to see if we've got some code stored in session, and if so, we stuff it into our editor
+// Then checking to see if we've got some code stored in session, 
+// and if so, we stuff it into our editor.
 get-session:executor.current-code
-if:x:/-?value
+if:x:/-/0?value
   set:x:/../**/literal/=input/*/innerValue?value
-    src:x:/../*/get-session/[0,1]?value
+    src:x:/../*/get-session/[0,1]/0?value
 
-// creating actual form to show the executor
+// Creating actual form to show the executor
 create-widget:executor
   class:span-24 prepend-top
   widgets
     literal:header
       element:h1
       class:span-23
-      innerValue:p5.lambda executor
+      innerValue:P5 Lambda Evaluator
     literal:back
       class:span-1 last
       element:a
@@ -41,7 +41,7 @@ create-widget:executor
       innerValue:back
 
     /*
-     * input textarea element, transformed into a CodeMirror widget later
+     * Input textarea element, transformed into a CodeMirror widget later
      */
     container:input-wrp
       class:span-24
@@ -52,7 +52,7 @@ create-widget:executor
           placeholder:type Hyperlisp code here ...
 
     /*
-     * "execute" widget, executes input, and puts the resulting code into output
+     * Evaluate widget, executes input, and puts the resulting code into output
      */
     container:exe-wrp
       class:span-4 prepend-20
@@ -61,47 +61,49 @@ create-widget:executor
           class:span-4 last
           element:button
           title:shortcut - F5
-          innerValue:execute
+          innerValue:Evaluate
 
           /*
-           * "trickery" to make sure we can handle our event in JavaScript
+           * Trickery to make sure we can handle our event in JavaScript
            * to retrieve custom JSON return values from server in JavaScript
            * the actual event handler is "onclick_", but this event is hidden,
            * and won't be rendered to the browser since it ends with "_".
            * the DOM onclick event handler though, invokes a JavaScript function,
            * which actually invokes the actual server-side event, which again returns
            * the executed code as a piece of string, named "code", which the JavaScript
-           * again puts into the "output" CodeMirror widget
+           * again puts into the "output" CodeMirror widget.
            */
           onclick-script:"window._execute_lambda(event);"
           onclick_
 
-            // first retrieving text from input textarea and converting to nodes
+            // First retrieving text from input textarea and converting to nodes
             get-widget-property:input
               innerValue
             lisp2lambda:x:/<?value
 
-            // then storing current code in session for simplicity
+            // Then storing current code in session such that code editor remembers content
             set:x:/../*/set-session/*/src?value
               src:x:/../*/get-widget-property/+/<?value
             set-session:executor.current-code
               src
 
-            // then executing p5.lambda nodes, in such a way that our converted hyperlisp becomes the "root node"
+            // Then executing p5.lambda nodes, in such a way that our converted hyperlisp becomes the "root node",
             // while still reachable after execution is done!
-            set:x:/../*/_exe/#/*
-            add:x:/../*/_exe/#
-              src:x:/../*/"lisp2lambda"/*
+            set:x:/+2/#/*
+            add:x:/+/#
+              src:x:/../*/lisp2lambda/*
             _exe:node:""
-            eval:x:/../*/_exe/#
 
-            // then converting p5.lambda result nodes to text, and returning back to client as JSON
-            lambda2lisp:x:/../*/_exe/#/*
+            // Notice, [eval-mutable], since we want to retrieve code AFTER execution!
+            eval-mutable:x:/-/#
+
+            // Then converting p5.lambda result nodes to text, and returning back to client as JSON
+            lambda2lisp:x:/-2/#/*
             return-value:code
-              :x:/../*/lambda2lisp?value
+              :x:/./-?value
 
     /*
-     * output textarea element, transformed into a CodeMirror widget later
+     * Output textarea element, transformed into a CodeMirror widget later
      */
     container:output-wrp
       class:span-24 prepend-top
@@ -109,6 +111,8 @@ create-widget:executor
         literal:output
           element:textarea
           placeholder:after execution, resulting Hyperlisp code will end up here ...
+
+    // The clear button for clearing the output editor surface
     container:clear-wrp
       class:span-4 prepend-20 last
       widgets
@@ -176,9 +180,21 @@ window._outputCode = CodeMirror.fromTextArea(document.getElementById('output'), 
   lineNumbers:true,
   styleActiveLine:true,
   path:'system42/codemirror/',
-  readOnly:true
+  readOnly:true,
+  extraKeys: {
+    F11: function(cm) {
+      cm.setOption('fullScreen', !cm.getOption('fullScreen'));
+    },
+    Esc: function(cm) {
+      if (cm.getOption('fullScreen')) cm.setOption('fullScreen', false);
+    }
+  }
 });
 window._outputCode.on('change',function(cMirror) {
   p5.$('output').el.value = cMirror.getValue();
 });
 "
+
+
+
+
