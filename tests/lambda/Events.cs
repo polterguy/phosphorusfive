@@ -272,7 +272,7 @@ insert-before:x:/../0
         {
             var result = ExecuteLambda (@"set-event:events.test13
   add:x:/..
-    src:x:/..?value
+    src:x:/../*/_arg?value
 insert-before:x:/../0
   events.test13:success");
             Assert.AreEqual (1, result.Count);
@@ -291,7 +291,7 @@ insert-before:x:/../0
   add:x:/..
     src:x:/..?value
   add:x:/..
-    src:x:/../*/_arg
+    src:x:/../*/_arg?value
 insert-before:x:/../0
   events.test13_2:succ{0}
     :ess");
@@ -310,7 +310,7 @@ insert-before:x:/../0
         {
             var result = ExecuteLambda (@"set-event:events.test14
   insert-before:x:/../0
-    src:x:/../*/_x/*
+    src:x:/../*/_arg/*/_x/*
 _x
   _foo1:bar1
   _foo2:bar2
@@ -334,7 +334,7 @@ insert-before:x:/../0
         {
             var result = ExecuteLambda (@"set-event:events.test14_3
   insert-before:x:/../0
-    src:x:/..?value
+    src:x:/../*/_arg?value
   set:x:/..?value
 _x:_foo1
 insert-before:x:/../0
@@ -354,7 +354,7 @@ insert-before:x:/../0
         {
             var result = ExecuteLambda (@"set-event:events.test14_2
   insert-before:x:/../0
-    src:x:/../*/_x/*
+    src:x:/../*/_arg/*/_x/*
 _x
   _foo1:bar1
   _foo2:bar2
@@ -379,7 +379,7 @@ insert-before:x:/../0
         {
             var result = ExecuteLambda (@"set-event:events.test15
   insert-before:x:/../0
-    src:x:/../*/_x/*
+    src:x:/../*/_arg/*/_x/*
 _x
   _foo1:bar1
   _foo2:bar2

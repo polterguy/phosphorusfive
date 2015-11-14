@@ -69,7 +69,7 @@ namespace p5
                 context.Raise ("load-file", loadFileNode);
 
                 // raising file as p5.lambda object
-                context.Raise ("eval", loadFileNode);
+                context.Raise ("eval", loadFileNode [0]);
             }
 
             /*

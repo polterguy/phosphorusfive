@@ -5,8 +5,8 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace p5.core
 {
@@ -1007,7 +1007,7 @@ namespace p5.core
         /// <param name="nodes">nodes to add</param>
         public Node AddRange (IEnumerable<Node> nodes)
         {
-            foreach (var idxNode in new List<Node> (nodes)) {
+            foreach (var idxNode in nodes.ToList ()) {
                 Add (idxNode);
             }
             return this;

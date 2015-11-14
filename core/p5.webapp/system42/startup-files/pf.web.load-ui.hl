@@ -7,14 +7,11 @@
 set-event:p5.web.load-ui
   include-stylesheet-file:/media/css/main.css
   select-data:x:/*/*/p5.page/"={0}"
-    :x:/././*/_form?value
-  add:x:/+3/*/_args
-    src:x:/./-/*/*
+    :x:/../*/_form?value
   add:x:/+2/*/_args
-    src:x:/././*/_args/*
-  set:x:/+1?value
+    src:x:/./-/*/*
+  set:x:/+?value
     src:system42/page-types/{0}.hl
-      :x:/././-3/*/*/type?value
+      :x:/././-2/*/*/type?value
   sys42.execute-lisp-file
     _args
-

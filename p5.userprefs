@@ -1,22 +1,22 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="tests/plugins/Folders.cs">
-    <Files>
-      <File FileName="tests/plugins/Folders.cs" Line="26" Column="1" />
-    </Files>
+  <MonoDevelop.Ide.Workbench>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="core" expanded="True" />
-          <Node name="plugins" expanded="True">
-            <Node name="extras" expanded="True" />
-            <Node name="p5.lambda" selected="True" />
+          <Node name="core" expanded="True">
+            <Node name="p5.webapp" expanded="True">
+              <Node name="system42" expanded="True">
+                <Node name="admin" selected="True" />
+                <Node name="codemirror" selected="True" />
+                <Node name="page-types" selected="True" />
+              </Node>
+            </Node>
           </Node>
+          <Node name="plugins" expanded="True" />
           <Node name="samples" expanded="True" />
           <Node name="tests" expanded="True">
-            <Node name="p5.tests" expanded="True">
-              <Node name="plugins" expanded="True" />
-            </Node>
+            <Node name="p5.tests" expanded="True" />
           </Node>
         </State>
       </Pad>
@@ -32,15 +32,7 @@
         <State expanded="True">
           <Node name="tests" expanded="True">
             <Node name="p5.tests" expanded="True">
-              <Node name="p5" expanded="True">
-                <Node name="unittests" expanded="True">
-                  <Node name="plugins" expanded="True">
-                    <Node name="Database" expanded="True" selected="True" />
-                    <Node name="Files" expanded="True" />
-                    <Node name="Folders" expanded="True" />
-                  </Node>
-                </Node>
-              </Node>
+              <Node name="p5" selected="True" />
             </Node>
           </Node>
         </State>

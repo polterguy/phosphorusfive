@@ -6,39 +6,28 @@
 
 set-event:sys42.show-lisp
 
-  // hack to be able to remove function invocation content in case user runs "get-events" for sys42.show-lisp
-  // This effectively removes all instances of "sys42.show-lisp" which HAS executed
-  _is-executing-instance:false
-  set:x:/-?value
-    src:true
+  if:x:/../*/_arg
+    not
 
-  // defaulting to "entire tree" unless an expression is explicitly given
-  if:x:/.?value
-    equals
-    add:x:/././*/lambda2lisp
-      src:x:/../*
+    // informing used he has to submit a lambda expression or add nodes himself
+    set:x:/../**/literal/=code/*/innerValue?value
+      src:@"No input given to {0}. Either supply an expression as value of event invocation, or explicitly 
+add nodes to invocation as [_arg] children nodes."
+        :x:/..?name
   else
 
-    // adds the nodes given for conversion to text
-    add:x:/././*/lambda2lisp
-      src:x:@/././.?value
+    // converting lambda to lisp
+    lambda2lisp:x:/../*/_arg/*
 
-  // here we remove the content dynamically created by our active event invocation
-  // to [sys42.show-lisp], which means that this Active Event will not be a
-  // part of what is shown to the end user, since it would defeat the purpose of
-  // this Active Event. See comment to "_is-executing-instance" at top of event
-  set:x:/+/**/sys42.show-lisp/*/_is-executing-instance/=true/./*
-  lambda2lisp
+    // HTML-encoding HTML
+    p5.html.html-encode:x:/-?value
 
-  // HTML-encoding HTML
-  p5.html.html-encode:x:/-?value
+    // setting the literal content to the nodes converted to Hyperlisp (or default code)
+    set:x:/../**/literal/=code/*/innerValue?value
+      src:x:/./-?value
 
-  // setting the literal content to the nodes converted to Hyperlisp (or default code)
-  set:x:/./**/literal/=code/*/innerValue?value
-    src:x:/./-?value
-
-  // making sure close button has focus
-  include-javascript:"window.p5.$('close').el.focus();"
+    // making sure close button has focus
+    include-javascript:"window.p5.$('close').el.focus();"
 
   // creating a widget showing the Hyperlisp code created from the given p5.lambda tree
   create-widget

@@ -590,7 +590,7 @@ save-file:test1.txt
                 .Add (string.Empty, "st");
             Context.Raise ("load-file", node);
 
-            Assert.AreEqual ("success", node.Value);
+            Assert.AreEqual ("success", node [0].Value);
         }
 
         /// <summary>
@@ -615,7 +615,7 @@ save-file:test1.txt
                 .Add ("test1.txt");
             Context.Raise ("load-file", node);
 
-            Assert.AreEqual ("success", node.Value);
+            Assert.AreEqual ("success", node [0].Value);
         }
         
         /// <summary>
@@ -639,10 +639,10 @@ foo2:bar2");
             node = new Node ("load-file", "test1.hl");
             Context.Raise ("load-file", node);
 
-            Assert.AreEqual ("foo1", node [0].Name);
-            Assert.AreEqual ("bar1", node [0].Value);
-            Assert.AreEqual ("foo2", node [1].Name);
-            Assert.AreEqual ("bar2", node [1].Value);
+            Assert.AreEqual ("foo1", node [0] [0].Name);
+            Assert.AreEqual ("bar1", node [0] [0].Value);
+            Assert.AreEqual ("foo2", node [0] [1].Name);
+            Assert.AreEqual ("bar2", node [0] [1].Value);
         }
     }
 }

@@ -48,38 +48,19 @@ namespace p5.file.file
                             if (idxFilename.EndsWith (".hl") && e.Args.GetExChildValue ("convert", context, true)) {
 
                                 // automatically converting to Hyperlisp before returning
-                                if (source.Count > 1) {
-
-                                    // loading more than one file
-                                    e.Args.Add (new Node (idxFilename, null, Utilities.Convert<Node> (fileContent, context).Children));
-                                    e.Args.Value = null;
-                                } else {
-
-                                    // loading a single file
-                                    e.Args.AddRange (Utilities.Convert<Node> (fileContent, context).Children);
-                                }
+                                e.Args.Add (new Node (idxFilename, null, Utilities.Convert<Node> (fileContent, context).Children));
+                                e.Args.Value = null;
                             } else {
 
                                 // adding file content as string
-                                if (source.Count > 1) {
-
-                                    // loading more than one file
-                                    e.Args.Add (new Node (idxFilename, fileContent));
-                                    e.Args.Value = null;
-                                } else {
-
-                                    // loading a single file
-                                    e.Args.Value = fileContent;
-                                }
+                                e.Args.Add (new Node (idxFilename, fileContent));
+                                e.Args.Value = null;
                             }
                         }
                     } else {
 
                         // file didn't exist, making sure we signal caller
-                        if (source.Count > 1)
-                            e.Args.Add (new Node (idxFilename, false));
-                        else
-                            e.Args.Value = false;
+                        e.Args.Add (new Node (idxFilename, false));
                     }
                 }
             }
@@ -87,13 +68,6 @@ namespace p5.file.file
 
         /// <summary>
         ///     Loads zero or more binary files from disc.
-        /// 
-        ///     If file does not exist, false will be returned for file path.
-        /// 
-        ///     Example that loads the file "foo.zip" from your "phosphorus.application-folder" if you run it through the main
-        ///     web application;
-        /// 
-        ///     <pre>p5.file.binary.load:foo.zip</pre>
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>

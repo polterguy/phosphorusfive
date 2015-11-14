@@ -131,20 +131,9 @@ namespace p5.webapp
         private void Page_LoadInitialLoading (object sender, EventArgs e)
         {
             // raising our [p5.web.load-ui] Active Event, creating the node to pass in first
-            // where the [_form] node becomes the name of the form requested, and all other HTTP GET arguments
-            // are passed in through [_args]
+            // where the [_form] node becomes the name of the form requested
             var args = new Node ("p5.web.load-ui");
             args.Add (new Node ("_form", (string) HttpContext.Current.Items ["__p5_original_url"]));
-
-            // making sure we pass in any HTTP GET parameters
-            if (Request.QueryString.Keys.Count > 0) {
-
-                // retrieving all GET parameters and passing in as [_args]
-                args.Add (new Node ("_args"));
-                foreach (var idxArg in Request.QueryString.AllKeys) {
-                    args.LastChild.Add (new Node (idxArg, Request.QueryString [idxArg]));
-                }
-            }
 
             // invoking the Active Event that actually loads our UI, now with a [_file] node, and possibly an [_args] node
             _context.Raise ("p5.web.load-ui", args);
@@ -997,7 +986,7 @@ namespace p5.webapp
             var eventName = e.Name;
             var lambdas = AjaxEvents [id] [eventName];
             foreach (var idxLambda in lambdas) {
-                _context.Raise ("lambda", idxLambda.Clone ());
+                _context.Raise ("eval", idxLambda.Clone ());
             }
         }
     }

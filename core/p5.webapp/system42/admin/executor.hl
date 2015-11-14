@@ -1,0 +1,184 @@
+
+/*
+ * allows the user to execute p5.lambda given through a textarea widget,
+ * seeing the results in another textarea result widget, relies upon CodeMirror
+ */
+
+
+// making sure necessary JavaScript files are included
+include-javascript-file:system42/codemirror/lib/codemirror.js
+include-javascript-file:system42/codemirror/addon/selection/active-line.js
+include-javascript-file:system42/codemirror/addon/display/placeholder.js
+include-javascript-file:system42/codemirror/addon/display/rulers.js
+include-javascript-file:system42/codemirror/addon/display/fullscreen.js
+include-javascript-file:system42/codemirror/hyperlisp-mode.js
+
+
+// making sure necessary Stylesheet files are included
+include-stylesheet-file:system42/codemirror/lib/codemirror.css
+include-stylesheet-file:system42/codemirror/theme/blackboard.css
+include-stylesheet-file:system42/codemirror/addon/display/fullscreen.css
+
+
+// then checking to see if we've got some code stored in session, and if so, we stuff it into our editor
+get-session:executor.current-code
+if:x:/-?value
+  set:x:/../**/literal/=input/*/innerValue?value
+    src:x:/../*/get-session/[0,1]?value
+
+// creating actual form to show the executor
+create-widget:executor
+  class:span-24 prepend-top
+  widgets
+    literal:header
+      element:h1
+      class:span-23
+      innerValue:p5.lambda executor
+    literal:back
+      class:span-1 last
+      element:a
+      href:/
+      innerValue:back
+
+    /*
+     * input textarea element, transformed into a CodeMirror widget later
+     */
+    container:input-wrp
+      class:span-24
+      widgets
+        literal:input
+          element:textarea
+          innerValue:
+          placeholder:type Hyperlisp code here ...
+
+    /*
+     * "execute" widget, executes input, and puts the resulting code into output
+     */
+    container:exe-wrp
+      class:span-4 prepend-20
+      widgets
+        literal:execute
+          class:span-4 last
+          element:button
+          title:shortcut - F5
+          innerValue:execute
+
+          /*
+           * "trickery" to make sure we can handle our event in JavaScript
+           * to retrieve custom JSON return values from server in JavaScript
+           * the actual event handler is "onclick_", but this event is hidden,
+           * and won't be rendered to the browser since it ends with "_".
+           * the DOM onclick event handler though, invokes a JavaScript function,
+           * which actually invokes the actual server-side event, which again returns
+           * the executed code as a piece of string, named "code", which the JavaScript
+           * again puts into the "output" CodeMirror widget
+           */
+          onclick-script:"window._execute_lambda(event);"
+          onclick_
+
+            // first retrieving text from input textarea and converting to nodes
+            get-widget-property:input
+              innerValue
+            lisp2lambda:x:/<?value
+
+            // then storing current code in session for simplicity
+            set:x:/../*/set-session/*/src?value
+              src:x:/../*/get-widget-property/+/<?value
+            set-session:executor.current-code
+              src
+
+            // then executing p5.lambda nodes, in such a way that our converted hyperlisp becomes the "root node"
+            // while still reachable after execution is done!
+            set:x:/../*/_exe/#/*
+            add:x:/../*/_exe/#
+              src:x:/../*/"lisp2lambda"/*
+            _exe:node:""
+            eval:x:/../*/_exe/#
+
+            // then converting p5.lambda result nodes to text, and returning back to client as JSON
+            lambda2lisp:x:/../*/_exe/#/*
+            return-value:code
+              :x:/../*/lambda2lisp?value
+
+    /*
+     * output textarea element, transformed into a CodeMirror widget later
+     */
+    container:output-wrp
+      class:span-24 prepend-top
+      widgets
+        literal:output
+          element:textarea
+          placeholder:after execution, resulting Hyperlisp code will end up here ...
+    container:clear-wrp
+      class:span-4 prepend-20 last
+      widgets
+        literal:clear
+          element:button
+          title:shortcut - F8
+          class:span-4 last
+          innerValue:clear
+          onclick-script:"window._outputCode.getDoc().setValue('');event.preventDefault();"
+
+
+/*
+ * making sure our "textarea" input and output HTML elements are 
+ * replaced with the codemirror editor
+ * in addition we're also pushing the DOM JavaScript event
+ * handler for the execute button's "click" event to client here
+ */
+include-javascript:@"
+
+
+window._execute_lambda = function (event) {
+  var el = p5.$('execute');
+  el.raise('onclick_', {
+    onsuccess:function(ret, evt) {
+      window._outputCode.getDoc().setValue(ret.code);
+    }});
+  event.preventDefault();
+}
+
+
+window._inputCode = CodeMirror.fromTextArea(document.getElementById('input'), {
+  mode:'hyperlisp',
+  theme:'blackboard',
+  lineNumbers:true,
+  styleActiveLine:true,
+  path:'system42/codemirror/',
+  autofocus:true,
+  extraKeys: {
+    Tab: function(cm) {
+      var spaces = Array(cm.getOption('indentUnit') + 1).join(' ');
+      cm.replaceSelection(spaces);
+    },
+    F11: function(cm) {
+      cm.setOption('fullScreen', !cm.getOption('fullScreen'));
+    },
+    Esc: function(cm) {
+      if (cm.getOption('fullScreen')) cm.setOption('fullScreen', false);
+    },
+    F5: function() {
+      window._execute_lambda(event);
+    },
+    F8: function() {
+      window._outputCode.getDoc().setValue('');
+    }
+  }
+});
+window._inputCode.on('change',function (cMirror) {
+  p5.$('input').el.value = cMirror.getValue();
+});
+
+
+window._outputCode = CodeMirror.fromTextArea(document.getElementById('output'), {
+  mode:'hyperlisp',
+  theme:'blackboard',
+  lineNumbers:true,
+  styleActiveLine:true,
+  path:'system42/codemirror/',
+  readOnly:true
+});
+window._outputCode.on('change',function(cMirror) {
+  p5.$('output').el.value = cMirror.getValue();
+});
+"

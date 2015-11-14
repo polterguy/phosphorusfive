@@ -5,13 +5,13 @@
 
 // checking to see if there exists any [p5.user] objects in database from before
 select-data:x:/*/*/"p5.user"?count
-if:x:/-/0?value
+if:x:/-?value
   equals:int:0
 
   // there were no [p5.user] objects in database, creating our default admin user
   insert-data
 
-    p5.user:"admin user"
+    p5.user:p5 admin
       username:admin
       password:admin
       role:admin

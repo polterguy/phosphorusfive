@@ -7,7 +7,7 @@
 
 // checking to see if there exists any [p5.page] objects in database from before
 select-data:x:/*/*/p5.page?count
-if:x:/-/0?value
+if:x:/-?value
   equals:int:0
 
   // there were no [p5.page] objects in database, creating 5 default pages, just to show some features from system42

@@ -52,6 +52,9 @@
     <Content Include="Global.asax" />
     <Content Include="media\css\main.css" />
     <Content Include="media\css\src\grid.png" />
+    <Content Include="system42\admin\files\file.png" />
+    <Content Include="system42\admin\files\files.css" />
+    <Content Include="system42\admin\files\folder.png" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -164,5 +167,26 @@
   <ItemGroup>
     <None Include="system42\application-startup.hl" />
     <None Include="system42\startup-files\pf.web.load-ui.hl" />
+    <None Include="system42\startup-files\debug-helpers\sys42.show-lisp.hl" />
+    <None Include="system42\startup-files\debug-helpers\sys42.show-widgets.hl" />
+    <None Include="system42\startup-files\pages\create-default-pages.hl" />
+    <None Include="system42\startup-files\pages\sys42.create-page.hl" />
+    <None Include="system42\startup-files\pages\sys42.edit-page.hl" />
+    <None Include="system42\startup-files\users\create-default-user.hl" />
+    <None Include="system42\startup-files\users\sys42.get-user.hl" />
+    <None Include="system42\startup-files\users\sys42.login-user.hl" />
+    <None Include="system42\startup-files\users\sys42.logout-user.hl" />
+    <None Include="system42\templates\main.hl" />
+    <None Include="system42\page-types\controls.hl" />
+    <None Include="system42\page-types\html.hl" />
+    <None Include="system42\page-types\lambda.hl" />
+    <None Include="system42\page-types\special-page\p5.no-access.hl" />
+    <None Include="system42\admin\executor.hl" />
+    <None Include="system42\admin\file-editor\hyperlisp-editor.hl" />
+    <None Include="system42\admin\files\files.hl" />
+    <None Include="system42\admin\page-editor\page-editor.hl" />
+    <None Include="system42\admin\page-editor\editor-types\controls-editor.hl" />
+    <None Include="system42\admin\page-editor\editor-types\html-editor.hl" />
+    <None Include="system42\admin\page-editor\editor-types\lambda-editor.hl" />
   </ItemGroup>
 </Project>

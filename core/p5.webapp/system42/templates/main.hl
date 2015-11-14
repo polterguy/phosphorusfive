@@ -11,14 +11,6 @@ set:x:/../*/"create-widget"/*/widgets/**/={header}?value
 set:x:/../*/"create-widget"/*/widgets/**/={content}?value
   src:x:/../*/_args/*/content?value
 
-// making sure the "showgrid" property is handled correctly, if we should handle it
-if:x:/../*/_args/*/showgrid?value
-  equals:true
-  set:x:/../*/create-widget/*/class?value
-    src:{0} showgrid
-      :x:/../*/create-widget/*/class?value
-
-
 /*
  * checking to see if user is logged in, and if so, we remove the login widget from the page, and replace
  * it with a logout widget
