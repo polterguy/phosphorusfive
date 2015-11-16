@@ -222,6 +222,25 @@ namespace p5.webapp
                 }
             }
         }
+        
+        /// <summary>
+        ///     Returns the ID and type of the given widget's children.
+        /// </summary>
+        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "find-widgets")]
+        private void find_widgets (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Making sure we clean up and remove all arguments passed in after execution
+            using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
+
+                // Looping through all control IDs given
+                foreach (var widget in FindWidgetsBy <Widget> (e.Args, FindControl<Widget> (e.Args.GetExValue (context, "cnt"), Page), context)) {
+
+                    e.Args.Add(widget.ID);
+                }
+            }
+        }
 
         /// <summary>
         ///     Lists all widgets on page.
@@ -837,6 +856,30 @@ namespace p5.webapp
                 if (widget == null)
                     throw new ArgumentException(string.Format("You cannot use [{0}] on a Control that is not a P5.ajax Widget. [{0}] was invoked for '{1}', which is of type '{2}'", activeEventName, ctrl.ID, ctrl.GetType().FullName));
                 yield return widget;
+            }
+        }
+        
+        /*
+         * Helper to retrieve a list of widgets from a Node
+         */
+        private IEnumerable<T> FindWidgetsBy<T> (Node args, Widget idx, ApplicationContext context) where T : Widget
+        {
+            if (idx == null)
+                yield break;
+
+            bool match = true;
+            foreach (var idxNode in args.Children) {
+                if (!idx.HasAttribute(idxNode.Name) || idx[idxNode.Name] != idxNode.GetExValue<string>(context, null)) {
+                    match = false;
+                    break;
+                }
+            }
+            if (match)
+                yield return idx as T;
+            foreach (var idxChild in idx.Controls) {
+                foreach (var idxSubFind in FindWidgetsBy<T> (args, idxChild as T, context)) {
+                    yield return idxSubFind;
+                }
             }
         }
 

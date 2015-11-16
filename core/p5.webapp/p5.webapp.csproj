@@ -195,6 +195,7 @@
     <None Include="system42\admin\page-editor\editor-types\lambda-editor.hl" />
     <None Include="system42\startup-files\debug-helpers\sys42.show-code.hl" />
     <None Include="system42\startup-files\debug-helpers\sys42.get-widget.hl" />
+    <None Include="system42\admin\files\file-browser.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="system42\admin\files\media\" />

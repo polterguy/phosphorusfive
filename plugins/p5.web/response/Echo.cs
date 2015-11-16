@@ -72,10 +72,6 @@ namespace p5.web.ui.response
             HttpContext.Current.Response.Filter = null;
             HttpContext.Current.Response.ClearContent ();
 
-            // abandoning session, and removing session cookie from response
-            HttpContext.Current.Response.Cookies.Remove ("ASP.NET_SessionId");
-            HttpContext.Current.Session.Abandon ();
-
             // retrieving root node of web application
             var rootNode = new Node ();
             context.Raise ("p5.core.application-folder", rootNode);
@@ -86,7 +82,8 @@ namespace p5.web.ui.response
             rootFolder = rootFolder.Replace ("\\", "/");
 
             // rendering file back to client over response
-            using (Stream fileStream = File.OpenRead (rootFolder + XUtil.Single<string> (e.Args, context))) {
+            var fullPath = rootFolder + XUtil.Single<string> (e.Args, context);
+            using (Stream fileStream = File.OpenRead (fullPath)) {
                 fileStream.CopyTo (HttpContext.Current.Response.OutputStream);
             }
 
