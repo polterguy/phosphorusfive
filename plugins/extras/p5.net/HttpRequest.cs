@@ -42,7 +42,7 @@ namespace p5.net
                 return; // nothing to do here
 
             // making sure we clean up and remove all arguments passed in after execution
-            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args)) {
+            using (new Utilities.ArgsRemover (e.Args)) {
 
                 // figuring out which method to use
                 string method = e.Args.Name.Substring (e.Args.Name.IndexOf ("-") + 1).ToUpper ();
@@ -90,7 +90,7 @@ namespace p5.net
                 return; // nothing to do here
             
             // making sure we clean up and remove all arguments passed in after execution
-            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args)) {
+            using (new Utilities.ArgsRemover (e.Args)) {
 
                 // figuring out which method to use
                 string method = e.Args.Name.Substring (e.Args.Name.LastIndexOf (".") + 1).ToUpper ();
@@ -136,7 +136,7 @@ namespace p5.net
                 return; // nothing to do here
             
             // making sure we clean up and remove all arguments passed in after execution
-            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args)) {
+            using (new Utilities.ArgsRemover (e.Args)) {
 
                 // Figuring out URL to create request towards
                 var url = XUtil.Single<string> (e.Args, context);

@@ -45,10 +45,8 @@
   <ItemGroup>
     <Compile Include="Session.cs" />
     <Compile Include="Application.cs" />
-    <Compile Include="widgets\Widgets.cs" />
     <Compile Include="response\Echo.cs" />
     <Compile Include="response\Headers.cs" />
-    <Compile Include="widgets\Properties.cs" />
     <Compile Include="Cache.cs" />
     <Compile Include="common\PhosphorusWebException.cs" />
     <Compile Include="common\CollectionBase.cs" />
@@ -57,6 +55,7 @@
     <Compile Include="request\Parameters.cs" />
     <Compile Include="request\Request.cs" />
     <Compile Include="response\Cookies.cs" />
+    <Compile Include="Widgets.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

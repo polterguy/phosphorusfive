@@ -119,6 +119,7 @@ namespace p5.lambda.keywords
                     throw new LambdaException ("you cannot have an [" + statement + "] without a matching [if] and/or [else-if] as its previous sibling", node, context);
                 if (previous.Name == "if")
                     break;
+                previous = previous.PreviousSibling;
             }
         }
     }

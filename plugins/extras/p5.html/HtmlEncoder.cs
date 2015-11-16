@@ -26,7 +26,7 @@ namespace p5.html
         private static void p5_html_html_encode (ApplicationContext context, ActiveEventArgs e)
         {
             // making sure we clean up and remove all arguments passed in after execution
-            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args)) {
+            using (new Utilities.ArgsRemover (e.Args)) {
 
                 // loops through all documents/fragments we're supposed to encode and adding them into value
                 bool first = true;
@@ -54,7 +54,7 @@ namespace p5.html
         private static void p5_html_html_decode (ApplicationContext context, ActiveEventArgs e)
         {
             // making sure we clean up and remove all arguments passed in after execution
-            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args)) {
+            using (new Utilities.ArgsRemover (e.Args)) {
 
                 // loops through all documents we're supposed to transform
                 bool first = true;

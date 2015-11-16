@@ -40,7 +40,7 @@ namespace phosphorus.crypto
         private static void p5_crypto_hash_string (ApplicationContext context, ActiveEventArgs e)
         {
             // making sure we clean up and remove all arguments passed in after execution
-            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args)) {
+            using (new Utilities.ArgsRemover (e.Args)) {
 
                 var whatToHash = XUtil.Single<string> (e.Args, context);
                 if (whatToHash == null)

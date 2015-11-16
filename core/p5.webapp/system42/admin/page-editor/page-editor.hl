@@ -57,7 +57,7 @@ include-stylesheet-file:system42/codemirror/addon/display/fullscreen.css
 // creating the actual "edit page" widget
 create-widget:editor
   class:span-24
-  oninitialload
+  oninit
     get-session:page-editor.current-page
     if:x:/-/0?value
       sys42.edit-page

@@ -33,7 +33,7 @@ namespace p5.html
         private static void p5_html_lambda2html (ApplicationContext context, ActiveEventArgs e)
         {
             // making sure we clean up and remove all arguments passed in after execution
-            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args)) {
+            using (new Utilities.ArgsRemover (e.Args)) {
 
                 StringBuilder builder = new StringBuilder ();
                 Convert (XUtil.Iterate<Node> (e.Args, e.Args, context), builder, 0, context);

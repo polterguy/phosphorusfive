@@ -23,7 +23,7 @@ namespace p5.file.file
         private static void delete_file (ApplicationContext context, ActiveEventArgs e)
         {
             // making sure we clean up and remove all arguments passed in after execution
-            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args)) {
+            using (new Utilities.ArgsRemover (e.Args)) {
 
                 // getting root folder
                 var rootFolder = Common.GetRootFolder (context);

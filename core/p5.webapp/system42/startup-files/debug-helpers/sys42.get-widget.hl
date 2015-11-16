@@ -32,18 +32,23 @@ set-event:sys42.get-widget
     add:x:/../0/-
       src:x:/./-/*/*
 
-
-    // Widget events
-    list-widget-events:x:/../*/list-widgets/0?value
+    // Widget ajax events
+    list-widget-ajax-events:x:/../*/list-widgets/0?value
     add:x:/+
       src:x:/./-/*/*
-    get-widget-event:x:/-2/*?name
+    get-widget-ajax-event:x:/-2/*?name
 
     // Removing all root node children of event nodes who's names are "_event"
     set:x:/-/**/~on/*/_event
     add:x:/../0/-
       src:x:/./-2/*/*
 
+    // Trickery to be able to get "execute" widget, which will create a recursive never ending
+    // loop during conversion to hyperlisp, since it contains a node value, referencing code executed
+    if:x:/../*/list-widgets/0?value
+      equals:execute
+      set:x:/../0/-/*/onclick_/*/_exe?value
+        src:node:"_executed-code"
 
     // Looping through all children, recursively invoking self
     get-children-widgets:x:/../*/list-widgets/0?value

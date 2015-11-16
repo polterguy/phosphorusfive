@@ -24,7 +24,7 @@ namespace p5.file.folder
         private static void folder_exist (ApplicationContext context, ActiveEventArgs e)
         {
             // making sure we clean up and remove all arguments passed in after execution
-            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args)) {
+            using (new Utilities.ArgsRemover (e.Args)) {
 
                 // retrieving root folder first
                 var rootFolder = Common.GetRootFolder (context);

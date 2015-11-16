@@ -15,8 +15,6 @@ namespace p5.exp
 {
     /// <summary>
     ///     Helper class encapsulating common operations for p5.lambda expressions
-    /// 
-    ///     Contains helpers to iterate expressions, convert expressions to single values, and so on
     /// </summary>
     public static class XUtil
     {
@@ -59,9 +57,6 @@ namespace p5.exp
 
         /// <summary>
         ///     Formats the node according to values returned by its children
-        /// 
-        ///     Uses dataSource as source to evaluate expressions in formatting parameters, unless
-        ///     dataSource is the same as evaluatedNode
         /// </summary>
         /// <returns>The node.</returns>
         /// <param name="evaluatedNode">Evaluated node.</param>
@@ -126,9 +121,6 @@ namespace p5.exp
 
         /// <summary>
         ///     Returns one single value by evaluating evaluatedNode
-        /// 
-        ///     Will either evaluate node's expression, or iterate its children, value, and so on, and return
-        ///     one single value of type (T) back to caller
         /// </summary>
         /// <param name="evaluatedNode">Evaluated node.</param>
         /// <param name="context">Context.</param>
@@ -146,10 +138,6 @@ namespace p5.exp
 
         /// <summary>
         ///     Returns one single value by evaluating evaluatedNode
-        /// 
-        ///     Will either evaluate node's expression, or iterate its children, value, and so on, and return
-        ///     one single value of type (T) back to caller. Uses dataSource as source to evaluate any expressions
-        ///     in evaluateddNode's value
         /// </summary>
         /// <param name="evaluatedNode">Evaluated node.</param>
         /// <param name="dataSource">Data source.</param>
@@ -204,15 +192,8 @@ namespace p5.exp
             return Utilities.Convert (multipleRetVal ?? singleRetVal, context, defaultValue);
         }
 
-        /*
-         * common implementation for Single<T> methods
-         */
         /// <summary>
         ///     Iterates the given node, and returns multiple values
-        /// 
-        ///     If node contains an expression, then this expression will be evaluated. Otherwise, node's value
-        ///     will be converted if possible. If no value in node, then children nodes of evaluates node will
-        ///     be returned during iteration
         /// </summary>
         /// <param name="evaluatedNode">Evaluated node.</param>
         /// <param name="context">Context.</param>
@@ -226,10 +207,6 @@ namespace p5.exp
 
         /// <summary>
         ///     Iterates the given node, and returns multiple values
-        /// 
-        ///     If node contains an expression, then this expression will be evaluated. Otherwise, node's value
-        ///     will be converted if possible. If no value in node, then children nodes of evaluates node will
-        ///     be returned during iteration. Uses dataSource to evaluate any expressions in evaluatedNode
         /// </summary>
         /// <param name="evaluatedNode">Evaluated node.</param>
         /// <param name="dataSource">Data source.</param>
@@ -288,14 +265,8 @@ namespace p5.exp
             }
         }
 
-        /*
-         * In use in [set] [save-file] and [update-data]
-         */
         /// <summary>
         ///     Will return one single source value from evaluatedNode
-        /// 
-        ///     Useful for operations where you need one single [src] value, such as when saving a file, [set]'ing 
-        ///     a node's value/name, etc.
         /// </summary>
         /// <returns>The single.</returns>
         /// <param name="evaluatedNode">Evaluated node.</param>
@@ -307,9 +278,6 @@ namespace p5.exp
 
         /// <summary>
         ///     Will return one single source value from evaluatedNode
-        /// 
-        ///     Useful for operations where you need one single [src] value, such as when saving a file, [set]'ing 
-        ///     a node's value/name, etc. Uses dataSource to evaluate any expressions in evaluatedNode's value
         /// </summary>
         /// <returns>The single.</returns>
         /// <param name="evaluatedNode">Evaluated node.</param>
@@ -388,13 +356,8 @@ namespace p5.exp
             }
         }
 
-        /*
-         * In use in [add], [insert-before] and [insert-after]
-         */
         /// <summary>
         ///    Will return multiple values if feasable
-        /// 
-        ///    Useful for operations such as [add] and [insert-before], that expects multiple values or a list of nodes
         /// </summary>
         /// <returns>The nodes.</returns>
         /// <param name="evaluatedNode">Evaluated node.</param>
@@ -406,9 +369,6 @@ namespace p5.exp
 
         /// <summary>
         ///     Will return multiple values if feasable
-        /// 
-        ///     Useful for operations such as [add] and [insert-before], that expects multiple values or a list of nodes.
-        ///     Uses dataSource to evaluate any expressions in evaluatedNode
         /// </summary>
         /// <returns>The nodes.</returns>
         /// <param name="evaluatedNode">Evaluated node.</param>
@@ -515,6 +475,65 @@ namespace p5.exp
             }
 
             // returning node list back to caller
-            return sourceNodes.Count > 0 ? sourceNodes : null;        }
+            return sourceNodes.Count > 0 ? sourceNodes : null;
+        }
+
+        /// <summary>
+        ///     Raises a dynamically created Active Event
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="args">Arguments to pass into event</param>
+        /// <param name="lambda">Lambda object to evaluate</param>
+        /// <param name="eventName">Name of Active Event to raise</param>
+        public static void RaiseEvent (ApplicationContext context, Node args, Node lambda, string eventName)
+        {
+            // creating an "executable" lambda node, which becomes the node that is finally executed, after 
+            // arguments is passed in and such. This is because we want the arguments at the TOP of the lambda node
+            var exeLambda = new Node (eventName);
+
+            // adding up arguments, no need to clone, they should be gone after execution anyway
+            // but skipping all "empty name" arguments, since they're highly likely formatting parameters
+            exeLambda.AddRange (args.Children.Where (ix => ix.Name != string.Empty));
+
+            if (args.Value is Expression) {
+
+                // evaluating node, and stuffing results into arguments
+                foreach (var idx in XUtil.Iterate<object> (args, context)) {
+
+                    // adding currently iterated results into execution object
+                    var idxNode = idx as Node;
+                    if (idxNode != null) {
+
+                        // appending node into execution object
+                        exeLambda.Add ("_arg", null, new Node [] { idxNode.Clone () });
+                    } else {
+
+                        // appending simple value into execution object with [_arg] name
+                        exeLambda.Add ("_arg", idx);
+                    }
+                }
+            } else if (args.Value != null) {
+
+                // simple value argument
+                exeLambda.Add ("_arg", XUtil.FormatNode (args, context));
+            }
+
+            // then adding actual Active Event code, to make sure lambda event is at the END of entire node structure, after arguments
+            exeLambda.AddRange (lambda.Children);
+
+            // storing lambda block and value, such that we can "diff" after execution, 
+            // and only return the nodes added during execution, and the value if it was changed
+            var oldLambdaNode = new List<Node> (exeLambda.Children);
+            args.Value = null; // to make sure we don't return what we came in with!
+
+            // executing lambda children, and not evaluating any expression in evaluated node!
+            context.Raise ("eval-mutable", exeLambda);
+
+            // making sure we return all nodes that was created during execution of event back to caller
+            // in addition to value, but only if it was changed
+            args.Clear ().AddRange (exeLambda.Children.Where (ix => oldLambdaNode.IndexOf (ix) == -1));
+            if (exeLambda.Value != null)
+                args.Value = exeLambda.Value;
+        }
     }
 }

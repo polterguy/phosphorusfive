@@ -23,7 +23,7 @@ namespace p5.file.folder
         private static void p5_folder_list_folders (ApplicationContext context, ActiveEventArgs e)
         {
             // making sure we clean up and remove all arguments passed in after execution
-            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args, true)) {
+            using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // retrieving root folder
                 var rootFolder = Common.GetRootFolder (context);

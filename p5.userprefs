@@ -1,23 +1,33 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench ActiveDocument="core/p5.webapp/Default.aspx.cs">
+    <Files>
+      <File FileName="core/p5.webapp/Default.aspx.cs" Line="636" Column="77" />
+      <File FileName="core/p5.webapp/system42/admin/executor.hl" Line="103" Column="18" />
+      <File FileName="core/p5.webapp/system42/startup-files/debug-helpers/sys42.get-widget.hl" Line="39" Column="5" />
+      <File FileName="plugins/p5.web/Widgets.cs" Line="234" Column="9" />
+      <File FileName="core/p5.webapp/system42/startup-files/debug-helpers/sys42.show-code.hl" Line="1" Column="1" />
+      <File FileName="core/p5.webapp/system42/admin/files/files.hl" Line="14" Column="9" />
+      <File FileName="core/p5.webapp/system42/admin/page-editor/page-editor.hl" Line="60" Column="9" />
+    </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="core" expanded="True">
             <Node name="p5.webapp" expanded="True">
               <Node name="system42" expanded="True">
-                <Node name="admin" selected="True" />
-                <Node name="codemirror" selected="True" />
-                <Node name="page-types" selected="True" />
+                <Node name="admin" expanded="True">
+                  <Node name="codemirror" selected="True" />
+                </Node>
               </Node>
+              <Node name="Default.aspx" expanded="True" />
             </Node>
           </Node>
-          <Node name="plugins" expanded="True" />
-          <Node name="samples" expanded="True" />
-          <Node name="tests" expanded="True">
-            <Node name="p5.tests" expanded="True" />
+          <Node name="plugins" expanded="True">
+            <Node name="p5.web" expanded="True" />
           </Node>
+          <Node name="samples" expanded="True" />
+          <Node name="tests" expanded="True" />
         </State>
       </Pad>
       <Pad Id="ClassPad">
@@ -25,14 +35,18 @@
       </Pad>
       <Pad Id="MonoDevelop.Debugger.WatchPad">
         <State>
-          <Value>e.Args.Value</Value>
+          <Value>idxExe</Value>
         </State>
       </Pad>
       <Pad Id="MonoDevelop.NUnit.TestPad">
-        <State expanded="True">
+        <State expanded="True" selected="True">
           <Node name="tests" expanded="True">
             <Node name="p5.tests" expanded="True">
-              <Node name="p5" selected="True" />
+              <Node name="p5" expanded="True">
+                <Node name="unittests" expanded="True">
+                  <Node name="lambda" expanded="True" />
+                </Node>
+              </Node>
             </Node>
           </Node>
         </State>

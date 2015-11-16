@@ -236,18 +236,18 @@ namespace p5.ajax.widgets
 
             // creating new control, and adding to the controls collection
             var control = GetCreator<T> ().Create () as T;
-            control.ID = string.IsNullOrEmpty (id) ? CreateId () : id;
+            control.ID = string.IsNullOrEmpty (id) ? CreateUniqueId () : id;
+
+            if (onLoad != null) {
+                control.Load += delegate {
+                    onLoad (control, new EventArgs ());
+                };
+            }
 
             if (index == -1)
                 Controls.Add (control);
             else
                 Controls.AddAt (index, control);
-
-            if (onLoad != null) {
-                control.Page.LoadComplete += delegate {
-                    onLoad (control, new EventArgs ());
-                };
-            }
 
             // returning newly created control back to caller, such that he can set his properties and such for it
             return control;
@@ -361,10 +361,11 @@ namespace p5.ajax.widgets
             }
         }
 
-        /*
-         * creates a new unique ID
-         */
-        private string CreateId ()
+        /// <summary>
+        ///     Creates a new Unique ID for a Control.
+        /// </summary>
+        /// <returns>The identifier.</returns>
+        public static string CreateUniqueId ()
         {
             var retVal = Guid.NewGuid ().ToString ().Replace ("-", "");
             retVal = "x" + retVal [0] + retVal [5] + retVal [10] + retVal [15] + retVal [20] + retVal [25] + retVal [30];

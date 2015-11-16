@@ -81,7 +81,7 @@ namespace p5.web.ui.common
         public static void Get (Node node, ApplicationContext context, GetDelegate functor)
         {
             // making sure we clean up and remove all arguments passed in after execution
-            using (Utilities.ArgsRemover remover = new Utilities.ArgsRemover (node, false)) {
+            using (new Utilities.ArgsRemover (node, false)) {
 
                 // iterating through each "key"
                 foreach (var idx in XUtil.Iterate<string> (node, context)) {
@@ -138,7 +138,7 @@ namespace p5.web.ui.common
         public static void List (Node node, ApplicationContext context, ListDelegate functor)
         {
             // making sure we clean up and remove all arguments passed in after execution
-            using (Utilities.ArgsRemover remover = new Utilities.ArgsRemover (node, true)) {
+            using (new Utilities.ArgsRemover (node, true)) {
 
                 // retrieving filters, if any
                 var filter = new List<string> (XUtil.Iterate<string> (node, context));

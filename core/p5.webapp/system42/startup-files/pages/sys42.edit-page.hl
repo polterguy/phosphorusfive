@@ -4,7 +4,7 @@
  */
 
 
-// event for editing a page object
+// Event for editing a page object
 set-event:sys42.edit-page
 
   // clearing any previous editors out from DOM
@@ -15,7 +15,7 @@ set-event:sys42.edit-page
     value
   if:x:/<?value
 
-    // user did not select any page, but in fact "Choose Page ..." item
+    // User did not select any page, but in fact "Choose Page ..." item
     equals:_default
     set-session:page-editor.current-page
 

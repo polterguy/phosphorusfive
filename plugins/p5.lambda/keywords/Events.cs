@@ -65,7 +65,7 @@ namespace p5.lambda.events
         private static void get_event (ApplicationContext context, ActiveEventArgs e)
         {
             // making sure we clean up and remove all arguments passed in after execution
-            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args, true)) {
+            using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // looping through all events caller wish to retrieve
                 foreach (var idxEventName in XUtil.Iterate<string> (e.Args, context)) {
@@ -98,7 +98,7 @@ namespace p5.lambda.events
         private static void list_events (ApplicationContext context, ActiveEventArgs e)
         {
             // making sure we clean up and remove all arguments passed in after execution
-            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args, true)) {
+            using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // retrieving filter, if any
                 var filter = new List<string> (XUtil.Iterate<string> (e.Args, context));
@@ -211,53 +211,8 @@ namespace p5.lambda.events
                 // executing if lambda is around
                 if (lambda != null) {
 
-                    // creating an "executable" lambda node, which becomes the node that is finally executed, after 
-                    // arguments is passed in and such. This is because we want the arguments at the TOP of the lambda node
-                    var exeLambda = new Node (e.Name);
-
-                    // adding up arguments, no need to clone, they should be gone after execution anyway
-                    // but skipping all "empty name" arguments, since they're highly likely formatting parameters
-                    exeLambda.AddRange (e.Args.Children.Where (ix => ix.Name != string.Empty));
-
-                    if (e.Args.Value is Expression) {
-
-                        // evaluating node, and stuffing results into arguments
-                        foreach (var idx in XUtil.Iterate<object> (e.Args, context)) {
-
-                            // adding currently iterated results into execution object
-                            var idxNode = idx as Node;
-                            if (idxNode != null) {
-
-                                // appending node into execution object
-                                exeLambda.Add ("_arg", null, new Node [] { idxNode.Clone () });
-                            } else {
-
-                                // appending simple value into execution object with [_arg] name
-                                exeLambda.Add ("_arg", idx);
-                            }
-                        }
-                    } else if (e.Args.Value != null) {
-
-                        // simple value argument
-                        exeLambda.Add ("_arg", XUtil.FormatNode (e.Args, context));
-                    }
-                    
-                    // then adding actual Active Event code, to make sure lambda event is at the END of entire node structure, after arguments
-                    exeLambda.AddRange (lambda.Children);
-
-                    // storing lambda block and value, such that we can "diff" after execution, 
-                    // and only return the nodes added during execution, and the value if it was changed
-                    var oldLambdaNode = new List<Node> (exeLambda.Children);
-                    e.Args.Value = null; // to make sure we don't return what we came in with!
-
-                    // executing lambda children, and not evaluating any expression in evaluated node!
-                    context.Raise ("eval-mutable", exeLambda);
-
-                    // making sure we return all nodes that was created during execution of event back to caller
-                    // in addition to value, but only if it was changed
-                    e.Args.Clear ().AddRange (exeLambda.Children.Where (ix => oldLambdaNode.IndexOf (ix) == -1));
-                    if (exeLambda.Value != null)
-                        e.Args.Value = exeLambda.Value;
+                    // Raising Active Event
+                    XUtil.RaiseEvent (context, e.Args, lambda, e.Name);
                 }
             }
         }

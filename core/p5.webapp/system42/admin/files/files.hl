@@ -1,21 +1,20 @@
 
 /*
- * allows the user to browse the file system on his system
+ * Allows the user to browse the file system on his system
  */
 
 // including CSS for file browser
-include-stylesheet-file:system42/admin/files/files.css
+include-stylesheet-file:system42/admin/files/media/files.css
 
 /*
- * creating main file system browser widget
+ * Creating main file system browser widget
  */
 create-widget:main-folders
   class:span-24 prepend-top
-  oninitialload
+  oninit
 
-    // creating folders and files according to what
-    // our current directory is
-    sys42.list-folder-content
+    // Creating folders and files according to what our current directory is
+    sys42.list-current-folder-content
 
   widgets
     literal
@@ -39,15 +38,17 @@ create-widget:main-folders
   events
 
     /*
-     * shows the toolbar for selected file or folder
+     * Shows the toolbar for selected file or folder
      */
     sys42.show-selected-file-object-toolbar
 
     /*
-     * creates a list of all folders and files for user to browse through
+     * Creates a list of all folders and files in current folder 
+     * for user to browse through.
      */
-    sys42.list-folder-content
+    sys42.list-current-folder-content
 
+      sys42.show-code:x:/../*
       // common lambda object for both files and folders
       _x
         for-each:x:/./*/_objects/*?value
@@ -82,15 +83,6 @@ create-widget:main-folders
         class:span-24 prepend-top
         parent:folder-content
         widgets
-
-
-
-
-
-
-
-
-
 
 
 

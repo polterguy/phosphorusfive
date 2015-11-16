@@ -100,7 +100,7 @@ create-widget:executor
             // Then converting p5.lambda result nodes to text, and returning back to client as JSON
             lambda2lisp:x:/-2/#/*
             return-value:code
-              :x:/./-?value
+              src:x:/./-?value
 
     /*
      * Output textarea element, transformed into a CodeMirror widget later

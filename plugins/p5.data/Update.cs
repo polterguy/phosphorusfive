@@ -29,7 +29,7 @@ namespace p5.data
                 throw new ArgumentException ("[update-data] requires an expression to select items from database");
 
             // making sure we clean up and remove all arguments passed in after execution
-            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args, true)) {
+            using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // acquiring lock on database
                 lock (Common.Lock) {

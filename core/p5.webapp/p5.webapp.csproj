@@ -52,9 +52,11 @@
     <Content Include="Global.asax" />
     <Content Include="media\css\main.css" />
     <Content Include="media\css\src\grid.png" />
-    <Content Include="system42\admin\files\file.png" />
-    <Content Include="system42\admin\files\files.css" />
-    <Content Include="system42\admin\files\folder.png" />
+    <Content Include="system42\admin\files\media\file.png" />
+    <Content Include="system42\admin\files\media\files.css" />
+    <Content Include="system42\admin\files\media\folder.png" />
+    <Content Include="system42\codemirror\hyperlisp-mode.js" />
+    <Content Include="system42\codemirror\theme\blackboard.css" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -108,6 +110,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="code\ActiveEventAssemblies.cs" />
+    <Compile Include="code\WidgetEventStorage.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -192,5 +195,8 @@
     <None Include="system42\admin\page-editor\editor-types\lambda-editor.hl" />
     <None Include="system42\startup-files\debug-helpers\sys42.show-code.hl" />
     <None Include="system42\startup-files\debug-helpers\sys42.get-widget.hl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="system42\admin\files\media\" />
   </ItemGroup>
 </Project>

@@ -1,6 +1,6 @@
 
 /*
- * allows for editing a [control] type of [p5.page], using the CodeMirror code editor
+ * Allows for editing a [control] type of page, using the CodeMirror code editor
  */
 
 

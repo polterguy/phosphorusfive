@@ -37,7 +37,7 @@ set-event:sys42.show-code
         class:span-24
         innerValue
       literal
-        oninitialload
+        oninit
 
           // making sure close button has focus
           include-javascript:"window.p5.$('{0}').el.focus();"

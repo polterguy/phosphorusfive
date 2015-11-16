@@ -29,7 +29,7 @@ namespace p5.math
             ApplicationContext context)
         {
             // making sure we clean up and remove all arguments passed in after execution
-            using (Utilities.ArgsRemover remover = new Utilities.ArgsRemover (args)) {
+            using (new Utilities.ArgsRemover (args)) {
 
                 dynamic result = args.GetExValue<object> (context, "");
                 Type resultType = null;

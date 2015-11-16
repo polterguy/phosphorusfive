@@ -185,7 +185,7 @@ namespace p5.hyperlisp
         private static void lisp2lambda (ApplicationContext context, ActiveEventArgs e)
         {
             // making sure we clean up and remove all arguments passed in after execution
-            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args, true)) {
+            using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 e.Args.AddRange (new NodeBuilder (context, XUtil.Single<string> (e.Args, context, "", "\r\n")).Nodes);
             }
@@ -208,7 +208,7 @@ namespace p5.hyperlisp
         private static void lambda2lisp (ApplicationContext context, ActiveEventArgs e)
         {
             // making sure we clean up and remove all arguments passed in after execution
-            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args)) {
+            using (new Utilities.ArgsRemover (e.Args)) {
 
                 e.Args.Value = new HyperlispBuilder (context, XUtil.Iterate<Node> (e.Args, context)).Hyperlisp;
             }

@@ -64,7 +64,7 @@ namespace p5.web.ui.widgets
             var parent = args.GetChildValue<Container> ("__parent", context);
             var position = args.GetChildValue ("position", context, -1);
 
-            // getting [oninitialload], if any
+            // getting [oninit], if any
             var onInitialLoad = CreateLoadingEvents (context, args);
             EventHandler handler = null;
             if (onInitialLoad != null) {
@@ -91,12 +91,12 @@ namespace p5.web.ui.widgets
         }
 
         /*
-         * creates the [oninitialload] event for widget, if we should
+         * creates the [oninit] event for widget, if we should
          */
         private static Node CreateLoadingEvents (ApplicationContext context, Node node)
         {
             // checking to see if we've got an "initialload" Active Event for widget, and if so, handle it
-            var onInitialLoad = node.Find ("oninitialload");
+            var onInitialLoad = node.Find ("oninit");
             if (onInitialLoad == null)
                 return null;
 
@@ -131,10 +131,12 @@ namespace p5.web.ui.widgets
                     case "widgets":
                         CreateChildWidgets (context, widget, idxArg);
                         break;
+                    case "events":
+                        CreateWidgetLambdaEvents (context, widget, idxArg);
+                        break;
                     case "__parent":
                     case "position":
                     case "parent":
-                    case "events":
                     case "has-name":
                         // skipping these buggers, since they're not supposed to be handled here
                         break;
@@ -215,13 +217,27 @@ namespace p5.web.ui.widgets
         }
 
         /*
+         * Creates lambda events for Widget
+         */
+        private static void CreateWidgetLambdaEvents (ApplicationContext context, Widget widget, Node events)
+        {
+            // Looping through all events for widget
+            foreach (var idxEvt in events.Children.ToList ()) {
+
+                // Letting p5.webapp do the actual creation
+                var eventNode = new Node (idxEvt.Name, widget);
+                eventNode.AddRange (idxEvt.Children);
+                context.Raise ("_p5.web.add-widget-lambda-event", eventNode);
+            }
+        }
+
+        /*
          * handles all default properties of Widget
          */
         private static void HandleDefaultProperty (ApplicationContext context, Widget widget, Node node)
         {
             if (node.Name.StartsWith ("on")) {
-                if (node.Name != "oninitialload")
-                    CreateEventHandler (context, widget, node);
+                CreateEventHandler (context, widget, node);
             } else if (!node.Name.StartsWith ("_")) {
                 widget [node.Name] = node.Get<string> (context);
             }
@@ -240,15 +256,11 @@ namespace p5.web.ui.widgets
                 widget [node.Name.Replace ("-script", "")] = node.Get<string> (context);
             } else {
 
-                // finding lambda object(s) referred to by [event], and creating our lambda node structure
-                var evtNode = new Node (node.Name)
-                    .Add (new Node ("_event", widget.ID))
-                    .AddRange (node.Clone ().Children);
-
                 // raising the Active Event that actually creates our ajax event handler for our p5.lambda object
-                var eventNode = new Node (string.Empty, widget);
-                eventNode.Add (evtNode);
-                context.Raise ("_p5.web.add-widget-event", eventNode);
+                var eventNode = new Node (node.Name, widget);
+                eventNode.Add ("_event", widget.ID);
+                eventNode.AddRange (node.Children);
+                context.Raise ("_p5.web.add-widget-ajax-event", eventNode);
             }
         }
     }

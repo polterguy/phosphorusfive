@@ -25,7 +25,7 @@ namespace p5.file.file
         private static void file_load (ApplicationContext context, ActiveEventArgs e)
         {
             // making sure we clean up and remove all arguments passed in after execution
-            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args, true)) {
+            using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // retrieving root folder of app
                 var rootFolder = Common.GetRootFolder (context);
@@ -70,7 +70,7 @@ namespace p5.file.file
         private static void load_binary_file (ApplicationContext context, ActiveEventArgs e)
         {
             // making sure we clean up and remove all arguments passed in after execution
-            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args, true)) {
+            using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // retrieving root folder of app
                 var rootFolder = Common.GetRootFolder (context);

@@ -23,7 +23,7 @@ namespace p5.lambda.keywords
         private static void lambda_split (ApplicationContext context, ActiveEventArgs e)
         {
             // making sure we clean up and remove all arguments passed in after execution
-            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args, true)) {
+            using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 string whatToSplit = XUtil.Single<string> (e.Args, context);
                 if (whatToSplit == null)

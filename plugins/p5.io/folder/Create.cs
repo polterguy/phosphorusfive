@@ -37,7 +37,7 @@ namespace p5.file.folder
         private static void create_folder (ApplicationContext context, ActiveEventArgs e)
         {
             // making sure we clean up and remove all arguments passed in after execution
-            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args, true)) {
+            using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // retrieving root folder
                 var rootFolder = Common.GetRootFolder (context);

@@ -53,7 +53,7 @@ namespace p5.html
                 throw new ArgumentException ("No value supplied to [p5.html.html2lambda]");
             
             // making sure we clean up and remove all arguments passed in after execution
-            using (Utilities.ArgsRemover args = new Utilities.ArgsRemover (e.Args, true)) {
+            using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // loops through all documents we're supposed to transform
                 foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {

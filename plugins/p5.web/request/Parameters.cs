@@ -28,7 +28,7 @@ namespace p5.web.ui.request
         private static void get_http_param (ApplicationContext context, ActiveEventArgs e)
         {
             // making sure we clean up and remove all arguments passed in after execution
-            using (Utilities.ArgsRemover remover = new Utilities.ArgsRemover (e.Args, true)) {
+            using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // looping through each parameter requested by caller
                 foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {

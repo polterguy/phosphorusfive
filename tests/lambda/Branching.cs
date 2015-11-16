@@ -250,11 +250,29 @@ if:x:/-2?value
         ///     true, and the second evaluates to false, where the second if has an else statement.
         /// </summary>
         [Test]
-        public void IfTwoIfsFollowedByElse ()
+        public void TwoIfsFollowedByElse ()
         {
             var result = ExecuteLambda (@"if:bool:true
 if:bool:false
 else
+  add:x:/..
+    src
+      _foo1:bar1");
+            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual ("_foo1", result [0].Name);
+            Assert.AreEqual ("bar1", result [0].Value);
+        }
+        
+        /// <summary>
+        ///     Verifies [if] works when there is one if followed by two else-if, where the second '
+        ///     else-if evaluates to true
+        /// </summary>
+        [Test]
+        public void OneIfFollwedByTwoElseIfs ()
+        {
+            var result = ExecuteLambda (@"if:bool:false
+else-if:bool:false
+else-if:bool:true
   add:x:/..
     src
       _foo1:bar1");
