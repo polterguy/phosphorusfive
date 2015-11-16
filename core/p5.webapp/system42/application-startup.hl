@@ -32,14 +32,14 @@ set-event:sys42.execute-lisp-folder
     filter:hl
 
   // executing all files listed from that folder
-  sys42.execute-lisp-file:x:/-/*?value
+  sys42.execute-lisp-file:x:/-/*?name
 
   // listing all folders in all folders this Active Event is given
   list-folders:x:/../*/_arg?value
 
   // if above [list-folder] could find folders, we recursively invoke self
   if:x:/-/*
-    sys42.execute-lisp-folder:x:/./-/*?value
+    sys42.execute-lisp-folder:x:/./-/*?name
 
 
 /*

@@ -138,14 +138,14 @@ namespace p5.webapp
                 if (parent == null)
                     throw new ArgumentException("You cannot delete a widget who's parent is not a P5.Ajax Container widget. Tried to delete; " + widget.ID + " which is of type " + widget.GetType().FullName);
 
-                // Removing all Ajax Events for widget
-                WidgetAjaxEventStorage.RemoveFromKey1(widget.ID);
+                // Removing all events, both "lambda" and "ajax"
+                RemoveAllEventsRecursive(widget);
 
                 // Removing widget itself
                 parent.RemoveControlPersistent (widget);
             }
         }
-        
+
         /// <summary>
         ///     Clears the given widget, removing all its children widgets.
         /// </summary>
@@ -160,8 +160,8 @@ namespace p5.webapp
                 // Then looping through all of its children controls
                 foreach (Control innerCtrl in new ArrayList(widget.Controls)) {
 
-                    // Removing all Ajax Events for widget
-                    WidgetAjaxEventStorage.RemoveFromKey1(innerCtrl.ID);
+                    // Removing all events, both "lambda" and "ajax"
+                    RemoveAllEventsRecursive(widget);
 
                     // Actually removing widget from Page control collection, and persisting our change
                     widget.RemoveControlPersistent (innerCtrl);
@@ -951,6 +951,27 @@ namespace p5.webapp
             // recursively removing all ajax events for all of control's children controls
             foreach (Control idxChild in idx.Controls) {
                 RemoveWidgetAjaxEvents (idxChild);
+            }
+        }
+        
+        /*
+         * Removing all events for widget recursively
+         */
+        private void RemoveAllEventsRecursive (Control widget)
+        {
+            if (widget is Widget) {
+
+                // Removing all Ajax Events for widget
+                WidgetAjaxEventStorage.RemoveFromKey1(widget.ID);
+
+                // Removing all lambda events for widget
+                WidgetLambdaEventStorage.RemoveFromKey2(widget.ID);
+            }
+
+            // Recursively invoking for "self"
+            foreach (Widget idx in widget.Controls) {
+
+                RemoveAllEventsRecursive(idx);
             }
         }
 

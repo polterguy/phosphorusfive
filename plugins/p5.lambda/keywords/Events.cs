@@ -74,7 +74,7 @@ namespace p5.lambda.events
                     foreach (var idxKey in _events.Keys) {
 
                         // checking is current event name contains current filter
-                        if (idxKey.Contains (idxEventName)) {
+                        if (idxKey == idxEventName) {
 
                             // current Active Event contains current filter value in its name, and we have a match
                             // checking if event is already returned by a previous filter
@@ -204,7 +204,7 @@ namespace p5.lambda.events
                     if (_events.ContainsKey (e.Name)) {
 
                         // adding event into execution lambda
-                        lambda = _events [e.Name].Clone ();
+                        lambda = _events [e.Name];
                     }
                 }
 

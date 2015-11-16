@@ -254,9 +254,15 @@ namespace p5.exp
                     foreach (var idx in new List<Node> (evaluatedNode.Children)) {
                         yield return Utilities.Convert<T> (idx, context);
                     }
+                } else if (typeof(T) == typeof(string)) {
+
+                    // caller requests string, iterating children, yielding names of children
+                    foreach (var idx in new List<Node> (evaluatedNode.Children)) {
+                        yield return Utilities.Convert<T> (idx.Name, context);
+                    }
                 } else {
 
-                    // caller requests anything but node, iterating children, yielding
+                    // caller requests anything but node and string, iterating children, yielding
                     // values of children, converted to type back to caller
                     foreach (var idx in new List<Node> (evaluatedNode.Children)) {
                         yield return idx.Get<T> (context);
@@ -519,7 +525,7 @@ namespace p5.exp
             }
 
             // then adding actual Active Event code, to make sure lambda event is at the END of entire node structure, after arguments
-            exeLambda.AddRange (lambda.Children);
+            exeLambda.AddRange (lambda.Clone ().Children);
 
             // storing lambda block and value, such that we can "diff" after execution, 
             // and only return the nodes added during execution, and the value if it was changed

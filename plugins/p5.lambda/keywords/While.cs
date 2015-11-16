@@ -3,8 +3,9 @@
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
-using p5.core;
 using p5.exp;
+using p5.core;
+using p5.exp.exceptions;
 using p5.lambda.helpers;
 
 namespace p5.lambda.keywords
@@ -28,6 +29,11 @@ namespace p5.lambda.keywords
             // storing old while value, since Evaluate changes it to either true or false
             var oldWhileValue = e.Args.Value;
 
+            // Trying to prevent infinite loops
+            int iterations = 0;
+            bool uncheck = e.Args.GetExChildValue ("_unchecked", context, false);
+
+            // Actual [while] loop
             while (Conditions.Evaluate (context, e.Args)) {
 
                 // changing value back to what it was, to support things like "while:int:5" and so on
@@ -39,6 +45,9 @@ namespace p5.lambda.keywords
                 // making sure each iteration is immutable
                 e.Args.Clear ();
                 e.Args.AddRange (oldWhile.Clone ().Children);
+
+                if (!uncheck && iterations++ > 10000)
+                    throw new LambdaException ("Possible infinite loop encountered, more than 10.000 iterations of [while] loop. If this is not correct, then please make sure you invoke your [while] with [_unchecked] equals false", e.Args, context);
             }
         }
     }

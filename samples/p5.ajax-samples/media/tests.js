@@ -998,3 +998,32 @@ tests.invoke_remove_many = function(event) {
     }
   });
 };
+
+
+/*
+ * removes one child, and adds back another child with the same ID
+ */
+tests.invoke_add_similar = function(event) {
+  var el = p5.$('sandbox_invoke_add_similar');
+  el.raise('sandbox_invoke_add_similar_onclick', {
+    onerror: function(statusCode, statusText, responseHtml, evt) {
+      tests.setError('invoke_add_similar');
+    },
+
+    onsuccess: function(serverReturn, evt) {
+      if (tests.countMembers(serverReturn) != 2) {
+        tests.setError('invoke_add_similar');
+        return;
+      }
+      if (serverReturn.__p5_del.length != 1) {
+        tests.setError('invoke_add_similar');
+        return;
+      }
+      if (serverReturn.__p5_change == null) {
+        tests.setError('invoke_add_similar');
+        return;
+      }
+      tests.setSuccess('invoke_add_similar');
+    }
+  });
+};

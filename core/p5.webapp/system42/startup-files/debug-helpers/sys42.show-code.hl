@@ -12,8 +12,8 @@ set-event:sys42.show-code
     not
 
     // informing used he has to submit a lambda expression or add nodes himself
-    set:x:/../**/literal/=code/*/innerValue?value
-      src:No input given to {0}. Supply an expression as value of event invocation
+    set:x:/../**/literal/*/element/=pre/./*/innerValue?value
+      src:"No input given to {0}. Supply an expression as value of event invocation, for instance; 'sys42.show-code:x:/../*'"
         :x:/..?name
   else
 

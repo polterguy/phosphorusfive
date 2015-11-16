@@ -43,15 +43,17 @@ include-javascript:"window.CKEDITOR_BASEPATH='/system42/ckeditor/';"
 
 // And just to be sure, we also load up CodeMirror javascript and CSS files here ...
 // Besides switching between pages when editing goes WAAAAY faster when we do it this way ...
-include-javascript-file:system42/codemirror/lib/codemirror.js
-include-javascript-file:system42/codemirror/hyperlisp-mode.js
-include-javascript-file:system42/codemirror/addon/selection/active-line.js
-include-javascript-file:system42/codemirror/addon/display/placeholder.js
-include-javascript-file:system42/codemirror/addon/display/fullscreen.js
+include-javascript-file
+  system42/codemirror/lib/codemirror.js
+  system42/codemirror/hyperlisp-mode.js
+  system42/codemirror/addon/selection/active-line.js
+  system42/codemirror/addon/display/placeholder.js
+  system42/codemirror/addon/display/fullscreen.js
 
-include-stylesheet-file:system42/codemirror/lib/codemirror.css
-include-stylesheet-file:system42/codemirror/theme/blackboard.css
-include-stylesheet-file:system42/codemirror/addon/display/fullscreen.css
+include-stylesheet-file
+  system42/codemirror/lib/codemirror.css
+  system42/codemirror/theme/blackboard.css
+  system42/codemirror/addon/display/fullscreen.css
 
 
 // creating the actual "edit page" widget

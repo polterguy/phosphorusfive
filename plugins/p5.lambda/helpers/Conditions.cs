@@ -209,6 +209,12 @@ namespace p5.lambda.helpers
                 case "less-than":
                 case "more-than-equals":
                 case "less-than-equals":
+                case "=":
+                case "!=":
+                case ">":
+                case "<":
+                case ">=":
+                case "<=":
                     retVal.Add (idx);
                     break;
                 }

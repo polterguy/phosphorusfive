@@ -104,7 +104,7 @@ insert-before:x:/../0
         public void CreateRemoveAndGetEvent ()
         {
             var result = ExecuteLambda (@"set-event:events.test5
-  foo:bar
+  _foo:bar
 delete-events:events.test5
 insert-before:x:/../0
   get-events:events.test5");
@@ -117,17 +117,39 @@ insert-before:x:/../0
         [Test]
         public void CreateAndInvokeEventReturningStringValue ()
         {
-            var result = ExecuteLambda (@"set-event:events.test5
+            var result = ExecuteLambda (@"set-event:events.test5_3
   set:x:/..?value
     src:success
 insert-before:x:/../0
-  events.test5");
+  events.test5_3");
             Assert.AreEqual (1, result.Count);
             Assert.AreEqual (0, result [0].Count);
             Assert.AreEqual ("success", result [0].Name);
             Assert.IsNull (result [0].Value);
         }
         
+        /// <summary>
+        ///     Creates a simple event, and invokes it, returning a string value
+        /// </summary>
+        [Test]
+        public void CreateAndInvokeEventReturningStringValueTwice ()
+        {
+            var result = ExecuteLambda (@"set-event:events.test5_2
+  set:x:/..?value
+    src:success
+insert-before:x:/../0
+  events.test5_2
+insert-before:x:/../0
+  events.test5_2");
+            Assert.AreEqual (2, result.Count);
+            Assert.AreEqual (0, result [0].Count);
+            Assert.AreEqual (0, result [1].Count);
+            Assert.AreEqual ("success", result [0].Name);
+            Assert.AreEqual ("success", result [1].Name);
+            Assert.IsNull (result [0].Value);
+            Assert.IsNull (result [1].Value);
+        }
+
         /// <summary>
         ///     Creates a simple event, and invokes it, returning a node value
         /// </summary>

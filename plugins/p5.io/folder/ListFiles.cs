@@ -59,7 +59,7 @@ namespace p5.file.folder
                                 // returning filename back to caller
                                 var fileName = idxFile.Replace ("\\", "/");
                                 fileName = fileName.Replace (rootFolder, "");
-                                e.Args.Add (new Node (string.Empty, fileName));
+                                e.Args.Add (new Node (fileName));
                             }
                         }
                     }

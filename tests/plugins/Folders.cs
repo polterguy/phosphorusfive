@@ -273,9 +273,9 @@ namespace p5.unittests.plugins
             Context.Raise ("list-files", node);
 
             // verifying list-files returned true as it should
-            Assert.AreEqual ("test1/test1.txt", node [0].Value);
-            Assert.AreEqual ("test1/test2.txt", node [1].Value);
-            Assert.AreEqual ("test1/test3.txt", node [2].Value);
+            Assert.AreEqual ("test1/test1.txt", node [0].Name);
+            Assert.AreEqual ("test1/test2.txt", node [1].Name);
+            Assert.AreEqual ("test1/test3.txt", node [2].Name);
         }
 
         /// <summary>
@@ -312,9 +312,9 @@ namespace p5.unittests.plugins
             Context.Raise ("list-files", node);
 
             // verifying list-files returned true as it should
-            Assert.AreEqual ("test1/test1.txt", node [0].Value);
-            Assert.AreEqual ("test1/test3.txt", node [1].Value);
-            Assert.AreEqual ("test2/test2.txt", node [2].Value);
+            Assert.AreEqual ("test1/test1.txt", node [0].Name);
+            Assert.AreEqual ("test1/test3.txt", node [1].Name);
+            Assert.AreEqual ("test2/test2.txt", node [2].Name);
         }
 
         /// <summary>
@@ -352,9 +352,9 @@ namespace p5.unittests.plugins
             Context.Raise ("list-files", node);
 
             // verifying list-files returned true as it should
-            Assert.AreEqual ("test1/test1.txt", node [0].Value);
-            Assert.AreEqual ("test1/test3.txt", node [1].Value);
-            Assert.AreEqual ("test2/test2.txt", node [2].Value);
+            Assert.AreEqual ("test1/test1.txt", node [0].Name);
+            Assert.AreEqual ("test1/test3.txt", node [1].Name);
+            Assert.AreEqual ("test2/test2.txt", node [2].Name);
         }
 
         /// <summary>
@@ -386,9 +386,9 @@ namespace p5.unittests.plugins
             Context.Raise ("list-files", node);
 
             // verifying list-files returned true as it should
-            Assert.AreEqual ("test1/test1.txt", node [0].Value);
-            Assert.AreEqual ("test1/test2.txt", node [1].Value);
-            Assert.AreEqual ("test1/test3.txt", node [2].Value);
+            Assert.AreEqual ("test1/test1.txt", node [0].Name);
+            Assert.AreEqual ("test1/test2.txt", node [1].Name);
+            Assert.AreEqual ("test1/test3.txt", node [2].Name);
         }
 
         /// <summary>
@@ -410,8 +410,8 @@ namespace p5.unittests.plugins
             Context.Raise ("list-folders", node);
 
             // verifying list-files returned true as it should
-            Assert.AreEqual ("test1/xxx", node [0].Value);
-            Assert.AreEqual ("test1/yyy", node [1].Value);
+            Assert.AreEqual ("test1/xxx", node [0].Name);
+            Assert.AreEqual ("test1/yyy", node [1].Name);
         }
 
         /// <summary>
@@ -439,8 +439,8 @@ namespace p5.unittests.plugins
             Context.Raise ("list-folders", node);
 
             // verifying list-files returned true as it should
-            Assert.AreEqual ("test1/xxx", node [0].Value);
-            Assert.AreEqual ("test2/yyy", node [1].Value);
+            Assert.AreEqual ("test1/xxx", node [0].Name);
+            Assert.AreEqual ("test2/yyy", node [1].Name);
         }
 
         /// <summary>
@@ -469,8 +469,8 @@ namespace p5.unittests.plugins
             Context.Raise ("list-folders", node);
 
             // verifying list-files returned true as it should
-            Assert.AreEqual ("test1/xxx", node [0].Value);
-            Assert.AreEqual ("test2/yyy", node [1].Value);
+            Assert.AreEqual ("test1/xxx", node [0].Name);
+            Assert.AreEqual ("test2/yyy", node [1].Name);
         }
 
         /// <summary>
@@ -493,8 +493,8 @@ namespace p5.unittests.plugins
             Context.Raise ("list-folders", node);
 
             // verifying list-files returned true as it should
-            Assert.AreEqual ("test1/xxx", node [0].Value);
-            Assert.AreEqual ("test1/yyy", node [1].Value);
+            Assert.AreEqual ("test1/xxx", node [0].Name);
+            Assert.AreEqual ("test1/yyy", node [1].Name);
         }
 
         [ActiveEvent (Name = "test.list-folders-1")]
@@ -523,7 +523,7 @@ insert-before:x:/../0
   src:x:/../*");
 
             // verifying list-files returned true as it should
-            Assert.AreEqual ("test1/test-folder", node [0] [0].Value);
+            Assert.AreEqual ("test1/test-folder", node [0] [0].Name);
         }
 
         /// <summary>

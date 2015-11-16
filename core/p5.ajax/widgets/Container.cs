@@ -355,8 +355,8 @@ namespace p5.ajax.widgets
             if (_originalCollection == null) {
                 base.RenderChildrenWidgetsAsJson (writer);
             } else {
-                RenderAddedControls ();
                 RenderRemovedControls ();
+                RenderAddedControls ();
                 RenderOldControls (writer);
             }
         }
@@ -413,7 +413,7 @@ namespace p5.ajax.widgets
         private void RenderRemovedControls ()
         {
             foreach (var idxOriginal in _originalCollection) {
-                var exist = Controls.Cast<Control> ().Any (idxActual => idxActual.ID == idxOriginal.ID);
+                var exist = Controls.Cast<Control> ().Any (idxActual => idxActual == idxOriginal);
                 if (!exist && !string.IsNullOrEmpty (idxOriginal.ID))
                     (Page as IAjaxPage).Manager.RegisterDeletedWidget (idxOriginal.ClientID);
             }

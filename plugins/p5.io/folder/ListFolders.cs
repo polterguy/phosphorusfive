@@ -37,7 +37,7 @@ namespace p5.file.folder
                         // normalizing file path delimiters for both Linux and Windows
                         var folderName = idxFolder.Replace ("\\", "/");
                         folderName = folderName.Replace (rootFolder, "");
-                        e.Args.Add (new Node (string.Empty, folderName));
+                        e.Args.Add (new Node (folderName));
                     }
                 }
             }

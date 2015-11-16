@@ -605,5 +605,38 @@ insert-before:x:/../0
   src:x:/../*(!/insert-before)");
             Assert.AreEqual ("success", node [0].Value);
         }
+        
+        [Test]
+        public void IterateStringValues ()
+        {
+            var node = CreateNode (@"succ
+ess:bar2");
+            string result = "";
+            foreach (var idx in XUtil.Iterate<string> (node, Context)) {
+                result += idx;
+            }
+            Assert.AreEqual ("success", result);
+        }
+        
+        [Test]
+        public void IterateNodesIntegerValues ()
+        {
+            var node = CreateNode (@"err:5
+or:2");
+            int result = 0;
+            foreach (var idx in XUtil.Iterate<int> (node, Context)) {
+                result += idx;
+            }
+            Assert.AreEqual (7, result);
+        }
+        
+        [Test]
+        public void SingleNodesStringValue ()
+        {
+            var node = CreateNode (@"succ:err
+ess:or");
+            string result = XUtil.Single<string> (node, Context);
+            Assert.AreEqual ("success", result);
+        }
     }
 }

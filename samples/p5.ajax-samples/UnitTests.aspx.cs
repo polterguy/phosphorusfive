@@ -278,6 +278,18 @@ namespace p5.samples
             lit2.ElementType = "em";
             lit2.innerValue = "world";
         }
+        
+        [WebMethod]
+        protected void sandbox_invoke_add_similar_onclick (p5.Container container, EventArgs e)
+        {
+            // removing one controls
+            container.RemoveControlPersistentAt (0); // sandbox_invoke_remove_many_2
+
+            // adding another control with same ID
+            var lit1 = container.CreatePersistentControl<p5.Literal> ("sandbox_invoke_add_similar_child", 0);
+            lit1.ElementType = "strong";
+            lit1.innerValue = "howdy";
+        }
 
         [WebMethod]
         protected void sandbox_invoke_remove_many_verify_onclick (p5.Container container, EventArgs e)

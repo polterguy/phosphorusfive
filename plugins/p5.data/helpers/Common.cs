@@ -180,7 +180,7 @@ namespace p5.data.helpers
                     string.Empty,
                     fileNode.Get<string> (context)
                         .Substring (0, fileNode.Get<string> (context).LastIndexOf ("/", StringComparison.Ordinal)));
-                context.Raise ("p5.file.list-files", folderNode);
+                context.Raise ("list-files", folderNode);
                 if (folderNode.Count == 0) {
                     context.Raise ("delete-folder", folderNode);
                 }
@@ -222,12 +222,12 @@ namespace p5.data.helpers
 
             dbFoldersNode.Sort (
                 delegate (Node left, Node right) {
-                    var leftInt = int.Parse (left.Get<string> (context).Replace (_dbPath, "").Substring (2));
-                    var rightInt = int.Parse (right.Get<string> (context).Replace (_dbPath, "").Substring (2));
+                    var leftInt = int.Parse (left.Name.Replace (_dbPath, "").Substring (2));
+                    var rightInt = int.Parse (right.Name.Replace (_dbPath, "").Substring (2));
                     return leftInt.CompareTo (rightInt);
                 });
 
-            return dbFoldersNode.Children.Select (idxDirectory => (string) idxDirectory.Value);
+            return dbFoldersNode.Children.Select (idxDirectory => idxDirectory.Name);
         }
 
         /*
@@ -240,12 +240,12 @@ namespace p5.data.helpers
 
             dbFoldersNode.Sort (
                 delegate (Node left, Node right) {
-                    var leftInt = int.Parse (left.Get<string> (context).Replace (directory, "").Substring (3).Replace (".hl", ""));
-                    var rightInt = int.Parse (right.Get<string> (context).Replace (directory, "").Substring (3).Replace (".hl", ""));
+                    var leftInt = int.Parse (left.Name.Replace (directory, "").Substring (3).Replace (".hl", ""));
+                    var rightInt = int.Parse (right.Name.Replace (directory, "").Substring (3).Replace (".hl", ""));
                     return leftInt.CompareTo (rightInt);
                 });
 
-            return dbFoldersNode.Children.Select (idxFile => idxFile.Value as string);
+            return dbFoldersNode.Children.Select (idxFile => idxFile.Name);
         }
 
         /*

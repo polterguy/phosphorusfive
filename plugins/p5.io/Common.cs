@@ -58,9 +58,27 @@ namespace p5.file
         public static IEnumerable<string> GetSource (Node args, ApplicationContext context)
         {
             if (args.Value != null) {
-                return XUtil.Iterate<string> (args, context);
+                foreach (var idx in XUtil.Iterate<string> (args, context)) {
+
+                    yield return idx;
+                }
+                yield break;
             } else {
-                return new string[] { XUtil.SourceSingle (args, context) as string ?? "" };
+                var objRetVal = XUtil.SourceSingle (args, context);
+                if (objRetVal is Node) {
+
+                    // Converting to a single string
+                    objRetVal = ((Node)objRetVal).Get<string> (context);
+                } else if (objRetVal is IEnumerable<Node>) {
+
+                    // converting to a single string
+                    foreach (var idx in objRetVal as IEnumerable<Node>) {
+                    
+                        yield return idx.Get<string> (context);
+                    }
+                    yield break;
+                }
+                yield return Utilities.Convert<string> (objRetVal, context) ?? "";
             }
         }
     }

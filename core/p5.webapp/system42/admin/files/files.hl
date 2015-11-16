@@ -1,6 +1,6 @@
 
 /*
- * Allows the user to browse the file system on his system
+ * Allows the user to browse through the files on his system
  */
 
 // including CSS for file browser
@@ -37,10 +37,152 @@ create-widget:main-folders
 
   events
 
+
     /*
      * Shows the toolbar for selected file or folder
      */
     sys42.show-selected-file-object-toolbar
+
+
+    /*
+     * Shows the bread-crumb for file browser
+     */
+    sys42.show-folder-bread-crumb
+
+      // Deleting previously created bread-crumb
+      clear-widget:folders-bread-crumb
+
+      // Getting current folder
+      get-session:sys42.current-folder
+      split:x:/-/*?value
+        =:/
+      for-each:x:/-/*?name
+        _lit
+          void
+            element:input
+            type:button
+            class:span-3 last
+            value
+            onclick
+              sys42.bread-crumb-clicked:x:/../*/_event?value
+        set:x:/-/*/*/value?value
+          src:x:/././*/__dp?value
+        add:x:/../*/create-widget/*/widgets
+          src:x:/././*/_lit/*
+      add:x:/+/*/widgets/0/-
+        src:disabled
+      create-widget:bread-crumb
+        parent:folders-bread-crumb
+        class:span-24 bread-crumb
+        widgets
+          void
+            element:input
+            type:button
+            class:span-3 last
+            value:/
+            onclick
+              sys42.bread-crumb-clicked:x:/../*/_event?value
+
+
+    /*
+     * Bread-crumb button was clicked
+     */
+    sys42.bread-crumb-clicked
+      set-session:sys42.selected-file-object
+      get-widget-property:x:/../*/_arg?value
+        value
+      if:x:/-/*/*?value
+
+        // "home" was clicked
+        equals:/
+        set-session:sys42.current-folder
+      else
+
+        // Anything but home was clicked
+        get-session:sys42.current-folder
+        split:x:/-/*?value
+          =:/
+        _new-folder
+
+        // Looping through each [split] results until we're at new current folder
+        while:bool:true
+
+          // Making sure each consecutive folder append operation are separated by a "/"
+          if:x:/./-?value
+            set:x:/././-?value
+              src:{0}/
+                :x:/././././-?value
+
+          // Appending currently iterated folder into [_new-folder]
+          set:x:/./-?value
+            src:{0}{1}
+              :x:/./././-?value
+              :x:/..else/*/split/0?name
+
+          // Checking if we're at "new current folder", and if so, breaking while
+          if:x:/../*/get-widget-property/*/*?value
+            equals:x:/..else/*/split/0?name
+            set:x:/..while?value
+              src:bool:false
+
+          // Removing zeroth split item, which is the one we just dealt with
+          set:x:/..else/*/split/0
+
+        // Updating current folder to new value
+        set:x:/+/0?value
+          src:x:/..else/*/_new-folder?value
+        set-session:sys42.current-folder
+          src
+
+      // Listing current folder's folders and files again
+      sys42.list-current-folder-content
+
+
+    /*
+     * Invoked when a folder widget was clicked
+     */
+    sys42.folder-clicked
+
+      // Getting name of folder that was clicked
+      get-widget-property:x:/../*/_arg?value
+        innerValue
+        class
+      if:x:/-/*/*/class?value
+        =:span-3 folder active-file
+
+        // Folder is currently selected
+        get-session:sys42.current-folder
+
+        // Appending a slash if there's a value in current-folder
+        if:x:/-/*?value
+          set:x:/./-/*?value
+            src:{0}/
+              :x:/./././-/*?value
+
+        // Updating current folder
+        set-session:sys42.current-folder
+          src:{0}{1}
+            :x:/././-2/0?value
+            :x:/../*/get-widget-property/*/*/innerValue?value
+        set-session:sys42.selected-file-object
+      else
+
+        // Selecting folder
+        set-session:sys42.selected-file-object
+          src:x:/../*/get-widget-property/*/*/innerValue?value
+
+      // Listing all folders and files in current folder
+      sys42.list-current-folder-content
+
+
+    /*
+     * Invoked when a file widget was clicked
+     */
+    sys42.file-clicked
+      get-widget-property:x:/../*/_arg?value
+        innerValue
+      get-session:sys42.current-folder
+
 
     /*
      * Creates a list of all folders and files in current folder 
@@ -48,10 +190,15 @@ create-widget:main-folders
      */
     sys42.list-current-folder-content
 
-      sys42.show-code:x:/../*
-      // common lambda object for both files and folders
+      // clearing previously created folders and files
+      clear-widget:folder-content
+
+      // showing bread crumb
+      sys42.show-folder-bread-crumb
+
+      // Common lambda object for both files and folders
       _x
-        for-each:x:/./*/_objects/*?value
+        for-each:x:/../*/_objects/*?name
           split:x:/./*/__dp?value
             =:/
           _lit
@@ -64,19 +211,52 @@ create-widget:main-folders
             src:{0} {1}
               :x:/./././*/_lit/*/*/class?value
               :x:/././././*/_class?value
-          add:x:/..
+          if:x:/../*/_selected-object?value
+            =:x:/..for-each/*/split/0/-?name
+            set:x:/..for-each/*/_lit/*/*/class?value
+              src:{0} {1}
+                :x:/..for-each/*/_lit/*/*/class?value
+                : active-file
+          insert-before:x:/../0
             src:x:/././*/_lit/*
+          for-each:x:/../*/_events/*
+            add:x:/../0
+              src:x:/././*/__dp/#
 
-      // looping through all folders
+      // Looping through all folders
       get-session:sys42.selected-file-object
       list-folders
         get-session:sys42.current-folder
-      add:x:/+/*/_objects
-        src:x:/./-/*
-      lambda:x:/./*/_x
+      add:x:/+2/*/_objects
+        src:x:/./-/*?name
+      set:x:/+/*/_selected-object?value
+        src:x:/../*/get-session/[0,1]/*?value
+      eval:x:/../*/_x
         _objects
         _class:folder
-      sys42.show-code
+        _selected-object
+        _events
+          onclick
+            sys42.folder-clicked:x:/../*/_event?value
+      add:x:/../*/create-widget/*/widgets
+        src:x:/./-/*
+
+      // Looping through all files
+      list-files
+        get-session:sys42.current-folder
+      add:x:/+2/*/_objects
+        src:x:/./-/*?name
+      set:x:/+/*/_selected-object?value
+        src:x:/././*/get-session/[0,1]/*?value
+      eval:x:/../*/_x
+        _objects
+        _class:file
+        _selected-object
+        _events
+          onclick
+            sys42.file-clicked:x:/../*/_event?value
+      add:x:/../*/create-widget/*/widgets
+        src:x:/./-/*
 
       // creating widget containing all folders and files
       create-widget:all-files-and-folders

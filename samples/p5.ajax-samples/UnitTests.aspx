@@ -273,6 +273,14 @@
                             <input type="button" id="invoke_remove_many" class="undetermined" value="run" onclick="tests.invoke_remove_many(event)">
                         </td>
                     </tr>
+                    <tr>
+                        <td>
+                            remove one control, and add back another control, with the same ID
+                        </td>
+                        <td>
+                            <input type="button" id="invoke_add_similar" class="undetermined" value="run" onclick="tests.invoke_add_similar(event)">
+                        </td>
+                    </tr>
                 </table>
 
                 <div style="display:none;" id="sandbox">
@@ -529,6 +537,15 @@
                                 id="sandbox_invoke_remove_many_6"
                                 ElementType="strong">bar 2</p5:Literal>
                         </p5:Container>
+                    </p5:Container>
+                    <p5:Container
+                        runat="server"
+                        id="sandbox_invoke_add_similar"
+                        ElementType="div">
+                        <p5:Literal
+                            runat="server"
+                            id="sandbox_invoke_add_similar_child"
+                            ElementType="p">foo</p5:Literal>
                     </p5:Container>
                 </div>
 
