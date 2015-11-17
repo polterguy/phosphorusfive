@@ -1,0 +1,22 @@
+
+/*
+ * Default [lambda] type of page
+ */
+
+
+/*
+ * Returns default [lambda] page
+ */
+insert-before:x:/../0
+  src
+    lambda:@"/*
+ * Default [lambda] type of page
+ * Edit this page to meet your own needs
+ */
+create-widget:foo
+  class:span-24
+  widgets
+    literal:bar
+      innerValue:Howdy Lambda World!"
+
+

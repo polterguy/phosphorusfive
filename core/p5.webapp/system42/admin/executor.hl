@@ -17,7 +17,7 @@ include-javascript-file
 // Making sure necessary Stylesheet files are included
 include-stylesheet-file
   system42/codemirror/lib/codemirror.css
-  system42/codemirror/theme/blackboard.css
+  system42/codemirror/theme/whiteboard.css
   system42/codemirror/addon/display/fullscreen.css
 
 
@@ -147,7 +147,7 @@ window._execute_lambda = function (event) {
 
 window._inputCode = CodeMirror.fromTextArea(document.getElementById('input'), {
   mode:'hyperlisp',
-  theme:'blackboard',
+  theme:'whiteboard',
   lineNumbers:true,
   styleActiveLine:true,
   path:'system42/codemirror/',
@@ -178,7 +178,7 @@ window._inputCode.on('change',function (cMirror) {
 
 window._outputCode = CodeMirror.fromTextArea(document.getElementById('output'), {
   mode:'hyperlisp',
-  theme:'blackboard',
+  theme:'whiteboard',
   lineNumbers:true,
   styleActiveLine:true,
   path:'system42/codemirror/',

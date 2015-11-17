@@ -45,6 +45,7 @@
     <Compile Include="GetTypeName.cs" />
     <Compile Include="GetStringValue.cs" />
     <Compile Include="GetObjectValue.cs" />
+    <Compile Include="CanConvert.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

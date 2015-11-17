@@ -1,0 +1,12 @@
+
+/*
+ * Editor for [html] types of pages
+ */
+
+/*
+ * Setting CKEditor's basepath
+ */
+include-javascript:"window.CKEDITOR_BASEPATH='/system42/ckeditor/';"
+
+
+sys42.show-code:x:/..

@@ -1,14 +1,11 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="core/p5.webapp/Default.aspx.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="core/p5.webapp/system42/admin/page-editor/page-editor.hl">
     <Files>
-      <File FileName="core/p5.webapp/Default.aspx.cs" Line="636" Column="77" />
-      <File FileName="core/p5.webapp/system42/admin/executor.hl" Line="103" Column="18" />
-      <File FileName="core/p5.webapp/system42/startup-files/debug-helpers/sys42.get-widget.hl" Line="39" Column="5" />
-      <File FileName="plugins/p5.web/Widgets.cs" Line="234" Column="9" />
-      <File FileName="core/p5.webapp/system42/startup-files/debug-helpers/sys42.show-code.hl" Line="1" Column="1" />
-      <File FileName="core/p5.webapp/system42/admin/files/files.hl" Line="14" Column="9" />
-      <File FileName="core/p5.webapp/system42/admin/page-editor/page-editor.hl" Line="60" Column="9" />
+      <File FileName="core/p5.webapp/system42/admin/page-editor/page-editor.hl" Line="127" Column="33" />
+      <File FileName="core/p5.webapp/system42/admin/page-editor/editors/controls.hl" Line="6" Column="1" />
+      <File FileName="core/p5.webapp/system42/admin/page-editor/editors/html.hl" Line="7" Column="1" />
+      <File FileName="core/p5.webapp/system42/admin/page-editor/editors/lambda.hl" Line="7" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -17,15 +14,16 @@
             <Node name="p5.webapp" expanded="True">
               <Node name="system42" expanded="True">
                 <Node name="admin" expanded="True">
-                  <Node name="codemirror" selected="True" />
+                  <Node name="page-editor" expanded="True">
+                    <Node name="editors" expanded="True" />
+                    <Node name="page-editor.hl" selected="True" />
+                  </Node>
                 </Node>
               </Node>
               <Node name="Default.aspx" expanded="True" />
             </Node>
           </Node>
-          <Node name="plugins" expanded="True">
-            <Node name="p5.web" expanded="True" />
-          </Node>
+          <Node name="plugins" expanded="True" />
           <Node name="samples" expanded="True" />
           <Node name="tests" expanded="True" />
         </State>
@@ -40,15 +38,7 @@
       </Pad>
       <Pad Id="MonoDevelop.NUnit.TestPad">
         <State expanded="True" selected="True">
-          <Node name="tests" expanded="True">
-            <Node name="p5.tests" expanded="True">
-              <Node name="p5" expanded="True">
-                <Node name="unittests" expanded="True">
-                  <Node name="lambda" expanded="True" />
-                </Node>
-              </Node>
-            </Node>
-          </Node>
+          <Node name="tests" expanded="True" />
         </State>
       </Pad>
     </Pads>

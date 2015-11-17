@@ -1,0 +1,18 @@
+
+/*
+ * Returns default [html] type of page
+ */
+list-files:system42/templates
+if:x:/-/*/"system42/templates/main.hl"
+  insert-before:x:/./+2/0/0
+    src:"template:system42/templates/main.hl"
+else
+  insert-before:x:/./+/0/0
+    src:"template:{0}"
+      :x:/../*/list-files/0?name
+insert-before:x:/../0
+  src
+    header:Welcome to foo-bar
+    content:@"<h1>Hello HTML World</h1>
+<p>Foo, and then a dash of bar too, I guess ...?</p>"
+

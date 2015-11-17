@@ -14,7 +14,7 @@ include-javascript-file:system42/codemirror/hyperlisp-mode.js
 
 // making sure necessary Stylesheet files are included
 include-stylesheet-file:system42/codemirror/lib/codemirror.css
-include-stylesheet-file:system42/codemirror/theme/blackboard.css
+include-stylesheet-file:system42/codemirror/theme/whiteboard.css
 include-stylesheet-file:system42/codemirror/addon/display/fullscreen.css
 
 
@@ -97,7 +97,7 @@ if (window._inputCode) {{
 
 window._inputCode = CodeMirror.fromTextArea(document.getElementById('file-editor-content'), {{
   mode:'hyperlisp',
-  theme:'blackboard',
+  theme:'whiteboard',
   lineNumbers:true,
   styleActiveLine:true,
   path:'system42/codemirror/',

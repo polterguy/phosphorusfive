@@ -13,16 +13,11 @@ using p5.exp;
 
 /// <summary>
 ///     Main namespace for types and type-conversions in Phosphorus Five.
-/// 
-///     Contains classes that helps you convert back and forth between objects of different types. Heavily used in Hyperlisp, to allow
-///     Hyperlisp to declare instances of Guids, integers, and other types.
 /// </summary>
 namespace p5.types
 {
     /// <summary>
     ///     Class helps converts from string to object.
-    /// 
-    ///     Contains all Active Events necessary to convert from for instance <em>"string"</em> to object value of specified type.
     /// </summary>
     public static class GetObjectValue
     {
@@ -39,10 +34,6 @@ namespace p5.types
 
         /// <summary>
         ///     Creates a <see cref="phosphorus.core.Node">Node</see> list from its string representation.
-        /// 
-        ///     Returns a Node list created from its string representation. String representation of object is expected to
-        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string
-        ///     representation parameter passed in.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -57,11 +48,6 @@ namespace p5.types
 
         /// <summary>
         ///     Creates a single <see cref="phosphorus.core.Node">Node</see> from its string representation.
-        /// 
-        ///     Returns a single Node created from its string representation. String representation of object is expected to
-        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string
-        ///     representation parameter passed in. If you pass in a string with multiple root nodes, then this Active Event will
-        ///     choke, and throw an exception.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -83,10 +69,6 @@ namespace p5.types
 
         /// <summary>
         ///     Creates a <see cref="phosphorus.core.Node.Dna">DNA</see> from its string representation.
-        /// 
-        ///     Returns a path or DNA created from its string representation. String representation of object is expected to
-        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string
-        ///     representation parameter passed in.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -98,8 +80,6 @@ namespace p5.types
         
         /// <summary>
         ///     Creates a <see cref="p5.exp.Expression">Expression</see> from its string representation.
-        /// 
-        ///     Returns an Expression
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -111,10 +91,6 @@ namespace p5.types
 
         /// <summary>
         ///     Creates a Guid from its string/byte[] representation.
-        /// 
-        ///     Returns a System.Guid created from its string/byte[] representation. String/byte[] representation of object is expected to
-        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string/byte[]
-        ///     representation parameter passed in.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -134,10 +110,6 @@ namespace p5.types
 
         /// <summary>
         ///     Creates a long from its string/byte[] representation.
-        /// 
-        ///     Returns a System.Int64 created from its string/byte[] representation. String/byte[] representation of object is expected to
-        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string/byte[]
-        ///     representation parameter passed in.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -157,10 +129,6 @@ namespace p5.types
 
         /// <summary>
         ///     Creates a ulong from its string/byte[] representation.
-        /// 
-        ///     Returns a System.UInt64 created from its string/byte[] representation. String/byte[] representation of object is expected to
-        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string/byte[]
-        ///     representation parameter passed in.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -180,10 +148,6 @@ namespace p5.types
 
         /// <summary>
         ///     Creates an int from its string/byte[] representation.
-        /// 
-        ///     Returns a System.Int32 created from its string/byte[] representation. String/byte[] representation of object is expected to
-        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string/byte[]
-        ///     representation parameter passed in.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -203,10 +167,6 @@ namespace p5.types
 
         /// <summary>
         ///     Creates a uint from its string/byte[] representation.
-        /// 
-        ///     Returns a System.UInt32 created from its string/byte[] representation. String/byte[] representation of object is expected to
-        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string/byte[]
-        ///     representation parameter passed in.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -226,10 +186,6 @@ namespace p5.types
 
         /// <summary>
         ///     Creates a short from its string/byte[] representation.
-        /// 
-        ///     Returns a System.Int16 created from its string/byte[] representation. String/byte[] representation of object is expected to
-        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string/byte[]
-        ///     representation parameter passed in.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -249,10 +205,6 @@ namespace p5.types
 
         /// <summary>
         ///     Creates a single from its string/byte[] representation.
-        /// 
-        ///     Returns a System.Single created from its string/byte[] representation. String/byte[] representation of object is expected to
-        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string/byte[]
-        ///     representation parameter passed in.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -272,10 +224,6 @@ namespace p5.types
 
         /// <summary>
         ///     Creates a double from its string/byte[] representation.
-        /// 
-        ///     Returns a System.Double created from its string/byte[] representation. String/byte[] representation of object is expected to
-        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string/byte[]
-        ///     representation parameter passed in.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -295,10 +243,6 @@ namespace p5.types
 
         /// <summary>
         ///     Creates a decimal from its string/byte[] representation.
-        /// 
-        ///     Returns a System.Decimal created from its string/byte[] representation. String/byte[] representation of object is expected to
-        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string/byte[]
-        ///     representation parameter passed in.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -318,10 +262,6 @@ namespace p5.types
 
         /// <summary>
         ///     Creates a bool from its string/byte[] representation.
-        /// 
-        ///     Returns a System.Boolean created from its string/byte[] representation. String/byte[] representation of object is expected to
-        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string/byte[]
-        ///     representation parameter passed in.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -341,10 +281,6 @@ namespace p5.types
 
         /// <summary>
         ///     Creates a byte from its string/byte[] representation.
-        /// 
-        ///     Returns a System.Byte created from its string/byte[] representation. String/byte[] representation of object is expected to
-        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string/byte[]
-        ///     representation parameter passed in.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -364,11 +300,6 @@ namespace p5.types
 
         /// <summary>
         ///     Creates a byte array from its string/object representation.
-        /// 
-        ///     Returns a System.Byte[] created from its string/object representation. Object/string is expected to
-        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string/object
-        ///     representation parameter passed in. If you pass in [decode], this active event will decode any string values given 
-        ///     as base64.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -409,10 +340,6 @@ namespace p5.types
 
         /// <summary>
         ///     Creates an sbyte from its string representation.
-        /// 
-        ///     Returns a System.SByte created from its string representation. String representation of object is expected to
-        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string
-        ///     representation parameter passed in.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -432,10 +359,6 @@ namespace p5.types
 
         /// <summary>
         ///     Creates a char from its string representation.
-        /// 
-        ///     Returns a System.Char created from its string representation. String representation of object is expected to
-        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string
-        ///     representation parameter passed in.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -455,11 +378,6 @@ namespace p5.types
 
         /// <summary>
         ///     Creates a date from its string representation.
-        /// 
-        ///     Returns a System.DateTime created from its string representation. String representation of object is expected to
-        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string
-        ///     representation parameter passed in. The string representation of the date object, is expected to be in ISO format, with
-        ///     its time and milliseconds parts being optional. For instance; "yyy-MM-dd", "yyyy-MM-ddTHH:mm:ss" or "yyyy-MM-ddTHH:mm:ss.fff".
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -486,10 +404,6 @@ namespace p5.types
 
         /// <summary>
         ///     Creates a timespan from its string representation.
-        /// 
-        ///     Returns a System.TimeSpan created from its string representation. String representation of object is expected to
-        ///     be in the value of the main node. Converted object, will be returned as main value of node, replacing the string
-        ///     representation parameter passed in.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -506,7 +420,7 @@ namespace p5.types
                 }
             }
         }
-
+        
         /*
          * helper to convert from bytes to type T
          */

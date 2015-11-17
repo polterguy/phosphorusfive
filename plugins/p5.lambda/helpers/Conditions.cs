@@ -26,7 +26,8 @@ namespace p5.lambda.helpers
         public static bool Evaluate (ApplicationContext context, Node args)
         {
             // looping through all conditional children nodes
-            foreach (var idx in GetConditionalEventNodes (args)) {
+            var conditions = GetConditionalEventNodes (args);
+            foreach (var idx in conditions) {
 
                 switch (idx.Name) {
 
@@ -37,7 +38,7 @@ namespace p5.lambda.helpers
                         // evaluated to true!
                         // since previous conditions evaluated to true, there is no need to evaluate any further
                         // hence, cleaning up, and returning true "early"
-                        RemoveConditionalOperators (context, args);
+                        RemoveConditionalOperators (context, conditions);
                         return true;
                     }
 
@@ -84,7 +85,7 @@ namespace p5.lambda.helpers
             if (args.Get<bool> (context)) {
 
                 // success, evaluated to true
-                RemoveConditionalOperators (context, args);
+                RemoveConditionalOperators (context, conditions);
                 return true;
             } else {
 
@@ -94,10 +95,12 @@ namespace p5.lambda.helpers
             }
         }
 
-        private static void RemoveConditionalOperators (ApplicationContext context, Node args)
+        /*
+         * Removes all nodes that was part of the conditional statement
+         */
+        private static void RemoveConditionalOperators (ApplicationContext context, List<Node> conditions)
         {
-            var removeList = GetConditionalEventNodes (args);
-            foreach (var idxOperators in removeList) {
+            foreach (var idxOperators in conditions) {
                 idxOperators.UnTie ();
             }
         }

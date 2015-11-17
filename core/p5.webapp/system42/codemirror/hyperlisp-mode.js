@@ -178,6 +178,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'wait':
         case 'split':
         case 'join':
+        case 'can-convert':
         case '+':
         case '-':
         case '/': // TODO: why doesn't this work ...?
@@ -191,6 +192,9 @@ CodeMirror.defineMode("hyperlisp", function() {
           return this.styles.keyword;
 
         // Then "lesser" keywords that needs indentation
+        case 'move-file':
+        case 'copy-file':
+        case 'move-folder':
         case 'save-file':
         case 'save-text-file':
         case 'save-binary-file':

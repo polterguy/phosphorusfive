@@ -4,132 +4,148 @@
  */
 
 
-// Checking if user has previously chosen a page to edit
-get-session:page-editor.current-page
-
-
-// Populating the "select page" drop down list, with all [p5.page] objects from the database, 
-// making sure we select the right one, if we should select a specific page.
-select-data:x:/*/*/p5.page
-for-each:x:/-/*
-  _option
-    literal
-      element:option
-      value
-      innerValue
-  set:x:/-/0/*/value?value
-    src:x:/..for-each/*/__dp/#?value
-  set:x:/-2/0/*/innerValue?value
-    src:{0} - [{1}]
-      :x:/..for-each/*/__dp/#/*/name?value
-      :x:/..for-each/*/__dp/#/*/type?value
-      
-  // Checking if this is the currently selected page
-  if:x:/../*/get-session/0?value
-    equals:x:/..for-each/*/__dp/#?value
-    add:x:/..for-each/*/_option/0
-      src
-        selected
-  add:x:/../*/create-widget/*/widgets/*/container/=select-page/*/widgets
-    src:x:/..for-each/*/_option/0
-
-
-// Since CKEditor requires the BASEPATH variable to be set before the JavaScript is loaded,
-// and phosphorus.ajax loads JavaScript files before it executes JavaScript, we need to set
-// the BASEPATH variable for CKEditor HERE, to make sure it is set before we load the CKEditor 
-// JavaScript file
-include-javascript:"window.CKEDITOR_BASEPATH='/system42/ckeditor/';"
-
-
-// And just to be sure, we also load up CodeMirror javascript and CSS files here ...
-// Besides switching between pages when editing goes WAAAAY faster when we do it this way ...
-include-javascript-file
-  system42/codemirror/lib/codemirror.js
-  system42/codemirror/hyperlisp-mode.js
-  system42/codemirror/addon/selection/active-line.js
-  system42/codemirror/addon/display/placeholder.js
-  system42/codemirror/addon/display/fullscreen.js
-
-include-stylesheet-file
-  system42/codemirror/lib/codemirror.css
-  system42/codemirror/theme/blackboard.css
-  system42/codemirror/addon/display/fullscreen.css
-
-
-// creating the actual "edit page" widget
-create-widget:editor
+/*
+ * Creating our "Edit Page" Widget, which actually only contains 
+ * a header, back link, and a couple of drop down lists to create 
+ * new pages, and edit existing pages
+ */
+create-widget:page-editor
   class:span-24
-  oninit
-    get-session:page-editor.current-page
-    if:x:/-/0?value
-      sys42.edit-page
   widgets
-    literal:header
-      class:span-15
+    literal:page-editor-header
+      class:span-11
       style:"margin-top:18px;"
       element:h1
       innerValue:page editor
 
-    // The "new page ..." drop down list
-    container:new-page
-      element:select
-      class:span-3 prepend-top
-      onchange
-        sys42.create-page
-      widgets
-        literal
-          element:option
-          value:_default
-          innerValue:new page ...
-        literal
-          element:option
-          value:html
-          innerValue:html
-        literal
-          element:option
-          value:controls
-          innerValue:controls
-        literal
-          element:option
-          value:lambda
-          innerValue:lambda
-
-    // The select existing page to edit drop down
-    container:select-page
+    // The "Create new page ..." drop down list
+    container:create-new-page
       element:select
       class:span-4 prepend-top
+      oninit
+        create-literal-widget
+          element:option
+          parent:create-new-page
+          value:_default
+          innerValue:Create new page ...
+        list-files:system42/admin/page-editor/editors
+        for-each:x:/-/*?name
+          split:x:/./*/__dp?value
+            =:/
+          split:x:/-/0/-?name
+            =:.
+          add:x:/..for-each/*/create-literal-widget
+            src:"value:{0}"
+              :x:/..for-each/*/split/[1,2]/0?name
+          add:x:/..for-each/*/create-literal-widget
+            src:"innerValue:{0}"
+              :x:/..for-each/*/split/[1,2]/0?name
+          create-literal-widget
+            element:option
+            parent:create-new-page
       onchange
+        get-widget-property:create-new-page
+          value
+        sys42.execute-lisp-file:system42/admin/page-editor/templates/create-new-{0}-page.hl
+          :x:/../*/get-widget-property/*/*?value
+        add:x:/../*/insert-data/0
+          src:"type:{0}"
+            :x:/../*/get-widget-property/*/*?value
+        add:x:/../*/insert-data/0
+          src:x:/./-2/*
+        select-data:x:/*/*/p5.page/"=~/change-this-"
+        _high:int:1
+        for-each:x:/../*/select-data/*?value
+          split:x:/./*/__dp?value
+            =:-
+          if
+            can-convert:x:/./-/0/-?name
+              type:int
+            and:x:/./-/0/-?name.int
+              more-than-equals:x:/../*/_high?value
+            set:x:/../*/_high?value
+              +:x:/..for-each/*/split/0/-?name.int
+                _:1
+        set:x:/../*/insert-data/0?value
+          src:/change-this-{0}
+            :x:/../*/_high?value
+        insert-data
+          p5.page
+            name:Change this
+        set-widget-property:create-new-page
+          value:_default
 
-        // Figuring out which page user wants to edit
+    literal
+      class:span-1 prepend-top
+      innerValue:or
+
+    container:select-page
+      element:select
+      class:span-6 prepend-top
+      oninit
+        sys42.populate-select-page
+        sys42.update-page-editor
+      onchange
         get-widget-property:select-page
           value
-        if:x:/<?value
-          not-equals:_default
+        set-session:sys42.currently-edited-page
+          src:x:/./-/*/*(!/=_default)?value
+        sys42.update-page-editor
 
-          // User did choose an actual page
-          set:x:/+/*/src?value
-            src:x:/../*/get-widget-property/+/<?value
-          set-session:page-editor.current-page
-            src
-        else
+      events
+        sys42.get-currently-edited-page
+          get-session:sys42.currently-edited-page
+          set:x:/..?value
+            src:x:/./-/*?value
 
-          // User did choose the "Choose page ..." item
-          set-session:page-editor.current-page
+        sys42.populate-select-page
+          clear-widget:select-page
+          create-literal-widget
+            element:option
+            parent:select-page
+            value:_default
+            innerValue:Choose existing page to edit ...
+          get-session:sys42.currently-edited-page
+          select-data:x:/*/*/p5.page
+          for-each:x:/-/*
+            set:x:/..for-each/*/create-literal-widget/*/value?value
+              src:x:/..for-each/*/__dp/#?value
+            set:x:/..for-each/*/create-literal-widget/*/innerValue?value
+              src:{0} - [{1}]
+                :x:/..for-each/*/__dp/#/*/name?value
+                :x:/..for-each/*/__dp/#/*/type?value
+            if:x:/../*/get-session/0?value
+              equals:x:/..for-each/*/__dp/#?value
+              add:x:/..for-each/*/create-literal-widget
+                src
+                  selected
+            create-literal-widget
+              element:option
+              parent:select-page
+              value
+              innerValue
 
-        // Editing page
-        sys42.edit-page
-      widgets
-        literal
-          element:option
-          value:_default
-          innerValue:Choose page ...
     literal:back-link
       class:span-2 last prepend-top
       element:a
       href:/
       innerValue:back
-    container:editor-toolbar
+    container:page-editor-editor-surface
       class:span-24
-    container:editor-main-surface
-      class:span-24
+      events
+        sys42.update-page-editor
+          sys42.get-currently-edited-page
+          if:x:/-?value
+            select-data:x:/*/*/p5.page/"={0}"/*/type?value
+              :x:/../*/sys42.get-currently-edited-page?value
+            add:x:/+
+              src:"_id:{0}"
+                :x:/../*/sys42.get-currently-edited-page?value
+            sys42.execute-lisp-file:system42/admin/page-editor/editors/{0}.hl
+              :x:/./-2/*?value
+          else
+            clear-widget:page-editor-editor-surface
+
+
+
 

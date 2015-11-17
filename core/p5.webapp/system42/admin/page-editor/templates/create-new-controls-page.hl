@@ -1,0 +1,17 @@
+
+/*
+ * Returns default [controls] type of page
+ */
+insert-before:x:/../0
+  src
+    controls:@"/*
+ * Default [controls] type of page
+ * Edit this page to meet your own needs
+ */
+container:foo
+  class:span-24
+  widgets
+    literal:bar
+      innerValue:Howdy Controls World!"
+
+

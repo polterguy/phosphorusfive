@@ -1,0 +1,25 @@
+
+.cm-s-whiteboard { font-size:15px; }
+.cm-s-whiteboard .CodeMirror { background: #fafaff; color: #555; }
+.cm-s-whiteboard .CodeMirror-selected { background: #d0d0e0 !important; }
+.cm-s-whiteboard .CodeMirror-gutters { background: #f0f0f0; border-right: 0; }
+.cm-s-whiteboard .CodeMirror-guttermarker { color: #ff00ff; }
+.cm-s-whiteboard .CodeMirror-guttermarker-subtle { color: #888; }
+.cm-s-whiteboard .CodeMirror-linenumber { color: #aaaaaa; }
+.cm-s-whiteboard .CodeMirror-cursor { border-left: 1px solid #000 !important; }
+
+.cm-s-whiteboard .cm-keyword { color: #0E1EaF; }
+.cm-s-whiteboard .cm-lesser_keyword { color: #5E6EeF; }
+.cm-s-whiteboard .cm-active-event { color: #555; }
+.cm-s-whiteboard .cm-operator { color: #aa0000; }
+.cm-s-whiteboard .cm-string { color: #282; }
+.cm-s-whiteboard .cm-mstring { color: #282; }
+.cm-s-whiteboard .cm-comment { color: #888888; }
+.cm-s-whiteboard .cm-mcomment { color: #888888; }
+.cm-s-whiteboard .cm-expression { color: #982A2D; }
+.cm-s-whiteboard .cm-variable { color: #5F928F; }
+.cm-s-whiteboard .cm-type { color: #282A0C; }
+.cm-s-whiteboard .cm-value { color: #282; }
+.cm-s-whiteboard .cm-error { background: #9D1E15; color: #F8F8F8; }
+
+.cm-s-whiteboard .CodeMirror-activeline-background {background: #eeeefa !important;}

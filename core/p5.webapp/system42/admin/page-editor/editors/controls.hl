@@ -1,0 +1,22 @@
+
+/*
+ * Editor for [controls] types of pages
+ */
+
+
+/*
+ * Including JavaScript and CSS for CodeMirror
+ */
+include-javascript-file
+  system42/codemirror/lib/codemirror.js
+  system42/codemirror/hyperlisp-mode.js
+  system42/codemirror/addon/selection/active-line.js
+  system42/codemirror/addon/display/placeholder.js
+  system42/codemirror/addon/display/fullscreen.js
+include-stylesheet-file
+  system42/codemirror/lib/codemirror.css
+  system42/codemirror/theme/whiteboard.css
+  system42/codemirror/addon/display/fullscreen.css
+
+
+sys42.show-code:x:/..

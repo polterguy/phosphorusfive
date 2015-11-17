@@ -57,6 +57,7 @@
     <Compile Include="folder\Delete.cs" />
     <Compile Include="file\Move.cs" />
     <Compile Include="folder\Move.cs" />
+    <Compile Include="file\Copy.cs" />
   </ItemGroup>
   <ItemGroup />
   <ProjectExtensions>
