@@ -1,27 +1,29 @@
 
 /*
- * Responsible for loading up page of type [lambda]. A [lambda] type of page, is normally a
- * p5.lambda Hyperlisp script, declared as [lambda], allowing for a piece of [lambda] to execute,
- * passed in as [_args][lambda]
+ * Responsible for loading up page of type [controls]
  */
 
-
 // Checking to see if user has access to object first
-_go:true
-if:x:/../*/_args/*/role
-  sys42.get-user
-  if:x:/-/*/role?value
-    not-equals:x:/../*/_args/*/role?value
-    set:x:/../*/_go?value
-      src:false
+if
+  sys42.verify-access:x:/../*/_args/*/role?value
 
-// Adding the [lambda] object from page into lambda execution,
-// but only if user has access to object, or object has no access restrictions.
-if:x:/../*/_go?value.bool
+  // Loading Template and removing {content} and {header} widget entirely
+  set:x:/+?value
+    src:x:/../*/_args/*/template?value
 
-  // executing the [lambda] given
-  add:x:/+
-    src:x:/../*/_args/*/lambda?value
-  eval
+  // Loading up our template
+  load-file
+
+  // Removing {content} and setting {header}
+  set:x:/-/*/*/create-widget/*/widgets/**/={header}?value
+    src:x:/../*/_args/*/name?value
+  set:x:/-2/*/*/create-widget/*/widgets/**/={content}/.
+  eval:x:/./*/load-file/*
+
+  // Evaluating [lambda] from database
+  eval:x:/../*/_args/*/lambda?value
+
 else
   sys42.execute-lisp-file:system42/page-types/special-page/p5.no-access.hl
+
+

@@ -3,27 +3,68 @@
  * Responsible for loading up the user interface. Called by the framework when the UI is needed.
  * Notice that the URL of the page is the value of the [p5.page] object in the database 
  */
-
 set-event:p5.web.load-ui
 
-  // including blueprint.css
-  include-stylesheet-file:/media/css/main.css
+  // Including all stylesheets and JavaScript files for page
+  p5.web.include-stylesheets
+  p5.web.include-javascript
 
-  // figuring out which page to load according to arguments supplied [_form]
+  // Figuring out which page to load according to argument supplied in [_form]
   select-data:x:/*/*/p5.page/"={0}"
     :x:/../*/_form?value
 
-  // adding up all nodes from results of select-data into [execute-lisp-file]
+  // Adding up all nodes from results of select-data into [execute-lisp-file]
   add:x:/+2/*/_args
     src:x:/./-/*/*
 
   // Setting value of [execute-lisp-file] to type of page we're loading
   // If you look in "system42/page-types/" folder, you will see all the
-  // different tyoes of pages that exist in the system
+  // different types of pages that exist in the system. These types of
+  // pages are extendible, and can be added to to create custom types of
+  // pages. If you extend them, you should probably also create an editor
+  // for your page type
   set:x:/+?value
     src:system42/page-types/{0}.hl
       :x:/././-2/*/*/type?value
   sys42.execute-lisp-file
     _args
+
+
+/*
+ * Responsible for re-loading the user interface on postbacks (not Ajax postbacks)
+ * Since p5.ajax controls are persistently stored in ViewState, which again is stored in Session,
+ * you don't have to reload actual UI, but only make sure CSS files and JavaScript files 
+ * are included here
+ */
+set-event:p5.web.re-load-ui
+
+  p5.web.include-stylesheets
+  p5.web.include-javascript
+
+
+/*
+ * Responsible for making sure all CSS files are included
+ */
+set-event:p5.web.include-stylesheets
+
+  // Including bootstrap
+  include-stylesheet-file
+    /media/bootstrap/css/bootstrap.min.css
+    /media/css/main.css
+
+
+/*
+ * Responsible for making sure all JavaSccript files are included
+ */
+set-event:p5.web.include-javascript
+
+  // Including jQuery, then bootstrap
+  include-javascript-file
+    media/jquery-2.1.4.min.js
+    media/bootstrap/js/bootstrap.min.js
+    
+
+
+
 
 

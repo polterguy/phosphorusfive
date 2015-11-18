@@ -1,33 +1,29 @@
 
 /*
- * Responsible for loading up page of type [html]. Basically just passes in the given properties
- * from the given [_args] node into a template, defined as [_args][template], and executes the [template],
- * as any other p5.lambda Hyperlisp file.
+ * Responsible for loading up page of type [html]
  */
 
 // Checking to see if user has access to object first
-_go:true
-if:x:/../*/_args/*/role
-  sys42.get-user
-  if:x:/-/*/role?value
-    not-equals:x:/../*/_args/*/role?value
-    set:x:/../*/_go?value
-      src:false
+if
+  sys42.verify-access:x:/../*/_args/*/role?value
 
-// adding the controls from page object into create-widget Active Event [controls} collection
-// but only if user has access to object, or object has no access restrictions
-if:x:/../*/_go?value.bool
-
-  // passing in the [_args] given, and setting the correct value of our [template] as the file to execute
-  set:x:/+2?value
+  // Loading Template and exchanging {content} with HTML from database
+  set:x:/+?value
     src:x:/../*/_args/*/template?value
-  add:x:/+/*/_args
-    src:x:/../*/_args/*
 
-  // executing the [template] file to load up page with [_args] passed in
-  sys42.execute-lisp-file
-    _args
+  // Loading up our template
+  load-file
+
+  // setting the [header] and [content] of our page object from our database
+  set:x:/-/*/*/create-widget/*/widgets/**/={header}?value
+    src:x:/../*/_args/*/header?value
+  set:x:/-2/*/*/create-widget/*/widgets/**/={content}?value
+    src:x:/../*/_args/*/content?value
+  eval:x:/./*/load-file/*
+
 else
+
+  // Loading page that shows user does not have access to object
   sys42.execute-lisp-file:system42/page-types/special-page/p5.no-access.hl
 
 

@@ -21,7 +21,8 @@ create-widget:page-editor
     // The "Create new page ..." drop down list
     container:create-new-page
       element:select
-      class:span-4 prepend-top
+      class:span-4 prepend-top large
+
       oninit
         create-literal-widget
           element:option
@@ -43,6 +44,7 @@ create-widget:page-editor
           create-literal-widget
             element:option
             parent:create-new-page
+
       onchange
         get-widget-property:create-new-page
           value
@@ -74,25 +76,34 @@ create-widget:page-editor
             name:Change this
         set-widget-property:create-new-page
           value:_default
+        sys42.set-currently-edited-page:x:/../*/insert-data/0?value
+        sys42.populate-select-page
+        sys42.update-page-editor
 
     literal
-      class:span-1 prepend-top
+      class:span-1 prepend-top large
       innerValue:or
 
     container:select-page
       element:select
-      class:span-6 prepend-top
+      class:span-6 prepend-top large
+
       oninit
         sys42.populate-select-page
         sys42.update-page-editor
+
       onchange
         get-widget-property:select-page
           value
-        set-session:sys42.currently-edited-page
-          src:x:/./-/*/*(!/=_default)?value
+        sys42.set-currently-edited-page:x:/-/*/*(!/=_default)?value
         sys42.update-page-editor
 
       events
+
+        sys42.set-currently-edited-page
+          set-session:sys42.currently-edited-page
+            src:x:/../*/_arg?value
+
         sys42.get-currently-edited-page
           get-session:sys42.currently-edited-page
           set:x:/..?value
@@ -105,7 +116,7 @@ create-widget:page-editor
             parent:select-page
             value:_default
             innerValue:Choose existing page to edit ...
-          get-session:sys42.currently-edited-page
+          sys42.get-currently-edited-page
           select-data:x:/*/*/p5.page
           for-each:x:/-/*
             set:x:/..for-each/*/create-literal-widget/*/value?value
@@ -114,7 +125,7 @@ create-widget:page-editor
               src:{0} - [{1}]
                 :x:/..for-each/*/__dp/#/*/name?value
                 :x:/..for-each/*/__dp/#/*/type?value
-            if:x:/../*/get-session/0?value
+            if:x:/../*/sys42.get-currently-edited-page?value
               equals:x:/..for-each/*/__dp/#?value
               add:x:/..for-each/*/create-literal-widget
                 src
@@ -126,13 +137,14 @@ create-widget:page-editor
               innerValue
 
     literal:back-link
-      class:span-2 last prepend-top
+      class:span-2 last prepend-top large
       element:a
       href:/
       innerValue:back
     container:page-editor-editor-surface
       class:span-24
       events
+
         sys42.update-page-editor
           sys42.get-currently-edited-page
           if:x:/-?value
@@ -141,11 +153,62 @@ create-widget:page-editor
             add:x:/+
               src:"_id:{0}"
                 :x:/../*/sys42.get-currently-edited-page?value
+            sys42.create-common-toolbar
             sys42.execute-lisp-file:system42/admin/page-editor/editors/{0}.hl
-              :x:/./-2/*?value
+              :x:/./-3/*?value
+              _parent-widget:page-editor-editor-surface
           else
             clear-widget:page-editor-editor-surface
 
-
-
-
+        sys42.create-common-toolbar
+          create-widget
+            parent:page-editor-editor-surface
+            class:span-24
+            widgets
+              literal
+                element:label
+                for:page-name
+                innerValue:Name
+                has-id:false
+                class:span-2 large
+              void:page-name
+                element:input
+                type:text
+                class:title span-10
+                placeholder:Page name ...
+                value
+              literal
+                element:label
+                for:page-url
+                innerValue:URL
+                has-id:false
+                class:span-2 prepend-2 large
+              void:page-url
+                element:input
+                type:text
+                class:title span-8 last
+                placeholder:URL ...
+                value
+              literal
+                element:label
+                for:page-role
+                innerValue:Role
+                has-id:false
+                class:span-2 large clear
+              void:page-role
+                element:input
+                type:text
+                class:text
+                class:title span-10
+                placeholder:Access role ...
+                value
+              literal:save-button
+                element:button
+                innerValue:Save
+                class:span-4 large right
+                onclick
+              literal:delete-button
+                element:button
+                innerValue:Delete
+                class:span-4 large right
+                onclick

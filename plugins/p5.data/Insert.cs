@@ -30,39 +30,35 @@ namespace p5.data
             if (e.Args.Count == 0 && e.Args.Value == null)
                 return; // nothing to do here
 
-            // making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            // acquiring lock on database
+            lock (Common.Lock) {
 
-                // acquiring lock on database
-                lock (Common.Lock) {
+                // making sure database is initialized
+                Common.Initialize (context);
 
-                    // making sure database is initialized
-                    Common.Initialize (context);
+                // looping through all nodes given as children or through expression
+                var changed = new List<Node> ();
+                foreach (var idx in XUtil.Iterate<Node> (e.Args, context)) {
 
-                    // looping through all nodes given as children or through expression
-                    var changed = new List<Node> ();
-                    foreach (var idx in XUtil.Iterate<Node> (e.Args, context)) {
+                    // inserting node
+                    if (e.Args.Value is string && !XUtil.IsExpression (e.Args.Value)) {
 
-                        // inserting node
-                        if (e.Args.Value is string && !XUtil.IsExpression (e.Args.Value)) {
-
-                            // source is a string, and not an expression, making sure we add children of converted
-                            // string, since conversion routine creates a root node wrapping actual nodes in string
-                            foreach (var idxInner in idx.Children) {
-
-                                // inserting node
-                                InsertNode (idxInner, context, changed);
-                            }
-                        } else {
+                        // source is a string, and not an expression, making sure we add children of converted
+                        // string, since conversion routine creates a root node wrapping actual nodes in string
+                        foreach (var idxInner in idx.Children) {
 
                             // inserting node
-                            InsertNode (idx, context, changed);
+                            InsertNode (idxInner, context, changed);
                         }
-                    }
+                    } else {
 
-                    // saving all affected files
-                    Common.SaveAffectedFiles (context, changed);
+                        // inserting node
+                        InsertNode (idx, context, changed);
+                    }
                 }
+
+                // saving all affected files
+                Common.SaveAffectedFiles (context, changed);
             }
         }
 

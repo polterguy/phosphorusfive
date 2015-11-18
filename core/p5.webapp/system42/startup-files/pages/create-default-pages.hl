@@ -36,7 +36,8 @@ together what your developers create.</p>
 
     p5.page:/hello-world
       type:controls
-      name:Controls example
+      name:Hello World
+      template:system42/templates/main.hl
       controls:@"
 
 /*
@@ -45,28 +46,24 @@ together what your developers create.</p>
  * of it, through a declarative syntax
  */
 
-// this becomes the header of your page
-literal:header
-  element:h1
-  innerValue:""Hello World application""
-  class:span-20 last header prepend-top prepend-4
-
 // then we create a container, to hold child controls
 container:content
-  element:div
-  class:span-16 prepend-4 content
+  class:container
   widgets
-    literal
-      element:p
-      innerValue:@""This is an example of how you can create applications as an integral part 
+    container:main-row
+      class:row
+      widgets
+        literal
+          class:col-xs-12
+          innerValue:@""This is an example of how you can create applications as an integral part 
 of your website content, and have them run side-by-side your CMS pages, 
 as a web page with a list of server-side controls, making it possible 
 to declaratively create your applications, as a list of server-side web 
 controls, capable of executing p5.lambda Active Events as a response to 
 ajax events on the client-side.""
-    literal
-      element:p
-      innerValue:@""This type of application can easily be created with a visual interface, or 
+        literal
+          class:col-xs-12
+          innerValue:@""This type of application can easily be created with a visual interface, or 
 an IDE, without requiring complex concepts, such as code or programming, 
 by dragging and dropping objects into your design surface of your form. 
 The limitation is that the server controls must be known in advance, 
@@ -74,33 +71,30 @@ since you cannot inject server-side web controls easily, besides as
 the result of p5.lambda Active Events. In this type of application, you 
 have complete control over the rendering of your page, and there are no 
 pre-existing objects, such as ads or menus for you.""
-    literal
-      element:a
-      class:span-2
-      href:/
-      innerValue:Go back
-    literal
-      element:button
-      class:span-2 clear prepend-top
-      innerValue:click me!
-      onclick
-        create-widget
-
-          // 'main-controls-surface' is the ID for the main 
-          // container widget your entire hierarchy will be added into
-          parent:main-controls-surface
-          class:prepend-4 span-8 clear prepend-top
+        container
+          class:col-xs-12
           widgets
             literal
-              innerValue:@""this widget was <strong>dynamically</strong> 
-created as a consequence of you clicking the button. Try clicking it!""
+              element:button
+              class:btn btn-default
+              innerValue:click me!
               onclick
-                get-parent-widget:x:/../*/_event?value
-                delete-widget:x:/-/*?value"
+                create-widget
+                  parent:main-row
+                  class:col-xs-12
+                  widgets
+                    literal
+                      element:p
+                      innerValue:@""this widget was <strong>dynamically</strong> 
+        created as a consequence of you clicking the button. Try clicking me!""
+                      onclick
+                        get-parent-widget:x:/../*/_event?value
+                        delete-widget:x:/-/*?value"
 
-    p5.page:/lambda-world
+    p5.page:/hello-world-2
       type:lambda
-      name:Lambda example
+      name:Hello World 2.0
+      template:system42/templates/main.hl
       lambda:@"
 
 /*
@@ -109,52 +103,48 @@ created as a consequence of you clicking the button. Try clicking it!""
  * your page being loaded
  */
 
-create-widget:main-script-surface
+create-widget
   class:span-24 last
+  parent:content
   widgets
     literal
-      element:h1
-      class:span-16 last header prepend-top prepend-4
-      innerValue:""Hello World, lambda version""
-    literal
-      class:span-16 last prepend-top prepend-4
-      innerValue:@""This is an example of how you can create an application as a lambda object, 
+      element:div
+      class:col-xs-12
+      innerValue:@""<p>This is an example of how you can create an application as a lambda object, 
 that executes as the result of a page being requested, and have it run 
 side-by-side with your CMS pages, making it possible to create any amount 
-of complexity your website requires within a page.""
+of complexity your website requires within a page.</p>""
     literal
-      class:span-16 last prepend-4
-      innerValue:@""In this type of application, you are in complete control over the entire
+      element:div
+      class:col-xs-12
+      innerValue:@""<p>In this type of application, you are in complete control over the entire
 rendering of the page, which you must do by resorting to p5.lambda scripts, 
 and you can entirely dynamically create your page, having full control over 
-every aspect of it yourself.""
-    literal
-      element:a
-      class:span-2 clear prepend-4
-      href:/
-      innerValue:Go back
-    container
-      class:prepend-4 span-4 clear
+every aspect of it yourself.</p>""
+    container:result-container
+      class:col-xs-12
       widgets
         literal
           element:button
-          class:span-2 prepend-top
+          class:btn btn-default
           innerValue:click me!
           onclick
             create-widget
-              parent:main-script-surface
-              class:prepend-4 span-8 clear prepend-top
+              parent:result-container
+              class:col-xs-12
               widgets
                 literal
+                  element:p
                   innerValue:@""this widget was <strong>dynamically</strong>
 created as a consequence of you clicking the button. Try clicking it!""
                   onclick
                     get-parent-widget:x:/../*/_event?value
                     delete-widget:x:/-/*?value"
 
-    p5.page:/editor
+    p5.page:/admin/editor
       type:lambda
       name:Page editor
+      template:system42/templates/main.hl
       role:admin
       lambda:@"
 
@@ -164,9 +154,10 @@ created as a consequence of you clicking the button. Try clicking it!""
 sys42.execute-lisp-file:system42/admin/page-editor/page-editor.hl
 "
 
-    p5.page:/executor
+    p5.page:/admin/executor
       type:lambda
       name:P5 Lambda Evaluator
+      template:system42/templates/main.hl
       role:admin
       lambda:@"
 
@@ -176,9 +167,10 @@ sys42.execute-lisp-file:system42/admin/page-editor/page-editor.hl
 sys42.execute-lisp-file:system42/admin/executor.hl
 "
 
-    p5.page:/files
+    p5.page:/admin/files
       type:lambda
       name:File system
+      template:system42/templates/main.hl
       role:admin
       lambda:@"
 

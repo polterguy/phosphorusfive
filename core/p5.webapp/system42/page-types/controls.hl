@@ -1,29 +1,28 @@
 
 /*
- * Responsible for loading up page of type [controls]. A [controls] type of page object,
- * is normally a list of controls, declared as a [controls] collection, allowing to declaratively
- * load up a widget, from a list of controls passed in as [_args][controls]
+ * Responsible for loading up page of type [controls]
  */
 
-
 // Checking to see if user has access to object first
-_go:true
-if:x:/../*/_args/*/role
-  sys42.get-user
-  if:x:/-/*/role?value
-    not-equals:x:/../*/_args/*/role?value
-    set:x:/../*/_go?value
-      src:false
+if
+  sys42.verify-access:x:/../*/_args/*/role?value
 
-// Adding the controls from page object into create-widget Active Event [controls] collection
-// but only if user has access to object, or object has no access restrictions
-if:x:/../*/_go?value.bool
-  add:x:/+/*/widgets
+  // Loading Template and exchanging {content} widget entirely with [controls] from database
+  set:x:/+?value
+    src:x:/../*/_args/*/template?value
+
+  // Loading up our template
+  load-file
+
+  // setting the [header] and [content] of our page object from our database
+  add:x:/-/*/*/create-widget/*/widgets/**/={content}/./.
     src:x:/../*/_args/*/controls?value
+  set:x:/-2/*/*/create-widget/*/widgets/**/={header}?value
+    src:x:/../*/_args/*/name?value
+  set:x:/-3/*/*/create-widget/*/widgets/**/={content}/.
+  eval:x:/./*/load-file/*
 
-  // creating a widget wrapping our [controls] from page object
-  create-widget:main-controls-surface
-    class:span-24 last
-    widgets
 else
   sys42.execute-lisp-file:system42/page-types/special-page/p5.no-access.hl
+
+

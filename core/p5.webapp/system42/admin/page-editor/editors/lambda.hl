@@ -18,5 +18,12 @@ include-stylesheet-file
   system42/codemirror/theme/whiteboard.css
   system42/codemirror/addon/display/fullscreen.css
 
+// Retrieving the page object [lambda] object, and other properties from database
+select-data:x:/*/*/p5.page/"={0}"
+  :x:/../*/_id?value
 
-sys42.show-code:x:/..
+
+_sys42.show-code:x:/..
+
+
+

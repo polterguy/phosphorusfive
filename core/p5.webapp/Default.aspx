@@ -8,13 +8,13 @@
 <html>
     <head runat="server">
         <meta charset="utf-8">
-        <title>phosphorus five</title>
+        <title>Phosphorus Five - Embrace the Future!</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
     <body>
         <form id="form1" runat="server" autocomplete="off">
             <p5:Container
                 runat="server"
-                class="container"
                 id="cnt"/>
         </form>
     </body>

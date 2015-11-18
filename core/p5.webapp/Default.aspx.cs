@@ -58,6 +58,8 @@ namespace p5.webapp
             }
         }
 
+        #region [ -- Page overrides and initializers -- ]
+
         /*
          * Overridden to create context, and do other types of initialization, such as mapping up our Page_Load event,
          * URL-rewriting, and so on.
@@ -84,6 +86,8 @@ namespace p5.webapp
             // mapping up our Page_Load event for initial loading of web page
             if (!IsPostBack)
                 Load += Page_LoadInitialLoading;
+            else if (!Manager.IsPhosphorusRequest)
+                Load += Page_LoadInitialReLoading;
 
             // call base
             base.OnInit (e);
@@ -103,6 +107,22 @@ namespace p5.webapp
             // invoking the Active Event that actually loads our UI, now with a [_file] node, and possibly an [_args] node
             _context.Raise ("p5.web.load-ui", args);
         }
+        
+        /*
+         * Invoked for each consecutive postback (not Ajax postback)
+         * Useful for reloading stylesheets and such associated with the page
+         */
+        private void Page_LoadInitialReLoading (object sender, EventArgs e)
+        {
+            // Raising our [p5.web.re-load-ui] Active Event, to make sure JavaScript files and
+            // CSS files are included on non-Ajax postbacks
+            var args = new Node ("p5.web.re-load-ui");
+
+            // invoking the Active Event that actually loads our UI, now with a [_file] node, and possibly an [_args] node
+            _context.Raise ("p5.web.re-load-ui", args);
+        }
+
+        #endregion
 
         #region [ -- Creating and deleting Widgets -- ]
 
@@ -161,7 +181,7 @@ namespace p5.webapp
                 foreach (Control innerCtrl in new ArrayList(widget.Controls)) {
 
                     // Removing all events, both "lambda" and "ajax"
-                    RemoveAllEventsRecursive(widget);
+                    RemoveAllEventsRecursive(innerCtrl);
 
                     // Actually removing widget from Page control collection, and persisting our change
                     widget.RemoveControlPersistent (innerCtrl);

@@ -1,13 +1,7 @@
 
 /*
- * Template for showing [content] types of pages from the database.
+ * Template for showing any type of page
  */
-
-// setting the [header] and [content] of our page object from our database
-set:x:/../*/create-widget/*/widgets/**/={header}?value
-  src:x:/../*/_args/*/header?value
-set:x:/../*/create-widget/*/widgets/**/={content}?value
-  src:x:/../*/_args/*/content?value
 
 /*
  * Checking to see if user is logged in, and if so, we remove the login 
@@ -18,15 +12,16 @@ if:x:/-/*?count
   more-than:int:0
 
   // User is logged in with persistent cookie
-  set:x:/../**/container/=rhs/*/widgets/*
+  set:x:/../**/container/=login-wrapper
+  set:x:/../**/container/=show-login-controls-wrapper/*/widgets/*
   _logout-controls
     literal:logout
       element:button
-      class:span-2 last
+      class:btn btn-default
       innerValue:logout
       onclick
         sys42.logout-user
-  add:x:/../**/container/=rhs/*/widgets
+  add:x:/../**/container/=show-login-controls-wrapper/*/widgets
     src:x:/./-/*
 
 
@@ -48,18 +43,21 @@ for-each:x:/-/*
 
   // menu item "template"
   _menu-item
-    literal
-      element:a
-      class:span-4 last
-      has-id:false
-      innerValue
-      href
+    container
+      element:li
+      widgets
+        literal
+          element:a
+          class:span-4 last
+          has-id:false
+          innerValue
+          href
 
   // adding menu item, if we're supposed to
   if:x:/./*/_go?value.bool
-    set:x:/./-/*/literal/*/innerValue?value
+    set:x:/./-/**/literal/*/innerValue?value
       src:x:/..for-each/*/__dp/#/*/name?value
-    set:x:/./-/*/literal/*/href?value
+    set:x:/./-/**/literal/*/href?value
       src:x:/..for-each/*/__dp/#?value
     add:x:/../*/create-widget/*/widgets/**/container/=menu/*/widgets
       src:x:/././-/0
@@ -69,87 +67,115 @@ for-each:x:/-/*
  * creating our main widget, showing the webpage, now modified accordingly to the [_args] given
  */
 create-widget:template
-  class:main span-24 last
+  class:container
   widgets
+    container:menu-wrapper
+      element:nav
+      class:navbar navbar-default navbar-fixed-top
+      widgets
+        container
+          class:container-fluid
+          widgets
+            container
+              class:navbar-header
+              widgets
+                literal
+                  element:button
+                  type:button
+                  class:navbar-toggle collapsed
+                  data-toggle:collapse
+                  data-target:#navbar-main
+                  aria-expanded:false
+                  innerValue:"<span class=\"icon-bar\"></span>"
+                literal
+                  element:a
+                  href:"http://phosphorusfive.wordpress.com"
+                  innerValue:P5
+                  class:navbar-brand
+                  title:A Phosphorus Five production!
+            container:navbar-main
+              class:collapse navbar-collapse
+              widgets
+                container:menu
+                  element:ul
+                  class:nav navbar-nav
+                  widgets
     container
       has-id:false
-      class:span-20
+      class:row
       widgets
-        literal:header
-          element:h1
-          class:span-16 last header prepend-top prepend-4
-          innerValue:{header}
-        container:menu
-          element:div
-          class:span-4 menu
-          widgets
-        literal:content
-          element:div
-          class:span-16 last content
-          innerValue:{content}
-    container:rhs
-      element:div
-      class:span-4 last prepend-top
-      widgets
-        literal
-          class:span-4 last
-          has-id:false
-          innerValue:username
-          element:label
-        void:username
-          class:span-4 last
-          element:input
-          type:text
-          placeholder:username ...
-          onkeypress-script:"if (event.keyKode == 13) {p5.$('login').raise('onclick2');return false;}"
-        literal
-          class:span-4 last
-          has-id:false
-          innerValue:username
-          element:label
-        void:password
-          class:span-4 last
-          element:input
-          type:password
-          placeholder:password ...
-          onkeypress-script:"if (event.keyKode == 13) {p5.$('login').raise('onclick2');return false;}"
-        literal:error
-          class:span-4 last error
-          innerValue:wrong credentials
-          style:"display:none;"
         container
-          class:span-2 prepend-2 last
+          has-id:false
+          class:col-xs-8
           widgets
-            literal:login
+            literal:header
+              element:h1
+              class:col-xs-12
+              innerValue:{header}
+        container:show-login-controls-wrapper
+          class:col-xs-1 col-xs-push-3 prepend-top
+          widgets
+            literal
               element:button
-              class:span-2 last
-              innerValue:login
-              onclick-script:"p5.$('login').raise('onclick2');event.preventDefault();"
-              onclick2
-                get-widget-property:username
-                  value
-                get-widget-property:password
-                  value
-                set:x:/+2/*/username?value
-                  src:x:/././*/get-widget-property/[0,1]/+/<?value
-                set:x:/+1/*/password?value
-                  src:x:/././*/get-widget-property/[1,2]/+/<?value
-                sys42.login-user
-                  username
-                  password
-                if:x:/-/*/success?value
-                  equals:bool:false
-                  set-widget-property:error
-                    style:
-    container:footer
-      element:div
-      class:span-24 footer
+              class:btn button-default
+              innerValue:Login
+              onclick
+                set-widget-property:show-login-controls-wrapper
+                  class:hidden col-xs-2 col-xs-push-2 prepend-top
+                set-widget-property:login-wrapper
+                  class:form-inline col-xs-4 prepend-top show
+                include-javascript:@"var el = p5.$('username').el;el.focus();el.select();"
+        container:login-wrapper
+          class:form-inline col-xs-4 prepend-top hidden
+          widgets
+            container
+              has-id:false
+              class:form-group
+              widgets
+                void:username
+                  class:form-control input-sm
+                  element:input
+                  type:text
+                  placeholder:Username ...
+                void:password
+                  class:form-control input-sm
+                  element:input
+                  type:password
+                  placeholder:Password ...
+                literal:login
+                  element:button
+                  class:btn btn-default form-control input-sm
+                  innerValue:login
+                  onclick
+                    get-widget-property:username
+                      value
+                    get-widget-property:password
+                      value
+                    set:x:/+2/*/username?value
+                      src:x:/././*/get-widget-property/[0,1]/+/<?value
+                    set:x:/+1/*/password?value
+                      src:x:/././*/get-widget-property/[1,2]/+/<?value
+                    sys42.login-user
+                      username
+                      password
+                    if:x:/-/*/success?value
+                      equals:bool:false
+                      set-widget-property:username
+                        class:form-control input-sm text-danger
+    container:content
+      class:row
       widgets
         literal
-          element:p
-          has-id:false
-          innerValue:@"System42 is a <a href=""http://phosphorusfive.wordpress.com"">Phosphorus Five</a>
-Open Source/Free Software production, licensed under the terms of the MIT license, and copyright © Thomas Hansen - phosphorusfive@gmail.com"
-          class:prepend-4 span-20 last quiet small
+          element:div
+          class:col-xs-12
+          innerValue:{content}
+    container:footer
+      class:row
+      widgets
+        literal
+          element:small
+          class:col-xs-8 text-muted col-xs-push-2 prepend-top
+          innerValue:@"A <a href=""http://phosphorusfive.wordpress.com"">Phosphorus Five</a>
+Free Software product, licensed under the terms of the MIT license, copyright © <a href=""mailto:phosphorusfive@gmail.com"">Thomas Hansen</a>"
 
 
