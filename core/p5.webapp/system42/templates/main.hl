@@ -4,25 +4,9 @@
  */
 
 /*
- * Checking to see if user is logged in, and if so, we remove the login 
- * widget from the page, and replace it with a logout widget.
+ * Checking to see if user is logged in. Needed for parts of logic below
  */
 sys42.get-user
-if:x:/-/*?count
-  more-than:int:0
-
-  // User is logged in with persistent cookie
-  set:x:/../**/container/=login-wrapper
-  set:x:/../**/container/=show-login-controls-wrapper/*/widgets/*
-  _logout-controls
-    literal:logout
-      element:button
-      class:btn btn-default
-      innerValue:logout
-      onclick
-        sys42.logout-user
-  add:x:/../**/container/=show-login-controls-wrapper/*/widgets
-    src:x:/./-/*
 
 
 /*
@@ -33,28 +17,20 @@ if:x:/-/*?count
 select-data:x:/*/*/p5.page
 for-each:x:/-/*
 
-  // Checking to see if user has access to page
-  _go:true
-  if:x:/./*/__dp/#/*/role?value
-    if:x:/..for-each/*/__dp/#/*/role?value
-      not-equals:x:/../*/sys42.get-user/*/role?value
-      set:x:/..for-each/*/_go?value
-        src:false
-
-  // menu item "template"
+  // Menu item "template"
   _menu-item
     container
       element:li
       widgets
         literal
           element:a
-          class:span-4 last
           has-id:false
           innerValue
           href
 
-  // adding menu item, if we're supposed to
-  if:x:/./*/_go?value.bool
+  // Verifying user has access to page object
+  if
+    sys42.verify-access:x:/..for-each/*/__dp/#/*/role?value
     set:x:/./-/**/literal/*/innerValue?value
       src:x:/..for-each/*/__dp/#/*/name?value
     set:x:/./-/**/literal/*/href?value
@@ -64,22 +40,64 @@ for-each:x:/-/*
 
 
 /*
- * creating our main widget, showing the webpage, now modified accordingly to the [_args] given
+ * Adding login/logout button to navbar
  */
-create-widget:template
+add:x:/../*/create-widget/*/widgets/**/container/=menu/*/widgets
+  src
+    container
+      element:li
+      widgets
+        literal:login-logout-btn
+          element:a
+          innerValue:Login
+          href:#
+          onclick:"return p5.showLogin();"
+
+
+/*
+ * Modifying navbar Login button to Logout, if user is logged in
+ */
+if:x:/../*/sys42.get-user/*
+
+  // User is logged in, changing "Login" to "Logout"
+  set:x:/../*/create-widget/**/literal/=login-logout-btn/*/innerValue?value
+    src:Logout
+  set:x:/../*/create-widget/**/literal/=login-logout-btn/*/onclick?value
+  add:x:/../*/create-widget/**/literal/=login-logout-btn/*/onclick
+    src
+      sys42.logout-user
+else
+  include-javascript:@"
+$('#login-logout-btn').on('click', function(){
+    $('.navbar-toggle').click()
+});"
+    
+
+
+/*
+ * Creating our main template webpage
+ */
+create-widget:template-root
   class:container
   widgets
+
+    /*
+     * Our main bootstrap navbar menu, stuck to the top
+     */
     container:menu-wrapper
       element:nav
-      class:navbar navbar-default navbar-fixed-top
+      class:navbar navbar-default navbar-fixed-top navbar-inverse
       widgets
         container
+          has-id:false
           class:container-fluid
           widgets
             container
+              has-id:false
               class:navbar-header
               widgets
                 literal
+                  has-id:false
                   element:button
                   type:button
                   class:navbar-toggle collapsed
@@ -88,48 +106,49 @@ create-widget:template
                   aria-expanded:false
                   innerValue:"<span class=\"icon-bar\"></span>"
                 literal
+                  has-id:false
                   element:a
                   href:"http://phosphorusfive.wordpress.com"
-                  innerValue:P5
-                  class:navbar-brand
+                  class:navbar-brand glyphicon glyphicon-info-sign
                   title:A Phosphorus Five production!
             container:navbar-main
               class:collapse navbar-collapse
               widgets
                 container:menu
+                  has-id:false
                   element:ul
                   class:nav navbar-nav
                   widgets
+
+
+    /*
+     * Page content starts here, header and login/logout wrapper first
+     */    
     container
       has-id:false
       class:row
       widgets
         container
           has-id:false
-          class:col-xs-8
+          class:col-md-7 col-xs-9
           widgets
+
+            /*
+             * Header of page
+             */
             literal:header
-              element:h1
-              class:col-xs-12
-              innerValue:{header}
-        container:show-login-controls-wrapper
-          class:col-xs-1 col-xs-push-3 prepend-top
-          widgets
-            literal
-              element:button
-              class:btn button-default
-              innerValue:Login
-              onclick
-                set-widget-property:show-login-controls-wrapper
-                  class:hidden col-xs-2 col-xs-push-2 prepend-top
-                set-widget-property:login-wrapper
-                  class:form-inline col-xs-4 prepend-top show
-                include-javascript:@"var el = p5.$('username').el;el.focus();el.select();"
-        container:login-wrapper
-          class:form-inline col-xs-4 prepend-top hidden
-          widgets
-            container
               has-id:false
+              element:h1
+              innerValue:{header}
+
+
+        /*
+         * Login/logout widgets and helpers
+         */
+        container:login-wrapper
+          class:form-inline col-md-5 hidden col-md-push-1 col-xs-3
+          widgets
+            container:login-controls
               class:form-group
               widgets
                 void:username
@@ -137,11 +156,15 @@ create-widget:template
                   element:input
                   type:text
                   placeholder:Username ...
+                  onkeypress:"return p5.keyPressed(event);"
+                  onkeyup:"p5.keyUp(event);"
                 void:password
                   class:form-control input-sm
                   element:input
                   type:password
                   placeholder:Password ...
+                  onkeypress:"return p5.keyPressed(event);"
+                  onkeyup:"p5.keyUp(event);"
                 literal:login
                   element:button
                   class:btn btn-default form-control input-sm
@@ -151,17 +174,29 @@ create-widget:template
                       value
                     get-widget-property:password
                       value
-                    set:x:/+2/*/username?value
+                    set:x:/+2/0/*/_username?value
                       src:x:/././*/get-widget-property/[0,1]/+/<?value
-                    set:x:/+1/*/password?value
+                    set:x:/+1/0/*/_password?value
                       src:x:/././*/get-widget-property/[1,2]/+/<?value
-                    sys42.login-user
-                      username
-                      password
-                    if:x:/-/*/success?value
-                      equals:bool:false
-                      set-widget-property:username
-                        class:form-control input-sm text-danger
+                    if
+                      sys42.login-user
+                        _username
+                        _password
+
+                      // Reloading page to make sure everything is wired up together correctly
+                      include-javascript:"location.reload();"
+                    else
+
+                      // Oops, wrong credentials, or something
+                      set-widget-property:login-controls
+                        class:form-group has-error
+                      include-javascript:"p5.wrongCredentials();"
+
+
+    /*
+     * Actual dynamic content comes here, after navbar menu at top, 
+     * and header + login/logout widgets
+     */
     container:content
       class:row
       widgets
@@ -169,6 +204,11 @@ create-widget:template
           element:div
           class:col-xs-12
           innerValue:{content}
+
+
+    /*
+     * Copyright notice, and general (muted) information here
+     */
     container:footer
       class:row
       widgets
@@ -177,5 +217,34 @@ create-widget:template
           class:col-xs-8 text-muted col-xs-push-2 prepend-top
           innerValue:@"A <a href=""http://phosphorusfive.wordpress.com"">Phosphorus Five</a>
 Free Software product, licensed under the terms of the MIT license, copyright © <a href=""mailto:phosphorusfive@gmail.com"">Thomas Hansen</a>"
+
+
+/*
+ * Simple inline JavaScript functions, 
+ * referenced in event handlers for widgets above
+ */
+include-javascript:@"
+p5.showLogin = function() {
+  $('#login-wrapper').toggleClass('hidden');
+  $('#show-login-wrapper').toggleClass('hidden');
+  $('#username').focus().select();
+  return false;
+}
+p5.keyPressed = function(e) {
+  if(e.keyCode == 13) {
+    p5.$('login').raise('onclick');
+    return false;
+  }
+}
+p5.keyUp = function(e) {
+  if(e.keyCode == 27) {
+    $('#login-wrapper').toggleClass('hidden');
+    $('#show-login-wrapper').toggleClass('hidden');
+  }
+}
+p5.wrongCredentials = function() {
+  $('#login-wrapper').effect('shake');
+  $('#username').focus().select();
+}"
 
 

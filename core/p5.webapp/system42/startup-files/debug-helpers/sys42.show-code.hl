@@ -29,22 +29,18 @@ set-event:sys42.show-code
 
   // creating a widget showing the Hyperlisp code created from the given p5.lambda tree
   create-widget
-    class:info span-24
+    class:col-xs-12 show-lisp-dialogue
+    parent:content
     position:0
     widgets
       literal
         element:pre
-        class:span-24
         innerValue
       literal
-        oninit
-
-          // making sure close button has focus
-          include-javascript:"window.p5.$('{0}').el.focus();"
-            :x:/../*/_event?value
-        element:button
-        class:span-4 right last
-        innerValue:close
+        element:a
+        href:#
+        class:glyphicon glyphicon-remove
+        style:"position:absolute;top:10px;right:25px;cursor:pointer;"
         onclick
 
           // removing entire debug window

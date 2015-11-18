@@ -8,15 +8,15 @@
  * Including JavaScript and CSS for CodeMirror
  */
 include-javascript-file
-  system42/codemirror/lib/codemirror.js
-  system42/codemirror/hyperlisp-mode.js
-  system42/codemirror/addon/selection/active-line.js
-  system42/codemirror/addon/display/placeholder.js
-  system42/codemirror/addon/display/fullscreen.js
+  /system42/codemirror/lib/codemirror.js
+  /system42/codemirror/hyperlisp-mode.js
+  /system42/codemirror/addon/selection/active-line.js
+  /system42/codemirror/addon/display/placeholder.js
+  /system42/codemirror/addon/display/fullscreen.js
 include-stylesheet-file
-  system42/codemirror/lib/codemirror.css
-  system42/codemirror/theme/whiteboard.css
-  system42/codemirror/addon/display/fullscreen.css
+  /system42/codemirror/lib/codemirror.css
+  /system42/codemirror/theme/whiteboard.css
+  /system42/codemirror/addon/display/fullscreen.css
 
 // Retrieving the page object [lambda] object, and other properties from database
 select-data:x:/*/*/p5.page/"={0}"

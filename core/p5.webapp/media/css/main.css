@@ -8,3 +8,16 @@ body {
   margin-top:18px;
 }
 
+.prepend-bottom {
+  margin-bottom:18px;
+}
+
+.show-lisp-dialogue {
+  position:relative;
+}
+
+.p5-ck-editor {
+  display:inline-block;
+  width:100%;
+}
+

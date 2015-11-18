@@ -55,11 +55,11 @@
     <Content Include="system42\admin\files\media\folder.png" />
     <Content Include="system42\codemirror\hyperlisp-mode.js" />
     <Content Include="system42\codemirror\theme\whiteboard.css" />
-    <Content Include="media\jquery-2.1.4.min.js" />
     <Content Include="media\bootstrap\css\bootstrap.min.css" />
     <Content Include="media\bootstrap\css\bootstrap-theme.min.css" />
     <Content Include="media\bootstrap\js\bootstrap.min.js" />
     <Content Include="media\css\main.css" />
+    <Content Include="media\jquery\jquery-2.1.4.min.js" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -208,10 +208,12 @@
     <None Include="media\bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <None Include="media\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
     <None Include="system42\startup-files\users\sys42.verify-access.hl" />
+    <None Include="system42\page-types\special-page\not-found.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="system42\admin\files\media\" />
     <Folder Include="system42\admin\page-editor\editors\" />
     <Folder Include="system42\admin\page-editor\templates\" />
+    <Folder Include="media\jquery\" />
   </ItemGroup>
 </Project>

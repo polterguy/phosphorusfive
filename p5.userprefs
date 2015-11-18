@@ -1,40 +1,32 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="core/p5.webapp/Default.aspx">
+  <MonoDevelop.Ide.Workbench ActiveDocument="core/p5.webapp/system42/page-types/lambda.hl">
     <Files>
-      <File FileName="core/p5.webapp/system42/admin/page-editor/page-editor.hl" Line="140" Column="42" />
-      <File FileName="core/p5.webapp/system42/admin/page-editor/editors/lambda.hl" Line="26" Column="2" />
-      <File FileName="core/p5.webapp/media/css/main.css" Line="70" Column="59" />
-      <File FileName="core/p5.webapp/system42/startup-files/pf.web.load-ui.hl" Line="28" Column="1" />
-      <File FileName="plugins/p5.web/request/Parameters.cs" Line="54" Column="1" />
-      <File FileName="core/p5.webapp/Default.aspx" Line="7" Column="16" />
+      <File FileName="core/p5.webapp/system42/templates/main.hl" Line="172" Column="1" />
+      <File FileName="core/p5.webapp/system42/startup-files/pages/create-default-pages.hl" Line="108" Column="1" />
+      <File FileName="core/p5.webapp/system42/startup-files/pf.web.load-ui.hl" Line="26" Column="1" />
+      <File FileName="core/p5.webapp/system42/page-types/html.hl" Line="9" Column="1" />
+      <File FileName="core/p5.webapp/system42/page-types/controls.hl" Line="9" Column="1" />
+      <File FileName="core/p5.webapp/system42/page-types/lambda.hl" Line="23" Column="39" />
+      <File FileName="core/p5.webapp/system42/startup-files/users/sys42.verify-access.hl" Line="14" Column="18" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="core" expanded="True">
-            <Node name="p5.core" expanded="True" />
             <Node name="p5.webapp" expanded="True">
-              <Node name="media" expanded="True">
-                <Node name="css" expanded="True" />
-              </Node>
               <Node name="system42" expanded="True">
-                <Node name="admin" expanded="True">
-                  <Node name="page-editor" expanded="True">
-                    <Node name="editors" expanded="True" />
-                  </Node>
+                <Node name="page-types" expanded="True">
+                  <Node name="lambda.hl" selected="True" />
                 </Node>
-                <Node name="startup-files" expanded="True" />
+                <Node name="startup-files" expanded="True">
+                  <Node name="users" expanded="True" />
+                </Node>
                 <Node name="templates" expanded="True" />
               </Node>
-              <Node name="Default.aspx" expanded="True" selected="True" />
             </Node>
           </Node>
-          <Node name="plugins" expanded="True">
-            <Node name="p5.web" expanded="True">
-              <Node name="request" expanded="True" />
-            </Node>
-          </Node>
+          <Node name="plugins" expanded="True" />
           <Node name="samples" expanded="True" />
           <Node name="tests" expanded="True" />
         </State>

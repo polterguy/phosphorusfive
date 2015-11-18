@@ -16,7 +16,7 @@ if
 
   // setting the [header] and [content] of our page object from our database
   set:x:/-/*/*/create-widget/*/widgets/**/={header}?value
-    src:x:/../*/_args/*/header?value
+    src:x:/../*/_args/*/name?value
   set:x:/-2/*/*/create-widget/*/widgets/**/={content}?value
     src:x:/../*/_args/*/content?value
   eval:x:/./*/load-file/*

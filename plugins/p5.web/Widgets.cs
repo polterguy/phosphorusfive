@@ -244,19 +244,20 @@ namespace p5.web.ui.widgets
         }
 
         /*
-         * creates an event handler on the given widget for the given node. if the name of the node ends with "-script", the
-         * event will be assumed to be a JavaScript event, and simply sent back to client as JavaScript. if it does not end
-         * with "-script", the event will be handled as a server-side p5.lambda event
+         * Creates an event handler on the given widget for the given node. If the value of the node is set, the
+         * event will be assumed to be a JavaScript event, and simply sent back to client as JavaScript. If it 
+         * does not contain a value, the event will be handled as a server-side p5.lambda event, assuming children 
+         * widgets are lambda code to evaluate
          */
         private static void CreateEventHandler (ApplicationContext context, Widget widget, Node node)
         {
-            if (node.Name.EndsWith ("-script")) {
+            if (node.Value != null) {
 
-                // javascript code to be executed
-                widget [node.Name.Replace ("-script", "")] = node.Get<string> (context);
+                // Javascript code to be executed
+                widget [node.Name] = node.Get<string> (context);
             } else {
 
-                // raising the Active Event that actually creates our ajax event handler for our p5.lambda object
+                // Raising the Active Event that actually creates our Ajax event handler for our p5.lambda object
                 var eventNode = new Node (node.Name, widget);
                 eventNode.Add ("_event", widget.ID);
                 eventNode.AddRange (node.Children);

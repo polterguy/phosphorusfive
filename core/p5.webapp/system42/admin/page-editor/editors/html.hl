@@ -6,7 +6,69 @@
 /*
  * Setting CKEditor's basepath
  */
+
+// making sure necessary CKEditor JavaScript files are included
+include-javascript-file:/system42/ckeditor/ckeditor.js
+
 include-javascript:"window.CKEDITOR_BASEPATH='/system42/ckeditor/';"
 
+select-data:x:/*/*/p5.page/"={0}"
+  :x:/../*/_id?value
 
-sys42.show-code:x:/..
+// setting the content of text-editor main surface to HTML from [p5.page]
+set:x:/../*/create-widget/*/widgets/*/literal/=ck-editor/*/innerValue?value
+  src:x:/../*/select-data/*/*/content?value
+
+// setting the href of the "preview page" to the URL of the page
+set:x:/../*/create-widget/*/widgets/**/literal/=preview/*/href?value
+  src:x:/../*/select-data/*?value
+
+// Setting parent widget
+set:x:/../*/create-widget/*/parent?value
+  src:x:/../*/_parent-widget?value
+
+// populating the "templates" drop down list
+list-files:system42/templates
+for-each:x:/-/*
+  _literal
+    literal
+      element:option
+      selected
+      value
+      innerValue
+  set:x:/-/*/literal/*/value?value
+    src:x:/..for-each/*/__dp/#?value
+  set:x:/-2/*/literal/*/innerValue?value
+    src:x:/..for-each/*/__dp/#?value
+  if:x:/..for-each/*/__dp/#?value
+    not-equals:x:/../*/select-data/*/*/template?value
+    set:x:/..for-each/*/_literal/*/literal/*/selected
+  add:x:/../*/create-widget/*/widgets/**/container/=page-template/*/widgets
+    src:x:/..for-each/*/_literal/*
+
+// creating our widget to display our editor surface
+create-widget
+  parent
+  class:p5-ck-editor col-xs-12
+  widgets
+    literal:ck-editor
+      element:textarea
+      innerValue
+
+
+// making sure our "textarea" HTML element is replaced with the CKEditor WYSIWYG editor
+include-javascript:@"CKEDITOR.replace('ck-editor',{
+  contentsCss: [CKEDITOR.basePath + 'contents.css', '/media/bootstrap/css/bootstrap.min.css'],
+  allowedContent: true,
+  height:400
+});"
+
+
+// making sure CKEditor automatically updates its associated "textarea"
+include-javascript:@"for (var i in CKEDITOR.instances) {
+   CKEDITOR.instances[i].on('change', function() { CKEDITOR.instances[i].updateElement() });
+}"
+
+
+
+_sys42.show-code:x:/..

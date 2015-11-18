@@ -17,7 +17,6 @@ if:x:/-?value
       type:html
       name:Home
       template:system42/templates/main.hl
-      header:Welcome to System42
       content:@"<p>System42 is an example minimalistic content management system, 
 built on top of <a href=""http://github.com/polterguy/phosphorus-five"">phosphorus.five</a>. Its purpose is to be an example
 CMS, while at the same time giving you some useful tools to get started with Phosphorus Five.</p>
@@ -29,7 +28,7 @@ while at the same time retaining the possibility to dive into <em>real</em> prog
 <p>This way your developers can focus on what they should focus on, allowing your non-technical staff to orchestrate
 together what your developers create.</p>
 
-<h2>Username/password</h2>
+<h3>Username/password</h3>
 
 <p>When you start system42 for the first time, then a default user with the username/password combination of
 <em>admin/admin</em> is created for you</p>"
@@ -81,7 +80,7 @@ pre-existing objects, such as ads or menus for you.""
               onclick
                 create-widget
                   parent:main-row
-                  class:col-xs-12
+                  class:col-xs-12 prepend-top
                   widgets
                     literal
                       element:p
@@ -93,7 +92,7 @@ pre-existing objects, such as ads or menus for you.""
 
     p5.page:/hello-world-2
       type:lambda
-      name:Hello World 2.0
+      name:Yo World
       template:system42/templates/main.hl
       lambda:@"
 
@@ -131,7 +130,7 @@ every aspect of it yourself.</p>""
           onclick
             create-widget
               parent:result-container
-              class:col-xs-12
+              class:col-xs-12 prepend-top
               widgets
                 literal
                   element:p
@@ -156,7 +155,7 @@ sys42.execute-lisp-file:system42/admin/page-editor/page-editor.hl
 
     p5.page:/admin/executor
       type:lambda
-      name:P5 Lambda Evaluator
+      name:Lambda Evaluator
       template:system42/templates/main.hl
       role:admin
       lambda:@"

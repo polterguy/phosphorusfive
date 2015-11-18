@@ -2,43 +2,41 @@
 /*
  * Logs in the user, creating a persistent cookie on disc for the current session if successful.
  * Pass in [_username] and [_password] as the credentials you wish to check. If login is not
- * successful, then [success] with value of false will be returned. If user is successfully
- * logged in, then a persistent cookie will be created on disc, and page will be reloaded.
+ * successful, then return value will be false, otherwise true
  */
 
 set-event:sys42.login-user
 
-  // checks to see if username/password combination exists in database
+  // Checks to see if username/password combination exists in database
   select-data:x:/*/*/p5.user/*(/username/"={0}"/.&/password/"={1}"/.)
-    :x:/..sys42.login-user/*/username?value
-    :x:/..sys42.login-user/*/password?value
-  if:x:/-/*?count
-    more-than:int:0
+    :x:/..sys42.login-user/*/_username?value
+    :x:/..sys42.login-user/*/_password?value
+  if:x:/-/*
 
-    // username/password combination existed in database, storing username in plain, and password hashed
-    // in persistent cookie
+    // Username/password combination existed in database, storing username in plain, 
+    // and password hashed in persistent cookie
 
-    // hashing password
+    // Hashing password
     p5.crypto.hash-string:x:/..sys42.login-user/*/select-data/*/*/password?value
     set:x:/+2/*/src/*/password?value
       src:x:/./-?value
     set:x:/+/*/src/*/username?value
       src:x:/..sys42.login-user/*/select-data/*/*/username?value
 
-    // returning cookie on browser response
+    // Returning cookie on browser response
     set-cookie:system42-user
       duration:int:365
       src
         username
         password
 
-    // reloading page, to make sure UI reflects that user is logged in
-    include-javascript:"location.reload();"
+    // Returning success to caller
+    set:x:/..?value
+      src:bool:true
   else
 
-    // username/password combination did not exist in database, returning failure
+    // Username/password combination did not exist in database, returning failure
     // to caller
-    insert-before:x:/..sys42.login-user/0
-      src
-        success:bool:false
+    set:x:/..?value
+      src:bool:false
 

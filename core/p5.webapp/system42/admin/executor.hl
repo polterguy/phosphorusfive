@@ -7,18 +7,18 @@
 
 // Making sure necessary JavaScript files are included
 include-javascript-file
-  system42/codemirror/lib/codemirror.js
-  system42/codemirror/addon/selection/active-line.js
-  system42/codemirror/addon/display/placeholder.js
-  system42/codemirror/addon/display/fullscreen.js
-  system42/codemirror/hyperlisp-mode.js
+  /system42/codemirror/lib/codemirror.js
+  /system42/codemirror/addon/selection/active-line.js
+  /system42/codemirror/addon/display/placeholder.js
+  /system42/codemirror/addon/display/fullscreen.js
+  /system42/codemirror/hyperlisp-mode.js
 
 
 // Making sure necessary Stylesheet files are included
 include-stylesheet-file
-  system42/codemirror/lib/codemirror.css
-  system42/codemirror/theme/whiteboard.css
-  system42/codemirror/addon/display/fullscreen.css
+  /system42/codemirror/lib/codemirror.css
+  /system42/codemirror/theme/whiteboard.css
+  /system42/codemirror/addon/display/fullscreen.css
 
 
 // Then checking to see if we've got some code stored in session, 
@@ -30,23 +30,14 @@ if:x:/-/0?value
 
 // Creating actual form to show the executor
 create-widget:executor
-  class:span-24 prepend-top
+  parent:content
+  class:col-xs-12
   widgets
-    literal:header
-      element:h1
-      class:span-23
-      innerValue:P5 Lambda Evaluator
-    literal:back
-      class:span-1 last
-      element:a
-      href:/
-      innerValue:back
 
     /*
      * Input textarea element, transformed into a CodeMirror widget later
      */
-    container:input-wrp
-      class:span-24
+    container
       widgets
         literal:input
           element:textarea
@@ -57,10 +48,10 @@ create-widget:executor
      * Evaluate widget, executes input, and puts the resulting code into output
      */
     container:exe-wrp
-      class:span-4 prepend-20
+      class:text-right
       widgets
         literal:execute
-          class:span-4 last
+          class:btn btn-primary
           element:button
           title:shortcut - F5
           innerValue:Evaluate
@@ -70,12 +61,12 @@ create-widget:executor
            * to retrieve custom JSON return values from server in JavaScript
            * the actual event handler is "onclick_", but this event is hidden,
            * and won't be rendered to the browser since it ends with "_".
-           * the DOM onclick event handler though, invokes a JavaScript function,
+           * the DOM javascript onclick event handler though, invokes a JavaScript function,
            * which actually invokes the actual server-side event, which again returns
            * the executed code as a piece of string, named "code", which the JavaScript
            * again puts into the "output" CodeMirror widget.
            */
-          onclick-script:"window._execute_lambda(event);"
+          onclick:"window._execute_lambda(event);"
           onclick_
 
             // First retrieving text from input textarea and converting to nodes
@@ -107,8 +98,8 @@ create-widget:executor
     /*
      * Output textarea element, transformed into a CodeMirror widget later
      */
-    container:output-wrp
-      class:span-24 prepend-top
+    container
+      class:prepend-top
       widgets
         literal:output
           element:textarea
@@ -116,12 +107,12 @@ create-widget:executor
 
     // The clear button for clearing the output editor surface
     container:clear-wrp
-      class:span-4 prepend-20 last
+      class:text-right
       widgets
         literal:clear
           element:button
           title:shortcut - F8
-          class:span-4 last
+          class:btn btn-default
           innerValue:clear
           onclick-script:"window._outputCode.getDoc().setValue('');event.preventDefault();"
 
@@ -178,7 +169,7 @@ window._inputCode.on('change',function (cMirror) {
 
 window._outputCode = CodeMirror.fromTextArea(document.getElementById('output'), {
   mode:'hyperlisp',
-  theme:'whiteboard',
+  theme:'whiteboard-ro',
   lineNumbers:true,
   styleActiveLine:true,
   path:'system42/codemirror/',

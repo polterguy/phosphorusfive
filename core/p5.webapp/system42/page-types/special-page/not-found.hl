@@ -1,0 +1,15 @@
+
+/*
+ * Shows the "not found" page
+ */
+
+create-widget
+  class:span-24
+  widgets
+    literal:header
+      class:span-18 prepend-6 last prepend-top
+      element:h1
+      innerValue:Page not found!
+    literal:content
+      class:span-18 prepent-6 last prepend-top
+      innerValue:"404, 404, magical 404!"
