@@ -230,6 +230,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'list-widget-ajax-events':
         case 'list-widget-lambda-events':
         case 'include-javascript':
+        case 'send-javascript':
         case 'include-javascript-file':
         case 'include-stylesheet-file':
         case 'set-title':

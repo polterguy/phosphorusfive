@@ -57,6 +57,8 @@ namespace p5.ajax
         public class AjaxPage : Page, IAjaxPage
         {
             private PageStatePersister _statePersister;
+            private List<Tuple<string, bool>> _newJavaScriptObjects = new List<Tuple<string, bool>> ();
+            private List<string> _newCssFiles = new List<string> ();
 
             /// <summary>
             ///     Maximum number of ViewState entries in Session.
@@ -121,6 +123,7 @@ namespace p5.ajax
                 var lst = ViewState ["__p5_js_objects"] as List<Tuple<string, bool>>;
                 if (lst.Find (delegate (Tuple<string, bool> idx) { return idx.Item1 == url; }) == null) {
                     lst.Add (new Tuple<string, bool>(url, true));
+                    _newJavaScriptObjects.Add (new Tuple<string, bool>(url, true));
                 }
             }
             
@@ -135,6 +138,7 @@ namespace p5.ajax
                 var lst = ViewState ["__p5_js_objects"] as List<Tuple<string, bool>>;
                 if (lst.Find (delegate (Tuple<string, bool> idx) { return idx.Item1 == script; }) == null) {
                     lst.Add (new Tuple<string, bool>(script, false));
+                    _newJavaScriptObjects.Add (new Tuple<string, bool>(script, true));
                 }
             }
 
@@ -142,13 +146,14 @@ namespace p5.ajax
             ///     Registers stylesheet file for page, that will be included on the client-side.
             /// </summary>
             /// <param name="url">url to stylesheet to register</param>
-            protected void RegisterStylesheetFile (string url)
+            public void RegisterStylesheetFile (string url)
             {
                 if (ViewState ["__p5_css_files"] == null)
                     ViewState ["__p5_css_files"] = new List<string> ();
                 var lst = ViewState ["__p5_css_files"] as List<string>;
                 if (!lst.Contains (url)) {
                     lst.Add (url);
+                    _newCssFiles.Add (url);
                 }
             }
 
@@ -163,9 +168,25 @@ namespace p5.ajax
             /*
              * returns the JavaScript file URL's we need to push to client during this request
              */
+            List<Tuple<string, bool>> IAjaxPage.NewJavaScriptToPush
+            {
+                get { return _newJavaScriptObjects; }
+            }
+
+            /*
+             * returns the JavaScript file URL's we need to push to client during this request
+             */
             List<string> IAjaxPage.StylesheetFilesToPush
             {
                 get { return ViewState ["__p5_css_files"] as List<string>; }
+            }
+
+            /*
+             * returns the JavaScript file URL's we need to push to client during this request
+             */
+            List<string> IAjaxPage.NewStylesheetFilesToPush
+            {
+                get { return _newCssFiles; }
             }
 
             protected override void OnPreInit (EventArgs e)

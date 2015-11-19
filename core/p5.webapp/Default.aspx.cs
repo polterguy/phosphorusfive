@@ -698,11 +698,8 @@ namespace p5.webapp
             }
         }
 
-        /// \todo implement inclusion of JavaScript files become async. Today it's included using a non-async GET request.
-        // such that if I include JavaScript first, for then to include a file, then the JavaScript is executed before the
-        // file is downloaded, vice versa. This is a problem with among other things the CK Editor in System42.
         /// <summary>
-        ///     Includes JavaScript file(s) on the client side.
+        ///     Includes JavaScript file(s) persistently
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -717,10 +714,8 @@ namespace p5.webapp
             }
         }
 
-        /// \todo implement support for including CSS files during Ajax requests.
-        /// \todo implement support for including CSS directly, without having a css file where css is included
         /// <summary>
-        ///     Includes CSS StyleSheet file(s) on the client side.
+        ///     Includes CSS StyleSheet file(s) persistently on the client side.
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>

@@ -23,21 +23,43 @@ namespace p5.ajax.core
         Manager Manager { get; }
 
         /// <summary>
-        ///     Returns the list of JavaScript files/objects page contains, and must be pushed back to client somehow.
+        ///     Returns the list of JavaScript files/objects page contains, 
+        ///     that are either already loaded on client, or will be loaded during the response
         /// </summary>
         /// <value>The JavaScript files to push back to client.</value>
         List<Tuple<string, bool>> JavaScriptToPush { get; }
 
         /// <summary>
-        ///     Returns the list of Stylesheet files that was added during this request, and must be pushed back to client somehow.
+        ///     Returns the list of new JavaScript files/objects page contains during this request, 
+        ///     and must be pushed back to client somehow
+        /// </summary>
+        /// <value>The JavaScript files to push back to client.</value>
+        List<Tuple<string, bool>> NewJavaScriptToPush { get; }
+
+        /// <summary>
+        ///     Returns the list of Stylesheet files that are either already loaded on client,
+        ///     or will be loaded during this response
         /// </summary>
         /// <value>The CSS files to push back to client.</value>
         List<string> StylesheetFilesToPush { get; }
+        
+        /// <summary>
+        ///     Returns the list of Stylesheet files that was added during this request, 
+        ///     and must be pushed back to client during this response
+        /// </summary>
+        /// <value>The CSS files to push back to client.</value>
+        List<string> NewStylesheetFilesToPush { get; }
 
         /// <summary>
         ///     Registers a JavaScript file to be included on to the client-side.
         /// </summary>
         /// <param name="url">URL to JavaScript file.</param>
         void RegisterJavaScriptFile (string url);
+        
+        /// <summary>
+        ///     Registers a stylesheet file to be included on to the client-side.
+        /// </summary>
+        /// <param name="url">URL to JavaScript file.</param>
+        void RegisterStylesheetFile (string url);
     }
 }
