@@ -42,7 +42,6 @@ create-widget:executor
         literal:input
           element:textarea
           innerValue:
-          placeholder:type Hyperlisp code here ...
 
     /*
      * Evaluate widget, executes input, and puts the resulting code into output
@@ -103,7 +102,6 @@ create-widget:executor
       widgets
         literal:output
           element:textarea
-          placeholder:after execution, resulting Hyperlisp code will end up here ...
 
     // The clear button for clearing the output editor surface
     container:clear-wrp
@@ -113,7 +111,7 @@ create-widget:executor
           element:button
           title:shortcut - F8
           class:btn btn-default
-          innerValue:clear
+          innerValue:Clear
           onclick-script:"window._outputCode.getDoc().setValue('');event.preventDefault();"
 
 
@@ -123,10 +121,7 @@ create-widget:executor
  * in addition we're also pushing the DOM JavaScript event
  * handler for the execute button's "click" event to client here
  */
-include-javascript:@"
-
-
-window._execute_lambda = function (event) {
+include-javascript:@"window._execute_lambda = function (event) {
   var el = p5.$('execute');
   el.raise('onclick_', {
     onsuccess:function(ret, evt) {
@@ -134,8 +129,6 @@ window._execute_lambda = function (event) {
     }});
   event.preventDefault();
 }
-
-
 window._inputCode = CodeMirror.fromTextArea(document.getElementById('input'), {
   mode:'hyperlisp',
   theme:'whiteboard',
@@ -165,11 +158,9 @@ window._inputCode = CodeMirror.fromTextArea(document.getElementById('input'), {
 window._inputCode.on('change',function (cMirror) {
   p5.$('input').el.value = cMirror.getValue();
 });
-
-
 window._outputCode = CodeMirror.fromTextArea(document.getElementById('output'), {
   mode:'hyperlisp',
-  theme:'whiteboard-ro',
+  theme:'whiteboard whiteboard-ro',
   lineNumbers:true,
   styleActiveLine:true,
   path:'system42/codemirror/',

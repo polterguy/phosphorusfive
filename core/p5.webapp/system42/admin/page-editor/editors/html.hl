@@ -1,33 +1,47 @@
 
 /*
- * Editor for [html] types of pages
+ * Editor for [html] types of pages, relies on CKEditor
  */
+
 
 /*
- * Setting CKEditor's basepath
+ * Setting CKEditor's basepath, notice this must occur BEFORE 
+ * we include the CKEditor's JavaScript files!
  */
-
-// making sure necessary CKEditor JavaScript files are included
-include-javascript-file:/system42/ckeditor/ckeditor.js
-
 include-javascript:"window.CKEDITOR_BASEPATH='/system42/ckeditor/';"
 
+
+/*
+ * Loading CKEditor's JavaScript file
+ */
+include-javascript-file:/system42/ckeditor/ckeditor.js
+
+
+/*
+ * Loading page from database
+ */
 select-data:x:/*/*/p5.page/"={0}"
   :x:/../*/_id?value
 
-// setting the content of text-editor main surface to HTML from [p5.page]
+
+/*
+ * Setings the value of textarea to [content] from database
+ */
 set:x:/../*/create-widget/*/widgets/*/literal/=ck-editor/*/innerValue?value
   src:x:/../*/select-data/*/*/content?value
 
-// setting the href of the "preview page" to the URL of the page
-set:x:/../*/create-widget/*/widgets/**/literal/=preview/*/href?value
-  src:x:/../*/select-data/*?value
 
-// Setting parent widget
+/*
+ * Making sure editor is loaded underneath the correct widget according to 
+ * caller's specifications
+ */
 set:x:/../*/create-widget/*/parent?value
   src:x:/../*/_parent-widget?value
 
-// populating the "templates" drop down list
+
+/*
+ * Populating the "template" drop down select list
+ */
 list-files:system42/templates
 for-each:x:/-/*
   _literal
@@ -46,7 +60,10 @@ for-each:x:/-/*
   add:x:/../*/create-widget/*/widgets/**/container/=page-template/*/widgets
     src:x:/..for-each/*/_literal/*
 
-// creating our widget to display our editor surface
+
+/*
+ * Creates the editor widget
+ */
 create-widget
   parent
   class:p5-ck-editor col-xs-12
@@ -56,19 +73,20 @@ create-widget
       innerValue
 
 
-// making sure our "textarea" HTML element is replaced with the CKEditor WYSIWYG editor
-include-javascript:@"CKEDITOR.replace('ck-editor',{
+/*
+ * JavaScript to replace textarea with CKEditor instance
+ */
+send-javascript:@"CKEDITOR.replace('ck-editor',{
   contentsCss: [CKEDITOR.basePath + 'contents.css', '/media/bootstrap/css/bootstrap.min.css'],
   allowedContent: true,
-  height:400
+  height:396
 });"
 
 
-// making sure CKEditor automatically updates its associated "textarea"
-include-javascript:@"for (var i in CKEDITOR.instances) {
+/*
+ * Making sure the textarea HTML innerValue updates every time CKEditor content updates,
+ * since we rely upon being able to postback this value over Ajax Requests and Post Requests
+ */
+send-javascript:@"for (var i in CKEDITOR.instances) {
    CKEDITOR.instances[i].on('change', function() { CKEDITOR.instances[i].updateElement() });
 }"
-
-
-
-_sys42.show-code:x:/..

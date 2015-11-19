@@ -36,8 +36,8 @@ namespace p5.ajax.core.filters
             TextReader reader = new StreamReader (this, Encoding);
             var content = reader.ReadToEnd ();
             content = IncludeStylesheetFiles (content);
-            content = IncludeJavaScriptFiles (content);
-            content = IncludeJavaScriptContent (content);
+            content = IncludeJavaScript (content);
+            content = SendJavaScriptContent (content);
             return content;
         }
 
@@ -73,9 +73,9 @@ namespace p5.ajax.core.filters
         /*
          * includes the JavaScript files we should include for this response
          */
-        private string IncludeJavaScriptFiles (string content)
+        private string IncludeJavaScript (string content)
         {
-            if ((Manager.Page as IAjaxPage).JavaScriptFilesToPush.Count == 0)
+            if ((Manager.Page as IAjaxPage).JavaScriptToPush.Count == 0)
                 return content; // nothing to do here
 
             // stripping away "</body>...</html>" from the end, and keeping the "</body>...</html>" parts to concatenate into result after
@@ -90,9 +90,18 @@ namespace p5.ajax.core.filters
             var builder = new StringBuilder (content.Substring (0, idxPosition));
 
             // including javascript files
-            foreach (var idxFile in (Manager.Page as IAjaxPage).JavaScriptFilesToPush) {
-                builder.Append (string.Format (@"    <script type=""text/javascript"" src=""{0}""></script>
-    ", idxFile.Replace ("&", "&amp;")));
+            foreach (var idxFile in (Manager.Page as IAjaxPage).JavaScriptToPush) {
+                if (idxFile.Item2) {
+
+                    // This is a file
+                    builder.Append (string.Format (@"    <script type=""text/javascript"" src=""{0}""></script>
+    ", idxFile.Item1.Replace ("&", "&amp;")));
+                } else {
+
+                    // This is a simple inline inclusion
+                    builder.Append (string.Format (@"    <script type=""text/javascript"">{0}</script>
+    ", idxFile.Item1));
+                }
             }
 
             // adding back up again the "</html>" parts
@@ -103,7 +112,7 @@ namespace p5.ajax.core.filters
         /*
          * includes the JavaScript content we should include for this response
          */
-        private string IncludeJavaScriptContent (string content)
+        private string SendJavaScriptContent (string content)
         {
             if (!Manager.Changes.Contains ("__p5_script"))
                 return content; // nothing to do here
@@ -119,7 +128,7 @@ namespace p5.ajax.core.filters
             }
             var builder = new StringBuilder (content.Substring (0, idxPosition));
 
-            // including javascript files
+            // including javascript
             builder.Append (@"    <script type=""text/javascript"">window.onload = function() {
 ");
             foreach (var idxScript in Manager.Changes ["__p5_script"] as List<string>) {

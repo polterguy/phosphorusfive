@@ -49,8 +49,8 @@ namespace p5.ajax.core.filters
             }
 
             // JavaScript files
-            if ((Manager.Page as IAjaxPage).JavaScriptFilesToPush.Count > 0) {
-                Manager.SendObject ("__p5_js_files", (Manager.Page as IAjaxPage).JavaScriptFilesToPush);
+            if ((Manager.Page as IAjaxPage).JavaScriptToPush.Count > 0) {
+                Manager.SendObject ("__p5_js_objects", (Manager.Page as IAjaxPage).JavaScriptToPush);
             }
 
             // stylesheet files

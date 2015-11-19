@@ -551,32 +551,10 @@
                     head.appendChild(el);
                 }
 
-                // inserting all JavaScript files sent from server
-                arr = json.__p5_js_files || [];
-                var idxScript;
-                for (idxScript = 0; idxScript < arr.length; idxScript++) {
-                    var xhr2 = new XMLHttpRequest();
-                    xhr2.open("GET", arr[idxScript], false);
-                    xhr2.onload = function() {
-                        if (xhr2.readyState === 4) {
-                            if (xhr2.status === 200) {
-                                eval(xhr2.responseText);
-                            } else {
-                                alert("couldn't download JavaScript file; '" + arr[idxScript] + "'");
-                            }
-                        }
-                    };
-                    xhr2.onerror = function() {
-                        alert("couldn't download JavaScript file; '" + arr[idxScript] + "'");
-                    };
-                    xhr2.send(null);
-                }
-
-                // executing all the JavaScript sent from server
-                arr = json.__p5_script || [];
-                for (idxScript = 0; idxScript < arr.length; idxScript++) {
-                    eval(arr[idxScript]);
-                }
+                // Inserting all JavaScript objects sent from server
+                // This can be both files and javascript inline inclusions
+                // After this is done, we execute the results from "send-script"
+                this._includeScripts(json.__p5_js_objects || [], json.__p5_script || []);
 
                 // removing current request from queue
                 window.p5._chain.splice(0, 1);
@@ -592,6 +570,45 @@
 
             // processing next request
             window.p5._next();
+        },
+
+        _includeScripts: function(arr, sent) {
+            if (arr.length > 0) {
+                var T = this;
+                if (arr[0]['Item2'] === true) {
+
+                    // JavaScript file
+                    var xhr2 = new XMLHttpRequest();
+                    xhr2.open("GET", arr[0]['Item1'], true);
+                    xhr2.onload = function() {
+                        if (xhr2.readyState === 4) {
+                            if (xhr2.status === 200) {
+                                eval(xhr2.responseText);
+                                arr.splice(0, 1);
+                                T._includeScripts(arr, sent);
+                            } else {
+                                throw "Couldn't download JavaScript file; '" + arr[0]['Item1'] + "'";
+                            }
+                        }
+                    };
+                    xhr2.onerror = function() {
+                        throw "Couldn't download JavaScript file; '" + arr[0]['Item1'] + "'";
+                    };
+                    xhr2.send(null);
+                } else {
+
+                    // JavaScript object inclusion
+                    eval(arr[0]['Item1']);
+                    arr.splice(0, 1);
+                    this._includeScripts(arr, sent);
+                }
+            } else {
+
+                // Finally, in the end, executing all the JavaScript sent from server
+                for (var idxScript = 0; idxScript < sent.length; idxScript++) {
+                    eval(sent[idxScript]);
+                }
+            }
         }
     };
 

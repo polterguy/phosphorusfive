@@ -4,7 +4,7 @@
  * called "sys42.download-file", then that file will be directly 
  * downloaded. If not, then file browser will start on page. This is
  * to let the file browser allow for downloading files by simply doing
- * a "location.reload();" JavaScript inclusion.
+ * a "window.location.reload(true);" JavaScript inclusion.
  */
 
 // Checking session if there's a file we should download

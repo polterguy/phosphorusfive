@@ -86,8 +86,6 @@ namespace p5.webapp
             // mapping up our Page_Load event for initial loading of web page
             if (!IsPostBack)
                 Load += Page_LoadInitialLoading;
-            else if (!Manager.IsPhosphorusRequest)
-                Load += Page_LoadInitialReLoading;
 
             // call base
             base.OnInit (e);
@@ -106,20 +104,6 @@ namespace p5.webapp
 
             // invoking the Active Event that actually loads our UI, now with a [_file] node, and possibly an [_args] node
             _context.Raise ("p5.web.load-ui", args);
-        }
-        
-        /*
-         * Invoked for each consecutive postback (not Ajax postback)
-         * Useful for reloading stylesheets and such associated with the page
-         */
-        private void Page_LoadInitialReLoading (object sender, EventArgs e)
-        {
-            // Raising our [p5.web.re-load-ui] Active Event, to make sure JavaScript files and
-            // CSS files are included on non-Ajax postbacks
-            var args = new Node ("p5.web.re-load-ui");
-
-            // invoking the Active Event that actually loads our UI, now with a [_file] node, and possibly an [_args] node
-            _context.Raise ("p5.web.re-load-ui", args);
         }
 
         #endregion
@@ -683,20 +667,38 @@ namespace p5.webapp
         #region [ -- Misc. global helpers -- ]
 
         /// <summary>
-        ///     Sends the given JavaScript to the client.
+        ///     Sends the given JavaScript to client once
+        /// </summary>
+        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "send-javascript")]
+        private void send_javascript (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Looping through each JavaScript snippet
+            foreach (var idxSnippet in XUtil.Iterate<string> (e.Args, context)) {
+
+                // Passing file to client
+                Manager.SendJavaScriptToClient (idxSnippet);
+            }
+        }
+        
+        /// <summary>
+        ///     Includes the given JavaScript on page persistently
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "include-javascript")]
         private void include_javascript (ApplicationContext context, ActiveEventArgs e)
         {
-            // Retrieving JavaScript and sending to client
-            var js = XUtil.Single<string> (e.Args, context);
-            Manager.SendJavaScriptToClient (js);
+            // Looping through each JavaScript snippet
+            foreach (var idxSnippet in XUtil.Iterate<string> (e.Args, context)) {
+
+                // Passing file to client
+                RegisterJavaScript (idxSnippet);
+            }
         }
 
         /// \todo implement inclusion of JavaScript files become async. Today it's included using a non-async GET request.
-        /// \todo Make sure inclusion of JavaScript files, and inclusion of JavaScript content is being executed sequentially,
         // such that if I include JavaScript first, for then to include a file, then the JavaScript is executed before the
         // file is downloaded, vice versa. This is a problem with among other things the CK Editor in System42.
         /// <summary>
@@ -783,6 +785,18 @@ namespace p5.webapp
                 // Redirecting using Response object
                 Page.Response.Redirect (XUtil.Single<string> (e.Args, context));
             }
+        }
+
+        /// <summary>
+        ///     Reloads the current document
+        /// </summary>
+        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "reload-location")]
+        private void reload_location (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Redirecting using JavaScript
+            Manager.SendJavaScriptToClient (string.Format ("window.location.replace(window.location.pathname);"));
         }
 
         /// <summary>

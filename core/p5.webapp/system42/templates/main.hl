@@ -184,13 +184,13 @@ create-widget:template-root
                         _password
 
                       // Reloading page to make sure everything is wired up together correctly
-                      include-javascript:"location.reload();"
+                      send-javascript:"window.location.replace(window.location.pathname);"
                     else
 
                       // Oops, wrong credentials, or something
                       set-widget-property:login-controls
                         class:form-group has-error
-                      include-javascript:"p5.wrongCredentials();"
+                      send-javascript:"p5.wrongCredentials();"
 
 
     /*

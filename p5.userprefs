@@ -1,32 +1,50 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="core/p5.webapp/system42/page-types/lambda.hl">
+  <MonoDevelop.Ide.Workbench ActiveDocument="core/p5.webapp/system42/admin/executor.hl">
     <Files>
-      <File FileName="core/p5.webapp/system42/templates/main.hl" Line="172" Column="1" />
-      <File FileName="core/p5.webapp/system42/startup-files/pages/create-default-pages.hl" Line="108" Column="1" />
-      <File FileName="core/p5.webapp/system42/startup-files/pf.web.load-ui.hl" Line="26" Column="1" />
-      <File FileName="core/p5.webapp/system42/page-types/html.hl" Line="9" Column="1" />
-      <File FileName="core/p5.webapp/system42/page-types/controls.hl" Line="9" Column="1" />
-      <File FileName="core/p5.webapp/system42/page-types/lambda.hl" Line="23" Column="39" />
-      <File FileName="core/p5.webapp/system42/startup-files/users/sys42.verify-access.hl" Line="14" Column="18" />
+      <File FileName="core/p5.webapp/system42/admin/page-editor/page-editor.hl" Line="170" Column="37" />
+      <File FileName="core/p5.webapp/system42/admin/page-editor/editors/html.hl" Line="81" Column="13" />
+      <File FileName="core/p5.webapp/system42/templates/main.hl" Line="142" Column="1" />
+      <File FileName="core/p5.webapp/system42/admin/page-editor/editors/lambda.hl" Line="86" Column="1" />
+      <File FileName="core/p5.webapp/system42/admin/page-editor/editors/controls.hl" Line="32" Column="1" />
+      <File FileName="core/p5.webapp/system42/startup-files/pages/create-default-pages.hl" Line="18" Column="16" />
+      <File FileName="core/p5.webapp/media/css/main.css" Line="20" Column="23" />
+      <File FileName="core/p5.webapp/system42/codemirror/theme/whiteboard.css" Line="34" Column="74" />
+      <File FileName="core/p5.webapp/system42/admin/executor.hl" Line="55" Column="30" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="core" expanded="True">
             <Node name="p5.webapp" expanded="True">
-              <Node name="system42" expanded="True">
-                <Node name="page-types" expanded="True">
-                  <Node name="lambda.hl" selected="True" />
+              <Node name="media" expanded="True">
+                <Node name="bootstrap" expanded="True">
+                  <Node name="css" expanded="True" />
                 </Node>
+                <Node name="css" expanded="True" />
+              </Node>
+              <Node name="system42" expanded="True">
+                <Node name="admin" expanded="True">
+                  <Node name="page-editor" expanded="True">
+                    <Node name="editors" expanded="True" />
+                  </Node>
+                  <Node name="executor.hl" selected="True" />
+                </Node>
+                <Node name="codemirror" expanded="True">
+                  <Node name="theme" expanded="True" />
+                </Node>
+                <Node name="page-types" expanded="True" />
                 <Node name="startup-files" expanded="True">
-                  <Node name="users" expanded="True" />
+                  <Node name="debug-helpers" expanded="True" />
+                  <Node name="pages" expanded="True" />
                 </Node>
                 <Node name="templates" expanded="True" />
               </Node>
             </Node>
           </Node>
-          <Node name="plugins" expanded="True" />
+          <Node name="plugins" expanded="True">
+            <Node name="p5.web" expanded="True" />
+          </Node>
           <Node name="samples" expanded="True" />
           <Node name="tests" expanded="True" />
         </State>

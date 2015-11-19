@@ -33,21 +33,9 @@ set-event:p5.web.load-ui
     // for your page type
     set:x:/+?value
       src:system42/page-types/{0}.hl
-        :x:/././-2/*/*/type?value
+        :x:/../*/select-data/*/*/type?value
     sys42.execute-lisp-file
       _args
-
-
-/*
- * Responsible for re-loading the user interface on postbacks (not Ajax postbacks)
- * Since p5.ajax controls are persistently stored in ViewState, which again is stored in Session,
- * you don't have to reload actual UI, but only make sure CSS files and JavaScript files 
- * are included here
- */
-set-event:p5.web.re-load-ui
-
-  p5.web.include-stylesheets
-  p5.web.include-javascript
 
 
 /*

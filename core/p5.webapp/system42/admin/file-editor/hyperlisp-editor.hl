@@ -87,14 +87,9 @@ create-widget:file-editor
  * making sure our "textarea" file HTML elements are 
  * replaced with the codemirror editor
  */
-include-javascript:@"
-
-if (window._inputCode) {{
-  window._inputCode.toTextArea();
-  var el = window._inputCode.getTextArea();
-  el.parentNode.removeChild(el);
-}}
-
+include-javascript:@"window._inputCode.toTextArea();
+var el = window._inputCode.getTextArea();
+el.parentNode.removeChild(el);
 window._inputCode = CodeMirror.fromTextArea(document.getElementById('file-editor-content'), {{
   mode:'hyperlisp',
   theme:'whiteboard',

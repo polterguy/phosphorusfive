@@ -19,4 +19,67 @@ include-stylesheet-file
   /system42/codemirror/addon/display/fullscreen.css
 
 
-_sys42.show-code:x:/..
+/*
+ * Loading page from database
+ */
+select-data:x:/*/*/p5.page/"={0}"
+  :x:/../*/_id?value
+
+
+/*
+ * Setting the content of editor-surface to the [controls] from database
+ */
+set:x:/../*/create-widget/*/widgets/*/literal/=editor-surface/*/innerValue?value
+  src:x:/../*/select-data/*/*/controls?value
+
+
+/*
+ * Making sure editor is loaded underneath the correct widget according to 
+ * caller's specifications
+ */
+set:x:/../*/create-widget/*/parent?value
+  src:x:/../*/_parent-widget?value
+
+
+/*
+ * Transforming our "textarea" HTML element to a codemirror editor
+ */
+send-javascript:@"(function(){
+var editor = CodeMirror.fromTextArea(document.getElementById('editor-surface'), {
+  mode:'hyperlisp',
+  theme:'whiteboard whiteboard-large',
+  lineNumbers:true,
+  styleActiveLine:true,
+  path:'/system42/codemirror/',
+  autofocus:true,
+  extraKeys: {
+    Tab: function(cm) {
+      var spaces = Array(cm.getOption('indentUnit') + 1).join(' ');
+      cm.replaceSelection(spaces);
+    },
+    ""F11"": function(cm) {
+      cm.setOption(""fullScreen"", !cm.getOption(""fullScreen""));
+    },
+    ""Esc"": function(cm) {
+      if (cm.getOption(""fullScreen"")) cm.setOption(""fullScreen"", false);
+    }
+  }
+});
+editor.on('change',function (cMirror) {
+  p5.$('editor-surface').el.value = cMirror.getValue();
+});
+})();"
+
+
+/*
+ * Creating our widget to display our editor surface
+ */
+create-widget
+  parent
+  class:col-xs-12
+  widgets
+    literal:editor-surface
+      element:textarea
+      innerValue
+
+

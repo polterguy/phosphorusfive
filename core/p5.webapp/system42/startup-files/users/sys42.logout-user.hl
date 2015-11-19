@@ -8,5 +8,5 @@ set-event:sys42.logout-user
 
   // destroying persistent cookie, and reloading location
   set-cookie:system42-user
-  include-javascript:"location.reload();"
+  send-javascript:"window.location.replace(window.location.pathname);"
 

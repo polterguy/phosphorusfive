@@ -56,8 +56,6 @@ namespace p5.ajax
         /// </summary>
         public class AjaxPage : Page, IAjaxPage
         {
-            private readonly List<string> _javaScriptFilesToPush = new List<string> ();
-            private readonly List<string> _stylesheetFilesToPush = new List<string> ();
             private PageStatePersister _statePersister;
 
             /// <summary>
@@ -118,15 +116,28 @@ namespace p5.ajax
             /// <param name="url">url to JavaScript to register</param>
             public void RegisterJavaScriptFile (string url)
             {
-                if (ViewState ["__p5_js_files"] == null)
-                    ViewState ["__p5_js_files"] = new List<string> ();
-                var lst = ViewState ["__p5_js_files"] as List<string>;
-                if (!lst.Contains (url)) {
-                    lst.Add (url);
-                    _javaScriptFilesToPush.Add (url);
+                if (ViewState ["__p5_js_objects"] == null)
+                    ViewState ["__p5_js_objects"] = new List<Tuple<string, bool>> ();
+                var lst = ViewState ["__p5_js_objects"] as List<Tuple<string, bool>>;
+                if (lst.Find (delegate (Tuple<string, bool> idx) { return idx.Item1 == url; }) == null) {
+                    lst.Add (new Tuple<string, bool>(url, true));
                 }
             }
             
+            /// <summary>
+            ///     Registers JavaScript for page, that will be included on the client-side.
+            /// </summary>
+            /// <param name="url">url to JavaScript to register</param>
+            public void RegisterJavaScript (string script)
+            {
+                if (ViewState ["__p5_js_objects"] == null)
+                    ViewState ["__p5_js_objects"] = new List<Tuple<string, bool>> ();
+                var lst = ViewState ["__p5_js_objects"] as List<Tuple<string, bool>>;
+                if (lst.Find (delegate (Tuple<string, bool> idx) { return idx.Item1 == script; }) == null) {
+                    lst.Add (new Tuple<string, bool>(script, false));
+                }
+            }
+
             /// <summary>
             ///     Registers stylesheet file for page, that will be included on the client-side.
             /// </summary>
@@ -138,16 +149,15 @@ namespace p5.ajax
                 var lst = ViewState ["__p5_css_files"] as List<string>;
                 if (!lst.Contains (url)) {
                     lst.Add (url);
-                    _stylesheetFilesToPush.Add (url);
                 }
             }
 
             /*
              * returns the JavaScript file URL's we need to push to client during this request
              */
-            List<string> IAjaxPage.JavaScriptFilesToPush
+            List<Tuple<string, bool>> IAjaxPage.JavaScriptToPush
             {
-                get { return _javaScriptFilesToPush; }
+                get { return ViewState ["__p5_js_objects"] as List<Tuple<string, bool>>; }
             }
 
             /*
@@ -155,7 +165,7 @@ namespace p5.ajax
              */
             List<string> IAjaxPage.StylesheetFilesToPush
             {
-                get { return _stylesheetFilesToPush; }
+                get { return ViewState ["__p5_css_files"] as List<string>; }
             }
 
             protected override void OnPreInit (EventArgs e)

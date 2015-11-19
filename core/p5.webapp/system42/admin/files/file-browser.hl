@@ -382,10 +382,10 @@ window.checkKey = function (e) {
           set:x:/./-3?value
             src:x:/../*/get-widget-property/*/*/innerValue?value
 
-        // Returning file over HTTP Response by setting session variable and doing "location.reload()"
+        // Returning file over HTTP Response by setting session variable and doing "window.location.reload(true)"
         set-session:sys42.download-file
           src:x:/././*/_file-path?value
-        include-javascript:"location.reload();"
+        send-javascript:"window.location.reload(true);"
       else
 
         // Shows toolbar for selected file

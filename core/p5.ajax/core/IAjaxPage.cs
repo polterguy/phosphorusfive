@@ -3,6 +3,7 @@
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details.
  */
 
+using System;
 using System.Collections.Generic;
 
 namespace p5.ajax.core
@@ -22,10 +23,10 @@ namespace p5.ajax.core
         Manager Manager { get; }
 
         /// <summary>
-        ///     Returns the list of JavaScript files that was added during this request, and must be pushed back to client somehow.
+        ///     Returns the list of JavaScript files/objects page contains, and must be pushed back to client somehow.
         /// </summary>
         /// <value>The JavaScript files to push back to client.</value>
-        List<string> JavaScriptFilesToPush { get; }
+        List<Tuple<string, bool>> JavaScriptToPush { get; }
 
         /// <summary>
         ///     Returns the list of Stylesheet files that was added during this request, and must be pushed back to client somehow.
