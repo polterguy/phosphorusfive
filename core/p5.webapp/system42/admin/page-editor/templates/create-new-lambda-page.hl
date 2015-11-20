@@ -4,9 +4,14 @@
  */
 
 
-/*
- * Returns default [lambda] page
- */
+list-files:system42/templates
+if:x:/-/*/"system42/templates/main.hl"
+  insert-before:x:/./+2/0/0
+    src:"template:system42/templates/main.hl"
+else
+  insert-before:x:/./+/0/0
+    src:"template:{0}"
+      :x:/../*/list-files/0?name
 insert-before:x:/../0
   src
     lambda:@"/*
@@ -14,6 +19,7 @@ insert-before:x:/../0
  * Edit this page to meet your own needs
  */
 create-widget:foo
+  parent:content
   class:span-24
   widgets
     literal:bar

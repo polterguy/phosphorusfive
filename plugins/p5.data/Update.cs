@@ -28,53 +28,49 @@ namespace p5.data
             if (ex == null)
                 throw new ArgumentException ("[update-data] requires an expression to select items from database");
 
-            // making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            // acquiring lock on database
+            lock (Common.Lock) {
 
-                // acquiring lock on database
-                lock (Common.Lock) {
+                // making sure database is initialized
+                Common.Initialize (context);
 
-                    // making sure database is initialized
-                    Common.Initialize (context);
+                // storing all affected nodes, such that we know which files to update
+                var changed = new List<Node> ();
 
-                    // storing all affected nodes, such that we know which files to update
-                    var changed = new List<Node> ();
+                // figuring out source, and executing the corresponding logic
+                if (e.Args.Count > 0 && e.Args.LastChild.Name == "rel-src") {
 
-                    // figuring out source, and executing the corresponding logic
-                    if (e.Args.Count > 0 && e.Args.LastChild.Name == "rel-src") {
+                    // iterating through all destinations, figuring out source relative to each destinations
+                    foreach (var idxDestination in e.Args.Get<Expression> (context).Evaluate (Common.Database, context, e.Args)) {
 
-                        // iterating through all destinations, figuring out source relative to each destinations
-                        foreach (var idxDestination in e.Args.Get<Expression> (context).Evaluate (Common.Database, context, e.Args)) {
+                        // figuring out which file Node updated belongs to, and storing in changed list
+                        Common.AddNodeToChanges (idxDestination.Node, changed);
 
-                            // figuring out which file Node updated belongs to, and storing in changed list
-                            Common.AddNodeToChanges (idxDestination.Node, changed);
-
-                            // source is relative to destination
-                            idxDestination.Value = XUtil.SourceSingle (e.Args, idxDestination.Node, context);
-                        }
-                    } else if (e.Args.Count > 0 && e.Args.LastChild.Name == "src") {
-
-                        // figuring out source
-                        var source = XUtil.SourceSingle (e.Args, context);
-
-                        // iterating through all destinations, updating with source
-                        foreach (var idxDestination in e.Args.Get<Expression> (context).Evaluate (Common.Database, context, e.Args)) {
-
-                            // figuring out which file Node updated belongs to, and storing in changed list
-                            Common.AddNodeToChanges (idxDestination.Node, changed);
-
-                            // doing actual update
-                            idxDestination.Value = source;
-                        }
-                    } else {
-
-                        // syntax error
-                        throw new ArgumentException ("No [src] or [rel-src] was given to [update-data].");
+                        // source is relative to destination
+                        idxDestination.Value = XUtil.SourceSingle (e.Args, idxDestination.Node, context);
                     }
-                
-                    // saving all affected files
-                    Common.SaveAffectedFiles (context, changed);
+                } else if (e.Args.Count > 0 && e.Args.LastChild.Name == "src") {
+
+                    // figuring out source
+                    var source = XUtil.SourceSingle (e.Args, context);
+
+                    // iterating through all destinations, updating with source
+                    foreach (var idxDestination in e.Args.Get<Expression> (context).Evaluate (Common.Database, context, e.Args)) {
+
+                        // figuring out which file Node updated belongs to, and storing in changed list
+                        Common.AddNodeToChanges (idxDestination.Node, changed);
+
+                        // doing actual update
+                        idxDestination.Value = source;
+                    }
+                } else {
+
+                    // syntax error
+                    throw new ArgumentException ("No [src] or [rel-src] was given to [update-data].");
                 }
+            
+                // saving all affected files
+                Common.SaveAffectedFiles (context, changed);
             }
         }
     }

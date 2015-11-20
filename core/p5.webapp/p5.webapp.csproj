@@ -209,6 +209,7 @@
     <None Include="media\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
     <None Include="system42\startup-files\users\sys42.verify-access.hl" />
     <None Include="system42\page-types\special-page\not-found.hl" />
+    <None Include="system42\admin\page-editor\editor-toolbar.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="system42\admin\files\media\" />

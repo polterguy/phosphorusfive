@@ -11,46 +11,31 @@ using p5.exp;
 
 /// <summary>
 ///     Namespace wrapping helpers for collections.
-/// 
-///     Namespace contains common helper operations for collection base classes, such as Session, Application and Cookies.
 /// </summary>
 namespace p5.web.ui.common
 {
     /// <summary>
     ///     Helper class to help set, get and list collections.
-    /// 
-    ///     Helper class for Active Events that needs to set, get and list collections, such as Session, Cookies and Application.
     /// </summary>
     public static class CollectionBase
     {
         /// <summary>
         ///     Callback functor object for Get operation.
-        /// 
-        ///     Functor that expects callback to return an object matching the given key parameter.
-        ///     Used in for instance Session and Application wrapper to retrieve one item with the given name.
         /// </summary>
         public delegate object GetDelegate (string key);
 
         /// <summary>
         ///     Callback functor object for list operation.
-        /// 
-        ///     Expects callback to return all keys. Used in among the Session and Application wrapper, to 
-        ///     ask for all keys in Session and Application.
         /// </summary>
         public delegate IEnumerable<string> ListDelegate ();
 
         /// <summary>
         ///     Callback functor object for set operation.
-        /// 
-        ///     Expects callback to change or set one item, with the given name, to the given value.
         /// </summary>
         public delegate void SetDelegate (string key, object value);
 
         /// <summary>
         ///     Sets a single value in a collection.
-        /// 
-        ///     Requres caller to supply a functor callback, that should set one item in the collection. Will loop through
-        ///     all keys caller requests to set, and invoke callback once for each item.
         /// </summary>
         /// <param name="node">Root node of collection Active Event invoker.</param>
         /// <param name="context">Application context.</param>
@@ -71,9 +56,6 @@ namespace p5.web.ui.common
 
         /// <summary>
         ///     Gets a value from a collection.
-        /// 
-        ///     Expects caller to supply a functor callback, that should retrieve one item from the collection.
-        ///     Will loop through all keys caller requests to set, and invoke callback once for each item.
         /// </summary>
         /// <param name="node">Root node of collection Active Event invoker.</param>
         /// <param name="context">Application context.</param>
@@ -127,10 +109,6 @@ namespace p5.web.ui.common
 
         /// <summary>
         ///     Lists all items from a collection.
-        /// 
-        ///     Expects caller to supply a functor callback, that should return all keys from the collection.
-        ///     Will loop through all keys supplied by caller, use them as a filter, and return all items from
-        ///     the collection, having a key that matches the filter(s).
         /// </summary>
         /// <param name="node">Root node of Active Event invoked.</param>
         /// <param name="context">Application context.</param>
@@ -161,7 +139,10 @@ namespace p5.web.ui.common
                 }
             }
         }
-        
+
+        /*
+         * Helper to retrieve source for setters
+         */
         private static object Source (Node evaluatedNode, ApplicationContext context)
         {
             object source = null;

@@ -11,6 +11,7 @@ using System.Collections;
 using System.Configuration;
 using System.Collections.Generic;
 using p5.exp;
+using p5Web = p5.web.ui.common;
 using p5.core;
 using p5.ajax.core;
 using p5.webapp.code;
@@ -655,11 +656,58 @@ namespace p5.webapp
         private void null_handler (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through each lambda event handler for given event
-            foreach (var idxLambda in WidgetLambdaEventStorage [e.Name]) {
+            foreach (var idxLambda in WidgetLambdaEventStorage [e.Name].ToList ()) {
 
                 // Raising Active Event
                 XUtil.RaiseEvent (context, e.Args, idxLambda, e.Name);
             }
+        }
+
+        #endregion
+
+        #region [ -- ViewState setters and getters -- ]
+
+        /// <summary>
+        ///     Sets one or more ViewState object(s).
+        /// </summary>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
+        [ActiveEvent (Name = "set-viewstate")]
+        private void set_viewstate (ApplicationContext context, ActiveEventArgs e)
+        {
+            p5Web.CollectionBase.Set (e.Args, context, delegate (string key, object value) {
+                if (value == null) {
+
+                    // removing object, if it exists
+                    ViewState.Remove (key);
+                } else {
+
+                    // adding object
+                    ViewState [key] = value;
+                }
+            });
+        }
+
+        /// <summary>
+        ///     Retrieves ViewState object(s).
+        /// </summary>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
+        [ActiveEvent (Name = "get-viewstate")]
+        private void get_viewstate (ApplicationContext context, ActiveEventArgs e)
+        {
+            p5Web.CollectionBase.Get (e.Args, context, key => ViewState [key]);
+        }
+
+        /// <summary>
+        ///     Lists all keys in the Session object.
+        /// </summary>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
+        [ActiveEvent (Name = "list-viewstate")]
+        private void list_viewstate (ApplicationContext context, ActiveEventArgs e)
+        {
+            p5Web.CollectionBase.List (e.Args, context, () => (from object idx in ViewState.Keys select idx.ToString ()).ToList ());
         }
 
         #endregion

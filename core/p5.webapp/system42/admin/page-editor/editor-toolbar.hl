@@ -1,0 +1,245 @@
+
+/*
+ * Creates the toolbar for the Page editor
+ */
+
+
+/*
+ * Loading page from database, and setting
+ * widget values accordingly
+ * TODO: Why can't we do this in oninit of main widget?
+ */
+select-data:x:/*/*/p5.page/"={0}"
+  :x:/../*/_id?value
+set:x:/../*/create-widget/**/void/=page-name/*/value?value
+  src:x:/../*/select-data/*/*/name?value
+set:x:/../*/create-widget/**/void/=page-url/*/value?value
+  src:x:/../*/select-data/*?value
+set:x:/../*/create-widget/**/void/=page-role/*/value?value
+  src:x:/../*/select-data/*/*/role?value
+
+
+/*
+ * Setting templates
+ */
+list-files:system42/templates
+for-each:x:/-/*?name
+  _lit
+    literal
+      parent:page-template
+      element:option
+      value
+      innerValue
+  split:x:/./*/__dp?value
+    =:/
+  split:x:/-/0/-?name
+    =:.
+  set:x:/..for-each/*/_lit/*/*/value?value
+    src:x:/..for-each/*/__dp?value
+  set:x:/..for-each/*/_lit/*/*/innerValue?value
+    src:x:/..for-each/*/split/[1,2]/0?name
+  if:x:/../*/select-data/*/*/template?value
+    equals:x:/..for-each/*/__dp?value
+    add:x:/..for-each/*/_lit/*
+      src
+        selected
+  add:x:/../*/create-widget/**/container/=page-template/*/widgets
+    src:x:/..for-each/*/_lit/*
+
+
+/*
+ * Creating actual toolbar
+ */
+create-widget
+  parent:page-editor-editor-surface
+  widgets
+
+
+    /*
+     * Page Name
+     */
+    container
+      class:col-md-4
+      widgets
+        container
+          class:form-group
+          widgets
+            container
+              class:input-group
+              widgets
+                literal
+                  element:div
+                  innerValue:Name
+                  class:input-group-addon
+                void:page-name
+                  element:input
+                  type:text
+                  class:form-control
+                  placeholder:Page name ...
+                  value
+
+
+    /*
+     * Page URL
+     */
+    container
+      class:col-md-3
+      widgets
+        container
+          class:form-group
+          widgets
+            container
+              class:input-group
+              widgets
+                literal
+                  element:div
+                  innerValue:URL
+                  has-id:false
+                  class:input-group-addon
+                void:page-url
+                  element:input
+                  type:text
+                  class:form-control
+                  placeholder:URL ...
+                  value
+
+
+    /*
+     * Page Template
+     */
+    container
+      class:col-md-3
+      widgets
+        container
+          class:form-group
+          widgets
+            container
+              class:input-group
+              widgets
+                literal
+                  element:div
+                  class:input-group-addon
+                  innerValue:Template
+                  has-id:false
+                container:page-template
+                  element:select
+                  class:form-control
+                  widgets
+
+
+    /*
+     * Page Access Role
+     */
+    container
+      class:col-md-2
+      widgets
+        container
+          class:form-group
+          widgets
+            container
+              class:input-group
+              widgets
+                literal
+                  element:div
+                  class:input-group-addon
+                  innerValue:Role
+                  has-id:false
+                void:page-role
+                  element:input
+                  type:text
+                  class:form-control
+                  placeholder:Access role ...
+                  value
+
+
+    /*
+     * Save and Delete button wrapper
+     */
+    container
+      class:col-md-12 text-right prepend-bottom
+      widgets
+
+
+        /*
+         * Save button
+         */
+        literal:save-button
+          element:button
+          innerValue:Save
+          class:btn btn-default
+          onclick
+            sys42.save-edited-page
+
+
+          /*
+           * Lambda events for "Save" button
+           */
+          events
+
+
+            /*
+             * Saves currently edited page
+             */
+            sys42.save-edited-page
+              sys42.get-currently-edited-page
+              _widgets
+                page-url
+                page-name
+                page-role
+                page-template
+              get-widget-property:x:/-/*?name
+                value
+              set:x:/../*/update-data/*/*?value
+                src:x:/../*/get-widget-property/*/page-url/*?value
+              set:x:/../*/update-data/*/*/*/name?value
+                src:x:/../*/get-widget-property/*/page-name/*?value
+              set:x:/../*/update-data/*/*/*/template?value
+                src:x:/../*/get-widget-property/*/page-template/*?value
+              if:x:/../*/get-widget-property/*/page-role/*?value
+                not-equals:""
+                add:x:/../*/update-data/*/*
+                  src:"role:{0}"
+                    :x:/../*/get-widget-property/*/page-role/*?value
+              sys42.get-page-editor-data
+              add:x:/../*/update-data/*/*
+                src:x:/../*/sys42.get-page-editor-data/*
+              update-data:x:/*/*/p5.page/"={0}"
+                :x:/../*/sys42.get-currently-edited-page?value
+                src
+                  p5.page
+                    name
+                    template
+              sys42.set-currently-edited-page:x:/../*/get-widget-property/*/page-url/*?value
+              sys42.populate-select-page
+              sys42.edit-page
+
+
+        /*
+         * Delete button
+         */
+        literal:delete-button
+          element:button
+          innerValue:Delete
+          class:btn btn-default
+          onclick
+            sys42.delete-currently-edited-page
+
+
+          /*
+           * Lambda events for delete button
+           */
+          events
+
+
+            /*
+             * Deletes the currently edited page
+             */
+            sys42.delete-currently-edited-page
+              sys42.get-currently-edited-page
+              delete-data:x:/*/*/p5.page/"={0}"
+                :x:/./-?value
+              _sys42.show-code:x:/..
+              sys42.set-currently-edited-page
+              sys42.populate-select-page
+              clear-widget:page-editor-editor-surface
+

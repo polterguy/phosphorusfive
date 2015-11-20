@@ -2,6 +2,16 @@
 /*
  * Returns default [controls] type of page
  */
+
+
+list-files:system42/templates
+if:x:/-/*/"system42/templates/main.hl"
+  insert-before:x:/./+2/0/0
+    src:"template:system42/templates/main.hl"
+else
+  insert-before:x:/./+/0/0
+    src:"template:{0}"
+      :x:/../*/list-files/0?name
 insert-before:x:/../0
   src
     controls:@"/*

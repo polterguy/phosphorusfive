@@ -73,13 +73,35 @@ create-widget
       innerValue
 
 
+      /*
+       * Lambda events for Editor Surface
+       */
+      events
+
+
+        /*
+         * "Sink" event required by main editor to retrieve data
+         * from specialized editor during saving process
+         */
+        sys42.get-page-editor-data
+          insert-before:x:/../0
+            src
+              type:html
+          get-widget-property:ck-editor
+            innerValue
+          insert-before:x:/../0
+            src:content
+          set:x:/../0?value
+            src:x:/../*/get-widget-property/*/*?value
+
+
 /*
  * JavaScript to replace textarea with CKEditor instance
  */
 send-javascript:@"CKEDITOR.replace('ck-editor',{
   contentsCss: [CKEDITOR.basePath + 'contents.css', '/media/bootstrap/css/bootstrap.min.css'],
   allowedContent: true,
-  height:396
+  height:381
 });"
 
 
