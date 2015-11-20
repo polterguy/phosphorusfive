@@ -1,0 +1,52 @@
+
+/*
+ * Responsible for creating the Active Event that shows the user a modal dialog,
+ * to force him to confirm some action
+ */
+set-event:sys42.confirm-action
+
+  set:x:/../*/create-widget/**/literal/=modal-header/*/innerValue?value
+    src:x:/../*/_header?value
+  set:x:/../*/create-widget/**/literal/=modal-body/*/innerValue?value
+    src:x:/../*/_message?value
+  add:x:/../*/create-widget/**/literal/=modal-ok/*/onclick
+    src:x:/../*/_onok/*
+
+  create-widget:modal-confirmation
+    class:modal fade
+    oninit
+      send-javascript:@"$('#modal-confirmation').modal('toggle');"
+    widgets
+      container
+        class:modal-dialog
+        role:document
+        widgets
+          container
+            class:modal-content
+            widgets
+              container
+                class:modal-header
+                widgets
+                  literal:modal-header
+                    element:h4
+                    innerValue
+              container
+                class:modal-body
+                widgets
+                  literal:modal-body
+                    innerValue:foo bar 2.0
+              container
+                class:modal-footer
+                widgets
+                  literal:modal-ok
+                    element:button
+                    class:btn btn-default
+                    innerValue:OK
+                    onclick
+                      send-javascript:@"$('#modal-confirmation').modal('toggle');"
+
+
+
+
+
+

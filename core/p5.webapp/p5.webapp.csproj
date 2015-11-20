@@ -210,11 +210,13 @@
     <None Include="system42\startup-files\users\sys42.verify-access.hl" />
     <None Include="system42\page-types\special-page\not-found.hl" />
     <None Include="system42\admin\page-editor\editor-toolbar.hl" />
+    <None Include="system42\startup-files\misc\sys42.confirm-action.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="system42\admin\files\media\" />
     <Folder Include="system42\admin\page-editor\editors\" />
     <Folder Include="system42\admin\page-editor\templates\" />
     <Folder Include="media\jquery\" />
+    <Folder Include="system42\startup-files\misc\" />
   </ItemGroup>
 </Project>

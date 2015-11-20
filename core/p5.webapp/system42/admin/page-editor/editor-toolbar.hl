@@ -222,7 +222,11 @@ create-widget
           innerValue:Delete
           class:btn btn-default
           onclick
-            sys42.delete-currently-edited-page
+            sys42.confirm-action
+              _header:Please confirm deletion
+              _message:Are you sure you want to delete this page, this action cannot be undone!
+              _onok
+                sys42.delete-currently-edited-page
 
 
           /*
@@ -238,8 +242,14 @@ create-widget
               sys42.get-currently-edited-page
               delete-data:x:/*/*/p5.page/"={0}"
                 :x:/./-?value
-              _sys42.show-code:x:/..
               sys42.set-currently-edited-page
               sys42.populate-select-page
               clear-widget:page-editor-editor-surface
+
+
+
+
+
+
+
 
