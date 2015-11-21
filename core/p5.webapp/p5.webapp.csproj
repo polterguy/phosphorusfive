@@ -60,6 +60,7 @@
     <Content Include="media\css\main.css" />
     <Content Include="media\jquery\jquery-2.1.4.min.js" />
     <Content Include="media\images\phosphorusfive-logo.png" />
+    <Content Include="system42\private\web.config" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -213,5 +214,6 @@
     <Folder Include="system42\admin\page-editor\templates\" />
     <Folder Include="media\jquery\" />
     <Folder Include="system42\startup-files\misc\" />
+    <Folder Include="system42\public\" />
   </ItemGroup>
 </Project>
