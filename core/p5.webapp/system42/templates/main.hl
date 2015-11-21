@@ -109,7 +109,7 @@ create-widget:template-root
                   has-id:false
                   element:a
                   href:"http://phosphorusfive.wordpress.com"
-                  class:navbar-brand glyphicon glyphicon-info-sign
+                  class:navbar-brand navbar-icon-p5
                   title:A Phosphorus Five production!
             container:navbar-main
               class:collapse navbar-collapse
@@ -214,9 +214,8 @@ create-widget:template-root
       widgets
         literal
           element:small
-          class:col-xs-8 text-muted col-xs-push-2 prepend-top
-          innerValue:@"A <a href=""http://phosphorusfive.wordpress.com"">Phosphorus Five</a>
-Free Software product, licensed under the terms of the MIT license, copyright © <a href=""mailto:phosphorusfive@gmail.com"">Thomas Hansen</a>"
+          class:col-xs-6 text-muted col-xs-push-3 prepend-top
+          innerValue:@"Free Software, MIT License, Copyright © <a href=""http://phosphorusfive.wordpress.com"">Thomas Hansen</a>"
 
 
 /*

@@ -4,6 +4,11 @@ body {
   padding-top: 70px;
 }
 
+.navbar-icon-p5 {
+    background:transparent url(../images/phosphorusfive-small-logo.png) no-repeat 10px 10px;
+    width:40px;
+}
+
 .prepend-top {
   margin-top:15px;
 }

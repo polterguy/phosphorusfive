@@ -59,6 +59,7 @@
     <Content Include="media\bootstrap\js\bootstrap.min.js" />
     <Content Include="media\css\main.css" />
     <Content Include="media\jquery\jquery-2.1.4.min.js" />
+    <Content Include="media\images\phosphorusfive-logo.png" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

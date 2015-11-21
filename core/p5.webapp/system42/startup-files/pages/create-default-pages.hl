@@ -18,20 +18,20 @@ if:x:/-?value
       name:Home
       template:system42/templates/main.hl
       content:@"<p>System42 is an example minimalistic content management system, 
-built on top of <a href=""http://github.com/polterguy/phosphorus-five"">phosphorus.five</a>. Its purpose is to be an example
+built on top of <a href=""http://github.com/polterguy/phosphorus-five"">Phosphorus Five</a>. Its purpose is to be an example
 CMS, while at the same time giving you some useful tools to get started with Phosphorus Five.</p>
 
-<p>Through p5.lambda, you can orchestrate your web application together, using a high-level abstraction language, that doesn't
-require much pre-existing programming skills from you. This creates opportunities for non-developers to create complex web applications, 
+<p>Through p5.lambda and Hyperlisp, you can orchestrate your web application together, using a high-level abstraction language, that doesn't
+require much, if any, pre-existing programming skills from you. This creates opportunities for non-developers to create complex web applications, 
 while at the same time retaining the possibility to dive into <em>real</em> programming for system developers.</p>
 
-<p>This way your developers can focus on what they should focus on, allowing your non-technical staff to orchestrate
+<p>This way your developers can focus on what they should focus on, allowing non-technical staff to orchestrate
 together what your developers create.</p>
 
 <h3>Username/password</h3>
 
 <p>When you start system42 for the first time, then a default user with the username/password combination of
-<em>admin/admin</em> is created for you</p>"
+<em>admin/admin</em> is created for you. Login in the navigational menu at the top.</p>"
 
     p5.page:/admin/editor
       type:lambda

@@ -48,8 +48,9 @@ namespace p5.file.folder
                     // iterating all files in current directory, and returning as nodes beneath args given
                     foreach (var idxFile in Directory.GetFiles (rootFolder + idx)) {
 
-                        // intentionally dropping "invisible linux 'backup' files"
-                        if (!idxFile.EndsWith ("~") && !idxFile.StartsWith (".")) {
+                        // intentionally dropping "invisible linux 'backup' files" and "invisible system files" on MAC
+                        string[] splits = idxFile.Split (new char[]{'/'});
+                        if (!idxFile.EndsWith ("~") && !splits[splits.Length - 1].StartsWith (".")) {
 
                             // file is not a backup file on Linux
                             // normalizing file path delimiters for both Linux and Windows, before we return it 

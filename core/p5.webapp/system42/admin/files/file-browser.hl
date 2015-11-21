@@ -13,11 +13,15 @@ include-stylesheet-file:/system42/admin/files/media/files.css
  */
 create-widget:main-folders
   parent:content
-  class:col-xs-12
+  class:col-xs-12 file-browser
+
+  /*
+   * Loads up files from current folder or 
+   * root folder if there is no current folder, and
+   * if there's a selected file/folder, will display 
+   * selected file/folder toolbar
+   */
   oninit
-
-
-    // Creating folders and files according to what our current directory is
     sys42.list-current-folder-content
     get-session:sys42.selected-file-folder-object
     if:x:/-/*?value
@@ -30,6 +34,10 @@ create-widget:main-folders
     container:selected-file-object-toolbar
     container:selected-file-object-editor
 
+
+  /*
+   * Lambda events for the main folder browser widget
+   */
   events
 
 
@@ -77,52 +85,42 @@ create-widget:main-folders
      */
     sys42.delete-selected-file-folder
       get-session
-        sys42.current-folder
         sys42.selected-file-folder-object
-        sys42.selected-file-folder-type
-      find-widgets:folder-content
-        innerValue:x:/./-/*/sys42.selected-file-folder-object?value
-      get-widget-property:x:/-/*?name
-        class
-      split:x:/-/*/*?value
-        =:" "
-      if:x:/-/*/warning
+      set:x:/+/*/_message?value
+        src::Are you sure you wish to delete <strong>'{0}'</strong>, this action cannot be undone once done
+          :x:/././-/*?value
+      sys42.confirm-action
+        _header:Please confirm deletion
+        _message
+        _onok
+          get-session
+            sys42.current-folder
+            sys42.selected-file-folder-object
+            sys42.selected-file-folder-type
+          if:x:/../*/get-session/*/sys42.selected-file-folder-type?value
+            =:file
 
-        // User has been warned, we can proceed with deleting file
-        if:x:/../*/get-session/*/sys42.selected-file-folder-type?value
-          =:file
+            // User is deleting a file
+            delete-file:{0}/{1}
+              :x:/../*/get-session/*/sys42.current-folder?value
+              :x:/../*/get-session/*/sys42.selected-file-folder-object?value
+          else
 
-          // User is deleting a file
-          delete-file:{0}/{1}
-            :x:/../*/get-session/*/sys42.current-folder?value
-            :x:/../*/get-session/*/sys42.selected-file-folder-object?value
-        else
+            // User is deleting a folder
+            delete-folder:{0}/{1}
+              :x:/../*/get-session/*/sys42.current-folder?value
+              :x:/../*/get-session/*/sys42.selected-file-folder-object?value
 
-          // User is deleting a folder
-          delete-folder:{0}/{1}
-            :x:/../*/get-session/*/sys42.current-folder?value
-            :x:/../*/get-session/*/sys42.selected-file-folder-object?value
+          // Clearing currently selected object and associated session variables
+          set-session
+            sys42.selected-file-folder-object
+            sys42.selected-file-folder-type
 
-        // Clearing currently selected object and associated session variables
-        set-session
-          sys42.selected-file-folder-object
-          sys42.selected-file-folder-type
+          // Re-listing widgets of current folder
+          sys42.list-current-folder-content
 
-        // Re-listing widgets of current folder
-        sys42.list-current-folder-content
-
-        // Deleting edit object toolbar
-        clear-widget:selected-file-object-toolbar
-      else
-
-        // User has NOT been warned, hence we warn him with css class
-        set-widget-property:x:/../*/find-widgets/*?name
-          class:{0} {1}
-            :x:/../*/get-widget-property/*/*?value
-            :warning
-        set-widget-property:delete-selected-file
-          value:sure?
-          class:span-3 yellow
+          // Deleting edit object toolbar
+          clear-widget:selected-file-object-toolbar
 
 
     /*
@@ -160,7 +158,7 @@ create-widget:main-folders
                     :x:/../*/get-session/*/sys42.current-folder?value
                     :x:/../*/get-widget-property/*/*/value?value
 
-                // Clearing selected file session value
+                // Changing selected file session value
                 set-session:sys42.selected-file-folder-object
                   src:x:/../*/get-widget-property/*/*/value?value
                 sys42.list-current-folder-content
@@ -174,23 +172,21 @@ create-widget:main-folders
                     :x:/../*/get-session/*/sys42.current-folder?value
                     :x:/../*/get-widget-property/*/*/value?value
 
-                // Clearing selected file session value
+                // Changing selected file session value
                 set-session:sys42.selected-file-folder-object
                   src:x:/../*/get-widget-property/*/*/value?value
                 sys42.list-current-folder-content
             onclose_
               delete-widget:rename-file
-            onkeyup-script:"window.checkKey(event);"
+            onkeyup:"window.checkKey(event);"
           void:stupid-fucking-browser-idiotic-behavior-needs-this-fucking-shit-to-not-post-form-on-carriage-return
             element:input
             type:text
-            class:span-8
-            value
             style:"display:none;"
 
 
       // Helper JavaScript to handle key events for saving and discarding new file/folder name
-      include-javascript:@"(function() {var el = window.p5.$('rename-input-el').el;el.focus();el.select();
+      include-javascript:@"(function() {
 window.checkKey = function (e) {
   if (e.keyCode == 13) {
     p5.$('rename-input-el').raise('onsubmit_');
@@ -201,6 +197,9 @@ window.checkKey = function (e) {
   }
 };
 })();"
+
+      // Helper JavaScript to set focus to rename textbox
+      send-javascript:@"(function(){var el = window.p5.$('rename-input-el').el;el.focus();el.select();})();"
 
 
     /*
@@ -311,9 +310,9 @@ window.checkKey = function (e) {
       // Getting name of folder that was clicked
       get-widget-property:x:/../*/_arg?value
         innerValue
-        class
-      if:x:/-/*/*/class?value
-        =:span-3 folder active-file
+      get-session:sys42.selected-file-folder-object
+      if:x:/-/*?value
+        =:x:/./-2/*/*?value
 
         // Folder is currently selected
         get-session:sys42.current-folder
@@ -330,7 +329,7 @@ window.checkKey = function (e) {
             :x:/././-2/0?value
             :x:/../*/get-widget-property/*/*/innerValue?value
             
-        // Deleting the "currently selected object" session variable
+        // Deleting the "currently selected object and type" session variable
         set-session:sys42.selected-file-folder-object
         set-session:sys42.selected-file-folder-type
 
@@ -359,9 +358,9 @@ window.checkKey = function (e) {
       // Getting name of file that was clicked
       get-widget-property:x:/../*/_arg?value
         innerValue
-        class
-      if:x:/-/*/*/class?value
-        =:span-3 file active-file
+      get-session:sys42.selected-file-folder-object
+      if:x:/-/*?value
+        =:x:/./-2/*/*?value
 
         // Getting file name and path
         _file-path
@@ -477,6 +476,7 @@ window.checkKey = function (e) {
       // creating widget containing all folders and files
       create-widget:all-files-and-folders
         parent:folder-content
+        class:prepend-top prepend-bottom
         widgets
 
 

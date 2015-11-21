@@ -6,10 +6,6 @@
     user-select: none;
 }
 
-.bread-crumb input {
-    cursor:pointer;
-}
-
 .file-object {
     width:80px;
     display:inline-block;
@@ -24,6 +20,8 @@
     border-radius:5px;
     overflow:hidden;
     text-overflow: ellipsis;
+    border:dashed 1px rgba(0,0,0,.0);
+    margin-right:10px;
 }
 
 .folder {
@@ -40,29 +38,7 @@
 }
 
 .active-file {
-    background-color:rgba(220,255,220,0.8);
+    border:dashed 1px rgba(0,0,0,.3);
+    background-color:rgba(0,128,0,.1);
 }
 
-.file-toolbar input {
-    cursor:pointer;
-}
-
-.warning {
-  animation: blink 1s steps(5, start) infinite;
-  -webkit-animation: blink 1s steps(5, start) infinite;
-  background-color:rgba(255,0,0,.05);
-}
-@keyframes blink {
-  to {
-    visibility: hidden;
-  }
-}
-@-webkit-keyframes blink {
-  to {
-    visibility: hidden;
-  }
-}
-
-input.yellow {
-    background-color:Yellow;
-}
