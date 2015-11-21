@@ -126,7 +126,26 @@ namespace p5.webapp
             CreateWidget (context, e.Args, type);
         }
 
-        
+        /// <summary>
+        ///     Checks if the given widget(s) exist
+        /// </summary>
+        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "widget-exist")]
+        private void widget_exist (ApplicationContext context, ActiveEventArgs e)
+        {
+            // making sure we clean up and remove all arguments passed in after execution
+            using (new p5.core.Utilities.ArgsRemover(e.Args)) {
+
+                // loping through all control ID's given
+                foreach (var widgetId in XUtil.Iterate<string> (e.Args, context)) {
+
+                    e.Args.Add(widgetId, FindControl<Control>(widgetId, Page) != null);
+                }
+                e.Args.Value = !e.Args.Children.Where(ix => !ix.Get<bool> (context)).GetEnumerator().MoveNext();
+            }
+        }
+
         /// <summary>
         ///     Deletes the given widget(s) entirely.
         /// </summary>

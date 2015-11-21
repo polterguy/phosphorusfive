@@ -1,21 +1,46 @@
 
 /*
  * Responsible for creating the Active Event that shows the user a modal dialog,
- * to force him to confirm some action
+ * to make user confirm some action before execution
  */
 set-event:sys42.confirm-action
 
-  set:x:/../*/create-widget/**/literal/=modal-header/*/innerValue?value
+  /*
+   * Making sure we delete any previously created dialogs
+   */
+  if
+    widget-exist:modal-confirmation
+    delete-widget:modal-confirmation
+
+  /*
+   * Setting properties of Modal Dialog
+   */
+  set:x:/../*/create-widget/**/literal/=modal-confirmation-header/*/innerValue?value
     src:x:/../*/_header?value
-  set:x:/../*/create-widget/**/literal/=modal-body/*/innerValue?value
+  set:x:/../*/create-widget/**/literal/=modal-confirmation-body/*/innerValue?value
     src:x:/../*/_message?value
-  add:x:/../*/create-widget/**/literal/=modal-ok/*/onclick
+
+  /*
+   * Appending code into OK onclick button's event handler
+   */
+  add:x:/../*/create-widget/**/literal/=modal-confirmation-ok/*/onclick
     src:x:/../*/_onok/*
 
+
+  /*
+   * Creating actual modal Widget
+   */
   create-widget:modal-confirmation
     class:modal fade
     oninit
-      send-javascript:@"$('#modal-confirmation').modal('toggle');"
+
+      // Making sure dialog is visible
+      send-javascript:@"
+      $('#modal-confirmation').modal('toggle');
+$('#modal-confirmation').on('shown.bs.modal', function () {
+    $('#modal-confirmation-ok').focus();
+})"
+
     widgets
       container
         class:modal-dialog
@@ -24,25 +49,45 @@ set-event:sys42.confirm-action
           container
             class:modal-content
             widgets
+
+              /*
+               * Header of dialog
+               */
               container
                 class:modal-header
                 widgets
-                  literal:modal-header
+                  literal
+                    element:button
+                    class:close
+                    data-dismiss:modal
+                    aria-label:Close
+                    innerValue:&times;
+                  literal:modal-confirmation-header
                     element:h4
-                    innerValue
+                    innerValue:Please confirm action
+
+              /*
+               * Body of dialog
+               */
               container
                 class:modal-body
                 widgets
-                  literal:modal-body
-                    innerValue:foo bar 2.0
+                  literal:modal-confirmation-body
+                    innerValue:Please confirm that you wish to do what you requested
+
+              /*
+               * Footer of dialog (contains OK and Cancel buttons)
+               */
               container
                 class:modal-footer
                 widgets
-                  literal:modal-ok
+                  literal:modal-confirmation-ok
                     element:button
                     class:btn btn-default
                     innerValue:OK
                     onclick
+
+                      // Hiding dialog
                       send-javascript:@"$('#modal-confirmation').modal('toggle');"
 
 

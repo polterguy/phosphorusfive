@@ -1,72 +1,9 @@
-﻿<Properties>
+﻿<Properties StartupItem="core/p5.webapp/p5.webapp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="core/p5.webapp/system42/admin/page-editor/editor-toolbar.hl">
+  <MonoDevelop.Ide.Workbench ActiveDocument="core/p5.webapp/system42/admin/page-editor/page-editor.hl">
     <Files>
-      <File FileName="core/p5.webapp/system42/admin/page-editor/editor-toolbar.hl" Line="48" Column="1" />
-      <File FileName="core/p5.webapp/system42/admin/page-editor/editors/html.hl" Line="90" Column="1" />
-      <File FileName="core/p5.webapp/system42/admin/page-editor/editors/lambda.hl" Line="100" Column="1" />
-      <File FileName="core/p5.webapp/system42/codemirror/theme/whiteboard.css" Line="41" Column="36" />
-      <File FileName="core/p5.webapp/system42/admin/page-editor/page-editor.hl" Line="278" Column="42" />
-      <File FileName="plugins/p5.data/Update.cs" Line="76" Column="1" />
-      <File FileName="core/p5.webapp/system42/admin/page-editor/editors/controls.hl" Line="100" Column="1" />
-      <File FileName="core/p5.webapp/Default.aspx.cs" Line="1009" Column="1" />
-      <File FileName="core/p5.core/ApplicationContext.cs" Line="197" Column="1" />
-      <File FileName="plugins/p5.web/Widgets.cs" Line="241" Column="1" />
-      <File FileName="core/p5.ajax/widgets/Widget.cs" Line="574" Column="1" />
-      <File FileName="core/p5.ajax/core/internals/AttributeStorage.cs" Line="316" Column="50" />
-      <File FileName="core/p5.ajax/core/Manager.cs" Line="109" Column="1" />
+      <File FileName="core/p5.webapp/system42/admin/page-editor/page-editor.hl" Line="1" Column="1" />
     </Files>
-    <Pads>
-      <Pad Id="ProjectPad">
-        <State expanded="True">
-          <Node name="core" expanded="True">
-            <Node name="p5.ajax" expanded="True">
-              <Node name="core" expanded="True">
-                <Node name="internals" expanded="True" />
-              </Node>
-              <Node name="widgets" expanded="True" />
-            </Node>
-            <Node name="p5.core" expanded="True" />
-            <Node name="p5.webapp" expanded="True">
-              <Node name="media" expanded="True">
-                <Node name="css" expanded="True" />
-              </Node>
-              <Node name="system42" expanded="True">
-                <Node name="admin" expanded="True">
-                  <Node name="page-editor" expanded="True">
-                    <Node name="editors" expanded="True" />
-                    <Node name="editor-toolbar.hl" selected="True" />
-                  </Node>
-                </Node>
-                <Node name="codemirror" expanded="True">
-                  <Node name="theme" expanded="True" />
-                </Node>
-              </Node>
-              <Node name="Default.aspx" expanded="True" />
-            </Node>
-          </Node>
-          <Node name="plugins" expanded="True">
-            <Node name="p5.data" expanded="True" />
-            <Node name="p5.web" expanded="True" />
-          </Node>
-          <Node name="samples" expanded="True" />
-          <Node name="tests" expanded="True" />
-        </State>
-      </Pad>
-      <Pad Id="ClassPad">
-        <State expanded="True" selected="True" />
-      </Pad>
-      <Pad Id="MonoDevelop.Debugger.WatchPad">
-        <State>
-          <Value>id</Value>
-        </State>
-      </Pad>
-      <Pad Id="MonoDevelop.NUnit.TestPad">
-        <State expanded="True" selected="True">
-          <Node name="tests" expanded="True" />
-        </State>
-      </Pad>
-    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
