@@ -8,7 +8,7 @@
 <html>
     <head runat="server">
         <meta charset="utf-8">
-        <title>Phosphorus Five - Embrace the Future!</title>
+        <title>Phosphorus Five - Enter The Future Today!</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
     <body>

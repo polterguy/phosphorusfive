@@ -7,6 +7,9 @@ set-event:sys42.confirm-action
 
   /*
    * Making sure we delete any previously created dialogs
+   * Notice that sice we only hide the dialog when it is closed, we need
+   * to check if any previous dialogs exist, and if so, delete them, before 
+   * we create any new ones
    */
   if
     widget-exist:modal-confirmation

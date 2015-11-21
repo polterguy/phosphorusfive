@@ -29,216 +29,210 @@ create-widget:page-editor
      * The "Create new page ..." drop down select list
      */
     container
-      class:col-md-4 col-xs-12
+      class:col-md-4 col-xs-12 form-group
       widgets
         container
-          class:form-group
+          class:input-group
           widgets
-            container
-              class:input-group
-              widgets
-                literal
-                  class:input-group-addon
-                  innerValue:Create
-                container:create-new-page
-                  element:select
-                  class:form-control
+            literal
+              class:input-group-addon
+              innerValue:Create
+            container:create-new-page
+              element:select
+              class:form-control
 
 
-                  /*
-                   * Populates the "create new page" select drop down list
-                   */
-                  oninit
-                    sys42.populate-create-new-page
+              /*
+               * Populates the "create new page" select drop down list
+               */
+              oninit
+                sys42.populate-create-new-page
 
 
-                  /*
-                   * Here we create a new page according to which option item
-                   * was selected
-                   */
-                  onchange
-                    sys42.create-new-page
+              /*
+               * Here we create a new page according to which option item
+               * was selected
+               */
+              onchange
+                sys42.create-new-page
 
 
-                  /*
-                   * Lambda events for "Create new page" widget
-                   */
-                  events
+              /*
+               * Lambda events for "Create new page" widget
+               */
+              events
 
 
-                    /*
-                     * Here we loop through all files in "system42/admin/page-editor/editors",
-                     * and create one "create new page" option item for each of those files
-                     */
-                    sys42.populate-create-new-page
-                      create-literal-widget
-                        element:option
-                        parent:create-new-page
-                        value:_default
-                        innerValue:New page ...
-                      list-files:system42/admin/page-editor/editors
-                      for-each:x:/-/*?name
-                        split:x:/./*/__dp?value
-                          =:/
-                        split:x:/-/0/-?name
-                          =:.
-                        add:x:/..for-each/*/create-literal-widget
-                          src:"value:{0}"
-                            :x:/..for-each/*/split/[1,2]/0?name
-                        add:x:/..for-each/*/create-literal-widget
-                          src:"innerValue:{0}"
-                            :x:/..for-each/*/split/[1,2]/0?name
-                        create-literal-widget
-                          element:option
-                          parent:create-new-page
+                /*
+                 * Here we loop through all files in "system42/admin/page-editor/editors",
+                 * and create one "create new page" option item for each of those files
+                 */
+                sys42.populate-create-new-page
+                  create-literal-widget
+                    element:option
+                    parent:create-new-page
+                    value:_default
+                    innerValue:New page ...
+                  list-files:system42/admin/page-editor/editors
+                  for-each:x:/-/*?name
+                    split:x:/./*/__dp?value
+                      =:/
+                    split:x:/-/0/-?name
+                      =:.
+                    add:x:/..for-each/*/create-literal-widget
+                      src:"value:{0}"
+                        :x:/..for-each/*/split/[1,2]/0?name
+                    add:x:/..for-each/*/create-literal-widget
+                      src:"innerValue:{0}"
+                        :x:/..for-each/*/split/[1,2]/0?name
+                    create-literal-widget
+                      element:option
+                      parent:create-new-page
 
 
-                    /*
-                     * Here we create a new page, according to what option user selected, by
-                     * executing "system42/admin/page-editor/templates/create-new-X-page.hl"
-                     * which is expected to create a new default page of selected type X
-                     */
-                    sys42.create-new-page
-                      get-widget-property:create-new-page
-                        value
-                      sys42.execute-lisp-file:system42/admin/page-editor/templates/create-new-{0}-page.hl
-                        :x:/../*/get-widget-property/*/*?value
-                      add:x:/../*/insert-data/0
-                        src:"type:{0}"
-                          :x:/../*/get-widget-property/*/*?value
-                      add:x:/../*/insert-data/0
-                        src:x:/./-2/*
-                      select-data:x:/*/*/p5.page/"=~/change-this-"
-                      _high:int:1
-                      for-each:x:/../*/select-data/*?value
-                        split:x:/./*/__dp?value
-                          =:-
-                        if
-                          can-convert:x:/./-/0/-?name
-                            type:int
-                          and:x:/./-/0/-?name.int
-                            more-than-equals:x:/../*/_high?value
-                          set:x:/../*/_high?value
-                            +:x:/..for-each/*/split/0/-?name.int
-                              _:1
-                      set:x:/../*/insert-data/0?value
-                        src:/change-this-{0}
-                          :x:/../*/_high?value
-                      insert-data
-                        p5.page
-                          name:Change this
-                      set-widget-property:create-new-page
-                        value:_default
-                      sys42.set-currently-edited-page:x:/../*/insert-data/0?value
-                      sys42.populate-select-page
-                      sys42.edit-page
+                /*
+                 * Here we create a new page, according to what option user selected, by
+                 * executing "system42/admin/page-editor/templates/create-new-X-page.hl"
+                 * which is expected to create a new default page of selected type X
+                 */
+                sys42.create-new-page
+                  get-widget-property:create-new-page
+                    value
+                  sys42.execute-lisp-file:system42/admin/page-editor/templates/create-new-{0}-page.hl
+                    :x:/../*/get-widget-property/*/*?value
+                  add:x:/../*/insert-data/0
+                    src:"type:{0}"
+                      :x:/../*/get-widget-property/*/*?value
+                  add:x:/../*/insert-data/0
+                    src:x:/./-2/*
+                  select-data:x:/*/*/p5.page/"=~/change-this-"
+                  _high:int:1
+                  for-each:x:/../*/select-data/*?value
+                    split:x:/./*/__dp?value
+                      =:-
+                    if
+                      can-convert:x:/./-/0/-?name
+                        type:int
+                      and:x:/./-/0/-?name.int
+                        more-than-equals:x:/../*/_high?value
+                      set:x:/../*/_high?value
+                        +:x:/..for-each/*/split/0/-?name.int
+                          _:1
+                  set:x:/../*/insert-data/0?value
+                    src:/change-this-{0}
+                      :x:/../*/_high?value
+                  insert-data
+                    p5.page
+                      name:Change this
+                  set-widget-property:create-new-page
+                    value:_default
+                  sys42.set-currently-edited-page:x:/../*/insert-data/0?value
+                  sys42.populate-select-page
+                  sys42.edit-page
 
 
     /*
      * The edit existing page select drop down list
      */
     container
-      class:col-md-8 col-xs-12
+      class:col-md-8 col-xs-12 form-group
       widgets
         container
-          class:form-group
+          class:input-group
           widgets
-            container
-              class:input-group
-              widgets
-                literal
-                  class:input-group-addon
-                  innerValue:Edit existing page
-                container:select-page
-                  element:select
-                  class:form-control
+            literal
+              class:input-group-addon
+              innerValue:Edit
+            container:select-page
+              element:select
+              class:form-control
 
 
-                  /*
-                   * Here we selected the currently edited page, if any, and 
-                   * load up the correct page editor
-                   */
-                  oninit
-                    sys42.populate-select-page
-                    if
-                      sys42.get-currently-edited-page
-                      sys42.edit-page
+              /*
+               * Here we selected the currently edited page, if any, and 
+               * load up the correct page editor
+               */
+              oninit
+                sys42.populate-select-page
+                if
+                  sys42.get-currently-edited-page
+                  sys42.edit-page
 
-                  /*
-                   * Here we start editing the selected page
-                   */
-                  onchange
-                    sys42.page-was-selected-for-editing
-
-
-                  /*
-                   * Lambda events for "Select existing page to edit" widget
-                   */
-                  events
+              /*
+               * Here we start editing the selected page
+               */
+              onchange
+                sys42.page-was-selected-for-editing
 
 
-                    /*
-                     * Stores the currently edited page in session
-                     */
-                    sys42.set-currently-edited-page
-                      set-session:sys42.currently-edited-page
-                        src:x:/../*/_arg?value
+              /*
+               * Lambda events for "Select existing page to edit" widget
+               */
+              events
 
 
-                    /*
-                     * Returns the currently edited page
-                     */
-                    sys42.get-currently-edited-page
-                      get-session:sys42.currently-edited-page
-                      set:x:/..?value
-                        src:x:/./-/*?value
+                /*
+                 * Stores the currently edited page in session
+                 */
+                sys42.set-currently-edited-page
+                  set-session:sys42.currently-edited-page
+                    src:x:/../*/_arg?value
 
 
-                    /*
-                     * Retrieves all pages from database, and creates
-                     * one option item for each of them, to allow editing
-                     */
-                    sys42.populate-select-page
-                      clear-widget:select-page
-                      create-literal-widget
-                        element:option
-                        parent:select-page
-                        value:_default
-                        innerValue:Choose existing page to edit ...
-                      sys42.get-currently-edited-page
-                      select-data:x:/*/*/p5.page
-                      for-each:x:/-/*
-                        set:x:/..for-each/*/create-literal-widget/*/value?value
-                          src:x:/..for-each/*/__dp/#?value
-                        set:x:/..for-each/*/create-literal-widget/*/innerValue?value
-                          src:{0} - [{1}]
-                            :x:/..for-each/*/__dp/#/*/name?value
-                            :x:/..for-each/*/__dp/#/*/type?value
-                        if:x:/../*/sys42.get-currently-edited-page?value
-                          equals:x:/..for-each/*/__dp/#?value
-                          add:x:/..for-each/*/create-literal-widget
-                            src
-                              selected
-                        create-literal-widget
-                          element:option
-                          parent:select-page
-                          value
-                          innerValue
+                /*
+                 * Returns the currently edited page
+                 */
+                sys42.get-currently-edited-page
+                  get-session:sys42.currently-edited-page
+                  set:x:/..?value
+                    src:x:/./-/*?value
 
 
-                    /*
-                     * Invoked when user selects a page for editing. Retrieves which page
-                     * user wants to edit, and starts the correct page editor according to
-                     * user's request
-                     */
-                    sys42.page-was-selected-for-editing
-                      get-widget-property:select-page
-                        value
-                      sys42.set-currently-edited-page:x:/-/*/*(!/=_default)?value
-                      if:x:/-2/*/*(!/=_default)?value
-                        sys42.edit-page
-                      else
-                        clear-widget:page-editor-editor-surface
+                /*
+                 * Retrieves all pages from database, and creates
+                 * one option item for each of them, to allow editing
+                 */
+                sys42.populate-select-page
+                  clear-widget:select-page
+                  create-literal-widget
+                    element:option
+                    parent:select-page
+                    value:_default
+                    innerValue:Choose existing page to edit ...
+                  sys42.get-currently-edited-page
+                  select-data:x:/*/*/p5.page
+                  for-each:x:/-/*
+                    set:x:/..for-each/*/create-literal-widget/*/value?value
+                      src:x:/..for-each/*/__dp/#?value
+                    set:x:/..for-each/*/create-literal-widget/*/innerValue?value
+                      src:{0} - [{1}]
+                        :x:/..for-each/*/__dp/#/*/name?value
+                        :x:/..for-each/*/__dp/#/*/type?value
+                    if:x:/../*/sys42.get-currently-edited-page?value
+                      equals:x:/..for-each/*/__dp/#?value
+                      add:x:/..for-each/*/create-literal-widget
+                        src
+                          selected
+                    create-literal-widget
+                      element:option
+                      parent:select-page
+                      value
+                      innerValue
+
+
+                /*
+                 * Invoked when user selects a page for editing. Retrieves which page
+                 * user wants to edit, and starts the correct page editor according to
+                 * user's request
+                 */
+                sys42.page-was-selected-for-editing
+                  get-widget-property:select-page
+                    value
+                  sys42.set-currently-edited-page:x:/-/*/*(!/=_default)?value
+                  if:x:/-2/*/*(!/=_default)?value
+                    sys42.edit-page
+                  else
+                    clear-widget:page-editor-surface
 
 
     /*
@@ -248,7 +242,7 @@ create-widget:page-editor
      * property, etc, in addition to the custom editor, which depends
      * upon the type of page user is editing
      */
-    container:page-editor-editor-surface
+    container:page-editor-surface
 
 
       /*
@@ -268,7 +262,7 @@ create-widget:page-editor
          * "system42/admin/page-editor/editors"
          */
         sys42.edit-page
-          clear-widget:page-editor-editor-surface
+          clear-widget:page-editor-surface
           sys42.get-currently-edited-page
           if:x:/-?value
             select-data:x:/*/*/p5.page/"={0}"/*/type?value
