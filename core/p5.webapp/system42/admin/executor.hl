@@ -112,7 +112,7 @@ create-widget:executor
           title:shortcut - F8
           class:btn btn-default
           innerValue:Clear
-          onclick-script:"window._outputCode.getDoc().setValue('');event.preventDefault();"
+          onclick:"window._outputCode.getDoc().setValue('');event.preventDefault();"
 
 
 /*

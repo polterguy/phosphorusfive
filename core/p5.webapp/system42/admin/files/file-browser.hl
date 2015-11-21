@@ -3,15 +3,19 @@
  * Allows the user to browse through the files on his system
  */
 
+
 // including CSS for file browser
-include-stylesheet-file:system42/admin/files/media/files.css
+include-stylesheet-file:/system42/admin/files/media/files.css
+
 
 /*
  * Creating main file system browser widget
  */
 create-widget:main-folders
-  class:span-24 prepend-top file-browser
+  parent:content
+  class:col-xs-12
   oninit
+
 
     // Creating folders and files according to what our current directory is
     sys42.list-current-folder-content
@@ -19,24 +23,12 @@ create-widget:main-folders
     if:x:/-/*?value
       sys42.show-selected-file-object-toolbar
 
+
   widgets
-    literal
-      element:h1
-      class:span-23
-      innerValue:File browser
-    literal
-      class:span-1 last
-      element:a
-      href:/
-      innerValue:back
     container:folders-bread-crumb
-      class:span-24
     container:folder-content
-      class:span-24
     container:selected-file-object-toolbar
-      class:span-24 file-toolbar
     container:selected-file-object-editor
-      class:span-24
 
   events
 
@@ -52,28 +44,29 @@ create-widget:main-folders
       // Creating new toolbar
       create-widget:selected-object-toolbar
         parent:selected-file-object-toolbar
+        class:btn-group
         widgets
           void
             element:input
             type:button
-            class:span-3
+            class:btn btn-default
             value:copy
           void
             element:input
             type:button
-            class:span-3
+            class:btn btn-default
             value:cut
           void
             element:input
             type:button
-            class:span-3
+            class:btn btn-default
             value:rename
             onclick
               sys42.load-rename-selected-file-folder-widget
           void:delete-selected-file
             element:input
             type:button
-            class:span-3
+            class:btn btn-default
             value:delete
             onclick
               sys42.delete-selected-file-folder
@@ -227,7 +220,7 @@ window.checkKey = function (e) {
           void
             element:input
             type:button
-            class:span-3
+            class:btn btn-default
             value
             onclick
               sys42.bread-crumb-clicked:x:/../*/_event?value
@@ -239,12 +232,12 @@ window.checkKey = function (e) {
         src:disabled
       create-widget:bread-crumb
         parent:folders-bread-crumb
-        class:span-24 bread-crumb
+        class:btn-group
         widgets
           void
             element:input
             type:button
-            class:span-3
+            class:btn btn-default
             value:/
             onclick
               sys42.bread-crumb-clicked:x:/../*/_event?value
@@ -420,7 +413,8 @@ window.checkKey = function (e) {
             =:/
           _lit
             literal
-              class:span-3
+              element:small
+              class:file-object
               title
           add:x:/-/*
             src:"innerValue:{0}"
@@ -482,7 +476,6 @@ window.checkKey = function (e) {
 
       // creating widget containing all folders and files
       create-widget:all-files-and-folders
-        class:span-24 prepend-top
         parent:folder-content
         widgets
 

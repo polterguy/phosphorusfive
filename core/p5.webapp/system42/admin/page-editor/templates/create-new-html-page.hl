@@ -14,5 +14,6 @@ else
       :x:/../*/list-files/0?name
 insert-before:x:/../0
   src
+    role:admin
     content:@"<p>Foo, and then a dash of bar too, I guess ...?</p>"
 

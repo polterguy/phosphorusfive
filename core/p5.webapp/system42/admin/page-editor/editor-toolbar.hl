@@ -12,11 +12,9 @@
 select-data:x:/*/*/p5.page/"={0}"
   :x:/../*/_id?value
 set:x:/../*/create-widget/**/void/=page-name/*/value?value
-  src:x:/../*/select-data/*/*/name?value
+  src:x:/../*/select-data/[0,1]/*/*/name?value
 set:x:/../*/create-widget/**/void/=page-url/*/value?value
-  src:x:/../*/select-data/*?value
-set:x:/../*/create-widget/**/void/=page-role/*/value?value
-  src:x:/../*/select-data/*/*/role?value
+  src:x:/../*/select-data/[0,1]/*?value
 
 
 /*
@@ -38,12 +36,35 @@ for-each:x:/-/*?name
     src:x:/..for-each/*/__dp?value
   set:x:/..for-each/*/_lit/*/*/innerValue?value
     src:x:/..for-each/*/split/[1,2]/0?name
-  if:x:/../*/select-data/*/*/template?value
+  if:x:/../*/select-data/[0,1]/*/*/template?value
     equals:x:/..for-each/*/__dp?value
     add:x:/..for-each/*/_lit/*
       src
         selected
   add:x:/../*/create-widget/**/container/=page-template/*/widgets
+    src:x:/..for-each/*/_lit/*
+
+
+/*
+ * Setting roles
+ */
+select-data:x:/*/*/p5.role
+for-each:x:/-/*
+  _lit
+    literal
+      parent:page-role
+      element:option
+      value
+      innerValue
+  set:x:/..for-each/*/_lit/*/*/value?value
+    src:x:/..for-each/*/__dp/#/*/name?value
+  set:x:/..for-each/*/_lit/*/*/innerValue?value
+    src:x:/..for-each/*/__dp/#/*/name?value
+  if:x:/../*/select-data/[0,1]/*/*/role?value
+    equals:x:/..for-each/*/__dp/#/*/name?value
+    add:x:/..for-each/*/_lit/*
+      src:selected
+  add:x:/../*/create-widget/**/container/=page-role/*/widgets
     src:x:/..for-each/*/_lit/*
 
 
@@ -102,7 +123,7 @@ create-widget
      * Page Template
      */
     container
-      class:col-md-3 form-group
+      class:col-md-2 form-group
       widgets
         container
           class:input-group
@@ -122,7 +143,7 @@ create-widget
      * Page Access Role
      */
     container
-      class:col-md-2 form-group
+      class:col-md-3 form-group
       widgets
         container
           class:input-group
@@ -130,14 +151,16 @@ create-widget
             literal
               element:div
               class:input-group-addon
-              innerValue:Role
+              innerValue:Access Role
               has-id:false
-            void:page-role
-              element:input
-              type:text
+            container:page-role
+              element:select
               class:form-control
-              placeholder:Access role ...
-              value
+              widgets
+                literal
+                  element:option
+                  value:_default
+                  innerValue:No restrictions ...
 
 
     /*
@@ -195,7 +218,7 @@ create-widget
                   set:x:/../*/update-data/*/*/*/template?value
                     src:x:/../*/get-widget-property/*/page-template/*?value
                   if:x:/../*/get-widget-property/*/page-role/*?value
-                    not-equals:""
+                    not-equals:"_default"
                     add:x:/../*/update-data/*/*
                       src:"role:{0}"
                         :x:/../*/get-widget-property/*/page-role/*?value

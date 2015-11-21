@@ -10,9 +10,14 @@
     cursor:pointer;
 }
 
+.file-object {
+    width:80px;
+    display:inline-block;
+}
+
 .folder,
 .file {
-    height:45px;
+    height:85px;
     padding-top:50px;
     text-align:center;
     cursor:pointer;
@@ -22,11 +27,11 @@
 }
 
 .folder {
-    background:transparent url(folder.png) no-repeat 30px 10px;
+    background:transparent url(folder.png) no-repeat 15px 10px;
 }
 
 .file {
-    background:transparent url(file.png) no-repeat 30px 10px;
+    background:transparent url(file.png) no-repeat 15px 10px;
 }
 
 .folder:hover,

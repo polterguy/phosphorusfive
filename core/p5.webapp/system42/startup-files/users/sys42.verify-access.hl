@@ -9,7 +9,9 @@ set-event:sys42.verify-access
   if:x:/../*/_arg
     sys42.get-user
     if:x:/-/*/role?value
-      not-equals:x:/../*/_arg?value
+      not-equals:admin
+      and:x:/./-/*/role?value
+        not-equals:x:/../*/_arg?value
       set:x:/..?value
         src:bool:false
 
