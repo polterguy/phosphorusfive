@@ -185,7 +185,7 @@ namespace p5.net
                 // Retrieving actual content to post or put
                 var content = GetRequestContent (args ["content"], context);
 
-                // Checking to see if this is Hyperlisp content, since we're b y default setting Content-Type to application/Hyperlisp if it is
+                // Checking to see if this is Hyperlisp content, since we're b y default setting Content-Type to application/x-hyperlisp if it is
                 bool isHyperlisp = args ["content"].Value == null && args ["content"].Count > 0;
 
                 if (content != null) {
@@ -215,7 +215,7 @@ namespace p5.net
                             request.ContentType = args.GetExChildValue (
                                 "Content-Type", 
                                 context, 
-                                isHyperlisp ? "application/Hyperlisp" : "text/plain");
+                                isHyperlisp ? "application/x-hyperlisp" : "text/plain");
 
                             // setting other headers
                             SetRequestHeaders (request, context, args);
@@ -262,7 +262,7 @@ namespace p5.net
                 request.ContentType = args.GetExChildValue (
                     "Content-Type", 
                     context, 
-                    file.EndsWith (".hl") ? "application/Hyperlisp" : "application/octet-stream");
+                    file.EndsWith (".hl") ? "application/x-hyperlisp" : "application/octet-stream");
 
                 // seting other HTTP request headers
                 SetRequestHeaders (request, context, args);
@@ -358,7 +358,7 @@ namespace p5.net
             using (Stream stream = response.GetResponseStream ()) {
 
                 // checking type of response
-                if (response.ContentType.StartsWith ("application/Hyperlisp")) {
+                if (response.ContentType.StartsWith ("application/x-hyperlisp")) {
 
                     // Hyperlisp, special treatment
                     using (TextReader reader = new StreamReader (stream)) {
