@@ -30,36 +30,30 @@ include-stylesheet-file:"/system42/codemirror/theme/{0}.css"
 
 // Making sure fullscreen is toggled if it should be allowed
 if:x:/../*/_editor/*/*/fullscreen?value.bool
-  set:x:/../*/send-javascript/4?value
+  set:x:/../*/include-javascript/4?value
     src:@",""Alt-F"": function(cm) {
   cm.setOption('fullScreen', !cm.getOption('fullScreen'));
 }"
 else
-  set:x:/../*/send-javascript/4?value
+  set:x:/../*/include-javascript/4?value
     src:""
 
 
-_keys:
+_keys
 if:x:/../*/_editor/*/*/keys/*
   for-each:x:/../*/_editor/*/*/keys/*
     set:x:/../*/_keys?value
-      src:@"{0},
-    ""{1}"":{2}"
+      src:{0}"{1}"
         :x:/../*/_keys?value
         :x:/..for-each/*/__dp/#?name
-        :x:/..for-each/*/__dp/#?value
-
-
-set:x:/../*/send-javascript/5?value
-  src:"{0}"
-    :x:/../*/_keys?value
 
 
 /*
  * making sure given "textarea" inputs are 
  * replaced with the codemirror editor
  */
-send-javascript:@"window.{0} = CodeMirror.fromTextArea(document.getElementById('{0}'), {{
+send-javascript:@"
+window.{0} = CodeMirror.fromTextArea(document.getElementById('{0}'), {{
   mode:'{1}',
   theme:'{2}',
   lineNumbers:true,
@@ -81,6 +75,7 @@ window.{0}.on('change',function (cMirror) {{
   :x:/../*/_editor/*/*/theme?value
   :x:/../*/_editor/*/*/autofocus?value
   :
-  :
+
+
 
 

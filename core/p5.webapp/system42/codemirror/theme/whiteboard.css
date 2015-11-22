@@ -31,7 +31,7 @@
 /*
  * Read only CodeMirror modules
  */
-.cm-s-whiteboard-ro { font-size:15px; height:212px; background-color:#eee; }
+.cm-s-whiteboard-ro { font-size:15px; height:212px; background-color:#eee; z-index:1039;}
 
 
 

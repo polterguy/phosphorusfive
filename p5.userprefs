@@ -1,9 +1,37 @@
 ﻿<Properties StartupItem="core/p5.webapp/p5.webapp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="core/p5.webapp/Default.aspx">
+  <MonoDevelop.Ide.Workbench ActiveDocument="core/p5.webapp/system42/misc/include-codemirror.hl">
     <Files>
-      <File FileName="core/p5.webapp/Default.aspx" Line="11" Column="46" />
+      <File FileName="core/p5.webapp/system42/admin/executor.hl" Line="20" Column="16" />
+      <File FileName="core/p5.webapp/system42/misc/include-codemirror.hl" Line="50" Column="1" />
+      <File FileName="core/p5.webapp/system42/codemirror/theme/whiteboard.css" Line="34" Column="76" />
     </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="p5" expanded="True">
+            <Node name="core" expanded="True">
+              <Node name="p5.webapp" expanded="True">
+                <Node name="system42" expanded="True">
+                  <Node name="admin" expanded="True" />
+                  <Node name="misc" expanded="True">
+                    <Node name="include-codemirror.hl" selected="True" />
+                  </Node>
+                </Node>
+              </Node>
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+      <Pad Id="MonoDevelop.NUnit.TestPad">
+        <State name="__root__">
+          <Node name="p5" expanded="True" selected="True" />
+        </State>
+      </Pad>
+      <Pad Id="MonoDevelop.Debugger.WatchPad">
+        <State />
+      </Pad>
+    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />

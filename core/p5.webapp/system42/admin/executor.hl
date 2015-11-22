@@ -16,6 +16,9 @@ sys42.execute-lisp-file:system42/misc/include-codemirror.hl
       theme:whiteboard
       autofocus:true
       fullscreen:true
+      keys
+        Alt-E:function() {window._execute_lambda();}
+        Alt-C:function() {window.execute_output.getDoc().setValue('');}
 sys42.execute-lisp-file:system42/misc/include-codemirror.hl
   _editor
     execute_output
@@ -27,13 +30,15 @@ sys42.execute-lisp-file:system42/misc/include-codemirror.hl
 /*
  * Making sure our "Evaluate" button is wired up
  */
-include-javascript:@"window._execute_lambda = function (event) {
+include-javascript:@"window._execute_lambda = function (e) {
   var el = p5.$('execute');
   el.raise('onclick_', {
     onsuccess:function(ret, evt) {
       window.execute_output.getDoc().setValue(ret.code);
     }});
-  event.preventDefault();
+    if (e !== null) {
+      event.preventDefault();
+    }
 }"
 
 
@@ -76,6 +81,7 @@ create-widget:executor
         literal:execute
           class:btn btn-primary
           element:button
+          title:Alt+E
           innerValue:Evaluate
 
 
@@ -137,6 +143,7 @@ create-widget:executor
       widgets
         literal:clear
           element:button
+          title:Alt+C
           class:btn btn-default
           innerValue:Clear
           onclick:"window.execute_output.getDoc().setValue('');event.preventDefault();"
