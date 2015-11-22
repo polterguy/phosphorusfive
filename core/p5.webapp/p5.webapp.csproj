@@ -52,7 +52,6 @@
     <Content Include="system42\admin\files\media\file.png" />
     <Content Include="system42\admin\files\media\files.css" />
     <Content Include="system42\admin\files\media\folder.png" />
-    <Content Include="system42\codemirror\hyperlisp-mode.js" />
     <Content Include="system42\codemirror\theme\whiteboard.css" />
     <Content Include="media\bootstrap\css\bootstrap.min.css" />
     <Content Include="media\bootstrap\css\bootstrap-theme.min.css" />
@@ -60,7 +59,8 @@
     <Content Include="media\css\main.css" />
     <Content Include="media\jquery\jquery-2.1.4.min.js" />
     <Content Include="media\images\phosphorusfive-logo.png" />
-    <Content Include="system42\private\web.config" />
+    <Content Include="private\web.config" />
+    <Content Include="system42\codemirror\hyperlisp.js" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -172,12 +172,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="system42\application-startup.hl" />
-    <None Include="system42\startup-files\pf.web.load-ui.hl" />
-    <None Include="system42\startup-files\pages\create-default-pages.hl" />
-    <None Include="system42\startup-files\users\create-default-user.hl" />
-    <None Include="system42\startup-files\users\sys42.get-user.hl" />
-    <None Include="system42\startup-files\users\sys42.login-user.hl" />
-    <None Include="system42\startup-files\users\sys42.logout-user.hl" />
     <None Include="system42\templates\main.hl" />
     <None Include="system42\page-types\controls.hl" />
     <None Include="system42\page-types\html.hl" />
@@ -187,8 +181,6 @@
     <None Include="system42\admin\file-editor\hyperlisp-editor.hl" />
     <None Include="system42\admin\files\files.hl" />
     <None Include="system42\admin\page-editor\page-editor.hl" />
-    <None Include="system42\startup-files\debug-helpers\sys42.show-code.hl" />
-    <None Include="system42\startup-files\debug-helpers\sys42.get-widget.hl" />
     <None Include="system42\admin\files\file-browser.hl" />
     <None Include="system42\admin\page-editor\editors\controls.hl" />
     <None Include="system42\admin\page-editor\editors\html.hl" />
@@ -203,17 +195,30 @@
     <None Include="media\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
     <None Include="media\bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <None Include="media\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
-    <None Include="system42\startup-files\users\sys42.verify-access.hl" />
     <None Include="system42\page-types\special-page\not-found.hl" />
     <None Include="system42\admin\page-editor\editor-toolbar.hl" />
-    <None Include="system42\startup-files\misc\sys42.confirm-action.hl" />
+    <None Include="system42\startup\pf.web.load-ui.hl" />
+    <None Include="system42\startup\pages\create-default-pages.hl" />
+    <None Include="system42\startup\users\create-default-user.hl" />
+    <None Include="system42\startup\misc-events\sys42.get-widget.hl" />
+    <None Include="system42\startup\misc-dialog-events\sys42.confirm-action.hl" />
+    <None Include="system42\startup\misc-dialog-events\sys42.show-code.hl" />
+    <None Include="system42\startup\users\user-events\sys42.get-user.hl" />
+    <None Include="system42\startup\users\user-events\sys42.login-user.hl" />
+    <None Include="system42\startup\users\user-events\sys42.logout-user.hl" />
+    <None Include="system42\startup\users\user-events\sys42.verify-access.hl" />
+    <None Include="system42\startup\misc-events\sys42.get-content-type.hl" />
+    <None Include="system42\misc\content-types.hl" />
+    <None Include="system42\misc\include-codemirror.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="system42\admin\files\media\" />
     <Folder Include="system42\admin\page-editor\editors\" />
     <Folder Include="system42\admin\page-editor\templates\" />
     <Folder Include="media\jquery\" />
-    <Folder Include="system42\startup-files\misc\" />
-    <Folder Include="system42\public\" />
+    <Folder Include="public\" />
+    <Folder Include="system42\startup\misc-dialog-events\" />
+    <Folder Include="system42\startup\users\user-events\" />
+    <Folder Include="system42\misc\" />
   </ItemGroup>
 </Project>

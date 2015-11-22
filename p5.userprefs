@@ -1,10 +1,8 @@
 ﻿<Properties StartupItem="core/p5.webapp/p5.webapp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="core/p5.webapp/system42/admin/page-editor/editor-toolbar.hl">
+  <MonoDevelop.Ide.Workbench ActiveDocument="core/p5.webapp/Default.aspx">
     <Files>
-      <File FileName="core/p5.webapp/system42/admin/page-editor/page-editor.hl" Line="1" Column="1" />
-      <File FileName="core/p5.webapp/system42/admin/page-editor/editor-toolbar.hl" Line="239" Column="17" />
-      <File FileName="plugins/p5.data/Update.cs" Line="1" Column="1" />
+      <File FileName="core/p5.webapp/Default.aspx" Line="11" Column="46" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

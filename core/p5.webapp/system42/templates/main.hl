@@ -198,7 +198,7 @@ create-widget:template-root
      * and header + login/logout widgets
      */
     container:content
-      class:row
+      class:row content-row
       widgets
         literal
           element:div
@@ -214,8 +214,8 @@ create-widget:template-root
       widgets
         literal
           element:small
-          class:col-xs-6 text-muted col-xs-push-3 prepend-top
-          innerValue:@"Free Software, MIT License, Copyright © <a href=""http://phosphorusfive.wordpress.com"">Thomas Hansen</a>"
+          class:col-md-6 text-muted text-center col-md-push-3 prepend-top col-xs-12
+          innerValue:@"Liberated Software, Copyleft © <a href=""https://phosphorusfive.wordpress.com/2015/11/22/liberated-software-defined/"">Thomas Hansen</a>"
 
 
 /*

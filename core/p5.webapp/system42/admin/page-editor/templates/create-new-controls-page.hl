@@ -20,7 +20,8 @@ insert-before:x:/../0
  * Edit this page to meet your own needs
  */
 container:foo
-  class:span-24
+  parent:content
+  class:col-xs-12
   widgets
     literal:bar
       innerValue:Howdy Controls World!"

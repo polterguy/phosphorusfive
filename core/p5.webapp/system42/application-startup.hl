@@ -46,7 +46,7 @@ set-event:sys42.execute-lisp-folder
 
 /*
  * After creation of the above Active Events, this file will execute all
- * files in the "system42/startup-files" folder recursively, by using the Active
+ * files in the "system42/startup" folder recursively, by using the Active
  * Events above.
  */
-sys42.execute-lisp-folder:system42/startup-files
+sys42.execute-lisp-folder:system42/startup

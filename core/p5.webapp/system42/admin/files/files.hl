@@ -7,47 +7,35 @@
  * a "window.location.reload(true);" JavaScript inclusion.
  */
 
-// Checking session if there's a file we should download
-get-session:sys42.download-file
 
+get-session:sys42.download-file
 if:x:/-/*?value
 
-  // We had a file to download, figuring out what type of Content-Type
-  // we should hand it out with.
-  split:x:/./-/*?value
-    =:.
-  if:x:/-/0/-?name
-    =:hl
-    set-http-header
-      Content-Type:application/Hyperlisp
-  else-if:x:/-2/0/-?name
-    =:html
-    or:x:/./-2/0/-?name
-      =:htm
-    set-http-header
-      Content-Type:text/html
-  else-if:x:/-3/0/-?name
-    =:js
-    set-http-header
-      Content-Type:application/JavaScript
-  else-if:x:/-4/0/-?name
-    =:css
-    set-http-header
-      Content-Type:text/css
-  else
-    set-http-header
-      Content-Type:application/octet-stream
+  /*
+   * We have a file to download, figuring out what type of Content-Type
+   * we should serve it as
+   */
+  sys42.get-content-type:x:/../*/get-session/*?value
+  set-http-header
+    Content-Type:x:/./-?value
+
+  // Figuring out filename
   split:x:/../*/get-session/*?value
     =:/
   set-http-header
-    Content-Disposition:attachment; filename={0}
+    Content-Disposition:"attachment; filename={0}"
       :x:/././-/0/-?name
-  set-session:sys42.download-file
+
+  // Returning file
   echo-file:x:/../*/get-session/*?value
+
+  // Clearing session value
+  set-session:sys42.download-file
 
 else
 
-  // There was no file to download currently, starting the actual file-browser implementation
+  // There was no file to download, 
+  // starting the actual file-browser implementation
   sys42.execute-lisp-file:system42/admin/files/file-browser.hl
 
 

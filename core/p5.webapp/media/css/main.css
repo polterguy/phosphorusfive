@@ -9,20 +9,24 @@ body {
     width:40px;
 }
 
+.content-row {
+    min-height:300px;
+}
+
 .prepend-top {
-  margin-top:15px;
+    margin-top:15px;
 }
 
 .prepend-bottom {
-  margin-bottom:15px;
+    margin-bottom:15px;
 }
 
 .show-lisp-dialogue {
-  position:relative;
+    position:relative;
 }
 
 .p5-ck-editor {
-  display:inline-block;
-  width:100%;
+    display:inline-block;
+    width:100%;
 }
 

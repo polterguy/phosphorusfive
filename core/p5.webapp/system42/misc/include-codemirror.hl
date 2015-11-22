@@ -1,0 +1,72 @@
+
+/*
+ * Helps you include CodeMirror
+ */
+
+
+// Making sure necessary JavaScript files are included
+include-javascript-file
+  /system42/codemirror/lib/codemirror.js
+  /system42/codemirror/addon/selection/active-line.js
+  /system42/codemirror/addon/display/placeholder.js
+  /system42/codemirror/addon/display/fullscreen.js
+
+
+// Making sure language mode file is included
+include-javascript-file:"/system42/codemirror/{0}.js"
+  :x:/../*/_editor/*/*/mode?value
+
+
+// Making sure necessary Stylesheet files are included
+include-stylesheet-file
+  /system42/codemirror/lib/codemirror.css
+  /system42/codemirror/addon/display/fullscreen.css
+
+
+// Making sure theme is included
+include-stylesheet-file:"/system42/codemirror/theme/{0}.css"
+  :x:/../*/_editor/*/*/theme?value
+
+
+// Making sure fullscreen is toggled if it should be allowed
+if:x:/../*/_editor/*/*/fullscreen?value.bool
+  set:x:/../*/include-javascript/4?value
+    src:@",""Alt-F"": function(cm) {
+  cm.setOption('fullScreen', !cm.getOption('fullScreen'));
+}"
+else
+  set:x:/../*/include-javascript/4?value
+    src:""
+
+
+/*
+ * making sure given "textarea" inputs are 
+ * replaced with the codemirror editor
+ */
+include-javascript:@"
+window.{0} = CodeMirror.fromTextArea(document.getElementById('{0}'), {{
+  mode:'{1}',
+  theme:'{2}',
+  lineNumbers:true,
+  styleActiveLine:true,
+  path:'system42/codemirror/',
+  autofocus:{3},
+  extraKeys: {{
+    Tab: function(cm) {{
+      var spaces = Array(cm.getOption('indentUnit') + 1).join(' ');
+      cm.replaceSelection(spaces);
+    }}{4}
+  }}
+}});
+window.{0}.on('change',function (cMirror) {{
+  p5.$('{0}').el.value = cMirror.getValue();
+}});"
+  :x:/../*/_editor/*?name
+  :x:/../*/_editor/*/*/mode?value
+  :x:/../*/_editor/*/*/theme?value
+  :x:/../*/_editor/*/*/autofocus?value
+  :
+
+
+
+

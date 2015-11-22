@@ -1,0 +1,24 @@
+
+/*
+ * List of all Content-Types System42 knows about. Used in
+ * sys42.get-content-type
+ */
+
+
+_Content-Types
+  hl:application/Hyperlisp
+  css:text/css
+  js:application/JavaScript
+  htm:text/html
+  html:text/html
+  png:application/octet-stream
+  jpg:application/octet-stream
+  jpeg:application/octet-stream
+  gif:application/octet-stream
+  txt:text/plain
+  md:text/plain
+  xml:text/xml
+  config:text/xml
+  xslt:text/xml
+  zip:application/octet-stream
+  csproj:text/xml

@@ -1,50 +1,74 @@
 
 /*
- * Allows the user to execute p5.lambda given through a syntax highlighted textarea widget,
- * seeing the results in another textarea result widget, relies upon CodeMirror.
+ * Allows the user to execute p5.lambda given through a 
+ * syntax highlighted textarea widget, seeing the results 
+ * in another textarea result widget. Relies upon CodeMirror.
  */
 
 
-// Making sure necessary JavaScript files are included
-include-javascript-file
-  /system42/codemirror/lib/codemirror.js
-  /system42/codemirror/addon/selection/active-line.js
-  /system42/codemirror/addon/display/placeholder.js
-  /system42/codemirror/addon/display/fullscreen.js
-  /system42/codemirror/hyperlisp-mode.js
+/*
+ * Including CodeMirror for both execute_input and execute_output
+ */
+sys42.execute-lisp-file:system42/misc/include-codemirror.hl
+  _editor
+    execute_input
+      mode:hyperlisp
+      theme:whiteboard
+      autofocus:true
+      fullscreen:true
+sys42.execute-lisp-file:system42/misc/include-codemirror.hl
+  _editor
+    execute_output
+      mode:hyperlisp
+      theme:whiteboard whiteboard-ro
+      autofocus:false
 
 
-// Making sure necessary Stylesheet files are included
-include-stylesheet-file
-  /system42/codemirror/lib/codemirror.css
-  /system42/codemirror/theme/whiteboard.css
-  /system42/codemirror/addon/display/fullscreen.css
+/*
+ * Making sure our "Evaluate" button is wired up
+ */
+include-javascript:@"window._execute_lambda = function (event) {
+  var el = p5.$('execute');
+  el.raise('onclick_', {
+    onsuccess:function(ret, evt) {
+      window.execute_output.getDoc().setValue(ret.code);
+    }});
+  event.preventDefault();
+}"
 
 
-// Then checking to see if we've got some code stored in session, 
-// and if so, we stuff it into our editor.
+/*
+ * Then checking to see if we've got some code stored in session, 
+ * and if so, we stuff it into our editor.
+ */
 get-session:executor.current-code
 if:x:/-/0?value
-  set:x:/../**/literal/=input/*/innerValue?value
+  set:x:/../**/literal/=execute_input/*/innerValue?value
     src:x:/../*/get-session/[0,1]/0?value
 
-// Creating actual form to show the executor
+
+/*
+ * Creating actual form to show the executor
+ */
 create-widget:executor
   parent:content
   class:col-xs-12
   widgets
 
+
     /*
-     * Input textarea element, transformed into a CodeMirror widget later
+     * Input textarea element, transformed into a CodeMirror widget
      */
     container
       widgets
-        literal:input
+        literal:execute_input
           element:textarea
           innerValue:
 
+
     /*
-     * Evaluate widget, executes input, and puts the resulting code into output
+     * Evaluate widget, executes execute_input, and puts the 
+     * resulting code into execute_output
      */
     container:exe-wrp
       class:text-right
@@ -52,8 +76,8 @@ create-widget:executor
         literal:execute
           class:btn btn-primary
           element:button
-          title:shortcut - F5
           innerValue:Evaluate
+
 
           /*
            * Trickery to make sure we can handle our event in JavaScript
@@ -63,13 +87,13 @@ create-widget:executor
            * the DOM javascript onclick event handler though, invokes a JavaScript function,
            * which actually invokes the actual server-side event, which again returns
            * the executed code as a piece of string, named "code", which the JavaScript
-           * again puts into the "output" CodeMirror widget.
+           * again puts into the "execute_output" CodeMirror widget.
            */
           onclick:"window._execute_lambda(event);"
           onclick_
 
-            // First retrieving text from input textarea and converting to nodes
-            get-widget-property:input
+            // First retrieving text from execute_input textarea and converting to nodes
+            get-widget-property:execute_input
               innerValue
             lisp2lambda:x:/<?value
 
@@ -79,14 +103,14 @@ create-widget:executor
             set-session:executor.current-code
               src
 
-            // Then executing p5.lambda nodes, in such a way that our converted hyperlisp becomes the "root node",
-            // while still reachable after execution is done!
+            // Then executing p5.lambda nodes, in such a way that our converted hyperlisp 
+            // becomes the "root node", while still reachable after execution is done!
             set:x:/+2/#/*
             add:x:/+/#
               src:x:/../*/lisp2lambda/*
             _exe:node:""
 
-            // Notice, [eval-mutable], since we want to retrieve code AFTER execution!
+            // Notice, [eval-mutable], since we want to retrieve transformed code after execution!
             eval-mutable:x:/-/#
 
             // Then converting p5.lambda result nodes to text, and returning back to client as JSON
@@ -94,91 +118,27 @@ create-widget:executor
             return-value:code
               src:x:/./-?value
 
+
     /*
      * Output textarea element, transformed into a CodeMirror widget later
      */
     container
       class:prepend-top
       widgets
-        literal:output
+        literal:execute_output
           element:textarea
 
-    // The clear button for clearing the output editor surface
+
+    /*
+     * The clear button for clearing the execute_output editor surface
+     */
     container:clear-wrp
       class:text-right
       widgets
         literal:clear
           element:button
-          title:shortcut - F8
           class:btn btn-default
           innerValue:Clear
-          onclick:"window._outputCode.getDoc().setValue('');event.preventDefault();"
-
-
-/*
- * making sure our "textarea" input and output HTML elements are 
- * replaced with the codemirror editor
- * in addition we're also pushing the DOM JavaScript event
- * handler for the execute button's "click" event to client here
- */
-include-javascript:@"window._execute_lambda = function (event) {
-  var el = p5.$('execute');
-  el.raise('onclick_', {
-    onsuccess:function(ret, evt) {
-      window._outputCode.getDoc().setValue(ret.code);
-    }});
-  event.preventDefault();
-}
-window._inputCode = CodeMirror.fromTextArea(document.getElementById('input'), {
-  mode:'hyperlisp',
-  theme:'whiteboard',
-  lineNumbers:true,
-  styleActiveLine:true,
-  path:'system42/codemirror/',
-  autofocus:true,
-  extraKeys: {
-    Tab: function(cm) {
-      var spaces = Array(cm.getOption('indentUnit') + 1).join(' ');
-      cm.replaceSelection(spaces);
-    },
-    F11: function(cm) {
-      cm.setOption('fullScreen', !cm.getOption('fullScreen'));
-    },
-    Esc: function(cm) {
-      if (cm.getOption('fullScreen')) cm.setOption('fullScreen', false);
-    },
-    F5: function() {
-      window._execute_lambda(event);
-    },
-    F8: function() {
-      window._outputCode.getDoc().setValue('');
-    }
-  }
-});
-window._inputCode.on('change',function (cMirror) {
-  p5.$('input').el.value = cMirror.getValue();
-});
-window._outputCode = CodeMirror.fromTextArea(document.getElementById('output'), {
-  mode:'hyperlisp',
-  theme:'whiteboard whiteboard-ro',
-  lineNumbers:true,
-  styleActiveLine:true,
-  path:'system42/codemirror/',
-  readOnly:true,
-  extraKeys: {
-    F11: function(cm) {
-      cm.setOption('fullScreen', !cm.getOption('fullScreen'));
-    },
-    Esc: function(cm) {
-      if (cm.getOption('fullScreen')) cm.setOption('fullScreen', false);
-    }
-  }
-});
-window._outputCode.on('change',function(cMirror) {
-  p5.$('output').el.value = cMirror.getValue();
-});
-"
-
-
+          onclick:"window.execute_output.getDoc().setValue('');event.preventDefault();"
 
 
