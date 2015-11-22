@@ -5,18 +5,15 @@
 
 
 /*
- * Including JavaScript and CSS for CodeMirror
+ * Including CodeMirror for both [content] editor
  */
-include-javascript-file
-  /system42/codemirror/lib/codemirror.js
-  /system42/codemirror/hyperlisp-mode.js
-  /system42/codemirror/addon/selection/active-line.js
-  /system42/codemirror/addon/display/placeholder.js
-  /system42/codemirror/addon/display/fullscreen.js
-include-stylesheet-file
-  /system42/codemirror/lib/codemirror.css
-  /system42/codemirror/theme/whiteboard.css
-  /system42/codemirror/addon/display/fullscreen.css
+sys42.execute-lisp-file:system42/misc/include-codemirror.hl
+  _editor
+    editor_surface
+      mode:hyperlisp
+      theme:whiteboard
+      autofocus:true
+      fullscreen:true
 
 
 /*
@@ -27,9 +24,9 @@ select-data:x:/*/*/p5.page/"={0}"
 
 
 /*
- * Setting the content of editor-surface to the [controls] from database
+ * Setting the content of editor_surface to the [controls] from database
  */
-set:x:/../*/create-widget/*/widgets/*/literal/=editor-surface/*/innerValue?value
+set:x:/../*/create-widget/*/widgets/*/literal/=editor_surface/*/innerValue?value
   src:x:/../*/select-data/*/*/controls?value
 
 
@@ -42,43 +39,13 @@ set:x:/../*/create-widget/*/parent?value
 
 
 /*
- * Transforming our "textarea" HTML element to a codemirror editor
- */
-send-javascript:@"(function(){
-var editor = CodeMirror.fromTextArea(document.getElementById('editor-surface'), {
-  mode:'hyperlisp',
-  theme:'whiteboard whiteboard-large',
-  lineNumbers:true,
-  styleActiveLine:true,
-  path:'/system42/codemirror/',
-  autofocus:true,
-  extraKeys: {
-    Tab: function(cm) {
-      var spaces = Array(cm.getOption('indentUnit') + 1).join(' ');
-      cm.replaceSelection(spaces);
-    },
-    ""F11"": function(cm) {
-      cm.setOption(""fullScreen"", !cm.getOption(""fullScreen""));
-    },
-    ""Esc"": function(cm) {
-      if (cm.getOption(""fullScreen"")) cm.setOption(""fullScreen"", false);
-    }
-  }
-});
-editor.on('change',function (cMirror) {
-  p5.$('editor-surface').el.value = cMirror.getValue();
-});
-})();"
-
-
-/*
  * Creating our widget to display our editor surface
  */
 create-widget
   parent
   class:col-xs-12
   widgets
-    literal:editor-surface
+    literal:editor_surface
       element:textarea
       innerValue
 
@@ -97,7 +64,7 @@ create-widget
           insert-before:x:/../0
             src
               type:controls
-          get-widget-property:editor-surface
+          get-widget-property:editor_surface
             innerValue
           insert-before:x:/../0
             src:controls

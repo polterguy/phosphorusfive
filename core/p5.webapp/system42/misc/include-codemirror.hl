@@ -43,7 +43,7 @@ else
  * making sure given "textarea" inputs are 
  * replaced with the codemirror editor
  */
-include-javascript:@"
+send-javascript:@"
 window.{0} = CodeMirror.fromTextArea(document.getElementById('{0}'), {{
   mode:'{1}',
   theme:'{2}',
