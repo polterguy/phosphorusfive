@@ -8,6 +8,10 @@
 include-stylesheet-file:/system42/admin/files/media/files.css
 
 
+// Removing "selected file folder" session value
+set-session:sys42.copied-file
+
+
 /*
  * Creating main file system browser widget
  */
@@ -23,9 +27,6 @@ create-widget:main-folders
    */
   oninit
     sys42.list-current-folder-content
-    get-session:sys42.copied-file
-    if:x:/-/*/*?value
-      sys42.show-paste-toolbar
     get-session:sys42.selected-file-folder-object
     if:x:/-/*?value
       sys42.show-selected-file-object-toolbar
@@ -144,43 +145,182 @@ create-widget:main-folders
               class:btn btn-default
               value:paste
               onclick
-                get-session:sys42.copied-file
-                get-session:sys42.current-folder
-                set:x:/../*/_eval/0?name
-                  src:sys42.{0}-{1}
-                    :x:/../*/get-session/[0,1]/*/*/operation?value
-                    :x:/../*/get-session/[0,1]/*/*/type?value
-                set:x:/../*/_eval/0/*/_src?value
-                  src:x:/../*/get-session/*/*/object?value
-                split:x:/../*/get-session/[0,1]/*/*/object?value
-                  =:/
-                if:x:/../*/get-session/[1,2]/*?value
-                  and:x:/../*/get-session/[1,2]/*?value
-                    !=:
-                  set:x:/../*/_eval/0/*/_dest?value
-                    src:{0}/{1}
-                      :x:/../*/get-session/[1,2]/*?value
-                      :x:/../*/split/0/-?name
-                else
-                  set:x:/../*/_eval/0/*/_dest?value
-                    src:x:/../*/split/0/-?name
-                _eval
-                  foo-bar
-                    _src
-                    _dest
-                eval:x:/-
+                sys42.paste-button-clicked
 
 
               /*
                * Lambda events for Paste button
                */
               events
+
+
+                /*
+                 * Invoked when Paste button is clicked
+                 */
+                sys42.paste-button-clicked
+
+                  // Retrieving which file or folder is copied/moved
+                  get-session:sys42.copied-file
+
+                  // Retrieving currently selected folder, which becomes
+                  // the destination
+                  get-session:sys42.current-folder
+
+                  // Dynamically building our event invocation, by modifying
+                  // "foo-bar" below to become the correct Active Event
+                  set:x:/../*/_eval/0?name
+                    src:sys42.{0}-{1}
+                      :x:/../*/get-session/[0,1]/*/*/operation?value
+                      :x:/../*/get-session/[0,1]/*/*/type?value
+
+                  // Setting source of operation
+                  set:x:/../*/_eval/0/*/_src?value
+                    src:x:/../*/get-session/*/*/object?value
+
+                  // Setting destination of operation, and making sure there
+                  // are no initial "/" for clarity
+                  split:x:/../*/get-session/[0,1]/*/*/object?value
+                    =:/
+                  if:x:/../*/get-session/[1,2]/*?value
+                    and:x:/../*/get-session/[1,2]/*?value
+                      !=:
+                    set:x:/../*/_eval/0/*/_dest?value
+                      src:{0}/{1}
+                        :x:/../*/get-session/[1,2]/*?value
+                        :x:/../*/split/0/-?name
+                  else
+                    set:x:/../*/_eval/0/*/_dest?value
+                      src:x:/../*/split/0/-?name
+
+                  // At this point, "foo-bar" below should be something like "sys42.move-file",
+                  // "sys42.copy-folder", etc, and source and destinations correctly mapped up ...
+                  _eval
+                    foo-bar
+                      _src
+                      _dest
+                    set-session:sys42.selected-file-folder-object
+                      src:x:/../0?value
+                    split:x:/../0?name
+                      =:-
+                    set-session:sys42.selected-file-folder-type
+                      src:x:/./-/0/-?name
+                    sys42.list-current-folder-content
+                    sys42.show-selected-file-object-toolbar
+                    set-session:sys42.copied-file
+                    delete-widget:selected-object-paste-toolbar
+                    set:x:/..?value
+                      src:x:/../0?value
+
+                  // Checking if source and destinations are the same, and
+                  // if so, appending " - copy" to destination
+                  if:x:/../*/_eval/0/*/_src?value
+                    =:x:/../*/_eval/0/*/_dest?value
+                    and:x:/../*/_eval/0?name
+                      !=:sys42.move-file
+                      and:x:/../*/_eval/0?name
+                        !=:sys42.move-folder
+                    set:x:/../*/_eval/0/*/_dest?value
+                      src:{0} - copy
+                        :x:/../*/_eval/0/*/_dest?value
+
+                  // Invocing operation Active Event
+                  eval:x:/../*/_eval
+
+
+                /*
+                 * Moves a file
+                 */
                 sys42.move-file
-                  sys42.show-code:x:/..
+
+                  // If source and destinations are the same, there are
+                  // no reasons to proceed
+                  if:x:/../*/_dest?value
+                    !=:x:/../*/_src?value
+
+                    // Making sure filename is changed to "x - copy" if there
+                    // exist a file with the same name in destination folder
+                    // from before
+                    get-session:sys42.current-folder
+                    list-files:x:/-/*?value
+                    if:x:/-/*/"{0}"
+                      :x:/../*/_dest?value
+
+                      // There exists a file with destination name in folder from before,
+                      // appending " - copy" and invoking self recursively
+                      set:x:/..if/*/sys42.move-file/*/_dest?value
+                        src:{0} - copy
+                          :x:/../*/_dest?value
+                      set:x:/..if/*/sys42.move-file/*/_src?value
+                        src:x:/../*/_src?value
+                      sys42.move-file
+                        _dest
+                        _src
+                      set:x:/..?value
+                        src:x:/./-?value
+                    else
+                      move-file:x:/../*/_src?value
+                        to:x:/../*/_dest?value
+                      split:x:/../*/_dest?value
+                        =:/
+                      set:x:/..?value
+                        src:x:/./-/0/-?name
+                  else
+                    set:x:/..?value
+                      src:x:/../*/_src?value
+
+
+                /*
+                 * Copies a file
+                 */
                 sys42.copy-file
                   sys42.show-code:x:/..
+
+
+                /*
+                 * Moves a folder
+                 */
                 sys42.move-folder
-                  sys42.show-code:x:/..
+
+                  // If source and destinations are the same, there are
+                  // no reasons to proceed
+                  if:x:/../*/_dest?value
+                    !=:x:/../*/_src?value
+
+                    // Making sure foldername is changed to "x - copy" if there
+                    // exist a folder with the same name in destination folder
+                    // from before
+                    get-session:sys42.current-folder
+                    list-folders:x:/-/*?value
+                    if:x:/-/*/"{0}"
+                      :x:/../*/_dest?value
+
+                      // There exists a folder with destination name in folder from before,
+                      // appending " - copy" and invoking self recursively
+                      set:x:/..if/*/sys42.move-folder/*/_dest?value
+                        src:{0} - copy
+                          :x:/../*/_dest?value
+                      set:x:/..if/*/sys42.move-folder/*/_src?value
+                        src:x:/../*/_src?value
+                      sys42.move-folder
+                        _dest
+                        _src
+                      set:x:/..?value
+                        src:x:/./-?value
+                    else
+                      move-folder:x:/../*/_src?value
+                        to:x:/../*/_dest?value
+                      split:x:/../*/_dest?value
+                        =:/
+                      set:x:/..?value
+                        src:x:/./-/0/-?name
+                  else
+                    set:x:/..?value
+                      src:x:/../*/_src?value
+
+
+                /*
+                 * Copies a file
+                 */
                 sys42.copy-folder
                   sys42.show-code:x:/..
 
