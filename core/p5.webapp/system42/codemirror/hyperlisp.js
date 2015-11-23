@@ -195,6 +195,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'move-file':
         case 'copy-file':
         case 'move-folder':
+        case 'copy-folder':
         case 'save-file':
         case 'save-text-file':
         case 'save-binary-file':

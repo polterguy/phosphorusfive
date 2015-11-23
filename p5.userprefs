@@ -1,23 +1,18 @@
 ﻿<Properties StartupItem="core/p5.webapp/p5.webapp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="core/p5.webapp/system42/misc/include-codemirror.hl">
-    <Files>
-      <File FileName="core/p5.webapp/system42/admin/executor.hl" Line="20" Column="16" />
-      <File FileName="core/p5.webapp/system42/misc/include-codemirror.hl" Line="50" Column="1" />
-      <File FileName="core/p5.webapp/system42/codemirror/theme/whiteboard.css" Line="34" Column="76" />
-    </Files>
+  <MonoDevelop.Ide.Workbench>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="p5" expanded="True">
             <Node name="core" expanded="True">
               <Node name="p5.webapp" expanded="True">
-                <Node name="system42" expanded="True">
-                  <Node name="admin" expanded="True" />
-                  <Node name="misc" expanded="True">
-                    <Node name="include-codemirror.hl" selected="True" />
-                  </Node>
-                </Node>
+                <Node name="system42" expanded="True" />
+              </Node>
+            </Node>
+            <Node name="plugins" expanded="True">
+              <Node name="extras" expanded="True">
+                <Node name="p5.net" expanded="True" />
               </Node>
             </Node>
           </Node>

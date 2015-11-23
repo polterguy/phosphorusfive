@@ -23,6 +23,9 @@ create-widget:main-folders
    */
   oninit
     sys42.list-current-folder-content
+    get-session:sys42.copied-file
+    if:x:/-/*/*?value
+      sys42.show-paste-toolbar
     get-session:sys42.selected-file-folder-object
     if:x:/-/*?value
       sys42.show-selected-file-object-toolbar
@@ -47,7 +50,7 @@ create-widget:main-folders
     sys42.show-selected-file-object-toolbar
 
       // Clearing any previous toolbars out
-      clear-widget:selected-file-object-toolbar
+      delete-widget:selected-object-toolbar
 
       // Creating new toolbar
       create-widget:selected-object-toolbar
@@ -59,11 +62,17 @@ create-widget:main-folders
             type:button
             class:btn btn-default
             value:copy
+            onclick
+              sys42.copy-file-folder
+                _cut:false
           void
             element:input
             type:button
             class:btn btn-default
             value:cut
+            onclick
+              sys42.copy-file-folder
+                _cut:true
           void
             element:input
             type:button
@@ -78,6 +87,102 @@ create-widget:main-folders
             value:delete
             onclick
               sys42.delete-selected-file-folder
+
+
+    /*
+     * Invoked when user wants to copy/cut a file/folder
+     */
+    sys42.copy-file-folder
+      get-session
+        sys42.selected-file-folder-object
+        sys42.selected-file-folder-type
+        sys42.current-folder
+      if:x:/../*/_cut?value.bool
+        set:x:/../*/set-session/*/*/operation?value
+          src:move
+      else
+        set:x:/../*/set-session/*/*/operation?value
+          src:copy
+      if:x:/../*/get-session/[0,1]/*/sys42.current-folder?value
+        and:x:/../*/get-session/[0,1]/*/sys42.current-folder?value
+          !=:
+        set:x:/../*/set-session/*/*/object?value
+          src:{0}/{1}
+            :x:/../*/get-session/[0,1]/*/sys42.current-folder?value
+            :x:/../*/get-session/[0,1]/*/sys42.selected-file-folder-object?value
+      else
+        set:x:/../*/set-session/*/*/object?value
+          src:{0}
+            :x:/../*/get-session/[0,1]/*/sys42.selected-file-folder-object?value
+      set:x:/../*/set-session/*/*/type?value
+        src:x:/../*/get-session/[0,1]/*/sys42.selected-file-folder-type?value
+      set-session:sys42.copied-file
+        src
+          object
+          type
+          operation
+      sys42.show-paste-toolbar
+
+
+    /*
+     * Shows the paste toolbar
+     */
+    sys42.show-paste-toolbar
+
+      // Creating paste toolbar, but only if it does not exist from before
+      if
+        widget-exist:selected-object-paste-toolbar
+        not
+        create-widget:selected-object-paste-toolbar
+          parent:selected-file-object-toolbar
+          class:btn-group
+          position:0
+          widgets
+            void
+              element:input
+              type:button
+              class:btn btn-default
+              value:paste
+              onclick
+                get-session:sys42.copied-file
+                get-session:sys42.current-folder
+                set:x:/../*/_eval/0?name
+                  src:sys42.{0}-{1}
+                    :x:/../*/get-session/[0,1]/*/*/operation?value
+                    :x:/../*/get-session/[0,1]/*/*/type?value
+                set:x:/../*/_eval/0/*/_src?value
+                  src:x:/../*/get-session/*/*/object?value
+                split:x:/../*/get-session/[0,1]/*/*/object?value
+                  =:/
+                if:x:/../*/get-session/[1,2]/*?value
+                  and:x:/../*/get-session/[1,2]/*?value
+                    !=:
+                  set:x:/../*/_eval/0/*/_dest?value
+                    src:{0}/{1}
+                      :x:/../*/get-session/[1,2]/*?value
+                      :x:/../*/split/0/-?name
+                else
+                  set:x:/../*/_eval/0/*/_dest?value
+                    src:x:/../*/split/0/-?name
+                _eval
+                  foo-bar
+                    _src
+                    _dest
+                eval:x:/-
+
+
+              /*
+               * Lambda events for Paste button
+               */
+              events
+                sys42.move-file
+                  sys42.show-code:x:/..
+                sys42.copy-file
+                  sys42.show-code:x:/..
+                sys42.move-folder
+                  sys42.show-code:x:/..
+                sys42.copy-folder
+                  sys42.show-code:x:/..
 
 
     /*
@@ -120,7 +225,7 @@ create-widget:main-folders
           sys42.list-current-folder-content
 
           // Deleting edit object toolbar
-          clear-widget:selected-file-object-toolbar
+          delete-widget:selected-object-toolbar
 
 
     /*
@@ -248,7 +353,7 @@ window.checkKey = function (e) {
     sys42.bread-crumb-clicked
 
       // Clearing selected file toolbar widget
-      clear-widget:selected-file-object-toolbar
+      delete-widget:selected-object-toolbar
 
       // Clearing selected file session value
       set-session:sys42.selected-file-folder-object
@@ -334,7 +439,7 @@ window.checkKey = function (e) {
         set-session:sys42.selected-file-folder-type
 
         // Clearing selected file toolbar widget
-        clear-widget:selected-file-object-toolbar
+        delete-widget:selected-object-toolbar
       else
 
         // Selecting folder
