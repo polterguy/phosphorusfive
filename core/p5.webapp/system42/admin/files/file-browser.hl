@@ -35,14 +35,35 @@ create-widget:file-browser
 
 
   widgets
+
+
+    /*
+     * Bread crumb button group, allowing user to go "back" to where he cam from
+     * in the folder hierarchy
+     */
     container:file-browser-bread-crumb
       class:btn-group
+
+
+    /*
+     * Actual folders and files content, showing the "current folder"
+     */
     container:file-browser-current-folder-content
+
+
+    /*
+     * Toolbar widget for showing "Copy", "Cut", "Paste", "Rename" buttons etc ...
+     */
     container:file-browser-current-item-toolbar
       class:btn-group
+      oninit
+        sys42.update-file-browser-toolbar
       widgets
 
-        // "Copy" button
+
+        /*
+         * "Copy" button
+         */
         literal:file-browser-copy-button
           element:button
           class:btn btn-default
@@ -62,7 +83,10 @@ create-widget:file-browser
             // Updating toolbar
             sys42.update-file-browser-toolbar
 
-        // "Cut" button
+
+        /*
+         * "Cut" button
+         */
         literal:file-browser-cut-button
           element:button
           class:btn btn-default
@@ -82,26 +106,106 @@ create-widget:file-browser
             // Updating toolbar
             sys42.update-file-browser-toolbar
 
-        // "Paste" button
+
+        /*
+         * "Paste" button
+         */
         literal:file-browser-paste-button
           element:button
           class:btn btn-default
           innerValue:Paste
           disabled
+          onclick
 
-        // "Rename" button
+            // Getting copied object and current folder, combining
+            // filename from copied object and current folder, as destination
+            // filepath
+            get-session:sys42.copied-file-browser-object
+            get-session:sys42.current-folder
+            split:x:/../*/get-session/[0,1]/*/*/object?value
+              =:/
+
+            // This will do the actual work after modifying "foo-bar" to correct Active Event
+            _x-copy-move-file
+              foo-bar
+                to
+              set:x:/..?value
+                src:x:/./-?value
+
+            // Making sure we use the right Active Event
+            set:x:/../*/_x-copy-move-file/0?name
+              src:{0}-{1}
+                :x:/../*/get-session/[0,1]/*/*/operation?value
+                :x:/../*/get-session/[0,1]/*/*/type?value
+
+            // Setting source file for operation
+            set:x:/../*/_x-copy-move-file/0?value
+              src:x:/../*/get-session/[0,1]/*/*/object?value
+
+            // Setting destination filepath for operation
+            set:x:/../*/_x-copy-move-file/0/0?value
+              src:{0}{1}
+                :x:/../*/get-session/[1,2]/*?value
+                :x:/../*/split/0/-?name
+
+            // Executing actual move/copy/file/folder operation
+            eval:x:/../*/_x-copy-move-file
+
+            // Updating currently selected object to be the new file/folder that
+            // was moved/copied
+            set:x:/../*/set-session/*/*/type?value
+              src:x:/../*/get-session/[0,1]/*/*/type?value
+            set:x:/../*/set-session/*/*/object?value
+              src:x:/../*/eval?value
+            set-session:sys42.selected-file-browser-object
+              src
+                type
+                object
+
+            // Re-creating folder content, to reflect our new file/folder here ...
+            sys42.create-current-folder-content
+
+            // Updating selected visual clues, since our "new file" is now selected
+            sys42.create-selected-object-clues:x:/../*/set-session/*/*/object?value
+
+            // If this was a "move" operation, then we cannot click on "Paste" multiple times
+            // since source file is gone, which BTW doesn't logically do much sense anyway, hence
+            // we check if this was a "move" operation, and if it was, we simply discard the 
+            // "currently cut file browser object"
+            if:x:/../*/get-session/[0,1]/*/*/operation?value
+              =:move
+              set-session:sys42.copied-file-browser-object
+
+            // Since we now have a selected file, where we maybe didn't have one before, in addition
+            // to that we might have discarded the "Paste" logic, we update toolbar, since some items
+            // might be enabled now, while others might have been disabled ...
+            sys42.update-file-browser-toolbar
+
+
+        /*
+         * "Rename" button
+         */
         literal:file-browser-rename-button
           element:button
           class:btn btn-default
           innerValue:Rename
           disabled
 
-        // "Delete" button
+
+        /*
+         * "Delete" button
+         */
         literal:file-browser-delete-button
           element:button
           class:btn btn-default
           innerValue:Delete
           disabled
+
+
+    /*
+     * Wrapper to load a file-editor, for editing stuff like Hyperlisp files,
+     * CSS files or JavaScript files, etc. Loading editor for files "inline"
+     */
     container:file-browser-file-editor
 
 
@@ -213,16 +317,16 @@ create-widget:file-browser
       clear-widget:file-browser-current-folder-content
 
       // Listing folders first
-      sys42.create-current-folders
+      sys42.create-folders
 
       // Listing files afterwards
-      sys42.create-current-files
+      sys42.create-files
 
 
     /*
      * List all folders from current folder
      */
-    sys42.create-current-folders
+    sys42.create-folders
 
       // Retrieving current folder
       get-session:sys42.current-folder
@@ -257,7 +361,7 @@ create-widget:file-browser
     /*
      * List all files from current folder
      */
-    sys42.create-current-files
+    sys42.create-files
 
       // Retrieving current folder
       get-session:sys42.current-folder
