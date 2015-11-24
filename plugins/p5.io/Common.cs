@@ -3,24 +3,13 @@
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
+using System.IO;
 using System.Collections.Generic;
 using p5.exp;
 using p5.core;
 
 /// <summary>
 ///     Main namespace for all file operations in Phosphorus Five.
-/// 
-///     Contains all Active Events within the [p5.file.xxx] and [p5.folder.xxx] namespace.
-/// 
-///     Notice that all of these Active Events can only check for files within the main folder of your application,
-///     and they will have the root folder of your application automatically appended, to their files and folder, as they
-///     execute.
-/// 
-///     Due to the above reasons, it is therefor necessary for you to either expose an Active Event in your ApplicationContext
-///     returning this root folder, with the name of; [p5.core.application-folder]
-/// 
-///     This is automatically done for you though, if you use the main phosphorus.application-pool, or the lambda.exe console program
-///     as your main application context pool.
 /// </summary>
 namespace p5.file
 {
@@ -53,6 +42,53 @@ namespace p5.file
                 _rootFolder = _rootFolder.Replace ("\\", "/");
             }
             return _rootFolder;
+        }
+
+        /*
+         * Creates a new unique filename, and returns it to caller
+         */
+        public static string CreateNewUniqueFileName (ApplicationContext context, string destination)
+        {
+            string basepath = GetRootFolder (context);
+            string[] parts = destination.Split ('.');
+
+            // Getting suffix of filename
+            string suffix = parts.Length == 1 ? "" : parts [parts.Length - 1];
+
+            // Getting folder
+            string folder = destination.Substring (0, destination.LastIndexOf ("/") + 1);
+
+            // Getting filename, and removing suffix from filename
+            string filename = destination.Substring (folder.Length);
+            if (!string.IsNullOrEmpty (suffix))
+                filename = filename.Substring (0, filename.Length - (suffix.Length + 1));
+            suffix = "." + suffix;
+
+            int idxNo = 2;
+            while (File.Exists (basepath + folder + string.Format ("{0} - copy {1}{2}", filename, idxNo, suffix))) {
+                idxNo += 1;
+            }
+            return string.Format (folder + "{0} - copy {1}{2}", filename, idxNo, suffix);
+        }
+
+        /*
+         * Creates a new unique foldername, and returns it to caller
+         */
+        public static string CreateNewUniqueFolderName (ApplicationContext context, string destination)
+        {
+            string basepath = GetRootFolder (context);
+
+            // Getting folder
+            string folder = destination.Substring (0, destination.LastIndexOf ("/") + 1);
+
+            // Getting filename, and removing suffix from filename
+            string filename = destination.Substring (folder.Length);
+
+            int idxNo = 2;
+            while (Directory.Exists (basepath + folder + string.Format ("{0} - copy {1}", filename, idxNo))) {
+                idxNo += 1;
+            }
+            return string.Format (folder + "{0} - copy {1}", filename, idxNo);
         }
 
         public static IEnumerable<string> GetSource (Node args, ApplicationContext context)

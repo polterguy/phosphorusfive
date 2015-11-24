@@ -33,13 +33,26 @@ namespace p5.file.folder
                 var rootFolder = Common.GetRootFolder (context);
 
                 // getting file to move
-                string fromFolder = XUtil.Single<string> (e.Args, context);
+                string sourceFolder = XUtil.Single<string> (e.Args, context);
 
-                // Gettting new filename of file
-                string toFolder = XUtil.Single<string> (e.Args ["to"], context);
+                // Getting new filename of file
+                string destinationFolder = XUtil.Single<string> (e.Args ["to"], context);
+
+                if (sourceFolder == destinationFolder)
+                    return; // Nothing to do here
+
+                // Getting new filename of file, if needed
+                if (Directory.Exists (rootFolder + destinationFolder)) {
+
+                    // Destination file exist from before, creating a new unique destination filename
+                    destinationFolder = Common.CreateNewUniqueFolderName (context, destinationFolder);
+                }
 
                 // Actually moving (or renaming) file
-                Directory.Move (rootFolder + fromFolder, rootFolder + toFolder);
+                Directory.Move (rootFolder + sourceFolder, rootFolder + destinationFolder);
+
+                // Returning actual destination foldername used to caller
+                e.Args.Value = destinationFolder;
             }
         }
     }

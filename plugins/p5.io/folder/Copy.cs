@@ -33,13 +33,23 @@ namespace p5.file.folder
                 var rootFolder = Common.GetRootFolder (context);
 
                 // getting folder to copy
-                string fromFolder = XUtil.Single<string> (e.Args, context);
+                string sourceFolder = XUtil.Single<string> (e.Args, context);
 
                 // Gettting new path of folder
-                string toFolder = XUtil.Single<string> (e.Args ["to"], context);
+                string destinationFolder = XUtil.Single<string> (e.Args ["to"], context);
+
+                // Getting new foldername for folder, if needed
+                if (Directory.Exists (rootFolder + destinationFolder)) {
+
+                    // Destination folder exist from before, creating a new unique destination foldername
+                    destinationFolder = Common.CreateNewUniqueFolderName (context, destinationFolder);
+                }
 
                 // Actually copying folder
-                CopyFolder (rootFolder + fromFolder, toFolder);
+                CopyFolder (rootFolder + sourceFolder, destinationFolder);
+
+                // Returning actual destination foldername used to caller
+                e.Args.Value = destinationFolder;
             }
         }
 

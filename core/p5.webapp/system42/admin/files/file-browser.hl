@@ -8,35 +8,27 @@
 include-stylesheet-file:/system42/admin/files/media/files.css
 
 
-// Removing "selected file folder" session value
-set-session:sys42.copied-file
-
-
 /*
  * Creating main file system browser widget
  */
-create-widget:main-folders
+create-widget:file-browser
   parent:content
   class:col-xs-12 file-browser
 
   /*
-   * Loads up files from current folder or 
-   * root folder if there is no current folder, and
-   * if there's a selected file/folder, will display 
-   * selected file/folder toolbar
+   * Loads up files from current folder, or root folder, 
+   * if there is no current folder
    */
   oninit
-    sys42.list-current-folder-content
-    get-session:sys42.selected-file-folder-object
-    if:x:/-/*?value
-      sys42.show-selected-file-object-toolbar
+    sys42.create-folder-bread-crumb
+    sys42.create-current-folder-content
 
 
   widgets
-    container:folders-bread-crumb
-    container:folder-content
-    container:selected-file-object-toolbar
-    container:selected-file-object-editor
+    container:file-browser-bread-crumb
+      class:btn-group
+    container:file-browser-current-folder-content
+    container:file-browser-current-item-toolbar
 
 
   /*
@@ -46,683 +38,299 @@ create-widget:main-folders
 
 
     /*
-     * Shows the toolbar for selected file or folder
+     * Shows the bread-crumb for the file browser. Takes no arguments
      */
-    sys42.show-selected-file-object-toolbar
-
-      // Clearing any previous toolbars out
-      delete-widget:selected-object-toolbar
-
-      // Creating new toolbar
-      create-widget:selected-object-toolbar
-        parent:selected-file-object-toolbar
-        class:btn-group
-        widgets
-          void
-            element:input
-            type:button
-            class:btn btn-default
-            value:copy
-            onclick
-              sys42.copy-file-folder
-                _cut:false
-          void
-            element:input
-            type:button
-            class:btn btn-default
-            value:cut
-            onclick
-              sys42.copy-file-folder
-                _cut:true
-          void
-            element:input
-            type:button
-            class:btn btn-default
-            value:rename
-            onclick
-              sys42.load-rename-selected-file-folder-widget
-          void:delete-selected-file
-            element:input
-            type:button
-            class:btn btn-default
-            value:delete
-            onclick
-              sys42.delete-selected-file-folder
-
-
-    /*
-     * Invoked when user wants to copy/cut a file/folder
-     */
-    sys42.copy-file-folder
-      get-session
-        sys42.selected-file-folder-object
-        sys42.selected-file-folder-type
-        sys42.current-folder
-      if:x:/../*/_cut?value.bool
-        set:x:/../*/set-session/*/*/operation?value
-          src:move
-      else
-        set:x:/../*/set-session/*/*/operation?value
-          src:copy
-      if:x:/../*/get-session/[0,1]/*/sys42.current-folder?value
-        and:x:/../*/get-session/[0,1]/*/sys42.current-folder?value
-          !=:
-        set:x:/../*/set-session/*/*/object?value
-          src:{0}/{1}
-            :x:/../*/get-session/[0,1]/*/sys42.current-folder?value
-            :x:/../*/get-session/[0,1]/*/sys42.selected-file-folder-object?value
-      else
-        set:x:/../*/set-session/*/*/object?value
-          src:{0}
-            :x:/../*/get-session/[0,1]/*/sys42.selected-file-folder-object?value
-      set:x:/../*/set-session/*/*/type?value
-        src:x:/../*/get-session/[0,1]/*/sys42.selected-file-folder-type?value
-      set-session:sys42.copied-file
-        src
-          object
-          type
-          operation
-      sys42.show-paste-toolbar
-
-
-    /*
-     * Shows the paste toolbar
-     */
-    sys42.show-paste-toolbar
-
-      // Creating paste toolbar, but only if it does not exist from before
-      if
-        widget-exist:selected-object-paste-toolbar
-        not
-        create-widget:selected-object-paste-toolbar
-          parent:selected-file-object-toolbar
-          class:btn-group
-          position:0
-          widgets
-            void
-              element:input
-              type:button
-              class:btn btn-default
-              value:paste
-              onclick
-                sys42.paste-button-clicked
-
-
-              /*
-               * Lambda events for Paste button
-               */
-              events
-
-
-                /*
-                 * Invoked when Paste button is clicked
-                 */
-                sys42.paste-button-clicked
-
-                  // Retrieving which file or folder is copied/moved
-                  get-session:sys42.copied-file
-
-                  // Retrieving currently selected folder, which becomes
-                  // the destination
-                  get-session:sys42.current-folder
-
-                  // Dynamically building our event invocation, by modifying
-                  // "foo-bar" below to become the correct Active Event
-                  set:x:/../*/_eval/0?name
-                    src:sys42.{0}-{1}
-                      :x:/../*/get-session/[0,1]/*/*/operation?value
-                      :x:/../*/get-session/[0,1]/*/*/type?value
-
-                  // Setting source of operation
-                  set:x:/../*/_eval/0/*/_src?value
-                    src:x:/../*/get-session/*/*/object?value
-
-                  // Setting destination of operation, and making sure there
-                  // are no initial "/" for clarity
-                  split:x:/../*/get-session/[0,1]/*/*/object?value
-                    =:/
-                  if:x:/../*/get-session/[1,2]/*?value
-                    and:x:/../*/get-session/[1,2]/*?value
-                      !=:
-                    set:x:/../*/_eval/0/*/_dest?value
-                      src:{0}/{1}
-                        :x:/../*/get-session/[1,2]/*?value
-                        :x:/../*/split/0/-?name
-                  else
-                    set:x:/../*/_eval/0/*/_dest?value
-                      src:x:/../*/split/0/-?name
-
-                  // At this point, "foo-bar" below should be something like "sys42.move-file",
-                  // "sys42.copy-folder", etc, and source and destinations correctly mapped up ...
-                  _eval
-                    foo-bar
-                      _src
-                      _dest
-                    set-session:sys42.selected-file-folder-object
-                      src:x:/../0?value
-                    split:x:/../0?name
-                      =:-
-                    set-session:sys42.selected-file-folder-type
-                      src:x:/./-/0/-?name
-                    sys42.list-current-folder-content
-                    sys42.show-selected-file-object-toolbar
-                    set-session:sys42.copied-file
-                    delete-widget:selected-object-paste-toolbar
-                    set:x:/..?value
-                      src:x:/../0?value
-
-                  // Checking if source and destinations are the same, and
-                  // if so, appending " - copy" to destination
-                  if:x:/../*/_eval/0/*/_src?value
-                    =:x:/../*/_eval/0/*/_dest?value
-                    and:x:/../*/_eval/0?name
-                      !=:sys42.move-file
-                      and:x:/../*/_eval/0?name
-                        !=:sys42.move-folder
-                    set:x:/../*/_eval/0/*/_dest?value
-                      src:{0} - copy
-                        :x:/../*/_eval/0/*/_dest?value
-
-                  // Invocing operation Active Event
-                  eval:x:/../*/_eval
-
-
-                /*
-                 * Moves a file
-                 */
-                sys42.move-file
-
-                  // If source and destinations are the same, there are
-                  // no reasons to proceed
-                  if:x:/../*/_dest?value
-                    !=:x:/../*/_src?value
-
-                    // Making sure filename is changed to "x - copy" if there
-                    // exist a file with the same name in destination folder
-                    // from before
-                    get-session:sys42.current-folder
-                    list-files:x:/-/*?value
-                    if:x:/-/*/"{0}"
-                      :x:/../*/_dest?value
-
-                      // There exists a file with destination name in folder from before,
-                      // appending " - copy" and invoking self recursively
-                      set:x:/..if/*/sys42.move-file/*/_dest?value
-                        src:{0} - copy
-                          :x:/../*/_dest?value
-                      set:x:/..if/*/sys42.move-file/*/_src?value
-                        src:x:/../*/_src?value
-                      sys42.move-file
-                        _dest
-                        _src
-                      set:x:/..?value
-                        src:x:/./-?value
-                    else
-                      move-file:x:/../*/_src?value
-                        to:x:/../*/_dest?value
-                      split:x:/../*/_dest?value
-                        =:/
-                      set:x:/..?value
-                        src:x:/./-/0/-?name
-                  else
-                    set:x:/..?value
-                      src:x:/../*/_src?value
-
-
-                /*
-                 * Copies a file
-                 */
-                sys42.copy-file
-                  sys42.show-code:x:/..
-
-
-                /*
-                 * Moves a folder
-                 */
-                sys42.move-folder
-
-                  // If source and destinations are the same, there are
-                  // no reasons to proceed
-                  if:x:/../*/_dest?value
-                    !=:x:/../*/_src?value
-
-                    // Making sure foldername is changed to "x - copy" if there
-                    // exist a folder with the same name in destination folder
-                    // from before
-                    get-session:sys42.current-folder
-                    list-folders:x:/-/*?value
-                    if:x:/-/*/"{0}"
-                      :x:/../*/_dest?value
-
-                      // There exists a folder with destination name in folder from before,
-                      // appending " - copy" and invoking self recursively
-                      set:x:/..if/*/sys42.move-folder/*/_dest?value
-                        src:{0} - copy
-                          :x:/../*/_dest?value
-                      set:x:/..if/*/sys42.move-folder/*/_src?value
-                        src:x:/../*/_src?value
-                      sys42.move-folder
-                        _dest
-                        _src
-                      set:x:/..?value
-                        src:x:/./-?value
-                    else
-                      move-folder:x:/../*/_src?value
-                        to:x:/../*/_dest?value
-                      split:x:/../*/_dest?value
-                        =:/
-                      set:x:/..?value
-                        src:x:/./-/0/-?name
-                  else
-                    set:x:/..?value
-                      src:x:/../*/_src?value
-
-
-                /*
-                 * Copies a file
-                 */
-                sys42.copy-folder
-                  sys42.show-code:x:/..
-
-
-    /*
-     * Deletes the currently selected file/folder
-     */
-    sys42.delete-selected-file-folder
-      get-session
-        sys42.selected-file-folder-object
-      set:x:/+/*/_message?value
-        src::Are you sure you wish to delete <strong>'{0}'</strong>, this action cannot be undone once done
-          :x:/././-/*?value
-      sys42.confirm-action
-        _header:Please confirm deletion
-        _message
-        _onok
-          get-session
-            sys42.current-folder
-            sys42.selected-file-folder-object
-            sys42.selected-file-folder-type
-          if:x:/../*/get-session/*/sys42.selected-file-folder-type?value
-            =:file
-
-            // User is deleting a file
-            delete-file:{0}/{1}
-              :x:/../*/get-session/*/sys42.current-folder?value
-              :x:/../*/get-session/*/sys42.selected-file-folder-object?value
-          else
-
-            // User is deleting a folder
-            delete-folder:{0}/{1}
-              :x:/../*/get-session/*/sys42.current-folder?value
-              :x:/../*/get-session/*/sys42.selected-file-folder-object?value
-
-          // Clearing currently selected object and associated session variables
-          set-session
-            sys42.selected-file-folder-object
-            sys42.selected-file-folder-type
-
-          // Re-listing widgets of current folder
-          sys42.list-current-folder-content
-
-          // Deleting edit object toolbar
-          delete-widget:selected-object-toolbar
-
-
-    /*
-     * Renames the currently selected file or folder
-     */
-    sys42.load-rename-selected-file-folder-widget
-      get-session
-        sys42.selected-file-folder-object
-      set:x:/+/*/widgets/0/*/value?value
-        src:x:/./-/*/sys42.selected-file-folder-object?value
-      create-widget:rename-file
-        parent:selected-file-object-editor
-        widgets
-          void:rename-input-el
-            element:input
-            type:text
-            class:span-8
-            value
-            onsubmit_
-              get-widget-property:rename-input-el
-                value
-              delete-widget:rename-file
-              get-session
-                sys42.current-folder
-                sys42.selected-file-folder-object
-                sys42.selected-file-folder-type
-              if:x:/-/*/sys42.selected-file-folder-type?value
-                =:file
-
-                // Renaming a file
-                move-file:{0}/{1}
-                  :x:/../*/get-session/*/sys42.current-folder?value
-                  :x:/../*/get-session/*/sys42.selected-file-folder-object?value
-                  to:{0}/{1}
-                    :x:/../*/get-session/*/sys42.current-folder?value
-                    :x:/../*/get-widget-property/*/*/value?value
-
-                // Changing selected file session value
-                set-session:sys42.selected-file-folder-object
-                  src:x:/../*/get-widget-property/*/*/value?value
-                sys42.list-current-folder-content
-              else
-
-                // Renaming a folder
-                move-folder:{0}/{1}
-                  :x:/../*/get-session/*/sys42.current-folder?value
-                  :x:/../*/get-session/*/sys42.selected-file-folder-object?value
-                  to:{0}/{1}
-                    :x:/../*/get-session/*/sys42.current-folder?value
-                    :x:/../*/get-widget-property/*/*/value?value
-
-                // Changing selected file session value
-                set-session:sys42.selected-file-folder-object
-                  src:x:/../*/get-widget-property/*/*/value?value
-                sys42.list-current-folder-content
-            onclose_
-              delete-widget:rename-file
-            onkeyup:"window.checkKey(event);"
-          void:stupid-fucking-browser-idiotic-behavior-needs-this-fucking-shit-to-not-post-form-on-carriage-return
-            element:input
-            type:text
-            style:"display:none;"
-
-
-      // Helper JavaScript to handle key events for saving and discarding new file/folder name
-      include-javascript:@"(function() {
-window.checkKey = function (e) {
-  if (e.keyCode == 13) {
-    p5.$('rename-input-el').raise('onsubmit_');
-    e.preventDefault();
-    return false;
-  } else if (e.keyCode == 27) {
-    p5.$('rename-input-el').raise('onclose_');
-  }
-};
-})();"
-
-      // Helper JavaScript to set focus to rename textbox
-      send-javascript:@"(function(){var el = window.p5.$('rename-input-el').el;el.focus();el.select();})();"
-
-
-    /*
-     * Shows the bread-crumb for file browser
-     */
-    sys42.show-folder-bread-crumb
+    sys42.create-folder-bread-crumb
 
       // Deleting previously created bread-crumb
-      clear-widget:folders-bread-crumb
+      clear-widget:file-browser-bread-crumb
 
       // Getting current folder
       get-session:sys42.current-folder
-      split:x:/-/*?value
+
+      // Creating bread-crumb home button widget part
+      if:x:/../*/get-session/*?value
+        not
+        add:x:/../*/create-literal-widget
+          src:disabled
+      create-literal-widget
+        element:button
+        parent:file-browser-bread-crumb
+        class:btn btn-default
+        innerValue:/
+        onclick
+          sys42.change-current-folder
+
+      // Looping through each folder leading to current path, 
+      // building "path" as we go along
+      _path:
+      split:x:/../*/get-session/*?value
         =:/
       for-each:x:/-/*?name
-        _lit
-          void
-            element:input
-            type:button
-            class:btn btn-default
-            value
-            onclick
-              sys42.bread-crumb-clicked:x:/../*/_event?value
-        set:x:/-/*/*/value?value
-          src:x:/././*/__dp?value
-        add:x:/../*/create-widget/*/widgets
-          src:x:/././*/_lit/*
-      add:x:/+/*/widgets/0/-
-        src:disabled
-      create-widget:bread-crumb
-        parent:folders-bread-crumb
-        class:btn-group
-        widgets
-          void
-            element:input
-            type:button
-            class:btn btn-default
-            value:/
-            onclick
-              sys42.bread-crumb-clicked:x:/../*/_event?value
+
+        // Creating a button for each folder leading to current folder
+        set:x:/..for-each/*/create-literal-widget/*/innerValue?value
+          src:x:/..for-each/*/__dp?value
+        set:x:/../*/_path?value
+          src:{0}{1}/
+            :x:/../*/_path?value
+            :x:/..for-each/*/__dp?value
+        set:x:/..for-each/*/create-literal-widget/*/onclick/0?value
+          src:x:/../*/_path?value
+
+        // Checking if this is last bread-crumb button, and if so, disabling it
+        if:x:/../*/_path?value
+          =:x:/../*/get-session/*?value
+          add:x:/..for-each/*/create-literal-widget
+            src:disabled
+
+        // Creating bread-crumb button widget part
+        create-literal-widget
+          element:button
+          parent:file-browser-bread-crumb
+          class:btn btn-default
+          innerValue
+          onclick
+            sys42.change-current-folder
 
 
     /*
-     * Bread-crumb button was clicked
+     * Creates a list of all folders and files from current folder,
+     * for user to browse through
      */
-    sys42.bread-crumb-clicked
+    sys42.create-current-folder-content
 
-      // Clearing selected file toolbar widget
-      delete-widget:selected-object-toolbar
+      // Clearing previously created folders and files
+      clear-widget:file-browser-current-folder-content
 
-      // Clearing selected file session value
-      set-session:sys42.selected-file-folder-object
-      set-session:sys42.selected-file-folder-type
-      get-widget-property:x:/../*/_arg?value
-        value
-      if:x:/-/*/*?value
+      // Listing folders first
+      sys42.create-current-folders
 
-        // "home" was clicked
-        equals:/
-        set-session:sys42.current-folder
-      else
+      // Listing files afterwards
+      sys42.create-current-files
 
-        // Anything but home was clicked
-        get-session:sys42.current-folder
-        split:x:/-/*?value
+
+    /*
+     * List all folders from current folder
+     */
+    sys42.create-current-folders
+
+      // Retrieving current folder
+      get-session:sys42.current-folder
+
+      // Retrieving selected object
+      get-session:sys42.selected-file-browser-object
+
+      // Looping through each folder, creating a widget for each of them
+      list-folders:x:/../*/get-session/[0,1]/*?value
+      for-each:x:/../*/list-folders/*?name
+
+        // Removing trailing "/" and setting innerValue
+        split:x:/..for-each/*/__dp?value
           =:/
-        _new-folder
+        set:x:/..for-each/*/create-literal-widget/*/innerValue?value
+          src:x:/..for-each/*/split/0/-?name
 
-        // Looping through each [split] results until we're at new current folder
-        while:bool:true
+        // Adding the "currently selected item" class, if it is selected
+        if:x:/../*/get-session/[1,2]/*/*/type?value
+          =:folder
+          and:x:/../*/get-session/[1,2]/*/*/object?value
+            =:x:/..for-each/*/__dp?value
+          set:x:/..for-each/*/create-literal-widget/*/class?value
+            src:{0} active-file
+              :x:/..for-each/*/create-literal-widget/*/class?value
 
-          // Making sure each consecutive folder append operation are separated by a "/"
-          if:x:/./-?value
-            set:x:/././-?value
-              src:{0}/
-                :x:/././././-?value
+        // Making sure event handler for widget is correctly wired up
+        set:x:/..for-each/*/create-literal-widget/*/onclick/0?value
+          src:x:/..for-each/*/__dp?value
 
-          // Appending currently iterated folder into [_new-folder]
-          set:x:/./-?value
-            src:{0}{1}
-              :x:/./././-?value
-              :x:/..else/*/split/0?name
+        // Actually creating folder object widget
+        create-literal-widget
+          parent:file-browser-current-folder-content
+          class:file-object folder
+          innerValue
+          onclick
+            sys42.folder-clicked
 
-          // Checking if we're at "new current folder", and if so, breaking while
-          if:x:/../*/get-widget-property/*/*?value
-            equals:x:/..else/*/split/0?name
-            set:x:/..while?value
-              src:bool:false
 
-          // Removing zeroth split item, which is the one we just dealt with
-          set:x:/..else/*/split/0
+    /*
+     * List all files from current folder
+     */
+    sys42.create-current-files
 
-        // Updating current folder to new value
-        set:x:/+/0?value
-          src:x:/..else/*/_new-folder?value
-        set-session:sys42.current-folder
-          src
+      // Retrieving current folder
+      get-session:sys42.current-folder
+
+      // Retrieving selected object
+      get-session:sys42.selected-file-browser-object
+
+      // Looping through each folder, creating a widget for each of them
+      list-files:x:/../*/get-session/[0,1]/*?value
+      for-each:x:/../*/list-files/*?name
+
+        // Removing trailing "/" and setting innerValue
+        split:x:/..for-each/*/__dp?value
+          =:/
+        set:x:/..for-each/*/create-literal-widget/*/innerValue?value
+          src:x:/..for-each/*/split/0/-?name
+
+        // Making sure event handler for widget is correctly wired up
+        set:x:/..for-each/*/create-literal-widget/*/onclick/0?value
+          src:x:/..for-each/*/__dp?value
+
+        // Adding the "currently selected item" class, if it is selected
+        if:x:/../*/get-session/[1,2]/*/*/type?value
+          =:file
+          and:x:/../*/get-session/[1,2]/*/*/object?value
+            =:x:/..for-each/*/__dp?value
+          set:x:/..for-each/*/create-literal-widget/*/class?value
+            src:{0} active-file
+              :x:/..for-each/*/create-literal-widget/*/class?value
+
+        // Actually creating folder object widget
+        create-literal-widget
+          parent:file-browser-current-folder-content
+          class:file-object file
+          innerValue
+          onclick
+            sys42.file-clicked
+
+
+    /*
+     * Bread-crumb button was clicked. Takes the path to
+     * the new folder as an argument
+     */
+    sys42.change-current-folder
+
+      // Destroys any toolbars and editors currently loaded
+      sys42.destroy-edit-object-toolbar
+
+      // Updating current folder
+      set-session:sys42.current-folder
+        src:x:/../*/_arg?value
+
+      // Removing selected file/folder object
+      set-session:sys42.selected-file-browser-object
+
+      // Re-creating bread-crumb
+      sys42.create-folder-bread-crumb
 
       // Listing current folder's folders and files again
-      sys42.list-current-folder-content
+      sys42.create-current-folder-content
 
 
     /*
-     * Invoked when a folder widget was clicked
+     * Invoked when a folder widget was clicked. Takes path to
+     * folder that is clicked as input argument
      */
     sys42.folder-clicked
 
-      // Getting name of folder that was clicked
-      get-widget-property:x:/../*/_arg?value
-        innerValue
-      get-session:sys42.selected-file-folder-object
-      if:x:/-/*?value
-        =:x:/./-2/*/*?value
+      // Checking if folder is already selected
+      get-session:sys42.selected-file-browser-object
+      if:x:/../*/get-session/*/*/type?value
+        =:folder
+        and:x:/../*/get-session/*/*/object?value
+          =:x:/../*/_arg?value
 
-        // Folder is currently selected
-        get-session:sys42.current-folder
-
-        // Appending a slash if there's a value in current-folder
-        if:x:/-/*?value
-          set:x:/./-/*?value
-            src:{0}/
-              :x:/./././-/*?value
-
-        // Updating current folder
-        set-session:sys42.current-folder
-          src:{0}{1}
-            :x:/././-2/0?value
-            :x:/../*/get-widget-property/*/*/innerValue?value
-            
-        // Deleting the "currently selected object and type" session variable
-        set-session:sys42.selected-file-folder-object
-        set-session:sys42.selected-file-folder-type
-
-        // Clearing selected file toolbar widget
-        delete-widget:selected-object-toolbar
+        // Clicked folder was already selected, hence opening it
+        sys42.change-current-folder:x:/../*/_arg?value
       else
 
-        // Selecting folder
-        set-session:sys42.selected-file-folder-object
-          src:x:/../*/get-widget-property/*/*/innerValue?value
-        set-session:sys42.selected-file-folder-type
-          src:folder
-
-        // Shows toolbar for selected folder
-        sys42.show-selected-file-object-toolbar
-
-      // Listing all folders and files in current folder
-      sys42.list-current-folder-content
+        // Clicked folder was not selected, hence we select it
+        set:x:/+/*/*/object?value
+          src:x:/../*/_arg?value
+        set-session:sys42.selected-file-browser-object
+          src
+            type:folder
+            object
+        sys42.select-file-object:x:/../*/_arg?value
+        sys42.create-edit-folder-toolbar:x:/../*/_arg?value
+      sys42.destroy-file-editor
 
 
     /*
-     * Invoked when a file widget was clicked
+     * Invoked when a file widget was clicked. Takes path to
+     * file that is clicked as input argument
      */
     sys42.file-clicked
 
-      // Getting name of file that was clicked
-      get-widget-property:x:/../*/_arg?value
-        innerValue
-      get-session:sys42.selected-file-folder-object
-      if:x:/-/*?value
-        =:x:/./-2/*/*?value
+      // Checking if file is already selected
+      get-session:sys42.selected-file-browser-object
+      if:x:/../*/get-session/*/*/type?value
+        =:file
+        and:x:/../*/get-session/*/*/object?value
+          =:x:/../*/_arg?value
 
-        // Getting file name and path
-        _file-path
-        get-session:sys42.current-folder
-        if:x:/-/*?value
-          set:x:/./-2?value
-            src:{0}/{1}
-              :x:/./././-/*?value
-              :x:/../*/get-widget-property/*/*/innerValue?value
-        else
-          set:x:/./-3?value
-            src:x:/../*/get-widget-property/*/*/innerValue?value
-
-        // Returning file over HTTP Response by setting session variable and doing "window.location.reload(true)"
-        set-session:sys42.download-file
-          src:x:/././*/_file-path?value
-        send-javascript:"window.location.reload(true);"
+        // File was already selected, opening up file editor
+        sys42.create-file-editor:x:/../*/get-session/*/*/object?value
       else
 
-        // Shows toolbar for selected file
-        sys42.show-selected-file-object-toolbar
-
-        // Selecting file
-        set-session:sys42.selected-file-folder-object
-          src:x:/../*/get-widget-property/*/*/innerValue?value
-        set-session:sys42.selected-file-folder-type
-          src:file
-
-      // Listing all folders and files in current folder
-      sys42.list-current-folder-content
+        // Clicked file was not selected, hence we select it, and update view
+        set:x:/+/*/*/object?value
+          src:x:/../*/_arg?value
+        set-session:sys42.selected-file-browser-object
+          src
+            type:file
+            object
+        sys42.select-file-object:x:/../*/_arg?value
+        sys42.destroy-file-editor
+        sys42.create-edit-file-toolbar:x:/../*/_arg?value
+        sys42.destroy-file-editor
 
 
     /*
-     * Creates a list of all folders and files in current folder 
-     * for user to browse through.
+     * Selects a file/folder object on screen, giving visual clues to user
+     * Takes filename as argument
      */
-    sys42.list-current-folder-content
-
-      // clearing previously created folders and files
-      clear-widget:folder-content
-
-      // showing bread crumb
-      sys42.show-folder-bread-crumb
-
-      // Common lambda object for both files and folders
-      _x
-        for-each:x:/../*/_objects/*?name
-          split:x:/./*/__dp?value
-            =:/
-          _lit
-            literal
-              element:small
-              class:file-object
-              title
-          add:x:/-/*
-            src:"innerValue:{0}"
-              :x:/./././*/split/+/<?name
-          set:x:/./*/_lit/*/*/class?value
-            src:{0} {1}
-              :x:/./././*/_lit/*/*/class?value
-              :x:/././././*/_class?value
-          set:x:/./*/_lit/*/*/title?value
-            src:x:/..for-each/*/split/0/-?name
-          if:x:/../*/_selected-object?value
-            =:x:/..for-each/*/split/0/-?name
-            set:x:/..for-each/*/_lit/*/*/class?value
-              src:{0} {1}
-                :x:/..for-each/*/_lit/*/*/class?value
-                : active-file
-          insert-before:x:/../0
-            src:x:/././*/_lit/*
-          for-each:x:/../*/_events/*
-            add:x:/../0
-              src:x:/././*/__dp/#
-
-      // Getting currently selected file/folder object
-      get-session:sys42.selected-file-folder-object
-
-      // Looping through all folders
-      list-folders
-        get-session:sys42.current-folder
-      add:x:/+2/*/_objects
-        src:x:/./-/*?name
-      set:x:/+/*/_selected-object?value
-        src:x:/../*/get-session/[0,1]/*?value
-      eval:x:/../*/_x
-        _objects
-        _class:folder
-        _selected-object
-        _events
-          onclick
-            sys42.folder-clicked:x:/../*/_event?value
-      add:x:/../*/create-widget/*/widgets
-        src:x:/./-/*
-
-      // Looping through all files
-      list-files
-        get-session:sys42.current-folder
-      add:x:/+2/*/_objects
-        src:x:/./-/*?name
-      set:x:/+/*/_selected-object?value
-        src:x:/././*/get-session/[0,1]/*?value
-      eval:x:/../*/_x
-        _objects
-        _class:file
-        _selected-object
-        _events
-          onclick
-            sys42.file-clicked:x:/../*/_event?value
-      add:x:/../*/create-widget/*/widgets
-        src:x:/./-/*
-
-      // creating widget containing all folders and files
-      create-widget:all-files-and-folders
-        parent:folder-content
-        class:prepend-top prepend-bottom
-        widgets
+    sys42.select-file-object
+      get-children-widgets:file-browser-current-folder-content
+      get-widget-property:x:/-/*/*?value
+        class
+        innerValue
+      split::x:/-/*/*/"=~ active-file"?value
+        =:" active-file"
+      set-widget-property:x:/-2/*/*/class/"=~ active-file"/.?name
+        class:x:/./-/0?name
+      split:x:/../*/_arg?value
+        =:/
+      set-widget-property:x:/-4/*/*/innerValue/"={0}"/.?name
+        :x:/./-/0/-?name
+        class:{0} active-file
+          :x:/././-4/*/*/innerValue/"={0}"/./*/class?value
+            :x:/./././-/0/-?name
 
 
+    /*
+     * Creates the "Edit File toolbar" for changing filename, copying, etc
+     * Takes filename as argument
+     */
+    sys42.create-edit-file-toolbar
 
+
+    /*
+     * Creates the "Edit Folder toolbar" for changing filename, copying, etc
+     * Takes foldername as argument
+     */
+    sys42.create-edit-folder-toolbar
+
+
+    /*
+     * Destroys any "Edit File/Folder toolbars", and editors
+     */
+    sys42.destroy-edit-object-toolbar
+      clear-widget:file-browser-current-item-toolbar
+
+
+    /*
+     * Creates the "Edit file editor widget" for editing files, if possible
+     * Takes filename as argument
+     */
+    sys42.create-file-editor
+      sys42.show-code:x:/..
+
+
+    /*
+     * Destroys any "Edit file editor widgets"
+     */
+    sys42.destroy-file-editor
+      _sys42.show-code:x:/..
