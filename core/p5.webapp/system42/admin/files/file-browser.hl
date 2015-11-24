@@ -20,8 +20,18 @@ create-widget:file-browser
    * if there is no current folder
    */
   oninit
+
+    // Creating folder bread-crumb buttons
     sys42.create-folder-bread-crumb
+
+    // Creating current folder content
     sys42.create-current-folder-content
+
+    // Making sure selected file gives visual clues, if any files are selected
+    get-session:sys42.selected-file-browser-object
+    if:x:/-/*/*/object?value
+      sys42.create-selected-object-clues:x:/./-/*/*/object?value
+      sys42.update-file-browser-toolbar
 
 
   widgets
@@ -29,12 +39,111 @@ create-widget:file-browser
       class:btn-group
     container:file-browser-current-folder-content
     container:file-browser-current-item-toolbar
+      class:btn-group
+      widgets
+
+        // "Copy" button
+        literal:file-browser-copy-button
+          element:button
+          class:btn btn-default
+          innerValue:Copy
+          disabled
+          onclick
+
+            // Putting currently active object into session, 
+            // to store which object has been "Copied"
+            get-session:sys42.selected-file-browser-object
+            add:x:/../*/set-session/*
+              src:x:/./-/*/*
+            set-session:sys42.copied-file-browser-object
+              src
+                operation:copy
+
+            // Updating toolbar
+            sys42.update-file-browser-toolbar
+
+        // "Cut" button
+        literal:file-browser-cut-button
+          element:button
+          class:btn btn-default
+          innerValue:Cut
+          disabled
+          onclick
+
+            // Putting currently active object into session, 
+            // to store which object has been "Cut"
+            get-session:sys42.selected-file-browser-object
+            add:x:/../*/set-session/*
+              src:x:/./-/*/*
+            set-session:sys42.copied-file-browser-object
+              src
+                operation:move
+
+            // Updating toolbar
+            sys42.update-file-browser-toolbar
+
+        // "Paste" button
+        literal:file-browser-paste-button
+          element:button
+          class:btn btn-default
+          innerValue:Paste
+          disabled
+
+        // "Rename" button
+        literal:file-browser-rename-button
+          element:button
+          class:btn btn-default
+          innerValue:Rename
+          disabled
+
+        // "Delete" button
+        literal:file-browser-delete-button
+          element:button
+          class:btn btn-default
+          innerValue:Delete
+          disabled
+    container:file-browser-file-editor
 
 
   /*
    * Lambda events for the main folder browser widget
    */
   events
+
+
+    /*
+     * Updates the toolbar, showing and hiding items according to
+     * whether or not there are any objects selected, etc
+     */
+    sys42.update-file-browser-toolbar
+
+      // Figuring out if there are any objects currently selected
+      get-session:sys42.selected-file-browser-object
+      _widgets
+        file-browser-copy-button
+        file-browser-cut-button
+        file-browser-rename-button
+        file-browser-delete-button
+      if:x:/../*/get-session/*/*
+
+        // There is currently an object active in file browser surface
+        delete-widget-property:x:/../*/_widgets/*?name
+          disabled
+      else
+
+        // There are currently no objects active in file browser surface
+        set-widget-property:x:/../*/_widgets/*?name
+          disabled
+
+      // Setting "Paste" button to enabled, or vidce versa, depending
+      // upon whether or not there's an object in "clipboard" or not
+      get-session:sys42.copied-file-browser-object
+      if:x:/-/*/*
+        delete-widget-property:file-browser-paste-button
+          disabled
+      else
+        set-widget-property:file-browser-paste-button
+          disabled
 
 
     /*
@@ -75,7 +184,7 @@ create-widget:file-browser
           src:{0}{1}/
             :x:/../*/_path?value
             :x:/..for-each/*/__dp?value
-        set:x:/..for-each/*/create-literal-widget/*/onclick/0?value
+        set:x:/..for-each/*/create-literal-widget/*/onclick/*/sys42.change-current-folder?value
           src:x:/../*/_path?value
 
         // Checking if this is last bread-crumb button, and if so, disabling it
@@ -125,20 +234,11 @@ create-widget:file-browser
       list-folders:x:/../*/get-session/[0,1]/*?value
       for-each:x:/../*/list-folders/*?name
 
-        // Removing trailing "/" and setting innerValue
+        // Removing trailing "/" and setting innerValue and title
         split:x:/..for-each/*/__dp?value
           =:/
-        set:x:/..for-each/*/create-literal-widget/*/innerValue?value
+        set:x:/..for-each/*/create-literal-widget/*(/innerValue|/title)?value
           src:x:/..for-each/*/split/0/-?name
-
-        // Adding the "currently selected item" class, if it is selected
-        if:x:/../*/get-session/[1,2]/*/*/type?value
-          =:folder
-          and:x:/../*/get-session/[1,2]/*/*/object?value
-            =:x:/..for-each/*/__dp?value
-          set:x:/..for-each/*/create-literal-widget/*/class?value
-            src:{0} active-file
-              :x:/..for-each/*/create-literal-widget/*/class?value
 
         // Making sure event handler for widget is correctly wired up
         set:x:/..for-each/*/create-literal-widget/*/onclick/0?value
@@ -149,6 +249,7 @@ create-widget:file-browser
           parent:file-browser-current-folder-content
           class:file-object folder
           innerValue
+          title
           onclick
             sys42.folder-clicked
 
@@ -171,27 +272,19 @@ create-widget:file-browser
         // Removing trailing "/" and setting innerValue
         split:x:/..for-each/*/__dp?value
           =:/
-        set:x:/..for-each/*/create-literal-widget/*/innerValue?value
+        set:x:/..for-each/*/create-literal-widget/*(/innerValue|/title)?value
           src:x:/..for-each/*/split/0/-?name
 
         // Making sure event handler for widget is correctly wired up
         set:x:/..for-each/*/create-literal-widget/*/onclick/0?value
           src:x:/..for-each/*/__dp?value
 
-        // Adding the "currently selected item" class, if it is selected
-        if:x:/../*/get-session/[1,2]/*/*/type?value
-          =:file
-          and:x:/../*/get-session/[1,2]/*/*/object?value
-            =:x:/..for-each/*/__dp?value
-          set:x:/..for-each/*/create-literal-widget/*/class?value
-            src:{0} active-file
-              :x:/..for-each/*/create-literal-widget/*/class?value
-
         // Actually creating folder object widget
         create-literal-widget
           parent:file-browser-current-folder-content
           class:file-object file
           innerValue
+          title
           onclick
             sys42.file-clicked
 
@@ -201,9 +294,6 @@ create-widget:file-browser
      * the new folder as an argument
      */
     sys42.change-current-folder
-
-      // Destroys any toolbars and editors currently loaded
-      sys42.destroy-edit-object-toolbar
 
       // Updating current folder
       set-session:sys42.current-folder
@@ -218,12 +308,18 @@ create-widget:file-browser
       // Listing current folder's folders and files again
       sys42.create-current-folder-content
 
+      // Refreshing toolbar
+      sys42.update-file-browser-toolbar
+
 
     /*
      * Invoked when a folder widget was clicked. Takes path to
      * folder that is clicked as input argument
      */
     sys42.folder-clicked
+
+      // Destroying any existing file object editors
+      sys42.destroy-file-editor
 
       // Checking if folder is already selected
       get-session:sys42.selected-file-browser-object
@@ -232,7 +328,8 @@ create-widget:file-browser
         and:x:/../*/get-session/*/*/object?value
           =:x:/../*/_arg?value
 
-        // Clicked folder was already selected, hence opening it
+        // Clicked folder was already selected, hence opening it, 
+        // and destroying any existing object toolbars
         sys42.change-current-folder:x:/../*/_arg?value
       else
 
@@ -243,9 +340,10 @@ create-widget:file-browser
           src
             type:folder
             object
-        sys42.select-file-object:x:/../*/_arg?value
-        sys42.create-edit-folder-toolbar:x:/../*/_arg?value
-      sys42.destroy-file-editor
+        sys42.create-selected-object-clues:x:/../*/_arg?value
+
+        // Refreshing toolbar
+        sys42.update-file-browser-toolbar
 
 
     /*
@@ -272,17 +370,22 @@ create-widget:file-browser
           src
             type:file
             object
-        sys42.select-file-object:x:/../*/_arg?value
+
+        // Destroying any existing editors, since selected object changed
         sys42.destroy-file-editor
-        sys42.create-edit-file-toolbar:x:/../*/_arg?value
-        sys42.destroy-file-editor
+
+        // Showing selected object clues
+        sys42.create-selected-object-clues:x:/../*/_arg?value
+
+        // Refreshing toolbar
+        sys42.update-file-browser-toolbar
 
 
     /*
      * Selects a file/folder object on screen, giving visual clues to user
      * Takes filename as argument
      */
-    sys42.select-file-object
+    sys42.create-selected-object-clues
       get-children-widgets:file-browser-current-folder-content
       get-widget-property:x:/-/*/*?value
         class
@@ -301,36 +404,15 @@ create-widget:file-browser
 
 
     /*
-     * Creates the "Edit File toolbar" for changing filename, copying, etc
-     * Takes filename as argument
-     */
-    sys42.create-edit-file-toolbar
-
-
-    /*
-     * Creates the "Edit Folder toolbar" for changing filename, copying, etc
-     * Takes foldername as argument
-     */
-    sys42.create-edit-folder-toolbar
-
-
-    /*
-     * Destroys any "Edit File/Folder toolbars", and editors
-     */
-    sys42.destroy-edit-object-toolbar
-      clear-widget:file-browser-current-item-toolbar
-
-
-    /*
      * Creates the "Edit file editor widget" for editing files, if possible
      * Takes filename as argument
      */
     sys42.create-file-editor
-      sys42.show-code:x:/..
+      clear-widget:file-browser-file-editor
 
 
     /*
      * Destroys any "Edit file editor widgets"
      */
     sys42.destroy-file-editor
-      _sys42.show-code:x:/..
+      clear-widget:file-browser-file-editor
