@@ -211,6 +211,7 @@
     <None Include="system42\misc\include-codemirror.hl" />
     <None Include="system42\admin\file-editors\launch.hl" />
     <None Include="system42\admin\file-editors\editor-hl.hl" />
+    <None Include="system42\admin\file-editors\editor-html.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="system42\admin\files\media\" />

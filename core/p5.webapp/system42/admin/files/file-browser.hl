@@ -33,6 +33,12 @@ create-widget:file-browser
       sys42.create-selected-object-clues:x:/./-/*/*/object?value
       sys42.update-file-browser-toolbar
 
+    // Checking if we're currently in "edit file mode", and if
+    // so, opening up editor
+    get-session:sys42.editor-file
+    if:x:/-/*?value
+      sys42.create-file-editor:x:/./-/*?value
+
 
   widgets
 
@@ -932,19 +938,56 @@ create-widget:file-browser
 
       // Deleting any previous editors
       clear-widget:file-browser-file-editor
-      get-session:sys42.selected-file-browser-object
+
+      // Retrieving selected file, and opening up editor
       set:x:/+/0?value
-        src:x:/../*/get-session/*/*/object?value
+        src:x:/../*/_arg?value
       sys42.execute-lisp-file:system42/admin/file-editors/launch.hl
         _file
         _parent:file-browser-file-editor
+
+      // Storing original CSS classes in session for all widgets we're hiding
+      _widgets
+        file-browser-bread-crumb
+        file-browser-current-folder-content
+        file-browser-current-item-toolbar
+      get-widget-property:x:/-/*?name
+        class
+      set-widget-property:x:/-2/*?name
+        class:hide
+      set-session:sys42.original-file-editor-classes
+        src:x:/./-2
+
+      // Storing which file we're editing in session, to
+      // make editor re-appear if we're going back and forth
+      set-session:sys42.editor-file
+        src:x:/../*/_arg?value
 
 
     /*
      * Destroys any "Edit file editor widgets"
      */
     sys42.destroy-file-editor
+
+      // Destroying editor Widget
       clear-widget:file-browser-file-editor
+
+      // Restoring CSS classes for all widgets that were hidden
+      // when editor was opened
+      get-session:sys42.original-file-editor-classes
+      for-each:x:/-/*/*/*
+        set-widget-property:x:/./*/__dp/#?name
+          class:x:/././*/__dp/#/*?value
+
+      // Removing CSS classes from widgets hidden out of session
+      set-session:sys42.original-file-editor-classes
+
+      // Removing "currently edited file" out of session
+      set-session:sys42.editor-file
+
+      // Changing header back to what it was
+      set-widget-property:header
+        innerValue:File system
 
 
 /*

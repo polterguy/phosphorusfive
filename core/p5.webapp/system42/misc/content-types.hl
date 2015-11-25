@@ -1,8 +1,7 @@
-
 /*
  * List of all Content-Types System42 knows about. Used in
- * sys42.get-content-type. This list is not complete, but it
- * is long compared to other versions
+ * sys42.get-content-type. This list is not complete, but
+ * probably sufficient for most needs
  */
 
 
@@ -20,9 +19,13 @@ _Content-Types
   atomcat:application/atomcat+xml
   atom:application/atom+xml
   aif:audio/x-aiff
+  aifc:audio/x-aiff
+  aiff:audio/x-aiff
   avi:video/x-msvideo
+  mov:video/quicktime
   dxf:image/vnd.dxf
-  bin:application/octet-stream
+  bin:application/x-macbinary
+  dll:application/octet-stream
   bmp:image/bmp
   torrent:application/x-bittorrent
   sh:application/x-sh
@@ -82,6 +85,8 @@ _Content-Types
   mid:audio/midi
   mpga:audio/mpeg
   mpeg:video/mpeg
+  mpe:video/mpeg
+  mpg:video/mpeg
   mp4a:audio/mp4
   mp4:video/mp4
   ogx:application/ogg
@@ -131,7 +136,10 @@ _Content-Types
   smf:application/vnd.stardivision.math
   sdw:application/vnd.stardivision.writer
   sgl:application/vnd.stardivision.writer-global
+  sgml:text/x-sgml
+  sgm:text/x-sgml
   tiff:image/tiff
+  tif:image/tiff
   tar:application/x-tar
   tex:application/x-tex
   tfm:application/x-tex-tfm
@@ -147,18 +155,37 @@ _Content-Types
   xslt:application/xslt+xml
   xpi:application/x-xpinstall
   zip:application/zip
+  gzip:multipart/x-gzip
+  gz:application/x-gzip
   css:text/css
-  js:application/JavaScript
+  js:x-application/JavaScript
   htm:text/html
   html:text/html
   png:application/octet-stream
+  jpe:application/octet-stream
   jpg:application/octet-stream
   jpeg:application/octet-stream
-  gif:application/octet-stream
+  gif:image/gif
   txt:text/plain
+  c:text/plain
+  cc:text/plain
+  h:text/plain
   md:text/plain
   xml:application/xml
   config:text/xml
   csproj:text/xml
   sln:text/xml
+  etx:text/x-setext
+  tsv:text/tab-separated-values
+  xpm:image/x-xpixmap
+  xbm:image/x-xbitmap
+  rgb:image/x-rgb
+  ppm:image/x-portable-pixmap
+  pict:image/pict
+  mp3:audio/x-mpeg
+  hlp:application/x-winhelp
+  gtar:application/x-gtar
+  rtf:application/rtf
+  jar:application/java-archive
+  arj:application/arj
 

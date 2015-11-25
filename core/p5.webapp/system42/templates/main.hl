@@ -137,7 +137,6 @@ create-widget:template-root
              * Header of page
              */
             literal:header
-              has-id:false
               element:h1
               innerValue:{header}
 

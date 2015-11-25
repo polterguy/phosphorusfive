@@ -9,6 +9,12 @@ split:x:/../*/_file?value
   =:.
 
 
+// Changing header to reflect which file is edited
+set-widget-property:header
+  innerValue:Editing <small>{0}</small>
+    :x:/../*/_file?value
+
+
 // Launching the correct editor
 add:x:/../*/sys42.execute-lisp-file
   src:"_parent:{0}"

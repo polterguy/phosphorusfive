@@ -11,8 +11,8 @@
 .cm-s-whiteboard .CodeMirror-linenumber { color: #aaaaaa; }
 .cm-s-whiteboard .CodeMirror-cursor { border-left: 1px solid #000 !important; }
 
-.cm-s-whiteboard .cm-keyword { color: #0E1EaF; }
-.cm-s-whiteboard .cm-lesser_keyword { color: #5E6EeF; }
+.cm-s-whiteboard .cm-keyword { color: #5E6EeF; }
+.cm-s-whiteboard .cm-lesser_keyword { color: #0E1EaF; }
 .cm-s-whiteboard .cm-active-event { color: #555; }
 .cm-s-whiteboard .cm-operator { color: #aa0000; }
 .cm-s-whiteboard .cm-string { color: #282; }
