@@ -6,6 +6,10 @@
     user-select: none;
 }
 
+.file-browser-content-surface {
+    min-height:105px;
+}
+
 .file-object {
     width:80px;
     display:inline-block;
@@ -37,7 +41,7 @@
     background-color:rgba(220,220,255,0.5);
 }
 
-.active-file {
+.active-file-object {
     border:dashed 1px rgba(0,0,0,.3);
     background-color:rgba(0,128,0,.1);
 }

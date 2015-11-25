@@ -49,6 +49,7 @@ create-widget:file-browser
      * Actual folders and files content, showing the "current folder"
      */
     container:file-browser-current-folder-content
+      class:prepend-top file-browser-content-surface
 
 
     /*
@@ -69,6 +70,8 @@ create-widget:file-browser
           class:btn btn-default
           innerValue:Copy
           disabled
+          accesskey:C
+          title:Shortcut - C
           onclick
             sys42.copy-button-clicked
 
@@ -81,6 +84,8 @@ create-widget:file-browser
           class:btn btn-default
           innerValue:Cut
           disabled
+          accesskey:X
+          title:Shortcut - X
           onclick
             sys42.cut-button-clicked
 
@@ -93,6 +98,8 @@ create-widget:file-browser
           class:btn btn-default
           innerValue:Paste
           disabled
+          accesskey:V
+          title:Shortcut - V
           onclick
             sys42.paste-button-clicked
 
@@ -105,6 +112,8 @@ create-widget:file-browser
           class:btn btn-default
           innerValue:Rename
           disabled
+          accesskey:R
+          title:Shortcut R
           onclick
             sys42.rename-button-clicked
 
@@ -117,8 +126,32 @@ create-widget:file-browser
           class:btn btn-default
           innerValue:Delete
           disabled
+          accesskey:D
+          title:Shortcut - D
           onclick
             sys42.delete-button-clicked
+
+
+        /*
+         * "Create folder" button
+         */
+        literal:create-folder-button
+          element:button
+          class:btn btn-default
+          innerValue:New folder
+          onclick
+            sys42.new-folder-button-clicked
+
+
+        /*
+         * "Create file" button
+         */
+        literal:create-file-button
+          element:button
+          class:btn btn-default
+          innerValue:New file
+          onclick
+            sys42.new-file-button-clicked
 
 
       /*
@@ -260,6 +293,10 @@ create-widget:file-browser
           // Setting focus to "Rename" textbox
           send-javascript:@"$('#rename-file-object').focus().select();"
 
+          // Disabling "Rename" button
+          set-widget-property:file-browser-rename-button
+            class:btn btn-info
+
           // Creating "Rename" textbox widget
           create-literal-widget:rename-file-object
             element:input
@@ -271,12 +308,18 @@ create-widget:file-browser
             value
             placeholder
             title
-            onkeypress:"return p5.renameFileKeyPressed(event);"
-            onkeyup:"p5.renameFileKeyUp(event);"
+            onkeypress:"return p5.textBoxKeyPress(event, 'rename-file-object');"
+            onkeyup:"p5.textBoxKeyUp(event, 'rename-file-object');"
+            onblur
+              delete-widget:rename-file-object
+              set-widget-property:file-browser-rename-button
+                class:btn btn-default
             onenter_
               sys42.rename-file
             onesc_
               delete-widget:rename-file-object
+              set-widget-property:file-browser-rename-button
+                class:btn btn-default
 
 
             /*
@@ -310,21 +353,23 @@ create-widget:file-browser
                 get-widget-property:rename-file-object
                   value
 
-                // Checking if new filename exist from before
-                set:x:/+?name
-                  src:{0}-exist
-                    :x:/../*/get-session/*/*/type?value
-                foo-bar1:{0}{1}
+                // Checking if new filename/foldername exist from before
+                file-exist:{0}{1}
                   :x:/../*/_new-filepath?value
                   :x:/../*/get-widget-property/*/*/value?value
-                if:x:/-?value
+                folder-exist:{0}{1}
+                  :x:/../*/_new-filepath?value
+                  :x:/../*/get-widget-property/*/*/value?value
+                if:x:/-2?value
+                  or:x:/./-?value
 
                   // That filename is taken up by another file on system
                   set:x:/+/*/_message?value
-                    src:Sorry, I cannot rename your file to <strong>'{0}'</strong>, since there's already another file with that name
+                    src:Sorry, I cannot rename your {0} to <strong>'{1}'</strong>, since there's already another file/folder with that name
+                      :x:/../*/get-session/*/*/type?value
                       :x:/../*/get-widget-property/*/*/value?value
                   sys42.confirm-action
-                    _header:File exist from before
+                    _header:Object exist from before
                     _message
                     _onok
                       send-javascript:@"$('#rename-file-object').focus().select();"
@@ -347,6 +392,10 @@ create-widget:file-browser
                     src:x:/..else/*/~move-?value
                   set-session:sys42.selected-file-browser-object
                     src
+
+                  // Making rename button have default colors
+                  set-widget-property:file-browser-rename-button
+                    class:btn btn-default
 
                   // Refreshing toolbar
                   sys42.update-file-browser-toolbar
@@ -413,6 +462,158 @@ create-widget:file-browser
 
               // Re-creating current folder's content
               sys42.create-current-folder-content
+
+
+        /*
+         * "New folder" button clicked
+         */
+        sys42.new-folder-button-clicked
+
+          // Setting focus to "New folder" textbox
+          send-javascript:@"$('#new-folder-name').focus().select();"
+
+          // Disabling "New folder" button
+          set-widget-property:create-folder-button
+            class:btn btn-info
+
+          // Creating "New folder" textbox widget
+          create-literal-widget:new-folder-name
+            element:input
+            type:text
+            parent:file-browser-current-item-toolbar
+            position:6
+            class:form-control
+            style:"float:left;width:250px;border-radius:0;border-left:none;border-right:none;"
+            value
+            placeholder:New folder name ...
+            title:New folder name
+            onkeypress:"return p5.textBoxKeyPress(event, 'new-folder-name');"
+            onkeyup:"p5.textBoxKeyUp(event, 'new-folder-name');"
+            onblur
+              delete-widget:new-folder-name
+              set-widget-property:create-folder-button
+                class:btn btn-default
+            onenter_
+              sys42.create-folder
+            onesc_
+              delete-widget:new-folder-name
+              set-widget-property:create-folder-button
+                class:btn btn-default
+
+
+            /*
+             * Lambda events for "Create folder textbox"
+             */
+            events
+
+
+              /*
+               * Creates new folder, takes no arguments
+               */
+              sys42.create-folder
+                get-session:sys42.current-folder
+                get-widget-property:new-folder-name
+                  value
+                create-folder:{0}{1}/
+                  :x:/../*/get-session/*?value
+                  :x:/../*/get-widget-property/*/*?value
+
+                // Removing "Create new folder" textbox, and enabling "Create new folder" button
+                delete-widget:new-folder-name
+                set-widget-property:create-folder-button
+                  class:btn btn-default
+
+                // Making sure new folder is selected
+                set:x:/+/0/*/object?value
+                  src:x:/../*/create-folder/*?name
+                set-session:sys42.selected-file-browser-object
+                  src
+                    type:folder
+                    object
+
+                // Listing current folder's folders and files again, and showing visual clues for
+                // selected item
+                sys42.create-current-folder-content
+                sys42.create-selected-object-clues:x:/../*/create-folder/*?name
+
+                // Refreshing toolbar
+                sys42.update-file-browser-toolbar
+
+
+        /*
+         * "New file" button clicked
+         */
+        sys42.new-file-button-clicked
+
+          // Setting focus to "New folder" textbox
+          send-javascript:@"$('#new-file-name').focus().select();"
+
+          // Disabling "New folder" button
+          set-widget-property:create-file-button
+            class:btn btn-info
+
+          // Creating "New file" textbox widget
+          create-literal-widget:new-file-name
+            element:input
+            type:text
+            parent:file-browser-current-item-toolbar
+            position:7
+            class:form-control
+            style:"float:left;width:250px;border-radius:0 4px 4px 0;border-left:none;"
+            value
+            placeholder:New file name ...
+            title:New file name
+            onkeypress:"return p5.textBoxKeyPress(event, 'new-file-name');"
+            onkeyup:"p5.textBoxKeyUp(event, 'new-file-name');"
+            onblur
+              delete-widget:new-file-name
+              set-widget-property:create-file-button
+                class:btn btn-default
+            onenter_
+              sys42.create-file
+            onesc_
+              delete-widget:new-file-name
+              set-widget-property:create-file-button
+                class:btn btn-default
+
+
+            /*
+             * Lambda events for "Create file textbox"
+             */
+            events
+
+
+              /*
+               * Creates new file, takes no arguments
+               */
+              sys42.create-file
+                get-session:sys42.current-folder
+                get-widget-property:new-file-name
+                  value
+                save-file:{0}{1}
+                  :x:/../*/get-session/*?value
+                  :x:/../*/get-widget-property/*/*?value
+
+                // Removing "Create new file" textbox, and enabling "Create new file" button
+                delete-widget:new-file-name
+                set-widget-property:create-file-button
+                  class:btn btn-default
+
+                // Making sure new file is selected
+                set:x:/+/0/*/object?value
+                  src:x:/../*/save-file?value
+                set-session:sys42.selected-file-browser-object
+                  src
+                    type:file
+                    object
+
+                // Listing current folder's folders and files again, and showing visual clues for
+                // selected item
+                sys42.create-current-folder-content
+                sys42.create-selected-object-clues:x:/../*/save-file?value
+
+                // Refreshing toolbar
+                sys42.update-file-browser-toolbar
 
 
     /*
@@ -710,15 +911,15 @@ create-widget:file-browser
       get-widget-property:x:/-/*/*?value
         class
         innerValue
-      split::x:/-/*/*/"=~ active-file"?value
-        =:" active-file"
-      set-widget-property:x:/-2/*/*/class/"=~ active-file"/.?name
+      split::x:/-/*/*/"=~ active-file-object"?value
+        =:" active-file-object"
+      set-widget-property:x:/-2/*/*/class/"=~ active-file-object"/.?name
         class:x:/./-/0?name
       split:x:/../*/_arg?value
         =:/
       set-widget-property:x:/-4/*/*/innerValue/"={0}"/.?name
         :x:/./-/0/-?name
-        class:{0} active-file
+        class:{0} active-file-object
           :x:/././-4/*/*/innerValue/"={0}"/./*/class?value
             :x:/./././-/0/-?name
 
@@ -728,7 +929,15 @@ create-widget:file-browser
      * Takes filename as argument
      */
     sys42.create-file-editor
+
+      // Deleting any previous editors
       clear-widget:file-browser-file-editor
+      get-session:sys42.selected-file-browser-object
+      set:x:/+/0?value
+        src:x:/../*/get-session/*/*/object?value
+      sys42.execute-lisp-file:system42/admin/file-editors/launch.hl
+        _file
+        _parent:file-browser-file-editor
 
 
     /*
@@ -737,16 +946,20 @@ create-widget:file-browser
     sys42.destroy-file-editor
       clear-widget:file-browser-file-editor
 
+
+/*
+ * Including helper JavaScript for keypress DOM events
+ */
 include-javascript:@"
-p5.renameFileKeyPressed = function(e) {
+p5.textBoxKeyPress = function(e, control) {
   if(e.keyCode == 13) {
-    p5.$('rename-file-object').raise('onenter_');
+    p5.$(control).raise('onenter_');
     return false;
   }
 };
-p5.renameFileKeyUp = function(e) {
+p5.textBoxKeyUp = function(e, control) {
   if(e.keyCode == 27) {
-    p5.$('rename-file-object').raise('onesc_');
+    p5.$(control).raise('onesc_');
     return false;
   }
 };"

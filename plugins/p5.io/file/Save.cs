@@ -25,7 +25,7 @@ namespace p5.file.file
         private static void save_file (ApplicationContext context, ActiveEventArgs e)
         {
             // making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            using (new Utilities.ArgsRemover (e.Args)) {
 
                 // getting root folder
                 var rootFolder = Common.GetRootFolder (context);
@@ -40,6 +40,9 @@ namespace p5.file.file
                 using (TextWriter writer = File.CreateText (rootFolder + fileName)) {
                     writer.Write (source);
                 }
+
+                // Returning back to caller that creation was successful
+                e.Args.Value = fileName;
             }
         }
 

@@ -1,0 +1,50 @@
+
+/*
+ * File editor for Hyperlisp files
+ */
+
+
+/*
+ * Including CodeMirror for editor surface
+ */
+sys42.execute-lisp-file:system42/misc/include-codemirror.hl
+  _editor
+    editor_surface
+      mode:hyperlisp
+      theme:whiteboard
+      autofocus:true
+      fullscreen:true
+
+
+/*
+ * Loading up file given, and passing it into
+ * textarea surface
+ */
+load-file:x:/../*/_file?value
+  convert:false
+
+
+/*
+ * Making sure editor is created as child of right widget, and
+ * starting with contents from file
+ */
+set:x:/../*/create-widget/*/parent?value
+  src:x:/../*/_parent?value
+set:x:/../*/create-widget/*/widgets/*/literal/*/innerValue?value
+  src:x:/../*/load-file/*?value
+
+
+/*
+ * Creating actual form to show the editor surface
+ */
+create-widget:hyperlisp-editor
+  parent
+  widgets
+
+
+    /*
+     * Input textarea element, transformed into a CodeMirror widget
+     */
+    literal:editor_surface
+      element:textarea
+      innerValue

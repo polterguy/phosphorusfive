@@ -12,7 +12,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
     <body>
-        <form id="form1" runat="server" autocomplete="off">
+        <form id="form1" runat="server" autocomplete="off" enctype="multipart/form-data">
             <p5:Container
                 runat="server"
                 id="cnt"/>

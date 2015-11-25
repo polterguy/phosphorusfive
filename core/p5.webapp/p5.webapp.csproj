@@ -178,7 +178,6 @@
     <None Include="system42\page-types\lambda.hl" />
     <None Include="system42\page-types\special-page\p5.no-access.hl" />
     <None Include="system42\admin\executor.hl" />
-    <None Include="system42\admin\file-editor\hyperlisp-editor.hl" />
     <None Include="system42\admin\files\files.hl" />
     <None Include="system42\admin\page-editor\page-editor.hl" />
     <None Include="system42\admin\files\file-browser.hl" />
@@ -210,6 +209,8 @@
     <None Include="system42\startup\misc-events\sys42.get-content-type.hl" />
     <None Include="system42\misc\content-types.hl" />
     <None Include="system42\misc\include-codemirror.hl" />
+    <None Include="system42\admin\file-editors\launch.hl" />
+    <None Include="system42\admin\file-editors\editor-hl.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="system42\admin\files\media\" />
