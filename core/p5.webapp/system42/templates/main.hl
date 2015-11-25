@@ -244,6 +244,6 @@ p5.keyUp = function(e) {
 p5.wrongCredentials = function() {
   $('#login-wrapper').effect('shake');
   $('#username').focus().select();
-}"
+};"
 
 

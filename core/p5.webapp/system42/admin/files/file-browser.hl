@@ -70,18 +70,7 @@ create-widget:file-browser
           innerValue:Copy
           disabled
           onclick
-
-            // Putting currently active object into session, 
-            // to store which object has been "Copied"
-            get-session:sys42.selected-file-browser-object
-            add:x:/../*/set-session/*
-              src:x:/./-/*/*
-            set-session:sys42.copied-file-browser-object
-              src
-                operation:copy
-
-            // Updating toolbar
-            sys42.update-file-browser-toolbar
+            sys42.copy-button-clicked
 
 
         /*
@@ -93,18 +82,7 @@ create-widget:file-browser
           innerValue:Cut
           disabled
           onclick
-
-            // Putting currently active object into session, 
-            // to store which object has been "Cut"
-            get-session:sys42.selected-file-browser-object
-            add:x:/../*/set-session/*
-              src:x:/./-/*/*
-            set-session:sys42.copied-file-browser-object
-              src
-                operation:move
-
-            // Updating toolbar
-            sys42.update-file-browser-toolbar
+            sys42.cut-button-clicked
 
 
         /*
@@ -116,70 +94,7 @@ create-widget:file-browser
           innerValue:Paste
           disabled
           onclick
-
-            // Getting copied object and current folder, combining
-            // filename from copied object and current folder, as destination
-            // filepath
-            get-session:sys42.copied-file-browser-object
-            get-session:sys42.current-folder
-            split:x:/../*/get-session/[0,1]/*/*/object?value
-              =:/
-
-            // This will do the actual work after modifying "foo-bar" to correct Active Event
-            _x-copy-move-file
-              foo-bar
-                to
-              set:x:/..?value
-                src:x:/./-?value
-
-            // Making sure we use the right Active Event
-            set:x:/../*/_x-copy-move-file/0?name
-              src:{0}-{1}
-                :x:/../*/get-session/[0,1]/*/*/operation?value
-                :x:/../*/get-session/[0,1]/*/*/type?value
-
-            // Setting source file for operation
-            set:x:/../*/_x-copy-move-file/0?value
-              src:x:/../*/get-session/[0,1]/*/*/object?value
-
-            // Setting destination filepath for operation
-            set:x:/../*/_x-copy-move-file/0/0?value
-              src:{0}{1}
-                :x:/../*/get-session/[1,2]/*?value
-                :x:/../*/split/0/-?name
-
-            // Executing actual move/copy/file/folder operation
-            eval:x:/../*/_x-copy-move-file
-
-            // Updating currently selected object to be the new file/folder that
-            // was moved/copied
-            set:x:/../*/set-session/*/*/type?value
-              src:x:/../*/get-session/[0,1]/*/*/type?value
-            set:x:/../*/set-session/*/*/object?value
-              src:x:/../*/eval?value
-            set-session:sys42.selected-file-browser-object
-              src
-                type
-                object
-
-            // Re-creating folder content, to reflect our new file/folder here ...
-            sys42.create-current-folder-content
-
-            // Updating selected visual clues, since our "new file" is now selected
-            sys42.create-selected-object-clues:x:/../*/set-session/*/*/object?value
-
-            // If this was a "move" operation, then we cannot click on "Paste" multiple times
-            // since source file is gone, which BTW doesn't logically do much sense anyway, hence
-            // we check if this was a "move" operation, and if it was, we simply discard the 
-            // "currently cut file browser object"
-            if:x:/../*/get-session/[0,1]/*/*/operation?value
-              =:move
-              set-session:sys42.copied-file-browser-object
-
-            // Since we now have a selected file, where we maybe didn't have one before, in addition
-            // to that we might have discarded the "Paste" logic, we update toolbar, since some items
-            // might be enabled now, while others might have been disabled ...
-            sys42.update-file-browser-toolbar
+            sys42.paste-button-clicked
 
 
         /*
@@ -190,6 +105,8 @@ create-widget:file-browser
           class:btn btn-default
           innerValue:Rename
           disabled
+          onclick
+            sys42.rename-button-clicked
 
 
         /*
@@ -200,11 +117,307 @@ create-widget:file-browser
           class:btn btn-default
           innerValue:Delete
           disabled
+          onclick
+            sys42.delete-button-clicked
+
+
+      /*
+       * Lambda events for file browser current item toolbar
+       */
+      events
+
+
+        /*
+         * Raised when "Copy" button is clicked
+         */
+        sys42.copy-button-clicked
+
+          // Putting currently active object into session, 
+          // to store which object has been "Copied"
+          get-session:sys42.selected-file-browser-object
+          add:x:/../*/set-session/*
+            src:x:/./-/*/*
+          set-session:sys42.copied-file-browser-object
+            src
+              operation:copy
+
+          // Updating toolbar
+          sys42.update-file-browser-toolbar
+
+
+        /*
+         * Raised when "Cut" button is clicked
+         */
+        sys42.cut-button-clicked
+
+          // Putting currently active object into session, 
+          // to store which object has been "Cut"
+          get-session:sys42.selected-file-browser-object
+          add:x:/../*/set-session/*
+            src:x:/./-/*/*
+          set-session:sys42.copied-file-browser-object
+            src
+              operation:move
+
+          // Updating toolbar
+          sys42.update-file-browser-toolbar
+
+
+        /*
+         * Raised when "Paste" button is clicked
+         */
+        sys42.paste-button-clicked
+
+          // Getting copied object and current folder, combining
+          // filename from copied object and current folder, as destination
+          // filepath
+          get-session:sys42.copied-file-browser-object
+          get-session:sys42.current-folder
+          split:x:/../*/get-session/[0,1]/*/*/object?value
+            =:/
+
+          // This will do the actual work after modifying "foo-bar" to correct Active Event
+          _x-copy-move-file
+            foo-bar
+              to
+            set:x:/..?value
+              src:x:/./-?value
+
+          // Making sure we use the right Active Event
+          set:x:/../*/_x-copy-move-file/0?name
+            src:{0}-{1}
+              :x:/../*/get-session/[0,1]/*/*/operation?value
+              :x:/../*/get-session/[0,1]/*/*/type?value
+
+          // Setting source file for operation
+          set:x:/../*/_x-copy-move-file/0?value
+            src:x:/../*/get-session/[0,1]/*/*/object?value
+
+          // Setting destination filepath for operation
+          set:x:/../*/_x-copy-move-file/0/0?value
+            src:{0}{1}
+              :x:/../*/get-session/[1,2]/*?value
+              :x:/../*/split/0/-?name
+
+          // Executing actual move/copy/file/folder operation
+          eval:x:/../*/_x-copy-move-file
+
+          // Updating currently selected object to be the new file/folder that
+          // was moved/copied
+          set:x:/../*/set-session/*/*/type?value
+            src:x:/../*/get-session/[0,1]/*/*/type?value
+          set:x:/../*/set-session/*/*/object?value
+            src:x:/../*/eval?value
+          set-session:sys42.selected-file-browser-object
+            src
+              type
+              object
+
+          // Re-creating folder content, to reflect our new file/folder here ...
+          sys42.create-current-folder-content
+
+          // Updating selected visual clues, since our "new file" is now selected
+          sys42.create-selected-object-clues:x:/../*/set-session/*/*/object?value
+
+          // If this was a "move" operation, then we cannot click on "Paste" multiple times
+          // since source file is gone, which BTW doesn't logically do much sense anyway, hence
+          // we check if this was a "move" operation, and if it was, we simply discard the 
+          // "currently cut file browser object"
+          if:x:/../*/get-session/[0,1]/*/*/operation?value
+            =:move
+            set-session:sys42.copied-file-browser-object
+
+          // Since we now have a selected file, where we maybe didn't have one before, in addition
+          // to that we might have discarded the "Paste" logic, we update toolbar, since some items
+          // might be enabled now, while others might have been disabled ...
+          sys42.update-file-browser-toolbar
+
+
+        /*
+         * Raised when "Rename" button is clicked
+         */
+        sys42.rename-button-clicked
+
+          // Retrieving selected file-/folder object
+          get-session:sys42.selected-file-browser-object
+
+          // Finding only name of selected object, such that we can
+          // put it into "Rename" textbox as starting value
+          split:x:/../*/get-session/*/*/object?value
+            =:/
+          set:x:/../*/create-literal-widget/*/value?value
+            src:x:/../*/split/0/-?name
+
+          // Setting placeholder and title according to whether 
+          // or not this is "file" or "folder"
+          set:x:/../*/create-literal-widget/*/placeholder?value
+            src:New name of {0} ...
+              :x:/../*/get-session/*/*/type?value
+          set:x:/../*/create-literal-widget/*/title?value
+            src:New name of {0} ...
+              :x:/../*/get-session/*/*/type?value
+
+          // Setting focus to "Rename" textbox
+          send-javascript:@"$('#rename-file-object').focus().select();"
+
+          // Creating "Rename" textbox widget
+          create-literal-widget:rename-file-object
+            element:input
+            type:text
+            parent:file-browser-current-item-toolbar
+            position:4
+            class:form-control
+            style:"float:left;width:250px;border-radius:0;border-left:none;border-right:none;"
+            value
+            placeholder
+            title
+            onkeypress:"return p5.renameFileKeyPressed(event);"
+            onkeyup:"p5.renameFileKeyUp(event);"
+            onenter_
+              sys42.rename-file
+            onesc_
+              delete-widget:rename-file-object
+
+
+            /*
+             * Lambda events for "Rename file textbox"
+             */
+            events
+
+
+              /*
+               * Renames file, takes no arguments
+               */
+              sys42.rename-file
+
+                // Retrieving selected file/folder and finding folder of it
+                get-session:sys42.selected-file-browser-object
+                split:x:/../*/get-session/*/*/object?value
+                  =:/
+
+                // Removing old filename from split results
+                set:x:/../*/split/0/-
+
+                // Figuring out new filename
+                _new-filepath
+                for-each:x:/../*/split/*?name
+                  set:x:/../*/_new-filepath?value
+                    src:{0}{1}/
+                      :x:/../*/_new-filepath?value
+                      :x:/..for-each/*/__dp?value
+
+                // Retrieving new file-/folder name
+                get-widget-property:rename-file-object
+                  value
+
+                // Checking if new filename exist from before
+                set:x:/+?name
+                  src:{0}-exist
+                    :x:/../*/get-session/*/*/type?value
+                foo-bar1:{0}{1}
+                  :x:/../*/_new-filepath?value
+                  :x:/../*/get-widget-property/*/*/value?value
+                if:x:/-?value
+
+                  // That filename is taken up by another file on system
+                  set:x:/+/*/_message?value
+                    src:Sorry, I cannot rename your file to <strong>'{0}'</strong>, since there's already another file with that name
+                      :x:/../*/get-widget-property/*/*/value?value
+                  sys42.confirm-action
+                    _header:File exist from before
+                    _message
+                    _onok
+                      send-javascript:@"$('#rename-file-object').focus().select();"
+                else
+
+                  // Renaming file
+                  set:x:/..else/*/foo-bar2?name
+                    src:move-{0}
+                      :x:/../*/get-session/*/*/type?value
+                  foo-bar2:x:/../*/get-session/*/*/object?value
+                    to:{0}{1}
+                      :x:/../*/_new-filepath?value
+                      :x:/../*/get-widget-property/*/*/value?value
+
+                  // Making sure we update currently selected object, and delete currently copied/cut object
+                  set-session:sys42.copied-file-browser-object
+                  add:x:/+2/*
+                    src:x:/../*/get-session/*/*
+                  set:x:/+/*/*/object?value
+                    src:x:/..else/*/~move-?value
+                  set-session:sys42.selected-file-browser-object
+                    src
+
+                  // Refreshing toolbar
+                  sys42.update-file-browser-toolbar
+
+                  // Re-creating current folder's content
+                  sys42.create-current-folder-content
+
+                  // Making sure renamed file is still selected
+                  sys42.create-selected-object-clues:x:/..else/*/~move-?value
+
+                  // Removing "Rename object" textbox
+                  delete-widget:rename-file-object
+
+
+        /*
+         * Raised when "Delete" button is clicked
+         */
+        sys42.delete-button-clicked
+
+          // Showing a "Confirm Action" modal dialog, to warn user
+          // that deleting files cannot be undone
+          get-session:sys42.selected-file-browser-object
+
+          // Finding filename, without path
+          split:x:/../*/get-session/*/*/object?value
+            =:/
+
+          // Setting Header of dialog, including either "file" or "folder"
+          set:x:/../*/sys42.confirm-action/*/_header?value
+            src:Please confirm deletion of {0}
+              :x:/../*/get-session/*/*/type?value
+
+          // Setting body of dialog, including "file/folder" and file-/folder name
+          set:x:/../*/sys42.confirm-action/*/_message?value
+            src:Are you sure you wish to delete the {0}; <strong>'{1}'</strong>, this action cannot be undone!
+              :x:/../*/get-session/*/*/type?value
+              :x:/../*/split/0/-?name
+
+          // Making sure we raise the correct Active Event upon "OK" of dialog
+          set:x:/../*/sys42.confirm-action/*/_onok/0?name
+            src:delete-{0}
+              :x:/../*/get-session/*/*/type?value
+
+          // Setting file-/folder name and path to delete upon "OK" of dialog
+          set:x:/../*/sys42.confirm-action/*/_onok/0?value
+            src:x:/../*/get-session/*/*/object?value
+
+          // Showing "Confirmation Modal Dialog" to have user confirm he wants to delete file or folder
+          sys42.confirm-action
+            _header
+            _message
+            _onok
+
+              // This becomes an Active Event invocation for either [delete-file] or [delete-folder] with
+              // path to folder/file in value
+              foo-bar
+
+              // Making sure we delete both copied/cut object, and currently selected object
+              set-session:sys42.copied-file-browser-object
+              set-session:sys42.selected-file-browser-object
+
+              // Refreshing toolbar
+              sys42.update-file-browser-toolbar
+
+              // Re-creating current folder's content
+              sys42.create-current-folder-content
 
 
     /*
      * Wrapper to load a file-editor, for editing stuff like Hyperlisp files,
-     * CSS files or JavaScript files, etc. Loading editor for files "inline"
+     * CSS files, or JavaScript files, etc. No arguments
      */
     container:file-browser-file-editor
 
@@ -248,6 +461,9 @@ create-widget:file-browser
       else
         set-widget-property:file-browser-paste-button
           disabled
+
+      // Removing Rename File textbox
+      delete-widget:rename-file-object
 
 
     /*
@@ -520,3 +736,17 @@ create-widget:file-browser
      */
     sys42.destroy-file-editor
       clear-widget:file-browser-file-editor
+
+include-javascript:@"
+p5.renameFileKeyPressed = function(e) {
+  if(e.keyCode == 13) {
+    p5.$('rename-file-object').raise('onenter_');
+    return false;
+  }
+};
+p5.renameFileKeyUp = function(e) {
+  if(e.keyCode == 27) {
+    p5.$('rename-file-object').raise('onesc_');
+    return false;
+  }
+};"

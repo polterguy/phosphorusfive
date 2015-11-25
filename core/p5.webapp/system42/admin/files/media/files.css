@@ -25,11 +25,11 @@
 }
 
 .folder {
-    background:transparent url(folder.png) no-repeat 15px 10px;
+    background:transparent url(folder.png) no-repeat 16px 10px;
 }
 
 .file {
-    background:transparent url(file.png) no-repeat 15px 10px;
+    background:transparent url(file.png) no-repeat 21px 10px;
 }
 
 .folder:hover,
