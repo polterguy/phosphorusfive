@@ -258,11 +258,11 @@
     <None Include="system42\misc\content-types.hl" />
     <None Include="system42\admin\file-editors\launch.hl" />
     <None Include="system42\admin\file-editors\code-mirror-editor.hl" />
-    <None Include="system42\admin\file-browser\files.hl" />
     <None Include="system42\admin\file-browser\file-browser.hl" />
     <None Include="system42\admin\file-editors\html-editor.hl" />
     <None Include="system42\codemirror\include-codemirror.hl" />
     <None Include="system42\startup\misc-dialog-events\sys42.info-feedback.hl" />
+    <None Include="system42\admin\file-browser\launch.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="system42\admin\page-editor\editors\" />

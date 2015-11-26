@@ -69,5 +69,5 @@ sys42.execute-lisp-file:system42/admin/executor.hl
 /*
  * simply executes the file that loads up the 'file browser'
  */
-sys42.execute-lisp-file:system42/admin/file-browser/files.hl
+sys42.execute-lisp-file:system42/admin/file-browser/launch.hl
 "

@@ -1,35 +1,45 @@
 
 
+/*
+ * To ensure body of document starts below navbar (menu)
+ */
 body {
-  padding-top: 70px;
+  padding-top: 50px;
 }
 
+/*
+ * Icon being URL to phosphorusfive.wordpress.com
+ */
 .navbar-icon-p5 {
     background:transparent url(../images/phosphorusfive-small-logo.png) no-repeat 10px 10px;
     width:40px;
 }
 
+/*
+ * To ensure content is filling the whole screen, regardless of its size
+ */
 .content-row {
     min-height:632px;
 }
 
+/*
+ * Helper to give some space before element begins
+ */
 .prepend-top {
     margin-top:15px;
 }
 
+/*
+ * Helper to give some space after element is finished
+ */
 .prepend-bottom {
     margin-bottom:15px;
 }
 
-.show-lisp-dialogue {
-    position:relative;
-}
 
-.p5-ck-editor {
-    display:inline-block;
-    width:100%;
-}
-
+/*
+ * Info feedback popdown dialog animations, and CSS class
+ */
 @keyframes animate-info-feedback {
     0% {
         opacity:0;

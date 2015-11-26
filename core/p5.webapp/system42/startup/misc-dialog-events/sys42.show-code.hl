@@ -29,7 +29,8 @@ set-event:sys42.show-code
 
   // creating a widget showing the Hyperlisp code created from the given p5.lambda tree
   create-widget
-    class:col-xs-12 show-lisp-dialogue
+    class:col-xs-12
+    style:"position:relative;"
     parent:content
     position:0
     widgets

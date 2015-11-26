@@ -111,6 +111,20 @@ create-widget:file-browser
 
 
         /*
+         * "Download" button
+         */
+        literal:file-browser-download-button
+          element:button
+          class:btn btn-default
+          innerValue:Download
+          disabled
+          accesskey:D
+          title:Shortcut - D
+          onclick
+            sys42.download-button-clicked
+
+
+        /*
          * "Rename" button
          */
         literal:file-browser-rename-button
@@ -282,6 +296,19 @@ create-widget:file-browser
           // Showing popup to user, informing him that action was successful
           sys42.info-feedback:@"{0} was pasted into current folder"
             :x:/../*/get-session/*/*/type?value
+
+
+        /*
+         * Raised when "Download" button is clicked
+         */
+        sys42.download-button-clicked
+
+          // Retrieving currently selected file, and passing onto session
+          // value tracking which file to download, before we refresh browser window
+          get-session:sys42.selected-file-browser-object
+          set-session:sys42.download-file
+            src:x:/../*/get-session/*/*/object?value
+          send-javascript:@"window.location.replace(window.location.pathname);"
 
 
         /*
@@ -514,7 +541,7 @@ create-widget:file-browser
             element:input
             type:text
             parent:file-browser-current-item-toolbar
-            position:6
+            position:7
             class:form-control
             style:"float:left;width:250px;border-radius:0;border-left:none;border-right:none;"
             value
@@ -594,7 +621,7 @@ create-widget:file-browser
             element:input
             type:text
             parent:file-browser-current-item-toolbar
-            position:7
+            position:8
             class:form-control
             style:"float:left;width:250px;border-radius:0 4px 4px 0;border-left:none;"
             value
@@ -688,13 +715,26 @@ create-widget:file-browser
         // There is currently an object active in file browser surface
         delete-widget-property:x:/../*/_widgets/*?name
           disabled
+
+        // Special treatment for download button, since it can't download folders
+        if:x:/../*/get-session/*/*/type?value
+          =:file
+          delete-widget-property:file-browser-download-button
+            disabled
+        else
+          set-widget-property:file-browser-download-button
+            disabled
       else
 
         // There are currently no objects active in file browser surface
         set-widget-property:x:/../*/_widgets/*?name
           disabled
 
-      // Setting "Paste" button to enabled, or vidce versa, depending
+        // Special treatment for download button, since it cannot download folders
+        set-widget-property:file-browser-download-button
+          disabled
+
+      // Setting "Paste" button to enabled, or disabled, depending
       // upon whether or not there's an object in "clipboard" or not
       get-session:sys42.copied-file-browser-object
       if:x:/-/*/*
@@ -703,9 +743,6 @@ create-widget:file-browser
       else
         set-widget-property:file-browser-paste-button
           disabled
-
-      // Removing Rename File textbox
-      delete-widget:rename-file-object
 
 
     /*

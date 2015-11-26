@@ -5,6 +5,8 @@
 
 using System;
 using System.IO;
+using System.Linq;
+using System.Collections.Generic;
 using p5.core;
 using p5.exp;
 
@@ -33,10 +35,10 @@ namespace p5.file.folder
                 var rootFolder = Common.GetRootFolder (context);
 
                 // getting folder to copy
-                string sourceFolder = XUtil.Single<string> (e.Args, context);
+                string sourceFolder = XUtil.Single<string> (e.Args, context).Trim ('/') + "/";
 
                 // Gettting new path of folder
-                string destinationFolder = XUtil.Single<string> (e.Args ["to"], context);
+                string destinationFolder = XUtil.Single<string> (e.Args ["to"], context).Trim ('/') + "/";
 
                 // Getting new foldername for folder, if needed
                 if (Directory.Exists (rootFolder + destinationFolder)) {
@@ -45,8 +47,10 @@ namespace p5.file.folder
                     destinationFolder = Common.CreateNewUniqueFolderName (context, destinationFolder);
                 }
 
-                // Actually copying folder
-                CopyFolder (rootFolder + sourceFolder, destinationFolder);
+                // Actually copying folder, getting source first, in case copying implies copy one
+                // folder inside of itself, directly, or indirectly, which would create a never ending
+                // recursive loop, unless we retrieve all source objects first
+                CopyFolder (GetSourceFileObjects (rootFolder + sourceFolder, ""), rootFolder + sourceFolder, rootFolder + destinationFolder);
 
                 // Returning actual destination foldername used to caller
                 e.Args.Value = destinationFolder;
@@ -56,29 +60,63 @@ namespace p5.file.folder
         /*
          * Helper for above, recursively traverses a folder, and copies it
          */
-        private static void CopyFolder (string source, string destination)
+        private static void CopyFolder (List<Tuple<string, bool>> sourceFileObjects, string source, string destination)
         {
-            DirectoryInfo sourceFolder = new DirectoryInfo (source);
-
+            // Verifying currently traversed source folder exist
+            var sourceFolder = new DirectoryInfo (source);
             if (!sourceFolder.Exists)
                 throw new DirectoryNotFoundException (
-                    "Directory to copy could not be found: "
+                    "Folder to copy could not be found: "
                     + source);
 
-            if (!Directory.Exists (destination))
-                Directory.CreateDirectory (destination);
+            // Creating destination folder, if necessary
+            var destinationFolder = new DirectoryInfo(destination);
+            if (!destinationFolder.Exists) // Makes "merge" operations possible
+                Directory.CreateDirectory (destinationFolder.FullName);
 
-            // Copying all files from currently traversed source 
-            // folder, into currently traversed destination folder
-            foreach (FileInfo file in sourceFolder.GetFiles ()) {
-                file.CopyTo (Path.Combine (destination, file.Name), true);
+            // Looping through each folder and file, creating as we proceed, linearly
+            foreach (var idxFileObj in sourceFileObjects) {
+                if (idxFileObj.Item2) {
+
+                    // Folder, verifying each path up to current exist
+                    string[] entities = idxFileObj.Item1.Split (new char [] {'/'}, StringSplitOptions.RemoveEmptyEntries);
+                    string fullPath = "";
+                    foreach (var idxFolder in entities) {
+
+                        fullPath += idxFolder + "/";
+                        if (!Directory.Exists (destination + fullPath))
+                            Directory.CreateDirectory (destination + fullPath);
+                    }
+                } else {
+
+                    // File, simply copying
+                    File.Copy (source + idxFileObj.Item1, destination + idxFileObj.Item1);
+                }
+            }
+        }
+
+        /*
+         * Helper for above, returns a list of folders and files (folders are "true" in Item2 of Tuple)
+         */
+        private static List<Tuple<string, bool>> GetSourceFileObjects (string rootFolder, string source)
+        {
+            List<Tuple<string, bool>> retVal = new List<Tuple<string, bool>> ();
+
+            // Looping through all files in current directory, and appending to return value
+            foreach (FileInfo subdir in new DirectoryInfo (rootFolder + source).GetFiles ()) {
+                retVal.Add (new Tuple<string, bool> (subdir.FullName.Replace (rootFolder, ""), false));
             }
 
-            // Looping through each sub folder in source folder, and copying it
-            // to the destination
-            foreach (DirectoryInfo subdir in sourceFolder.GetDirectories ()) {
-                CopyFolder (subdir.FullName, Path.Combine (destination, subdir.Name));
+            // Looping through all folders in current directory, and appending to return value
+            foreach (DirectoryInfo subdir in new DirectoryInfo (rootFolder + source).GetDirectories ()) {
+                retVal.Add (new Tuple<string, bool> (subdir.FullName.Replace (rootFolder, "").Trim ('/') + "/", true));
+
+                // Recursively invoking "self"
+                retVal.AddRange (GetSourceFileObjects (rootFolder, subdir.FullName.Replace (rootFolder, "").Trim ('/') + "/"));
             }
+
+            // Returning list of files and folders
+            return retVal;
         }
     }
 }

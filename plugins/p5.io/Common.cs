@@ -79,6 +79,7 @@ namespace p5.file
             string basepath = GetRootFolder (context);
 
             // Getting folder
+            destination = destination.TrimEnd ('/');
             string folder = destination.Substring (0, destination.LastIndexOf ("/") + 1);
 
             // Getting filename, and removing suffix from filename
@@ -88,7 +89,7 @@ namespace p5.file
             while (Directory.Exists (basepath + folder + string.Format ("{0} - copy {1}", filename, idxNo))) {
                 idxNo += 1;
             }
-            return string.Format (folder + "{0} - copy {1}", filename, idxNo);
+            return string.Format (folder + "{0} - copy {1}/", filename, idxNo);
         }
 
         public static IEnumerable<string> GetSource (Node args, ApplicationContext context)

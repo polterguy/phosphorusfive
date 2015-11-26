@@ -66,7 +66,8 @@ for-each:x:/-/*
  */
 create-widget
   parent
-  class:p5-ck-editor col-xs-12
+  class:col-xs-12
+  style:"display:inline-block;width:100%;"
   widgets
     literal:ck-editor
       element:textarea
