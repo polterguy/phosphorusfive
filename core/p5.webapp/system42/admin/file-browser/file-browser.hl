@@ -767,6 +767,15 @@ create-widget:file-browser
       // Getting "root folder"
       get-session:sys42.root-directory
 
+      // Splitting path up in folder components
+      split:x:/../*/get-session/[0,1]/*?value
+        =:/
+
+      // Making sure once "Home" is clicked, that path we came from is selected folder
+      set:x:/../*/create-widget/*/onclick/*/set-session/*/*/object?value
+        src:{0}/
+          :x:/../*/split/0?name
+
       // Creating bread-crumb home button widget part
       if:x:/../*/get-session/[0,1]/*?value
         not
@@ -774,14 +783,29 @@ create-widget:file-browser
           =:x:/../*/get-session/[1,2]/*?value
         add:x:/../*/create-widget
           src:disabled
+
+      // Actually creating widget
       create-widget
         element:button
         parent:file-browser-bread-crumb
         class:btn btn-default
         title:Home
         onclick
+
+          // Making sure user can never go beneath "root access folder"
           get-session:sys42.root-directory
           sys42.change-current-folder:x:/../*/get-session/*?value
+
+          // Setting selected folder to path were we came from
+          set-session:sys42.selected-file-browser-object
+            src
+              type:folder
+              object
+          sys42.create-selected-object-clues:x:/-/*/*/object?value
+
+          // Refreshing toolbar
+          sys42.update-file-browser-toolbar
+
         widgets
           literal
             class:glyphicon glyphicon-home
@@ -790,15 +814,16 @@ create-widget:file-browser
       // Looping through each folder leading to current path, 
       // building "path" as we go along
       _path:
-      split:x:/../*/get-session/[0,1]/*?value
-        =:/
-      for-each:x:/-/*?name
+      for-each:x:/../*/split/*
 
-        // Checking this is beneath main root access folder
+        // Updating "_path" above
         set:x:/../*/_path?value
           src:{0}{1}/
             :x:/../*/_path?value
-            :x:/..for-each/*/__dp?value
+            :x:/..for-each/*/__dp/#?name
+
+        // Checking that this folder is beneath "main root access folder", and also NOT actually
+        // THE "main root access folder" (since it's handled by "Home" button)
         if:x:/../*/_path/"=~{0}"
           :x:/../*/get-session/[1,2]/*?value
           and:x:/../*/_path/"=~{0}"?value
@@ -807,24 +832,43 @@ create-widget:file-browser
 
           // Creating a button for each folder leading to current folder
           set:x:/..if/*/create-literal-widget/*/innerValue?value
-            src:x:/..for-each/*/__dp?value
+            src:x:/..for-each/*/__dp/#?name
           set:x:/..if/*/create-literal-widget/*/onclick/*/sys42.change-current-folder?value
             src:x:/../*/_path?value
 
-          // Checking if this is last bread-crumb button, or beneath "root folder", and if so, disabling it
+          // Checking if this is last bread-crumb button, and if so, disabling it
           if:x:/../*/_path?value
             =:x:/../*/get-session/[0,1]/*?value
             add:x:/..if/..if/*/create-literal-widget
               src:disabled
 
-          // Creating bread-crumb button widget part
+          // Making sure that when bread-crumb is clicked, the folder in the path
+          // we came from becomes selected
+          set:x:/..if/*/create-literal-widget/*/onclick/*/set-session/*/*/object?value
+            src:{0}{1}/
+              :x:/../*/_path?value
+              :x:/..for-each/*/__dp/#/>?name
+
+          // Creating bread-crumb button widget part, which now should be populated 
+          // dyanmically according to above logic
           create-literal-widget
             element:button
             parent:file-browser-bread-crumb
             class:btn btn-default
             innerValue
             onclick
+
+              // Changing current folder, folder applied above
               sys42.change-current-folder
+
+              // Making sure path were we came from is selected folder, and updating
+              // toolbar and visual clues
+              set-session:sys42.selected-file-browser-object
+                src
+                  type:folder
+                  object
+              sys42.create-selected-object-clues:x:/-/*/*/object?value
+              sys42.update-file-browser-toolbar
 
 
     /*
@@ -923,17 +967,11 @@ create-widget:file-browser
       set-session:sys42.current-folder
         src:x:/../*/_arg?value
 
-      // Removing selected file/folder object
-      set-session:sys42.selected-file-browser-object
-
       // Re-creating bread-crumb
       sys42.create-folder-bread-crumb
 
       // Listing current folder's folders and files again
       sys42.create-current-folder-content
-
-      // Refreshing toolbar
-      sys42.update-file-browser-toolbar
 
 
     /*
@@ -955,6 +993,13 @@ create-widget:file-browser
         // Clicked folder was already selected, hence opening it, 
         // and destroying any existing object toolbars
         sys42.change-current-folder:x:/../*/_arg?value
+
+        // Removing selected file/folder object
+        set-session:sys42.selected-file-browser-object
+
+        // Refreshing toolbar
+        sys42.update-file-browser-toolbar
+
       else
 
         // Clicked folder was not selected, hence we select it

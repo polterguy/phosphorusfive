@@ -41,6 +41,12 @@ else
   get-session:sys42.current-folder
   if:x:/-/*?value
     not
+    or:x:/..else/*/sys42.get-user/*/role?value
+      !=:admin
+      and:x:/..else/*/get-session/*/"=~{0}"
+        :/users/{0}/Documents/
+          :x:/../*/sys42.get-user/*/username?value
+        not
     set-session:sys42.current-folder
       src:users/{0}/Documents/
         :x:/..else/*/sys42.get-user/*/username?value
