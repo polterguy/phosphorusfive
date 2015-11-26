@@ -1,0 +1,106 @@
+
+/*
+ * File editor for Hyperlisp files
+ */
+
+
+/*
+ * Including CodeMirror for editor surface
+ */
+set:x:/../*/sys42.execute-lisp-file/*/*/*/theme?value
+  src:x:/../*/_theme?value
+if:x:/../*/_mode?value
+  =:hl
+  set:x:/../*/sys42.execute-lisp-file/*/*/*/mode?value
+    src:hyperlisp
+else-if:x:/../*/_mode?value
+  =:js
+  set:x:/../*/sys42.execute-lisp-file/*/*/*/mode?value
+    src:javascript
+else-if:x:/../*/_mode?value
+  =:md
+  set:x:/../*/sys42.execute-lisp-file/*/*/*/mode?value
+    src:markdown
+else-if:x:/../*/_mode?value
+  =:cs
+  set:x:/../*/sys42.execute-lisp-file/*/*/*/mode?value
+    src:clike
+else
+  set:x:/../*/sys42.execute-lisp-file/*/*/*/mode?value
+    src:x:/../*/_mode?value
+sys42.execute-lisp-file:system42/misc/include-codemirror.hl
+  _editor
+    editor_surface
+      mode
+      theme
+      autofocus:true
+      fullscreen:true
+      height:596px
+
+
+/*
+ * Loading up file given, and passing it into
+ * textarea surface
+ */
+load-file:x:/../*/_file?value
+  convert:false
+
+
+/*
+ * Making sure editor is created as child of right widget, and
+ * starting with contents from file
+ */
+set:x:/../*/create-widget/*/parent?value
+  src:x:/../*/_parent?value
+set:x:/../**/literal/=editor_surface/*/innerValue?value
+  src:x:/../*/load-file/*?value
+
+
+/*
+ * Creating actual form to show the editor surface
+ */
+create-widget:hyperlisp-editor
+  style:"position:relative;"
+  parent
+  widgets
+
+
+    /*
+     * Input textarea element, transformed into a CodeMirror widget
+     */
+    literal:editor_surface
+      element:textarea
+      innerValue
+
+
+    /*
+     * Wrapper for "Save" button
+     */
+    container
+      class:text-right
+      widgets
+
+
+        /*
+         * "Save" button
+         */
+        literal
+          element:button
+          class:btn btn-default
+          innerValue:Save
+          onclick
+            get-widget-property:editor_surface
+              innerValue
+            get-session:sys42.editor-file
+            save-file:x:/../*/get-session/*?value
+              src:x:/../*/get-widget-property/*/*?value
+
+
+    /*
+     * "Close editor" button
+     */
+    literal
+      class:glyphicon glyphicon-remove-circle
+      style:"position:absolute;top:-32px;right:-32px;z-index:1030;font-size: 2em;cursor:pointer;"
+      onclick
+        sys42.destroy-file-editor

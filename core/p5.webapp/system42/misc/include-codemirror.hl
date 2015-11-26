@@ -13,7 +13,7 @@ include-javascript-file
 
 
 // Making sure language mode file is included
-include-javascript-file:"/system42/codemirror/{0}.js"
+include-javascript-file:"/system42/codemirror/mode/{0}/{0}.js"
   :x:/../*/_editor/*/*/mode?value
 
 

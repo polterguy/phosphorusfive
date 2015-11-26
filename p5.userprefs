@@ -1,42 +1,12 @@
 ﻿<Properties StartupItem="core/p5.webapp/p5.webapp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="core/p5.webapp/system42/admin/files/file-browser.hl">
+  <MonoDevelop.Ide.Workbench ActiveDocument="core/p5.webapp/system42/admin/file-editors/editor-hl.hl">
     <Files>
-      <File FileName="core/p5.webapp/system42/admin/files/file-browser.hl" Line="67" Column="9" />
+      <File FileName="core/p5.webapp/system42/admin/files/file-browser.hl" Line="1" Column="1" />
+      <File FileName="core/p5.webapp/system42/admin/file-editors/launch.hl" Line="1" Column="1" />
+      <File FileName="core/p5.webapp/system42/admin/file-editors/editor-html.hl" Line="1" Column="1" />
+      <File FileName="core/p5.webapp/system42/admin/file-editors/editor-hl.hl" Line="1" Column="1" />
     </Files>
-    <Pads>
-      <Pad Id="ProjectPad">
-        <State name="__root__">
-          <Node name="p5" expanded="True">
-            <Node name="core" expanded="True">
-              <Node name="p5.webapp" expanded="True">
-                <Node name="system42" expanded="True">
-                  <Node name="admin" expanded="True">
-                    <Node name="files" expanded="True">
-                      <Node name="file-browser.hl" selected="True" />
-                    </Node>
-                  </Node>
-                </Node>
-              </Node>
-            </Node>
-            <Node name="plugins" expanded="True">
-              <Node name="extras" expanded="True" />
-            </Node>
-            <Node name="tests" expanded="True" />
-          </Node>
-        </State>
-      </Pad>
-      <Pad Id="MonoDevelop.NUnit.TestPad">
-        <State name="__root__">
-          <Node name="p5" expanded="True" selected="True">
-            <Node name="tests" expanded="True" />
-          </Node>
-        </State>
-      </Pad>
-      <Pad Id="MonoDevelop.Debugger.WatchPad">
-        <State />
-      </Pad>
-    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />

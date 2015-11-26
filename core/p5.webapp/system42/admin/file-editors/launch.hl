@@ -16,13 +16,32 @@ set-widget-property:header
 
 
 // Launching the correct editor
-add:x:/../*/sys42.execute-lisp-file
-  src:"_parent:{0}"
-    :x:/../*/_parent?value
-add:x:/../*/sys42.execute-lisp-file
-  src:"_file:{0}"
-    :x:/../*/_file?value
-sys42.execute-lisp-file:system42/admin/file-editors/editor-{0}.hl
-  :x:/../*/split/0/-?name
+if
+  file-exist:system42/admin/file-editors/editor-{0}.hl
+    :x:/../*/split/0/-?name
+
+  // Loading specialized editor
+  add:x:/..if/*/sys42.execute-lisp-file
+    src:"_parent:{0}"
+      :x:/../*/_parent?value
+  add:x:/..if/*/sys42.execute-lisp-file
+    src:"_file:{0}"
+      :x:/../*/_file?value
+  sys42.execute-lisp-file:system42/admin/file-editors/editor-{0}.hl
+    :x:/../*/split/0/-?name
+else
+
+  // Loading generic CodeMirror editor
+  add:x:/..else/*/sys42.execute-lisp-file
+    src:"_parent:{0}"
+      :x:/../*/_parent?value
+  add:x:/..else/*/sys42.execute-lisp-file
+    src:"_file:{0}"
+      :x:/../*/_file?value
+  add:x:/..else/*/sys42.execute-lisp-file
+    src:"_mode:{0}"
+      :x:/../*/split/0/-?name
+  sys42.execute-lisp-file:system42/admin/file-editors/code-mirror-editor.hl
+    _theme:bespin
 
 

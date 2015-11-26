@@ -52,7 +52,6 @@
     <Content Include="system42\admin\files\media\file.png" />
     <Content Include="system42\admin\files\media\files.css" />
     <Content Include="system42\admin\files\media\folder.png" />
-    <Content Include="system42\codemirror\theme\whiteboard.css" />
     <Content Include="media\bootstrap\css\bootstrap.min.css" />
     <Content Include="media\bootstrap\css\bootstrap-theme.min.css" />
     <Content Include="media\bootstrap\js\bootstrap.min.js" />
@@ -60,7 +59,57 @@
     <Content Include="media\jquery\jquery-2.1.4.min.js" />
     <Content Include="media\images\phosphorusfive-logo.png" />
     <Content Include="private\web.config" />
-    <Content Include="system42\codemirror\hyperlisp.js" />
+    <Content Include="system42\codemirror\theme\3024-day.css" />
+    <Content Include="system42\codemirror\theme\3024-night.css" />
+    <Content Include="system42\codemirror\theme\abcdef.css" />
+    <Content Include="system42\codemirror\theme\ambiance-mobile.css" />
+    <Content Include="system42\codemirror\theme\ambiance.css" />
+    <Content Include="system42\codemirror\theme\base16-dark.css" />
+    <Content Include="system42\codemirror\theme\base16-light.css" />
+    <Content Include="system42\codemirror\theme\bespin.css" />
+    <Content Include="system42\codemirror\theme\blackboard.css" />
+    <Content Include="system42\codemirror\theme\cobalt.css" />
+    <Content Include="system42\codemirror\theme\colorforth.css" />
+    <Content Include="system42\codemirror\theme\dracula.css" />
+    <Content Include="system42\codemirror\theme\eclipse.css" />
+    <Content Include="system42\codemirror\theme\elegant.css" />
+    <Content Include="system42\codemirror\theme\erlang-dark.css" />
+    <Content Include="system42\codemirror\theme\hopscotch.css" />
+    <Content Include="system42\codemirror\theme\icecoder.css" />
+    <Content Include="system42\codemirror\theme\isotope.css" />
+    <Content Include="system42\codemirror\theme\lesser-dark.css" />
+    <Content Include="system42\codemirror\theme\liquibyte.css" />
+    <Content Include="system42\codemirror\theme\material.css" />
+    <Content Include="system42\codemirror\theme\mbo.css" />
+    <Content Include="system42\codemirror\theme\mdn-like.css" />
+    <Content Include="system42\codemirror\theme\midnight.css" />
+    <Content Include="system42\codemirror\theme\monokai.css" />
+    <Content Include="system42\codemirror\theme\neat.css" />
+    <Content Include="system42\codemirror\theme\neo.css" />
+    <Content Include="system42\codemirror\theme\night.css" />
+    <Content Include="system42\codemirror\theme\paraiso-dark.css" />
+    <Content Include="system42\codemirror\theme\paraiso-light.css" />
+    <Content Include="system42\codemirror\theme\pastel-on-dark.css" />
+    <Content Include="system42\codemirror\theme\railscasts.css" />
+    <Content Include="system42\codemirror\theme\rubyblue.css" />
+    <Content Include="system42\codemirror\theme\seti.css" />
+    <Content Include="system42\codemirror\theme\solarized.css" />
+    <Content Include="system42\codemirror\theme\the-matrix.css" />
+    <Content Include="system42\codemirror\theme\tomorrow-night-bright.css" />
+    <Content Include="system42\codemirror\theme\tomorrow-night-eighties.css" />
+    <Content Include="system42\codemirror\theme\ttcn.css" />
+    <Content Include="system42\codemirror\theme\twilight.css" />
+    <Content Include="system42\codemirror\theme\vibrant-ink.css" />
+    <Content Include="system42\codemirror\theme\xq-dark.css" />
+    <Content Include="system42\codemirror\theme\xq-light.css" />
+    <Content Include="system42\codemirror\theme\yeti.css" />
+    <Content Include="system42\codemirror\theme\zenburn.css" />
+    <Content Include="system42\codemirror\mode\clike\clike.js" />
+    <Content Include="system42\codemirror\mode\css\css.js" />
+    <Content Include="system42\codemirror\mode\hyperlisp\hyperlisp.js" />
+    <Content Include="system42\codemirror\mode\javascript\javascript.js" />
+    <Content Include="system42\codemirror\mode\markdown\markdown.js" />
+    <Content Include="system42\codemirror\mode\xml\xml.js" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -210,8 +259,8 @@
     <None Include="system42\misc\content-types.hl" />
     <None Include="system42\misc\include-codemirror.hl" />
     <None Include="system42\admin\file-editors\launch.hl" />
-    <None Include="system42\admin\file-editors\editor-hl.hl" />
     <None Include="system42\admin\file-editors\editor-html.hl" />
+    <None Include="system42\admin\file-editors\code-mirror-editor.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="system42\admin\files\media\" />
@@ -222,5 +271,6 @@
     <Folder Include="system42\startup\misc-dialog-events\" />
     <Folder Include="system42\startup\users\user-events\" />
     <Folder Include="system42\misc\" />
+    <Folder Include="system42\codemirror\theme\" />
   </ItemGroup>
 </Project>

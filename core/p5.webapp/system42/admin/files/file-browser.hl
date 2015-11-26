@@ -35,9 +35,9 @@ create-widget:file-browser
 
     // Checking if we're currently in "edit file mode", and if
     // so, opening up editor
-    get-session:sys42.editor-file
-    if:x:/-/*?value
-      sys42.create-file-editor:x:/./-/*?value
+    get-session:sys42.original-file-editor-classes
+    if:x:/-/*/*
+      sys42.create-file-editor:x:/../*/get-session/*/*/object?value
 
 
   widgets
@@ -958,11 +958,6 @@ create-widget:file-browser
       set-session:sys42.original-file-editor-classes
         src:x:/./-2
 
-      // Storing which file we're editing in session, to
-      // make editor re-appear if we're going back and forth
-      set-session:sys42.editor-file
-        src:x:/../*/_arg?value
-
 
     /*
      * Destroys any "Edit file editor widgets"
@@ -981,9 +976,6 @@ create-widget:file-browser
 
       // Removing CSS classes from widgets hidden out of session
       set-session:sys42.original-file-editor-classes
-
-      // Removing "currently edited file" out of session
-      set-session:sys42.editor-file
 
       // Changing header back to what it was
       set-widget-property:header
