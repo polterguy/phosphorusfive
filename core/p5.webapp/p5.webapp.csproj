@@ -49,9 +49,6 @@
     <Content Include="web.config" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
-    <Content Include="system42\admin\files\media\file.png" />
-    <Content Include="system42\admin\files\media\files.css" />
-    <Content Include="system42\admin\files\media\folder.png" />
     <Content Include="media\bootstrap\css\bootstrap.min.css" />
     <Content Include="media\bootstrap\css\bootstrap-theme.min.css" />
     <Content Include="media\bootstrap\js\bootstrap.min.js" />
@@ -110,6 +107,10 @@
     <Content Include="system42\codemirror\mode\javascript\javascript.js" />
     <Content Include="system42\codemirror\mode\markdown\markdown.js" />
     <Content Include="system42\codemirror\mode\xml\xml.js" />
+    <Content Include="system42\admin\file-browser\media\file.png" />
+    <Content Include="system42\admin\file-browser\media\files.css" />
+    <Content Include="system42\admin\file-browser\media\folder.png" />
+    <Content Include="system42\codemirror\mode\htmlmixed\htmlmixed.js" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -227,9 +228,7 @@
     <None Include="system42\page-types\lambda.hl" />
     <None Include="system42\page-types\special-page\p5.no-access.hl" />
     <None Include="system42\admin\executor.hl" />
-    <None Include="system42\admin\files\files.hl" />
     <None Include="system42\admin\page-editor\page-editor.hl" />
-    <None Include="system42\admin\files\file-browser.hl" />
     <None Include="system42\admin\page-editor\editors\controls.hl" />
     <None Include="system42\admin\page-editor\editors\html.hl" />
     <None Include="system42\admin\page-editor\editors\lambda.hl" />
@@ -257,13 +256,15 @@
     <None Include="system42\startup\users\user-events\sys42.verify-access.hl" />
     <None Include="system42\startup\misc-events\sys42.get-content-type.hl" />
     <None Include="system42\misc\content-types.hl" />
-    <None Include="system42\misc\include-codemirror.hl" />
     <None Include="system42\admin\file-editors\launch.hl" />
-    <None Include="system42\admin\file-editors\editor-html.hl" />
     <None Include="system42\admin\file-editors\code-mirror-editor.hl" />
+    <None Include="system42\admin\file-browser\files.hl" />
+    <None Include="system42\admin\file-browser\file-browser.hl" />
+    <None Include="system42\admin\file-editors\html-editor.hl" />
+    <None Include="system42\codemirror\include-codemirror.hl" />
+    <None Include="system42\startup\misc-dialog-events\sys42.info-feedback.hl" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="system42\admin\files\media\" />
     <Folder Include="system42\admin\page-editor\editors\" />
     <Folder Include="system42\admin\page-editor\templates\" />
     <Folder Include="media\jquery\" />
@@ -272,5 +273,6 @@
     <Folder Include="system42\startup\users\user-events\" />
     <Folder Include="system42\misc\" />
     <Folder Include="system42\codemirror\theme\" />
+    <Folder Include="system42\admin\file-browser\media\" />
   </ItemGroup>
 </Project>

@@ -25,10 +25,14 @@ else-if:x:/../*/_mode?value
   =:cs
   set:x:/../*/sys42.execute-lisp-file/*/*/*/mode?value
     src:clike
+else-if:x:/../*/_mode?value
+  =:config
+  set:x:/../*/sys42.execute-lisp-file/*/*/*/mode?value
+    src:xml
 else
   set:x:/../*/sys42.execute-lisp-file/*/*/*/mode?value
     src:x:/../*/_mode?value
-sys42.execute-lisp-file:system42/misc/include-codemirror.hl
+sys42.execute-lisp-file:system42/codemirror/include-codemirror.hl
   _editor
     editor_surface
       mode
@@ -91,9 +95,10 @@ create-widget:hyperlisp-editor
           onclick
             get-widget-property:editor_surface
               innerValue
-            get-session:sys42.editor-file
-            save-file:x:/../*/get-session/*?value
+            get-session:sys42.selected-file-browser-object
+            save-file:x:/../*/get-session/*/*/object?value
               src:x:/../*/get-widget-property/*/*?value
+            sys42.info-feedback:@"File was successfully saved"
 
 
     /*

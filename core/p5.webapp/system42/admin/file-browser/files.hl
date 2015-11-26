@@ -36,6 +36,6 @@ else
 
   // There was no file to download, 
   // starting the actual file-browser implementation
-  sys42.execute-lisp-file:system42/admin/files/file-browser.hl
+  sys42.execute-lisp-file:system42/admin/file-browser/file-browser.hl
 
 

@@ -91,3 +91,4 @@ if:x:/../*/_editor/*/*/height
   send-javascript:@"window.{0}.setSize('100%', '{1}');"
     :x:/../*/_editor/*?name
     :x:/../*/_editor/*/*/height?value
+

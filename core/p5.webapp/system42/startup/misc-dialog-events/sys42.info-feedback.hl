@@ -1,0 +1,32 @@
+
+/*
+ * Responsible for creating the Active Event that shows the user a small
+ * information box dropdown
+ */
+set-event:sys42.info-feedback
+
+  /*
+   * Making sure we delete any previously created windows
+   * Notice that sice we only hide the window when it is closed, we need
+   * to check if any previous windows exist, and if so, delete them, before 
+   * we create any new ones
+   */
+  if
+    widget-exist:info-feedback
+    delete-widget:info-feedback
+
+  /*
+   * Setting properties of window
+   */
+  set:x:/../*/create-widget/**/literal/=info-feedback-msg/*/innerValue?value
+    src:x:/../*/_arg?value
+
+
+  /*
+   * Creating actual window popdown
+   */
+  create-widget:info-feedback
+    class:info-feedback
+    widgets
+      literal:info-feedback-msg
+        innerValue

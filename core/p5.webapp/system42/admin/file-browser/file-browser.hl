@@ -5,7 +5,7 @@
 
 
 // including CSS for file browser
-include-stylesheet-file:/system42/admin/files/media/files.css
+include-stylesheet-file:/system42/admin/file-browser/media/files.css
 
 
 /*
@@ -183,6 +183,10 @@ create-widget:file-browser
           // Updating toolbar
           sys42.update-file-browser-toolbar
 
+          // Showing popup to user, informing him that action was successful
+          sys42.info-feedback:@"{0} was stored in clipboard"
+            :x:/../*/get-session/*/*/type?value
+
 
         /*
          * Raised when "Cut" button is clicked
@@ -200,6 +204,10 @@ create-widget:file-browser
 
           // Updating toolbar
           sys42.update-file-browser-toolbar
+
+          // Showing popup to user, informing him that action was successful
+          sys42.info-feedback:@"{0} was stored in clipboard"
+            :x:/../*/get-session/*/*/type?value
 
 
         /*
@@ -270,6 +278,10 @@ create-widget:file-browser
           // to that we might have discarded the "Paste" logic, we update toolbar, since some items
           // might be enabled now, while others might have been disabled ...
           sys42.update-file-browser-toolbar
+
+          // Showing popup to user, informing him that action was successful
+          sys42.info-feedback:@"{0} was pasted into current folder"
+            :x:/../*/get-session/*/*/type?value
 
 
         /*
@@ -415,6 +427,10 @@ create-widget:file-browser
                   // Removing "Rename object" textbox
                   delete-widget:rename-file-object
 
+                  // Showing popup to user, informing him that action was successful
+                  sys42.info-feedback:@"File was renamed to '{0}'"
+                    :x:/../*/get-widget-property/*/*?value
+
 
         /*
          * Raised when "Delete" button is clicked
@@ -449,6 +465,12 @@ create-widget:file-browser
           set:x:/../*/sys42.confirm-action/*/_onok/0?value
             src:x:/../*/get-session/*/*/object?value
 
+          // Setting filename and object type to info-feedback window popdown
+          set:x:/../*/sys42.confirm-action/*/_onok/*/sys42.info-feedback/0?value
+            src:x:/../*/get-session/*/*/type?value
+          set:x:/../*/sys42.confirm-action/*/_onok/*/sys42.info-feedback/1?value
+            src:x:/../*/split/0/-?name
+
           // Showing "Confirmation Modal Dialog" to have user confirm he wants to delete file or folder
           sys42.confirm-action
             _header
@@ -468,6 +490,11 @@ create-widget:file-browser
 
               // Re-creating current folder's content
               sys42.create-current-folder-content
+
+              // Showing popup to user, informing him that action was successful
+              sys42.info-feedback:@"{0} '{1}' was succesfully deleted"
+                :
+                :
 
 
         /*
@@ -545,6 +572,10 @@ create-widget:file-browser
                 // Refreshing toolbar
                 sys42.update-file-browser-toolbar
 
+                // Showing feedback to user that folder was created
+                sys42.info-feedback:@"Folder '{0}' was succesfully created"
+                  :x:/../*/get-widget-property/*/*?value
+
 
         /*
          * "New file" button clicked
@@ -620,6 +651,10 @@ create-widget:file-browser
 
                 // Refreshing toolbar
                 sys42.update-file-browser-toolbar
+
+                // Showing feedback to user that file was created
+                sys42.info-feedback:@"File '{0}' was succesfully created"
+                  :x:/../*/get-widget-property/*/*?value
 
 
     /*

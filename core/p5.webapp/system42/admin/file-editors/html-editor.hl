@@ -69,9 +69,10 @@ create-widget:html-editor
           onclick
             get-widget-property:editor_surface
               innerValue
-            get-session:sys42.editor-file
-            save-file:x:/../*/get-session/*?value
+            get-session:sys42.selected-file-browser-object
+            save-file:x:/../*/get-session/*/*/object?value
               src:x:/../*/get-widget-property/*/*?value
+            sys42.info-feedback:@"File was successfully saved"
 
 
     /*

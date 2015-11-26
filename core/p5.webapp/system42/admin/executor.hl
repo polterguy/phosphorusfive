@@ -9,22 +9,23 @@
 /*
  * Including CodeMirror for both execute_input and execute_output
  */
-sys42.execute-lisp-file:system42/misc/include-codemirror.hl
+sys42.execute-lisp-file:system42/codemirror/include-codemirror.hl
   _editor
     execute_input
       mode:hyperlisp
-      theme:whiteboard
+      theme:bespin
       autofocus:true
       fullscreen:true
       keys
         Alt-E:function() {window._execute_lambda();}
         Alt-C:function() {window.execute_output.getDoc().setValue('');}
-sys42.execute-lisp-file:system42/misc/include-codemirror.hl
+sys42.execute-lisp-file:system42/codemirror/include-codemirror.hl
   _editor
     execute_output
       mode:hyperlisp
-      theme:whiteboard whiteboard-ro
+      theme:bespin
       autofocus:false
+      height:"246px"
 
 
 /*
@@ -123,6 +124,7 @@ create-widget:executor
             lambda2lisp:x:/-2/#/*
             return-value:code
               src:x:/./-?value
+            sys42.info-feedback:@"Code was successfully executed"
 
 
     /*

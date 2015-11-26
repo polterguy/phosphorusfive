@@ -7,13 +7,14 @@
 /*
  * Including CodeMirror for both [content] editor
  */
-sys42.execute-lisp-file:system42/misc/include-codemirror.hl
+sys42.execute-lisp-file:system42/codemirror/include-codemirror.hl
   _editor
     editor_surface
       mode:hyperlisp
-      theme:whiteboard
+      theme:bespin
       autofocus:true
       fullscreen:true
+      height:484px
 
 
 /*

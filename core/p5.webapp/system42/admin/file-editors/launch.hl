@@ -17,7 +17,7 @@ set-widget-property:header
 
 // Launching the correct editor
 if
-  file-exist:system42/admin/file-editors/editor-{0}.hl
+  file-exist:system42/admin/file-editors/{0}-editor.hl
     :x:/../*/split/0/-?name
 
   // Loading specialized editor
@@ -27,7 +27,7 @@ if
   add:x:/..if/*/sys42.execute-lisp-file
     src:"_file:{0}"
       :x:/../*/_file?value
-  sys42.execute-lisp-file:system42/admin/file-editors/editor-{0}.hl
+  sys42.execute-lisp-file:system42/admin/file-editors/{0}-editor.hl
     :x:/../*/split/0/-?name
 else
 
