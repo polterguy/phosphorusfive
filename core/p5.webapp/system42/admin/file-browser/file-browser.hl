@@ -42,12 +42,45 @@ create-widget:file-browser
 
   widgets
 
+    /*
+     * "Show toolbar" button
+     */
+    container:file-browser-show-toolbar
+      class:btn btn-default prepend-bottom prepend-right blink
+      title:Show menu - S
+      accesskey:S
+      oninit
+        get-session:sys42.file-browser-toolbar-visible
+        get-session:sys42.original-file-editor-classes
+        if:x:/../*/get-session/[0,1]/*?value.bool
+          =:bool:true
+          and:x:/../*/get-session/[1,2]/*/*
+            not
+          sys42.show-toolbar
+        else-if:x:/../*/get-session/[1,2]/*/*
+          set-widget-property:file-browser-show-toolbar
+            class:hidden
+      onclick
+        sys42.show-toolbar
+      events
+        sys42.show-toolbar
+          set-session:sys42.file-browser-toolbar-visible
+            src:true
+          set-widget-property:file-browser-show-toolbar
+            class:hidden
+          set-widget-property:file-browser-current-item-toolbar
+            class:btn-group prepend-right-2 prepend-bottom
+      widgets
+        literal
+          element:span
+          class:glyphicon glyphicon-menu-right
+
 
     /*
      * Toolbar widget for showing "Copy", "Cut", "Paste", "Rename" buttons etc ...
      */
     container:file-browser-current-item-toolbar
-      class:btn-group prepend-right-2 prepend-bottom
+      class:hidden
       oninit
         sys42.update-file-browser-toolbar
       widgets
@@ -185,6 +218,26 @@ create-widget:file-browser
             literal
               element:span
               class:glyphicon glyphicon-plus
+
+
+
+        /*
+         * "Hide toolbar" button
+         */
+        container:file-browser-hide-toolbar
+          class:btn btn-default blink
+          title:Show menu - H
+          accesskey:H
+          onclick
+            set-session:sys42.file-browser-toolbar-visible
+            set-widget-property:file-browser-show-toolbar
+              class:btn btn-default prepend-bottom prepend-right blink
+            set-widget-property:file-browser-current-item-toolbar
+              class:hidden
+          widgets
+            literal
+              element:span
+              class:glyphicon glyphicon-menu-left
 
 
       /*
@@ -351,16 +404,12 @@ create-widget:file-browser
           // Setting focus to "Rename" textbox
           send-javascript:@"$('#rename-file-object').focus().select();"
 
-          // Disabling "Rename" button
-          set-widget-property:file-browser-rename-button
-            class:btn btn-info
-
           // Creating "Rename" textbox widget
           create-literal-widget:rename-file-object
             element:input
             type:text
             parent:file-browser-current-item-toolbar
-            position:4
+            position:5
             class:form-control
             style:"float:left;width:250px;border-radius:0;border-left:none;border-right:none;"
             value
@@ -370,14 +419,10 @@ create-widget:file-browser
             onkeyup:"p5.textBoxKeyUp(event, 'rename-file-object');"
             onblur
               delete-widget:rename-file-object
-              set-widget-property:file-browser-rename-button
-                class:btn btn-default
             onenter_
               sys42.rename-file
             onesc_
               delete-widget:rename-file-object
-              set-widget-property:file-browser-rename-button
-                class:btn btn-default
 
 
             /*
@@ -450,10 +495,6 @@ create-widget:file-browser
                     src:x:/..else/*/~move-?value
                   set-session:sys42.selected-file-browser-object
                     src
-
-                  // Making rename button have default colors
-                  set-widget-property:file-browser-rename-button
-                    class:btn btn-default
 
                   // Refreshing toolbar
                   sys42.update-file-browser-toolbar
@@ -1110,6 +1151,8 @@ create-widget:file-browser
         class:hide
       set-session:sys42.original-file-editor-classes
         src:x:/./-2
+      set-widget-property:file-browser-show-toolbar
+        class:hidden
 
 
     /*
@@ -1133,6 +1176,14 @@ create-widget:file-browser
       // Changing header back to what it was
       set-widget-property:header
         innerValue:Files
+
+      // Making sure show/hide toolbar is correctly shown
+      get-session:sys42.file-browser-toolbar-visible
+      if:x:/../*/get-session/[1,2]/*?value.bool
+        sys42.show-toolbar
+      else
+        set-widget-property:file-browser-show-toolbar
+          class:btn btn-default prepend-bottom prepend-right blink
 
 
 /*

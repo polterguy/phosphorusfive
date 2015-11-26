@@ -88,3 +88,26 @@ body {
     margin-top:-100px;
 }
 
+
+/*
+ * Blink CSS class animations
+ */
+@keyframes animate-blink {
+    0% {
+        background:rgba(255,255,0,0);
+    }
+    20% {
+        background:rgba(255,255,0,1);
+    }
+    100% {
+        background:rgba(255,255,0,0);
+    }
+}
+
+.blink {
+    background:inherit;
+    animation-name: animate-blink;
+    animation-duration: .3s;
+}
+
+
