@@ -34,8 +34,28 @@ if:x:/-/*?value
 
 else
 
-  // There was no file to download, 
-  // starting the actual file-browser implementation
+  // There were no files to download
+
+  // Making sure we start up in "default directory"
+  sys42.get-user
+  get-session:sys42.current-folder
+  if:x:/-/*?value
+    not
+    set-session:sys42.current-folder
+      src:users/{0}/Documents/
+        :x:/..else/*/sys42.get-user/*/username?value
+
+  // Setting "root directory" according to user role
+  if:x:/..else/*/sys42.get-user/*/role?value
+    !=:admin
+    set-session:sys42.root-directory
+      src:users/{0}/Documents/
+        :x:/..else/*/sys42.get-user/*/username?value
+  else
+    set-session:sys42.root-directory
+      src:/
+
+  // Starting the actual file-browser implementation
   sys42.execute-lisp-file:system42/admin/file-browser/file-browser.hl
 
 

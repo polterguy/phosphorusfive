@@ -35,3 +35,8 @@ if:x:/-?value
       username:admin
       password:admin
       role:admin
+
+    p5.user:p5-guest-user
+      username:user
+      password:user
+      role:user

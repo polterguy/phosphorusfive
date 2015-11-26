@@ -47,7 +47,7 @@ create-widget:file-browser
      * Toolbar widget for showing "Copy", "Cut", "Paste", "Rename" buttons etc ...
      */
     container:file-browser-current-item-toolbar
-      class:btn-group prepend-right-2
+      class:btn-group prepend-right-2 prepend-bottom
       oninit
         sys42.update-file-browser-toolbar
       widgets
@@ -545,10 +545,6 @@ create-widget:file-browser
           // Setting focus to "New folder" textbox
           send-javascript:@"$('#new-folder-name').focus().select();"
 
-          // Making button more "visible"
-          set-widget-property:create-folder-button
-            class:btn btn-info glyphicon glyphicon-asterisk
-
           // Creating "New folder" textbox widget
           create-literal-widget:new-folder-name
             element:input
@@ -564,14 +560,10 @@ create-widget:file-browser
             onkeyup:"p5.textBoxKeyUp(event, 'new-folder-name');"
             onblur
               delete-widget:new-folder-name
-              set-widget-property:create-folder-button
-                class:btn btn-default glyphicon glyphicon-asterisk
             onenter_
               sys42.create-folder
             onesc_
               delete-widget:new-folder-name
-              set-widget-property:create-folder-button
-                class:btn btn-default glyphicon glyphicon-asterisk
 
 
             /*
@@ -591,10 +583,8 @@ create-widget:file-browser
                   :x:/../*/get-session/*?value
                   :x:/../*/get-widget-property/*/*?value
 
-                // Removing "Create new folder" textbox, and enabling "Create new folder" button
+                // Removing "Create new folder" textbox
                 delete-widget:new-folder-name
-                set-widget-property:create-folder-button
-                  class:btn btn-default glyphicon glyphicon-asterisk
 
                 // Making sure new folder is selected
                 set:x:/+/0/*/object?value
@@ -625,10 +615,6 @@ create-widget:file-browser
           // Setting focus to "New folder" textbox
           send-javascript:@"$('#new-file-name').focus().select();"
 
-          // Disabling "New folder" button
-          set-widget-property:create-file-button
-            class:btn btn-info glyphicon glyphicon-plus
-
           // Creating "New file" textbox widget
           create-literal-widget:new-file-name
             element:input
@@ -644,14 +630,10 @@ create-widget:file-browser
             onkeyup:"p5.textBoxKeyUp(event, 'new-file-name');"
             onblur
               delete-widget:new-file-name
-              set-widget-property:create-file-button
-                class:btn btn-default glyphicon glyphicon-plus
             onenter_
               sys42.create-file
             onesc_
               delete-widget:new-file-name
-              set-widget-property:create-file-button
-                class:btn btn-default glyphicon glyphicon-plus
 
 
             /*
@@ -671,10 +653,8 @@ create-widget:file-browser
                   :x:/../*/get-session/*?value
                   :x:/../*/get-widget-property/*/*?value
 
-                // Removing "Create new file" textbox, and enabling "Create new file" button
+                // Removing "Create new file" textbox
                 delete-widget:new-file-name
-                set-widget-property:create-file-button
-                  class:btn btn-default glyphicon glyphicon-plus
 
                 // Making sure new file is selected
                 set:x:/+/0/*/object?value
@@ -702,7 +682,7 @@ create-widget:file-browser
      * in the folder hierarchy
      */
     container:file-browser-bread-crumb
-      class:btn-group
+      class:btn-group prepend-bottom
 
 
     /*
@@ -784,10 +764,15 @@ create-widget:file-browser
       // Getting current folder
       get-session:sys42.current-folder
 
+      // Getting "root folder"
+      get-session:sys42.root-directory
+
       // Creating bread-crumb home button widget part
-      if:x:/../*/get-session/*?value
+      if:x:/../*/get-session/[0,1]/*?value
         not
-        add:x:/../*/create-literal-widget
+        or:x:/../*/get-session/[0,1]/*?value
+          =:x:/../*/get-session/[1,2]/*?value
+        add:x:/../*/create-widget
           src:disabled
       create-widget
         element:button
@@ -795,7 +780,8 @@ create-widget:file-browser
         class:btn btn-default
         title:Home
         onclick
-          sys42.change-current-folder
+          get-session:sys42.root-directory
+          sys42.change-current-folder:x:/../*/get-session/*?value
         widgets
           literal
             class:glyphicon glyphicon-home
@@ -804,34 +790,41 @@ create-widget:file-browser
       // Looping through each folder leading to current path, 
       // building "path" as we go along
       _path:
-      split:x:/../*/get-session/*?value
+      split:x:/../*/get-session/[0,1]/*?value
         =:/
       for-each:x:/-/*?name
 
-        // Creating a button for each folder leading to current folder
-        set:x:/..for-each/*/create-literal-widget/*/innerValue?value
-          src:x:/..for-each/*/__dp?value
+        // Checking this is beneath main root access folder
         set:x:/../*/_path?value
           src:{0}{1}/
             :x:/../*/_path?value
             :x:/..for-each/*/__dp?value
-        set:x:/..for-each/*/create-literal-widget/*/onclick/*/sys42.change-current-folder?value
-          src:x:/../*/_path?value
+        if:x:/../*/_path/"=~{0}"
+          :x:/../*/get-session/[1,2]/*?value
+          and:x:/../*/_path/"=~{0}"?value
+            :x:/../*/get-session/[1,2]/*?value
+            !=:x:/../*/get-session/[1,2]/*?value
 
-        // Checking if this is last bread-crumb button, and if so, disabling it
-        if:x:/../*/_path?value
-          =:x:/../*/get-session/*?value
-          add:x:/..for-each/*/create-literal-widget
-            src:disabled
+          // Creating a button for each folder leading to current folder
+          set:x:/..if/*/create-literal-widget/*/innerValue?value
+            src:x:/..for-each/*/__dp?value
+          set:x:/..if/*/create-literal-widget/*/onclick/*/sys42.change-current-folder?value
+            src:x:/../*/_path?value
 
-        // Creating bread-crumb button widget part
-        create-literal-widget
-          element:button
-          parent:file-browser-bread-crumb
-          class:btn btn-default
-          innerValue
-          onclick
-            sys42.change-current-folder
+          // Checking if this is last bread-crumb button, or beneath "root folder", and if so, disabling it
+          if:x:/../*/_path?value
+            =:x:/../*/get-session/[0,1]/*?value
+            add:x:/..if/..if/*/create-literal-widget
+              src:disabled
+
+          // Creating bread-crumb button widget part
+          create-literal-widget
+            element:button
+            parent:file-browser-bread-crumb
+            class:btn btn-default
+            innerValue
+            onclick
+              sys42.change-current-folder
 
 
     /*
@@ -1083,7 +1076,7 @@ create-widget:file-browser
 
       // Changing header back to what it was
       set-widget-property:header
-        innerValue:File system
+        innerValue:Files
 
 
 /*

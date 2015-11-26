@@ -48,7 +48,7 @@ sys42.execute-lisp-file:system42/admin/page-editor/page-editor.hl
 
     p5.page:/admin/executor
       type:lambda
-      name:Lambda Evaluator
+      name:Evaluator
       template:system42/templates/main.hl
       role:admin
       lambda:@"
@@ -59,11 +59,11 @@ sys42.execute-lisp-file:system42/admin/page-editor/page-editor.hl
 sys42.execute-lisp-file:system42/admin/executor.hl
 "
 
-    p5.page:/admin/files
+    p5.page:/user/files
       type:lambda
-      name:File system
+      name:Files
       template:system42/templates/main.hl
-      role:admin
+      role:user
       lambda:@"
 
 /*
