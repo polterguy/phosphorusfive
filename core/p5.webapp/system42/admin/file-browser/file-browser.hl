@@ -44,25 +44,10 @@ create-widget:file-browser
 
 
     /*
-     * Bread crumb button group, allowing user to go "back" to where he cam from
-     * in the folder hierarchy
-     */
-    container:file-browser-bread-crumb
-      class:btn-group
-
-
-    /*
-     * Actual folders and files content, showing the "current folder"
-     */
-    container:file-browser-current-folder-content
-      class:prepend-top file-browser-content-surface
-
-
-    /*
      * Toolbar widget for showing "Copy", "Cut", "Paste", "Rename" buttons etc ...
      */
     container:file-browser-current-item-toolbar
-      class:btn-group
+      class:btn-group prepend-right-2
       oninit
         sys42.update-file-browser-toolbar
       widgets
@@ -71,107 +56,135 @@ create-widget:file-browser
         /*
          * "Copy" button
          */
-        literal:file-browser-copy-button
+        container:file-browser-copy-button
           element:button
           class:btn btn-default
-          innerValue:Copy
           disabled
           accesskey:C
-          title:Shortcut - C
+          title:Copy - C
           onclick
             sys42.copy-button-clicked
+          widgets
+            literal
+              element:span
+              class:glyphicon glyphicon-copy
 
 
         /*
          * "Cut" button
          */
-        literal:file-browser-cut-button
+        container:file-browser-cut-button
           element:button
           class:btn btn-default
-          innerValue:Cut
           disabled
           accesskey:X
-          title:Shortcut - X
+          title:Cut - X
           onclick
             sys42.cut-button-clicked
+          widgets
+            literal
+              element:span
+              class:glyphicon glyphicon-scissors
 
 
         /*
          * "Paste" button
          */
-        literal:file-browser-paste-button
+        container:file-browser-paste-button
           element:button
           class:btn btn-default
-          innerValue:Paste
           disabled
           accesskey:V
-          title:Shortcut - V
+          title:Paste - V
           onclick
             sys42.paste-button-clicked
+          widgets
+            literal
+              element:span
+              class:glyphicon glyphicon-paste
 
 
         /*
          * "Download" button
          */
-        literal:file-browser-download-button
+        container:file-browser-download-button
           element:button
           class:btn btn-default
-          innerValue:Download
           disabled
           accesskey:D
-          title:Shortcut - D
+          title:Download - D
           onclick
             sys42.download-button-clicked
+          widgets
+            literal
+              element:span
+              class:glyphicon glyphicon-download
 
 
         /*
          * "Rename" button
          */
-        literal:file-browser-rename-button
+        container:file-browser-rename-button
           element:button
           class:btn btn-default
-          innerValue:Rename
           disabled
           accesskey:R
-          title:Shortcut R
+          title:Rename - R
           onclick
             sys42.rename-button-clicked
+          widgets
+            literal
+              element:span
+              class:glyphicon glyphicon-pencil
 
 
         /*
          * "Delete" button
          */
-        literal:file-browser-delete-button
+        container:file-browser-delete-button
           element:button
           class:btn btn-default
-          innerValue:Delete
           disabled
-          accesskey:D
-          title:Shortcut - D
+          accesskey:T
+          title:Trash - T
           onclick
             sys42.delete-button-clicked
+          widgets
+            literal
+              element:span
+              class:glyphicon glyphicon-trash
 
 
         /*
          * "Create folder" button
          */
-        literal:create-folder-button
+        container:create-folder-button
           element:button
           class:btn btn-default
-          innerValue:New folder
+          accesskey:F
+          title:New folder - F
           onclick
             sys42.new-folder-button-clicked
+          widgets
+            literal
+              element:span
+              class:glyphicon glyphicon-asterisk
 
 
         /*
          * "Create file" button
          */
-        literal:create-file-button
+        container:create-file-button
           element:button
           class:btn btn-default
-          innerValue:New file
+          accesskey:N
+          title:New file - N
           onclick
             sys42.new-file-button-clicked
+          widgets
+            literal
+              element:span
+              class:glyphicon glyphicon-plus
 
 
       /*
@@ -532,9 +545,9 @@ create-widget:file-browser
           // Setting focus to "New folder" textbox
           send-javascript:@"$('#new-folder-name').focus().select();"
 
-          // Disabling "New folder" button
+          // Making button more "visible"
           set-widget-property:create-folder-button
-            class:btn btn-info
+            class:btn btn-info glyphicon glyphicon-asterisk
 
           // Creating "New folder" textbox widget
           create-literal-widget:new-folder-name
@@ -552,13 +565,13 @@ create-widget:file-browser
             onblur
               delete-widget:new-folder-name
               set-widget-property:create-folder-button
-                class:btn btn-default
+                class:btn btn-default glyphicon glyphicon-asterisk
             onenter_
               sys42.create-folder
             onesc_
               delete-widget:new-folder-name
               set-widget-property:create-folder-button
-                class:btn btn-default
+                class:btn btn-default glyphicon glyphicon-asterisk
 
 
             /*
@@ -581,7 +594,7 @@ create-widget:file-browser
                 // Removing "Create new folder" textbox, and enabling "Create new folder" button
                 delete-widget:new-folder-name
                 set-widget-property:create-folder-button
-                  class:btn btn-default
+                  class:btn btn-default glyphicon glyphicon-asterisk
 
                 // Making sure new folder is selected
                 set:x:/+/0/*/object?value
@@ -614,7 +627,7 @@ create-widget:file-browser
 
           // Disabling "New folder" button
           set-widget-property:create-file-button
-            class:btn btn-info
+            class:btn btn-info glyphicon glyphicon-plus
 
           // Creating "New file" textbox widget
           create-literal-widget:new-file-name
@@ -632,13 +645,13 @@ create-widget:file-browser
             onblur
               delete-widget:new-file-name
               set-widget-property:create-file-button
-                class:btn btn-default
+                class:btn btn-default glyphicon glyphicon-plus
             onenter_
               sys42.create-file
             onesc_
               delete-widget:new-file-name
               set-widget-property:create-file-button
-                class:btn btn-default
+                class:btn btn-default glyphicon glyphicon-plus
 
 
             /*
@@ -661,7 +674,7 @@ create-widget:file-browser
                 // Removing "Create new file" textbox, and enabling "Create new file" button
                 delete-widget:new-file-name
                 set-widget-property:create-file-button
-                  class:btn btn-default
+                  class:btn btn-default glyphicon glyphicon-plus
 
                 // Making sure new file is selected
                 set:x:/+/0/*/object?value
@@ -682,6 +695,21 @@ create-widget:file-browser
                 // Showing feedback to user that file was created
                 sys42.info-feedback:@"File '{0}' was succesfully created"
                   :x:/../*/get-widget-property/*/*?value
+
+
+    /*
+     * Bread crumb button group, allowing user to go "back" to where he cam from
+     * in the folder hierarchy
+     */
+    container:file-browser-bread-crumb
+      class:btn-group
+
+
+    /*
+     * Actual folders and files content, showing the "current folder"
+     */
+    container:file-browser-current-folder-content
+      class:prepend-top file-browser-content-surface
 
 
     /*
@@ -761,13 +789,17 @@ create-widget:file-browser
         not
         add:x:/../*/create-literal-widget
           src:disabled
-      create-literal-widget
+      create-widget
         element:button
         parent:file-browser-bread-crumb
         class:btn btn-default
-        innerValue:/
+        title:Home
         onclick
           sys42.change-current-folder
+        widgets
+          literal
+            class:glyphicon glyphicon-home
+            element:span
 
       // Looping through each folder leading to current path, 
       // building "path" as we go along

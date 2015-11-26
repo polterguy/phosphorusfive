@@ -38,6 +38,19 @@ body {
 
 
 /*
+ * Helper to give some space after element is finished
+ */
+.prepend-right {
+    margin-right:30px;
+}
+
+
+.prepend-right-2 {
+    margin-right:60px;
+}
+
+
+/*
  * Info feedback popdown dialog animations, and CSS class
  */
 @keyframes animate-info-feedback {
