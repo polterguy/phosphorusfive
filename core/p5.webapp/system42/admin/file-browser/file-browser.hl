@@ -771,11 +771,6 @@ create-widget:file-browser
       split:x:/../*/get-session/[0,1]/*?value
         =:/
 
-      // Making sure once "Home" is clicked, that path we came from is selected folder
-      set:x:/../*/create-widget/*/onclick/*/set-session/*/*/object?value
-        src:{0}/
-          :x:/../*/split/0?name
-
       // Creating bread-crumb home button widget part
       if:x:/../*/get-session/[0,1]/*?value
         not
@@ -792,9 +787,25 @@ create-widget:file-browser
         title:Home
         onclick
 
+          // Figuring out where user came from, such that we can make
+          // that path selected, therefor we need to retrieve where user came from
+          get-session:sys42.current-folder
+
           // Making sure user can never go beneath "root access folder"
           get-session:sys42.root-directory
-          sys42.change-current-folder:x:/../*/get-session/*?value
+          sys42.change-current-folder:x:/../*/get-session/[1,2]/*?value
+
+          // Figuring out where user came from
+          // PS, this looks REALLY weird if you inspect it with an admin user, but works fo reasons which makes
+          // me freaking LOOOOVE p5.lambda expressions ... ;) (Hint; splitting upon an empty string)
+          split:x:/../*/get-session/[0,1]/*?value
+            =:x:/../*/get-session/[1,2]/*?value
+          split:x:/-/*?name
+            =:/
+          set:x:/../*/set-session/*/*/object?value
+            src:{0}{1}/
+              :x:/../*/get-session/[1,2]/*?value
+              :x:/../*/split/[1,2]/0?name
 
           // Setting selected folder to path were we came from
           set-session:sys42.selected-file-browser-object

@@ -59,7 +59,7 @@ else
         :x:/..else/*/sys42.get-user/*/username?value
   else
     set-session:sys42.root-directory
-      src:/
+      src:
 
   // Starting the actual file-browser implementation
   sys42.execute-lisp-file:system42/admin/file-browser/file-browser.hl
