@@ -251,6 +251,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'list-files':
         case 'list-folders':
         case 'delete-folder':
+        case 'gzip':
         case 'select-data':
         case 'delete-data':
         case 'get-session':
