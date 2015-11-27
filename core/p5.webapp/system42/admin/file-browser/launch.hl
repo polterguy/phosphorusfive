@@ -36,17 +36,23 @@ else
 
   // There were no files to download
 
-  // Making sure we start up in "default directory"
+  // Making sure we start up in "default directory", unless user already
+  // has another directory selected. In addition we're making sure that
+  // the system won't start inside a directory the user does not have
+  // access to
   sys42.get-user
   get-session:sys42.current-folder
-  if:x:/-/*?value
+  if:x:/..else/*/get-session/*?value
     not
     or:x:/..else/*/sys42.get-user/*/role?value
       !=:admin
-      and:x:/..else/*/get-session/*/"=~{0}"
-        :/users/{0}/Documents/
-          :x:/../*/sys42.get-user/*/username?value
+      and:x:/..else/*/get-session/*/"=~users/{0}/Documents/"
+        :x:/..else/*/sys42.get-user/*/username?value
         not
+
+    // Either there was no current directory, or the current directory
+    // was a directory that the user did not have access to. Therefor
+    // we set the "current folder" to the user's "Home" directory
     set-session:sys42.current-folder
       src:users/{0}/Documents/
         :x:/..else/*/sys42.get-user/*/username?value
@@ -54,8 +60,11 @@ else
   // Setting "root directory" according to user role
   if:x:/..else/*/sys42.get-user/*/role?value
     !=:admin
+
+    // User is NOT admin, therefor we set "root access folder" to
+    // "users/username/"
     set-session:sys42.root-directory
-      src:users/{0}/Documents/
+      src:users/{0}/
         :x:/..else/*/sys42.get-user/*/username?value
   else
     set-session:sys42.root-directory
