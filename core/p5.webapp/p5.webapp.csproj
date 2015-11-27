@@ -267,6 +267,7 @@
     <None Include="system42\codemirror\include-codemirror.hl" />
     <None Include="system42\startup\misc-dialog-events\sys42.info-feedback.hl" />
     <None Include="system42\admin\file-browser\launch.hl" />
+    <None Include="system42\startup\misc-events\sys42.gzip-folder.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="system42\admin\page-editor\editors\" />

@@ -55,6 +55,9 @@ namespace p5.file.utilities
                             }
                         }
                     }
+
+                    // Returning filepath of ZIP file to caller
+                    e.Args.Value = e.Args ["to"].GetExValue<string> (context);
                 }
             }
         }

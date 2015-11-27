@@ -10,3 +10,13 @@ set-event:sys42.logout-user
   set-cookie:system42-user
   send-javascript:"window.location.replace(window.location.pathname);"
 
+  // Emptying user's "temp" directory
+  sys42.get-user
+  list-files:users/{0}/Temp
+    :x:/../*/sys42.get-user/*/username?value
+  for-each:x:/-/*?name
+    delete-file:x:/./*/__dp?value
+  list-folders:users/{0}/Temp
+    :x:/../*/sys42.get-user/*/username?value
+  for-each:x:/-/*?name
+    delete-folder:x:/./*/__dp?value

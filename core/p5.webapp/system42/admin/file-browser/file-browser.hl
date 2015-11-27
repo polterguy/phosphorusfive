@@ -372,9 +372,21 @@ create-widget:file-browser
           // Retrieving currently selected file, and passing onto session
           // value tracking which file to download, before we refresh browser window
           get-session:sys42.selected-file-browser-object
-          set-session:sys42.download-file
-            src:x:/../*/get-session/*/*/object?value
-          send-javascript:@"window.location.replace(window.location.pathname);"
+          if:x:/-/*/*/type?value
+            =:file
+
+            // Downloading file
+            set-session:sys42.download-file
+              src:x:/../*/get-session/*/*/object?value
+            send-javascript:@"window.location.replace(window.location.pathname);"
+
+          else
+
+            // Downloading folder by GZIP'ing it first into "temp" directory
+            sys42.gzip-folder:x:/../*/get-session/*/*/object?value
+            set-session:sys42.download-file
+              src:x:/..else/*/sys42.gzip-folder?value
+            send-javascript:@"window.location.replace(window.location.pathname);"
 
 
         /*
@@ -759,28 +771,17 @@ create-widget:file-browser
         file-browser-cut-button
         file-browser-rename-button
         file-browser-delete-button
+        file-browser-download-button
       if:x:/../*/get-session/*/*
 
         // There is currently an object active in file browser surface
         delete-widget-property:x:/../*/_widgets/*?name
           disabled
 
-        // Special treatment for download button, since it can't download folders
-        if:x:/../*/get-session/*/*/type?value
-          =:file
-          delete-widget-property:file-browser-download-button
-            disabled
-        else
-          set-widget-property:file-browser-download-button
-            disabled
       else
 
         // There are currently no objects active in file browser surface
         set-widget-property:x:/../*/_widgets/*?name
-          disabled
-
-        // Special treatment for download button, since it cannot download folders
-        set-widget-property:file-browser-download-button
           disabled
 
       // Setting "Paste" button to enabled, or disabled, depending
