@@ -1,4 +1,3 @@
-
 /*
  * CodeMirror module for editing Hyperlisp files
  */
@@ -215,6 +214,8 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'set-widget-lambda-event':
         case 'return-value':
         case 'lambda2lisp':
+        case 'gzip':
+        case 'gunzip':
           state.indent += 2;
           return this.styles.lesser_keyword;
 
@@ -251,7 +252,6 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'list-files':
         case 'list-folders':
         case 'delete-folder':
-        case 'gzip':
         case 'select-data':
         case 'delete-data':
         case 'get-session':
@@ -475,6 +475,6 @@ CodeMirror.defineMode("hyperlisp", function() {
   };
 });
 
-CodeMirror.defineMIME("text/hyperlisp", "hyperlisp");
+CodeMirror.defineMIME("text/x-hyperlisp", "hyperlisp");
 
 });

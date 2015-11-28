@@ -31,7 +31,7 @@ create-widget:file-browser
     get-session:sys42.selected-file-browser-object
     if:x:/-/*/*/object?value
       sys42.create-selected-object-clues:x:/./-/*/*/object?value
-      sys42.update-file-browser-toolbar
+    sys42.update-file-browser-toolbar
 
     // Checking if we're currently in "edit file mode", and if
     // so, opening up editor
@@ -46,7 +46,7 @@ create-widget:file-browser
      * "Show toolbar" button
      */
     container:file-browser-show-toolbar
-      class:btn btn-default prepend-bottom prepend-right blink
+      class:btn btn-default blink toolbar prepend-right-2
       title:Show menu - S
       accesskey:S
       oninit
@@ -69,20 +69,18 @@ create-widget:file-browser
           set-widget-property:file-browser-show-toolbar
             class:hidden
           set-widget-property:file-browser-current-item-toolbar
-            class:btn-group prepend-right-2 prepend-bottom
+            class:btn-group prepend-right-2 prepend-bottom toolbar
       widgets
         literal
           element:span
-          class:glyphicon glyphicon-menu-right
+          class:glyphicon glyphicon-menu-left
 
 
     /*
      * Toolbar widget for showing "Copy", "Cut", "Paste", "Rename" buttons etc ...
      */
     container:file-browser-current-item-toolbar
-      class:hidden
-      oninit
-        sys42.update-file-browser-toolbar
+      class:hidden toolbar
       widgets
 
 
@@ -220,24 +218,39 @@ create-widget:file-browser
               class:glyphicon glyphicon-plus
 
 
+        /*
+         * "Unzip file" button
+         */
+        container:unzip-file-button
+          element:button
+          class:btn btn-default
+          accesskey:U
+          title:Unzip - U
+          onclick
+            sys42.gunzip-file
+          widgets
+            literal
+              element:span
+              class:glyphicon glyphicon-folder-open
+
 
         /*
          * "Hide toolbar" button
          */
         container:file-browser-hide-toolbar
           class:btn btn-default blink
-          title:Show menu - H
+          title:Hide menu - H
           accesskey:H
           onclick
             set-session:sys42.file-browser-toolbar-visible
             set-widget-property:file-browser-show-toolbar
-              class:btn btn-default prepend-bottom prepend-right blink
+              class:btn btn-default blink toolbar prepend-right-2
             set-widget-property:file-browser-current-item-toolbar
-              class:hidden
+              class:hidden toolbar
           widgets
             literal
               element:span
-              class:glyphicon glyphicon-menu-left
+              class:glyphicon glyphicon-menu-right
 
 
       /*
@@ -730,6 +743,34 @@ create-widget:file-browser
                   :x:/../*/get-widget-property/*/*?value
 
 
+        /*
+         * Raised when "Unzip file" button is clicked
+         */
+        sys42.gunzip-file
+
+          // Retrieving currently selected file, which will be the file we unzip
+          get-session:sys42.selected-file-browser-object
+
+          // Retrieving current folder, which will be the folder we unzip file to
+          get-session:sys42.current-folder
+
+          // gunzipping file
+          gunzip:x:/../*/get-session/[0,1]/*/*/object?value
+            to:x:/../*/get-session/[1,2]/*?value
+
+          // Re-creating current folder's content, since it now has also all the files from the GZIP archive
+          sys42.create-current-folder-content
+
+          // Making sure currently selected object is still selected
+          sys42.create-selected-object-clues:x:/../*/get-session/[0,1]/*/*/object?value
+
+          // Giving user feedback of that operation was successful
+          split:x:/../*/get-session/[0,1]/*/*/object?value
+            =:/
+          sys42.info-feedback:@"'{0}' was successfully gunzipped"
+            :x:/../*/split/0/-?name
+
+
     /*
      * Bread crumb button group, allowing user to go "back" to where he cam from
      * in the folder hierarchy
@@ -772,11 +813,31 @@ create-widget:file-browser
         file-browser-rename-button
         file-browser-delete-button
         file-browser-download-button
+        unzip-file-button
       if:x:/../*/get-session/*/*
 
         // There is currently an object active in file browser surface
-        delete-widget-property:x:/../*/_widgets/*?name
+        // Enabling all buttons, except "Unzip" button
+        delete-widget-property:x:/../*/_widgets/*(!/unzip-file-button)?name
           disabled
+
+        // Checking if this is a file, and if it ends with "gz", at which point
+        // "Unzip file" button should be enabled
+        if:x:/../*/get-session/*/*/type?value
+          =:file
+          split:x:/../*/get-session/*/*/object?value
+            =:.
+          if:x:/-/0/-?name
+            =:gz
+
+            // This is a GunZipped file
+            delete-widget-property:unzip-file-button
+              disabled
+        else
+
+          // This is NOT a gunzipped file
+          set-widget-property:unzip-file-button
+            disabled
 
       else
 
@@ -1131,29 +1192,12 @@ create-widget:file-browser
      */
     sys42.create-file-editor
 
-      // Deleting any previous editors
-      clear-widget:file-browser-file-editor
-
       // Retrieving selected file, and opening up editor
       set:x:/+/0?value
         src:x:/../*/_arg?value
       sys42.execute-lisp-file:system42/admin/file-editors/launch.hl
         _file
         _parent:file-browser-file-editor
-
-      // Storing original CSS classes in session for all widgets we're hiding
-      _widgets
-        file-browser-bread-crumb
-        file-browser-current-folder-content
-        file-browser-current-item-toolbar
-      get-widget-property:x:/-/*?name
-        class
-      set-widget-property:x:/-2/*?name
-        class:hide
-      set-session:sys42.original-file-editor-classes
-        src:x:/./-2
-      set-widget-property:file-browser-show-toolbar
-        class:hidden
 
 
     /*
@@ -1184,7 +1228,7 @@ create-widget:file-browser
         sys42.show-toolbar
       else
         set-widget-property:file-browser-show-toolbar
-          class:btn btn-default prepend-bottom prepend-right blink
+          class:btn btn-default blink toolbar prepend-right-2
 
 
 /*

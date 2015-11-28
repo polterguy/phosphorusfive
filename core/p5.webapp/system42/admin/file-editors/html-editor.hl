@@ -4,6 +4,30 @@
  */
 
 
+// Changing header to reflect which file is edited
+set-widget-property:header
+  innerValue:Editing <small>{0}</small>
+    :x:/../*/_file?value
+
+
+// Deleting any previous editors
+clear-widget:file-browser-file-editor
+
+// Storing original CSS classes in session for all widgets we're hiding
+_widgets
+  file-browser-bread-crumb
+  file-browser-current-folder-content
+  file-browser-current-item-toolbar
+get-widget-property:x:/-/*?name
+  class
+set-widget-property:x:/-2/*?name
+  class:hide
+set-session:sys42.original-file-editor-classes
+  src:x:/./-2
+set-widget-property:file-browser-show-toolbar
+  class:hidden
+
+
 /*
  * Setting CKEditor's basepath, notice this must occur BEFORE 
  * we include the CKEditor's JavaScript files!

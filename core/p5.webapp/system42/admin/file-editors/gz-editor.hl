@@ -1,0 +1,9 @@
+
+/*
+ * File editor for GZIPPED file. Actually not an editor, simply
+ * invokes [sys42.gunzip-file], and nothing else. Here for simplicity to
+ * create an "intelligent action" for double-clicking a GZIP file
+ */
+
+
+sys42.gunzip-file

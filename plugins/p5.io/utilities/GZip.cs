@@ -28,7 +28,7 @@ namespace p5.file.utilities
         private static void gzip (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value == null || e.Args.LastChild == null || e.Args.LastChild.Name != "to")
-                throw new ArgumentException ("[gzip-folder] needs both a value and a [to] node.");
+                throw new ArgumentException ("[gzip] needs both a value and a [to] node.");
 
             // making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args)) {
@@ -62,8 +62,53 @@ namespace p5.file.utilities
             }
         }
 
+        /// <summary>
+        ///     Unzips folder(s) and file(s)
+        /// </summary>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
+        [ActiveEvent (Name = "gunzip")]
+        private static void gunzip (ApplicationContext context, ActiveEventArgs e)
+        {
+            if (e.Args.Value == null || e.Args.LastChild == null || e.Args.LastChild.Name != "to")
+                throw new ArgumentException ("[gunzip] needs both a value and a [to] node.");
+
+            // making sure we clean up and remove all arguments passed in after execution
+            using (new Utilities.ArgsRemover (e.Args)) {
+
+                // getting root folder
+                var rootFolder = Common.GetRootFolder (context);
+
+                // Getting destination folder
+                var destinationFolder = e.Args ["to"].GetExValue<string> (context);
+
+                // Looping through each source zip folder given
+                foreach (var idxSource in XUtil.Iterate<string> (e.Args, context)) {
+
+                    // Creating our input stream, which wraps the GZip file given
+                    using (var input = File.OpenRead (rootFolder + idxSource.TrimStart ('/'))) {
+
+                        // Creating our GZip stream, wrapping the file stream
+                        using (var gzStream = new GZipInputStream (input)) {
+
+                            // Creating TAR archive, wrapping our GZip stream
+                            using (var archive = TarArchive.CreateInputTarArchive (gzStream)) {
+
+                                // Extracting archive to destination folder
+                                archive.SetKeepOldFiles (false);
+                                archive.ExtractContents (rootFolder + destinationFolder);
+                            }
+                        }
+                    }
+                }
+
+                // Returning filepath of ZIP file to caller
+                e.Args.Value = e.Args ["to"].GetExValue<string> (context);
+            }
+        }
+
         /*
-         * Helper for above
+         * Helper for above [gzip] Active Event
          */
         private static void AddFileObjectToArchive (TarArchive archive, string fileFolderPath, string rootPath)
         {

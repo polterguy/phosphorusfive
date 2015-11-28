@@ -1,3 +1,4 @@
+
 /*
  * Launches file editor
  */
@@ -6,12 +7,6 @@
 // Figuring out file extension, such that we can launch the right editor
 split:x:/../*/_file?value
   =:.
-
-
-// Changing header to reflect which file is edited
-set-widget-property:header
-  innerValue:Editing <small>{0}</small>
-    :x:/../*/_file?value
 
 
 // Launching the correct editor
@@ -41,6 +36,6 @@ else
     src:"_mode:{0}"
       :x:/../*/split/0/-?name
   sys42.execute-lisp-file:system42/admin/file-editors/code-mirror-editor.hl
-    _theme:bespin
+    _theme:the-matrix-reduced
 
 

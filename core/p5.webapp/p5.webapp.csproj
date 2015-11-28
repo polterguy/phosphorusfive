@@ -115,6 +115,7 @@
     <Content Include="system42\admin\file-browser\media\folder.png" />
     <Content Include="system42\codemirror\mode\htmlmixed\htmlmixed.js" />
     <Content Include="packages.config" />
+    <Content Include="system42\codemirror\theme\the-matrix-reduced.css" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -268,6 +269,7 @@
     <None Include="system42\startup\misc-dialog-events\sys42.info-feedback.hl" />
     <None Include="system42\admin\file-browser\launch.hl" />
     <None Include="system42\startup\misc-events\sys42.gzip-folder.hl" />
+    <None Include="system42\admin\file-editors\gz-editor.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="system42\admin\page-editor\editors\" />
