@@ -5,7 +5,7 @@
 
 
 // including CSS for file browser
-include-stylesheet-file:/system42/admin/file-browser/media/files.css
+include-stylesheet-file:/system42/file-browser/media/files.css
 
 
 /*
@@ -219,13 +219,29 @@ create-widget:file-browser
 
 
         /*
-         * "Unzip file" button
+         * "GZIP file" button
+         */
+        container:zip-file-button
+          element:button
+          class:btn btn-default
+          accesskey:Z
+          title:Gzip - Z
+          onclick
+            sys42.zip-file
+          widgets
+            literal
+              element:span
+              class:glyphicon glyphicon-compressed
+
+
+        /*
+         * "GUNZIP file" button
          */
         container:unzip-file-button
           element:button
           class:btn btn-default
           accesskey:U
-          title:Unzip - U
+          title:Gunzip - U
           onclick
             sys42.gunzip-file
           widgets
@@ -744,6 +760,50 @@ create-widget:file-browser
 
 
         /*
+         * Raised when "Zip file" button is clicked
+         */
+        sys42.zip-file
+
+          // Retrieving currently selected file, which will be the file we zip
+          get-session:sys42.selected-file-browser-object
+
+          // Retrieving current folder, which will be the folder we zip file to
+          get-session:sys42.current-folder
+
+          // gzipping file
+          split:x:/../*/get-session/[0,1]/*/*/object?value
+            =:/
+          gzip:x:/../*/get-session/[0,1]/*/*/object?value
+            to:{0}{1}.tar.gz
+              :x:/../*/get-session/[1,2]/*?value
+              :x:/../*/split/[0,1]/0/-?name
+
+          // Making sure GZIP file becomes selected file
+          set:x:/+/*/*/object?value
+            src:x:/../*/gzip?value
+          set-session:sys42.selected-file-browser-object
+            src
+              type:file
+              object
+
+          // Re-creating current folder's content, since it now has also all the files from the GZIP archive
+          sys42.create-current-folder-content
+
+          // Making sure currently selected object is still selected
+          sys42.create-selected-object-clues:x:/../*/gzip?value
+
+          // Giving user feedback of that operation was successful
+          split:x:/../*/gzip?value
+            =:/
+          sys42.info-feedback:@"{0} '{1}' was successfully zipped"
+            :x:/../*/get-session/[0,1]/*/*/type?value
+            :x:/../*/split/[1,2]/0/-?name
+
+          // Updating toolbar, since we've now selected a ZIP file
+          sys42.update-file-browser-toolbar
+
+
+        /*
          * Raised when "Unzip file" button is clicked
          */
         sys42.gunzip-file
@@ -814,6 +874,7 @@ create-widget:file-browser
         file-browser-delete-button
         file-browser-download-button
         unzip-file-button
+        zip-file-button
       if:x:/../*/get-session/*/*
 
         // There is currently an object active in file browser surface
@@ -1195,7 +1256,7 @@ create-widget:file-browser
       // Retrieving selected file, and opening up editor
       set:x:/+/0?value
         src:x:/../*/_arg?value
-      sys42.execute-lisp-file:system42/admin/file-editors/launch.hl
+      sys42.execute-lisp-file:system42/file-editors/launch.hl
         _file
         _parent:file-browser-file-editor
 

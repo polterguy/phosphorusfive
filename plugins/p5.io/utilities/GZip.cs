@@ -36,8 +36,16 @@ namespace p5.file.utilities
                 // getting root folder
                 var rootFolder = Common.GetRootFolder (context);
 
+                // Getting new filename of file, if needed
+                var destinationFile = e.Args ["to"].GetExValue<string> (context);
+                if (File.Exists (rootFolder + destinationFile)) {
+
+                    // Destination file exist from before, creating a new unique destination filename
+                    destinationFile = Common.CreateNewUniqueFileName (context, destinationFile);
+                }
+
                 // Creating our output stream, which will contain our GZip file
-                using (var output = File.Create (rootFolder + e.Args ["to"].GetExValue<string> (context))) {
+                using (var output = File.Create (rootFolder + destinationFile)) {
 
                     // Creating our GZip stream, wrapping the file stream
                     using (var gzStream = new GZipOutputStream (output)) {
@@ -57,7 +65,7 @@ namespace p5.file.utilities
                     }
 
                     // Returning filepath of ZIP file to caller
-                    e.Args.Value = e.Args ["to"].GetExValue<string> (context);
+                    e.Args.Value = destinationFile;
                 }
             }
         }

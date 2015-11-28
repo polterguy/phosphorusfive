@@ -12,15 +12,11 @@ namespace p5.web.ui.response
 {
     /// <summary>
     ///     Helper class to manipulate the HTTP response headers.
-    /// 
-    ///     Class encapsulating Active Events requires to change or set HTTP headers for the HTTTP response.
     /// </summary>
     public static class Headers
     {
         /// <summary>
         ///     Changes the HTTP headers for the current response.
-        /// 
-        ///     Allows changing, removing or adding the HTTP headers returned by the current HTTP response.
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>

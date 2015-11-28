@@ -55,6 +55,7 @@
     <Compile Include="request\Request.cs" />
     <Compile Include="response\Cookies.cs" />
     <Compile Include="Widgets.cs" />
+    <Compile Include="response\Status.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

@@ -11,7 +11,7 @@ split:x:/../*/_file?value
 
 // Launching the correct editor
 if
-  file-exist:system42/admin/file-editors/{0}-editor.hl
+  file-exist:system42/file-editors/{0}-editor.hl
     :x:/../*/split/0/-?name
 
   // Loading specialized editor
@@ -21,7 +21,7 @@ if
   add:x:/..if/*/sys42.execute-lisp-file
     src:"_file:{0}"
       :x:/../*/_file?value
-  sys42.execute-lisp-file:system42/admin/file-editors/{0}-editor.hl
+  sys42.execute-lisp-file:system42/file-editors/{0}-editor.hl
     :x:/../*/split/0/-?name
 else
 
@@ -35,7 +35,7 @@ else
   add:x:/..else/*/sys42.execute-lisp-file
     src:"_mode:{0}"
       :x:/../*/split/0/-?name
-  sys42.execute-lisp-file:system42/admin/file-editors/code-mirror-editor.hl
+  sys42.execute-lisp-file:system42/file-editors/code-mirror-editor.hl
     _theme:the-matrix-reduced
 
 

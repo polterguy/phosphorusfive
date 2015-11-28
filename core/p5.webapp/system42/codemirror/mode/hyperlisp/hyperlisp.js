@@ -219,7 +219,7 @@ CodeMirror.defineMode("hyperlisp", function() {
           state.indent += 2;
           return this.styles.lesser_keyword;
 
-        // keywords not needing indentation
+        // lesser keywords not needing indentation
         case 'sleep':
         case 'clear-widget':
         case 'delete-widget':
@@ -275,6 +275,8 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'get-request-body':
         case 'delete-events':
         case 'list-events':
+        case 'set-http-status':
+        case 'set-http-status-code':
           return this.styles.lesser_keyword;
 
         // then "widget types"

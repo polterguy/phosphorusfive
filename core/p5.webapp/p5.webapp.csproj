@@ -110,12 +110,35 @@
     <Content Include="system42\codemirror\mode\javascript\javascript.js" />
     <Content Include="system42\codemirror\mode\markdown\markdown.js" />
     <Content Include="system42\codemirror\mode\xml\xml.js" />
-    <Content Include="system42\admin\file-browser\media\file.png" />
-    <Content Include="system42\admin\file-browser\media\files.css" />
-    <Content Include="system42\admin\file-browser\media\folder.png" />
     <Content Include="system42\codemirror\mode\htmlmixed\htmlmixed.js" />
     <Content Include="packages.config" />
     <Content Include="system42\codemirror\theme\the-matrix-reduced.css" />
+    <Content Include="system42\file-browser\media\file.png" />
+    <Content Include="system42\file-browser\media\files.css" />
+    <Content Include="system42\file-browser\media\folder.png" />
+    <Content Include="system42\ckeditor\ckeditor.js" />
+    <Content Include="system42\ckeditor\config.js" />
+    <Content Include="system42\ckeditor\contents.css" />
+    <Content Include="system42\ckeditor\styles.js" />
+    <Content Include="system42\ckeditor\skins\moono\dialog_ie.css" />
+    <Content Include="system42\ckeditor\skins\moono\dialog_ie7.css" />
+    <Content Include="system42\ckeditor\skins\moono\dialog_ie8.css" />
+    <Content Include="system42\ckeditor\skins\moono\dialog_iequirks.css" />
+    <Content Include="system42\ckeditor\skins\moono\dialog.css" />
+    <Content Include="system42\ckeditor\skins\moono\editor_gecko.css" />
+    <Content Include="system42\ckeditor\skins\moono\editor_ie.css" />
+    <Content Include="system42\ckeditor\skins\moono\editor_ie7.css" />
+    <Content Include="system42\ckeditor\skins\moono\editor_ie8.css" />
+    <Content Include="system42\ckeditor\skins\moono\editor_iequirks.css" />
+    <Content Include="system42\ckeditor\skins\moono\editor.css" />
+    <Content Include="system42\ckeditor\skins\moono\icons_hidpi.png" />
+    <Content Include="system42\ckeditor\skins\moono\icons.png" />
+    <Content Include="system42\ckeditor\skins\moono\images\arrow.png" />
+    <Content Include="system42\ckeditor\skins\moono\images\close.png" />
+    <Content Include="system42\ckeditor\skins\moono\images\lock-open.png" />
+    <Content Include="system42\ckeditor\skins\moono\images\lock.png" />
+    <Content Include="system42\ckeditor\skins\moono\images\refresh.png" />
+    <Content Include="system42\ckeditor\skins\moono\images\spinner.gif" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -261,15 +284,17 @@
     <None Include="system42\startup\users\user-events\sys42.verify-access.hl" />
     <None Include="system42\startup\misc-events\sys42.get-content-type.hl" />
     <None Include="system42\misc\content-types.hl" />
-    <None Include="system42\admin\file-editors\launch.hl" />
-    <None Include="system42\admin\file-editors\code-mirror-editor.hl" />
-    <None Include="system42\admin\file-browser\file-browser.hl" />
-    <None Include="system42\admin\file-editors\html-editor.hl" />
     <None Include="system42\codemirror\include-codemirror.hl" />
     <None Include="system42\startup\misc-dialog-events\sys42.info-feedback.hl" />
-    <None Include="system42\admin\file-browser\launch.hl" />
     <None Include="system42\startup\misc-events\sys42.gzip-folder.hl" />
-    <None Include="system42\admin\file-editors\gz-editor.hl" />
+    <None Include="system42\file-browser\file-browser.hl" />
+    <None Include="system42\file-browser\launch.hl" />
+    <None Include="system42\file-editors\code-mirror-editor.hl" />
+    <None Include="system42\file-editors\gz-editor.hl" />
+    <None Include="system42\file-editors\html-editor.hl" />
+    <None Include="system42\file-editors\launch.hl" />
+    <None Include="system42\ckeditor\README.md" />
+    <None Include="system42\ckeditor\skins\moono\readme.md" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="system42\admin\page-editor\editors\" />
@@ -280,6 +305,7 @@
     <Folder Include="system42\startup\users\user-events\" />
     <Folder Include="system42\misc\" />
     <Folder Include="system42\codemirror\theme\" />
-    <Folder Include="system42\admin\file-browser\media\" />
+    <Folder Include="system42\file-browser\" />
+    <Folder Include="system42\file-editors\" />
   </ItemGroup>
 </Project>

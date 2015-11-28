@@ -1,15 +1,34 @@
 
 /*
- * Shows the "not found" page
+ * Responsible for showing the 404 not-found page
  */
 
-create-widget
-  class:span-24
-  widgets
-    literal:header
-      class:span-18 prepend-6 last prepend-top
-      element:h1
-      innerValue:Page not found!
-    literal:content
-      class:span-18 prepent-6 last prepend-top
-      innerValue:"404, 404, magical 404!"
+
+/*
+ * Loading up our template
+ */
+load-file:x:/../*/_template?value
+
+
+/*
+ * Setting the [header] and [content] of our page to "not found" info
+ */
+set:x:/-/*/*/create-widget/*/widgets/**/={header}?value
+  src:"Page not found - 404!"
+set:x:/-2/*/*/create-widget/*/widgets/**/={content}?value
+  src:@"<img src=""/media/images/marvin-headshot.png"" style=""float:left;"" />
+<h5>Sorry, I could not find that page, even though my head is as big as a planet. Feel free to try finding another page by using the menu at the top!</h5>"
+
+
+/*
+ * Evaluating template, now with modified content
+ */
+eval:x:/./*/load-file/*
+
+
+/*
+ * Returning intelligent status code to client
+ */
+set-http-status-code:404
+set-http-status:404 Marvin could not find that page
+
