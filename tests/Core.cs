@@ -436,5 +436,87 @@ namespace p5.unittests
             context.Raise ("foo54", tmp);
             Assert.AreEqual ("successsuccess", tmp.Value, "Active Event in current assembly did not execute as expected");
         }
+
+        private class Foo55
+        {
+            [ActiveEvent (Name = "foo55", Protected = true)]
+            private void Foo54 (ApplicationContext context, ActiveEventArgs e)
+            {
+                e.Args.Value += "success";
+            }
+        }
+
+        [Test]
+        [ExpectedException]
+        public void ApplicationContext33 ()
+        {
+            var context = Loader.Instance.CreateApplicationContext ();
+            context.RegisterListeningObject (new Foo55 ());
+            context.RegisterListeningObject (new Foo55 ());
+        }
+
+        private class Foo56
+        {
+            [ActiveEvent (Name = "foo56", Protected = true)]
+            private static void Foo54 (ApplicationContext context, ActiveEventArgs e)
+            {
+                e.Args.Value += "success";
+            }
+        }
+
+        [Test]
+        public void ApplicationContext34 ()
+        {
+            var context = Loader.Instance.CreateApplicationContext ();
+            var tmp = new Node ();
+            context.Raise ("foo56", tmp);
+            Assert.AreEqual ("success", tmp.Value, "Active Event in current assembly did not execute as expected");
+        }
+
+        private class Foo57
+        {
+            [ActiveEvent (Name = "foo57", Protected = true)]
+            private static void Foo54 (ApplicationContext context, ActiveEventArgs e)
+            {
+                e.Args.Value += "success";
+            }
+
+            [ActiveEvent (Name = "foo57")]
+            private void Foo54_2 (ApplicationContext context, ActiveEventArgs e)
+            {
+                e.Args.Value += "success";
+            }
+        }
+
+        [Test]
+        [ExpectedException]
+        public void ApplicationContext35 ()
+        {
+            var context = Loader.Instance.CreateApplicationContext ();
+            context.RegisterListeningObject (new Foo57 ());
+        }
+
+        private class Foo58
+        {
+            [ActiveEvent (Name = "foo58")]
+            private static void Foo54 (ApplicationContext context, ActiveEventArgs e)
+            {
+                e.Args.Value += "success";
+            }
+
+            [ActiveEvent (Name = "foo58", Protected = true)]
+            private void Foo54_2 (ApplicationContext context, ActiveEventArgs e)
+            {
+                e.Args.Value += "success";
+            }
+        }
+
+        [Test]
+        [ExpectedException]
+        public void ApplicationContext36 ()
+        {
+            var context = Loader.Instance.CreateApplicationContext ();
+            context.RegisterListeningObject (new Foo58 ());
+        }
     }
 }

@@ -457,5 +457,58 @@ insert-before:x:/../0
             Assert.IsNull (result [2].Value);
             Assert.IsNull (result [3].Value);
         }
+
+        /// <summary>
+        ///     Creates a protected event, and verifies it works
+        /// </summary>
+        [Test]
+        public void CreateProtectedMethod ()
+        {
+            var result = ExecuteLambda (@"set-protected-event:events.test17
+  insert-before:x:/../0
+    src:success
+insert-before:x:/../0
+  events.test17");
+            Assert.AreEqual ("success", result [0].Name);
+        }
+
+        /// <summary>
+        ///     Creates a protected event, twice, and verifies an exception is thrown
+        /// </summary>
+        [Test]
+        [ExpectedException]
+        public void CreateProtectedEventTwice ()
+        {
+            ExecuteLambda (@"set-protected-event:events.test18
+  foo-bar
+set-protected-event:events.test18
+  foo-bar");
+        }
+
+        /// <summary>
+        ///     Creates a protected event, then tries to overwrite event, and verifies an exception is thrown
+        /// </summary>
+        [Test]
+        [ExpectedException]
+        public void CreateProtectedEventThenOverwrite ()
+        {
+            ExecuteLambda (@"set-protected-event:events.test19
+  foo-bar
+set-event:events.test19
+  foo-bar");
+        }
+
+        /// <summary>
+        ///     Creates a protected event, then tries to overwrite event, and verifies an exception is thrown
+        /// </summary>
+        [Test]
+        [ExpectedException]
+        public void CreateEventThenOverwriteWithProtectedEvent ()
+        {
+            ExecuteLambda (@"set-event:events.test20
+  foo-bar
+set-protected-event:events.test20
+  foo-bar");
+        }
     }
 }

@@ -102,6 +102,10 @@ namespace p5.core
 
                 // Oops, event entry existed, and it was protected
                 throw new ApplicationException(string.Format("You cannot add to the Active Event '{0}' since it is protected", name));
+            } else if (isProtected) {
+
+                // Oops, event entry did not exist, but caller tried to add a protected method, where one which was not protected existed from before
+                throw new ApplicationException(string.Format("You cannot add a protected method to the Active Event '{0}' since there already exist one which is not protected", name));
             }
 
             // Now that we have for sure created an Active Event entry, we can add the actual MethodInfo/Instance-object
