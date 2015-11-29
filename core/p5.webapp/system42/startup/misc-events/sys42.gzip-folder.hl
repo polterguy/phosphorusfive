@@ -5,7 +5,7 @@
  * of ZIP file after zipping it
  */
 
-set-event:sys42.gzip-folder
+set-protected-event:sys42.gzip-folder
 
   // Retrieving username, such that we can find correct "temp" folder
   sys42.get-user

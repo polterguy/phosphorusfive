@@ -5,7 +5,7 @@
  * successful, then return value will be false, otherwise true
  */
 
-set-event:sys42.login-user
+set-protected-event:sys42.login-user
 
   // Checks to see if username/password combination exists in database
   select-data:x:/*/*/p5.user/*(/username/"={0}"/.&/password/"={1}"/.)

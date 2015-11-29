@@ -13,25 +13,13 @@ namespace p5.core
 {
     /// <summary>
     ///     Loads up assemblies for handling Active Events.
-    /// 
-    ///     Class is a natural singleton, use the Instance static member to access its singleton instance.
-    /// 
-    ///     This class is also responsible for creating your <see cref="phosphorus.core.ApplicationContext" />,
-    ///     but make sure you create your application context AFTER you have initialized all assemblies you want to handle
-    ///     Active Events for you, since once you've created your application context, you can no longer load more assemblies to handle
-    ///     Active Events, without creating a new application context.
-    /// 
-    ///     Every time you load or unload an assembly, you should re-create your application context, at the very least.
-    /// 
-    ///     If you are within a "web context", using the phosphorus.application-pool as your driver, then you will have one
-    ///     ApplicationContext automatically created for you, for each request towards your site.
     /// </summary>
     public class Loader
     {
         /// <summary>
-        ///     gets the instance
+        ///     Returns the singleton instance
         /// </summary>
-        /// <value>the singleton instance</value>
+        /// <value>The singleton instance</value>
         public static readonly Loader Instance = new Loader ();
 
         private readonly List<Assembly> _assemblies = new List<Assembly> ();
@@ -45,10 +33,7 @@ namespace p5.core
         }
 
         /// <summary>
-        ///     Creates a new ApplicationContext for you.
-        /// 
-        ///     Creates an application context. There should normally be one application context for every user or request
-        ///     in your system. The application context is used for registering instance Active Event handlers, and  raising Active Events.
+        ///     Creates a new ApplicationContext for you
         /// </summary>
         /// <returns>The newly created context.</returns>
         public ApplicationContext CreateApplicationContext ()
@@ -58,12 +43,7 @@ namespace p5.core
         }
 
         /// <summary>
-        ///     Loads an assembly for handling Active Events.
-        /// 
-        ///     If you have an assembly which you wish for to handle Active Events, then you must register your assembly
-        ///     through this method, or one of its overloads, before it can handle Active Events.
-        /// 
-        ///     If assembly is not already loaded into your ApplicationDomain, then it will be so after execution of this method.
+        ///     Loads an assembly for handling Active Events
         /// </summary>
         /// <param name="assembly">Assembly to register as Active event handler.</param>
         public void LoadAssembly (Assembly assembly)
@@ -82,12 +62,7 @@ namespace p5.core
         }
 
         /// <summary>
-        ///     Loads and registers the assembly, containing the given type, for handling Active Events.
-        /// 
-        ///     If you have an assembly which you wish for to handle Active Events, then you must register your assembly
-        ///     through this method, or one of its overloads, before it can handle Active Events.
-        /// 
-        ///     If assembly is not already loaded into your ApplicationDomain, then it will be so after execution of this method.
+        ///     Loads and registers the assembly, containing the given type, for handling Active Events
         /// </summary>
         /// <param name="type">type from assembly you wish to load</param>
         public void LoadAssembly (Type type)
@@ -107,14 +82,7 @@ namespace p5.core
         }
 
         /// <summary>
-        ///     Loads an assembly for handling Active Events.
-        /// 
-        ///     If you have an assembly which you wish for to handle Active Events, then you must register your assembly
-        ///     through this method, or one of its overloads, before it can handle Active Events.
-        /// 
-        ///     If assembly is not already loaded into your ApplicationDomain, then it will be so after execution of this method.
-        /// 
-        ///     This overload, uses the current directory to resolve where your Asembly exists.
+        ///     Loads an assembly for handling Active Events
         /// </summary>
         /// <param name="name">The name of the assembly you wish to load.</param>
         public void LoadAssembly (string name)
@@ -124,13 +92,6 @@ namespace p5.core
 
         /// <summary>
         ///     Loads an assembly for handling Active Events
-        /// 
-        ///     If you have an assembly which you wish for to handle Active Events, then you must register your assembly
-        ///     through this method, or one of its overloads, before it can handle Active Events.
-        /// 
-        ///     If assembly is not already loaded into your ApplicationDomain, then it will be so after execution of this method.
-        /// 
-        ///     This overload, uses the given directory to resolve where your Asembly exists.
         /// </summary>
         /// <param name="path">Directory where assembly exists.</param>
         /// <param name="name">Name of your assembly.</param>
@@ -160,10 +121,7 @@ namespace p5.core
         }
 
         /// <summary>
-        ///     Unloads the assembly with the given name.
-        /// 
-        ///     All ApplicationContext objects created after this method is invoked, will no longer have Active Event handlers
-        ///     in the assembly you unload using this method.
+        ///     Unloads the assembly with the given name
         /// </summary>
         /// <param name="name">name of assembly to unload</param>
         public void UnloadAssembly (string name)
@@ -241,10 +199,12 @@ namespace p5.core
 
             // looping through all MethodInfo from type we currently are iterating
             foreach (var idxMethod in methods) {
+
                 // checking to see if current MethodInfo has our Active Event attribute, and if it does, we check if it has
                 // the right signature before we add it to our list of Active Event sinks
                 var atrs = idxMethod.GetCustomAttributes (typeof (ActiveEventAttribute), true) as ActiveEventAttribute[];
                 if (atrs != null && atrs.Length > 0) {
+
                     // checking if Active Event has a valid signature
                     VerifyActiveEventSignature (idxMethod);
 

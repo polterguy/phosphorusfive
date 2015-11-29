@@ -142,10 +142,14 @@ namespace p5.core
     {
         /// <summary>
         ///     The name of your Active Event.
-        /// 
-        ///     This is the name used to raise your Active Event.
         /// </summary>
         /// <value>the name</value>
         public string Name { get; set; }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether this <see cref="p5.core.ActiveEventAttribute"/> is protected.
+        /// </summary>
+        /// <value><c>true</c> if protected; otherwise, <c>false</c>.</value>
+        public bool Protected { get; set; }
     }
 }

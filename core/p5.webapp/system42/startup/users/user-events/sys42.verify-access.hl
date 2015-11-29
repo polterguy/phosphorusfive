@@ -3,7 +3,7 @@
  * Checks to see if the user has access to the given page object
  */
 
-set-event:sys42.verify-access
+set-protected-event:sys42.verify-access
   set:x:/..?value
     src:bool:true
   if:x:/../*/_arg

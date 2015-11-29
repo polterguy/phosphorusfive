@@ -4,7 +4,7 @@
  * a specific widget existing on page.
  */
 
-set-event:sys42.get-widget
+set-protected-event:sys42.get-widget
 
   // Figuring out type of widget
   list-widgets:x:/../*/_arg?value

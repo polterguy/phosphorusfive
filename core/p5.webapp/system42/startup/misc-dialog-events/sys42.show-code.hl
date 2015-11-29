@@ -5,7 +5,7 @@
  * whatever piece of code you'd like to study.
  */
 
-set-event:sys42.show-code
+set-protected-event:sys42.show-code
 
   // Checking if user supplied an expression, and if not, showing error message
   if:x:/../*/_arg

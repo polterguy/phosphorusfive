@@ -29,11 +29,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="nunit.framework">
-      <HintPath>..\..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
-    </Reference>
     <Reference Include="HtmlAgilityPack">
       <HintPath>..\packages\HtmlAgilityPack.1.4.9\lib\Net40-client\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -100,10 +103,6 @@
       <Project>{C02D30A6-7DA2-4045-8644-9710AB40B629}</Project>
       <Name>p5.hyperlisp</Name>
     </ProjectReference>
-    <ProjectReference Include="..\plugins\p5.io\p5.io.csproj">
-      <Project>{89C744BE-B583-4C6D-84B9-941E0C7CEBF4}</Project>
-      <Name>p5.io</Name>
-    </ProjectReference>
     <ProjectReference Include="..\plugins\p5.lambda\p5.lambda.csproj">
       <Project>{8EB5FDEA-D073-4147-AE65-376A01B463DF}</Project>
       <Name>p5.lambda</Name>
@@ -127,6 +126,10 @@
     <ProjectReference Include="..\plugins\p5.data\p5.data.csproj">
       <Project>{CA83A3ED-BD5D-4557-AA1B-A7C04ABD4D4F}</Project>
       <Name>p5.data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\plugins\p5.io\p5.io.csproj">
+      <Project>{89C744BE-B583-4C6D-84B9-941E0C7CEBF4}</Project>
+      <Name>p5.io</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

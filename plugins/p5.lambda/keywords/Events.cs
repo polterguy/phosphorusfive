@@ -8,6 +8,7 @@ using System.Linq;
 using System.Collections.Generic;
 using p5.exp;
 using p5.core;
+using p5.exp.exceptions;
 
 namespace p5.lambda.events
 {
@@ -34,10 +35,11 @@ namespace p5.lambda.events
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "set-event")]
+        [ActiveEvent (Name = "set-protected-event")]
         private static void set_event (ApplicationContext context, ActiveEventArgs e)
         {
             // creating event
-            CreateEvent (XUtil.Single<string> (e.Args, context), e.Args.Clone ());
+            CreateEvent (XUtil.Single<string> (e.Args, context), e.Args.Clone (), e.Name == "set-protected-event", context);
         }
 
         /// <summary>
@@ -52,7 +54,7 @@ namespace p5.lambda.events
             foreach (var idxName in XUtil.Iterate<string> (e.Args, context)) {
 
                 // deleting event
-                DeleteEvent (idxName);
+                DeleteEvent (idxName, context, e.Args);
             }
         }
 
@@ -113,16 +115,48 @@ namespace p5.lambda.events
             }
         }
 
+        /// <summary>
+        ///     Lists all dynamically created protected Active Events.
+        /// </summary>
+        /// <param name="context">Application context.</param>
+        /// <param name="e">Parameters passed into Active Event.</param>
+        [ActiveEvent (Name = "list-protected-events", Protected = true)]
+        private static void list_protected_events (ApplicationContext context, ActiveEventArgs e)
+        {
+            // making sure we clean up and remove all arguments passed in after execution
+            using (new Utilities.ArgsRemover (e.Args, true)) {
+
+                // Looping through all dynamically create Active Events, returning all those that are protected
+                foreach (var idxKey in _events.Keys) {
+
+                    // Checking if event is protected
+                    if (_events[idxKey].Get<bool> (context)) {
+                        e.Args.Add (new Node ("dynamic", idxKey));
+                    }
+                }
+
+                // Looping through all statically created Active Event, returning all those that are protected
+                foreach (var idxKey in context.ActiveEvents) {
+                    
+                }
+            }
+        }
+
         /*
          * Creates a new Active Event
          */
-        internal static void CreateEvent (string name, Node lambda)
+        internal static void CreateEvent (string name, Node lambda, bool isProtected, ApplicationContext context)
         {
             // acquiring lock since we're consuming object shared amongst more than one thread (_events)
             lock (Lock) {
 
+                // Checking if this is a protected event and there is an existing event with same name, 
+                // or there is an existing event, and existing event is protected, and if so, throwing
+                if (isProtected && _events.ContainsKey (name) || (_events.ContainsKey (name) && _events[name].Get<bool> (context)))
+                    throw new LambdaException (string.Format ("Sorry, '{0}' is a protected event, and cannot be modified", name), lambda, context);
+
                 // making sure we have a key for Active Event name
-                _events [name] = new Node ();
+                _events [name] = new Node (string.Empty, isProtected);
 
                 // adding event to dictionary
                 _events [name].AddRange (lambda.Children);
@@ -132,14 +166,19 @@ namespace p5.lambda.events
         /*
          * removes the given dynamically created Active Event(s)
          */
-        internal static void DeleteEvent (string name)
+        internal static void DeleteEvent (string name, ApplicationContext context, Node args)
         {
             // acquiring lock since we're consuming object shared amongst more than one thread (_events)
             lock (Lock) {
 
                 // removing event, if it exists
-                if (_events.ContainsKey (name))
+                if (_events.ContainsKey (name)) {
+
+                    // Checking if event is protected
+                    if (_events [name].Get<bool> (context))
+                        throw new LambdaException (string.Format ("You cannot delete '{0}' since it is marked as protected", name), args, context);
                     _events.Remove (name);
+                }
             }
         }
 
@@ -150,7 +189,7 @@ namespace p5.lambda.events
             IEnumerable<string> source, 
             Node node, 
             List<string> filter,
-            string name)
+            string eventTypeName)
         {
             // looping through each Active Event from IEnumerable
             foreach (var idx in source) {
@@ -163,12 +202,12 @@ namespace p5.lambda.events
                 if (filter.Count == 0) {
 
                     // no filter(s) given, slurping up everything
-                    node.Add (new Node (name, idx));
+                    node.Add (new Node (eventTypeName, idx));
                 } else {
 
                     // we have filter(s), checking to see if Active Event name matches at least one of our filters
                     if (filter.Any (ix => idx.IndexOf (ix) != -1)) {
-                        node.Add (new Node (name, idx));
+                        node.Add (new Node (eventTypeName, idx));
                     }
                 }
             }

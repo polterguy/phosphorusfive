@@ -3,7 +3,7 @@
  * Responsible for loading up the user interface. Called by the framework when the UI is needed.
  * Notice that the URL of the page is the value of the [p5.page] object in the database 
  */
-set-event:p5.web.load-ui
+set-protected-event:p5.web.load-ui
 
   // Including all stylesheets and JavaScript files for page
   p5.web.include-stylesheets
@@ -42,7 +42,7 @@ set-event:p5.web.load-ui
 /*
  * Responsible for making sure all CSS files are included
  */
-set-event:p5.web.include-stylesheets
+set-protected-event:p5.web.include-stylesheets
 
   // Including bootstrap
   include-stylesheet-file
@@ -53,7 +53,7 @@ set-event:p5.web.include-stylesheets
 /*
  * Responsible for making sure all JavaSccript files are included
  */
-set-event:p5.web.include-javascript
+set-protected-event:p5.web.include-javascript
 
   // Including jQuery, then bootstrap
   include-javascript-file

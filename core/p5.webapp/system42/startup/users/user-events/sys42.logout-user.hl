@@ -4,7 +4,7 @@
  * before reloading the current page.
  */
 
-set-event:sys42.logout-user
+set-protected-event:sys42.logout-user
 
   // destroying persistent cookie, and reloading location
   set-cookie:system42-user

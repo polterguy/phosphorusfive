@@ -13,7 +13,7 @@ sys42.execute-lisp-file:system42/codemirror/include-codemirror.hl
   _editor
     execute_input
       mode:hyperlisp
-      theme:bespin
+      theme:the-matrix-reduced
       autofocus:true
       fullscreen:true
       keys

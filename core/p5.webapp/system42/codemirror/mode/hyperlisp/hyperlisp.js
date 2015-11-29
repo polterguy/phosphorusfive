@@ -171,6 +171,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'while':
         case 'for-each':
         case 'set-event':
+        case 'set-protected-event':
         case 'insert-before':
         case 'insert-after':
         case 'lock':

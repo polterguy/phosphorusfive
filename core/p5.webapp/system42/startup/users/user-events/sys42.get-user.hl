@@ -4,7 +4,7 @@
  * in cookies
  */
 
-set-event:sys42.get-user
+set-protected-event:sys42.get-user
 
   // read "system42-user" cookie, if existing
   get-cookie:system42-user

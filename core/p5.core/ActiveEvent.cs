@@ -1,0 +1,149 @@
+/*
+ * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, phosphorusfive@gmail.com
+ * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
+ */
+
+using System;
+using System.Linq;
+using System.Reflection;
+using System.Collections.Generic;
+
+namespace p5.core
+{
+    /// <summary>
+    ///     Active Events wrapper class
+    /// </summary>
+    internal class ActiveEvents
+    {
+        /// <summary>
+        ///     One single Active Event
+        /// </summary>
+        internal class ActiveEvent
+        {
+            /// <summary>
+            ///     One single Active Event handler (method)
+            /// </summary>
+            internal class MethodSink
+            {
+                public MethodSink(MethodInfo method, object instance)
+                {
+                    Method = method;
+                    Instance = instance;
+                }
+
+                public MethodInfo Method {
+                    get;
+                    private set;
+                }
+
+                public object Instance {
+                    get;
+                    private set;
+                }
+            }
+
+            public ActiveEvent(string name, bool isProtected)
+            {
+                Name = name;
+                Protected = isProtected;
+                Methods = new List<MethodSink> ();
+            }
+
+            public string Name {
+                get;
+                private set;
+            }
+
+            public bool Protected {
+                get;
+                private set;
+            }
+
+            public List<MethodSink> Methods {
+                get;
+                private set;
+            }
+        }
+
+        private Dictionary<string, ActiveEvent> _events = new Dictionary<string, ActiveEvent> ();
+
+        public void AddMethod (string name, MethodInfo method, object instance, bool isProtected)
+        {
+            // Verifying we have an entry for event name
+            if (!_events.ContainsKey(name)) {
+
+                // Creating event name entry
+                _events[name] = new ActiveEvent(name, isProtected);
+            } else if (_events[name].Protected) {
+
+                // Oops, event entry existed, and it was protected
+                throw new ApplicationException(string.Format("You cannot add to the Active Event '{0}' since it is protected", name));
+            }
+
+            // Now that we have for sure created an Active Event entry, we can add the actual MethodInfo/Instance-object
+            _events[name].Methods.Add(new ActiveEvent.MethodSink (method, instance));
+        }
+
+        public void RemoveMethod (string name, object instance)
+        {
+            if (_events.ContainsKey(name)) {
+
+                // This Active Event exists, removing the Method Info associated with the given instance
+                _events[name].Methods.RemoveAll(ix => ix.Instance == instance);
+
+                // Checking if this was the only remaining MethodInfo/instance-object for given Active Event,
+                // and if so, removing the Active Event entirely
+                if (_events[name].Methods.Count == 0)
+                    _events.Remove(name);
+            }
+        }
+
+        public Node Raise (string name, Node args, ApplicationContext context)
+        {
+            // Used as buffer to store whether or not Active Event was protected or not
+            // This is done since we DO NOT invoke "null handlers" for protected events!
+            bool wasProtected = false;
+
+            ActiveEventArgs e = new ActiveEventArgs(name, args ?? new Node());
+
+            // Checking if we have any Active Event handlers for given name
+            if (_events.ContainsKey (name)) {
+
+                // looping through all Active Events handlers for the given Active Event name, and invoking them
+                foreach (var idxMethod in _events [name].Methods) {
+                    idxMethod.Method.Invoke (idxMethod.Instance, new object[] { context, e });
+                }
+
+                // Storing whether or not event was protected
+                wasProtected = _events[name].Protected;
+            }
+
+            // Then looping through all "null Active Event handlers" afterwards
+            // ORDER COUNTS. Since most native Active Events are dependent upon arguments
+            // being specifically ordered somehow, we must wait until after we have raised
+            // all "native Active Events", before we raise all "null Active Event handlers".
+            // this is because "null event handlers" might possibly append nodes to the current
+            // Active Event's "root node", and hence mess up the parameter passing of native Active
+            // Events, that also have "null event handlers", where these null event handlers,
+            // are handling events, existing also as "native Active Event handlers"
+            // Please also notice that we do NOT raise "null handlers" for "protected" Active Events
+            if (!wasProtected && _events.ContainsKey (string.Empty)) {
+
+                // Active Event was not protected, and we have a "null event handler"
+                foreach (var idxMethod in _events [string.Empty].Methods) {
+                    idxMethod.Method.Invoke (idxMethod.Instance, new object[] {context, e});
+                }
+            }
+
+            // Returning args to caller
+            return e.Args;
+        }
+
+        public IEnumerable<ActiveEvent> GetEvents ()
+        {
+            foreach (var idx in _events.Values) {
+                yield return idx;
+            }
+        }
+    }
+}
