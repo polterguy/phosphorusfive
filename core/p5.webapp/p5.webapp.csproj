@@ -58,7 +58,6 @@
     <Content Include="media\css\main.css" />
     <Content Include="media\jquery\jquery-2.1.4.min.js" />
     <Content Include="media\images\phosphorusfive-logo.png" />
-    <Content Include="private\web.config" />
     <Content Include="system42\codemirror\theme\3024-day.css" />
     <Content Include="system42\codemirror\theme\3024-night.css" />
     <Content Include="system42\codemirror\theme\abcdef.css" />
@@ -300,7 +299,6 @@
     <Folder Include="system42\admin\page-editor\editors\" />
     <Folder Include="system42\admin\page-editor\templates\" />
     <Folder Include="media\jquery\" />
-    <Folder Include="public\" />
     <Folder Include="system42\startup\misc-dialog-events\" />
     <Folder Include="system42\startup\users\user-events\" />
     <Folder Include="system42\misc\" />

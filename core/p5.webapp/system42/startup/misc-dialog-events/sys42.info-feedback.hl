@@ -21,6 +21,13 @@ set-event:sys42.info-feedback
   set:x:/../*/create-widget/**/literal/=info-feedback-msg/*/innerValue?value
     src:x:/../*/_arg?value
 
+  /*
+   * Checking if this is an "error" type of feedback
+   */
+  if:x:/../*/_error?value.bool
+    =:bool:true
+    add:x:/../*/create-widget/*/widgets/*/literal
+      src:node:@"style:""color:#c00;"""
 
   /*
    * Creating actual window popdown
