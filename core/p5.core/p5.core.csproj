@@ -48,7 +48,7 @@
     <Compile Include="Node.cs" />
     <Compile Include="ActiveEventArgs.cs" />
     <Compile Include="Utilities.cs" />
-    <Compile Include="ActiveEvent.cs" />
+    <Compile Include="ActiveEvents.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

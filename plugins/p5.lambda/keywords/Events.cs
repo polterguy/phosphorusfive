@@ -30,7 +30,7 @@ namespace p5.lambda.events
         }
 
         /// <summary>
-        ///     Creates one Active Event
+        ///     Creates (or deletes) an Active Event
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
@@ -38,8 +38,16 @@ namespace p5.lambda.events
         [ActiveEvent (Name = "set-protected-event")]
         private static void set_event (ApplicationContext context, ActiveEventArgs e)
         {
-            // creating event
-            CreateEvent (XUtil.Single<string> (e.Args, context), e.Args.Clone (), e.Name == "set-protected-event", context);
+            // Creating event
+            if (e.Args.Count == 0) {
+
+                // Deleting event, if existing, since it doesn't have any lambda objects associated with it
+                DeleteEvent (XUtil.Single<string> (e.Args, context), context, e.Args);
+            } else {
+
+                // Creating new event
+                CreateEvent (XUtil.Single<string> (e.Args, context), e.Args.Clone (), e.Name == "set-protected-event", context);
+            }
         }
 
         /// <summary>
@@ -50,10 +58,10 @@ namespace p5.lambda.events
         [ActiveEvent (Name = "delete-events")]
         private static void delete_events (ApplicationContext context, ActiveEventArgs e)
         {
-            // iterating through all events to delete
+            // Iterating through all events to delete
             foreach (var idxName in XUtil.Iterate<string> (e.Args, context)) {
 
-                // deleting event
+                // Deleting event
                 DeleteEvent (idxName, context, e.Args);
             }
         }

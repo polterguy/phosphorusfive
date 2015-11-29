@@ -176,12 +176,14 @@ namespace p5.data.helpers
                 context.Raise ("delete-file", new Node (string.Empty, fileNode.Value));
 
                 // checking to see if we should remove folder entirely
+                string folder = fileNode.Get<string> (context).Substring (0, fileNode.Get<string> (context).LastIndexOf ("/"));
                 var folderNode = new Node (
                     string.Empty,
-                    fileNode.Get<string> (context)
-                        .Substring (0, fileNode.Get<string> (context).LastIndexOf ("/", StringComparison.Ordinal)));
+                    folder);
                 context.Raise ("list-files", folderNode);
                 if (folderNode.Count == 0) {
+
+                    folderNode.Value = folder;
                     context.Raise ("delete-folder", folderNode);
                 }
             } else {

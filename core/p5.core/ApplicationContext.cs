@@ -19,11 +19,9 @@ namespace p5.core
     public class ApplicationContext
     {
         private readonly ActiveEvents _registeredActiveEvents = new ActiveEvents();
-        private readonly Dictionary<Type, List<Tuple<ActiveEventAttribute, MethodInfo>>> _typesInstanceActiveEvents;
+        private readonly Loader.ActiveEventTypes _typesInstanceActiveEvents;
 
-        internal ApplicationContext (
-            Dictionary<Type, List<Tuple<ActiveEventAttribute, MethodInfo>>> instanceEvents,
-            Dictionary<Type, List<Tuple<ActiveEventAttribute, MethodInfo>>> staticEvents)
+        internal ApplicationContext (Loader.ActiveEventTypes instanceEvents, Loader.ActiveEventTypes staticEvents)
         {
             _typesInstanceActiveEvents = instanceEvents;
             InitializeApplicationContext (staticEvents);
@@ -49,26 +47,26 @@ namespace p5.core
 
             // Recursively iterating the Type of the object given, until we reach an object where we know there won't exist
             // any Active Events
-            var type = instance.GetType ();
-            while (!type.FullName.StartsWith ("System.")) {
+            var idxType = instance.GetType ();
+            while (!idxType.FullName.StartsWith ("System.")) {
 
                 // Checking to see if this type is registered in our list of types that has Active Events
-                if (_typesInstanceActiveEvents.ContainsKey (type)) {
+                if (_typesInstanceActiveEvents.Types.ContainsKey (idxType)) {
 
                     // Retrieving the list of ActiveEvent/MethodInfo  for the currently iterated Type
-                    foreach (var idxTupleAvMethodInfo in _typesInstanceActiveEvents [type]) {
+                    foreach (var idxActiveEvent in _typesInstanceActiveEvents.Types [idxType].Events) {
 
                         // Adding Active Event
-                        _registeredActiveEvents.AddMethod (
-                            idxTupleAvMethodInfo.Item1.Name, 
-                            idxTupleAvMethodInfo.Item2, 
-                            instance, 
-                            idxTupleAvMethodInfo.Item1.Protected);
+                        _registeredActiveEvents.AddMethod(
+                            idxActiveEvent.Attribute.Name,
+                            idxActiveEvent.Method,
+                            instance,
+                            idxActiveEvent.Attribute.Protected);
                     }
                 }
 
                 // Continue iteration over Types until we reach a type we know does not have Active Events
-                type = type.BaseType;
+                idxType = idxType.BaseType;
             }
         }
 
@@ -86,14 +84,7 @@ namespace p5.core
             while (!type.FullName.StartsWith ("System.")) {
 
                 // Checking to see if our list of instance Active Events contains the currently iterated Type
-                if (_typesInstanceActiveEvents.ContainsKey (type)) {
-
-                    // retrieving the list of ActiveEvent/MethodInfo for the currently iterated type
-                    foreach (var idxTupleAvMethodInfo in _typesInstanceActiveEvents [type]) {
-
-                        _registeredActiveEvents.RemoveMethod(idxTupleAvMethodInfo.Item1.Name, instance);
-                    }
-                }
+                _registeredActiveEvents.RemoveMethod (instance);
 
                 // finding base type, to continue iteration over its Type until we find a Type we're sure of does not 
                 // contain Active Event declarations
@@ -114,16 +105,20 @@ namespace p5.core
         /*
          * initializes app context
          */
-        private void InitializeApplicationContext (Dictionary<Type, List<Tuple<ActiveEventAttribute, MethodInfo>>> staticEvents)
+        private void InitializeApplicationContext (Loader.ActiveEventTypes staticEvents)
         {
             // Looping through each Type in static Active Events given
-            foreach (var idxType in staticEvents.Keys) {
+            foreach (var idxType in staticEvents.Types.Keys) {
 
                 // Looping through each ActiveEvent/MethodInfo tuple in Type
-                foreach (var idxTupleAvMethodInfo in staticEvents [idxType]) {
+                foreach (var idxAVTypeEvent in staticEvents.Types [idxType].Events) {
 
                     // Registering Active Event
-                    _registeredActiveEvents.AddMethod(idxTupleAvMethodInfo.Item1.Name, idxTupleAvMethodInfo.Item2, null, idxTupleAvMethodInfo.Item1.Protected);
+                    _registeredActiveEvents.AddMethod (
+                        idxAVTypeEvent.Attribute.Name, 
+                        idxAVTypeEvent.Method, 
+                        null, 
+                        idxAVTypeEvent.Attribute.Protected);
                 }
             }
 

@@ -17,20 +17,134 @@ namespace p5.core
     public class Loader
     {
         /// <summary>
+        ///     Wrapper for all type in AppDomain that contains Active Event handlers
+        /// </summary>
+        internal class ActiveEventTypes
+        {
+            /// <summary>
+            ///     Wrapper for a single type in AppDomain that contains Active Event handlers
+            /// </summary>
+            internal class ActiveEventType
+            {
+                /// <summary>
+                ///     One single Active Event
+                /// 
+                ///     Notice, there might exist several Active Events for a single method
+                /// </summary>
+                internal class ActiveEvent
+                {
+                    /// <summary>
+                    ///     Initializes a new instance of the
+                    /// <see cref="p5.core.Loader+ActiveEventTypes+ActiveEventType+ActiveEvent"/> class.
+                    /// </summary>
+                    /// <param name="atr">Atr.</param>
+                    /// <param name="method">Method.</param>
+                    public ActiveEvent(ActiveEventAttribute atr, MethodInfo method)
+                    {
+                        Attribute = atr;
+                        Method = method;
+                    }
+
+                    /// <summary>
+                    ///     Gets the ActiveEventAttribute for given Active Event
+                    /// </summary>
+                    /// <value>The attribute.</value>
+                    public ActiveEventAttribute Attribute {
+                        get;
+                        private set;
+                    }
+
+                    /// <summary>
+                    ///     Returns the Method for Active Event
+                    /// </summary>
+                    /// <value>The method.</value>
+                    public MethodInfo Method {
+                        get;
+                        private set;
+                    }
+                }
+
+                /// <summary>
+                ///     Initializes a new instance of the <see cref="p5.core.Loader+ActiveEventTypes+ActiveEventType"/> class.
+                /// </summary>
+                public ActiveEventType()
+                {
+                    Events = new List<ActiveEvent> ();
+                }
+
+                /// <summary>
+                ///     Gets the list of Active Events for given Type
+                /// </summary>
+                /// <value>The events.</value>
+                public List<ActiveEvent> Events {
+                    get;
+                    private set;
+                }
+
+                /// <summary>
+                ///     Adds an Active Event for given type
+                /// </summary>
+                /// <param name="atr">Atr.</param>
+                /// <param name="method">Method.</param>
+                public void AddActiveEvent (ActiveEventAttribute atr, MethodInfo method)
+                {
+                    Events.Add(new ActiveEvent(atr, method));
+                }
+            }
+
+            /// <summary>
+            ///     Initializes a new instance of the <see cref="p5.core.Loader+ActiveEventTypes"/> class.
+            /// </summary>
+            public ActiveEventTypes()
+            {
+                Types = new Dictionary<Type, ActiveEventType>();
+            }
+
+            /// <summary>
+            ///     Returns all Types in AppDomain that has Active Event handlers
+            /// </summary>
+            /// <value>The types.</value>
+            public Dictionary<Type, ActiveEventType> Types {
+                get;
+                private set;
+            }
+
+            /// <summary>
+            ///     Adds an Active Event for given type
+            /// </summary>
+            /// <param name="type">Type with Active Event handlers</param>
+            /// <param name="atr">Attribute describing Active Event handler</param>
+            /// <param name="method">Method that implements handler</param>
+            public void AddActiveEvent (Type type, ActiveEventAttribute atr, MethodInfo method)
+            {
+                // Making sure there exists an entry for type
+                if (!Types.ContainsKey(type))
+                    Types[type] = new ActiveEventType();
+
+                // Adding Active Event and its associated method
+                Types[type].AddActiveEvent(atr, method);
+            }
+
+            /// <summary>
+            ///     Removes a type entirely from being able to handle Active Events
+            /// </summary>
+            /// <param name="type">Type.</param>
+            public void RemoveType (Type type)
+            {
+                if (Types.ContainsKey(type))
+                    Types.Remove(type);
+            }
+        }
+
+        /// <summary>
         ///     Returns the singleton instance
         /// </summary>
         /// <value>The singleton instance</value>
         public static readonly Loader Instance = new Loader ();
 
         private readonly List<Assembly> _assemblies = new List<Assembly> ();
-        private readonly Dictionary<Type, List<Tuple<ActiveEventAttribute, MethodInfo>>> _instanceActiveEvents;
-        private readonly Dictionary<Type, List<Tuple<ActiveEventAttribute, MethodInfo>>> _staticActiveEvents;
-
-        private Loader ()
-        {
-            _instanceActiveEvents = new Dictionary<Type, List<Tuple<ActiveEventAttribute, MethodInfo>>> ();
-            _staticActiveEvents = new Dictionary<Type, List<Tuple<ActiveEventAttribute, MethodInfo>>> ();
-        }
+        private readonly ActiveEventTypes _instanceActiveEvents = new ActiveEventTypes();
+        private readonly ActiveEventTypes _staticActiveEvents = new ActiveEventTypes();
 
         /// <summary>
         ///     Creates a new ApplicationContext for you
@@ -48,13 +162,17 @@ namespace p5.core
         /// <param name="assembly">Assembly to register as Active event handler.</param>
         public void LoadAssembly (Assembly assembly)
         {
-            // checking to see if assembly is already loaded up, to avoid initializing the same assembly twice
+            // Checking to see if assembly is already loaded up, to avoid initializing the same assembly twice
             if (_assemblies.Exists (idx => idx == assembly))
                 return;
 
-            // finding the assembly in our current AppDomain, for then to initialize it
+            // Looking for assembly in our current AppDomain, for then to initialize it
             foreach (var idxAsm in AppDomain.CurrentDomain.GetAssemblies ()) {
+
+                // Checking if this is the requested assembly
                 if (idxAsm == assembly) {
+
+                    // This is our assembly
                     InitializeAssembly (idxAsm);
                     _assemblies.Add (idxAsm);
                 }
@@ -64,27 +182,16 @@ namespace p5.core
         /// <summary>
         ///     Loads and registers the assembly, containing the given type, for handling Active Events
         /// </summary>
-        /// <param name="type">type from assembly you wish to load</param>
+        /// <param name="type">Type declared in assembly you wish to load</param>
         public void LoadAssembly (Type type)
         {
-            // checking to see if assembly is already loaded up, to avoid initializing the same assembly twice
-            var assembly = type.Assembly;
-            if (_assemblies.Exists (idx => idx == assembly))
-                return;
-
-            // finding the assembly in our current AppDomain, for then to initialize it
-            foreach (var idxAsm in AppDomain.CurrentDomain.GetAssemblies ()) {
-                if (idxAsm == assembly) {
-                    InitializeAssembly (idxAsm);
-                    _assemblies.Add (idxAsm);
-                }
-            }
+            LoadAssembly (type.Assembly);
         }
 
         /// <summary>
-        ///     Loads an assembly for handling Active Events
+        ///     Loads a named assembly for handling Active Events
         /// </summary>
-        /// <param name="name">The name of the assembly you wish to load.</param>
+        /// <param name="name">The name of the assembly you wish to load</param>
         public void LoadAssembly (string name)
         {
             LoadAssembly (string.Empty, name);
@@ -93,28 +200,33 @@ namespace p5.core
         /// <summary>
         ///     Loads an assembly for handling Active Events
         /// </summary>
-        /// <param name="path">Directory where assembly exists.</param>
-        /// <param name="name">Name of your assembly.</param>
+        /// <param name="path">Folder where assembly exists</param>
+        /// <param name="name">Name of your assembly</param>
         public void LoadAssembly (string path, string name)
         {
-            // "normalizing" name of assembly
-            if (!name.ToLower ().EndsWith (".dll"))
+            // "Normalizing" name of assembly
+            name = name.ToLower();
+            if (!name.EndsWith (".dll"))
                 name += ".dll";
 
-            // checking to see if assembly is already loaded
-            if (_assemblies.Exists (idx => String.Equals (idx.ManifestModule.Name, name, StringComparison.Ordinal)))
+            // Checking to see if assembly is already loaded
+            if (_assemblies.Exists (idx => idx.ManifestModule.Name.ToLower () == name))
                 return;
 
-            // checking our current AppDomain to see if assembly is already a part of our AppDomain
+            // Checking our current AppDomain to see if assembly is already a part of our AppDomain
             foreach (var idxAsm in AppDomain.CurrentDomain.GetAssemblies ()) {
-                if (idxAsm.ManifestModule.Name.ToLower () == name.ToLower ()) {
+
+                // Checking name of currently iterated assembly, to see if it's the assembly we wish to load
+                if (idxAsm.ManifestModule.Name.ToLower () == name) {
+
+                    // Initializing assembly for handling Active Events that is already loaded in AppDomain
                     InitializeAssembly (idxAsm);
                     _assemblies.Add (idxAsm);
                     return;
                 }
             }
 
-            // we must dynamically load assembly and initialize it
+            // We must dynamically load assembly and initialize it, since it is not registered in our current AppDomain
             var assembly = Assembly.LoadFile (Path.Combine (AppDomain.CurrentDomain.BaseDirectory, path + name));
             InitializeAssembly (assembly);
             _assemblies.Add (assembly);
@@ -123,20 +235,20 @@ namespace p5.core
         /// <summary>
         ///     Unloads the assembly with the given name
         /// </summary>
-        /// <param name="name">name of assembly to unload</param>
+        /// <param name="name">Name of assembly to unload</param>
         public void UnloadAssembly (string name)
         {
-            // "normalizing" assembly name
-            if (!name.ToLower ().EndsWith (".dll"))
+            // "Normalizing" assembly name
+            name = name.ToLower();
+            if (!name.EndsWith (".dll"))
                 name += ".dll";
 
-            // finding the assembly in our list of initialized assemblies
+            // Finding the assembly in our list of initialized assemblies
             var assembly = _assemblies.Find (idx => idx.ManifestModule.Name.ToLower () == name);
-
             if (assembly != null) {
-                // removing assembly, and making sure all Active Events are "unregistered"
+
+                // Removing assembly, and making sure all Active Events are "unregistered"
                 // please notice that assembly is still in AppDomain, but will no longer handle Active Events
-                /// \todo figure out how to "unload" assembly from AppDomain
                 _assemblies.Remove (assembly);
                 RemoveAssembly (assembly);
             }
@@ -148,12 +260,14 @@ namespace p5.core
          */
         private void RemoveAssembly (Assembly assembly)
         {
-            // looping through all types from assembly, to see if they're handling Active Events
+            // Looping through all types from assembly, to see if they're handling Active Events
             foreach (var idxType in assembly.GetTypes ()) {
-                if (_instanceActiveEvents.ContainsKey (idxType))
-                    _instanceActiveEvents.Remove (idxType);
-                if (_staticActiveEvents.ContainsKey (idxType))
-                    _staticActiveEvents.Remove (idxType);
+
+                // Removing type from instance Active Event list
+                _instanceActiveEvents.RemoveType (idxType);
+
+                // Removing type from static Active Event list
+                _staticActiveEvents.RemoveType (idxType);
             }
         }
 
@@ -164,9 +278,10 @@ namespace p5.core
          */
         private void InitializeAssembly (Assembly assembly)
         {
-            // looping through all types in assembly
+            // Looping through all types in assembly
             foreach (var idxType in assembly.GetTypes ()) {
-                // adding instance Active Events
+
+                // Adding instance Active Events
                 var instanceMethods = idxType.GetMethods (
                     BindingFlags.FlattenHierarchy |
                     BindingFlags.Instance |
@@ -174,7 +289,7 @@ namespace p5.core
                     BindingFlags.Public);
                 AddActiveEventsForType (idxType, instanceMethods, _instanceActiveEvents);
 
-                // adding static Active Events
+                // Adding static Active Events
                 var staticMethods = idxType.GetMethods (
                     BindingFlags.FlattenHierarchy |
                     BindingFlags.Static |
@@ -191,31 +306,27 @@ namespace p5.core
         private void AddActiveEventsForType (
             Type type,
             MethodInfo[] methods,
-            Dictionary<Type, List<Tuple<ActiveEventAttribute, MethodInfo>>> dictionary)
+            ActiveEventTypes activeEventTypes)
         {
-            // creating a list of Active Events for our type, which we check later if it contains any items, and if it does, we
-            // associate it with our type
-            var activeEvents = new List<Tuple<ActiveEventAttribute, MethodInfo>> ();
-
-            // looping through all MethodInfo from type we currently are iterating
+            // Looping through all MethodInfo from type we currently are iterating
             foreach (var idxMethod in methods) {
 
-                // checking to see if current MethodInfo has our Active Event attribute, and if it does, we check if it has
-                // the right signature before we add it to our list of Active Event sinks
+                // Checking to see if current MethodInfo has our Active Event attribute, and if it does, we check if it has
+                // the right signature, before we add it to our list of Active Event sinks
                 var atrs = idxMethod.GetCustomAttributes (typeof (ActiveEventAttribute), true) as ActiveEventAttribute[];
                 if (atrs != null && atrs.Length > 0) {
 
-                    // checking if Active Event has a valid signature
+                    // Checking if Active Event has a valid signature
                     VerifyActiveEventSignature (idxMethod);
 
-                    // adding all Active Event attributes such that they become associate with our MethodInfo, to our list of Active Events
-                    activeEvents.AddRange (atrs.Select (idxAtr => new Tuple<ActiveEventAttribute, MethodInfo> (idxAtr, idxMethod)));
+                    // Looping through each Active Event attribute for method
+                    foreach (var idxAtr in atrs) {
+
+                        // Adding currently iterated Active Event attribute
+                        activeEventTypes.AddActiveEvent (type, idxAtr, idxMethod);
+                    }
                 }
             }
-
-            // making sure we only add type as Active Event sinks, if it actually has Active Events declared through ActiveEventAttribute
-            if (activeEvents.Count > 0)
-                dictionary [type] = activeEvents;
         }
 
         /*
@@ -224,9 +335,14 @@ namespace p5.core
         private static void VerifyActiveEventSignature (MethodInfo method)
         {
             var pars = method.GetParameters ();
+
+            // An Active Event must take two arguments, the first argument must be of type "ApplicationContext", and the
+            // second argument must be of type "ActiveEventArgs"
             if (pars.Length != 2 ||
                 pars [0].ParameterType != typeof (ApplicationContext) ||
                 pars [1].ParameterType != typeof (ActiveEventArgs))
+
+                // Oops, signature didn't match
                 throw new ArgumentException (
                     string.Format ("method '{0}.{1}' is not a valid active event, parameters of method is wrong. all Active Events must take an ApplicationContext and an ActiveEventArgs object",
                         method.DeclaringType.FullName,
