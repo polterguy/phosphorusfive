@@ -290,7 +290,7 @@
     <None Include="system42\root\page-editor\templates\create-new-html-page.hl" />
     <None Include="system42\root\page-editor\templates\create-new-lambda-page.hl" />
     <None Include="system42\root\page-editor\editor-toolbar.hl" />
-    <None Include="system42\startup\users\user-events\sys42.empty-user-temp-folder.hl" />
+    <None Include="system42\startup\users\user-events\sys42.empty-user-tmp-folder.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />

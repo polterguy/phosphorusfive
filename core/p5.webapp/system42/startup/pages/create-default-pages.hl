@@ -46,11 +46,11 @@ together what your developers create.</p>
 sys42.execute-lisp-file:system42/root/page-editor/page-editor.hl
 "
 
-    p5.page:/root/executor
+    p5.page:/executor
       type:lambda
       name:Evaluator
       template:system42/templates/main.hl
-      role:root
+      role:user
       lambda:@"
 
 /*

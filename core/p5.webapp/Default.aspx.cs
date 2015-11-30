@@ -857,6 +857,9 @@ namespace p5.webapp
         {
             // By destroying this session value, default user will be used in future
             Session.Remove ("_ApplicationContext.ContextTicket");
+            HttpCookie cookie = Request.Cookies.Get("_p5_user");
+            cookie.Expires = DateTime.Now.AddDays(-1);
+            Response.Cookies.Add(cookie);
         }
 
         /// <summary>
@@ -870,6 +873,31 @@ namespace p5.webapp
             e.Args.Add("username", Ticket.Username);
             e.Args.Add("role", Ticket.Role);
             e.Args.Add("default", Ticket.IsDefault);
+        }
+
+        /// <summary>
+        ///     Returns all roles in system
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "roles", Protected = true)]
+        private void roles (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Getting password file in Node format
+            Node pwdFile = GetPasswordFile(context);
+            foreach (var idxUserNode in pwdFile["users"].Children) {
+                if (e.Args.Children.FirstOrDefault(ix => ix.Name == idxUserNode["role"].Get<string>(context)) == null) {
+                    e.Args.Add(idxUserNode["role"].Get<string>(context));
+                }
+            }
+
+            // Making sure default role is added
+            var configuration = ConfigurationManager.GetSection ("activeEventAssemblies") as ActiveEventAssemblies;
+            if (!string.IsNullOrEmpty(configuration.DefaultContextRole)) {
+                if (e.Args.Children.FirstOrDefault(ix => ix.Name == configuration.DefaultContextRole) == null) {
+                    e.Args.Add(configuration.DefaultContextRole);
+                }
+            }
         }
 
         /// <summary>
@@ -1155,7 +1183,7 @@ namespace p5.webapp
 
                     // MATCH, discarding previous ticket and Context to create a new
                     Ticket = new ApplicationContext.ContextTicket(
-                        userNode ["username"].Get<string>(_context), 
+                        userNode.Name, 
                         userNode ["role"].Get<string>(_context), 
                         false);
                     _context = Loader.Instance.CreateApplicationContext(Ticket);

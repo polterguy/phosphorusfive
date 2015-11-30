@@ -5,7 +5,7 @@
  * successful, then return value will be false, otherwise true
  */
 
-set-protected-event:sys42.empty-user-temp-folder
+set-protected-event:sys42.empty-user-tmp-folder
 
   // Retrieving user
   user

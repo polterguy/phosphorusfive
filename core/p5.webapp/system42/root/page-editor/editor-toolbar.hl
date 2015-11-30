@@ -48,8 +48,8 @@ for-each:x:/-/*?name
 /*
  * Setting roles
  */
-select-data:x:/*/*/p5.role
-for-each:x:/-/*
+roles
+for-each:x:/-/*?name
   _lit
     literal
       parent:page-role
@@ -57,11 +57,11 @@ for-each:x:/-/*
       value
       innerValue
   set:x:/..for-each/*/_lit/*/*/value?value
-    src:x:/..for-each/*/__dp/#/*/name?value
+    src:x:/..for-each/*/__dp?value
   set:x:/..for-each/*/_lit/*/*/innerValue?value
-    src:x:/..for-each/*/__dp/#/*/name?value
+    src:x:/..for-each/*/__dp?value
   if:x:/../*/select-data/[0,1]/*/*/role?value
-    equals:x:/..for-each/*/__dp/#/*/name?value
+    equals:x:/..for-each/*/__dp?value
     add:x:/..for-each/*/_lit/*
       src:selected
   add:x:/../*/create-widget/**/container/=page-role/*/widgets

@@ -193,6 +193,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'sleep':
         case 'user':
         case 'logout':
+        case 'roles':
           return this.styles.keyword;
 
         // Then "lesser" keywords that needs indentation
