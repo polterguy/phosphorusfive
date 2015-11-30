@@ -51,6 +51,19 @@ body {
 
 
 /*
+ * Helper to give some space before element starts
+ */
+.prepend-left {
+    margin-left:30px;
+}
+
+
+.prepend-left-2 {
+    margin-left:60px;
+}
+
+
+/*
  * Info feedback popdown dialog animations, and CSS class
  */
 @keyframes animate-info-feedback {
@@ -108,6 +121,21 @@ body {
     background:inherit;
     animation-name: animate-blink;
     animation-duration: .3s;
+}
+
+@keyframes animate-flash-from-right {
+    0% {
+        margin-left:-4000px;
+    }
+    100% {
+        margin-left:0;
+    }
+}
+
+.flash-from-right {
+    animation-name:animate-flash-from-right;
+    animation-duration:.5s;
+    position:relative;
 }
 
 

@@ -79,6 +79,15 @@ namespace p5.core
         }
 
         /// <summary>
+        ///     Gets the Context user ticket
+        /// </summary>
+        /// <value>The ticket</value>
+        public ContextTicket Ticket
+        {
+            get { return _ticket; }
+        }
+
+        /// <summary>
         ///     Returns all Active Events registered within the current ApplicationContext object.
         /// </summary>
         /// <value>The active events.</value>

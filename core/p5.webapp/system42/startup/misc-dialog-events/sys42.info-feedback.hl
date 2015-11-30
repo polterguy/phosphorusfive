@@ -27,7 +27,7 @@ set-protected-event:sys42.info-feedback
   if:x:/../*/_error?value.bool
     =:bool:true
     add:x:/../*/create-widget/*/widgets/*/literal
-      src:node:@"style:""color:#c00;"""
+      src:node:@"style:""color:#e55;"""
 
   /*
    * Creating actual window popdown

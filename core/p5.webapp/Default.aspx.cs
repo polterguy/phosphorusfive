@@ -36,6 +36,9 @@ namespace p5.webapp
         // Application Context for page life cycle
         private ApplicationContext _context;
 
+        // Used for locking access to password file
+        private object _passwordFileLocker = new object();
+
         /*
          * Used as storage for Widget Ajax Events
          */
@@ -804,7 +807,12 @@ namespace p5.webapp
                 bool persist = e.Args.GetExChildValue ("persist", context, false);
 
                 // Getting password file in Node format
-                Node pwdFile = GetPasswordFile(context);
+                Node pwdFile = null;
+
+                // Locking access to password file
+                lock (_passwordFileLocker) {
+                    pwdFile = GetPasswordFile(context);
+                }
 
                 // Checking for match for specified username
                 Node userNode = pwdFile["users"][username];
@@ -830,7 +838,8 @@ namespace p5.webapp
                 _context.UpdateTicket (Ticket);
 
                 // Checking if we should create persistent cookie on disc to remember username for given client
-                if (persist) {
+                // Notice, we do NOT allow root account to persist to cookie
+                if (role != "root" && persist) {
 
                     // Caller wants to create persistent cookie to remember username/password
                     HttpCookie cookie = new HttpCookie("_p5_user");
@@ -883,8 +892,14 @@ namespace p5.webapp
         [ActiveEvent (Name = "roles", Protected = true)]
         private void roles (ApplicationContext context, ActiveEventArgs e)
         {
-            // Getting password file in Node format
-            Node pwdFile = GetPasswordFile(context);
+            // Getting password file in Node format, such that we can traverse file for all roles
+            Node pwdFile = null;
+
+            // Locking access to password file
+            lock (_passwordFileLocker) {
+                pwdFile = GetPasswordFile(context);
+            }
+
             foreach (var idxUserNode in pwdFile["users"].Children) {
                 if (e.Args.Children.FirstOrDefault(ix => ix.Name == idxUserNode["role"].Get<string>(context)) == null) {
                     e.Args.Add(idxUserNode["role"].Get<string>(context));
@@ -1057,6 +1072,51 @@ namespace p5.webapp
         #region [ -- "Private" helper Active Events -- ]
 
         /*
+         * Invoked during installation. Sets root password, but only if existing password is null!
+         */
+        [ActiveEvent (Name = "p5.web.set-root-password")]
+        private void p5_web_set_root_password (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Retrieving password given
+            string password = e.Args.GetExChildValue<string>("password", context);
+            if (string.IsNullOrEmpty(password))
+                throw new ArgumentException("You cannot set the root password to empty");
+
+            // Retrieving password file, and making sure existing root password is null!
+            Node rootPwdNode = null;
+
+            // Locking access to password file
+            lock (_passwordFileLocker) {
+                rootPwdNode = GetPasswordFile(context)["users"]["root"];
+            }
+
+            if (rootPwdNode["password"].Value != null)
+                throw new System.Security.SecurityException("Somebody tried to use installation Active event [p5.web.set-root-password] to change password of root account");
+
+            // Logging in root user now, before changing password
+            Ticket = new ApplicationContext.ContextTicket("root", "root", false);
+            _context.UpdateTicket(Ticket);
+            ChangePassword(context, password);
+        }
+
+        /*
+         * Invoked during installation. Returns true if root password is null (server needs setup)
+         */
+        [ActiveEvent (Name = "p5.web.root-password-is-null", Protected = true)]
+        private void p5_web_root_password_is_null (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Retrieving password file, and making sure existing root password is null!
+            Node rootPwdNode = null;
+
+            // Locking access to password file
+            lock (_passwordFileLocker) {
+                rootPwdNode = GetPasswordFile(context)["users"]["root"];
+            }
+
+            e.Args.Value = rootPwdNode["password"].Value == null;
+        }
+
+        /*
          * Invoked by p5.web during creation of Widgets
          */
         [ActiveEvent (Name = "_p5.web.add-widget-ajax-event")]
@@ -1097,6 +1157,29 @@ namespace p5.webapp
         #region [ -- Private helper methods -- ]
 
         /*
+         * Changes password of the currently logged in Context user account
+         */
+        private void ChangePassword (ApplicationContext context, string newPwd)
+        {
+            var configuration = ConfigurationManager.GetSection ("activeEventAssemblies") as ActiveEventAssemblies;
+            string rootFolder = context.Raise("p5.core.application-folder").Get<string>(context);
+
+            // Locking access to password file
+            lock (_passwordFileLocker) {
+
+                Node pwdFile = GetPasswordFile(context);
+                pwdFile["users"][context.Ticket.Username]["password"].Value = newPwd;
+                string pwdFilePath = configuration.PasswordFile.Replace("~/", rootFolder);
+
+                using (TextWriter writer = File.CreateText(pwdFilePath)) {
+                    Node lambdaNode = new Node();
+                    lambdaNode.AddRange(pwdFile.Children);
+                    writer.Write(context.Raise ("lambda2lisp", lambdaNode).Get<string> (context));
+                }
+            }
+        }
+
+        /*
          * Helper to retrieve "_passwords" file
          */
         private static Node GetPasswordFile (ApplicationContext context)
@@ -1108,7 +1191,7 @@ namespace p5.webapp
 
             // Checking file exist
             if (!File.Exists(pwdFilePath))
-                CreateDefaultPasswordFile (context, pwdFilePath, configuration.DefaultRootPassword);
+                CreateDefaultPasswordFile (context, pwdFilePath);
 
             // Reading up passwords file
             using (TextReader reader = new StreamReader(File.OpenRead(pwdFilePath))) {
@@ -1123,7 +1206,7 @@ namespace p5.webapp
         /*
          * Creates a default "_passwords" file, and a default "root" user
          */
-        private static void CreateDefaultPasswordFile (ApplicationContext context, string pwdFile, string defaultRootPwd)
+        private static void CreateDefaultPasswordFile (ApplicationContext context, string pwdFile)
         {
             // Checking if ".passwords" file exist, and if not, creating a default
             using (TextWriter writer = File.CreateText(pwdFile)) {
@@ -1137,7 +1220,7 @@ namespace p5.webapp
                 writer.WriteLine(@"users");
                 writer.WriteLine(@"  root");
                 writer.WriteLine(@"    salt:" + salt);
-                writer.WriteLine(@"    password:" + defaultRootPwd);
+                writer.WriteLine(@"    password");
                 writer.WriteLine(@"    role:root");
             }
         }
@@ -1168,7 +1251,12 @@ namespace p5.webapp
 
                     string cookieUsername = cookieSplits[0];
                     string cookieHashSaltedPwd = cookieSplits[1];
-                    Node pwdFile = GetPasswordFile(_context);
+                    Node pwdFile = null;
+
+                    // Locking access to password file
+                    lock (_passwordFileLocker) {
+                        pwdFile = GetPasswordFile(_context);
+                    }
 
                     Node userNode = pwdFile["users"][cookieUsername];
                     if (userNode == null)

@@ -47,16 +47,6 @@ namespace p5.webapp.code
         }
 
         /// <summary>
-        ///     Gets the default root password
-        /// </summary>
-        /// <value>The plugin directory.</value>
-        [ConfigurationProperty ("defaultRootPassword", IsRequired = true)]
-        public string DefaultRootPassword
-        {
-            get { return this ["defaultRootPassword"] as string; }
-        }
-
-        /// <summary>
         ///     Gets the default role used to raise Active Events as
         /// </summary>
         /// <value>The plugin directory.</value>

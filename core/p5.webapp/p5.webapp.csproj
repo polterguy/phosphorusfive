@@ -138,6 +138,8 @@
     <Content Include="system42\ckeditor\skins\moono\images\lock.png" />
     <Content Include="system42\ckeditor\skins\moono\images\refresh.png" />
     <Content Include="system42\ckeditor\skins\moono\images\spinner.gif" />
+    <Content Include="media\images\marvin-headshot.png" />
+    <Content Include="media\images\phosphorusfive-small-logo.png" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -291,6 +293,8 @@
     <None Include="system42\root\page-editor\templates\create-new-lambda-page.hl" />
     <None Include="system42\root\page-editor\editor-toolbar.hl" />
     <None Include="system42\startup\users\user-events\sys42.empty-user-tmp-folder.hl" />
+    <None Include="system42\root\server-startup\launch-server.hl" />
+    <None Include="system42\root\server-startup\set-root-password.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />
@@ -302,5 +306,6 @@
     <Folder Include="system42\file-editors\" />
     <Folder Include="system42\root\page-editor\editors\" />
     <Folder Include="system42\root\page-editor\templates\" />
+    <Folder Include="system42\root\server-startup\" />
   </ItemGroup>
 </Project>

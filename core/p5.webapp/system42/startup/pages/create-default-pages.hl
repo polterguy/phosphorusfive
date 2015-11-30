@@ -14,24 +14,14 @@ if:x:/-?value
   insert-data
 
     p5.page:/
-      type:html
-      name:Home
+      type:lambda
+      name:Welcome to System42
       template:system42/templates/main.hl
-      content:@"<p>System42 is an example minimalistic content management system, 
-built on top of <a href=""http://github.com/polterguy/phosphorus-five"">Phosphorus Five</a>. Its purpose is to be an example
-CMS, while at the same time giving you some useful tools to get started with Phosphorus Five.</p>
-
-<p>Through p5.lambda and Hyperlisp, you can orchestrate your web application together, using a high-level abstraction language, that doesn't
-require much, if any, pre-existing programming skills from you. This creates opportunities for non-developers to create complex web applications, 
-while at the same time retaining the possibility to dive into <em>real</em> programming for system developers.</p>
-
-<p>This way your developers can focus on what they should focus on, allowing non-technical staff to orchestrate
-together what your developers create.</p>
-
-<h3>Username/password</h3>
-
-<p>When you start system42 for the first time, then a default user with the username/password combination of
-<em>root/root</em> is created for you. Login in the navigational menu at the top.</p>"
+      lambda:@"
+/*
+ * Executes the ""server startup"" file
+ */
+sys42.execute-lisp-file:system42/root/server-startup/launch-server.hl"
 
     p5.page:/root/editor
       type:lambda
@@ -46,11 +36,11 @@ together what your developers create.</p>
 sys42.execute-lisp-file:system42/root/page-editor/page-editor.hl
 "
 
-    p5.page:/executor
+    p5.page:/root/executor
       type:lambda
       name:Evaluator
       template:system42/templates/main.hl
-      role:user
+      role:root
       lambda:@"
 
 /*
@@ -59,11 +49,11 @@ sys42.execute-lisp-file:system42/root/page-editor/page-editor.hl
 sys42.execute-lisp-file:system42/root/executor.hl
 "
 
-    p5.page:/user/files
+    p5.page:/root/files
       type:lambda
       name:Files
       template:system42/templates/main.hl
-      role:user
+      role:root
       lambda:@"
 
 /*

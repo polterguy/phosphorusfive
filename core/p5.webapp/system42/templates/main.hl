@@ -63,7 +63,8 @@ if:x:/../*/user/*/default?value
 
   // User is logged in, changing "Login" to "Logout"
   set:x:/../*/create-widget/**/literal/=login-logout-btn/*/innerValue?value
-    src:Logout
+    src:Logout {0}
+      :x:/../*/user/*/username?value
   set:x:/../*/create-widget/**/literal/=login-logout-btn/*/onclick?value
   add:x:/../*/create-widget/**/literal/=login-logout-btn/*/onclick
     src
