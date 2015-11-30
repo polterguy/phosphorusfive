@@ -7,9 +7,9 @@ set-protected-event:sys42.verify-access
   set:x:/..?value
     src:bool:true
   if:x:/../*/_arg
-    sys42.get-user
+    user
     if:x:/-/*/role?value
-      not-equals:admin
+      not-equals:root
       and:x:/./-/*/role?value
         not-equals:x:/../*/_arg?value
       set:x:/..?value

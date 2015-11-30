@@ -189,3 +189,5 @@ core/p5.webapp/database
 
 #ignoring doxygen output folder
 dox/doxygen-output
+
+core/p5.webapp/_passwords

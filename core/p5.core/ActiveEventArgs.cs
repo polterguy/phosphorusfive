@@ -8,36 +8,32 @@ using System;
 namespace p5.core
 {
     /// <summary>
-    ///     Active Event arguments.
-    /// 
-    ///     This is the type of EventArgs passed into all of your Active Events. To retrieve parameters passed into, or return values
-    ///     from your Active Events, use the Args property.
+    ///     Active Event arguments
     /// </summary>
     public class ActiveEventArgs : EventArgs
     {
         /*
          * initializes a new instance of this class
          */
-        internal ActiveEventArgs (string name, Node args)
+        internal ActiveEventArgs (string name, Node args, ApplicationContext.ContextTicket ticket)
         {
             Args = args;
             Name = name;
+            Ticket = ticket;
         }
 
         /// <summary>
-        ///     Arguments passed in and returned from Active Events.
-        /// 
-        ///     Use this property to return values, or access parameters passed into your Active events.
+        ///     Arguments passed in and returned from Active Events
         /// </summary>
         /// <value>the arguments</value>
         public Node Args { get; private set; }
 
         /// <summary>
-        ///     Name of the Active Event raised.
-        /// 
-        ///     This is the name of the Active Event that was being raised.
+        ///     Name of the Active Event raised
         /// </summary>
         /// <value>the name</value>
         public string Name { get; private set; }
+
+        public ApplicationContext.ContextTicket Ticket { get; private set; }
     }
 }

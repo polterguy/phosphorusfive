@@ -35,7 +35,7 @@ namespace p5.core
                 {
                     /// <summary>
                     ///     Initializes a new instance of the
-                    /// <see cref="p5.core.Loader+ActiveEventTypes+ActiveEventType+ActiveEvent"/> class.
+                    /// <see cref="p5.core.Loader+ActiveEventTypes+ActiveEventType+ActiveEvent"/> class
                     /// </summary>
                     /// <param name="atr">Atr.</param>
                     /// <param name="method">Method.</param>
@@ -149,10 +149,10 @@ namespace p5.core
         /// <summary>
         ///     Creates a new ApplicationContext for you
         /// </summary>
-        /// <returns>The newly created context.</returns>
-        public ApplicationContext CreateApplicationContext ()
+        /// <returns>The newly created context</returns>
+        public ApplicationContext CreateApplicationContext (ApplicationContext.ContextTicket ticket = null)
         {
-            var context = new ApplicationContext (_instanceActiveEvents, _staticActiveEvents);
+            var context = new ApplicationContext (_instanceActiveEvents, _staticActiveEvents, ticket);
             return context;
         }
 

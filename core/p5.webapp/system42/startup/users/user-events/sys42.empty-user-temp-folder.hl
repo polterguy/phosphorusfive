@@ -1,0 +1,24 @@
+
+/*
+ * Logs in the user, creating a persistent cookie on disc for the current session if successful.
+ * Pass in [_username] and [_password] as the credentials you wish to check. If login is not
+ * successful, then return value will be false, otherwise true
+ */
+
+set-protected-event:sys42.empty-user-temp-folder
+
+  // Retrieving user
+  user
+  if:x:/-/*/default?value
+    not
+
+    // User is not default user, deleting all files in user's tmp folder
+    list-files:users/{0}/tmp
+      :x:/../*/user/*/username?value
+    delete-file:x:/-/*?name
+
+    // Then deleting all folders in user tmp folder
+    list-folders:users/{0}/tmp
+      :x:/../*/user/*/username?value
+    delete-folder:x:/-/*?name
+

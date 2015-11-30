@@ -31,32 +31,32 @@ together what your developers create.</p>
 <h3>Username/password</h3>
 
 <p>When you start system42 for the first time, then a default user with the username/password combination of
-<em>admin/admin</em> is created for you. Login in the navigational menu at the top.</p>"
+<em>root/root</em> is created for you. Login in the navigational menu at the top.</p>"
 
-    p5.page:/admin/editor
+    p5.page:/root/editor
       type:lambda
       name:Page editor
       template:system42/templates/main.hl
-      role:admin
+      role:root
       lambda:@"
 
 /*
  * simply executes the file that loads up the 'page editor'
  */
-sys42.execute-lisp-file:system42/admin/page-editor/page-editor.hl
+sys42.execute-lisp-file:system42/root/page-editor/page-editor.hl
 "
 
-    p5.page:/admin/executor
+    p5.page:/root/executor
       type:lambda
       name:Evaluator
       template:system42/templates/main.hl
-      role:admin
+      role:root
       lambda:@"
 
 /*
  * simply executes the file that loads up the 'executor'
  */
-sys42.execute-lisp-file:system42/admin/executor.hl
+sys42.execute-lisp-file:system42/root/executor.hl
 "
 
     p5.page:/user/files

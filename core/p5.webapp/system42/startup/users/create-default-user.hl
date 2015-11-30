@@ -1,7 +1,7 @@
 
 /*
  * Creates the default user for system42, 
- * with a username/password combination of admin/admin
+ * with a username/password combination of root/root
  */
 
 // checking to see if there exists any [p5.role] 
@@ -11,12 +11,12 @@ if:x:/-?value
   equals:int:0
 
   // There were no [p5.role] objects in database, 
-  // creating our default "admin" role, and our default 
+  // creating our default "root" role, and our default 
   // "user" role
   insert-data
 
-    p5.role:p5-admin-role
-      name:admin
+    p5.role:p5-root-role
+      name:root
     p5.role:p5-user-role
       name:user
 
@@ -28,13 +28,13 @@ if:x:/-?value
   equals:int:0
 
   // There were no [p5.user] objects in database, 
-  // creating our default admin user
+  // creating our default root user
   insert-data
 
-    p5.user:p5-admin-user
-      username:admin
-      password:admin
-      role:admin
+    p5.user:p5-root-user
+      username:root
+      password:root
+      role:root
 
     p5.user:p5-guest-user
       username:user

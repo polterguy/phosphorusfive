@@ -38,8 +38,8 @@ namespace p5.lambda.events
         [ActiveEvent (Name = "set-protected-event")]
         private static void set_event (ApplicationContext context, ActiveEventArgs e)
         {
-            // Creating event
-            if (e.Args.Count == 0) {
+            // Checking to see if this event has no lambda objects, and is not protected, at which case it is a "delete event" invocation
+            if (e.Args.Count == 0 && e.Name == "set-event") {
 
                 // Deleting event, if existing, since it doesn't have any lambda objects associated with it
                 DeleteEvent (XUtil.Single<string> (e.Args, context), context, e.Args);
@@ -63,6 +63,20 @@ namespace p5.lambda.events
 
                 // Deleting event
                 DeleteEvent (idxName, context, e.Args);
+            }
+        }
+
+        /// <summary>
+        ///     Returns all protected dynamically created Active Events
+        /// </summary>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "_p5.lambda.get-protected-events")]
+        private static void _p5_lambda_get_protected_events (ApplicationContext context, ActiveEventArgs e)
+        {
+            foreach (var idxEvt in _events.Keys) {
+                if (_events [idxEvt].Get<bool> (context))
+                    e.Args.Add (idxEvt);
             }
         }
 

@@ -1,6 +1,6 @@
 
 /*
- * Returns default [html] type of page
+ * Default [lambda] type of page
  */
 
 
@@ -14,6 +14,16 @@ else
       :x:/../*/list-files/0?name
 insert-before:x:/../0
   src
-    role:admin
-    content:@"<p>Foo, and then a dash of bar too, I guess ...?</p>"
+    role:root
+    lambda:@"/*
+ * Default [lambda] type of page
+ * Edit this page to meet your own needs
+ */
+create-widget:foo
+  parent:content
+  class:col-xs-12
+  widgets
+    literal:bar
+      innerValue:Howdy Lambda World!"
+
 

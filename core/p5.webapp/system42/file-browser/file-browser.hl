@@ -960,7 +960,7 @@ create-widget:file-browser
           sys42.change-current-folder:x:/../*/get-session/[1,2]/*?value
 
           // Figuring out where user came from
-          // PS, this looks REALLY weird if you inspect it with an admin user, but works fo reasons which makes
+          // PS, this looks REALLY weird if you inspect it with a root user, but works for easons which makes
           // me freaking LOOOOVE p5.lambda expressions ... ;) (Hint; splitting upon an empty string)
           split:x:/../*/get-session/[0,1]/*?value
             =:x:/../*/get-session/[1,2]/*?value

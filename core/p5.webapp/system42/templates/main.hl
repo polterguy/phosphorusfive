@@ -3,10 +3,11 @@
  * Template for showing any type of page
  */
 
+
 /*
- * Checking to see if user is logged in. Needed for parts of logic below
+ * Retrieving current Context user
  */
-sys42.get-user
+user
 
 
 /*
@@ -57,7 +58,8 @@ add:x:/../*/create-widget/*/widgets/**/container/=menu/*/widgets
 /*
  * Modifying navbar Login button to Logout, if user is logged in
  */
-if:x:/../*/sys42.get-user/*
+if:x:/../*/user/*/default?value
+  not
 
   // User is logged in, changing "Login" to "Logout"
   set:x:/../*/create-widget/**/literal/=login-logout-btn/*/innerValue?value
@@ -65,7 +67,9 @@ if:x:/../*/sys42.get-user/*
   set:x:/../*/create-widget/**/literal/=login-logout-btn/*/onclick?value
   add:x:/../*/create-widget/**/literal/=login-logout-btn/*/onclick
     src
-      sys42.logout-user
+      sys42.empty-user-temp-folder
+      logout
+      send-javascript:"window.location.replace(window.location.pathname);"
 else
   include-javascript:@"
 $('#login-logout-btn').on('click', function(){
@@ -173,14 +177,15 @@ create-widget:template-root
                       value
                     get-widget-property:password
                       value
-                    set:x:/+2/0/*/_username?value
+                    set:x:/+2/0/*/username?value
                       src:x:/././*/get-widget-property/[0,1]/+/<?value
-                    set:x:/+1/0/*/_password?value
+                    set:x:/+1/0/*/password?value
                       src:x:/././*/get-widget-property/[1,2]/+/<?value
                     if
-                      sys42.login-user
-                        _username
-                        _password
+                      login
+                        username
+                        password
+                        persist:bool:true
 
                       // Reloading page to make sure everything is wired up together correctly
                       send-javascript:"window.location.replace(window.location.pathname);"

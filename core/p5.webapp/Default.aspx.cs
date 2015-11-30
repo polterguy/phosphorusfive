@@ -4,6 +4,7 @@
  */
 
 using System;
+using System.IO;
 using System.Web;
 using System.Linq;
 using System.Web.UI;
@@ -41,9 +42,9 @@ namespace p5.webapp
         private WidgetEventStorage WidgetAjaxEventStorage
         {
             get {
-                if (ViewState["WidgetAjaxEventStorage"] == null)
-                    ViewState["WidgetAjaxEventStorage"] = new WidgetEventStorage ();
-                return ViewState["WidgetAjaxEventStorage"] as WidgetEventStorage;
+                if (ViewState["_WidgetAjaxEventStorage"] == null)
+                    ViewState["_WidgetAjaxEventStorage"] = new WidgetEventStorage ();
+                return ViewState["_WidgetAjaxEventStorage"] as WidgetEventStorage;
             }
         }
 
@@ -53,13 +54,36 @@ namespace p5.webapp
         private WidgetEventStorage WidgetLambdaEventStorage
         {
             get {
-                if (ViewState["WidgetLambdaEventStorage"] == null)
-                    ViewState["WidgetLambdaEventStorage"] = new WidgetEventStorage ();
-                return ViewState["WidgetLambdaEventStorage"] as WidgetEventStorage;
+                if (ViewState["_WidgetLambdaEventStorage"] == null)
+                    ViewState["_WidgetLambdaEventStorage"] = new WidgetEventStorage ();
+                return ViewState["_WidgetLambdaEventStorage"] as WidgetEventStorage;
             }
         }
 
-        #region [ -- Page overrides and initializers -- ]
+        /*
+         * Used for user Context Ticket (currently logged in Context user)
+         */
+        private ApplicationContext.ContextTicket Ticket
+        {
+            get {
+                if (Session["_ApplicationContext.ContextTicket"] == null) {
+
+                    // No user is logged in, using default impersonated user
+                    var configuration = ConfigurationManager.GetSection("activeEventAssemblies") as ActiveEventAssemblies;
+                    Session["_ApplicationContext.ContextTicket"] = 
+                        new ApplicationContext.ContextTicket (
+                            configuration.DefaultContextUsername, 
+                            configuration.DefaultContextRole, 
+                            true);
+                }
+                return Session["_ApplicationContext.ContextTicket"] as ApplicationContext.ContextTicket;
+            }
+            set { 
+                Session["_ApplicationContext.ContextTicket"] = value;
+            }
+        }
+
+        #region [ -- Page overrides and initializers, plus login of user -- ]
 
         /*
          * Overridden to create context, and do other types of initialization, such as mapping up our Page_Load event,
@@ -67,19 +91,27 @@ namespace p5.webapp
          */
         protected override void OnInit (EventArgs e)
         {
-            // retrieving viewstate entries per session
-            // please notice that if you change the setting of this key to "0", then the ViewState is no
-            // longer stored on the server, which is a major security concern, since it allows for p5.lambda
-            // code to be "ViewState hacked"
+            // Retrieving viewstate entries per session
             ViewStateSessionEntries = int.Parse (ConfigurationManager.AppSettings ["viewstate-per-session-entries"]);
 
-            // creating our application context for current request
-            _context = Loader.Instance.CreateApplicationContext ();
+            // Checking to see if we should attempt to login from persistent cookie
+            if (Session["_ApplicationContext.ContextTicket"] == null) {
 
-            // registering "this" web page as listener object, since page contains many Active Event handlers itself
+                // Creating our application context for current request first, since we need it when trying to login from cookie
+                _context = Loader.Instance.CreateApplicationContext (Ticket);
+
+                // Try logging in from cookie, notice if this is successful, we will have ANOTHER ApplicationContext replace our previous one
+                TryLoginFromPersistentCookie();
+            } else {
+
+                // Creating our application context for current request
+                _context = Loader.Instance.CreateApplicationContext (Ticket);
+            }
+
+            // Registering "this" web page as listener object, since page contains many Active Event handlers itself
             _context.RegisterListeningObject (this);
 
-            // rewriting path to what was actually requested, such that HTML form element doesn't become garbage ...
+            // Rewriting path to what was actually requested, such that HTML form element doesn't become garbage ...
             // this ensures that our HTML form element stays correct. basically "undoing" what was done in Global.asax.cs
             // in addition, when retrieving request URL later, we get the "correct" request URL, and not the URL to "Default.aspx"
             HttpContext.Current.RewritePath ((string) HttpContext.Current.Items ["__p5_original_url"]);
@@ -617,6 +649,10 @@ namespace p5.webapp
                 // looping through events requested by caller
                 foreach (var idxEventNameNode in e.Args.Children) {
 
+                    // Verifying Active Event is not protected
+                    if (EventIsProtected (context, idxEventNameNode.Name))
+                        throw new ApplicationException(string.Format ("You cannot override Active Event '{0}' since it is protected", e.Args.Name));
+
                     // Setting Widget's Ajax event to whatever we were given
                     WidgetLambdaEventStorage[idxEventNameNode.Name, widget.ID] = idxEventNameNode.Clone();
                 }
@@ -695,6 +731,10 @@ namespace p5.webapp
         private void set_viewstate (ApplicationContext context, ActiveEventArgs e)
         {
             p5Web.CollectionBase.Set (e.Args, context, delegate (string key, object value) {
+
+                if (key.StartsWith ("_"))
+                    throw new ApplicationException (string.Format ("You cannot modify '{0}' viewstate value, since it is protected", key));
+
                 if (value == null) {
 
                     // removing object, if it exists
@@ -716,6 +756,8 @@ namespace p5.webapp
         private void get_viewstate (ApplicationContext context, ActiveEventArgs e)
         {
             p5Web.CollectionBase.Get (e.Args, context, key => ViewState [key]);
+            e.Args.RemoveAll(
+                ix => ix.Name.StartsWith ("_"));
         }
 
         /// <summary>
@@ -727,11 +769,108 @@ namespace p5.webapp
         private void list_viewstate (ApplicationContext context, ActiveEventArgs e)
         {
             p5Web.CollectionBase.List (e.Args, context, () => (from object idx in ViewState.Keys select idx.ToString ()).ToList ());
+            e.Args.RemoveAll(
+                ix => ix.Name.StartsWith ("_"));
         }
 
         #endregion
 
         #region [ -- Misc. global helpers -- ]
+
+        /// <summary>
+        ///     Logs in a user to be associated with the ApplicationContext
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "login", Protected = true)]
+        private void login (ApplicationContext context, ActiveEventArgs e)
+        {
+            try {
+                
+                if (Application["_Last-Forms-Login-Attempt-" + Request.UserHostAddress] != null) {
+
+                    // User has previous unsuccessful login attempts to the system, verifying we're not being "hammered" by brute force attack
+                    DateTime lastAttempt = (DateTime)Application["_Last-Forms-Login-Attempt-" + Request.UserHostAddress];
+                    if ((DateTime.Now - lastAttempt).TotalSeconds < 30)
+                        throw new System.Security.SecurityException("You are trying to login too frequently, wait at least 30 seconds before you try again");
+                }
+
+                // Defaulting result of Active Event to unsuccessful
+                e.Args.Value = false;
+
+                // Retrieving supplied credentials
+                string username = e.Args.GetExChildValue<string> ("username", context);
+                string password = e.Args.GetExChildValue<string> ("password", context);
+                bool persist = e.Args.GetExChildValue ("persist", context, false);
+
+                // Getting password file in Node format
+                Node pwdFile = GetPasswordFile(context);
+
+                // Checking for match for specified username
+                Node userNode = pwdFile["users"][username];
+                if (userNode == null)
+                    throw new System.Security.SecurityException("Credentials not accepted");
+
+                // Checking for match on password
+                if (userNode["password"].Get<string> (context) != password)
+                    throw new System.Security.SecurityException("Credentials not accepted");
+
+                // Success, figuring out if user must change passwords, and creating our ticket
+                string role = userNode["role"].Get<string>(context);
+                Ticket = new ApplicationContext.ContextTicket(
+                    username, 
+                    role, 
+                    false);
+                e.Args.Value = true;
+
+                // Removing last login attempt
+                Application.Remove ("_Last-Forms-Login-Attempt-" + Request.UserHostAddress);
+
+                // Associating newly created Ticket with Application Context, since user now possibly have extended rights
+                _context.UpdateTicket (Ticket);
+
+                // Checking if we should create persistent cookie on disc to remember username for given client
+                if (persist) {
+
+                    // Caller wants to create persistent cookie to remember username/password
+                    HttpCookie cookie = new HttpCookie("_p5_user");
+                    cookie.Expires = DateTime.Now.AddDays(30);
+                    cookie.HttpOnly = true;
+                    string salt = userNode["salt"].Get<string>(context);
+                    cookie.Value = username + " " + context.Raise ("p5.crypto.hash-string", new Node(string.Empty, salt + password)).Value;
+                    Response.Cookies.Add(cookie);
+                }
+            }
+            catch {
+                Application["_Last-Forms-Login-Attempt-" + Request.UserHostAddress] = DateTime.Now;
+                throw;
+            }
+        }
+
+        /// <summary>
+        ///     Logs out a user from the ApplicationContext
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "logout", Protected = true)]
+        private void logout (ApplicationContext context, ActiveEventArgs e)
+        {
+            // By destroying this session value, default user will be used in future
+            Session.Remove ("_ApplicationContext.ContextTicket");
+        }
+
+        /// <summary>
+        ///     Returns the currently logged in Context user
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "user", Protected = true)]
+        private void user (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Add("username", Ticket.Username);
+            e.Args.Add("role", Ticket.Role);
+            e.Args.Add("default", Ticket.IsDefault);
+        }
 
         /// <summary>
         ///     Sends the given JavaScript to client once
@@ -918,13 +1057,119 @@ namespace p5.webapp
             var widget = e.Args.Get<pf.Widget> (context);
             e.Args.Value = null; // dropping the actual Widget, to avoid serializing it into ViewState!
 
-            // Storing our Widget lambda event in storage
+            // Verifying Active Event is not protected
+            if (EventIsProtected(context, e.Args.Name))
+                throw new ApplicationException(string.Format ("You cannot override Active Event '{0}' since it is protected", e.Args.Name));
+
             WidgetLambdaEventStorage [e.Args.Name, widget.ID] = e.Args;
         }
 
         #endregion
 
         #region [ -- Private helper methods -- ]
+
+        /*
+         * Helper to retrieve "_passwords" file
+         */
+        private static Node GetPasswordFile (ApplicationContext context)
+        {
+            // Getting filepath to pwd file
+            var configuration = ConfigurationManager.GetSection ("activeEventAssemblies") as ActiveEventAssemblies;
+            string rootFolder = context.Raise("p5.core.application-folder").Get<string>(context);
+            string pwdFilePath = configuration.PasswordFile.Replace("~", rootFolder);
+
+            // Checking file exist
+            if (!File.Exists(pwdFilePath))
+                CreateDefaultPasswordFile (context, pwdFilePath, configuration.DefaultRootPassword);
+
+            // Reading up passwords file
+            using (TextReader reader = new StreamReader(File.OpenRead(pwdFilePath))) {
+
+                // Returning file as lambda
+                string users = reader.ReadToEnd();
+                Node usersNode = context.Raise("lisp2lambda", new Node(string.Empty, users));
+                return usersNode;
+            }
+        }
+
+        /*
+         * Creates a default "_passwords" file, and a default "root" user
+         */
+        private static void CreateDefaultPasswordFile (ApplicationContext context, string pwdFile, string defaultRootPwd)
+        {
+            // Checking if ".passwords" file exist, and if not, creating a default
+            using (TextWriter writer = File.CreateText(pwdFile)) {
+
+                // Creating default root password, salt unique to user, and writing to file
+                var salt = "";
+                for (var idxRndNo = 0; idxRndNo < new Random (DateTime.Now.Millisecond).Next (1,5); idxRndNo++) {
+                    salt += Guid.NewGuid().ToString();
+                }
+                salt = salt.Replace("-", "");
+                writer.WriteLine(@"users");
+                writer.WriteLine(@"  root");
+                writer.WriteLine(@"    salt:" + salt);
+                writer.WriteLine(@"    password:" + defaultRootPwd);
+                writer.WriteLine(@"    role:root");
+            }
+        }
+
+        /*
+         * Will try to login from persistent cookie
+         */
+        private void TryLoginFromPersistentCookie()
+        {
+            try {
+
+                // Checking if client has persistent cookie
+                HttpCookie cookie = Request.Cookies.Get("_p5_user");
+                if (cookie != null) {
+
+                    if (Application["_Last-Cookie-Login-Attempt-" + Request.UserHostAddress] != null) {
+
+                        // User has been trying to login with cookie previously, which is possibly an intrusion attempt
+                        DateTime lastAttempt = (DateTime)Application["_Last-Cookie-Login-Attempt-" + Request.UserHostAddress];
+                        if ((DateTime.Now - lastAttempt).TotalSeconds < 30)
+                            throw new System.Security.SecurityException ("You have tried to login to this system to rapidly, wait 30 seconds before you try again.");
+                    }
+
+                    // User has persistent cookie associated with client
+                    var cookieSplits = cookie.Value.Split (' ');
+                    if (cookieSplits.Length != 2)
+                        throw new System.Security.SecurityException ("Cookie not accepted");
+
+                    string cookieUsername = cookieSplits[0];
+                    string cookieHashSaltedPwd = cookieSplits[1];
+                    Node pwdFile = GetPasswordFile(_context);
+
+                    Node userNode = pwdFile["users"][cookieUsername];
+                    if (userNode == null)
+                        throw new System.Security.SecurityException ("Cookie not accepted");
+
+                    // User exists, retrieving salt and password to see if we have a match
+                    string salt = userNode["salt"].Get<string> (_context);
+                    string password = userNode["password"].Get<string> (_context);
+                    string hashSaltedPwd = _context.Raise("p5.crypto.hash-string", new Node(string.Empty, salt + password)).Get<string>(_context);
+                    if (hashSaltedPwd != cookieHashSaltedPwd)
+                        throw new System.Security.SecurityException ("Cookie not accepted");
+
+                    // MATCH, discarding previous ticket and Context to create a new
+                    Ticket = new ApplicationContext.ContextTicket(
+                        userNode ["username"].Get<string>(_context), 
+                        userNode ["role"].Get<string>(_context), 
+                        false);
+                    _context = Loader.Instance.CreateApplicationContext(Ticket);
+                    Application.Remove ("_Last-Cookie-Login-Attempt-" + Request.UserHostAddress);
+                }
+            }
+            catch {
+                Application["_Last-Cookie-Login-Attempt-" + Request.UserHostAddress] = DateTime.Now;
+                HttpCookie cookie = Request.Cookies.Get("_p5_user");
+                cookie.Expires = DateTime.Now.AddDays(-1);
+                Response.Cookies.Add(cookie);
+                throw;
+            }
+        }
 
         /*
          * Helper to retrieve a list of widgets from a Node
@@ -1060,9 +1305,30 @@ namespace p5.webapp
             // Looping through each event in args
             foreach (var idxEvt in eventNode.Children.ToList ()) {
 
+                // Verifying Active Event is not protected
+                if (EventIsProtected (context, idxEvt.Name))
+                    throw new ApplicationException(string.Format ("You cannot override Active Event '{0}' since it is protected", idxEvt.Name));
+
                 // Adding lambda event to lambda event storage
                 WidgetLambdaEventStorage [idxEvt.Name, widgetId] = idxEvt;
             }
+        }
+
+        /*
+         * Helper to figure out if Active Event is protected or not
+         */
+        private Node _protectedDynamicEvents = null;
+        private bool EventIsProtected (ApplicationContext context, string evt)
+        {
+            // Verifying Active Event is not protected
+            if (context.IsProtected(evt))
+                return true;
+            if (_protectedDynamicEvents == null) {
+                _protectedDynamicEvents = context.Raise("_p5.lambda.get-protected-events");
+            }
+            if (_protectedDynamicEvents[evt] != null)
+                return true;
+            return false;
         }
 
         /*

@@ -3,8 +3,9 @@
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details.
  */
 
-using System.Linq;
+using System;
 using System.Web;
+using System.Linq;
 using p5.core;
 using p5.web.ui.common;
 
@@ -24,6 +25,11 @@ namespace p5.web.ui
         private static void set_session (ApplicationContext context, ActiveEventArgs e)
         {
             CollectionBase.Set (e.Args, context, delegate (string key, object value) {
+
+                // Verifying this is not a "protected session object"
+                if (key.StartsWith ("_"))
+                    throw new ApplicationException (string.Format ("You cannot set session value '{0}' since it is protected", key));
+
                 if (value == null) {
 
                     // removing object, if it exists
@@ -45,6 +51,7 @@ namespace p5.web.ui
         private static void get_session (ApplicationContext context, ActiveEventArgs e)
         {
             CollectionBase.Get (e.Args, context, key => HttpContext.Current.Session [key]);
+            e.Args.RemoveAll (ix => ix.Name.StartsWith ("_"));
         }
 
         /// <summary>
@@ -56,6 +63,7 @@ namespace p5.web.ui
         private static void list_session (ApplicationContext context, ActiveEventArgs e)
         {
             CollectionBase.List (e.Args, context, () => (from object idx in HttpContext.Current.Session.Keys select idx.ToString ()).ToList ());
+            e.Args.RemoveAll (ix => ix.Name.StartsWith ("_"));
         }
     }
 }

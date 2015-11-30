@@ -20,21 +20,9 @@ set:x:/-/*/*/create-widget/*/widgets/**/={header}?value
 /*
  * Checking if there's a user logged in, and if so, showing contextual feedback to client
  */
-sys42.get-user
-if:x:/-/*
-  not
-
-  // No user is logged in, explain to user that he might get access if he logs in
-  set:x:/../*/load-file/*/*/create-widget/*/widgets/**/={content}?value
-    src:@"<img src=""/media/images/marvin-headshot.png"" style=""float:left;"" />
-<h5>Sorry, I cannot give you access to that page, since my owner has created restricted access rights to it.
-Feel free to try to login at the top, or find another page at the same place!</h5>"
-
-else
-
-  // User is logged in, explaining that he does not have access
-  set:x:/../*/load-file/*/*/create-widget/*/widgets/**/={content}?value
-    src:@"<img src=""/media/images/marvin-headshot.png"" style=""float:left;"" />
+// User is logged in, explaining that he does not have access
+set:x:/../*/load-file/*/*/create-widget/*/widgets/**/={content}?value
+  src:@"<img src=""/media/images/marvin-headshot.png"" style=""float:left;"" />
 <h5>Sorry, I cannot give you access to that page, since my owner has created restricted access rights to it.
 Feel free to try finding another page by using the menu at the top!</h5>"
 

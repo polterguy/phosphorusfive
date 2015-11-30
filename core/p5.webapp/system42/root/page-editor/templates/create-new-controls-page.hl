@@ -14,7 +14,7 @@ else
       :x:/../*/list-files/0?name
 insert-before:x:/../0
   src
-    role:admin
+    role:root
     controls:@"/*
  * Default [controls] type of page
  * Edit this page to meet your own needs

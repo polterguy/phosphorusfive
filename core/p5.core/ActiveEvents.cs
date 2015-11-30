@@ -156,13 +156,13 @@ namespace p5.core
         /// <param name="name">Name of Active Event to raise</param>
         /// <param name="args">Arguments to pass into Event Handlers</param>
         /// <param name="context">Application Context</param>
-        public Node Raise (string name, Node args, ApplicationContext context)
+        public Node Raise (string name, Node args, ApplicationContext context, ApplicationContext.ContextTicket ticket)
         {
             // Used as buffer to store whether or not Active Event was protected or not
             // This is done since we DO NOT invoke "null handlers" for protected events!
             bool wasProtected = false;
 
-            ActiveEventArgs e = new ActiveEventArgs(name, args ?? new Node());
+            ActiveEventArgs e = new ActiveEventArgs(name, args ?? new Node(), ticket);
 
             // Checking if we have any Active Event handlers for given name
             if (_events.ContainsKey (name)) {

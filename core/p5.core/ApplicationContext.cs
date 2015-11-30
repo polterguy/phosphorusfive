@@ -18,13 +18,64 @@ namespace p5.core
     /// </summary>
     public class ApplicationContext
     {
+        /// <summary>
+        ///     Class used as ticket when raising Active Events
+        /// </summary>
+        [Serializable]
+        public class ContextTicket
+        {
+            /// <summary>
+            ///     Initializes a new instance of the <see cref="p5.core.ApplicationContext+ContextTicket"/> class
+            /// </summary>
+            /// <param name="username">Username</param>
+            /// <param name="role">Role</param>
+            public ContextTicket(string username, string role, bool isDefault)
+            {
+                Username = username;
+                Role = role;
+                IsDefault = isDefault;
+            }
+
+            /// <summary>
+            ///     Gets the username
+            /// </summary>
+            /// <value>The username</value>
+            public string Username {
+                get;
+                private set;
+            }
+
+            /// <summary>
+            ///     Gets the role
+            /// </summary>
+            /// <value>The password</value>
+            public string Role {
+                get;
+                private set;
+            }
+
+            /// <summary>
+            ///     Gets whether or not this is the "default Context user"
+            /// </summary>
+            /// <value>Whethere or not user is "default user"</value>
+            public bool IsDefault {
+                get;
+                private set;
+            }
+        }
+
         private readonly ActiveEvents _registeredActiveEvents = new ActiveEvents();
         private readonly Loader.ActiveEventTypes _typesInstanceActiveEvents;
+        private ContextTicket _ticket;
 
-        internal ApplicationContext (Loader.ActiveEventTypes instanceEvents, Loader.ActiveEventTypes staticEvents)
+        internal ApplicationContext (
+            Loader.ActiveEventTypes instanceEvents, 
+            Loader.ActiveEventTypes staticEvents, 
+            ContextTicket ticket)
         {
             _typesInstanceActiveEvents = instanceEvents;
             InitializeApplicationContext (staticEvents);
+            _ticket = ticket;
         }
 
         /// <summary>
@@ -34,6 +85,28 @@ namespace p5.core
         public IEnumerable<string> ActiveEvents
         {
             get { return _registeredActiveEvents.GetEvents ().Select (idx => idx.Name); }
+        }
+
+        /// <summary>
+        ///     Changes the ticket for the context
+        /// </summary>
+        /// <param name="ticket">New ticket</param>
+        public void UpdateTicket (ContextTicket ticket)
+        {
+            _ticket = ticket;
+        }
+
+        /// <summary>
+        ///     Determines whether given Active Event is protected or not
+        /// </summary>
+        /// <returns><c>true</c> if Active Event is protected; otherwise, <c>false</c></returns>
+        /// <param name="name">Name.</param>
+        public bool IsProtected (string name)
+        {
+            var evt = _registeredActiveEvents.GetEvents().SingleOrDefault(idx => idx.Name == name);
+            if (evt != null)
+                return evt.Protected;
+            return false;
         }
 
         /// <summary>
@@ -99,7 +172,7 @@ namespace p5.core
         /// <param name="pars">arguments to pass into the Active Event</param>
         public Node Raise (string name, Node pars = null)
         {
-            return _registeredActiveEvents.Raise (name, pars, this);
+            return _registeredActiveEvents.Raise (name, pars, this, _ticket);
         }
 
         /*

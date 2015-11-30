@@ -56,6 +56,10 @@ namespace p5.file.utilities
                             // Looping through each input directory given
                             foreach (var idxSource in XUtil.Iterate<string> (e.Args, context)) {
 
+                                // Verifying file-/folder name is not a "restricted" type of file
+                                if (idxSource.StartsWith (".") || idxSource.EndsWith ("~"))
+                                    continue;
+
                                 var rootSource = idxSource.Trim ('/');
                                 rootSource = rootSource.Substring (rootSource.LastIndexOf ("/") + 1);
 
@@ -93,6 +97,10 @@ namespace p5.file.utilities
                 // Looping through each source zip folder given
                 foreach (var idxSource in XUtil.Iterate<string> (e.Args, context)) {
 
+                    // Verifying file-/folder name is not a "restricted" type of file
+                    if (idxSource.StartsWith (".") || idxSource.EndsWith ("~"))
+                        continue;
+
                     // Creating our input stream, which wraps the GZip file given
                     using (var input = File.OpenRead (rootFolder + idxSource.TrimStart ('/'))) {
 
@@ -103,15 +111,15 @@ namespace p5.file.utilities
                             using (var archive = TarArchive.CreateInputTarArchive (gzStream)) {
 
                                 // Extracting archive to destination folder
-                                archive.SetKeepOldFiles (false);
+                                archive.SetKeepOldFiles (true);
                                 archive.ExtractContents (rootFolder + destinationFolder);
                             }
                         }
                     }
-                }
 
-                // Returning filepath of ZIP file to caller
-                e.Args.Value = e.Args ["to"].GetExValue<string> (context);
+                    // Returning filepath of ZIP file to caller
+                    e.Args.Value = destinationFolder;
+                }
             }
         }
 
@@ -130,11 +138,21 @@ namespace p5.file.utilities
 
                 // Traversing each file within directory
                 foreach (var idxFile in Directory.GetFiles (fileFolderPath)) {
+
+                    // Verifying file-/folder name is not a "restricted" type of file
+                    if (idxFile.StartsWith (".") || idxFile.EndsWith ("~"))
+                        continue;
+
                     AddFileObjectToArchive (archive, idxFile, rootPath);
                 }
 
                 // Traversing each folder within directory, recursively invoking "self"
                 foreach (var idxFolder in Directory.GetDirectories (fileFolderPath)) {
+
+                    // Verifying file-/folder name is not a "restricted" type of file
+                    if (idxFolder.StartsWith (".") || idxFolder.EndsWith ("~"))
+                        continue;
+
                     AddFileObjectToArchive (archive, idxFolder, rootPath);
                 }
             }

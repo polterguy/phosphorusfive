@@ -254,14 +254,6 @@
     <None Include="system42\page-types\html.hl" />
     <None Include="system42\page-types\lambda.hl" />
     <None Include="system42\page-types\special-page\p5.no-access.hl" />
-    <None Include="system42\admin\executor.hl" />
-    <None Include="system42\admin\page-editor\page-editor.hl" />
-    <None Include="system42\admin\page-editor\editors\controls.hl" />
-    <None Include="system42\admin\page-editor\editors\html.hl" />
-    <None Include="system42\admin\page-editor\editors\lambda.hl" />
-    <None Include="system42\admin\page-editor\templates\create-new-controls-page.hl" />
-    <None Include="system42\admin\page-editor\templates\create-new-html-page.hl" />
-    <None Include="system42\admin\page-editor\templates\create-new-lambda-page.hl" />
     <None Include="media\bootstrap\css\bootstrap.css.map" />
     <None Include="media\bootstrap\css\bootstrap-theme.css.map" />
     <None Include="media\bootstrap\fonts\glyphicons-halflings-regular.eot" />
@@ -270,16 +262,11 @@
     <None Include="media\bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <None Include="media\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
     <None Include="system42\page-types\special-page\not-found.hl" />
-    <None Include="system42\admin\page-editor\editor-toolbar.hl" />
     <None Include="system42\startup\pf.web.load-ui.hl" />
     <None Include="system42\startup\pages\create-default-pages.hl" />
-    <None Include="system42\startup\users\create-default-user.hl" />
     <None Include="system42\startup\misc-events\sys42.get-widget.hl" />
     <None Include="system42\startup\misc-dialog-events\sys42.confirm-action.hl" />
     <None Include="system42\startup\misc-dialog-events\sys42.show-code.hl" />
-    <None Include="system42\startup\users\user-events\sys42.get-user.hl" />
-    <None Include="system42\startup\users\user-events\sys42.login-user.hl" />
-    <None Include="system42\startup\users\user-events\sys42.logout-user.hl" />
     <None Include="system42\startup\users\user-events\sys42.verify-access.hl" />
     <None Include="system42\startup\misc-events\sys42.get-content-type.hl" />
     <None Include="system42\misc\content-types.hl" />
@@ -294,10 +281,18 @@
     <None Include="system42\file-editors\launch.hl" />
     <None Include="system42\ckeditor\README.md" />
     <None Include="system42\ckeditor\skins\moono\readme.md" />
+    <None Include="system42\root\executor.hl" />
+    <None Include="system42\root\page-editor\page-editor.hl" />
+    <None Include="system42\root\page-editor\editors\controls.hl" />
+    <None Include="system42\root\page-editor\editors\html.hl" />
+    <None Include="system42\root\page-editor\editors\lambda.hl" />
+    <None Include="system42\root\page-editor\templates\create-new-controls-page.hl" />
+    <None Include="system42\root\page-editor\templates\create-new-html-page.hl" />
+    <None Include="system42\root\page-editor\templates\create-new-lambda-page.hl" />
+    <None Include="system42\root\page-editor\editor-toolbar.hl" />
+    <None Include="system42\startup\users\user-events\sys42.empty-user-temp-folder.hl" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="system42\admin\page-editor\editors\" />
-    <Folder Include="system42\admin\page-editor\templates\" />
     <Folder Include="media\jquery\" />
     <Folder Include="system42\startup\misc-dialog-events\" />
     <Folder Include="system42\startup\users\user-events\" />
@@ -305,5 +300,7 @@
     <Folder Include="system42\codemirror\theme\" />
     <Folder Include="system42\file-browser\" />
     <Folder Include="system42\file-editors\" />
+    <Folder Include="system42\root\page-editor\editors\" />
+    <Folder Include="system42\root\page-editor\templates\" />
   </ItemGroup>
 </Project>

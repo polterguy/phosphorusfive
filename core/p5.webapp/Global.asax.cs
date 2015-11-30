@@ -30,7 +30,7 @@ namespace p5
              */
             protected void Application_Start (Object sender, EventArgs e)
             {
-                // sotring application base path for later usage
+                // storing application base path for later usage
                 _applicationBasePath = Server.MapPath ("~");
 
                 // adding up executing (this) assembly as Active Event handler

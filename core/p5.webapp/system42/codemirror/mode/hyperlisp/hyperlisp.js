@@ -161,6 +161,7 @@ CodeMirror.defineMode("hyperlisp", function() {
 
         // first p5.lambda keywords that requires indentation
         case 'eval':
+        case 'login':
         case 'eval-mutable':
         case 'add':
         case 'src':
@@ -190,6 +191,8 @@ CodeMirror.defineMode("hyperlisp", function() {
 
         // Afterwards keywords not needing indentation
         case 'sleep':
+        case 'user':
+        case 'logout':
           return this.styles.keyword;
 
         // Then "lesser" keywords that needs indentation
@@ -217,6 +220,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'lambda2lisp':
         case 'gzip':
         case 'gunzip':
+        case 'set-viewstate':
           state.indent += 2;
           return this.styles.lesser_keyword;
 
@@ -264,6 +268,8 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'get-widget-property':
         case 'delete-widget-property':
         case 'list-widget-properties':
+        case 'list-viewstate':
+        case 'get-viewstate':
         case 'get-cache':
         case 'list-cache':
         case 'get-cookie':
