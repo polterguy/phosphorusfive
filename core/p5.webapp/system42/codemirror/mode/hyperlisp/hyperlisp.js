@@ -160,6 +160,7 @@ CodeMirror.defineMode("hyperlisp", function() {
       switch (word) {
 
         // first p5.lambda keywords that requires indentation
+        case 'create-user':
         case 'eval':
         case 'login':
         case 'eval-mutable':

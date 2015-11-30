@@ -1,0 +1,110 @@
+
+/*
+ * Executed after server has been initially installed. Sets up an
+ * initial (non-root) user, for owner to use without having to login as root
+ */
+
+
+/*
+ * Second "tab" of wizard
+ */
+create-widget:create-default-user
+  parent:guide
+  class:flash-from-right
+  widgets
+
+
+    /*
+     * First paragraph of informational text
+     */
+    literal
+      element:blockquote
+      innerValue:@"<em>""Now you must create a non-root/superuser for yourself, for most day to day usage of your system.
+This user is what you should normally use, when you are not administrating the system. For security reasons, you should try to use this user
+as much as possible, and only use your 'root' account when absolutely necessary. This user will
+belong to the role 'superuser', and is quite powerful, but not as powerful as the 'root' user.""</em>"
+
+
+    /*
+     * Initial user container wrapper
+     */
+    container
+      class:form-inline
+      widgets
+        container
+          class:form-group
+          widgets
+            container
+              class:input-group
+              widgets
+                literal
+                  class:input-group-addon
+                  innerValue:Username
+                literal:user-username
+                  element:input
+                  type:text
+                  class:form-control
+                  placeholder:Username ...
+                  oninit
+                    send-javascript:@"$('#user-username').focus().select();"
+                  onkeypress:"return p5.keyInstallPressed2(event);"
+            container
+              class:input-group prepend-left
+              widgets
+                literal
+                  class:input-group-addon
+                  innerValue:Pwd
+                literal:user-password
+                  element:input
+                  type:password
+                  class:form-control
+                  placeholder:User password ...
+                  onkeypress:"return p5.keyInstallPressed2(event);"
+            container
+              class:input-group prepend-left
+              widgets
+                literal
+                  class:input-group-addon
+                  innerValue:Repeat
+                literal:password-repeat
+                  element:input
+                  type:password
+                  class:form-control
+                  placeholder:Repeat password ...
+                  onkeypress:"return p5.keyInstallPressed2(event);"
+            literal:save-user
+              element:button
+              class:btn btn-primary
+              innerValue:Save
+              onclick
+                _widgets
+                  user-username
+                  user-password
+                  password-repeat
+                get-widget-property:x:/-/*?name
+                  value
+                if:x:/../*/get-widget-property/*/user-password/*?value
+                  !=:x:/../*/get-widget-property/*/password-repeat/*?value
+                  sys42.info-feedback:Sorry, passwords don't match
+                    _error:true
+                  send-javascript:@"$('#user-password').focus().select();"
+                else
+                  set:x:/+2/*/username?value
+                    src:x:/../*/get-widget-property/*/user-username/*?value
+                  set:x:/+/*/password?value
+                    src:x:/../*/get-widget-property/*/user-password/*?value
+                  create-user
+                    username
+                    password
+                    role:superuser
+                  delete-widget:create-default-user
+                  sys42.execute-lisp-file:system42/root/server-startup/system-finished.hl
+
+include-javascript:@"
+p5.keyInstallPressed2 = function(e) {
+  if(e.keyCode == 13) {
+    p5.$('save-user').raise('onclick');
+    return false;
+  }
+}"
+

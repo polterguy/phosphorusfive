@@ -865,10 +865,12 @@ namespace p5.webapp
         private void logout (ApplicationContext context, ActiveEventArgs e)
         {
             // By destroying this session value, default user will be used in future
-            Session.Remove ("_ApplicationContext.ContextTicket");
+            Ticket = null;
             HttpCookie cookie = Request.Cookies.Get("_p5_user");
-            cookie.Expires = DateTime.Now.AddDays(-1);
-            Response.Cookies.Add(cookie);
+            if (cookie != null) {
+                cookie.Expires = DateTime.Now.AddDays(-1);
+                Response.Cookies.Add(cookie);
+            }
         }
 
         /// <summary>
@@ -882,6 +884,68 @@ namespace p5.webapp
             e.Args.Add("username", Ticket.Username);
             e.Args.Add("role", Ticket.Role);
             e.Args.Add("default", Ticket.IsDefault);
+        }
+
+        /// <summary>
+        ///     Creates a new user
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "create-user", Protected = true)]
+        private void create_user (ApplicationContext context, ActiveEventArgs e)
+        {
+            string username = e.Args.GetExChildValue<string>("username", context);
+            string password = e.Args.GetExChildValue<string>("password", context);
+            string role = e.Args.GetExChildValue<string>("role", context);
+            if (role == "root")
+                throw new System.Security.SecurityException("Sorry, you cannot create a root account through the [create-user] Active Event");
+
+            // We need this guy to save passwords file later
+            string rootFolder = context.Raise("p5.core.application-folder").Get<string>(context);
+
+            // Verifying username is valid, since we'll need to create a folder and associate with user later
+            foreach (var charIdx in username) {
+                if ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_-".IndexOf(charIdx) == -1)
+                    throw new ApplicationException("Sorry, you cannot use character '" + charIdx + "' in username");
+            }
+
+            // Locking access to password file
+            lock (_passwordFileLocker) {
+
+                Node pwdFile = GetPasswordFile(context);
+                if (pwdFile["users"][username] != null)
+                    throw new ApplicationException("Sorry, that username is already taken by another user in the system");
+                pwdFile["users"].Add(username);
+
+                // Creating a salt for user
+                var salt = "";
+                for (var idxRndNo = 0; idxRndNo < new Random (DateTime.Now.Millisecond).Next (1,5); idxRndNo++) {
+                    salt += Guid.NewGuid().ToString();
+                }
+                pwdFile ["users"].LastChild.Add("salt", salt);
+                pwdFile ["users"].LastChild.Add("password", password);
+                pwdFile ["users"].LastChild.Add("role", role);
+
+                // Saving password file
+                var configuration = ConfigurationManager.GetSection ("activeEventAssemblies") as ActiveEventAssemblies;
+                string pwdFilePath = configuration.PasswordFile.Replace("~/", rootFolder);
+
+                using (TextWriter writer = File.CreateText(pwdFilePath)) {
+                    Node lambdaNode = new Node();
+                    lambdaNode.AddRange(pwdFile.Children);
+                    writer.Write(context.Raise ("lambda2lisp", lambdaNode).Get<string> (context));
+                }
+
+                // Creating folders for user, and making sure private directory stays private ...
+                Directory.CreateDirectory(rootFolder + "users/" + username);
+                Directory.CreateDirectory(rootFolder + "users/" + username + "/documents");
+                Directory.CreateDirectory(rootFolder + "users/" + username + "/documents/private");
+                Directory.CreateDirectory(rootFolder + "users/" + username + "/documents/public");
+                Directory.CreateDirectory(rootFolder + "users/" + username + "/tmp");
+                File.Copy(
+                    rootFolder + "users/root/documents/private/web.config", 
+                    rootFolder + "users/" + username + "/documents/private/web.config");
+            }
         }
 
         /// <summary>

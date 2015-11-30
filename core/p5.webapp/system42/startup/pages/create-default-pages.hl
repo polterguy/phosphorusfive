@@ -23,11 +23,11 @@ if:x:/-?value
  */
 sys42.execute-lisp-file:system42/root/server-startup/launch-server.hl"
 
-    p5.page:/root/editor
+    p5.page:/superuser/editor
       type:lambda
       name:Page editor
       template:system42/templates/main.hl
-      role:root
+      role:superuser
       lambda:@"
 
 /*
@@ -36,11 +36,11 @@ sys42.execute-lisp-file:system42/root/server-startup/launch-server.hl"
 sys42.execute-lisp-file:system42/root/page-editor/page-editor.hl
 "
 
-    p5.page:/root/executor
+    p5.page:/superuser/executor
       type:lambda
       name:Evaluator
       template:system42/templates/main.hl
-      role:root
+      role:superuser
       lambda:@"
 
 /*
@@ -49,11 +49,11 @@ sys42.execute-lisp-file:system42/root/page-editor/page-editor.hl
 sys42.execute-lisp-file:system42/root/executor.hl
 "
 
-    p5.page:/root/files
+    p5.page:/superuser/files
       type:lambda
       name:Files
       template:system42/templates/main.hl
-      role:root
+      role:superuser
       lambda:@"
 
 /*

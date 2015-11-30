@@ -295,6 +295,8 @@
     <None Include="system42\startup\users\user-events\sys42.empty-user-tmp-folder.hl" />
     <None Include="system42\root\server-startup\launch-server.hl" />
     <None Include="system42\root\server-startup\set-root-password.hl" />
+    <None Include="system42\root\server-startup\create-initial-user.hl" />
+    <None Include="system42\root\server-startup\system-finished.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />
