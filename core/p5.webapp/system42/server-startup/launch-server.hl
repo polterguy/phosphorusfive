@@ -33,12 +33,12 @@ if
   p5.web.root-password-is-null
 
   // Need to set root password, and do other types of installation setup things
-  sys42.execute-lisp-file:system42/root/server-startup/set-root-password.hl
+  sys42.execute-lisp-file:system42/server-startup/set-root-password.hl
 else-if:x:/../*/user/*/role?value
   =:root
 
   // Possibly a refresh of page, or aborted setup installation process. Continuing from where we left off
-  sys42.execute-lisp-file:system42/root/server-startup/create-initial-user.hl
+  sys42.execute-lisp-file:system42/server-startup/create-initial-user.hl
 else
 
   // Informing current visitor that server is currently being maintained

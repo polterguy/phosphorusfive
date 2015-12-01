@@ -294,10 +294,10 @@
     <None Include="system42\root\page-editor\templates\create-new-lambda-page.hl" />
     <None Include="system42\root\page-editor\editor-toolbar.hl" />
     <None Include="system42\startup\users\user-events\sys42.empty-user-tmp-folder.hl" />
-    <None Include="system42\root\server-startup\launch-server.hl" />
-    <None Include="system42\root\server-startup\set-root-password.hl" />
-    <None Include="system42\root\server-startup\create-initial-user.hl" />
-    <None Include="system42\root\server-startup\system-finished.hl" />
+    <None Include="system42\server-startup\create-initial-user.hl" />
+    <None Include="system42\server-startup\launch-server.hl" />
+    <None Include="system42\server-startup\set-root-password.hl" />
+    <None Include="system42\server-startup\system-finished.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />
@@ -309,6 +309,6 @@
     <Folder Include="system42\file-editors\" />
     <Folder Include="system42\root\page-editor\editors\" />
     <Folder Include="system42\root\page-editor\templates\" />
-    <Folder Include="system42\root\server-startup\" />
+    <Folder Include="system42\server-startup\" />
   </ItemGroup>
 </Project>

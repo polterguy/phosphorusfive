@@ -35,6 +35,9 @@
   <ItemGroup>
     <Compile Include="Authentication.cs" />
     <Compile Include="helpers\AuthenticationHelper.cs" />
+    <Compile Include="Root.cs" />
+    <Compile Include="Users.cs" />
+    <Compile Include="Roles.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

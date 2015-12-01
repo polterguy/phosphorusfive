@@ -21,7 +21,7 @@ if:x:/-?value
 /*
  * Executes the ""server startup"" file
  */
-sys42.execute-lisp-file:system42/root/server-startup/launch-server.hl"
+sys42.execute-lisp-file:system42/server-startup/launch-server.hl"
 
     p5.page:/superuser/editor
       type:lambda
