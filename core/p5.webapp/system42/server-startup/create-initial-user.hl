@@ -100,7 +100,7 @@ belong to the role 'superuser', and is quite powerful, but not as powerful as th
                     password
                     role:superuser
 
-                  // Logging out root, and logging in newly created superuser
+                  // Logging out root, and logging in newly created superuser!
                   logout
                   set:x:/+2/*/username?value
                     src:x:/./-2/*/username?value
