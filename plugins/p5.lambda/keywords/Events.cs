@@ -130,10 +130,10 @@ namespace p5.lambda.events
                     return; // possibly a filter expression, leading into oblivion, since filter still was given, we return "nothing"
 
                 // Getting all dynamic Active Events
-                ListActiveEvents (_events.Keys, e.Args, filter, "dynamic");
+                ListActiveEvents (_events.Keys, e.Args, filter, "dynamic", context);
 
                 // Getting all core Active Events
-                ListActiveEvents (context.ActiveEvents, e.Args, filter, "static");
+                ListActiveEvents (context.ActiveEvents, e.Args, filter, "static", context);
             }
         }
 
@@ -211,13 +211,14 @@ namespace p5.lambda.events
             IEnumerable<string> source, 
             Node node, 
             List<string> filter,
-            string eventTypeName)
+            string eventTypeName, 
+            ApplicationContext context)
         {
             // looping through each Active Event from IEnumerable
             foreach (var idx in source) {
 
                 // checking to see if this is "private" active event
-                if (idx.StartsWith ("_"))
+                if (idx.StartsWith ("_") || idx == string.Empty)
                     continue;
 
                 // checking to see if we have any filter
@@ -233,6 +234,16 @@ namespace p5.lambda.events
                     }
                 }
             }
+
+            // Sorting such that keywords comes first
+            node.Sort (delegate(Node x, Node y) {
+                if (x.Get<string>(context).Contains (".") && !y.Get<string>(context).Contains ("."))
+                    return 1;
+                else if (!x.Get<string>(context).Contains (".") && y.Get<string>(context).Contains ("."))
+                    return -1;
+                else
+                    return x.Get<string> (context).CompareTo (y.Value);
+            });
         }
 
         /*

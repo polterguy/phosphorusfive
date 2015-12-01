@@ -13,11 +13,7 @@ using System.Text;
 namespace p5.core
 {
     /// <summary>
-    ///     Utility class, contains helpers for common operations.
-    /// 
-    ///     This class contains helper methods used both by the library internally, and exposed for you to use in your programs.
-    ///     One particularly interesting method for you, is the Convert method, that allows you to convert any object, to any other 
-    ///     type of object, using the internal type system of Phosphorus Five.
+    ///     Utility class, contains helpers for common operations
     /// </summary>
     public static class Utilities
     {
@@ -50,13 +46,7 @@ namespace p5.core
         }
 
         /// <summary>
-        ///     Converts the given value to type T.
-        /// 
-        ///     Will convert the given value to an object of type T for you, either by checking to see if the object
-        ///     implements IConvertible, if the object already is of type T, or by using the internal type system of Phosphorus Five, with
-        ///     its conversion Active Events.
-        /// 
-        ///     This method allows you to convert for instance between strings and Node, and is at the core of the type system of Phosphorus Five.
+        ///     Converts the given value to type T
         /// </summary>
         /// <param name="value">Value to convert.</param>
         /// <param name="context">Application context. Needed since it might potentially have to raise "conversion Active Events" to convert your value.</param>
@@ -101,10 +91,7 @@ namespace p5.core
         }
 
         /// <summary>
-        ///     Returns true if string can be converted to an integer.
-        /// 
-        ///     Returns true if string contains nothing but whole integer numbers. Used in the parsing of
-        ///     p5.lambda expressions, when constructing iterators, among other things.
+        ///     Returns true if string can be converted to an integer
         /// </summary>
         /// <returns><c>true</c> if this instance is a whole, positive, integer number; otherwise, <c>false</c>.</returns>
         /// <param name="value">String to check.</param>
@@ -117,12 +104,7 @@ namespace p5.core
         }
 
         /// <summary>
-        ///     Reads a single line string literal token from specified text reader.
-        /// 
-        ///     Will read a single line string literal in C# style from the specified reader, advancing the reader's position,
-        ///     such that it is just beyond the string literal when done.
-        /// 
-        ///     Used in among other things while parsing Hyperlisp and p5.lambda expressions.
+        ///     Reads a single line string literal token from specified text reader
         /// </summary>
         /// <returns>The single line string literal, parsed.</returns>
         /// <param name="reader">Reader to read from.</param>
@@ -148,12 +130,7 @@ namespace p5.core
         }
 
         /// <summary>
-        ///     Reads a multi line string literal token from specified text reader.
-        /// 
-        ///     Will read a multi line string literal in C# style from the specified reader, advancing the reader's position,
-        ///     such that it is just beyond the string literal when done.
-        /// 
-        ///     Used in among other things while parsing Hyperlisp and p5.lambda expressions.
+        ///     Reads a multi line string literal token from specified text reader
         /// </summary>
         /// <returns>The single line string literal, parsed.</returns>
         /// <param name="reader">Reader to read from.</param>

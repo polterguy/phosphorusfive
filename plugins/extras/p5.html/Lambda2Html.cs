@@ -12,31 +12,31 @@ using p5.exp;
 namespace p5.html
 {
     /// <summary>
-    ///     Class to help transform p5.lambda trees to HTML.
-    /// 
-    ///     Encapsulates the [p5.html.lambda2html] Active Event, and its associated helper methods.
+    ///     Class to help transform p5.lambda to HTML
     /// </summary>
     public static class Lambda2Html
     {
         /// <summary>
-        ///     Creates an HTML/XML document from the given p5.lambda structure.
-        /// 
-        ///     Will create an HTML, or XML document, from the given p5.lambda structure, reversing the process
-        ///     from [p5.html.html2lambda].
-        /// 
-        ///     Any child node who's name starts with an "@" character, will be transformed into an HTML/XML attribute,
-        ///     while all other nodes, will be assumed to be children nodes, and the resulting "value" their content.
+        ///     Creates an HTML document from the given p5.lambda
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "p5.html.lambda2html")]
         private static void p5_html_lambda2html (ApplicationContext context, ActiveEventArgs e)
         {
-            // making sure we clean up and remove all arguments passed in after execution
+            // Asserting that we are actually given an argument
+            XUtil.AssertHasValueOrChildren (context, e.Args, "p5.html.lambda2html");
+
+            // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args)) {
 
+                // Used as buffer when converting from lambda to HTML
                 StringBuilder builder = new StringBuilder ();
+
+                // Doing actual conversion from lambda to HTML
                 Convert (XUtil.Iterate<Node> (e.Args, e.Args, context), builder, 0, context);
+
+                // Returning HTML to caller
                 e.Args.Value = builder.ToString ().Trim ();
             }
         }

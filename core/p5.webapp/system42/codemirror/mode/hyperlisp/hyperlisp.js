@@ -32,7 +32,8 @@ CodeMirror.defineMode("hyperlisp", function() {
       mstring:'string',
       expression:'atom',
       value:'attribute',
-      error:'error'
+      error:'error',
+      property:'number'
     },
 
     /*
@@ -160,20 +161,20 @@ CodeMirror.defineMode("hyperlisp", function() {
       switch (word) {
 
         // first p5.lambda keywords that requires indentation
-        case 'create-user':
+        case 'and':
+        case 'or':
+        case 'xor':
+        case 'not':
+        case 'can-convert':
         case 'eval':
-        case 'login':
-        case 'eval-mutable':
-        case 'add':
-        case 'src':
         case 'if':
         case 'else-if':
         case 'else':
         case 'set':
+        case 'add':
+        case 'src':
         case 'while':
         case 'for-each':
-        case 'set-event':
-        case 'set-protected-event':
         case 'insert-before':
         case 'insert-after':
         case 'lock':
@@ -181,7 +182,6 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'wait':
         case 'split':
         case 'join':
-        case 'can-convert':
         case '+':
         case '-':
         case '/': // TODO: why doesn't this work ...?
@@ -192,12 +192,27 @@ CodeMirror.defineMode("hyperlisp", function() {
 
         // Afterwards keywords not needing indentation
         case 'sleep':
-        case 'get-user':
-        case 'logout':
-        case 'roles':
+        case 'equals':
+        case '=':
+        case 'not-equals':
+        case '!=':
+        case 'more-than':
+        case '>':
+        case 'less-than':
+        case '<':
+        case 'more-than-equals':
+        case '>=':
+        case 'less-than-equals':
+        case '<=':
           return this.styles.keyword;
 
         // Then "lesser" keywords that needs indentation
+        case 'lambda2lisp':
+        case 'set-event':
+        case 'set-protected-event':
+        case 'login':
+        case 'create-user':
+        case 'eval-mutable':
         case 'move-file':
         case 'copy-file':
         case 'move-folder':
@@ -219,7 +234,6 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'set-widget-ajax-event':
         case 'set-widget-lambda-event':
         case 'return-value':
-        case 'lambda2lisp':
         case 'gzip':
         case 'gunzip':
         case 'set-viewstate':
@@ -227,6 +241,15 @@ CodeMirror.defineMode("hyperlisp", function() {
           return this.styles.lesser_keyword;
 
         // lesser keywords not needing indentation
+        case 'lisp2lambda':
+        case 'md5-hash':
+        case 'list-protected-events':
+        case 'widget-exist':
+        case 'find-widgets':
+        case 'reload-location':
+        case 'get-user':
+        case 'logout':
+        case 'roles':
         case 'sleep':
         case 'clear-widget':
         case 'delete-widget':
@@ -248,7 +271,6 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'set-location':
         case 'get-location':
         case 'get-events':
-        case 'lisp2lambda':
         case 'file-exist':
         case 'load-file':
         case 'load-text-file':
@@ -315,7 +337,20 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'onkeyup':
         case 'onchange':
           state.indent += 2;
-          return this.styles.lesser_keyword;
+          return this.styles.property;
+
+        // Then DOM attributes and widget properties
+        case 'parent':
+        case 'position':
+        case 'element':
+        case 'class':
+        case 'style':
+        case 'src':
+        case 'href':
+        case 'type':
+        case 'target':
+          // TODO: finsish list ...!
+          return this.styles.property;
 
         // then "custom properties" that requires indentation
         case 'widgets':

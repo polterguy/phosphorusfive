@@ -9,89 +9,76 @@ using p5.core;
 using p5.exp;
 
 /// <summary>
-///     Main namespace for handling HTML.
-/// 
-///     Contains all Active Events related to the process of parsing, and creating HTML.
+///     Main namespace for handling HTML
 /// </summary>
 namespace p5.html
 {
     /// <summary>
-    ///     Class to help transform HTML to a p5.lambda node structure.
-    /// 
-    ///     Encapsulates the [p5.html.html2lambda] Active Event, and its associated helper methods.
+    ///     Class to help transform HTML to a p5.lambda structure
     /// </summary>
     public static class Html2Lambda
     {
         static Html2Lambda ()
         {
-            // making sure "form" element conforms to relational structure
+            // Making sure "form" element conforms to relational structure
             HtmlNode.ElementsFlags.Remove ("form");
         }
 
         /// <summary>
-        ///     Parses an HTML document, and creates a p5.lambda node structure from the results.
-        /// 
-        ///     Allows you to parse HTML, and create a semantic p5.lambda node structure from the results.
-        /// 
-        ///     Example that downloads the main landing page from Digg.com, creates a lambda structure, extracts
-        ///     all (distinct) hyperlink URLs starting with "http", and puts the results into the [_res] node. Afterwards,
-        ///     it removes the downloaded HTML and the intermediate p5.lambda structure created by the HTML;
-        /// 
-        ///     <pre>_res
-        /// p5.web.get:"http://digg.com"
-        /// p5.html.html2lambda:@/-/"*"?value
-        /// append:@/../"*"/_res/?node
-        ///   source:@/./-/"**"/"/@href/"/"=/^http/d"?node
-        /// set:@/-3|/-2|/-1?node</pre>
+        ///     Parses an HTML document, and creates a p5.lambda node structure from the results
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "p5.html.html2lambda")]
         private static void p5_html_html2lambda (ApplicationContext context, ActiveEventArgs e)
         {
-            if (e.Args.Value == null)
-                throw new ArgumentException ("No value supplied to [p5.html.html2lambda]");
-            
-            // making sure we clean up and remove all arguments passed in after execution
+            // Asserting that we are actually given an argument
+            XUtil.AssertHasValue (context, e.Args, "p5.html.html2lambda");
+
+            // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
-                // loops through all documents we're supposed to transform
-                foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+                // Loops through all documents we're supposed to transform
+                foreach (var idxHtmlDoc in XUtil.Iterate<string> (e.Args, context)) {
 
+                    // Making sure we're actually given a value, and not some expression leading into oblivion
+                    XUtil.AssertHasValue (context, e.Args, idxHtmlDoc, "p5.html.html2lambda");
+
+                    // Converting currently iterated document/fragment
                     var doc = new HtmlDocument ();
-                    doc.LoadHtml (idx);
+                    doc.LoadHtml (idxHtmlDoc);
                     ParseHtmlDocument (e.Args, doc.DocumentNode);
                 }
             }
         }
 
         /*
-         * helper for above, recursively parses HTML node given
+         * Helper for above, recursively parses HTML node given
          */
         private static void ParseHtmlDocument (Node resultNode, HtmlNode htmlNode)
         {
-            // skipping document node
+            // Skipping document node
             if (htmlNode.Name != "#document") {
 
-                // looping through each attribute
+                // Looping through each attribute
                 foreach (var idxAtr in htmlNode.Attributes) {
                     resultNode.Add (new Node ("@" + idxAtr.Name, idxAtr.Value));
                 }
 
-                // then the name of HTML element
+                // Then the name of HTML element
                 resultNode.Name = htmlNode.Name;
                 if (htmlNode.ChildNodes.Count == 1 && htmlNode.ChildNodes [0].Name == "#text") {
 
-                    // this is a "simple node", with no children, only HTML content
+                    // This is a "simple node", with no children, only HTML content
                     resultNode.Value = htmlNode.InnerText.Replace ("&lt;", "<").Replace ("&gt;", ">").Replace ("&amp;", "&");
                     return; // don't care about children
                 }
             }
 
-            // then looping through each child HTML element
+            // Then looping through each child HTML element
             foreach (var idxChild in htmlNode.ChildNodes) {
 
-                // we don't add comments or empty elements
+                // We don't add comments or empty elements
                 if (idxChild.Name != "#comment" &&
                     (idxChild.HasAttributes || idxChild.HasChildNodes || !string.IsNullOrEmpty (idxChild.InnerText.Trim ()))) {
                     resultNode.Add (new Node ());

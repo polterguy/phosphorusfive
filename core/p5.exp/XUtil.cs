@@ -43,6 +43,48 @@ namespace p5.exp
         }
 
         /// <summary>
+        ///     Throws an exception if given args Node's value is null
+        /// </summary>
+        /// <param name="args">Arguments</param>
+        /// <param name="activeEventName">Active event name</param>
+        public static void AssertHasValue (ApplicationContext context, Node args, string activeEventName)
+        {
+            if (args.Value == null)
+                throw new LambdaException (
+                    string.Format ("No arguments supplied to [{0}]", activeEventName), 
+                    args, 
+                    context);
+        }
+
+        /// <summary>
+        ///     Throws an exception if given value is null
+        /// </summary>
+        /// <param name="args">Argument</param>
+        /// <param name="activeEventName">Active event name</param>
+        public static void AssertHasValue (ApplicationContext context, Node args, object arg, string activeEventName)
+        {
+            if (arg == null)
+                throw new LambdaException (
+                    string.Format ("No arguments supplied to [{0}], possibly expression leading into oblivion", activeEventName), 
+                    args, 
+                    context);
+        }
+
+        /// <summary>
+        ///     Throws an exception if given args Node's value is null and args node has no children
+        /// </summary>
+        /// <param name="args">Arguments</param>
+        /// <param name="activeEventName">Active event name</param>
+        public static void AssertHasValueOrChildren (ApplicationContext context, Node args, string activeEventName)
+        {
+            if (args.Value == null && args.Children.Count == 0)
+                throw new LambdaException (
+                    string.Format ("No arguments or children nodes supplied to [{0}]", activeEventName), 
+                    args, 
+                    context);
+        }
+
+        /// <summary>
         ///     Formats the node according to values returned by its children
         /// </summary>
         /// <returns>The node.</returns>

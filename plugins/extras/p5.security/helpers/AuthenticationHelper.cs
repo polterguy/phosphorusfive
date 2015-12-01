@@ -99,7 +99,7 @@ namespace p5.security
                 cookie.Expires = DateTime.Now.AddDays(Configuration.PersistCredentialCookieDays);
                 cookie.HttpOnly = true;
                 string salt = userNode["salt"].Get<string>(context);
-                cookie.Value = username + " " + context.Raise ("p5.crypto.hash-string", new Node(string.Empty, salt + password)).Value;
+                cookie.Value = username + " " + context.Raise ("md5-hash", new Node(string.Empty, salt + password)).Value;
                 HttpContext.Current.Response.Cookies.Add(cookie);
             }
         }
@@ -375,7 +375,7 @@ namespace p5.security
             // User exists, retrieving salt and password to see if we have a match
             string salt = userNode["salt"].Get<string> (context);
             string password = userNode["password"].Get<string> (context);
-            string hashSaltedPwd = context.Raise("p5.crypto.hash-string", new Node(string.Empty, salt + password)).Get<string>(context);
+            string hashSaltedPwd = context.Raise("md5-hash", new Node(string.Empty, salt + password)).Get<string>(context);
 
             // Notice, we do NOT THROW if passwords do not match, since it might simply mean that user has explicitly created a new "salt"
             // to throw out other clients that are currently persistently logged into system under his account

@@ -10,45 +10,42 @@ using p5.core;
 using p5.exp;
 
 /// <summary>
-///     Main namespace for everything related to cryptographic services.
+///     Main namespace for everything related to cryptographic services
 /// 
-///     Contains all helper classes that somehow relates to cryptography.
+///     Contains all helper classes that somehow relates to cryptography
 /// </summary>
 namespace phosphorus.crypto
 {
     /// <summary>
-    ///     Helper class to create hashed value.
-    /// 
-    ///     A hashed string is a one-way street, creating a unique value from the given value, making
-    ///     it impossible to figure out what the original value was by using the hashed value, still having
-    ///     the possibility of re-creating the same hash if you know what was used to create the hash the first time.
-    /// 
-    ///     This happens to be a nice way to store passwords, and other types of sensitive information, such that even
-    ///     if another person acquires access to the hashed value, he can still not quess the original password used to
-    ///     generate the hash.
+    ///     Helper class to create MD5 hash of whatever given as input
     /// </summary>
     public static class Hash
     {
         /// <summary>
-        ///     Creates an MD5 hash-string.
-        /// 
-        ///     Creates an MD5 hash from the given value.
+        ///     Creates a base64 encoded MD5 hash string of given input
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
-        [ActiveEvent (Name = "p5.crypto.hash-string")]
-        private static void p5_crypto_hash_string (ApplicationContext context, ActiveEventArgs e)
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "md5-hash")]
+        private static void md5_hash (ApplicationContext context, ActiveEventArgs e)
         {
-            // making sure we clean up and remove all arguments passed in after execution
+            // Asserting that we are actually given an argument
+            XUtil.AssertHasValue (context, e.Args, "md5-hash");
+
+            // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args)) {
 
+                // Retrieving value to hash as a single string
                 var whatToHash = XUtil.Single<string> (e.Args, context);
-                if (whatToHash == null)
-                    return; // nothing to hash here ...
 
+                // Making sure we're actually given a value, and not some expression leading into oblivion
+                XUtil.AssertHasValue (context, e.Args, whatToHash, "md5-hash");
+
+                // Creating MD5 hash, and returning as value of args
                 using (var md5 = MD5.Create ()) {
-                    var hashValue = Convert.ToBase64String (md5.ComputeHash (Encoding.UTF8.GetBytes (whatToHash)));
-                    e.Args.Value = hashValue;
+
+                    // Returning MD5 hash as base64 encoded string
+                    e.Args.Value = Convert.ToBase64String (md5.ComputeHash (Encoding.UTF8.GetBytes (whatToHash)));
                 }
             }
         }
