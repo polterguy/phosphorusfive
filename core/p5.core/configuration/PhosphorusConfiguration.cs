@@ -67,6 +67,16 @@ namespace p5.core.configuration
         }
 
         /// <summary>
+        ///     Gets the number of days a persisted login cookie will be stored and valid on client side
+        /// </summary>
+        /// <value>The plugin directory.</value>
+        [ConfigurationProperty ("persistCredentialCookieDays", IsRequired = true)]
+        public int PersistCredentialCookieDays
+        {
+            get { return (int)this ["persistCredentialCookieDays"]; }
+        }
+
+        /// <summary>
         ///     Gets the assemblies
         /// </summary>
         /// <value>The assemblies.</value>

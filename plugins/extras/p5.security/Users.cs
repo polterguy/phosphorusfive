@@ -17,23 +17,10 @@ using p5.core.configuration;
 namespace p5.security
 {
     /// <summary>
-    ///     Class wrapping users features of Phosphorus Five
+    ///     Class wrapping user features of Phosphorus Five
     /// </summary>
     internal static class Users
     {
-        /// <summary>
-        ///     Returns the currently logged in Context user
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "user", Protected = true)]
-        private static void user (ApplicationContext context, ActiveEventArgs e)
-        {
-            e.Args.Add("username", AuthenticationHelper.Ticket.Username);
-            e.Args.Add("role", AuthenticationHelper.Ticket.Role);
-            e.Args.Add("default", AuthenticationHelper.Ticket.IsDefault);
-        }
-
         /// <summary>
         ///     Creates a new user
         /// </summary>

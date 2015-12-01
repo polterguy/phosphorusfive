@@ -192,7 +192,7 @@ CodeMirror.defineMode("hyperlisp", function() {
 
         // Afterwards keywords not needing indentation
         case 'sleep':
-        case 'user':
+        case 'get-user':
         case 'logout':
         case 'roles':
           return this.styles.keyword;

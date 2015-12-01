@@ -36,6 +36,19 @@ namespace p5.security
         }
 
         /// <summary>
+        ///     Returns the currently logged in Context user
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "get-user", Protected = true)]
+        private static void get_user (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Add("username", AuthenticationHelper.Ticket.Username);
+            e.Args.Add("role", AuthenticationHelper.Ticket.Role);
+            e.Args.Add("default", AuthenticationHelper.Ticket.IsDefault);
+        }
+
+        /// <summary>
         ///     Logs in a user to be associated with the ApplicationContext
         /// </summary>
         /// <param name="context">Application Context</param>

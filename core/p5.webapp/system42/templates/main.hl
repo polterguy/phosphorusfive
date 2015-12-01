@@ -7,7 +7,7 @@
 /*
  * Retrieving current Context user
  */
-user
+get-user
 
 
 /*
@@ -58,13 +58,13 @@ add:x:/../*/create-widget/*/widgets/**/container/=menu/*/widgets
 /*
  * Modifying navbar Login button to Logout, if user is logged in
  */
-if:x:/../*/user/*/default?value
+if:x:/../*/get-user/*/default?value
   not
 
   // User is logged in, changing "Login" to "Logout"
   set:x:/../*/create-widget/**/literal/=login-logout-btn/*/innerValue?value
     src:Logout {0}
-      :x:/../*/user/*/username?value
+      :x:/../*/get-user/*/username?value
   set:x:/../*/create-widget/**/literal/=login-logout-btn/*/onclick?value
   add:x:/../*/create-widget/**/literal/=login-logout-btn/*/onclick
     src

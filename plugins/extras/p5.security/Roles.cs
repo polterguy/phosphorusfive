@@ -17,7 +17,7 @@ using p5.core.configuration;
 namespace p5.security
 {
     /// <summary>
-    ///     Class wrapping authentication features of Phosphorus Five
+    ///     Class wrapping role features of Phosphorus Five
     /// </summary>
     internal static class Roles
     {

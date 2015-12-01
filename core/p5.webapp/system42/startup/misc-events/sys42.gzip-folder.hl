@@ -8,7 +8,7 @@
 set-protected-event:sys42.gzip-folder
 
   // Retrieving username, such that we can find correct "temp" folder
-  user
+  get-user
 
   // Finding name of folder being zipped, to create a "sane" zip filename
   split:x:/../*/_arg?value
@@ -17,7 +17,7 @@ set-protected-event:sys42.gzip-folder
   // GZIP'ing folder
   gzip:x:/../*/_arg?value
     to:users/{0}/tmp/{1}.tar.gz
-      :x:/../*/user/*/username?value
+      :x:/../*/get-user/*/username?value
       :x:/../*/split/0/-?name
   set:x:/..?value
     src:x:/../*/gzip?value
