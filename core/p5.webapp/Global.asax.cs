@@ -38,9 +38,9 @@ namespace p5
                 Loader.Instance.LoadAssembly (Assembly.GetExecutingAssembly ());
 
                 // adding all Active Event handler assemblies from web.config
-                var configuration = ConfigurationManager.GetSection ("activeEventAssemblies") as ActiveEventAssemblies;
+                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
                 if (configuration == null)
-                    throw new ConfigurationErrorsException ("No activeEventAssemblies section found in web.config");
+                    throw new ConfigurationErrorsException ("No Phosphorus configuration section found in web.config");
 
                 foreach (ActiveEventAssembly idxAssembly in configuration.Assemblies) {
 

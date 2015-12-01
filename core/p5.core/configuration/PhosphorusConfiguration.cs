@@ -14,7 +14,7 @@ namespace p5.core.configuration
     ///     Class wrapping your configuration section from your web.config that defines which assemblies to use as Active Event plugins,
     ///     and which default user to raise Active Events as, unless another user is explicitly logged in
     /// </summary>
-    public class ActiveEventAssemblies : ConfigurationSection
+    public class PhosphorusConfiguration : ConfigurationSection
     {
         /// <summary>
         ///     Gets the plugin directory
@@ -47,13 +47,23 @@ namespace p5.core.configuration
         }
 
         /// <summary>
-        ///     Gets the default role used to raise Active Events as
+        ///     Gets the path to the file on disc that is used for authenticating and authorizing users
         /// </summary>
         /// <value>The plugin directory.</value>
-        [ConfigurationProperty ("passwordFile", IsRequired = true)]
-        public string PasswordFile
+        [ConfigurationProperty ("authFile", IsRequired = true)]
+        public string AuthFile
         {
-            get { return this ["passwordFile"] as string; }
+            get { return this ["authFile"] as string; }
+        }
+
+        /// <summary>
+        ///     Gets the number of seconds a specific IP address must wait between attempting to login to the system
+        /// </summary>
+        /// <value>The plugin directory.</value>
+        [ConfigurationProperty ("loginCoolOffSeconds", IsRequired = true)]
+        public int LoginCoolOffSeconds
+        {
+            get { return (int)this ["loginCoolOffSeconds"]; }
         }
 
         /// <summary>

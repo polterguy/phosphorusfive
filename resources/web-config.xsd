@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:element name="configuration">
     <xs:complexType>
@@ -15,8 +15,13 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="activeEventAssemblies">
+        <xs:element name=“phosphorus”>
           <xs:complexType>
+            <xs:attribute name="assemblyDirectory" type="xs:string" use="required" />
+            <xs:attribute name="defaultContextUsername" type="xs:string" use="required" />
+            <xs:attribute name="defaultContextRole" type="xs:string" use="required" />
+            <xs:attribute name="authFile" type="xs:string" use="required" />
+            <xs:attribute name="loginCoolOffSeconds" type="xs:int” use="required" />
             <xs:sequence>
               <xs:element name="assemblies">
                 <xs:complexType>
@@ -30,7 +35,6 @@
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
-            <xs:attribute name="assemblyDirectory" type="xs:string" use="required" />
           </xs:complexType>
         </xs:element>
         <xs:element name="appSettings">
