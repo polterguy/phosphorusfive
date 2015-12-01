@@ -28,7 +28,7 @@ namespace p5.threading
         [ActiveEvent (Name = "lock")]
         private static void lambda_lock (ApplicationContext context, ActiveEventArgs e)
         {
-            var lockers = new List<string> (XUtil.Iterate<string> (e.Args, context));
+            var lockers = new List<string> (XUtil.Iterate<string> (context, e.Args));
             LockNext (lockers, delegate { context.Raise ("lambda", e.Args); });
         }
 

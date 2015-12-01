@@ -45,7 +45,7 @@ namespace p5.file.file
                             if (idxFilename.EndsWith (".hl") && e.Args.GetExChildValue ("convert", context, true)) {
 
                                 // automatically converting to Hyperlisp before returning
-                                e.Args.Add (new Node (idxFilename, null, Utilities.Convert<Node> (fileContent, context).Children));
+                                e.Args.Add (new Node (idxFilename, null, Utilities.Convert<Node> (context, fileContent).Children));
                             } else {
 
                                 // adding file content as string
@@ -76,7 +76,7 @@ namespace p5.file.file
                 var rootFolder = Common.GetRootFolder (context);
 
                 // iterating through each file path given
-                foreach (var idxFilename in XUtil.Iterate<string> (e.Args, context)) {
+                foreach (var idxFilename in XUtil.Iterate<string> (context, e.Args)) {
 
                     // checking to see if file exists
                     if (File.Exists (rootFolder + idxFilename)) {

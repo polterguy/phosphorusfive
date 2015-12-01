@@ -48,7 +48,7 @@ namespace p5.net
                 string method = e.Args.Name.Substring (e.Args.Name.IndexOf ("-") + 1).ToUpper ();
 
                 // iterating through each request URL given
-                foreach (var idxUrl in XUtil.Iterate<string> (e.Args, context)) {
+                foreach (var idxUrl in XUtil.Iterate<string> (context, e.Args)) {
 
                     if (string.IsNullOrEmpty (idxUrl))
                         continue; // nothing to do here, probably expression leading into oblivion
@@ -97,7 +97,7 @@ namespace p5.net
                 method = method.Substring (0, method.IndexOf ("-"));
 
                 // iterating through each request URL given
-                foreach (var idxUrl in XUtil.Iterate<string> (e.Args, context)) {
+                foreach (var idxUrl in XUtil.Iterate<string> (context, e.Args)) {
 
                     if (string.IsNullOrEmpty (idxUrl))
                         continue; // nothing to do here, probably expression leading into oblivion
@@ -139,7 +139,7 @@ namespace p5.net
             using (new Utilities.ArgsRemover (e.Args)) {
 
                 // Figuring out URL to create request towards
-                var url = XUtil.Single<string> (e.Args, context);
+                var url = XUtil.Single<string> (context, e.Args);
                 if (string.IsNullOrEmpty (url))
                     return; // nothing to do here, probably expression leading into oblivion
 
@@ -147,7 +147,7 @@ namespace p5.net
                 if (e.Args ["file"] == null || string.IsNullOrEmpty (e.Args ["file"].Get<string> (context)))
                     throw new ArgumentException ("No valid [file] node given to [p5.net.http-get-file].");
 
-                string fileName = XUtil.Single<string> (e.Args ["file"], context);
+                string fileName = XUtil.Single<string> (context, e.Args ["file"]);
                 if (string.IsNullOrEmpty (fileName))
                     throw new ArgumentException ("No valid [file] given to [p5.net.http-get-file], possibly an expression leading into oblivion.");
 
@@ -222,7 +222,7 @@ namespace p5.net
 
                             // any other type of content, such as string/integer/boolean etc. Converting to string beffore we write.
                             using (TextWriter writer = new StreamWriter (stream)) {
-                                writer.Write (Utilities.Convert<string> (content, context, ""));
+                                writer.Write (Utilities.Convert<string> (context, content, ""));
                             }
                         }
                     }
@@ -252,7 +252,7 @@ namespace p5.net
                 throw new ArgumentException ("No [file] node given");
 
             // getting file to post or put
-            var file = XUtil.Single<string> (args ["file"], context);
+            var file = XUtil.Single<string> (context, args ["file"]);
             if (file == null)
                 throw new ArgumentException ("No file given, or expression leading into oblivion");
 
@@ -291,7 +291,7 @@ namespace p5.net
             } else {
 
                 // some sort of "value" content, either text or binary (byte[])
-                return XUtil.Single<object> (content, context);
+                return XUtil.Single<object> (context, content);
             }
         }
 
@@ -304,40 +304,40 @@ namespace p5.net
                      args.Children.Where (idxArg => idxArg.Name != "content" && idxArg.Name != "Content-Type" && idxArg.Name != string.Empty)) {
                 switch (idxHeader.Name) {
                 case "Accept":
-                    request.Accept = XUtil.Single<string> (idxHeader, idxHeader, context);
+                    request.Accept = XUtil.Single<string> (context, idxHeader, idxHeader);
                     break;
                 case "Connection":
-                    request.Connection = XUtil.Single<string> (idxHeader, idxHeader, context);
+                    request.Connection = XUtil.Single<string> (context, idxHeader, idxHeader);
                     break;
                 case "Content-Length":
-                    request.ContentLength = XUtil.Single<long> (idxHeader, idxHeader, context);
+                    request.ContentLength = XUtil.Single<long> (context, idxHeader, idxHeader);
                     break;
                 case "Content-Type":
-                    request.ContentType = XUtil.Single<string> (idxHeader, idxHeader, context);
+                    request.ContentType = XUtil.Single<string> (context, idxHeader, idxHeader);
                     break;
                 case "Date":
-                    request.Date = XUtil.Single<DateTime> (idxHeader, idxHeader, context);
+                    request.Date = XUtil.Single<DateTime> (context, idxHeader, idxHeader);
                     break;
                 case "Expect":
-                    request.Expect = XUtil.Single<string> (idxHeader, idxHeader, context);
+                    request.Expect = XUtil.Single<string> (context, idxHeader, idxHeader);
                     break;
                 case "Host":
-                    request.Host = XUtil.Single<string> (idxHeader, idxHeader, context);
+                    request.Host = XUtil.Single<string> (context, idxHeader, idxHeader);
                     break;
                 case "If-Modifies-Since":
-                    request.IfModifiedSince = XUtil.Single<DateTime> (idxHeader, idxHeader, context);
+                    request.IfModifiedSince = XUtil.Single<DateTime> (context, idxHeader, idxHeader);
                     break;
                 case "Referer":
-                    request.Referer = XUtil.Single<string> (idxHeader, idxHeader, context);
+                    request.Referer = XUtil.Single<string> (context, idxHeader, idxHeader);
                     break;
                 case "Transfer-Encoding":
-                    request.TransferEncoding = XUtil.Single<string> (idxHeader, idxHeader, context);
+                    request.TransferEncoding = XUtil.Single<string> (context, idxHeader, idxHeader);
                     break;
                 case "User-Agent":
-                    request.UserAgent = XUtil.Single<string> (idxHeader, idxHeader, context);
+                    request.UserAgent = XUtil.Single<string> (context, idxHeader, idxHeader);
                     break;
                 default:
-                    request.Headers.Add (idxHeader.Name, XUtil.Single<string> (idxHeader, idxHeader, context));
+                    request.Headers.Add (idxHeader.Name, XUtil.Single<string> (context, idxHeader, idxHeader));
                     break;
                 }
             }
@@ -408,7 +408,7 @@ namespace p5.net
                 var rootFolder = context.Raise ("p5.core.application-folder").Get<string> (context);
 
                 // copying response content stream to file stream encapsualting file caller requested to save content to
-                using (Stream fileStream = File.Create (rootFolder + XUtil.Single<string> (args ["file"], context))) {
+                using (Stream fileStream = File.Create (rootFolder + XUtil.Single<string> (context, args ["file"]))) {
 
                     stream.CopyTo (fileStream);
                 }

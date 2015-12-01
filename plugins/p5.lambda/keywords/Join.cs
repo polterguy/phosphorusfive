@@ -35,8 +35,8 @@ namespace p5.lambda.keywords
                 Node valueSepNode = e.Args ["=="];
                 Node trimNode = e.Args ["trim"];
 
-                string insertBetweenNodes = sepNode == null ? "" : XUtil.Single<string> (sepNode, context);
-                string insertBetweenNameValue = valueSepNode == null ? "" : XUtil.Single<string> (valueSepNode, context);
+                string insertBetweenNodes = sepNode == null ? "" : XUtil.Single<string> (context, sepNode);
+                string insertBetweenNameValue = valueSepNode == null ? "" : XUtil.Single<string> (context, valueSepNode);
                 bool trim = trimNode == null ? false : trimNode.GetExValue (context, false);
 
                 StringBuilder result = new StringBuilder ();

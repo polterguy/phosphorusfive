@@ -42,11 +42,11 @@ namespace p5.lambda.events
             if (e.Args.Count == 0 && e.Name == "set-event") {
 
                 // Deleting event, if existing, since it doesn't have any lambda objects associated with it
-                DeleteEvent (XUtil.Single<string> (e.Args, context), context, e.Args);
+                DeleteEvent (XUtil.Single<string> (context, e.Args), context, e.Args);
             } else {
 
                 // Creating new event
-                CreateEvent (XUtil.Single<string> (e.Args, context), e.Args.Clone (), e.Name == "set-protected-event", context);
+                CreateEvent (XUtil.Single<string> (context, e.Args), e.Args.Clone (), e.Name == "set-protected-event", context);
             }
         }
 
@@ -59,7 +59,7 @@ namespace p5.lambda.events
         private static void delete_events (ApplicationContext context, ActiveEventArgs e)
         {
             // Iterating through all events to delete
-            foreach (var idxName in XUtil.Iterate<string> (e.Args, context)) {
+            foreach (var idxName in XUtil.Iterate<string> (context, e.Args)) {
 
                 // Deleting event
                 DeleteEvent (idxName, context, e.Args);
@@ -92,7 +92,7 @@ namespace p5.lambda.events
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // looping through all events caller wish to retrieve
-                foreach (var idxEventName in XUtil.Iterate<string> (e.Args, context)) {
+                foreach (var idxEventName in XUtil.Iterate<string> (context, e.Args)) {
 
                     // looping through all existing event keys
                     foreach (var idxKey in _events.Keys) {
@@ -125,7 +125,7 @@ namespace p5.lambda.events
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // retrieving filter, if any
-                var filter = new List<string> (XUtil.Iterate<string> (e.Args, context));
+                var filter = new List<string> (XUtil.Iterate<string> (context, e.Args));
                 if (e.Args.Value != null && filter.Count == 0)
                     return; // possibly a filter expression, leading into oblivion, since filter still was given, we return "nothing"
 

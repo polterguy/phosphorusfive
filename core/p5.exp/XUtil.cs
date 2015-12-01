@@ -47,7 +47,10 @@ namespace p5.exp
         /// </summary>
         /// <param name="args">Arguments</param>
         /// <param name="activeEventName">Active event name</param>
-        public static void AssertHasValue (ApplicationContext context, Node args, string activeEventName)
+        public static void AssertHasValue (
+            ApplicationContext context, 
+            Node args, 
+            string activeEventName)
         {
             if (args.Value == null)
                 throw new LambdaException (
@@ -61,7 +64,11 @@ namespace p5.exp
         /// </summary>
         /// <param name="args">Argument</param>
         /// <param name="activeEventName">Active event name</param>
-        public static void AssertHasValue (ApplicationContext context, Node args, object arg, string activeEventName)
+        public static void AssertHasValue (
+            ApplicationContext context, 
+            Node args, 
+            object arg, 
+            string activeEventName)
         {
             if (arg == null)
                 throw new LambdaException (
@@ -75,9 +82,12 @@ namespace p5.exp
         /// </summary>
         /// <param name="args">Arguments</param>
         /// <param name="activeEventName">Active event name</param>
-        public static void AssertHasValueOrChildren (ApplicationContext context, Node args, string activeEventName)
+        public static void AssertHasValueOrChildren (
+            ApplicationContext context, 
+            Node args, 
+            string activeEventName)
         {
-            if (args.Value == null && args.Children.Count == 0)
+            if (args.Value == null && args.Count == 0)
                 throw new LambdaException (
                     string.Format ("No arguments or children nodes supplied to [{0}]", activeEventName), 
                     args, 
@@ -91,10 +101,10 @@ namespace p5.exp
         /// <param name="evaluatedNode">Evaluated node.</param>
         /// <param name="context">Context.</param>
         public static object FormatNode (
-            Node evaluatedNode,
-            ApplicationContext context)
+            ApplicationContext context,
+            Node evaluatedNode)
         {
-            return FormatNode (evaluatedNode, evaluatedNode, context);
+            return FormatNode (context, evaluatedNode, evaluatedNode);
         }
 
         /// <summary>
@@ -105,9 +115,9 @@ namespace p5.exp
         /// <param name="dataSource">Data source.</param>
         /// <param name="context">Context.</param>
         public static object FormatNode (
+            ApplicationContext context,
             Node evaluatedNode,
-            Node dataSource,
-            ApplicationContext context)
+            Node dataSource)
         {
             // making sure node contains formatting values
             if (!IsFormatted (evaluatedNode))
@@ -121,7 +131,7 @@ namespace p5.exp
                     if (idx.Name == string.Empty) {
 
                         // recursively format and evaluate expressions of children nodes
-                        return FormatNodeRecursively (idx, dataSource == evaluatedNode ? idx : dataSource, context) ?? "";
+                        return FormatNodeRecursively (context, idx, dataSource == evaluatedNode ? idx : dataSource) ?? "";
                     }
 
                     // this is not a part of the formatting values for our formating expression,
@@ -132,16 +142,16 @@ namespace p5.exp
 
             // returning node's value, after being formatted, according to its children node's values
             // PS, at this point all childrenValues have already been converted by the engine itself to string values
-            return string.Format (CultureInfo.InvariantCulture, evaluatedNode.Value as string, childrenValues.ToArray ());
+            return string.Format (evaluatedNode.Value as string, childrenValues.ToArray ());
         }
         
         /*
          * helper method to recursively format node's value
          */
         private static object FormatNodeRecursively (
+            ApplicationContext context,
             Node evaluatedNode,
-            Node dataSource,
-            ApplicationContext context)
+            Node dataSource)
         {
             var isFormatted = IsFormatted (evaluatedNode);
             var isExpression = IsExpression (evaluatedNode.Value);
@@ -151,12 +161,12 @@ namespace p5.exp
                 // node is recursively formatted, and also an expression
                 // formating node first, then evaluating expression
                 // PS, we cannot return null here, in case expression yields null
-                return Single<object> (evaluatedNode, dataSource, context);
+                return Single<object> (context, evaluatedNode, dataSource);
             }
             if (isFormatted) {
 
                 // node is formatted recursively, but not an expression
-                return FormatNode (evaluatedNode, dataSource, context);
+                return FormatNode (context, evaluatedNode, dataSource);
             }
             return evaluatedNode.Value ?? "";
         }
@@ -170,12 +180,12 @@ namespace p5.exp
         /// <param name="inject">Inject.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
         public static T Single<T> (
-            Node evaluatedNode,
             ApplicationContext context,
-            T defaultValue = default (T),
-            string inject = null)
+            Node evaluatedNode,
+            bool mustHaveValue = false,
+            T defaultValue = default (T))
         {
-            return Single<T> (evaluatedNode, evaluatedNode, context, defaultValue, inject);
+            return Single<T> (context, evaluatedNode, evaluatedNode, mustHaveValue, defaultValue);
         }
 
         /// <summary>
@@ -188,16 +198,20 @@ namespace p5.exp
         /// <param name="inject">Inject.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
         public static T Single<T> (
+            ApplicationContext context,
             Node evaluatedNode,
             Node dataSource,
-            ApplicationContext context,
-            T defaultValue = default (T),
-            string inject = null)
+            bool mustHaveValue = false,
+            T defaultValue = default (T))
         {
+            // Checking if node must have a value, and if so, running our assert
+            if (mustHaveValue)
+                AssertHasValue (context, evaluatedNode, evaluatedNode.Name);
+
             object singleRetVal = null;
             string multipleRetVal = null;
             var firstRun = true;
-            foreach (var idx in Iterate<T> (evaluatedNode, dataSource, context)) {
+            foreach (var idx in Iterate<T> (context, evaluatedNode, dataSource)) {
 
                 // to make sure we never convert object to string, unless absolutely necessary
                 if (firstRun) {
@@ -213,25 +227,29 @@ namespace p5.exp
                     if (multipleRetVal == null) {
 
                         // second iteration of foreach
-                        multipleRetVal = Utilities.Convert<string> (singleRetVal, context);
+                        multipleRetVal = Utilities.Convert<string> (context, singleRetVal);
                     }
                     if (idx is Node || (singleRetVal is Node)) {
 
                         // current iteration contains a node, making sure we format our string nicely, such that
                         // the end result becomes valid hyperlisp, before trying to convert to type T afterwards
-                        if (inject != "\r\n")
-                            multipleRetVal += "\r\n";
+                        multipleRetVal += "\r\n";
                         singleRetVal = null;
                     }
-                    if (inject != null)
-                        multipleRetVal += inject;
-                    multipleRetVal += Utilities.Convert<string> (idx, context);
+                    multipleRetVal += Utilities.Convert<string> (context, idx);
                 }
             }
 
             // if there was not multiple iterations above, we use our "singleRetVal" object, which never was
             // converted into a string
-            return Utilities.Convert (multipleRetVal ?? singleRetVal, context, defaultValue);
+            var retVal = Utilities.Convert (context, multipleRetVal ?? singleRetVal, defaultValue);
+
+            // Checking to see if caller explicitly assumes a value, and if so, running our assert
+            if (mustHaveValue)
+                AssertHasValue (context, evaluatedNode, retVal, evaluatedNode.Name);
+
+            // Returning result
+            return retVal;
         }
 
         /// <summary>
@@ -241,10 +259,11 @@ namespace p5.exp
         /// <param name="context">Context.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
         public static IEnumerable<T> Iterate<T> (
-            Node evaluatedNode, 
-            ApplicationContext context)
+            ApplicationContext context,
+            Node evaluatedNode,
+            bool mustHaveValue = false)
         {
-            return Iterate<T> (evaluatedNode, evaluatedNode, context);
+            return Iterate<T> (context, evaluatedNode, evaluatedNode, mustHaveValue);
         }
 
         /// <summary>
@@ -255,10 +274,15 @@ namespace p5.exp
         /// <param name="context">Context.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
         public static IEnumerable<T> Iterate<T> (
+            ApplicationContext context,
             Node evaluatedNode,
             Node dataSource,
-            ApplicationContext context)
+            bool mustHaveValue = false)
         {
+            // Checking if node must have a value, and running relevant assertion
+            if (mustHaveValue)
+                AssertHasValue (context, evaluatedNode, evaluatedNode.Name);
+
             if (evaluatedNode.Value != null) {
 
                 // checking if node's value is an expression
@@ -273,19 +297,19 @@ namespace p5.exp
 
                         // if expression is of type 'count', we return 'count', possibly triggering
                         // a conversion, returning count as type T, hence only iterating once
-                        yield return Utilities.Convert<T> (match.Count, context);
+                        yield return Utilities.Convert<T> (context, match.Count);
                     } else {
 
                         // caller requested anything but 'count', we return it as type T, possibly triggering
                         // a conversion
                         foreach (var idx in match) {
-                            yield return Utilities.Convert<T> (idx.Value, context);
+                            yield return Utilities.Convert<T> (context, idx.Value);
                         }
                     }
                 } else {
 
                     // returning single value created from value of node, but first applying formatting parameters, if there are any
-                    yield return Utilities.Convert<T> (FormatNode (evaluatedNode, dataSource, context), context);
+                    yield return Utilities.Convert<T> (context, FormatNode (context, evaluatedNode, dataSource));
                 }
             } else {
 
@@ -294,13 +318,13 @@ namespace p5.exp
                     // node's value is null, caller requests nodes, 
                     // iterating through children of node, yielding results back to caller
                     foreach (var idx in new List<Node> (evaluatedNode.Children)) {
-                        yield return Utilities.Convert<T> (idx, context);
+                        yield return Utilities.Convert<T> (context, idx);
                     }
                 } else if (typeof(T) == typeof(string)) {
 
                     // caller requests string, iterating children, yielding names of children
                     foreach (var idx in new List<Node> (evaluatedNode.Children)) {
-                        yield return Utilities.Convert<T> (idx.Name, context);
+                        yield return Utilities.Convert<T> (context, idx.Name);
                     }
                 } else {
 
@@ -319,9 +343,11 @@ namespace p5.exp
         /// <returns>The single.</returns>
         /// <param name="evaluatedNode">Evaluated node.</param>
         /// <param name="context">Context.</param>
-        public static object SourceSingle (Node evaluatedNode, ApplicationContext context)
+        public static object SourceSingle (
+            ApplicationContext context,
+            Node evaluatedNode)
         {
-            return SourceSingle (evaluatedNode, evaluatedNode, context);
+            return SourceSingle (context, evaluatedNode, evaluatedNode);
         }
 
         /// <summary>
@@ -332,9 +358,9 @@ namespace p5.exp
         /// <param name="dataSource">Data source.</param>
         /// <param name="context">Context.</param>
         public static object SourceSingle (
+            ApplicationContext context,
             Node evaluatedNode, 
-            Node dataSource, 
-            ApplicationContext context)
+            Node dataSource)
         {
             if (evaluatedNode.LastChild == null || evaluatedNode.LastChild.Name == string.Empty)
                 return null; // no source!
@@ -369,26 +395,26 @@ namespace p5.exp
                         tmpRetVal.AddRange (idxSrcNode.Clone ().Children);
                     }
                 }
-                return SourceSingleImplementation (tmpRetVal, tmpRetVal, context);
+                return SourceSingleImplementation (context, tmpRetVal, tmpRetVal);
             } else {
 
                 // simple source
                 return SourceSingleImplementation (
+                    context,
                     evaluatedNode.LastChild, 
-                    dataSource == evaluatedNode ? evaluatedNode.LastChild : dataSource, 
-                    context);
+                    dataSource == evaluatedNode ? evaluatedNode.LastChild : dataSource);
             }
         }
 
         private static object SourceSingleImplementation (
+            ApplicationContext context,
             Node evaluatedNode, 
-            Node dataSource, 
-            ApplicationContext context)
+            Node dataSource)
         {
             if (evaluatedNode.Value != null) {
 
                 // this might be an expression, or a constant, converting value to single object, somehow
-                return Single<object> (evaluatedNode, dataSource, context);
+                return Single<object> (context, evaluatedNode, dataSource);
             } else {
 
                 // there are no values in [src] node, trying to create source out of [src]'s children
@@ -399,7 +425,7 @@ namespace p5.exp
                 } else {
 
                     // more than one source, making sure we convert it into one single value, meaning a 'string'
-                    return Utilities.Convert<string> (evaluatedNode.Children, context);
+                    return Utilities.Convert<string> (context, evaluatedNode.Children);
                 }
             }
         }
@@ -410,9 +436,11 @@ namespace p5.exp
         /// <returns>The nodes.</returns>
         /// <param name="evaluatedNode">Evaluated node.</param>
         /// <param name="context">Context.</param>
-        public static List<Node> SourceNodes (Node evaluatedNode, ApplicationContext context)
+        public static List<Node> SourceNodes (
+            ApplicationContext context,
+            Node evaluatedNode)
         {
-            return SourceNodes (evaluatedNode, evaluatedNode, context);
+            return SourceNodes (context, evaluatedNode, evaluatedNode);
         }
 
         /// <summary>
@@ -422,7 +450,10 @@ namespace p5.exp
         /// <param name="evaluatedNode">Evaluated node.</param>
         /// <param name="dataSource">Data source.</param>
         /// <param name="context">Context.</param>
-        public static List<Node> SourceNodes (Node evaluatedNode, Node dataSource, ApplicationContext context)
+        public static List<Node> SourceNodes (
+            ApplicationContext context,
+            Node evaluatedNode, 
+            Node dataSource)
         {
             if (evaluatedNode.LastChild == null || evaluatedNode.LastChild.Name == string.Empty)
                 return null; // no source!
@@ -461,18 +492,21 @@ namespace p5.exp
                         tmpRetVal.AddRange (idxSrcNode.Clone ().Children);
                     }
                 }
-                return SourceNodesImplementation (tmpRetVal, tmpRetVal, context);
+                return SourceNodesImplementation (context, tmpRetVal, tmpRetVal);
             } else {
 
                 // simple source
                 return SourceNodesImplementation (
+                    context,
                     evaluatedNode.LastChild, 
-                    dataSource == evaluatedNode ? evaluatedNode.LastChild : dataSource, 
-                    context);
+                    dataSource == evaluatedNode ? evaluatedNode.LastChild : dataSource);
             }
         }
 
-        private static List<Node> SourceNodesImplementation (Node evaluatedNode, Node dataSource, ApplicationContext context)
+        private static List<Node> SourceNodesImplementation (
+            ApplicationContext context,
+            Node evaluatedNode, 
+            Node dataSource)
         {
             var sourceNodes = new List<Node> ();
 
@@ -488,7 +522,7 @@ namespace p5.exp
                         // [source] is an expression leading to something that's not a node, this
                         // will trigger conversion from string to node, adding a "root node" during
                         // conversion. we make sure we remove this node, when creating our source
-                        sourceNodes.AddRange (Utilities.Convert<Node> (idx.Value, context).Children.Select (idxInner => idxInner.Clone ()));
+                        sourceNodes.AddRange (Utilities.Convert<Node> (context, idx.Value).Children.Select (idxInner => idxInner.Clone ()));
                     } else {
 
                         // [source] is an expression, leading to something that's already a node somehow
@@ -508,7 +542,7 @@ namespace p5.exp
                     // source is not an expression, but a string value. this will trigger a conversion
                     // from string, to node, creating a "root node" during conversion. we are discarding this 
                     // "root" node, and only adding children of that automatically generated root node
-                    sourceNodes.AddRange (Utilities.Convert<Node> (FormatNode(evaluatedNode, context), context).Children.Select (idx => idx.Clone ()));
+                    sourceNodes.AddRange (Utilities.Convert<Node> (context, FormatNode(context, evaluatedNode)).Children.Select (idx => idx.Clone ()));
                 } else if (evaluatedNode.Value == null) {
 
                     // source has no value, neither static string values, nor expressions
@@ -546,7 +580,7 @@ namespace p5.exp
             if (args.Value is Expression) {
 
                 // evaluating node, and stuffing results into arguments
-                foreach (var idx in XUtil.Iterate<object> (args, context)) {
+                foreach (var idx in XUtil.Iterate<object> (context, args)) {
 
                     // adding currently iterated results into execution object
                     var idxNode = idx as Node;
@@ -563,7 +597,7 @@ namespace p5.exp
             } else if (args.Value != null) {
 
                 // simple value argument
-                exeLambda.Add ("_arg", XUtil.FormatNode (args, context));
+                exeLambda.Add ("_arg", XUtil.FormatNode (context, args));
             }
 
             // then adding actual Active Event code, to make sure lambda event is at the END of entire node structure, after arguments

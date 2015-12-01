@@ -23,7 +23,7 @@ namespace p5.web.ui.response
         [ActiveEvent (Name = "set-http-header")]
         private static void set_http_header (ApplicationContext context, ActiveEventArgs e)
         {
-            foreach (var idxMatch in XUtil.Iterate<Node> (e.Args, context)) {
+            foreach (var idxMatch in XUtil.Iterate<Node> (context, e.Args)) {
                 if (idxMatch.Value == null) {
 
                     // removing specific header
@@ -31,7 +31,7 @@ namespace p5.web.ui.response
                 } else {
 
                     // adding header
-                    HttpContext.Current.Response.AddHeader (idxMatch.Name, XUtil.Single<string> (idxMatch, context));
+                    HttpContext.Current.Response.AddHeader (idxMatch.Name, XUtil.Single<string> (context, idxMatch));
                 }
             }
         }

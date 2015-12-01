@@ -25,7 +25,7 @@ namespace p5.exp.matchentities
                 object retVal = Node;
                 if (!string.IsNullOrEmpty (_match.Convert)) {
                     retVal = _match.Convert == "string" ?
-                        Utilities.Convert<string> (retVal, _match.Context) :
+                        Utilities.Convert<string> (_match.Context, retVal) :
                             _match.Context.Raise ("p5.hyperlisp.get-object-value." + _match.Convert, new Node (string.Empty, retVal)).Value;
                 }
                 return retVal;
@@ -35,7 +35,7 @@ namespace p5.exp.matchentities
                 if (value == null) {
                     Node.UnTie ();
                 } else {
-                    var tmp = Utilities.Convert<Node> (value, _match.Context);
+                    var tmp = Utilities.Convert<Node> (_match.Context, value);
                     if (value is string) {
                         // Node was created from a conversion from string, making sure that we discard
                         // the automatically created "root node" in object

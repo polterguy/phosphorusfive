@@ -612,7 +612,7 @@ insert-before:x:/../0
             var node = CreateNode (@"succ
 ess:bar2");
             string result = "";
-            foreach (var idx in XUtil.Iterate<string> (node, Context)) {
+            foreach (var idx in XUtil.Iterate<string> (Context, node)) {
                 result += idx;
             }
             Assert.AreEqual ("success", result);
@@ -624,7 +624,7 @@ ess:bar2");
             var node = CreateNode (@"err:5
 or:2");
             int result = 0;
-            foreach (var idx in XUtil.Iterate<int> (node, Context)) {
+            foreach (var idx in XUtil.Iterate<int> (Context, node)) {
                 result += idx;
             }
             Assert.AreEqual (7, result);
@@ -635,7 +635,7 @@ or:2");
         {
             var node = CreateNode (@"succ:err
 ess:or");
-            string result = XUtil.Single<string> (node, Context);
+            string result = XUtil.Single<string> (Context, node);
             Assert.AreEqual ("success", result);
         }
     }

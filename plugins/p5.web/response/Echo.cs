@@ -48,7 +48,7 @@ namespace p5.web.ui.response
             } else {
 
                 // Content is string, integer, etc type of content
-                HttpContext.Current.Response.Write (XUtil.Single<string> (e.Args, context));
+                HttpContext.Current.Response.Write (XUtil.Single<string> (context, e.Args));
             }
 
             // flushing response, and making sure default content is never rendered
@@ -82,7 +82,7 @@ namespace p5.web.ui.response
             rootFolder = rootFolder.Replace ("\\", "/");
 
             // rendering file back to client over response
-            var fullPath = rootFolder + XUtil.Single<string> (e.Args, context);
+            var fullPath = rootFolder + XUtil.Single<string> (context, e.Args);
             using (Stream fileStream = File.OpenRead (fullPath)) {
                 fileStream.CopyTo (HttpContext.Current.Response.OutputStream);
             }

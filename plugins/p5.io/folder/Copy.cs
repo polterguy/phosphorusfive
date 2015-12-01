@@ -35,10 +35,10 @@ namespace p5.file.folder
                 var rootFolder = Common.GetRootFolder (context);
 
                 // getting folder to copy
-                string sourceFolder = XUtil.Single<string> (e.Args, context).Trim ('/') + "/";
+                string sourceFolder = XUtil.Single<string> (context, e.Args).Trim ('/') + "/";
 
                 // Gettting new path of folder
-                string destinationFolder = XUtil.Single<string> (e.Args ["to"], context).Trim ('/') + "/";
+                string destinationFolder = XUtil.Single<string> (context, e.Args ["to"]).Trim ('/') + "/";
 
                 // Getting new foldername for folder, if needed
                 if (Directory.Exists (rootFolder + destinationFolder)) {

@@ -17,16 +17,13 @@ namespace p5.html
     public static class Lambda2Html
     {
         /// <summary>
-        ///     Creates an HTML document from the given p5.lambda
+        ///     Creates an HTML document from the given p5.lambda object
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="e">Parameters passed into Active Event.</param>
         [ActiveEvent (Name = "p5.html.lambda2html")]
         private static void p5_html_lambda2html (ApplicationContext context, ActiveEventArgs e)
         {
-            // Asserting that we are actually given an argument
-            XUtil.AssertHasValueOrChildren (context, e.Args, "p5.html.lambda2html");
-
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args)) {
 
@@ -34,7 +31,7 @@ namespace p5.html
                 StringBuilder builder = new StringBuilder ();
 
                 // Doing actual conversion from lambda to HTML
-                Convert (XUtil.Iterate<Node> (e.Args, e.Args, context), builder, 0, context);
+                Convert (context, XUtil.Iterate<Node> (context, e.Args), builder);
 
                 // Returning HTML to caller
                 e.Args.Value = builder.ToString ().Trim ();
@@ -44,7 +41,11 @@ namespace p5.html
         /*
          * helper for above
          */
-        private static bool Convert (IEnumerable<Node> nodes, StringBuilder builder, int level, ApplicationContext context)
+        private static bool Convert (
+            ApplicationContext context, 
+            IEnumerable<Node> nodes, 
+            StringBuilder builder, 
+            int level = 0)
         {
             bool retVal = false;
             foreach (Node idxNode in nodes) {
@@ -54,7 +55,7 @@ namespace p5.html
                     builder.Append (' ', 4);
                 }
                 builder.Append (string.Format ("<{0}{1}>", idxNode.Name, GetAttributes (idxNode)));
-                bool hadChildren = Convert (idxNode.FindAll (idx => !idx.Name.StartsWith ("@")), builder, level + 1, context);
+                bool hadChildren = Convert (context, idxNode.FindAll (idx => !idx.Name.StartsWith ("@")), builder, level + 1);
                 if (hadChildren) {
                     builder.Append ("\r\n");
                     for (int idxSpacer = 0; idxSpacer < level; idxSpacer++) {

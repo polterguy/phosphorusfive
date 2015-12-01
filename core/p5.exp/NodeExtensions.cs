@@ -30,12 +30,11 @@ namespace p5.exp
             this Node node, 
             string name, 
             ApplicationContext context, 
-            T defaultValue = default(T),
-            string inject = null)
+            T defaultValue = default(T))
         {
             if (node [name] == null || node [name].Value == null)
                 return defaultValue;
-            return XUtil.Single<T> (node [name], node [name], context, defaultValue, inject);
+            return XUtil.Single<T> (context, node [name], node [name], false, defaultValue);
         }
 
         /// <summary>
@@ -52,12 +51,11 @@ namespace p5.exp
         public static T GetExValue<T> (
             this Node node, 
             ApplicationContext context, 
-            T defaultValue = default(T), 
-            string inject = null)
+            T defaultValue = default(T))
         {
             if (node.Value == null)
                 return defaultValue;
-            return XUtil.Single<T> (node, node, context, defaultValue, inject);
+            return XUtil.Single<T> (context, node, node, false, defaultValue);
         }
     }
 }

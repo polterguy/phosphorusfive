@@ -31,7 +31,7 @@ namespace p5.unittests.lambda
 insert-before:x:/../0
   get-events:events.test1");
             Assert.AreEqual (@"events.test1
-  foo:bar", Utilities.Convert<string> (result [0], Context));
+  foo:bar", Utilities.Convert<string> (Context, result [0]));
         }
         
         /// <summary>
@@ -46,7 +46,7 @@ _evt:events.test2
 insert-before:x:/../0
   get-events:x:/./-?value");
             Assert.AreEqual (@"events.test2
-  foo:bar", Utilities.Convert<string> (result [0], Context));
+  foo:bar", Utilities.Convert<string> (Context, result [0]));
         }
         
         /// <summary>
@@ -64,7 +64,7 @@ _evt
   events.test4
 insert-before:x:/../0
   get-events:x:/./-/*?name");
-            string evts = Utilities.Convert<string> (result, Context);
+            string evts = Utilities.Convert<string> (Context, result);
             Assert.AreEqual (@"""""
   events.test3
     foo1:bar1
@@ -89,7 +89,7 @@ _evt
 insert-before:x:/../0
   get-events:x:/./{0}/*?name
     :x:/../*/_val?value");
-            string evts = Utilities.Convert<string> (result, Context);
+            string evts = Utilities.Convert<string> (Context, result);
             Assert.AreEqual (@"""""
   events.test3
     foo1:bar1

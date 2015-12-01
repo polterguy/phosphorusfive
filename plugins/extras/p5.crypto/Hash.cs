@@ -29,17 +29,11 @@ namespace phosphorus.crypto
         [ActiveEvent (Name = "md5-hash")]
         private static void md5_hash (ApplicationContext context, ActiveEventArgs e)
         {
-            // Asserting that we are actually given an argument
-            XUtil.AssertHasValue (context, e.Args, "md5-hash");
-
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args)) {
 
                 // Retrieving value to hash as a single string
-                var whatToHash = XUtil.Single<string> (e.Args, context);
-
-                // Making sure we're actually given a value, and not some expression leading into oblivion
-                XUtil.AssertHasValue (context, e.Args, whatToHash, "md5-hash");
+                var whatToHash = XUtil.Single<string> (context, e.Args, true);
 
                 // Creating MD5 hash, and returning as value of args
                 using (var md5 = MD5.Create ()) {

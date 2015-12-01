@@ -47,7 +47,7 @@ namespace p5.web.ui.common
 
             // looping through each destination, creating an object, or removing an existing
             // object, for each destination
-            foreach (var idx in XUtil.Iterate<string> (node, context)) {
+            foreach (var idx in XUtil.Iterate<string> (context, node)) {
 
                 // single object
                 functor (idx, source);
@@ -66,7 +66,7 @@ namespace p5.web.ui.common
             using (new Utilities.ArgsRemover (node, true)) {
 
                 // iterating through each "key"
-                foreach (var idx in XUtil.Iterate<string> (node, context)) {
+                foreach (var idx in XUtil.Iterate<string> (context, node)) {
 
                     // retrieving object from key
                     var value = functor (idx);
@@ -119,7 +119,7 @@ namespace p5.web.ui.common
             using (new Utilities.ArgsRemover (node, true)) {
 
                 // retrieving filters, if any
-                var filter = new List<string> (XUtil.Iterate<string> (node, context));
+                var filter = new List<string> (XUtil.Iterate<string> (context, node));
 
                 // looping through each existing key in collection
                 foreach (var idxKey in functor ()) {
@@ -154,7 +154,7 @@ namespace p5.web.ui.common
 
                 // this is an expression which might lead to multiple results, trying to return one result,
                 // but will resort to returning List of objects if necssary
-                var tmpList = new List<object> (XUtil.Iterate<object> (evaluatedNode, evaluatedNode, context));
+                var tmpList = new List<object> (XUtil.Iterate<object> (context, evaluatedNode, evaluatedNode));
                 switch (tmpList.Count) {
                     case 0:
                         // no source values
@@ -170,7 +170,7 @@ namespace p5.web.ui.common
             } else if (evaluatedNode.Value != null) {
 
                 // source is a constant, might still be formatted
-                source = XUtil.FormatNode (evaluatedNode, evaluatedNode, context);
+                source = XUtil.FormatNode (context, evaluatedNode, evaluatedNode);
 
                 if (source is Node)
                     source = (source as Node).Clone ();

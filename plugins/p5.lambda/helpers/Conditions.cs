@@ -129,7 +129,7 @@ namespace p5.lambda.helpers
             } else {
                 if (!(args.Value is bool)) {
 
-                    var obj = XUtil.Single<object> (args, context, null);
+                    var obj = XUtil.Single<object> (context, args, false, null);
                     if (obj is bool) {
 
                         args.Value = obj;

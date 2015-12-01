@@ -33,10 +33,10 @@ namespace p5.file.folder
                 var rootFolder = Common.GetRootFolder (context);
 
                 // getting file to move
-                string sourceFolder = XUtil.Single<string> (e.Args, context).Trim ('/') + "/";
+                string sourceFolder = XUtil.Single<string> (context, e.Args).Trim ('/') + "/";
 
                 // Getting new filename of file
-                string destinationFolder = XUtil.Single<string> (e.Args ["to"], context).Trim ('/') + "/";
+                string destinationFolder = XUtil.Single<string> (context, e.Args ["to"]).Trim ('/') + "/";
 
                 if (sourceFolder == destinationFolder)
                     return; // Nothing to do here

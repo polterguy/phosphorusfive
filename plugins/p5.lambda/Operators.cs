@@ -141,10 +141,10 @@ namespace p5.lambda
         private static Tuple<List<object>, List<object>> GetBothSides (Node args, ApplicationContext context)
         {
             // left-hand side
-            List<object> lhs = new List<object> (XUtil.Iterate<object> (args.Parent, context));
+            List<object> lhs = new List<object> (XUtil.Iterate<object> (context, args.Parent));
 
             // right-hand side
-            List<object> rhs = new List<object> (XUtil.Iterate<object> (args, context));
+            List<object> rhs = new List<object> (XUtil.Iterate<object> (context, args));
 
             // returning both sides to caller
             return new Tuple<List<object>, List<object>> (lhs, rhs);

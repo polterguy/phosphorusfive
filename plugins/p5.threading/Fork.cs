@@ -93,7 +93,7 @@ namespace p5.threading
             } else {
 
                 // iterating each result
-                foreach (var idxResult in XUtil.Iterate<Node> (args, context)) {
+                foreach (var idxResult in XUtil.Iterate<Node> (context, args)) {
 
                     // returning each iterated result
                     yield return idxResult.Clone ();

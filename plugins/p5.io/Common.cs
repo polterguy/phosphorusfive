@@ -95,13 +95,13 @@ namespace p5.file
         public static IEnumerable<string> GetSource (Node args, ApplicationContext context)
         {
             if (args.Value != null) {
-                foreach (var idx in XUtil.Iterate<string> (args, context)) {
+                foreach (var idx in XUtil.Iterate<string> (context, args)) {
 
                     yield return idx;
                 }
                 yield break;
             } else {
-                var objRetVal = XUtil.SourceSingle (args, context);
+                var objRetVal = XUtil.SourceSingle (context, args);
                 if (objRetVal is Node) {
 
                     // Converting to a single string
@@ -115,7 +115,7 @@ namespace p5.file
                     }
                     yield break;
                 }
-                yield return Utilities.Convert<string> (objRetVal, context) ?? "";
+                yield return Utilities.Convert<string> (context, objRetVal) ?? "";
             }
         }
     }

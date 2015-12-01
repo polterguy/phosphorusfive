@@ -23,7 +23,7 @@ namespace p5.threading
         [ActiveEvent (Name = "sleep")]
         private static void lambda_sleep (ApplicationContext context, ActiveEventArgs e)
         {
-            var milliseconds = XUtil.Single<int> (e.Args, context);
+            var milliseconds = XUtil.Single<int> (context, e.Args);
             Thread.Sleep (milliseconds);
         }
     }

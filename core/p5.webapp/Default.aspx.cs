@@ -137,7 +137,7 @@ namespace p5.webapp
             using (new p5.core.Utilities.ArgsRemover(e.Args)) {
 
                 // loping through all control ID's given
-                foreach (var widgetId in XUtil.Iterate<string> (e.Args, context)) {
+                foreach (var widgetId in XUtil.Iterate<string> (context, e.Args)) {
 
                     e.Args.Add(widgetId, FindControl<Control>(widgetId, Page) != null);
                 }
@@ -277,7 +277,7 @@ namespace p5.webapp
             using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
 
                 // retrieving filter, if any
-                var filter = new List<string>(XUtil.Iterate<string>(e.Args, context));
+                var filter = new List<string>(XUtil.Iterate<string>(context, e.Args));
                 if (e.Args.Value != null && filter.Count == 0)
                     return; // possibly a filter expression, leading into oblivion
 
@@ -753,7 +753,7 @@ namespace p5.webapp
         private void send_javascript (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through each JavaScript snippet
-            foreach (var idxSnippet in XUtil.Iterate<string> (e.Args, context)) {
+            foreach (var idxSnippet in XUtil.Iterate<string> (context, e.Args)) {
 
                 // Passing file to client
                 Manager.SendJavaScriptToClient (idxSnippet);
@@ -769,7 +769,7 @@ namespace p5.webapp
         private void include_javascript (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through each JavaScript snippet
-            foreach (var idxSnippet in XUtil.Iterate<string> (e.Args, context)) {
+            foreach (var idxSnippet in XUtil.Iterate<string> (context, e.Args)) {
 
                 // Passing file to client
                 RegisterJavaScript (idxSnippet);
@@ -785,7 +785,7 @@ namespace p5.webapp
         private void include_javascript_file (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through each JavaScript file
-            foreach (var idxFile in XUtil.Iterate<string> (e.Args, context)) {
+            foreach (var idxFile in XUtil.Iterate<string> (context, e.Args)) {
 
                 // Passing file to client
                 RegisterJavaScriptFile (idxFile);
@@ -801,7 +801,7 @@ namespace p5.webapp
         private void include_stylesheet_file (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through each stylesheet file given
-            foreach (var idxFile in XUtil.Iterate<string> (e.Args, context)) {
+            foreach (var idxFile in XUtil.Iterate<string> (context, e.Args)) {
 
                 // Register file for inclusion back to client
                 RegisterStylesheetFile (idxFile);
@@ -816,7 +816,7 @@ namespace p5.webapp
         [ActiveEvent (Name = "set-title")]
         private void set_title (ApplicationContext context, ActiveEventArgs e)
         {
-            var title = XUtil.Single<string>(e.Args, context);
+            var title = XUtil.Single<string>(context, e.Args);
             if (Manager.IsPhosphorusRequest) {
 
                 // passing title to client as JavaScript update
@@ -852,11 +852,11 @@ namespace p5.webapp
             if (Manager.IsPhosphorusRequest) {
 
                 // Redirecting using JavaScript
-                Manager.SendJavaScriptToClient (string.Format ("window.location='{0}';", XUtil.Single<string> (e.Args, context).Replace ("\\", "\\\\").Replace ("'", "\\'")));
+                Manager.SendJavaScriptToClient (string.Format ("window.location='{0}';", XUtil.Single<string> (context, e.Args).Replace ("\\", "\\\\").Replace ("'", "\\'")));
             } else {
 
                 // Redirecting using Response object
-                Page.Response.Redirect (XUtil.Single<string> (e.Args, context));
+                Page.Response.Redirect (XUtil.Single<string> (context, e.Args));
             }
         }
 
@@ -891,8 +891,8 @@ namespace p5.webapp
         [ActiveEvent (Name = "return-value")]
         private void return_value (ApplicationContext context, ActiveEventArgs e)
         {
-            var key = XUtil.Single<string> (e.Args, context);
-            var str = p5.core.Utilities.Convert<string> (XUtil.SourceSingle(e.Args, context), context, "");
+            var key = XUtil.Single<string> (context, e.Args);
+            var str = p5.core.Utilities.Convert<string> (context, XUtil.SourceSingle(context, e.Args), "");
             Manager.SendObject (key, str);
         }
 
@@ -945,7 +945,7 @@ namespace p5.webapp
          */
         private IEnumerable<T> FindWidgets<T> (Node args) where T : Control
         {
-            foreach (var widget in XUtil.Iterate<string> (args, _context).Select (ix => FindControl<T>(ix, Page))) {
+            foreach (var widget in XUtil.Iterate<string> (_context, args).Select (ix => FindControl<T>(ix, Page))) {
 
                 if (widget == null)
                     continue;
@@ -958,7 +958,7 @@ namespace p5.webapp
          */
         private IEnumerable<T> FindWidgetsThrow<T> (Node args, string activeEventName) where T : Control
         {
-            foreach (var ctrl in XUtil.Iterate<string> (args, _context).Select (ix => FindControl<Control>(ix, Page))) {
+            foreach (var ctrl in XUtil.Iterate<string> (_context, args).Select (ix => FindControl<Control>(ix, Page))) {
 
                 if (ctrl == null)
                     throw new ArgumentException("Couldn't find control with that ID");

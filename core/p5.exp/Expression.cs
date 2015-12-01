@@ -182,12 +182,12 @@ namespace p5.exp
                     var match = exVal.Evaluate (formatNodes [idx], context, formatNodes [idx]);
                     val = "";
                     foreach (var idxMatch in match) {
-                        val += Utilities.Convert<string> (idxMatch.Value, context);
+                        val += Utilities.Convert<string> (context, idxMatch.Value);
                     }
                 } else {
-                    val = XUtil.FormatNode (formatNodes [idx], context);
+                    val = XUtil.FormatNode (context, formatNodes [idx]);
                 }
-                retVal = retVal.Replace ("{" + idx + "}", Utilities.Convert<string> (val, context));
+                retVal = retVal.Replace ("{" + idx + "}", Utilities.Convert<string> (context, val));
             }
             return retVal;
         }

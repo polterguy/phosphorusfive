@@ -19,7 +19,7 @@ create-widget:finished
     literal
       element:blockquote
       innerValue:@"<em>""Congratulations, your system is now setup, and ready to use! The first thing you'd probably want
-to do, is to visit your <a href=""/superuser/pages"">Page editor</a>, and modify the main landing page. If you 
+to do, is to visit your <a href=""/superuser/editor"">Page editor</a>, and modify the main landing page. If you 
 <a href=""/"">reload</a> this page, you will see how your website looks like at the moment for any random visitor.""</em>"
 
 update-data:x:/*/*/p5.page/"=/"

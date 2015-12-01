@@ -39,7 +39,7 @@ namespace p5.types
                 // Exploting the fact that conversions will throw exception if conversion is not possible
                 try
                 {
-                    foreach (var idx in XUtil.Iterate<object> (e.Args, context)) {
+                    foreach (var idx in XUtil.Iterate<object> (context, e.Args)) {
                         var objValue = context.Raise ("p5.hyperlisp.get-object-value." + type, new Node (string.Empty, idx)).Value;
                     }
 

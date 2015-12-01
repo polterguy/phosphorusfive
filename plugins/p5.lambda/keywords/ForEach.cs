@@ -41,7 +41,7 @@ namespace p5.lambda.keywords
                 if (strValue != null) {
 
                     // Value of node is a string, converting to node and iterating the converted node's children
-                    foreach (var idxSource in Utilities.Convert<Node> (strValue, context).Children) {
+                    foreach (var idxSource in Utilities.Convert<Node> (context, strValue).Children) {
 
                         IterateForEach (context, idxSource, e.Args, oldForEach);
                     }

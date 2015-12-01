@@ -32,17 +32,11 @@ namespace p5.html
         [ActiveEvent (Name = "p5.html.html2lambda")]
         private static void p5_html_html2lambda (ApplicationContext context, ActiveEventArgs e)
         {
-            // Asserting that we are actually given an argument
-            XUtil.AssertHasValue (context, e.Args, "p5.html.html2lambda");
-
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // Loops through all documents we're supposed to transform
-                foreach (var idxHtmlDoc in XUtil.Iterate<string> (e.Args, context)) {
-
-                    // Making sure we're actually given a value, and not some expression leading into oblivion
-                    XUtil.AssertHasValue (context, e.Args, idxHtmlDoc, "p5.html.html2lambda");
+                foreach (var idxHtmlDoc in XUtil.Iterate<string> (context, e.Args, true)) {
 
                     // Converting currently iterated document/fragment
                     var doc = new HtmlDocument ();

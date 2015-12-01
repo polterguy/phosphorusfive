@@ -35,7 +35,7 @@ namespace p5.file.folder
                 if (e.Args ["filter"] != null) {
 
                     // we're given filters
-                    filters = new List<string> (new List<string> (XUtil.Iterate<string> (e.Args ["filter"], context)));
+                    filters = new List<string> (new List<string> (XUtil.Iterate<string> (context, e.Args ["filter"])));
                 } else {
 
                     // no filters

@@ -38,7 +38,7 @@ namespace p5.data
 
                 // looping through all nodes given as children or through expression
                 var changed = new List<Node> ();
-                foreach (var idx in XUtil.Iterate<Node> (e.Args, context)) {
+                foreach (var idx in XUtil.Iterate<Node> (context, e.Args)) {
 
                     // inserting node
                     if (e.Args.Value is string && !XUtil.IsExpression (e.Args.Value)) {

@@ -47,12 +47,12 @@ namespace p5.data
                         Common.AddNodeToChanges (idxDestination.Node, changed);
 
                         // source is relative to destination
-                        idxDestination.Value = XUtil.SourceSingle (e.Args, idxDestination.Node, context);
+                        idxDestination.Value = XUtil.SourceSingle (context, e.Args, idxDestination.Node);
                     }
                 } else if (e.Args.Count > 0 && e.Args.LastChild.Name == "src") {
 
                     // figuring out source
-                    var source = XUtil.SourceSingle (e.Args, context);
+                    var source = XUtil.SourceSingle (context, e.Args);
 
                     // iterating through all destinations, updating with source
                     foreach (var idxDestination in e.Args.Get<Expression> (context).Evaluate (Common.Database, context, e.Args)) {

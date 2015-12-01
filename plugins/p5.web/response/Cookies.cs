@@ -58,7 +58,7 @@ namespace p5.web.ui.response
         private static HttpCookie CreateCookieFromNode (Node node, ApplicationContext context, string name, object nodes)
         {
             // creating cookie to send back to caller
-            var retVal = new HttpCookie (name, HttpUtility.UrlEncode (Utilities.Convert<string> (nodes, context))) {
+            var retVal = new HttpCookie (name, HttpUtility.UrlEncode (Utilities.Convert<string> (context, nodes))) {
                 Expires = DateTime.Now.Date.AddDays (node.GetChildValue ("duration", context, 365)),
                 HttpOnly = node.GetChildValue ("http-only", context, true)
             };

@@ -54,7 +54,7 @@ namespace p5.file.utilities
                         using (var archive = TarArchive.CreateOutputTarArchive (gzStream)) {
 
                             // Looping through each input directory given
-                            foreach (var idxSource in XUtil.Iterate<string> (e.Args, context)) {
+                            foreach (var idxSource in XUtil.Iterate<string> (context, e.Args)) {
 
                                 // Verifying file-/folder name is not a "restricted" type of file
                                 if (idxSource.StartsWith (".") || idxSource.EndsWith ("~"))
@@ -95,7 +95,7 @@ namespace p5.file.utilities
                 var destinationFolder = e.Args ["to"].GetExValue<string> (context);
 
                 // Looping through each source zip folder given
-                foreach (var idxSource in XUtil.Iterate<string> (e.Args, context)) {
+                foreach (var idxSource in XUtil.Iterate<string> (context, e.Args)) {
 
                     // Verifying file-/folder name is not a "restricted" type of file
                     if (idxSource.StartsWith (".") || idxSource.EndsWith ("~"))

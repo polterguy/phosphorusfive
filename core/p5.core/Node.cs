@@ -476,7 +476,7 @@ namespace p5.core
         /// <typeparam name="T">Type to convert value to.</typeparam>
         public T Get<T> (ApplicationContext context, T defaultValue = default (T))
         {
-            return Utilities.Convert (Value, context, defaultValue);
+            return Utilities.Convert (context, Value, defaultValue);
         }
 
         /// <summary>
@@ -490,7 +490,7 @@ namespace p5.core
         /// <param name="encode">If set to <c>true</c> then string will be base64 encoded if necessary.</param>
         public string StringEncodeValue (ApplicationContext context, bool encode)
         {
-            return Utilities.Convert<string> (Value, context, null, encode);
+            return Utilities.Convert<string> (context, Value, null, encode);
         }
 
         /// <summary>

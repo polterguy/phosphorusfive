@@ -54,8 +54,8 @@ namespace p5.core
         /// <param name="encode">If true, then the value will be encoded as base64, if necessary, and value is byte[].</param>
         /// <typeparam name="T">Type to convert your value to.</typeparam>
         public static T Convert<T> (
-            object value,
             ApplicationContext context,
+            object value,
             T defaultValue = default (T),
             bool encode = false)
         {

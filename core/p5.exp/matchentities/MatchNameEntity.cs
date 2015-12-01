@@ -32,7 +32,7 @@ namespace p5.exp.matchentities
             }
             set
             {
-                Node.Name = Utilities.Convert (value, _match.Context, string.Empty);
+                Node.Name = Utilities.Convert (_match.Context, value, string.Empty);
             }
         }
     }

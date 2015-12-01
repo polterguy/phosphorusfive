@@ -31,10 +31,10 @@ namespace p5.file.file
                 var rootFolder = Common.GetRootFolder (context);
 
                 // getting source
-                var source = Utilities.Convert<string> (XUtil.SourceSingle (e.Args, context), context);
+                var source = Utilities.Convert<string> (context, XUtil.SourceSingle (context, e.Args));
 
                 // getting filename
-                string fileName = XUtil.Single<string> (e.Args, context);
+                string fileName = XUtil.Single<string> (context, e.Args);
 
                 // saving file
                 using (TextWriter writer = File.CreateText (rootFolder + fileName)) {
@@ -77,10 +77,10 @@ namespace p5.file.file
                     throw new LambdaException ("No [src] given to [save-file]", e.Args, context);
 
                 // getting source
-                var source = Utilities.Convert<byte[]> (XUtil.SourceSingle (e.Args, context), context);
+                var source = Utilities.Convert<byte[]> (context, XUtil.SourceSingle (context, e.Args));
 
                 // getting filename
-                string fileName = XUtil.Single<string> (e.Args, context);
+                string fileName = XUtil.Single<string> (context, e.Args);
 
                 // saving file
                 using (FileStream stream = File.Create (rootFolder + fileName)) {

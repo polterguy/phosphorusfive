@@ -33,10 +33,10 @@ namespace p5.file.file
                 var rootFolder = Common.GetRootFolder (context);
 
                 // Getting source
-                string sourceFile = XUtil.Single<string> (e.Args, context);
+                string sourceFile = XUtil.Single<string> (context, e.Args);
 
                 // Getting destination
-                string destinationFile = XUtil.Single<string> (e.Args ["to"], context);
+                string destinationFile = XUtil.Single<string> (context, e.Args ["to"]);
 
                 // Getting new filename of file, if needed
                 if (File.Exists (rootFolder + destinationFile)) {

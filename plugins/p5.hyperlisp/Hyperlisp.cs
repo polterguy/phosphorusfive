@@ -187,7 +187,20 @@ namespace p5.hyperlisp
             // making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
-                e.Args.AddRange (new NodeBuilder (context, XUtil.Single<string> (e.Args, context, "", "\r\n")).Nodes);
+                // Concatenating all Hyperlisp submitted, injecting CR/LF between each component
+                StringBuilder builder = new StringBuilder();
+                foreach (var idxHyperlisp in XUtil.Iterate<string> (context, e.Args)) {
+
+                    // Making sure we put in a carriage return between each Hyperlisp entity
+                    if (builder.Length > 0)
+                        builder.Append ("\r\n");
+
+                    // Appending currently iterated Hyperlisp into StringBuilder
+                    builder.Append (idxHyperlisp);
+                }
+
+                // Utilizing NodeBuilder to create our p5.lambda return value
+                e.Args.AddRange (new NodeBuilder (context, builder.ToString ()).Nodes);
             }
         }
 
@@ -210,7 +223,7 @@ namespace p5.hyperlisp
             // making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args)) {
 
-                e.Args.Value = new HyperlispBuilder (context, XUtil.Iterate<Node> (e.Args, context)).Hyperlisp;
+                e.Args.Value = new HyperlispBuilder (context, XUtil.Iterate<Node> (context, e.Args)).Hyperlisp;
             }
         }
     }

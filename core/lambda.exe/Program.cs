@@ -41,7 +41,7 @@ namespace lambda_exe
         [ActiveEvent (Name = "p5.console.write-line")]
         private static void console_write_line (ApplicationContext context, ActiveEventArgs e)
         {
-            var value = XUtil.Single<string> (e.Args, context, "");
+            var value = XUtil.Single<string> (context, e.Args, false, "");
             Console.WriteLine (value);
         }
 
@@ -53,7 +53,7 @@ namespace lambda_exe
         [ActiveEvent (Name = "p5.console.write")]
         private static void console_write (ApplicationContext context, ActiveEventArgs e)
         {
-            var value = XUtil.Single<string> (e.Args, context, "");
+            var value = XUtil.Single<string> (context, e.Args, false, "");
             Console.Write (value);
         }
 

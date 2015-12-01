@@ -46,7 +46,7 @@ namespace p5.lambda.keywords
         {
             // retrieving source before we start iterating destination,
             // in case destination and source overlaps
-            var sourceNodes = XUtil.SourceNodes (args, context);
+            var sourceNodes = XUtil.SourceNodes (context, args);
 
             // making sure there is a source
             if (sourceNodes == null)
@@ -81,7 +81,7 @@ namespace p5.lambda.keywords
                     throw new LambdaException ("cannot [add] into something that's not a node", args, context);
 
                 // evaluating source for each destination since it is relative to destination
-                foreach (var idxSource in XUtil.SourceNodes (args, idxDestination.Node, context)) {
+                foreach (var idxSource in XUtil.SourceNodes (context, args, idxDestination.Node)) {
 
                     curDest.Add (idxSource.Clone ());
                 }

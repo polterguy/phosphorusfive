@@ -37,7 +37,7 @@ namespace p5.lambda
                 // executing a value object or an expression, making sure we let functor know which
                 // was the first invocation
                 bool isFirst = true;
-                foreach (var idxSource in XUtil.Iterate<Node> (args, context)) {
+                foreach (var idxSource in XUtil.Iterate<Node> (context, args)) {
 
                     functor (context, idxSource, args, args.Children, isFirst);
                     isFirst = false;

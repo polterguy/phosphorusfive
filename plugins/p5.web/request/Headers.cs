@@ -31,7 +31,7 @@ namespace p5.web.ui.request
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // looping through each parameter requested by caller
-                foreach (var idx in XUtil.Iterate<string> (e.Args, context)) {
+                foreach (var idx in XUtil.Iterate<string> (context, e.Args)) {
 
                     // adding parameter's name/value as Node return value
                     if (HttpContext.Current.Request.Headers [idx] != null)

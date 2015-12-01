@@ -25,15 +25,15 @@ namespace p5.lambda.keywords
             // making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
-                string whatToSplit = XUtil.Single<string> (e.Args, context);
+                string whatToSplit = XUtil.Single<string> (context, e.Args);
                 if (whatToSplit == null)
                     return; // nothing to split
 
                 Node sepNode = e.Args ["="];
-                string separator = sepNode == null ? null : XUtil.Single<string> (sepNode, context);
+                string separator = sepNode == null ? null : XUtil.Single<string> (context, sepNode);
 
                 Node valueSepNode = e.Args ["=="];
-                string valueSep = valueSepNode == null ? null : XUtil.Single<string> (valueSepNode, context);
+                string valueSep = valueSepNode == null ? null : XUtil.Single<string> (context, valueSepNode);
 
                 Node trimNode = e.Args ["trim"];
                 bool trim = trimNode == null ? false : trimNode.GetExValue (context, false);
