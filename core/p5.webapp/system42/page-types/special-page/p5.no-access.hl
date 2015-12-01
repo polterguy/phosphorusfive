@@ -11,26 +11,111 @@ load-file:x:/../*/_template?value
 
 
 /*
- * Setting the [header] and [content] of our page to "no access" info
+ * Setting the [header] of our page to "no access" info
  */
 set:x:/-/*/*/create-widget/*/widgets/**/={header}?value
   src:"No Access!"
 
 
 /*
- * Checking if there's a user logged in, and if so, showing contextual feedback to client
+ * Checking if there's a user logged in, and if so, showing relevant feedback to user
  */
-// User is logged in, explaining that he does not have access
-set:x:/../*/load-file/*/*/create-widget/*/widgets/**/={content}?value
-  src:@"<img src=""/media/images/marvin-headshot.png"" style=""float:left;"" />
+user
+if:x:/../*/user/*/default?value
+  not
+
+  /*
+   * User is logged in, explaining that he does not have access to this URL
+   */
+  set:x:/../*/load-file/*/*/create-widget/*/widgets/**/={content}?value
+    src:@"<img src=""/media/images/marvin-headshot.png"" style=""float:left;"" />
 <h5>Sorry, I cannot give you access to that page, since my owner has created restricted access rights to it.
 Feel free to try finding another page by using the menu at the top!</h5>"
+
+else
+
+  /*
+   * User is not logged in, explaining that he may have success accessing this page
+   * if he logs in
+   */
+  add:x:/../*/load-file/*/*/create-widget/*/widgets/**/={content}/./.
+    src
+      literal
+        element:img
+        src:/media/images/marvin-headshot.png
+        style:"float:right;"
+        class:prepend-left
+      literal
+        element:blockquote
+        innerValue:@"Sorry, I cannot give you access to that page, since my owner has restricted access to it.
+Maybe it works if you login ...?"
+      container
+        class:form-inline
+        widgets
+          container
+            class:form-group prepend-left-2
+            widgets
+              container
+                class:input-group
+                widgets
+                  literal
+                    class:input-group-addon
+                    innerValue:Username
+                  literal:login-username
+                    element:input
+                    type:text
+                    class:form-control
+                    placeholder:Username ...
+                    oninit
+                      send-javascript:@"$('#login-username').focus().select();"
+                    onkeypress:"return p5.keyLoginPress(event);"
+              container
+                class:input-group prepend-left
+                widgets
+                  literal
+                    class:input-group-addon
+                    innerValue:Password
+                  literal:login-password
+                    element:input
+                    type:password
+                    class:form-control
+                    placeholder:Password ...
+                    oninit
+                      send-javascript:@"$('#user-username').focus().select();"
+                    onkeypress:"return p5.keyLoginPress(event);"
+              literal:login-user
+                element:button
+                class:btn btn-primary prepend-left
+                innerValue:Login
+                onclick
+                  _widgets
+                    login-username
+                    login-password
+                  get-widget-property:x:/-/*?name
+                    value
+                  set:x:/../**/login/*/username?value
+                    src:x:/../*/get-widget-property/*/login-username/*?value
+                  set:x:/../**/login/*/password?value
+                    src:x:/../*/get-widget-property/*/login-password/*?value
+                  if
+                    login
+                      username
+                      password
+                      persist:bool:true
+
+                    // Reloading page to make sure everything is wired up together correctly
+                    send-javascript:"window.location.replace(window.location.pathname);"
+                  else
+                    sys42.info-feedback:Sorry, wrong credentials
+                      _error:true
+  set:x:/../*/load-file/*/*/create-widget/*/widgets/**/={content}/.
 
 
 /*
  * Evaluating template, now with modified content
  */
-eval:x:/./*/load-file/*
+eval:x:/../*/load-file/*
+
 
 /*
  * Returning intelligent status codes to client
@@ -39,4 +124,13 @@ set-http-status-code:403
 set-http-status:403 Marvin cannot give you access to that page
 
 
-
+/*
+ * Including JavaScript to help handle carriage return key in login box
+ */
+include-javascript:@"
+p5.keyLoginPress = function(e) {
+  if(e.keyCode == 13) {
+    p5.$('login-user').raise('onclick');
+    return false;
+  }
+}"
