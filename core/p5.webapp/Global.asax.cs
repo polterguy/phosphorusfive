@@ -8,6 +8,7 @@ using System.Configuration;
 using System.Reflection;
 using System.Web;
 using p5.core;
+using p5.core.configuration;
 using p5.webapp.code;
 
 /// <summary>

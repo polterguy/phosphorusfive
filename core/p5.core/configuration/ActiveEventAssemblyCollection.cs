@@ -5,7 +5,7 @@
 
 using System.Configuration;
 
-namespace p5.webapp.code
+namespace p5.core.configuration
 {
     /// <summary>
     ///     Active event assembly collection.

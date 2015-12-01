@@ -39,6 +39,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -49,6 +50,9 @@
     <Compile Include="ActiveEventArgs.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="ActiveEvents.cs" />
+    <Compile Include="configuration\ActiveEventAssemblies.cs" />
+    <Compile Include="configuration\ActiveEventAssembly.cs" />
+    <Compile Include="configuration\ActiveEventAssemblyCollection.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
@@ -61,4 +65,7 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
+  <ItemGroup>
+    <Folder Include="configuration\" />
+  </ItemGroup>
 </Project>

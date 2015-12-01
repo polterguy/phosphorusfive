@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using p5.exp;
 using p5Web = p5.web.ui.common;
 using p5.core;
+using p5.core.configuration;
 using p5.ajax.core;
 using p5.webapp.code;
 using p5.ajax.widgets;
@@ -35,9 +36,6 @@ namespace p5.webapp
 
         // Application Context for page life cycle
         private ApplicationContext _context;
-
-        // Used for locking access to password file
-        private object _passwordFileLocker = new object();
 
         /*
          * Used as storage for Widget Ajax Events
@@ -63,29 +61,6 @@ namespace p5.webapp
             }
         }
 
-        /*
-         * Used for user Context Ticket (currently logged in Context user)
-         */
-        private ApplicationContext.ContextTicket Ticket
-        {
-            get {
-                if (Session["_ApplicationContext.ContextTicket"] == null) {
-
-                    // No user is logged in, using default impersonated user
-                    var configuration = ConfigurationManager.GetSection("activeEventAssemblies") as ActiveEventAssemblies;
-                    Session["_ApplicationContext.ContextTicket"] = 
-                        new ApplicationContext.ContextTicket (
-                            configuration.DefaultContextUsername, 
-                            configuration.DefaultContextRole, 
-                            true);
-                }
-                return Session["_ApplicationContext.ContextTicket"] as ApplicationContext.ContextTicket;
-            }
-            set { 
-                Session["_ApplicationContext.ContextTicket"] = value;
-            }
-        }
-
         #region [ -- Page overrides and initializers, plus login of user -- ]
 
         /*
@@ -97,19 +72,8 @@ namespace p5.webapp
             // Retrieving viewstate entries per session
             ViewStateSessionEntries = int.Parse (ConfigurationManager.AppSettings ["viewstate-per-session-entries"]);
 
-            // Checking to see if we should attempt to login from persistent cookie
-            if (Session["_ApplicationContext.ContextTicket"] == null) {
-
-                // Creating our application context for current request first, since we need it when trying to login from cookie
-                _context = Loader.Instance.CreateApplicationContext (Ticket);
-
-                // Try logging in from cookie, notice if this is successful, we will have ANOTHER ApplicationContext replace our previous one
-                TryLoginFromPersistentCookie();
-            } else {
-
-                // Creating our application context for current request
-                _context = Loader.Instance.CreateApplicationContext (Ticket);
-            }
+            // Creating our application context for current request
+            _context = Loader.Instance.CreateApplicationContext ();
 
             // Registering "this" web page as listener object, since page contains many Active Event handlers itself
             _context.RegisterListeningObject (this);
@@ -781,205 +745,6 @@ namespace p5.webapp
         #region [ -- Misc. global helpers -- ]
 
         /// <summary>
-        ///     Logs in a user to be associated with the ApplicationContext
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "login", Protected = true)]
-        private void login (ApplicationContext context, ActiveEventArgs e)
-        {
-            try {
-                
-                if (Application["_Last-Forms-Login-Attempt-" + Request.UserHostAddress] != null) {
-
-                    // User has previous unsuccessful login attempts to the system, verifying we're not being "hammered" by brute force attack
-                    DateTime lastAttempt = (DateTime)Application["_Last-Forms-Login-Attempt-" + Request.UserHostAddress];
-                    if ((DateTime.Now - lastAttempt).TotalSeconds < 30)
-                        throw new System.Security.SecurityException("You are trying to login too frequently, wait at least 30 seconds before you try again");
-                }
-
-                // Defaulting result of Active Event to unsuccessful
-                e.Args.Value = false;
-
-                // Retrieving supplied credentials
-                string username = e.Args.GetExChildValue<string> ("username", context);
-                string password = e.Args.GetExChildValue<string> ("password", context);
-                bool persist = e.Args.GetExChildValue ("persist", context, false);
-
-                // Getting password file in Node format
-                Node pwdFile = null;
-
-                // Locking access to password file
-                lock (_passwordFileLocker) {
-                    pwdFile = GetPasswordFile(context);
-                }
-
-                // Checking for match for specified username
-                Node userNode = pwdFile["users"][username];
-                if (userNode == null)
-                    throw new System.Security.SecurityException("Credentials not accepted");
-
-                // Checking for match on password
-                if (userNode["password"].Get<string> (context) != password)
-                    throw new System.Security.SecurityException("Credentials not accepted");
-
-                // Success, figuring out if user must change passwords, and creating our ticket
-                string role = userNode["role"].Get<string>(context);
-                Ticket = new ApplicationContext.ContextTicket(
-                    username, 
-                    role, 
-                    false);
-                e.Args.Value = true;
-
-                // Removing last login attempt
-                Application.Remove ("_Last-Forms-Login-Attempt-" + Request.UserHostAddress);
-
-                // Associating newly created Ticket with Application Context, since user now possibly have extended rights
-                _context.UpdateTicket (Ticket);
-
-                // Checking if we should create persistent cookie on disc to remember username for given client
-                // Notice, we do NOT allow root account to persist to cookie
-                if (role != "root" && persist) {
-
-                    // Caller wants to create persistent cookie to remember username/password
-                    HttpCookie cookie = new HttpCookie("_p5_user");
-                    cookie.Expires = DateTime.Now.AddDays(30);
-                    cookie.HttpOnly = true;
-                    string salt = userNode["salt"].Get<string>(context);
-                    cookie.Value = username + " " + context.Raise ("p5.crypto.hash-string", new Node(string.Empty, salt + password)).Value;
-                    Response.Cookies.Add(cookie);
-                }
-            }
-            catch {
-                Application["_Last-Forms-Login-Attempt-" + Request.UserHostAddress] = DateTime.Now;
-                throw;
-            }
-        }
-
-        /// <summary>
-        ///     Logs out a user from the ApplicationContext
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "logout", Protected = true)]
-        private void logout (ApplicationContext context, ActiveEventArgs e)
-        {
-            // By destroying this session value, default user will be used in future
-            Ticket = null;
-            HttpCookie cookie = Request.Cookies.Get("_p5_user");
-            if (cookie != null) {
-                cookie.Expires = DateTime.Now.AddDays(-1);
-                Response.Cookies.Add(cookie);
-            }
-        }
-
-        /// <summary>
-        ///     Returns the currently logged in Context user
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "user", Protected = true)]
-        private void user (ApplicationContext context, ActiveEventArgs e)
-        {
-            e.Args.Add("username", Ticket.Username);
-            e.Args.Add("role", Ticket.Role);
-            e.Args.Add("default", Ticket.IsDefault);
-        }
-
-        /// <summary>
-        ///     Creates a new user
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "create-user", Protected = true)]
-        private void create_user (ApplicationContext context, ActiveEventArgs e)
-        {
-            string username = e.Args.GetExChildValue<string>("username", context);
-            string password = e.Args.GetExChildValue<string>("password", context);
-            string role = e.Args.GetExChildValue<string>("role", context);
-            if (role == "root")
-                throw new System.Security.SecurityException("Sorry, you cannot create a root account through the [create-user] Active Event");
-
-            // We need this guy to save passwords file later
-            string rootFolder = context.Raise("p5.core.application-folder").Get<string>(context);
-
-            // Verifying username is valid, since we'll need to create a folder and associate with user later
-            foreach (var charIdx in username) {
-                if ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_-".IndexOf(charIdx) == -1)
-                    throw new ApplicationException("Sorry, you cannot use character '" + charIdx + "' in username");
-            }
-
-            // Locking access to password file
-            lock (_passwordFileLocker) {
-
-                Node pwdFile = GetPasswordFile(context);
-                if (pwdFile["users"][username] != null)
-                    throw new ApplicationException("Sorry, that username is already taken by another user in the system");
-                pwdFile["users"].Add(username);
-
-                // Creating a salt for user
-                var salt = "";
-                for (var idxRndNo = 0; idxRndNo < new Random (DateTime.Now.Millisecond).Next (1,5); idxRndNo++) {
-                    salt += Guid.NewGuid().ToString();
-                }
-                pwdFile ["users"].LastChild.Add("salt", salt);
-                pwdFile ["users"].LastChild.Add("password", password);
-                pwdFile ["users"].LastChild.Add("role", role);
-
-                // Saving password file
-                var configuration = ConfigurationManager.GetSection ("activeEventAssemblies") as ActiveEventAssemblies;
-                string pwdFilePath = configuration.PasswordFile.Replace("~/", rootFolder);
-
-                using (TextWriter writer = File.CreateText(pwdFilePath)) {
-                    Node lambdaNode = new Node();
-                    lambdaNode.AddRange(pwdFile.Children);
-                    writer.Write(context.Raise ("lambda2lisp", lambdaNode).Get<string> (context));
-                }
-
-                // Creating folders for user, and making sure private directory stays private ...
-                Directory.CreateDirectory(rootFolder + "users/" + username);
-                Directory.CreateDirectory(rootFolder + "users/" + username + "/documents");
-                Directory.CreateDirectory(rootFolder + "users/" + username + "/documents/private");
-                Directory.CreateDirectory(rootFolder + "users/" + username + "/documents/public");
-                Directory.CreateDirectory(rootFolder + "users/" + username + "/tmp");
-                File.Copy(
-                    rootFolder + "users/root/documents/private/web.config", 
-                    rootFolder + "users/" + username + "/documents/private/web.config");
-            }
-        }
-
-        /// <summary>
-        ///     Returns all roles in system
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "roles", Protected = true)]
-        private void roles (ApplicationContext context, ActiveEventArgs e)
-        {
-            // Getting password file in Node format, such that we can traverse file for all roles
-            Node pwdFile = null;
-
-            // Locking access to password file
-            lock (_passwordFileLocker) {
-                pwdFile = GetPasswordFile(context);
-            }
-
-            foreach (var idxUserNode in pwdFile["users"].Children) {
-                if (e.Args.Children.FirstOrDefault(ix => ix.Name == idxUserNode["role"].Get<string>(context)) == null) {
-                    e.Args.Add(idxUserNode["role"].Get<string>(context));
-                }
-            }
-
-            // Making sure default role is added
-            var configuration = ConfigurationManager.GetSection ("activeEventAssemblies") as ActiveEventAssemblies;
-            if (!string.IsNullOrEmpty(configuration.DefaultContextRole)) {
-                if (e.Args.Children.FirstOrDefault(ix => ix.Name == configuration.DefaultContextRole) == null) {
-                    e.Args.Add(configuration.DefaultContextRole);
-                }
-            }
-        }
-
-        /// <summary>
         ///     Sends the given JavaScript to client once
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
@@ -1136,51 +901,6 @@ namespace p5.webapp
         #region [ -- "Private" helper Active Events -- ]
 
         /*
-         * Invoked during installation. Sets root password, but only if existing password is null!
-         */
-        [ActiveEvent (Name = "p5.web.set-root-password")]
-        private void p5_web_set_root_password (ApplicationContext context, ActiveEventArgs e)
-        {
-            // Retrieving password given
-            string password = e.Args.GetExChildValue<string>("password", context);
-            if (string.IsNullOrEmpty(password))
-                throw new ArgumentException("You cannot set the root password to empty");
-
-            // Retrieving password file, and making sure existing root password is null!
-            Node rootPwdNode = null;
-
-            // Locking access to password file
-            lock (_passwordFileLocker) {
-                rootPwdNode = GetPasswordFile(context)["users"]["root"];
-            }
-
-            if (rootPwdNode["password"].Value != null)
-                throw new System.Security.SecurityException("Somebody tried to use installation Active event [p5.web.set-root-password] to change password of root account");
-
-            // Logging in root user now, before changing password
-            Ticket = new ApplicationContext.ContextTicket("root", "root", false);
-            _context.UpdateTicket(Ticket);
-            ChangePassword(context, password);
-        }
-
-        /*
-         * Invoked during installation. Returns true if root password is null (server needs setup)
-         */
-        [ActiveEvent (Name = "p5.web.root-password-is-null", Protected = true)]
-        private void p5_web_root_password_is_null (ApplicationContext context, ActiveEventArgs e)
-        {
-            // Retrieving password file, and making sure existing root password is null!
-            Node rootPwdNode = null;
-
-            // Locking access to password file
-            lock (_passwordFileLocker) {
-                rootPwdNode = GetPasswordFile(context)["users"]["root"];
-            }
-
-            e.Args.Value = rootPwdNode["password"].Value == null;
-        }
-
-        /*
          * Invoked by p5.web during creation of Widgets
          */
         [ActiveEvent (Name = "_p5.web.add-widget-ajax-event")]
@@ -1219,137 +939,6 @@ namespace p5.webapp
         #endregion
 
         #region [ -- Private helper methods -- ]
-
-        /*
-         * Changes password of the currently logged in Context user account
-         */
-        private void ChangePassword (ApplicationContext context, string newPwd)
-        {
-            var configuration = ConfigurationManager.GetSection ("activeEventAssemblies") as ActiveEventAssemblies;
-            string rootFolder = context.Raise("p5.core.application-folder").Get<string>(context);
-
-            // Locking access to password file
-            lock (_passwordFileLocker) {
-
-                Node pwdFile = GetPasswordFile(context);
-                pwdFile["users"][context.Ticket.Username]["password"].Value = newPwd;
-                string pwdFilePath = configuration.PasswordFile.Replace("~/", rootFolder);
-
-                using (TextWriter writer = File.CreateText(pwdFilePath)) {
-                    Node lambdaNode = new Node();
-                    lambdaNode.AddRange(pwdFile.Children);
-                    writer.Write(context.Raise ("lambda2lisp", lambdaNode).Get<string> (context));
-                }
-            }
-        }
-
-        /*
-         * Helper to retrieve "_passwords" file
-         */
-        private static Node GetPasswordFile (ApplicationContext context)
-        {
-            // Getting filepath to pwd file
-            var configuration = ConfigurationManager.GetSection ("activeEventAssemblies") as ActiveEventAssemblies;
-            string rootFolder = context.Raise("p5.core.application-folder").Get<string>(context);
-            string pwdFilePath = configuration.PasswordFile.Replace("~", rootFolder);
-
-            // Checking file exist
-            if (!File.Exists(pwdFilePath))
-                CreateDefaultPasswordFile (context, pwdFilePath);
-
-            // Reading up passwords file
-            using (TextReader reader = new StreamReader(File.OpenRead(pwdFilePath))) {
-
-                // Returning file as lambda
-                string users = reader.ReadToEnd();
-                Node usersNode = context.Raise("lisp2lambda", new Node(string.Empty, users));
-                return usersNode;
-            }
-        }
-
-        /*
-         * Creates a default "_passwords" file, and a default "root" user
-         */
-        private static void CreateDefaultPasswordFile (ApplicationContext context, string pwdFile)
-        {
-            // Checking if ".passwords" file exist, and if not, creating a default
-            using (TextWriter writer = File.CreateText(pwdFile)) {
-
-                // Creating default root password, salt unique to user, and writing to file
-                var salt = "";
-                for (var idxRndNo = 0; idxRndNo < new Random (DateTime.Now.Millisecond).Next (1,5); idxRndNo++) {
-                    salt += Guid.NewGuid().ToString();
-                }
-                salt = salt.Replace("-", "");
-                writer.WriteLine(@"users");
-                writer.WriteLine(@"  root");
-                writer.WriteLine(@"    salt:" + salt);
-                writer.WriteLine(@"    password");
-                writer.WriteLine(@"    role:root");
-            }
-        }
-
-        /*
-         * Will try to login from persistent cookie
-         */
-        private void TryLoginFromPersistentCookie()
-        {
-            try {
-
-                // Checking if client has persistent cookie
-                HttpCookie cookie = Request.Cookies.Get("_p5_user");
-                if (cookie != null) {
-
-                    if (Application["_Last-Cookie-Login-Attempt-" + Request.UserHostAddress] != null) {
-
-                        // User has been trying to login with cookie previously, which is possibly an intrusion attempt
-                        DateTime lastAttempt = (DateTime)Application["_Last-Cookie-Login-Attempt-" + Request.UserHostAddress];
-                        if ((DateTime.Now - lastAttempt).TotalSeconds < 30)
-                            throw new System.Security.SecurityException ("You have tried to login to this system to rapidly, wait 30 seconds before you try again.");
-                    }
-
-                    // User has persistent cookie associated with client
-                    var cookieSplits = cookie.Value.Split (' ');
-                    if (cookieSplits.Length != 2)
-                        throw new System.Security.SecurityException ("Cookie not accepted");
-
-                    string cookieUsername = cookieSplits[0];
-                    string cookieHashSaltedPwd = cookieSplits[1];
-                    Node pwdFile = null;
-
-                    // Locking access to password file
-                    lock (_passwordFileLocker) {
-                        pwdFile = GetPasswordFile(_context);
-                    }
-
-                    Node userNode = pwdFile["users"][cookieUsername];
-                    if (userNode == null)
-                        throw new System.Security.SecurityException ("Cookie not accepted");
-
-                    // User exists, retrieving salt and password to see if we have a match
-                    string salt = userNode["salt"].Get<string> (_context);
-                    string password = userNode["password"].Get<string> (_context);
-                    string hashSaltedPwd = _context.Raise("p5.crypto.hash-string", new Node(string.Empty, salt + password)).Get<string>(_context);
-                    if (hashSaltedPwd != cookieHashSaltedPwd)
-                        throw new System.Security.SecurityException ("Cookie not accepted");
-
-                    // MATCH, discarding previous ticket and Context to create a new
-                    Ticket = new ApplicationContext.ContextTicket(
-                        userNode.Name, 
-                        userNode ["role"].Get<string>(_context), 
-                        false);
-                    _context = Loader.Instance.CreateApplicationContext(Ticket);
-                    Application.Remove ("_Last-Cookie-Login-Attempt-" + Request.UserHostAddress);
-                }
-            }
-            catch {
-                Application["_Last-Cookie-Login-Attempt-" + Request.UserHostAddress] = DateTime.Now;
-                HttpCookie cookie = Request.Cookies.Get("_p5_user");
-                cookie.Expires = DateTime.Now.AddDays(-1);
-                Response.Cookies.Add(cookie);
-                throw;
-            }
-        }
 
         /*
          * Helper to retrieve a list of widgets from a Node

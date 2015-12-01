@@ -182,12 +182,9 @@
       <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="code\ActiveEventAssembly.cs" />
-    <Compile Include="code\ActiveEventAssemblyCollection.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="code\ActiveEventAssemblies.cs" />
     <Compile Include="code\WidgetEventStorage.cs" />
   </ItemGroup>
   <ItemGroup />
@@ -247,6 +244,10 @@
     <ProjectReference Include="..\..\plugins\p5.io\p5.io.csproj">
       <Project>{89C744BE-B583-4C6D-84B9-941E0C7CEBF4}</Project>
       <Name>p5.io</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\plugins\extras\p5.security\p5.security.csproj">
+      <Project>{1ADB1008-02F3-4D95-B1DA-628AA73B88DC}</Project>
+      <Name>p5.security</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

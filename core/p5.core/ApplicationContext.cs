@@ -73,9 +73,9 @@ namespace p5.core
             Loader.ActiveEventTypes staticEvents, 
             ContextTicket ticket)
         {
+            _ticket = ticket;
             _typesInstanceActiveEvents = instanceEvents;
             InitializeApplicationContext (staticEvents);
-            _ticket = ticket;
         }
 
         /// <summary>
@@ -204,7 +204,7 @@ namespace p5.core
                 }
             }
 
-            // Raising "initialize" Active Event
+            // Raising "initialize" Application Context Active Event
             Raise ("p5.core.initialize-application-context");
         }
     }
