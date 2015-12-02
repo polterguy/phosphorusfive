@@ -59,9 +59,6 @@ namespace p5.data
                         // string, since conversion routine creates a root node wrapping actual nodes in string
                         foreach (var idxInner in idx.Children) {
 
-                            // Making sure user is authorized to insert currently iterated node
-                            context.Raise ("authorize", new Node ("authorize").Add("insert-data", idxInner).Add ("args", e.Args));
-
                             // Inserting node
                             InsertNode (idxInner, context, changed);
                         }

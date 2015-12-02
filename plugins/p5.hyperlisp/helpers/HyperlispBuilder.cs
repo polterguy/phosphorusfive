@@ -8,16 +8,12 @@ using System.Text;
 using p5.core;
 
 /// <summary>
-///     Contains common helper methods for Hyperlisp.
-/// 
-///     Contains all the common helper methods necessary to create and parse Hyperlisp.
+///     Contains common helper methods for Hyperlisp
 /// </summary>
 namespace p5.hyperlisp.helpers
 {
     /// <summary>
-    ///     Class encapsulating internals of creation of Hyperlisp.
-    /// 
-    ///     Class containing actual implementation of logic behind the [lambda2lisp] Active Event.
+    ///     Class encapsulating internals of creation of Hyperlisp
     /// </summary>
     public class HyperlispBuilder
     {
@@ -25,7 +21,7 @@ namespace p5.hyperlisp.helpers
         private readonly IEnumerable<Node> _nodes;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="HyperlispBuilder" /> class.
+        ///     Initializes a new instance of the <see cref="HyperlispBuilder" /> class
         /// </summary>
         /// <param name="context">Application context object.</param>
         /// <param name="nodes">Nodes to convert into Hyperlisp.</param>
@@ -36,9 +32,7 @@ namespace p5.hyperlisp.helpers
         }
 
         /// <summary>
-        ///     Parses and retrieves the Hyperlisp.
-        /// 
-        ///     Will convert the given p5.lambda node structure to Hyperlisp and return to caller.
+        ///     Parses and retrieves the Hyperlisp
         /// </summary>
         /// <value>hyperlisp</value>
         public string Hyperlisp
@@ -52,7 +46,7 @@ namespace p5.hyperlisp.helpers
         }
 
         /*
-         * recursively invoked for every "level" in node hierarchy
+         * Recursively invoked for every "level" in node hierarchy
          */
         private void Nodes2Hyperlisp (StringBuilder builder, IEnumerable<Node> nodes, int level)
         {
@@ -70,7 +64,7 @@ namespace p5.hyperlisp.helpers
         }
 
         /*
-         * appends node's name to hyperlisp stringbuilder output
+         * Appends node's name to Hyperlisp StringBuilder output
          */
         private void AppendName (StringBuilder builder, Node node)
         {
@@ -85,7 +79,7 @@ namespace p5.hyperlisp.helpers
         }
 
         /*
-         * appends node's type to hyperlisp stringbuilder output
+         * Appends node's type to Hyperlisp StringBuilder output
          */
         private void AppendType (StringBuilder builder, Node node)
         {
@@ -104,7 +98,7 @@ namespace p5.hyperlisp.helpers
         }
 
         /*
-         * appends node's value to hyperlisp stringbuilder output
+         * Appends node's value to Hyperlisp StringBuilder output
          */
         private void AppendValue (StringBuilder builder, Node node)
         {

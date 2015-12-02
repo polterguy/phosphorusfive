@@ -4,15 +4,15 @@
  */
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using p5.core;
+using p5.exp.exceptions;
 
 namespace p5.hyperlisp.helpers
 {
     /// <summary>
-    ///     Class encapsulating internals of parsing of Hyperlisp.
-    /// 
-    ///     Class containing actual implementation of logic behind the [lisp2lambda] Active Event.
+    ///     Class encapsulating internals of parsing of Hyperlisp
     /// </summary>
     public class NodeBuilder
     {
@@ -20,7 +20,7 @@ namespace p5.hyperlisp.helpers
         private readonly string _hyperlisp;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="NodeBuilder" /> class.
+        ///     Initializes a new instance of the <see cref="NodeBuilder" /> class
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="hyperlisp">Hyperlisp to convert into a list of nodes.</param>
@@ -31,11 +31,9 @@ namespace p5.hyperlisp.helpers
         }
 
         /// <summary>
-        ///     Creates a list of <see cref="phosphorus.core.Node" />s from the given Hyperlisp.
-        /// 
-        ///     Will return the parsed p5.lambda nodes from the Hyperlisp input given through the constructor.
+        ///     Creates a list of <see cref="phosphorus.core.Node" />s from the given Hyperlisp
         /// </summary>
-        /// <returns>The Hyperlisp converted to a list of p5.lambda nodes.</returns>
+        /// <returns>The Hyperlisp converted to p5.lambda</returns>
         public List<Node> Nodes
         {
             get
@@ -43,38 +41,52 @@ namespace p5.hyperlisp.helpers
                 if (string.IsNullOrEmpty (_hyperlisp))
                     return new List<Node> (new[] {new Node (string.Empty)}); // empty result
 
-                // we need a text reader for our tokenizer
-                using (var tokenizer = new Tokenizer (_hyperlisp)) {
-                    // creating root node
-                    var node = new Node ();
-                    Token previousToken = null;
+                // Creating root node such that we have access to it outside of iteration of tokens
+                var node = new Node ();
 
-                    // looping through all tokens sequentially
-                    foreach (var idxToken in tokenizer.Tokens) {
-                        node = TokensToNode (node, idxToken, previousToken);
-                        previousToken = idxToken;
+                try
+                {
+                    // Creating tokenizer
+                    using (var tokenizer = new Tokenizer (_hyperlisp)) {
+
+                        Token previousToken = null;
+
+                        // Looping through all tokens sequentially
+                        foreach (var idxToken in tokenizer.Tokens) {
+                            node = TokensToNode (node, idxToken, previousToken);
+                            previousToken = idxToken;
+                        }
+
+                        // Return list of nodes back to caller
+                        return node.Root.Children.ToList ();
                     }
+                }
+                catch (Exception err)
+                {
+                    // Since we want to have LambaException leave this bugger, and not "whatever exception", we transform
+                    // current eception into LambdaException to give user intelligent feedback with stack trace
+                    if (err is LambdaException)
+                        throw;
 
-                    // return list of nodes back to caller
-                    return new List<Node> (node.Root.UnTieChildren ());
+                    throw new LambdaException (err.Message, node, _context);
                 }
             }
         }
 
         /*
-         * helper method for NodesFromHyperlisp, creates a node tree hierarchy from a token
+         * Helper method for NodesFromHyperlisp, creates a node tree hierarchy from a Token object
          */
         private Node TokensToNode (Node node, Token token, Token previousToken)
         {
             switch (token.Type) {
                 case Token.TokenType.Name:
 
-                    // this is the name of the node
+                    // This is the name of the node
                     node = NameTokenToNode (node, token, previousToken);
                     break;
                 case Token.TokenType.TypeOrContent:
 
-                    // this might either be the value or the type information of our node
+                    // This might either be the value or the type information of our node
                     HandleContentOrTypeToken (node, token, previousToken);
                     break;
             }
@@ -82,35 +94,41 @@ namespace p5.hyperlisp.helpers
         }
 
         /*
-         * handles a "Name" token
+         * Handles a "Name" token
          */
         private Node NameTokenToNode (Node node, Token token, Token previousToken)
         {
             if (previousToken == null || previousToken.Type == Token.TokenType.CarriageReturn) {
-                // root node
+
+                // Root node
                 node = node.Root;
             } else if (previousToken.Type == Token.TokenType.Spacer && node.Path.Count > previousToken.Scope) {
-                // some ancestor, finding the correct ancestor
+
+                // Some ancestor, finding the right one
                 while (node.Path.Count != previousToken.Scope) {
                     node = node.Parent;
                 }
             } else if (previousToken.Type != Token.TokenType.Spacer || node.Path.Count + 1 == previousToken.Scope) {
-                // more than two consecutive spaces offset from previous token's name, which is a syntax error
-                throw new ArgumentException ("syntax error in hyperlisp, too many consecutive spaces during the opening of child collection near; '" + token.Value + "'");
+
+                // More than two consecutive spaces offset from previous token's name, which is a syntax error
+                throw new LambdaException (
+                    string.Format ("Too many consecutive spaces in opening of child collection in Hyperlisp near '{0}'", token.Value), 
+                    node, 
+                    _context);
             }
 
-            // now that we have position we can add new node
+            // Now that we have position we can add new node
             node.Add (new Node (token.Value));
             node = node [node.Count - 1];
             return node;
         }
 
         /*
-         * handles a "TypeOrContent" token
+         * Handles a "TypeOrContent" token
          */
         private void HandleContentOrTypeToken (Node node, Token token, Token previousToken)
         {
-            // if there's no existing value for node, then there's not any type information associated with object neither,
+            // If there's no existing value for node, then there's not any type information associated with object neither,
             // hence we don't have to attempt to convert token's value before setting the value of the node
             node.Value = node.Value == null ? token.Value : ConvertStringValue (token.Value, node.Get<string> (_context));
         }

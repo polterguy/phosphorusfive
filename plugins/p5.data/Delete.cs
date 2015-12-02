@@ -44,9 +44,6 @@ namespace p5.data
                     var changed = new List<Node> ();
                     foreach (var idxDest in e.Args.Get<Expression> (context).Evaluate (Common.Database, context, e.Args)) {
 
-                        // Making sure user is authorized to remove currently iterated node
-                        context.Raise ("authorize", new Node ("authorize").Add("delete-data", idxDest.Node).Add ("args", e.Args));
-
                         // Figuring out which file Node updated belongs to, and storing in changed list
                         Common.AddNodeToChanges (idxDest.Node, changed);
 

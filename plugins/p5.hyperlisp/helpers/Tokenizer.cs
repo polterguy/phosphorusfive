@@ -20,8 +20,7 @@ namespace p5.hyperlisp.helpers
         private bool _disposed;
 
         /*
-         * ctor taking Hyperlisp as input. Use the "Tokens" property after creation to access p5.lambda nodes created
-         * from Hyperlisp.
+         * Ctor taking Hyperlisp as input. Use the "Tokens" property after creation to parse and access p5.lambda created from Hyperlisp
          */
         public Tokenizer (string hyperlisp) { _reader = new StringReader (hyperlisp); }
 
@@ -32,24 +31,32 @@ namespace p5.hyperlisp.helpers
         {
             get
             {
-                var previousToken = new Token (Token.TokenType.CarriageReturn, "\r\n"); // we start out with a CR/LF token
+                var previousToken = new Token (Token.TokenType.CarriageReturn, "\r\n"); // We start out with a CR/LF token
                 while (true) {
+
+                    // Retrieving next token
                     var token = NextToken (previousToken);
+
+                    // Checking if we're done (EOF)
                     if (token == null)
                         yield break;
+
+                    // Storin previous token as we proceed
                     previousToken = token;
+
+                    // Returning currently iterated token
                     yield return token;
                 }
             }
         }
 
         /*
-         * private implementation of IDisposable interface
+         * Private implementation of IDisposable interface
          */
         void IDisposable.Dispose () { Dispose (true); }
 
         /*
-         * actual implementation of Dispose method
+         * Actual implementation of Dispose method
          */
         private void Dispose (bool disposing)
         {
@@ -60,7 +67,7 @@ namespace p5.hyperlisp.helpers
         }
 
         /*
-         * retrieves next hyperlisp token from text reader
+         * Retrieves next hyperlisp token from text reader
          */
         private Token NextToken (Token previousToken)
         {
@@ -83,7 +90,7 @@ namespace p5.hyperlisp.helpers
                 if (previousToken.Type == Token.TokenType.CarriageReturn) {
                     return NextSpaceToken ();
                 }
-                // whitespace only carry semantics as first token in each line in hyperlisp content
+                // Whitespace only carry semantics as first token in each line in Hyperlisp content
                 // therefor we must "left-trim" the reader, before retrieving next token
                 TrimReader ();
                 return NextToken (previousToken);
@@ -98,18 +105,22 @@ namespace p5.hyperlisp.helpers
         }
 
         /*
-         * skips the comment token starting at current position of reader
+         * Skips the comment token starting at current position of reader
          */
         private Token SkipCommentToken ()
         {
             var nextChar = _reader.Read ();
             if (nextChar == '/') {
+
+                // Single line comment
                 _reader.ReadLine ();
             } else if (nextChar == '*') {
+
+                // Multiple lines comment
                 while (true) {
                     nextChar = _reader.Read ();
                     if (nextChar == -1)
-                        throw new ArgumentException ("unclosed comment in Hyperlisp");
+                        throw new ArgumentException ("Unclosed multiple lines comment in Hyperlisp");
                     if (nextChar == '*') {
                         nextChar = _reader.Read ();
                         if (nextChar == '/')
@@ -117,13 +128,15 @@ namespace p5.hyperlisp.helpers
                     }
                 }
             } else {
-                throw new ArgumentException ("syntax error in comment of Hyperlisp");
+
+                // Syntax Error
+                throw new ArgumentException ("Syntax error in comment of Hyperlisp, unknown comment type");
             }
             return new Token (Token.TokenType.CarriageReturn, "\r\n");
         }
 
         /*
-         * trims reader until reader head is at first non-space character
+         * Trims reader until reader head is at first non-space character
          */
         private void TrimReader ()
         {
@@ -135,7 +148,7 @@ namespace p5.hyperlisp.helpers
         }
 
         /*
-         * reads and validates next space token ("  ") from text reader
+         * Reads and validates next space token ("  ") from text reader
          */
         private Token NextSpaceToken ()
         {
@@ -149,20 +162,20 @@ namespace p5.hyperlisp.helpers
         }
 
         /*
-         * reads and validates next carriage return / line feed token ("\r\n" or "\n")
+         * Reads and validates next carriage return / line feed token ("\r\n" or "\n")
          */
         private Token NextCrlfToken ()
         {
             var nextChar = _reader.Read ();
             if (nextChar == -1)
-                throw new ArgumentException ("syntax error in hyperlisp, carriage return character found, but no new line character found at end of file");
+                throw new ArgumentException ("Syntax error in hyperlisp, carriage return character found, but no new line character found at end of file");
             if (nextChar != '\n')
-                throw new ArgumentException ("syntax error in hyperlisp, carriage return character found, but no new line character found");
+                throw new ArgumentException ("Syntax error in hyperlisp, carriage return character found, but no new line character found");
             return new Token (Token.TokenType.CarriageReturn, "\r\n");
         }
 
         /*
-         * reads next "default token" from text reader, can be string, multiline string or simply legal unescaped characters
+         * Reads next "default token" from text reader, can be string, multiline string, or simply legal unescaped characters
          */
         private Token NextDefaultToken (int nextChar, Token previousToken)
         {
@@ -176,7 +189,7 @@ namespace p5.hyperlisp.helpers
                 }
             }
 
-            // default token type, no string quoting here
+            // Default token type, no string quoting here
             var builder = new StringBuilder ();
             builder.Append ((char) nextChar);
             nextChar = _reader.Peek ();
@@ -185,12 +198,12 @@ namespace p5.hyperlisp.helpers
                 nextChar = _reader.Peek ();
             }
 
-            // whitespace has no semantics, and are not part of tokens, except if within string literals, or before name token type
+            // Whitespace has no semantics, and are not part of tokens, except if within string literals, or before name token type
             return new Token (GetTokenType (previousToken), builder.ToString ().Trim ());
         }
 
         /*
-         * returns the curent token's type according to the previous token type
+         * Returns the curent token's type according to the previous token type
          */
         private Token.TokenType GetTokenType (Token previousToken)
         {

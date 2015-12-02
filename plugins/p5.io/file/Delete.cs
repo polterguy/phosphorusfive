@@ -10,25 +10,25 @@ using p5.exp;
 namespace p5.file.file
 {
     /// <summary>
-    ///     Class to help remove files.
+    ///     Class to help remove files
     /// </summary>
     public static class Delete
     {
         /// <summary>
-        ///     Removes files from disc.
+        ///     Removes files from disc
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "delete-file")]
         private static void delete_file (ApplicationContext context, ActiveEventArgs e)
         {
-            // making sure we clean up and remove all arguments passed in after execution
+            // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args)) {
 
-                // getting root folder
+                // Getting root folder
                 var rootFolder = Common.GetRootFolder (context);
 
-                // iterating through each path given
+                // Iterating through each path given
                 bool? allDeleted = new bool? (); // used to keep track of whether or not we successfully deleted all files
                 foreach (var idx in Common.GetSource (e.Args, context)) {
 

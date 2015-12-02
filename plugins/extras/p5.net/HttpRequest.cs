@@ -55,10 +55,7 @@ namespace p5.net
         [ActiveEvent (Name = "p5.net.http-get-file")]
         private static void p5_net_http_get_file (ApplicationContext context, ActiveEventArgs e)
         {
-            CreateRequest (context, e.Args, RenderRequest,
-                delegate (ApplicationContext ctx, HttpWebRequest request, Node args) {
-                    RenderFileResponse (ctx, request, args, XUtil.Single<string> (context, e.Args ["file"], true));
-                });
+            CreateRequest (context, e.Args, RenderRequest, RenderFileResponse);
         }
 
         /*
@@ -75,6 +72,8 @@ namespace p5.net
 
                 // Figuring out which HTTP method to use
                 string method = args.Name.Substring (args.Name.IndexOf ("-") + 1).ToUpper ();
+                if (method.Contains ("-"))
+                    method = method.Substring (0, method.IndexOf ("-"));
                 try
                 {
                     // Iterating through each request URL given
@@ -206,8 +205,8 @@ namespace p5.net
             if (file == null)
                 throw new LambdaException ("No file given, probably an expression leading into oblivion", args, context);
 
-            // Making sure user is authorized to read file attempted to send over request
-            context.Raise ("authorize", new Node ("authorize").Add("read-file", file).Add ("args", args));
+            // Making sure user is authorized to read the file request should send
+            context.Raise ("_authorize-load-file", new Node ("_authorize-load-file", file).Add ("args", args));
 
             // Opening request stream, and render file as content of request
             using (Stream stream = request.GetRequestStream ()) {
@@ -240,14 +239,14 @@ namespace p5.net
             ApplicationContext context, 
             Node content)
         {
-            if (content.Value == null) {
+            if (content.Value == null && content.Count > 0) {
 
                 // Hyperlisp content
                 return context.Raise ("lambda2lisp", content.Clone ()).Value;
             } else {
 
                 // Some sort of "value" content, either text or binary (byte[])
-                return XUtil.Single<object> (context, content);
+                return XUtil.Single<object> (context, content, false, null);
             }
         }
 
@@ -366,9 +365,15 @@ namespace p5.net
         private static void RenderFileResponse (
             ApplicationContext context, 
             HttpWebRequest request, 
-            Node args, 
-            string fileName)
+            Node args)
         {
+            // Getting filename user wants to save response as
+            var filename = XUtil.Single<string> (context, args ["file"]);
+
+            // Making sure user is authorized to write/overwrite the file response should be saved to
+            context.Raise ("_authorize-save-file", new Node ("_authorize-save-file", filename).Add ("args", args));
+
+            // Retrieving HTTP response
             HttpWebResponse response = (HttpWebResponse)request.GetResponse ();
             Node result = args.Add ("result").LastChild;
 
@@ -380,12 +385,6 @@ namespace p5.net
 
                 // Retrieving root folder of web application
                 var rootFolder = context.Raise ("p5.core.application-folder").Get<string> (context);
-
-                // Getting filename user wants to save response as
-                var filename = XUtil.Single<string> (context, args ["file"]);
-
-                // Making sure user is authorized to write file response is saved to
-                context.Raise ("authorize", new Node ("authorize").Add("write-file", filename).Add ("args", args));
 
                 // Copying response content stream to file stream encapsualting file caller requested to save content to
                 using (Stream fileStream = File.Create (rootFolder + filename)) {

@@ -49,9 +49,6 @@ namespace p5.data
                         // Looping through each match in expression result
                         foreach (var idxMatch in match) {
 
-                            // Making sure user is authorized to insert currently iterated node
-                            context.Raise ("authorize", new Node ("authorize").Add("select-data", idxMatch.Node).Add ("args", e.Args));
-
                             // Dependent upon type of expression, we either return a bunch of nodes, flat, with
                             // name being string.Empty, and value being matched value, or we append node itself back
                             // to caller. This allows us to select using expressions which are not of type 'node'

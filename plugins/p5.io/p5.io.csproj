@@ -62,6 +62,7 @@
     <Compile Include="file\Copy.cs" />
     <Compile Include="folder\Copy.cs" />
     <Compile Include="utilities\GZip.cs" />
+    <Compile Include="Authorization.cs" />
   </ItemGroup>
   <ItemGroup />
   <ProjectExtensions>
