@@ -1,0 +1,43 @@
+p5.page:/
+  type:html
+  name:Welcome to System42
+  template:system42/templates/main.hl
+  content:@"<img src=""/media/images/marvin-headshot.png"" style=""float:right;"" class=""prepend-left"" />
+<blockquote><em>""Hello, my name is Marvin, and I have just been adopted by my owner. That's why things looks a little bit odd here, since
+he still haven't told me what he wants me to do. Until then, I'll just be attending these cars, and speak to this coffe machine. Maybe
+this coffe machine would want to listen to my troubles ...""</em></blockquote>"
+p5.page:/superuser/editor
+  name:Page editor@sdf
+  template:system42/templates/main.hl
+  role:superuser
+  lambda:@"
+/*SDFGFGDDFG
+ * simply executes the file that loads up the 'page editor'
+ */
+sys42.execute-lisp-file:system42/root/page-editor/page-editor.hl
+"
+  type:lambda
+p5.page:/superuser/executor
+  type:lambda
+  name:Evaluator
+  template:system42/templates/main.hl
+  role:superuser
+  lambda:@"
+
+/*
+ * simply executes the file that loads up the 'executor'
+ */
+sys42.execute-lisp-file:system42/root/executor.hl
+"
+p5.page:/superuser/files
+  type:lambda
+  name:Files
+  template:system42/templates/main.hl
+  role:superuser
+  lambda:@"
+
+/*
+ * simply executes the file that loads up the 'file browser'
+ */
+sys42.execute-lisp-file:system42/file-browser/launch.hl
+"

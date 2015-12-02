@@ -32,7 +32,8 @@ namespace p5.security
         [ActiveEvent (Name = "p5.core.initialize-application-context", Protected = true)]
         private static void p5_core_initialize_application_context (ApplicationContext context, ActiveEventArgs e)
         {
-            AuthenticationHelper.TryLoginFromPersistentCookie (context);
+            if (!AuthenticationHelper.TryLoginFromPersistentCookie (context) && HttpContext.Current.Session != null)
+                context.UpdateTicket (AuthenticationHelper.Ticket);
         }
 
         /// <summary>

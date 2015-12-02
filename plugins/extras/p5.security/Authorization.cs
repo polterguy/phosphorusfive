@@ -44,26 +44,139 @@ namespace p5.security
                 AuthorizeWriteFile (context, e.Args [0].Get<string> (context), e.Args);
                 break;
             case "execute-file":
+                // As a general rule, user is allowed to execute most files ...
+                break;
+            case "delete-data":
+                AuthorizeDeleteData (context, e.Args [0].Get<Node> (context), e.Args);
+                break;
+            case "insert-data":
+                AuthorizeInsertData (context, e.Args [0].Get<Node> (context), e.Args);
+                break;
+            case "select-data":
+                AuthorizeSelectData (context, e.Args [0].Get<Node> (context), e.Args);
+                break;
+            case "update-data":
+                AuthorizeUpdateData (context, e.Args [0].Get<Node> (context), e.Args);
                 break;
             default:
-                throw new LambdaException ("Sorry, I don't know how to [authorize] '" + e.Args.Name + "'", e.Args, context);
+                throw new LambdaException (
+                    "Sorry, I don't know how to [authorize] '" + e.Args [0].Name + "'", 
+                    e.Args["args"].Get<Node> (context), 
+                    context);
             }
         }
 
         /*
-         * Verifies user is authorized to reading specified file
+         * Verifies user is authorized to deleting specified data node
+         */
+        private static void AuthorizeDeleteData (ApplicationContext context, Node node, Node args)
+        {
+            // Making sure it is impossible to remove root nodes or file nodes from database, regardless of who you are!
+            if (node.Path.Count < 2)
+                throw new LambdaSecurityException (
+                    "You cannot remove file nodes, or root nodes from your database", 
+                    args["args"].Get<Node> (context), 
+                    context);
+            
+            // Checking if user is root (root is authorized to do almost everything!)
+            if (context.Ticket.Role != "root") {
+
+                // Making sure protected data is not deleted
+                while (node.Path.Count != 2) {
+                    node = node.Parent;
+                }
+
+                // Verifying main data node is not protected (starts with "_")
+                if (node.Name.StartsWith ("_"))
+                    throw new LambdaSecurityException (
+                        string.Format ("You cannot delete protected node '{0}' from your database, or parts of its descendants", node.Name), 
+                        args["args"].Get<Node> (context), 
+                        context);
+            }
+        }
+
+        /*
+         * Verifies user is authorized to insert specified data node
+         */
+        private static void AuthorizeInsertData (ApplicationContext context, Node node, Node args)
+        {
+            // Checking if user is root (root is authorized to do almost everything!)
+            if (context.Ticket.Role != "root") {
+
+                // Verifying main data node is not protected (starts with "_")
+                if (node.Name.StartsWith ("_"))
+                    throw new LambdaSecurityException (
+                        string.Format ("You cannot insert a protected node '{0}' into your database", node.Name), 
+                        args["args"].Get<Node> (context), 
+                        context);
+            }
+        }
+
+        /*
+         * Verifies user is authorized to deleting specified data node
+         */
+        private static void AuthorizeSelectData (ApplicationContext context, Node node, Node args)
+        {
+            // Checking if user is root (root is authorized to do almost everything!)
+            if (context.Ticket.Role != "root") {
+
+                // Making sure protected data is not deleted
+                while (node.Path.Count != 2) {
+                    node = node.Parent;
+                }
+
+                // Verifying main data node is not protected (starts with "_")
+                if (node.Name.StartsWith ("_"))
+                    throw new LambdaSecurityException (
+                        string.Format ("You cannot select protected node '{0}' from your database, or parts of its descendants", node.Name), 
+                        args["args"].Get<Node> (context), 
+                        context);
+            }
+        }
+
+        /*
+         * Verifies user is authorized to deleting specified data node
+         */
+        private static void AuthorizeUpdateData (ApplicationContext context, Node node, Node args)
+        {
+            // Making sure it is impossible to update root nodes or file nodes from database, regardless of who you are!
+            if (node.Path.Count < 2)
+                throw new LambdaSecurityException (
+                    "You cannot update file nodes, or root nodes from your database", 
+                    args["args"].Get<Node> (context), 
+                    context);
+
+            // Checking if user is root (root is authorized to do almost everything!)
+            if (context.Ticket.Role != "root") {
+
+                // Making sure protected data is not deleted
+                while (node.Path.Count != 2) {
+                    node = node.Parent;
+                }
+
+                // Verifying main data node is not protected (starts with "_")
+                if (node.Name.StartsWith ("_"))
+                    throw new LambdaSecurityException (
+                        string.Format ("You cannot update protected node '{0}' from your database, or parts of its descendants", node.Name), 
+                        args["args"].Get<Node> (context), 
+                        context);
+            }
+        }
+
+                /*
+         * Verifies user is authorized reading the specified file
          */
         private static void AuthorizeReadFile (ApplicationContext context, string filename, Node args)
         {
-            // Checking of user is root (root is authorized to do everything!)
+            // Checking if user is root (root is authorized to do everything!)
             if (context.Ticket.Role != "root") {
 
                 // Making sure we remove root folder, if it is given as part of filename
                 if (filename.IndexOf (GetRootFolder (context)) == 0)
                     filename = filename.Substring (GetRootFolder (context).Length);
 
-                // Verifying file is underneath user's folder
-                if (filename.IndexOf (string.Format ("users/{0}/", context.Ticket.Username)) != 0)
+                // Verifying file is not underneath another user's folder
+                if (filename.IndexOf (string.Format ("users/{0}/", context.Ticket.Username)) == -1 && filename.StartsWith ("users/"))
                     throw new LambdaSecurityException (
                         string.Format ("User '{0}' tried to read file '{1}'", context.Ticket.Username, filename), 
                         args["args"].Get<Node> (context), 
@@ -76,38 +189,25 @@ namespace p5.security
                         args["args"].Get<Node> (context), 
                         context);
 
-                // Verifying suffix of file is a type of file that user is allowed to read
-                switch (GetFileSuffix (filename)) {
+                // Verifying filename is not underneath a protected folder
+                foreach (var idxFolder in filename.Split (new char [] {'/'}, StringSplitOptions.RemoveEmptyEntries)) {
 
-                // Creating WHITELIST ...!
-                case "html":
-                case "htm":
-                case "css":
-                case "js":
-                case "png":
-                case "gif":
-                case "jpeg":
-                case "jpg":
-                case "pdf":
-                case "txt":
-                case "hl":
-                case "md":
-                    break;
-                default:
-                    throw new LambdaSecurityException (
-                        string.Format ("User '{0}' tried to read file '{1}'", context.Ticket.Username, filename), 
-                        args["args"].Get<Node> (context), 
-                        context);
+                    // Verifying currently iterated folder is NOT protected (starts with "_")
+                    if (idxFolder.StartsWith ("_"))
+                        throw new LambdaSecurityException (
+                            string.Format ("User '{0}' tried to read file '{1}' within protected folder '{2}'", context.Ticket.Username, filename, idxFolder), 
+                            args["args"].Get<Node> (context), 
+                            context);
                 }
             }
         }
 
         /*
-         * Verifies user is authorized to writing to specified file
+         * Verifies user is authorized writing to the specified file
          */
         private static void AuthorizeWriteFile (ApplicationContext context, string filename, Node args)
         {
-            // Checking of user is root (root is authorized to do everything!)
+            // Checking if user is root (root is authorized to do everything!)
             if (context.Ticket.Role != "root") {
 
                 // Making sure we remove root folder, if it is given as part of filename
@@ -128,24 +228,22 @@ namespace p5.security
                         args["args"].Get<Node> (context), 
                         context);
 
+                // Verifying filename is not underneath a protected folder
+                foreach (var idxFolder in filename.Split (new char []{'/'}, StringSplitOptions.RemoveEmptyEntries)) {
+
+                    // Verifying currently iterated folder is NOT protected (starts with "_")
+                    if (idxFolder.StartsWith ("_"))
+                        throw new LambdaSecurityException (
+                            string.Format ("User '{0}' tried to read file '{1}' within protected folder '{2}'", context.Ticket.Username, filename, idxFolder), 
+                            args["args"].Get<Node> (context), 
+                            context);
+                }
+
                 // Verifying suffix of file is a type of file that user is allowed to save
                 switch (GetFileSuffix (filename)) {
 
-                // Creating WHITELIST ...!
-                case "html":
-                case "htm":
-                case "css":
-                case "js":
-                case "png":
-                case "gif":
-                case "jpeg":
-                case "jpg":
-                case "pdf":
-                case "txt":
-                case "hl":
-                case "md":
-                    break;
-                default:
+                // Creating blacklist ...!
+                case "config":
                     throw new LambdaSecurityException (
                         string.Format ("User '{0}' tried to write to file '{1}'", context.Ticket.Username, filename), 
                         args["args"].Get<Node> (context), 

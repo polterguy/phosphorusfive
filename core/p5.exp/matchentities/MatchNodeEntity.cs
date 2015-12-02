@@ -37,6 +37,7 @@ namespace p5.exp.matchentities
                 } else {
                     var tmp = Utilities.Convert<Node> (_match.Context, value);
                     if (value is string) {
+
                         // Node was created from a conversion from string, making sure that we discard
                         // the automatically created "root node" in object
                         if (tmp.Count != 1)

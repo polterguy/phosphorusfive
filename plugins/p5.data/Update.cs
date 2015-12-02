@@ -5,71 +5,79 @@
 
 using System;
 using System.Collections.Generic;
-using p5.core;
 using p5.exp;
+using p5.core;
 using p5.data.helpers;
+using p5.exp.exceptions;
 
 namespace p5.data
 {
     /// <summary>
-    ///     Class wrapping [update-data].
+    ///     Class wrapping [update-data]
     /// </summary>
     public static class Update
     {
         /// <summary>
-        ///     Updates nodes in your database.
+        ///     Updates lambda objects in your database
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "update-data")]
         private static void update_data (ApplicationContext context, ActiveEventArgs e)
         {
+            // Retrieving expression and doing som basic syntax checking
             var ex = e.Args.Value as Expression;
             if (ex == null)
-                throw new ArgumentException ("[update-data] requires an expression to select items from database");
+                throw new LambdaException ("[update-data] requires an expression to select items from database", e.Args, context);
 
             // acquiring lock on database
             lock (Common.Lock) {
 
-                // making sure database is initialized
+                // Making sure database is initialized
                 Common.Initialize (context);
 
-                // storing all affected nodes, such that we know which files to update
+                // Used for storing all affected database nodes, such that we know which files to update
                 var changed = new List<Node> ();
 
-                // figuring out source, and executing the corresponding logic
+                // Figuring out source, and executing the corresponding logic
                 if (e.Args.Count > 0 && e.Args.LastChild.Name == "rel-src") {
 
-                    // iterating through all destinations, figuring out source relative to each destinations
-                    foreach (var idxDestination in e.Args.Get<Expression> (context).Evaluate (Common.Database, context, e.Args)) {
+                    // Iterating through all destinations, figuring out source relative to each destinations
+                    foreach (var idxDestination in ex.Evaluate (Common.Database, context, e.Args)) {
 
-                        // figuring out which file Node updated belongs to, and storing in changed list
+                        // Making sure user is authorized to insert currently iterated node
+                        context.Raise ("authorize", new Node ("authorize").Add("update-data", idxDestination.Node).Add ("args", e.Args));
+
+                        // Figuring out which file Node updated belongs to, and storing in changed list
                         Common.AddNodeToChanges (idxDestination.Node, changed);
 
-                        // source is relative to destination
+                        // Source is relative to destination
                         idxDestination.Value = XUtil.SourceSingle (context, e.Args, idxDestination.Node);
                     }
                 } else if (e.Args.Count > 0 && e.Args.LastChild.Name == "src") {
 
-                    // figuring out source
+                    // Figuring out source
                     var source = XUtil.SourceSingle (context, e.Args);
 
-                    // iterating through all destinations, updating with source
+                    // Iterating through all destinations, updating with source
                     foreach (var idxDestination in e.Args.Get<Expression> (context).Evaluate (Common.Database, context, e.Args)) {
 
-                        // figuring out which file Node updated belongs to, and storing in changed list
+                        // Making sure user is authorized to insert currently iterated node
+                        context.Raise ("authorize", new Node ("authorize").Add("update-data", idxDestination.Node).Add ("args", e.Args));
+
+                        // Figuring out which file Node updated belongs to, and storing in changed list
                         Common.AddNodeToChanges (idxDestination.Node, changed);
 
-                        // doing actual update
+                        // Doing actual update
                         idxDestination.Value = source;
                     }
                 } else {
 
-                    // syntax error
-                    throw new ArgumentException ("No [src] or [rel-src] was given to [update-data].");
+                    // Syntax error
+                    throw new LambdaException ("No [src] or [rel-src] was given to [update-data]", e.Args, context);
                 }
             
-                // saving all affected files
+                // Saving all affected files
                 Common.SaveAffectedFiles (context, changed);
             }
         }

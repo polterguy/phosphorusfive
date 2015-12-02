@@ -316,23 +316,27 @@ namespace p5.security
         /*
          * Will try to login from persistent cookie
          */
-        internal static void TryLoginFromPersistentCookie(ApplicationContext context)
+        internal static bool TryLoginFromPersistentCookie(ApplicationContext context)
         {
             // Checking if we have any session associated with current invocation, which is NOT the case if this is the
             // ApplicationContext created during "application-startup"
             if (HttpContext.Current.Session == null)
-                return; // Creation of ApplicationContext from [p5.core.application-start], before we have any session available - Ignoring ...
+                return false; // Creation of ApplicationContext from [p5.core.application-start], before we have any session available - Ignoring ...
 
-            try {
+            try
+            {
 
                 // Checking if client has persistent cookie
                 HttpCookie cookie = HttpContext.Current.Request.Cookies.Get(_credentialCookieName);
                 if (cookie != null) {
 
                     // We have a cookie, try to use it as credentials
-                    LoginFromCookie (cookie, context);
+                    if (LoginFromCookie (cookie, context))
+                        return true;
                 }
-            } catch {
+            } 
+            catch
+            {
 
                 // Making sure we delete cookie before we rethrow exception
                 HttpCookie cookie = HttpContext.Current.Request.Cookies.Get(_credentialCookieName);
@@ -340,6 +344,7 @@ namespace p5.security
                 HttpContext.Current.Response.Cookies.Add(cookie);
                 throw;
             }
+            return false;
         }
 
         #region [ -- Private helper methods -- ]
@@ -347,7 +352,7 @@ namespace p5.security
         /*
          * Tries to login with the given cookie as credentials
          */
-        private static void LoginFromCookie (HttpCookie cookie, ApplicationContext context)
+        private static bool LoginFromCookie (HttpCookie cookie, ApplicationContext context)
         {
             // Making sure nobody can reach us by brute force, by supplying a new 
             // cookie in a "brute force cookie login" attempt
@@ -388,7 +393,9 @@ namespace p5.security
                     false);
                 LastLoginAttemptForIP = DateTime.MinValue;
                 context.UpdateTicket (AuthenticationHelper.Ticket);
+                return true;
             }
+            return false;
         }
 
         /*

@@ -47,8 +47,8 @@ namespace p5
                     Loader.Instance.LoadAssembly (Server.MapPath (configuration.PluginDirectory), idxAssembly.Assembly);
                 }
 
-                // then raising the application start active event
-                var context = Loader.Instance.CreateApplicationContext ();
+                // then raising the application start active event, making sure we do it as "root"
+                var context = Loader.Instance.CreateApplicationContext (new ApplicationContext.ContextTicket("root", "root", false));
                 context.Raise ("p5.core.application-start");
 
                 // for then to execute our "startup file", if there exists any

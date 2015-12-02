@@ -78,6 +78,23 @@ namespace p5.exp
         }
 
         /// <summary>
+        ///     Throws an exception if given args Node does not have children nodes
+        /// </summary>
+        /// <param name="args">Arguments</param>
+        /// <param name="activeEventName">Active event name</param>
+        public static void AssertHasChildren (
+            ApplicationContext context, 
+            Node args, 
+            string activeEventName)
+        {
+            if (args.Count == 0)
+                throw new LambdaException (
+                    string.Format ("No arguments supplied to [{0}]", activeEventName), 
+                    args, 
+                    context);
+        }
+
+        /// <summary>
         ///     Throws an exception if given args Node's value is null and args node has no children
         /// </summary>
         /// <param name="args">Arguments</param>
@@ -261,7 +278,9 @@ namespace p5.exp
         public static IEnumerable<T> Iterate<T> (
             ApplicationContext context,
             Node evaluatedNode,
-            bool mustHaveValue = false)
+            bool mustHaveValue = false,
+            bool mustHaveChildren = false,
+            bool mustHaveValueOrChildren = false)
         {
             return Iterate<T> (context, evaluatedNode, evaluatedNode, mustHaveValue);
         }
@@ -277,11 +296,21 @@ namespace p5.exp
             ApplicationContext context,
             Node evaluatedNode,
             Node dataSource,
-            bool mustHaveValue = false)
+            bool mustHaveValue = false,
+            bool mustHaveChildren = false,
+            bool mustHaveValueOrChildren = false)
         {
             // Checking if node must have a value, and running relevant assertion
             if (mustHaveValue)
                 AssertHasValue (context, evaluatedNode, evaluatedNode.Name);
+
+            // Checking if node must have children, and running the relevant assertion
+            if (mustHaveChildren)
+                AssertHasChildren (context, evaluatedNode, evaluatedNode.Name);
+
+            // Checking if node must have children or value, and running the relevant assertion
+            if (mustHaveValueOrChildren)
+                AssertHasValueOrChildren (context, evaluatedNode, evaluatedNode.Name);
 
             if (evaluatedNode.Value != null) {
 
