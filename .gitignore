@@ -185,13 +185,14 @@ FakesAssemblies/
 test-results/
 p5.userprefs
 
-core/p5.webapp/database
+#p5.data files
+core/p5.webapp/_database
 
 #ignoring doxygen output folder
 dox/doxygen-output
 
-core/p5.webapp/_passwords
+#user files
+core/p5.webapp/users
 
-core/p5.webapp/users/thomas/documents/private/web.config
-
+#auth file
 core/p5.webapp/_auth.hl
