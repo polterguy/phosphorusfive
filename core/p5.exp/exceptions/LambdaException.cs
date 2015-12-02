@@ -9,9 +9,7 @@ using p5.core;
 namespace p5.exp.exceptions
 {
     /// <summary>
-    ///     Exception thrown when node hierarchy contains a logical error.
-    /// 
-    ///     Typically raised when there's a logical error in your p5.lambda code, such as having an [else-if] with no [if], and so on.
+    ///     Exception thrown when node hierarchy contains a logical error
     /// </summary>
     public class LambdaException : ApplicationException
     {
@@ -24,8 +22,8 @@ namespace p5.exp.exceptions
         /// <param name="message">Message for exception, describing what went wrong.</param>
         /// <param name="node">Node where expression was found.</param>
         /// <param name="context">Application context. Necessary to perform conversion from p5.lambda to Hyperlisp to show Hyperlisp StackTrace.</param>
-        public LambdaException (string message, Node node, ApplicationContext context)
-            : base (message)
+        public LambdaException (string message, Node node, ApplicationContext context, Exception innerException = null)
+            : base (message, innerException)
         {
             // making sure we go a couple of nodes "upwards" in hierarchy, to provide some context,
             // but not too much, to not overload user with information

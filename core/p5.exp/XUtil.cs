@@ -52,7 +52,7 @@ namespace p5.exp
             Node args, 
             string activeEventName)
         {
-            if (args.Value == null)
+            if (args == null || args.Value == null)
                 throw new LambdaException (
                     string.Format ("No arguments supplied to [{0}]", activeEventName), 
                     args, 

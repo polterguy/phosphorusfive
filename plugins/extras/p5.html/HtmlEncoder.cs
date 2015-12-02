@@ -56,7 +56,7 @@ namespace p5.html
                 StringBuilder builder = new StringBuilder();
 
                 // Loops through all documents/fragments we're supposed to transform
-                foreach (var idx in XUtil.Iterate<string> (context, e.Args)) {
+                foreach (var idx in XUtil.Iterate<string> (context, e.Args, true)) {
 
                     // Changing to 'safe HTML'
                     builder.Append (idx.Replace ("&lt;", "<").Replace ("&gt;", ">"));

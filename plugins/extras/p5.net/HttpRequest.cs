@@ -8,29 +8,26 @@ using System.IO;
 using System.Net;
 using System.Linq;
 using System.Collections.Generic;
-using p5.core;
 using p5.exp;
+using p5.core;
+using p5.exp.exceptions;
 
 /// <summary>
-///     Namespace wrapping Active Events related to networking.
-/// 
-///     Contains useful helper Classes for creating HTTP REST requests.
+///     Namespace wrapping Active Events related to networking
 /// </summary>
 namespace p5.net
 {
     /// <summary>
-    ///     Class wrapping the [p5.net.http-get/post/put/delete] Active Events.
-    /// 
-    ///     Contains the Active Events necessary to create REST HTTP requests. Use either [p5.net.post], [p5.net.get], [p5.net.put] or
-    ///     [p5.net.delete] to create request. Request type is determined according to what Active Event you're using.
+    ///     Class wrapping the [p5.net.http-get/post/put/delete] Active Events
     /// </summary>
     public static class HttpRequest
     {
+        // Specialized delegate functors for rendering request and response
+        private delegate void RenderRequestFunctor (ApplicationContext context, HttpWebRequest request, Node args, string method);
+        private delegate void RenderResponseFunctor (ApplicationContext context, HttpWebRequest request, Node args);
+
         /// <summary>
-        ///     Creates a new HTTP REST request of specified type.
-        /// 
-        ///     Active Events necessary to create REST HTTP requests. Use either [p5.net.post], [p5.net.get], [p5.net.put] or
-        ///     [p5.net.delete] to create request. Request type is determined according to what Active Event you're using.
+        ///     Creates a new HTTP REST request of specified type
         /// </summary>
         [ActiveEvent (Name = "p5.net.http-get")]
         [ActiveEvent (Name = "p5.net.http-post")]
@@ -38,137 +35,81 @@ namespace p5.net
         [ActiveEvent (Name = "p5.net.http-delete")]
         private static void p5_net_http_request (ApplicationContext context, ActiveEventArgs e)
         {
-            if (e.Args.Value == null)
-                return; // nothing to do here
-
-            // making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args)) {
-
-                // figuring out which method to use
-                string method = e.Args.Name.Substring (e.Args.Name.IndexOf ("-") + 1).ToUpper ();
-
-                // iterating through each request URL given
-                foreach (var idxUrl in XUtil.Iterate<string> (context, e.Args)) {
-
-                    if (string.IsNullOrEmpty (idxUrl))
-                        continue; // nothing to do here, probably expression leading into oblivion
-
-                    // Creating actual request
-                    try {
-                        HttpWebRequest request = WebRequest.Create (idxUrl) as HttpWebRequest;
-                        if (request == null)
-                            throw new ArgumentException (string.Format ("'{0}' did not create a valid HTTP request URL", idxUrl));
-
-                        // setting HTTP method
-                        request.Method = method;
-
-                        // writing content to request, if any
-                        RenderRequest (context, request, e.Args, method);
-
-                        // returning response to caller
-                        RenderResponse (context, request, e.Args);
-                    } catch (Exception err) {
-                        e.Args.Add (idxUrl, string.Format ("Something went wrong with request, error message was; '{0}'", err.Message));
-                    }
-                }
-            }
+            CreateRequest (context, e.Args, RenderRequest, RenderResponse);
         }
 
         /// <summary>
-        ///     Posts or puts a file over an HTTP request.
-        /// 
-        ///     Identical to [p5.net.post] and [p5.net.put] except this posts or puts a file, without loading it into memory first.
-        ///     Pass in file path as [file] instead of using [content].
-        /// 
-        ///     Default Content-Type HTTP header used is "application/octet-stream" unless explicitly overridden.
+        ///     Posts or puts a file over an HTTP request
         /// </summary>
         [ActiveEvent (Name = "p5.net.http-post-file")]
         [ActiveEvent (Name = "p5.net.http-put-file")]
         private static void p5_net_http_post_put_file (ApplicationContext context, ActiveEventArgs e)
         {
-            if (e.Args.Value == null)
-                return; // nothing to do here
-            
-            // making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args)) {
-
-                // figuring out which method to use
-                string method = e.Args.Name.Substring (e.Args.Name.LastIndexOf (".") + 1).ToUpper ();
-                method = method.Substring (0, method.IndexOf ("-"));
-
-                // iterating through each request URL given
-                foreach (var idxUrl in XUtil.Iterate<string> (context, e.Args)) {
-
-                    if (string.IsNullOrEmpty (idxUrl))
-                        continue; // nothing to do here, probably expression leading into oblivion
-
-                    // Creating actual request
-                    try {
-                        HttpWebRequest request = WebRequest.Create (idxUrl) as HttpWebRequest;
-                        if (request == null)
-                            throw new ArgumentException (string.Format ("'{0}' did not create a valid HTTP request URL", idxUrl));
-
-                        // setting request HTTP method
-                        request.Method = method;
-
-                        // writing file to request
-                        RenderFileRequest (context, request, e.Args, method);
-
-                        // returning response to caller
-                        RenderResponse (context, request, e.Args);
-                    } catch (Exception err) {
-                        e.Args.Add (idxUrl, string.Format ("Something went wrong with request, error message was; '{0}'", err.Message));
-                    }
-                }
-            }
+            CreateRequest (context, e.Args, RenderFileRequest, RenderResponse);
         }
         
         /// <summary>
-        ///     Gets a file from an HTTP request.
-        /// 
-        ///     Identical to [p5.net.get] except this retrieves a file, without loading it into memory first, and saves it
-        ///     to a specified path. Pass in file path where you wish to save the response as [file]. No [content] is returned.
+        ///     Gets a file from an HTTP request
         /// </summary>
         [ActiveEvent (Name = "p5.net.http-get-file")]
         private static void p5_net_http_get_file (ApplicationContext context, ActiveEventArgs e)
         {
-            if (e.Args.Value == null)
-                return; // nothing to do here
-            
-            // making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args)) {
+            CreateRequest (context, e.Args, RenderRequest,
+                delegate (ApplicationContext ctx, HttpWebRequest request, Node args) {
+                    RenderFileResponse (ctx, request, args, XUtil.Single<string> (context, e.Args ["file"], true));
+                });
+        }
 
-                // Figuring out URL to create request towards
-                var url = XUtil.Single<string> (context, e.Args);
-                if (string.IsNullOrEmpty (url))
-                    return; // nothing to do here, probably expression leading into oblivion
+        /*
+         * Actual implementation of creation of HTTP request
+         */
+        private static void CreateRequest (
+            ApplicationContext context, 
+            Node args, 
+            RenderRequestFunctor renderRequest, 
+            RenderResponseFunctor renderResponse)
+        {
+            // Making sure we clean up and remove all arguments passed in after execution
+            using (new Utilities.ArgsRemover (args)) {
 
-                // checking that a valid file path is given
-                if (e.Args ["file"] == null || string.IsNullOrEmpty (e.Args ["file"].Get<string> (context)))
-                    throw new ArgumentException ("No valid [file] node given to [p5.net.http-get-file].");
+                // Figuring out which HTTP method to use
+                string method = args.Name.Substring (args.Name.IndexOf ("-") + 1).ToUpper ();
+                try
+                {
+                    // Iterating through each request URL given
+                    foreach (var idxUrl in XUtil.Iterate<string> (context, args, true)) {
 
-                string fileName = XUtil.Single<string> (context, e.Args ["file"]);
-                if (string.IsNullOrEmpty (fileName))
-                    throw new ArgumentException ("No valid [file] given to [p5.net.http-get-file], possibly an expression leading into oblivion.");
+                        // Creating request
+                        HttpWebRequest request = WebRequest.Create (idxUrl) as HttpWebRequest;
 
-                // Creating actual request
-                HttpWebRequest request = WebRequest.Create (url) as HttpWebRequest;
-                if (request == null)
-                    throw new ArgumentException (string.Format ("'{0}' did not create a valid HTTP request URL", url));
+                        // Setting HTTP method
+                        request.Method = method;
 
-                // setting method
-                request.Method = "GET";
+                        // Writing content to request, if any
+                        renderRequest (context, request, args, method);
 
-                // writing file to request
-                RenderRequest (context, request, e.Args, "GET");
+                        // Returning response to caller
+                        renderResponse (context, request, args);
+                    }
+                }
+                catch (Exception err)
+                {
+                    // Trying to avoid throwing a new exception, unless we have to
+                    if (err is LambdaException)
+                        throw;
 
-                // returning response to caller
-                RenderFileResponse (context, request, e.Args, fileName);
+                    // Making sure we re-throw as LambdaException, to get more detailed information about what went wrong ...
+                    throw new LambdaException (
+                        string.Format ("Something went wrong with request, error message was; '{0}'", err.Message), 
+                        args, 
+                        context, 
+                        err);
+                }
             }
         }
 
         /*
-         * renders HTTP request
+         * Renders normal HTTP request
          */
         private static void RenderRequest (
             ApplicationContext context, 
@@ -180,66 +121,74 @@ namespace p5.net
 
                 // We've got content to post or put, making sure caller is not trying to submit content over HTTP get or delete requests
                 if (method != "PUT" && method != "POST")
-                    throw new ArgumentException ("You cannot have content with 'GET' and 'DELETE' types of requests.");
+                    throw new LambdaException ("You cannot have content with 'GET' and 'DELETE' types of requests", args, context);
 
                 // Retrieving actual content to post or put
-                var content = GetRequestContent (args ["content"], context);
+                var content = GetRequestContent (context, args ["content"]);
 
                 // Checking to see if this is Hyperlisp content, since we're b y default setting Content-Type to application/x-hyperlisp if it is
                 bool isHyperlisp = args ["content"].Value == null && args ["content"].Count > 0;
 
                 if (content != null) {
 
-                    // caller supplied actual content in [content] node (as opposed to for instance an expression leading to oblivion)
+                    // Caller supplied actual content in [content] node (as opposed to for instance an expression leading to oblivion)
                     using (Stream stream = request.GetRequestStream ()) {
 
-                        // checking if this is binary content
+                        // Checking if this is binary content
                         byte[] byteContent = content as byte[];
                         if (byteContent != null) {
 
-                            // setting our Content-Type header, defaulting to "application/octet-stream", in addition to other headers
+                            // Setting our Content-Type header, defaulting to "application/octet-stream", in addition to other headers
                             request.ContentType = args.GetExChildValue (
                                 "Content-Type", 
                                 context, 
                                 "application/octet-stream");
 
-                            // setting other headers
-                            SetRequestHeaders (request, context, args);
+                            // Setting other headers
+                            SetRequestHeaders (context, request, args);
 
-                            // binary content
+                            // Binary content
                             stream.Write (byteContent, 0, byteContent.Length);
                         } else {
 
-                            // some sort of "text" type of content, can also be Hyperlisp
-                            // setting our Content-Type header, defaulting to "text/plain" unless Hyperlisp is given
+                            // Some sort of "text" type of content, can also be Hyperlisp
+                            // Setting our Content-Type header, defaulting to "text/plain", unless Hyperlisp is given
                             request.ContentType = args.GetExChildValue (
                                 "Content-Type", 
                                 context, 
                                 isHyperlisp ? "application/x-hyperlisp" : "text/plain");
 
-                            // setting other headers
-                            SetRequestHeaders (request, context, args);
+                            // Setting other headers
+                            SetRequestHeaders (context, request, args);
 
-                            // any other type of content, such as string/integer/boolean etc. Converting to string beffore we write.
+                            // Any other type of content, such as string/integer/boolean etc. Converting to string before we write.
                             using (TextWriter writer = new StreamWriter (stream)) {
                                 writer.Write (Utilities.Convert<string> (context, content, ""));
                             }
                         }
                     }
                 } else {
+
+                    // Checking if this is a POST request, at which case not supplying content is a bug
+                    if (method == "POST" || method == "PUT")
+                        throw new LambdaException ("No content supplied with '" + method + "' request", args, context);
                     
-                    // Only setting headers and returning immediately since caller supplied empty [content] node, or expression leading into oblivion
-                    SetRequestHeaders (request, context, args);
+                    // Only setting headers and returning immediately, since caller supplied empty [content] node, or expression leading into oblivion
+                    SetRequestHeaders (context, request, args);
                 }
             } else {
 
-                // Only setting headers and returning immediately since caller didn't supply [content] node
-                SetRequestHeaders (request, context, args);
+                // Checking if this is a POST request, at which case not supplying content is a bug
+                if (method == "POST" || method == "PUT")
+                    throw new LambdaException ("No content supplied with '" + method + "' request", args, context);
+
+                // Only setting headers and returning immediately, since caller didn't supply [content] node
+                SetRequestHeaders (context, request, args);
             }
         }
         
         /*
-         * renders HTTP post/put file request
+         * Renders HTTP post/put file request
          */
         private static void RenderFileRequest (
             ApplicationContext context, 
@@ -247,15 +196,19 @@ namespace p5.net
             Node args, 
             string method)
         {
-            // verifying syntax
-            if (args ["file"] == null)
-                throw new ArgumentException ("No [file] node given");
+            // Verifying caller supplied [file] node
+            if (args["file"] == null)
+                throw new LambdaException ("No [file] node given", args, context);
 
-            // getting file to post or put
+            // Getting file to post or put, verifying expression does not lead into oblivion
             var file = XUtil.Single<string> (context, args ["file"]);
             if (file == null)
-                throw new ArgumentException ("No file given, or expression leading into oblivion");
+                throw new LambdaException ("No file given, probably an expression leading into oblivion", args, context);
 
+            // Making sure user is authorized to read file attempted to send over request
+            context.Raise ("authorize", new Node ("authorize").Add("read-file", file).Add ("args", args));
+
+            // Opening request stream, and render file as content of request
             using (Stream stream = request.GetRequestStream ()) {
 
                 // Setting Content-Type to "application/octet-stream", unless file ends with ".hl", or Content-Type is explicitly supplied
@@ -264,25 +217,25 @@ namespace p5.net
                     context, 
                     file.EndsWith (".hl") ? "application/x-hyperlisp" : "application/octet-stream");
 
-                // seting other HTTP request headers
-                SetRequestHeaders (request, context, args);
+                // Setting other HTTP request headers
+                SetRequestHeaders (context, request, args);
 
-                // retrieving root node of web application
-                var rootNode = new Node ();
-                context.Raise ("p5.core.application-folder", rootNode);
-                var rootFolder = rootNode.Get<string> (context);
+                // Retrieving root node of web application
+                var rootFolder = context.Raise ("p5.core.application-folder").Get<string> (context);
 
-                // copying FileStream to RequestStream, and pushing file to server end-point
-                using (Stream fileStream = File.OpenRead (rootFolder + file)) {
+                // Copying FileStream to RequestStream
+                using (Stream fileStream = File.OpenRead (rootFolder + file.TrimStart ('/'))) {
+
+                    // Sending file to server end-point
                     fileStream.CopyTo (stream);
                 }
             }
         }
 
         /*
-         * returns content back to caller
+         * Returns content back to caller
          */
-        private static object GetRequestContent (Node content, ApplicationContext context)
+        private static object GetRequestContent (ApplicationContext context, Node content)
         {
             if (content.Value == null) {
 
@@ -290,16 +243,20 @@ namespace p5.net
                 return context.Raise ("lambda2lisp", content.Clone ()).Value;
             } else {
 
-                // some sort of "value" content, either text or binary (byte[])
+                // Some sort of "value" content, either text or binary (byte[])
                 return XUtil.Single<object> (context, content);
             }
         }
 
         /*
-         * decorates all headers for request, except Content-Type which is handled in caller
+         * Decorates all headers for request, except Content-Type, which should be handled by caller
          */
-        private static void SetRequestHeaders (HttpWebRequest request, ApplicationContext context, Node args)
+        private static void SetRequestHeaders (
+            ApplicationContext context, 
+            HttpWebRequest request, 
+            Node args)
         {
+            // Redmond, this is ridiculous! Why can't we set headers in a uniform way ...?
             foreach (var idxHeader in 
                      args.Children.Where (idxArg => idxArg.Name != "content" && idxArg.Name != "Content-Type" && idxArg.Name != string.Empty)) {
                 switch (idxHeader.Name) {
@@ -344,20 +301,20 @@ namespace p5.net
         }
 
         /*
-         * renders response into given Node
+         * Renders response into given Node
          */
         private static void RenderResponse (ApplicationContext context, HttpWebRequest request, Node args)
         {
             HttpWebResponse response = (HttpWebResponse)request.GetResponse ();
             Node result = args.Add ("result", request.RequestUri.ToString ()).LastChild;
 
-            // getting response HTTP headers
+            // Getting response HTTP headers
             GetResponseHeaders (context, response, result, request);
 
-            // retrieving response stream, and parsing content
+            // Retrieving response stream, and parsing content
             using (Stream stream = response.GetResponseStream ()) {
 
-                // checking type of response
+                // Checking type of response
                 if (response.ContentType.StartsWith ("application/x-hyperlisp")) {
 
                     // Hyperlisp, special treatment
@@ -370,19 +327,18 @@ namespace p5.net
                     }
                 } else if (response.ContentType.StartsWith ("text")) {
 
-                    // text response
+                    // Text response
                     using (TextReader reader = new StreamReader (stream)) {
 
-                        // simply adding as text
+                        // Simply adding as text
                         result.Add ("content", reader.ReadToEnd ());
                     }
                 } else {
 
-                    // defaulting to binary
-                    // TODO: check up which non-text MIME types are actually textually based
+                    // Defaulting to binary
                     using (MemoryStream memStream = new MemoryStream ()) {
 
-                        // simply adding as byte[]
+                        // Simply adding as byte[]
                         stream.CopyTo (memStream);
                         result.Add ("content", memStream.GetBuffer ());
                     }
@@ -391,43 +347,50 @@ namespace p5.net
         }
         
         /*
-         * saves response into filename given
+         * Saves response into filename given
          */
         private static void RenderFileResponse (ApplicationContext context, HttpWebRequest request, Node args, string fileName)
         {
             HttpWebResponse response = (HttpWebResponse)request.GetResponse ();
             Node result = args.Add ("result").LastChild;
 
-            // getting HTTP response headers
+            // Getting HTTP response headers
             GetResponseHeaders (context, response, result, request);
 
-            // retrieving response content stream, and parsing as expected by caller
+            // Retrieving response content stream, and parsing as expected by caller
             using (Stream stream = response.GetResponseStream ()) {
 
-                // retrieving root folder of web application
+                // Retrieving root folder of web application
                 var rootFolder = context.Raise ("p5.core.application-folder").Get<string> (context);
 
-                // copying response content stream to file stream encapsualting file caller requested to save content to
-                using (Stream fileStream = File.Create (rootFolder + XUtil.Single<string> (context, args ["file"]))) {
+                // Getting filename user wants to save response as
+                var filename = XUtil.Single<string> (context, args ["file"]);
 
+                // Making sure user is authorized to write file response is saved to
+                context.Raise ("authorize", new Node ("authorize").Add("write-file", filename).Add ("args", args));
+
+                // Copying response content stream to file stream encapsualting file caller requested to save content to
+                using (Stream fileStream = File.Create (rootFolder + filename)) {
+
+                    // Copy response stream to file stream
                     stream.CopyTo (fileStream);
                 }
             }
         }
 
         /*
-         * returns the HTTP response headers into node given
+         * Returns the HTTP response headers into node given
          */
         private static void GetResponseHeaders (ApplicationContext context, HttpWebResponse response, Node args, HttpWebRequest request)
         {
-            // we only add [Status] node if status was NOT OK! At which point we also supply the error description to caller
+            // We only add [Status] node if status was NOT OK! At which point we also supply the error description to caller
             if (response.StatusCode != HttpStatusCode.OK) {
 
                 args.Add ("status", response.StatusCode.ToString ());
                 args.Add ("Status-Description", response.StatusDescription);
             }
 
-            // checking to see if Content-Type is given, and if so, adding header to caller
+            // Checking to see if Content-Type is given, and if so, adding header to caller
             if (!string.IsNullOrEmpty (response.ContentType))
                 args.Add ("Content-Type", response.ContentType);
 
@@ -451,9 +414,10 @@ namespace p5.net
             // Server
             args.Add ("Server", response.Server);
 
-            // the rest of the HTTP headers
+            // The rest of the HTTP headers
             foreach (string idxHeader in response.Headers.Keys) {
 
+                // Checking if header is not one of those already handled, and if not, handling it
                 if (idxHeader != "Server" && idxHeader != "Content-Type")
                     args.Add (idxHeader, response.Headers [idxHeader]);
             }

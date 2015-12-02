@@ -14,7 +14,7 @@ namespace p5.data
     /// <summary>
     ///     Class wrapping [delete-data].
     /// </summary>
-    public static class Remove
+    public static class Delete
     {
         /// <summary>
         ///     Removes nodes from your database.

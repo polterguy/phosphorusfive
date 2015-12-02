@@ -19,7 +19,6 @@ namespace p5.core
         {
             Args = args;
             Name = name;
-            Ticket = ticket;
         }
 
         /// <summary>
@@ -33,7 +32,5 @@ namespace p5.core
         /// </summary>
         /// <value>the name</value>
         public string Name { get; private set; }
-
-        public ApplicationContext.ContextTicket Ticket { get; private set; }
     }
 }
