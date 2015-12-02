@@ -43,7 +43,7 @@
     <Reference Include="System.Security" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Hash.cs" />
+    <Compile Include="MD5Hash.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

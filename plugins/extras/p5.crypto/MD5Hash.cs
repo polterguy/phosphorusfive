@@ -11,18 +11,16 @@ using p5.exp;
 
 /// <summary>
 ///     Main namespace for everything related to cryptographic services
-/// 
-///     Contains all helper classes that somehow relates to cryptography
 /// </summary>
 namespace phosphorus.crypto
 {
     /// <summary>
-    ///     Helper class to create MD5 hash of whatever given as input
+    ///     Helper class to create MD5 hash of whatever input given
     /// </summary>
-    public static class Hash
+    public static class MD5Hash
     {
         /// <summary>
-        ///     Creates a base64 encoded MD5 hash string of given input
+        ///     Creates a base64 encoded MD5 hash string of input given
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>

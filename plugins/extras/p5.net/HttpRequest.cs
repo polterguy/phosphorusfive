@@ -7,6 +7,7 @@ using System;
 using System.IO;
 using System.Net;
 using System.Linq;
+using System.Text;
 using System.Collections.Generic;
 using p5.exp;
 using p5.core;
@@ -70,7 +71,7 @@ namespace p5.net
             RenderResponseFunctor renderResponse)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (args)) {
+            using (new Utilities.ArgsRemover (args, true)) {
 
                 // Figuring out which HTTP method to use
                 string method = args.Name.Substring (args.Name.IndexOf ("-") + 1).ToUpper ();
@@ -235,7 +236,9 @@ namespace p5.net
         /*
          * Returns content back to caller
          */
-        private static object GetRequestContent (ApplicationContext context, Node content)
+        private static object GetRequestContent (
+            ApplicationContext context, 
+            Node content)
         {
             if (content.Value == null) {
 
@@ -303,7 +306,10 @@ namespace p5.net
         /*
          * Renders response into given Node
          */
-        private static void RenderResponse (ApplicationContext context, HttpWebRequest request, Node args)
+        private static void RenderResponse (
+            ApplicationContext context, 
+            HttpWebRequest request, 
+            Node args)
         {
             HttpWebResponse response = (HttpWebResponse)request.GetResponse ();
             Node result = args.Add ("result", request.RequestUri.ToString ()).LastChild;
@@ -317,18 +323,26 @@ namespace p5.net
                 // Checking type of response
                 if (response.ContentType.StartsWith ("application/x-hyperlisp")) {
 
-                    // Hyperlisp, special treatment
-                    using (TextReader reader = new StreamReader (stream)) {
+                    // Hyperlisp, possibly special treatment
+                    using (TextReader reader = new StreamReader (stream, Encoding.GetEncoding (response.CharacterSet ?? "UTF8"))) {
 
-                        // converting from Hyperlisp to p5.lambda
-                        Node convert = context.Raise ("lisp2lambda", new Node ("content", reader.ReadToEnd ()));
-                        convert.Value = null;
-                        result.Add (convert);
+                        // Checking if caller wants to automatically convert to p5.lambda, which is default behavior
+                        if (args.GetExChildValue ("convert", context, true)) {
+
+                            // Converting from Hyperlisp to p5.lambda
+                            Node convert = context.Raise ("lisp2lambda", new Node ("content", reader.ReadToEnd ()));
+                            convert.Value = null;
+                            result.Add (convert);
+                        } else {
+
+                            // Caller explicitly said he did NOT want to convert
+                            result.Add ("content", reader.ReadToEnd());
+                        }
                     }
                 } else if (response.ContentType.StartsWith ("text")) {
 
                     // Text response
-                    using (TextReader reader = new StreamReader (stream)) {
+                    using (TextReader reader = new StreamReader (stream, Encoding.GetEncoding (response.CharacterSet ?? "UTF8"))) {
 
                         // Simply adding as text
                         result.Add ("content", reader.ReadToEnd ());
@@ -349,7 +363,11 @@ namespace p5.net
         /*
          * Saves response into filename given
          */
-        private static void RenderFileResponse (ApplicationContext context, HttpWebRequest request, Node args, string fileName)
+        private static void RenderFileResponse (
+            ApplicationContext context, 
+            HttpWebRequest request, 
+            Node args, 
+            string fileName)
         {
             HttpWebResponse response = (HttpWebResponse)request.GetResponse ();
             Node result = args.Add ("result").LastChild;
@@ -381,7 +399,11 @@ namespace p5.net
         /*
          * Returns the HTTP response headers into node given
          */
-        private static void GetResponseHeaders (ApplicationContext context, HttpWebResponse response, Node args, HttpWebRequest request)
+        private static void GetResponseHeaders (
+            ApplicationContext context, 
+            HttpWebResponse response, 
+            Node args, 
+            HttpWebRequest request)
         {
             // We only add [Status] node if status was NOT OK! At which point we also supply the error description to caller
             if (response.StatusCode != HttpStatusCode.OK) {
@@ -393,11 +415,6 @@ namespace p5.net
             // Checking to see if Content-Type is given, and if so, adding header to caller
             if (!string.IsNullOrEmpty (response.ContentType))
                 args.Add ("Content-Type", response.ContentType);
-
-            // Character-Set
-            // TODO: Check up if this is actually a part of "Content-Type" (which I suspect)
-            if (!string.IsNullOrEmpty (response.CharacterSet))
-                args.Add ("Character-Set", response.CharacterSet);
 
             // Content-Encoding
             if (!string.IsNullOrEmpty (response.ContentEncoding))

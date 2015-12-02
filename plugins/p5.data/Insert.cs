@@ -29,10 +29,11 @@ namespace p5.data
         private static void insert_data (ApplicationContext context, ActiveEventArgs e)
         {
             /*
-             * Note, since [insert-data] creates an ID for items not explicitly giving it an ID,
+             * Note, since [insert-data] creates an ID for items not explicitly giving an ID,
              * we do NOT remove arguments in this Active Event, since sometimes caller needs to
              * know the ID of the node inserted into database, and is not ready to create an ID
-             * for it itself ...!!
+             * for it himself. Therefor the generated ID is returned as tha value of each item inserted,
+             * and hence we cannot remove all arguments passed into Active Event
              * 
              * However, we DO remove children of each root node inserted, unless string is submitted 
              * as source somehow ...

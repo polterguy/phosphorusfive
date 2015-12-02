@@ -51,7 +51,7 @@ namespace p5.data
                         Common.AddNodeToChanges (idxDest.Node, changed);
 
                         // Setting value to null, which works if user chooses to delete "value", "name" and/or "node"
-                        // Path and count will throw an exception though
+                        // Path and count though will throw an exception
                         idxDest.Value = null;
 
                         // Incrementing affected items
