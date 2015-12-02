@@ -486,7 +486,7 @@ namespace p5.core
         ///     this means base64 encode its value.
         /// </summary>
         /// <returns>The string value of the node's value.</returns>
-        /// <param name="context">Application context.</param>
+        /// <param name="context">Application context</param>
         /// <param name="encode">If set to <c>true</c> then string will be base64 encoded if necessary.</param>
         public string StringEncodeValue (ApplicationContext context, bool encode)
         {
@@ -844,7 +844,7 @@ namespace p5.core
         ///     the Value of that node as type T.
         /// </summary>
         /// <param name="name">Name of node to return.</param>
-        /// <param name="context">Application context.</param>
+        /// <param name="context">Application context</param>
         /// <param name="defaultValue">Default value to use, if no child with the given name is found.</param>
         public T GetChildValue<T> (string name, ApplicationContext context, T defaultValue = default (T))
         {

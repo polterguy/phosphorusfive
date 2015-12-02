@@ -48,8 +48,8 @@ namespace p5.web.ui.request
         /// 
         ///     Returns all keys for all items in your user's Cookie object.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-cookies")]
         private static void p5_web_list_request_cookies (ApplicationContext context, ActiveEventArgs e)
         {

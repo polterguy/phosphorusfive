@@ -6,6 +6,7 @@
 using System.IO;
 using p5.core;
 using p5.exp;
+using p5.exp.exceptions;
 
 namespace p5.file.file
 {
@@ -23,35 +24,28 @@ namespace p5.file.file
         private static void delete_file (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args)) {
+            using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // Getting root folder
                 var rootFolder = Common.GetRootFolder (context);
 
                 // Iterating through each path given
-                bool? allDeleted = new bool? (); // used to keep track of whether or not we successfully deleted all files
-                foreach (var idx in Common.GetSource (e.Args, context)) {
+                foreach (var idxFile in Common.GetSource (e.Args, context)) {
 
-                    if (!allDeleted.HasValue)
-                        allDeleted = true;
+                    // Verifying user is authorized to writing to destination file
+                    context.Raise ("_authorize-save-file", new Node ("_authorize-save-file", idxFile).Add ("args", e.Args));
 
-                    // checking if file exist
-                    if (File.Exists (rootFolder + idx)) {
+                    // Checking if file exist
+                    if (File.Exists (rootFolder + idxFile)) {
 
-                        // file exists, removing file and signaling caller
-                        File.Delete (rootFolder + idx);
-                        e.Args.Add (new Node (idx, true));
+                        // File exists, removing file
+                        File.Delete (rootFolder + idxFile);
                     } else {
 
-                        // file does not exist, signaling caller
-                        e.Args.Add (new Node (idx, false));
-                        allDeleted = false;
+                        // Oops, file didn't exist, throwing an exception
+                        throw new LambdaException  (string.Format ("Tried to delete non-existing file - '{0}'", idxFile), e.Args, context);
                     }
                 }
-                if (!allDeleted.HasValue || !allDeleted.Value)
-                    e.Args.Value = false;
-                else
-                    e.Args.Value = true;
             }
         }
     }

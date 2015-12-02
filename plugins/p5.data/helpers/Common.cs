@@ -99,7 +99,7 @@ namespace p5.data.helpers
         /// <summary>
         ///     Saves the affected files
         /// </summary>
-        /// <param name="context">Application context.</param>
+        /// <param name="context">Application context</param>
         /// <param name="changed">List of files that were changed, and hence will be saved.</param>
         public static void SaveAffectedFiles (ApplicationContext context, List<Node> changed)
         {

@@ -37,8 +37,8 @@ namespace p5.types
         ///     Will convert the given <see cref="phosphorus.core.Node">Node</see> to its string representation. The string representation
         ///     of a node, is Hyperlisp.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-string-value.p5.core.Node")]
         private static void p5_hyperlisp_get_string_value_p5_core_Node (ApplicationContext context, ActiveEventArgs e)
         {
@@ -52,8 +52,8 @@ namespace p5.types
         /// 
         ///     Will convert the given <see cref="p5.exp.Expression">Node</see> to its string representation.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-string-value.p5.exp.Expression")]
         private static void p5_hyperlisp_get_string_value_p5_exp_Expression (ApplicationContext context, ActiveEventArgs e)
         {
@@ -67,8 +67,8 @@ namespace p5.types
         ///     its ISO standardized format, meaning for instance; "yy-MM-dd". Its time parts, and milliseconds parts, will only be
         ///     converted, if they contain anything but "0".
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-string-value.System.DateTime")]
         private static void p5_hyperlisp_get_string_value_System_DateTime (ApplicationContext context, ActiveEventArgs e)
         {
@@ -86,8 +86,8 @@ namespace p5.types
         /// 
         ///     Will convert the given System.TimeSpan to its string representation.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-string-value.System.TimeSpan")]
         private static void p5_hyperlisp_get_string_value_System_TimeSpan (ApplicationContext context, ActiveEventArgs e)
         {
@@ -99,8 +99,8 @@ namespace p5.types
         /// 
         ///     Will convert the given System.Boolean to its string representation, meaning either "false" or "true". Notice, no capital letters.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-string-value.System.Boolean")]
         private static void p5_hyperlisp_get_string_value_System_Boolean (ApplicationContext context, ActiveEventArgs e)
         {
@@ -113,8 +113,8 @@ namespace p5.types
         ///     Will convert the given System.Byte[] to a string. If [encode] is true, then it will base64 encode the
         ///     string, otherwise it will use Encoding.UTF8.GetString to create a string from the byte array.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-string-value.System.Byte[]")]
         private static void p5_hyperlisp_get_string_value_System_ByteBlob (ApplicationContext context, ActiveEventArgs e)
         {

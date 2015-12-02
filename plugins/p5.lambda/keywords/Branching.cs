@@ -20,8 +20,8 @@ namespace p5.lambda.keywords
         /// <summary>
         ///     The [if] keyword allows for conditional execution of p5.lambda nodes.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "if")]
         private static void lambda_if (ApplicationContext context, ActiveEventArgs e)
         {
@@ -36,8 +36,8 @@ namespace p5.lambda.keywords
         /// <summary>
         ///     The [else-if] keyword allows for conditional execution of p5.lambda nodes.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "else-if")]
         private static void lambda_else_if (ApplicationContext context, ActiveEventArgs e)
         {
@@ -62,8 +62,8 @@ namespace p5.lambda.keywords
         /// <summary>
         ///     The [else] keyword allows for conditional execution of p5.lambda nodes.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "else")]
         private static void lambda_else (ApplicationContext context, ActiveEventArgs e)
         {

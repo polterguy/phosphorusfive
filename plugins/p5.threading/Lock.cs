@@ -23,8 +23,8 @@ namespace p5.threading
         /// <summary>
         ///     Locks an object wrapped by the given string(s).
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "lock")]
         private static void lambda_lock (ApplicationContext context, ActiveEventArgs e)
         {

@@ -33,8 +33,8 @@ namespace p5.web.ui.response
         ///     the key your items are stored with. Pass in [duration] as number of days before cookie expires from cookie storage
         ///     on client.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set-cookie")]
         private static void set_cookie (ApplicationContext context, ActiveEventArgs e)
         {

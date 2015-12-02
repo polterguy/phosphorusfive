@@ -17,8 +17,8 @@ namespace p5.file.folder
         /// <summary>
         ///     List all folders in folder(s).
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-folders")]
         private static void p5_folder_list_folders (ApplicationContext context, ActiveEventArgs e)
         {

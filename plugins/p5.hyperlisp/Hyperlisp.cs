@@ -22,8 +22,8 @@ namespace p5.hyperlisp
         /// <summary>
         ///     Tranforms the given Hyperlisp to a p5.lambda node structure
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "lisp2lambda")]
         private static void lisp2lambda (ApplicationContext context, ActiveEventArgs e)
         {

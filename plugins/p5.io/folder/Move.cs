@@ -18,8 +18,8 @@ namespace p5.file.folder
         /// <summary>
         ///     Moves or renames a folder
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "move-folder")]
         private static void move_folder (ApplicationContext context, ActiveEventArgs e)
         {

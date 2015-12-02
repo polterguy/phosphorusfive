@@ -23,7 +23,7 @@ namespace p5.exp
         /// <returns>The evaluated result.</returns>
         /// <param name="node">Node.</param>
         /// <param name="name">Name of child node to evaluate.</param>
-        /// <param name="context">Application context.</param>
+        /// <param name="context">Application context</param>
         /// <param name="defaultValue">Default value to return.</param>
         /// <typeparam name="T">The type to return the evaluated result as.</typeparam>
         public static T GetExChildValue<T> (
@@ -44,7 +44,7 @@ namespace p5.exp
         /// </summary>
         /// <returns>The evaluated result of the node's value.</returns>
         /// <param name="node">Node to evaluate.</param>
-        /// <param name="context">Application context.</param>
+        /// <param name="context">Application context</param>
         /// <param name="defaultValue">Default value to return.</param>
         /// <param name="inject">String to inject between entities of expression.</param>
         /// <typeparam name="T">The type to return the evaluated result as.</typeparam>

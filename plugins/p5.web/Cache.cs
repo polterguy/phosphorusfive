@@ -27,8 +27,8 @@ namespace p5.web.ui
         ///     Where [source], or [src], becomes the nodes that are stored in the cache. The main node's value(s), becomes
         ///     the key your items are stored with.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set-cache")]
         private static void set_cache (ApplicationContext context, ActiveEventArgs e)
         {
@@ -61,8 +61,8 @@ namespace p5.web.ui
         /// 
         ///     Returns all keys for all items in your Cache object.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-cache")]
         private static void list_cache (ApplicationContext context, ActiveEventArgs e)
         {

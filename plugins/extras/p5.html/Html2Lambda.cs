@@ -27,8 +27,8 @@ namespace p5.html
         /// <summary>
         ///     Parses an HTML document, and creates a p5.lambda node structure from the results
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.html.html2lambda")]
         private static void p5_html_html2lambda (ApplicationContext context, ActiveEventArgs e)
         {

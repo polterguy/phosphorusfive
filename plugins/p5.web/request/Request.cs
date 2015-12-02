@@ -31,8 +31,8 @@ namespace p5.web.ui.request
         /// 
         ///     Will return the type of request, such as for instance "GET", "POST", "DELETE" or "PUT" as value of main node.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-http-method")]
         private static void get_http_method (ApplicationContext context, ActiveEventArgs e)
         {
@@ -48,8 +48,8 @@ namespace p5.web.ui.request
         /// 
         ///     The body of the request will be returned as the value of [result] node.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-request-body")]
         private static void get_request_body (ApplicationContext context, ActiveEventArgs e)
         {

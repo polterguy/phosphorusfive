@@ -31,8 +31,8 @@ namespace p5.file.folder
         /// 
         ///     <pre>create-folder:foo</pre>
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "create-folder")]
         private static void create_folder (ApplicationContext context, ActiveEventArgs e)
         {

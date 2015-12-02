@@ -22,8 +22,8 @@ namespace p5.web.ui.request
         /// 
         ///     The name of the header you wish to retrieve, is given as the value(s) of the main node.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-http-header")]
         private static void get_http_header (ApplicationContext context, ActiveEventArgs e)
         {
@@ -45,8 +45,8 @@ namespace p5.web.ui.request
         /// 
         ///     Returns all keys for all HTTP headers in current request.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-http-headers")]
         private static void list_http_headers (ApplicationContext context, ActiveEventArgs e)
         {

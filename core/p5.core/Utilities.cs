@@ -49,7 +49,7 @@ namespace p5.core
         ///     Converts the given value to type T
         /// </summary>
         /// <param name="value">Value to convert.</param>
-        /// <param name="context">Application context. Needed since it might potentially have to raise "conversion Active Events" to convert your value.</param>
+        /// <param name="context">Application context Needed since it might potentially have to raise "conversion Active Events" to convert your value.</param>
         /// <param name="defaultValue">Default value to return, if no conversion is possible.</param>
         /// <param name="encode">If true, then the value will be encoded as base64, if necessary, and value is byte[].</param>
         /// <typeparam name="T">Type to convert your value to.</typeparam>

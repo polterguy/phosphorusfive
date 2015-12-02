@@ -18,8 +18,8 @@ namespace p5.threading
         /// <summary>
         ///     Sleeps the thread you invoke it on for a specified time interval.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "sleep")]
         private static void lambda_sleep (ApplicationContext context, ActiveEventArgs e)
         {

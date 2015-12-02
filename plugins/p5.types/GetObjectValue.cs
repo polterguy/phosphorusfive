@@ -35,8 +35,8 @@ namespace p5.types
         /// <summary>
         ///     Creates a <see cref="phosphorus.core.Node">Node</see> list from its string representation.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-object-value.node")]
         private static void p5_hyperlisp_get_object_value_node (ApplicationContext context, ActiveEventArgs e)
         {
@@ -49,8 +49,8 @@ namespace p5.types
         /// <summary>
         ///     Creates a single <see cref="phosphorus.core.Node">Node</see> from its string representation.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-object-value.abs.node")]
         private static void p5_hyperlisp_get_object_value_abs_node (ApplicationContext context, ActiveEventArgs e)
         {
@@ -70,8 +70,8 @@ namespace p5.types
         /// <summary>
         ///     Creates a <see cref="phosphorus.core.Node.Dna">DNA</see> from its string representation.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-object-value.path")]
         private static void p5_hyperlisp_get_object_value_path (ApplicationContext context, ActiveEventArgs e)
         {
@@ -81,8 +81,8 @@ namespace p5.types
         /// <summary>
         ///     Creates a <see cref="p5.exp.Expression">Expression</see> from its string representation.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-object-value.x")]
         private static void p5_hyperlisp_get_object_value_x (ApplicationContext context, ActiveEventArgs e)
         {
@@ -92,8 +92,8 @@ namespace p5.types
         /// <summary>
         ///     Creates a Guid from its string/byte[] representation.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-object-value.guid")]
         private static void p5_hyperlisp_get_object_value_guid (ApplicationContext context, ActiveEventArgs e)
         {
@@ -111,8 +111,8 @@ namespace p5.types
         /// <summary>
         ///     Creates a long from its string/byte[] representation.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-object-value.long")]
         private static void p5_hyperlisp_get_object_value_long (ApplicationContext context, ActiveEventArgs e)
         {
@@ -130,8 +130,8 @@ namespace p5.types
         /// <summary>
         ///     Creates a ulong from its string/byte[] representation.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-object-value.ulong")]
         private static void p5_hyperlisp_get_object_value_ulong (ApplicationContext context, ActiveEventArgs e)
         {
@@ -149,8 +149,8 @@ namespace p5.types
         /// <summary>
         ///     Creates an int from its string/byte[] representation.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-object-value.int")]
         private static void p5_hyperlisp_get_object_value_int (ApplicationContext context, ActiveEventArgs e)
         {
@@ -168,8 +168,8 @@ namespace p5.types
         /// <summary>
         ///     Creates a uint from its string/byte[] representation.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-object-value.uint")]
         private static void p5_hyperlisp_get_object_value_uint (ApplicationContext context, ActiveEventArgs e)
         {
@@ -187,8 +187,8 @@ namespace p5.types
         /// <summary>
         ///     Creates a short from its string/byte[] representation.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-object-value.short")]
         private static void p5_hyperlisp_get_object_value_short (ApplicationContext context, ActiveEventArgs e)
         {
@@ -206,8 +206,8 @@ namespace p5.types
         /// <summary>
         ///     Creates a single from its string/byte[] representation.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-object-value.float")]
         private static void p5_hyperlisp_get_object_value_float (ApplicationContext context, ActiveEventArgs e)
         {
@@ -225,8 +225,8 @@ namespace p5.types
         /// <summary>
         ///     Creates a double from its string/byte[] representation.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-object-value.double")]
         private static void p5_hyperlisp_get_object_value_double (ApplicationContext context, ActiveEventArgs e)
         {
@@ -244,8 +244,8 @@ namespace p5.types
         /// <summary>
         ///     Creates a decimal from its string/byte[] representation.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-object-value.decimal")]
         private static void p5_hyperlisp_get_object_value_decimal (ApplicationContext context, ActiveEventArgs e)
         {
@@ -263,8 +263,8 @@ namespace p5.types
         /// <summary>
         ///     Creates a bool from its string/byte[] representation.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-object-value.bool")]
         private static void p5_hyperlisp_get_object_value_bool (ApplicationContext context, ActiveEventArgs e)
         {
@@ -282,8 +282,8 @@ namespace p5.types
         /// <summary>
         ///     Creates a byte from its string/byte[] representation.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-object-value.byte")]
         private static void p5_hyperlisp_get_object_value_byte (ApplicationContext context, ActiveEventArgs e)
         {
@@ -301,8 +301,8 @@ namespace p5.types
         /// <summary>
         ///     Creates a byte array from its string/object representation.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-object-value.blob")]
         private static void p5_hyperlisp_get_object_value_blob (ApplicationContext context, ActiveEventArgs e)
         {
@@ -341,8 +341,8 @@ namespace p5.types
         /// <summary>
         ///     Creates an sbyte from its string representation.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-object-value.sbyte")]
         private static void p5_hyperlisp_get_object_value_sbyte (ApplicationContext context, ActiveEventArgs e)
         {
@@ -360,8 +360,8 @@ namespace p5.types
         /// <summary>
         ///     Creates a char from its string representation.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-object-value.char")]
         private static void p5_hyperlisp_get_object_value_char (ApplicationContext context, ActiveEventArgs e)
         {
@@ -379,8 +379,8 @@ namespace p5.types
         /// <summary>
         ///     Creates a date from its string representation.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-object-value.date")]
         private static void p5_hyperlisp_get_object_value_date (ApplicationContext context, ActiveEventArgs e)
         {
@@ -405,8 +405,8 @@ namespace p5.types
         /// <summary>
         ///     Creates a timespan from its string representation.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-object-value.time")]
         private static void p5_hyperlisp_get_object_value_time (ApplicationContext context, ActiveEventArgs e)
         {

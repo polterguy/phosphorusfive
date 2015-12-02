@@ -249,6 +249,9 @@ namespace p5.unittests.plugins
         [Test]
         public void ListFilesStringFilter ()
         {
+            // Making sure we're in root account
+            Context.UpdateTicket (new ApplicationContext.ContextTicket("root", "root", false));
+
             // creating folder if it doesn't already exists
             if (!Directory.Exists (GetBasePath () + "test1")) {
                 Directory.CreateDirectory (GetBasePath () + "test1");
@@ -284,7 +287,10 @@ namespace p5.unittests.plugins
         [Test]
         public void ListFilesExpressionFilter ()
         {
-            // deleting and re-creating folders to make sure they're empty and don't contain "garbage"
+            // Making sure we're in root account
+            Context.UpdateTicket (new ApplicationContext.ContextTicket("root", "root", false));
+
+            // Deleting and re-creating folders to make sure they're empty and don't contain "garbage"
             if (Directory.Exists (GetBasePath () + "test1")) {
                 Directory.Delete (GetBasePath () + "test1", true);
             }
@@ -323,6 +329,9 @@ namespace p5.unittests.plugins
         [Test]
         public void ListFilesFormattedExpression ()
         {
+            // Making sure we're in root account
+            Context.UpdateTicket (new ApplicationContext.ContextTicket("root", "root", false));
+
             // deleting and re-creating folders to make sure they're empty and don't contain "garbage"
             if (Directory.Exists (GetBasePath () + "test1")) {
                 Directory.Delete (GetBasePath () + "test1", true);
@@ -363,6 +372,9 @@ namespace p5.unittests.plugins
         [Test]
         public void ListFilesFormattedStringFilter ()
         {
+            // Making sure we're in root account
+            Context.UpdateTicket (new ApplicationContext.ContextTicket("root", "root", false));
+
             // deleting and re-creating folders to make sure they're empty and don't contain "garbage"
             if (Directory.Exists (GetBasePath () + "test1")) {
                 Directory.Delete (GetBasePath () + "test1", true);

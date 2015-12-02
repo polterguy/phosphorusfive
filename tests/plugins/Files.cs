@@ -47,8 +47,6 @@ namespace p5.unittests.plugins
 
             // verifying [file-exist] returned valid values
             Assert.AreEqual (true, node.Value);
-            Assert.AreEqual ("test1.txt", node [0].Name);
-            Assert.AreEqual (true, node [0].Value);
         }
 
         /// <summary>
@@ -74,10 +72,6 @@ namespace p5.unittests.plugins
 
             // verifying [file-exist] returned valid values
             Assert.AreEqual (true, node.Value);
-            Assert.AreEqual ("test1.txt", node [0].Name);
-            Assert.AreEqual (true, node [0].Value);
-            Assert.AreEqual ("test2.txt", node [1].Name);
-            Assert.AreEqual (true, node [1].Value);
         }
 
         /// <summary>
@@ -102,10 +96,7 @@ namespace p5.unittests.plugins
             Context.Raise ("file-exist", node);
 
             // verifying [file-exist] returned valid values
-            Assert.AreEqual ("test1.txt", node [0].Name);
-            Assert.AreEqual (true, node [0].Value);
-            Assert.AreEqual ("test2.txt", node [1].Name);
-            Assert.AreEqual (true, node [1].Value);
+            Assert.AreEqual (true, node.Value);
         }
 
         /// <summary>
@@ -125,8 +116,7 @@ namespace p5.unittests.plugins
             Context.Raise ("file-exist", node);
 
             // verifying [file-exist] returned valid values
-            Assert.AreEqual ("test1.txt", node [0].Name);
-            Assert.AreEqual (true, node [0].Value);
+            Assert.AreEqual (true, node.Value);
         }
 
         /// <summary>
@@ -135,6 +125,9 @@ namespace p5.unittests.plugins
         [Test]
         public void DeleteFile ()
         {
+            // Making sure we're root for current operation
+            Context.UpdateTicket (new ApplicationContext.ContextTicket ("root", "root", false));
+
             // creating file using p5.file
             var node = new Node (string.Empty, "test1.txt")
                 .Add ("src", "this is a test");
@@ -146,7 +139,6 @@ namespace p5.unittests.plugins
 
             // verifying removal of file was done correctly
             Assert.AreEqual (false, File.Exists (GetBasePath () + "test1.txt"));
-            Assert.AreEqual (true, node.Value);
         }
 
         /// <summary>
@@ -155,6 +147,9 @@ namespace p5.unittests.plugins
         [Test]
         public void DeleteTwoFilesExpression ()
         {
+            // Making sure we're root for current operation
+            Context.UpdateTicket (new ApplicationContext.ContextTicket ("root", "root", false));
+
             // creating files using p5.file
             var node = new Node (string.Empty, "test1.txt")
                 .Add ("src", "this is test 1");
@@ -173,11 +168,6 @@ namespace p5.unittests.plugins
             // verifying removal of files was done correctly
             Assert.AreEqual (false, File.Exists (GetBasePath () + "test1.txt"));
             Assert.AreEqual (false, File.Exists (GetBasePath () + "test2.txt"));
-            Assert.AreEqual (true, node.Value);
-            Assert.AreEqual (true, node [0].Value);
-            Assert.AreEqual (true, node [1].Value);
-            Assert.AreEqual ("test1.txt", node [0].Name);
-            Assert.AreEqual ("test2.txt", node [1].Name);
         }
 
         /// <summary>
@@ -186,6 +176,9 @@ namespace p5.unittests.plugins
         [Test]
         public void DeleteTwoFilesFormattedExpression ()
         {
+            // Making sure we're root for current operation
+            Context.UpdateTicket (new ApplicationContext.ContextTicket ("root", "root", false));
+
             // creating files using p5.file
             var node = new Node (string.Empty, "test1.txt")
                 .Add ("src", "this is test 1");
@@ -205,11 +198,6 @@ namespace p5.unittests.plugins
             // verifying removal of files was done correctly
             Assert.AreEqual (false, File.Exists (GetBasePath () + "test1.txt"));
             Assert.AreEqual (false, File.Exists (GetBasePath () + "test2.txt"));
-            Assert.AreEqual (true, node.Value);
-            Assert.AreEqual (true, node [0].Value);
-            Assert.AreEqual (true, node [1].Value);
-            Assert.AreEqual ("test1.txt", node [0].Name);
-            Assert.AreEqual ("test2.txt", node [1].Name);
         }
 
         /// <summary>
@@ -218,6 +206,9 @@ namespace p5.unittests.plugins
         [Test]
         public void DeleteFileFormattedString ()
         {
+            // Making sure we're root for current operation
+            Context.UpdateTicket (new ApplicationContext.ContextTicket ("root", "root", false));
+
             // creating files using p5.file
             var node = new Node (string.Empty, "test1.txt")
                 .Add ("src", "this is a test");
@@ -230,9 +221,6 @@ namespace p5.unittests.plugins
 
             // verifying removal of files was done correctly
             Assert.AreEqual (false, File.Exists (GetBasePath () + "test1.txt"));
-            Assert.AreEqual (true, node.Value);
-            Assert.AreEqual (true, node [0].Value);
-            Assert.AreEqual ("test1.txt", node [0].Name);
         }
 
         /// <summary>

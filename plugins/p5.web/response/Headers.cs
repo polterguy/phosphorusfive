@@ -18,8 +18,8 @@ namespace p5.web.ui.response
         /// <summary>
         ///     Changes the HTTP headers for the current response.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set-http-header")]
         private static void set_http_header (ApplicationContext context, ActiveEventArgs e)
         {

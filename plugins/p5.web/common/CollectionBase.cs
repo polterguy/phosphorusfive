@@ -38,7 +38,7 @@ namespace p5.web.ui.common
         ///     Sets a single value in a collection.
         /// </summary>
         /// <param name="node">Root node of collection Active Event invoker.</param>
-        /// <param name="context">Application context.</param>
+        /// <param name="context">Application context</param>
         /// <param name="functor">Callback functor, will be invoked once for each key.</param>
         public static void Set (Node node, ApplicationContext context, SetDelegate functor)
         {
@@ -58,7 +58,7 @@ namespace p5.web.ui.common
         ///     Gets a value from a collection.
         /// </summary>
         /// <param name="node">Root node of collection Active Event invoker.</param>
-        /// <param name="context">Application context.</param>
+        /// <param name="context">Application context</param>
         /// <param name="functor">Callback functor, will be invoked once for each key.</param>
         public static void Get (Node node, ApplicationContext context, GetDelegate functor)
         {
@@ -111,7 +111,7 @@ namespace p5.web.ui.common
         ///     Lists all items from a collection.
         /// </summary>
         /// <param name="node">Root node of Active Event invoked.</param>
-        /// <param name="context">Application context.</param>
+        /// <param name="context">Application context</param>
         /// <param name="functor">Callback functor, will be invoked once to retrieve all keys from collection.</param>
         public static void List (Node node, ApplicationContext context, ListDelegate functor)
         {

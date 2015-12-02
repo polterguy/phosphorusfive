@@ -19,8 +19,8 @@ namespace p5.lambda.keywords
         /// <summary>
         ///     The [insert-before] keyword allows you to insert nodes before another node.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "insert-before")]
         private static void lambda_insert_before (ApplicationContext context, ActiveEventArgs e)
         {
@@ -30,8 +30,8 @@ namespace p5.lambda.keywords
         /// <summary>
         ///     The [insert-after] keyword allows you to insert nodes after another node.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "insert-after")]
         private static void lambda_insert_after (ApplicationContext context, ActiveEventArgs e)
         {

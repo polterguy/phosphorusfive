@@ -19,8 +19,8 @@ namespace p5.lambda
     {
         /// <summary>
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "equals")]
         [ActiveEvent (Name = "=")]
         private static void equals (ApplicationContext context, ActiveEventArgs e)
@@ -31,8 +31,8 @@ namespace p5.lambda
 
         /// <summary>
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "not-equals")]
         [ActiveEvent (Name = "!=")]
         private static void not_equals (ApplicationContext context, ActiveEventArgs e)
@@ -43,8 +43,8 @@ namespace p5.lambda
 
         /// <summary>
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "more-than")]
         [ActiveEvent (Name = ">")]
         private static void more_than (ApplicationContext context, ActiveEventArgs e)
@@ -55,8 +55,8 @@ namespace p5.lambda
 
         /// <summary>
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "less-than")]
         [ActiveEvent (Name = "<")]
         private static void less_than (ApplicationContext context, ActiveEventArgs e)
@@ -67,8 +67,8 @@ namespace p5.lambda
 
         /// <summary>
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "more-than-equals")]
         [ActiveEvent (Name = ">=")]
         private static void more_than_equals (ApplicationContext context, ActiveEventArgs e)
@@ -79,8 +79,8 @@ namespace p5.lambda
 
         /// <summary>
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "less-than-equals")]
         [ActiveEvent (Name = "<=")]
         private static void less_than_equals (ApplicationContext context, ActiveEventArgs e)

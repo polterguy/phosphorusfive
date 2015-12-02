@@ -22,8 +22,8 @@ namespace p5.file.utilities
         /// <summary>
         ///     GZips folder(s) and file(s)
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "gzip")]
         private static void gzip (ApplicationContext context, ActiveEventArgs e)
         {
@@ -77,8 +77,8 @@ namespace p5.file.utilities
         /// <summary>
         ///     Unzips folder(s) and file(s)
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "gunzip")]
         private static void gunzip (ApplicationContext context, ActiveEventArgs e)
         {

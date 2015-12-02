@@ -27,6 +27,9 @@ namespace p5.unittests.plugins
         [Test]
         public void SaveDataResults ()
         {
+            // Making sure we're in root account
+            Context.UpdateTicket (new ApplicationContext.ContextTicket("root", "root", false));
+
             ExecuteLambda (@"delete-data:x:/*/*(/foo1|/foo2)
 insert-data
   foo1:bar1

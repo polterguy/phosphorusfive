@@ -22,8 +22,8 @@ namespace p5.web.ui.widgets
         /// <summary>
         ///     Creates an Ajax Container Web Widget.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.web.widgets.container")]
         private static void p5_web_controls_container (ApplicationContext context, ActiveEventArgs e)
         {
@@ -33,8 +33,8 @@ namespace p5.web.ui.widgets
         /// <summary>
         ///     Creates an Ajax Literal Web Widget.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.web.widgets.literal")]
         private static void p5_web_controls_literal (ApplicationContext context, ActiveEventArgs e)
         {
@@ -44,8 +44,8 @@ namespace p5.web.ui.widgets
         /// <summary>
         ///     Creates an Ajax Void Web Widget.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.web.widgets.void")]
         private static void p5_web_controls_void (ApplicationContext context, ActiveEventArgs e)
         {

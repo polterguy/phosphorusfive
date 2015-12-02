@@ -19,8 +19,8 @@ namespace p5.html
         /// <summary>
         ///     Creates an HTML document from the given p5.lambda object
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.html.lambda2html")]
         private static void p5_html_lambda2html (ApplicationContext context, ActiveEventArgs e)
         {

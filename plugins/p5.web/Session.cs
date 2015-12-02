@@ -19,8 +19,8 @@ namespace p5.web.ui
         /// <summary>
         ///     Sets one or more Session object(s).
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set-session")]
         private static void set_session (ApplicationContext context, ActiveEventArgs e)
         {
@@ -45,8 +45,8 @@ namespace p5.web.ui
         /// <summary>
         ///     Retrieves Session object(s).
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-session")]
         private static void get_session (ApplicationContext context, ActiveEventArgs e)
         {
@@ -57,8 +57,8 @@ namespace p5.web.ui
         /// <summary>
         ///     Lists all keys in the Session object.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-session")]
         private static void list_session (ApplicationContext context, ActiveEventArgs e)
         {

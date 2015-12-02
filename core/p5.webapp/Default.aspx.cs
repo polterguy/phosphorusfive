@@ -293,8 +293,8 @@ namespace p5.webapp
         /// <summary>
         ///     Returns properties and/or attributes requested by caller as children nodes.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-widget-property")]
         private void get_widget_property (ApplicationContext context, ActiveEventArgs e)
         {
@@ -342,8 +342,8 @@ namespace p5.webapp
         /// <summary>
         ///     Sets properties and/or attributes of web widgets.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set-widget-property")]
         private void set_widget_property (ApplicationContext context, ActiveEventArgs e)
         {
@@ -384,8 +384,8 @@ namespace p5.webapp
         /// <summary>
         ///     Removes the properties and/or attributes of web widgets.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "delete-widget-property")]
         private void delete_widget_property (ApplicationContext context, ActiveEventArgs e)
         {
@@ -420,8 +420,8 @@ namespace p5.webapp
         /// <summary>
         ///     Lists all existing properties for given web widget.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-widget-properties")]
         private void list_widget_properties (ApplicationContext context, ActiveEventArgs e)
         {
@@ -692,8 +692,8 @@ namespace p5.webapp
         /// <summary>
         ///     Sets one or more ViewState object(s).
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set-viewstate")]
         private void set_viewstate (ApplicationContext context, ActiveEventArgs e)
         {
@@ -717,8 +717,8 @@ namespace p5.webapp
         /// <summary>
         ///     Retrieves ViewState object(s).
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-viewstate")]
         private void get_viewstate (ApplicationContext context, ActiveEventArgs e)
         {
@@ -730,8 +730,8 @@ namespace p5.webapp
         /// <summary>
         ///     Lists all keys in the Session object.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-viewstate")]
         private void list_viewstate (ApplicationContext context, ActiveEventArgs e)
         {

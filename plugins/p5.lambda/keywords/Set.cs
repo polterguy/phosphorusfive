@@ -19,8 +19,8 @@ namespace p5.lambda.keywords
         /// <summary>
         ///     The [set] keyword, allows you to change nodes through p5.lambda.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set")]
         private static void lambda_set (ApplicationContext context, ActiveEventArgs e)
         {

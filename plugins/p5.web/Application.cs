@@ -31,8 +31,8 @@ namespace p5.web.ui
         ///     Where [source], or [src], becomes the nodes that are stored in the application. The main node's value(s), becomes
         ///     the key your items are stored with.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set-application")]
         private static void set_application (ApplicationContext context, ActiveEventArgs e)
         {
@@ -52,8 +52,8 @@ namespace p5.web.ui
         /// 
         ///     Supply one or more keys to which items you wish to retrieve as the value of your main node.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-application")]
         private static void get_application (ApplicationContext context, ActiveEventArgs e)
         {
@@ -65,8 +65,8 @@ namespace p5.web.ui
         /// 
         ///     Returns all keys for all items in your Application object.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-application")]
         private static void list_application (ApplicationContext context, ActiveEventArgs e)
         {

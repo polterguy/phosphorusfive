@@ -19,8 +19,8 @@ namespace p5.lambda.keywords
         /// <summary>
         ///     The [add] keyword allows you to append a node-set into another node-set.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "add")]
         private static void lambda_add (ApplicationContext context, ActiveEventArgs e)
         {

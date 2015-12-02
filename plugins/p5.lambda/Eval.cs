@@ -48,8 +48,8 @@ namespace p5.lambda
         /// <summary>
         ///     Executes a specified piece of p5.lambda block as a copied lambda object
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "eval")]
         private static void eval (ApplicationContext context, ActiveEventArgs e)
         {
@@ -59,8 +59,8 @@ namespace p5.lambda
         /// <summary>
         ///     Executes a specified piece of p5.lambda block mutably
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "eval-mutable")]
         private static void eval_mutable (ApplicationContext context, ActiveEventArgs e)
         {

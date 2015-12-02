@@ -26,8 +26,8 @@ namespace p5.web.ui.response
         ///     or any other type you wish. There is no session associated with the response, so using the session object 
         ///     across requests while intending to execute this Active Event to echo back specific content is futile.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "echo")]
         private static void echo (ApplicationContext context, ActiveEventArgs e)
         {
@@ -63,8 +63,8 @@ namespace p5.web.ui.response
         ///     Writes the given file back to the client over the existing HTTP response without loading it into memory first. 
         ///     File can be either binary, textually based, or any other type you wish.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "echo-file")]
         private static void echo_file (ApplicationContext context, ActiveEventArgs e)
         {

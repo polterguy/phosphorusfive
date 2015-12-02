@@ -68,8 +68,8 @@ namespace p5.threading
         /// <summary>
         ///     Forks a new thread of execution.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "fork")]
         private static void fork (ApplicationContext context, ActiveEventArgs e)
         {

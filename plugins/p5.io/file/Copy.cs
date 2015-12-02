@@ -18,11 +18,18 @@ namespace p5.file.file
         /// <summary>
         ///     Copies a file
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "copy-file")]
         private static void copy_file (ApplicationContext context, ActiveEventArgs e)
         {
+            /*
+             * We do not remove value of arguments here, since it is used for returning value of 
+             * new filename, since it might not necessarily be the same as the one caller requested, 
+             * if file exist from before
+             */
+
+            // Basic syntax checking
             if (e.Args.Value == null || e.Args.LastChild == null || e.Args.LastChild.Name != "to")
                 throw new ArgumentException ("[copy-file] needs both a value and a [to] node.");
 

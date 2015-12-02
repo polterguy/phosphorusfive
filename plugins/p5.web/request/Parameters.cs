@@ -22,8 +22,8 @@ namespace p5.web.ui.request
         /// 
         ///     The name of the parameter you wish to retrieve, is given as the value(s) of the main node.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-http-param")]
         private static void get_http_param (ApplicationContext context, ActiveEventArgs e)
         {
@@ -45,8 +45,8 @@ namespace p5.web.ui.request
         /// 
         ///     Returns all keys for all HTTP POST and GET parameters in current request.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-http-params")]
         private static void list_http_params (ApplicationContext context, ActiveEventArgs e)
         {

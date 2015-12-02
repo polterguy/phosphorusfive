@@ -40,6 +40,9 @@ namespace p5.unittests.lambda
         [Test]
         public void FireAndForgetThread ()
         {
+            // Making sure we're in root account
+            Context.UpdateTicket (new ApplicationContext.ContextTicket("root", "root", false));
+
             if (File.Exists (GetBasePath () + "thread-test.txt")) {
                 File.Delete (GetBasePath () + "thread-test.txt");
             }

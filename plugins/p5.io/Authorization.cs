@@ -12,8 +12,8 @@ using System.Configuration;
 using System.Collections.Generic;
 using p5.exp;
 using p5.core;
-using p5.exp.exceptions;
 using p5.core.configuration;
+using p5.exp.exceptions;
 
 namespace p5.io
 {
@@ -70,6 +70,14 @@ namespace p5.io
                         context);
                 }
             }
+
+            // Verifying auth file is safe
+            var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
+            if (filename == configuration.AuthFile)
+                throw new LambdaSecurityException (
+                    string.Format ("User '{0}' tried to access auth file", context.Ticket.Username, filename), 
+                    stack, 
+                    context);
         }
 
         /*
@@ -81,6 +89,14 @@ namespace p5.io
             if (filename.StartsWith ("users/") && filename.IndexOf (string.Format ("users/{0}/", context.Ticket.Username)) != 0)
                 throw new LambdaSecurityException (
                     string.Format ("User '{0}' tried to read file '{1}'", context.Ticket.Username, filename), 
+                    stack, 
+                    context);
+
+            // Verifying auth file is safe
+            var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
+            if (filename == configuration.AuthFile)
+                throw new LambdaSecurityException (
+                    string.Format ("User '{0}' tried to access auth file", context.Ticket.Username, filename), 
                     stack, 
                     context);
         }

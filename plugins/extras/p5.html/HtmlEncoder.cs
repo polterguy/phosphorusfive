@@ -18,8 +18,8 @@ namespace p5.html
         /// <summary>
         ///     Encodes HTML
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.html.html-encode")]
         private static void p5_html_html_encode (ApplicationContext context, ActiveEventArgs e)
         {
@@ -44,8 +44,8 @@ namespace p5.html
         /// <summary>
         ///     Decodes HTML
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.html.html-decode")]
         private static void p5_html_html_decode (ApplicationContext context, ActiveEventArgs e)
         {

@@ -43,8 +43,8 @@ namespace p5.types
         /// 
         ///     Returns the Hyperlisp type-name for <see cref="phosphorus.core.Node">Node</see>s, which is <em>"node"</em>.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-type-name.p5.core.Node")]
         private static void p5_hyperlisp_get_type_name_p5_core_Node (ApplicationContext context, ActiveEventArgs e)
         {
@@ -56,8 +56,8 @@ namespace p5.types
         /// 
         ///     Returns the Hyperlisp type-name for <see cref="phosphorus.core.Node.Dna">DNA</see>s, which is <em>"path"</em>.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-type-name.p5.core.Node+Dna")]
         private static void p5_hyperlisp_get_type_name_p5_core_Node_DNA (ApplicationContext context, ActiveEventArgs e)
         {
@@ -69,8 +69,8 @@ namespace p5.types
         /// 
         ///     Returns the Hyperlisp type-name for <see cref="p5.exp.Expression">Expressions</see>.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-type-name.p5.exp.Expression")]
         private static void p5_hyperlisp_get_type_name_p5_exp_Expression (ApplicationContext context, ActiveEventArgs e)
         {
@@ -82,8 +82,8 @@ namespace p5.types
         /// 
         ///     Returns the Hyperlisp type-name for System.Guid, which is <em>"guid"</em>.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Guid")]
         private static void p5_hyperlisp_get_type_name_System_Guid (ApplicationContext context, ActiveEventArgs e)
         {
@@ -95,8 +95,8 @@ namespace p5.types
         /// 
         ///     Returns the Hyperlisp type-name for System.Int64, which is <em>"long"</em>.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Int64")]
         private static void p5_hyperlisp_get_type_name_System_Int64 (ApplicationContext context, ActiveEventArgs e)
         {
@@ -108,8 +108,8 @@ namespace p5.types
         /// 
         ///     Returns the Hyperlisp type-name for System.UInt64, which is <em>"ulong"</em>.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.UInt64")]
         private static void p5_hyperlisp_get_type_name_System_UInt64 (ApplicationContext context, ActiveEventArgs e)
         {
@@ -121,8 +121,8 @@ namespace p5.types
         /// 
         ///     Returns the Hyperlisp type-name for System.Int32, which is <em>"int"</em>.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Int32")]
         private static void p5_hyperlisp_get_type_name_System_Int32 (ApplicationContext context, ActiveEventArgs e)
         {
@@ -134,8 +134,8 @@ namespace p5.types
         /// 
         ///     Returns the Hyperlisp type-name for System.UInt32, which is <em>"uint"</em>.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.UInt32")]
         private static void p5_hyperlisp_get_type_name_System_UInt32 (ApplicationContext context, ActiveEventArgs e)
         {
@@ -147,8 +147,8 @@ namespace p5.types
         /// 
         ///     Returns the Hyperlisp type-name for System.Int16, which is <em>"short"</em>.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Int16")]
         private static void p5_hyperlisp_get_type_name_System_Int16 (ApplicationContext context, ActiveEventArgs e)
         {
@@ -160,8 +160,8 @@ namespace p5.types
         /// 
         ///     Returns the Hyperlisp type-name for System.UInt16, which is <em>"ushort"</em>.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.UInt16")]
         private static void p5_hyperlisp_get_type_name_System_UInt16 (ApplicationContext context, ActiveEventArgs e)
         {
@@ -173,8 +173,8 @@ namespace p5.types
         /// 
         ///     Returns the Hyperlisp type-name for System.Single, which is <em>"float"</em>.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Single")]
         private static void p5_hyperlisp_get_type_name_System_Single (ApplicationContext context, ActiveEventArgs e)
         {
@@ -186,8 +186,8 @@ namespace p5.types
         /// 
         ///     Returns the Hyperlisp type-name for System.Double, which is <em>"double"</em>.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Double")]
         private static void p5_hyperlisp_get_type_name_System_Double (ApplicationContext context, ActiveEventArgs e)
         {
@@ -199,8 +199,8 @@ namespace p5.types
         /// 
         ///     Returns the Hyperlisp type-name for System.Decimal, which is <em>"decimal"</em>.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Decimal")]
         private static void p5_hyperlisp_get_type_name_System_Decimal (ApplicationContext context, ActiveEventArgs e)
         {
@@ -212,8 +212,8 @@ namespace p5.types
         /// 
         ///     Returns the Hyperlisp type-name for System.Boolean, which is <em>"bool"</em>.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Boolean")]
         private static void p5_hyperlisp_get_type_name_System_Boolean (ApplicationContext context, ActiveEventArgs e)
         {
@@ -225,8 +225,8 @@ namespace p5.types
         /// 
         ///     Returns the Hyperlisp type-name for System.Byte, which is <em>"byte"</em>.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Byte")]
         private static void p5_hyperlisp_get_type_name_System_Byte (ApplicationContext context, ActiveEventArgs e)
         {
@@ -238,8 +238,8 @@ namespace p5.types
         /// 
         ///     Returns the Hyperlisp type-name for System.Byte[], which is <em>"blob"</em>.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Byte[]")]
         private static void p5_hyperlisp_get_type_name_System_ByteBlob (ApplicationContext context, ActiveEventArgs e)
         {
@@ -251,8 +251,8 @@ namespace p5.types
         /// 
         ///     Returns the Hyperlisp type-name for System.SByte, which is <em>"sbyte"</em>.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.SByte")]
         private static void p5_hyperlisp_get_type_name_System_SByte (ApplicationContext context, ActiveEventArgs e)
         {
@@ -264,8 +264,8 @@ namespace p5.types
         /// 
         ///     Returns the Hyperlisp type-name for System.Char, which is <em>"char"</em>.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Char")]
         private static void p5_hyperlisp_get_type_name_System_Char (ApplicationContext context, ActiveEventArgs e)
         {
@@ -277,8 +277,8 @@ namespace p5.types
         /// 
         ///     Returns the Hyperlisp type-name for System.DateTime, which is <em>"date"</em>.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.DateTime")]
         private static void p5_hyperlisp_get_type_name_System_DateTime (ApplicationContext context, ActiveEventArgs e)
         {
@@ -290,8 +290,8 @@ namespace p5.types
         /// 
         ///     Returns the Hyperlisp type-name for System.TimeSpan, which is <em>"time"</em>.
         /// </summary>
-        /// <param name="context">Application context.</param>
-        /// <param name="e">Parameters passed into Active Event.</param>
+        /// <param name="context">Application context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.TimeSpan")]
         private static void p5_hyperlisp_get_type_name_System_TimeSpan (ApplicationContext context, ActiveEventArgs e)
         {
