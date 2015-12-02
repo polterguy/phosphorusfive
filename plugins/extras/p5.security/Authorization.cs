@@ -120,6 +120,13 @@ namespace p5.security
             // Checking if user is root (root is authorized to do almost everything!)
             if (context.Ticket.Role != "root") {
 
+                // Making sure user cannot access "file node"
+                if (node.Path.Count < 2)
+                    throw new LambdaSecurityException (
+                        "You cannot select file nodes from database", 
+                        args["args"].Get<Node> (context), 
+                        context);
+
                 // Making sure protected data is not deleted
                 while (node.Path.Count != 2) {
                     node = node.Parent;
@@ -128,7 +135,7 @@ namespace p5.security
                 // Verifying main data node is not protected (starts with "_")
                 if (node.Name.StartsWith ("_"))
                     throw new LambdaSecurityException (
-                        string.Format ("You cannot select protected node '{0}' from your database, or parts of its descendants", node.Name), 
+                        string.Format ("You cannot select protected node '{0}' from database, or parts of its descendants", node.Name), 
                         args["args"].Get<Node> (context), 
                         context);
             }

@@ -4,28 +4,24 @@
  */
 
 using System;
+using System.IO;
 using System.Linq;
 using System.Configuration;
 using System.Collections.Generic;
 using p5.core;
 
 /// <summary>
-///     Main namespace for common data classes.
-/// 
-///     Contains common helper classes for the [p5.data.xxx] namespace in Phosphorus Five.
+///     Main namespace for common data classes
 /// </summary>
 namespace p5.data.helpers
 {
     /// <summary>
-    ///     Helper class for common operations.
-    /// 
-    ///     Contains helper methods for common operations shared among for instance the [select-data] and [delete-data]
-    ///     Active Events.
+    ///     Helper class for common operations
     /// </summary>
     public static class Common
     {
-        // contains the path to the database folder, where all the p5.lambda files are stored
-        private static string _dbPath;
+        // Contains full path to database folder
+        private static string _dbFullPath;
 
         static Common ()
         {
@@ -33,55 +29,48 @@ namespace p5.data.helpers
         }
 
         /// <summary>
-        ///     This is your actual Database.
-        /// 
-        ///     The [p5.data.xxx] namespace in Phosphorus Five, is a memory-based Database, allowing you to have a quick and dirty
-        ///     database implementation, not usable for huge data centers, but smaller websites, in addition to serving as a cache
-        ///     object for you. This is where you actual Database data is stored.
+        ///     This is your actual Database
         /// </summary>
-        /// <value>Database node tree.</value>
+        /// <value>Database node lambda object</value>
         public static Node Database { get; private set; }
 
         /// <summary>
-        ///     Used to lock database access.
-        /// 
-        ///     Some operations in the database layer of Phosphorus Five, requires that only one thread access the database 
-        ///     at the same time. This is the object we use to lock such access to the database.
+        ///     Used to lock database access
         /// </summary>
         /// <value>lock object</value>
         public static object Lock { get; private set; }
 
         /// <summary>
-        ///     Makes sure database is properly initialized.
-        /// 
-        ///     Basically loads all files from the database path, which can be found in your application configuration file, and
-        ///     loads up all items from all p5.lambda files inside your databasse directory, and stores them in memory.
-        /// 
-        ///     After initial execution, this method will return immediately, not being particularly costy in any ways.
+        ///     Make sure database is properly initialized
         /// </summary>
         /// <param name="context">application context</param>
         public static void Initialize (ApplicationContext context)
         {
-            // verifying database is not already initialized from before
-            if (string.IsNullOrEmpty (_dbPath)) {
+            // Verifying database is not already initialized from before
+            if (string.IsNullOrEmpty (_dbFullPath)) {
 
-                // need to initialize database
+                // Need to initialize database
                 Database = new Node ();
 
-                // finding and setting our databasse root directory
-                _dbPath = ConfigurationManager.AppSettings ["database-path"] ?? "database/";
+                // Finding and setting our database root directory
+                _dbFullPath = (ConfigurationManager.AppSettings ["database-path"] ?? "~/_database/");
+                _dbFullPath = _dbFullPath.Replace ("~/", GetRootFolder (context));
 
-                // checking to see if database directory exist
-                var dbPath = new Node (string.Empty, _dbPath);
-                context.Raise ("folder-exist", dbPath);
-                if (!dbPath [0].Get<bool> (context)) {
-                    context.Raise ("create-folder", new Node (string.Empty, _dbPath));
+                // Checking to see if database directory exist
+                if (!Directory.Exists (_dbFullPath)) {
+
+                    // Database folder did NOT exist, therefor we need to create
+                    Directory.CreateDirectory (_dbFullPath);
                 }
 
-                // iterating through all folders inside of database directory and loading all files in all folders inside of database directory
-                foreach (var idxDirectory in GetDirectories (context, _dbPath)) {
+                // Iterating through all folders inside of database directory, and loading all files in 
+                // all folders inside of database directory
+                foreach (var idxDirectory in GetFolders (context)) {
 
+                    // Loading all files in currently iterated folder
                     foreach (var idxFile in GetFiles (context, idxDirectory)) {
+
+                        // Loading currently iterated file
                         Database.Add (LoadFile (context, idxFile));
                     }
                 }
@@ -89,199 +78,199 @@ namespace p5.data.helpers
         }
 
         /// <summary>
-        ///     Adds the file node to changes.
-        /// 
-        ///     When you update or remove items from the database, then this method is useful for figuring
-        ///     out which files are affected by your operation.
-        /// 
-        ///     Pass in the node that was either changed or removed, and the method will append the file node necessary to
-        ///     save as a consequence in the changed parameter.
+        ///     Adds the file node to changes
         /// </summary>
-        /// <param name="idxDest">Which node was changed.</param>
-        /// <param name="changed">List of nodes containing the files that needs to be saved due to change operation.</param>
+        /// <param name="idxDest">Which node was changed</param>
+        /// <param name="changed">List of nodes containing the files that needs to be saved due to change operation</param>
         public static void AddNodeToChanges (Node idxDest, List<Node> changed)
         {
-            // finding "file node"
+            // Finding "file node"
             var dnaFile = idxDest;
             while (dnaFile.Path.Count > 1) {
                 dnaFile = dnaFile.Parent;
             }
 
-            // making sure changed list of items contains "file node"
+            // Making sure changed list of items contains "file node"
             if (!changed.Contains (dnaFile)) {
                 changed.Add (dnaFile);
             }
         }
 
-        /*
-         * saves all affected files
-         */
         /// <summary>
-        ///     Saves the affected files.
-        /// 
-        ///     Will save all files in the changed parameter that needs to be save as a consequence of a change or
-        ///     remove operation into the database.
+        ///     Saves the affected files
         /// </summary>
         /// <param name="context">Application context.</param>
         /// <param name="changed">List of files that were changed, and hence will be saved.</param>
         public static void SaveAffectedFiles (ApplicationContext context, List<Node> changed)
         {
+            // Looping through all files that needs to be saved
             foreach (var idxNode in changed) {
+
+                // Making sure file is stored to disc (or deleted, if it is empty)
                 SaveFileNode (context, idxNode);
+
+                // Removing node entirely from database, if file node was empty, at which case the file was deleted above
                 if (idxNode.Count == 0)
                     idxNode.UnTie ();
             }
         }
 
-        /// \todo Do we really need to save the file? It is not really supposed to be necessary...
         /// <summary>
-        ///     Gets the available file node.
-        /// 
-        ///     Will automatically figure out the next available file node for you, and create a container file
-        ///     which will be used for the node.
+        ///     Gets the first available file node
         /// </summary>
         /// <returns>The next available file node.</returns>
         /// <param name="context">Aplication context.</param>
         public static Node GetAvailableFileNode (ApplicationContext context)
         {
-            // searching through database to see if there are any nodes we can use from before
+            // Searching through database to see if there are any nodes we can use from before
             var objectsPerFile = int.Parse (ConfigurationManager.AppSettings ["database-nodes-per-file"] ?? "32");
             foreach (var idxFileNode in Database.Children) {
+
+                // Checking if currently iterated file has room for more data
                 if (idxFileNode.Count < objectsPerFile)
-                    return idxFileNode;
+                    return idxFileNode; // We found an available node
             }
 
-            // creating new node and appending into database
+            // Creating new node and appending into database
             var newFileName = FindAvailableNewFileName (context);
             var newNode = new Node (string.Empty, newFileName);
             Database.Add (newNode);
 
-            // making sure fil exists on disc, for future new creations of files before save operation occurs
-            var createFile = new Node (string.Empty, newFileName);
-            createFile.Add (new Node ("src", ""));
-            context.Raise ("save-file", createFile);
+            // Making sure file exists on disc, for future new creations of files, before save operation occurs
+            using (File.CreateText (_dbFullPath + newFileName)) { }
 
-            // returning available file node back to caller
+            // Returning available file node back to caller
             return newNode;
         }
 
         /*
-         * saves a database node to disc
+         * Saves a database node to disc, or deletes it if it is empty
          */
         private static void SaveFileNode (ApplicationContext context, Node fileNode)
         {
+            // Checking to see if we should remove file entirely, due to it having no more content
             if (fileNode.Count == 0) {
 
-                // removing file entirely since it no longer has any data
-                context.Raise ("delete-file", new Node (string.Empty, fileNode.Value));
+                // Removing file since it no longer has any data
+                File.Delete (_dbFullPath + fileNode.Value);
 
-                // checking to see if we should remove folder entirely
-                string folder = fileNode.Get<string> (context).Substring (0, fileNode.Get<string> (context).LastIndexOf ("/"));
-                var folderNode = new Node (
-                    string.Empty,
-                    folder);
-                context.Raise ("list-files", folderNode);
-                if (folderNode.Count == 0) {
+                // Checking to see if we should remove folder entirely
+                string folder = fileNode.Get<string> (context).Substring (0, fileNode.Get<string> (context).LastIndexOf ("/") + 1);
+                var fileList = Directory.GetFiles (_dbFullPath + folder).ToList ();
+                fileList.RemoveAll (ix => !Path.GetFileName (ix).StartsWith ("db") && !Path.GetFileName (ix).EndsWith (".hl"));
+                if (fileList.Count == 0) {
 
-                    folderNode.Value = folder;
-                    context.Raise ("delete-folder", folderNode);
+                    // Deleting folder, since there are no more files in it
+                    Directory.Delete (_dbFullPath + folder);
                 }
             } else {
 
-                // converts node to code
-                var convertNode = new Node ();
-                foreach (var idx in fileNode.Children) {
-                    convertNode.Add (idx.Clone ());
+                // Saves node as Hyperlisp
+                using (TextWriter writer = File.CreateText (_dbFullPath + fileNode.Value)) {
+                    writer.Write (context.Raise ("lambda2lisp", new Node ().AddRange (fileNode.Clone ().Children)).Value);
                 }
-                context.Raise ("lambda2lisp", convertNode);
-
-                // saves code
-                var saveNode = new Node (string.Empty, fileNode.Value);
-                saveNode.Add (new Node ("src", convertNode.Value));
-                context.Raise ("save-file", saveNode);
             }
         }
 
         /*
-         * loads a file from "path" and returns as Node
+         * Loads a file from "path" and returns as Node
          */
         private static Node LoadFile (ApplicationContext context, string path)
         {
-            // returning Node with node value being path, and content being children
-            var retVal = new Node (string.Empty, path);
-            context.Raise ("load-file", retVal);
-            retVal.LastChild.Value = path;
-            return retVal.LastChild.UnTie ();
+            // Reading file from disc
+            using (TextReader reader = File.OpenText (_dbFullPath + path)) {
+
+                // Converting file to lambda
+                Node retVal = context.Raise ("lisp2lambda", new Node (string.Empty, reader.ReadToEnd ()));
+                retVal.Value = path;
+                return retVal;
+            }
         }
 
         /*
-         * returns all directories within given folder
+         * Returns all directories within database folder
          */
-        private static IEnumerable<string> GetDirectories (ApplicationContext context, string folder)
+        private static IEnumerable<string> GetFolders (ApplicationContext context)
         {
-            var dbFoldersNode = new Node (string.Empty, folder);
-            context.Raise ("list-folders", dbFoldersNode);
+            // Looping through each subfolder in folder given
+            var folders = Directory.GetDirectories (_dbFullPath).ToList ();
+            folders.Sort (
+                (x, y) => 
+                int.Parse (x.Substring (_dbFullPath.Length + 2)).CompareTo (int.Parse (y.Substring (_dbFullPath.Length + 2))));
+            foreach (var idxDirectory in folders) {
 
-            dbFoldersNode.Sort (
-                delegate (Node left, Node right) {
-                    var leftInt = int.Parse (left.Name.Replace (_dbPath, "").Substring (2));
-                    var rightInt = int.Parse (right.Name.Replace (_dbPath, "").Substring (2));
-                    return leftInt.CompareTo (rightInt);
-                });
-
-            return dbFoldersNode.Children.Select (idxDirectory => idxDirectory.Name);
+                // Returning currently iterated subfolder
+                yield return "/" + idxDirectory.Substring (_dbFullPath.Length).Trim ('/') + "/";
+            }
         }
 
         /*
-         * returns files within directory
+         * Returns files within directory
          */
-        private static IEnumerable<string> GetFiles (ApplicationContext context, string directory)
+        private static IEnumerable<string> GetFiles (ApplicationContext context, string folder)
         {
-            var dbFoldersNode = new Node (string.Empty, directory);
-            context.Raise ("list-files", dbFoldersNode);
+            // Looping through each file in folder given
+            var files = Directory.GetFiles (_dbFullPath + folder.Substring (1)).ToList ();
+            files.RemoveAll (ix => !Path.GetFileName (ix).StartsWith ("db") || Path.GetFileName (ix).EndsWith ("~"));
+            files.Sort ((x, y) => 
+                int.Parse (Path.GetFileName (x).Substring (2).Replace (".hl", "")).CompareTo (int.Parse (Path.GetFileName (y).Substring (2).Replace (".hl", ""))));
+            foreach (var idxFile in files) {
 
-            dbFoldersNode.Sort (
-                delegate (Node left, Node right) {
-                    var leftInt = int.Parse (left.Name.Replace (directory, "").Substring (3).Replace (".hl", ""));
-                    var rightInt = int.Parse (right.Name.Replace (directory, "").Substring (3).Replace (".hl", ""));
-                    return leftInt.CompareTo (rightInt);
-                });
-
-            return dbFoldersNode.Children.Select (idxFile => idxFile.Name);
+                // Returning currently iterated file
+                yield return idxFile.Substring (_dbFullPath.Length);
+            }
         }
 
         /*
-         * returns the next available filename for a new database file
+         * Returns the next available filename for a new database file
          */
         private static string FindAvailableNewFileName (ApplicationContext context)
         {
+            // Retrieving maximum number of files for folder
             var maxFilesPerDirectory = int.Parse (ConfigurationManager.AppSettings ["database-files-per-directory"] ?? "256");
 
-            // checking to see if we can use existing directory
-            var directoryList = new List<string> (GetDirectories (context, _dbPath));
+            // Retrieving all folders currently in use
+            var directoryList = GetFolders (context).ToList ();
+
+            // Looping through each existing directory
             foreach (var idxDirectory in directoryList) {
-                var filesList = new List<string> (GetFiles (context, idxDirectory));
+
+                // Retrieving all files in currently iterated folder
+                var filesList = GetFiles (context, idxDirectory).ToList ();
+
+                // Checking if this folder has room for another file
                 if (filesList.Count >= maxFilesPerDirectory)
-                    continue;
+                    continue; // No more room here ...
+
+                // Finding first available filename in current folder
                 for (var idxNo = 0; idxNo < filesList.Count; idxNo++) {
-                    if (!filesList.Exists (
-                        file => file == idxDirectory + "/db" + idxNo + ".hl"))
-                        return idxDirectory + "/db" + idxNo + ".hl";
+
+                    // Checking if currently iterated filename exist
+                    if (!filesList.Exists (file => file == idxDirectory.Substring (1) + "db" + idxNo + ".hl"))
+
+                        // Filename did not exist, returning as next available filename
+                        return idxDirectory.Substring (1) + "db" + idxNo + ".hl";
                 }
-                return idxDirectory + "/db" + filesList.Count + ".hl";
+
+                // No missing files in folder, returning next available filename
+                return idxDirectory.TrimStart('/') + "db" + filesList.Count + ".hl";
             }
 
-            // didn't find an available filename, without creating new directory
+            // Didn't find an available filename, without creating new directory, looping through each folder
             for (var idxNo = 0; idxNo < directoryList.Count; idxNo++) {
-                if (!directoryList.Exists (
-                    dirNode => dirNode == _dbPath + "db" + idxNo)) {
-                    CreateNewDirectory (context, _dbPath + "db" + idxNo);
-                    return _dbPath + "db" + idxNo + "/db0.hl";
+
+                // Checking if currently iterated folder exist
+                if (!directoryList.Exists (dirNode => dirNode == "/db" + idxNo + "/")) {
+
+                    // Folder did not exist, create it, and returning to caller
+                    CreateNewDirectory (context, "/db" + idxNo + "/");
+                    return "db" + idxNo + "/db0.hl";
                 }
             }
 
-            CreateNewDirectory (context, _dbPath + "db" + directoryList.Count);
-            return _dbPath + "db" + directoryList.Count + "/db0.hl";
+            // Creating next available folder, and returning to caller
+            CreateNewDirectory (context, "/db" + directoryList.Count + "/");
+            return "db" + directoryList.Count + "/db0.hl";
         }
 
         /*
@@ -289,8 +278,15 @@ namespace p5.data.helpers
          */
         private static void CreateNewDirectory (ApplicationContext context, string directory)
         {
-            var createDirectoryNode = new Node (string.Empty, directory);
-            context.Raise ("create-folder", createDirectoryNode);
+            Directory.CreateDirectory (_dbFullPath + directory.Substring (1));
+        }
+
+        /*
+         * Helper to retrieve root folder of application
+         */
+        private static string GetRootFolder (ApplicationContext context)
+        {
+            return context.Raise ("p5.core.application-folder").Get<string> (context);
         }
     }
 }
