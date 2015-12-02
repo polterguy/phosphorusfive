@@ -4,57 +4,49 @@
  */
 
 using System.IO;
-using p5.core;
 using p5.exp;
+using p5.core;
+using p5.exp.exceptions;
 
 /// <summary>
-///     Main namespace for everything related to folders.
-/// 
-///     The Active Events within this namespace, allows you to create, remove, view, and change, your folders, and the contents of the folders, 
-///     within your Phosphorus Five installation.
+///     Main namespace for everything related to folders
 /// </summary>
 namespace p5.file.folder
 {
     /// <summary>
-    ///     Class to help create folders on disc.
-    /// 
-    ///     Encapsulates the [create-folder] Active Event, and its associated helper methods.
+    ///     Class to help create folders on disc
     /// </summary>
     public static class Create
     {
         /// <summary>
-        ///     Creates zero or more folders on disc.
-        /// 
-        ///     If folder exists from before, then false is returned.
-        /// 
-        ///     Example that creates a "foo" folder, on root of your application;
-        /// 
-        ///     <pre>create-folder:foo</pre>
+        ///     Creates folders on disc
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "create-folder")]
         private static void create_folder (ApplicationContext context, ActiveEventArgs e)
         {
-            // making sure we clean up and remove all arguments passed in after execution
+            // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
-                // retrieving root folder
+                // Retrieving root folder
                 var rootFolder = Common.GetRootFolder (context);
 
-                // iterating through each folder caller wants to create
-                foreach (var idx in Common.GetSource (e.Args, context)) {
+                // Iterating through each folder caller wants to create
+                foreach (var idxFolder in Common.GetSource (e.Args, context)) {
 
-                    // checking to see if folder already exists, and if it does, return "false" to caller
-                    if (Directory.Exists (rootFolder + idx)) {
+                    // Verifying user is authorized to both reading from source, and writing to destination
+                    context.Raise ("_authorize-save-folder", new Node ("_authorize-save-folder", idxFolder).Add ("args", e.Args));
 
-                        // folder already exists, returning back to caller that creation was unsuccessful
-                        e.Args.Add (new Node (idx, false));
+                    // Checking to see if folder already exists
+                    if (Directory.Exists (rootFolder + idxFolder)) {
+
+                        // Oops, folder exist from before
+                        throw new LambdaException (string.Format ("Folder '{0}' exist from before", idxFolder), e.Args, context);
                     } else {
 
-                        // folder didn't exist, creating it, and returning "true" back to caller, meaning "success"
-                        Directory.CreateDirectory (rootFolder + idx);
-                        e.Args.Add (new Node (idx, true));
+                        // Folder didn't exist
+                        Directory.CreateDirectory (rootFolder + idxFolder);
                     }
                 }
             }

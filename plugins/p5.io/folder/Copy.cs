@@ -25,26 +25,40 @@ namespace p5.file.folder
         [ActiveEvent (Name = "copy-folder")]
         private static void copy_folder (ApplicationContext context, ActiveEventArgs e)
         {
+            /*
+             * We do not remove value of arguments here, since it is used for returning value of 
+             * new foldername, since it might not necessarily be the same as the one caller requested, 
+             * if folder exist from before
+             */
+
+            // Basic syntax checking
             if (e.Args.Value == null || e.Args.LastChild == null || e.Args.LastChild.Name != "to")
                 throw new ArgumentException ("[copy-folder] needs both a value and a [to] node.");
 
-            // making sure we clean up and remove all arguments passed in after execution
+            // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args)) {
 
-                // getting root folder
+                // Getting root folder
                 var rootFolder = Common.GetRootFolder (context);
 
-                // getting folder to copy
+                // Getting folder to copy
                 string sourceFolder = XUtil.Single<string> (context, e.Args).Trim ('/') + "/";
 
-                // Gettting new path of folder
+                // Getting new path of folder
                 string destinationFolder = XUtil.Single<string> (context, e.Args ["to"]).Trim ('/') + "/";
+
+                // Verifying user is authorized to both reading from source, and writing to destination
+                context.Raise ("_authorize-load-folder", new Node ("_authorize-load-folder", sourceFolder).Add ("args", e.Args));
+                context.Raise ("_authorize-save-folder", new Node ("_authorize-save-folder", destinationFolder).Add ("args", e.Args));
 
                 // Getting new foldername for folder, if needed
                 if (Directory.Exists (rootFolder + destinationFolder)) {
 
                     // Destination folder exist from before, creating a new unique destination foldername
                     destinationFolder = Common.CreateNewUniqueFolderName (context, destinationFolder);
+
+                    // Making sure user is authorized to writing to UPDATED folder
+                    context.Raise ("_authorize-save-folder", new Node ("_authorize-save-folder", destinationFolder).Add ("args", e.Args));
                 }
 
                 // Actually copying folder, getting source first, in case copying implies copy one

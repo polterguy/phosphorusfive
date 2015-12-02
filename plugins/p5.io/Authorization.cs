@@ -44,12 +44,34 @@ namespace p5.io
             AuthorizeLoadFile (context, e.Args.Get<string> (context).TrimStart ('/'), e.Args ["args"].Get<Node> (context));
         }
 
+        /// <summary>
+        ///     Throws an exception if user is not authorized to save the given file
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "_authorize-save-folder", Protected = true)]
+        private static void _authorize_save_folder (ApplicationContext context, ActiveEventArgs e)
+        {
+            AuthorizeWriteFolder (context, "/" + e.Args.Get<string> (context).TrimStart ('/'), e.Args ["args"].Get<Node> (context));
+        }
+
+        /// <summary>
+        ///     Throws an exception if user is not authorized to read the given file
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "_authorize-load-folder", Protected = true)]
+        private static void _authorize_load_folder (ApplicationContext context, ActiveEventArgs e)
+        {
+            AuthorizeLoadFolder (context, "/" + e.Args.Get<string> (context).TrimStart ('/'), e.Args ["args"].Get<Node> (context));
+        }
+
         /*
          * Verifies user is authorized writing to the specified file
          */
         private static void AuthorizeWriteFile (ApplicationContext context, string filename, Node stack)
         {
-            // Checking if user is root (root is authorized to do everything!)
+            // Checking if user is root (root is authorized to do almost everything!)
             if (context.Ticket.Role != "root") {
 
                 // Verifying file is underneath user's folder
@@ -62,30 +84,38 @@ namespace p5.io
                 // Verifying suffix of file is a type of file that user is allowed to save
                 switch (Path.GetExtension (filename)) {
 
-                // Creating blacklist ...!
+                // Blacklisted ...!
                 case "config":
                     throw new LambdaSecurityException (
                         string.Format ("User '{0}' tried to write to file '{1}'", context.Ticket.Username, filename), 
                         stack, 
                         context);
                 }
+            } else {
+
+                // Verifying file is not underneath ANOTHER user's folder, which is not legal even for root account!
+                if (filename.StartsWith ("users/") && filename.IndexOf (string.Format ("users/{0}/", context.Ticket.Username)) != 0)
+                    throw new LambdaSecurityException (
+                        string.Format ("Root user '{0}' tried to write to file '{1}'", context.Ticket.Username, filename), 
+                        stack, 
+                        context);
             }
 
-            // Verifying auth file is safe
+            // Verifying "auth file" is safe
             var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
             if (filename == configuration.AuthFile)
                 throw new LambdaSecurityException (
-                    string.Format ("User '{0}' tried to access auth file", context.Ticket.Username, filename), 
+                    string.Format ("User '{0}' tried to access 'auth' file", context.Ticket.Username, filename), 
                     stack, 
                     context);
         }
 
         /*
-         * Verifies user is authorized reading the specified file
+         * Verifies user is authorized reading from the specified file
          */
         private static void AuthorizeLoadFile (ApplicationContext context, string filename, Node stack)
         {
-            // Verifying file is underneath user's folder, if it is underneath "users/" folders
+            // Verifying file is underneath authenticated user's folder, if it is underneath "users/" folders
             if (filename.StartsWith ("users/") && filename.IndexOf (string.Format ("users/{0}/", context.Ticket.Username)) != 0)
                 throw new LambdaSecurityException (
                     string.Format ("User '{0}' tried to read file '{1}'", context.Ticket.Username, filename), 
@@ -97,6 +127,44 @@ namespace p5.io
             if (filename == configuration.AuthFile)
                 throw new LambdaSecurityException (
                     string.Format ("User '{0}' tried to access auth file", context.Ticket.Username, filename), 
+                    stack, 
+                    context);
+        }
+
+        /*
+         * Verifies user is authorized writing to the specified folder
+         */
+        private static void AuthorizeWriteFolder (ApplicationContext context, string foldername, Node stack)
+        {
+            // Checking if user is root (root is authorized to do almost everything!)
+            if (context.Ticket.Role != "root") {
+
+                // Verifying file is underneath user's folder
+                if (foldername.IndexOf (string.Format ("/users/{0}/", context.Ticket.Username)) != 0)
+                    throw new LambdaSecurityException (
+                        string.Format ("User '{0}' tried to write to folder '{1}'", context.Ticket.Username, foldername), 
+                        stack, 
+                        context);
+            } else {
+
+                // Verifying folder is not underneath ANOTHER user's folder, which is not legal even for root account!
+                if (foldername.StartsWith ("/users/") && foldername.IndexOf (string.Format ("/users/{0}/", context.Ticket.Username)) != 0)
+                    throw new LambdaSecurityException (
+                        string.Format ("Root user '{0}' tried to write to folder '{1}'", context.Ticket.Username, foldername), 
+                        stack, 
+                        context);
+            }
+        }
+
+        /*
+         * Verifies user is authorized reading from the specified folder
+         */
+        private static void AuthorizeLoadFolder (ApplicationContext context, string foldername, Node stack)
+        {
+            // Verifying file is underneath authorized user's folder, if it is underneath "/users/" folders
+            if (foldername.StartsWith ("/users/") && foldername.IndexOf (string.Format ("/users/{0}/", context.Ticket.Username)) != 0)
+                throw new LambdaSecurityException (
+                    string.Format ("User '{0}' tried to read from folder '{1}'", context.Ticket.Username, foldername), 
                     stack, 
                     context);
         }

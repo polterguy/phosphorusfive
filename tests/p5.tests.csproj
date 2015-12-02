@@ -77,7 +77,6 @@
   <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="lambda\" />

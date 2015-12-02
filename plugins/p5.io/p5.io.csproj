@@ -63,6 +63,7 @@
     <Compile Include="file\Copy.cs" />
     <Compile Include="folder\Copy.cs" />
     <Compile Include="utilities\GZip.cs" />
+    <Compile Include="Authorization.cs" />
   </ItemGroup>
   <ItemGroup />
   <ProjectExtensions>
@@ -91,10 +92,5 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="utilities\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Authorization.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 </Project>
