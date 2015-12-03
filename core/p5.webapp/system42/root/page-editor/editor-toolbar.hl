@@ -48,7 +48,7 @@ for-each:x:/-/*?name
 /*
  * Setting roles
  */
-roles
+get-roles
 for-each:x:/-/*?name
   _lit
     literal

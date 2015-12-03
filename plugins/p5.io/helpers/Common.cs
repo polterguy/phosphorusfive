@@ -11,7 +11,7 @@ using p5.core;
 /// <summary>
 ///     Main namespace for all file operations in Phosphorus Five
 /// </summary>
-namespace p5.io
+namespace p5.io.common
 {
     /// <summary>
     ///     Class containing common methods for p5.io namespace

@@ -24,7 +24,7 @@ namespace lambda_exe
         /// </summary>
         /// <param name="context">Application context Active Event is raised within.</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.core.application-folder", Protection = EventProtection.NativeOnly)]
+        [ActiveEvent (Name = "p5.core.application-folder", Protection = EventProtection.Native)]
         private static void p5_core_application_folder (ApplicationContext context, ActiveEventArgs e)
         {
             string path = Assembly.GetExecutingAssembly().Location;

@@ -101,15 +101,15 @@ namespace p5.core
             // Verifying we have an entry for event name
             if (!_events.ContainsKey(name)) {
 
-                // Creating event name entry
+                // No existing event exist, create new event
                 _events[name] = new ActiveEvent(name, protection);
-            } else if (_events[name].Protection != EventProtection.NativeOnlyVirtual && _events[name].Protection != EventProtection.LambdaVirtual) {
+            } else if (_events[name].Protection != EventProtection.NativeOpen && _events[name].Protection != EventProtection.LambdaOpen) {
 
-                // Oops, event entry existed, and it was protected
-                throw new ApplicationException(string.Format("You cannot add to the Active Event '{0}' since it is protected", name));
-            } else if (protection != EventProtection.NativeOnlyVirtual && protection != EventProtection.LambdaVirtual) {
+                // Oops, event entry existed, and it was protected from being handled multiple times
+                throw new ApplicationException(string.Format("You cannot add to the Active Event '{0}' since it is protected from being declared multiple times", name));
+            } else if (protection != EventProtection.NativeOpen && protection != EventProtection.LambdaOpen) {
 
-                // Oops, event entry did not exist, but caller tried to add a protected method, where one which was not protected existed from before
+                // Oops, caller tried to add a protected method, where one which was not protected existed from before
                 throw new ApplicationException(string.Format("You cannot add a protected method to the Active Event '{0}' since there already exist one which is not protected", name));
             }
 
@@ -182,8 +182,8 @@ namespace p5.core
 
                     // Checking if Active Event cannot legally be raise by caller
                     if (!sourceIsNative && 
-                        _events[name].Protection != EventProtection.Lambda && 
-                        _events[name].Protection != EventProtection.LambdaVirtual)
+                        (_events[name].Protection == EventProtection.Native || 
+                        _events[name].Protection == EventProtection.NativeOpen))
                         throw new SecurityException ("Caller tried to raise Active Event from lambda that has exclusive native code access");
 
                     // Looping through all Active Events handlers for the given Active Event name
@@ -194,7 +194,7 @@ namespace p5.core
                     }
 
                     // Storing whether or not event was protected for C# code only, at which case we do not raise "null event handlers" for it
-                    wasProtected = _events[name].Protection == EventProtection.NativeOnly || _events[name].Protection == EventProtection.NativeOnlyVirtual;
+                    wasProtected = _events[name].Protection == EventProtection.Native || _events[name].Protection == EventProtection.NativeOpen;
                 }
 
                 // Then looping through all "null Active Event handlers" afterwards

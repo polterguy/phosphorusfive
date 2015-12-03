@@ -103,7 +103,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo2", Protection = EventProtection.LambdaVirtual)]
+        [ActiveEvent (Name = "foo2", Protection = EventProtection.LambdaOpen)]
         private static void foo2_1 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -114,7 +114,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo2", Protection = EventProtection.LambdaVirtual)]
+        [ActiveEvent (Name = "foo2", Protection = EventProtection.LambdaOpen)]
         private static void foo2_2 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -137,7 +137,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo3", Protection = EventProtection.LambdaVirtual)]
+        [ActiveEvent (Name = "foo3", Protection = EventProtection.NativeOpen)]
         private void Foo3 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "success";
@@ -161,7 +161,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo4", Protection = EventProtection.LambdaVirtual)]
+        [ActiveEvent (Name = "foo4", Protection = EventProtection.NativeOpen)]
         private void foo4_1 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -172,7 +172,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo4", Protection = EventProtection.LambdaVirtual)]
+        [ActiveEvent (Name = "foo4", Protection = EventProtection.NativeOpen)]
         private void foo4_2 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -196,7 +196,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo5", Protection = EventProtection.LambdaVirtual)]
+        [ActiveEvent (Name = "foo5", Protection = EventProtection.NativeOpen)]
         private void foo5_1 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -207,7 +207,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo5", Protection = EventProtection.LambdaVirtual)]
+        [ActiveEvent (Name = "foo5", Protection = EventProtection.NativeOpen)]
         private static void foo5_2 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -289,7 +289,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo8", Protection = EventProtection.LambdaVirtual)]
+        [ActiveEvent (Name = "foo8", Protection = EventProtection.NativeOpen)]
         private void Foo8 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -316,7 +316,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo9", Protection = EventProtection.LambdaVirtual)]
+        [ActiveEvent (Name = "foo9", Protection = EventProtection.NativeOpen)]
         private void foo9_1 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -327,7 +327,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo9", Protection = EventProtection.LambdaVirtual)]
+        [ActiveEvent (Name = "foo9", Protection = EventProtection.NativeOpen)]
         private static void foo9_2 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -379,7 +379,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo11", Protection = EventProtection.LambdaVirtual)]
+        [ActiveEvent (Name = "foo11", Protection = EventProtection.NativeOpen)]
         private void Foo11 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -415,14 +415,14 @@ namespace p5.unittests
             context.RaiseNative ("non-existing", tmp);
         }
 
-        [ActiveEvent (Name = "foo24", Protection = EventProtection.LambdaVirtual)]
+        [ActiveEvent (Name = "foo24", Protection = EventProtection.NativeOpen)]
         private void Foo24 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "failure";
         }
 
-        [ActiveEvent (Name = "foo54", Protection = EventProtection.LambdaVirtual)]
-        [ActiveEvent (Name = "foo54", Protection = EventProtection.LambdaVirtual)]
+        [ActiveEvent (Name = "foo54", Protection = EventProtection.LambdaOpen)]
+        [ActiveEvent (Name = "foo54", Protection = EventProtection.LambdaOpen)]
         private static void Foo54 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -439,7 +439,7 @@ namespace p5.unittests
 
         private class Foo55
         {
-            [ActiveEvent (Name = "foo55", Protection = EventProtection.Lambda)]
+            [ActiveEvent (Name = "foo55", Protection = EventProtection.Native)]
             private void Foo54 (ApplicationContext context, ActiveEventArgs e)
             {
                 e.Args.Value += "success";
@@ -475,13 +475,13 @@ namespace p5.unittests
 
         private class Foo57
         {
-            [ActiveEvent (Name = "foo57", Protection = EventProtection.Lambda)]
+            [ActiveEvent (Name = "foo57", Protection = EventProtection.Native)]
             private static void Foo54 (ApplicationContext context, ActiveEventArgs e)
             {
                 e.Args.Value += "success";
             }
 
-            [ActiveEvent (Name = "foo57", Protection = EventProtection.Lambda)]
+            [ActiveEvent (Name = "foo57", Protection = EventProtection.NativeOpen)]
             private void Foo54_2 (ApplicationContext context, ActiveEventArgs e)
             {
                 e.Args.Value += "success";
@@ -489,22 +489,25 @@ namespace p5.unittests
         }
 
         [Test]
-        [ExpectedException]
+        [ExpectedException (typeof (System.Security.SecurityException))]
         public void ApplicationContext35 ()
         {
             var context = Loader.Instance.CreateApplicationContext ();
+            Assert.AreEqual ("success", context.RaiseLambda ("foo57").Value);
+
+            // Should throw!!
             context.RegisterListeningObject (new Foo57 ());
         }
 
         private class Foo58
         {
-            [ActiveEvent (Name = "foo58", Protection = EventProtection.Lambda)]
+            [ActiveEvent (Name = "foo58", Protection = EventProtection.NativeOpen)]
             private static void Foo54 (ApplicationContext context, ActiveEventArgs e)
             {
                 e.Args.Value += "success";
             }
 
-            [ActiveEvent (Name = "foo58", Protection = EventProtection.Lambda)]
+            [ActiveEvent (Name = "foo58", Protection = EventProtection.Native)]
             private void Foo54_2 (ApplicationContext context, ActiveEventArgs e)
             {
                 e.Args.Value += "success";
@@ -516,6 +519,9 @@ namespace p5.unittests
         public void ApplicationContext36 ()
         {
             var context = Loader.Instance.CreateApplicationContext ();
+            Assert.AreEqual ("success", context.RaiseLambda ("foo58").Value);
+
+            // Should throw!!
             context.RegisterListeningObject (new Foo58 ());
         }
     }

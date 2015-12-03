@@ -248,7 +248,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'reload-location':
         case 'get-user':
         case 'logout':
-        case 'roles':
+        case 'get-roles':
         case 'sleep':
         case 'clear-widget':
         case 'delete-widget':

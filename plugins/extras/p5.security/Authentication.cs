@@ -28,7 +28,7 @@ namespace p5.security
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.core.initialize-application-context", Protection = EventProtection.NativeOnly)]
+        [ActiveEvent (Name = "p5.core.initialize-application-context", Protection = EventProtection.Native)]
         private static void p5_core_initialize_application_context (ApplicationContext context, ActiveEventArgs e)
         {
             if (!AuthenticationHelper.TryLoginFromPersistentCookie (context))

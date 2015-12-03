@@ -12,75 +12,20 @@ using System.Configuration;
 using System.Collections.Generic;
 using p5.exp;
 using p5.core;
+using p5.io.common;
 using p5.exp.exceptions;
 
-namespace p5.io
+namespace p5.io.authorization
 {
-    /// <summary>
-    ///     Class wrapping authorization for files in Phosphorus Five
-    /// </summary>
-    internal static class Authorization
+    /*
+     * Helper class for authorization features in p5.io
+     */
+    internal static class AuthorizationHelper
     {
-        /// <summary>
-        ///     Throws an exception if user is not authorized to save the given file
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "_authorize-save-file", Protection = EventProtection.NativeOnly)]
-        private static void _authorize_save_file (ApplicationContext context, ActiveEventArgs e)
-        {
-            AuthorizeSaveFile (
-                context, 
-                Common.NormalizeFileName (e.Args.Get<string> (context)), 
-                e.Args ["args"].Get<Node> (context));
-        }
-
-        /// <summary>
-        ///     Throws an exception if user is not authorized to read the given file
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "_authorize-load-file", Protection = EventProtection.NativeOnly)]
-        private static void _authorize_load_file (ApplicationContext context, ActiveEventArgs e)
-        {
-            AuthorizeLoadFile (
-                context, 
-                Common.NormalizeFileName (e.Args.Get<string> (context)), 
-                e.Args ["args"].Get<Node> (context));
-        }
-
-        /// <summary>
-        ///     Throws an exception if user is not authorized to save the given file
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "_authorize-save-folder", Protection = EventProtection.NativeOnly)]
-        private static void _authorize_save_folder (ApplicationContext context, ActiveEventArgs e)
-        {
-            AuthorizeSaveFolder (
-                context, 
-                Common.NormalizeFolderName (e.Args.Get<string> (context)), 
-                e.Args ["args"].Get<Node> (context));
-        }
-
-        /// <summary>
-        ///     Throws an exception if user is not authorized to read the given file
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "_authorize-load-folder", Protection = EventProtection.NativeOnly)]
-        private static void _authorize_load_folder (ApplicationContext context, ActiveEventArgs e)
-        {
-            AuthorizeLoadFolder (
-                context, 
-                Common.NormalizeFolderName (e.Args.Get<string> (context)), 
-                e.Args ["args"].Get<Node> (context));
-        }
-
         /*
          * Verifies user is authorized writing to the specified file
          */
-        private static void AuthorizeSaveFile (ApplicationContext context, string filename, Node stack)
+        internal static void AuthorizeSaveFile (ApplicationContext context, string filename, Node stack)
         {
             // Checking if user is root (root is authorized to do almost everything!)
             if (context.Ticket.Role != "root") {
@@ -124,7 +69,7 @@ namespace p5.io
         /*
          * Verifies user is authorized reading from the specified file
          */
-        private static void AuthorizeLoadFile (ApplicationContext context, string filename, Node stack)
+        internal static void AuthorizeLoadFile (ApplicationContext context, string filename, Node stack)
         {
             // Verifying file is underneath authenticated user's folder, if it is underneath "users/" folders
             if (filename.ToLower ().StartsWith ("users/") && 
@@ -145,7 +90,7 @@ namespace p5.io
         /*
          * Verifies user is authorized writing to the specified folder
          */
-        private static void AuthorizeSaveFolder (ApplicationContext context, string foldername, Node stack)
+        internal static void AuthorizeSaveFolder (ApplicationContext context, string foldername, Node stack)
         {
             // Checking if user is root (root is authorized to do almost everything!)
             if (context.Ticket.Role != "root") {
@@ -170,7 +115,7 @@ namespace p5.io
         /*
          * Verifies user is authorized reading from the specified folder
          */
-        private static void AuthorizeLoadFolder (ApplicationContext context, string foldername, Node stack)
+        internal static void AuthorizeLoadFolder (ApplicationContext context, string foldername, Node stack)
         {
             // Verifying file is underneath authorized user's folder, if it is underneath "/users/" folders
             if (foldername.StartsWith ("/users/") && foldername.Length != 7 && foldername.IndexOf (string.Format ("/users/{0}/", context.Ticket.Username)) != 0)

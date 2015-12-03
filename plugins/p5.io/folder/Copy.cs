@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
+using p5.io.common;
 
 /// <summary>
 ///     Main namespace for all IO folder operations in Phosphorus Five

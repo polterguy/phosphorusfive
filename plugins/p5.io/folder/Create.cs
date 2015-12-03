@@ -7,6 +7,7 @@ using System.IO;
 using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
+using p5.io.common;
 
 /// <summary>
 ///     Main namespace for everything related to folders

@@ -673,7 +673,7 @@ namespace p5.webapp
         /*
          * Raises Widget specific lambda events
          */
-        [ActiveEvent (Name = "", Protection = EventProtection.NativeOnlyVirtual)]
+        [ActiveEvent (Name = "", Protection = EventProtection.NativeOpen)]
         private void null_handler (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through each lambda event handler for given event
@@ -902,7 +902,7 @@ namespace p5.webapp
         /*
          * Invoked by p5.web during creation of Widgets
          */
-        [ActiveEvent (Name = "_p5.web.add-widget-ajax-event", Protection = EventProtection.NativeOnly)]
+        [ActiveEvent (Name = "_p5.web.add-widget-ajax-event", Protection = EventProtection.Native)]
         private void _p5_web_add_widget_ajax_event (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving widget
@@ -921,7 +921,7 @@ namespace p5.webapp
         /*
          * Invoked by p5.web during creation of Widgets
          */
-        [ActiveEvent (Name = "_p5.web.add-widget-lambda-event", Protection = EventProtection.NativeOnly)]
+        [ActiveEvent (Name = "_p5.web.add-widget-lambda-event", Protection = EventProtection.Native)]
         private void _p5_web_add_widget_lambda_event (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving widget
@@ -1092,7 +1092,7 @@ namespace p5.webapp
             var protection = context.GetEventProtection (evt);
             switch (protection) {
                 case EventProtection.Lambda:
-                case EventProtection.NativeOnly:
+                case EventProtection.Native:
                     return true;
             }
             if (_protectedDynamicEvents == null) {

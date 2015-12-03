@@ -71,7 +71,7 @@ namespace p5.lambda.events
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "_p5.lambda.get-protected-events", Protection = EventProtection.NativeOnly)]
+        [ActiveEvent (Name = "_p5.lambda.get-protected-events", Protection = EventProtection.Native)]
         private static void _p5_lambda_get_protected_events (ApplicationContext context, ActiveEventArgs e)
         {
             foreach (var idxEvt in _events.Keys) {
@@ -192,7 +192,7 @@ namespace p5.lambda.events
 
                 // Checking to see if this is Active Event is protected for C# code only, and if so, ignoring it
                 EventProtection protection = context.GetEventProtection (idx);
-                if (protection == EventProtection.NativeOnly || protection == EventProtection.NativeOnlyVirtual)
+                if (protection == EventProtection.Native || protection == EventProtection.NativeOpen)
                     continue;
 
                 // Checking to see if we have any filter
@@ -223,7 +223,7 @@ namespace p5.lambda.events
         /*
          * responsible for executing all dynamically created Active Events or lambda objects
          */
-        [ActiveEvent (Name = "", Protection = EventProtection.NativeOnlyVirtual)]
+        [ActiveEvent (Name = "", Protection = EventProtection.NativeOpen)]
         private static void _p5_core_null_active_event (ApplicationContext context, ActiveEventArgs e)
         {
             // checking if there's an event with given name in dynamically created events
