@@ -158,45 +158,53 @@ namespace p5.core
         /// <param name="context">Application Context</param>
         public Node Raise (string name, Node args, ApplicationContext context, ApplicationContext.ContextTicket ticket)
         {
-            // Used as buffer to store whether or not Active Event was protected or not
-            // This is done since we DO NOT invoke "null handlers" for protected events!
-            bool wasProtected = false;
+            try
+            {
+                // Used as buffer to store whether or not Active Event was protected or not
+                // This is done since we DO NOT invoke "null handlers" for protected events!
+                bool wasProtected = false;
 
-            ActiveEventArgs e = new ActiveEventArgs(name, args ?? new Node(), ticket);
+                ActiveEventArgs e = new ActiveEventArgs(name, args ?? new Node(), ticket);
 
-            // Checking if we have any Active Event handlers for given name
-            if (_events.ContainsKey (name)) {
+                // Checking if we have any Active Event handlers for given name
+                if (_events.ContainsKey (name)) {
 
-                // Looping through all Active Events handlers for the given Active Event name
-                foreach (var idxMethod in _events [name].Methods) {
+                    // Looping through all Active Events handlers for the given Active Event name
+                    foreach (var idxMethod in _events [name].Methods) {
 
-                    // Invoking Event Handler
-                    idxMethod.Method.Invoke (idxMethod.Instance, new object[] { context, e });
+                        // Invoking Event Handler
+                        idxMethod.Method.Invoke (idxMethod.Instance, new object[] { context, e });
+                    }
+
+                    // Storing whether or not event was protected
+                    wasProtected = _events[name].Protected;
                 }
 
-                // Storing whether or not event was protected
-                wasProtected = _events[name].Protected;
-            }
+                // Then looping through all "null Active Event handlers" afterwards
+                // ORDER COUNTS. Since most native Active Events are dependent upon arguments
+                // being specifically ordered somehow, we must wait until after we have raised
+                // all "native Active Events", before we raise all "null Active Event handlers".
+                // this is because "null event handlers" might possibly append nodes to the current
+                // Active Event's "root node", and hence mess up the parameter passing of native Active
+                // Events, that also have "null event handlers", where these null event handlers,
+                // are handling events, existing also as "native Active Event handlers"
+                // Please also notice that we do NOT raise "null handlers" for "protected" Active Events
+                if (!wasProtected && _events.ContainsKey (string.Empty)) {
 
-            // Then looping through all "null Active Event handlers" afterwards
-            // ORDER COUNTS. Since most native Active Events are dependent upon arguments
-            // being specifically ordered somehow, we must wait until after we have raised
-            // all "native Active Events", before we raise all "null Active Event handlers".
-            // this is because "null event handlers" might possibly append nodes to the current
-            // Active Event's "root node", and hence mess up the parameter passing of native Active
-            // Events, that also have "null event handlers", where these null event handlers,
-            // are handling events, existing also as "native Active Event handlers"
-            // Please also notice that we do NOT raise "null handlers" for "protected" Active Events
-            if (!wasProtected && _events.ContainsKey (string.Empty)) {
-
-                // Active Event was not protected, and we have a "null event handler"
-                foreach (var idxMethod in _events [string.Empty].Methods) {
-                    idxMethod.Method.Invoke (idxMethod.Instance, new object[] {context, e});
+                    // Active Event was not protected, and we have a "null event handler"
+                    foreach (var idxMethod in _events [string.Empty].Methods) {
+                        idxMethod.Method.Invoke (idxMethod.Instance, new object[] {context, e});
+                    }
                 }
-            }
 
-            // Returning args to caller
-            return e.Args;
+                // Returning args to caller
+                return e.Args;
+            }
+            catch (System.Reflection.TargetInvocationException err)
+            {
+                // Making sure we transform reflection exceptions into actual exceptions thrown
+                throw err.InnerException;
+            }
         }
 
         /// <summary>

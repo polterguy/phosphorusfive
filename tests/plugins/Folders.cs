@@ -620,5 +620,80 @@ insert-before:x:/../0
             // verifying remove works as it should
             Assert.AreEqual (false, Directory.Exists (GetBasePath () + "test1"));
         }
+
+        /// <summary>
+        ///     Tries to acces "auth" file
+        /// </summary>
+        [Test]
+        [ExpectedException (typeof (p5.exp.exceptions.LambdaSecurityException))]
+        public void ReadAuthFileAsGuest ()
+        {
+            _role = "guest";
+            _username = "guest";
+            try
+            {
+                var node = new Node (string.Empty, _auth);
+                Context.Raise ("load-file", node);
+            }
+            finally 
+            {
+                _role = "root";
+                _username = "root";
+            }
+        }
+
+        /// <summary>
+        ///     Tries to acces "auth" file
+        /// </summary>
+        [Test]
+        [ExpectedException (typeof (p5.exp.exceptions.LambdaSecurityException))]
+        public void ReadAuthFileAsGuestFileNameUppers ()
+        {
+            _role = "guest";
+            _username = "guest";
+            try
+            {
+                var node = new Node (string.Empty, _auth.ToUpper ());
+                Context.Raise ("load-file", node);
+            }
+            finally 
+            {
+                _role = "root";
+                _username = "root";
+            }
+        }
+
+        /// <summary>
+        ///     Tries to acces "auth" file
+        /// </summary>
+        [Test]
+        [ExpectedException (typeof (p5.exp.exceptions.LambdaSecurityException))]
+        public void ReadAuthFileAsRoot ()
+        {
+            var node = new Node (string.Empty, _auth);
+            Context.Raise ("load-file", node);
+        }
+
+        /// <summary>
+        ///     Tries to acces "auth" file
+        /// </summary>
+        [Test]
+        [ExpectedException (typeof (p5.exp.exceptions.LambdaSecurityException))]
+        public void ReadAuthFileWithSlash ()
+        {
+            var node = new Node (string.Empty, "/" + _auth);
+            Context.Raise ("load-file", node);
+        }
+
+        /// <summary>
+        ///     Tries to acces "auth" file
+        /// </summary>
+        [Test]
+        [ExpectedException (typeof (p5.exp.exceptions.LambdaSecurityException))]
+        public void ReadAuthFileWithDot ()
+        {
+            var node = new Node (string.Empty, _auth + ".");
+            Context.Raise ("load-file", node);
+        }
     }
 }

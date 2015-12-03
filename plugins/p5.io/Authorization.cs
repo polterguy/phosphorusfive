@@ -121,7 +121,9 @@ namespace p5.io
                     context);
 
             // Verifying auth file is safe
-            if (filename == Common.GetAuthFile (context))
+            filename = filename.TrimStart ('/').TrimEnd ('.');
+            var authFile = Common.GetAuthFile (context).Replace ("~/", "");
+            if (filename.ToLower () == authFile.ToLower ())
                 throw new LambdaSecurityException (
                     string.Format ("User '{0}' tried to access auth file", context.Ticket.Username, filename), 
                     stack, 

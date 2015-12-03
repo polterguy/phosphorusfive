@@ -16,6 +16,9 @@ namespace p5.unittests
     public abstract class TestBase
     {
         protected ApplicationContext Context;
+        protected static string _role = "root";
+        protected static string _username = "root";
+        protected const string _auth = "auth";
 
         /// <summary>
         /// initializes a new instance of the <see cref="phosphorus.unittests.TestBase"/> class. pass
@@ -80,7 +83,7 @@ namespace p5.unittests
         [ActiveEvent (Name = "_p5.security.get-auth-file")]
         private static void _p5_security_get_auth_file (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = "~/auth";
+            e.Args.Value = _auth;
         }
 
         [ActiveEvent (Name = "_p5.security.get-credential-cookie-days")]
@@ -97,7 +100,7 @@ namespace p5.unittests
         [ActiveEvent (Name = "_p5.security.get-default-context-role")]
         private static void _p5_security_get_default_context_role (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = "root";
+            e.Args.Value = _role;
         }
 
         /// <summary>
@@ -108,7 +111,7 @@ namespace p5.unittests
         [ActiveEvent (Name = "_p5.security.get-default-context-username")]
         private static void _p5_security_get_default_context_username (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = "root";
+            e.Args.Value = _username;
         }
 
         /// <summary>
