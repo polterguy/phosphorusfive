@@ -10,7 +10,7 @@ using p5.core;
 namespace p5.unittests.lambda
 {
     /// <summary>
-    ///     unit tests for testing the [for-each] lambda keyword
+    ///     Unit tests for testing the [for-each] lambda keyword
     /// </summary>
     [TestFixture]
     public class ForEach : TestBase
@@ -19,7 +19,7 @@ namespace p5.unittests.lambda
         : base ("p5.lambda", "p5.types", "p5.hyperlisp") { }
 
         /// <summary>
-        ///     verifies that [for-each] works when expression is of type 'node'
+        ///     Verifies that [for-each] works when expression is of type 'node'
         /// </summary>
         [Test]
         public void ForEachNode ()
@@ -38,7 +38,7 @@ for-each:x:/-/*
         }
         
         /// <summary>
-        ///     verifies that [for-each] works when expression is of type 'name'
+        ///     Verifies that [for-each] works when expression is of type 'name'
         /// </summary>
         [Test]
         public void ForEachName ()
@@ -57,7 +57,7 @@ for-each:x:/-/*?name
         }
         
         /// <summary>
-        ///     verifies that [for-each] works when expression is of type 'value'
+        ///     Verifies that [for-each] works when expression is of type 'value'
         /// </summary>
         [Test]
         public void ForEachValue ()
@@ -76,7 +76,7 @@ for-each:x:/-/*?value
         }
         
         /// <summary>
-        ///     verifies that [for-each] works when given a constant node with two children
+        ///     Verifies that [for-each] works when given a constant node with two children
         /// </summary>
         [Test]
         public void ForEachValueIsNode ()
@@ -94,7 +94,7 @@ for-each:x:/-/*?value
         }
         
         /// <summary>
-        ///     verifies that [for-each] works when given a constant string that turns into two nodes
+        ///     Verifies that [for-each] works when given a constant string that turns into two nodes
         /// </summary>
         [Test]
         public void ForEachValueIsString ()
@@ -118,7 +118,7 @@ _foo2:bar2""
         }
 
         /// <summary>
-        ///     verifies that [for-each] works when given a source that is an Active Event invocation
+        ///     Verifies that [for-each] works when given a source that is an Active Event invocation
         /// </summary>
         [Test]
         public void ForEachSourceIsActiveEvent ()
@@ -135,7 +135,7 @@ _foo2:bar2""
         }
         
         /// <summary>
-        ///     verifies that [for-each] works when given a source that is a dynamically created Active Event invocation
+        ///     Verifies that [for-each] works when given a source that is a dynamically created Active Event invocation
         /// </summary>
         [Test]
         public void ForEachSourceIsDynamicActiveEvent ()
@@ -157,7 +157,7 @@ for-each
         }
         
         /// <summary>
-        ///     verifies that [for-each] works when given a source that is a dynamically created Active Event invocation
+        ///     Verifies that [for-each] works when given a source that is a dynamically created Active Event invocation
         ///     that returns a string as value
         /// </summary>
         [Test]
@@ -179,7 +179,7 @@ for-each
         }
         
         /// <summary>
-        ///     verifies that [for-each] has access to nodes outside of itself
+        ///     Verifies that [for-each] has access to nodes outside of itself
         /// </summary>
         [Test]
         public void ForEachIsNotRoot ()

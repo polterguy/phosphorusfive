@@ -550,18 +550,6 @@ namespace p5.core
         }
 
         /// <summary>
-        ///     Returns the first child node of the curent node, not having the given name.
-        /// 
-        ///     Will return the first child node of the Children collection of the durrent node, who's Name property is
-        ///     NOT the given name.
-        /// </summary>
-        /// <value>the first child</value>
-        public Node FirstChildNotOf (string name)
-        {
-            return _children.FirstOrDefault (idx => idx.Name != name);
-        }
-
-        /// <summary>
         ///     Returns the last child of the node.
         /// </summary>
         /// <value>The last child node.</value>

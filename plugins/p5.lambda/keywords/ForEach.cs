@@ -76,7 +76,7 @@ namespace p5.lambda.keywords
                                 // assuming first non-empty name child node of for-each is "source",
                                 // raising that node's name as Active Event, and iterating on the resulting
                                 // children from that Event invocation
-                                Node sourceNode = e.Args.FirstChildNotOf (string.Empty);
+                                Node sourceNode = e.Args.Children.First(ix=>ix.Name != string.Empty);
                                 var oldSourceValue = sourceNode.Value;
                                 context.RaiseLambda (sourceNode.Name, sourceNode);
                                 sourceNode.UnTie (); // removing node that was used as source

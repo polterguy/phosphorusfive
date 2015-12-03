@@ -25,17 +25,18 @@ namespace p5.threading
         [ActiveEvent (Name = "wait", Protection = EventProtection.LambdaClosed)]
         private static void lambda_wait (ApplicationContext context, ActiveEventArgs e)
         {
-            if (e.Args.FirstChildNotOf ("fork") != null)
+            // Basic syntax checking
+            if (e.Args.Children.Count( ix => ix.Name != "fork" && ix.Name != "") != 0)
                 throw new LambdaException ("[wait] cannot have any other types of children but [fork] statements", e.Args, context);
 
             // looping through each fork child
-            foreach (var idxFork in e.Args.Children) {
+            foreach (var idxFork in e.Args.Children.Where (ix => ix.Name == "fork")) {
 
                 // iterating each lambda object in fork
-                foreach (var idxThread in Fork.GetForkObjects (context, e.Args)) {
+                foreach (var idxThread in Fork.GetForkObjects (context, idxFork)) {
 
                     // creating a new thread for each lambda object in fork statement
-                    Fork.ThreadStart thread = new Fork.ThreadStart (context, idxFork);
+                    Fork.ThreadStart thread = new Fork.ThreadStart (context, idxThread);
                     thread.Start ();
                     thread.Join (e.Args.GetExValue (context, -1));
                 }

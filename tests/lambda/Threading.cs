@@ -10,7 +10,7 @@ using p5.core;
 namespace p5.unittests.lambda
 {
     /// <summary>
-    ///     unit tests for testing the threading features of p5.lambda
+    ///     Unit tests for testing the threading features of Phosphorus Five
     /// </summary>
     [TestFixture]
     public class Threading : TestBase
@@ -91,6 +91,37 @@ if
         }
 
         /// <summary>
+        ///     Creates one thread that saves a file on disc, but only if [fork] is root node
+        /// 
+        ///     NOTICE!
+        ///     Some times this test might produce an error, since it assumes that if the main thread waits for
+        ///     10 milliseconds, this should be sufficient enough time for the forked thread to execute its logic, which
+        ///     is to produce a file on disc called "thread-test.txt". If the test fails, then run it again, if it 
+        ///     doesn't fail, then the test is valid, but 10 milliseonds was not previously enough for the main thread
+        ///     to wait for the forked thread to execute its logic
+        /// </summary>
+        [Test]
+        public void ForkIsRootForFork ()
+        {
+            if (File.Exists (GetBasePath () + "thread-test1.txt")) {
+                File.Delete (GetBasePath () + "thread-test1.txt");
+            }
+
+            var result = ExecuteLambda (@"fork
+  if:x:/..?name
+    =:fork
+    save-file:thread-test1.txt
+      src:hello world 1
+sleep:20
+if
+  file-exist:thread-test1.txt
+  insert-before:x:/../0
+    src:success");
+            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual ("success", result [0].Name);
+        }
+
+        /// <summary>
         ///     Creates two threads that saves a file each, and waits for them to finish, 
         ///     verifying that both threads are executed
         /// </summary>
@@ -106,9 +137,11 @@ if
 
             var result = ExecuteLambda (@"wait
   fork
+    sleep:10
     save-file:thread-test1.txt
       src:hello world 1
   fork
+    sleep:10
     save-file:thread-test2.txt
       src:hello world 2
 _files
@@ -122,6 +155,30 @@ if
             Assert.AreEqual ("success", result [0].Name);
         }
         
+        /// <summary>
+        ///     Creates one thread beneath a [wait] that saves a file on disc, but only if [fork] is root node
+        /// </summary>
+        [Test]
+        public void ForkIsRootForWait ()
+        {
+            if (File.Exists (GetBasePath () + "thread-test1.txt")) {
+                File.Delete (GetBasePath () + "thread-test1.txt");
+            }
+
+            var result = ExecuteLambda (@"wait
+  fork
+    if:x:/..?name
+      =:fork
+      save-file:thread-test1.txt
+        src:hello world 1
+if
+  file-exist:thread-test1.txt
+  insert-before:x:/../0
+    src:success");
+            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual ("success", result [0].Name);
+        }
+
         /// <summary>
         ///     Creates two threads that have a [wait] statement, where the wait is 10 milliseconds, and
         ///     one of the threads sleeps for 20 milliseconds, before creating a file on disc, verifying the
@@ -156,10 +213,10 @@ else
         }
         
         /// <summary>
-        ///     Creates two threads that have a [wait] statement, where the wait an expression yielding 20
+        ///     Creates two threads that have a [wait] statement, where the wait is a formatted expression yielding 10
         /// </summary>
         [Test]
-        public void ForkAndWaitExpression ()
+        public void ForkAndWaitFormattedExpression ()
         {
             if (File.Exists (GetBasePath () + "thread-test1.txt")) {
                 File.Delete (GetBasePath () + "thread-test1.txt");
@@ -168,7 +225,8 @@ else
                 File.Delete (GetBasePath () + "thread-test2.txt");
             }
             var result = ExecuteLambda (@"_wait:10
-wait:x:/-?value
+wait:x:/{0}?value
+  :x:/../*/_minus?value
   fork
     save-file:thread-test1.txt
       src:foo bar
@@ -189,7 +247,8 @@ else
     and
       file-exist:thread-test2.txt
     insert-before:x:/../0
-      src:success");
+      src:success
+_minus:-");
             Assert.AreEqual (1, result.Count);
             Assert.AreEqual ("success", result [0].Name);
         }
