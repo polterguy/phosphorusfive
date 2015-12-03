@@ -230,7 +230,7 @@ namespace p5.core
                     } else {
                         builder.Append ("\r\n");
                     }
-                    builder.Append (context.Raise (
+                    builder.Append (context.RaiseNative (
                         "p5.hyperlisp.get-string-value." +
                         idx.GetType ().FullName, new Node (string.Empty, idx)).Value);
                 }
@@ -239,7 +239,7 @@ namespace p5.core
             Node node = new Node (string.Empty, value);
             if (encode && value is byte[])
                 node.Add ("encode", true);
-            return context.Raise (
+            return context.RaiseNative (
                 "p5.hyperlisp.get-string-value." +
                 value.GetType ().FullName, node).Value as string;
         }
@@ -249,11 +249,11 @@ namespace p5.core
          */
         private static T Convert2Object<T> (object value, ApplicationContext context, T defaultValue = default (T))
         {
-            var typeName = context.Raise (
+            var typeName = context.RaiseNative (
                 "p5.hyperlisp.get-type-name." + typeof (T).FullName).Get<string> (context);
             if (typeName == null)
                 return defaultValue;
-            return context.Raise (
+            return context.RaiseNative (
                 "p5.hyperlisp.get-object-value." +
                 typeName, new Node (string.Empty, value)).Get<T> (context);
         }

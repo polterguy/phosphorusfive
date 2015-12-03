@@ -24,7 +24,7 @@ namespace p5.exp.matchentities
             {
                 object retVal = Node.Name;
                 if (!string.IsNullOrEmpty (_match.Convert) && _match.Convert != "string") {
-                    retVal = _match.Context.Raise (
+                    retVal = _match.Context.RaiseNative (
                         "p5.hyperlisp.get-object-value." + _match.Convert, 
                         new Node (string.Empty, retVal)).Value;
                 }

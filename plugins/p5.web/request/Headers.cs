@@ -24,7 +24,7 @@ namespace p5.web.ui.request
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-http-header", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "get-http-header", Protection = EventProtection.Lambda)]
         private static void get_http_header (ApplicationContext context, ActiveEventArgs e)
         {
             // making sure we clean up and remove all arguments passed in after execution
@@ -47,7 +47,7 @@ namespace p5.web.ui.request
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-http-headers", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "list-http-headers", Protection = EventProtection.Lambda)]
         private static void list_http_headers (ApplicationContext context, ActiveEventArgs e)
         {
             CollectionBase.List (e.Args, context, () => HttpContext.Current.Request.Headers.AllKeys);

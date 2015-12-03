@@ -106,16 +106,16 @@ namespace p5.core
         }
 
         /// <summary>
-        ///     Determines whether given Active Event is protected or not
+        ///     Returns protection level of Active Event
         /// </summary>
         /// <returns><c>true</c> if Active Event is protected; otherwise, <c>false</c></returns>
         /// <param name="name">Name.</param>
-        public bool IsProtected (string name)
+        public EventProtection GetEventProtection (string activeEventName)
         {
-            var evt = _registeredActiveEvents.GetEvents().SingleOrDefault(idx => idx.Name == name);
+            var evt = _registeredActiveEvents.GetEvents().SingleOrDefault(idx => idx.Name == activeEventName);
             if (evt != null)
-                return evt.Protection != EntranceProtection.LambdaVirtual;
-            return false;
+                return evt.Protection;
+            return EventProtection.None;
         }
 
         /// <summary>
@@ -175,13 +175,23 @@ namespace p5.core
         }
 
         /// <summary>
-        ///     Raises one Active Event.
+        ///     Raises one Active Event from native code
         /// </summary>
         /// <param name="name">name of Active Event to raise</param>
         /// <param name="pars">arguments to pass into the Active Event</param>
-        public Node Raise (string name, Node pars = null)
+        public Node RaiseNative (string name, Node pars = null)
         {
-            return _registeredActiveEvents.Raise (name, pars, this, _ticket);
+            return _registeredActiveEvents.Raise (name, pars, this, _ticket, true);
+        }
+
+        /// <summary>
+        ///     Raises one Active Event from lambda object
+        /// </summary>
+        /// <param name="name">name of Active Event to raise</param>
+        /// <param name="pars">arguments to pass into the Active Event</param>
+        public Node RaiseLambda (string name, Node pars = null)
+        {
+            return _registeredActiveEvents.Raise (name, pars, this, _ticket, false);
         }
 
         /*
@@ -205,7 +215,7 @@ namespace p5.core
             }
 
             // Raising "initialize" Application Context Active Event
-            Raise ("p5.core.initialize-application-context");
+            RaiseNative ("p5.core.initialize-application-context");
         }
     }
 }

@@ -23,7 +23,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "can-convert", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "can-convert", Protection = EventProtection.Lambda)]
         private static void can_convert (ApplicationContext context, ActiveEventArgs e)
         {
             // making sure we clean up and remove all arguments passed in after execution
@@ -40,7 +40,7 @@ namespace p5.types
                 try
                 {
                     foreach (var idx in XUtil.Iterate<object> (context, e.Args)) {
-                        var objValue = context.Raise ("p5.hyperlisp.get-object-value." + type, new Node (string.Empty, idx)).Value;
+                        var objValue = context.RaiseNative ("p5.hyperlisp.get-object-value." + type, new Node (string.Empty, idx)).Value;
                     }
 
                     // No exception occurred, conversion is possible

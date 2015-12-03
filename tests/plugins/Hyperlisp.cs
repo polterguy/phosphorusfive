@@ -26,7 +26,7 @@ namespace p5.unittests.plugins
         public void ParseHyperlispNameValue ()
         {
             var tmp = new Node (string.Empty, "x:y");
-            Context.Raise ("lisp2lambda", tmp);
+            Context.RaiseNative ("lisp2lambda", tmp);
             Assert.AreEqual ("x", tmp [0].Name, "wrong value of node after parsing of hyperlisp");
             Assert.AreEqual ("y", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
         }
@@ -42,7 +42,7 @@ namespace p5.unittests.plugins
 x:y
 
 ");
-            Context.Raise ("lisp2lambda", tmp);
+            Context.RaiseNative ("lisp2lambda", tmp);
             Assert.AreEqual (1, tmp.Count, "wrong value of node after parsing of hyperlisp");
             Assert.AreEqual ("x", tmp [0].Name, "wrong value of node after parsing of hyperlisp");
             Assert.AreEqual ("y", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
@@ -55,7 +55,7 @@ x:y
         public void ParseHyperlispNoName ()
         {
             var tmp = new Node (string.Empty, ":y");
-            Context.Raise ("lisp2lambda", tmp);
+            Context.RaiseNative ("lisp2lambda", tmp);
             Assert.AreEqual (string.Empty, tmp [0].Name, "wrong value of node after parsing of hyperlisp");
             Assert.AreEqual ("y", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
         }
@@ -69,7 +69,7 @@ x:y
             var tmp = new Node (string.Empty, @"
 
 :y");
-            Context.Raise ("lisp2lambda", tmp);
+            Context.RaiseNative ("lisp2lambda", tmp);
             Assert.AreEqual (string.Empty, tmp [0].Name, "wrong value of node after parsing of hyperlisp");
             Assert.AreEqual ("y", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
         }
@@ -81,7 +81,7 @@ x:y
         public void ParseHyperlispValueString ()
         {
             var tmp = new Node {Value = @"x:""y"""};
-            Context.Raise ("lisp2lambda", tmp);
+            Context.RaiseNative ("lisp2lambda", tmp);
             Assert.AreEqual ("y", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
         }
 
@@ -92,7 +92,7 @@ x:y
         public void ParseHyperlispValueStringCRLF ()
         {
             var tmp = new Node {Value = @"x:""\ny\\\r\n\"""""};
-            Context.Raise ("lisp2lambda", tmp);
+            Context.RaiseNative ("lisp2lambda", tmp);
             Assert.AreEqual ("\r\ny\\\r\n\"", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
         }
 
@@ -103,7 +103,7 @@ x:y
         public void ParseHyperlispMultiLineStringValue ()
         {
             var tmp = new Node {Value = @"x:@""y"""};
-            Context.Raise ("lisp2lambda", tmp);
+            Context.RaiseNative ("lisp2lambda", tmp);
             Assert.AreEqual ("y", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
         }
 
@@ -116,7 +116,7 @@ x:y
         {
             var tmp = new Node {Value = string.Format (@"x:@""mumbo
 jumbo""""howdy\r\n{0}""", "\n")};
-            Context.Raise ("lisp2lambda", tmp);
+            Context.RaiseNative ("lisp2lambda", tmp);
             Assert.AreEqual ("mumbo\r\njumbo\"howdy\\r\\n\r\n", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
         }
 
@@ -127,7 +127,7 @@ jumbo""""howdy\r\n{0}""", "\n")};
         public void ParseHyperlispEmptyValueString ()
         {
             var tmp = new Node {Value = @"x:"""""};
-            Context.Raise ("lisp2lambda", tmp);
+            Context.RaiseNative ("lisp2lambda", tmp);
             Assert.AreEqual ("", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
         }
 
@@ -138,7 +138,7 @@ jumbo""""howdy\r\n{0}""", "\n")};
         public void ParseHyperlispEmptyValueMultiLineString ()
         {
             var tmp = new Node {Value = @"x:@"""""};
-            Context.Raise ("lisp2lambda", tmp);
+            Context.RaiseNative ("lisp2lambda", tmp);
             Assert.AreEqual ("", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
         }
 
@@ -170,7 +170,7 @@ _date:date:2012-12-21
 _date:date:""2012-12-21T23:59:59""
 _date:date:""2012-12-21T23:59:59.987""
 _time:time:""15.23:57:53.567"""};
-            Context.Raise ("lisp2lambda", tmp);
+            Context.RaiseNative ("lisp2lambda", tmp);
             Assert.AreEqual ("", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
             Assert.AreEqual ("", tmp [1].Value, "wrong value of node after parsing of hyperlisp");
             Assert.AreEqual (5, tmp [2].Value, "wrong value of node after parsing of hyperlisp");
@@ -207,10 +207,10 @@ _time:time:""15.23:57:53.567"""};
         {
             var tmp = new Node ();
             tmp.Add (new Node ("_blob", new byte[] {134, 254, 12}));
-            Context.Raise ("lambda2lisp", tmp);
+            Context.RaiseNative ("lambda2lisp", tmp);
             Assert.AreEqual ("_blob:blob:hv4M", tmp.Value, "wrong value of node after parsing of hyperlisp");
             tmp = new Node (string.Empty, tmp.Value);
-            Context.Raise ("lisp2lambda", tmp);
+            Context.RaiseNative ("lisp2lambda", tmp);
             Assert.AreEqual (new byte[] {134, 254, 12}, tmp [0].Value, "wrong value of node after parsing of hyperlisp");
         }
         
@@ -275,7 +275,7 @@ _exe1
         public void ParseHyperlispOnlyEmptyComment ()
         {
             var tmp = new Node (string.Empty, "//");
-            Context.Raise ("lisp2lambda", tmp);
+            Context.RaiseNative ("lisp2lambda", tmp);
             Assert.AreEqual (0, tmp.Count, "wrong value of node after parsing of hyperlisp");
         }
 
@@ -286,7 +286,7 @@ _exe1
         public void ParseHyperlispOnlyComment ()
         {
             var tmp = new Node (string.Empty, "// comment");
-            Context.Raise ("lisp2lambda", tmp);
+            Context.RaiseNative ("lisp2lambda", tmp);
             Assert.AreEqual (0, tmp.Count, "wrong value of node after parsing of hyperlisp");
         }
 
@@ -297,7 +297,7 @@ _exe1
         public void ParseHyperlispOnlyEmptyMultiLineComment ()
         {
             var tmp = new Node (string.Empty, "/**/");
-            Context.Raise ("lisp2lambda", tmp);
+            Context.RaiseNative ("lisp2lambda", tmp);
             Assert.AreEqual (0, tmp.Count, "wrong value of node after parsing of hyperlisp");
         }
 
@@ -308,7 +308,7 @@ _exe1
         public void ParseHyperlispOnlyMultiLineComment ()
         {
             var tmp = new Node (string.Empty, "/*comment*/");
-            Context.Raise ("lisp2lambda", tmp);
+            Context.RaiseNative ("lisp2lambda", tmp);
             Assert.AreEqual (0, tmp.Count, "wrong value of node after parsing of hyperlisp");
         }
 
@@ -322,7 +322,7 @@ _exe1
 comment
 
 */");
-            Context.Raise ("lisp2lambda", tmp);
+            Context.RaiseNative ("lisp2lambda", tmp);
             Assert.AreEqual (0, tmp.Count, "wrong value of node after parsing of hyperlisp");
         }
 
@@ -339,7 +339,7 @@ hello
 /*
  * foo bar
  */");
-            Context.Raise ("lisp2lambda", tmp);
+            Context.RaiseNative ("lisp2lambda", tmp);
             Assert.AreEqual (2, tmp.Count, "wrong value of node after parsing of hyperlisp");
         }
 
@@ -398,7 +398,7 @@ insert-before:x:/../0
         public void ParseErrorWrongSpacing ()
         {
             var tmp = new Node (string.Empty, " x:y"); // one space before token
-            Context.Raise ("lisp2lambda", tmp);
+            Context.RaiseNative ("lisp2lambda", tmp);
         }
 
         /// <summary>
@@ -410,7 +410,7 @@ insert-before:x:/../0
         {
             var tmp = new Node (string.Empty, @"x:y
  z:q"); // only one space when opening children collection
-            Context.Raise ("lisp2lambda", tmp);
+            Context.RaiseNative ("lisp2lambda", tmp);
         }
 
         /// <summary>
@@ -422,7 +422,7 @@ insert-before:x:/../0
         {
             var tmp = new Node (string.Empty, @"x:y
    z:q"); // three spaces when opening children collection
-            Context.Raise ("lisp2lambda", tmp);
+            Context.RaiseNative ("lisp2lambda", tmp);
         }
 
         /// <summary>
@@ -433,7 +433,7 @@ insert-before:x:/../0
         public void ParseErrorOpenStringLiteral ()
         {
             var tmp = new Node (string.Empty, "z:\"howdy"); // open string literal
-            Context.Raise ("lisp2lambda", tmp);
+            Context.RaiseNative ("lisp2lambda", tmp);
         }
 
         /// <summary>
@@ -444,7 +444,7 @@ insert-before:x:/../0
         public void ParseErrorOpenEmptyStringLiteral ()
         {
             var tmp = new Node (string.Empty, @"z:"""); // empty and open string literal
-            Context.Raise ("lisp2lambda", tmp);
+            Context.RaiseNative ("lisp2lambda", tmp);
         }
 
         /// <summary>
@@ -455,7 +455,7 @@ insert-before:x:/../0
         public void ParseErrorOpenEmptyMultiLineString ()
         {
             var tmp = new Node (string.Empty, @"z:@"""); // empty and open multiline string literal
-            Context.Raise ("lisp2lambda", tmp);
+            Context.RaiseNative ("lisp2lambda", tmp);
         }
 
         /// <summary>
@@ -466,7 +466,7 @@ insert-before:x:/../0
         public void ParseErrorOpenMultiLineString ()
         {
             var tmp = new Node (string.Empty, @"z:@""howdy"); // open multiline string literal
-            Context.Raise ("lisp2lambda", tmp);
+            Context.RaiseNative ("lisp2lambda", tmp);
         }
 
         /// <summary>
@@ -479,7 +479,7 @@ insert-before:x:/../0
             var tmp = new Node (string.Empty, @"z:@""howdy
 qwertyuiop
                     "); // open multiline string literal
-            Context.Raise ("lisp2lambda", tmp);
+            Context.RaiseNative ("lisp2lambda", tmp);
         }
 
         /// <summary>
@@ -491,7 +491,7 @@ qwertyuiop
         {
             var tmp = new Node (string.Empty, @"z:node:@""howdy:x
  f:g"""); // syntax error in hyperlisp node content, only one space while opening child collection of "howdy" node
-            Context.Raise ("lisp2lambda", tmp);
+            Context.RaiseNative ("lisp2lambda", tmp);
         }
     }
 }

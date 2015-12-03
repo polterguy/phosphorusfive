@@ -21,7 +21,7 @@ namespace p5.lambda.keywords
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "for-each", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "for-each", Protection = EventProtection.Lambda)]
         private static void lambda_for_each (ApplicationContext context, ActiveEventArgs e)
         {
             // storing old for-each "body"
@@ -78,7 +78,7 @@ namespace p5.lambda.keywords
                                 // children from that Event invocation
                                 Node sourceNode = e.Args.FirstChildNotOf (string.Empty);
                                 var oldSourceValue = sourceNode.Value;
-                                context.Raise (sourceNode.Name, sourceNode);
+                                context.RaiseNative (sourceNode.Name, sourceNode);
                                 sourceNode.UnTie (); // removing node that was used as source
 
                                 // value has presedence
@@ -110,7 +110,7 @@ namespace p5.lambda.keywords
             var dp = new Node ("__dp", source);
             args.Insert (0, dp);
 
-            context.Raise ("eval-mutable", args);
+            context.RaiseNative ("eval-mutable", args);
             args.Clear ();
             args.AddRange (oldForEach.Clone ().Children);
         }

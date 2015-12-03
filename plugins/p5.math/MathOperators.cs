@@ -55,7 +55,7 @@ namespace p5.math
 
                         // Active Event invocation to retrieve value to use
                         idxChild.FindOrCreate ("__pf_type").Value = resultType;
-                        nextValue = context.Raise (idxChild.Name, idxChild).Get<object> (context, 0);
+                        nextValue = context.RaiseNative (idxChild.Name, idxChild).Get<object> (context, 0);
                     }
                     result = functor (result, Convert.ChangeType (nextValue, resultType));
                 }
@@ -71,7 +71,7 @@ namespace p5.math
         /// </summary>
         /// <param name="context">Context.</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "+", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "+", Protection = EventProtection.Lambda)]
         private static void math_plus (ApplicationContext context, ActiveEventArgs e)
         {
             Calculate (delegate (dynamic sum, dynamic input) {
@@ -87,7 +87,7 @@ namespace p5.math
         /// </summary>
         /// <param name="context">Context.</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "-", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "-", Protection = EventProtection.Lambda)]
         private static void math_minus (ApplicationContext context, ActiveEventArgs e)
         {
             Calculate (delegate (dynamic sum, dynamic input) {
@@ -103,7 +103,7 @@ namespace p5.math
         /// </summary>
         /// <param name="context">Context.</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "*", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "*", Protection = EventProtection.Lambda)]
         private static void math_multiply (ApplicationContext context, ActiveEventArgs e)
         {
             Calculate (delegate (dynamic sum, dynamic input) {
@@ -119,7 +119,7 @@ namespace p5.math
         /// </summary>
         /// <param name="context">Context.</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "/", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "/", Protection = EventProtection.Lambda)]
         private static void math_divide (ApplicationContext context, ActiveEventArgs e)
         {
             Calculate (delegate (dynamic sum, dynamic input) {
@@ -135,7 +135,7 @@ namespace p5.math
         /// </summary>
         /// <param name="context">Context.</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "%", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "%", Protection = EventProtection.Lambda)]
         private static void math_modulo (ApplicationContext context, ActiveEventArgs e)
         {
             Calculate (delegate (dynamic sum, dynamic input) {

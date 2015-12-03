@@ -21,7 +21,7 @@ namespace p5.io.folder
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "folder-exist", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "folder-exist", Protection = EventProtection.Lambda)]
         private static void folder_exist (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
@@ -38,7 +38,7 @@ namespace p5.io.folder
                 foreach (var idxFolder in sourceFiles) {
 
                     // Verifying user is authorized to reading from currently iterated folder
-                    context.Raise ("_authorize-load-folder", new Node ("_authorize-load-folder", idxFolder).Add ("args", e.Args));
+                    context.RaiseNative ("_authorize-load-folder", new Node ("_authorize-load-folder", idxFolder).Add ("args", e.Args));
 
                     // Letting caller know whether or not this file exists
                     if (!Directory.Exists (rootFolder + idxFolder)) {

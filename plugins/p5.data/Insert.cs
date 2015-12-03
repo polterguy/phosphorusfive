@@ -25,7 +25,7 @@ namespace p5.data
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "insert-data", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "insert-data", Protection = EventProtection.Lambda)]
         private static void insert_data (ApplicationContext context, ActiveEventArgs e)
         {
             /*
@@ -68,7 +68,7 @@ namespace p5.data
                         using (new Utilities.ArgsRemover (idx)) {
 
                             // Making sure user is authorized to insert currently iterated node
-                            context.Raise ("authorize", new Node ("authorize").Add("insert-data", idx).Add ("args", e.Args));
+                            context.RaiseNative ("authorize", new Node ("authorize").Add("insert-data", idx).Add ("args", e.Args));
 
                             // Inserting node
                             InsertNode (idx, context, changed);

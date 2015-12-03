@@ -26,7 +26,7 @@ namespace p5.io.folder
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "copy-folder", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "copy-folder", Protection = EventProtection.Lambda)]
         private static void copy_folder (ApplicationContext context, ActiveEventArgs e)
         {
             /*
@@ -52,8 +52,8 @@ namespace p5.io.folder
                 string destinationFolder = XUtil.Single<string> (context, e.Args ["to"]).Trim ('/') + "/";
 
                 // Verifying user is authorized to both reading from source, and writing to destination
-                context.Raise ("_authorize-load-folder", new Node ("_authorize-load-folder", sourceFolder).Add ("args", e.Args));
-                context.Raise ("_authorize-save-folder", new Node ("_authorize-save-folder", destinationFolder).Add ("args", e.Args));
+                context.RaiseNative ("_authorize-load-folder", new Node ("_authorize-load-folder", sourceFolder).Add ("args", e.Args));
+                context.RaiseNative ("_authorize-save-folder", new Node ("_authorize-save-folder", destinationFolder).Add ("args", e.Args));
 
                 // Getting new foldername for folder, if needed
                 if (Directory.Exists (rootFolder + destinationFolder)) {
@@ -62,7 +62,7 @@ namespace p5.io.folder
                     destinationFolder = Common.CreateNewUniqueFolderName (context, destinationFolder);
 
                     // Making sure user is authorized to writing to UPDATED folder
-                    context.Raise ("_authorize-save-folder", new Node ("_authorize-save-folder", destinationFolder).Add ("args", e.Args));
+                    context.RaiseNative ("_authorize-save-folder", new Node ("_authorize-save-folder", destinationFolder).Add ("args", e.Args));
                 }
 
                 // Actually copying folder, getting source first, in case copying implies copy one

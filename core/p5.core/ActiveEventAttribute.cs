@@ -13,27 +13,32 @@ namespace p5.core
     /// <summary>
     ///     Security association for Active Event
     /// </summary>
-    public enum EntranceProtection
+    public enum EventProtection
     {
         /// <summary>
-        ///     Only native code (C#) can invoke this Active Event
+        ///     Only native code (C#) can invoke this Event
         /// </summary>
         NativeOnly,
 
         /// <summary>
-        ///     Only native code (C#) can invoke this Active Event, and Event can be handled multiple times
+        ///     Only native code (C#) can invoke this Event, and Event can be handled multiple times
         /// </summary>
         NativeOnlyVirtual,
 
         /// <summary>
-        ///     Both p5.lambda and C# code can invoke this Active Event
+        ///     Both p5.lambda and C# code can invoke this Active
         /// </summary>
         Lambda,
 
         /// <summary>
-        ///     Both p5.lambda and C# code can invoke this Active Event, and Event can be handled multiple times and/or reset
+        ///     Both p5.lambda and C# code can invoke this Event, and Event can be handled multiple times and/or changed
         /// </summary>
-        LambdaVirtual
+        LambdaVirtual,
+
+        /// <summary>
+        ///     No protection at all
+        /// </summary>
+        None
     }
 
     /// <summary>
@@ -48,7 +53,7 @@ namespace p5.core
         public ActiveEventAttribute()
         {
             // Creating strongest possible protection by default
-            Protection = EntranceProtection.NativeOnly;
+            Protection = EventProtection.NativeOnly;
         }
 
         /// <summary>
@@ -61,7 +66,7 @@ namespace p5.core
         ///     Gets the security entrance associated with Active Event
         /// </summary>
         /// <value>The entrance.</value>
-        public EntranceProtection Protection {
+        public EventProtection Protection {
             get;
             set;
         }

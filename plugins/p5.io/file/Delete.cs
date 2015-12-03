@@ -20,7 +20,7 @@ namespace p5.io.file
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "delete-file", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "delete-file", Protection = EventProtection.Lambda)]
         private static void delete_file (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
@@ -33,7 +33,7 @@ namespace p5.io.file
                 foreach (var idxFile in Common.GetSource (e.Args, context)) {
 
                     // Verifying user is authorized to writing to destination file
-                    context.Raise ("_authorize-save-file", new Node ("_authorize-save-file", idxFile).Add ("args", e.Args));
+                    context.RaiseNative ("_authorize-save-file", new Node ("_authorize-save-file", idxFile).Add ("args", e.Args));
 
                     // Checking if file exist
                     if (File.Exists (rootFolder + idxFile)) {

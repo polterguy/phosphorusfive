@@ -24,7 +24,7 @@ namespace lambda_exe
         /// </summary>
         /// <param name="context">Application context Active Event is raised within.</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.core.application-folder", Protection = EntranceProtection.NativeOnly)]
+        [ActiveEvent (Name = "p5.core.application-folder", Protection = EventProtection.NativeOnly)]
         private static void p5_core_application_folder (ApplicationContext context, ActiveEventArgs e)
         {
             string path = Assembly.GetExecutingAssembly().Location;
@@ -38,7 +38,7 @@ namespace lambda_exe
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Active event arguments.</param>
-        [ActiveEvent (Name = "p5.console.write-line", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "p5.console.write-line", Protection = EventProtection.Lambda)]
         private static void console_write_line (ApplicationContext context, ActiveEventArgs e)
         {
             var value = XUtil.Single<string> (context, e.Args, false, "");
@@ -50,7 +50,7 @@ namespace lambda_exe
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Active event arguments.</param>
-        [ActiveEvent (Name = "p5.console.write", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "p5.console.write", Protection = EventProtection.Lambda)]
         private static void console_write (ApplicationContext context, ActiveEventArgs e)
         {
             var value = XUtil.Single<string> (context, e.Args, false, "");
@@ -85,7 +85,7 @@ namespace lambda_exe
                     var context = Loader.Instance.CreateApplicationContext ();
 
                     // raising our application startup Active Event, in case there are modules loaded depending upon it
-                    context.Raise ("p5.core.application-start", new Node ());
+                    context.RaiseNative ("p5.core.application-start", new Node ());
 
                     if (immediate) {
 
@@ -95,14 +95,14 @@ namespace lambda_exe
 
                         // loads and convert file to lambda nodes
                         var convertExeFile = 
-                            context.Raise ("lisp2lambda", 
+                            context.RaiseNative ("lisp2lambda", 
                                            new Node (string.Empty, 
-                                           context.Raise ("load-file", 
+                                           context.RaiseNative ("load-file", 
                                                new Node (string.Empty, exeNode.Value)) [0].Get<string> (context)));
 
                         // appending nodes from lambda file into execution objects, and execute lambda file given through command-line arguments
                         exeNode.AddRange (convertExeFile.Children);
-                        context.Raise ("lambda", exeNode);
+                        context.RaiseNative ("lambda", exeNode);
                     }
                 }
             } catch (Exception err) {
@@ -140,8 +140,8 @@ namespace lambda_exe
                 } else if (hyperlisp.Trim () == string.Empty) {
                     Console.WriteLine ("nothing to do here");
                 } else {
-                    Node convert = context.Raise ("lisp2lambda", new Node (string.Empty, hyperlisp));
-                    context.Raise ("lambda", convert);
+                    Node convert = context.RaiseNative ("lisp2lambda", new Node (string.Empty, hyperlisp));
+                    context.RaiseNative ("lambda", convert);
                     Console.WriteLine ();
                 }
             }

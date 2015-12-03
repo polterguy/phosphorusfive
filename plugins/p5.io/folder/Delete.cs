@@ -20,7 +20,7 @@ namespace p5.io.folder
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "delete-folder", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "delete-folder", Protection = EventProtection.Lambda)]
         private static void delete_folder (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
@@ -33,7 +33,7 @@ namespace p5.io.folder
                 foreach (var idxFolder in Common.GetSource (e.Args, context)) {
 
                     // Verifying user is authorized to both reading from source, and writing to destination
-                    context.Raise ("_authorize-save-folder", new Node ("_authorize-save-folder", idxFolder).Add ("args", e.Args));
+                    context.RaiseNative ("_authorize-save-folder", new Node ("_authorize-save-folder", idxFolder).Add ("args", e.Args));
 
                     // Checking to see if folder already exists
                     if (Directory.Exists (rootFolder + idxFolder)) {

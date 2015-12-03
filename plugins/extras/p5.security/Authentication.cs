@@ -28,7 +28,7 @@ namespace p5.security
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.core.initialize-application-context", Protection = EntranceProtection.NativeOnly)]
+        [ActiveEvent (Name = "p5.core.initialize-application-context", Protection = EventProtection.NativeOnly)]
         private static void p5_core_initialize_application_context (ApplicationContext context, ActiveEventArgs e)
         {
             if (!AuthenticationHelper.TryLoginFromPersistentCookie (context))
@@ -40,7 +40,7 @@ namespace p5.security
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "get-user", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "get-user", Protection = EventProtection.Lambda)]
         private static void get_user (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Add("username", AuthenticationHelper.GetTicket (context).Username);
@@ -53,7 +53,7 @@ namespace p5.security
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "login", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "login", Protection = EventProtection.Lambda)]
         private static void login (ApplicationContext context, ActiveEventArgs e)
         {
             AuthenticationHelper.Login (context, e.Args);
@@ -64,7 +64,7 @@ namespace p5.security
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "logout", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "logout", Protection = EventProtection.Lambda)]
         private static void logout (ApplicationContext context, ActiveEventArgs e)
         {
             AuthenticationHelper.Logout (context);

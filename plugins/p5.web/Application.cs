@@ -33,7 +33,7 @@ namespace p5.web.ui
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-application", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "set-application", Protection = EventProtection.Lambda)]
         private static void set_application (ApplicationContext context, ActiveEventArgs e)
         {
             CollectionBase.Set (e.Args, context, delegate (string key, object value) {
@@ -54,7 +54,7 @@ namespace p5.web.ui
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-application", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "get-application", Protection = EventProtection.Lambda)]
         private static void get_application (ApplicationContext context, ActiveEventArgs e)
         {
             CollectionBase.Get (e.Args, context, key => HttpContext.Current.Application [key]);
@@ -67,7 +67,7 @@ namespace p5.web.ui
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-application", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "list-application", Protection = EventProtection.Lambda)]
         private static void list_application (ApplicationContext context, ActiveEventArgs e)
         {
             CollectionBase.List (e.Args, context, () => HttpContext.Current.Application.AllKeys);

@@ -24,7 +24,7 @@ namespace p5.web.ui.widgets
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.widgets.container", Protection = EntranceProtection.NativeOnly)]
+        [ActiveEvent (Name = "p5.web.widgets.container", Protection = EventProtection.NativeOnly)]
         private static void p5_web_controls_container (ApplicationContext context, ActiveEventArgs e)
         {
             CreateWidget<Container> (context, e.Args, "div");
@@ -35,7 +35,7 @@ namespace p5.web.ui.widgets
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.widgets.literal", Protection = EntranceProtection.NativeOnly)]
+        [ActiveEvent (Name = "p5.web.widgets.literal", Protection = EventProtection.NativeOnly)]
         private static void p5_web_controls_literal (ApplicationContext context, ActiveEventArgs e)
         {
             CreateWidget<Literal> (context, e.Args, "p");
@@ -46,7 +46,7 @@ namespace p5.web.ui.widgets
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.widgets.void", Protection = EntranceProtection.NativeOnly)]
+        [ActiveEvent (Name = "p5.web.widgets.void", Protection = EventProtection.NativeOnly)]
         private static void p5_web_controls_void (ApplicationContext context, ActiveEventArgs e)
         {
             CreateWidget<Void> (context, e.Args, "input");
@@ -70,7 +70,7 @@ namespace p5.web.ui.widgets
             if (onInitialLoad != null) {
                 handler = delegate (object sender, EventArgs e) {
                     onInitialLoad.Insert (0, new Node ("_event", ((Control)sender).ID));
-                    context.Raise ("eval", onInitialLoad);
+                    context.RaiseNative ("eval", onInitialLoad);
                 };
             }
 
@@ -212,7 +212,7 @@ namespace p5.web.ui.widgets
             foreach (var idxChild in children.Children) {
 
                 idxChild.Insert (0, new Node ("__parent", widget));
-                context.Raise ("p5.web.widgets." + idxChild.Name, idxChild);
+                context.RaiseNative ("p5.web.widgets." + idxChild.Name, idxChild);
             }
         }
 
@@ -227,7 +227,7 @@ namespace p5.web.ui.widgets
                 // Letting p5.webapp do the actual creation
                 var eventNode = new Node (idxEvt.Name, widget);
                 eventNode.AddRange (idxEvt.Children);
-                context.Raise ("_p5.web.add-widget-lambda-event", eventNode);
+                context.RaiseNative ("_p5.web.add-widget-lambda-event", eventNode);
             }
         }
 
@@ -261,7 +261,7 @@ namespace p5.web.ui.widgets
                 var eventNode = new Node (node.Name, widget);
                 eventNode.Add ("_event", widget.ID);
                 eventNode.AddRange (node.Children);
-                context.Raise ("_p5.web.add-widget-ajax-event", eventNode);
+                context.RaiseNative ("_p5.web.add-widget-ajax-event", eventNode);
             }
         }
     }

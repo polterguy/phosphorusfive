@@ -5,6 +5,7 @@
 
 using System;
 using System.Linq;
+using System.Security;
 using System.Reflection;
 using System.Collections.Generic;
 
@@ -47,7 +48,7 @@ namespace p5.core
             /// </summary>
             /// <param name="name">Name of Active Event</param>
             /// <param name="isProtected">If set to <c>true</c> is protected, otherwise it is not protected</param>
-            public ActiveEvent(string name, EntranceProtection protection)
+            public ActiveEvent(string name, EventProtection protection)
             {
                 Name = name;
                 Protection = protection;
@@ -67,7 +68,7 @@ namespace p5.core
             ///     Gets a value indicating whether this <see cref="p5.core.ActiveEvents+ActiveEvent"/> is protected or not
             /// </summary>
             /// <value><c>true</c> if protected; otherwise, <c>false</c>.</value>
-            public EntranceProtection Protection {
+            public EventProtection Protection {
                 get;
                 private set;
             }
@@ -95,18 +96,18 @@ namespace p5.core
             string name, 
             MethodInfo method, 
             object instance, 
-            EntranceProtection protection)
+            EventProtection protection)
         {
             // Verifying we have an entry for event name
             if (!_events.ContainsKey(name)) {
 
                 // Creating event name entry
                 _events[name] = new ActiveEvent(name, protection);
-            } else if (_events[name].Protection != EntranceProtection.NativeOnlyVirtual && _events[name].Protection != EntranceProtection.LambdaVirtual) {
+            } else if (_events[name].Protection != EventProtection.NativeOnlyVirtual && _events[name].Protection != EventProtection.LambdaVirtual) {
 
                 // Oops, event entry existed, and it was protected
                 throw new ApplicationException(string.Format("You cannot add to the Active Event '{0}' since it is protected", name));
-            } else if (protection != EntranceProtection.NativeOnlyVirtual && protection != EntranceProtection.LambdaVirtual) {
+            } else if (protection != EventProtection.NativeOnlyVirtual && protection != EventProtection.LambdaVirtual) {
 
                 // Oops, event entry did not exist, but caller tried to add a protected method, where one which was not protected existed from before
                 throw new ApplicationException(string.Format("You cannot add a protected method to the Active Event '{0}' since there already exist one which is not protected", name));
@@ -160,7 +161,12 @@ namespace p5.core
         /// <param name="name">Name of Active Event to raise</param>
         /// <param name="args">Arguments to pass into Event Handlers</param>
         /// <param name="context">Application Context</param>
-        public Node Raise (string name, Node args, ApplicationContext context, ApplicationContext.ContextTicket ticket)
+        public Node Raise (
+            string name, 
+            Node args, 
+            ApplicationContext context, 
+            ApplicationContext.ContextTicket ticket, 
+            bool sourceIsNative)
         {
             try
             {
@@ -168,10 +174,17 @@ namespace p5.core
                 // This is done since we DO NOT invoke "null handlers" for protected events!
                 bool wasProtected = false;
 
+                // Constructing EventArgs
                 ActiveEventArgs e = new ActiveEventArgs(name, args ?? new Node(), ticket);
 
                 // Checking if we have any Active Event handlers for given name
                 if (_events.ContainsKey (name)) {
+
+                    // Checking if Active Event cannot legally be raise by caller
+                    if (!sourceIsNative && 
+                        _events[name].Protection != EventProtection.Lambda && 
+                        _events[name].Protection != EventProtection.LambdaVirtual)
+                        throw new SecurityException ("Caller tried to raise Active Event from lambda that has exclusive native code access");
 
                     // Looping through all Active Events handlers for the given Active Event name
                     foreach (var idxMethod in _events [name].Methods) {
@@ -180,8 +193,8 @@ namespace p5.core
                         idxMethod.Method.Invoke (idxMethod.Instance, new object[] { context, e });
                     }
 
-                    // Storing whether or not event was protected
-                    wasProtected = _events[name].Protection == EntranceProtection.NativeOnly;
+                    // Storing whether or not event was protected for C# code only, at which case we do not raise "null event handlers" for it
+                    wasProtected = _events[name].Protection == EventProtection.NativeOnly || _events[name].Protection == EventProtection.NativeOnlyVirtual;
                 }
 
                 // Then looping through all "null Active Event handlers" afterwards

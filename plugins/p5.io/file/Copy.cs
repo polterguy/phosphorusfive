@@ -23,7 +23,7 @@ namespace p5.io.file
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "copy-file", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "copy-file", Protection = EventProtection.Lambda)]
         private static void copy_file (ApplicationContext context, ActiveEventArgs e)
         {
             /*
@@ -49,8 +49,8 @@ namespace p5.io.file
                 string destinationFile = XUtil.Single<string> (context, e.Args ["to"]);
 
                 // Verifying user is authorized to both reading from source, and writing to destination
-                context.Raise ("_authorize-load-file", new Node ("_authorize-load-file", sourceFile).Add ("args", e.Args));
-                context.Raise ("_authorize-save-file", new Node ("_authorize-save-file", destinationFile).Add ("args", e.Args));
+                context.RaiseNative ("_authorize-load-file", new Node ("_authorize-load-file", sourceFile).Add ("args", e.Args));
+                context.RaiseNative ("_authorize-save-file", new Node ("_authorize-save-file", destinationFile).Add ("args", e.Args));
 
                 // Getting new filename of file, if needed
                 if (File.Exists (rootFolder + destinationFile)) {
@@ -59,7 +59,7 @@ namespace p5.io.file
                     destinationFile = Common.CreateNewUniqueFileName (context, destinationFile);
 
                     // Checking again if user is authorized to writing to new destination filename
-                    context.Raise ("_authorize-save-file", new Node ("_authorize-save-file", destinationFile).Add ("args", e.Args));
+                    context.RaiseNative ("_authorize-save-file", new Node ("_authorize-save-file", destinationFile).Add ("args", e.Args));
                 }
 
                 // Actually moving (or renaming) file

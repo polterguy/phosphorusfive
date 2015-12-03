@@ -175,7 +175,7 @@ if:x:/-2?value
             Assert.AreEqual ("bar1", result [0].Value);
         }
 
-        [ActiveEvent (Name = "if.test1", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "if.test1", Protection = EventProtection.Lambda)]
         private static void if_test1 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = true;
@@ -197,7 +197,7 @@ if:x:/-2?value
             Assert.AreEqual ("bar1", result [0].Value);
         }
         
-        [ActiveEvent (Name = "if.test2", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "if.test2", Protection = EventProtection.Lambda)]
         private static void if_test2 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = true;
@@ -222,7 +222,7 @@ if:x:/-2?value
             Assert.AreEqual ("bar1", result [0].Value);
         }
         
-        [ActiveEvent (Name = "if.test3", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "if.test3", Protection = EventProtection.Lambda)]
         private static void if_test3 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = false;

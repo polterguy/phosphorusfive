@@ -103,10 +103,10 @@ namespace p5.security
 
                 // Caller wants to create persistent cookie to remember username/password
                 HttpCookie cookie = new HttpCookie(_credentialCookieName);
-                cookie.Expires = DateTime.Now.AddDays(context.Raise ("_p5.security.get-credential-cookie-days").Get<int> (context));
+                cookie.Expires = DateTime.Now.AddDays(context.RaiseNative ("_p5.security.get-credential-cookie-days").Get<int> (context));
                 cookie.HttpOnly = true;
                 string salt = userNode["salt"].Get<string>(context);
-                cookie.Value = username + " " + context.Raise ("md5-hash", new Node(string.Empty, salt + password)).Value;
+                cookie.Value = username + " " + context.RaiseNative ("md5-hash", new Node(string.Empty, salt + password)).Value;
                 HttpContext.Current.Response.Cookies.Add(cookie);
             }
         }
@@ -141,7 +141,7 @@ namespace p5.security
                 throw new LambdaSecurityException("[create-user] Active Event tried to create 'root' user", args, context);
 
             // We need this guy to save passwords file, and create user folder structure
-            string rootFolder = context.Raise("p5.core.application-folder").Get<string>(context);
+            string rootFolder = context.RaiseNative("p5.core.application-folder").Get<string>(context);
 
             // Verifying username is valid, since we'll need to create a folder for user
             VerifyUsernameValid (username);
@@ -161,7 +161,7 @@ namespace p5.security
                 pwdFile ["users"].LastChild.Add("role", role);
 
                 // Getting path to 'auth' file
-                string pwdFilePath = context.Raise ("_p5.security.get-auth-file").Get<string> (context).Replace("~/", rootFolder);
+                string pwdFilePath = context.RaiseNative ("_p5.security.get-auth-file").Get<string> (context).Replace("~/", rootFolder);
 
                 // Saving password file
                 using (TextWriter writer = File.CreateText(pwdFilePath)) {
@@ -169,7 +169,7 @@ namespace p5.security
                     // Converting lambda to Hyperlisp
                     Node lambdaNode = new Node();
                     lambdaNode.AddRange(pwdFile.Children);
-                    writer.Write(context.Raise ("lambda2lisp", lambdaNode).Get<string> (context));
+                    writer.Write(context.RaiseNative ("lambda2lisp", lambdaNode).Get<string> (context));
                 }
             }
 
@@ -242,7 +242,7 @@ namespace p5.security
             }
 
             // Making sure default role is added
-            string defaultRole = context.Raise ("_p5.security.get-default-context-role").Get<string> (context);
+            string defaultRole = context.RaiseNative ("_p5.security.get-default-context-role").Get<string> (context);
             if (!string.IsNullOrEmpty(defaultRole)) {
 
                 // There exist a default role, checking if it's already added
@@ -309,7 +309,7 @@ namespace p5.security
         internal static void ChangePassword (ApplicationContext context, string newPwd)
         {
             // Getting root folder of app, needed to save passwords file later
-            string rootFolder = context.Raise("p5.core.application-folder").Get<string>(context);
+            string rootFolder = context.RaiseNative("p5.core.application-folder").Get<string>(context);
 
             // Locking access to password file
             lock (_passwordFileLocker) {
@@ -322,12 +322,12 @@ namespace p5.security
 
                 // Saving password file to disc
                 using (TextWriter writer = File.CreateText(
-                    context.Raise ("_p5.security.get-auth-file").Get<string> (context).Replace("~/", rootFolder))) {
+                    context.RaiseNative ("_p5.security.get-auth-file").Get<string> (context).Replace("~/", rootFolder))) {
 
                     // Creating Hyperlisp out of lambda password file
                     Node lambdaNode = new Node();
                     lambdaNode.AddRange(pwdFile.Children);
-                    writer.Write(context.Raise ("lambda2lisp", lambdaNode).Get<string> (context));
+                    writer.Write(context.RaiseNative ("lambda2lisp", lambdaNode).Get<string> (context));
                 }
             }
         }
@@ -338,8 +338,8 @@ namespace p5.security
         internal static Node GetPasswordFile (ApplicationContext context)
         {
             // Getting filepath to pwd file
-            string rootFolder = context.Raise("p5.core.application-folder").Get<string>(context);
-            string pwdFilePath = context.Raise ("_p5.security.get-auth-file").Get<string>(context).Replace("~", rootFolder);
+            string rootFolder = context.RaiseNative("p5.core.application-folder").Get<string>(context);
+            string pwdFilePath = context.RaiseNative ("_p5.security.get-auth-file").Get<string>(context).Replace("~", rootFolder);
 
             // Checking file exist
             if (!File.Exists(pwdFilePath))
@@ -350,7 +350,7 @@ namespace p5.security
 
                 // Returning file as lambda
                 string users = reader.ReadToEnd();
-                Node usersNode = context.Raise("lisp2lambda", new Node(string.Empty, users));
+                Node usersNode = context.RaiseNative("lisp2lambda", new Node(string.Empty, users));
                 return usersNode;
             }
         }
@@ -424,7 +424,7 @@ namespace p5.security
             // User exists, retrieving salt and password to see if we have a match
             string salt = userNode["salt"].Get<string> (context);
             string password = userNode["password"].Get<string> (context);
-            string hashSaltedPwd = context.Raise("md5-hash", new Node(string.Empty, salt + password)).Get<string>(context);
+            string hashSaltedPwd = context.RaiseNative("md5-hash", new Node(string.Empty, salt + password)).Get<string>(context);
 
             // Notice, we do NOT THROW if passwords do not match, since it might simply mean that user has explicitly created a new "salt"
             // to throw out other clients that are currently persistently logged into system under his account
@@ -448,8 +448,8 @@ namespace p5.security
         private static ApplicationContext.ContextTicket CreateDefaultTicket (ApplicationContext context)
         {
             return new ApplicationContext.ContextTicket (
-                context.Raise ("_p5.security.get-default-context-username").Get<string> (context), 
-                context.Raise ("_p5.security.get-default-context-role").Get<string> (context), 
+                context.RaiseNative ("_p5.security.get-default-context-username").Get<string> (context), 
+                context.RaiseNative ("_p5.security.get-default-context-role").Get<string> (context), 
                 true);
         }
 
@@ -494,7 +494,7 @@ namespace p5.security
             TimeSpan span = DateTime.Now - LastLoginAttemptForIP;
 
             // Verifying delta is lower than threshold accepted
-            int seconds = context.Raise ("_p5.security.get-login-cooloff-seconds").Get<int> (context);
+            int seconds = context.RaiseNative ("_p5.security.get-login-cooloff-seconds").Get<int> (context);
             if (span.TotalSeconds < seconds)
                 throw new SecurityException (
                     string.Format (

@@ -21,8 +21,8 @@ namespace p5.io.file
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "load-file", Protection = EntranceProtection.Lambda)]
-        [ActiveEvent (Name = "load-text-file", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "load-file", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "load-text-file", Protection = EventProtection.Lambda)]
         private static void file_text_load (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
@@ -35,7 +35,7 @@ namespace p5.io.file
                 foreach (var idxFilename in Common.GetSource (e.Args, context)) {
 
                     // Verifying user is authorized to reading from currently iterated file
-                    context.Raise ("_authorize-load-file", new Node ("_authorize-load-file", idxFilename).Add ("args", e.Args));
+                    context.RaiseNative ("_authorize-load-file", new Node ("_authorize-load-file", idxFilename).Add ("args", e.Args));
 
                     // Checking to see if file exists
                     if (File.Exists (rootFolder + idxFilename)) {
@@ -70,7 +70,7 @@ namespace p5.io.file
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "load-binary-file", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "load-binary-file", Protection = EventProtection.Lambda)]
         private static void load_binary_file (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
@@ -83,7 +83,7 @@ namespace p5.io.file
                 foreach (var idxFilename in XUtil.Iterate<string> (context, e.Args)) {
 
                     // Verifying user is authorized to reading from currently iterated file
-                    context.Raise ("_authorize-load-file", new Node ("_authorize-load-file", idxFilename).Add ("args", e.Args));
+                    context.RaiseNative ("_authorize-load-file", new Node ("_authorize-load-file", idxFilename).Add ("args", e.Args));
 
                     // Checking to see if file exists
                     if (File.Exists (rootFolder + idxFilename)) {

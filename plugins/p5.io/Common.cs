@@ -33,7 +33,7 @@ namespace p5.io
             if (_rootFolder == null) {
 
                 // This is the first time we invoke this guy
-                _rootFolder = context.Raise ("p5.core.application-folder").Get<string> (context);
+                _rootFolder = context.RaiseNative ("p5.core.application-folder").Get<string> (context);
 
                 // Making sure we normalize folder separators, to have uniform folder structure on different operating systems
                 _rootFolder = _rootFolder.Replace ("\\", "/").TrimEnd ('/') + "/";
@@ -124,7 +124,7 @@ namespace p5.io
          */
         public static string GetAuthFile (ApplicationContext context)
         {
-            return context.Raise ("_p5.security.get-auth-file").Get<string> (context);
+            return context.RaiseNative ("_p5.security.get-auth-file").Get<string> (context);
         }
 
         /*

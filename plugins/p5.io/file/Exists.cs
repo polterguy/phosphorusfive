@@ -24,7 +24,7 @@ namespace p5.io.file
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "file-exist", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "file-exist", Protection = EventProtection.Lambda)]
         private static void file_exist (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
@@ -41,7 +41,7 @@ namespace p5.io.file
                 foreach (var idxFile in sourceFiles) {
 
                     // Verifying user is authorized to reading from currently iterated file
-                    context.Raise ("_authorize-load-file", new Node ("_authorize-load-file", idxFile).Add ("args", e.Args));
+                    context.RaiseNative ("_authorize-load-file", new Node ("_authorize-load-file", idxFile).Add ("args", e.Args));
 
                     // Letting caller know whether or not this file exists
                     if (!File.Exists (rootFolder + idxFile)) {

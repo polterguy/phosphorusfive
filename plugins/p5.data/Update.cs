@@ -22,7 +22,7 @@ namespace p5.data
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "update-data", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "update-data", Protection = EventProtection.Lambda)]
         private static void update_data (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving expression and doing some basic syntax checking
@@ -60,7 +60,7 @@ namespace p5.data
                     foreach (var idxDestination in e.Args.Get<Expression> (context).Evaluate (Common.Database, context, e.Args)) {
 
                         // Making sure user is authorized to insert currently iterated node
-                        context.Raise ("authorize", new Node ("authorize").Add("update-data", idxDestination.Node).Add ("args", e.Args));
+                        context.RaiseNative ("authorize", new Node ("authorize").Add("update-data", idxDestination.Node).Add ("args", e.Args));
 
                         // Figuring out which file Node updated belongs to, and storing in changed list
                         Common.AddNodeToChanges (idxDestination.Node, changed);

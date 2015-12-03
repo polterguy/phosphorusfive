@@ -19,6 +19,7 @@ namespace p5.lambda
     /// </summary>
     public static class Eval
     {
+        // Used to extract commonalities for eval Active Events
         private delegate void ExecuteFunctor (
             ApplicationContext context, 
             Node exe, 
@@ -26,31 +27,12 @@ namespace p5.lambda
             IEnumerable<Node> args,
             bool isFirst);
 
-        private static void Executor (ExecuteFunctor functor, ApplicationContext context, Node args, bool forceChildren)
-        {
-            if (forceChildren || args.Value == null) {
-
-                // executing current scope
-                functor (context, args, args, new Node[] {}, true);
-            } else {
-                
-                // executing a value object or an expression, making sure we let functor know which
-                // was the first invocation
-                bool isFirst = true;
-                foreach (var idxSource in XUtil.Iterate<Node> (context, args)) {
-
-                    functor (context, idxSource, args, args.Children, isFirst);
-                    isFirst = false;
-                }
-            }
-        }
-
-        /// <summary>
+                /// <summary>
         ///     Executes a specified piece of p5.lambda block as a copied lambda object
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "eval", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "eval", Protection = EventProtection.Lambda)]
         private static void eval (ApplicationContext context, ActiveEventArgs e)
         {
             Executor (ExecuteBlockCopy, context, e.Args, e.Args.Name != "eval");
@@ -61,10 +43,32 @@ namespace p5.lambda
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "eval-mutable", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "eval-mutable", Protection = EventProtection.Lambda)]
         private static void eval_mutable (ApplicationContext context, ActiveEventArgs e)
         {
             Executor (ExecuteBlockMutable, context, e.Args, e.Args.Name != "eval-mutable");
+        }
+
+        /*
+         * Worker method for [eval]
+         */
+        private static void Executor (ExecuteFunctor functor, ApplicationContext context, Node args, bool forceChildren)
+        {
+            if (forceChildren || args.Value == null) {
+
+                // executing current scope
+                functor (context, args, args, new Node[] {}, true);
+            } else {
+
+                // executing a value object or an expression, making sure we let functor know which
+                // was the first invocation
+                bool isFirst = true;
+                foreach (var idxSource in XUtil.Iterate<Node> (context, args)) {
+
+                    functor (context, idxSource, args, args.Children, isFirst);
+                    isFirst = false;
+                }
+            }
         }
 
         /*
@@ -140,7 +144,7 @@ namespace p5.lambda
                 if (!idxExe.Name.StartsWith ("_") && idxExe.Name != string.Empty) {
 
                     // raising the given Active Event normally, taking inheritance chain into account
-                    context.Raise (idxExe.Name, idxExe);
+                    context.RaiseLambda (idxExe.Name, idxExe);
                 }
 
                 // prioritizing "NextSibling", in case this node created new nodes, while having

@@ -243,7 +243,6 @@ CodeMirror.defineMode("hyperlisp", function() {
         // lesser keywords not needing indentation
         case 'lisp2lambda':
         case 'md5-hash':
-        case 'list-protected-events':
         case 'widget-exist':
         case 'find-widgets':
         case 'reload-location':

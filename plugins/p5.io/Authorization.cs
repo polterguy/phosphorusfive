@@ -26,7 +26,7 @@ namespace p5.io
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "_authorize-save-file", Protection = EntranceProtection.NativeOnly)]
+        [ActiveEvent (Name = "_authorize-save-file", Protection = EventProtection.NativeOnly)]
         private static void _authorize_save_file (ApplicationContext context, ActiveEventArgs e)
         {
             AuthorizeSaveFile (
@@ -40,7 +40,7 @@ namespace p5.io
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "_authorize-load-file", Protection = EntranceProtection.NativeOnly)]
+        [ActiveEvent (Name = "_authorize-load-file", Protection = EventProtection.NativeOnly)]
         private static void _authorize_load_file (ApplicationContext context, ActiveEventArgs e)
         {
             AuthorizeLoadFile (
@@ -54,7 +54,7 @@ namespace p5.io
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "_authorize-save-folder", Protection = EntranceProtection.NativeOnly)]
+        [ActiveEvent (Name = "_authorize-save-folder", Protection = EventProtection.NativeOnly)]
         private static void _authorize_save_folder (ApplicationContext context, ActiveEventArgs e)
         {
             AuthorizeSaveFolder (
@@ -68,7 +68,7 @@ namespace p5.io
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "_authorize-load-folder", Protection = EntranceProtection.NativeOnly)]
+        [ActiveEvent (Name = "_authorize-load-folder", Protection = EventProtection.NativeOnly)]
         private static void _authorize_load_folder (ApplicationContext context, ActiveEventArgs e)
         {
             AuthorizeLoadFolder (

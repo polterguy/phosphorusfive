@@ -19,7 +19,7 @@ namespace p5.io.folder
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-folders", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "list-folders", Protection = EventProtection.Lambda)]
         private static void p5_folder_list_folders (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
@@ -32,7 +32,7 @@ namespace p5.io.folder
                 foreach (var idxFolder in Common.GetSource (e.Args, context)) {
 
                     // Verifying user is authorized to reading from currently iterated folder
-                    context.Raise ("_authorize-load-folder", new Node ("_authorize-load-folder", idxFolder).Add ("args", e.Args));
+                    context.RaiseNative ("_authorize-load-folder", new Node ("_authorize-load-folder", idxFolder).Add ("args", e.Args));
 
                     // Iterating all folders in current directory, and returning as nodes beneath args given
                     foreach (var idxInnerFolder in Directory.GetDirectories (rootFolder + idxFolder)) {

@@ -24,7 +24,7 @@ namespace phosphorus.crypto
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "md5-hash", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "md5-hash", Protection = EventProtection.Lambda)]
         private static void md5_hash (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution

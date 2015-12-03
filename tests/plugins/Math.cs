@@ -235,7 +235,7 @@ insert-before:x:/../0
             Assert.AreEqual (typeof (int), result [0].Value.GetType ());
         }
 
-        [ActiveEvent (Name = "p5.math.test-av", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "p5.math.test-av", Protection = EventProtection.Lambda)]
         private static void p5_math_test_av (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = 5;

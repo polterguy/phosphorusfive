@@ -53,7 +53,7 @@ add:x:/..
             Assert.AreEqual ("bar2", result [1].Value);
         }
         
-        [ActiveEvent (Name = "add.test1", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "add.test1", Protection = EventProtection.Lambda)]
         private static void add_test1 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Add ("_foo1", "bar1");
@@ -75,7 +75,7 @@ add:x:/..
             Assert.AreEqual ("bar2", result [1].Value);
         }
         
-        [ActiveEvent (Name = "add.test2", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "add.test2", Protection = EventProtection.Lambda)]
         private static void add_test2 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = @"_foo1:bar1

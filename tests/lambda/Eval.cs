@@ -93,7 +93,7 @@ add:x:/..
             Assert.AreEqual ("bar", result [0].Value);
         }
 
-        [ActiveEvent (Name = "eval.test1", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "eval.test1", Protection = EventProtection.Lambda)]
         private static void eval_test1 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "foo2";
@@ -204,6 +204,37 @@ set:x:/..?value
             Assert.IsTrue (result.Value is Node);
             Assert.AreEqual ("success", result.Get<Node> (Context).Name);
             Assert.AreEqual (0, result.Count);
+        }
+
+        /// <summary>
+        ///     Verifies that protected events cannot be invoked by lambda code
+        /// </summary>
+        [Test]
+        [ExpectedException (typeof (System.Security.SecurityException))]
+        public void EvalCannotExecuteProtectedActiveEvents ()
+        {
+            ExecuteLambda (@"p5.hyperlisp.get-type-name.System.UInt64");
+        }
+
+        /// <summary>
+        ///     Verifies that protected events cannot be invoked by lambda code that raises [eval]
+        /// </summary>
+        [Test]
+        [ExpectedException (typeof (System.Security.SecurityException))]
+        public void EvalEvalCannotExecuteProtectedActiveEvents ()
+        {
+            ExecuteLambda (@"eval
+  p5.hyperlisp.get-type-name.System.UInt64");
+        }
+
+        /// <summary>
+        ///     Verifies that protected events cannot be invoked by lambda code
+        /// </summary>
+        [Test]
+        [ExpectedException (typeof (System.Security.SecurityException))]
+        public void EvalMutableCannotExecuteProtectedActiveEvents ()
+        {
+            ExecuteLambda (@"p5.hyperlisp.get-type-name.System.UInt64", "eval-mutable");
         }
     }
 }

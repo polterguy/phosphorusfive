@@ -19,7 +19,7 @@ namespace p5.lambda.keywords
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "split", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "split", Protection = EventProtection.Lambda)]
         private static void lambda_split (ApplicationContext context, ActiveEventArgs e)
         {
             // making sure we clean up and remove all arguments passed in after execution

@@ -32,7 +32,7 @@ namespace p5.unittests.plugins
 
             // creating folder using "phosphorus.file"
             var node = new Node (string.Empty, "test1");
-            Context.Raise ("create-folder", node);
+            Context.RaiseNative ("create-folder", node);
 
             // verifying create functioned as is should
             Assert.AreEqual (true, Directory.Exists (GetBasePath () + "test1"));
@@ -56,7 +56,7 @@ namespace p5.unittests.plugins
             var node = new Node (string.Empty, Expression.Create ("/*?name", Context))
                 .Add ("test1")
                 .Add ("test2");
-            Context.Raise ("create-folder", node);
+            Context.RaiseNative ("create-folder", node);
 
             // verifying create functioned as is should
             Assert.AreEqual (true, Directory.Exists (GetBasePath () + "test1"));
@@ -82,7 +82,7 @@ namespace p5.unittests.plugins
                 .Add (string.Empty, "name")
                 .Add ("test1")
                 .Add ("test2");
-            Context.Raise ("create-folder", node);
+            Context.RaiseNative ("create-folder", node);
 
             // verifying create functioned as is should
             Assert.AreEqual (true, Directory.Exists (GetBasePath () + "test1"));
@@ -114,7 +114,7 @@ namespace p5.unittests.plugins
                 .Add ("test1")
                 .Add ("test2")
                 .Add ("test3");
-            Context.Raise ("create-folder", node);
+            Context.RaiseNative ("create-folder", node);
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace p5.unittests.plugins
 
             // checking to see if folder exists using "phosphorus.file"
             var node = new Node (string.Empty, "test1");
-            Context.Raise ("folder-exist", node);
+            Context.RaiseNative ("folder-exist", node);
 
             // verifying exists returned true as it should
             Assert.AreEqual (true, node.Value);
@@ -154,7 +154,7 @@ namespace p5.unittests.plugins
             var node = new Node (string.Empty, Expression.Create ("/*?name", Context))
                 .Add ("test1")
                 .Add ("test2");
-            Context.Raise ("folder-exist", node);
+            Context.RaiseNative ("folder-exist", node);
 
             // verifying exists returned true as it should
             Assert.AreEqual (true, node.Value);
@@ -179,7 +179,7 @@ namespace p5.unittests.plugins
                 .Add (string.Empty, "name")
                 .Add ("test1")
                 .Add ("test2");
-            Context.Raise ("folder-exist", node);
+            Context.RaiseNative ("folder-exist", node);
 
             // verifying exists returned true as it should
             Assert.AreEqual (true, node.Value);
@@ -207,7 +207,7 @@ namespace p5.unittests.plugins
                 .Add ("test1")
                 .Add ("test2")
                 .Add ("test3");
-            Context.Raise ("folder-exist", node);
+            Context.RaiseNative ("folder-exist", node);
 
             // verifying exists returned true as it should
             Assert.AreEqual (false, node.Value); // this bugger doesn't exist
@@ -231,19 +231,19 @@ namespace p5.unittests.plugins
             var node = new Node (string.Empty, Expression.Create ("/0?name", Context))
                 .Add ("test1/test1.txt")
                     .Add ("src", "success");
-            Context.Raise ("save-file", node);
+            Context.RaiseNative ("save-file", node);
             node = new Node (string.Empty, Expression.Create ("/0?name", Context))
                 .Add ("test1/test2.txt")
                     .Add ("src", "success");
-            Context.Raise ("save-file", node);
+            Context.RaiseNative ("save-file", node);
             node = new Node (string.Empty, Expression.Create ("/0?name", Context))
                 .Add ("test1/test3.txt")
                     .Add ("src", "success");
-            Context.Raise ("save-file", node);
+            Context.RaiseNative ("save-file", node);
 
             // listing files within folder
             node = new Node (string.Empty, "test1");
-            Context.Raise ("list-files", node);
+            Context.RaiseNative ("list-files", node);
 
             // verifying list-files returned true as it should
             Assert.AreEqual ("test1/test1.txt", node [0].Name);
@@ -273,19 +273,19 @@ namespace p5.unittests.plugins
             // creating files within folder
             var node = new Node (string.Empty, "test1/test1.txt")
                 .Add ("src", "success");
-            Context.Raise ("save-file", node);
+            Context.RaiseNative ("save-file", node);
             node = new Node (string.Empty, "test2/test2.txt")
                 .Add ("src", "success");
-            Context.Raise ("save-file", node);
+            Context.RaiseNative ("save-file", node);
             node = new Node (string.Empty, "test1/test3.txt")
                 .Add ("src", "success");
-            Context.Raise ("save-file", node);
+            Context.RaiseNative ("save-file", node);
 
             // listing files within folder
             node = new Node (string.Empty, Expression.Create ("/*?name", Context))
                 .Add ("test1")
                 .Add ("test2");
-            Context.Raise ("list-files", node);
+            Context.RaiseNative ("list-files", node);
 
             // verifying list-files returned true as it should
             Assert.AreEqual ("test1/test1.txt", node [0].Name);
@@ -315,20 +315,20 @@ namespace p5.unittests.plugins
             // creating files within folder
             var node = new Node (string.Empty, "test1/test1.txt")
                 .Add ("src", "success");
-            Context.Raise ("save-file", node);
+            Context.RaiseNative ("save-file", node);
             node = new Node (string.Empty, "test2/test2.txt")
                 .Add ("src", "success");
-            Context.Raise ("save-file", node);
+            Context.RaiseNative ("save-file", node);
             node = new Node (string.Empty, "test1/test3.txt")
                 .Add ("src", "success");
-            Context.Raise ("save-file", node);
+            Context.RaiseNative ("save-file", node);
 
             // listing files within folder
             node = new Node (string.Empty, Expression.Create ("/*!/*/?{0}", Context))
                 .Add (string.Empty, "name")
                 .Add ("test1")
                 .Add ("test2");
-            Context.Raise ("list-files", node);
+            Context.RaiseNative ("list-files", node);
 
             // verifying list-files returned true as it should
             Assert.AreEqual ("test1/test1.txt", node [0].Name);
@@ -354,18 +354,18 @@ namespace p5.unittests.plugins
             // creating files within folder
             var node = new Node (string.Empty, "test1/test1.txt")
                 .Add ("src", "success");
-            Context.Raise ("save-file", node);
+            Context.RaiseNative ("save-file", node);
             node = new Node (string.Empty, "test1/test2.txt")
                 .Add ("src", "success");
-            Context.Raise ("save-file", node);
+            Context.RaiseNative ("save-file", node);
             node = new Node (string.Empty, "test1/test3.txt")
                 .Add ("src", "success");
-            Context.Raise ("save-file", node);
+            Context.RaiseNative ("save-file", node);
 
             // listing files within folder
             node = new Node (string.Empty, "te{0}")
                 .Add (string.Empty, "st1");
-            Context.Raise ("list-files", node);
+            Context.RaiseNative ("list-files", node);
 
             // verifying list-files returned true as it should
             Assert.AreEqual ("test1/test1.txt", node [0].Name);
@@ -389,7 +389,7 @@ namespace p5.unittests.plugins
 
             // listing folders within folder
             var node = new Node (string.Empty, "test1");
-            Context.Raise ("list-folders", node);
+            Context.RaiseNative ("list-folders", node);
 
             // verifying list-files returned true as it should
             Assert.AreEqual ("/test1/xxx/", node [0].Name);
@@ -418,7 +418,7 @@ namespace p5.unittests.plugins
             var node = new Node (string.Empty, Expression.Create ("/*?name", Context))
                 .Add ("test1")
                 .Add ("test2");
-            Context.Raise ("list-folders", node);
+            Context.RaiseNative ("list-folders", node);
 
             // verifying list-files returned true as it should
             Assert.AreEqual ("/test1/xxx/", node [0].Name);
@@ -448,7 +448,7 @@ namespace p5.unittests.plugins
                 .Add (string.Empty, "/*!/*/")
                 .Add ("test1")
                 .Add ("test2");
-            Context.Raise ("list-folders", node);
+            Context.RaiseNative ("list-folders", node);
 
             // verifying list-files returned true as it should
             Assert.AreEqual ("/test1/xxx/", node [0].Name);
@@ -472,14 +472,14 @@ namespace p5.unittests.plugins
             // listing folders within folder
             var node = new Node (string.Empty, "te{0}")
                 .Add (string.Empty, "st1");
-            Context.Raise ("list-folders", node);
+            Context.RaiseNative ("list-folders", node);
 
             // verifying list-files returned true as it should
             Assert.AreEqual ("/test1/xxx/", node [0].Name);
             Assert.AreEqual ("/test1/yyy/", node [1].Name);
         }
 
-        [ActiveEvent (Name = "test.list-folders-1", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "test.list-folders-1", Protection = EventProtection.Lambda)]
         private static void ListFolderEvent (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "test1";
@@ -521,7 +521,7 @@ insert-before:x:/../0
 
             // removing directory using "phosphorus.file"
             var node = new Node (string.Empty, "test1");
-            Context.Raise ("delete-folder", node);
+            Context.RaiseNative ("delete-folder", node);
 
             // verifying remove works as it should
             Assert.AreEqual (false, Directory.Exists (GetBasePath () + "test1"));
@@ -540,11 +540,11 @@ insert-before:x:/../0
             // creating a file within directory, to verify remove removes recursively
             var createFile = new Node (string.Empty, "test1/test1.txt")
                 .Add ("src", "this is a test");
-            Context.Raise ("save-file", createFile);
+            Context.RaiseNative ("save-file", createFile);
 
             // removing directory using "phosphorus.file"
             var node = new Node (string.Empty, "test1");
-            Context.Raise ("delete-folder", node);
+            Context.RaiseNative ("delete-folder", node);
 
             // verifying remove works as it should
             Assert.AreEqual (false, Directory.Exists (GetBasePath () + "test1"));
@@ -568,7 +568,7 @@ insert-before:x:/../0
             var node = new Node (string.Empty, Expression.Create ("/*?name", Context))
                 .Add ("test1")
                 .Add ("test2");
-            Context.Raise ("delete-folder", node);
+            Context.RaiseNative ("delete-folder", node);
 
             // verifying remove works as it should
             Assert.AreEqual (false, Directory.Exists (GetBasePath () + "test1"));
@@ -594,7 +594,7 @@ insert-before:x:/../0
                 .Add (string.Empty, "name")
                 .Add ("test1")
                 .Add ("test2");
-            Context.Raise ("delete-folder", node);
+            Context.RaiseNative ("delete-folder", node);
 
             // verifying remove works as it should
             Assert.AreEqual (false, Directory.Exists (GetBasePath () + "test1"));
@@ -615,7 +615,7 @@ insert-before:x:/../0
             // removing directory using "phosphorus.file"
             var node = new Node (string.Empty, "te{0}")
                 .Add (string.Empty, "st1");
-            Context.Raise ("delete-folder", node);
+            Context.RaiseNative ("delete-folder", node);
 
             // verifying remove works as it should
             Assert.AreEqual (false, Directory.Exists (GetBasePath () + "test1"));
@@ -629,7 +629,7 @@ insert-before:x:/../0
         public void ReadAnotherUsersDataAsRoot ()
         {
             var node = new Node (string.Empty, "/users/foo/foo.txt");
-            Context.Raise ("load-file", node);
+            Context.RaiseNative ("load-file", node);
         }
 
         /// <summary>
@@ -640,7 +640,7 @@ insert-before:x:/../0
         public void SaveToAnotherUsersDataAsRoot ()
         {
             var node = new Node (string.Empty, "users/foo/foo.txt");
-            Context.Raise ("save-file", node);
+            Context.RaiseNative ("save-file", node);
         }
     }
 }

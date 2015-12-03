@@ -29,7 +29,7 @@ namespace p5.web.ui
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-cache", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "set-cache", Protection = EventProtection.Lambda)]
         private static void set_cache (ApplicationContext context, ActiveEventArgs e)
         {
             p5.web.ui.common.CollectionBase.Set (e.Args, context, delegate (string key, object value) {
@@ -50,7 +50,7 @@ namespace p5.web.ui
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-cache", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "get-cache", Protection = EventProtection.Lambda)]
         private static void get_cache (ApplicationContext context, ActiveEventArgs e)
         {
             p5.web.ui.common.CollectionBase.Get (e.Args, context, key => HttpContext.Current.Cache [key]);
@@ -63,7 +63,7 @@ namespace p5.web.ui
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-cache", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "list-cache", Protection = EventProtection.Lambda)]
         private static void list_cache (ApplicationContext context, ActiveEventArgs e)
         {
             List<string> retVal = new List<string> ();

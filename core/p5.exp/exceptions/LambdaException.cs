@@ -53,7 +53,7 @@ namespace p5.exp.exceptions
             {
                 var convert = new Node ();
                 convert.AddRange (_node.Clone ().Children);
-                _context.Raise ("lambda2lisp", convert);
+                _context.RaiseNative ("lambda2lisp", convert);
                 return string.Format ("p5.lambda stack trace;\r\n{0}\r\n\r\nC# stack trace;\r\n{1}",
                     convert.Get<string> (_context),
                     base.StackTrace);

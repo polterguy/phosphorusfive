@@ -26,7 +26,7 @@ namespace p5.exp.matchentities
                 if (!string.IsNullOrEmpty (_match.Convert)) {
                     retVal = _match.Convert == "string" ?
                         Utilities.Convert<string> (_match.Context, retVal) :
-                            _match.Context.Raise ("p5.hyperlisp.get-object-value." + _match.Convert, new Node (string.Empty, retVal)).Value;
+                            _match.Context.RaiseNative ("p5.hyperlisp.get-object-value." + _match.Convert, new Node (string.Empty, retVal)).Value;
                 }
                 return retVal;
             }

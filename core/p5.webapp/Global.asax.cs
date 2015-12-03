@@ -49,7 +49,7 @@ namespace p5
 
                 // then raising the application start active event, making sure we do it as "root"
                 var context = Loader.Instance.CreateApplicationContext (new ApplicationContext.ContextTicket("root", "root", false));
-                context.Raise ("p5.core.application-start");
+                context.RaiseNative ("p5.core.application-start");
 
                 // for then to execute our "startup file", if there exists any
                 if (!string.IsNullOrEmpty (ConfigurationManager.AppSettings ["application-startup-file"])) {
@@ -67,10 +67,10 @@ namespace p5
             {
                 // loading file
                 var loadFileNode = new Node (string.Empty, filePath);
-                context.Raise ("load-file", loadFileNode);
+                context.RaiseNative ("load-file", loadFileNode);
 
                 // raising file as p5.lambda object
-                context.Raise ("eval", loadFileNode [0]);
+                context.RaiseNative ("eval", loadFileNode [0]);
             }
 
             /*
@@ -103,7 +103,7 @@ namespace p5
             /// </summary>
             /// <param name="context">Application context Active Event is raised within</param>
             /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.core.application-folder", Protection = EntranceProtection.NativeOnly)]
+            [ActiveEvent (Name = "p5.core.application-folder", Protection = EventProtection.NativeOnly)]
             private static void p5_core_application_folder (ApplicationContext context, ActiveEventArgs e)
             {
                 e.Args.Value = _applicationBasePath;
@@ -114,7 +114,7 @@ namespace p5
             /// </summary>
             /// <param name="context">Application context Active Event is raised within</param>
             /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "_p5.security.get-auth-file", Protection = EntranceProtection.NativeOnly)]
+            [ActiveEvent (Name = "_p5.security.get-auth-file", Protection = EventProtection.NativeOnly)]
             private static void _p5_security_get_auth_file (ApplicationContext context, ActiveEventArgs e)
             {
                 var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
@@ -126,7 +126,7 @@ namespace p5
             /// </summary>
             /// <param name="context">Application context Active Event is raised within</param>
             /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "_p5.security.get-credential-cookie-days", Protection = EntranceProtection.NativeOnly)]
+            [ActiveEvent (Name = "_p5.security.get-credential-cookie-days", Protection = EventProtection.NativeOnly)]
             private static void _p5_security_get_credential_cookie_days (ApplicationContext context, ActiveEventArgs e)
             {
                 var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
@@ -138,7 +138,7 @@ namespace p5
             /// </summary>
             /// <param name="context">Application context Active Event is raised within</param>
             /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "_p5.security.get-default-context-role", Protection = EntranceProtection.NativeOnly)]
+            [ActiveEvent (Name = "_p5.security.get-default-context-role", Protection = EventProtection.NativeOnly)]
             private static void _p5_security_get_default_context_role (ApplicationContext context, ActiveEventArgs e)
             {
                 var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
@@ -150,7 +150,7 @@ namespace p5
             /// </summary>
             /// <param name="context">Application context Active Event is raised within</param>
             /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "_p5.security.get-default-context-username", Protection = EntranceProtection.NativeOnly)]
+            [ActiveEvent (Name = "_p5.security.get-default-context-username", Protection = EventProtection.NativeOnly)]
             private static void _p5_security_get_default_context_username (ApplicationContext context, ActiveEventArgs e)
             {
                 var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
@@ -162,7 +162,7 @@ namespace p5
             /// </summary>
             /// <param name="context">Application context Active Event is raised within</param>
             /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "_p5.security.get-login-cooloff-seconds", Protection = EntranceProtection.NativeOnly)]
+            [ActiveEvent (Name = "_p5.security.get-login-cooloff-seconds", Protection = EventProtection.NativeOnly)]
             private static void _p5_security_get_login_cooloff_seconds (ApplicationContext context, ActiveEventArgs e)
             {
                 var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;

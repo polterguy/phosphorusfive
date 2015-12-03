@@ -25,11 +25,11 @@ namespace p5.threading
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "lock", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "lock", Protection = EventProtection.Lambda)]
         private static void lambda_lock (ApplicationContext context, ActiveEventArgs e)
         {
             var lockers = new List<string> (XUtil.Iterate<string> (context, e.Args));
-            LockNext (lockers, delegate { context.Raise ("lambda", e.Args); });
+            LockNext (lockers, delegate { context.RaiseNative ("lambda", e.Args); });
         }
 
         /*

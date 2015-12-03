@@ -25,7 +25,7 @@ namespace p5.security
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "create-user", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "create-user", Protection = EventProtection.Lambda)]
         private static void create_user (ApplicationContext context, ActiveEventArgs e)
         {
             AuthenticationHelper.CreateUser (context, e.Args);

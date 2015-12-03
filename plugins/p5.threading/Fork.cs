@@ -61,7 +61,7 @@ namespace p5.threading
 
             private void Execute ()
             {
-                Context.Raise ("eval-mutable", Lambda);
+                Context.RaiseNative ("eval-mutable", Lambda);
             }
         }
 
@@ -70,7 +70,7 @@ namespace p5.threading
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "fork", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "fork", Protection = EventProtection.Lambda)]
         private static void fork (ApplicationContext context, ActiveEventArgs e)
         {
             // looping through each lambda object in fork statement

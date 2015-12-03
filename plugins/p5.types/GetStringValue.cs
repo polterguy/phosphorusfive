@@ -39,11 +39,11 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-string-value.p5.core.Node", Protection = EntranceProtection.NativeOnly)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-string-value.p5.core.Node", Protection = EventProtection.NativeOnly)]
         private static void p5_hyperlisp_get_string_value_p5_core_Node (ApplicationContext context, ActiveEventArgs e)
         {
             var tmp = new Node ("", e.Args.Value);
-            context.Raise ("lambda2lisp", tmp);
+            context.RaiseNative ("lambda2lisp", tmp);
             e.Args.Value = tmp.Value;
         }
 
@@ -54,7 +54,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-string-value.p5.exp.Expression", Protection = EntranceProtection.NativeOnly)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-string-value.p5.exp.Expression", Protection = EventProtection.NativeOnly)]
         private static void p5_hyperlisp_get_string_value_p5_exp_Expression (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = e.Args.Get<Expression> (context).Value;
@@ -69,7 +69,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-string-value.System.DateTime", Protection = EntranceProtection.NativeOnly)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-string-value.System.DateTime", Protection = EventProtection.NativeOnly)]
         private static void p5_hyperlisp_get_string_value_System_DateTime (ApplicationContext context, ActiveEventArgs e)
         {
             var value = e.Args.Get<DateTime> (context);
@@ -88,7 +88,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-string-value.System.TimeSpan", Protection = EntranceProtection.NativeOnly)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-string-value.System.TimeSpan", Protection = EventProtection.NativeOnly)]
         private static void p5_hyperlisp_get_string_value_System_TimeSpan (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = e.Args.Get<TimeSpan> (context).ToString ("c", CultureInfo.InvariantCulture);
@@ -101,7 +101,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-string-value.System.Boolean", Protection = EntranceProtection.NativeOnly)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-string-value.System.Boolean", Protection = EventProtection.NativeOnly)]
         private static void p5_hyperlisp_get_string_value_System_Boolean (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = e.Args.Get<bool> (context).ToString ().ToLower ();
@@ -115,7 +115,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-string-value.System.Byte[]", Protection = EntranceProtection.NativeOnly)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-string-value.System.Byte[]", Protection = EventProtection.NativeOnly)]
         private static void p5_hyperlisp_get_string_value_System_ByteBlob (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.GetChildValue ("encode", context, false))

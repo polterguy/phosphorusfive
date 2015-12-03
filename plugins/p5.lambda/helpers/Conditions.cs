@@ -72,7 +72,7 @@ namespace p5.lambda.helpers
                 default:
 
                     // raising comparison operator Active Event, or any other Active Event currently part of conditional operators
-                    context.Raise (idx.Name, idx);
+                    context.RaiseNative (idx.Name, idx);
                     if (args.Value == null)
                         args.Value = idx.Value;
                     break;
@@ -113,7 +113,7 @@ namespace p5.lambda.helpers
         public static void ExecuteCurrentScope (ApplicationContext context, Node args)
         {
             // executing current scope
-            context.Raise ("eval-mutable", args);
+            context.RaiseNative ("eval-mutable", args);
         }
 
         /*

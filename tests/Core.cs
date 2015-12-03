@@ -80,7 +80,7 @@ namespace p5.unittests
             Assert.IsNotNull (context);
         }
 
-        [ActiveEvent (Name = "foo", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "foo", Protection = EventProtection.Lambda)]
         private static void Foo (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "success";
@@ -94,7 +94,7 @@ namespace p5.unittests
         {
             var context = Loader.Instance.CreateApplicationContext ();
             var tmp = new Node ();
-            context.Raise ("foo", tmp);
+            context.RaiseNative ("foo", tmp);
             Assert.AreEqual ("success", tmp.Value, "Active Event in current assembly did not execute when expected");
         }
 
@@ -103,7 +103,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo2", Protection = EntranceProtection.LambdaVirtual)]
+        [ActiveEvent (Name = "foo2", Protection = EventProtection.LambdaVirtual)]
         private static void foo2_1 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -114,7 +114,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo2", Protection = EntranceProtection.LambdaVirtual)]
+        [ActiveEvent (Name = "foo2", Protection = EventProtection.LambdaVirtual)]
         private static void foo2_2 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -128,7 +128,7 @@ namespace p5.unittests
         {
             var context = Loader.Instance.CreateApplicationContext ();
             var tmp = new Node (string.Empty, string.Empty);
-            context.Raise ("foo2", tmp);
+            context.RaiseNative ("foo2", tmp);
             Assert.AreEqual ("successsuccess", tmp.Value, "Active Event in current assembly did not execute when expected");
         }
 
@@ -137,7 +137,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo3", Protection = EntranceProtection.LambdaVirtual)]
+        [ActiveEvent (Name = "foo3", Protection = EventProtection.LambdaVirtual)]
         private void Foo3 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "success";
@@ -152,7 +152,7 @@ namespace p5.unittests
             var context = Loader.Instance.CreateApplicationContext ();
             context.RegisterListeningObject (this);
             var tmp = new Node ();
-            context.Raise ("foo3", tmp);
+            context.RaiseNative ("foo3", tmp);
             Assert.AreEqual ("success", tmp.Value, "Active Event in current assembly did not execute when expected");
         }
 
@@ -161,7 +161,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo4", Protection = EntranceProtection.LambdaVirtual)]
+        [ActiveEvent (Name = "foo4", Protection = EventProtection.LambdaVirtual)]
         private void foo4_1 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -172,7 +172,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo4", Protection = EntranceProtection.LambdaVirtual)]
+        [ActiveEvent (Name = "foo4", Protection = EventProtection.LambdaVirtual)]
         private void foo4_2 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -187,7 +187,7 @@ namespace p5.unittests
             var context = Loader.Instance.CreateApplicationContext ();
             context.RegisterListeningObject (this);
             var tmp = new Node (string.Empty, string.Empty);
-            context.Raise ("foo4", tmp);
+            context.RaiseNative ("foo4", tmp);
             Assert.AreEqual ("successsuccess", tmp.Value, "Active Event in current assembly did not execute when expected");
         }
 
@@ -196,7 +196,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo5", Protection = EntranceProtection.LambdaVirtual)]
+        [ActiveEvent (Name = "foo5", Protection = EventProtection.LambdaVirtual)]
         private void foo5_1 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -207,7 +207,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo5", Protection = EntranceProtection.LambdaVirtual)]
+        [ActiveEvent (Name = "foo5", Protection = EventProtection.LambdaVirtual)]
         private static void foo5_2 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -223,7 +223,7 @@ namespace p5.unittests
             var context = Loader.Instance.CreateApplicationContext ();
             context.RegisterListeningObject (this);
             var tmp = new Node (string.Empty, string.Empty);
-            context.Raise ("foo5", tmp);
+            context.RaiseNative ("foo5", tmp);
             Assert.AreEqual ("successsuccess", tmp.Value, "Active Event in current assembly did not execute when expected");
         }
 
@@ -232,7 +232,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo6", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "foo6", Protection = EventProtection.Lambda)]
         private static void Foo6 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -254,7 +254,7 @@ namespace p5.unittests
 
             // raising Active Event on new context, making sure our event handler is only invoked once
             var tmp = new Node (string.Empty, string.Empty);
-            context.Raise ("foo6", tmp);
+            context.RaiseNative ("foo6", tmp);
             Assert.AreEqual ("success", tmp.Value, "context contained previously registered instance listener");
         }
 
@@ -263,7 +263,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo7", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "foo7", Protection = EventProtection.Lambda)]
         private static void Foo7 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -280,7 +280,7 @@ namespace p5.unittests
             context.RegisterListeningObject (this);
             context.RegisterListeningObject (this);
             var tmp = new Node (string.Empty, string.Empty);
-            context.Raise ("foo7", tmp);
+            context.RaiseNative ("foo7", tmp);
             Assert.AreEqual ("success", tmp.Value, "context contained previously registered instance listener");
         }
 
@@ -289,7 +289,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo8", Protection = EntranceProtection.LambdaVirtual)]
+        [ActiveEvent (Name = "foo8", Protection = EventProtection.LambdaVirtual)]
         private void Foo8 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -307,7 +307,7 @@ namespace p5.unittests
             // unregistering instance listener before we raise event
             context.UnregisterListeningObject (this);
             var tmp = new Node (string.Empty, string.Empty);
-            context.Raise ("foo8", tmp);
+            context.RaiseNative ("foo8", tmp);
             Assert.AreEqual (string.Empty, tmp.Value, "context contained previously registered instance listener");
         }
 
@@ -316,7 +316,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo9", Protection = EntranceProtection.LambdaVirtual)]
+        [ActiveEvent (Name = "foo9", Protection = EventProtection.LambdaVirtual)]
         private void foo9_1 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -327,7 +327,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo9", Protection = EntranceProtection.LambdaVirtual)]
+        [ActiveEvent (Name = "foo9", Protection = EventProtection.LambdaVirtual)]
         private static void foo9_2 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -343,7 +343,7 @@ namespace p5.unittests
             context.RegisterListeningObject (this);
             context.UnregisterListeningObject (this);
             var tmp = new Node (string.Empty, string.Empty);
-            context.Raise ("foo9", tmp);
+            context.RaiseNative ("foo9", tmp);
             Assert.AreEqual ("success", tmp.Value, "context contained previously registered instance listener");
         }
 
@@ -352,7 +352,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo10", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "foo10", Protection = EventProtection.Lambda)]
         private static void Foo10 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -369,7 +369,7 @@ namespace p5.unittests
             Loader.Instance.UnloadAssembly ("p5.tests");
             var context = Loader.Instance.CreateApplicationContext ();
             var tmp = new Node (string.Empty, string.Empty);
-            context.Raise ("foo10", tmp);
+            context.RaiseNative ("foo10", tmp);
             Loader.Instance.LoadAssembly (GetType ());
             Assert.AreEqual (string.Empty, tmp.Value, "assembly didn't unload correctly");
         }
@@ -379,7 +379,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo11", Protection = EntranceProtection.LambdaVirtual)]
+        [ActiveEvent (Name = "foo11", Protection = EventProtection.LambdaVirtual)]
         private void Foo11 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -400,7 +400,7 @@ namespace p5.unittests
             context = Loader.Instance.CreateApplicationContext ();
             Loader.Instance.LoadAssembly (this.GetType ());
             var tmp = new Node (string.Empty, string.Empty);
-            context.Raise ("foo11", tmp);
+            context.RaiseNative ("foo11", tmp);
             Assert.AreEqual (string.Empty, tmp.Value, "assembly didn't unload correctly");
         }
 
@@ -412,17 +412,17 @@ namespace p5.unittests
         {
             var context = Loader.Instance.CreateApplicationContext ();
             var tmp = new Node (string.Empty, string.Empty);
-            context.Raise ("non-existing", tmp);
+            context.RaiseNative ("non-existing", tmp);
         }
 
-        [ActiveEvent (Name = "foo24", Protection = EntranceProtection.LambdaVirtual)]
+        [ActiveEvent (Name = "foo24", Protection = EventProtection.LambdaVirtual)]
         private void Foo24 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "failure";
         }
 
-        [ActiveEvent (Name = "foo54", Protection = EntranceProtection.LambdaVirtual)]
-        [ActiveEvent (Name = "foo54", Protection = EntranceProtection.LambdaVirtual)]
+        [ActiveEvent (Name = "foo54", Protection = EventProtection.LambdaVirtual)]
+        [ActiveEvent (Name = "foo54", Protection = EventProtection.LambdaVirtual)]
         private static void Foo54 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -433,13 +433,13 @@ namespace p5.unittests
         {
             var context = Loader.Instance.CreateApplicationContext ();
             var tmp = new Node ();
-            context.Raise ("foo54", tmp);
+            context.RaiseNative ("foo54", tmp);
             Assert.AreEqual ("successsuccess", tmp.Value, "Active Event in current assembly did not execute as expected");
         }
 
         private class Foo55
         {
-            [ActiveEvent (Name = "foo55", Protection = EntranceProtection.Lambda)]
+            [ActiveEvent (Name = "foo55", Protection = EventProtection.Lambda)]
             private void Foo54 (ApplicationContext context, ActiveEventArgs e)
             {
                 e.Args.Value += "success";
@@ -457,7 +457,7 @@ namespace p5.unittests
 
         private class Foo56
         {
-            [ActiveEvent (Name = "foo56", Protection = EntranceProtection.Lambda)]
+            [ActiveEvent (Name = "foo56", Protection = EventProtection.Lambda)]
             private static void Foo54 (ApplicationContext context, ActiveEventArgs e)
             {
                 e.Args.Value += "success";
@@ -469,19 +469,19 @@ namespace p5.unittests
         {
             var context = Loader.Instance.CreateApplicationContext ();
             var tmp = new Node ();
-            context.Raise ("foo56", tmp);
+            context.RaiseNative ("foo56", tmp);
             Assert.AreEqual ("success", tmp.Value, "Active Event in current assembly did not execute as expected");
         }
 
         private class Foo57
         {
-            [ActiveEvent (Name = "foo57", Protection = EntranceProtection.Lambda)]
+            [ActiveEvent (Name = "foo57", Protection = EventProtection.Lambda)]
             private static void Foo54 (ApplicationContext context, ActiveEventArgs e)
             {
                 e.Args.Value += "success";
             }
 
-            [ActiveEvent (Name = "foo57", Protection = EntranceProtection.Lambda)]
+            [ActiveEvent (Name = "foo57", Protection = EventProtection.Lambda)]
             private void Foo54_2 (ApplicationContext context, ActiveEventArgs e)
             {
                 e.Args.Value += "success";
@@ -498,13 +498,13 @@ namespace p5.unittests
 
         private class Foo58
         {
-            [ActiveEvent (Name = "foo58", Protection = EntranceProtection.Lambda)]
+            [ActiveEvent (Name = "foo58", Protection = EventProtection.Lambda)]
             private static void Foo54 (ApplicationContext context, ActiveEventArgs e)
             {
                 e.Args.Value += "success";
             }
 
-            [ActiveEvent (Name = "foo58", Protection = EntranceProtection.Lambda)]
+            [ActiveEvent (Name = "foo58", Protection = EventProtection.Lambda)]
             private void Foo54_2 (ApplicationContext context, ActiveEventArgs e)
             {
                 e.Args.Value += "success";

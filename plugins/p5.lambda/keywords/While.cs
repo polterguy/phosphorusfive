@@ -20,7 +20,7 @@ namespace p5.lambda.keywords
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "while", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "while", Protection = EventProtection.Lambda)]
         private static void lambda_while (ApplicationContext context, ActiveEventArgs e)
         {
             // storing old while "body"
