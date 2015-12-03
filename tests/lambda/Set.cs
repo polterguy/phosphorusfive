@@ -5,11 +5,12 @@
 
 using NUnit.Framework;
 using p5.core;
+using p5.exp.exceptions;
 
 namespace p5.unittests.lambda
 {
     /// <summary>
-    ///     unit tests for testing the [set] lambda keyword
+    ///     Unit tests for testing the [set] lambda keyword
     /// </summary>
     [TestFixture]
     public class Set : TestBase
@@ -18,7 +19,7 @@ namespace p5.unittests.lambda
             : base ("p5.lambda", "p5.hyperlisp", "p5.types", "p5.math") { }
 
         /// <summary>
-        ///     verifies [set] works with a static constant source
+        ///     Verifies [set] works with a static constant source
         /// </summary>
         [Test]
         public void SetStaticSource ()
@@ -35,7 +36,7 @@ add:x:/..
         }
         
         /// <summary>
-        ///     verifies [set] works with an expression source
+        ///     Verifies [set] works with an expression source
         /// </summary>
         [Test]
         public void SetExpressionSource ()
@@ -59,7 +60,7 @@ add:x:/..
         }
         
         /// <summary>
-        ///     verifies [set] works with an Active Event source
+        ///     Verifies [set] works with an Active Event source
         /// </summary>
         [Test]
         public void SetActiveEventSource ()
@@ -82,7 +83,7 @@ add:x:/..
         }
 
         /// <summary>
-        ///     verifies [set] works with an Active Event source that returns nodes
+        ///     Verifies [set] works with an Active Event source that returns nodes
         /// </summary>
         [Test]
         public void SetActiveEventSourceReturningNodes ()
@@ -105,7 +106,7 @@ add:x:/..
         }
 
         /// <summary>
-        ///     verifies [set] works with an Active Event source that returns a single node
+        ///     Verifies [set] works with an Active Event source that returns a single node
         /// </summary>
         [Test]
         public void SetActiveEventSourceReturningSingleNode ()
@@ -125,7 +126,7 @@ add:x:/..
         }
         
         /// <summary>
-        ///     verifies [set] works with src being math results
+        ///     Verifies [set] works with [src] being math results
         /// </summary>
         [Test]
         public void SetMathResult ()
@@ -142,7 +143,7 @@ add:x:/..
         }
         
         /// <summary>
-        ///     verifies [set] works with src being math results containing expressions
+        ///     Verifies [set] works with src being math results containing expressions
         /// </summary>
         [Test]
         public void SetMathResultContainingExpressions ()
@@ -157,6 +158,30 @@ add:x:/..
             Assert.AreEqual (1, result.Count);
             Assert.AreEqual ("_dest", result [0].Name);
             Assert.AreEqual (10, result [0].Value);
+        }
+
+        [ActiveEvent (Name = "set.test4", Protection = EventProtection.LambdaClosed)]
+        private static void set_test4 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "succ";
+        }
+
+        [ActiveEvent (Name = "set.test5", Protection = EventProtection.LambdaClosed)]
+        private static void set_test5 (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "ess";
+        }
+
+        /// <summary>
+        ///     Verifies [set] works with multiple active event invocations as source
+        /// </summary>
+        [Test]
+        public void SetSrcIsTwoActiveEvents ()
+        {
+            var result = ExecuteLambda (@"set:x:/..?value
+  set.test4
+  set.test5");
+            Assert.AreEqual ("success", result.Value);
         }
     }
 }

@@ -11,13 +11,13 @@ using p5.exp;
 namespace p5.unittests.plugins
 {
     /// <summary>
-    ///     Unit tests for testing combinations of modules in p5
+    ///     Unit tests for testing combinations of modules in Phosphorus Five
     /// </summary>
     [TestFixture]
     public class Combination : TestBase
     {
         public Combination ()
-            : base ("p5.io", "p5.hyperlisp", "p5.lambda", "p5.types", "p5.data")
+            : base ("p5.io", "p5.hyperlisp", "p5.lambda", "p5.types", "p5.data", "p5.security")
         { }
 
         /// <summary>
@@ -109,6 +109,25 @@ _data
 insert-before:x:/../0
   src:x:/../*(!/insert-before)");
             Assert.AreEqual ("foo1-bar1,foo2-bar2", node [0].Value);
+        }
+
+        /// <summary>
+        ///     Making sure [if] works when given two [and] [file-exist] as condition
+        /// </summary>
+        [Test]
+        public void IfFileExist ()
+        {
+            var node = ExecuteLambda (@"save-file:foo1.txt
+  src:foo
+save-file:foo2.txt
+  src:bar
+if
+  file-exist:foo1.txt
+  and
+    file-exist:foo2.txt
+  set:x:/..?value
+    src:success", "eval-mutable");
+            Assert.AreEqual ("success", node.Value);
         }
     }
 }

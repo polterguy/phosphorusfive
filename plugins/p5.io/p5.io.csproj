@@ -48,11 +48,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Compile Include="file\Exists.cs" />
     <Compile Include="file\Load.cs" />
     <Compile Include="file\Save.cs" />
     <Compile Include="folder\Create.cs" />
-    <Compile Include="folder\Exists.cs" />
     <Compile Include="folder\ListFiles.cs" />
     <Compile Include="folder\ListFolders.cs" />
     <Compile Include="file\Delete.cs" />
@@ -65,6 +63,8 @@
     <Compile Include="authorization\Authorization.cs" />
     <Compile Include="authorization\AuthorizationHelper.cs" />
     <Compile Include="helpers\Common.cs" />
+    <Compile Include="file\Exist.cs" />
+    <Compile Include="folder\Exist.cs" />
   </ItemGroup>
   <ItemGroup />
   <ProjectExtensions>
