@@ -20,8 +20,8 @@ namespace p5.io.file
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "save-file")]
-        [ActiveEvent (Name = "save-text-file")]
+        [ActiveEvent (Name = "save-file", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "save-text-file", Protection = EntranceProtection.Lambda)]
         private static void save_file (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
@@ -52,7 +52,7 @@ namespace p5.io.file
         ///     Saves a binary file to disc
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "save-binary-file")]
+        [ActiveEvent (Name = "save-binary-file", Protection = EntranceProtection.Lambda)]
         private static void save_binary_file (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution

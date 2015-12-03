@@ -20,7 +20,7 @@ namespace p5.web.ui.response
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-http-status-code")]
+        [ActiveEvent (Name = "set-http-status-code", Protection = EntranceProtection.Lambda)]
         private static void set_http_status_code (ApplicationContext context, ActiveEventArgs e)
         {
             HttpContext.Current.Response.StatusCode = e.Args.GetExValue<int> (context);
@@ -31,7 +31,7 @@ namespace p5.web.ui.response
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-http-status")]
+        [ActiveEvent (Name = "set-http-status", Protection = EntranceProtection.Lambda)]
         private static void set_http_status (ApplicationContext context, ActiveEventArgs e)
         {
             HttpContext.Current.Response.Status = e.Args.GetExValue<string> (context);

@@ -20,7 +20,7 @@ namespace p5.io.folder
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "delete-folder")]
+        [ActiveEvent (Name = "delete-folder", Protection = EntranceProtection.Lambda)]
         private static void delete_folder (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution

@@ -18,15 +18,6 @@ namespace p5.unittests.lambda
         public Threading ()
             : base ("p5.types", "p5.hyperlisp", "p5.threading", "p5.lambda", "p5.io") { }
         
-        /*
-         * necessary to return "root folder" of executing Assembly
-         */
-        [ActiveEvent (Name = "p5.core.application-folder")]
-        private static void GetRootFolder (ApplicationContext context, ActiveEventArgs e)
-        {
-            e.Args.Value = GetBasePath ();
-        }
-
         /// <summary>
         ///     Creates a "fire and forget" thread that saves a file, verifying that the thread is executed
         /// 

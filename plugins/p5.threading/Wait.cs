@@ -22,7 +22,7 @@ namespace p5.threading
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "wait")]
+        [ActiveEvent (Name = "wait", Protection = EntranceProtection.Lambda)]
         private static void lambda_wait (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.FirstChildNotOf ("fork") != null)

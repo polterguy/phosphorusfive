@@ -34,8 +34,8 @@ namespace p5.lambda.events
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-event")]
-        [ActiveEvent (Name = "set-protected-event")]
+        [ActiveEvent (Name = "set-event", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "set-protected-event", Protection = EntranceProtection.Lambda)]
         private static void set_event (ApplicationContext context, ActiveEventArgs e)
         {
             // Checking to see if this event has no lambda objects, and is not protected, at which case it is a "delete event" invocation
@@ -55,7 +55,7 @@ namespace p5.lambda.events
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "delete-events")]
+        [ActiveEvent (Name = "delete-events", Protection = EntranceProtection.Lambda)]
         private static void delete_events (ApplicationContext context, ActiveEventArgs e)
         {
             // Iterating through all events to delete
@@ -71,7 +71,7 @@ namespace p5.lambda.events
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "_p5.lambda.get-protected-events")]
+        [ActiveEvent (Name = "_p5.lambda.get-protected-events", Protection = EntranceProtection.NativeOnly)]
         private static void _p5_lambda_get_protected_events (ApplicationContext context, ActiveEventArgs e)
         {
             foreach (var idxEvt in _events.Keys) {
@@ -85,7 +85,7 @@ namespace p5.lambda.events
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-events")]
+        [ActiveEvent (Name = "get-events", Protection = EntranceProtection.Lambda)]
         private static void get_event (ApplicationContext context, ActiveEventArgs e)
         {
             // making sure we clean up and remove all arguments passed in after execution
@@ -118,7 +118,7 @@ namespace p5.lambda.events
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-events")]
+        [ActiveEvent (Name = "list-events", Protection = EntranceProtection.Lambda)]
         private static void list_events (ApplicationContext context, ActiveEventArgs e)
         {
             // making sure we clean up and remove all arguments passed in after execution
@@ -142,7 +142,7 @@ namespace p5.lambda.events
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-protected-events")]
+        [ActiveEvent (Name = "list-protected-events", Protection = EntranceProtection.Lambda)]
         private static void list_protected_events (ApplicationContext context, ActiveEventArgs e)
         {
             // making sure we clean up and remove all arguments passed in after execution
@@ -249,7 +249,7 @@ namespace p5.lambda.events
         /*
          * responsible for executing all dynamically created Active Events or lambda objects
          */
-        [ActiveEvent (Name = "")]
+        [ActiveEvent (Name = "", Protection = EntranceProtection.NativeOnlyVirtual)]
         private static void _p5_core_null_active_event (ApplicationContext context, ActiveEventArgs e)
         {
             // checking if there's an event with given name in dynamically created events

@@ -71,7 +71,7 @@ namespace p5.math
         /// </summary>
         /// <param name="context">Context.</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "+")]
+        [ActiveEvent (Name = "+", Protection = EntranceProtection.Lambda)]
         private static void math_plus (ApplicationContext context, ActiveEventArgs e)
         {
             Calculate (delegate (dynamic sum, dynamic input) {
@@ -87,7 +87,7 @@ namespace p5.math
         /// </summary>
         /// <param name="context">Context.</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "-")]
+        [ActiveEvent (Name = "-", Protection = EntranceProtection.Lambda)]
         private static void math_minus (ApplicationContext context, ActiveEventArgs e)
         {
             Calculate (delegate (dynamic sum, dynamic input) {
@@ -103,7 +103,7 @@ namespace p5.math
         /// </summary>
         /// <param name="context">Context.</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "*")]
+        [ActiveEvent (Name = "*", Protection = EntranceProtection.Lambda)]
         private static void math_multiply (ApplicationContext context, ActiveEventArgs e)
         {
             Calculate (delegate (dynamic sum, dynamic input) {
@@ -119,7 +119,7 @@ namespace p5.math
         /// </summary>
         /// <param name="context">Context.</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "/")]
+        [ActiveEvent (Name = "/", Protection = EntranceProtection.Lambda)]
         private static void math_divide (ApplicationContext context, ActiveEventArgs e)
         {
             Calculate (delegate (dynamic sum, dynamic input) {
@@ -135,7 +135,7 @@ namespace p5.math
         /// </summary>
         /// <param name="context">Context.</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "%")]
+        [ActiveEvent (Name = "%", Protection = EntranceProtection.Lambda)]
         private static void math_modulo (ApplicationContext context, ActiveEventArgs e)
         {
             Calculate (delegate (dynamic sum, dynamic input) {

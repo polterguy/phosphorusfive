@@ -24,7 +24,7 @@ namespace p5.io.file
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "file-exist")]
+        [ActiveEvent (Name = "file-exist", Protection = EntranceProtection.Lambda)]
         private static void file_exist (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution

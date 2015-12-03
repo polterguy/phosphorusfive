@@ -24,7 +24,7 @@ namespace p5.hyperlisp
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "lisp2lambda")]
+        [ActiveEvent (Name = "lisp2lambda", Protection = EntranceProtection.Lambda)]
         private static void lisp2lambda (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
@@ -52,7 +52,7 @@ namespace p5.hyperlisp
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "lambda2lisp")]
+        [ActiveEvent (Name = "lambda2lisp", Protection = EntranceProtection.Lambda)]
         private static void lambda2lisp (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution

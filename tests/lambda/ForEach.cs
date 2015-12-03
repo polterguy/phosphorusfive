@@ -110,7 +110,7 @@ _foo2:bar2""
             Assert.AreEqual ("bar2", result [1].Value);
         }
         
-        [ActiveEvent (Name = "for-each.test1")]
+        [ActiveEvent (Name = "for-each.test1", Protection = EntranceProtection.Lambda)]
         private static void for_each_test1 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Add ("_foo1", "bar1");

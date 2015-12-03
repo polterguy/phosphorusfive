@@ -20,16 +20,6 @@ namespace p5.unittests.plugins
             : base ("p5.io", "p5.hyperlisp", "p5.lambda", "p5.types")
         { }
 
-        /*
-         * necessary to return "root folder" of executing Assembly
-         * p5.io relies on this Active Event as a sink
-         */
-        [ActiveEvent (Name = "p5.core.application-folder")]
-        private static void GetRootFolder (ApplicationContext context, ActiveEventArgs e)
-        {
-            e.Args.Value = GetBasePath ();
-        }
-
         /// <summary>
         ///     saves a file for then to check if it exist
         /// </summary>
@@ -403,7 +393,7 @@ save-file:test1.txt
             }
         }
 
-        [ActiveEvent (Name = "test.save.av1")]
+        [ActiveEvent (Name = "test.save.av1", Protection = EntranceProtection.Lambda)]
         private static void test_save_av1 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "success";
@@ -422,7 +412,7 @@ save-file:test1.txt
             }
         }
         
-        [ActiveEvent (Name = "test.save.av2")]
+        [ActiveEvent (Name = "test.save.av2", Protection = EntranceProtection.Lambda)]
         private static void test_save_av2 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Add ("foo1", "bar1");
@@ -442,13 +432,13 @@ save-file:test1.txt
             }
         }
         
-        [ActiveEvent (Name = "test.save.av3_1")]
+        [ActiveEvent (Name = "test.save.av3_1", Protection = EntranceProtection.Lambda)]
         private static void test_save_av3_1 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Add ("foo1", "bar1");
         }
 
-        [ActiveEvent (Name = "test.save.av3_2")]
+        [ActiveEvent (Name = "test.save.av3_2", Protection = EntranceProtection.Lambda)]
         private static void test_save_av3_2 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Add ("foo2", "bar2");
@@ -468,13 +458,13 @@ save-file:test1.txt
             }
         }
         
-        [ActiveEvent (Name = "test.save.av4_1")]
+        [ActiveEvent (Name = "test.save.av4_1", Protection = EntranceProtection.Lambda)]
         private static void test_save_av4_1 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "succ";
         }
 
-        [ActiveEvent (Name = "test.save.av4_2")]
+        [ActiveEvent (Name = "test.save.av4_2", Protection = EntranceProtection.Lambda)]
         private static void test_save_av4_2 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "ess";
@@ -631,6 +621,113 @@ foo2:bar2");
             Assert.AreEqual ("bar1", node [0] [0].Value);
             Assert.AreEqual ("foo2", node [0] [1].Name);
             Assert.AreEqual ("bar2", node [0] [1].Value);
+        }
+
+        /// <summary>
+        ///     Tries to acces "auth" file
+        /// </summary>
+        [Test]
+        [ExpectedException (typeof (p5.exp.exceptions.LambdaSecurityException))]
+        public void ReadAuthFileAsGuest ()
+        {
+            _role = "guest";
+            _username = "guest";
+            try
+            {
+                var node = new Node (string.Empty, _auth);
+                Context.Raise ("load-file", node);
+            }
+            finally 
+            {
+                _role = "root";
+                _username = "root";
+            }
+        }
+
+        /// <summary>
+        ///     Tries to acces "auth" file
+        /// </summary>
+        [Test]
+        [ExpectedException (typeof (p5.exp.exceptions.LambdaSecurityException))]
+        public void ReadAuthFileAsGuestFileNameUppers ()
+        {
+            _role = "guest";
+            _username = "guest";
+            try
+            {
+                var node = new Node (string.Empty, _auth.ToUpper ());
+                Context.Raise ("load-file", node);
+            }
+            finally 
+            {
+                _role = "root";
+                _username = "root";
+            }
+        }
+
+        /// <summary>
+        ///     Tries to acces "auth" file
+        /// </summary>
+        [Test]
+        [ExpectedException (typeof (p5.exp.exceptions.LambdaSecurityException))]
+        public void ReadAuthFileAsRoot ()
+        {
+            var node = new Node (string.Empty, _auth);
+            Context.Raise ("load-file", node);
+        }
+
+        /// <summary>
+        ///     Tries to acces "auth" file
+        /// </summary>
+        [Test]
+        [ExpectedException (typeof (p5.exp.exceptions.LambdaSecurityException))]
+        public void ReadAuthFileWithSlash ()
+        {
+            var node = new Node (string.Empty, "/" + _auth);
+            Context.Raise ("load-file", node);
+        }
+
+        /// <summary>
+        ///     Tries to acces "auth" file
+        /// </summary>
+        [Test]
+        [ExpectedException (typeof (p5.exp.exceptions.LambdaSecurityException))]
+        public void ReadAuthFileWithDot ()
+        {
+            var node = new Node (string.Empty, _auth + ".");
+            Context.Raise ("load-file", node);
+        }
+
+        /// <summary>
+        ///     Tries to write to "auth" file
+        /// </summary>
+        [Test]
+        [ExpectedException (typeof (p5.exp.exceptions.LambdaSecurityException))]
+        public void WriteAuthFileAsRoot ()
+        {
+            var node = new Node (string.Empty, _auth + ".");
+            Context.Raise ("save-file", node);
+        }
+
+        /// <summary>
+        ///     Tries to acces "auth" file
+        /// </summary>
+        [Test]
+        [ExpectedException (typeof (p5.exp.exceptions.LambdaSecurityException))]
+        public void WriteAuthFileUppersAsGuest ()
+        {
+            _role = "guest";
+            _username = "guest";
+            try
+            {
+                var node = new Node (string.Empty, _auth.ToUpper ());
+                Context.Raise ("save-file", node);
+            }
+            finally 
+            {
+                _role = "root";
+                _username = "root";
+            }
         }
     }
 }

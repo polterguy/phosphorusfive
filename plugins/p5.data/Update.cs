@@ -22,7 +22,7 @@ namespace p5.data
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "update-data")]
+        [ActiveEvent (Name = "update-data", Protection = EntranceProtection.Lambda)]
         private static void update_data (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving expression and doing some basic syntax checking

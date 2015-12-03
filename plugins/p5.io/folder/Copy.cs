@@ -26,7 +26,7 @@ namespace p5.io.folder
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "copy-folder")]
+        [ActiveEvent (Name = "copy-folder", Protection = EntranceProtection.Lambda)]
         private static void copy_folder (ApplicationContext context, ActiveEventArgs e)
         {
             /*

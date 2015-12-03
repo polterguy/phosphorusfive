@@ -21,8 +21,8 @@ namespace p5.lambda
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "equals")]
-        [ActiveEvent (Name = "=")]
+        [ActiveEvent (Name = "equals", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "=", Protection = EntranceProtection.Lambda)]
         private static void equals (ApplicationContext context, ActiveEventArgs e)
         {
             var sides = GetBothSides (e.Args, context);
@@ -33,8 +33,8 @@ namespace p5.lambda
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "not-equals")]
-        [ActiveEvent (Name = "!=")]
+        [ActiveEvent (Name = "not-equals", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "!=", Protection = EntranceProtection.Lambda)]
         private static void not_equals (ApplicationContext context, ActiveEventArgs e)
         {
             var sides = GetBothSides (e.Args, context);
@@ -45,8 +45,8 @@ namespace p5.lambda
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "more-than")]
-        [ActiveEvent (Name = ">")]
+        [ActiveEvent (Name = "more-than", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = ">", Protection = EntranceProtection.Lambda)]
         private static void more_than (ApplicationContext context, ActiveEventArgs e)
         {
             var sides = GetBothSides (e.Args, context);
@@ -57,8 +57,8 @@ namespace p5.lambda
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "less-than")]
-        [ActiveEvent (Name = "<")]
+        [ActiveEvent (Name = "less-than", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "<", Protection = EntranceProtection.Lambda)]
         private static void less_than (ApplicationContext context, ActiveEventArgs e)
         {
             var sides = GetBothSides (e.Args, context);
@@ -69,8 +69,8 @@ namespace p5.lambda
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "more-than-equals")]
-        [ActiveEvent (Name = ">=")]
+        [ActiveEvent (Name = "more-than-equals", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = ">=", Protection = EntranceProtection.Lambda)]
         private static void more_than_equals (ApplicationContext context, ActiveEventArgs e)
         {
             var sides = GetBothSides (e.Args, context);
@@ -81,8 +81,8 @@ namespace p5.lambda
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "less-than-equals")]
-        [ActiveEvent (Name = "<=")]
+        [ActiveEvent (Name = "less-than-equals", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "<=", Protection = EntranceProtection.Lambda)]
         private static void less_than_equals (ApplicationContext context, ActiveEventArgs e)
         {
             var sides = GetBothSides (e.Args, context);

@@ -47,10 +47,10 @@ namespace p5.core
             /// </summary>
             /// <param name="name">Name of Active Event</param>
             /// <param name="isProtected">If set to <c>true</c> is protected, otherwise it is not protected</param>
-            public ActiveEvent(string name, bool isProtected)
+            public ActiveEvent(string name, EntranceProtection protection)
             {
                 Name = name;
-                Protected = isProtected;
+                Protection = protection;
                 Methods = new List<MethodSink> ();
             }
 
@@ -67,7 +67,7 @@ namespace p5.core
             ///     Gets a value indicating whether this <see cref="p5.core.ActiveEvents+ActiveEvent"/> is protected or not
             /// </summary>
             /// <value><c>true</c> if protected; otherwise, <c>false</c>.</value>
-            public bool Protected {
+            public EntranceProtection Protection {
                 get;
                 private set;
             }
@@ -91,18 +91,22 @@ namespace p5.core
         /// <param name="method">Event handler for Active Event</param>
         /// <param name="instance">Instance, meaning the object that is registered as a listener object. Null if event handler is static</param>
         /// <param name="isProtected">If set to <c>true</c> then Active Event is protected and cannot be overwritten once created</param>
-        public void AddMethod (string name, MethodInfo method, object instance, bool isProtected)
+        public void AddMethod (
+            string name, 
+            MethodInfo method, 
+            object instance, 
+            EntranceProtection protection)
         {
             // Verifying we have an entry for event name
             if (!_events.ContainsKey(name)) {
 
                 // Creating event name entry
-                _events[name] = new ActiveEvent(name, isProtected);
-            } else if (_events[name].Protected) {
+                _events[name] = new ActiveEvent(name, protection);
+            } else if (_events[name].Protection != EntranceProtection.NativeOnlyVirtual && _events[name].Protection != EntranceProtection.LambdaVirtual) {
 
                 // Oops, event entry existed, and it was protected
                 throw new ApplicationException(string.Format("You cannot add to the Active Event '{0}' since it is protected", name));
-            } else if (isProtected) {
+            } else if (protection != EntranceProtection.NativeOnlyVirtual && protection != EntranceProtection.LambdaVirtual) {
 
                 // Oops, event entry did not exist, but caller tried to add a protected method, where one which was not protected existed from before
                 throw new ApplicationException(string.Format("You cannot add a protected method to the Active Event '{0}' since there already exist one which is not protected", name));
@@ -177,7 +181,7 @@ namespace p5.core
                     }
 
                     // Storing whether or not event was protected
-                    wasProtected = _events[name].Protected;
+                    wasProtected = _events[name].Protection == EntranceProtection.NativeOnly;
                 }
 
                 // Then looping through all "null Active Event handlers" afterwards

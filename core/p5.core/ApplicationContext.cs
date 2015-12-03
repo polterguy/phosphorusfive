@@ -114,7 +114,7 @@ namespace p5.core
         {
             var evt = _registeredActiveEvents.GetEvents().SingleOrDefault(idx => idx.Name == name);
             if (evt != null)
-                return evt.Protected;
+                return evt.Protection != EntranceProtection.LambdaVirtual;
             return false;
         }
 
@@ -143,7 +143,7 @@ namespace p5.core
                             idxActiveEvent.Attribute.Name,
                             idxActiveEvent.Method,
                             instance,
-                            idxActiveEvent.Attribute.Protected);
+                            idxActiveEvent.Attribute.Protection);
                     }
                 }
 
@@ -200,7 +200,7 @@ namespace p5.core
                         idxAVTypeEvent.Attribute.Name, 
                         idxAVTypeEvent.Method, 
                         null, 
-                        idxAVTypeEvent.Attribute.Protected);
+                        idxAVTypeEvent.Attribute.Protection);
                 }
             }
 

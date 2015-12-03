@@ -21,7 +21,7 @@ namespace p5.io.folder
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "folder-exist")]
+        [ActiveEvent (Name = "folder-exist", Protection = EntranceProtection.Lambda)]
         private static void folder_exist (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution

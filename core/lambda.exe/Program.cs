@@ -24,7 +24,7 @@ namespace lambda_exe
         /// </summary>
         /// <param name="context">Application context Active Event is raised within.</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.core.application-folder")]
+        [ActiveEvent (Name = "p5.core.application-folder", Protection = EntranceProtection.NativeOnly)]
         private static void p5_core_application_folder (ApplicationContext context, ActiveEventArgs e)
         {
             string path = Assembly.GetExecutingAssembly().Location;
@@ -38,7 +38,7 @@ namespace lambda_exe
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Active event arguments.</param>
-        [ActiveEvent (Name = "p5.console.write-line")]
+        [ActiveEvent (Name = "p5.console.write-line", Protection = EntranceProtection.Lambda)]
         private static void console_write_line (ApplicationContext context, ActiveEventArgs e)
         {
             var value = XUtil.Single<string> (context, e.Args, false, "");
@@ -50,7 +50,7 @@ namespace lambda_exe
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Active event arguments.</param>
-        [ActiveEvent (Name = "p5.console.write")]
+        [ActiveEvent (Name = "p5.console.write", Protection = EntranceProtection.Lambda)]
         private static void console_write (ApplicationContext context, ActiveEventArgs e)
         {
             var value = XUtil.Single<string> (context, e.Args, false, "");

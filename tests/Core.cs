@@ -80,7 +80,7 @@ namespace p5.unittests
             Assert.IsNotNull (context);
         }
 
-        [ActiveEvent (Name = "foo")]
+        [ActiveEvent (Name = "foo", Protection = EntranceProtection.Lambda)]
         private static void Foo (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "success";
@@ -103,7 +103,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo2")]
+        [ActiveEvent (Name = "foo2", Protection = EntranceProtection.LambdaVirtual)]
         private static void foo2_1 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -114,7 +114,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo2")]
+        [ActiveEvent (Name = "foo2", Protection = EntranceProtection.LambdaVirtual)]
         private static void foo2_2 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -137,7 +137,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo3")]
+        [ActiveEvent (Name = "foo3", Protection = EntranceProtection.LambdaVirtual)]
         private void Foo3 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "success";
@@ -161,7 +161,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo4")]
+        [ActiveEvent (Name = "foo4", Protection = EntranceProtection.LambdaVirtual)]
         private void foo4_1 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -172,7 +172,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo4")]
+        [ActiveEvent (Name = "foo4", Protection = EntranceProtection.LambdaVirtual)]
         private void foo4_2 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -196,7 +196,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo5")]
+        [ActiveEvent (Name = "foo5", Protection = EntranceProtection.LambdaVirtual)]
         private void foo5_1 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -207,7 +207,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo5")]
+        [ActiveEvent (Name = "foo5", Protection = EntranceProtection.LambdaVirtual)]
         private static void foo5_2 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -232,7 +232,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo6")]
+        [ActiveEvent (Name = "foo6", Protection = EntranceProtection.Lambda)]
         private static void Foo6 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -263,7 +263,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo7")]
+        [ActiveEvent (Name = "foo7", Protection = EntranceProtection.Lambda)]
         private static void Foo7 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -289,7 +289,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo8")]
+        [ActiveEvent (Name = "foo8", Protection = EntranceProtection.LambdaVirtual)]
         private void Foo8 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -316,7 +316,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo9")]
+        [ActiveEvent (Name = "foo9", Protection = EntranceProtection.LambdaVirtual)]
         private void foo9_1 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -327,7 +327,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo9")]
+        [ActiveEvent (Name = "foo9", Protection = EntranceProtection.LambdaVirtual)]
         private static void foo9_2 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -352,7 +352,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo10")]
+        [ActiveEvent (Name = "foo10", Protection = EntranceProtection.Lambda)]
         private static void Foo10 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -379,7 +379,7 @@ namespace p5.unittests
         /// </summary>
         /// <param name="context">application context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "foo11")]
+        [ActiveEvent (Name = "foo11", Protection = EntranceProtection.LambdaVirtual)]
         private void Foo11 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -415,14 +415,14 @@ namespace p5.unittests
             context.Raise ("non-existing", tmp);
         }
 
-        [ActiveEvent (Name = "foo24")]
+        [ActiveEvent (Name = "foo24", Protection = EntranceProtection.LambdaVirtual)]
         private void Foo24 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "failure";
         }
 
-        [ActiveEvent (Name = "foo54")]
-        [ActiveEvent (Name = "foo54")]
+        [ActiveEvent (Name = "foo54", Protection = EntranceProtection.LambdaVirtual)]
+        [ActiveEvent (Name = "foo54", Protection = EntranceProtection.LambdaVirtual)]
         private static void Foo54 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
@@ -439,7 +439,7 @@ namespace p5.unittests
 
         private class Foo55
         {
-            [ActiveEvent (Name = "foo55", Protected = true)]
+            [ActiveEvent (Name = "foo55", Protection = EntranceProtection.Lambda)]
             private void Foo54 (ApplicationContext context, ActiveEventArgs e)
             {
                 e.Args.Value += "success";
@@ -457,7 +457,7 @@ namespace p5.unittests
 
         private class Foo56
         {
-            [ActiveEvent (Name = "foo56")]
+            [ActiveEvent (Name = "foo56", Protection = EntranceProtection.Lambda)]
             private static void Foo54 (ApplicationContext context, ActiveEventArgs e)
             {
                 e.Args.Value += "success";
@@ -475,13 +475,13 @@ namespace p5.unittests
 
         private class Foo57
         {
-            [ActiveEvent (Name = "foo57")]
+            [ActiveEvent (Name = "foo57", Protection = EntranceProtection.Lambda)]
             private static void Foo54 (ApplicationContext context, ActiveEventArgs e)
             {
                 e.Args.Value += "success";
             }
 
-            [ActiveEvent (Name = "foo57", Protected = true)]
+            [ActiveEvent (Name = "foo57", Protection = EntranceProtection.Lambda)]
             private void Foo54_2 (ApplicationContext context, ActiveEventArgs e)
             {
                 e.Args.Value += "success";
@@ -498,13 +498,13 @@ namespace p5.unittests
 
         private class Foo58
         {
-            [ActiveEvent (Name = "foo58", Protected = true)]
+            [ActiveEvent (Name = "foo58", Protection = EntranceProtection.Lambda)]
             private static void Foo54 (ApplicationContext context, ActiveEventArgs e)
             {
                 e.Args.Value += "success";
             }
 
-            [ActiveEvent (Name = "foo58")]
+            [ActiveEvent (Name = "foo58", Protection = EntranceProtection.Lambda)]
             private void Foo54_2 (ApplicationContext context, ActiveEventArgs e)
             {
                 e.Args.Value += "success";

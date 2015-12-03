@@ -479,7 +479,7 @@ namespace p5.unittests.plugins
             Assert.AreEqual ("/test1/yyy/", node [1].Name);
         }
 
-        [ActiveEvent (Name = "test.list-folders-1")]
+        [ActiveEvent (Name = "test.list-folders-1", Protection = EntranceProtection.Lambda)]
         private static void ListFolderEvent (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "test1";
@@ -622,78 +622,25 @@ insert-before:x:/../0
         }
 
         /// <summary>
-        ///     Tries to acces "auth" file
+        ///     Tries to access another user's data
         /// </summary>
         [Test]
         [ExpectedException (typeof (p5.exp.exceptions.LambdaSecurityException))]
-        public void ReadAuthFileAsGuest ()
+        public void ReadAnotherUsersDataAsRoot ()
         {
-            _role = "guest";
-            _username = "guest";
-            try
-            {
-                var node = new Node (string.Empty, _auth);
-                Context.Raise ("load-file", node);
-            }
-            finally 
-            {
-                _role = "root";
-                _username = "root";
-            }
-        }
-
-        /// <summary>
-        ///     Tries to acces "auth" file
-        /// </summary>
-        [Test]
-        [ExpectedException (typeof (p5.exp.exceptions.LambdaSecurityException))]
-        public void ReadAuthFileAsGuestFileNameUppers ()
-        {
-            _role = "guest";
-            _username = "guest";
-            try
-            {
-                var node = new Node (string.Empty, _auth.ToUpper ());
-                Context.Raise ("load-file", node);
-            }
-            finally 
-            {
-                _role = "root";
-                _username = "root";
-            }
-        }
-
-        /// <summary>
-        ///     Tries to acces "auth" file
-        /// </summary>
-        [Test]
-        [ExpectedException (typeof (p5.exp.exceptions.LambdaSecurityException))]
-        public void ReadAuthFileAsRoot ()
-        {
-            var node = new Node (string.Empty, _auth);
+            var node = new Node (string.Empty, "/users/foo/foo.txt");
             Context.Raise ("load-file", node);
         }
 
         /// <summary>
-        ///     Tries to acces "auth" file
+        ///     Tries to write to another user's data
         /// </summary>
         [Test]
         [ExpectedException (typeof (p5.exp.exceptions.LambdaSecurityException))]
-        public void ReadAuthFileWithSlash ()
+        public void SaveToAnotherUsersDataAsRoot ()
         {
-            var node = new Node (string.Empty, "/" + _auth);
-            Context.Raise ("load-file", node);
-        }
-
-        /// <summary>
-        ///     Tries to acces "auth" file
-        /// </summary>
-        [Test]
-        [ExpectedException (typeof (p5.exp.exceptions.LambdaSecurityException))]
-        public void ReadAuthFileWithDot ()
-        {
-            var node = new Node (string.Empty, _auth + ".");
-            Context.Raise ("load-file", node);
+            var node = new Node (string.Empty, "users/foo/foo.txt");
+            Context.Raise ("save-file", node);
         }
     }
 }

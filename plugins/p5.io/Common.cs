@@ -126,5 +126,25 @@ namespace p5.io
         {
             return context.Raise ("_p5.security.get-auth-file").Get<string> (context);
         }
+
+        /*
+         * Normalizes a folder name
+         */
+        public static string NormalizeFolderName (string folder)
+        {
+            if (folder.StartsWith ("~/"))
+                folder = folder.Substring (2);
+            return "/" + folder.Trim ('/') + "/";
+        }
+
+        /*
+         * Normalizes a file name
+         */
+        public static string NormalizeFileName (string file)
+        {
+            if (file.StartsWith ("̃~/"))
+                file = file.Substring (2);
+            return file.TrimStart ('/').TrimEnd ('.');
+        }
     }
 }

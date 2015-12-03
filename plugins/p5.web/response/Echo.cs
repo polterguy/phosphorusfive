@@ -28,7 +28,7 @@ namespace p5.web.ui.response
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "echo")]
+        [ActiveEvent (Name = "echo", Protection = EntranceProtection.Lambda)]
         private static void echo (ApplicationContext context, ActiveEventArgs e)
         {
             // discarding current response, and removing session cookie, unless caller explicitly said he wanted to keep it
@@ -65,7 +65,7 @@ namespace p5.web.ui.response
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "echo-file")]
+        [ActiveEvent (Name = "echo-file", Protection = EntranceProtection.Lambda)]
         private static void echo_file (ApplicationContext context, ActiveEventArgs e)
         {
             // discarding current response, and removing session cookie, unless caller explicitly said he wanted to keep it

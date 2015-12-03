@@ -26,10 +26,13 @@ namespace p5.io
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "_authorize-save-file")]
+        [ActiveEvent (Name = "_authorize-save-file", Protection = EntranceProtection.NativeOnly)]
         private static void _authorize_save_file (ApplicationContext context, ActiveEventArgs e)
         {
-            AuthorizeSaveFile (context, e.Args.Get<string> (context).TrimStart ('/'), e.Args ["args"].Get<Node> (context));
+            AuthorizeSaveFile (
+                context, 
+                Common.NormalizeFileName (e.Args.Get<string> (context)), 
+                e.Args ["args"].Get<Node> (context));
         }
 
         /// <summary>
@@ -37,10 +40,13 @@ namespace p5.io
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "_authorize-load-file")]
+        [ActiveEvent (Name = "_authorize-load-file", Protection = EntranceProtection.NativeOnly)]
         private static void _authorize_load_file (ApplicationContext context, ActiveEventArgs e)
         {
-            AuthorizeLoadFile (context, e.Args.Get<string> (context).TrimStart ('/'), e.Args ["args"].Get<Node> (context));
+            AuthorizeLoadFile (
+                context, 
+                Common.NormalizeFileName (e.Args.Get<string> (context)), 
+                e.Args ["args"].Get<Node> (context));
         }
 
         /// <summary>
@@ -48,10 +54,13 @@ namespace p5.io
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "_authorize-save-folder")]
+        [ActiveEvent (Name = "_authorize-save-folder", Protection = EntranceProtection.NativeOnly)]
         private static void _authorize_save_folder (ApplicationContext context, ActiveEventArgs e)
         {
-            AuthorizeSaveFolder (context, "/" + e.Args.Get<string> (context).TrimStart ('/'), e.Args ["args"].Get<Node> (context));
+            AuthorizeSaveFolder (
+                context, 
+                Common.NormalizeFolderName (e.Args.Get<string> (context)), 
+                e.Args ["args"].Get<Node> (context));
         }
 
         /// <summary>
@@ -59,10 +68,13 @@ namespace p5.io
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "_authorize-load-folder")]
+        [ActiveEvent (Name = "_authorize-load-folder", Protection = EntranceProtection.NativeOnly)]
         private static void _authorize_load_folder (ApplicationContext context, ActiveEventArgs e)
         {
-            AuthorizeLoadFolder (context, "/" + e.Args.Get<string> (context).TrimStart ('/'), e.Args ["args"].Get<Node> (context));
+            AuthorizeLoadFolder (
+                context, 
+                Common.NormalizeFolderName (e.Args.Get<string> (context)), 
+                e.Args ["args"].Get<Node> (context));
         }
 
         /*
@@ -93,7 +105,8 @@ namespace p5.io
             } else {
 
                 // Verifying file is not underneath ANOTHER user's folder, which is not legal even for root account!
-                if (filename.StartsWith ("users/") && filename.IndexOf (string.Format ("users/{0}/", context.Ticket.Username)) != 0)
+                if (filename.ToLower ().StartsWith ("users/") && 
+                    filename.ToLower ().IndexOf (string.Format ("users/{0}/", context.Ticket.Username)) != 0)
                     throw new LambdaSecurityException (
                         string.Format ("Root user '{0}' tried to write to file '{1}'", context.Ticket.Username, filename), 
                         stack, 
@@ -101,7 +114,7 @@ namespace p5.io
             }
 
             // Verifying "auth file" is safe
-            if (filename == Common.GetAuthFile (context))
+            if (filename.ToLower () == Common.NormalizeFileName (Common.GetAuthFile (context)).ToLower ())
                 throw new LambdaSecurityException (
                     string.Format ("User '{0}' tried to access 'auth' file", context.Ticket.Username, filename), 
                     stack, 
@@ -114,16 +127,15 @@ namespace p5.io
         private static void AuthorizeLoadFile (ApplicationContext context, string filename, Node stack)
         {
             // Verifying file is underneath authenticated user's folder, if it is underneath "users/" folders
-            if (filename.StartsWith ("users/") && filename.IndexOf (string.Format ("users/{0}/", context.Ticket.Username)) != 0)
+            if (filename.ToLower ().StartsWith ("users/") && 
+                filename.ToLower ().IndexOf (string.Format ("users/{0}/", context.Ticket.Username)) != 0)
                 throw new LambdaSecurityException (
                     string.Format ("User '{0}' tried to read file '{1}'", context.Ticket.Username, filename), 
                     stack, 
                     context);
 
             // Verifying auth file is safe
-            filename = filename.TrimStart ('/').TrimEnd ('.');
-            var authFile = Common.GetAuthFile (context).Replace ("~/", "");
-            if (filename.ToLower () == authFile.ToLower ())
+            if (filename.ToLower () == Common.NormalizeFileName (Common.GetAuthFile (context)).ToLower ())
                 throw new LambdaSecurityException (
                     string.Format ("User '{0}' tried to access auth file", context.Ticket.Username, filename), 
                     stack, 

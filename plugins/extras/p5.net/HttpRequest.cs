@@ -30,10 +30,10 @@ namespace p5.net
         /// <summary>
         ///     Creates a new HTTP REST request of specified type
         /// </summary>
-        [ActiveEvent (Name = "p5.net.http-get")]
-        [ActiveEvent (Name = "p5.net.http-post")]
-        [ActiveEvent (Name = "p5.net.http-put")]
-        [ActiveEvent (Name = "p5.net.http-delete")]
+        [ActiveEvent (Name = "p5.net.http-get", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "p5.net.http-post", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "p5.net.http-put", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "p5.net.http-delete", Protection = EntranceProtection.Lambda)]
         private static void p5_net_http_request (ApplicationContext context, ActiveEventArgs e)
         {
             CreateRequest (context, e.Args, RenderRequest, RenderResponse);
@@ -42,8 +42,8 @@ namespace p5.net
         /// <summary>
         ///     Posts or puts a file over an HTTP request
         /// </summary>
-        [ActiveEvent (Name = "p5.net.http-post-file")]
-        [ActiveEvent (Name = "p5.net.http-put-file")]
+        [ActiveEvent (Name = "p5.net.http-post-file", Protection = EntranceProtection.Lambda)]
+        [ActiveEvent (Name = "p5.net.http-put-file", Protection = EntranceProtection.Lambda)]
         private static void p5_net_http_post_put_file (ApplicationContext context, ActiveEventArgs e)
         {
             CreateRequest (context, e.Args, RenderFileRequest, RenderResponse);
@@ -52,7 +52,7 @@ namespace p5.net
         /// <summary>
         ///     Gets a file from an HTTP request
         /// </summary>
-        [ActiveEvent (Name = "p5.net.http-get-file")]
+        [ActiveEvent (Name = "p5.net.http-get-file", Protection = EntranceProtection.Lambda)]
         private static void p5_net_http_get_file (ApplicationContext context, ActiveEventArgs e)
         {
             CreateRequest (context, e.Args, RenderRequest, RenderFileResponse);

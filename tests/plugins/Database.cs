@@ -29,15 +29,6 @@ namespace p5.unittests.plugins
             ExecuteLambda (@"delete-data:x:/*/*");
         }
 
-        /*
-         * necessary to return "root folder" of executing Assembly since p5.data relies on p5.io
-         */
-        [ActiveEvent (Name = "p5.core.application-folder")]
-        private static void GetRootFolder (ApplicationContext context, ActiveEventArgs e)
-        {
-            e.Args.Value = GetBasePath ();
-        }
-
         /// <summary>
         ///     selects non-existing objects from database, making sure nothing is returned
         /// </summary>

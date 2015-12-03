@@ -25,7 +25,7 @@ namespace p5.threading
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "lock")]
+        [ActiveEvent (Name = "lock", Protection = EntranceProtection.Lambda)]
         private static void lambda_lock (ApplicationContext context, ActiveEventArgs e)
         {
             var lockers = new List<string> (XUtil.Iterate<string> (context, e.Args));

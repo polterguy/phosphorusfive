@@ -21,7 +21,7 @@ namespace p5.web.ui
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-session")]
+        [ActiveEvent (Name = "set-session", Protection = EntranceProtection.Lambda)]
         private static void set_session (ApplicationContext context, ActiveEventArgs e)
         {
             CollectionBase.Set (e.Args, context, delegate (string key, object value) {
@@ -47,7 +47,7 @@ namespace p5.web.ui
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-session")]
+        [ActiveEvent (Name = "get-session", Protection = EntranceProtection.Lambda)]
         private static void get_session (ApplicationContext context, ActiveEventArgs e)
         {
             CollectionBase.Get (e.Args, context, key => HttpContext.Current.Session [key]);
@@ -59,7 +59,7 @@ namespace p5.web.ui
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-session")]
+        [ActiveEvent (Name = "list-session", Protection = EntranceProtection.Lambda)]
         private static void list_session (ApplicationContext context, ActiveEventArgs e)
         {
             CollectionBase.List (e.Args, context, () => (from object idx in HttpContext.Current.Session.Keys select idx.ToString ()).ToList ());
