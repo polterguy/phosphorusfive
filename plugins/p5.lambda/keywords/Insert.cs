@@ -21,7 +21,7 @@ namespace p5.lambda.keywords
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "insert-before", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "insert-before", Protection = EventProtection.LambdaClosed)]
         private static void lambda_insert_before (ApplicationContext context, ActiveEventArgs e)
         {
             InsertNodes (e.Args, context, false);
@@ -32,7 +32,7 @@ namespace p5.lambda.keywords
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "insert-after", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "insert-after", Protection = EventProtection.LambdaClosed)]
         private static void lambda_insert_after (ApplicationContext context, ActiveEventArgs e)
         {
             InsertNodes (e.Args, context, true);

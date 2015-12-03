@@ -21,7 +21,7 @@ namespace p5.lambda.keywords
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "set", Protection = EventProtection.LambdaClosed)]
         private static void lambda_set (ApplicationContext context, ActiveEventArgs e)
         {
             // asserting destination is expression

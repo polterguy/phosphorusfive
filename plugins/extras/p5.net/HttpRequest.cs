@@ -30,10 +30,10 @@ namespace p5.net
         /// <summary>
         ///     Creates a new HTTP REST request of specified type
         /// </summary>
-        [ActiveEvent (Name = "p5.net.http-get", Protection = EventProtection.Lambda)]
-        [ActiveEvent (Name = "p5.net.http-post", Protection = EventProtection.Lambda)]
-        [ActiveEvent (Name = "p5.net.http-put", Protection = EventProtection.Lambda)]
-        [ActiveEvent (Name = "p5.net.http-delete", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "p5.net.http-get", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "p5.net.http-post", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "p5.net.http-put", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "p5.net.http-delete", Protection = EventProtection.LambdaClosed)]
         private static void p5_net_http_request (ApplicationContext context, ActiveEventArgs e)
         {
             CreateRequest (context, e.Args, RenderRequest, RenderResponse);
@@ -42,8 +42,8 @@ namespace p5.net
         /// <summary>
         ///     Posts or puts a file over an HTTP request
         /// </summary>
-        [ActiveEvent (Name = "p5.net.http-post-file", Protection = EventProtection.Lambda)]
-        [ActiveEvent (Name = "p5.net.http-put-file", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "p5.net.http-post-file", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "p5.net.http-put-file", Protection = EventProtection.LambdaClosed)]
         private static void p5_net_http_post_put_file (ApplicationContext context, ActiveEventArgs e)
         {
             CreateRequest (context, e.Args, RenderFileRequest, RenderResponse);
@@ -52,7 +52,7 @@ namespace p5.net
         /// <summary>
         ///     Gets a file from an HTTP request
         /// </summary>
-        [ActiveEvent (Name = "p5.net.http-get-file", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "p5.net.http-get-file", Protection = EventProtection.LambdaClosed)]
         private static void p5_net_http_get_file (ApplicationContext context, ActiveEventArgs e)
         {
             CreateRequest (context, e.Args, RenderRequest, RenderFileResponse);

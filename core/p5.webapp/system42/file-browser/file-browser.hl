@@ -20,6 +20,9 @@ create-widget:file-browser
    */
   oninit
 
+    // Retrieving currently selected file
+    get-session:sys42.selected-file-browser-object
+
     // Creating folder bread-crumb buttons
     sys42.create-folder-bread-crumb
 
@@ -27,16 +30,17 @@ create-widget:file-browser
     sys42.create-current-folder-content
 
     // Making sure selected file gives visual clues, if any files are selected
-    get-session:sys42.selected-file-browser-object
-    if:x:/-/*/*/object?value
-      sys42.create-selected-object-clues:x:/./-/*/*/object?value
+    if:x:/../*/get-session/[0,1]/*/*/object?value
+      sys42.create-selected-object-clues:x:/../*/get-session/[0,1]/*/*/object?value
     sys42.update-file-browser-toolbar
 
     // Checking if we're currently in "edit file mode", and if
     // so, opening up editor
     get-session:sys42.original-file-editor-classes
     if:x:/-/*/*
-      sys42.create-file-editor:x:/../*/get-session/*/*/object?value
+
+      // Loading up file editor for currently edited file
+      sys42.create-file-editor:x:/../*/get-session/[0,1]/*/*/object?value
 
 
   widgets

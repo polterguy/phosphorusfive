@@ -21,7 +21,7 @@ namespace p5.io.file
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "move-file", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "move-file", Protection = EventProtection.LambdaClosed)]
         private static void move_file (ApplicationContext context, ActiveEventArgs e)
         {
             /*

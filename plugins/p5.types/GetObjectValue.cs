@@ -37,7 +37,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.node", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.node", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_object_value_node (ApplicationContext context, ActiveEventArgs e)
         {
             var code = e.Args.Get<string> (context);
@@ -51,7 +51,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.abs.node", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.abs.node", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_object_value_abs_node (ApplicationContext context, ActiveEventArgs e)
         {
             var code = e.Args.Get<string> (context);
@@ -72,7 +72,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.path", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.path", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_object_value_path (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = new Node.Dna (e.Args.Get<string> (context));
@@ -83,7 +83,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.x", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.x", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_object_value_x (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = Expression.Create (e.Args.Get<string> (context), context);
@@ -94,7 +94,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.guid", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.guid", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_object_value_guid (ApplicationContext context, ActiveEventArgs e)
         {
             var strValue = e.Args.Value as string;
@@ -113,7 +113,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.long", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.long", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_object_value_long (ApplicationContext context, ActiveEventArgs e)
         {
             var strValue = e.Args.Value as string;
@@ -132,7 +132,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.ulong", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.ulong", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_object_value_ulong (ApplicationContext context, ActiveEventArgs e)
         {
             var strValue = e.Args.Value as string;
@@ -151,7 +151,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.int", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.int", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_object_value_int (ApplicationContext context, ActiveEventArgs e)
         {
             var strValue = e.Args.Value as string;
@@ -170,7 +170,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.uint", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.uint", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_object_value_uint (ApplicationContext context, ActiveEventArgs e)
         {
             var strValue = e.Args.Value as string;
@@ -189,7 +189,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.short", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.short", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_object_value_short (ApplicationContext context, ActiveEventArgs e)
         {
             var strValue = e.Args.Value as string;
@@ -208,7 +208,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.float", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.float", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_object_value_float (ApplicationContext context, ActiveEventArgs e)
         {
             var strValue = e.Args.Value as string;
@@ -227,7 +227,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.double", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.double", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_object_value_double (ApplicationContext context, ActiveEventArgs e)
         {
             var strValue = e.Args.Value as string;
@@ -246,7 +246,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.decimal", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.decimal", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_object_value_decimal (ApplicationContext context, ActiveEventArgs e)
         {
             var strValue = e.Args.Value as string;
@@ -265,7 +265,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.bool", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.bool", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_object_value_bool (ApplicationContext context, ActiveEventArgs e)
         {
             var strValue = e.Args.Value as string;
@@ -284,7 +284,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.byte", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.byte", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_object_value_byte (ApplicationContext context, ActiveEventArgs e)
         {
             var strValue = e.Args.Value as string;
@@ -303,7 +303,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.blob", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.blob", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_object_value_blob (ApplicationContext context, ActiveEventArgs e)
         {
             var strValue = e.Args.Value as string;
@@ -343,7 +343,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.sbyte", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.sbyte", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_object_value_sbyte (ApplicationContext context, ActiveEventArgs e)
         {
             var strValue = e.Args.Value as string;
@@ -362,7 +362,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.char", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.char", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_object_value_char (ApplicationContext context, ActiveEventArgs e)
         {
             var strValue = e.Args.Value as string;
@@ -381,7 +381,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.date", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.date", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_object_value_date (ApplicationContext context, ActiveEventArgs e)
         {
             var strValue = e.Args.Value as string;
@@ -407,7 +407,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.time", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.time", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_object_value_time (ApplicationContext context, ActiveEventArgs e)
         {
             var strValue = e.Args.Value as string;

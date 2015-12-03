@@ -112,10 +112,17 @@ namespace p5.core
         /// <param name="name">Name.</param>
         public EventProtection GetEventProtection (string activeEventName)
         {
-            var evt = _registeredActiveEvents.GetEvents().SingleOrDefault(idx => idx.Name == activeEventName);
-            if (evt != null)
-                return evt.Protection;
-            return EventProtection.None;
+            return _registeredActiveEvents.GetEvents().SingleOrDefault(idx => idx.Name == activeEventName).Protection;
+        }
+
+        /// <summary>
+        ///     Determines whether this instance has the event with the specified name.
+        /// </summary>
+        /// <returns><c>true</c> if this instance has event with the specified name; otherwise, <c>false</c>.</returns>
+        /// <param name="name">Name.</param>
+        public bool HasEvent (string name)
+        {
+            return _registeredActiveEvents.HasEvent(name);
         }
 
         /// <summary>

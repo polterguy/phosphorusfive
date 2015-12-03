@@ -21,7 +21,7 @@ namespace p5.io.file
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "delete-file", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "delete-file", Protection = EventProtection.LambdaClosed)]
         private static void delete_file (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution

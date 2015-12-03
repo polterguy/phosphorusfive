@@ -32,7 +32,7 @@ namespace p5.lambda
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "eval", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "eval", Protection = EventProtection.LambdaClosed)]
         private static void eval (ApplicationContext context, ActiveEventArgs e)
         {
             Executor (ExecuteBlockCopy, context, e.Args, e.Args.Name != "eval");
@@ -43,7 +43,7 @@ namespace p5.lambda
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "eval-mutable", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "eval-mutable", Protection = EventProtection.LambdaClosed)]
         private static void eval_mutable (ApplicationContext context, ActiveEventArgs e)
         {
             Executor (ExecuteBlockMutable, context, e.Args, e.Args.Name != "eval-mutable");

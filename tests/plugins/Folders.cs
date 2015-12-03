@@ -479,7 +479,7 @@ namespace p5.unittests.plugins
             Assert.AreEqual ("/test1/yyy/", node [1].Name);
         }
 
-        [ActiveEvent (Name = "test.list-folders-1", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "test.list-folders-1", Protection = EventProtection.LambdaClosed)]
         private static void ListFolderEvent (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "test1";

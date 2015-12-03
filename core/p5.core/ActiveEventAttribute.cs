@@ -16,29 +16,29 @@ namespace p5.core
     public enum EventProtection
     {
         /// <summary>
-        ///     Only native code (C#) can invoke this Event, and there can only be one handler
+        ///     Only native code can invoke this Event, and there can only be one handler
         /// </summary>
-        Native,
+        NativeClosed,
 
         /// <summary>
-        ///     Only native code (C#) can invoke this Event, and Event can be handled multiple times
+        ///     Only native code can invoke this Event, and Event can be handled multiple times
         /// </summary>
         NativeOpen,
 
         /// <summary>
-        ///     Both p5.lambda and C# code can invoke this Active, but event cannot be handled multiple times
+        ///     Both p5.lambda and native code can invoke this Active, but event cannot be handled multiple times
         /// </summary>
-        Lambda,
+        LambdaClosed,
 
         /// <summary>
-        ///     Both p5.lambda and C# code can invoke and handle this Active, and event can be handled multiple times
+        ///     Both p5.lambda and native code can invoke this event, and there can exist multiple handlers for it, but only in native code
         /// </summary>
-        LambdaOpen,
+        LambdaClosedNativeOpen,
 
         /// <summary>
-        ///     No protection at all
+        ///     Both p5.lambda and native code can invoke and handle this Active, and event can be handled multiple times, also from lambda
         /// </summary>
-        None
+        LambdaOpen
     }
 
     /// <summary>
@@ -53,7 +53,7 @@ namespace p5.core
         public ActiveEventAttribute()
         {
             // Creating strongest possible protection by default
-            Protection = EventProtection.Native;
+            Protection = EventProtection.NativeClosed;
         }
 
         /// <summary>

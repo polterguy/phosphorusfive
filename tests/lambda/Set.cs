@@ -52,7 +52,7 @@ add:x:/..
             Assert.AreEqual ("success", result [0].Value);
         }
         
-        [ActiveEvent (Name = "set.test1", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "set.test1", Protection = EventProtection.LambdaClosed)]
         private static void set_test1 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "success";
@@ -74,7 +74,7 @@ add:x:/..
             Assert.AreEqual ("success", result [0].Value);
         }
         
-        [ActiveEvent (Name = "set.test2", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "set.test2", Protection = EventProtection.LambdaClosed)]
         private static void set_test2 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Add (new Node ("_foo1", "bar1"));
@@ -97,7 +97,7 @@ add:x:/..
             Assert.AreEqual ("_foo1:bar1\r\n_foo2:bar2", result [0].Value);
         }
         
-        [ActiveEvent (Name = "set.test3", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "set.test3", Protection = EventProtection.LambdaClosed)]
         private static void set_test3 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Add (new Node ("_foo1", "bar1"));

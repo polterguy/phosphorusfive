@@ -114,9 +114,9 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Context for current request</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "create-widget", Protection = EventProtection.Lambda)]
-        [ActiveEvent (Name = "create-void-widget", Protection = EventProtection.Lambda)]
-        [ActiveEvent (Name = "create-literal-widget", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "create-widget", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "create-void-widget", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "create-literal-widget", Protection = EventProtection.LambdaClosed)]
         private void create_widget (ApplicationContext context, ActiveEventArgs e)
         {
             var splits = e.Name.Split(new char[] {'-'}, StringSplitOptions.RemoveEmptyEntries);
@@ -129,7 +129,7 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "widget-exist", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "widget-exist", Protection = EventProtection.LambdaClosed)]
         private void widget_exist (ApplicationContext context, ActiveEventArgs e)
         {
             // making sure we clean up and remove all arguments passed in after execution
@@ -149,7 +149,7 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "delete-widget", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "delete-widget", Protection = EventProtection.LambdaClosed)]
         private void delete_widget (ApplicationContext context, ActiveEventArgs e)
         {
             // loping through all control ID's given
@@ -173,7 +173,7 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "clear-widget", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "clear-widget", Protection = EventProtection.LambdaClosed)]
         private void clear_widget (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through all control ID's given
@@ -200,7 +200,7 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-parent-widget", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "get-parent-widget", Protection = EventProtection.LambdaClosed)]
         private void get_parent_widget (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
@@ -223,7 +223,7 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-children-widgets", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "get-children-widgets", Protection = EventProtection.LambdaClosed)]
         private void get_children_widgets (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
@@ -250,7 +250,7 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "find-widgets", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "find-widgets", Protection = EventProtection.LambdaClosed)]
         private void find_widgets (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
@@ -269,7 +269,7 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-widgets", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "list-widgets", Protection = EventProtection.LambdaClosed)]
         private void list_widgets (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
@@ -294,7 +294,7 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-widget-property", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "get-widget-property", Protection = EventProtection.LambdaClosed)]
         private void get_widget_property (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
@@ -343,7 +343,7 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-widget-property", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "set-widget-property", Protection = EventProtection.LambdaClosed)]
         private void set_widget_property (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value == null || e.Args.Count == 0)
@@ -385,7 +385,7 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "delete-widget-property", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "delete-widget-property", Protection = EventProtection.LambdaClosed)]
         private void delete_widget_property (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value == null || e.Args.Count == 0)
@@ -421,7 +421,7 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-widget-properties", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "list-widget-properties", Protection = EventProtection.LambdaClosed)]
         private void list_widget_properties (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
@@ -465,7 +465,7 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-widget-ajax-event", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "get-widget-ajax-event", Protection = EventProtection.LambdaClosed)]
         private void get_widget_ajax_event (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
@@ -490,7 +490,7 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-widget-ajax-event", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "set-widget-ajax-event", Protection = EventProtection.LambdaClosed)]
         private void set_widget_ajax_event (ApplicationContext context, ActiveEventArgs e)
         {
             // looping through all widgets
@@ -510,7 +510,7 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "delete-widget-ajax-event", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "delete-widget-ajax-event", Protection = EventProtection.LambdaClosed)]
         private void delete_widget_ajax_event (ApplicationContext context, ActiveEventArgs e)
         {
             // looping through all widgets
@@ -533,7 +533,7 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-widget-ajax-events", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "list-widget-ajax-events", Protection = EventProtection.LambdaClosed)]
         private void list_widget_ajax_events (ApplicationContext context, ActiveEventArgs e)
         {
             // looping through all widgets
@@ -576,7 +576,7 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-widget-lambda-event", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "get-widget-lambda-event", Protection = EventProtection.LambdaClosed)]
         private void get_widget_lambda_event (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
@@ -606,7 +606,7 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-widget-lambda-event", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "set-widget-lambda-event", Protection = EventProtection.LambdaClosed)]
         private void set_widget_lambda_event (ApplicationContext context, ActiveEventArgs e)
         {
             // looping through all widgets
@@ -630,7 +630,7 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "delete-widget-lambda-event", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "delete-widget-lambda-event", Protection = EventProtection.LambdaClosed)]
         private void delete_widget_lambda_event (ApplicationContext context, ActiveEventArgs e)
         {
             // looping through all widgets
@@ -650,7 +650,7 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-widget-lambda-events", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "list-widget-lambda-events", Protection = EventProtection.LambdaClosed)]
         private void list_widget_lambda_events (ApplicationContext context, ActiveEventArgs e)
         {
             // looping through all widgets
@@ -693,7 +693,7 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-viewstate", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "set-viewstate", Protection = EventProtection.LambdaClosed)]
         private void set_viewstate (ApplicationContext context, ActiveEventArgs e)
         {
             p5Web.CollectionBase.Set (e.Args, context, delegate (string key, object value) {
@@ -718,7 +718,7 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-viewstate", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "get-viewstate", Protection = EventProtection.LambdaClosed)]
         private void get_viewstate (ApplicationContext context, ActiveEventArgs e)
         {
             p5Web.CollectionBase.Get (e.Args, context, key => ViewState [key]);
@@ -731,7 +731,7 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-viewstate", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "list-viewstate", Protection = EventProtection.LambdaClosed)]
         private void list_viewstate (ApplicationContext context, ActiveEventArgs e)
         {
             p5Web.CollectionBase.List (e.Args, context, () => (from object idx in ViewState.Keys select idx.ToString ()).ToList ());
@@ -748,7 +748,7 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "send-javascript", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "send-javascript", Protection = EventProtection.LambdaClosed)]
         private void send_javascript (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through each JavaScript snippet
@@ -764,7 +764,7 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "include-javascript", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "include-javascript", Protection = EventProtection.LambdaClosed)]
         private void include_javascript (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through each JavaScript snippet
@@ -780,7 +780,7 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "include-javascript-file", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "include-javascript-file", Protection = EventProtection.LambdaClosed)]
         private void include_javascript_file (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through each JavaScript file
@@ -796,7 +796,7 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "include-stylesheet-file", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "include-stylesheet-file", Protection = EventProtection.LambdaClosed)]
         private void include_stylesheet_file (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through each stylesheet file given
@@ -812,7 +812,7 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-title", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "set-title", Protection = EventProtection.LambdaClosed)]
         private void set_title (ApplicationContext context, ActiveEventArgs e)
         {
             var title = XUtil.Single<string>(context, e.Args);
@@ -832,7 +832,7 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-title", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "get-title", Protection = EventProtection.LambdaClosed)]
         private void get_title (ApplicationContext context, ActiveEventArgs e)
         {
             // ViewState title has presedence, since it might have been changed, 
@@ -845,7 +845,7 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-location", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "set-location", Protection = EventProtection.LambdaClosed)]
         private void set_location (ApplicationContext context, ActiveEventArgs e)
         {
             if (Manager.IsPhosphorusRequest) {
@@ -864,7 +864,7 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "reload-location", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "reload-location", Protection = EventProtection.LambdaClosed)]
         private void reload_location (ApplicationContext context, ActiveEventArgs e)
         {
             // Redirecting using JavaScript
@@ -876,7 +876,7 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-location", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "get-location", Protection = EventProtection.LambdaClosed)]
         private void get_location (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = Request.Url.ToString ();
@@ -887,7 +887,7 @@ namespace p5.webapp
         /// </summary>
         /// <param name="context">Application context Active Event is raised within</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "return-value", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "return-value", Protection = EventProtection.LambdaClosed)]
         private void return_value (ApplicationContext context, ActiveEventArgs e)
         {
             var key = XUtil.Single<string> (context, e.Args);
@@ -902,7 +902,7 @@ namespace p5.webapp
         /*
          * Invoked by p5.web during creation of Widgets
          */
-        [ActiveEvent (Name = "_p5.web.add-widget-ajax-event", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "_p5.web.add-widget-ajax-event", Protection = EventProtection.NativeClosed)]
         private void _p5_web_add_widget_ajax_event (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving widget
@@ -921,7 +921,7 @@ namespace p5.webapp
         /*
          * Invoked by p5.web during creation of Widgets
          */
-        [ActiveEvent (Name = "_p5.web.add-widget-lambda-event", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "_p5.web.add-widget-lambda-event", Protection = EventProtection.NativeClosed)]
         private void _p5_web_add_widget_lambda_event (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving widget
@@ -1088,12 +1088,18 @@ namespace p5.webapp
         private Node _protectedDynamicEvents = null;
         private bool EventIsProtected (ApplicationContext context, string evt)
         {
-            // Verifying Active Event is not protected
-            var protection = context.GetEventProtection (evt);
-            switch (protection) {
-                case EventProtection.Lambda:
-                case EventProtection.Native:
-                    return true;
+            // Verifying Active Event is not protected, first checking native handlers
+            if (context.HasEvent (evt)){
+
+                // There exist a native handler for this Active Event, now getting protection level of event
+                var protection = context.GetEventProtection (evt);
+
+                // Verifying native Active Event is not protected
+                switch (protection) {
+                    case EventProtection.LambdaClosed:
+                    case EventProtection.NativeClosed:
+                        return true;
+                }
             }
             if (_protectedDynamicEvents == null) {
                 _protectedDynamicEvents = context.RaiseNative("_p5.lambda.get-protected-events");

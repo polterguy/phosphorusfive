@@ -20,7 +20,7 @@ namespace p5.io.folder
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-folders", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "list-folders", Protection = EventProtection.LambdaClosed)]
         private static void p5_folder_list_folders (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution

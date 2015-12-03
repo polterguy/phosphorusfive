@@ -24,7 +24,7 @@ namespace p5.security
         /*
          * Useful during installation. Sets root password, but only if existing password is null!
          */
-        [ActiveEvent (Name = "p5.web.set-root-password", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "p5.web.set-root-password", Protection = EventProtection.LambdaClosed)]
         private static void p5_web_set_root_password (ApplicationContext context, ActiveEventArgs e)
         {
             // If root account's password is not null, then if this Active Event is 
@@ -39,7 +39,7 @@ namespace p5.security
         /*
          * Useful during installation. Returns true if root password is null (server needs setup)
          */
-        [ActiveEvent (Name = "p5.web.root-password-is-null", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "p5.web.root-password-is-null", Protection = EventProtection.LambdaClosed)]
         private static void p5_web_root_password_is_null (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = AuthenticationHelper.RootPasswordIsNull (context);

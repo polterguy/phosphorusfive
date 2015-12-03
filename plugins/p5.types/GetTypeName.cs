@@ -45,7 +45,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.p5.core.Node", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.p5.core.Node", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_type_name_p5_core_Node (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "node";
@@ -58,7 +58,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.p5.core.Node+Dna", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.p5.core.Node+Dna", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_type_name_p5_core_Node_DNA (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "path";
@@ -71,7 +71,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.p5.exp.Expression", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.p5.exp.Expression", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_type_name_p5_exp_Expression (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "x";
@@ -84,7 +84,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Guid", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Guid", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_type_name_System_Guid (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "guid";
@@ -97,7 +97,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Int64", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Int64", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_type_name_System_Int64 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "long";
@@ -110,7 +110,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.UInt64", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.UInt64", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_type_name_System_UInt64 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "ulong";
@@ -123,7 +123,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Int32", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Int32", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_type_name_System_Int32 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "int";
@@ -136,7 +136,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.UInt32", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.UInt32", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_type_name_System_UInt32 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "uint";
@@ -149,7 +149,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Int16", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Int16", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_type_name_System_Int16 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "short";
@@ -162,7 +162,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.UInt16", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.UInt16", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_type_name_System_UInt16 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "ushort";
@@ -175,7 +175,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Single", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Single", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_type_name_System_Single (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "float";
@@ -188,7 +188,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Double", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Double", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_type_name_System_Double (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "double";
@@ -201,7 +201,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Decimal", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Decimal", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_type_name_System_Decimal (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "decimal";
@@ -214,7 +214,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Boolean", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Boolean", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_type_name_System_Boolean (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "bool";
@@ -227,7 +227,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Byte", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Byte", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_type_name_System_Byte (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "byte";
@@ -240,7 +240,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Byte[]", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Byte[]", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_type_name_System_ByteBlob (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "blob";
@@ -253,7 +253,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.SByte", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.SByte", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_type_name_System_SByte (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "sbyte";
@@ -266,7 +266,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Char", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Char", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_type_name_System_Char (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "char";
@@ -279,7 +279,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.DateTime", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.DateTime", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_type_name_System_DateTime (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "date";
@@ -292,7 +292,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.TimeSpan", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.TimeSpan", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_type_name_System_TimeSpan (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "time";

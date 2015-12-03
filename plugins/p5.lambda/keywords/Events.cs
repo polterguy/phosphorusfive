@@ -34,8 +34,8 @@ namespace p5.lambda.events
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-event", Protection = EventProtection.Lambda)]
-        [ActiveEvent (Name = "set-protected-event", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "set-event", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "set-protected-event", Protection = EventProtection.LambdaClosed)]
         private static void set_event (ApplicationContext context, ActiveEventArgs e)
         {
             // Checking to see if this event has no lambda objects, and is not protected, at which case it is a "delete event" invocation
@@ -55,7 +55,7 @@ namespace p5.lambda.events
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "delete-events", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "delete-events", Protection = EventProtection.LambdaClosed)]
         private static void delete_events (ApplicationContext context, ActiveEventArgs e)
         {
             // Iterating through all events to delete
@@ -71,7 +71,7 @@ namespace p5.lambda.events
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "_p5.lambda.get-protected-events", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "_p5.lambda.get-protected-events", Protection = EventProtection.NativeClosed)]
         private static void _p5_lambda_get_protected_events (ApplicationContext context, ActiveEventArgs e)
         {
             foreach (var idxEvt in _events.Keys) {
@@ -85,7 +85,7 @@ namespace p5.lambda.events
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-events", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "get-events", Protection = EventProtection.LambdaClosed)]
         private static void get_event (ApplicationContext context, ActiveEventArgs e)
         {
             // making sure we clean up and remove all arguments passed in after execution
@@ -118,7 +118,7 @@ namespace p5.lambda.events
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-events", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "list-events", Protection = EventProtection.LambdaClosed)]
         private static void list_events (ApplicationContext context, ActiveEventArgs e)
         {
             // making sure we clean up and remove all arguments passed in after execution
@@ -191,9 +191,15 @@ namespace p5.lambda.events
             foreach (var idx in source) {
 
                 // Checking to see if this is Active Event is protected for C# code only, and if so, ignoring it
-                EventProtection protection = context.GetEventProtection (idx);
-                if (protection == EventProtection.Native || protection == EventProtection.NativeOpen)
-                    continue;
+                if (context.HasEvent (idx)) {
+
+                    // There exist a native Active Event handler for this event, now getting protection level of event
+                    EventProtection protection = context.GetEventProtection (idx);
+
+                    // Checking if Active Event is protected for native code only
+                    if (protection == EventProtection.NativeClosed || protection == EventProtection.NativeOpen)
+                        continue;
+                }
 
                 // Checking to see if we have any filter
                 if (filter.Count == 0) {

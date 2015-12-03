@@ -393,7 +393,7 @@ save-file:test1.txt
             }
         }
 
-        [ActiveEvent (Name = "test.save.av1", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "test.save.av1", Protection = EventProtection.LambdaClosed)]
         private static void test_save_av1 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "success";
@@ -412,7 +412,7 @@ save-file:test1.txt
             }
         }
         
-        [ActiveEvent (Name = "test.save.av2", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "test.save.av2", Protection = EventProtection.LambdaClosed)]
         private static void test_save_av2 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Add ("foo1", "bar1");
@@ -432,13 +432,13 @@ save-file:test1.txt
             }
         }
         
-        [ActiveEvent (Name = "test.save.av3_1", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "test.save.av3_1", Protection = EventProtection.LambdaClosed)]
         private static void test_save_av3_1 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Add ("foo1", "bar1");
         }
 
-        [ActiveEvent (Name = "test.save.av3_2", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "test.save.av3_2", Protection = EventProtection.LambdaClosed)]
         private static void test_save_av3_2 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Add ("foo2", "bar2");
@@ -458,13 +458,13 @@ save-file:test1.txt
             }
         }
         
-        [ActiveEvent (Name = "test.save.av4_1", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "test.save.av4_1", Protection = EventProtection.LambdaClosed)]
         private static void test_save_av4_1 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "succ";
         }
 
-        [ActiveEvent (Name = "test.save.av4_2", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "test.save.av4_2", Protection = EventProtection.LambdaClosed)]
         private static void test_save_av4_2 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "ess";

@@ -20,7 +20,7 @@ namespace p5.web.ui.response
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-http-header", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "set-http-header", Protection = EventProtection.LambdaClosed)]
         private static void set_http_header (ApplicationContext context, ActiveEventArgs e)
         {
             foreach (var idxMatch in XUtil.Iterate<Node> (context, e.Args)) {

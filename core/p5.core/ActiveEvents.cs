@@ -106,15 +106,18 @@ namespace p5.core
             } else if (_events[name].Protection != EventProtection.NativeOpen && _events[name].Protection != EventProtection.LambdaOpen) {
 
                 // Oops, event entry existed, and it was protected from being handled multiple times
-                throw new ApplicationException(string.Format("You cannot add to the Active Event '{0}' since it is protected from being declared multiple times", name));
+                throw new SecurityException(string.Format("You cannot add to the Active Event '{0}' since it is protected from being declared multiple times", name));
             } else if (protection != EventProtection.NativeOpen && protection != EventProtection.LambdaOpen) {
 
                 // Oops, caller tried to add a protected method, where one which was not protected existed from before
-                throw new ApplicationException(string.Format("You cannot add a protected method to the Active Event '{0}' since there already exist one which is not protected", name));
+                throw new SecurityException(string.Format("You cannot add a protected method to the Active Event '{0}' since there already exist one which is not protected", name));
             }
 
-            // Now that we have for sure created an Active Event entry, we can add the actual MethodInfo/Instance-object
-            _events[name].Methods.Add(new ActiveEvent.MethodSink (method, instance));
+            // Now that we have for sure created an Active Event entry, 
+            // we can add the actual MethodInfo/Instance-object, but only
+            // if listener is not registered from before
+            if (!_events[name].Methods.Exists(ix => ix.Instance == instance && ix.Method == method))
+                _events[name].Methods.Add(new ActiveEvent.MethodSink(method, instance));
         }
 
         /// <summary>
@@ -134,6 +137,16 @@ namespace p5.core
                 if (_events[name].Methods.Count == 0)
                     _events.Remove(name);
             }
+        }
+
+        /// <summary>
+        ///     Determines whether this instance has the event with the specified name.
+        /// </summary>
+        /// <returns><c>true</c> if this instance has event with the specified name; otherwise, <c>false</c>.</returns>
+        /// <param name="name">Name.</param>
+        public bool HasEvent (string name)
+        {
+            return _events.ContainsKey(name);
         }
 
         /// <summary>
@@ -182,7 +195,7 @@ namespace p5.core
 
                     // Checking if Active Event cannot legally be raise by caller
                     if (!sourceIsNative && 
-                        (_events[name].Protection == EventProtection.Native || 
+                        (_events[name].Protection == EventProtection.NativeClosed || 
                         _events[name].Protection == EventProtection.NativeOpen))
                         throw new SecurityException ("Caller tried to raise Active Event from lambda that has exclusive native code access");
 
@@ -194,7 +207,7 @@ namespace p5.core
                     }
 
                     // Storing whether or not event was protected for C# code only, at which case we do not raise "null event handlers" for it
-                    wasProtected = _events[name].Protection == EventProtection.Native || _events[name].Protection == EventProtection.NativeOpen;
+                    wasProtected = _events[name].Protection == EventProtection.NativeClosed || _events[name].Protection == EventProtection.NativeOpen;
                 }
 
                 // Then looping through all "null Active Event handlers" afterwards

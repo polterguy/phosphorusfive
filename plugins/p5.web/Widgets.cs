@@ -24,7 +24,7 @@ namespace p5.web.ui.widgets
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.widgets.container", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.web.widgets.container", Protection = EventProtection.NativeClosed)]
         private static void p5_web_controls_container (ApplicationContext context, ActiveEventArgs e)
         {
             CreateWidget<Container> (context, e.Args, "div");
@@ -35,7 +35,7 @@ namespace p5.web.ui.widgets
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.widgets.literal", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.web.widgets.literal", Protection = EventProtection.NativeClosed)]
         private static void p5_web_controls_literal (ApplicationContext context, ActiveEventArgs e)
         {
             CreateWidget<Literal> (context, e.Args, "p");
@@ -46,7 +46,7 @@ namespace p5.web.ui.widgets
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.widgets.void", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "p5.web.widgets.void", Protection = EventProtection.NativeClosed)]
         private static void p5_web_controls_void (ApplicationContext context, ActiveEventArgs e)
         {
             CreateWidget<Void> (context, e.Args, "input");

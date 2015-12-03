@@ -136,7 +136,7 @@ if
             }
             var result = ExecuteLambda (@"wait:10
   fork
-    foo:bar
+    _foo:bar
   fork
     sleep:20
     save-file:thread-test.txt

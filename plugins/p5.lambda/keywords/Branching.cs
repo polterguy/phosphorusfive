@@ -22,7 +22,7 @@ namespace p5.lambda.keywords
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "if", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "if", Protection = EventProtection.LambdaClosed)]
         private static void lambda_if (ApplicationContext context, ActiveEventArgs e)
         {
             // Evaluating condition
@@ -38,7 +38,7 @@ namespace p5.lambda.keywords
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "else-if", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "else-if", Protection = EventProtection.LambdaClosed)]
         private static void lambda_else_if (ApplicationContext context, ActiveEventArgs e)
         {
             // Syntax checking statement, making sure it has either an [if] or [else-if] as previous sibling
@@ -67,7 +67,7 @@ namespace p5.lambda.keywords
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "else", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "else", Protection = EventProtection.LambdaClosed)]
         private static void lambda_else (ApplicationContext context, ActiveEventArgs e)
         {
             // Basic syntax checking

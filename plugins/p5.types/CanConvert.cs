@@ -23,7 +23,7 @@ namespace p5.types
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "can-convert", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "can-convert", Protection = EventProtection.LambdaClosed)]
         private static void can_convert (ApplicationContext context, ActiveEventArgs e)
         {
             // making sure we clean up and remove all arguments passed in after execution

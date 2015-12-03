@@ -93,7 +93,7 @@ add:x:/..
             Assert.AreEqual ("bar", result [0].Value);
         }
 
-        [ActiveEvent (Name = "eval.test1", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "eval.test1", Protection = EventProtection.LambdaClosed)]
         private static void eval_test1 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "foo2";

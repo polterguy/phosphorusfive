@@ -27,7 +27,7 @@ namespace p5.io.authorization
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "_authorize-save-file", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "_authorize-save-file", Protection = EventProtection.NativeClosed)]
         private static void _authorize_save_file (ApplicationContext context, ActiveEventArgs e)
         {
             AuthorizationHelper.AuthorizeSaveFile (
@@ -41,7 +41,7 @@ namespace p5.io.authorization
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "_authorize-load-file", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "_authorize-load-file", Protection = EventProtection.NativeClosed)]
         private static void _authorize_load_file (ApplicationContext context, ActiveEventArgs e)
         {
             AuthorizationHelper.AuthorizeLoadFile (
@@ -55,7 +55,7 @@ namespace p5.io.authorization
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "_authorize-save-folder", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "_authorize-save-folder", Protection = EventProtection.NativeClosed)]
         private static void _authorize_save_folder (ApplicationContext context, ActiveEventArgs e)
         {
             AuthorizationHelper.AuthorizeSaveFolder (
@@ -69,7 +69,7 @@ namespace p5.io.authorization
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "_authorize-load-folder", Protection = EventProtection.Native)]
+        [ActiveEvent (Name = "_authorize-load-folder", Protection = EventProtection.NativeClosed)]
         private static void _authorize_load_folder (ApplicationContext context, ActiveEventArgs e)
         {
             AuthorizationHelper.AuthorizeLoadFolder (

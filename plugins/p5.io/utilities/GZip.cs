@@ -25,7 +25,7 @@ namespace p5.io.utilities
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "gzip", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "gzip", Protection = EventProtection.LambdaClosed)]
         private static void gzip (ApplicationContext context, ActiveEventArgs e)
         {
             // Basic syntax checking
@@ -92,7 +92,7 @@ namespace p5.io.utilities
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "gunzip", Protection = EventProtection.Lambda)]
+        [ActiveEvent (Name = "gunzip", Protection = EventProtection.LambdaClosed)]
         private static void gunzip (ApplicationContext context, ActiveEventArgs e)
         {
             // Basic syntax checking
