@@ -8,7 +8,7 @@ using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
 
-namespace p5.file.folder
+namespace p5.io.folder
 {
     /// <summary>
     ///     Class to help remove folders from disc

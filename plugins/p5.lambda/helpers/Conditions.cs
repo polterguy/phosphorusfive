@@ -11,17 +11,17 @@ using p5.exp;
 using p5.exp.exceptions;
 
 /// <summary>
-///     Contains helper classes for p5.lambda conditional active events.
+///     Contains helper classes for p5.lambda conditional active events
 /// </summary>
 namespace p5.lambda.helpers
 {
     /// <summary>
-    ///     Class wrapping commonalities between conditional statements.
+    ///     Class wrapping commonalities between conditional statements
     /// </summary>
     public class Conditions
     {
         /*
-         * recursively run through conditions
+         * Recursively run through conditions
          */
         public static bool Evaluate (ApplicationContext context, Node args)
         {

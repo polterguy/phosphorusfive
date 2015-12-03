@@ -50,9 +50,6 @@
     <Compile Include="ActiveEventArgs.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="ActiveEvents.cs" />
-    <Compile Include="configuration\ActiveEventAssembly.cs" />
-    <Compile Include="configuration\ActiveEventAssemblyCollection.cs" />
-    <Compile Include="configuration\PhosphorusConfiguration.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
@@ -65,7 +62,4 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
-  <ItemGroup>
-    <Folder Include="configuration\" />
-  </ItemGroup>
 </Project>

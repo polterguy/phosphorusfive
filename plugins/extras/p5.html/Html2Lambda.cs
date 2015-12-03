@@ -20,7 +20,7 @@ namespace p5.html
     {
         static Html2Lambda ()
         {
-            // Making sure "form" element conforms to relational structure
+            // Making sure "form" element conforms to relational DOM structure
             HtmlNode.ElementsFlags.Remove ("form");
         }
 

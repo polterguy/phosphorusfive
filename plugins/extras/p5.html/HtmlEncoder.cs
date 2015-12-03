@@ -29,14 +29,14 @@ namespace p5.html
                 // Used as return value
                 StringBuilder builder = new StringBuilder();
 
-                // Loops through all documents/fragments we're supposed to encode and adding them into value
+                // Loops through all documents/fragments we're supposed to encode and eppending into StringBuilder
                 foreach (var idxHtmlFragment in XUtil.Iterate<string> (context, e.Args, true)) {
 
                     // Changing to 'safe HTML'
-                    builder.Append (idxHtmlFragment.Replace ("<", "&lt;").Replace (">", "&gt;"));
+                    builder.Append (idxHtmlFragment.Replace ("&", "&amp;").Replace ("<", "&lt;").Replace (">", "&gt;"));
                 }
 
-                // Returning "safe HTML" back to caller
+                // Returning "encoded HTML" back to caller
                 e.Args.Value = builder.ToString ();
             }
         }
@@ -59,7 +59,7 @@ namespace p5.html
                 foreach (var idx in XUtil.Iterate<string> (context, e.Args, true)) {
 
                     // Changing to 'safe HTML'
-                    builder.Append (idx.Replace ("&lt;", "<").Replace ("&gt;", ">"));
+                    builder.Append (idx.Replace ("&amp;", "&").Replace ("&lt;", "<").Replace ("&gt;", ">"));
                 }
 
                 // Returning decoded HTML to caller

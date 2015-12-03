@@ -4,51 +4,53 @@
  */
 
 using System.IO;
+using System.Linq;
 using System.Collections.Generic;
 using p5.core;
 using p5.exp;
 
-namespace p5.file.folder
+namespace p5.io.folder
 {
     /// <summary>
-    ///     Class to check if a folder exists on disc.
+    ///     Class to check if a folder exists on disc
     /// </summary>
     public static class Exists
     {
         /// <summary>
-        ///     Checks to see if a folder exists on disc or not.
+        ///     Checks to see if a folder exists on disc or not
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "folder-exist")]
         private static void folder_exist (ApplicationContext context, ActiveEventArgs e)
         {
-            // making sure we clean up and remove all arguments passed in after execution
+            // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args)) {
 
-                // retrieving root folder first
+                // Getting root folder
                 var rootFolder = Common.GetRootFolder (context);
 
-                // retrieving source
-                var source = new List<string> (Common.GetSource (e.Args, context));
-                if (source.Count > 0) {
+                // Retrieving source
+                var sourceFiles = Common.GetSource (e.Args, context).ToList ();
 
-                    // multiple filename source, returning existence of each file as children nodes of args
-                    // plus existence of all files as value of args
-                    bool seenFalse = false;
-                    foreach (var idx in source) {
+                // Multiple folder source, returning existence of all folders
+                e.Args.Value = false;
+                foreach (var idxFolder in sourceFiles) {
 
-                        // letting caller know whether or not this file exists
-                        var fileExist = Directory.Exists (rootFolder + idx);
-                        if (!fileExist)
-                            seenFalse = true;
-                        e.Args.Add (new Node (idx, fileExist));
+                    // Verifying user is authorized to reading from currently iterated folder
+                    context.Raise ("_authorize-load-folder", new Node ("_authorize-load-folder", idxFolder).Add ("args", e.Args));
+
+                    // Letting caller know whether or not this file exists
+                    if (!Directory.Exists (rootFolder + idxFolder)) {
+
+                        // Folder didn't exist, letting caller know, and aborting early
+                        e.Args.Value = false;
+                        return;
+                    } else {
+
+                        // Folder existed
+                        e.Args.Value = true;
                     }
-                    e.Args.Value = !seenFalse;
-                } else {
-
-                    // probably expression leading into oblivian
-                    e.Args.Value = false;
                 }
             }
         }

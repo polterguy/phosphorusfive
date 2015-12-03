@@ -8,7 +8,10 @@ using System.IO;
 using p5.core;
 using p5.exp;
 
-namespace p5.file.file
+/// <summary>
+///     Main namespace for all IO file operations in Phosphorus Five
+/// </summary>
+namespace p5.io.file
 {
     /// <summary>
     ///     Class to help copy a file

@@ -25,6 +25,7 @@ namespace p5.data
         [ActiveEvent (Name = "delete-data")]
         private static void delete_data (ApplicationContext context, ActiveEventArgs e)
         {
+            // Basic syntax checking
             if (!XUtil.IsExpression (e.Args.Value))
                 throw new LambdaException ("[delete-data] requires an expression as its value", e.Args, context);
 

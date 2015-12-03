@@ -9,37 +9,34 @@ using p5.exp;
 using p5.core;
 
 /// <summary>
-///     Main namespace for all file operations in Phosphorus Five.
+///     Main namespace for all file operations in Phosphorus Five
 /// </summary>
-namespace p5.file
+namespace p5.io
 {
     /// <summary>
-    ///     Class containing common methods for [p5.file.xxx] namespace
+    ///     Class containing common methods for p5.io namespace
     /// </summary>
-    public static class Common
+    internal static class Common
     {
         /*
-         * contains our root folder
+         * Contains our root folder
          */
         private static string _rootFolder;
 
         /// <summary>
-        ///     Returns the root folder of application pool back to caller.
+        ///     Returns the root folder of application pool back to caller
         /// </summary>
         /// <returns>the root folder</returns>
         /// <param name="context">application context</param>
         public static string GetRootFolder (ApplicationContext context)
         {
             if (_rootFolder == null) {
-                // first time we invoke this bugger, retrieving root folder by raising our
-                // "retrieve root folder" Active Event
-                var rootNode = new Node ();
-                context.Raise ("p5.core.application-folder", rootNode);
-                _rootFolder = rootNode.Get<string> (context);
 
-                // making sure we normalize folder separators, to have uniform folder structure
-                // for both Linux and Windows
-                _rootFolder = _rootFolder.Replace ("\\", "/");
+                // This is the first time we invoke this guy
+                _rootFolder = context.Raise ("p5.core.application-folder").Get<string> (context);
+
+                // Making sure we normalize folder separators, to have uniform folder structure on different operating systems
+                _rootFolder = _rootFolder.Replace ("\\", "/").TrimEnd ('/') + "/";
             }
             return _rootFolder;
         }
@@ -65,10 +62,10 @@ namespace p5.file
             suffix = "." + suffix;
 
             int idxNo = 2;
-            while (File.Exists (basepath + folder + string.Format ("{0} - copy {1}{2}", filename, idxNo, suffix))) {
+            while (File.Exists (basepath + folder + string.Format ("{0} copy {1}{2}", filename, idxNo, suffix))) {
                 idxNo += 1;
             }
-            return string.Format (folder + "{0} - copy {1}{2}", filename, idxNo, suffix);
+            return string.Format (folder + "{0} copy {1}{2}", filename, idxNo, suffix);
         }
 
         /*
@@ -80,18 +77,21 @@ namespace p5.file
 
             // Getting folder
             destination = destination.TrimEnd ('/');
-            string folder = destination.Substring (0, destination.LastIndexOf ("/") + 1);
+            string baseFolder = destination.Substring (0, destination.LastIndexOf ("/") + 1);
 
             // Getting filename, and removing suffix from filename
-            string filename = destination.Substring (folder.Length);
+            string newFolderName = destination.Substring (baseFolder.Length);
 
             int idxNo = 2;
-            while (Directory.Exists (basepath + folder + string.Format ("{0} - copy {1}", filename, idxNo))) {
+            while (Directory.Exists (basepath + baseFolder + string.Format ("{0} copy {1}/", newFolderName, idxNo))) {
                 idxNo += 1;
             }
-            return string.Format (folder + "{0} - copy {1}/", filename, idxNo);
+            return string.Format (baseFolder + "{0} copy {1}/", newFolderName, idxNo);
         }
 
+        /*
+         * Used to retrieve source for operations such as [file-exist], [load-file] etc ...
+         */
         public static IEnumerable<string> GetSource (Node args, ApplicationContext context)
         {
             if (args.Value != null) {
@@ -108,7 +108,7 @@ namespace p5.file
                     objRetVal = ((Node)objRetVal).Get<string> (context);
                 } else if (objRetVal is IEnumerable<Node>) {
 
-                    // converting to a single string
+                    // Converting to a single string
                     foreach (var idx in objRetVal as IEnumerable<Node>) {
                     
                         yield return idx.Get<string> (context);
@@ -117,6 +117,14 @@ namespace p5.file
                 }
                 yield return Utilities.Convert<string> (context, objRetVal) ?? "";
             }
+        }
+
+        /*
+         * Returns the filename of our "auth" file
+         */
+        public static string GetAuthFile (ApplicationContext context)
+        {
+            return context.Raise ("_p5.security.get-auth-file").Get<string> (context);
         }
     }
 }

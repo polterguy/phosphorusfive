@@ -185,6 +185,9 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="code\WidgetEventStorage.cs" />
+    <Compile Include="code\configuration\ActiveEventAssembly.cs" />
+    <Compile Include="code\configuration\ActiveEventAssemblyCollection.cs" />
+    <Compile Include="code\configuration\PhosphorusConfiguration.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -309,5 +312,6 @@
     <Folder Include="system42\root\page-editor\editors\" />
     <Folder Include="system42\root\page-editor\templates\" />
     <Folder Include="system42\server-startup\" />
+    <Folder Include="code\configuration\" />
   </ItemGroup>
 </Project>

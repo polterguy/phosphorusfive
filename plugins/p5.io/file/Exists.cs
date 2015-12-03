@@ -12,7 +12,7 @@ using p5.exp;
 /// <summary>
 ///     Main namespace for all files and folders Active Events
 /// </summary>
-namespace p5.file.file
+namespace p5.io.file
 {
     /// <summary>
     ///     Class to help check if a file exists.

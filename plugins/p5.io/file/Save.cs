@@ -8,7 +8,7 @@ using p5.core;
 using p5.exp;
 using p5.exp.exceptions;
 
-namespace p5.file.file
+namespace p5.io.file
 {
     /// <summary>
     ///     Class to help save files
@@ -41,6 +41,8 @@ namespace p5.file.file
 
                 // Saving file
                 using (TextWriter writer = File.CreateText (rootFolder + fileName)) {
+
+                    // Writing content to file stream
                     writer.Write (source);
                 }
             }

@@ -142,7 +142,7 @@ namespace p5.lambda.events
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-protected-events", Protected = true)]
+        [ActiveEvent (Name = "list-protected-events")]
         private static void list_protected_events (ApplicationContext context, ActiveEventArgs e)
         {
             // making sure we clean up and remove all arguments passed in after execution

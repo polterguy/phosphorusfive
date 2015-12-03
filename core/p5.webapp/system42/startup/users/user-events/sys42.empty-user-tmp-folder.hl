@@ -9,7 +9,6 @@ set-protected-event:sys42.empty-user-tmp-folder
 
   // Retrieving user
   get-user
-  sys42.show-code:x:/..
   if:x:/-/*/default?value
     not
 

@@ -12,7 +12,7 @@ using System.Configuration;
 using System.Collections.Generic;
 using p5.exp;
 using p5.core;
-using p5.core.configuration;
+using p5.exp.exceptions;
 
 namespace p5.security
 {
@@ -28,21 +28,28 @@ namespace p5.security
         private const string _credentialCookieName = "_p5_user";
 
         /*
-         * Contains user Context Ticket (Context "user")
+         * Returns user Context Ticket (Context "user")
          */
-        internal static ApplicationContext.ContextTicket Ticket
+        internal static ApplicationContext.ContextTicket GetTicket (ApplicationContext context)
         {
-            get {
-                if (HttpContext.Current.Session["_ContextTicket"] == null) {
+            // If we have no session or HttpContext, we login "default impersonated user" automatically
+            if (HttpContext.Current == null || HttpContext.Current.Session == null)
+                return CreateDefaultTicket (context);
 
-                    // No user is logged in, using default impersonated user
-                    HttpContext.Current.Session ["_ContextTicket"] = CreateDefaultTicket ();
-                }
-                return HttpContext.Current.Session["_ContextTicket"] as ApplicationContext.ContextTicket;
+            if (HttpContext.Current.Session["_ContextTicket"] == null) {
+
+                // No user is logged in, using default impersonated user
+                HttpContext.Current.Session ["_ContextTicket"] = CreateDefaultTicket (context);
             }
-            set { 
-                HttpContext.Current.Session["_ContextTicket"] = value;
-            }
+            return HttpContext.Current.Session["_ContextTicket"] as ApplicationContext.ContextTicket;
+        }
+
+        /*
+         * Sets user Context Ticket (context "user")
+         */
+        internal static void SetTicket (ApplicationContext.ContextTicket ticket)
+        { 
+            HttpContext.Current.Session["_ContextTicket"] = ticket;
         }
 
         /*
@@ -51,7 +58,7 @@ namespace p5.security
         internal static void Login (ApplicationContext context, Node args)
         {
             // Checking for a brute force login attack
-            GuardAgainstBruteForce();
+            GuardAgainstBruteForce(context);
 
             // Defaulting result of Active Event to unsuccessful
             args.Value = false;
@@ -78,17 +85,17 @@ namespace p5.security
 
             // Success, creating our ticket
             string role = userNode["role"].Get<string>(context);
-            Ticket = new ApplicationContext.ContextTicket(
+            SetTicket (new ApplicationContext.ContextTicket(
                 username, 
                 role, 
-                false);
+                false));
             args.Value = true;
 
             // Removing last login attempt, to reset brute force login cool off seconds for user's IP address
             LastLoginAttemptForIP = DateTime.MinValue;
 
             // Associating newly created Ticket with Application Context, since user now possibly have extended rights
-            context.UpdateTicket (Ticket);
+            context.UpdateTicket (GetTicket (context));
 
             // Checking if we should create persistent cookie on disc to remember username for given client
             // Notice, we do NOT allow root account to persist to cookie
@@ -96,7 +103,7 @@ namespace p5.security
 
                 // Caller wants to create persistent cookie to remember username/password
                 HttpCookie cookie = new HttpCookie(_credentialCookieName);
-                cookie.Expires = DateTime.Now.AddDays(Configuration.PersistCredentialCookieDays);
+                cookie.Expires = DateTime.Now.AddDays(context.Raise ("_p5.security.get-credential-cookie-days").Get<int> (context));
                 cookie.HttpOnly = true;
                 string salt = userNode["salt"].Get<string>(context);
                 cookie.Value = username + " " + context.Raise ("md5-hash", new Node(string.Empty, salt + password)).Value;
@@ -109,8 +116,10 @@ namespace p5.security
          */
         internal static void Logout (ApplicationContext context)
         {
-            // By destroying Ticket, default user will be used for current session unless session logs in again
-            Ticket = null;
+            // By destroying Ticket, default user will be used for current session, until user logs in again
+            SetTicket (null);
+
+            // Destroying persistent credentials cookie, if there is one
             HttpCookie cookie = HttpContext.Current.Request.Cookies.Get(_credentialCookieName);
             if (cookie != null) {
 
@@ -129,16 +138,13 @@ namespace p5.security
             string password = args.GetExChildValue<string>("password", context);
             string role = args.GetExChildValue<string>("role", context);
             if (role == "root")
-                throw new SecurityException("Sorry, you cannot create a root account through the [create-user] Active Event");
+                throw new LambdaSecurityException("[create-user] Active Event tried to create 'root' user", args, context);
 
             // We need this guy to save passwords file, and create user folder structure
             string rootFolder = context.Raise("p5.core.application-folder").Get<string>(context);
 
-            // Verifying username is valid, since we'll need to create a folder and associate with user later
-            foreach (var charIdx in username) {
-                if ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_-".IndexOf(charIdx) == -1)
-                    throw new SecurityException("Sorry, you cannot use character '" + charIdx + "' in username");
-            }
+            // Verifying username is valid, since we'll need to create a folder for user
+            VerifyUsernameValid (username);
 
             // Locking access to password file
             lock (_passwordFileLocker) {
@@ -154,36 +160,59 @@ namespace p5.security
                 pwdFile ["users"].LastChild.Add("password", password);
                 pwdFile ["users"].LastChild.Add("role", role);
 
-                // Saving password file
-                string pwdFilePath = Configuration.AuthFile.Replace("~/", rootFolder);
+                // Getting path to 'auth' file
+                string pwdFilePath = context.Raise ("_p5.security.get-auth-file").Get<string> (context).Replace("~/", rootFolder);
 
+                // Saving password file
                 using (TextWriter writer = File.CreateText(pwdFilePath)) {
+
+                    // Converting lambda to Hyperlisp
                     Node lambdaNode = new Node();
                     lambdaNode.AddRange(pwdFile.Children);
                     writer.Write(context.Raise ("lambda2lisp", lambdaNode).Get<string> (context));
                 }
-
-                // Creating folders for user, and making sure private directory stays private ...
-                if (!Directory.Exists (rootFolder + "users/" + username))
-                    Directory.CreateDirectory (rootFolder + "users/" + username);
-
-                if (!Directory.Exists (rootFolder + "users/" + username + "/documents"))
-                    Directory.CreateDirectory(rootFolder + "users/" + username + "/documents");
-
-                if (!Directory.Exists (rootFolder + "users/" + username + "/documents/private"))
-                    Directory.CreateDirectory(rootFolder + "users/" + username + "/documents/private");
-
-                if (!Directory.Exists (rootFolder + "users/" + username + "/documents/public"))
-                    Directory.CreateDirectory(rootFolder + "users/" + username + "/documents/public");
-
-                if (!Directory.Exists (rootFolder + "users/" + username + "/tmp"))
-                    Directory.CreateDirectory(rootFolder + "users/" + username + "/tmp");
-
-                if (!File.Exists (rootFolder + "users/" + username + "/documents/private/web.config"))
-                    File.Copy (
-                        rootFolder + "users/root/documents/private/web.config", 
-                        rootFolder + "users/" + username + "/documents/private/web.config");
             }
+
+            // Creating newly created user's directory structure
+            CreateUserDirectory (rootFolder, username);
+        }
+
+        /*
+         * Verifies that given username is valid
+         */
+        private static void VerifyUsernameValid (string username)
+        {
+            foreach (var charIdx in username) {
+                if ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_-".IndexOf(charIdx) == -1)
+                    throw new SecurityException("Sorry, you cannot use character '" + charIdx + "' in username");
+            }
+        }
+
+        /*
+         * Creates folder structure for user
+         */
+        private static void CreateUserDirectory (string rootFolder, string username)
+        {
+            // Creating folders for user, and making sure private directory stays private ...
+            if (!Directory.Exists (rootFolder + "users/" + username))
+                Directory.CreateDirectory (rootFolder + "users/" + username);
+
+            if (!Directory.Exists (rootFolder + "users/" + username + "/documents"))
+                Directory.CreateDirectory(rootFolder + "users/" + username + "/documents");
+
+            if (!Directory.Exists (rootFolder + "users/" + username + "/documents/private"))
+                Directory.CreateDirectory(rootFolder + "users/" + username + "/documents/private");
+
+            if (!Directory.Exists (rootFolder + "users/" + username + "/documents/public"))
+                Directory.CreateDirectory(rootFolder + "users/" + username + "/documents/public");
+
+            if (!Directory.Exists (rootFolder + "users/" + username + "/tmp"))
+                Directory.CreateDirectory(rootFolder + "users/" + username + "/tmp");
+
+            if (!File.Exists (rootFolder + "users/" + username + "/documents/private/web.config"))
+                File.Copy (
+                    rootFolder + "users/root/documents/private/web.config", 
+                    rootFolder + "users/" + username + "/documents/private/web.config");
         }
 
         /*
@@ -194,25 +223,33 @@ namespace p5.security
             // Getting password file in Node format, such that we can traverse file for all roles
             Node pwdFile = null;
 
-            // Locking access to password file
+            // Locking access to password file as we retrieve it
             lock (_passwordFileLocker) {
+
+                // Retrieving password file
                 pwdFile = GetPasswordFile(context);
             }
 
+            // Looping through each user object in password file, retrieving all roles
             foreach (var idxUserNode in pwdFile["users"].Children) {
+
+                // Checking if currently iterated user's role was already added
                 if (args.Children.FirstOrDefault(ix => ix.Name == idxUserNode["role"].Get<string>(context)) == null) {
 
-                    // Role was not already added
+                    // Default Context role was not already added
                     args.Add(idxUserNode["role"].Get<string>(context));
                 }
             }
 
             // Making sure default role is added
-            if (!string.IsNullOrEmpty(Configuration.DefaultContextRole)) {
-                if (args.Children.FirstOrDefault(ix => ix.Name == Configuration.DefaultContextRole) == null) {
+            string defaultRole = context.Raise ("_p5.security.get-default-context-role").Get<string> (context);
+            if (!string.IsNullOrEmpty(defaultRole)) {
 
-                    // Role was not already added
-                    args.Add(Configuration.DefaultContextRole);
+                // There exist a default role, checking if it's already added
+                if (args.Children.FirstOrDefault(ix => ix.Name == defaultRole) == null) {
+
+                    // Default Role was not already added, therefor we add it to return lambda node
+                    args.Add(defaultRole);
                 }
             }
         }
@@ -236,12 +273,16 @@ namespace p5.security
             if (rootPwdNode["password"].Value != null)
                 throw new SecurityException("Somebody tried to use installation Active event [p5.web.set-root-password] to change password of existing root account");
 
-            // Temporary logging in root user now, before changing password, since passwords can only be changed for "currently logged in user"
-            Ticket = new ApplicationContext.ContextTicket("root", "root", false);
-            context.UpdateTicket(Ticket);
+            // Temporary logging in root user now, before changing password, 
+            // since passwords can only be changed for "currently logged in user"
+            SetTicket (new ApplicationContext.ContextTicket("root", "root", false));
+            context.UpdateTicket(GetTicket (context));
             try {
-              ChangePassword(context, password);
+
+                // Changing password of "root"
+                ChangePassword(context, password);
             } finally {
+
                 // Making sure we log OUT root account again, before returning ...
                 Logout (context);
             }
@@ -280,7 +321,8 @@ namespace p5.security
                 pwdFile["users"][context.Ticket.Username]["password"].Value = newPwd;
 
                 // Saving password file to disc
-                using (TextWriter writer = File.CreateText(Configuration.AuthFile.Replace("~/", rootFolder))) {
+                using (TextWriter writer = File.CreateText(
+                    context.Raise ("_p5.security.get-auth-file").Get<string> (context).Replace("~/", rootFolder))) {
 
                     // Creating Hyperlisp out of lambda password file
                     Node lambdaNode = new Node();
@@ -297,7 +339,7 @@ namespace p5.security
         {
             // Getting filepath to pwd file
             string rootFolder = context.Raise("p5.core.application-folder").Get<string>(context);
-            string pwdFilePath = Configuration.AuthFile.Replace("~", rootFolder);
+            string pwdFilePath = context.Raise ("_p5.security.get-auth-file").Get<string>(context).Replace("~", rootFolder);
 
             // Checking file exist
             if (!File.Exists(pwdFilePath))
@@ -320,7 +362,7 @@ namespace p5.security
         {
             // Checking if we have any session associated with current invocation, which is NOT the case if this is the
             // ApplicationContext created during "application-startup"
-            if (HttpContext.Current.Session == null)
+            if (HttpContext.Current == null || HttpContext.Current.Session == null)
                 return false; // Creation of ApplicationContext from [p5.core.application-start], before we have any session available - Ignoring ...
 
             try
@@ -338,11 +380,13 @@ namespace p5.security
             catch
             {
 
-                // Making sure we delete cookie before we rethrow exception
+                // Making sure we delete cookie
+                // We do not rethrow this, since reason might be because "salt" has changed, to explicitly log user
+                // out, and that is actually not a "security issue", but a "feature". Besides, login-cooloff-seconds
+                // will make sure "brute force" login through cookies are virtually impossible
                 HttpCookie cookie = HttpContext.Current.Request.Cookies.Get(_credentialCookieName);
                 cookie.Expires = DateTime.Now.AddDays(-1);
                 HttpContext.Current.Response.Cookies.Add(cookie);
-                throw;
             }
             return false;
         }
@@ -356,7 +400,7 @@ namespace p5.security
         {
             // Making sure nobody can reach us by brute force, by supplying a new 
             // cookie in a "brute force cookie login" attempt
-            GuardAgainstBruteForce ();
+            GuardAgainstBruteForce (context);
 
             // User has persistent cookie associated with client
             var cookieSplits = cookie.Value.Split (' ');
@@ -387,12 +431,12 @@ namespace p5.security
             if (hashSaltedPwd == cookieHashSaltedPwd) {
 
                 // MATCH, discarding previous Context Ticket and creating a new Ticket
-                Ticket = new ApplicationContext.ContextTicket(
+                SetTicket (new ApplicationContext.ContextTicket(
                     userNode.Name, 
                     userNode ["role"].Get<string>(context), 
-                    false);
+                    false));
                 LastLoginAttemptForIP = DateTime.MinValue;
-                context.UpdateTicket (AuthenticationHelper.Ticket);
+                context.UpdateTicket (AuthenticationHelper.GetTicket (context));
                 return true;
             }
             return false;
@@ -401,11 +445,11 @@ namespace p5.security
         /*
          * Creates default Context Ticket according to settings from config file
          */
-        private static ApplicationContext.ContextTicket CreateDefaultTicket ()
+        private static ApplicationContext.ContextTicket CreateDefaultTicket (ApplicationContext context)
         {
             return new ApplicationContext.ContextTicket (
-                Configuration.DefaultContextUsername, 
-                Configuration.DefaultContextRole, 
+                context.Raise ("_p5.security.get-default-context-username").Get<string> (context), 
+                context.Raise ("_p5.security.get-default-context-role").Get<string> (context), 
                 true);
         }
 
@@ -445,29 +489,20 @@ namespace p5.security
          * Helper to guard against brute force login attempt. Basically denies an IP address to attempt to login without having
          * to wait a configurable amount of seconds between each attempt
          */
-        private static void GuardAgainstBruteForce()
+        private static void GuardAgainstBruteForce(ApplicationContext context)
         {
             TimeSpan span = DateTime.Now - LastLoginAttemptForIP;
 
             // Verifying delta is lower than threshold accepted
-            if (span.TotalSeconds < Configuration.LoginCoolOffSeconds)
+            int seconds = context.Raise ("_p5.security.get-login-cooloff-seconds").Get<int> (context);
+            if (span.TotalSeconds < seconds)
                 throw new SecurityException (
                     string.Format (
                         "Your IP address is trying to login to frequently, please wait {0} seconds before trying again.", 
-                        Configuration.LoginCoolOffSeconds));
+                        seconds));
 
             // Making sure we set the last login attempt to now!
             LastLoginAttemptForIP = DateTime.Now;
-        }
-
-        /*
-         * Returns the Phosphorus configuration values
-         */
-        private static PhosphorusConfiguration Configuration
-        {
-            get {
-                return ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
-            }
         }
 
         /*

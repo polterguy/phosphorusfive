@@ -8,7 +8,7 @@ using p5.core;
 using p5.exp;
 using p5.exp.exceptions;
 
-namespace p5.file.file
+namespace p5.io.file
 {
     /// <summary>
     ///     Class to help remove files

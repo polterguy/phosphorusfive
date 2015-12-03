@@ -11,7 +11,7 @@ using p5.exp.exceptions;
 /// <summary>
 ///     Main namespace for everything related to folders
 /// </summary>
-namespace p5.file.folder
+namespace p5.io.folder
 {
     /// <summary>
     ///     Class to help create folders on disc
@@ -35,7 +35,7 @@ namespace p5.file.folder
                 // Iterating through each folder caller wants to create
                 foreach (var idxFolder in Common.GetSource (e.Args, context)) {
 
-                    // Verifying user is authorized to both reading from source, and writing to destination
+                    // Verifying user is authorized to writing to destination
                     context.Raise ("_authorize-save-folder", new Node ("_authorize-save-folder", idxFolder).Add ("args", e.Args));
 
                     // Checking to see if folder already exists

@@ -12,7 +12,6 @@ using System.Configuration;
 using System.Collections.Generic;
 using p5.exp;
 using p5.core;
-using p5.core.configuration;
 
 /// <summary>
 ///     Main namespace for security features of Phosphorus Five
@@ -29,11 +28,11 @@ namespace p5.security
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.core.initialize-application-context", Protected = true)]
+        [ActiveEvent (Name = "p5.core.initialize-application-context")]
         private static void p5_core_initialize_application_context (ApplicationContext context, ActiveEventArgs e)
         {
-            if (!AuthenticationHelper.TryLoginFromPersistentCookie (context) && HttpContext.Current.Session != null)
-                context.UpdateTicket (AuthenticationHelper.Ticket);
+            if (!AuthenticationHelper.TryLoginFromPersistentCookie (context))
+                context.UpdateTicket (AuthenticationHelper.GetTicket (context));
         }
 
         /// <summary>
@@ -41,12 +40,12 @@ namespace p5.security
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "get-user", Protected = true)]
+        [ActiveEvent (Name = "get-user")]
         private static void get_user (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Add("username", AuthenticationHelper.Ticket.Username);
-            e.Args.Add("role", AuthenticationHelper.Ticket.Role);
-            e.Args.Add("default", AuthenticationHelper.Ticket.IsDefault);
+            e.Args.Add("username", AuthenticationHelper.GetTicket (context).Username);
+            e.Args.Add("role", AuthenticationHelper.GetTicket (context).Role);
+            e.Args.Add("default", AuthenticationHelper.GetTicket (context).IsDefault);
         }
 
         /// <summary>
@@ -54,7 +53,7 @@ namespace p5.security
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "login", Protected = true)]
+        [ActiveEvent (Name = "login")]
         private static void login (ApplicationContext context, ActiveEventArgs e)
         {
             AuthenticationHelper.Login (context, e.Args);
@@ -65,7 +64,7 @@ namespace p5.security
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "logout", Protected = true)]
+        [ActiveEvent (Name = "logout")]
         private static void logout (ApplicationContext context, ActiveEventArgs e)
         {
             AuthenticationHelper.Logout (context);

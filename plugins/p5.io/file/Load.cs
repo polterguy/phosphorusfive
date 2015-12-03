@@ -9,7 +9,7 @@ using p5.core;
 using p5.exp;
 using p5.exp.exceptions;
 
-namespace p5.file.file
+namespace p5.io.file
 {
     /// <summary>
     ///     Class to help load files
@@ -34,11 +34,11 @@ namespace p5.file.file
                 // Iterating through each file path given
                 foreach (var idxFilename in Common.GetSource (e.Args, context)) {
 
+                    // Verifying user is authorized to reading from currently iterated file
+                    context.Raise ("_authorize-load-file", new Node ("_authorize-load-file", idxFilename).Add ("args", e.Args));
+
                     // Checking to see if file exists
                     if (File.Exists (rootFolder + idxFilename)) {
-
-                        // Verifying user is authorized to reading from currently iterated file
-                        context.Raise ("_authorize-load-file", new Node ("_authorize-load-file", idxFilename).Add ("args", e.Args));
 
                         // File exists, loading it as text file, and appending text into node,
                         // with filename as name, and content as value

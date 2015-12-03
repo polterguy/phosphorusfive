@@ -7,37 +7,40 @@ using System.IO;
 using p5.core;
 using p5.exp;
 
-namespace p5.file.folder
+namespace p5.io.folder
 {
     /// <summary>
-    ///     Class to help list all folders within folder(s).
+    ///     Class to help list all folders within folder
     /// </summary>
     public static class ListFolders
     {
         /// <summary>
-        ///     List all folders in folder(s).
+        ///     List all folders in folder
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-folders")]
         private static void p5_folder_list_folders (ApplicationContext context, ActiveEventArgs e)
         {
-            // making sure we clean up and remove all arguments passed in after execution
+            // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
-                // retrieving root folder
+                // Retrieving root folder
                 var rootFolder = Common.GetRootFolder (context);
 
-                // iterating through each folder passed in by caller
-                foreach (var idx in Common.GetSource (e.Args, context)) {
+                // Iterating through each folder passed in by caller
+                foreach (var idxFolder in Common.GetSource (e.Args, context)) {
 
-                    // iterating all folders in current directory, and returning as nodes beneath args given
-                    foreach (var idxFolder in Directory.GetDirectories (rootFolder + idx)) {
+                    // Verifying user is authorized to reading from currently iterated folder
+                    context.Raise ("_authorize-load-folder", new Node ("_authorize-load-folder", idxFolder).Add ("args", e.Args));
 
-                        // normalizing file path delimiters for both Linux and Windows
-                        var folderName = idxFolder.Replace ("\\", "/");
+                    // Iterating all folders in current directory, and returning as nodes beneath args given
+                    foreach (var idxInnerFolder in Directory.GetDirectories (rootFolder + idxFolder)) {
+
+                        // Normalizing file path delimiters for both Linux and Windows
+                        var folderName = idxInnerFolder.Replace ("\\", "/");
                         folderName = folderName.Replace (rootFolder, "");
-                        e.Args.Add (new Node (folderName.Trim ('/') + "/"));
+                        e.Args.Add (new Node ("/" + folderName.Trim ('/') + "/"));
                     }
                 }
             }

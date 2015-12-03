@@ -8,10 +8,10 @@ using System.IO;
 using p5.core;
 using p5.exp;
 
-namespace p5.file.folder
+namespace p5.io.folder
 {
     /// <summary>
-    ///     Class to help rename and/or move folders.
+    ///     Class to help rename and/or move folders
     /// </summary>
     public static class Move
     {
@@ -23,33 +23,42 @@ namespace p5.file.folder
         [ActiveEvent (Name = "move-folder")]
         private static void move_folder (ApplicationContext context, ActiveEventArgs e)
         {
+            // Basic syntax checking
             if (e.Args.Value == null || e.Args.LastChild == null || e.Args.LastChild.Name != "to")
                 throw new ArgumentException ("[move-folder] needs both a value and a [to] node.");
 
-            // making sure we clean up and remove all arguments passed in after execution
+            // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args)) {
 
-                // getting root folder
+                // Getting root folder
                 var rootFolder = Common.GetRootFolder (context);
 
-                // getting file to move
-                string sourceFolder = XUtil.Single<string> (context, e.Args).Trim ('/') + "/";
+                // Getting folder to move
+                string sourceFolder = "/" + XUtil.Single<string> (context, e.Args).Trim ('/') + "/";
 
-                // Getting new filename of file
-                string destinationFolder = XUtil.Single<string> (context, e.Args ["to"]).Trim ('/') + "/";
+                // Getting new destination of folder
+                string destinationFolder = "/" + XUtil.Single<string> (context, e.Args ["to"]).Trim ('/') + "/";
 
+                // Verifying user is authorized to both reading from source, and writing to destination
+                context.Raise ("_authorize-load-folder", new Node ("_authorize-load-folder", sourceFolder).Add ("args", e.Args));
+                context.Raise ("_authorize-save-folder", new Node ("_authorize-save-folder", destinationFolder).Add ("args", e.Args));
+
+                // Aborting early if there's nothing to do here ...
                 if (sourceFolder == destinationFolder)
-                    return; // Nothing to do here
+                    return;
 
                 // Getting new filename of file, if needed
                 if (Directory.Exists (rootFolder + destinationFolder)) {
 
-                    // Destination file exist from before, creating a new unique destination filename
+                    // Destination folder exist from before, creating a new unique destination foldername
                     destinationFolder = Common.CreateNewUniqueFolderName (context, destinationFolder);
+
+                    // Authorizing for new folder name
+                    context.Raise ("_authorize-save-folder", new Node ("_authorize-save-folder", destinationFolder).Add ("args", e.Args));
                 }
 
-                // Actually moving (or renaming) file
-                Directory.Move (rootFolder + sourceFolder, rootFolder + destinationFolder);
+                // Actually moving (or renaming) folder
+                Directory.Move (rootFolder + sourceFolder.TrimStart('/'), rootFolder + destinationFolder.TrimStart('/'));
 
                 // Returning actual destination foldername used to caller
                 e.Args.Value = destinationFolder;

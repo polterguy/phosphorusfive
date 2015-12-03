@@ -7,10 +7,14 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
-using p5.core;
 using p5.exp;
+using p5.core;
+using p5.exp.exceptions;
 
-namespace p5.file.folder
+/// <summary>
+///     Main namespace for all IO folder operations in Phosphorus Five
+/// </summary>
+namespace p5.io.folder
 {
     /// <summary>
     ///     Class to help copy a folder
@@ -64,7 +68,7 @@ namespace p5.file.folder
                 // Actually copying folder, getting source first, in case copying implies copy one
                 // folder inside of itself, directly, or indirectly, which would create a never ending
                 // recursive loop, unless we retrieve all source objects first
-                CopyFolder (GetSourceFileObjects (rootFolder + sourceFolder, ""), rootFolder + sourceFolder, rootFolder + destinationFolder);
+                CopyFolder (context, e.Args, GetSourceFileObjects (rootFolder + sourceFolder, ""), rootFolder + sourceFolder, rootFolder + destinationFolder);
 
                 // Returning actual destination foldername used to caller
                 e.Args.Value = destinationFolder;
@@ -74,18 +78,23 @@ namespace p5.file.folder
         /*
          * Helper for above, recursively traverses a folder, and copies it
          */
-        private static void CopyFolder (List<Tuple<string, bool>> sourceFileObjects, string source, string destination)
+        private static void CopyFolder (
+            ApplicationContext context,
+            Node args,
+            List<Tuple<string, bool>> sourceFileObjects, 
+            string source, 
+            string destination)
         {
             // Verifying currently traversed source folder exist
             var sourceFolder = new DirectoryInfo (source);
             if (!sourceFolder.Exists)
-                throw new DirectoryNotFoundException (
-                    "Folder to copy could not be found: "
-                    + source);
+                throw new LambdaException (string.Format ("Source folder '{0}' could not be found", source), args, context);
 
             // Creating destination folder, if necessary
             var destinationFolder = new DirectoryInfo(destination);
-            if (!destinationFolder.Exists) // Makes "merge" operations possible
+
+            // Makes "merge" operations possible
+            if (!destinationFolder.Exists)
                 Directory.CreateDirectory (destinationFolder.FullName);
 
             // Looping through each folder and file, creating as we proceed, linearly
@@ -112,18 +121,25 @@ namespace p5.file.folder
         /*
          * Helper for above, returns a list of folders and files (folders are "true" in Item2 of Tuple)
          */
-        private static List<Tuple<string, bool>> GetSourceFileObjects (string rootFolder, string source)
+        private static List<Tuple<string, bool>> GetSourceFileObjects (
+            string rootFolder, 
+            string source)
         {
-            List<Tuple<string, bool>> retVal = new List<Tuple<string, bool>> ();
+            // Return value
+            var retVal = new List<Tuple<string, bool>> ();
 
             // Looping through all files in current directory, and appending to return value
             foreach (FileInfo subdir in new DirectoryInfo (rootFolder + source).GetFiles ()) {
-                retVal.Add (new Tuple<string, bool> (subdir.FullName.Replace (rootFolder, ""), false));
+
+                // Adding currently iterated file to return value
+                retVal.Add (new Tuple<string, bool> (subdir.FullName.Replace (rootFolder, ""), false /* FILE */));
             }
 
             // Looping through all folders in current directory, and appending to return value
             foreach (DirectoryInfo subdir in new DirectoryInfo (rootFolder + source).GetDirectories ()) {
-                retVal.Add (new Tuple<string, bool> (subdir.FullName.Replace (rootFolder, "").Trim ('/') + "/", true));
+
+                // Adding currently iterated folder to return value
+                retVal.Add (new Tuple<string, bool> (subdir.FullName.Replace (rootFolder, "").Trim ('/') + "/", true /* FOLDER */));
 
                 // Recursively invoking "self"
                 retVal.AddRange (GetSourceFileObjects (rootFolder, subdir.FullName.Replace (rootFolder, "").Trim ('/') + "/"));

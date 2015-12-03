@@ -25,7 +25,7 @@ namespace p5.data
         [ActiveEvent (Name = "update-data")]
         private static void update_data (ApplicationContext context, ActiveEventArgs e)
         {
-            // Retrieving expression and doing som basic syntax checking
+            // Retrieving expression and doing some basic syntax checking
             var ex = e.Args.Value as Expression;
             if (ex == null)
                 throw new LambdaException ("[update-data] requires an expression to select items from database", e.Args, context);

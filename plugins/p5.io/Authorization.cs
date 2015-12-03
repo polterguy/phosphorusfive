@@ -12,7 +12,6 @@ using System.Configuration;
 using System.Collections.Generic;
 using p5.exp;
 using p5.core;
-using p5.core.configuration;
 using p5.exp.exceptions;
 
 namespace p5.io
@@ -27,10 +26,10 @@ namespace p5.io
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "_authorize-save-file", Protected = true)]
+        [ActiveEvent (Name = "_authorize-save-file")]
         private static void _authorize_save_file (ApplicationContext context, ActiveEventArgs e)
         {
-            AuthorizeWriteFile (context, e.Args.Get<string> (context).TrimStart ('/'), e.Args ["args"].Get<Node> (context));
+            AuthorizeSaveFile (context, e.Args.Get<string> (context).TrimStart ('/'), e.Args ["args"].Get<Node> (context));
         }
 
         /// <summary>
@@ -38,7 +37,7 @@ namespace p5.io
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "_authorize-load-file", Protected = true)]
+        [ActiveEvent (Name = "_authorize-load-file")]
         private static void _authorize_load_file (ApplicationContext context, ActiveEventArgs e)
         {
             AuthorizeLoadFile (context, e.Args.Get<string> (context).TrimStart ('/'), e.Args ["args"].Get<Node> (context));
@@ -49,10 +48,10 @@ namespace p5.io
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "_authorize-save-folder", Protected = true)]
+        [ActiveEvent (Name = "_authorize-save-folder")]
         private static void _authorize_save_folder (ApplicationContext context, ActiveEventArgs e)
         {
-            AuthorizeWriteFolder (context, "/" + e.Args.Get<string> (context).TrimStart ('/'), e.Args ["args"].Get<Node> (context));
+            AuthorizeSaveFolder (context, "/" + e.Args.Get<string> (context).TrimStart ('/'), e.Args ["args"].Get<Node> (context));
         }
 
         /// <summary>
@@ -60,7 +59,7 @@ namespace p5.io
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "_authorize-load-folder", Protected = true)]
+        [ActiveEvent (Name = "_authorize-load-folder")]
         private static void _authorize_load_folder (ApplicationContext context, ActiveEventArgs e)
         {
             AuthorizeLoadFolder (context, "/" + e.Args.Get<string> (context).TrimStart ('/'), e.Args ["args"].Get<Node> (context));
@@ -69,7 +68,7 @@ namespace p5.io
         /*
          * Verifies user is authorized writing to the specified file
          */
-        private static void AuthorizeWriteFile (ApplicationContext context, string filename, Node stack)
+        private static void AuthorizeSaveFile (ApplicationContext context, string filename, Node stack)
         {
             // Checking if user is root (root is authorized to do almost everything!)
             if (context.Ticket.Role != "root") {
@@ -85,7 +84,7 @@ namespace p5.io
                 switch (Path.GetExtension (filename)) {
 
                 // Blacklisted ...!
-                case "config":
+                case ".config":
                     throw new LambdaSecurityException (
                         string.Format ("User '{0}' tried to write to file '{1}'", context.Ticket.Username, filename), 
                         stack, 
@@ -102,8 +101,7 @@ namespace p5.io
             }
 
             // Verifying "auth file" is safe
-            var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
-            if (filename == configuration.AuthFile)
+            if (filename == Common.GetAuthFile (context))
                 throw new LambdaSecurityException (
                     string.Format ("User '{0}' tried to access 'auth' file", context.Ticket.Username, filename), 
                     stack, 
@@ -123,8 +121,7 @@ namespace p5.io
                     context);
 
             // Verifying auth file is safe
-            var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
-            if (filename == configuration.AuthFile)
+            if (filename == Common.GetAuthFile (context))
                 throw new LambdaSecurityException (
                     string.Format ("User '{0}' tried to access auth file", context.Ticket.Username, filename), 
                     stack, 
@@ -134,7 +131,7 @@ namespace p5.io
         /*
          * Verifies user is authorized writing to the specified folder
          */
-        private static void AuthorizeWriteFolder (ApplicationContext context, string foldername, Node stack)
+        private static void AuthorizeSaveFolder (ApplicationContext context, string foldername, Node stack)
         {
             // Checking if user is root (root is authorized to do almost everything!)
             if (context.Ticket.Role != "root") {
@@ -162,7 +159,7 @@ namespace p5.io
         private static void AuthorizeLoadFolder (ApplicationContext context, string foldername, Node stack)
         {
             // Verifying file is underneath authorized user's folder, if it is underneath "/users/" folders
-            if (foldername.StartsWith ("/users/") && foldername.IndexOf (string.Format ("/users/{0}/", context.Ticket.Username)) != 0)
+            if (foldername.StartsWith ("/users/") && foldername.Length != 7 && foldername.IndexOf (string.Format ("/users/{0}/", context.Ticket.Username)) != 0)
                 throw new LambdaSecurityException (
                     string.Format ("User '{0}' tried to read from folder '{1}'", context.Ticket.Username, foldername), 
                     stack, 

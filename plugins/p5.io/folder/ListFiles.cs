@@ -9,57 +9,60 @@ using System.Collections.Generic;
 using p5.exp;
 using p5.core;
 
-namespace p5.file.folder
+namespace p5.io.folder
 {
     /// <summary>
-    ///     Class to help list all files within folder(s).
+    ///     Class to help list all files within folder
     /// </summary>
     public static class ListFiles
     {
         /// <summary>
-        ///     List all files in folder(s).
+        ///     List all files in folder
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-files")]
         private static void list_files (ApplicationContext context, ActiveEventArgs e)
         {
-            // making sure we clean up and remove all arguments passed in after execution
+            // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
-                // retrieving root folder
+                // Retrieving root folder
                 var rootFolder = Common.GetRootFolder (context);
 
-                // checking if we've got a filter
+                // Checking if we've got a filter
                 List<string> filters;
                 if (e.Args ["filter"] != null) {
 
-                    // we're given filters
-                    filters = new List<string> (new List<string> (XUtil.Iterate<string> (context, e.Args ["filter"])));
+                    // We are given filter(s)
+                    filters = XUtil.Iterate<string> (context, e.Args ["filter"]).ToList ();
                 } else {
 
-                    // no filters
+                    // No filters
                     filters = new List<string> ();
                 }
 
-                // iterating through each folder given by caller
-                foreach (var idx in Common.GetSource (e.Args, context)) {
+                // Iterating through each folder supplied by caller
+                foreach (var idxFolder in Common.GetSource (e.Args, context)) {
 
-                    // iterating all files in current directory, and returning as nodes beneath args given
-                    foreach (var idxFile in Directory.GetFiles (rootFolder + idx)) {
+                    // Verifying user is authorized to reading from currently iterated folder
+                    context.Raise ("_authorize-load-folder", new Node ("_authorize-load-folder", idxFolder).Add ("args", e.Args));
 
-                        // intentionally dropping "invisible linux 'backup' files" and "invisible system files" on MAC
-                        string[] splits = idxFile.Split (new char[]{'/'});
+                    // Iterating all files in current directory, and returning as nodes beneath args given
+                    foreach (var idxFile in Directory.GetFiles (rootFolder + idxFolder)) {
+
+                        // Intentionally dropping "invisible linux 'backup' files" and "invisible system files" on MAC
+                        string[] splits = idxFile.Split (new char[] {'/'});
                         if (!idxFile.EndsWith ("~") && !splits[splits.Length - 1].StartsWith (".")) {
 
-                            // file is not a backup file on Linux
-                            // normalizing file path delimiters for both Linux and Windows, before we return it 
+                            // File is not a backup file on Linux
+                            // Normalizing file path delimiters for both Linux and Windows, before we return it 
                             // back to caller, but first verifying file matches filter given
                             if (filters.Count == 0 || filters.Where (ix => idxFile.EndsWith ("." + ix)).GetEnumerator ().MoveNext ()) {
 
-                                // returning filename back to caller
+                                // Returning filename back to caller
                                 var fileName = idxFile.Replace ("\\", "/");
-                                fileName = fileName.Replace (rootFolder, "");
+                                fileName = fileName.Replace (rootFolder, "").TrimStart ('/');
                                 e.Args.Add (new Node (fileName));
                             }
                         }

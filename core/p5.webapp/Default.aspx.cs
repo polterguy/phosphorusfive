@@ -14,7 +14,6 @@ using System.Collections.Generic;
 using p5.exp;
 using p5Web = p5.web.ui.common;
 using p5.core;
-using p5.core.configuration;
 using p5.ajax.core;
 using p5.webapp.code;
 using p5.ajax.widgets;

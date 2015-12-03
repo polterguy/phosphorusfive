@@ -457,7 +457,7 @@ namespace p5.unittests
 
         private class Foo56
         {
-            [ActiveEvent (Name = "foo56", Protected = true)]
+            [ActiveEvent (Name = "foo56")]
             private static void Foo54 (ApplicationContext context, ActiveEventArgs e)
             {
                 e.Args.Value += "success";
@@ -475,13 +475,13 @@ namespace p5.unittests
 
         private class Foo57
         {
-            [ActiveEvent (Name = "foo57", Protected = true)]
+            [ActiveEvent (Name = "foo57")]
             private static void Foo54 (ApplicationContext context, ActiveEventArgs e)
             {
                 e.Args.Value += "success";
             }
 
-            [ActiveEvent (Name = "foo57")]
+            [ActiveEvent (Name = "foo57", Protected = true)]
             private void Foo54_2 (ApplicationContext context, ActiveEventArgs e)
             {
                 e.Args.Value += "success";
@@ -498,13 +498,13 @@ namespace p5.unittests
 
         private class Foo58
         {
-            [ActiveEvent (Name = "foo58")]
+            [ActiveEvent (Name = "foo58", Protected = true)]
             private static void Foo54 (ApplicationContext context, ActiveEventArgs e)
             {
                 e.Args.Value += "success";
             }
 
-            [ActiveEvent (Name = "foo58", Protected = true)]
+            [ActiveEvent (Name = "foo58")]
             private void Foo54_2 (ApplicationContext context, ActiveEventArgs e)
             {
                 e.Args.Value += "success";

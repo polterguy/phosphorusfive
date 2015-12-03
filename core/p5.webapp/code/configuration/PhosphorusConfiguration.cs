@@ -8,7 +8,7 @@ using System.Configuration;
 /// <summary>
 ///     Main namespace for all code that is specific to your application-pool
 /// </summary>
-namespace p5.core.configuration
+namespace p5.webapp.code.configuration
 {
     /// <summary>
     ///     Class wrapping your configuration section from your web.config that defines which assemblies to use as Active Event plugins,

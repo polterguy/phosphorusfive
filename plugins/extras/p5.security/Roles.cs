@@ -12,7 +12,6 @@ using System.Configuration;
 using System.Collections.Generic;
 using p5.exp;
 using p5.core;
-using p5.core.configuration;
 
 namespace p5.security
 {
@@ -26,7 +25,7 @@ namespace p5.security
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "roles", Protected = true)]
+        [ActiveEvent (Name = "roles")]
         private static void roles (ApplicationContext context, ActiveEventArgs e)
         {
             AuthenticationHelper.GetRoles (context, e.Args);

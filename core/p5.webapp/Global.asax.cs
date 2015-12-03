@@ -8,8 +8,8 @@ using System.Configuration;
 using System.Reflection;
 using System.Web;
 using p5.core;
-using p5.core.configuration;
 using p5.webapp.code;
+using p5.webapp.code.configuration;
 
 /// <summary>
 ///     Main namespace for the Phosphorus Five core functionality.
@@ -99,7 +99,7 @@ namespace p5
             }
 
             /// <summary>
-            ///     Returns the Application base folder.
+            ///     Returns the Application base folder
             /// </summary>
             /// <param name="context">Application context Active Event is raised within</param>
             /// <param name="e">Parameters passed into Active Event</param>
@@ -107,6 +107,66 @@ namespace p5
             private static void p5_core_application_folder (ApplicationContext context, ActiveEventArgs e)
             {
                 e.Args.Value = _applicationBasePath;
+            }
+
+            /// <summary>
+            ///     Returns the "auth" file for application
+            /// </summary>
+            /// <param name="context">Application context Active Event is raised within</param>
+            /// <param name="e">Parameters passed into Active Event</param>
+            [ActiveEvent (Name = "_p5.security.get-auth-file")]
+            private static void _p5_security_get_auth_file (ApplicationContext context, ActiveEventArgs e)
+            {
+                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
+                e.Args.Value = configuration.AuthFile;
+            }
+
+            /// <summary>
+            ///     Returns the number of days before persistent credential cookie expires
+            /// </summary>
+            /// <param name="context">Application context Active Event is raised within</param>
+            /// <param name="e">Parameters passed into Active Event</param>
+            [ActiveEvent (Name = "_p5.security.get-credential-cookie-days")]
+            private static void _p5_security_get_credential_cookie_days (ApplicationContext context, ActiveEventArgs e)
+            {
+                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
+                e.Args.Value = configuration.PersistCredentialCookieDays;
+            }
+
+            /// <summary>
+            ///     Returns the default role used for the ApplicationContext, unless a user is explicitly logged in
+            /// </summary>
+            /// <param name="context">Application context Active Event is raised within</param>
+            /// <param name="e">Parameters passed into Active Event</param>
+            [ActiveEvent (Name = "_p5.security.get-default-context-role")]
+            private static void _p5_security_get_default_context_role (ApplicationContext context, ActiveEventArgs e)
+            {
+                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
+                e.Args.Value = configuration.DefaultContextRole;
+            }
+
+            /// <summary>
+            ///     Returns the default username used for the ApplicationContext, unless a user is explicitly logged in
+            /// </summary>
+            /// <param name="context">Application context Active Event is raised within</param>
+            /// <param name="e">Parameters passed into Active Event</param>
+            [ActiveEvent (Name = "_p5.security.get-default-context-username")]
+            private static void _p5_security_get_default_context_username (ApplicationContext context, ActiveEventArgs e)
+            {
+                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
+                e.Args.Value = configuration.DefaultContextUsername;
+            }
+
+            /// <summary>
+            ///     Returns the number of seconds that must pass from an unsuccessful login attempt to client is allowed to try again
+            /// </summary>
+            /// <param name="context">Application context Active Event is raised within</param>
+            /// <param name="e">Parameters passed into Active Event</param>
+            [ActiveEvent (Name = "_p5.security.get-login-cooloff-seconds")]
+            private static void _p5_security_get_login_cooloff_seconds (ApplicationContext context, ActiveEventArgs e)
+            {
+                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
+                e.Args.Value = configuration.LoginCoolOffSeconds;
             }
         }
     }

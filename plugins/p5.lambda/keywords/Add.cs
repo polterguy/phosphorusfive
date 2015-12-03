@@ -12,77 +12,80 @@ using p5.exp.exceptions;
 namespace p5.lambda.keywords
 {
     /// <summary>
-    ///     Class wrapping execution engine keyword [add].
+    ///     Class wrapping execution engine keyword [add]
     /// </summary>
     public static class Add
     {
         /// <summary>
-        ///     The [add] keyword allows you to append a node-set into another node-set.
+        ///     The [add] keyword allows you to append a source lambda object into a destination lambda object
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "add")]
         private static void lambda_add (ApplicationContext context, ActiveEventArgs e)
         {
-            // figuring out source type, for then to execute the corresponding logic, but first asserting destination is expression
+            // Basic syntax checking
             if (!(e.Args.Value is Expression))
-                throw new LambdaException ("Not a valid destination expression given, make sure you set [add]'s value to an expression using :x:", e.Args, context);
+                throw new LambdaException ("[add] was not given a destination expression", e.Args, context);
 
+            // Figuring out source type
             if (e.Args.Count > 0 && e.Args.LastChild.Name == "rel-src") {
 
-                // relative source
+                // Relative source
                 AppendRelativeSource (e.Args, context);
             } else {
 
-                // static source
+                // Static source
                 AppendStaticSource (e.Args, context);
             }
         }
         
         /*
-         * source is static
+         * Appends a static source into destination
          */
         private static void AppendStaticSource (Node args, ApplicationContext context)
         {
-            // retrieving source before we start iterating destination,
-            // in case destination and source overlaps
+            // Retrieving source before we start iterating destination, in case destination and source overlaps
             var sourceNodes = XUtil.SourceNodes (context, args);
 
-            // making sure there is a source
+            // Making sure there is a source
             if (sourceNodes == null)
                 return;
 
-            // looping through every destination node
+            // Looping through each destination node
             foreach (var idxDestination in args.Get<Expression> (context).Evaluate (args, context, args)) {
 
-                // verifying destination actually is a node
+                // Verifying destination actually is a node
                 var curDest = idxDestination.Value as Node;
                 if (curDest == null)
-                    throw new LambdaException ("cannot [add] into something that's not a node", args, context);
+                    throw new LambdaException ("Cannot [add] into something that's not a node", args, context);
 
-                // cloning source and appending into destination
+                // Looping through each source
                 foreach (var idxSource in sourceNodes) {
 
+                    // Appending currently iterated cloned source into destination
                     curDest.Add (idxSource.Clone ());
                 }
             }
         }
 
         /*
-         * relative source
+         * Appends a relative source into destination
          */
         private static void AppendRelativeSource (Node args, ApplicationContext context)
         {
+            // Looping through each destination
             foreach (var idxDestination in args.Get<Expression> (context).Evaluate (args, context, args)) {
 
-                // verifying destination actually is a node
+                // Verifying destination actually is a node
                 var curDest = idxDestination.Value as Node;
                 if (curDest == null)
-                    throw new LambdaException ("cannot [add] into something that's not a node", args, context);
+                    throw new LambdaException ("Cannot [add] into something that's not a node", args, context);
 
-                // evaluating source for each destination since it is relative to destination
+                // Evaluating source for each destination since it is relative to destination
                 foreach (var idxSource in XUtil.SourceNodes (context, args, idxDestination.Node)) {
 
+                    // Appending currently iterated cloned source into destination
                     curDest.Add (idxSource.Clone ());
                 }
             }

@@ -8,7 +8,7 @@ using System.IO;
 using p5.core;
 using p5.exp;
 
-namespace p5.file.file
+namespace p5.io.file
 {
     /// <summary>
     ///     Class to help rename and/or move files
