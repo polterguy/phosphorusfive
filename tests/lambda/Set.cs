@@ -95,7 +95,12 @@ add:x:/..
   src:x:/./-2");
             Assert.AreEqual (1, result.Count);
             Assert.AreEqual ("_dest", result [0].Name);
-            Assert.AreEqual ("_foo1:bar1\r\n_foo2:bar2", result [0].Value);
+            Assert.AreEqual ("", result[0].Get<Node> (Context).Name);
+            Assert.IsNull (result[0].Get<Node> (Context).Value);
+            Assert.AreEqual ("_foo1", result[0].Get<Node> (Context)[0].Name);
+            Assert.AreEqual ("bar1", result[0].Get<Node> (Context)[0].Value);
+            Assert.AreEqual ("_foo2", result[0].Get<Node> (Context)[1].Name);
+            Assert.AreEqual ("bar2", result[0].Get<Node> (Context)[1].Value);
         }
         
         [ActiveEvent (Name = "set.test3", Protection = EventProtection.LambdaClosed)]
@@ -182,6 +187,35 @@ add:x:/..
   set.test4
   set.test5");
             Assert.AreEqual ("success", result.Value);
+        }
+
+        /// <summary>
+        ///     Verifies [set] works with two Active Event source invocations that returns a single node each
+        /// </summary>
+        [Test]
+        public void SetTwoActiveEventSourceInvocationsReturningSingleNodeEach ()
+        {
+            var result = ExecuteLambda (@"_dest
+set:x:/-?value
+  set.test3
+  set.test3
+add:x:/..
+  src:x:/./-2");
+            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual ("_dest", result [0].Name);
+            Assert.IsTrue (result [0].Value is Node);
+            Assert.AreEqual ("", result [0].Get<Node> (Context).Name);
+            Assert.IsNull (result [0].Get<Node> (Context).Value);
+            Assert.AreEqual (2, result [0].Get<Node> (Context).Count);
+
+            Assert.AreEqual ("_foo1", result [0].Get<Node> (Context)[0].Name);
+            Assert.AreEqual ("bar1", result [0].Get<Node> (Context)[0].Value);
+            Assert.AreEqual ("_foo2", result [0].Get<Node> (Context)[0] [0].Name);
+            Assert.AreEqual ("bar2", result [0].Get<Node> (Context)[0] [0].Value);
+            Assert.AreEqual ("_foo1", result [0].Get<Node> (Context)[1].Name);
+            Assert.AreEqual ("bar1", result [0].Get<Node> (Context)[1].Value);
+            Assert.AreEqual ("_foo2", result [0].Get<Node> (Context)[1] [0].Name);
+            Assert.AreEqual ("bar2", result [0].Get<Node> (Context)[1] [0].Value);
         }
     }
 }

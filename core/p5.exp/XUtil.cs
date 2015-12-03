@@ -453,8 +453,8 @@ namespace p5.exp
                     return evaluatedNode.FirstChild.Clone ();
                 } else {
 
-                    // more than one source, making sure we convert it into one single value, meaning a 'string'
-                    return Utilities.Convert<string> (context, evaluatedNode.Children);
+                    // more than one source, returning "wrapper node", since we need a single source
+                    return evaluatedNode.Clone ();
                 }
             }
         }

@@ -428,7 +428,9 @@ save-file:test1.txt
             ExecuteLambda (@"save-file:test1.txt
   test.save.av2");
             using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
-                Assert.AreEqual ("foo1:bar1\r\nfoo2:bar2", reader.ReadToEnd ());
+                Assert.AreEqual (@"""""
+  foo1:bar1
+  foo2:bar2", reader.ReadToEnd ());
             }
         }
         
@@ -454,7 +456,9 @@ save-file:test1.txt
   test.save.av3_1
   test.save.av3_2");
             using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
-                Assert.AreEqual ("foo1:bar1\r\nfoo2:bar2", reader.ReadToEnd ());
+                Assert.AreEqual (@"""""
+  foo1:bar1
+  foo2:bar2", reader.ReadToEnd ());
             }
         }
         

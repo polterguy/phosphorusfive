@@ -183,10 +183,16 @@ add:x:/..
     src:succ
 _x2
   add:x:/..
-    src:ess
+    src:""ess:yup!""
 set:x:/..?value
   eval:x:/./-2|/./-1");
-            Assert.AreEqual ("succ\r\ness", result.Value);
+            Assert.AreEqual ("", result.Get<Node>(Context).Name);
+            Assert.IsNull (result.Get<Node>(Context).Value);
+            Assert.AreEqual ("succ", result.Get<Node>(Context)[0].Name);
+            Assert.IsNull (result.Get<Node>(Context)[0].Value);
+            Assert.AreEqual ("ess", result.Get<Node>(Context)[1].Name);
+            Assert.AreEqual ("yup!", result.Get<Node>(Context)[1].Value);
+            Assert.AreEqual (2, result.Get<Node>(Context).Count);
             Assert.AreEqual (0, result.Count);
         }
         

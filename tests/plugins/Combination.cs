@@ -40,9 +40,10 @@ save-file:test1.txt
 insert-before:x:/../0
   src:x:/../*(!/insert-before)");
             using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
-                Assert.AreEqual (@"foo1:bar1
-  foo-child:bar-child
-foo2:bar2", reader.ReadToEnd ());
+                Assert.AreEqual (@"""""
+  foo1:bar1
+    foo-child:bar-child
+  foo2:bar2", reader.ReadToEnd ());
             }
         }
 
