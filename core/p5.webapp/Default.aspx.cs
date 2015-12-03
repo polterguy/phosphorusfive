@@ -564,7 +564,7 @@ namespace p5.webapp
         [WebMethod]
         protected void common_event_handler (pf.Widget sender, pf.Widget.AjaxEventArgs e)
         {
-            _context.RaiseNative("eval", WidgetAjaxEventStorage[sender.ID, e.Name].Clone());
+            _context.RaiseLambda("eval", WidgetAjaxEventStorage[sender.ID, e.Name].Clone());
         }
 
         #endregion

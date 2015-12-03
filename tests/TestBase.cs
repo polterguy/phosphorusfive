@@ -45,7 +45,7 @@ namespace p5.unittests
             var node = new Node { Value = hyperlisp };
             Context.RaiseNative ("lisp2lambda", node);
             node.Value = null;
-            return Context.RaiseNative (lambdaActiveEvent, node);
+            return Context.RaiseLambda (lambdaActiveEvent, node);
         }
 
         /// <summary>

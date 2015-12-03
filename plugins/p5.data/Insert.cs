@@ -67,9 +67,6 @@ namespace p5.data
                         // Making sure we clean up and remove all arguments of inserted node passed in after execution
                         using (new Utilities.ArgsRemover (idx)) {
 
-                            // Making sure user is authorized to insert currently iterated node
-                            context.RaiseNative ("authorize", new Node ("authorize").Add("insert-data", idx).Add ("args", e.Args));
-
                             // Inserting node
                             InsertNode (idx, context, changed);
                         }

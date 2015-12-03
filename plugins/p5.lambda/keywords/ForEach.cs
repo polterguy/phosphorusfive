@@ -78,7 +78,7 @@ namespace p5.lambda.keywords
                                 // children from that Event invocation
                                 Node sourceNode = e.Args.FirstChildNotOf (string.Empty);
                                 var oldSourceValue = sourceNode.Value;
-                                context.RaiseNative (sourceNode.Name, sourceNode);
+                                context.RaiseLambda (sourceNode.Name, sourceNode);
                                 sourceNode.UnTie (); // removing node that was used as source
 
                                 // value has presedence
@@ -110,7 +110,7 @@ namespace p5.lambda.keywords
             var dp = new Node ("__dp", source);
             args.Insert (0, dp);
 
-            context.RaiseNative ("eval-mutable", args);
+            context.RaiseLambda ("eval-mutable", args);
             args.Clear ();
             args.AddRange (oldForEach.Clone ().Children);
         }

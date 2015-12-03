@@ -15,10 +15,11 @@ namespace p5.core
         /*
          * initializes a new instance of this class
          */
-        internal ActiveEventArgs (string name, Node args, ApplicationContext.ContextTicket ticket)
+        internal ActiveEventArgs (string name, Node args, bool nativeSource)
         {
             Args = args;
             Name = name;
+            NativeSource = nativeSource;
         }
 
         /// <summary>
@@ -32,5 +33,11 @@ namespace p5.core
         /// </summary>
         /// <value>the name</value>
         public string Name { get; private set; }
+
+        /// <summary>
+        ///     True if source of event is native code, otherwise false
+        /// </summary>
+        /// <value>the name</value>
+        public bool NativeSource { get; private set; }
     }
 }

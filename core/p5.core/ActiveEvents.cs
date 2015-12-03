@@ -188,7 +188,7 @@ namespace p5.core
                 bool wasProtected = false;
 
                 // Constructing EventArgs
-                ActiveEventArgs e = new ActiveEventArgs(name, args ?? new Node(), ticket);
+                ActiveEventArgs e = new ActiveEventArgs(name, args ?? new Node(), sourceIsNative);
 
                 // Checking if we have any Active Event handlers for given name
                 if (_events.ContainsKey (name)) {

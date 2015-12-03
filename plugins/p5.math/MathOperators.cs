@@ -55,7 +55,7 @@ namespace p5.math
 
                         // Active Event invocation to retrieve value to use
                         idxChild.FindOrCreate ("__pf_type").Value = resultType;
-                        nextValue = context.RaiseNative (idxChild.Name, idxChild).Get<object> (context, 0);
+                        nextValue = context.RaiseLambda (idxChild.Name, idxChild).Get<object> (context, 0);
                     }
                     result = functor (result, Convert.ChangeType (nextValue, resultType));
                 }

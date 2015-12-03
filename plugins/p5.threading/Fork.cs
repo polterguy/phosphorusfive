@@ -61,7 +61,7 @@ namespace p5.threading
 
             private void Execute ()
             {
-                Context.RaiseNative ("eval-mutable", Lambda);
+                Context.RaiseLambda ("eval-mutable", Lambda);
             }
         }
 

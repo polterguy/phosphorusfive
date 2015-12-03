@@ -70,7 +70,7 @@ namespace p5.web.ui.widgets
             if (onInitialLoad != null) {
                 handler = delegate (object sender, EventArgs e) {
                     onInitialLoad.Insert (0, new Node ("_event", ((Control)sender).ID));
-                    context.RaiseNative ("eval", onInitialLoad);
+                    context.RaiseLambda ("eval", onInitialLoad);
                 };
             }
 

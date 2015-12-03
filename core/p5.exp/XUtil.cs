@@ -407,7 +407,7 @@ namespace p5.exp
 
                     // Raising currently iterated Active Event source, but storing value to see if it changes
                     var oldValue = idxSrcNode.Value;
-                    context.RaiseNative (idxSrcNode.Name, idxSrcNode);
+                    context.RaiseLambda (idxSrcNode.Name, idxSrcNode);
 
                     if ((oldValue == null && idxSrcNode.Value != null) || 
                         (oldValue != null && idxSrcNode.Value != null && !oldValue.Equals (idxSrcNode.Value))) {
@@ -500,7 +500,7 @@ namespace p5.exp
 
                     // Raising currently iterated Active Event source, but storing value to see if it changes
                     var oldValue = idxSrcNode.Value;
-                    context.RaiseNative (idxSrcNode.Name, idxSrcNode);
+                    context.RaiseLambda (idxSrcNode.Name, idxSrcNode);
 
                     if ((oldValue == null && idxSrcNode.Value != null) || 
                         (oldValue != null && idxSrcNode.Value != null && !oldValue.Equals (idxSrcNode.Value))) {
@@ -638,7 +638,7 @@ namespace p5.exp
             args.Value = null; // to make sure we don't return what we came in with!
 
             // executing lambda children, and not evaluating any expression in evaluated node!
-            context.RaiseNative ("eval-mutable", exeLambda);
+            context.RaiseLambda ("eval-mutable", exeLambda);
 
             // making sure we return all nodes that was created during execution of event back to caller
             // in addition to value, but only if it was changed

@@ -102,7 +102,7 @@ namespace lambda_exe
 
                         // appending nodes from lambda file into execution objects, and execute lambda file given through command-line arguments
                         exeNode.AddRange (convertExeFile.Children);
-                        context.RaiseNative ("lambda", exeNode);
+                        context.RaiseLambda ("eval", exeNode);
                     }
                 }
             } catch (Exception err) {
@@ -141,7 +141,7 @@ namespace lambda_exe
                     Console.WriteLine ("nothing to do here");
                 } else {
                     Node convert = context.RaiseNative ("lisp2lambda", new Node (string.Empty, hyperlisp));
-                    context.RaiseNative ("lambda", convert);
+                    context.RaiseLambda ("eval", convert);
                     Console.WriteLine ();
                 }
             }

@@ -59,9 +59,6 @@ namespace p5.data
                     // Iterating through all destinations, updating with source
                     foreach (var idxDestination in e.Args.Get<Expression> (context).Evaluate (Common.Database, context, e.Args)) {
 
-                        // Making sure user is authorized to insert currently iterated node
-                        context.RaiseNative ("authorize", new Node ("authorize").Add("update-data", idxDestination.Node).Add ("args", e.Args));
-
                         // Figuring out which file Node updated belongs to, and storing in changed list
                         Common.AddNodeToChanges (idxDestination.Node, changed);
 
