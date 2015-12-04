@@ -34,7 +34,7 @@ namespace p5.io.file
                 foreach (var idxFile in Common.GetSource (e.Args, context)) {
 
                     // Verifying user is authorized to writing to destination file
-                    context.RaiseNative ("_authorize-save-file", new Node ("_authorize-save-file", idxFile).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.save-file", new Node ("p5.io.authorize.save-file", idxFile).Add ("args", e.Args));
 
                     // Checking if file exist
                     if (File.Exists (rootFolder + idxFile)) {

@@ -60,8 +60,6 @@
     <Compile Include="file\Copy.cs" />
     <Compile Include="folder\Copy.cs" />
     <Compile Include="utilities\GZip.cs" />
-    <Compile Include="authorization\Authorization.cs" />
-    <Compile Include="authorization\AuthorizationHelper.cs" />
     <Compile Include="helpers\Common.cs" />
     <Compile Include="file\Exist.cs" />
     <Compile Include="folder\Exist.cs" />
@@ -93,7 +91,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="utilities\" />
-    <Folder Include="authorization\" />
     <Folder Include="helpers\" />
   </ItemGroup>
 </Project>

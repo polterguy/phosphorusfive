@@ -36,7 +36,7 @@ namespace p5.io.file
                 foreach (var idxFilename in Common.GetSource (e.Args, context)) {
 
                     // Verifying user is authorized to reading from currently iterated file
-                    context.RaiseNative ("_authorize-load-file", new Node ("_authorize-load-file", idxFilename).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.load-file", new Node ("p5.io.authorize.load-file", idxFilename).Add ("args", e.Args));
 
                     // Checking to see if file exists
                     if (File.Exists (rootFolder + idxFilename)) {
@@ -84,7 +84,7 @@ namespace p5.io.file
                 foreach (var idxFilename in XUtil.Iterate<string> (context, e.Args)) {
 
                     // Verifying user is authorized to reading from currently iterated file
-                    context.RaiseNative ("_authorize-load-file", new Node ("_authorize-load-file", idxFilename).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.load-file", new Node ("p5.io.authorize.load-file", idxFilename).Add ("args", e.Args));
 
                     // Checking to see if file exists
                     if (File.Exists (rootFolder + idxFilename)) {

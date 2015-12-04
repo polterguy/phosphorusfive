@@ -37,7 +37,7 @@ namespace p5.io.folder
                 foreach (var idxFolder in Common.GetSource (e.Args, context)) {
 
                     // Verifying user is authorized to writing to destination
-                    context.RaiseNative ("_authorize-save-folder", new Node ("_authorize-save-folder", idxFolder).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.save-folder", new Node ("p5.io.authorize.save-folder", idxFolder).Add ("args", e.Args));
 
                     // Checking to see if folder already exists
                     if (Directory.Exists (rootFolder + idxFolder)) {

@@ -39,7 +39,7 @@ namespace p5.io.folder
                 foreach (var idxFolder in sourceFiles) {
 
                     // Verifying user is authorized to reading from currently iterated folder
-                    context.RaiseNative ("_authorize-load-folder", new Node ("_authorize-load-folder", idxFolder).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.load-folder", new Node ("p5.io.authorize.load-folder", idxFolder).Add ("args", e.Args));
 
                     // Letting caller know whether or not this file exists
                     if (!Directory.Exists (rootFolder + idxFolder)) {

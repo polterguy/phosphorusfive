@@ -41,8 +41,8 @@ namespace p5.io.folder
                 string destinationFolder = "/" + XUtil.Single<string> (context, e.Args ["to"]).Trim ('/') + "/";
 
                 // Verifying user is authorized to both reading from source, and writing to destination
-                context.RaiseNative ("_authorize-load-folder", new Node ("_authorize-load-folder", sourceFolder).Add ("args", e.Args));
-                context.RaiseNative ("_authorize-save-folder", new Node ("_authorize-save-folder", destinationFolder).Add ("args", e.Args));
+                context.RaiseNative ("p5.io.authorize.load-folder", new Node ("p5.io.authorize.load-folder", sourceFolder).Add ("args", e.Args));
+                context.RaiseNative ("p5.io.authorize.save-folder", new Node ("p5.io.authorize.save-folder", destinationFolder).Add ("args", e.Args));
 
                 // Aborting early if there's nothing to do here ...
                 if (sourceFolder == destinationFolder)
@@ -55,7 +55,7 @@ namespace p5.io.folder
                     destinationFolder = Common.CreateNewUniqueFolderName (context, destinationFolder);
 
                     // Authorizing for new folder name
-                    context.RaiseNative ("_authorize-save-folder", new Node ("_authorize-save-folder", destinationFolder).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.save-folder", new Node ("p5.io.authorize.save-folder", destinationFolder).Add ("args", e.Args));
                 }
 
                 // Actually moving (or renaming) folder

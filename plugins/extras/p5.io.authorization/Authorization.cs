@@ -12,8 +12,8 @@ using System.Configuration;
 using System.Collections.Generic;
 using p5.exp;
 using p5.core;
-using p5.io.common;
 using p5.exp.exceptions;
+using p5.io.authorization.helpers;
 
 namespace p5.io.authorization
 {
@@ -27,8 +27,8 @@ namespace p5.io.authorization
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "_authorize-save-file", Protection = EventProtection.NativeClosed)]
-        private static void _authorize_save_file (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.io.authorize.save-file", Protection = EventProtection.NativeClosed)]
+        private static void p5_io_authorize_save_file (ApplicationContext context, ActiveEventArgs e)
         {
             AuthorizationHelper.AuthorizeSaveFile (
                 context, 
@@ -41,8 +41,8 @@ namespace p5.io.authorization
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "_authorize-load-file", Protection = EventProtection.NativeClosed)]
-        private static void _authorize_load_file (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.io.authorize.load-file", Protection = EventProtection.NativeClosed)]
+        private static void p5_io_authorize_load_file (ApplicationContext context, ActiveEventArgs e)
         {
             AuthorizationHelper.AuthorizeLoadFile (
                 context, 
@@ -55,8 +55,8 @@ namespace p5.io.authorization
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "_authorize-save-folder", Protection = EventProtection.NativeClosed)]
-        private static void _authorize_save_folder (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.io.authorize.save-folder", Protection = EventProtection.NativeClosed)]
+        private static void p5_io_authorize_save_folder (ApplicationContext context, ActiveEventArgs e)
         {
             AuthorizationHelper.AuthorizeSaveFolder (
                 context, 
@@ -69,7 +69,7 @@ namespace p5.io.authorization
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "_authorize-load-folder", Protection = EventProtection.NativeClosed)]
+        [ActiveEvent (Name = "p5.io.authorize.load-folder", Protection = EventProtection.NativeClosed)]
         private static void _authorize_load_folder (ApplicationContext context, ActiveEventArgs e)
         {
             AuthorizationHelper.AuthorizeLoadFolder (

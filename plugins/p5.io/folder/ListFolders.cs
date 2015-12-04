@@ -33,7 +33,7 @@ namespace p5.io.folder
                 foreach (var idxFolder in Common.GetSource (e.Args, context)) {
 
                     // Verifying user is authorized to reading from currently iterated folder
-                    context.RaiseNative ("_authorize-load-folder", new Node ("_authorize-load-folder", idxFolder).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.load-folder", new Node ("p5.io.authorize.load-folder", idxFolder).Add ("args", e.Args));
 
                     // Iterating all folders in current directory, and returning as nodes beneath args given
                     foreach (var idxInnerFolder in Directory.GetDirectories (rootFolder + idxFolder)) {

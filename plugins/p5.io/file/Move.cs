@@ -47,8 +47,8 @@ namespace p5.io.file
                 string destinationFile = XUtil.Single<string> (context, e.Args ["to"]);
 
                 // Verifying user is authorized to both reading from source, and writing to destination
-                context.RaiseNative ("_authorize-load-file", new Node ("_authorize-load-file", sourceFile).Add ("args", e.Args));
-                context.RaiseNative ("_authorize-save-file", new Node ("_authorize-save-file", destinationFile).Add ("args", e.Args));
+                context.RaiseNative ("p5.io.authorize.load-file", new Node ("p5.io.authorize.load-file", sourceFile).Add ("args", e.Args));
+                context.RaiseNative ("p5.io.authorize.save-file", new Node ("p5.io.authorize.save-file", destinationFile).Add ("args", e.Args));
 
                 // Verifying there's actually any work for us to do here
                 if (sourceFile == destinationFile)
@@ -61,7 +61,7 @@ namespace p5.io.file
                     destinationFile = Common.CreateNewUniqueFileName (context, destinationFile);
 
                     // Verifying user is allowed to save to updated destination filename
-                    context.RaiseNative ("_authorize-save-file", new Node ("_authorize-save-file", destinationFile).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.save-file", new Node ("p5.io.authorize.save-file", destinationFile).Add ("args", e.Args));
                 }
 
                 // Actually moving (or renaming) file

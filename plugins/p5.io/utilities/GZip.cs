@@ -42,7 +42,7 @@ namespace p5.io.utilities
                 var destinationFile = e.Args ["to"].GetExValue<string> (context);
 
                 // Verifying user is authorized to writing to destination
-                context.RaiseNative ("_authorize-save-file", new Node ("_authorize-save-file", destinationFile).Add ("args", e.Args));
+                context.RaiseNative ("p5.io.authorize.save-file", new Node ("p5.io.authorize.save-file", destinationFile).Add ("args", e.Args));
 
                 // Checking if file exist
                 if (File.Exists (rootFolder + destinationFile)) {
@@ -51,7 +51,7 @@ namespace p5.io.utilities
                     destinationFile = Common.CreateNewUniqueFileName (context, destinationFile);
 
                     // Verifying user is authorized to writing to updated destination
-                    context.RaiseNative ("_authorize-save-file", new Node ("_authorize-save-file", destinationFile).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.save-file", new Node ("p5.io.authorize.save-file", destinationFile).Add ("args", e.Args));
                 }
 
                 // Creating our output stream, which will contain our GZip file
@@ -67,7 +67,7 @@ namespace p5.io.utilities
                             foreach (var idxSourceFile in XUtil.Iterate<string> (context, e.Args)) {
 
                                 // Verifying user is authorized to reading from source
-                                context.RaiseNative ("_authorize-load-file", new Node ("_authorize-load-file", idxSourceFile).Add ("args", e.Args));
+                                context.RaiseNative ("p5.io.authorize.load-file", new Node ("p5.io.authorize.load-file", idxSourceFile).Add ("args", e.Args));
 
                                 // Verifying file-/folder name is not a "restricted" type of file
                                 if (idxSourceFile.StartsWith (".") || idxSourceFile.EndsWith ("~"))
@@ -109,13 +109,13 @@ namespace p5.io.utilities
                 var destinationFolder = "/" + e.Args ["to"].GetExValue<string> (context).Trim ('/') + "/";
 
                 // Verifying user is authorized to writing to destination folder
-                context.RaiseNative ("_authorize-save-folder", new Node ("_authorize-save-folder", destinationFolder).Add ("args", e.Args));
+                context.RaiseNative ("p5.io.authorize.save-folder", new Node ("p5.io.authorize.save-folder", destinationFolder).Add ("args", e.Args));
 
                 // Looping through each source zip file given
                 foreach (var idxZipFile in XUtil.Iterate<string> (context, e.Args)) {
 
                     // Verifying user is allowed to read from file given
-                    context.RaiseNative ("_authorize-load-file", new Node ("_authorize-load-file", idxZipFile).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.load-file", new Node ("p5.io.authorize.load-file", idxZipFile).Add ("args", e.Args));
 
                     // Creating our input stream, which wraps the GZip file given
                     using (var input = File.OpenRead (rootFolder + idxZipFile.TrimStart ('/'))) {

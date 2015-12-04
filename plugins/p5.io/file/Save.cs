@@ -35,7 +35,7 @@ namespace p5.io.file
                 string fileName = XUtil.Single<string> (context, e.Args);
 
                 // Verifying user is allowed to save to file
-                context.RaiseNative ("_authorize-save-file", new Node ("_authorize-save-file", fileName).Add ("args", e.Args));
+                context.RaiseNative ("p5.io.authorize.save-file", new Node ("p5.io.authorize.save-file", fileName).Add ("args", e.Args));
 
                 // Getting source
                 var source = Utilities.Convert<string> (context, XUtil.SourceSingle (context, e.Args));
@@ -66,7 +66,7 @@ namespace p5.io.file
                 string fileName = XUtil.Single<string> (context, e.Args);
 
                 // Verifying user is allowed to save to file
-                context.RaiseNative ("_authorize-save-file", new Node ("_authorize-save-file", fileName).Add ("args", e.Args));
+                context.RaiseNative ("p5.io.authorize.save-file", new Node ("p5.io.authorize.save-file", fileName).Add ("args", e.Args));
 
                 // Getting source
                 var source = Utilities.Convert<byte[]> (context, XUtil.SourceSingle (context, e.Args));

@@ -206,7 +206,7 @@ namespace p5.net
                 throw new LambdaException ("No file given, probably an expression leading into oblivion", args, context);
 
             // Making sure user is authorized to read the file request should send
-            context.RaiseNative ("_authorize-load-file", new Node ("_authorize-load-file", file).Add ("args", args));
+            context.RaiseNative ("p5.io.authorize.load-file", new Node ("p5.io.authorize.load-file", file).Add ("args", args));
 
             // Opening request stream, and render file as content of request
             using (Stream stream = request.GetRequestStream ()) {
@@ -371,7 +371,7 @@ namespace p5.net
             var filename = XUtil.Single<string> (context, args ["file"]);
 
             // Making sure user is authorized to write/overwrite the file response should be saved to
-            context.RaiseNative ("_authorize-save-file", new Node ("_authorize-save-file", filename).Add ("args", args));
+            context.RaiseNative ("p5.io.authorize.save-file", new Node ("p5.io.authorize.save-file", filename).Add ("args", args));
 
             // Retrieving HTTP response
             HttpWebResponse response = (HttpWebResponse)request.GetResponse ();

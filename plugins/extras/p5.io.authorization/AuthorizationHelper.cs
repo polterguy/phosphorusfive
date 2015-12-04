@@ -12,8 +12,8 @@ using System.Configuration;
 using System.Collections.Generic;
 using p5.exp;
 using p5.core;
-using p5.io.common;
 using p5.exp.exceptions;
+using p5.io.authorization.helpers;
 
 namespace p5.io.authorization
 {
