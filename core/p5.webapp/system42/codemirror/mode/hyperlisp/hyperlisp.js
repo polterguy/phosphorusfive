@@ -172,6 +172,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'else':
         case 'set':
         case 'add':
+        case 'retrieve':
         case 'src':
         case 'while':
         case 'for-each':

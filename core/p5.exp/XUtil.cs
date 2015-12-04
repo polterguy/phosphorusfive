@@ -409,15 +409,17 @@ namespace p5.exp
                     var oldValue = idxSrcNode.Value;
                     context.RaiseLambda (idxSrcNode.Name, idxSrcNode);
 
+                    // Checking if we should use value or children as source, value has presedence, 
+                    // but only if it exist, and has changed!
                     if ((oldValue == null && idxSrcNode.Value != null) || 
                         (oldValue != null && idxSrcNode.Value != null && !oldValue.Equals (idxSrcNode.Value))) {
 
-                        // value has presedence
+                        // Value has presedence
                         if (tmpRetVal.Value == null)
                             tmpRetVal.Value = idxSrcNode.Value;
                         else
-                            tmpRetVal.Value = tmpRetVal.Get<string> (context) + idxSrcNode.Value; // concatenating as strings
-                        tmpRetVal.Clear (); // dropping all other potential candidates!
+                            tmpRetVal.Value = tmpRetVal.Get<string> (context) + idxSrcNode.Value; // Concatenating as strings
+                        tmpRetVal.Clear (); // Dropping all other potential candidates!
                     } else {
 
                         // Children nodes are used
@@ -427,11 +429,37 @@ namespace p5.exp
                 return SourceSingleImplementation (context, tmpRetVal, tmpRetVal);
             } else {
 
-                // simple source
-                return SourceSingleImplementation (
-                    context,
-                    evaluatedNode.LastChild, 
-                    dataSource == evaluatedNode ? evaluatedNode.LastChild : dataSource);
+                // Simple source, there might still exist several [src] or [rel-src] children, 
+                // making sure we use them all, and making sure [src] and [rel-src] is not mixed!
+                string srcType = null;
+
+                // Used as return value
+                Node retVal = new Node ();
+
+                // Iterating through each [src] and/or [rel-src], verify that they're never mixed in same operation
+                foreach (var idxSource in evaluatedNode.Children.Where (ix => ix.Name == "src" || ix.Name == "rel-src")) {
+
+                    // Making sure [src] and [rel-src] is never mixed
+                    if (srcType == null)
+                        srcType = idxSource.Name;
+                    else if (srcType != idxSource.Name)
+                        throw new LambdaException (
+                            "You cannot mix [src] with [rel-src] for the same operation", 
+                            evaluatedNode, 
+                            context);
+
+                    // Retrieving surrently iterated source
+                    var curSource = SourceSingleImplementation (
+                        context,
+                        idxSource, 
+                        dataSource == evaluatedNode ? idxSource : dataSource);
+
+                    // Appending to retval
+                    retVal.Add ("", curSource);
+                }
+
+                // Making sure we return one single source object
+                return Single<object> (context, retVal);
             }
         }
 
@@ -473,7 +501,7 @@ namespace p5.exp
         }
 
         /// <summary>
-        ///     Will return multiple values if feasable
+        ///     Will return multiple values if possible
         /// </summary>
         /// <returns>The nodes.</returns>
         /// <param name="evaluatedNode">Evaluated node.</param>
@@ -484,10 +512,15 @@ namespace p5.exp
             Node evaluatedNode, 
             Node dataSource)
         {
-            if (evaluatedNode.LastChild == null || evaluatedNode.LastChild.Name == string.Empty)
+            // Finding first [src] or [rel-src] node
+            var firstSourceNode = evaluatedNode.Children.FirstOrDefault (ix => ix.Name != "");
+
+            // Returning early if there is no source
+            if (firstSourceNode == null)
                 return null; // no source!
 
-            if (evaluatedNode.LastChild.Name != "src" && evaluatedNode.LastChild.Name != "rel-src") {
+            // Checking what type of source we have, it might be [src], [rel-src] or any Active Event
+            if (firstSourceNode.Name != "src" && firstSourceNode.Name != "rel-src") {
 
                 // Active Event invocation source, iterating through all source events, invoking Active 
                 // event, updating with result from Active Event invocation
@@ -502,33 +535,58 @@ namespace p5.exp
                     var oldValue = idxSrcNode.Value;
                     context.RaiseLambda (idxSrcNode.Name, idxSrcNode);
 
+                    // Checking if we should use value or children as source, value has presedence, 
+                    // but only if it exist, and has changed!
                     if ((oldValue == null && idxSrcNode.Value != null) || 
                         (oldValue != null && idxSrcNode.Value != null && !oldValue.Equals (idxSrcNode.Value))) {
 
-                        // value has presedence
+                        // Value has presedence
                         if (idxSrcNode.Value is Node) {
 
                             // Value is node
                             tmpRetVal.Add (idxSrcNode.Get<Node> (context).Clone ());
                         } else {
 
-                            // Value is NOT node, converting to node list before adding
+                            // Value is NOT node, converting to node list before adding, but adding CHILDREN since conversion creates a "wrapper node"
                             tmpRetVal.AddRange (idxSrcNode.Get<Node> (context).Children);
                         }
                     } else {
 
-                        // Children nodes are used
+                        // Children nodes are used, since there was no Value in Active Event invocation node after invocation, or value
+                        // was never changed!
                         tmpRetVal.AddRange (idxSrcNode.Clone ().Children);
                     }
                 }
                 return SourceNodesImplementation (context, tmpRetVal, tmpRetVal);
             } else {
 
-                // simple source
-                return SourceNodesImplementation (
-                    context,
-                    evaluatedNode.LastChild, 
-                    dataSource == evaluatedNode ? evaluatedNode.LastChild : dataSource);
+                // Simple source, either [src] or [rel-src], but there might still exist multiple [src] or [rel-src] nodes!
+                var retVal = new List<Node> ();
+
+                // Iterating through each [src] or [rel-src] nodes, making sure there's only [src] sources or only [rel-src] sources
+                // since these cannot be mixed!
+                string srcType = null;
+                foreach (var idxSource in evaluatedNode.Children.Where (ix => ix.Name == "src" || ix.Name == "rel-src")) {
+
+                    // Basic syntax checking, to avoid mixing [rel-src] and [src]
+                    if (srcType == null)
+                        srcType = idxSource.Name;
+                    else if (srcType != idxSource.Name)
+                        throw new LambdaException ("You cannot mix [src] and [rel-src] in same operation", evaluatedNode, context);
+
+                    // Getting currently iterated source
+                    var curSrc = SourceNodesImplementation (
+                        context,
+                        idxSource, 
+                        dataSource == evaluatedNode ? idxSource : dataSource);
+
+                    // Appending currently iterated source into return value, but verify that there actually IS a source first!
+                    if (curSrc != null)
+                        retVal.AddRange (curSrc);
+                }
+
+                // Returning source
+                return retVal;
             }
         }
 
@@ -548,7 +606,7 @@ namespace p5.exp
                         continue;
                     if (idx.TypeOfMatch != Match.MatchType.node && !(idx.Value is Node)) {
 
-                        // [source] is an expression leading to something that's not a node, this
+                        // [src] is an expression leading to something that's not a node, this
                         // will trigger conversion from string to node, adding a "root node" during
                         // conversion. we make sure we remove this node, when creating our source
                         sourceNodes.AddRange (Utilities.Convert<Node> (context, idx.Value).Children.Select (idxInner => idxInner.Clone ()));

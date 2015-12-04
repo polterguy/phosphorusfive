@@ -8,17 +8,16 @@ p5.page:/
  */
 sys42.execute-lisp-file:system42/server-startup/launch-server.hl"
 p5.page:/superuser/editor
-  type:lambda
-  name:Page editor
+  name:Page editorSDFFDSDF
   template:system42/templates/main.hl
   role:superuser
   lambda:@"
-
 /*
- * simply executes the file that loads up the 'page editor'
+ * simply executes the file that loads SDFFDSDFup the 'page editor'
  */
 sys42.execute-lisp-file:system42/root/page-editor/page-editor.hl
 "
+  type:lambda
 p5.page:/superuser/executor
   type:lambda
   name:Evaluator
@@ -43,3 +42,18 @@ p5.page:/superuser/files
  */
 sys42.execute-lisp-file:system42/file-browser/launch.hl
 "
+p5.page:/change-this-1
+  name:Change this
+  type:lambda
+  template:system42/templates/main.hl
+  role:root
+  lambda:@"/*
+ * Default [lambda] type of page
+ * Edit this page to meet your own needs
+ */
+create-widget:foo
+  parent:content
+  class:col-xs-12
+  widgets
+    literal:bar
+      innerValue:Howdy Lambda World!"

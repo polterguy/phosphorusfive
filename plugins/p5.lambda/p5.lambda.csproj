@@ -54,6 +54,7 @@
     <Compile Include="Operators.cs" />
     <Compile Include="keywords\Events.cs" />
     <Compile Include="Eval.cs" />
+    <Compile Include="keywords\Retrieve.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

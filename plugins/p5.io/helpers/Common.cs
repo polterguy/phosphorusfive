@@ -124,7 +124,7 @@ namespace p5.io.common
          */
         public static string GetAuthFile (ApplicationContext context)
         {
-            return context.RaiseNative ("_p5.security.get-auth-file").Get<string> (context);
+            return context.RaiseNative ("_p5.security.get-auth-file").Get<string> (context).Replace ("~/", "");
         }
 
         /*
@@ -142,8 +142,6 @@ namespace p5.io.common
          */
         public static string NormalizeFileName (string file)
         {
-            if (file.StartsWith ("̃~/"))
-                file = file.Substring (2);
             return file.TrimStart ('/').TrimEnd ('.');
         }
     }

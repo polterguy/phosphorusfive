@@ -10,42 +10,45 @@ using p5.exp.exceptions;
 namespace p5.lambda.keywords
 {
     /// <summary>
-    ///     Class wrapping the [set] keyword in p5.lambda.
-    /// 
-    ///     The [set] keyword allows you to change nodes through p5.lambda.
+    ///     Class wrapping the [set] keyword in p5.lambda
     /// </summary>
     public static class Set
     {
         /// <summary>
-        ///     The [set] keyword, allows you to change nodes through p5.lambda.
+        ///     The [set] keyword, allows you to change nodes through p5.lambda
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set", Protection = EventProtection.LambdaClosed)]
         private static void lambda_set (ApplicationContext context, ActiveEventArgs e)
         {
-            // asserting destination is expression
+            // Asserting destination is expression
             var destEx = e.Args.Value as Expression;
             if (destEx == null)
-                throw new LambdaException ("Not a valid destination expression given, make sure you set [set]'s value to an expression using :x:", e.Args, context);
+                throw new LambdaException (
+                    string.Format ("Not a valid destination expression given to [set], value was '{0}', expected expression", e.Args.Value),
+                    e.Args, 
+                    context);
 
-            // figuring out source type, for then to execute the corresponding logic
+            // Figuring out source type, for then to execute the corresponding logic
             if (e.Args.Count > 0 && e.Args.LastChild.Name == "rel-src") {
 
-                // iterating through all destinations, figuring out source relative to each destinations
+                // Iterating through all destinations, figuring out source relative to each destinations
                 foreach (var idxDestination in destEx.Evaluate (e.Args, context, e.Args)) {
 
-                    // source is relative to destination, postponing figuring it out, until we're inside 
+                    // Source is relative to destination, postponing figuring it out, until we're inside 
                     // our destination nodes, on each iteration, passing in destination node as data source
                     idxDestination.Value = XUtil.SourceSingle (context, e.Args, idxDestination.Node);
                 }
             } else {
 
-                // static source, hence retrieving source before iteration starts
+                // Static source, hence retrieving source before iteration starts, in case destination and source overlaps
                 var source = XUtil.SourceSingle (context, e.Args);
 
-                // iterating through all destinations, updating with source
+                // Iterating through all destinations, updating with source
                 foreach (var idxDestination in destEx.Evaluate (e.Args, context, e.Args)) {
+
+                    // Setting value on MatchEntity will work correctly for both removal and changing values/names and nodes
                     idxDestination.Value = source;
                 }
             }

@@ -72,7 +72,7 @@ namespace p5.lambda
         }
 
         /*
-         * executes a block of nodes by copying the nodes executed, and executing the copy, 
+         * Executes a block of nodes by copying the nodes executed, and executing the copy, 
          * returning anything created inside of the block back to caller
          */
         private static void ExecuteBlockCopy (
@@ -82,7 +82,7 @@ namespace p5.lambda
             IEnumerable<Node> args,
             bool isFirst)
         {
-            // making sure lambda is executed on copy of execution nodes,
+            // Making sure lambda is executed on copy of execution nodes,
             // without access to nodes outside of its own scope
             Node exeCopy = exe.Clone ();
 
@@ -130,8 +130,26 @@ namespace p5.lambda
          */
         private static void ExecuteAll (Node exe, ApplicationContext context)
         {
-            // iterating through all nodes in execution scope, and raising these as Active Events
-            var idxExe = exe.FirstChild;
+            // Iterating through all nodes in execution scope, unless [offset] is given, and raising these as Active Events
+            Node idxExe = null;
+
+            // Checking if we have an [offset]
+            if (exe ["offset"] != null) {
+
+                // Retrieving offset
+                int offset = exe ["offset"].Get<int> (context);
+
+                // Checking offset is not larger than number of children in current lambda
+                if (offset >= exe.Count)
+                    throw new LambdaException ("[offset] was too large for lambda block, couldn't find that many children", exe, context);
+
+                // Setting first execution statement as the offset node
+                idxExe = exe [offset];
+            } else {
+
+                // No [offset] given, executing everything
+                idxExe = exe.FirstChild;
+            }
 
             // looping as long as we've got more nodes in scope
             while (idxExe != null) {

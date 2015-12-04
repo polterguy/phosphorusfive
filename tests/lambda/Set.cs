@@ -217,5 +217,44 @@ add:x:/..
             Assert.AreEqual ("_foo2", result [0].Get<Node> (Context)[1] [0].Name);
             Assert.AreEqual ("bar2", result [0].Get<Node> (Context)[1] [0].Value);
         }
+
+        /// <summary>
+        ///     Verifies [set] works with multiple [src] children
+        /// </summary>
+        [Test]
+        public void SetTwoStaticSrc ()
+        {
+            var result = ExecuteLambda (@"set:x:/..?value
+  src:succ
+  src:ess");
+            Assert.AreEqual ("success", result.Value);
+        }
+
+        /// <summary>
+        ///     Verifies [set] works with multiple [src] children, where one has a static source, 
+        ///     and the other an expression
+        /// </summary>
+        [Test]
+        public void SetTwoSrcMixed ()
+        {
+            var result = ExecuteLambda (@"_ess:ess
+set:x:/..?value
+  src:succ
+  src:x:/../*/_ess?value");
+            Assert.AreEqual ("success", result.Value);
+        }
+
+        /// <summary>
+        ///     Verifies [set] works with multiple [src] children, where one has a static string source, 
+        ///     and the other a node value
+        /// </summary>
+        [Test]
+        public void SetTwoSrcStaticAndNode ()
+        {
+            var result = ExecuteLambda (@"set:x:/..?value
+  src:succ
+  src:node:""ess""");
+            Assert.AreEqual ("succ\r\ness", result.Value);
+        }
     }
 }
