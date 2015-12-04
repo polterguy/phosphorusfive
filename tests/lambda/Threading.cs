@@ -220,6 +220,41 @@ wait
         }
 
         /// <summary>
+        ///     Creates two threads beneath a [wait] that both updates the same node values, with multiple lockers
+        /// </summary>
+        [Test]
+        public void MultipleLockers ()
+        {
+            var result = ExecuteLambda (@"_res
+_lockers
+  foo
+  bar
+wait
+  fork
+    lock:x:/../*/_lockers/*/foo?name
+      sleep:20
+      set:x:/../*/_res?value
+        src:su
+    sleep:1
+    lock:x:/../*/_lockers/*?name
+      set:x:/../*/_res?value
+        src:{0}s
+          :x:/../*/_res?value
+  fork
+    sleep:10
+    lock:x:/../*/_lockers/0?name
+      lock:x:/../*/_lockers/1?name
+        set:x:/../*/_res?value
+          src:{0}cc
+            :x:/../*/_res?value
+      sleep:20
+      set:x:/../*/_res?value
+        src:{0}es
+          :x:/../*/_res?value", "eval-mutable");
+            Assert.AreEqual ("success", result [0].Value);
+        }
+
+        /// <summary>
         ///     Creates two threads that have a [wait] statement, where the wait is 10 milliseconds, and
         ///     one of the threads sleeps for 20 milliseconds, before creating a file on disc, verifying the
         ///     file is not created as we leave the wait. Then having the main thread sleep for 20 milliseconds,

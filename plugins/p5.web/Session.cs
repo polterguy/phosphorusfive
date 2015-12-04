@@ -6,8 +6,8 @@
 using System;
 using System.Web;
 using System.Linq;
+using p5.exp;
 using p5.core;
-using p5.web.ui.common;
 
 namespace p5.web.ui
 {
@@ -21,14 +21,10 @@ namespace p5.web.ui
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-session", Protection = EventProtection.LambdaClosed)]
-        private static void set_session (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "set-session-value", Protection = EventProtection.LambdaClosed)]
+        private static void set_session_value (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.Set (e.Args, context, delegate (string key, object value) {
-
-                // Verifying this is not a "protected session object"
-                if (key.StartsWith ("_"))
-                    throw new ApplicationException (string.Format ("You cannot set session value '{0}' since it is protected", key));
+            CollectionBase.Set (context, e.Args, delegate (string key, object value) {
 
                 if (value == null) {
 
@@ -47,11 +43,10 @@ namespace p5.web.ui
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-session", Protection = EventProtection.LambdaClosed)]
-        private static void get_session (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "get-session-value", Protection = EventProtection.LambdaClosed)]
+        private static void get_session_value (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.Get (e.Args, context, key => HttpContext.Current.Session [key]);
-            e.Args.RemoveAll (ix => ix.Name.StartsWith ("_"));
+            CollectionBase.Get (context, e.Args, key => HttpContext.Current.Session [key]);
         }
 
         /// <summary>
@@ -59,11 +54,10 @@ namespace p5.web.ui
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-session", Protection = EventProtection.LambdaClosed)]
-        private static void list_session (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "list-session-keys", Protection = EventProtection.LambdaClosed)]
+        private static void list_session_keys (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.List (e.Args, context, () => (from object idx in HttpContext.Current.Session.Keys select idx.ToString ()).ToList ());
-            e.Args.RemoveAll (ix => ix.Name.StartsWith ("_"));
+            CollectionBase.List (context, e.Args, () => (from object idx in HttpContext.Current.Session.Keys select idx.ToString ()).ToList ());
         }
     }
 }

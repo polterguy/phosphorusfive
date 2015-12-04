@@ -175,7 +175,7 @@ create-widget:page-editor
                  * Stores the currently edited page in session
                  */
                 sys42.set-currently-edited-page
-                  set-session:sys42.currently-edited-page
+                  set-session-value:sys42.currently-edited-page
                     src:x:/../*/_arg?value
 
 
@@ -183,7 +183,7 @@ create-widget:page-editor
                  * Returns the currently edited page
                  */
                 sys42.get-currently-edited-page
-                  get-session:sys42.currently-edited-page
+                  get-session-value:sys42.currently-edited-page
                   set:x:/..?value
                     src:x:/./-/*?value
 

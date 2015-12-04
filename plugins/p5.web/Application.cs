@@ -4,8 +4,8 @@
  */
 
 using System.Web;
+using p5.exp;
 using p5.core;
-using p5.web.ui.common;
 
 /// <summary>
 ///     Main namespace for everything related to Web User Interface.
@@ -33,10 +33,10 @@ namespace p5.web.ui
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-application", Protection = EventProtection.LambdaClosed)]
-        private static void set_application (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "set-global-value", Protection = EventProtection.LambdaClosed)]
+        private static void set_global_value (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.Set (e.Args, context, delegate (string key, object value) {
+            CollectionBase.Set (context, e.Args, delegate (string key, object value) {
                 if (value == null) {
                     // removing object, if it exists
                     HttpContext.Current.Application.Remove (key);
@@ -54,10 +54,10 @@ namespace p5.web.ui
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-application", Protection = EventProtection.LambdaClosed)]
-        private static void get_application (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "get-global-value", Protection = EventProtection.LambdaClosed)]
+        private static void get_global_value (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.Get (e.Args, context, key => HttpContext.Current.Application [key]);
+            CollectionBase.Get (context, e.Args, key => HttpContext.Current.Application [key]);
         }
 
         /// <summary>
@@ -67,10 +67,10 @@ namespace p5.web.ui
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-application", Protection = EventProtection.LambdaClosed)]
-        private static void list_application (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "list-global-keys", Protection = EventProtection.LambdaClosed)]
+        private static void list_global_keys (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.List (e.Args, context, () => HttpContext.Current.Application.AllKeys);
+            CollectionBase.List (context, e.Args, () => HttpContext.Current.Application.AllKeys);
         }
     }
 }

@@ -186,7 +186,7 @@ test-results/
 p5.userprefs
 
 #p5.data files
-core/p5.webapp/_database
+core/p5.webapp/db
 
 #ignoring doxygen output folder
 dox/doxygen-output

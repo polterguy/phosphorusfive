@@ -5,8 +5,8 @@
 
 using System;
 using System.Web;
+using p5.exp;
 using p5.core;
-using p5.web.ui.common;
 
 namespace p5.web.ui.request
 {
@@ -30,7 +30,7 @@ namespace p5.web.ui.request
         [ActiveEvent (Name = "get-cookie", Protection = EventProtection.LambdaClosed)]
         private static void get_cookie (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.Get (e.Args, context, delegate (string key) {
+            CollectionBase.Get (context, e.Args, delegate (string key) {
 
                 //fetching cookie
                 var cookie = HttpContext.Current.Request.Cookies.Get (key);
@@ -50,10 +50,10 @@ namespace p5.web.ui.request
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-cookies", Protection = EventProtection.LambdaClosed)]
-        private static void p5_web_list_request_cookies (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "list-cookie-keys", Protection = EventProtection.LambdaClosed)]
+        private static void list_cookie_keys (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.List (e.Args, context, () => HttpContext.Current.Request.Cookies.AllKeys);
+            CollectionBase.List (context, e.Args, () => HttpContext.Current.Request.Cookies.AllKeys);
         }
     }
 }

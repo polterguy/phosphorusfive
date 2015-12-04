@@ -47,10 +47,10 @@ include-javascript:@"window._execute_lambda = function (e) {
  * Then checking to see if we've got some code stored in session, 
  * and if so, we stuff it into our editor.
  */
-get-session:executor.current-code
+get-session-value:executor.current-code
 if:x:/-/0?value
   set:x:/../**/literal/=execute_input/*/innerValue?value
-    src:x:/../*/get-session/[0,1]/0?value
+    src:x:/../*/get-session-value/[0,1]/0?value
 
 
 /*
@@ -105,9 +105,9 @@ create-widget:executor
             lisp2lambda:x:/<?value
 
             // Then storing current code in session such that code editor remembers content
-            set:x:/../*/set-session/*/src?value
+            set:x:/../*/set-session-value/*/src?value
               src:x:/../*/get-widget-property/+/<?value
-            set-session:executor.current-code
+            set-session-value:executor.current-code
               src
 
             // Then executing p5.lambda nodes, in such a way that our converted hyperlisp 

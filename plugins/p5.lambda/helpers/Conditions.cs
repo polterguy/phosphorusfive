@@ -23,13 +23,21 @@ namespace p5.lambda.helpers
         // Used as buffer for all comparison operators and logical operators in system
         private static Node _operators;
 
+        // Used to hold the number of operators used to evaluate the condition
+        private int _noConditions = -1;
+
         /*
          * Recursively run through conditions
          */
-        public static bool Evaluate (ApplicationContext context, Node args)
+        public bool Evaluate (ApplicationContext context, Node args)
         {
             // Looping through all conditional children nodes
             var conditions = GetConditionalEventNodes (context, args).ToList ();
+
+            // Storing how many operators are part of our conditional statement, such that we can now the offset we should use later
+            _noConditions = conditions.Count;
+
+            // Looping through each condition
             foreach (var idx in conditions) {
 
                 switch (idx.Name) {
@@ -93,17 +101,14 @@ namespace p5.lambda.helpers
         /*
          * Executes current scope
          */
-        public static void ExecuteCurrentScope (ApplicationContext context, Node args)
+        public void ExecuteCurrentScope (ApplicationContext context, Node args)
         {
             // Making sure there actually is something to evaluate
             if (args.Count == 0)
                 return;
 
-            // Executing current scope, but figurig out offset first
-            int offset = GetConditionalEventNodes (context, args).Count ();
-
             // Storing offset temporary in args, making sure we clean up afterwards
-            args.Insert (0, new Node ("offset", offset + 1 /* Remember [offset] node itself */));
+            args.Insert (0, new Node ("offset", _noConditions + 1 /* Remember [offset] node itself */));
             try
             {
                 // Evaluating body of conditional statement, now with offset at first non-comparison operator event
@@ -120,7 +125,7 @@ namespace p5.lambda.helpers
          * Will evaluate the given condition to true, if it is anything but a false boolean, null, 
          * or an expression returning anything but null or false
          */
-        private static void TryEvaluateSimpleExist (ApplicationContext context, Node args)
+        private void TryEvaluateSimpleExist (ApplicationContext context, Node args)
         {
             // If value is not boolean type, we evaluate value, and set its value to true, if evaluation did not
             // result in "null" or "false"

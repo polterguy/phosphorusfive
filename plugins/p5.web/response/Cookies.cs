@@ -5,8 +5,8 @@
 
 using System;
 using System.Web;
+using p5.exp;
 using p5.core;
-using p5.web.ui.common;
 
 /// <summary>
 ///     Main namespace for everything related to the current HTTP response.
@@ -38,7 +38,7 @@ namespace p5.web.ui.response
         [ActiveEvent (Name = "set-cookie", Protection = EventProtection.LambdaClosed)]
         private static void set_cookie (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.Set (e.Args, context, delegate (string key, object value) {
+            CollectionBase.Set (context, e.Args, delegate (string key, object value) {
                 if (value == null) {
 
                     // removing existing cookie

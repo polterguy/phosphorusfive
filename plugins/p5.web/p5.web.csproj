@@ -48,7 +48,6 @@
     <Compile Include="response\Headers.cs" />
     <Compile Include="Cache.cs" />
     <Compile Include="common\PhosphorusWebException.cs" />
-    <Compile Include="common\CollectionBase.cs" />
     <Compile Include="request\Cookies.cs" />
     <Compile Include="request\Headers.cs" />
     <Compile Include="request\Parameters.cs" />

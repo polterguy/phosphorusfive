@@ -1,9 +1,0 @@
-users
-  root
-    salt:8b3f7b0499f746e7a7d585e63a84672ec7c0c52f41fe4aeba08807daedbdaa5b
-    password:foo
-    role:root
-  thomas
-    salt:1bd9fc8a-12c2-4071-9632-956c86384345ef66ca3e-5e75-4db6-b4ea-f5e942e103eb
-    password:foo
-    role:superuser

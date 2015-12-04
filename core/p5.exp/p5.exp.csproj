@@ -74,6 +74,7 @@
     <Compile Include="XUtil.cs" />
     <Compile Include="NodeExtensions.cs" />
     <Compile Include="exceptions\LambdaSecurityException.cs" />
+    <Compile Include="CollectionBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

@@ -225,11 +225,11 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'save-binary-file':
         case 'update-data':
         case 'insert-data':
-        case 'set-session':
-        case 'set-application':
+        case 'set-session-value':
+        case 'set-global-value':
         case 'set-http-header':
         case 'set-widget-property':
-        case 'set-cache':
+        case 'set-cache-value':
         case 'set-cookie':
         case 'create-widget':
         case 'create-literal-widget':
@@ -285,10 +285,10 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'delete-folder':
         case 'select-data':
         case 'delete-data':
-        case 'get-session':
-        case 'list-session':
+        case 'get-session-value':
+        case 'list-session-leys':
         case 'get-application':
-        case 'list-application':
+        case 'list-global-keys':
         case 'echo':
         case 'echo-file':
         case 'get-widget-property':
@@ -296,10 +296,10 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'list-widget-properties':
         case 'list-viewstate':
         case 'get-viewstate':
-        case 'get-cache':
-        case 'list-cache':
+        case 'get-cache-value':
+        case 'list-cache-keys':
         case 'get-cookie':
-        case 'list-cookies':
+        case 'list-cookie-keys':
         case 'get-http-header':
         case 'list-http-headers':
         case 'get-http-param':

@@ -68,8 +68,8 @@ if:x:/../*/get-user/*/default?value
   set:x:/../*/create-widget/**/literal/=login-logout-btn/*/onclick?value
   add:x:/../*/create-widget/**/literal/=login-logout-btn/*/onclick
     src
-      list-session
-      set-session:x:/-/*?name
+      list-session-keys
+      set-session-value:x:/-/*?name
       sys42.empty-user-tmp-folder
       logout
       send-javascript:"window.location.replace(window.location.pathname);"

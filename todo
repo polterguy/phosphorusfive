@@ -3,7 +3,7 @@
 * gzip javascript files through pre-build step on Release-Linux
 
 * create support for "array" p5.lambda type, which allows to be used as an expression for Expression.Iterate, such that
-  users may submit a static array of values to stuff such as "for-each", "set-session-value", etc
+  users may submit a static array of values to stuff such as "for-each", "set-session-value-value", etc
 
 * store timezone (GTM+x) in DateTime when serializing and de-serializing from Hyperlisp
 
@@ -29,7 +29,7 @@
 
 * Email send receive support through MimeKit
 
-* [rel-source] on [set-session-value] and friends
+* [rel-source] on [set-session-value-value] and friends
 
 * make sure [sys42.show-tree] can "append more results" to itself, such that it keeps the same dialogue for multiple invocations
   during the same, and consecutive request

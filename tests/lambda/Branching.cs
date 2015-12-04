@@ -280,5 +280,24 @@ else-if:bool:true
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
         }
+
+        /// <summary>
+        ///     Verifies [if] does not execute its conditional operators twice
+        /// </summary>
+        [Test]
+        public void VerifyConditionNotExecuted ()
+        {
+            // Notice, [can-convert] cannot execute twice, since it demands an expression as input,
+            // and returns a boolean as result. Hence, by using it as part of conditional statement,
+            // we can verify that conditions are not executed twice, and that [offset] passed into 
+            // [eval-mutable] is correctly calculated
+            var result = ExecuteLambda (@"_res:57
+if
+  can-convert:x:/../*/_res?value
+    type:int
+  set:x:/../*/_res?value
+    src:success", "eval-mutable");
+            Assert.AreEqual ("success", result [0].Value);
+        }
     }
 }

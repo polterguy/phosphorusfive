@@ -26,10 +26,11 @@ namespace p5.lambda.keywords
         private static void lambda_if (ApplicationContext context, ActiveEventArgs e)
         {
             // Evaluating condition
-            if (Conditions.Evaluate (context, e.Args)) {
+            var condition = new Conditions ();
+            if (condition.Evaluate (context, e.Args)) {
 
                 // Executing current scope since evaluation of condition yielded true
-                Conditions.ExecuteCurrentScope (context, e.Args);
+                condition.ExecuteCurrentScope (context, e.Args);
             }
         }
 
@@ -55,10 +56,11 @@ namespace p5.lambda.keywords
             }
 
             // Evaluating condition
-            if (Conditions.Evaluate (context, e.Args)) {
+            var condition = new Conditions ();
+            if (condition.Evaluate (context, e.Args)) {
 
                 // Executing current scope since evaluation of condition yielded true
-                Conditions.ExecuteCurrentScope (context, e.Args);
+                condition.ExecuteCurrentScope (context, e.Args);
             }
         }
 
@@ -87,7 +89,8 @@ namespace p5.lambda.keywords
             // Since no previous conditions evaluated to true, we simply execute this scope, 
             // without checking any conditions, since there are none!
             e.Args.Value = true;
-            Conditions.ExecuteCurrentScope (context, e.Args);
+            var condition = new Conditions ();
+            condition.ExecuteCurrentScope (context, e.Args);
         }
 
         /*

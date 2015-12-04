@@ -1,5 +1,5 @@
 /*
- * Allows the user to browse through the files on his system
+ * Allows the user to browse through his filesystem on his server
  */
 
 
@@ -21,7 +21,7 @@ create-widget:file-browser
   oninit
 
     // Retrieving currently selected file
-    get-session:sys42.selected-file-browser-object
+    get-session-value:sys42.selected-file-browser-object
 
     // Creating folder bread-crumb buttons
     sys42.create-folder-bread-crumb
@@ -30,17 +30,17 @@ create-widget:file-browser
     sys42.create-current-folder-content
 
     // Making sure selected file gives visual clues, if any files are selected
-    if:x:/../*/get-session/[0,1]/*/*/object?value
-      sys42.create-selected-object-clues:x:/../*/get-session/[0,1]/*/*/object?value
+    if:x:/../*/get-session-value/[0,1]/*/*/object?value
+      sys42.create-selected-object-clues:x:/../*/get-session-value/[0,1]/*/*/object?value
     sys42.update-file-browser-toolbar
 
     // Checking if we're currently in "edit file mode", and if
     // so, opening up editor
-    get-session:sys42.original-file-editor-classes
+    get-session-value:sys42.original-file-editor-classes
     if:x:/-/*/*
 
       // Loading up file editor for currently edited file
-      sys42.create-file-editor:x:/../*/get-session/[0,1]/*/*/object?value
+      sys42.create-file-editor:x:/../*/get-session-value/[0,1]/*/*/object?value
 
 
   widgets
@@ -53,21 +53,21 @@ create-widget:file-browser
       title:Show menu - S
       accesskey:S
       oninit
-        get-session:sys42.file-browser-toolbar-visible
-        get-session:sys42.original-file-editor-classes
-        if:x:/../*/get-session/[0,1]/*?value.bool
+        get-session-value:sys42.file-browser-toolbar-visible
+        get-session-value:sys42.original-file-editor-classes
+        if:x:/../*/get-session-value/[0,1]/*?value.bool
           =:bool:true
-          and:x:/../*/get-session/[1,2]/*/*
+          and:x:/../*/get-session-value/[1,2]/*/*
             not
           sys42.show-toolbar
-        else-if:x:/../*/get-session/[1,2]/*/*
+        else-if:x:/../*/get-session-value/[1,2]/*/*
           set-widget-property:file-browser-show-toolbar
             class:hidden
       onclick
         sys42.show-toolbar
       events
         sys42.show-toolbar
-          set-session:sys42.file-browser-toolbar-visible
+          set-session-value:sys42.file-browser-toolbar-visible
             src:true
           set-widget-property:file-browser-show-toolbar
             class:hidden
@@ -261,7 +261,7 @@ create-widget:file-browser
           title:Hide menu - H
           accesskey:H
           onclick
-            set-session:sys42.file-browser-toolbar-visible
+            set-session-value:sys42.file-browser-toolbar-visible
             set-widget-property:file-browser-show-toolbar
               class:btn btn-default blink toolbar prepend-right-2
             set-widget-property:file-browser-current-item-toolbar
@@ -285,10 +285,10 @@ create-widget:file-browser
 
           // Putting currently active object into session, 
           // to store which object has been "Copied"
-          get-session:sys42.selected-file-browser-object
-          add:x:/../*/set-session/*
+          get-session-value:sys42.selected-file-browser-object
+          add:x:/../*/set-session-value/*
             src:x:/./-/*/*
-          set-session:sys42.copied-file-browser-object
+          set-session-value:sys42.copied-file-browser-object
             src
               operation:copy
 
@@ -297,7 +297,7 @@ create-widget:file-browser
 
           // Showing popup to user, informing him that action was successful
           sys42.info-feedback:@"{0} was stored in clipboard"
-            :x:/../*/get-session/*/*/type?value
+            :x:/../*/get-session-value/*/*/type?value
 
 
         /*
@@ -307,10 +307,10 @@ create-widget:file-browser
 
           // Putting currently active object into session, 
           // to store which object has been "Cut"
-          get-session:sys42.selected-file-browser-object
-          add:x:/../*/set-session/*
+          get-session-value:sys42.selected-file-browser-object
+          add:x:/../*/set-session-value/*
             src:x:/./-/*/*
-          set-session:sys42.copied-file-browser-object
+          set-session-value:sys42.copied-file-browser-object
             src
               operation:move
 
@@ -319,7 +319,7 @@ create-widget:file-browser
 
           // Showing popup to user, informing him that action was successful
           sys42.info-feedback:@"{0} was stored in clipboard"
-            :x:/../*/get-session/*/*/type?value
+            :x:/../*/get-session-value/*/*/type?value
 
 
         /*
@@ -330,9 +330,9 @@ create-widget:file-browser
           // Getting copied object and current folder, combining
           // filename from copied object and current folder, as destination
           // filepath
-          get-session:sys42.copied-file-browser-object
-          get-session:sys42.current-folder
-          split:x:/../*/get-session/[0,1]/*/*/object?value
+          get-session-value:sys42.copied-file-browser-object
+          get-session-value:sys42.current-folder
+          split:x:/../*/get-session-value/[0,1]/*/*/object?value
             =:/
 
           // This will do the actual work after modifying "foo-bar" to correct Active Event
@@ -345,17 +345,17 @@ create-widget:file-browser
           // Making sure we use the right Active Event
           set:x:/../*/_x-copy-move-file/0?name
             src:{0}-{1}
-              :x:/../*/get-session/[0,1]/*/*/operation?value
-              :x:/../*/get-session/[0,1]/*/*/type?value
+              :x:/../*/get-session-value/[0,1]/*/*/operation?value
+              :x:/../*/get-session-value/[0,1]/*/*/type?value
 
           // Setting source file for operation
           set:x:/../*/_x-copy-move-file/0?value
-            src:x:/../*/get-session/[0,1]/*/*/object?value
+            src:x:/../*/get-session-value/[0,1]/*/*/object?value
 
           // Setting destination filepath for operation
           set:x:/../*/_x-copy-move-file/0/0?value
             src:{0}{1}
-              :x:/../*/get-session/[1,2]/*?value
+              :x:/../*/get-session-value/[1,2]/*?value
               :x:/../*/split/0/-?name
 
           // Executing actual move/copy/file/folder operation
@@ -363,11 +363,11 @@ create-widget:file-browser
 
           // Updating currently selected object to be the new file/folder that
           // was moved/copied
-          set:x:/../*/set-session/*/*/type?value
-            src:x:/../*/get-session/[0,1]/*/*/type?value
-          set:x:/../*/set-session/*/*/object?value
+          set:x:/../*/set-session-value/*/*/type?value
+            src:x:/../*/get-session-value/[0,1]/*/*/type?value
+          set:x:/../*/set-session-value/*/*/object?value
             src:x:/../*/eval?value
-          set-session:sys42.selected-file-browser-object
+          set-session-value:sys42.selected-file-browser-object
             src
               type
               object
@@ -376,15 +376,15 @@ create-widget:file-browser
           sys42.create-current-folder-content
 
           // Updating selected visual clues, since our "new file" is now selected
-          sys42.create-selected-object-clues:x:/../*/set-session/*/*/object?value
+          sys42.create-selected-object-clues:x:/../*/set-session-value/*/*/object?value
 
           // If this was a "move" operation, then we cannot click on "Paste" multiple times
           // since source file is gone, which BTW doesn't logically do much sense anyway, hence
           // we check if this was a "move" operation, and if it was, we simply discard the 
           // "currently cut file browser object"
-          if:x:/../*/get-session/[0,1]/*/*/operation?value
+          if:x:/../*/get-session-value/[0,1]/*/*/operation?value
             =:move
-            set-session:sys42.copied-file-browser-object
+            set-session-value:sys42.copied-file-browser-object
 
           // Since we now have a selected file, where we maybe didn't have one before, in addition
           // to that we might have discarded the "Paste" logic, we update toolbar, since some items
@@ -393,7 +393,7 @@ create-widget:file-browser
 
           // Showing popup to user, informing him that action was successful
           sys42.info-feedback:@"{0} was pasted into current folder"
-            :x:/../*/get-session/*/*/type?value
+            :x:/../*/get-session-value/*/*/type?value
 
 
         /*
@@ -403,20 +403,20 @@ create-widget:file-browser
 
           // Retrieving currently selected file, and passing onto session
           // value tracking which file to download, before we refresh browser window
-          get-session:sys42.selected-file-browser-object
+          get-session-value:sys42.selected-file-browser-object
           if:x:/-/*/*/type?value
             =:file
 
             // Downloading file
-            set-session:sys42.download-file
-              src:x:/../*/get-session/*/*/object?value
+            set-session-value:sys42.download-file
+              src:x:/../*/get-session-value/*/*/object?value
             send-javascript:@"window.location.replace(window.location.pathname);"
 
           else
 
             // Downloading folder by GZIP'ing it first into "temp" directory
-            sys42.gzip-folder:x:/../*/get-session/*/*/object?value
-            set-session:sys42.download-file
+            sys42.gzip-folder:x:/../*/get-session-value/*/*/object?value
+            set-session-value:sys42.download-file
               src:x:/..else/*/sys42.gzip-folder?value
             send-javascript:@"window.location.replace(window.location.pathname);"
 
@@ -427,11 +427,11 @@ create-widget:file-browser
         sys42.rename-button-clicked
 
           // Retrieving selected file-/folder object
-          get-session:sys42.selected-file-browser-object
+          get-session-value:sys42.selected-file-browser-object
 
           // Finding only name of selected object, such that we can
           // put it into "Rename" textbox as starting value
-          split:x:/../*/get-session/*/*/object?value
+          split:x:/../*/get-session-value/*/*/object?value
             =:/
           set:x:/../*/create-literal-widget/*/value?value
             src:x:/../*/split/0/-?name
@@ -440,10 +440,10 @@ create-widget:file-browser
           // or not this is "file" or "folder"
           set:x:/../*/create-literal-widget/*/placeholder?value
             src:New name of {0} ...
-              :x:/../*/get-session/*/*/type?value
+              :x:/../*/get-session-value/*/*/type?value
           set:x:/../*/create-literal-widget/*/title?value
             src:New name of {0} ...
-              :x:/../*/get-session/*/*/type?value
+              :x:/../*/get-session-value/*/*/type?value
 
           // Setting focus to "Rename" textbox
           send-javascript:@"$('#rename-file-object').focus().select();"
@@ -481,8 +481,8 @@ create-widget:file-browser
               sys42.rename-file
 
                 // Retrieving selected file/folder and finding folder of it
-                get-session:sys42.selected-file-browser-object
-                split:x:/../*/get-session/*/*/object?value
+                get-session-value:sys42.selected-file-browser-object
+                split:x:/../*/get-session-value/*/*/object?value
                   =:/
 
                 // Removing old filename from split results
@@ -513,7 +513,7 @@ create-widget:file-browser
                   // That filename is taken up by another file on system
                   set:x:/+/*/_message?value
                     src:Sorry, I cannot rename your {0} to <strong>'{1}'</strong>, since there's already another file/folder with that name
-                      :x:/../*/get-session/*/*/type?value
+                      :x:/../*/get-session-value/*/*/type?value
                       :x:/../*/get-widget-property/*/*/value?value
                   sys42.confirm-action
                     _header:Object exist from before
@@ -525,19 +525,19 @@ create-widget:file-browser
                   // Renaming file
                   set:x:/..else/*/foo-bar2?name
                     src:move-{0}
-                      :x:/../*/get-session/*/*/type?value
-                  foo-bar2:x:/../*/get-session/*/*/object?value
+                      :x:/../*/get-session-value/*/*/type?value
+                  foo-bar2:x:/../*/get-session-value/*/*/object?value
                     to:{0}{1}
                       :x:/../*/_new-filepath?value
                       :x:/../*/get-widget-property/*/*/value?value
 
                   // Making sure we update currently selected object, and delete currently copied/cut object
-                  set-session:sys42.copied-file-browser-object
+                  set-session-value:sys42.copied-file-browser-object
                   add:x:/+2/*
-                    src:x:/../*/get-session/*/*
+                    src:x:/../*/get-session-value/*/*
                   set:x:/+/*/*/object?value
                     src:x:/..else/*/~move-?value
-                  set-session:sys42.selected-file-browser-object
+                  set-session-value:sys42.selected-file-browser-object
                     src
 
                   // Refreshing toolbar
@@ -564,35 +564,35 @@ create-widget:file-browser
 
           // Showing a "Confirm Action" modal dialog, to warn user
           // that deleting files cannot be undone
-          get-session:sys42.selected-file-browser-object
+          get-session-value:sys42.selected-file-browser-object
 
           // Finding filename, without path
-          split:x:/../*/get-session/*/*/object?value
+          split:x:/../*/get-session-value/*/*/object?value
             =:/
 
           // Setting Header of dialog, including either "file" or "folder"
           set:x:/../*/sys42.confirm-action/*/_header?value
             src:Please confirm deletion of {0}
-              :x:/../*/get-session/*/*/type?value
+              :x:/../*/get-session-value/*/*/type?value
 
           // Setting body of dialog, including "file/folder" and file-/folder name
           set:x:/../*/sys42.confirm-action/*/_message?value
             src:Are you sure you wish to delete the {0}; <strong>'{1}'</strong>, this action cannot be undone!
-              :x:/../*/get-session/*/*/type?value
+              :x:/../*/get-session-value/*/*/type?value
               :x:/../*/split/0/-?name
 
           // Making sure we raise the correct Active Event upon "OK" of dialog
           set:x:/../*/sys42.confirm-action/*/_onok/0?name
             src:delete-{0}
-              :x:/../*/get-session/*/*/type?value
+              :x:/../*/get-session-value/*/*/type?value
 
           // Setting file-/folder name and path to delete upon "OK" of dialog
           set:x:/../*/sys42.confirm-action/*/_onok/0?value
-            src:x:/../*/get-session/*/*/object?value
+            src:x:/../*/get-session-value/*/*/object?value
 
           // Setting filename and object type to info-feedback window popdown
           set:x:/../*/sys42.confirm-action/*/_onok/*/sys42.info-feedback/0?value
-            src:x:/../*/get-session/*/*/type?value
+            src:x:/../*/get-session-value/*/*/type?value
           set:x:/../*/sys42.confirm-action/*/_onok/*/sys42.info-feedback/1?value
             src:x:/../*/split/0/-?name
 
@@ -607,8 +607,8 @@ create-widget:file-browser
               foo-bar
 
               // Making sure we delete both copied/cut object, and currently selected object
-              set-session:sys42.copied-file-browser-object
-              set-session:sys42.selected-file-browser-object
+              set-session-value:sys42.copied-file-browser-object
+              set-session-value:sys42.selected-file-browser-object
 
               // Refreshing toolbar
               sys42.update-file-browser-toolbar
@@ -661,11 +661,11 @@ create-widget:file-browser
                * Creates new folder, takes no arguments
                */
               sys42.create-folder
-                get-session:sys42.current-folder
+                get-session-value:sys42.current-folder
                 get-widget-property:new-folder-name
                   value
                 create-folder:{0}{1}/
-                  :x:/../*/get-session/*?value
+                  :x:/../*/get-session-value/*?value
                   :x:/../*/get-widget-property/*/*?value
 
                 // Removing "Create new folder" textbox
@@ -674,7 +674,7 @@ create-widget:file-browser
                 // Making sure new folder is selected
                 set:x:/+/0/*/object?value
                   src:x:/../*/create-folder/*?name
-                set-session:sys42.selected-file-browser-object
+                set-session-value:sys42.selected-file-browser-object
                   src
                     type:folder
                     object
@@ -731,11 +731,11 @@ create-widget:file-browser
                * Creates new file, takes no arguments
                */
               sys42.create-file
-                get-session:sys42.current-folder
+                get-session-value:sys42.current-folder
                 get-widget-property:new-file-name
                   value
                 save-file:{0}{1}
-                  :x:/../*/get-session/*?value
+                  :x:/../*/get-session-value/*?value
                   :x:/../*/get-widget-property/*/*?value
 
                 // Removing "Create new file" textbox
@@ -744,7 +744,7 @@ create-widget:file-browser
                 // Making sure new file is selected
                 set:x:/+/0/*/object?value
                   src:x:/../*/save-file?value
-                set-session:sys42.selected-file-browser-object
+                set-session-value:sys42.selected-file-browser-object
                   src
                     type:file
                     object
@@ -768,23 +768,23 @@ create-widget:file-browser
         sys42.zip-file
 
           // Retrieving currently selected file, which will be the file we zip
-          get-session:sys42.selected-file-browser-object
+          get-session-value:sys42.selected-file-browser-object
 
           // Retrieving current folder, which will be the folder we zip file to
-          get-session:sys42.current-folder
+          get-session-value:sys42.current-folder
 
           // gzipping file
-          split:x:/../*/get-session/[0,1]/*/*/object?value
+          split:x:/../*/get-session-value/[0,1]/*/*/object?value
             =:/
-          gzip:x:/../*/get-session/[0,1]/*/*/object?value
+          gzip:x:/../*/get-session-value/[0,1]/*/*/object?value
             to:{0}{1}.tar.gz
-              :x:/../*/get-session/[1,2]/*?value
+              :x:/../*/get-session-value/[1,2]/*?value
               :x:/../*/split/[0,1]/0/-?name
 
           // Making sure GZIP file becomes selected file
           set:x:/+/*/*/object?value
             src:x:/../*/gzip?value
-          set-session:sys42.selected-file-browser-object
+          set-session-value:sys42.selected-file-browser-object
             src
               type:file
               object
@@ -799,7 +799,7 @@ create-widget:file-browser
           split:x:/../*/gzip?value
             =:/
           sys42.info-feedback:@"{0} '{1}' was successfully zipped"
-            :x:/../*/get-session/[0,1]/*/*/type?value
+            :x:/../*/get-session-value/[0,1]/*/*/type?value
             :x:/../*/split/[1,2]/0/-?name
 
           // Updating toolbar, since we've now selected a ZIP file
@@ -812,23 +812,23 @@ create-widget:file-browser
         sys42.gunzip-file
 
           // Retrieving currently selected file, which will be the file we unzip
-          get-session:sys42.selected-file-browser-object
+          get-session-value:sys42.selected-file-browser-object
 
           // Retrieving current folder, which will be the folder we unzip file to
-          get-session:sys42.current-folder
+          get-session-value:sys42.current-folder
 
           // gunzipping file
-          gunzip:x:/../*/get-session/[0,1]/*/*/object?value
-            to:x:/../*/get-session/[1,2]/*?value
+          gunzip:x:/../*/get-session-value/[0,1]/*/*/object?value
+            to:x:/../*/get-session-value/[1,2]/*?value
 
           // Re-creating current folder's content, since it now has also all the files from the GZIP archive
           sys42.create-current-folder-content
 
           // Making sure currently selected object is still selected
-          sys42.create-selected-object-clues:x:/../*/get-session/[0,1]/*/*/object?value
+          sys42.create-selected-object-clues:x:/../*/get-session-value/[0,1]/*/*/object?value
 
           // Giving user feedback of that operation was successful
-          split:x:/../*/get-session/[0,1]/*/*/object?value
+          split:x:/../*/get-session-value/[0,1]/*/*/object?value
             =:/
           sys42.info-feedback:@"'{0}' was successfully gunzipped"
             :x:/../*/split/0/-?name
@@ -869,7 +869,7 @@ create-widget:file-browser
     sys42.update-file-browser-toolbar
 
       // Figuring out if there are any objects currently selected
-      get-session:sys42.selected-file-browser-object
+      get-session-value:sys42.selected-file-browser-object
       _widgets
         file-browser-copy-button
         file-browser-cut-button
@@ -878,7 +878,7 @@ create-widget:file-browser
         file-browser-download-button
         unzip-file-button
         zip-file-button
-      if:x:/../*/get-session/*/*
+      if:x:/../*/get-session-value/*/*
 
         // There is currently an object active in file browser surface
         // Enabling all buttons, except "Unzip" button
@@ -887,9 +887,9 @@ create-widget:file-browser
 
         // Checking if this is a file, and if it ends with "gz", at which point
         // "Unzip file" button should be enabled
-        if:x:/../*/get-session/*/*/type?value
+        if:x:/../*/get-session-value/*/*/type?value
           =:file
-          split:x:/../*/get-session/*/*/object?value
+          split:x:/../*/get-session-value/*/*/object?value
             =:.
           if:x:/-/0/-?name
             =:gz
@@ -911,7 +911,7 @@ create-widget:file-browser
 
       // Setting "Paste" button to enabled, or disabled, depending
       // upon whether or not there's an object in "clipboard" or not
-      get-session:sys42.copied-file-browser-object
+      get-session-value:sys42.copied-file-browser-object
       if:x:/-/*/*
         delete-widget-property:file-browser-paste-button
           disabled
@@ -929,20 +929,20 @@ create-widget:file-browser
       clear-widget:file-browser-bread-crumb
 
       // Getting current folder
-      get-session:sys42.current-folder
+      get-session-value:sys42.current-folder
 
       // Getting "root folder"
-      get-session:sys42.root-directory
+      get-session-value:sys42.root-directory
 
       // Splitting path up in folder components
-      split:x:/../*/get-session/[0,1]/*?value
+      split:x:/../*/get-session-value/[0,1]/*?value
         =:/
 
       // Creating bread-crumb home button widget part
-      if:x:/../*/get-session/[0,1]/*?value
+      if:x:/../*/get-session-value/[0,1]/*?value
         not
-        or:x:/../*/get-session/[0,1]/*?value
-          =:x:/../*/get-session/[1,2]/*?value
+        or:x:/../*/get-session-value/[0,1]/*?value
+          =:x:/../*/get-session-value/[1,2]/*?value
         add:x:/../*/create-widget
           src:disabled
 
@@ -956,26 +956,26 @@ create-widget:file-browser
 
           // Figuring out where user came from, such that we can make
           // that path selected, therefor we need to retrieve where user came from
-          get-session:sys42.current-folder
+          get-session-value:sys42.current-folder
 
           // Making sure user can never go beneath "root access folder"
-          get-session:sys42.root-directory
-          sys42.change-current-folder:x:/../*/get-session/[1,2]/*?value
+          get-session-value:sys42.root-directory
+          sys42.change-current-folder:x:/../*/get-session-value/[1,2]/*?value
 
           // Figuring out where user came from
           // PS, this looks REALLY weird if you inspect it with a root user, but works for easons which makes
           // me freaking LOOOOVE p5.lambda expressions ... ;) (Hint; splitting upon an empty string)
-          split:x:/../*/get-session/[0,1]/*?value
-            =:x:/../*/get-session/[1,2]/*?value
+          split:x:/../*/get-session-value/[0,1]/*?value
+            =:x:/../*/get-session-value/[1,2]/*?value
           split:x:/-/*?name
             =:/
-          set:x:/../*/set-session/*/*/object?value
+          set:x:/../*/set-session-value/*/*/object?value
             src:{0}{1}/
-              :x:/../*/get-session/[1,2]/*?value
+              :x:/../*/get-session-value/[1,2]/*?value
               :x:/../*/split/[1,2]/0?name
 
           // Setting selected folder to path were we came from
-          set-session:sys42.selected-file-browser-object
+          set-session-value:sys42.selected-file-browser-object
             src
               type:folder
               object
@@ -1003,10 +1003,10 @@ create-widget:file-browser
         // Checking that this folder is beneath "main root access folder", and also NOT actually
         // THE "main root access folder" (since it's handled by "Home" button)
         if:x:/../*/_path/"=~{0}"
-          :x:/../*/get-session/[1,2]/*?value
+          :x:/../*/get-session-value/[1,2]/*?value
           and:x:/../*/_path/"=~{0}"?value
-            :x:/../*/get-session/[1,2]/*?value
-            !=:x:/../*/get-session/[1,2]/*?value
+            :x:/../*/get-session-value/[1,2]/*?value
+            !=:x:/../*/get-session-value/[1,2]/*?value
 
           // Creating a button for each folder leading to current folder
           set:x:/..if/*/create-literal-widget/*/innerValue?value
@@ -1016,13 +1016,13 @@ create-widget:file-browser
 
           // Checking if this is last bread-crumb button, and if so, disabling it
           if:x:/../*/_path?value
-            =:x:/../*/get-session/[0,1]/*?value
+            =:x:/../*/get-session-value/[0,1]/*?value
             add:x:/..if/..if/*/create-literal-widget
               src:disabled
 
           // Making sure that when bread-crumb is clicked, the folder in the path
           // we came from becomes selected
-          set:x:/..if/*/create-literal-widget/*/onclick/*/set-session/*/*/object?value
+          set:x:/..if/*/create-literal-widget/*/onclick/*/set-session-value/*/*/object?value
             src:{0}{1}/
               :x:/../*/_path?value
               :x:/..for-each/*/__dp/#/>?name
@@ -1041,7 +1041,7 @@ create-widget:file-browser
 
               // Making sure path were we came from is selected folder, and updating
               // toolbar and visual clues
-              set-session:sys42.selected-file-browser-object
+              set-session-value:sys42.selected-file-browser-object
                 src
                   type:folder
                   object
@@ -1071,13 +1071,13 @@ create-widget:file-browser
     sys42.create-folders
 
       // Retrieving current folder
-      get-session:sys42.current-folder
+      get-session-value:sys42.current-folder
 
       // Retrieving selected object
-      get-session:sys42.selected-file-browser-object
+      get-session-value:sys42.selected-file-browser-object
 
       // Looping through each folder, creating a widget for each of them
-      list-folders:x:/../*/get-session/[0,1]/*?value
+      list-folders:x:/../*/get-session-value/[0,1]/*?value
       for-each:x:/../*/list-folders/*?name
 
         // Removing trailing "/" and setting innerValue and title
@@ -1106,13 +1106,13 @@ create-widget:file-browser
     sys42.create-files
 
       // Retrieving current folder
-      get-session:sys42.current-folder
+      get-session-value:sys42.current-folder
 
       // Retrieving selected object
-      get-session:sys42.selected-file-browser-object
+      get-session-value:sys42.selected-file-browser-object
 
       // Looping through each folder, creating a widget for each of them
-      list-files:x:/../*/get-session/[0,1]/*?value
+      list-files:x:/../*/get-session-value/[0,1]/*?value
       for-each:x:/../*/list-files/*?name
 
         // Removing trailing "/" and setting innerValue
@@ -1142,7 +1142,7 @@ create-widget:file-browser
     sys42.change-current-folder
 
       // Updating current folder
-      set-session:sys42.current-folder
+      set-session-value:sys42.current-folder
         src:x:/../*/_arg?value
 
       // Re-creating bread-crumb
@@ -1162,10 +1162,10 @@ create-widget:file-browser
       sys42.destroy-file-editor
 
       // Checking if folder is already selected
-      get-session:sys42.selected-file-browser-object
-      if:x:/../*/get-session/*/*/type?value
+      get-session-value:sys42.selected-file-browser-object
+      if:x:/../*/get-session-value/*/*/type?value
         =:folder
-        and:x:/../*/get-session/*/*/object?value
+        and:x:/../*/get-session-value/*/*/object?value
           =:x:/../*/_arg?value
 
         // Clicked folder was already selected, hence opening it, 
@@ -1173,7 +1173,7 @@ create-widget:file-browser
         sys42.change-current-folder:x:/../*/_arg?value
 
         // Removing selected file/folder object
-        set-session:sys42.selected-file-browser-object
+        set-session-value:sys42.selected-file-browser-object
 
         // Refreshing toolbar
         sys42.update-file-browser-toolbar
@@ -1183,7 +1183,7 @@ create-widget:file-browser
         // Clicked folder was not selected, hence we select it
         set:x:/+/*/*/object?value
           src:x:/../*/_arg?value
-        set-session:sys42.selected-file-browser-object
+        set-session-value:sys42.selected-file-browser-object
           src
             type:folder
             object
@@ -1200,20 +1200,20 @@ create-widget:file-browser
     sys42.file-clicked
 
       // Checking if file is already selected
-      get-session:sys42.selected-file-browser-object
-      if:x:/../*/get-session/*/*/type?value
+      get-session-value:sys42.selected-file-browser-object
+      if:x:/../*/get-session-value/*/*/type?value
         =:file
-        and:x:/../*/get-session/*/*/object?value
+        and:x:/../*/get-session-value/*/*/object?value
           =:x:/../*/_arg?value
 
         // File was already selected, opening up file editor
-        sys42.create-file-editor:x:/../*/get-session/*/*/object?value
+        sys42.create-file-editor:x:/../*/get-session-value/*/*/object?value
       else
 
         // Clicked file was not selected, hence we select it, and update view
         set:x:/+/*/*/object?value
           src:x:/../*/_arg?value
-        set-session:sys42.selected-file-browser-object
+        set-session-value:sys42.selected-file-browser-object
           src
             type:file
             object
@@ -1274,21 +1274,21 @@ create-widget:file-browser
 
       // Restoring CSS classes for all widgets that were hidden
       // when editor was opened
-      get-session:sys42.original-file-editor-classes
+      get-session-value:sys42.original-file-editor-classes
       for-each:x:/-/*/*/*
         set-widget-property:x:/./*/__dp/#?name
           class:x:/././*/__dp/#/*?value
 
       // Removing CSS classes from widgets hidden out of session
-      set-session:sys42.original-file-editor-classes
+      set-session-value:sys42.original-file-editor-classes
 
       // Changing header back to what it was
       set-widget-property:header
         innerValue:Files
 
       // Making sure show/hide toolbar is correctly shown
-      get-session:sys42.file-browser-toolbar-visible
-      if:x:/../*/get-session/[1,2]/*?value.bool
+      get-session-value:sys42.file-browser-toolbar-visible
+      if:x:/../*/get-session-value/[1,2]/*?value.bool
         sys42.show-toolbar
       else
         set-widget-property:file-browser-show-toolbar

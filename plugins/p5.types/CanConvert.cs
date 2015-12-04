@@ -26,7 +26,7 @@ namespace p5.types
         [ActiveEvent (Name = "can-convert", Protection = EventProtection.LambdaClosed)]
         private static void can_convert (ApplicationContext context, ActiveEventArgs e)
         {
-            // making sure we clean up and remove all arguments passed in after execution
+            // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args)) {
 
                 // Syntax checking invocation
@@ -36,7 +36,7 @@ namespace p5.types
                 // Figuring out type to check for
                 string type = e.Args.GetExChildValue<string> ("type", context);
 
-                // Exploting the fact that conversions will throw exception if conversion is not possible
+                // Exploiting the fact that conversions will throw exception if conversion is not possible
                 try
                 {
                     foreach (var idx in XUtil.Iterate<object> (context, e.Args)) {
@@ -46,8 +46,8 @@ namespace p5.types
                     // No exception occurred, conversion is possible
                     e.Args.Value = true;
                 }
-                catch {
-
+                catch
+                {
                     // Oops, conversion is not possible!
                     e.Args.Value = false;
                 }

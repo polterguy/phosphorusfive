@@ -6,8 +6,8 @@
 using System.Web;
 using System.Collections;
 using System.Collections.Generic;
+using p5.exp;
 using p5.core;
-using p5.web.ui.common;
 
 namespace p5.web.ui
 {
@@ -29,10 +29,10 @@ namespace p5.web.ui
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-cache", Protection = EventProtection.LambdaClosed)]
-        private static void set_cache (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "set-cache-value", Protection = EventProtection.LambdaClosed)]
+        private static void set_cache_value (ApplicationContext context, ActiveEventArgs e)
         {
-            p5.web.ui.common.CollectionBase.Set (e.Args, context, delegate (string key, object value) {
+            p5.exp.CollectionBase.Set (context, e.Args, delegate (string key, object value) {
                 if (value == null) {
                     // removing object, if it exists
                     HttpContext.Current.Cache.Remove (key);
@@ -50,10 +50,10 @@ namespace p5.web.ui
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-cache", Protection = EventProtection.LambdaClosed)]
-        private static void get_cache (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "get-cache-value", Protection = EventProtection.LambdaClosed)]
+        private static void get_cache_value (ApplicationContext context, ActiveEventArgs e)
         {
-            p5.web.ui.common.CollectionBase.Get (e.Args, context, key => HttpContext.Current.Cache [key]);
+            p5.exp.CollectionBase.Get (context, e.Args, key => HttpContext.Current.Cache [key]);
         }
 
         /// <summary>
@@ -63,14 +63,14 @@ namespace p5.web.ui
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-cache", Protection = EventProtection.LambdaClosed)]
-        private static void list_cache (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "list-cache-keys", Protection = EventProtection.LambdaClosed)]
+        private static void list_cache_keys (ApplicationContext context, ActiveEventArgs e)
         {
             List<string> retVal = new List<string> ();
             foreach (IDictionaryEnumerator idx in HttpContext.Current.Cache) {
                 retVal.Add (idx.Key.ToString ());
             }
-            p5.web.ui.common.CollectionBase.List (e.Args, context, () => retVal);
+            p5.exp.CollectionBase.List (context, e.Args, () => retVal);
         }
     }
 }

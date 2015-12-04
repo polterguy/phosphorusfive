@@ -696,10 +696,7 @@ namespace p5.webapp
         [ActiveEvent (Name = "set-viewstate", Protection = EventProtection.LambdaClosed)]
         private void set_viewstate (ApplicationContext context, ActiveEventArgs e)
         {
-            p5Web.CollectionBase.Set (e.Args, context, delegate (string key, object value) {
-
-                if (key.StartsWith ("_"))
-                    throw new ApplicationException (string.Format ("You cannot modify '{0}' viewstate value, since it is protected", key));
+            p5.exp.CollectionBase.Set (context, e.Args, delegate (string key, object value) {
 
                 if (value == null) {
 
@@ -721,9 +718,7 @@ namespace p5.webapp
         [ActiveEvent (Name = "get-viewstate", Protection = EventProtection.LambdaClosed)]
         private void get_viewstate (ApplicationContext context, ActiveEventArgs e)
         {
-            p5Web.CollectionBase.Get (e.Args, context, key => ViewState [key]);
-            e.Args.RemoveAll(
-                ix => ix.Name.StartsWith ("_"));
+            p5.exp.CollectionBase.Get (context, e.Args, key => ViewState [key]);
         }
 
         /// <summary>
@@ -734,9 +729,7 @@ namespace p5.webapp
         [ActiveEvent (Name = "list-viewstate", Protection = EventProtection.LambdaClosed)]
         private void list_viewstate (ApplicationContext context, ActiveEventArgs e)
         {
-            p5Web.CollectionBase.List (e.Args, context, () => (from object idx in ViewState.Keys select idx.ToString ()).ToList ());
-            e.Args.RemoveAll(
-                ix => ix.Name.StartsWith ("_"));
+            p5.exp.CollectionBase.List (context, e.Args, () => (from object idx in ViewState.Keys select idx.ToString ()).ToList ());
         }
 
         #endregion
