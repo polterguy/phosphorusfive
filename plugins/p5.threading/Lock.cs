@@ -29,7 +29,7 @@ namespace p5.threading
         private static void lambda_lock (ApplicationContext context, ActiveEventArgs e)
         {
             var lockers = new List<string> (XUtil.Iterate<string> (context, e.Args));
-            LockNext (lockers, delegate { context.RaiseLambda ("eval", e.Args); });
+            LockNext (lockers, delegate { context.RaiseLambda ("eval-mutable", e.Args); });
         }
 
         /*

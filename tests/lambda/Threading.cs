@@ -159,7 +159,7 @@ if
         ///     Creates one thread beneath a [wait] that saves a file on disc, but only if [fork] is root node
         /// </summary>
         [Test]
-        public void ForkIsRootForWait ()
+        public void ForkIsNotRootForWait ()
         {
             if (File.Exists (GetBasePath () + "thread-test1.txt")) {
                 File.Delete (GetBasePath () + "thread-test1.txt");
@@ -167,8 +167,8 @@ if
 
             var result = ExecuteLambda (@"wait
   fork
-    if:x:/..?name
-      =:fork
+    if:x:/../0?name
+      =:wait
       save-file:thread-test1.txt
         src:hello world 1
 if
@@ -177,6 +177,46 @@ if
     src:success");
             Assert.AreEqual (1, result.Count);
             Assert.AreEqual ("success", result [0].Name);
+        }
+
+        /// <summary>
+        ///     Creates two threads beneath a [wait] that updates nodes in the main tree
+        /// </summary>
+        [Test]
+        public void WaitCanAccessTree ()
+        {
+            var result = ExecuteLambda (@"_res1
+_res2
+wait
+  fork
+    set:x:/../*/_res1?value
+      src:success1
+  fork
+    set:x:/../*/_res2?value
+      src:success2", "eval-mutable");
+            Assert.AreEqual ("success1", result [0].Value);
+            Assert.AreEqual ("success2", result [1].Value);
+        }
+
+        /// <summary>
+        ///     Creates two threads beneath a [wait] that updates the same node values, with a lock while updating
+        /// </summary>
+        [Test]
+        public void WaitTwoThreadsWithLock ()
+        {
+            var result = ExecuteLambda (@"_res
+wait
+  fork
+    lock:threading.lock1
+      set:x:/../*/_res?value
+        src:{0}success
+          :x:/../*/_res?value
+  fork
+    lock:threading.lock1
+      set:x:/../*/_res?value
+        src:{0}success
+          :x:/../*/_res?value", "eval-mutable");
+            Assert.AreEqual ("successsuccess", result [0].Value);
         }
 
         /// <summary>

@@ -214,56 +214,6 @@ namespace p5.unittests.plugins
         }
 
         /// <summary>
-        ///     Saves a file using a formatted file path expression
-        /// </summary>
-        [Test]
-        public void SaveExpressionFilePath ()
-        {
-            // deleting file if it already exists
-            if (File.Exists (GetBasePath () + "test1.txt")) {
-                File.Delete (GetBasePath () + "test1.txt");
-            }
-
-            // creating file using p5.file
-            var node = new Node (string.Empty, Expression.Create ("/0?name", Context))
-                .Add ("test1.txt")
-                .Add ("src", "this is a test");
-            Context.RaiseNative ("save-file", node);
-
-            // verifying creation of file was done correctly
-            Assert.AreEqual (true, File.Exists (GetBasePath () + "test1.txt"));
-            using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
-                Assert.AreEqual ("this is a test", reader.ReadToEnd ());
-            }
-        }
-
-        /// <summary>
-        ///     Saves a file using a formatted expression, leading to multiple results, building a path
-        /// </summary>
-        [Test]
-        public void SaveFormattedExpressionFilePathYieldingMultipleValues ()
-        {
-            // deleting file if it already exists
-            if (File.Exists (GetBasePath () + "test1.txt")) {
-                File.Delete (GetBasePath () + "test1.txt");
-            }
-
-            // creating file using p5.file
-            var node = new Node (string.Empty, Expression.Create ("/1|/2?{0}", Context))
-                .Add (string.Empty, "name")
-                .Add ("test1")
-                .Add (".txt")
-                .Add ("src", "this is a test");
-            Context.RaiseNative ("save-file", node);
-
-            // verifying creation of file was done correctly
-            Assert.AreEqual (true, File.Exists (GetBasePath () + "test1.txt"));
-            using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
-                Assert.AreEqual ("this is a test", reader.ReadToEnd ());
-            }
-        }
-
-        /// <summary>
         ///     Saves a file using a formatted string as filepath
         /// </summary>
         [Test]
@@ -284,80 +234,6 @@ namespace p5.unittests.plugins
             Assert.AreEqual (true, File.Exists (GetBasePath () + "test1.txt"));
             using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
                 Assert.AreEqual ("this is a test", reader.ReadToEnd ());
-            }
-        }
-
-        /// <summary>
-        ///     Saves a file where src is an expression yielding a single result
-        /// </summary>
-        [Test]
-        public void SaveSrcIsExpression ()
-        {
-            // deleting file if it already exists
-            if (File.Exists (GetBasePath () + "test1.txt")) {
-                File.Delete (GetBasePath () + "test1.txt");
-            }
-
-            // creating file using p5.file
-            var node = new Node (string.Empty, "test1.txt")
-                .Add ("success")
-                .Add ("src", Expression.Create ("/-?name", Context));
-            Context.RaiseNative ("save-file", node);
-
-            // verifying creation of file was done correctly
-            Assert.AreEqual (true, File.Exists (GetBasePath () + "test1.txt"));
-            using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
-                Assert.AreEqual ("success", reader.ReadToEnd ());
-            }
-        }
-
-        /// <summary>
-        ///     Saves a file where src is an expression yielding multiple results
-        /// </summary>
-        [Test]
-        public void SaveSrcIsExpressionMultiResult ()
-        {
-            // deleting file if it already exists
-            if (File.Exists (GetBasePath () + "test1.txt")) {
-                File.Delete (GetBasePath () + "test1.txt");
-            }
-
-            // creating file using p5.file
-            var node = new Node (string.Empty, "test1.txt")
-                .Add ("succ")
-                .Add ("ess")
-                .Add ("src", Expression.Create ("/-2|/-1?name", Context));
-            Context.RaiseNative ("save-file", node);
-
-            // verifying creation of file was done correctly
-            Assert.AreEqual (true, File.Exists (GetBasePath () + "test1.txt"));
-            using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
-                Assert.AreEqual ("success", reader.ReadToEnd ());
-            }
-        }
-
-        /// <summary>
-        ///     Saves a file using a formatted expression as src
-        /// </summary>
-        [Test]
-        public void SaveSrcIsFormattedExpression ()
-        {
-            // deleting file if it already exists
-            if (File.Exists (GetBasePath () + "test1.txt")) {
-                File.Delete (GetBasePath () + "test1.txt");
-            }
-
-            // creating file using p5.file
-            var node = new Node (string.Empty, "test1.txt")
-                .Add ("success")
-                .Add ("src", Expression.Create ("/{0}?name", Context)).LastChild
-                    .Add (string.Empty, "-").Root;
-            Context.RaiseNative ("save-file", node);
-
-            // verifying creation of file was done correctly
-            Assert.AreEqual (true, File.Exists (GetBasePath () + "test1.txt"));
-            using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
-                Assert.AreEqual ("success", reader.ReadToEnd ());
             }
         }
 
@@ -423,7 +299,7 @@ save-file:test1.txt
         ///     Saves a file where src is an Active Event invocation returning multiple nodes
         /// </summary>
         [Test]
-        public void SaveActiveEvent02 ()
+        public void SaveActiveEvent ()
         {
             ExecuteLambda (@"save-file:test1.txt
   test.save.av2");

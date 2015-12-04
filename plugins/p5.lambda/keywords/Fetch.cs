@@ -11,27 +11,27 @@ using p5.exp.exceptions;
 namespace p5.lambda.keywords
 {
     /// <summary>
-    ///     Class wrapping the [retrieve] keyword in p5.lambda
+    ///     Class wrapping the [fetch] keyword in p5.lambda
     /// </summary>
-    public static class Retrieve
+    public static class Fetch
     {
         /// <summary>
-        ///     The [retrieve] keyword, allows you to forward retrieve node results of evaluation of its body
+        ///     The [fetch] keyword, allows you to forward retrieve value results of evaluation of its body
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "retrieve", Protection = EventProtection.LambdaClosed)]
-        private static void lambda_retrieve (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "fetch", Protection = EventProtection.LambdaClosed)]
+        private static void lambda_fetch (ApplicationContext context, ActiveEventArgs e)
         {
             // Basic syntax checking
             if (e.Args.Value != null)
-                throw new LambdaException ("[retrieve] does not take arguments as value, use [src] nodes for supplying arguments", e.Args, context);
+                throw new LambdaException ("[fetch] does not take arguments as value, use [src] nodes for supplying arguments", e.Args, context);
             if (e.Args.Count == 0)
-                throw new LambdaException ("[retrieve] was not given any arguments at all, neither [src] nor lambda to evaluate", e.Args, context);
+                throw new LambdaException ("[fetch] was not given any arguments at all, neither [src] nor lambda to evaluate", e.Args, context);
             if (e.Args.Children.Count (ix => ix.Name == "src") == 0)
-                throw new LambdaException ("[retrieve] was not given any [src] arguments", e.Args, context);
+                throw new LambdaException ("[fetch] was not given any [src] arguments", e.Args, context);
             if (e.Args.Children.Count (ix => ix.Name == "src") == e.Args.Count)
-                throw new LambdaException ("[retrieve] was not given a lambda block to evaluate", e.Args, context);
+                throw new LambdaException ("[fetch] was not given a lambda block to evaluate", e.Args, context);
 
             int offset = 0;
             Node curIdx = e.Args.FirstChild;
@@ -49,7 +49,7 @@ namespace p5.lambda.keywords
             // Making sure [eval] starts at right offset
             e.Args.Insert (0, new Node ("offset", offset + 1 /* Remember [offset] node itself! */));
 
-            // Evaluating [retrieve] lambda block, now with correct offset, 
+            // Evaluating [fetch] lambda block, now with correct offset, 
             // making sure regardless of what happens, offset is removed after execution
             try
             {
@@ -62,11 +62,11 @@ namespace p5.lambda.keywords
             }
 
             // Now that [retrieve] lambda block is evaluated, we can start retrieving our source
-            var source = XUtil.SourceNodes (context, e.Args);
+            var source = XUtil.SourceSingle (context, e.Args);
 
             // Now we can remove entire lambda block, and [src] nodes, and replace with result from [src]
             e.Args.Clear ();
-            e.Args.AddRange (source);
+            e.Args.Value = source;
         }
     }
 }

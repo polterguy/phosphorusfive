@@ -391,10 +391,15 @@ namespace p5.exp
             Node evaluatedNode, 
             Node dataSource)
         {
-            if (evaluatedNode.LastChild == null || evaluatedNode.LastChild.Name == string.Empty)
+            // Finding first [src] or [rel-src] node
+            var firstSourceNode = evaluatedNode.Children.FirstOrDefault (ix => ix.Name != "");
+
+            // Returning early if there is no source
+            if (firstSourceNode == null)
                 return null; // no source!
 
-            if (evaluatedNode.LastChild.Name != "src" && evaluatedNode.LastChild.Name != "rel-src") {
+            // Checking what type of source we have, it might be [src], [rel-src] or any Active Event
+            if (firstSourceNode.Name != "src" && firstSourceNode.Name != "rel-src") {
 
                 // Active Event invocation source, iterating through all source events, invoking Active 
                 // event, updating with result from Active Event invocation

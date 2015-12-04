@@ -63,6 +63,7 @@
     <Compile Include="plugins\Combination.cs" />
     <Compile Include="Expressions.cs" />
     <Compile Include="lambda\Retrieve.cs" />
+    <Compile Include="lambda\Fetch.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
