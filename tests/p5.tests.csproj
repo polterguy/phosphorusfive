@@ -62,6 +62,7 @@
     <Compile Include="plugins\Math.cs" />
     <Compile Include="plugins\Combination.cs" />
     <Compile Include="Expressions.cs" />
+    <Compile Include="lambda\Retrieve.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

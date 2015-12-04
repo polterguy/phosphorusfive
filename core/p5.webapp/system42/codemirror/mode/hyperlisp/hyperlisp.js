@@ -192,6 +192,7 @@ CodeMirror.defineMode("hyperlisp", function() {
           return this.styles.keyword;
 
         // Afterwards keywords not needing indentation
+        case 'operators':
         case 'sleep':
         case 'equals':
         case '=':

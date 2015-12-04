@@ -4,8 +4,8 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
 using p5.core;
 using p5.exp;
 using p5.exp.exceptions;
@@ -16,17 +16,20 @@ using p5.exp.exceptions;
 namespace p5.lambda.helpers
 {
     /// <summary>
-    ///     Class wrapping commonalities between conditional statements
+    ///     Class wrapping commonalities for conditional statements
     /// </summary>
     public class Conditions
     {
+        // Used as buffer for all comparison operators and logical operators in system
+        private static Node _operators;
+
         /*
          * Recursively run through conditions
          */
         public static bool Evaluate (ApplicationContext context, Node args)
         {
-            // looping through all conditional children nodes
-            var conditions = GetConditionalEventNodes (args);
+            // Looping through all conditional children nodes
+            var conditions = GetConditionalEventNodes (context, args).ToList ();
             foreach (var idx in conditions) {
 
                 switch (idx.Name) {
@@ -35,194 +38,168 @@ namespace p5.lambda.helpers
                     TryEvaluateSimpleExist (context, args);
                     if (args.Get<bool> (context)) {
 
-                        // evaluated to true!
-                        // since previous conditions evaluated to true, there is no need to evaluate any further
-                        // hence, cleaning up, and returning true "early"
-                        RemoveConditionalOperators (context, conditions);
+                        // Evaluated to true! Aborting the rest of conditional checks, since condition before [or] evaluated to true!
                         return true;
                     }
 
-                    // recursively loop through, if previous condition did NOT evaluate to true!
+                    // Recursively loop through next condition, if previous condition did NOT evaluate to true!
                     args.Value = Evaluate (context, idx);
                     break;
 
                 case "and":
                     TryEvaluateSimpleExist (context, args);
 
-                    // recursively loop through, but only if previous statements are true!
+                    // Recursively loop through, but only if previous statements are true! If previous condition evaluated to false, we abort!
                     args.Value = args.Get<bool> (context) && Evaluate (context, idx);
                     break;
 
                 case "xor":
                     TryEvaluateSimpleExist (context, args);
 
-                    // only evaluates to true if conditions are NOT EQUAL
+                    // Only evaluates to true if conditions are NOT EQUAL
                     args.Value = args.Get<bool> (context) != Evaluate (context, idx);
                     break;
 
                 case "not":
                     TryEvaluateSimpleExist (context, args);
+
+                    // Basic syntax checking
                     if (idx.Value != null || idx.Count != 0)
                         throw new LambdaException ("Operator [not] cannot have neither any value, nor any children", idx, context);
 
-                    // simply "nots" the previously evaluated conditional value
+                    // Simply "negates" the previously evaluated condition
                     args.Value = !args.Get<bool> (context);
                     break;
 
                 default:
 
-                    // raising comparison operator Active Event, or any other Active Event currently part of conditional operators
+                    // Raising comparison operator Active Event, 
+                    // or any other Active Event currently part of conditional operators
                     context.RaiseLambda (idx.Name, idx);
-                    if (args.Value == null)
-                        args.Value = idx.Value;
+
+                    // Moving results of Active Event invocation up from conditional Active Event invocation result node's value,
+                    // to the result of conditional statement, to "bubble" results up to the top-most branching Active Event result
+                    args.Value = idx.Value;
                     break;
                 }
             }
 
-            // if condition had no operator active event children, then we must evaluate a "simple exist" condition
+            // If condition had no operator active event children, then we must evaluate a "simple exist" condition
             TryEvaluateSimpleExist (context, args);
 
-            if (args.Get<bool> (context)) {
-
-                // success, evaluated to true
-                RemoveConditionalOperators (context, conditions);
-                return true;
-            } else {
-
-                // condition evaluated to false, returning false, removing entire execution scope
-                args.Clear ();
-                return false;
-            }
+            return args.Get<bool> (context);
         }
 
         /*
-         * Removes all nodes that was part of the conditional statement
-         */
-        private static void RemoveConditionalOperators (ApplicationContext context, List<Node> conditions)
-        {
-            foreach (var idxOperators in conditions) {
-                idxOperators.UnTie ();
-            }
-        }
-
-        /*
-         * executes current scope, after cleaning up all conditional nodes, 
-         * but only if root node's value has evaluated to true!
-         * Returns true if scope was successfully executed!
+         * Executes current scope
          */
         public static void ExecuteCurrentScope (ApplicationContext context, Node args)
         {
-            // executing current scope
-            context.RaiseLambda ("eval-mutable", args);
+            // Making sure there actually is something to evaluate
+            if (args.Count == 0)
+                return;
+
+            // Executing current scope, but figurig out offset first
+            int offset = GetConditionalEventNodes (context, args).Count ();
+
+            // Storing offset temporary in args, making sure we clean up afterwards
+            args.Insert (0, new Node ("offset", offset + 1 /* Remember [offset] node itself */));
+            try
+            {
+                // Evaluating body of conditional statement, now with offset at first non-comparison operator event
+                context.RaiseLambda ("eval-mutable", args);
+            }
+            finally
+            {
+                // Making sure we clean up, and remove our [offset], also in the case of exceptions being thrown
+                args[0].UnTie ();
+            }
         }
 
         /*
-         * will evaluate the given condition to true if it is anything but a boolean or a null value
+         * Will evaluate the given condition to true, if it is anything but a false boolean, null, 
+         * or an expression returning anything but null or false
          */
         private static void TryEvaluateSimpleExist (ApplicationContext context, Node args)
         {
-            // if value is not boolean type, we evaluate value, and set its value to true if evaluation did not
-            // result in "null", otherwiswe we set it to false
+            // If value is not boolean type, we evaluate value, and set its value to true, if evaluation did not
+            // result in "null" or "false"
             if (args.Value == null) {
 
+                // Null evaluates to false
                 args.Value = false;
             } else {
+
+                // Checking if value already is boolean, at which case we don't evaluate any further, since it is already evaluated
                 if (!(args.Value is bool)) {
 
                     var obj = XUtil.Single<object> (context, args, false, null);
-                    if (obj is bool) {
+                    if (obj == null) {
 
+                        // Result of evaluated expression yields null, hence evaluation result is false
+                        args.Value = false;
+                    } else if (obj is bool) {
+
+                        // Result of evaluated expression yields boolean, using this boolean as result
                         args.Value = obj;
-                    } else if (obj is int) {
-
-                        args.Value = (int)obj != 0;
-                    } else if (obj is uint) {
-
-                        args.Value = (uint)obj != 0;
-                    } else if (obj is decimal) {
-
-                        args.Value = (decimal)obj != 0M;
-                    } else if (obj is float) {
-
-                        args.Value = (float)obj != 0F;
-                    } else if (obj is double) {
-
-                        args.Value = (double)obj != 0F;
-                    } else if (obj is long) {
-
-                        args.Value = (long)obj != 0L;
-                    } else if (obj is ulong) {
-
-                        args.Value = (ulong)obj != 0L;
-                    } else if (obj is short) {
-
-                        args.Value = (short)obj != 0;
-                    } else if (obj is ushort) {
-
-                        args.Value = (ushort)obj != 0;
-                    } else if (obj is byte) {
-
-                        args.Value = (byte)obj != 0;
-                    } else if (obj is sbyte) {
-
-                        args.Value = (sbyte)obj != 0;
-                    } else if (obj is char) {
-
-                        args.Value = (char)obj != 0;
-                    } else if (obj is byte[]) {
-
-                        args.Value = ((byte[])obj).Length != 0;
-                    } else if (obj is Guid) {
-
-                        args.Value = (Guid)obj != Guid.Empty;
-                    } else if (obj is DateTime) {
-
-                        args.Value = (DateTime)obj != DateTime.MinValue;
-                    } else if (obj is TimeSpan) {
-
-                        args.Value = (TimeSpan)obj != TimeSpan.MinValue;
                     } else {
 
-                        args.Value = obj != null;
+                        // Anything but null and boolean, existence is true, hence evaluation becomes true!
+                        args.Value = true;
                     }
                 }
             }
         }
 
         /*
-         * returns all nodes that are part of evaluating conditional statements
+         * Returns all nodes that either comparison operators or logical operators, and hence should be evaluated
          */
-        private static List<Node> GetConditionalEventNodes (Node args)
+        private static IEnumerable<Node> GetConditionalEventNodes (
+            ApplicationContext context,
+            Node args)
         {
-            List<Node> retVal = new List<Node> ();
-            if (args.Value == null && args.Count > 0) {
+            // Checking if we have retrieved operators, and if not, retrieving them
+            if (_operators == null) {
+            
+                // Retrieving all comparison operators and logical operators in system
+                _operators = context.RaiseNative ("operators");
 
-                // first child node is an Active Event invocation, being part of conditional operators
-                retVal.Add (args.FirstChild);
+                // Then adding all logical operators
+                _operators.Add ("or");
+                _operators.Add ("xor");
+                _operators.Add ("and");
+                _operators.Add ("not");
             }
-            foreach (var idx in args.Children) {
-                switch (idx.Name) {
-                case "and":
-                case "or":
-                case "xor":
-                case "not":
-                case "equals":
-                case "not-equals":
-                case "more-than":
-                case "less-than":
-                case "more-than-equals":
-                case "less-than-equals":
-                case "=":
-                case "!=":
-                case ">":
-                case "<":
-                case ">=":
-                case "<=":
-                    retVal.Add (idx);
-                    break;
-                }
+
+            // Checking if value of args is null, and if so, we use the first child of it as
+            // an "active event" operator, which simply will be checked for existence
+            Node idxOperator = args.FirstChild;
+            if (args.Value == null) {
+
+                // Basic syntax checking
+                if (args.Count == 0)
+                    throw new LambdaException ("Nothing to conditionally use for branching in conditional statement", args, context);
+
+                // Retrieving first child as Active Event operator, but making sure we do NOT return "" events!
+                yield return args.Children.First (ix => ix.Name != "");
+
+                // Incrementing our idxOperator node
+                idxOperator = idxOperator.NextSibling;
             }
-            return retVal;
+
+            // Then returning operators, until we find something that is NOT in our list of comparison/logical operators
+            while (idxOperator != null) {
+
+                // Checking if currently iterated node's name is in list of operators
+                if (_operators.Children.Count (ix => ix.Name == idxOperator.Name) == 0)
+                    yield break;
+
+                // This is a comparison/logical operator
+                yield return idxOperator;
+
+                // Incrementing currently iterated node
+                idxOperator = idxOperator.NextSibling;
+            }
         }
     }
 }

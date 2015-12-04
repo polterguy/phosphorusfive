@@ -51,10 +51,10 @@
     <Compile Include="keywords\Insert.cs" />
     <Compile Include="keywords\Split.cs" />
     <Compile Include="keywords\Join.cs" />
-    <Compile Include="Operators.cs" />
     <Compile Include="keywords\Events.cs" />
     <Compile Include="Eval.cs" />
     <Compile Include="keywords\Retrieve.cs" />
+    <Compile Include="ComparisonOperators.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

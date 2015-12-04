@@ -80,10 +80,7 @@ namespace p5.lambda.keywords
             // Checking if previous conditional statement yielded true, and if not, evaluating current node
             if (PreviousConditionEvaluatedTrue (e.Args, context)) {
 
-                // Clearing entire scope, setting value of [else] to false, 
-                // before returning, without even evaluating condition
-                e.Args.Clear ();
-                e.Args.Value = false;
+                // Not executing [else], since previous conditional statement evaluated to true!
                 return;
             }
 

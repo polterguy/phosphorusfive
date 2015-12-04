@@ -130,5 +130,48 @@ if
     src:success", "eval-mutable");
             Assert.AreEqual ("success", node.Value);
         }
+
+        /// <summary>
+        ///     Checks a conditional branching [if], that uses dynamically create event as condition, [and]ing with 
+        ///     negative result, [or]ed with positive result, making sure output is what was expected
+        /// </summary>
+        [Test]
+        public void IfEventFalseAndOr ()
+        {
+            var node = ExecuteLambda (@"_res
+_res1:
+set-event:combination.test1
+  set:x:/..?value
+    src:bool:true
+_tmp:foo
+if
+  combination.test1
+  and:x:/../0?value
+    =:
+    or:x:/../1?value
+      =:
+  set:x:/../*/_res?value
+    src:success
+else
+  set:x:/../*/_res?value
+    src:error", "eval-mutable");
+            Assert.AreEqual (@"_res:success
+_res1:
+set-event:combination.test1
+  set:x:/..?value
+    src:bool:true
+_tmp:foo
+if:bool:true
+  combination.test1:bool:true
+  and:bool:true
+    =:bool:false
+    or:bool:true
+      =:bool:true
+  set:x:/../*/_res?value
+    src:success
+else
+  set:x:/../*/_res?value
+    src:error", Utilities.Convert<string> (Context, node.Children));
+        }
     }
 }

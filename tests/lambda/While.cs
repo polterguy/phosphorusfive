@@ -42,6 +42,7 @@ namespace p5.unittests.lambda
         {
             var result = ExecuteLambda (@"_data:int:1
 while:x:/-?value
+  >:int:0
   add:x:/..
     src:_foo1
   set:x:/./-?value
@@ -59,6 +60,7 @@ while:x:/-?value
         public void WhileConstantInteger ()
         {
             var result = ExecuteLambda (@"while:int:1
+  >:int:0
   add:x:/..
     src:_foo1
   set:x:/.?value
