@@ -62,19 +62,29 @@ namespace p5.webapp.code
         /*
          * Removes Dictionary item entirely
          */
+        internal void Remove (string key1, string key2)
+        {
+            if (_events.ContainsKey(key1)) {
+                _events[key1].RemoveAll(ix => ix.Name == key2);
+            }
+        }
+
+        /*
+         * Removes Dictionary item entirely
+         */
         internal void RemoveFromKey1 (string key1)
         {
             if (_events.ContainsKey(key1))
                 _events.Remove(key1);
         }
-        
+                
         /*
          * Removes from key2
          */
         internal void RemoveFromKey2 (string key2)
         {
-            foreach (var key1 in new List<string> (_events.Keys)) {
-                _events[key1].RemoveAll(delegate (Node idx) { return idx.Name == key2; });
+            foreach (var key1 in _events.Keys.ToList ()) {
+                _events[key1].RemoveAll(ix => ix.Name == key2);
                 if (_events[key1].Count == 0)
                     _events.Remove(key1);
             }

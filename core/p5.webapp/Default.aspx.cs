@@ -312,7 +312,7 @@ namespace p5.webapp
         #region [ -- Widget properties -- ]
 
         /// <summary>
-        ///     Returns properties and/or attributes requested by caller as children nodes.
+        ///     Returns properties and/or attributes requested by caller as children nodes
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -323,36 +323,34 @@ namespace p5.webapp
             using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
 
                 if (e.Args.Value == null || e.Args.Count == 0)
-                    return; // nothing to do here ...
+                    return; // Nothing to do here ...
 
-                // looping through all widget IDs given by caller
-                foreach (var widget in FindWidgetsThrow<Widget> (e.Args, "get-widget-property")) {
+                // Looping through all widget IDs given by caller
+                foreach (var idxWidget in FindWidgetsThrow<Widget> (e.Args, "get-widget-property")) {
 
-                    // looping through all properties requested by caller
-                    foreach (var nameNode in e.Args.Children.ToList ()) {
+                    // Looping through all properties requested by caller
+                    foreach (var nameNode in e.Args.Children.Where (ix => ix.Name != "").ToList ()) {
 
-                        // checking if this is a generic attribute, or a specific property
+                        // Checking if this is a generic attribute, or a specific property
                         switch (nameNode.Name) {
-                            case "":
-                                continue; // formatting parameter to expression in main node
-                            case "visible":
-                                CreatePropertyReturn (e.Args, nameNode, widget, widget.Visible);
+                           case "visible":
+                                CreatePropertyReturn (e.Args, nameNode, idxWidget, idxWidget.Visible);
                                 break;
                             case "invisible-element":
-                                CreatePropertyReturn (e.Args, nameNode, widget, widget.InvisibleElement);
+                                CreatePropertyReturn (e.Args, nameNode, idxWidget, idxWidget.InvisibleElement);
                                 break;
                             case "element":
-                                CreatePropertyReturn (e.Args, nameNode, widget, widget.ElementType);
+                                CreatePropertyReturn (e.Args, nameNode, idxWidget, idxWidget.ElementType);
                                 break;
                             case "has-id":
-                                CreatePropertyReturn (e.Args, nameNode, widget, !widget.NoIdAttribute);
+                                CreatePropertyReturn (e.Args, nameNode, idxWidget, idxWidget.HasID);
                                 break;
                             case "render-type":
-                                CreatePropertyReturn (e.Args, nameNode, widget, widget.RenderType.ToString ());
+                                CreatePropertyReturn (e.Args, nameNode, idxWidget, idxWidget.RenderType.ToString ());
                                 break;
                             default:
                                 if (!string.IsNullOrEmpty (nameNode.Name))
-                                    CreatePropertyReturn (e.Args, nameNode, widget);
+                                    CreatePropertyReturn (e.Args, nameNode, idxWidget);
                                 break;
                         }
                     }
@@ -361,7 +359,7 @@ namespace p5.webapp
         }
 
         /// <summary>
-        ///     Sets properties and/or attributes of web widgets.
+        ///     Sets properties and/or attributes of web widgets
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -369,33 +367,31 @@ namespace p5.webapp
         private void set_widget_property (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value == null || e.Args.Count == 0)
-                return; // nothing to do here ...
+                return; // Nothing to do here ...
 
-            // looping through all widget IDs given by caller
-            foreach (var widget in FindWidgetsThrow<Widget> (e.Args, "set-widget-property")) {
+            // Looping through all widget IDs given by caller
+            foreach (var idxWidget in FindWidgetsThrow<Widget> (e.Args, "set-widget-property")) {
 
-                // looping through all properties requested by caller
-                foreach (var valueNode in e.Args.Children) {
+                // Looping through all properties requested by caller
+                foreach (var valueNode in e.Args.Children.Where (ix => ix.Name != "")) {
                     switch (valueNode.Name) {
-                        case "":
-                            continue; // formatting parameter to expression in main node
                         case "visible":
-                            widget.Visible = valueNode.GetExValue<bool> (context);
+                            idxWidget.Visible = valueNode.GetExValue<bool> (context);
                             break;
                         case "invisible-element":
-                            widget.InvisibleElement = valueNode.GetExValue<string> (context);
+                            idxWidget.InvisibleElement = valueNode.GetExValue<string> (context);
                             break;
                         case "element":
-                            widget.ElementType = valueNode.GetExValue<string> (context);
+                            idxWidget.ElementType = valueNode.GetExValue<string> (context);
                             break;
                         case "has-id":
-                            widget.NoIdAttribute = valueNode.GetExValue<bool> (context);
+                            idxWidget.HasID = valueNode.GetExValue<bool> (context);
                             break;
                         case "render-type":
-                            widget.RenderType = (Widget.RenderingType) Enum.Parse (typeof (Widget.RenderingType), valueNode.GetExValue<string> (context));
+                            idxWidget.RenderType = (Widget.RenderingType) Enum.Parse (typeof (Widget.RenderingType), valueNode.GetExValue<string> (context));
                             break;
                         default:
-                            widget [valueNode.Name] = valueNode.GetExValue<string> (context);
+                            idxWidget [valueNode.Name] = valueNode.GetExValue<string> (context);
                             break;
                     }
                 }
@@ -403,7 +399,7 @@ namespace p5.webapp
         }
 
         /// <summary>
-        ///     Removes the properties and/or attributes of web widgets.
+        ///     Removes the properties and/or attributes of web widgets
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -411,25 +407,23 @@ namespace p5.webapp
         private void delete_widget_property (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value == null || e.Args.Count == 0)
-                return; // nothing to do here ...
+                return; // Nothing to do here ...
 
-            // looping through all widgets
+            // Looping through all widgets supplied by caller
             foreach (var widget in FindWidgetsThrow<Widget> (e.Args, "delete-widget-property")) {
 
-                // looping through each property to remove
-                foreach (var nameNode in e.Args.Children) {
+                // Looping through each property to remove
+                foreach (var nameNode in e.Args.Children.Where (ix => ix.Name != "")) {
 
-                    // verifying property can be removed
+                    // Verifying property can be removed
                     switch (nameNode.Name) {
-                        case "":
-                            continue; // formatting parameter to expression in main node
                         case "visible":
                         case "invisible-element":
                         case "element":
                         case "has-id":
                         case "has-name":
                         case "render-type":
-                            throw new ArgumentException ("Cannot remove property; '" + nameNode.Name + "' of widget.");
+                            throw new LambdaException ("Cannot remove property; '" + nameNode.Name + "' of widget", e.Args, context);
                         default:
                             widget.RemoveAttribute (nameNode.Name);
                             break;
@@ -439,7 +433,7 @@ namespace p5.webapp
         }
 
         /// <summary>
-        ///     Lists all existing properties for given web widget.
+        ///     Lists all existing properties for given web widget
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -458,18 +452,18 @@ namespace p5.webapp
                     // Creating our "return node" for currently handled widget
                     Node curNode = e.Args.Add (widget.ID).LastChild;
 
-                    // first listing "static properties"
+                    // First listing "static properties"
                     if (!widget.Visible)
                         curNode.Add ("visible", false);
                     if ((widget is Container && widget.ElementType != "div") || (widget is Literal && widget.ElementType != "p"))
                         curNode.Add ("element", widget.ElementType);
-                    if (widget.NoIdAttribute)
+                    if (!widget.HasID)
                         curNode.Add ("has-id", false);
 
                     // Then the generic attributes
                     foreach (var idxAtr in widget.AttributeKeys) {
 
-                        // We drop the Tag property and all events
+                        // Dropping the Tag property and all events
                         if (idxAtr == "Tag" || idxAtr.StartsWith ("on"))
                             continue;
                         curNode.Add (idxAtr, widget [idxAtr]);
@@ -483,7 +477,7 @@ namespace p5.webapp
         #region [ -- Widget Ajax events -- ]
 
         /// <summary>
-        ///     Returns the given ajax event(s) for the given widget(s).
+        ///     Returns the given ajax event(s) for the given widget(s)
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -493,100 +487,94 @@ namespace p5.webapp
             // Making sure we clean up and remove all arguments passed in after execution
             using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
 
-                // looping through all widgets
-                foreach (var widget in FindWidgetsThrow<Widget> (e.Args, "get-widget-ajax-event")) {
+                // Looping through all widgets
+                foreach (var idxWidget in FindWidgetsThrow<Widget> (e.Args, "get-widget-ajax-event")) {
 
-                    // looping through events requested by caller
-                    foreach (var idxEventNameNode in new List<Node> (e.Args.Children)) {
+                    // Looping through events requested by caller
+                    foreach (var idxEventNameNode in e.Args.Children.Where (ix => ix.Name != "").ToList ()) {
 
                         // Returning lambda object for Widget Ajax event
-                        if (WidgetAjaxEventStorage[widget.ID, idxEventNameNode.Name] != null)
-                            e.Args.FindOrCreate(widget.ID).Add(WidgetAjaxEventStorage[widget.ID, idxEventNameNode.Name].Clone());
+                        if (WidgetAjaxEventStorage[idxWidget.ID, idxEventNameNode.Name] != null)
+                            e.Args.FindOrCreate(idxWidget.ID).Add(WidgetAjaxEventStorage[idxWidget.ID, idxEventNameNode.Name].Clone());
                     }
                 }
             }
         }
 
         /// <summary>
-        ///     Changes the given ajax event(s) for the given widget(s).
+        ///     Changes the given ajax event(s) for the given widget(s)
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set-widget-ajax-event", Protection = EventProtection.LambdaClosed)]
         private void set_widget_ajax_event (ApplicationContext context, ActiveEventArgs e)
         {
-            // looping through all widgets
-            foreach (var widget in FindWidgetsThrow<Widget> (e.Args, "set-widget-ajax-event")) {
+            // Looping through all widgets
+            foreach (var idxWidget in FindWidgetsThrow<Widget> (e.Args, "set-widget-ajax-event")) {
 
-                // looping through events requested by caller
+                // Looping through events requested by caller
                 foreach (var idxEventNameNode in e.Args.Children) {
 
                     // Setting Widget's Ajax event to whatever we were given
-                    WidgetAjaxEventStorage[widget.ID, idxEventNameNode.Name] = idxEventNameNode.Clone();
+                    WidgetAjaxEventStorage[idxWidget.ID, idxEventNameNode.Name] = idxEventNameNode.Clone();
                 }
             }
         }
 
         /// <summary>
-        ///     Removes the given ajax event(s) for the given widget(s).
+        ///     Removes the given ajax event(s) for the given widget(s)
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "delete-widget-ajax-event", Protection = EventProtection.LambdaClosed)]
         private void delete_widget_ajax_event (ApplicationContext context, ActiveEventArgs e)
         {
-            // looping through all widgets
-            foreach (var widget in FindWidgetsThrow<Widget> (e.Args, "delete-widget-ajax-event")) {
+            // Looping through all widgets
+            foreach (var idxWidget in FindWidgetsThrow<Widget> (e.Args, "delete-widget-ajax-event")) {
                 
-                // looping through events requested by caller
+                // Looping through events caller wants to delete
                 foreach (var idxEventNameNode in e.Args.Children) {
 
-                    // Setting Widget's Ajax event to whatever we were given
-                    WidgetAjaxEventStorage[widget.ID, idxEventNameNode.Name] = null;
+                    // Setting Widget's Ajax event to null, which deletes it
+                    WidgetAjaxEventStorage[idxWidget.ID, idxEventNameNode.Name] = null;
 
-                    // removing widget event attribute
-                    widget.RemoveAttribute(idxEventNameNode.Name);
+                    // Removing widget event attribute
+                    idxWidget.RemoveAttribute(idxEventNameNode.Name);
                 }
             }
         }
         
         /// <summary>
-        ///     Lists all existing ajax events for given widget(s).
+        ///     Lists all existing ajax events for given widget(s)
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-widget-ajax-events", Protection = EventProtection.LambdaClosed)]
         private void list_widget_ajax_events (ApplicationContext context, ActiveEventArgs e)
         {
-            // looping through all widgets
-            foreach (var widget in FindWidgetsThrow<Widget> (e.Args, "list-widget-ajax-events")) {
+            // Making sure we clean up and remove all arguments passed in after execution
+            using (new p5.core.Utilities.ArgsRemover(e.Args, true)) {
 
-                // then looping through all attribute keys, filtering everything out that does not start with "on"
-                Node curNode = new Node (widget.ID);
-                foreach (var idxAtr in widget.AttributeKeys) {
+                // Looping through all widgets supplied
+                foreach (var idxWidget in FindWidgetsThrow<Widget> (e.Args, "list-widget-ajax-events")) {
 
-                    // Checking if this attribute is an event or not
-                    if (idxAtr.StartsWith ("on"))
-                        curNode.Add (idxAtr);
+                    // Then looping through all attribute keys, filtering everything out that does not start with "on"
+                    Node curNode = new Node(idxWidget.ID);
+                    foreach (var idxAtr in idxWidget.AttributeKeys.Where (ix => !ix.StartsWith ("on"))) {
+
+                        // Adding this attribute
+                        curNode.Add(idxAtr);
+                    }
+
+                    // Special handling of [oninit], since it never leaves the server, and is hence not in widget's attribute collection
+                    if (WidgetAjaxEventStorage[idxWidget.ID, "oninit"] != null)
+                        curNode.Add("oninit");
+
+                    // Checking if we've got more than zero events for given widget, and if so, adding event node, containing list of events
+                    if (curNode.Count > 0)
+                        e.Args.Add(curNode);
                 }
-
-                // Special handling of [oninit], since it never leaves the server
-                if (WidgetAjaxEventStorage[widget.ID, "oninit"] != null)
-                    curNode.Add("oninit");
-
-                // Checking if we've got more than zero events for given widget, and if so, adding event node, containing list of events
-                if (curNode.Count > 0)
-                    e.Args.Add(curNode);
             }
-        }
-        
-        /*
-         * common ajax event handler for all widget's events on page
-         */
-        [WebMethod]
-        protected void common_event_handler (pf.Widget sender, pf.Widget.AjaxEventArgs e)
-        {
-            _context.RaiseLambda("eval", WidgetAjaxEventStorage[sender.ID, e.Name].Clone());
         }
 
         #endregion
@@ -604,19 +592,19 @@ namespace p5.webapp
             // Making sure we clean up and remove all arguments passed in after execution
             using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
 
-                // looping through all widgets
-                foreach (var widget in FindWidgetsThrow<Widget> (e.Args, "get-widget-lambda-event")) {
+                // Looping through all widgets
+                foreach (var idxWidget in FindWidgetsThrow<Widget> (e.Args, "get-widget-lambda-event")) {
 
-                    // looping through events requested by caller
-                    foreach (var idxEventNameNode in new List<Node> (e.Args.Children)) {
+                    // Looping through events requested by caller
+                    foreach (var idxEventNameNode in e.Args.Children.ToList ()) {
 
                         // Returning lambda object for Widget Ajax event
-                        if (WidgetLambdaEventStorage[idxEventNameNode.Name, widget.ID] != null) {
+                        if (WidgetLambdaEventStorage[idxEventNameNode.Name, idxWidget.ID] != null) {
 
                             // We found a Lambda event with that name for that widget
-                            var evtNode = WidgetLambdaEventStorage[idxEventNameNode.Name, widget.ID].Clone();
+                            var evtNode = WidgetLambdaEventStorage[idxEventNameNode.Name, idxWidget.ID].Clone();
                             evtNode.Name = idxEventNameNode.Name;
-                            e.Args.FindOrCreate(widget.ID).Add(evtNode);
+                            e.Args.FindOrCreate(idxWidget.ID).Add(evtNode);
                         }
                     }
                 }
@@ -624,71 +612,67 @@ namespace p5.webapp
         }
 
         /// <summary>
-        ///     Changes the given lambda event(s) for the given widget(s).
+        ///     Changes the given lambda event(s) for the given widget(s)
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set-widget-lambda-event", Protection = EventProtection.LambdaClosed)]
         private void set_widget_lambda_event (ApplicationContext context, ActiveEventArgs e)
         {
-            // looping through all widgets
-            foreach (var widget in FindWidgetsThrow<Widget> (e.Args, "set-widget-lambda-event")) {
+            // Looping through all widget IDs
+            foreach (var idxWidget in FindWidgetsThrow<Widget> (e.Args, "set-widget-lambda-event")) {
 
-                // looping through events requested by caller
+                // Looping through events requested by caller
                 foreach (var idxEventNameNode in e.Args.Children) {
 
                     // Verifying Active Event is not protected
                     if (EventIsProtected (context, idxEventNameNode.Name))
-                        throw new ApplicationException(string.Format ("You cannot override Active Event '{0}' since it is protected", e.Args.Name));
+                        throw new LambdaSecurityException(
+                            string.Format ("You cannot override Active Event '{0}' since it is protected", e.Args.Name),
+                            e.Args,
+                            context);
 
-                    // Setting Widget's Ajax event to whatever we were given
-                    WidgetLambdaEventStorage[idxEventNameNode.Name, widget.ID] = idxEventNameNode.Clone();
+                    // Checking if this is actually a deletion invocation
+                    if (idxEventNameNode.Count == 0) {
+
+                        // Deleting existing event
+                        WidgetLambdaEventStorage.Remove (idxEventNameNode.Name, idxWidget.ID);
+                    } else {
+
+                        // Setting Widget's Ajax event to whatever we were given
+                        WidgetLambdaEventStorage[idxEventNameNode.Name, idxWidget.ID] = idxEventNameNode.Clone();
+                    }
                 }
             }
         }
 
         /// <summary>
-        ///     Removes the given lambda event(s) for the given widget(s).
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "delete-widget-lambda-event", Protection = EventProtection.LambdaClosed)]
-        private void delete_widget_lambda_event (ApplicationContext context, ActiveEventArgs e)
-        {
-            // looping through all widgets
-            foreach (var widget in FindWidgetsThrow<Widget> (e.Args, "delete-widget-lambda-event")) {
-
-                // looping through events requested by caller
-                foreach (var idxEventNameNode in e.Args.Children) {
-
-                    // Setting Widget's Ajax event to whatever we were given
-                    WidgetLambdaEventStorage[idxEventNameNode.Name, widget.ID] = null;
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Lists all existing lambda events for given widget(s).
+        ///     Lists all existing lambda events for given widget(s)
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-widget-lambda-events", Protection = EventProtection.LambdaClosed)]
         private void list_widget_lambda_events (ApplicationContext context, ActiveEventArgs e)
         {
-            // looping through all widgets
-            foreach (var widget in FindWidgetsThrow<Widget> (e.Args, "list-widget-lambda-events")) {
+            // Making sure we clean up and remove all arguments passed in after execution
+            using (new p5.core.Utilities.ArgsRemover(e.Args, true)) {
 
-                // then looping through all attribute keys, filtering everything out that does not start with "on"
-                Node curNode = new Node (widget.ID);
-                foreach (var idxAtr in WidgetLambdaEventStorage.FindByKey2 (widget.ID)) {
+                // Looping through all widgets
+                foreach (var idxWidget in FindWidgetsThrow<Widget> (e.Args, "list-widget-lambda-events")) {
 
-                    // Checking if this attribute is an event or not
-                    curNode.Add (idxAtr);
+                    // Then looping through all attribute keys, filtering everything out that does not start with "on"
+                    Node curNode = new Node(idxWidget.ID);
+                    foreach (var idxAtr in WidgetLambdaEventStorage.FindByKey2 (idxWidget.ID)) {
+
+                        // Checking if this attribute is an event or not
+                        curNode.Add(idxAtr);
+                    }
+
+                    // Checking if we've got more than zero events for given widget, and if so, 
+                    // adding event node, containing list of events
+                    if (curNode.Count > 0)
+                        e.Args.Add(curNode);
                 }
-
-                // Checking if we've got more than zero events for given widget, and if so, adding event node, containing list of events
-                if (curNode.Count > 0)
-                    e.Args.Add(curNode);
             }
         }
         
@@ -708,50 +692,52 @@ namespace p5.webapp
 
         #endregion
 
-        #region [ -- ViewState setters and getters -- ]
+        #region [ -- Page object setters and getters -- ]
 
         /// <summary>
-        ///     Sets one or more ViewState object(s).
+        ///     Sets one or more page object(s)
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-viewstate", Protection = EventProtection.LambdaClosed)]
-        private void set_viewstate (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "set-page-value", Protection = EventProtection.LambdaClosed)]
+        private void set_page_value (ApplicationContext context, ActiveEventArgs e)
         {
-            p5.exp.CollectionBase.Set (context, e.Args, delegate (string key, object value) {
+            // Using collection helper to traverse all keys supplied by caller
+            p5.exp.CollectionBase.Set (context, e.Args, (key, value) => {
 
+                // Checking if this is delete operation
                 if (value == null) {
 
-                    // removing object, if it exists
+                    // Removing object, if it exists
                     ViewState.Remove (key);
                 } else {
 
-                    // adding object
+                    // Adding object
                     ViewState [key] = value;
                 }
             });
         }
 
         /// <summary>
-        ///     Retrieves ViewState object(s).
+        ///     Retrieves page object(s)
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-viewstate", Protection = EventProtection.LambdaClosed)]
-        private void get_viewstate (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "get-page-value", Protection = EventProtection.LambdaClosed)]
+        private void get_page_value (ApplicationContext context, ActiveEventArgs e)
         {
             p5.exp.CollectionBase.Get (context, e.Args, key => ViewState [key]);
         }
 
         /// <summary>
-        ///     Lists all keys in the Session object.
+        ///     Lists all keys in the page object
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-viewstate", Protection = EventProtection.LambdaClosed)]
-        private void list_viewstate (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "list-page-keys", Protection = EventProtection.LambdaClosed)]
+        private void list_page_keys (ApplicationContext context, ActiveEventArgs e)
         {
-            p5.exp.CollectionBase.List (context, e.Args, () => (from object idx in ViewState.Keys select idx.ToString ()).ToList ());
+            p5.exp.CollectionBase.List (context, e.Args, () => (from object idx in ViewState.Keys select idx.ToString ()));
         }
 
         #endregion
@@ -759,7 +745,7 @@ namespace p5.webapp
         #region [ -- Misc. global helpers -- ]
 
         /// <summary>
-        ///     Sends the given JavaScript to client once
+        ///     Sends the given JavaScript to client
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -807,7 +793,7 @@ namespace p5.webapp
         }
 
         /// <summary>
-        ///     Includes CSS StyleSheet file(s) persistently on the client side.
+        ///     Includes CSS StyleSheet file(s) persistently
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -823,50 +809,63 @@ namespace p5.webapp
         }
 
         /// <summary>
-        ///     Changes the title of your web page.
+        ///     Changes the title of your web page
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set-title", Protection = EventProtection.LambdaClosed)]
         private void set_title (ApplicationContext context, ActiveEventArgs e)
         {
-            var title = XUtil.Single<string>(context, e.Args);
+            // Retrieving new Title of page
+            var title = XUtil.Single<string>(context, e.Args, true);
+
+            // Checking if this is ajax request, at which point we'll have to update title using JavaScript
             if (Manager.IsPhosphorusRequest) {
 
-                // passing title to client as JavaScript update
-                Manager.SendJavaScriptToClient (string.Format ("document.title='{0}';", title.Replace ("\\", "\\\\").Replace ("'", "\\'")));
+                // Passing title to client as JavaScript update, making sure we escape string
+                Manager.SendJavaScriptToClient(
+                    string.Format("document.title='{0}';", title.Replace("\\", "\\\\").Replace("'", "\\'")));
+            } else {
+
+                // Updating Title element of page
+                Title = title;
             }
-            Title = title;
 
             // Storing Title in ViewState such that we can retrieve correct title later
-            ViewState["P5-Title"] = Title;
+            ViewState["_pf_title"] = Title;
         }
 
         /// <summary>
-        ///     Returns the title of your web page.
+        ///     Returns the title of your web page
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-title", Protection = EventProtection.LambdaClosed)]
         private void get_title (ApplicationContext context, ActiveEventArgs e)
         {
-            // ViewState title has presedence, since it might have been changed, 
-            // and "Title" property of page is not serialized into ViewState
-            e.Args.Value = ViewState ["P5-Title"] ?? Title;
+            // Making sure we clean up and remove all arguments passed in after execution
+            using (new p5.core.Utilities.ArgsRemover(e.Args)) {
+
+                // ViewState title has presedence, since it might have been changed, 
+                // and "Title" property of page is not serialized into ViewState
+                e.Args.Value = ViewState["_pf_title"] ?? Title;
+            }
         }
 
         /// <summary>
-        ///     Changes the URL/location of your web page.
+        ///     Changes the URL/location of your web page
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set-location", Protection = EventProtection.LambdaClosed)]
         private void set_location (ApplicationContext context, ActiveEventArgs e)
         {
+            // Checking if this is ajax callback, which means we'll have to redirect using JavaScript
             if (Manager.IsPhosphorusRequest) {
 
                 // Redirecting using JavaScript
-                Manager.SendJavaScriptToClient (string.Format ("window.location='{0}';", XUtil.Single<string> (context, e.Args).Replace ("\\", "\\\\").Replace ("'", "\\'")));
+                Manager.SendJavaScriptToClient (
+                    string.Format ("window.location='{0}';", XUtil.Single<string> (context, e.Args, true)));
             } else {
 
                 // Redirecting using Response object
@@ -887,23 +886,28 @@ namespace p5.webapp
         }
 
         /// <summary>
-        ///     Returns the URL/location of your web page.
+        ///     Returns the URL/location of your web page
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-location", Protection = EventProtection.LambdaClosed)]
         private void get_location (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = Request.Url.ToString ();
+            // Making sure we clean up and remove all arguments passed in after execution
+            using (new p5.core.Utilities.ArgsRemover(e.Args)) {
+
+                // Returning current URL
+                e.Args.Value = Request.Url.ToString();
+            }
         }
 
         /// <summary>
-        ///     Returns the given Node back to client as JSON.
+        ///     Returns the given Node back to client as JSON
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "return-value", Protection = EventProtection.LambdaClosed)]
-        private void return_value (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "return-response-object", Protection = EventProtection.LambdaClosed)]
+        private void return_response_object (ApplicationContext context, ActiveEventArgs e)
         {
             var key = XUtil.Single<string> (context, e.Args);
             var str = p5.core.Utilities.Convert<string> (context, XUtil.SourceSingle(context, e.Args), "");
@@ -915,7 +919,7 @@ namespace p5.webapp
         #region [ -- "Private" helper Active Events -- ]
 
         /*
-         * Invoked by p5.web during creation of Widgets
+         * Invoked by p5.web during creation of Widgets, creates a Widget Ajax event
          */
         [ActiveEvent (Name = "_p5.web.add-widget-ajax-event", Protection = EventProtection.NativeClosed)]
         private void _p5_web_add_widget_ajax_event (ApplicationContext context, ActiveEventArgs e)
@@ -934,7 +938,7 @@ namespace p5.webapp
         }
         
         /*
-         * Invoked by p5.web during creation of Widgets
+         * Invoked by p5.web during creation of Widgets, creates a Widget Lambda event
          */
         [ActiveEvent (Name = "_p5.web.add-widget-lambda-event", Protection = EventProtection.NativeClosed)]
         private void _p5_web_add_widget_lambda_event (ApplicationContext context, ActiveEventArgs e)
@@ -952,7 +956,16 @@ namespace p5.webapp
 
         #endregion
 
-        #region [ -- Private helper methods -- ]
+        #region [ -- Private and protected helper methods -- ]
+
+        /*
+         * Common ajax event handler for all widget's events on page
+         */
+        [WebMethod]
+        protected void common_event_handler (pf.Widget sender, pf.Widget.AjaxEventArgs e)
+        {
+            _context.RaiseLambda("eval", WidgetAjaxEventStorage[sender.ID, e.Name].Clone());
+        }
 
         /*
          * Helper to retrieve a list of widgets from a Node

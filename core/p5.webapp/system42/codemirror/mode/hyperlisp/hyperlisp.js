@@ -236,10 +236,10 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'create-void-widget':
         case 'set-widget-ajax-event':
         case 'set-widget-lambda-event':
-        case 'return-value':
+        case 'return-response-object':
         case 'gzip':
         case 'gunzip':
-        case 'set-viewstate':
+        case 'set-page-value':
           state.indent += 2;
           return this.styles.lesser_keyword;
 
@@ -294,8 +294,8 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'get-widget-property':
         case 'delete-widget-property':
         case 'list-widget-properties':
-        case 'list-viewstate':
-        case 'get-viewstate':
+        case 'list-page-keys':
+        case 'get-page-value':
         case 'get-cache-value':
         case 'list-cache-keys':
         case 'get-cookie':

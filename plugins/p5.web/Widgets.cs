@@ -123,7 +123,7 @@ namespace p5.web.ui.widgets
                         widget.ElementType = idxArg.Get<string> (context);
                         break;
                     case "has-id":
-                        widget.NoIdAttribute = !idxArg.Get<bool> (context);
+                        widget.HasID = idxArg.Get<bool> (context);
                         break;
                     case "render-type":
                         widget.RenderType = (Widget.RenderingType) Enum.Parse (typeof (Widget.RenderingType), idxArg.Get<string> (context));

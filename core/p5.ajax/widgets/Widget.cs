@@ -216,26 +216,13 @@ namespace p5.ajax.widgets
         }
 
         /// <summary>
-        ///     Sets or gets whether your widget has its ID attribute rendered to the client or not.
-        /// 
-        ///     If this property is true, then no "id" attribute will be rendered back to the client for the widget. This is useful 
-        ///     for widgets that does not require an id attribute, where the id attribute is not supposed to be rendered to the
-        ///     client.
-        /// 
-        ///     Examples includes for instance "option" HTML elements, where the id attribute is not always necessary, and
-        ///     not rendering the id attribute, creates "better" and more beautiful HTML.
-        /// 
-        ///     The widget must still have a unique id, but this id will only be used on the server-side, and never rendered back to the client.
-        /// 
-        ///     If you do not render the id attribute, then you cannot change any of the widget's attributes or properties during server-side
-        ///     Ajax callbacks, since the id attribute is used on the client-side to find the widget in the DOM, to update its properties and
-        ///     attributes.
+        ///     Sets or gets whether your widget has its ID attribute rendered to the client or not
         /// </summary>
         /// <value>Whether an "id" attribute is rendered to the client or not.</value>
-        public bool NoIdAttribute
+        public bool HasID
         {
-            get { return ViewState ["noid"] != null && (bool) ViewState ["noid"]; }
-            set { ViewState ["noid"] = value; }
+            get { return ViewState ["hasid"] == null ? true : (bool) ViewState ["hasid"]; }
+            set { ViewState ["hasid"] = value; }
         }
 
         /// <summary>
@@ -612,8 +599,8 @@ namespace p5.ajax.widgets
             foreach (Control idxCtrl in Controls) {
                 var idxWidget = idxCtrl as Widget;
                 if (idxWidget != null) {
-                    if (idxWidget.NoIdAttribute)
-                        return false;
+                    if (idxWidget.HasID)
+                        return true;
                 }
             }
             return true;
@@ -685,10 +672,10 @@ namespace p5.ajax.widgets
         private void RenderHtmlResponse (HtmlTextWriter writer)
         {
             // render opening tag
-            if (NoIdAttribute) {
-                writer.Write (@"<{0}", ElementType);
-            } else {
+            if (HasID) {
                 writer.Write (@"<{0} id=""{1}""", ElementType, ClientID);
+            } else {
+                writer.Write (@"<{0}", ElementType);
             }
 
             // render attributes

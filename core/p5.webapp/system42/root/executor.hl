@@ -122,7 +122,7 @@ create-widget:executor
 
             // Then converting p5.lambda result nodes to text, and returning back to client as JSON
             lambda2lisp:x:/-2/#/*
-            return-value:code
+            return-response-object:code
               src:x:/./-?value
             sys42.info-feedback:@"Code was successfully executed"
 

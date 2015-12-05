@@ -72,7 +72,7 @@ if:x:/../*/get-user/*/default?value
       set-session-value:x:/-/*?name
       sys42.empty-user-tmp-folder
       logout
-      send-javascript:"window.location.replace(window.location.pathname);"
+      reload-location
 else
   include-javascript:@"
 $('#login-logout-btn').on('click', function(){
@@ -191,7 +191,7 @@ create-widget:template-root
                         persist:bool:true
 
                       // Reloading page to make sure everything is wired up together correctly
-                      send-javascript:"window.location.replace(window.location.pathname);"
+                      reload-location
                     else
 
                       // Oops, wrong credentials, or something

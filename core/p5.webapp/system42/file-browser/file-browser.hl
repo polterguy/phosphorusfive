@@ -410,7 +410,7 @@ create-widget:file-browser
             // Downloading file
             set-session-value:sys42.download-file
               src:x:/../*/get-session-value/*/*/object?value
-            send-javascript:@"window.location.replace(window.location.pathname);"
+            reload-location
 
           else
 
@@ -418,7 +418,7 @@ create-widget:file-browser
             sys42.gzip-folder:x:/../*/get-session-value/*/*/object?value
             set-session-value:sys42.download-file
               src:x:/..else/*/sys42.gzip-folder?value
-            send-javascript:@"window.location.replace(window.location.pathname);"
+            reload-location
 
 
         /*

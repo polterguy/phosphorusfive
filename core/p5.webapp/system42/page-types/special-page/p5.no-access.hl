@@ -104,7 +104,7 @@ Maybe it works if you login ...?"
                       persist:bool:true
 
                     // Reloading page to make sure everything is wired up together correctly
-                    send-javascript:"window.location.replace(window.location.pathname);"
+                    reload-location
                   else
                     sys42.info-feedback:Sorry, wrong credentials
                       _error:true

@@ -274,7 +274,7 @@ namespace p5.ajax.core.internals
                 var name = idx.Name;
                 string value;
                 if (idx.Name.StartsWith ("on") && Utilities.IsLegalMethodName (idx.Value)) {
-                    if (widget.NoIdAttribute)
+                    if (!widget.HasID)
                         throw new ArgumentException ("cannot have events on a Widget that doesn't render its ID attribute");
                     if (name.EndsWith ("_"))
                         continue; // "invisible" event
