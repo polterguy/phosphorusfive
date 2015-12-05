@@ -57,7 +57,7 @@ namespace p5.web.ui
         [ActiveEvent (Name = "list-session-keys", Protection = EventProtection.LambdaClosed)]
         private static void list_session_keys (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.List (context, e.Args, () => (from object idx in HttpContext.Current.Session.Keys select idx.ToString ()).ToList ());
+            CollectionBase.List (context, e.Args, HttpContext.Current.Session.Keys);
         }
     }
 }

@@ -255,6 +255,10 @@
       <Project>{1D3C2CCC-F27C-4525-96E3-65E83D2E92A6}</Project>
       <Name>p5.io.authorization</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\plugins\extras\p5.io.zip\p5.io.zip.csproj">
+      <Project>{1D57B094-2569-4899-A33A-E0A6E067EAD3}</Project>
+      <Name>p5.io.zip</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="system42\application-startup.hl" />

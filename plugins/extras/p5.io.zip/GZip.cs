@@ -11,9 +11,11 @@ using ICSharpCode.SharpZipLib.Tar;
 using ICSharpCode.SharpZipLib.GZip;
 using p5.core;
 using p5.exp;
-using p5.io.common;
 
-namespace p5.io.utilities
+/// <summary>
+///     Main namespace for all file operations in Phosphorus Five
+/// </summary>
+namespace p5.io.zip
 {
     /// <summary>
     ///     Class to help GZip folders and files
@@ -36,7 +38,7 @@ namespace p5.io.utilities
             using (new Utilities.ArgsRemover (e.Args)) {
 
                 // Getting root folder
-                var rootFolder = Common.GetRootFolder (context);
+                var rootFolder = Helpers.GetRootFolder (context);
 
                 // Getting filename of gz file to create
                 var destinationFile = e.Args ["to"].GetExValue<string> (context);
@@ -48,7 +50,7 @@ namespace p5.io.utilities
                 if (File.Exists (rootFolder + destinationFile)) {
 
                     // Destination file exist from before, creating a new unique destination filename
-                    destinationFile = Common.CreateNewUniqueFileName (context, destinationFile);
+                    destinationFile = Helpers.CreateNewUniqueFileName (context, destinationFile);
 
                     // Verifying user is authorized to writing to updated destination
                     context.RaiseNative ("p5.io.authorize.save-file", new Node ("p5.io.authorize.save-file", destinationFile).Add ("args", e.Args));
@@ -103,7 +105,7 @@ namespace p5.io.utilities
             using (new Utilities.ArgsRemover (e.Args)) {
 
                 // Getting root folder
-                var rootFolder = Common.GetRootFolder (context);
+                var rootFolder = Helpers.GetRootFolder (context);
 
                 // Getting destination folder
                 var destinationFolder = "/" + e.Args ["to"].GetExValue<string> (context).Trim ('/') + "/";

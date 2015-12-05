@@ -34,6 +34,9 @@ namespace p5.webapp
         // Main root container for all widgets
         protected pf.Container cnt;
 
+        // List of all dynamically created protected events
+        private static Node _protectedDynamicEvents = null;
+
         // Application Context for page life cycle
         private ApplicationContext _context;
 
@@ -157,7 +160,7 @@ namespace p5.webapp
         private void delete_widget (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through all IDs given
-            foreach (var idxWidget in FindWidgetsThrow<Control> (e.Args, "delete-widget")) {
+            foreach (var idxWidget in FindWidgets<Control> (context, e.Args, "delete-widget")) {
 
                 // Removing widget
                 RemoveWidget (context, e.Args, idxWidget);
@@ -173,7 +176,7 @@ namespace p5.webapp
         private void clear_widget (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through all IDs given
-            foreach (var idxWidget in FindWidgetsThrow<pf.Container> (e.Args, "clear-widget")) {
+            foreach (var idxWidget in FindWidgets<pf.Container> (context, e.Args, "clear-widget")) {
 
                 // Then looping through all of its children controls
                 foreach (Control idxChildWidget in new ArrayList(idxWidget.Controls)) {
@@ -200,7 +203,7 @@ namespace p5.webapp
             using (new p5.core.Utilities.ArgsRemover (e.Args)) {
 
                 // Looping through all IDs given
-                foreach (var idxWidget in FindWidgetsThrow <Control> (e.Args, "get-parent-widget")) {
+                foreach (var idxWidget in FindWidgets <Control> (context, e.Args, "get-parent-widget")) {
 
                     // Finding parent and returning type as Name and ID as Value
                     var parent = idxWidget.Parent;
@@ -232,7 +235,7 @@ namespace p5.webapp
             using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
 
                 // Looping through all IDs given
-                foreach (var idxWidget in FindWidgetsThrow <Control> (e.Args, "get-children-widgets")) {
+                foreach (var idxWidget in FindWidgets <Control> (context, e.Args, "get-children-widgets")) {
 
                     // Adding currently iterated widget's ID
                     e.Args.Add(idxWidget.ID);
@@ -326,7 +329,7 @@ namespace p5.webapp
                     return; // Nothing to do here ...
 
                 // Looping through all widget IDs given by caller
-                foreach (var idxWidget in FindWidgetsThrow<Widget> (e.Args, "get-widget-property")) {
+                foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "get-widget-property")) {
 
                     // Looping through all properties requested by caller
                     foreach (var nameNode in e.Args.Children.Where (ix => ix.Name != "").ToList ()) {
@@ -370,7 +373,7 @@ namespace p5.webapp
                 return; // Nothing to do here ...
 
             // Looping through all widget IDs given by caller
-            foreach (var idxWidget in FindWidgetsThrow<Widget> (e.Args, "set-widget-property")) {
+            foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "set-widget-property")) {
 
                 // Looping through all properties requested by caller
                 foreach (var valueNode in e.Args.Children.Where (ix => ix.Name != "")) {
@@ -410,7 +413,7 @@ namespace p5.webapp
                 return; // Nothing to do here ...
 
             // Looping through all widgets supplied by caller
-            foreach (var widget in FindWidgetsThrow<Widget> (e.Args, "delete-widget-property")) {
+            foreach (var widget in FindWidgets<Widget> (context, e.Args, "delete-widget-property")) {
 
                 // Looping through each property to remove
                 foreach (var nameNode in e.Args.Children.Where (ix => ix.Name != "")) {
@@ -447,7 +450,7 @@ namespace p5.webapp
                     return; // Nothing to do here ...
 
                 // Looping through all widgets
-                foreach (var widget in FindWidgetsThrow<Widget> (e.Args, "list-widget-properties")) {
+                foreach (var widget in FindWidgets<Widget> (context, e.Args, "list-widget-properties")) {
 
                     // Creating our "return node" for currently handled widget
                     Node curNode = e.Args.Add (widget.ID).LastChild;
@@ -488,7 +491,7 @@ namespace p5.webapp
             using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
 
                 // Looping through all widgets
-                foreach (var idxWidget in FindWidgetsThrow<Widget> (e.Args, "get-widget-ajax-event")) {
+                foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "get-widget-ajax-event")) {
 
                     // Looping through events requested by caller
                     foreach (var idxEventNameNode in e.Args.Children.Where (ix => ix.Name != "").ToList ()) {
@@ -510,40 +513,25 @@ namespace p5.webapp
         private void set_widget_ajax_event (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through all widgets
-            foreach (var idxWidget in FindWidgetsThrow<Widget> (e.Args, "set-widget-ajax-event")) {
+            foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "set-widget-ajax-event")) {
 
                 // Looping through events requested by caller
                 foreach (var idxEventNameNode in e.Args.Children) {
 
-                    // Setting Widget's Ajax event to whatever we were given
-                    WidgetAjaxEventStorage[idxWidget.ID, idxEventNameNode.Name] = idxEventNameNode.Clone();
+                    // Checking if we should delete existing event
+                    if (idxEventNameNode.Count == 0) {
+
+                        // Deleting existing ajax event
+                        WidgetAjaxEventStorage.Remove (idxWidget.ID, idxEventNameNode.Name);
+                    } else {
+
+                        // Setting Widget's Ajax event to whatever we were given
+                        WidgetAjaxEventStorage[idxWidget.ID, idxEventNameNode.Name] = idxEventNameNode.Clone();
+                    }
                 }
             }
         }
 
-        /// <summary>
-        ///     Removes the given ajax event(s) for the given widget(s)
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "delete-widget-ajax-event", Protection = EventProtection.LambdaClosed)]
-        private void delete_widget_ajax_event (ApplicationContext context, ActiveEventArgs e)
-        {
-            // Looping through all widgets
-            foreach (var idxWidget in FindWidgetsThrow<Widget> (e.Args, "delete-widget-ajax-event")) {
-                
-                // Looping through events caller wants to delete
-                foreach (var idxEventNameNode in e.Args.Children) {
-
-                    // Setting Widget's Ajax event to null, which deletes it
-                    WidgetAjaxEventStorage[idxWidget.ID, idxEventNameNode.Name] = null;
-
-                    // Removing widget event attribute
-                    idxWidget.RemoveAttribute(idxEventNameNode.Name);
-                }
-            }
-        }
-        
         /// <summary>
         ///     Lists all existing ajax events for given widget(s)
         /// </summary>
@@ -556,7 +544,7 @@ namespace p5.webapp
             using (new p5.core.Utilities.ArgsRemover(e.Args, true)) {
 
                 // Looping through all widgets supplied
-                foreach (var idxWidget in FindWidgetsThrow<Widget> (e.Args, "list-widget-ajax-events")) {
+                foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "list-widget-ajax-events")) {
 
                     // Then looping through all attribute keys, filtering everything out that does not start with "on"
                     Node curNode = new Node(idxWidget.ID);
@@ -593,7 +581,7 @@ namespace p5.webapp
             using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
 
                 // Looping through all widgets
-                foreach (var idxWidget in FindWidgetsThrow<Widget> (e.Args, "get-widget-lambda-event")) {
+                foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "get-widget-lambda-event")) {
 
                     // Looping through events requested by caller
                     foreach (var idxEventNameNode in e.Args.Children.ToList ()) {
@@ -620,7 +608,7 @@ namespace p5.webapp
         private void set_widget_lambda_event (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through all widget IDs
-            foreach (var idxWidget in FindWidgetsThrow<Widget> (e.Args, "set-widget-lambda-event")) {
+            foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "set-widget-lambda-event")) {
 
                 // Looping through events requested by caller
                 foreach (var idxEventNameNode in e.Args.Children) {
@@ -658,7 +646,7 @@ namespace p5.webapp
             using (new p5.core.Utilities.ArgsRemover(e.Args, true)) {
 
                 // Looping through all widgets
-                foreach (var idxWidget in FindWidgetsThrow<Widget> (e.Args, "list-widget-lambda-events")) {
+                foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "list-widget-lambda-events")) {
 
                     // Then looping through all attribute keys, filtering everything out that does not start with "on"
                     Node curNode = new Node(idxWidget.ID);
@@ -673,20 +661,6 @@ namespace p5.webapp
                     if (curNode.Count > 0)
                         e.Args.Add(curNode);
                 }
-            }
-        }
-        
-        /*
-         * Raises Widget specific lambda events
-         */
-        [ActiveEvent (Name = "", Protection = EventProtection.NativeOpen)]
-        private void null_handler (ApplicationContext context, ActiveEventArgs e)
-        {
-            // Looping through each lambda event handler for given event
-            foreach (var idxLambda in WidgetLambdaEventStorage [e.Name].ToList ()) {
-
-                // Raising Active Event
-                XUtil.RaiseEvent (context, e.Args, idxLambda, e.Name);
             }
         }
 
@@ -737,7 +711,7 @@ namespace p5.webapp
         [ActiveEvent (Name = "list-page-keys", Protection = EventProtection.LambdaClosed)]
         private void list_page_keys (ApplicationContext context, ActiveEventArgs e)
         {
-            p5.exp.CollectionBase.List (context, e.Args, () => (from object idx in ViewState.Keys select idx.ToString ()));
+            p5.exp.CollectionBase.List (context, e.Args, ViewState.Keys);
         }
 
         #endregion
@@ -959,6 +933,20 @@ namespace p5.webapp
         #region [ -- Private and protected helper methods -- ]
 
         /*
+         * Raises Widget specific lambda events
+         */
+        [ActiveEvent (Name = "", Protection = EventProtection.NativeOpen)]
+        private void null_handler (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Looping through each lambda event handler for given event
+            foreach (var idxLambda in WidgetLambdaEventStorage [e.Name].ToList ()) {
+
+                // Raising Active Event
+                XUtil.RaiseEvent (context, e.Args, idxLambda, e.Name);
+            }
+        }
+
+        /*
          * Common ajax event handler for all widget's events on page
          */
         [WebMethod]
@@ -968,36 +956,49 @@ namespace p5.webapp
         }
 
         /*
-         * Helper to retrieve a list of widgets from a Node
+         * Helper to retrieve a list of widgets from a Node, throws if widget with specified ID does not exist
          */
-        private IEnumerable<T> FindWidgets<T> (Node args) where T : Control
+        private IEnumerable<T> FindWidgets<T> (ApplicationContext context, Node args, string activeEventName) where T : Control
         {
-            foreach (var widget in XUtil.Iterate<string> (_context, args).Select (ix => FindControl<T>(ix, Page))) {
+            // Looping through all Widget IDs supplied by caller, finding widget with specified ID
+            foreach (var idxWidgetID in XUtil.Iterate<string> (context, args, true)) {
 
-                if (widget == null)
-                    continue;
-                yield return widget;
+                // Retrieving Widget with currently iterated ID
+                var idxWidget = FindControl<Control>(idxWidgetID, Page);
+
+                // Throwing exception if widget does not exist
+                if (idxWidget == null)
+                    throw new LambdaException(
+                        string.Format ("Couldn't find widget with ID '{0}'", idxWidgetID),
+                        args, 
+                        context);
+
+                // Verifies widget is of requested type
+                var retVal = idxWidget as T;
+                if (retVal == null) {
+
+                    // Widget was not correct type, figuring out type of widget
+                    string typeString = typeof (T).FullName;
+                    if (typeof(T).BaseType == typeof(Widget)) {
+
+                        // Using "short version" typename for all widgets inheriting from p5 Ajax Widget
+                        typeString = typeString.Substring(typeString.LastIndexOf(".") + 1).ToLower();
+                    }
+
+                    // Throwing exception
+                    throw new LambdaException(
+                        string.Format("You cannot use [{0}] on a Control that is not of type '{1}'", activeEventName, typeString),
+                        args,
+                        context);
+                }
+
+                // Returning widget to caller
+                yield return retVal;
             }
         }
         
         /*
-         * Helper to retrieve a list of widgets from a Node
-         */
-        private IEnumerable<T> FindWidgetsThrow<T> (Node args, string activeEventName) where T : Control
-        {
-            foreach (var ctrl in XUtil.Iterate<string> (_context, args).Select (ix => FindControl<Control>(ix, Page))) {
-
-                if (ctrl == null)
-                    throw new ArgumentException("Couldn't find control with that ID");
-                var widget = ctrl as T;
-                if (widget == null)
-                    throw new ArgumentException(string.Format("You cannot use [{0}] on a Control that is not a P5.ajax Widget. [{0}] was invoked for '{1}', which is of type '{2}'", activeEventName, ctrl.ID, ctrl.GetType().FullName));
-                yield return widget;
-            }
-        }
-        
-        /*
-         * Helper to retrieve a list of widgets from a Node
+         * Helper to retrieve a list of widgets from a Node that serves as criteria
          */
         private IEnumerable<T> FindWidgetsBy<T> (Node args, Widget idx, ApplicationContext context) where T : Widget
         {
@@ -1133,8 +1134,7 @@ namespace p5.webapp
         /*
          * Helper to figure out if Active Event is protected or not
          */
-        private Node _protectedDynamicEvents = null;
-        private bool EventIsProtected (ApplicationContext context, string evt)
+        private static bool EventIsProtected (ApplicationContext context, string evt)
         {
             // Verifying Active Event is not protected, first checking native handlers
             if (context.HasEvent (evt)){

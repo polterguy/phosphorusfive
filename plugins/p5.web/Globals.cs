@@ -8,28 +8,17 @@ using p5.exp;
 using p5.core;
 
 /// <summary>
-///     Main namespace for everything related to Web User Interface.
-/// 
-///     Contains helper classes for creating a web User Interface, such as creation of Ajax Web Widgets, retrieving
-///     and setting items in your Session object, etc.
+///     Main namespace for everything related to Web User Interface
 /// </summary>
 namespace p5.web.ui
 {
     /// <summary>
-    ///     Helper to retrieve and set Application values.
-    /// 
-    ///     Allows for you to retrieve and set items in your Application object.
-    /// 
-    ///     The Application object is a "global shared" object between all sessions, visitors and user of your web site, 
-    ///     and allows for you to share information between different users of your web site.
+    ///     Helper to retrieve and set global application wide values
     /// </summary>
-    public static class Application
+    public static class Globals
     {
         /// <summary>
-        ///     Sets one or more Application object(s).
-        /// 
-        ///     Where [source], or [src], becomes the nodes that are stored in the application. The main node's value(s), becomes
-        ///     the key your items are stored with.
+        ///     Sets one or more global application wide object(s)
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -48,9 +37,7 @@ namespace p5.web.ui
         }
 
         /// <summary>
-        ///     Retrieves Application object(s).
-        /// 
-        ///     Supply one or more keys to which items you wish to retrieve as the value of your main node.
+        ///     Retrieves global application wide object(s)
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -61,16 +48,14 @@ namespace p5.web.ui
         }
 
         /// <summary>
-        ///     Lists all keys in the Application object.
-        /// 
-        ///     Returns all keys for all items in your Application object.
+        ///     Lists all keys in the global application wide object storage
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-global-keys", Protection = EventProtection.LambdaClosed)]
         private static void list_global_keys (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.List (context, e.Args, () => HttpContext.Current.Application.AllKeys);
+            CollectionBase.List (context, e.Args, HttpContext.Current.Application.AllKeys);
         }
     }
 }

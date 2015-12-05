@@ -4,6 +4,7 @@
  */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using p5.exp;
@@ -21,11 +22,6 @@ namespace p5.exp
         ///     Callback functor object for Get operation
         /// </summary>
         public delegate object GetDelegate (string key);
-
-        /// <summary>
-        ///     Callback functor object for list operation
-        /// </summary>
-        public delegate IEnumerable<string> ListDelegate ();
 
         /// <summary>
         ///     Callback functor object for set operation
@@ -121,7 +117,7 @@ namespace p5.exp
         /// <param name="context">Application context</param>
         /// <param name="node">Root node of Active Event invoked</param>
         /// <param name="functor">Callback functor, will be invoked once to retrieve all keys from collection</param>
-        public static void List (ApplicationContext context, Node node, ListDelegate functor)
+        public static void List (ApplicationContext context, Node node, IEnumerable list)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (node, true)) {
@@ -130,7 +126,7 @@ namespace p5.exp
                 var filter = new List<string> (XUtil.Iterate<string> (context, node));
 
                 // Looping through each existing key in collection
-                foreach (var idxKey in functor ()) {
+                foreach (string idxKey in list) {
 
                     // Checking if currently iterated key is "protected data"
                     if (idxKey.IndexOf ("_") == 0)

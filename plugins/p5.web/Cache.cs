@@ -66,11 +66,11 @@ namespace p5.web.ui
         [ActiveEvent (Name = "list-cache-keys", Protection = EventProtection.LambdaClosed)]
         private static void list_cache_keys (ApplicationContext context, ActiveEventArgs e)
         {
-            List<string> retVal = new List<string> ();
-            foreach (IDictionaryEnumerator idx in HttpContext.Current.Cache) {
+            var retVal = new List<string> ();
+            foreach (DictionaryEntry idx in HttpContext.Current.Cache) {
                 retVal.Add (idx.Key.ToString ());
             }
-            p5.exp.CollectionBase.List (context, e.Args, () => retVal);
+            p5.exp.CollectionBase.List (context, e.Args, retVal);
         }
     }
 }

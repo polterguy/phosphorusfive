@@ -53,7 +53,7 @@ namespace p5.web.ui.request
         [ActiveEvent (Name = "list-cookie-keys", Protection = EventProtection.LambdaClosed)]
         private static void list_cookie_keys (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.List (context, e.Args, () => HttpContext.Current.Request.Cookies.AllKeys);
+            CollectionBase.List (context, e.Args, HttpContext.Current.Request.Cookies.AllKeys);
         }
     }
 }

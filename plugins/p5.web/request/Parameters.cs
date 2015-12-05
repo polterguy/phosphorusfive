@@ -49,7 +49,7 @@ namespace p5.web.ui.request
         [ActiveEvent (Name = "list-http-params", Protection = EventProtection.LambdaClosed)]
         private static void list_http_params (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.List (context, e.Args, () => HttpContext.Current.Request.Params.AllKeys);
+            CollectionBase.List (context, e.Args, HttpContext.Current.Request.Params.AllKeys);
         }
     }
 }
