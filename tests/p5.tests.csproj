@@ -8,6 +8,7 @@
     <RootNamespace>p5.tests</RootNamespace>
     <AssemblyName>p5.tests</AssemblyName>
     <ReleaseVersion>1.0</ReleaseVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -136,6 +137,10 @@
     <ProjectReference Include="..\plugins\extras\p5.security\p5.security.csproj">
       <Project>{1ADB1008-02F3-4D95-B1DA-628AA73B88DC}</Project>
       <Name>p5.security</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\plugins\extras\p5.io.authorization\p5.io.authorization.csproj">
+      <Project>{1D3C2CCC-F27C-4525-96E3-65E83D2E92A6}</Project>
+      <Name>p5.io.authorization</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

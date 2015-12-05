@@ -12,25 +12,26 @@ using System.Collections;
 using System.Configuration;
 using System.Collections.Generic;
 using p5.exp;
-using p5Web = p5.web.ui.common;
 using p5.core;
+using p5.exp.exceptions;
 using p5.ajax.core;
 using p5.webapp.code;
 using p5.ajax.widgets;
 
 /// <summary>
-///     Main namespace for your Application Pool.
+///     Main namespace for your Phosphorus Five Web App
 /// </summary>
 namespace p5.webapp
 {
+    // Helper namespace alias to avoid nameclashing with ASP.NET core controls
     using pf = p5.ajax.widgets;
 
     /// <summary>
-    ///     Main .aspx web page for your Application Pool.
+    ///     Main asp.net web page for your Application Pool
     /// </summary>
     public partial class Default : AjaxPage
     {
-        // Main container for all widgets
+        // Main root container for all widgets
         protected pf.Container cnt;
 
         // Application Context for page life cycle
@@ -77,31 +78,31 @@ namespace p5.webapp
             // Registering "this" web page as listener object, since page contains many Active Event handlers itself
             _context.RegisterListeningObject (this);
 
-            // Rewriting path to what was actually requested, such that HTML form element doesn't become garbage ...
-            // this ensures that our HTML form element stays correct. basically "undoing" what was done in Global.asax.cs
-            // in addition, when retrieving request URL later, we get the "correct" request URL, and not the URL to "Default.aspx"
-            HttpContext.Current.RewritePath ((string) HttpContext.Current.Items ["__p5_original_url"]);
+            // Rewriting path to what was actually requested, such that HTML form element's action doesn't become garbage.
+            // This ensures that our HTML form element stays correct. Basically "undoing" what was done in Global.asax.cs
+            // In addition, when retrieving request URL later, we get the "correct" request URL, and not the URL to "Default.aspx"
+            HttpContext.Current.RewritePath ((string) HttpContext.Current.Items ["_p5_original_url"]);
 
-            // mapping up our Page_Load event for initial loading of web page
+            // Mapping up our Page_Load event for initial loading of web page, but only if is not a form postback or ajax request
             if (!IsPostBack)
                 Load += Page_LoadInitialLoading;
 
-            // call base
+            // Call base
             base.OnInit (e);
         }
 
         /*
-         * Invoked only for the initial request of our web page, to make sure we load up our UI according to which URL is requested.
-         * Not invoked during any consecutive POST requests
+         * Invoked only for the initial request of our web page, to make sure we load up our UI 
+         * according to which URL is requested. Not invoked during any consecutive POST requests or Ajax requests
          */
         private void Page_LoadInitialLoading (object sender, EventArgs e)
         {
-            // raising our [p5.web.load-ui] Active Event, creating the node to pass in first
+            // Raising our [p5.web.load-ui] Active Event, creating the node to pass in first,
             // where the [_form] node becomes the name of the form requested
             var args = new Node ("p5.web.load-ui");
-            args.Add (new Node ("_form", (string) HttpContext.Current.Items ["__p5_original_url"]));
+            args.Add (new Node ("_form", (string) HttpContext.Current.Items ["_p5_original_url"]));
 
-            // invoking the Active Event that actually loads our UI, now with a [_file] node, and possibly an [_args] node
+            // Invoking the Active Event that actually loads our UI, now with a [_form] node being the URL of the requested page
             _context.RaiseNative ("p5.web.load-ui", args);
         }
 
@@ -110,7 +111,7 @@ namespace p5.webapp
         #region [ -- Creating and deleting Widgets -- ]
 
         /// <summary>
-        ///     Creates a web widget.
+        ///     Creates a web widget
         /// </summary>
         /// <param name="context">Context for current request</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -119,7 +120,7 @@ namespace p5.webapp
         [ActiveEvent (Name = "create-literal-widget", Protection = EventProtection.LambdaClosed)]
         private void create_widget (ApplicationContext context, ActiveEventArgs e)
         {
-            var splits = e.Name.Split(new char[] {'-'}, StringSplitOptions.RemoveEmptyEntries);
+            var splits = e.Name.Split('-');
             string type = splits.Length == 2 ? "container" : splits[1];
             CreateWidget (context, e.Args, type);
         }
@@ -127,66 +128,58 @@ namespace p5.webapp
         /// <summary>
         ///     Checks if the given widget(s) exist
         /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "widget-exist", Protection = EventProtection.LambdaClosed)]
         private void widget_exist (ApplicationContext context, ActiveEventArgs e)
         {
-            // making sure we clean up and remove all arguments passed in after execution
+            // Making sure we clean up and remove all arguments passed in after execution
             using (new p5.core.Utilities.ArgsRemover(e.Args)) {
 
-                // loping through all control ID's given
-                foreach (var widgetId in XUtil.Iterate<string> (context, e.Args)) {
+                // Looping through all IDs given
+                foreach (var widgetId in XUtil.Iterate<string> (context, e.Args, true)) {
 
+                    // Adding a boolean as result node, with widget's ID as name, indicating existence of widget
                     e.Args.Add(widgetId, FindControl<Control>(widgetId, Page) != null);
                 }
+
+                // Return true as main Active Event node if ALL widgets existed, otherwise returning false
                 e.Args.Value = !e.Args.Children.Where(ix => !ix.Get<bool> (context)).GetEnumerator().MoveNext();
             }
         }
 
         /// <summary>
-        ///     Deletes the given widget(s) entirely.
+        ///     Deletes the given widget(s) entirely
         /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "delete-widget", Protection = EventProtection.LambdaClosed)]
         private void delete_widget (ApplicationContext context, ActiveEventArgs e)
         {
-            // loping through all control ID's given
-            foreach (var widget in FindWidgets<Control> (e.Args)) {
+            // Looping through all IDs given
+            foreach (var idxWidget in FindWidgetsThrow<Control> (e.Args, "delete-widget")) {
 
-                // actually removing widget from Page control collection, and persisting our change
-                var parent = widget.Parent as pf.Container;
-                if (parent == null)
-                    throw new ArgumentException("You cannot delete a widget who's parent is not a P5.Ajax Container widget. Tried to delete; " + widget.ID + " which is of type " + widget.GetType().FullName);
-
-                // Removing all events, both "lambda" and "ajax"
-                RemoveAllEventsRecursive(widget);
-
-                // Removing widget itself
-                parent.RemoveControlPersistent (widget);
+                // Removing widget
+                RemoveWidget (context, e.Args, idxWidget);
             }
         }
 
         /// <summary>
-        ///     Clears the given widget, removing all its children widgets.
+        ///     Clears the given widget(s), removing all of its children widgets
         /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "clear-widget", Protection = EventProtection.LambdaClosed)]
         private void clear_widget (ApplicationContext context, ActiveEventArgs e)
         {
-            // Looping through all control ID's given
-            foreach (var widget in FindWidgetsThrow<pf.Container> (e.Args, "clear-widget")) {
+            // Looping through all IDs given
+            foreach (var idxWidget in FindWidgetsThrow<pf.Container> (e.Args, "clear-widget")) {
 
                 // Then looping through all of its children controls
-                foreach (Control innerCtrl in new ArrayList(widget.Controls)) {
+                foreach (Control idxChildWidget in new ArrayList(idxWidget.Controls)) {
 
-                    // Removing all events, both "lambda" and "ajax"
-                    RemoveAllEventsRecursive(innerCtrl);
-
-                    // Actually removing widget from Page control collection, and persisting our change
-                    widget.RemoveControlPersistent (innerCtrl);
+                    // Removing widget from page control collection
+                    RemoveWidget (context, e.Args, idxChildWidget);
                 }
             }
         }
@@ -196,32 +189,41 @@ namespace p5.webapp
         #region [ -- Retrieving Widgets -- ]
 
         /// <summary>
-        ///     Returns the ID and type of the given widget's parent.
+        ///     Returns the ID and type of the given widget's parent(s)
         /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-parent-widget", Protection = EventProtection.LambdaClosed)]
         private void get_parent_widget (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
+            using (new p5.core.Utilities.ArgsRemover (e.Args)) {
 
-                // loping through all control ID's given
-                foreach (var widget in FindWidgets <Control> (e.Args)) {
+                // Looping through all IDs given
+                foreach (var idxWidget in FindWidgetsThrow <Control> (e.Args, "get-parent-widget")) {
 
-                    var parent = widget.Parent;
+                    // Finding parent and returning type as Name and ID as Value
+                    var parent = idxWidget.Parent;
                     string type = parent.GetType().FullName;
+
+                    // Checking if type is from p5 Ajax, and if so, returning "condensed" typename
                     if (parent is Widget)
                         type = type.Substring(type.LastIndexOf(".") + 1).ToLower();
                     e.Args.Add(type, parent.ID);
                 }
             }
+
+            // Making sure we set value of main event node to widget's ID if only one widget was requested
+            if (e.Args.Count == 1)
+                e.Args.Value = e.Args.FirstChild.Value;
+            else
+                e.Args.Value = null; // Making sure we remove arguments if there are multiple return values
         }
 
         /// <summary>
-        ///     Returns the ID and type of the given widget's children.
+        ///     Returns the ID and type of the given widget's children
         /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-children-widgets", Protection = EventProtection.LambdaClosed)]
         private void get_children_widgets (ApplicationContext context, ActiveEventArgs e)
@@ -229,14 +231,19 @@ namespace p5.webapp
             // Making sure we clean up and remove all arguments passed in after execution
             using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
 
-                // Looping through all control IDs given
-                foreach (var widget in FindWidgets <Control> (e.Args)) {
+                // Looping through all IDs given
+                foreach (var idxWidget in FindWidgetsThrow <Control> (e.Args, "get-children-widgets")) {
 
-                    e.Args.Add(widget.ID);
-                    foreach (Control idxCtrl in widget.Controls) {
+                    // Adding currently iterated widget's ID
+                    e.Args.Add(idxWidget.ID);
 
-                        // looping through all children of currently iterated widget
+                    // Then looping through currently iterated widget's children, adding them
+                    foreach (Control idxCtrl in idxWidget.Controls) {
+
+                        // Adding type of widget as name, and ID as value
                         string type = idxCtrl.GetType().FullName;
+
+                        // Making sure we return "condensed typename" if widget type is from p5 Ajax
                         if (idxCtrl is Widget)
                             type = type.Substring(type.LastIndexOf(".") + 1).ToLower();
                         e.Args.LastChild.Add(type, idxCtrl.ID);
@@ -246,28 +253,43 @@ namespace p5.webapp
         }
         
         /// <summary>
-        ///     Returns the ID and type of the given widget's children.
+        ///     Find widget(s) according to criteria underneath an (optionally) declared widget, and returns its ID
         /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "find-widgets", Protection = EventProtection.LambdaClosed)]
-        private void find_widgets (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "find-widget", Protection = EventProtection.LambdaClosed)]
+        private void find_widget (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
+            using (new p5.core.Utilities.ArgsRemover (e.Args)) {
 
-                // Looping through all control IDs given
-                foreach (var widget in FindWidgetsBy <Widget> (e.Args, FindControl<Widget> (e.Args.GetExValue (context, "cnt"), Page), context)) {
+                // Retrieving where to start looking
+                var root = FindControl<Widget> (e.Args.GetExValue (context, "cnt"), Page);
 
-                    e.Args.Add(widget.ID);
+                // Retrieving all controls having properties matching whatever arguments supplied
+                foreach (var idxWidget in FindWidgetsBy <Widget> (e.Args, root, context)) {
+
+                    // Adding type of widget as name, and ID as value
+                    string type = idxWidget.GetType().FullName;
+
+                    // Making sure we return "condensed typename" if widget type is from p5 Ajax
+                    if (idxWidget is Widget)
+                        type = type.Substring(type.LastIndexOf(".") + 1).ToLower();
+                    e.Args.Add (type, idxWidget.ID);
                 }
             }
+
+            // Making sure we set value of main event node to widget's ID if only one widget was found
+            if (e.Args.Count == 1)
+                e.Args.Value = e.Args.FirstChild.Value;
+            else
+                e.Args.Value = null; // Making sure we remove arguments if there are multiple return values
         }
 
         /// <summary>
-        ///     Lists all widgets on page.
+        ///     Lists all widgets on page
         /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-widgets", Protection = EventProtection.LambdaClosed)]
         private void list_widgets (ApplicationContext context, ActiveEventArgs e)
@@ -275,12 +297,12 @@ namespace p5.webapp
             // Making sure we clean up and remove all arguments passed in after execution
             using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
 
-                // retrieving filter, if any
-                var filter = new List<string>(XUtil.Iterate<string>(context, e.Args));
+                // Retrieving filter, if any
+                var filter = XUtil.Iterate<string>(context, e.Args).ToList ();
                 if (e.Args.Value != null && filter.Count == 0)
-                    return; // possibly a filter expression, leading into oblivion
+                    return; // Possibly a filter expression, leading into oblivion
 
-                // recursively retrieving all widgets on page
+                // Recursively retrieving all widgets on page
                 ListWidgets(filter, e.Args, cnt);
             }
         }
@@ -463,7 +485,7 @@ namespace p5.webapp
         /// <summary>
         ///     Returns the given ajax event(s) for the given widget(s).
         /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-widget-ajax-event", Protection = EventProtection.LambdaClosed)]
         private void get_widget_ajax_event (ApplicationContext context, ActiveEventArgs e)
@@ -488,7 +510,7 @@ namespace p5.webapp
         /// <summary>
         ///     Changes the given ajax event(s) for the given widget(s).
         /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set-widget-ajax-event", Protection = EventProtection.LambdaClosed)]
         private void set_widget_ajax_event (ApplicationContext context, ActiveEventArgs e)
@@ -508,7 +530,7 @@ namespace p5.webapp
         /// <summary>
         ///     Removes the given ajax event(s) for the given widget(s).
         /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "delete-widget-ajax-event", Protection = EventProtection.LambdaClosed)]
         private void delete_widget_ajax_event (ApplicationContext context, ActiveEventArgs e)
@@ -574,7 +596,7 @@ namespace p5.webapp
         /// <summary>
         ///     Returns the given lambda event(s) for the given widget(s).
         /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-widget-lambda-event", Protection = EventProtection.LambdaClosed)]
         private void get_widget_lambda_event (ApplicationContext context, ActiveEventArgs e)
@@ -604,7 +626,7 @@ namespace p5.webapp
         /// <summary>
         ///     Changes the given lambda event(s) for the given widget(s).
         /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set-widget-lambda-event", Protection = EventProtection.LambdaClosed)]
         private void set_widget_lambda_event (ApplicationContext context, ActiveEventArgs e)
@@ -628,7 +650,7 @@ namespace p5.webapp
         /// <summary>
         ///     Removes the given lambda event(s) for the given widget(s).
         /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "delete-widget-lambda-event", Protection = EventProtection.LambdaClosed)]
         private void delete_widget_lambda_event (ApplicationContext context, ActiveEventArgs e)
@@ -739,7 +761,7 @@ namespace p5.webapp
         /// <summary>
         ///     Sends the given JavaScript to client once
         /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "send-javascript", Protection = EventProtection.LambdaClosed)]
         private void send_javascript (ApplicationContext context, ActiveEventArgs e)
@@ -755,7 +777,7 @@ namespace p5.webapp
         /// <summary>
         ///     Includes the given JavaScript on page persistently
         /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "include-javascript", Protection = EventProtection.LambdaClosed)]
         private void include_javascript (ApplicationContext context, ActiveEventArgs e)
@@ -771,7 +793,7 @@ namespace p5.webapp
         /// <summary>
         ///     Includes JavaScript file(s) persistently
         /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "include-javascript-file", Protection = EventProtection.LambdaClosed)]
         private void include_javascript_file (ApplicationContext context, ActiveEventArgs e)
@@ -787,7 +809,7 @@ namespace p5.webapp
         /// <summary>
         ///     Includes CSS StyleSheet file(s) persistently on the client side.
         /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "include-stylesheet-file", Protection = EventProtection.LambdaClosed)]
         private void include_stylesheet_file (ApplicationContext context, ActiveEventArgs e)
@@ -803,7 +825,7 @@ namespace p5.webapp
         /// <summary>
         ///     Changes the title of your web page.
         /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set-title", Protection = EventProtection.LambdaClosed)]
         private void set_title (ApplicationContext context, ActiveEventArgs e)
@@ -823,7 +845,7 @@ namespace p5.webapp
         /// <summary>
         ///     Returns the title of your web page.
         /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-title", Protection = EventProtection.LambdaClosed)]
         private void get_title (ApplicationContext context, ActiveEventArgs e)
@@ -836,7 +858,7 @@ namespace p5.webapp
         /// <summary>
         ///     Changes the URL/location of your web page.
         /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set-location", Protection = EventProtection.LambdaClosed)]
         private void set_location (ApplicationContext context, ActiveEventArgs e)
@@ -855,7 +877,7 @@ namespace p5.webapp
         /// <summary>
         ///     Reloads the current document
         /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "reload-location", Protection = EventProtection.LambdaClosed)]
         private void reload_location (ApplicationContext context, ActiveEventArgs e)
@@ -867,7 +889,7 @@ namespace p5.webapp
         /// <summary>
         ///     Returns the URL/location of your web page.
         /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-location", Protection = EventProtection.LambdaClosed)]
         private void get_location (ApplicationContext context, ActiveEventArgs e)
@@ -878,7 +900,7 @@ namespace p5.webapp
         /// <summary>
         ///     Returns the given Node back to client as JSON.
         /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "return-value", Protection = EventProtection.LambdaClosed)]
         private void return_value (ApplicationContext context, ActiveEventArgs e)
@@ -1073,6 +1095,26 @@ namespace p5.webapp
                 // Adding lambda event to lambda event storage
                 WidgetLambdaEventStorage [idxEvt.Name, widgetId] = idxEvt;
             }
+        }
+
+        /*
+         * Helper to remove a widget from Page control collection
+         */
+        private void RemoveWidget (ApplicationContext context, Node args, Control widget)
+        {
+            // Basic logical error checking
+            var parent = widget.Parent as pf.Container;
+            if (parent == null)
+                throw new LambdaException (
+                    "You cannot delete a widget who's parent is not a Phosphorus Five Ajax Container widget. Tried to delete; " + widget.ID + " which is of type " + widget.GetType().FullName,
+                    args,
+                    context);
+
+            // Removing all events, both "lambda" and "ajax"
+            RemoveAllEventsRecursive (widget);
+
+            // Removing widget itself from page control collection, making sure we persist the change to parent Container
+            parent.RemoveControlPersistent (widget);
         }
 
         /*

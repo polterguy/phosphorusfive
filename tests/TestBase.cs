@@ -95,7 +95,7 @@ namespace p5.unittests
         /// <summary>
         ///     Returns the default role used for the ApplicationContext, unless a user is explicitly logged in
         /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "_p5.security.get-default-context-role", Protection = EventProtection.NativeClosed)]
         private static void _p5_security_get_default_context_role (ApplicationContext context, ActiveEventArgs e)
@@ -106,7 +106,7 @@ namespace p5.unittests
         /// <summary>
         ///     Returns the default username used for the ApplicationContext, unless a user is explicitly logged in
         /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "_p5.security.get-default-context-username", Protection = EventProtection.NativeClosed)]
         private static void _p5_security_get_default_context_username (ApplicationContext context, ActiveEventArgs e)
@@ -117,7 +117,7 @@ namespace p5.unittests
         /// <summary>
         ///     Returns the number of seconds that must pass from an unsuccessful login attempt to client is allowed to try again
         /// </summary>
-        /// <param name="context">Application context Active Event is raised within</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "_p5.security.get-login-cooloff-seconds", Protection = EventProtection.NativeClosed)]
         private static void _p5_security_get_login_cooloff_seconds (ApplicationContext context, ActiveEventArgs e)

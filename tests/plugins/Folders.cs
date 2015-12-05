@@ -17,7 +17,7 @@ namespace p5.unittests.plugins
     public class Folders : TestBase
     {
         public Folders ()
-            : base ("p5.io", "p5.hyperlisp", "p5.lambda", "p5.types", "p5.security") { }
+            : base ("p5.io", "p5.hyperlisp", "p5.lambda", "p5.types", "p5.security", "p5.io.authorization") { }
 
         /// <summary>
         ///     Creates a folder

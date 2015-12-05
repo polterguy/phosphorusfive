@@ -22,7 +22,7 @@ namespace lambda_exe
         /// <summary>
         ///     Returns the application base path as value of given args node.
         /// </summary>
-        /// <param name="context">Application context Active Event is raised within.</param>
+        /// <param name="context">Application Context.</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.core.application-folder", Protection = EventProtection.NativeClosed)]
         private static void p5_core_application_folder (ApplicationContext context, ActiveEventArgs e)

@@ -17,7 +17,7 @@ namespace p5.unittests.plugins
     public class Files : TestBase
     {
         public Files ()
-            : base ("p5.io", "p5.hyperlisp", "p5.lambda", "p5.types")
+            : base ("p5.io", "p5.hyperlisp", "p5.lambda", "p5.types", "p5.io.authorization")
         { }
 
         /// <summary>
