@@ -31,11 +31,11 @@ namespace p5.webapp
     /// </summary>
     public partial class Default : AjaxPage
     {
+        // List of all dynamically created protected events
+        private Node _protectedDynamicEvents = null;
+
         // Main root container for all widgets
         protected pf.Container cnt;
-
-        // List of all dynamically created protected events
-        private static Node _protectedDynamicEvents = null;
 
         // Application Context for page life cycle
         private ApplicationContext _context;
@@ -614,7 +614,7 @@ namespace p5.webapp
                 foreach (var idxEventNameNode in e.Args.Children) {
 
                     // Verifying Active Event is not protected
-                    if (EventIsProtected (context, idxEventNameNode.Name))
+                    if (!CanOverrideEventInLambda (context, idxEventNameNode.Name))
                         throw new LambdaSecurityException(
                             string.Format ("You cannot override Active Event '{0}' since it is protected", e.Args.Name),
                             e.Args,
@@ -922,7 +922,7 @@ namespace p5.webapp
             e.Args.Value = null; // dropping the actual Widget, to avoid serializing it into ViewState!
 
             // Verifying Active Event is not protected
-            if (EventIsProtected(context, e.Args.Name))
+            if (!CanOverrideEventInLambda(context, e.Args.Name))
                 throw new ApplicationException(string.Format ("You cannot override Active Event '{0}' since it is protected", e.Args.Name));
 
             WidgetLambdaEventStorage [e.Args.Name, widget.ID] = e.Args;
@@ -1022,7 +1022,7 @@ namespace p5.webapp
         }
 
         /*
-         * recursively traverses entire Control hierarchy on page, and adds up into result node
+         * Recursively traverses entire Control hierarchy on page, and adds up into result node
          */
         private static void ListWidgets (List<string> filter, Node args, Control current)
         {
@@ -1036,6 +1036,8 @@ namespace p5.webapp
                 args.Add(typeString, current.ID);
             }
             foreach (Control idxChild in current.Controls) {
+
+                // Recursively invoking "self"
                 ListWidgets (filter, args, idxChild);
             }
         }
@@ -1045,10 +1047,10 @@ namespace p5.webapp
          */
         private void CreateWidget (ApplicationContext context, Node args, string type)
         {
-            // finding parent widget first, which defaults to "main container" widget, if no parent is given
+            // Finding parent widget first, which defaults to "main container" widget, if no parent is given
             var parent = FindControl<pf.Widget>(args.GetChildValue ("parent", context, "cnt"), Page);
 
-            // creating our widget by raising the active event responsible for creating it
+            // Creating our widget by raising the active event responsible for creating it
             var createNode = args.Clone ();
             if (createNode.Value == null) {
 
@@ -1060,7 +1062,7 @@ namespace p5.webapp
 
             // ORDER COUNTS!! Read above comments!
 
-            // Initializing Active Events for widget, if there are any given BEFORE widget is created, 
+            // Initializing Active Events for widget, BEFORE widget is created, 
             // since [oninit] might depend upon Widget events for widget
             var eventNode = createNode.Find (idx => idx.Name == "events");
             if (eventNode != null)
@@ -1103,7 +1105,7 @@ namespace p5.webapp
             foreach (var idxEvt in eventNode.Children.ToList ()) {
 
                 // Verifying Active Event is not protected
-                if (EventIsProtected (context, idxEvt.Name))
+                if (!CanOverrideEventInLambda (context, idxEvt.Name))
                     throw new ApplicationException(string.Format ("You cannot override Active Event '{0}' since it is protected", idxEvt.Name));
 
                 // Adding lambda event to lambda event storage
@@ -1134,27 +1136,25 @@ namespace p5.webapp
         /*
          * Helper to figure out if Active Event is protected or not
          */
-        private static bool EventIsProtected (ApplicationContext context, string evt)
+        private bool CanOverrideEventInLambda (ApplicationContext context, string evt)
         {
             // Verifying Active Event is not protected, first checking native handlers
-            if (context.HasEvent (evt)){
+            if (context.HasEvent (evt)) {
 
                 // There exist a native handler for this Active Event, now getting protection level of event
-                var protection = context.GetEventProtection (evt);
-
-                // Verifying native Active Event is not protected
-                switch (protection) {
-                    case EventProtection.LambdaClosed:
-                    case EventProtection.NativeClosed:
-                        return true;
-                }
+                if (context.GetEventProtection(evt) == EventProtection.LambdaOpen)
+                    return true;
             }
+
+            // Checking if dynamically created protected events are retrieved from before, and if not, retrieving them
             if (_protectedDynamicEvents == null) {
+
+                // Retrieving dynamically protected events
                 _protectedDynamicEvents = context.RaiseNative("_p5.lambda.get-protected-events");
             }
-            if (_protectedDynamicEvents[evt] != null)
-                return true;
-            return false;
+
+            // Checking if protected events contains given event name, and if so, returning true, else returning false
+            return _protectedDynamicEvents[evt] == null;
         }
 
         /*
@@ -1179,7 +1179,7 @@ namespace p5.webapp
             // Removing all Ajax Events for widget
             WidgetAjaxEventStorage.RemoveFromKey1(idx.ID);
 
-            // recursively removing all ajax events for all of control's children controls
+            // Recursively removing all ajax events for all of control's children controls
             foreach (Control idxChild in idx.Controls) {
                 RemoveWidgetAjaxEvents (idxChild);
             }
@@ -1199,10 +1199,11 @@ namespace p5.webapp
                 WidgetLambdaEventStorage.RemoveFromKey2(widget.ID);
             }
 
-            // Recursively invoking for "self"
-            foreach (Widget idx in widget.Controls) {
+            // Recursively invoking "self" for all children widgets
+            foreach (Widget idxChildWidget in widget.Controls) {
 
-                RemoveAllEventsRecursive(idx);
+                // Removing all events for currently iterated child
+                RemoveAllEventsRecursive(idxChildWidget);
             }
         }
 

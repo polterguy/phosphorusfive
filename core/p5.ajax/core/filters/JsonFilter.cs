@@ -50,12 +50,12 @@ namespace p5.ajax.core.filters
 
             // JavaScript files
             if ((Manager.Page as IAjaxPage).NewJavaScriptToPush.Count > 0) {
-                Manager.SendObject ("__p5_js_objects", (Manager.Page as IAjaxPage).JavaScriptToPush);
+                Manager.SendObject ("_p5_js_objects", (Manager.Page as IAjaxPage).JavaScriptToPush);
             }
 
             // stylesheet files
             if ((Manager.Page as IAjaxPage).NewStylesheetFilesToPush.Count > 0) {
-                Manager.SendObject ("__p5_css_files", (Manager.Page as IAjaxPage).NewStylesheetFilesToPush);
+                Manager.SendObject ("_p5_css_files", (Manager.Page as IAjaxPage).NewStylesheetFilesToPush);
             }
 
             // returning json

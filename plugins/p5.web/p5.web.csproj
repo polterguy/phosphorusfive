@@ -56,6 +56,7 @@
     <Compile Include="Widgets.cs" />
     <Compile Include="response\Status.cs" />
     <Compile Include="Globals.cs" />
+    <Compile Include="Context.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

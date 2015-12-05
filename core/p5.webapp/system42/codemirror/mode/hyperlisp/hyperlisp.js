@@ -225,6 +225,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'save-binary-file':
         case 'update-data':
         case 'insert-data':
+        case 'set-context-value':
         case 'set-session-value':
         case 'set-global-value':
         case 'set-http-header':
@@ -285,8 +286,10 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'delete-folder':
         case 'select-data':
         case 'delete-data':
+        case 'get-context-value':
         case 'get-session-value':
-        case 'list-session-leys':
+        case 'list-context-keys':
+        case 'list-session-keys':
         case 'get-application':
         case 'list-global-keys':
         case 'echo':

@@ -540,7 +540,7 @@
                 }
 
                 // inserting all stylesheet files sent from server
-                arr = json.__p5_css_files || [];
+                arr = json._p5_css_files || [];
                 for (var idxCss = 0; idxCss < arr.length; idxCss++) {
                     el = document.createElement("link");
                     var href = arr[idxCss];
@@ -554,7 +554,7 @@
                 // Inserting all JavaScript objects sent from server
                 // This can be both files and javascript inline inclusions
                 // After this is done, we execute the results from "send-script"
-                this._includeScripts(json.__p5_js_objects || [], json.__p5_script || []);
+                this._includeScripts(json._p5_js_objects || [], json.__p5_script || []);
 
                 // removing current request from queue
                 window.p5._chain.splice(0, 1);

@@ -12,52 +12,52 @@ using p5.core;
 namespace p5.web.ui
 {
     /// <summary>
-    ///     Helper to retrieve and set Session values.
+    ///     Helper to retrieve and set HttpContext values.
     /// </summary>
-    public static class Session
+    public static class Context
     {
         /// <summary>
-        ///     Sets one or more Session object(s)
+        ///     Sets one or more HttpContext object(s).
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "set-session-value", Protection = EventProtection.LambdaClosed)]
-        private static void set_session_value (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "set-context-value", Protection = EventProtection.LambdaClosed)]
+        private static void set_context_value (ApplicationContext context, ActiveEventArgs e)
         {
             CollectionBase.Set (context, e.Args, delegate (string key, object value) {
 
                 if (value == null) {
 
                     // removing object, if it exists
-                    HttpContext.Current.Session.Remove (key);
+                    HttpContext.Current.Items.Remove (key);
                 } else {
 
                     // adding object
-                    HttpContext.Current.Session [key] = value;
+                    HttpContext.Current.Items [key] = value;
                 }
             });
         }
 
         /// <summary>
-        ///     Retrieves Session object(s)
+        ///     Retrieves HttpContext object(s)
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "get-session-value", Protection = EventProtection.LambdaClosed)]
-        private static void get_session_value (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "get-context-value", Protection = EventProtection.LambdaClosed)]
+        private static void get_context_value (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.Get (context, e.Args, key => HttpContext.Current.Session [key]);
+            CollectionBase.Get (context, e.Args, key => HttpContext.Current.Items [key]);
         }
 
         /// <summary>
-        ///     Lists all keys in the Session object
+        ///     Lists all keys in the HttpContext object
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "list-session-keys", Protection = EventProtection.LambdaClosed)]
-        private static void list_session_keys (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "list-context-keys", Protection = EventProtection.LambdaClosed)]
+        private static void list_context_keys (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.List (context, e.Args, HttpContext.Current.Session.Keys);
+            CollectionBase.List (context, e.Args, HttpContext.Current.Items.Keys);
         }
     }
 }
