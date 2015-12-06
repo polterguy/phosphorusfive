@@ -41,26 +41,6 @@ namespace p5.web.widgets
 
         #region [ -- Widget lambda events -- ]
 
-        /*
-         * Invoked by p5.web during creation of Widgets
-         */
-        [ActiveEvent (Name = "p5.web.add-widget-lambda-event", Protection = EventProtection.NativeClosed)]
-        private void p5_web_add_widget_lambda_event (ApplicationContext context, ActiveEventArgs e)
-        {
-            // Retrieving widget
-            var widget = e.Args.Get<Widget> (context);
-            e.Args.Value = null; // dropping the actual Widget, to avoid serializing it into ViewState!
-
-            // Verifying Active Event is not protected
-            if (!Manager.CanOverrideEventInLambda(context, e.Args.Name))
-                throw new LambdaException(
-                    string.Format ("You cannot override Active Event '{0}' since it is protected", e.Args.Name),
-                    e.Args,
-                    context);
-
-            Manager.WidgetLambdaEventStorage [e.Args.Name, widget.ID] = e.Args;
-        }
-
         /// <summary>
         ///     Returns the given lambda event(s) for the given widget(s).
         /// </summary>

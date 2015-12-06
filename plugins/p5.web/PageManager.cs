@@ -14,11 +14,12 @@ using p5.ajax.core;
 using p5.web.widgets;
 using p5.ajax.widgets;
 using p5.exp.exceptions;
+using p5.web.widgets.helpers;
 
 namespace p5.web
 {
     /// <summary>
-    ///     Class managing page of HTTP request
+    ///     Class managing page for one HTTP request
     /// </summary>
     public class PageManager
     {
@@ -102,7 +103,7 @@ namespace p5.web
             context.RaiseLambda("eval", WidgetAjaxEventStorage[widgetID, eventName].Clone());
         }
 
-        #region [ -- Misc. global helpers -- ]
+        #region [ -- Misc. global Active Events -- ]
 
         /// <summary>
         ///     Sends the given JavaScript to client
@@ -190,18 +191,6 @@ namespace p5.web
         }
 
         /// <summary>
-        ///     Reloads the current document
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "reload-location", Protection = EventProtection.LambdaClosed)]
-        private void reload_location (ApplicationContext context, ActiveEventArgs e)
-        {
-            // Redirecting using JavaScript
-            AjaxManager.SendJavaScriptToClient (string.Format ("window.location.replace(window.location.pathname);"));
-        }
-
-        /// <summary>
         ///     Returns the URL/location of your web page
         /// </summary>
         /// <param name="context">Application Context</param>
@@ -215,6 +204,18 @@ namespace p5.web
                 // Returning current URL
                 e.Args.Value = AjaxPage.Request.Url.ToString();
             }
+        }
+
+        /// <summary>
+        ///     Reloads the current document
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "reload-location", Protection = EventProtection.LambdaClosed)]
+        private void reload_location (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Redirecting using JavaScript
+            AjaxManager.SendJavaScriptToClient (string.Format ("window.location.replace(window.location.pathname);"));
         }
 
         /// <summary>
@@ -292,6 +293,9 @@ namespace p5.web
 
             // Creating and registering our WidgetLambdaEvents as event listener
             context.RegisterListeningObject (new WidgetLambdaEvents (context, this));
+
+            // Creating and registering our WidgetTypes as event listener
+            context.RegisterListeningObject (new WidgetTypes (context, this));
         }
 
         /*

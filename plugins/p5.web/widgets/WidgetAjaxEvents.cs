@@ -41,25 +41,6 @@ namespace p5.web.widgets
 
         #region [ -- Widget Ajax events -- ]
 
-        /*
-         * Invoked by p5.web during creation of Widgets
-         */
-        [ActiveEvent (Name = "p5.web.add-widget-ajax-event", Protection = EventProtection.NativeClosed)]
-        private void p5_web_add_widget_ajax_event (ApplicationContext context, ActiveEventArgs e)
-        {
-            // Retrieving widget
-            var widget = e.Args.Get<Widget> (context);
-            e.Args.Value = null; // dropping the actual Widget, to avoid serializing it into ViewState!
-
-            // Mapping the widget's ajax event to our common event handler on page
-            // But intentionally dropping [oninit], since it's a purely server-side lambda event, and not supposed to be pushed to client
-            if (e.Args.Name != "oninit")
-                widget [e.Args.Name] = "common_event_handler"; // Name of common WebMethod from Default.aspx.cs
-
-            // Storing our Widget Ajax event in storage
-            Manager.WidgetAjaxEventStorage [widget.ID, e.Args.Name] = e.Args;
-        }
-
         /// <summary>
         ///     Returns the given ajax event(s) for the given widget(s)
         /// </summary>

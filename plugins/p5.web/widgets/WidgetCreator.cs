@@ -57,29 +57,6 @@ namespace p5.web.widgets
         }
 
         /// <summary>
-        ///     Checks if the given widget(s) exist
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "widget-exist", Protection = EventProtection.LambdaClosed)]
-        private void widget_exist (ApplicationContext context, ActiveEventArgs e)
-        {
-            // Making sure we clean up and remove all arguments passed in after execution
-            using (new p5.core.Utilities.ArgsRemover(e.Args)) {
-
-                // Looping through all IDs given
-                foreach (var widgetId in XUtil.Iterate<string> (context, e.Args, true)) {
-
-                    // Adding a boolean as result node, with widget's ID as name, indicating existence of widget
-                    e.Args.Add(widgetId, Manager.FindControl<Control>(widgetId, Manager.AjaxPage) != null);
-                }
-
-                // Return true as main Active Event node if ALL widgets existed, otherwise returning false
-                e.Args.Value = !e.Args.Children.Where(ix => !ix.Get<bool> (context)).GetEnumerator().MoveNext();
-            }
-        }
-
-        /// <summary>
         ///     Deletes the given widget(s) entirely
         /// </summary>
         /// <param name="context">Application Context</param>
@@ -145,7 +122,7 @@ namespace p5.web.widgets
             if (eventNode != null)
                 CreateWidgetLambdaEvents (createNode.Get<string> (context), eventNode.UnTie (), context);
 
-            createNode.Insert (0, new Node ("__parent", parent));
+            createNode.Insert (0, new Node ("_parent", parent));
             context.RaiseNative ("p5.web.widgets." + type, createNode);
         }
 

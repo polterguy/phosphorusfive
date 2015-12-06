@@ -56,7 +56,6 @@
     <Compile Include="storage\Context.cs" />
     <Compile Include="storage\Globals.cs" />
     <Compile Include="storage\Session.cs" />
-    <Compile Include="widgets\WidgetEventStorage.cs" />
     <Compile Include="widgets\WidgetTypes.cs" />
     <Compile Include="widgets\WidgetCreator.cs" />
     <Compile Include="widgets\WidgetRetriever.cs" />
@@ -64,6 +63,7 @@
     <Compile Include="widgets\WidgetAjaxEvents.cs" />
     <Compile Include="widgets\WidgetLambdaEvents.cs" />
     <Compile Include="PageManager.cs" />
+    <Compile Include="widgets\helpers\WidgetEventStorage.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
@@ -82,6 +82,7 @@
     <Folder Include="request\" />
     <Folder Include="storage\" />
     <Folder Include="widgets\" />
+    <Folder Include="widgets\helpers\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\core\p5.ajax\p5.ajax.csproj">

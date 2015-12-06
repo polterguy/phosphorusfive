@@ -455,20 +455,6 @@ namespace p5.core
         }
 
         /// <summary>
-        ///     Returns the number of children nodes matching the given predicate.
-        /// </summary>
-        /// <param name="functor">Predicate nodes must match to be counted.</param>
-        public int CountWhere (Predicate<Node> functor)
-        {
-            int retVal = 0;
-            foreach (var idxNode in Children) {
-                if (functor (idxNode))
-                    retVal += 1;
-            }
-            return retVal;
-        }
-
-        /// <summary>
         ///     Returns the value of this instance as typeof(T).
         ///
         ///    Returns Value, converted to T, if necessary. If a conversion is not possible, then an exception might occur.

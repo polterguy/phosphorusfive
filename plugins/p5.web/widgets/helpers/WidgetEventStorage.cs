@@ -8,7 +8,7 @@ using System.Linq;
 using System.Collections.Generic;
 using p5.core;
 
-namespace p5.web.widgets
+namespace p5.web.widgets.helpers
 {
     /*
      * Used as storage for Ajax and lambda events for Widgets
