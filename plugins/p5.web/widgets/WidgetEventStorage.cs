@@ -8,10 +8,10 @@ using System.Linq;
 using System.Collections.Generic;
 using p5.core;
 
-namespace p5.webapp.code
+namespace p5.web.widgets
 {
     /*
-     * Used as storage for Ajax events for Widgets and lambda events for widgets
+     * Used as storage for Ajax and lambda events for Widgets
      */
     [Serializable]
     internal class WidgetEventStorage
@@ -60,7 +60,7 @@ namespace p5.webapp.code
         }
 
         /*
-         * Removes Dictionary item entirely
+         * Removes Dictionary items from dictionary matching both key1 and key2
          */
         internal void Remove (string key1, string key2)
         {

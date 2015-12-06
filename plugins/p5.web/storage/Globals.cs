@@ -10,7 +10,7 @@ using p5.core;
 /// <summary>
 ///     Main namespace for everything related to Web User Interface
 /// </summary>
-namespace p5.web.ui
+namespace p5.web.storage
 {
     /// <summary>
     ///     Helper to retrieve and set global application wide values

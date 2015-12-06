@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using p5.exp;
 using p5.core;
 
-namespace p5.web.ui
+namespace p5.web.storage
 {
     /// <summary>
     ///     Helper to retrieve and set Cache values.

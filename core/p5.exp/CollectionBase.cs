@@ -34,20 +34,28 @@ namespace p5.exp
         /// <param name="context">Application context</param>
         /// <param name="node">Root node of collection Active Event invoker</param>
         /// <param name="functor">Callback functor, will be invoked once for each key</param>
-        public static void Set (ApplicationContext context, Node args, SetDelegate functor)
+        public static void Set (ApplicationContext context, Node args, SetDelegate functor, bool isNative = false)
         {
-            // Retrieving source
-            var source = Source (args.LastChild, context);
+            // Special handling of native invocations
+            if (isNative) {
 
-            // Looping through each destination, invoking functor for each object
-            foreach (var idxKey in XUtil.Iterate<string> (context, args, true)) {
+                // This is a native invocation
+                functor (args.Get<string> (context), args [0].Value);
+            } else {
 
-                // Making sure caller does not try to set "protected data"
-                if (idxKey.IndexOf ("_") == 0)
-                    throw new LambdaException ("User tried to update protected value in collection", args, context);
+                // Retrieving source
+                var source = Source (args.LastChild, context);
 
-                // Invoking functor
-                functor (idxKey, source);
+                // Looping through each destination, invoking functor for each object
+                foreach (var idxKey in XUtil.Iterate<string> (context, args, true)) {
+
+                    // Making sure caller does not try to set "protected data"
+                    if (idxKey.IndexOf ("_") == 0)
+                        throw new LambdaException ("User tried to update protected value in collection", args, context);
+
+                    // Invoking functor
+                    functor (idxKey, source);
+                }
             }
         }
 
@@ -57,55 +65,64 @@ namespace p5.exp
         /// <param name="context">Application context</param>
         /// <param name="node">Root node of collection Active Event invoker</param>
         /// <param name="functor">Callback functor, will be invoked once for each key</param>
-        public static void Get (ApplicationContext context, Node args, GetDelegate functor)
+        public static void Get (ApplicationContext context, Node args, GetDelegate functor, bool isNative = false)
         {
-            // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (args, true)) {
+            // Special handling of native invocations
+            if (isNative) {
 
-                // Iterating through each "key"
-                foreach (var idxKey in XUtil.Iterate<string> (context, args, true)) {
+                // This is a native invocation
+                args.Value = functor (args.Get<string>(context));
+                
+            } else {
 
-                    // Making sure caller does not try to retrieve "protected data"
-                    if (idxKey.IndexOf ("_") == 0)
-                        throw new LambdaException ("User tried to access protected value from collection", args, context);
+                // Making sure we clean up and remove all arguments passed in after execution
+                using (new Utilities.ArgsRemover (args, true)) {
 
-                    // Retrieving object by invoking functor with key
-                    var value = functor (idxKey);
+                    // Iterating through each "key"
+                    foreach (var idxKey in XUtil.Iterate<string> (context, args, true)) {
 
-                    // Checking if value is not null, and if not, adding result, 
-                    // according to what type of value we're given
-                    if (value != null) {
+                        // Making sure caller does not try to retrieve "protected data"
+                        if (!isNative && idxKey.IndexOf ("_") == 0)
+                            throw new LambdaException ("User tried to access protected value from collection", args, context);
 
-                        // Adding key node, and value as object, if value is not node, otherwise
-                        // appending value nodes beneath key node
-                        var resultNode = args.Add (idxKey).LastChild;
-                        if (value is Node) {
+                        // Retrieving object by invoking functor with key
+                        var value = functor (idxKey);
 
-                            // Value is Node
-                            resultNode.Add ((value as Node).Clone ());
-                        } else if (value is IEnumerable<Node>) {
+                        // Checking if value is not null, and if not, adding result, 
+                        // according to what type of value we're given
+                        if (value != null) {
 
-                            // Value is a bunch of nodes, adding them all
-                            foreach (var idxValue in value as IEnumerable<Node>) {
-                                resultNode.Add (idxValue.Clone ());
-                            }
-                        } else if (value is IEnumerable<object>) {
+                            // Adding key node, and value as object, if value is not node, otherwise
+                            // appending value nodes beneath key node
+                            var resultNode = args.Add (idxKey).LastChild;
+                            if (value is Node) {
 
-                            // Value is a bunch of object values, adding them all as values of children appended into args
-                            foreach (var idxValue in value as IEnumerable<object>) {
-                                resultNode.Add (string.Empty, idxValue);
+                                // Value is Node
+                                resultNode.Add ((value as Node).Clone ());
+                            } else if (value is IEnumerable<Node>) {
+
+                                // Value is a bunch of nodes, adding them all
+                                foreach (var idxValue in value as IEnumerable<Node>) {
+                                    resultNode.Add (idxValue.Clone ());
+                                }
+                            } else if (value is IEnumerable<object>) {
+
+                                // Value is a bunch of object values, adding them all as values of children appended into args
+                                foreach (var idxValue in value as IEnumerable<object>) {
+                                    resultNode.Add (string.Empty, idxValue);
+                                }
+                            } else {
+
+                                // Value is any "other type of value", returning it anyway, even though it
+                                // cannot possibly have come from p5.lambda, to allow user to retrieve "any values"
+                                // that exists
+                                resultNode.Value = value;
                             }
                         } else {
 
-                            // Value is any "other type of value", returning it anyway, even though it
-                            // cannot possibly have come from p5.lambda, to allow user to retrieve "any values"
-                            // that exists
-                            resultNode.Value = value;
+                            // There was no value in collection for key, reflecting this fact back to caller
+                            args.Add (idxKey, null);
                         }
-                    } else {
-
-                        // There was no value in collection for key, reflecting this fact back to caller
-                        args.Add (idxKey, null);
                     }
                 }
             }
@@ -117,7 +134,7 @@ namespace p5.exp
         /// <param name="context">Application context</param>
         /// <param name="node">Root node of Active Event invoked</param>
         /// <param name="functor">Callback functor, will be invoked once to retrieve all keys from collection</param>
-        public static void List (ApplicationContext context, Node node, IEnumerable list)
+        public static void List (ApplicationContext context, Node node, IEnumerable list, bool isNative = false)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (node, true)) {
@@ -129,7 +146,7 @@ namespace p5.exp
                 foreach (string idxKey in list) {
 
                     // Checking if currently iterated key is "protected data"
-                    if (idxKey.IndexOf ("_") == 0)
+                    if (!isNative && idxKey.IndexOf ("_") == 0)
                         continue; // Ignoring "protected data"
 
                     // Returning current key, if it matches our filter, or filter is not given

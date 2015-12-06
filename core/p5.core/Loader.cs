@@ -150,7 +150,8 @@ namespace p5.core
         ///     Creates a new ApplicationContext for you
         /// </summary>
         /// <returns>The newly created context</returns>
-        public ApplicationContext CreateApplicationContext (ApplicationContext.ContextTicket ticket = null)
+        public ApplicationContext CreateApplicationContext (
+            ApplicationContext.ContextTicket ticket = null)
         {
             var context = new ApplicationContext (_instanceActiveEvents, _staticActiveEvents, ticket);
             return context;

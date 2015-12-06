@@ -222,7 +222,7 @@ namespace p5.core
             }
 
             // Raising "initialize" Application Context Active Event
-            RaiseNative ("p5.core.initialize-application-context");
+            RaiseNative("p5.core.initialize-application-context");
         }
     }
 }

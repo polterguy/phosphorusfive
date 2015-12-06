@@ -23,7 +23,7 @@ namespace p5.io.authorization.helpers
          */
         public static string GetAuthFile (ApplicationContext context)
         {
-            return context.RaiseNative ("_p5.security.get-auth-file").Get<string> (context).Replace ("~/", "");
+            return context.RaiseNative ("p5.security.get-auth-file").Get<string> (context).Replace ("~/", "");
         }
 
         /*

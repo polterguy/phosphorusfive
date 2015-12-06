@@ -1,9 +1,9 @@
 users
   root
-    salt:b1a376d8ae7d487d99dd2ffadc3b62cbac3f736b5e004fa1badb8dbff438c3f8b1cee78fef354d61bccf0b0ac385ea644bbacc71217c4d8f9926cf1e29b6dadf
+    salt:1fc452a333914512bc3e994de490412542618be58e7b4b4aa7a35b8239ba59499fde015a90fc4f4dbf7e57a47650e853ac9f32bc83e0448fb0b62f81f715c8b0
     password:foo
     role:root
   thomas
-    salt:e1572e8b-db5a-47dc-89e8-f9f55ca2fdc14047d95a-2445-4d8d-98a1-6e18ba9defff601faebc-ff92-4e1f-a7ed-91113c1d28a9
+    salt:8661a707-8b62-4b93-a530-3dd41c58a15405d4be28-7947-46d4-9867-a753be22f6a9
     password:foo
     role:superuser

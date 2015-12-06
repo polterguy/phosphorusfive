@@ -43,20 +43,22 @@
     <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Session.cs" />
     <Compile Include="response\Echo.cs" />
     <Compile Include="response\Headers.cs" />
-    <Compile Include="Cache.cs" />
     <Compile Include="common\PhosphorusWebException.cs" />
     <Compile Include="request\Cookies.cs" />
     <Compile Include="request\Headers.cs" />
     <Compile Include="request\Parameters.cs" />
     <Compile Include="request\Request.cs" />
     <Compile Include="response\Cookies.cs" />
-    <Compile Include="Widgets.cs" />
     <Compile Include="response\Status.cs" />
-    <Compile Include="Globals.cs" />
-    <Compile Include="Context.cs" />
+    <Compile Include="storage\Cache.cs" />
+    <Compile Include="storage\Context.cs" />
+    <Compile Include="storage\Globals.cs" />
+    <Compile Include="storage\Session.cs" />
+    <Compile Include="widgets\Widgets.cs" />
+    <Compile Include="widgets\CreateWidgets.cs" />
+    <Compile Include="widgets\WidgetEventStorage.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
@@ -73,6 +75,8 @@
   </ProjectExtensions>
   <ItemGroup>
     <Folder Include="request\" />
+    <Folder Include="storage\" />
+    <Folder Include="widgets\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\core\p5.ajax\p5.ajax.csproj">

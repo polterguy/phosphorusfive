@@ -12,15 +12,15 @@ using p5.core;
 using p5.exp;
 using Void = p5.ajax.widgets.Void;
 
-namespace p5.web.ui.widgets
+namespace p5.web.widgets
 {
     /// <summary>
-    ///     Class for creating web widgets.
+    ///     Class encapsulating web widgets
     /// </summary>
     public static class Widgets
     {
         /// <summary>
-        ///     Creates an Ajax Container Web Widget.
+        ///     Creates an ajax container web widget
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -31,7 +31,7 @@ namespace p5.web.ui.widgets
         }
 
         /// <summary>
-        ///     Creates an Ajax Literal Web Widget.
+        ///     Creates an ajax literal web widget
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -42,7 +42,7 @@ namespace p5.web.ui.widgets
         }
 
         /// <summary>
-        ///     Creates an Ajax Void Web Widget.
+        ///     Creates an ajax void web widget
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -53,18 +53,18 @@ namespace p5.web.ui.widgets
         }
 
         /*
-         * creates a widget from the given node
+         * Creates a widget from the given node
          */
         private static void CreateWidget<T> (
             ApplicationContext context, 
             Node args, 
             string elementType) where T : Widget, new ()
         {
-            // creating widget as persistent control
+            // Creating widget as persistent control
             var parent = args.GetChildValue<Container> ("__parent", context);
             var position = args.GetChildValue ("position", context, -1);
 
-            // getting [oninit], if any
+            // Getting [oninit], if any
             var onInitialLoad = CreateLoadingEvents (context, args);
             EventHandler handler = null;
             if (onInitialLoad != null) {
@@ -74,42 +74,42 @@ namespace p5.web.ui.widgets
                 };
             }
 
-            // creating control as persistent control
+            // Creating control as persistent control
             var widget = parent.CreatePersistentControl<T> (
                 args.Get<string> (context),
                 position,
                 handler);
 
-            // setting ElementType (html element) of Widget
+            // Setting ElementType (html element) of Widget
             widget.ElementType = elementType;
 
-            // making sure main widget ID is passed into decoration process
+            // Making sure main widget ID is passed into decoration process
             DecorateWidget (context, widget, args);
 
-            // making sure we return Widget to caller
+            // Making sure we return Widget to caller
             args.Value = widget;
         }
 
         /*
-         * creates the [oninit] event for widget, if we should
+         * Creates the [oninit] event for widget, if there is one defined
          */
         private static Node CreateLoadingEvents (ApplicationContext context, Node node)
         {
-            // checking to see if we've got an "initialload" Active Event for widget, and if so, handle it
+            // Checking to see if we've got an "oninit" Active Event for widget, and if so, return lambda for it
             var onInitialLoad = node.Find ("oninit");
             if (onInitialLoad == null)
                 return null;
 
-            // returning p5.lambda node
+            // Returning lambda object
             return onInitialLoad.Clone ();
         }
 
         /*
-         * decorates widget with common properties
+         * Decorates widget with common properties
          */
         private static Widget DecorateWidget (ApplicationContext context, Widget widget, Node args)
         {
-            // looping through all children nodes of Widget's node to decorate Widget
+            // Looping through all children nodes of Widget's node to decorate Widget
             foreach (var idxArg in args.Children) {
 
                 switch (idxArg.Name) {
@@ -138,36 +138,37 @@ namespace p5.web.ui.widgets
                     case "position":
                     case "parent":
                     case "has-name":
-                        // skipping these buggers, since they're not supposed to be handled here
+                        // Skipping these buggers, since they're not supposed to be handled here
                         break;
                     default:
 
-                        // this might be an event, it might be a node we should ignore (starting with "_") or it might be any arbitrary attribute
-                        // we should render. HandleDefaultProperty will figure out
+                        // This might be an event, or an arbitrary attribute
                         HandleDefaultProperty (context, widget, idxArg);
                         break;
                 }
             }
 
-            // ensures "name" property is created, if necessary
+            // Ensures "name" property is created, if necessary
             EnsureNameProperty (widget, args, context);
             
-            // ensures "name" property is created, if necessary
+            // Ensures "value" property is created, if necessary
             EnsureValueProperty (widget, args, context);
 
+            // Returning widget to caller
             return widget;
         }
 
         /*
-         * ensuring the "value" property is the same as the "ID" of the widget, but only for "radio" input elements,
-         * unless a value property is explicitly given
+         * Ensuring that the "value" property is the same as the "ID" of the widget, 
+         * but only for widgets that require a value attribute to function properly, and
+         * for widgets that has not explicitly been given a value
          */
         private static void EnsureValueProperty (Widget widget, Node node, ApplicationContext context)
         {
             if (widget.HasAttribute ("value"))
-                return; // caller already explicitly added value attribute
+                return; // Caller already explicitly added value attribute
             
-            // making sure "input" type "radio" widgets have a value corresponding to 
+            // Making sure "input" type "radio" widgets have a value corresponding to 
             // their ID, unless value is explicitly given
             if (widget.ElementType == "input" && widget ["type"] == "radio") {
                 widget ["value"] = widget.ID;
@@ -175,40 +176,35 @@ namespace p5.web.ui.widgets
         }
             
         /*
-         * ensuring the "name" property is the same as the "ID" of the widget, unless a name property is explicitly given,
-         * or element type doesn't necessarily require a "name" to function correctly, or [has-name] equals false
+         * Ensuring that the "name" property is the same as the "ID" of the widget, unless a name property is explicitly given,
+         * or element type doesn't necessarily require a "name" to function properly, or [has-name] equals false
          */
         private static void EnsureNameProperty (Widget widget, Node node, ApplicationContext context)
         {
             if (widget.HasAttribute ("name"))
-                return; // caller already explicitly added name attribute
+                return; // Caller already explicitly added name attribute
 
             if (!node.GetChildValue ("has-name", context, true)) {
-                return; // caller explicitly told us he didn't want no name
+                return; // Caller explicitly told us he didn't want any name attribute value
             }
 
-            // making sure "input", "select" and "textarea" widgets have a name corresponding to 
-            // their ID, unless name is explicitly given
-            var addName = false;
+            // Making sure "input", "select" and "textarea" widgets have a name corresponding to 
+            // their ID
             switch (widget.ElementType) {
                 case "input":
-                    if (widget.ElementType != "button")
-                        addName = true;
-                    break;
                 case "textarea":
                 case "select":
-                    addName = true;
+                    widget ["name"] = widget.ID;
                     break;
             }
-            if (addName)
-                widget ["name"] = widget.ID;
         }
 
         /*
-         * creates children widgets of widget
+         * Creates children widgets of widget
          */
         private static void CreateChildWidgets (ApplicationContext context, Widget widget, Node children)
         {
+            // Looping through all child widgets declared in lambda object
             foreach (var idxChild in children.Children) {
 
                 idxChild.Insert (0, new Node ("__parent", widget));
@@ -227,26 +223,31 @@ namespace p5.web.ui.widgets
                 // Letting p5.webapp do the actual creation
                 var eventNode = new Node (idxEvt.Name, widget);
                 eventNode.AddRange (idxEvt.Children);
-                context.RaiseNative ("_p5.web.add-widget-lambda-event", eventNode);
+                context.RaiseNative ("p5.web.add-widget-lambda-event", eventNode);
             }
         }
 
         /*
-         * handles all default properties of Widget
+         * Handles all default properties of Widget
          */
         private static void HandleDefaultProperty (ApplicationContext context, Widget widget, Node node)
         {
+            // Checking if this is a declaration of an event handler
             if (node.Name.StartsWith ("on")) {
+
+                // This is an event, creating it
                 CreateEventHandler (context, widget, node);
-            } else if (!node.Name.StartsWith ("_")) {
+            } else {
+
+                // This is a normal attribute
                 widget [node.Name] = node.Get<string> (context);
             }
         }
 
         /*
-         * Creates an event handler on the given widget for the given node. If the value of the node is set, the
-         * event will be assumed to be a JavaScript event, and simply sent back to client as JavaScript. If it 
-         * does not contain a value, the event will be handled as a server-side p5.lambda event, assuming children 
+         * Creates an event handler on the given widget for the given node. If a value is given in node, the
+         * event will be assumed to be a JavaScript event, and simply sent back to client as JavaScript. If node 
+         * does not contain a value, the event will be handled as a server-side lambda event, assuming children 
          * widgets are lambda code to evaluate
          */
         private static void CreateEventHandler (ApplicationContext context, Widget widget, Node node)
@@ -257,11 +258,11 @@ namespace p5.web.ui.widgets
                 widget [node.Name] = node.Get<string> (context);
             } else {
 
-                // Raising the Active Event that actually creates our Ajax event handler for our p5.lambda object
+                // Raising the Active Event that actually creates our Ajax event handler for our lambda object
                 var eventNode = new Node (node.Name, widget);
                 eventNode.Add ("_event", widget.ID);
                 eventNode.AddRange (node.Children);
-                context.RaiseNative ("_p5.web.add-widget-ajax-event", eventNode);
+                context.RaiseNative ("p5.web.add-widget-ajax-event", eventNode);
             }
         }
     }

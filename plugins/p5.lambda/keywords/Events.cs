@@ -71,8 +71,8 @@ namespace p5.lambda.events
         /// </summary>
         /// <param name="context">Application context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "_p5.lambda.get-protected-events", Protection = EventProtection.NativeClosed)]
-        private static void _p5_lambda_get_protected_events (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.lambda.get-protected-events", Protection = EventProtection.NativeClosed)]
+        private static void p5_lambda_get_protected_events (ApplicationContext context, ActiveEventArgs e)
         {
             foreach (var idxEvt in _events.Keys) {
                 if (_events [idxEvt].Get<bool> (context))
