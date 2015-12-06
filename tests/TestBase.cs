@@ -7,6 +7,7 @@
 using System;
 using System.Reflection;
 using p5.core;
+using NUnit.Framework;
 
 namespace p5.unittests
 {
@@ -32,6 +33,7 @@ namespace p5.unittests
             }
             Loader.Instance.LoadAssembly (GetType ());
             Context = Loader.Instance.CreateApplicationContext ();
+            Context.RaiseNative ("p5.core.application-start");
         }
 
         /// <summary>
@@ -75,19 +77,19 @@ namespace p5.unittests
          * helper Active Events necessary as helper for some of our plugins
          */
         [ActiveEvent (Name = "p5.core.application-folder", Protection = EventProtection.NativeClosed)]
-        private static void GetRootFolder (ApplicationContext context, ActiveEventArgs e)
+        private static void p5_core_application_folder (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = GetBasePath ();
         }
 
         [ActiveEvent (Name = "p5.security.get-auth-file", Protection = EventProtection.NativeClosed)]
-        private static void _p5_security_get_auth_file (ApplicationContext context, ActiveEventArgs e)
+        private static void p5_security_get_auth_file (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = _auth;
         }
 
         [ActiveEvent (Name = "p5.security.get-credential-cookie-days", Protection = EventProtection.NativeClosed)]
-        private static void _p5_security_get_credential_cookie_days (ApplicationContext context, ActiveEventArgs e)
+        private static void p5_security_get_credential_cookie_days (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = 90;
         }
@@ -98,7 +100,7 @@ namespace p5.unittests
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.security.get-default-context-role", Protection = EventProtection.NativeClosed)]
-        private static void _p5_security_get_default_context_role (ApplicationContext context, ActiveEventArgs e)
+        private static void p5_security_get_default_context_role (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = _role;
         }
@@ -109,7 +111,7 @@ namespace p5.unittests
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.security.get-default-context-username", Protection = EventProtection.NativeClosed)]
-        private static void _p5_security_get_default_context_username (ApplicationContext context, ActiveEventArgs e)
+        private static void p5_security_get_default_context_username (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = _username;
         }
@@ -120,7 +122,7 @@ namespace p5.unittests
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.security.get-login-cooloff-seconds", Protection = EventProtection.NativeClosed)]
-        private static void _p5_security_get_login_cooloff_seconds (ApplicationContext context, ActiveEventArgs e)
+        private static void p5_security_get_login_cooloff_seconds (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = 90;
         }

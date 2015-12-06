@@ -20,6 +20,22 @@ namespace p5.data.helpers
     /// </summary>
     public static class Common
     {
+        /// <summary>
+        ///     Initializes the database
+        /// </summary>
+        /// <param name="context">Context.</param>
+        /// <param name="e">E.</param>
+        [ActiveEvent (Name = "p5.core.application-start", Protection = EventProtection.LambdaClosed)]
+        private static void p5_core_application_start (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Acquiring lock on database
+            lock (Common.Lock) {
+
+                // Making sure database is initialized
+                Common.Initialize (context);
+            }
+        }
+
         // Contains full path to database folder
         private static string _dbFullPath;
 
@@ -44,10 +60,10 @@ namespace p5.data.helpers
         ///     Make sure database is properly initialized
         /// </summary>
         /// <param name="context">application context</param>
-        public static void Initialize (ApplicationContext context)
+        private static void Initialize (ApplicationContext context)
         {
             // Verifying database is not already initialized from before
-            if (string.IsNullOrEmpty (_dbFullPath)) {
+            if (Database == null) {
 
                 // Need to initialize database
                 Database = new Node ();

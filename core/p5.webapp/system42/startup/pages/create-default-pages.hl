@@ -23,11 +23,11 @@ if:x:/-?value
  */
 sys42.execute-lisp-file:system42/server-startup/launch-server.hl"
 
-    p5.page:/superuser/editor
+    p5.page:/root/editor
       type:lambda
       name:Page editor
       template:system42/templates/main.hl
-      role:superuser
+      role:root
       lambda:@"
 
 /*

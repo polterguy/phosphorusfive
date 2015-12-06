@@ -17,7 +17,7 @@ namespace p5.web.widgets
     /// <summary>
     ///     Class encapsulating web widgets
     /// </summary>
-    public static class Widgets
+    public static class WidgetTypes
     {
         /// <summary>
         ///     Creates an ajax container web widget

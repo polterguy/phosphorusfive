@@ -35,9 +35,6 @@ namespace p5.data
                 // Acquiring lock on database
                 lock (Common.Lock) {
 
-                    // Making sure database is initialized
-                    Common.Initialize (context);
-
                     // Iterating through each result from database node tree
                     var match = ex.Evaluate (Common.Database, context, e.Args);
                     if (match.TypeOfMatch == Match.MatchType.count) {

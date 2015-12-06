@@ -187,6 +187,7 @@
     <Compile Include="code\configuration\ActiveEventAssembly.cs" />
     <Compile Include="code\configuration\ActiveEventAssemblyCollection.cs" />
     <Compile Include="code\configuration\PhosphorusConfiguration.cs" />
+    <Compile Include="code\PhosphorusPage.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

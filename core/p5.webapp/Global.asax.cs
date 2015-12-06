@@ -16,6 +16,9 @@ using p5.webapp.code.configuration;
 /// </summary>
 namespace p5
 {
+    /// <summary>
+    ///     Main namespace for your Phosphorus Five web app
+    /// </summary>
     namespace webapp
     {
         /// <summary>
@@ -49,7 +52,7 @@ namespace p5
                     Loader.Instance.LoadAssembly (Server.MapPath (configuration.PluginDirectory), idxAssembly.Assembly);
                 }
 
-                // Creating our App Context, notice we do NOT raise [p5.core.initialize-application-context]
+                // Creating our App Context
                 var context = Loader.Instance.CreateApplicationContext (new ApplicationContext.ContextTicket("root", "root", false));
 
                 // Raising the application start Active Event, making sure we do it with a "root" Context Ticket
@@ -65,37 +68,23 @@ namespace p5
             }
 
             /*
-             * Executes a Hyperlisp file
-             */
-            private static void ExecuteHyperlispFile (ApplicationContext context, string filePath)
-            {
-                // Loading file, converting to Lambda, for then to evaluate as p5.lambda
-                context.RaiseNative ("eval", context.RaiseNative ("load-file", new Node("", filePath)) [0]);
-            }
-
-            /*
              * Rewrites path to support "URL rewriting"
              */
             protected void Application_BeginRequest (object sender, EventArgs e)
             {
                 // Rewriting path such that "x.com/somefolder/somefile" becomes "x.com?file=somefolder/somefile"
-                var localPath = HttpContext.Current.Request.Url.LocalPath;
+                // Notice, "ToLower"!
+                var localPath = HttpContext.Current.Request.Url.LocalPath.ToLower ();
 
-                // Checking to see if this is a [p5.page] request, and if so, we rewrite the path to "Default.aspx"
-                // and store the original URL in the HttpContext.Item collection for later references
-                if (localPath.ToLower ().Trim ('/') == "default.aspx" || !localPath.Contains (".")) {
+                // Checking to see if we should rewrite the URL/path to page
+                if (localPath == "/default.aspx" || !localPath.Contains (".")) {
 
-                    // If file requested is Default.aspx, we change it to simply "?file=/"
-                    if (localPath == "/Default.aspx")
-                        localPath = "/";
-
-                    // Storing original path
-                    HttpContext.Current.Items ["_p5_original_url"] = localPath;
-
-                    // Rewriting path
-                    HttpContext.Current.RewritePath ("~/Default.aspx");
+                    // Rewriting path (URL) of request
+                    RewritePath(localPath);
                 }
             }
+
+            #region [ -- Common helper Active Event sinks to retrieve global settings -- ]
 
             /// <summary>
             ///     Returns the Application base folder
@@ -167,6 +156,37 @@ namespace p5
                 var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
                 e.Args.Value = configuration.LoginCoolOffSeconds;
             }
+
+            #endregion
+
+            #region [ -- Private helper methods -- ]
+
+            /*
+             * Executes a Hyperlisp file
+             */
+            private static void ExecuteHyperlispFile (ApplicationContext context, string filePath)
+            {
+                // Loading file, converting to Lambda, for then to evaluate as p5.lambda
+                context.RaiseNative ("eval", context.RaiseNative ("load-file", new Node("", filePath)) [0]);
+            }
+
+            /*
+             * Rewrites URL/path to web page request
+             */
+            private static void RewritePath (string url)
+            {
+                // If file requested is Default.aspx, we change it to simply "?file=/"
+                if (url == "/default.aspx")
+                    url = "/";
+
+                // Storing original path
+                HttpContext.Current.Items ["_p5_original_url"] = url;
+
+                // Rewriting path
+                HttpContext.Current.RewritePath ("~/Default.aspx");
+            }
+
+            #endregion
         }
     }
 }

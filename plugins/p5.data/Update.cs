@@ -33,9 +33,6 @@ namespace p5.data
             // acquiring lock on database
             lock (Common.Lock) {
 
-                // Making sure database is initialized
-                Common.Initialize (context);
-
                 // Used for storing all affected database nodes, such that we know which files to update
                 var changed = new List<Node> ();
 

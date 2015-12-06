@@ -35,9 +35,6 @@ namespace p5.data
                 // Acquiring lock on database
                 lock (Common.Lock) {
 
-                    // Making sure database is initialized
-                    Common.Initialize (context);
-
                     // Used to store how many items are actually affected
                     int affectedItems = 0;
 
