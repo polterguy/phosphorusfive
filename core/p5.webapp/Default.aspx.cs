@@ -19,20 +19,17 @@ using p5.webapp.code;
 using p5.ajax.widgets;
 
 /// <summary>
-///     Main namespace for your Phosphorus Five Web App
+///     Main namespace for your Phosphorus Five web app
 /// </summary>
 namespace p5.webapp
 {
-    // Helper namespace alias to avoid nameclashing with ASP.NET core controls
-    using pf = p5.ajax.widgets;
-
     /// <summary>
     ///     Main asp.net web page for your Application Pool
     /// </summary>
     public partial class Default : AjaxPage
     {
         // Main root container for all widgets
-        protected pf.Container cnt;
+        protected Container cnt;
 
         // Application Context for page life cycle
         private ApplicationContext _context;
