@@ -11,22 +11,7 @@ using p5.core;
 namespace p5.exp.iterators
 {
     /// <summary>
-    ///     Returns all nodes with the specified name.
-    /// 
-    ///     Will filter away all nodes from previous Iterator that does not match the name given through this iterator. If 
-    ///     name given starts with a back-slash, then the first back-slash will be removed. This allows you to use named iterators,
-    ///     where the Expression engine would normally choose another type of iterator, due to that your name fulfills the criteria for
-    ///     being a different type of iterator.
-    /// 
-    ///     For instance, to return a node who's name is "555", instead of the 555th child node of previous results, you can use; /\555
-    ///     as the value of your iterator.
-    /// 
-    ///     Example;
-    ///     <pre>/some-name</pre>
-    /// 
-    ///     This iterator is the default iterator being used by the Expression engine, unless it can find a better match for another type
-    ///     of iterator. Meaning, if your iterator doesn't match any of the other specialized iterators, then the engine defaults to
-    ///     treating your iterator as an iterator of this type.
+    ///     Returns all nodes with the specified name
     /// </summary>
     [Serializable]
     public class IteratorNamed : Iterator
@@ -35,23 +20,23 @@ namespace p5.exp.iterators
         private bool _like;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorNamed" /> class.
+        ///     Initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorNamed" /> class
         /// </summary>
         /// <param name="name">name to match</param>
         public IteratorNamed (string name)
         {
             if (name.StartsWith ("~")) {
 
-                // "like" equality
+                // "Like" equality
                 Name = name.Substring (1);
                 _like = true;
             } else if (name.StartsWith ("\\")) {
 
-                // escaped "like operator"
+                // Escaped "like operator"
                 Name = name.Substring (1);
             } else {
 
-                // plain and simple
+                // Plain and simple
                 Name = name;
             }
         }

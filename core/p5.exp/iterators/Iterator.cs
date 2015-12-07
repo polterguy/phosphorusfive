@@ -8,53 +8,24 @@ using System.Collections.Generic;
 using p5.core;
 
 /// <summary>
-///     Main namespace for all p5.lambda Expression Iterators.
-/// 
-///     A p5.lambda Expression Iterator is an sub-part of a p5.lambda expression, which informs the expression engine what types
-///     of criteria the nodes from the previous iterator, if any, the nodes should match, in order to become a part of the result
-///     for the next iterator.
-/// 
-///     An iterator starts with a slash (/), and can optionally end with a slash. The iterator's content, can optionally be put
-///     inside of double-quotes ("), if you have complex characters, that are normally considered control characters in the expression
-///     engine.
-/// 
-///     You can also compose multi-line string iterators, by putting your iterator's content inside of @"xxx" as a multi-line string literal.
+///     Main namespace for all p5.lambda Expression Iterators
 /// </summary>
 namespace p5.exp.iterators
 {
     /// <summary>
-    ///     Iterator class, wrapping one iterator, for p5.lambda expressions.
-    /// 
-    ///     Iterators is at the heart of <see cref="phosphorus.expressions.Expression">Expressions</see>, and are executed as a chain, 
-    ///     encapsulated within a <see cref="phosphorus.expressions.Logical">Logical</see> object, which again  is a child of an 
-    ///     <see cref="phosphorus.expressions.iterators.IteratorGroup">IteratorGroup</see>. When iterators are evaluated, they are 
-    ///     evaluated in a left-associative manner, where the last iterator is evaluated last, and evaluated as a result of its previous 
-    ///     iterator's Left property.
-    /// 
-    ///     The root iterator of all expressions, is normally an iterator, containing a single <see cref="phosphorus.core.Node">Node</see>
-    ///     instance, from which iteration begins. Below is an example of an Expression containing two iterators;
-    /// 
-    ///     <pre>@/../*?node</pre>
-    /// 
-    ///     The above Expression has one IteratorRoot iterator, and one IteratorChildren iterator, and has the 'value' type declaration,
-    ///     which means it will extract the 'value' of its resulting nodes. Effectively extracting all value properties, from all children nodes,
-    ///     of the root node of your expression's execution tree.
+    ///     Iterator class, wrapping one iterator, for p5 lambda expressions
     /// </summary>
     [Serializable]
     public abstract class Iterator
     {
         /// <summary>
-        ///     Gets or sets the left or "previous iterator".
-        /// 
-        ///     The left iterator is the "previous iterator" in the chain of iterators for your expressions.
+        ///     Gets or sets the left or "previous iterator"
         /// </summary>
         /// <value>Its previous iterator in its chain of iterators</value>
         public Iterator Left { get; set; }
 
         /// <summary>
-        ///     Evaluates the iterator.
-        /// 
-        ///     Will evaluate your expression, and return a list of nodes, matching your Expression.
+        ///     Evaluates the iterator
         /// </summary>
         /// <value>The evaluated result, returning a list of <see cref="phosphorus.core.Node" />s</value>
         public abstract IEnumerable<Node> Evaluate (ApplicationContext context);

@@ -9,16 +9,12 @@ using p5.core;
 namespace p5.exp
 {
     /// <summary>
-    ///     Contains extension methods for the Node class.
-    /// 
-    ///     Contains useful extension methods for Nodes
+    ///     Contains extension methods for the Node class
     /// </summary>
     public static class NodeExtensions
     {
         /// <summary>
-        ///     Returns the evaluated value of the given node's child node.
-        /// 
-        ///     Evaluates node's speecified children node's value with XUtil.Single and returns the result.
+        ///     Returns the evaluated value of the given node's child node
         /// </summary>
         /// <returns>The evaluated result</returns>
         /// <param name="node">Node</param>
@@ -38,9 +34,7 @@ namespace p5.exp
         }
 
         /// <summary>
-        ///     Returns the evaluated value of the given node.
-        /// 
-        ///     Evaluates the given node's value with XUtil.Single, and returns the result.
+        ///     Returns the evaluated value of the given node
         /// </summary>
         /// <returns>The evaluated result of the node's value</returns>
         /// <param name="node">Node to evaluate</param>

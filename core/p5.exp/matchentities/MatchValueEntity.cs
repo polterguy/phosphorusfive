@@ -8,6 +8,9 @@ using p5.core;
 
 namespace p5.exp.matchentities
 {
+    /// <summary>
+    ///     Represents a match entity wrapping the Value of a node
+    /// </summary>
     public class MatchValueEntity : MatchEntity
     {
         internal MatchValueEntity (Node node, Match match)
@@ -26,7 +29,7 @@ namespace p5.exp.matchentities
                 if (!string.IsNullOrEmpty (_match.Convert)) {
                     retVal = _match.Convert == "string" ?
                         Utilities.Convert<string> (_match.Context, retVal) :
-                        _match.Context.RaiseNative ("p5.hyperlisp.get-object-value." + _match.Convert, new Node (string.Empty, retVal)).Value;
+                        _match.Context.RaiseNative ("p5.hyperlisp.get-object-value." + _match.Convert, new Node ("", retVal)).Value;
                 }
                 return retVal;
             }

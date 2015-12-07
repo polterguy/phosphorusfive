@@ -40,7 +40,7 @@ namespace p5.lambda.keywords
                 bool trim = trimNode == null ? false : trimNode.GetExValue (context, false);
 
                 StringBuilder result = new StringBuilder ();
-                foreach (var idx in ex.Evaluate (e.Args, context)) {
+                foreach (var idx in ex.Evaluate (context, e.Args)) {
 
                     if (result.Length != 0)
                         result.Append (insertBetweenNodes);

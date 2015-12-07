@@ -10,12 +10,7 @@ using p5.core;
 namespace p5.exp.iterators
 {
     /// <summary>
-    ///     Returns the "root" <see cref="phosphorus.core.Node" /> of your tree-structure.
-    /// 
-    ///     Will return the root node of your tree.
-    /// 
-    ///     Example;
-    ///     <pre>/..</pre>
+    ///     Returns the "root" <see cref="phosphorus.core.Node" /> of your tree-structure
     /// </summary>
     [Serializable]
     public class IteratorRoot : Iterator

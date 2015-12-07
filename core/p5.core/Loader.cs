@@ -195,7 +195,7 @@ namespace p5.core
         /// <param name="name">The name of the assembly you wish to load</param>
         public void LoadAssembly (string name)
         {
-            LoadAssembly (string.Empty, name);
+            LoadAssembly ("", name);
         }
 
         /// <summary>

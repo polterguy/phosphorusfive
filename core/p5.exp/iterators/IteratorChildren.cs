@@ -11,12 +11,7 @@ using p5.core;
 namespace p5.exp.iterators
 {
     /// <summary>
-    ///     Returns all children of previous iterator.
-    /// 
-    ///     Will return all Children nodes of the results of the previous Iterator.
-    /// 
-    ///     Example;
-    ///     <pre>/*</pre>
+    ///     Returns all children of previous iterator
     /// </summary>
     [Serializable]
     public class IteratorChildren : Iterator

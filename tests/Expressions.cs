@@ -89,7 +89,7 @@ namespace p5.unittests
             var exp = Expression.Create ("/*/_foo/*/?value", Context);
             var node = CreateNode (@"_foo
   :success");
-            var match = exp.Evaluate (node, Context);
+            var match = exp.Evaluate (Context, node);
             Assert.AreEqual (Match.MatchType.value, match.TypeOfMatch);
             Assert.AreEqual (1, match.Count);
             Assert.AreEqual ("success", match [0].Value);
@@ -103,7 +103,7 @@ namespace p5.unittests
   :success1
 _bar
   :success2");
-            var match = exp.Evaluate (node, Context);
+            var match = exp.Evaluate (Context, node);
             Assert.AreEqual (2, match.Count);
             Assert.AreEqual ("success1", match [0].Value);
             Assert.AreEqual ("success2", match [1].Value);
@@ -116,7 +116,7 @@ _bar
             var node = CreateNode (@"_foo
   :success
   :error");
-            var match = exp.Evaluate (node, Context);
+            var match = exp.Evaluate (Context, node);
             Assert.AreEqual (1, match.Count);
             Assert.AreEqual ("success", match [0].Value);
         }
@@ -128,7 +128,7 @@ _bar
             var node = CreateNode (@"_foo:success
 _result:error
 _content:error");
-            var match = exp.Evaluate (node, Context);
+            var match = exp.Evaluate (Context, node);
             Assert.AreEqual (1, match.Count);
             Assert.AreEqual ("success", match [0].Value);
         }
@@ -142,7 +142,7 @@ _content:error");
     :success
   _not-empty:error2
     :error");
-            var match = exp.Evaluate (node, Context);
+            var match = exp.Evaluate (Context, node);
             Assert.AreEqual (1, match.Count);
             Assert.AreEqual ("success", match [0].Value);
         }
@@ -176,7 +176,7 @@ _content:error");
         {
             var exp = Expression.Create ("/../0?value", Context);
             var node = CreateNode (@"foo:success");
-            var match = exp.Evaluate (node, Context);
+            var match = exp.Evaluate (Context, node);
             Assert.AreEqual (Match.MatchType.value, match.TypeOfMatch);
             Assert.AreEqual (1, match.Count);
             Assert.AreEqual ("success", match [0].Value);
@@ -187,7 +187,7 @@ _content:error");
         {
             var exp = Expression.Create ("/../0?name", Context);
             var node = CreateNode (@"success");
-            var match = exp.Evaluate (node, Context);
+            var match = exp.Evaluate (Context, node);
             Assert.AreEqual (Match.MatchType.name, match.TypeOfMatch);
             Assert.AreEqual (1, match.Count);
             Assert.AreEqual ("success", match [0].Value);
@@ -200,7 +200,7 @@ _content:error");
             var node = CreateNode (@"_foo
   x
   y");
-            var match = exp.Evaluate (node, Context);
+            var match = exp.Evaluate (Context, node);
             Assert.AreEqual (Match.MatchType.count, match.TypeOfMatch);
             Assert.AreEqual (2, match.Count);
         }
@@ -212,7 +212,7 @@ _content:error");
             var node = CreateNode (@"_foo
   x:x1
   y:y1");
-            var match = exp.Evaluate (node, Context);
+            var match = exp.Evaluate (Context, node);
             Assert.AreEqual (Match.MatchType.node, match.TypeOfMatch);
             Assert.AreEqual (2, match.Count);
             Assert.AreSame (node [0] [0], match [0].Value);
@@ -226,7 +226,7 @@ _content:error");
             var node = CreateNode (@"_foo
   x
   y");
-            var match = exp.Evaluate (node, Context);
+            var match = exp.Evaluate (Context, node);
             Assert.AreEqual (Match.MatchType.name, match.TypeOfMatch);
             Assert.AreEqual (2, match.Count);
             Assert.AreEqual ("x", match [0].Value);
@@ -240,7 +240,7 @@ _content:error");
             var node = CreateNode (@"_foo
   :x
   :y");
-            var match = exp.Evaluate (node, Context);
+            var match = exp.Evaluate (Context, node);
             Assert.AreEqual (Match.MatchType.value, match.TypeOfMatch);
             Assert.AreEqual (2, match.Count);
             Assert.AreEqual ("x", match [0].Value);
@@ -253,7 +253,7 @@ _content:error");
             var exp = Expression.Create ("/../0?value", Context);
             var node = CreateNode (@"_foo:x:/+?value");
             Assert.AreEqual ("/../0?value", exp.Value);
-            var match = exp.Evaluate (node, Context);
+            var match = exp.Evaluate (Context, node);
             Assert.AreEqual (Match.MatchType.value, match.TypeOfMatch);
             Assert.AreEqual (1, match.Count);
             Assert.AreEqual ("/+?value", (match [0].Value as Expression).Value);
@@ -266,7 +266,7 @@ _content:error");
             var node = CreateNode (@"_foo:x:/+?value
 _bar:success");
             Assert.AreEqual ("@/../0?value", exp.Value);
-            var match = exp.Evaluate (node, Context);
+            var match = exp.Evaluate (Context, node);
             Assert.AreEqual (Match.MatchType.value, match.TypeOfMatch);
             Assert.AreEqual (1, match.Count);
             Assert.AreEqual ("success", match [0].Value);
@@ -279,7 +279,7 @@ _bar:success");
             var exp = Expression.Create ("@/../0?value", Context);
             var node = CreateNode (@"_foo:x:/+?name
 _success");
-            var match = exp.Evaluate (node, Context);
+            var match = exp.Evaluate (Context, node);
             Assert.AreEqual (Match.MatchType.value, match.TypeOfMatch);
             Assert.AreEqual (1, match.Count);
             Assert.AreEqual ("_success", match [0].Value);
@@ -294,7 +294,7 @@ _success");
             var exp = Expression.Create ("@/../0?value", Context);
             var node = CreateNode (@"_bar:success");
             Assert.AreEqual ("@/../0?value", exp.Value);
-            var match = exp.Evaluate (node, Context);
+            var match = exp.Evaluate (Context, node);
             Assert.AreEqual (Match.MatchType.value, match.TypeOfMatch);
             Assert.AreEqual (1, match.Count);
 
@@ -311,7 +311,7 @@ _success");
             var node = CreateNode (@"_bar1:success1
 _bar2:x:/+?name
 _success2");
-            var match = exp.Evaluate (node, Context);
+            var match = exp.Evaluate (Context, node);
             Assert.AreEqual (2, match.Count);
             Assert.AreEqual (Match.MatchType.value, match.TypeOfMatch);
 
@@ -330,7 +330,7 @@ _success2");
 _foo2:x:/+2?value
 _res1:success1
 _res2:success2");
-            var match = exp.Evaluate (node, Context);
+            var match = exp.Evaluate (Context, node);
             Assert.AreEqual (2, match.Count);
 
             Assert.AreEqual ("success1", match [0].Value);
@@ -348,7 +348,7 @@ _res2:success2");
 _foo2:x:/+2?value
 _res1:success1
 _res2:success2");
-            var match = exp.Evaluate (node, Context);
+            var match = exp.Evaluate (Context, node);
             Assert.AreEqual (2, match.Count);
             bool first = true;
             foreach (var idxMatch in match) {
@@ -369,7 +369,7 @@ _res2:success2");
 _foo2:x:/+2?value
 _res1:error1
 _res2:error2");
-            var match = exp.Evaluate (node, Context);
+            var match = exp.Evaluate (Context, node);
             Assert.AreEqual (2, match.Count);
             bool first = true;
             foreach (var idxMatch in match) {
@@ -392,7 +392,7 @@ _res2:error2");
 _foo2:x:/+2?value
 _res1:error1
 _res2:error2");
-            var match = exp.Evaluate (node, Context);
+            var match = exp.Evaluate (Context, node);
             Assert.AreEqual (2, match.Count);
             bool first = true;
             foreach (var idxMatch in match) {
@@ -415,7 +415,7 @@ _res2:error2");
 _foo2:x:/+2?name
 _error1
 _error2");
-            var match = exp.Evaluate (node, Context);
+            var match = exp.Evaluate (Context, node);
             Assert.AreEqual (2, match.Count);
             bool first = true;
             foreach (var idxMatch in match) {
@@ -438,7 +438,7 @@ _error2");
 _foo2:x:/+2?name
 _error1
 _error2");
-            var match = exp.Evaluate (node, Context);
+            var match = exp.Evaluate (Context, node);
             Assert.AreEqual (2, match.Count);
             bool first = true;
             foreach (var idxMatch in match) {
@@ -459,7 +459,7 @@ _error2");
             var exp = Expression.Create ("/../*?node", Context);
             var node = CreateNode (@"_error1
 _error2");
-            var match = exp.Evaluate (node, Context);
+            var match = exp.Evaluate (Context, node);
             Assert.AreEqual (2, match.Count);
             bool first = true;
             foreach (var idxMatch in match) {
@@ -480,7 +480,7 @@ _error2");
             var exp = Expression.Create ("/../*?name.int", Context);
             var node = CreateNode (@"1
 2");
-            var match = exp.Evaluate (node, Context);
+            var match = exp.Evaluate (Context, node);
             Assert.AreEqual (2, match.Count);
             Assert.AreEqual (1, match [0].Value);
             Assert.AreEqual (2, match [1].Value);
@@ -492,7 +492,7 @@ _error2");
             var exp = Expression.Create ("/../*?value.string", Context);
             var node = CreateNode (@"_x:date:""2012-12-23T21:21:21""
 _x:date:""2012-12-23T21:21:22""");
-            var match = exp.Evaluate (node, Context);
+            var match = exp.Evaluate (Context, node);
             Assert.AreEqual (2, match.Count);
             Assert.AreEqual ("2012-12-23T21:21:21", match [0].Value);
             Assert.AreEqual ("2012-12-23T21:21:22", match [1].Value);
@@ -504,7 +504,7 @@ _x:date:""2012-12-23T21:21:22""");
             var exp = Expression.Create ("/../*?value", Context);
             var node = CreateNode (@"_x:date:""2012-12-23T21:21:21""
 _x:date:""2012-12-23T21:21:22""");
-            var match = exp.Evaluate (node, Context);
+            var match = exp.Evaluate (Context, node);
             Assert.AreEqual (2, match.Count);
             Assert.AreEqual (new DateTime (2012, 12, 23, 21, 21, 21), match [0].Value);
             Assert.AreEqual (new DateTime (2012, 12, 23, 21, 21, 22), match [1].Value);
@@ -517,7 +517,7 @@ _x:date:""2012-12-23T21:21:22""");
             var node = CreateNode (@"_x:x:/../{0}?value
   :1
 _success:success");
-            var match = exp.Evaluate (node, Context);
+            var match = exp.Evaluate (Context, node);
             Assert.AreEqual (1, match.Count);
             Assert.AreEqual ("success", match [0].Value);
         }
@@ -530,7 +530,7 @@ _success:success");
   :x:/../*/_1?value
 _success:success
 _1:1");
-            var match = exp.Evaluate (node, Context);
+            var match = exp.Evaluate (Context, node);
             Assert.AreEqual (1, match.Count);
             Assert.AreEqual ("success", match [0].Value);
         }
@@ -544,11 +544,7 @@ _1:1");
     :x:/../*/_1?name
 _success:success
 _1:1");
-            Assert.IsFalse (exp.Lazy);
-            Assert.IsTrue (node [0].Get<Expression> (Context).Lazy);
-            Assert.IsTrue (node [0] [0].Get<Expression> (Context).Lazy);
-            Assert.IsFalse (node [0] [0] [0].Get<Expression> (Context).Lazy);
-            var match = exp.Evaluate (node, Context);
+            var match = exp.Evaluate (Context, node);
             Assert.AreEqual (1, match.Count);
             Assert.AreEqual ("success", match [0].Value);
         }
@@ -563,11 +559,7 @@ _1:1");
 _success:success
 _1:1
 _nest:x:/../*/_1?name");
-            Assert.IsFalse (exp.Lazy);
-            Assert.IsTrue (node [0].Get<Expression> (Context).Lazy);
-            Assert.IsTrue (node [0] [0].Get<Expression> (Context).Lazy);
-            Assert.IsFalse (node [0] [0] [0].Get<Expression> (Context).Lazy);
-            var match = exp.Evaluate (node, Context);
+            var match = exp.Evaluate (Context, node);
             Assert.AreEqual (1, match.Count);
             Assert.AreEqual ("success", match [0].Value);
         }

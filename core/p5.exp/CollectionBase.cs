@@ -109,7 +109,7 @@ namespace p5.exp
 
                                 // Value is a bunch of object values, adding them all as values of children appended into args
                                 foreach (var idxValue in value as IEnumerable<object>) {
-                                    resultNode.Add (string.Empty, idxValue);
+                                    resultNode.Add ("", idxValue);
                                 }
                             } else {
 

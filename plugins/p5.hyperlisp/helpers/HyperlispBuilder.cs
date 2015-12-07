@@ -70,7 +70,7 @@ namespace p5.hyperlisp.helpers
         {
             if (node.Name.Contains ("\n")) {
                 builder.Append (string.Format (@"@""{0}""", node.Name.Replace (@"""", @"""""")));
-            } else if ((node.Name == string.Empty && node.Value == null) || 
+            } else if ((node.Name == "" && node.Value == null) || 
                        node.Name.Contains (":") || node.Name.Trim () != node.Name) {
                 builder.Append (string.Format (@"""{0}""", node.Name.Replace (@"""", @"\""")));
             } else {

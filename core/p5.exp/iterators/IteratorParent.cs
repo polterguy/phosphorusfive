@@ -11,10 +11,7 @@ using p5.core;
 namespace p5.exp.iterators
 {
     /// <summary>
-    ///     Returns all parent <see cref="phosphorus.core.Node" />s of previous iterator result.
-    /// 
-    ///     Example;
-    ///     <pre>/.</pre>
+    ///     Returns all parent <see cref="phosphorus.core.Node" />s of previous iterator result
     /// </summary>
     [Serializable]
     public class IteratorParent : Iterator

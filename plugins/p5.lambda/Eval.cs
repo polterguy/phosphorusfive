@@ -159,7 +159,7 @@ namespace p5.lambda
 
                 // we don't execute nodes that start with an underscore "_" since these are considered "data segments"
                 // also we don't execute nodes with no name, since these interfers with "null Active Event handlers"
-                if (!idxExe.Name.StartsWith ("_") && idxExe.Name != string.Empty) {
+                if (!idxExe.Name.StartsWith ("_") && idxExe.Name != "") {
 
                     // raising the given Active Event normally, taking inheritance chain into account
                     context.RaiseLambda (idxExe.Name, idxExe);

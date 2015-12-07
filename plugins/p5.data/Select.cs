@@ -36,7 +36,7 @@ namespace p5.data
                 lock (Common.Lock) {
 
                     // Iterating through each result from database node tree
-                    var match = ex.Evaluate (Common.Database, context, e.Args);
+                    var match = ex.Evaluate (context, Common.Database, e.Args);
                     if (match.TypeOfMatch == Match.MatchType.count) {
 
                         // Returning number of items found as main value of node if expression was of type 'count'
@@ -47,10 +47,10 @@ namespace p5.data
                         foreach (var idxMatch in match) {
 
                             // Dependent upon type of expression, we either return a bunch of nodes, flat, with
-                            // name being string.Empty, and value being matched value, or we append node itself back
+                            // name being "", and value being matched value, or we append node itself back
                             // to caller. This allows us to select using expressions which are not of type 'node'
                             e.Args.Add (idxMatch.TypeOfMatch != Match.MatchType.node ? 
-                                new Node (string.Empty, idxMatch.Value) : 
+                                new Node ("", idxMatch.Value) : 
                                 idxMatch.Node.Clone ());
                         }
 

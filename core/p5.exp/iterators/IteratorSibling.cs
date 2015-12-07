@@ -10,14 +10,7 @@ using p5.core;
 namespace p5.exp.iterators
 {
     /// <summary>
-    ///     Returns an offset sibling node from previous result-set.
-    /// 
-    ///     Can start with either "+" or "-", depending upon whether or not you'd like to retrieve a "younger sibling"
-    ///     or an "older sibling" from the previous result-set. Next comes an integer value, defining how many siblings
-    ///     you wish to "jump".
-    /// 
-    ///     Example, that returns the sibling which is "two generations older" than your current result-set node's;
-    ///     <pre>/+2</pre>
+    ///     Returns an offset sibling node from previous result-set
     /// </summary>
     [Serializable]
     public class IteratorSibling : Iterator
@@ -25,7 +18,7 @@ namespace p5.exp.iterators
         private readonly int _offset;
 
         /// <summary>
-        ///     initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorSibling" /> class
+        ///     Initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorSibling" /> class
         /// </summary>
         /// <param name="offset">offset siblings from current nodes</param>
         public IteratorSibling (int offset)

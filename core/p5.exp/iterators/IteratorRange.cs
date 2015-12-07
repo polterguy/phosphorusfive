@@ -10,12 +10,7 @@ using p5.core;
 namespace p5.exp.iterators
 {
     /// <summary>
-    ///     Returns all nodes within the specified range.
-    /// 
-    ///     Returns all nodes within the given range from previous result-set.
-    /// 
-    ///     Example, will return the second and third node from previous result-set;
-    ///     <pre>/[1,3]</pre>
+    ///     Returns all nodes within the specified range
     /// </summary>
     [Serializable]
     public class IteratorRange : Iterator
@@ -24,7 +19,7 @@ namespace p5.exp.iterators
         private readonly int _to;
 
         /// <summary>
-        ///     initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorRange" /> class
+        ///     Initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorRange" /> class
         /// </summary>
         /// <param name="from">start position, from</param>
         /// <param name="to">end position, to</param>

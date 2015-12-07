@@ -74,9 +74,9 @@ namespace p5.hyperlisp.helpers
             var nextChar = _reader.Peek ();
             if ((nextChar == ':') &&
                 (previousToken == null || previousToken.Type == Token.TokenType.Spacer || previousToken.Type == Token.TokenType.CarriageReturn))
-                return new Token (Token.TokenType.Name, string.Empty); // empty name
+                return new Token (Token.TokenType.Name, ""); // empty name
             if ((nextChar == '\r' || nextChar == '\n' || nextChar == -1) && previousToken.Type == Token.TokenType.Separator)
-                return new Token (Token.TokenType.TypeOrContent, string.Empty); // empty name
+                return new Token (Token.TokenType.TypeOrContent, ""); // empty name
             if (nextChar == -1)
                 return null; // end of stream
 

@@ -8,6 +8,9 @@ using p5.core;
 
 namespace p5.exp.matchentities
 {
+    /// <summary>
+    ///     Class encapsulating a '?count' match entity from expression
+    /// </summary>
     public class MatchCountEntity : MatchEntity
     {
         internal MatchCountEntity (Node node, Match match)

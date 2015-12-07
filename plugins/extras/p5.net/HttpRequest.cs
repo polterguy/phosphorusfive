@@ -260,7 +260,7 @@ namespace p5.net
         {
             // Redmond, this is ridiculous! Why can't we set headers in a uniform way ...?
             foreach (var idxHeader in 
-                     args.Children.Where (idxArg => idxArg.Name != "content" && idxArg.Name != "Content-Type" && idxArg.Name != string.Empty)) {
+                     args.Children.Where (idxArg => idxArg.Name != "content" && idxArg.Name != "Content-Type" && idxArg.Name != "")) {
                 switch (idxHeader.Name) {
                 case "Accept":
                     request.Accept = XUtil.Single<string> (context, idxHeader, idxHeader);

@@ -17,7 +17,7 @@ namespace p5.exp.exceptions
         private readonly Node _node;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LambdaException" /> class.
+        ///     Initializes a new instance of the <see cref="LambdaException" /> class
         /// </summary>
         /// <param name="message">Message for exception, describing what went wrong</param>
         /// <param name="node">Node where expression was found</param>
@@ -25,34 +25,23 @@ namespace p5.exp.exceptions
         public LambdaException (string message, Node node, ApplicationContext context, Exception innerException = null)
             : base (message, innerException)
         {
-            // making sure we go a couple of nodes "upwards" in hierarchy, to provide some context,
-            // but not too much, to not overload user with information
-            if (node.Parent != null) {
-                _node = node.Parent;
-                if (_node.Parent != null)
-                    _node = _node.Parent;
-                if (_node.Parent != null)
-                    _node = _node.Parent;
-                if (_node.Parent != null)
-                    _node = _node.Parent;
-                _node = _node.Clone ();
-            } else {
-                _node = node.Clone ();
-            }
+            // Need to find root to append current evaluation scope to stack trace!
+            _node = node.Root.Clone ();
 
-            // storing context since we need it to convert to Hyperlisp later
+            // Storing context since we need it to convert to Hyperlisp later
             _context = context;
         }
 
         /*
-         * overiding StackTrace from Exception class to provide "Hyperlisp stack trace" as an additional piece of contextual information
+         * Overiding StackTrace from Exception class to provide "Hyperlisp stack trace" as an additional piece 
+         * of contextual information
          */
         public override string StackTrace
         {
             get
             {
                 var convert = new Node ();
-                convert.AddRange (_node.Clone ().Children);
+                convert.Add (_node);
                 _context.RaiseNative ("lambda2lisp", convert);
                 return string.Format ("p5.lambda stack trace;\r\n{0}\r\n\r\nC# stack trace;\r\n{1}",
                     convert.Get<string> (_context),

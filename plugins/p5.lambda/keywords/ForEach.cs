@@ -51,7 +51,7 @@ namespace p5.lambda.keywords
                     if (expValue != null) {
 
                         // Value of node is an expression, evaluating that expression, and iterating the evaluated results
-                        foreach (var idxSource in e.Args.Get<Expression> (context).Evaluate (e.Args, context, e.Args)) {
+                        foreach (var idxSource in e.Args.Get<Expression> (context).Evaluate (context, e.Args, e.Args)) {
 
                             IterateForEach (context, idxSource.Value, e.Args, oldForEach);
                         }
@@ -71,12 +71,12 @@ namespace p5.lambda.keywords
 
                                 // value of for-each is "any type of single item object", invoking for-each once and once only on that value
                                 IterateForEach (context, e.Args.Value, e.Args, oldForEach);
-                            } else if (e.Args.Children.Where (ix => ix.Name != string.Empty).GetEnumerator ().MoveNext ()) {
+                            } else if (e.Args.Children.Where (ix => ix.Name != "").GetEnumerator ().MoveNext ()) {
 
                                 // assuming first non-empty name child node of for-each is "source",
                                 // raising that node's name as Active Event, and iterating on the resulting
                                 // children from that Event invocation
-                                Node sourceNode = e.Args.Children.First(ix=>ix.Name != string.Empty);
+                                Node sourceNode = e.Args.Children.First(ix=>ix.Name != "");
                                 var oldSourceValue = sourceNode.Value;
                                 context.RaiseLambda (sourceNode.Name, sourceNode);
                                 sourceNode.UnTie (); // removing node that was used as source

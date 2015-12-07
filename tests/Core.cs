@@ -160,7 +160,7 @@ namespace p5.unittests
         public void RaiseTwoStaticHandlers ()
         {
             var context = Loader.Instance.CreateApplicationContext ();
-            var tmp = new Node (string.Empty, string.Empty);
+            var tmp = new Node ("", "");
             context.RaiseNative ("core.foo2", tmp);
             Assert.AreEqual ("successsuccess", tmp.Value);
         }
@@ -209,7 +209,7 @@ namespace p5.unittests
         {
             var context = Loader.Instance.CreateApplicationContext ();
             context.RegisterListeningObject (this);
-            var tmp = new Node (string.Empty, string.Empty);
+            var tmp = new Node ("", "");
             context.RaiseNative ("core.foo4", tmp);
             Assert.AreEqual ("successsuccess", tmp.Value);
         }
@@ -227,7 +227,7 @@ namespace p5.unittests
             // Adding same object twice, which SHOULDN'T make a difference ...
             context.RegisterListeningObject (this);
 
-            var tmp = new Node (string.Empty, string.Empty);
+            var tmp = new Node ("", "");
             context.RaiseNative ("core.foo4", tmp);
             Assert.AreEqual ("successsuccess", tmp.Value);
         }
@@ -253,7 +253,7 @@ namespace p5.unittests
         {
             var context = Loader.Instance.CreateApplicationContext ();
             context.RegisterListeningObject (this);
-            var tmp = new Node (string.Empty, string.Empty);
+            var tmp = new Node ("", "");
             context.RaiseNative ("core.foo5", tmp);
             Assert.AreEqual ("successsuccess", tmp.Value);
         }
@@ -283,7 +283,7 @@ namespace p5.unittests
             context.RegisterListeningObject (this);
 
             // Raising Active Event on new context, making sure our event handler is only invoked once
-            var tmp = new Node (string.Empty, string.Empty);
+            var tmp = new Node ("", "");
             context.RaiseNative ("core.foo6", tmp);
             Assert.AreEqual ("success", tmp.Value, "context contained previously registered instance listener");
         }
@@ -306,7 +306,7 @@ namespace p5.unittests
 
             // SHOULDN'T make a difference
             context.RegisterListeningObject (this);
-            var tmp = new Node (string.Empty, string.Empty);
+            var tmp = new Node ("", "");
             context.RaiseNative ("core.foo7", tmp);
             Assert.AreEqual ("success", tmp.Value, "context contained previously registered instance listener");
         }
@@ -329,9 +329,9 @@ namespace p5.unittests
             // Unregistering instance listener before we raise event, which SHOULD remove handler
             context.UnregisterListeningObject (this);
 
-            var tmp = new Node (string.Empty, string.Empty);
+            var tmp = new Node ("", "");
             context.RaiseNative ("core.foo8", tmp);
-            Assert.AreEqual (string.Empty, tmp.Value, "context contained previously registered instance listener");
+            Assert.AreEqual ("", tmp.Value, "context contained previously registered instance listener");
         }
 
         [ActiveEvent (Name = "core.foo9", Protection = EventProtection.NativeOpen)]
@@ -355,7 +355,7 @@ namespace p5.unittests
             var context = Loader.Instance.CreateApplicationContext ();
             context.RegisterListeningObject (this);
             context.UnregisterListeningObject (this);
-            var tmp = new Node (string.Empty, string.Empty);
+            var tmp = new Node ("", "");
             context.RaiseNative ("foo9", tmp);
             Assert.AreEqual ("success", tmp.Value, "context contained previously registered instance listener");
         }
@@ -380,12 +380,12 @@ namespace p5.unittests
 
             // Creating context after unloading assembly
             var context = Loader.Instance.CreateApplicationContext ();
-            var tmp = new Node (string.Empty, string.Empty);
+            var tmp = new Node ("", "");
             context.RaiseNative ("core.foo10", tmp);
 
             // Making sure we reload assembly, for next test
             Loader.Instance.LoadAssembly (GetType ());
-            Assert.AreEqual (string.Empty, tmp.Value);
+            Assert.AreEqual ("", tmp.Value);
         }
 
         [ActiveEvent (Name = "core.foo11", Protection = EventProtection.NativeOpen)]
@@ -412,12 +412,12 @@ namespace p5.unittests
 
             // Registering type of this as event handler, which is TOO LATE to change above created context
             Loader.Instance.LoadAssembly (this.GetType ());
-            var tmp = new Node (string.Empty, string.Empty);
+            var tmp = new Node ("", "");
 
             // Even though we reloaded this assembly, we did so after creating context, 
             // which means context should NOT have [core.foo11] as handler
             context.RaiseNative ("core.foo11", tmp);
-            Assert.AreEqual (string.Empty, tmp.Value);
+            Assert.AreEqual ("", tmp.Value);
         }
 
         /// <summary>
@@ -427,7 +427,7 @@ namespace p5.unittests
         public void InvokeNullEventHandler ()
         {
             var context = Loader.Instance.CreateApplicationContext ();
-            var tmp = new Node (string.Empty, string.Empty);
+            var tmp = new Node ("", "");
             context.RaiseNative ("core.non-existing", tmp);
             Assert.AreEqual ("", tmp.Name);
             Assert.AreEqual ("", tmp.Value);

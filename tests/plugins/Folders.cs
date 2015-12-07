@@ -40,7 +40,7 @@ namespace p5.unittests.plugins
             }
 
             // creating folder using "phosphorus.file"
-            var node = new Node (string.Empty, "/test1/");
+            var node = new Node ("", "/test1/");
             Context.RaiseNative ("create-folder", node);
 
             // verifying create functioned as is should
@@ -62,7 +62,7 @@ namespace p5.unittests.plugins
             }
 
             // creating folder using "phosphorus.file"
-            var node = new Node (string.Empty, Expression.Create ("/*?name", Context))
+            var node = new Node ("", Expression.Create ("/*?name", Context))
                 .Add ("/test1/")
                 .Add ("/test2/");
             Context.RaiseNative ("create-folder", node);
@@ -87,8 +87,8 @@ namespace p5.unittests.plugins
             }
 
             // creating folder using "phosphorus.file"
-            var node = new Node (string.Empty, Expression.Create ("/*!/0?{0}", Context))
-                .Add (string.Empty, "name")
+            var node = new Node ("", Expression.Create ("/*!/0?{0}", Context))
+                .Add ("", "name")
                 .Add ("/test1/")
                 .Add ("/test2/");
             Context.RaiseNative ("create-folder", node);
@@ -119,7 +119,7 @@ namespace p5.unittests.plugins
             }
 
             // creating folder using "phosphorus.file"
-            var node = new Node (string.Empty, Expression.Create ("/*?name", Context))
+            var node = new Node ("", Expression.Create ("/*?name", Context))
                 .Add ("/test1")
                 .Add ("/test2")
                 .Add ("/test3");
@@ -138,7 +138,7 @@ namespace p5.unittests.plugins
             }
 
             // checking to see if folder exists using "phosphorus.file"
-            var node = new Node (string.Empty, "/test1/");
+            var node = new Node ("", "/test1/");
             Context.RaiseNative ("folder-exist", node);
 
             // verifying exists returned true as it should
@@ -160,7 +160,7 @@ namespace p5.unittests.plugins
             }
 
             // checking to see if folder exists using "phosphorus.file"
-            var node = new Node (string.Empty, Expression.Create ("/*?name", Context))
+            var node = new Node ("", Expression.Create ("/*?name", Context))
                 .Add ("/test1/")
                 .Add ("/test2/");
             Context.RaiseNative ("folder-exist", node);
@@ -184,8 +184,8 @@ namespace p5.unittests.plugins
             }
 
             // checking to see if folder exists using "phosphorus.file"
-            var node = new Node (string.Empty, Expression.Create ("/*!/0?{0}", Context))
-                .Add (string.Empty, "name")
+            var node = new Node ("", Expression.Create ("/*!/0?{0}", Context))
+                .Add ("", "name")
                 .Add ("/test1/")
                 .Add ("/test2/");
             Context.RaiseNative ("folder-exist", node);
@@ -212,7 +212,7 @@ namespace p5.unittests.plugins
             }
 
             // checking to see if folder exists using "phosphorus.file"
-            var node = new Node (string.Empty, Expression.Create ("/*?name", Context))
+            var node = new Node ("", Expression.Create ("/*?name", Context))
                 .Add ("/test1/")
                 .Add ("/test2/")
                 .Add ("/test3/");
@@ -234,21 +234,21 @@ namespace p5.unittests.plugins
             }
 
             // creating files within folder
-            var node = new Node (string.Empty, Expression.Create ("/0?name", Context))
+            var node = new Node ("", Expression.Create ("/0?name", Context))
                 .Add ("/test1/test1.txt")
                     .Add ("src", "success");
             Context.RaiseNative ("save-file", node);
-            node = new Node (string.Empty, Expression.Create ("/0?name", Context))
+            node = new Node ("", Expression.Create ("/0?name", Context))
                 .Add ("/test1/test2.txt")
                     .Add ("src", "success");
             Context.RaiseNative ("save-file", node);
-            node = new Node (string.Empty, Expression.Create ("/0?name", Context))
+            node = new Node ("", Expression.Create ("/0?name", Context))
                 .Add ("/test1/test3.txt")
                     .Add ("src", "success");
             Context.RaiseNative ("save-file", node);
 
             // listing files within folder
-            node = new Node (string.Empty, "/test1/");
+            node = new Node ("", "/test1/");
             Context.RaiseNative ("list-files", node);
 
             // verifying list-files returned true as it should
@@ -274,18 +274,18 @@ namespace p5.unittests.plugins
             Directory.CreateDirectory (GetBasePath () + "test2");
 
             // creating files within folder
-            var node = new Node (string.Empty, "/test1/test1.txt")
+            var node = new Node ("", "/test1/test1.txt")
                 .Add ("src", "success");
             Context.RaiseNative ("save-file", node);
-            node = new Node (string.Empty, "/test2/test2.txt")
+            node = new Node ("", "/test2/test2.txt")
                 .Add ("src", "success");
             Context.RaiseNative ("save-file", node);
-            node = new Node (string.Empty, "/test1/test3.txt")
+            node = new Node ("", "/test1/test3.txt")
                 .Add ("src", "success");
             Context.RaiseNative ("save-file", node);
 
             // listing files within folder
-            node = new Node (string.Empty, Expression.Create ("/*?name", Context))
+            node = new Node ("", Expression.Create ("/*?name", Context))
                 .Add ("/test1/")
                 .Add ("/test2/");
             Context.RaiseNative ("list-files", node);
@@ -313,19 +313,19 @@ namespace p5.unittests.plugins
             Directory.CreateDirectory (GetBasePath () + "test2");
 
             // creating files within folder
-            var node = new Node (string.Empty, "/test1/test1.txt")
+            var node = new Node ("", "/test1/test1.txt")
                 .Add ("src", "success");
             Context.RaiseNative ("save-file", node);
-            node = new Node (string.Empty, "/test2/test2.txt")
+            node = new Node ("", "/test2/test2.txt")
                 .Add ("src", "success");
             Context.RaiseNative ("save-file", node);
-            node = new Node (string.Empty, "/test1/test3.txt")
+            node = new Node ("", "/test1/test3.txt")
                 .Add ("src", "success");
             Context.RaiseNative ("save-file", node);
 
             // listing files within folder
-            node = new Node (string.Empty, Expression.Create ("/*!/*/?{0}", Context))
-                .Add (string.Empty, "name")
+            node = new Node ("", Expression.Create ("/*!/*/?{0}", Context))
+                .Add ("", "name")
                 .Add ("/test1/")
                 .Add ("/test2/");
             Context.RaiseNative ("list-files", node);
@@ -349,19 +349,19 @@ namespace p5.unittests.plugins
             Directory.CreateDirectory (GetBasePath () + "test1");
 
             // creating files within folder
-            var node = new Node (string.Empty, "/test1/test1.txt")
+            var node = new Node ("", "/test1/test1.txt")
                 .Add ("src", "success");
             Context.RaiseNative ("save-file", node);
-            node = new Node (string.Empty, "/test1/test2.txt")
+            node = new Node ("", "/test1/test2.txt")
                 .Add ("src", "success");
             Context.RaiseNative ("save-file", node);
-            node = new Node (string.Empty, "/test1/test3.txt")
+            node = new Node ("", "/test1/test3.txt")
                 .Add ("src", "success");
             Context.RaiseNative ("save-file", node);
 
             // listing files within folder
-            node = new Node (string.Empty, "/te{0}")
-                .Add (string.Empty, "st1/");
+            node = new Node ("", "/te{0}")
+                .Add ("", "st1/");
             Context.RaiseNative ("list-files", node);
 
             // verifying list-files returned true as it should
@@ -385,7 +385,7 @@ namespace p5.unittests.plugins
             Directory.CreateDirectory (GetBasePath () + "test1/yyy");
 
             // listing folders within folder
-            var node = new Node (string.Empty, "/test1/");
+            var node = new Node ("", "/test1/");
             Context.RaiseNative ("list-folders", node);
 
             // verifying list-files returned true as it should
@@ -412,7 +412,7 @@ namespace p5.unittests.plugins
             Directory.CreateDirectory (GetBasePath () + "test2/yyy");
 
             // listing folders within folder
-            var node = new Node (string.Empty, Expression.Create ("/*?name", Context))
+            var node = new Node ("", Expression.Create ("/*?name", Context))
                 .Add ("/test1/")
                 .Add ("/test2/");
             Context.RaiseNative ("list-folders", node);
@@ -441,8 +441,8 @@ namespace p5.unittests.plugins
             Directory.CreateDirectory (GetBasePath () + "test2/yyy");
 
             // listing folders within folder
-            var node = new Node (string.Empty, Expression.Create ("{0}?name", Context))
-                .Add (string.Empty, "/*!/*/")
+            var node = new Node ("", Expression.Create ("{0}?name", Context))
+                .Add ("", "/*!/*/")
                 .Add ("/test1/")
                 .Add ("/test2/");
             Context.RaiseNative ("list-folders", node);
@@ -467,8 +467,8 @@ namespace p5.unittests.plugins
             Directory.CreateDirectory (GetBasePath () + "test1/yyy");
 
             // listing folders within folder
-            var node = new Node (string.Empty, "/te{0}/")
-                .Add (string.Empty, "st1");
+            var node = new Node ("", "/te{0}/")
+                .Add ("", "st1");
             Context.RaiseNative ("list-folders", node);
 
             // verifying list-files returned true as it should
@@ -517,7 +517,7 @@ insert-before:x:/../0
             }
 
             // removing directory using "phosphorus.file"
-            var node = new Node (string.Empty, "/test1/");
+            var node = new Node ("", "/test1/");
             Context.RaiseNative ("delete-folder", node);
 
             // verifying remove works as it should
@@ -535,12 +535,12 @@ insert-before:x:/../0
                 Directory.CreateDirectory (GetBasePath () + "test1");
 
             // creating a file within directory, to verify remove removes recursively
-            var createFile = new Node (string.Empty, "/test1/test1.txt")
+            var createFile = new Node ("", "/test1/test1.txt")
                 .Add ("src", "this is a test");
             Context.RaiseNative ("save-file", createFile);
 
             // removing directory using "phosphorus.file"
-            var node = new Node (string.Empty, "/test1/");
+            var node = new Node ("", "/test1/");
             Context.RaiseNative ("delete-folder", node);
 
             // verifying remove works as it should
@@ -562,7 +562,7 @@ insert-before:x:/../0
             }
 
             // removing directory using "phosphorus.file"
-            var node = new Node (string.Empty, Expression.Create ("/*?name", Context))
+            var node = new Node ("", Expression.Create ("/*?name", Context))
                 .Add ("/test1/")
                 .Add ("/test2/");
             Context.RaiseNative ("delete-folder", node);
@@ -587,8 +587,8 @@ insert-before:x:/../0
             }
 
             // removing directory using "phosphorus.file"
-            var node = new Node (string.Empty, Expression.Create ("/*!/*/?{0}", Context))
-                .Add (string.Empty, "name")
+            var node = new Node ("", Expression.Create ("/*!/*/?{0}", Context))
+                .Add ("", "name")
                 .Add ("/test1/")
                 .Add ("/test2/");
             Context.RaiseNative ("delete-folder", node);
@@ -610,8 +610,8 @@ insert-before:x:/../0
             }
 
             // removing directory using "phosphorus.file"
-            var node = new Node (string.Empty, "/te{0}")
-                .Add (string.Empty, "st1/");
+            var node = new Node ("", "/te{0}")
+                .Add ("", "st1/");
             Context.RaiseNative ("delete-folder", node);
 
             // verifying remove works as it should
@@ -631,7 +631,7 @@ insert-before:x:/../0
             }
 
             // removing directory using "phosphorus.file"
-            var node = new Node (string.Empty, "/test1");
+            var node = new Node ("", "/test1");
             Context.RaiseNative ("list-files", node);
         }
 
@@ -648,7 +648,7 @@ insert-before:x:/../0
             }
 
             // removing directory using "phosphorus.file"
-            var node = new Node (string.Empty, "/test1");
+            var node = new Node ("", "/test1");
             Context.RaiseNative ("list-folders", node);
         }
 
@@ -665,7 +665,7 @@ insert-before:x:/../0
             }
 
             // removing directory using "phosphorus.file"
-            var node = new Node (string.Empty, "test1/");
+            var node = new Node ("", "test1/");
             Context.RaiseNative ("list-files", node);
         }
 
@@ -682,7 +682,7 @@ insert-before:x:/../0
             }
 
             // removing directory using "phosphorus.file"
-            var node = new Node (string.Empty, "test1/");
+            var node = new Node ("", "test1/");
             Context.RaiseNative ("list-folders", node);
         }
 
@@ -694,12 +694,12 @@ insert-before:x:/../0
         public void FolderExistWithoutInitialSlash ()
         {
             if (!Directory.Exists ("test1")) {
-                var node = new Node (string.Empty, "/test1/");
+                var node = new Node ("", "/test1/");
                 Context.RaiseNative ("create-folder", node);
             }
 
             // removing directory using "phosphorus.file"
-            var result = new Node (string.Empty, "test1/");
+            var result = new Node ("", "test1/");
             Context.RaiseNative ("folder-exist", result);
         }
 
@@ -711,12 +711,12 @@ insert-before:x:/../0
         public void FolderExistWithoutTrailingSlash ()
         {
             if (!Directory.Exists ("test1")) {
-                var node = new Node (string.Empty, "/test1/");
+                var node = new Node ("", "/test1/");
                 Context.RaiseNative ("create-folder", node);
             }
 
             // removing directory using "phosphorus.file"
-            var result = new Node (string.Empty, "/test1");
+            var result = new Node ("", "/test1");
             Context.RaiseNative ("folder-exist", result);
         }
 
@@ -728,12 +728,12 @@ insert-before:x:/../0
         public void DeleteFolderWithoutInitialSlash ()
         {
             if (!Directory.Exists ("test1")) {
-                var node = new Node (string.Empty, "/test1/");
+                var node = new Node ("", "/test1/");
                 Context.RaiseNative ("create-folder", node);
             }
 
             // removing directory using "phosphorus.file"
-            var result = new Node (string.Empty, "test1/");
+            var result = new Node ("", "test1/");
             Context.RaiseNative ("delete-folder", result);
         }
 
@@ -745,12 +745,12 @@ insert-before:x:/../0
         public void DeleteFolderWithoutTrailingSlash ()
         {
             if (!Directory.Exists ("test1")) {
-                var node = new Node (string.Empty, "/test1/");
+                var node = new Node ("", "/test1/");
                 Context.RaiseNative ("create-folder", node);
             }
 
             // removing directory using "phosphorus.file"
-            var result = new Node (string.Empty, "/test1");
+            var result = new Node ("", "/test1");
             Context.RaiseNative ("delete-folder", result);
         }
 
@@ -762,10 +762,10 @@ insert-before:x:/../0
         public void CreateFolderWithoutInitialSlash ()
         {
             if (Directory.Exists ("test1")) {
-                var node = new Node (string.Empty, "/test1/");
+                var node = new Node ("", "/test1/");
                 Context.RaiseNative ("delete-folder", node);
             }
-            var result = new Node (string.Empty, "test1/");
+            var result = new Node ("", "test1/");
             Context.RaiseNative ("create-folder", result);
         }
 
@@ -777,10 +777,10 @@ insert-before:x:/../0
         public void CreateFolderWithoutTrailingSlash ()
         {
             if (Directory.Exists ("test1")) {
-                var node = new Node (string.Empty, "/test1/");
+                var node = new Node ("", "/test1/");
                 Context.RaiseNative ("delete-folder", node);
             }
-            var result = new Node (string.Empty, "/test1");
+            var result = new Node ("", "/test1");
             Context.RaiseNative ("create-folder", result);
         }
 
@@ -792,14 +792,14 @@ insert-before:x:/../0
         public void CopyFolderWithoutInitialSlashInSource ()
         {
             if (!Directory.Exists ("test1")) {
-                var node = new Node (string.Empty, "/test1/");
+                var node = new Node ("", "/test1/");
                 Context.RaiseNative ("create-folder", node);
             }
             if (Directory.Exists ("test2")) {
-                var node = new Node (string.Empty, "/test2/");
+                var node = new Node ("", "/test2/");
                 Context.RaiseNative ("delete-folder", node);
             }
-            var result = new Node (string.Empty, "test1/")
+            var result = new Node ("", "test1/")
                 .Add ("to", "/test2/");
             Context.RaiseNative ("copy-folder", result);
         }
@@ -812,14 +812,14 @@ insert-before:x:/../0
         public void CopyFolderWithoutTrailingSlashInSource ()
         {
             if (!Directory.Exists ("test1")) {
-                var node = new Node (string.Empty, "/test1/");
+                var node = new Node ("", "/test1/");
                 Context.RaiseNative ("create-folder", node);
             }
             if (Directory.Exists ("test2")) {
-                var node = new Node (string.Empty, "/test2/");
+                var node = new Node ("", "/test2/");
                 Context.RaiseNative ("delete-folder", node);
             }
-            var result = new Node (string.Empty, "/test1")
+            var result = new Node ("", "/test1")
                 .Add ("to", "/test2/");
             Context.RaiseNative ("copy-folder", result);
         }
@@ -832,14 +832,14 @@ insert-before:x:/../0
         public void CopyFolderWithoutInitialSlashInDestinatio  ()
         {
             if (!Directory.Exists ("test1")) {
-                var node = new Node (string.Empty, "/test1/");
+                var node = new Node ("", "/test1/");
                 Context.RaiseNative ("create-folder", node);
             }
             if (Directory.Exists ("test2")) {
-                var node = new Node (string.Empty, "/test2/");
+                var node = new Node ("", "/test2/");
                 Context.RaiseNative ("delete-folder", node);
             }
-            var result = new Node (string.Empty, "/test1/")
+            var result = new Node ("", "/test1/")
                 .Add ("to", "test2/");
             Context.RaiseNative ("copy-folder", result);
         }
@@ -852,14 +852,14 @@ insert-before:x:/../0
         public void CopyFolderWithoutTrailingSlashInDestination ()
         {
             if (!Directory.Exists ("test1")) {
-                var node = new Node (string.Empty, "/test1/");
+                var node = new Node ("", "/test1/");
                 Context.RaiseNative ("create-folder", node);
             }
             if (Directory.Exists ("test2")) {
-                var node = new Node (string.Empty, "/test2/");
+                var node = new Node ("", "/test2/");
                 Context.RaiseNative ("delete-folder", node);
             }
-            var result = new Node (string.Empty, "/test1/")
+            var result = new Node ("", "/test1/")
                 .Add ("to", "/test2");
             Context.RaiseNative ("copy-folder", result);
         }
@@ -872,14 +872,14 @@ insert-before:x:/../0
         public void MoveFolderWithoutInitialSlashInSource ()
         {
             if (!Directory.Exists ("test1")) {
-                var node = new Node (string.Empty, "/test1/");
+                var node = new Node ("", "/test1/");
                 Context.RaiseNative ("create-folder", node);
             }
             if (Directory.Exists ("test2")) {
-                var node = new Node (string.Empty, "/test2/");
+                var node = new Node ("", "/test2/");
                 Context.RaiseNative ("delete-folder", node);
             }
-            var result = new Node (string.Empty, "test1/")
+            var result = new Node ("", "test1/")
                 .Add ("to", "/test2/");
             Context.RaiseNative ("move-folder", result);
         }
@@ -892,14 +892,14 @@ insert-before:x:/../0
         public void MoveFolderWithoutTrailingSlashInSource ()
         {
             if (!Directory.Exists ("test1")) {
-                var node = new Node (string.Empty, "/test1/");
+                var node = new Node ("", "/test1/");
                 Context.RaiseNative ("create-folder", node);
             }
             if (Directory.Exists ("test2")) {
-                var node = new Node (string.Empty, "/test2/");
+                var node = new Node ("", "/test2/");
                 Context.RaiseNative ("delete-folder", node);
             }
-            var result = new Node (string.Empty, "/test1")
+            var result = new Node ("", "/test1")
                 .Add ("to", "/test2/");
             Context.RaiseNative ("move-folder", result);
         }
@@ -912,14 +912,14 @@ insert-before:x:/../0
         public void MoveFolderWithoutInitialSlashInDestinatio  ()
         {
             if (!Directory.Exists ("test1")) {
-                var node = new Node (string.Empty, "/test1/");
+                var node = new Node ("", "/test1/");
                 Context.RaiseNative ("create-folder", node);
             }
             if (Directory.Exists ("test2")) {
-                var node = new Node (string.Empty, "/test2/");
+                var node = new Node ("", "/test2/");
                 Context.RaiseNative ("delete-folder", node);
             }
-            var result = new Node (string.Empty, "/test1/")
+            var result = new Node ("", "/test1/")
                 .Add ("to", "test2/");
             Context.RaiseNative ("move-folder", result);
         }
@@ -932,14 +932,14 @@ insert-before:x:/../0
         public void MoveFolderWithoutTrailingSlashInDestination ()
         {
             if (!Directory.Exists ("test1")) {
-                var node = new Node (string.Empty, "/test1/");
+                var node = new Node ("", "/test1/");
                 Context.RaiseNative ("create-folder", node);
             }
             if (Directory.Exists ("test2")) {
-                var node = new Node (string.Empty, "/test2/");
+                var node = new Node ("", "/test2/");
                 Context.RaiseNative ("delete-folder", node);
             }
-            var result = new Node (string.Empty, "/test1/")
+            var result = new Node ("", "/test1/")
                 .Add ("to", "/test2");
             Context.RaiseNative ("move-folder", result);
         }

@@ -119,7 +119,7 @@ namespace p5.data
                 // An ID was given, making sure it doesn't exist from before
                 var tmpId = node.Get<string> (context);
                 if (Expression.Create (string.Format (@"/*/*/""={0}""", tmpId), context)
-                    .Evaluate (Common.Database, context)
+                    .Evaluate (context, Common.Database)
                     .GetEnumerator ()
                     .MoveNext ()) {
                     throw new LambdaException ("ID exists from before in database", node, context);

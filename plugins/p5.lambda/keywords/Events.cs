@@ -151,7 +151,7 @@ namespace p5.lambda.events
                     throw new LambdaException (string.Format ("Sorry, '{0}' is a protected event, and cannot be modified", name), lambda, context);
 
                 // making sure we have a key for Active Event name
-                _events [name] = new Node (string.Empty, isProtected);
+                _events [name] = new Node ("", isProtected);
 
                 // adding event to dictionary
                 _events [name].AddRange (lambda.Children);

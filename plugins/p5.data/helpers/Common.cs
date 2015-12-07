@@ -149,7 +149,7 @@ namespace p5.data.helpers
 
             // Creating new node and appending into database
             var newFileName = FindAvailableNewFileName (context);
-            var newNode = new Node (string.Empty, newFileName);
+            var newNode = new Node ("", newFileName);
             Database.Add (newNode);
 
             // Making sure file exists on disc, for future new creations of files, before save operation occurs
@@ -197,7 +197,7 @@ namespace p5.data.helpers
             using (TextReader reader = File.OpenText (_dbFullPath + path)) {
 
                 // Converting file to lambda
-                Node retVal = context.RaiseNative ("lisp2lambda", new Node (string.Empty, reader.ReadToEnd ()));
+                Node retVal = context.RaiseNative ("lisp2lambda", new Node ("", reader.ReadToEnd ()));
                 retVal.Value = path;
                 return retVal;
             }

@@ -8,6 +8,9 @@ using p5.core;
 
 namespace p5.exp.matchentities
 {
+    /// <summary>
+    ///     Represents a match entity wrapping the Node itself
+    /// </summary>
     public class MatchNodeEntity : MatchEntity
     {
         internal MatchNodeEntity (Node node, Match match)
@@ -24,15 +27,19 @@ namespace p5.exp.matchentities
             {
                 object retVal = Node;
                 if (!string.IsNullOrEmpty (_match.Convert)) {
+
+                    // Need to convert value before returning
                     retVal = _match.Convert == "string" ?
                         Utilities.Convert<string> (_match.Context, retVal) :
-                            _match.Context.RaiseNative ("p5.hyperlisp.get-object-value." + _match.Convert, new Node (string.Empty, retVal)).Value;
+                            _match.Context.RaiseNative ("p5.hyperlisp.get-object-value." + _match.Convert, new Node ("", retVal)).Value;
                 }
                 return retVal;
             }
             set
             {
                 if (value == null) {
+
+                    // Simply removing node
                     Node.UnTie ();
                 } else {
                     var tmp = Utilities.Convert<Node> (_match.Context, value);

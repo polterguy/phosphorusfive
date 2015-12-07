@@ -25,7 +25,7 @@ namespace p5.unittests.plugins
         [Test]
         public void ParseHyperlispNameValue ()
         {
-            var tmp = new Node (string.Empty, "x:y");
+            var tmp = new Node ("", "x:y");
             Context.RaiseNative ("lisp2lambda", tmp);
             Assert.AreEqual ("x", tmp [0].Name);
             Assert.AreEqual ("y", tmp [0].Value);
@@ -37,7 +37,7 @@ namespace p5.unittests.plugins
         [Test]
         public void ParseHyperlispTrimSpaces ()
         {
-            var tmp = new Node (string.Empty, @"
+            var tmp = new Node ("", @"
 
 x:y
 
@@ -54,9 +54,9 @@ x:y
         [Test]
         public void ParseHyperlispNoName ()
         {
-            var tmp = new Node (string.Empty, ":y");
+            var tmp = new Node ("", ":y");
             Context.RaiseNative ("lisp2lambda", tmp);
-            Assert.AreEqual (string.Empty, tmp [0].Name);
+            Assert.AreEqual ("", tmp [0].Name);
             Assert.AreEqual ("y", tmp [0].Value);
         }
 
@@ -66,11 +66,11 @@ x:y
         [Test]
         public void ParseHyperlispNoNameTrim ()
         {
-            var tmp = new Node (string.Empty, @"
+            var tmp = new Node ("", @"
 
 :y");
             Context.RaiseNative ("lisp2lambda", tmp);
-            Assert.AreEqual (string.Empty, tmp [0].Name);
+            Assert.AreEqual ("", tmp [0].Name);
             Assert.AreEqual ("y", tmp [0].Value);
         }
 
@@ -207,7 +207,7 @@ _time:time:""15.23:57:53.567"""};
             tmp.Add (new Node ("_blob", new byte[] {134, 254, 12}));
             Context.RaiseNative ("lambda2lisp", tmp);
             Assert.AreEqual ("_blob:blob:hv4M", tmp.Value);
-            tmp = new Node (string.Empty, tmp.Value);
+            tmp = new Node ("", tmp.Value);
             Context.RaiseNative ("lisp2lambda", tmp);
             Assert.AreEqual (new byte[] {134, 254, 12}, tmp [0].Value);
         }
@@ -272,7 +272,7 @@ _exe1
         [Test]
         public void ParseHyperlispOnlyEmptyComment ()
         {
-            var tmp = new Node (string.Empty, "//");
+            var tmp = new Node ("", "//");
             Context.RaiseNative ("lisp2lambda", tmp);
             Assert.AreEqual (0, tmp.Count);
         }
@@ -283,7 +283,7 @@ _exe1
         [Test]
         public void ParseHyperlispOnlyComment ()
         {
-            var tmp = new Node (string.Empty, "// comment");
+            var tmp = new Node ("", "// comment");
             Context.RaiseNative ("lisp2lambda", tmp);
             Assert.AreEqual (0, tmp.Count);
         }
@@ -294,7 +294,7 @@ _exe1
         [Test]
         public void ParseHyperlispOnlyEmptyMultiLineComment ()
         {
-            var tmp = new Node (string.Empty, "/**/");
+            var tmp = new Node ("", "/**/");
             Context.RaiseNative ("lisp2lambda", tmp);
             Assert.AreEqual (0, tmp.Count);
         }
@@ -305,7 +305,7 @@ _exe1
         [Test]
         public void ParseHyperlispOnlyMultiLineComment ()
         {
-            var tmp = new Node (string.Empty, "/*comment*/");
+            var tmp = new Node ("", "/*comment*/");
             Context.RaiseNative ("lisp2lambda", tmp);
             Assert.AreEqual (0, tmp.Count);
         }
@@ -316,7 +316,7 @@ _exe1
         [Test]
         public void ParseHyperlispOnlyMultiLineCommentSpacing ()
         {
-            var tmp = new Node (string.Empty, @"/*
+            var tmp = new Node ("", @"/*
 comment
 
 */");
@@ -330,7 +330,7 @@ comment
         [Test]
         public void ParseHyperlispMultiComments ()
         {
-            var tmp = new Node (string.Empty, @"// comment
+            var tmp = new Node ("", @"// comment
 jo:dude
 /*comment */
 hello
@@ -395,7 +395,7 @@ insert-before:x:/../0
         [ExpectedException]
         public void ParseErrorWrongSpacing ()
         {
-            var tmp = new Node (string.Empty, " x:y"); // one space before token
+            var tmp = new Node ("", " x:y"); // one space before token
             Context.RaiseNative ("lisp2lambda", tmp);
         }
 
@@ -406,7 +406,7 @@ insert-before:x:/../0
         [ExpectedException]
         public void ParseErrorWrongSpacingOfChildTooLittle ()
         {
-            var tmp = new Node (string.Empty, @"x:y
+            var tmp = new Node ("", @"x:y
  z:q"); // only one space when opening children collection
             Context.RaiseNative ("lisp2lambda", tmp);
         }
@@ -418,7 +418,7 @@ insert-before:x:/../0
         [ExpectedException]
         public void ParseErrorWrongSpacingOfChildTooMuch ()
         {
-            var tmp = new Node (string.Empty, @"x:y
+            var tmp = new Node ("", @"x:y
    z:q"); // three spaces when opening children collection
             Context.RaiseNative ("lisp2lambda", tmp);
         }
@@ -430,7 +430,7 @@ insert-before:x:/../0
         [ExpectedException]
         public void ParseErrorOpenStringLiteral ()
         {
-            var tmp = new Node (string.Empty, "z:\"howdy"); // open string literal
+            var tmp = new Node ("", "z:\"howdy"); // open string literal
             Context.RaiseNative ("lisp2lambda", tmp);
         }
 
@@ -441,7 +441,7 @@ insert-before:x:/../0
         [ExpectedException]
         public void ParseErrorOpenEmptyStringLiteral ()
         {
-            var tmp = new Node (string.Empty, @"z:"""); // empty and open string literal
+            var tmp = new Node ("", @"z:"""); // empty and open string literal
             Context.RaiseNative ("lisp2lambda", tmp);
         }
 
@@ -452,7 +452,7 @@ insert-before:x:/../0
         [ExpectedException]
         public void ParseErrorOpenEmptyMultiLineString ()
         {
-            var tmp = new Node (string.Empty, @"z:@"""); // empty and open multiline string literal
+            var tmp = new Node ("", @"z:@"""); // empty and open multiline string literal
             Context.RaiseNative ("lisp2lambda", tmp);
         }
 
@@ -463,7 +463,7 @@ insert-before:x:/../0
         [ExpectedException]
         public void ParseErrorOpenMultiLineString ()
         {
-            var tmp = new Node (string.Empty, @"z:@""howdy"); // open multiline string literal
+            var tmp = new Node ("", @"z:@""howdy"); // open multiline string literal
             Context.RaiseNative ("lisp2lambda", tmp);
         }
 
@@ -474,7 +474,7 @@ insert-before:x:/../0
         [ExpectedException]
         public void ParseErrorOpenMultiLineStringMultiLines ()
         {
-            var tmp = new Node (string.Empty, @"z:@""howdy
+            var tmp = new Node ("", @"z:@""howdy
 qwertyuiop
                     "); // open multiline string literal
             Context.RaiseNative ("lisp2lambda", tmp);
@@ -487,7 +487,7 @@ qwertyuiop
         [ExpectedException]
         public void ParseErrorNodeValueNotValid ()
         {
-            var tmp = new Node (string.Empty, @"z:node:@""howdy:x
+            var tmp = new Node ("", @"z:node:@""howdy:x
  f:g"""); // syntax error in hyperlisp node content, only one space while opening child collection of "howdy" node
             Context.RaiseNative ("lisp2lambda", tmp);
         }

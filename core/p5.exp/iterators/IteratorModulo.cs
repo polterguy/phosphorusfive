@@ -11,13 +11,7 @@ using p5.core;
 namespace p5.exp.iterators
 {
     /// <summary>
-    ///     Returns all nodes matching the given modulo.
-    /// 
-    ///     Will return all n'th node from previous Iterator result, where "n" is defined through a modulo iterator, for instance; /%2
-    ///     to return all "even nodes" from previous iterator.
-    /// 
-    ///     Example;
-    ///     <pre>/%2</pre>
+    ///     Returns all nodes matching the given modulo
     /// </summary>
     [Serializable]
     public class IteratorModulo : Iterator
@@ -25,7 +19,7 @@ namespace p5.exp.iterators
         private readonly int _modulo;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorModulo" /> class.
+        ///     Initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorModulo" /> class
         /// </summary>
         /// <param name="modulo">modulo</param>
         public IteratorModulo (int modulo)

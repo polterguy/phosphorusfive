@@ -53,7 +53,7 @@ namespace p5.lambda.keywords
                 return;
 
             // Looping through each destination node
-            foreach (var idxDestination in args.Get<Expression> (context).Evaluate (args, context, args)) {
+            foreach (var idxDestination in args.Get<Expression> (context).Evaluate (context, args, args)) {
 
                 // Verifying destination actually is a node
                 var curDest = idxDestination.Value as Node;
@@ -75,7 +75,7 @@ namespace p5.lambda.keywords
         private static void AppendRelativeSource (Node args, ApplicationContext context)
         {
             // Looping through each destination
-            foreach (var idxDestination in args.Get<Expression> (context).Evaluate (args, context, args)) {
+            foreach (var idxDestination in args.Get<Expression> (context).Evaluate (context, args, args)) {
 
                 // Verifying destination actually is a node
                 var curDest = idxDestination.Value as Node;

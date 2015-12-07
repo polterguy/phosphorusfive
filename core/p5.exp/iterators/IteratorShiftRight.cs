@@ -11,13 +11,7 @@ using p5.core;
 namespace p5.exp.iterators
 {
     /// <summary>
-    ///     Returns the "next node".
-    /// 
-    ///     To understand how this method works, see the documentation for <see cref="phosphorus.core.NextNode"/>, since
-    ///     it basically is an implementation of an Iterator doing exactly what that method does.
-    /// 
-    ///     Example;
-    ///     <pre>/&gt;</pre>
+    ///     Returns the "next node"
     /// </summary>
     [Serializable]
     public class IteratorShiftRight : Iterator

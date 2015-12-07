@@ -77,7 +77,7 @@ select-data:x:/*/*/_testX/0?name
 insert-before:x:/../0
   src:x:/../*");
             Assert.AreEqual (1, tmp [1].Count);
-            Assert.AreEqual (string.Empty, tmp [1] [0].Name);
+            Assert.AreEqual ("", tmp [1] [0].Name);
             Assert.AreEqual ("howdy", tmp [1] [0].Value);
         }
 
@@ -94,7 +94,7 @@ select-data:x:/*/*/_testX/0?value
 insert-before:x:/../0
   src:x:/../*");
             Assert.AreEqual (1, tmp [1].Count);
-            Assert.AreEqual (string.Empty, tmp [1] [0].Name);
+            Assert.AreEqual ("", tmp [1] [0].Name);
             Assert.AreEqual ("world", tmp [1] [0].Value);
         }
 
@@ -130,9 +130,9 @@ select-data:x:/*/*/_testX/0?name
 insert-before:x:/../0
   src:x:/../*");
             Assert.AreEqual (2, tmp [1].Count);
-            Assert.AreEqual (string.Empty, tmp [1] [0].Name);
+            Assert.AreEqual ("", tmp [1] [0].Name);
             Assert.AreEqual ("howdy1", tmp [1] [0].Value);
-            Assert.AreEqual (string.Empty, tmp [1] [1].Name);
+            Assert.AreEqual ("", tmp [1] [1].Name);
             Assert.AreEqual ("howdy2", tmp [1] [1].Value);
         }
 
@@ -152,9 +152,9 @@ select-data:x:/*/*/_testX/0?value
 insert-before:x:/../0
   src:x:/../*");
             Assert.AreEqual (2, tmp [1].Count);
-            Assert.AreEqual (string.Empty, tmp [1] [0].Name);
+            Assert.AreEqual ("", tmp [1] [0].Name);
             Assert.AreEqual ("world1", tmp [1] [0].Value);
-            Assert.AreEqual (string.Empty, tmp [1] [1].Name);
+            Assert.AreEqual ("", tmp [1] [1].Name);
             Assert.AreEqual ("world2", tmp [1] [1].Value);
         }
 

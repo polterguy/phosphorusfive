@@ -40,7 +40,7 @@ namespace p5.types
                 try
                 {
                     foreach (var idx in XUtil.Iterate<object> (context, e.Args)) {
-                        var objValue = context.RaiseNative ("p5.hyperlisp.get-object-value." + type, new Node (string.Empty, idx)).Value;
+                        var objValue = context.RaiseNative ("p5.hyperlisp.get-object-value." + type, new Node ("", idx)).Value;
                     }
 
                     // No exception occurred, conversion is possible

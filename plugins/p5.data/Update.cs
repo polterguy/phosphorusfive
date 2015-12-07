@@ -40,7 +40,7 @@ namespace p5.data
                 if (e.Args.Count > 0 && e.Args.LastChild.Name == "rel-src") {
 
                     // Iterating through all destinations, figuring out source relative to each destinations
-                    foreach (var idxDestination in ex.Evaluate (Common.Database, context, e.Args)) {
+                    foreach (var idxDestination in ex.Evaluate (context, Common.Database, e.Args)) {
 
                         // Figuring out which file Node updated belongs to, and storing in changed list
                         Common.AddNodeToChanges (idxDestination.Node, changed);
@@ -54,7 +54,7 @@ namespace p5.data
                     var source = XUtil.SourceSingle (context, e.Args);
 
                     // Iterating through all destinations, updating with source
-                    foreach (var idxDestination in e.Args.Get<Expression> (context).Evaluate (Common.Database, context, e.Args)) {
+                    foreach (var idxDestination in e.Args.Get<Expression> (context).Evaluate (context, Common.Database, e.Args)) {
 
                         // Figuring out which file Node updated belongs to, and storing in changed list
                         Common.AddNodeToChanges (idxDestination.Node, changed);

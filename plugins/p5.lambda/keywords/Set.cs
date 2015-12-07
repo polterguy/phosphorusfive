@@ -34,7 +34,7 @@ namespace p5.lambda.keywords
             if (e.Args.Count > 0 && e.Args.LastChild.Name == "rel-src") {
 
                 // Iterating through all destinations, figuring out source relative to each destinations
-                foreach (var idxDestination in destEx.Evaluate (e.Args, context, e.Args)) {
+                foreach (var idxDestination in destEx.Evaluate (context, e.Args, e.Args)) {
 
                     // Source is relative to destination, postponing figuring it out, until we're inside 
                     // our destination nodes, on each iteration, passing in destination node as data source
@@ -46,7 +46,7 @@ namespace p5.lambda.keywords
                 var source = XUtil.SourceSingle (context, e.Args);
 
                 // Iterating through all destinations, updating with source
-                foreach (var idxDestination in destEx.Evaluate (e.Args, context, e.Args)) {
+                foreach (var idxDestination in destEx.Evaluate (context, e.Args, e.Args)) {
 
                     // Setting value on MatchEntity will work correctly for both removal and changing values/names and nodes
                     idxDestination.Value = source;

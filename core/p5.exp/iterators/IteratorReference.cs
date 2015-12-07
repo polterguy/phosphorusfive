@@ -10,10 +10,7 @@ using p5.core;
 namespace p5.exp.iterators
 {
     /// <summary>
-    ///     Returns all nodes found through value of previous node's matched converted to node.
-    /// 
-    ///     Example;
-    ///     <pre>/#</pre>
+    ///     Returns all nodes found through value of previous node's matched converted to node
     /// </summary>
     [Serializable]
     public class IteratorReference : Iterator

@@ -122,14 +122,14 @@ namespace lambda_exe
 
                     // Exiting program entirely
                     break;
-                } else if (hyperlisp.Trim () == string.Empty) {
+                } else if (hyperlisp.Trim () == "") {
 
                     // User didn't type anything at all
                     Console.WriteLine ("Nothing to do here, type 'exit' to exit program");
                 } else {
 
                     // Converting Hyperlisp collected above to lambda and executing
-                    Node convert = context.RaiseNative ("lisp2lambda", new Node (string.Empty, hyperlisp));
+                    Node convert = context.RaiseNative ("lisp2lambda", new Node ("", hyperlisp));
                     context.RaiseLambda ("eval", convert);
                     Console.WriteLine ();
                 }
@@ -154,7 +154,7 @@ namespace lambda_exe
                 string line = Console.ReadLine ();
 
                 // Checking what to do according to input given
-                if (line == string.Empty)
+                if (line == "")
                     break; // Breaking and executing given code
 
                 // Appending carriage return, to create understandable Hyperlisp

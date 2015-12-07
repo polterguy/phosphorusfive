@@ -4,8 +4,8 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -25,16 +25,25 @@ namespace p5.core
             private List<Node> _nodes;
             private Node _args;
 
+            /// <summary>
+            ///     Initializes a new instance of the <see cref="p5.core.Utilities+ArgsRemover"/> class
+            /// </summary>
+            /// <param name="args">Arguments.</param>
+            /// <param name="removeValue">If set to <c>true</c> removes value</param>
+            /// <param name="onlyEmptyNames">If set to <c>true</c> removes only empty names</param>
             public ArgsRemover (Node args, bool removeValue = false, bool onlyEmptyNames = false)
             {
                 if (onlyEmptyNames)
-                    _nodes = new List<Node> (args.Children.Where (idx => idx.Name == string.Empty));
+                    _nodes = new List<Node> (args.Children.Where (idx => idx.Name == ""));
                 else
                     _nodes = new List<Node> (args.Children);
                 if (removeValue)
                     _args = args;
             }
 
+            /*
+             * Private implementation
+             */
             void IDisposable.Dispose ()
             {
                 foreach (var idx in _nodes) {
@@ -59,34 +68,40 @@ namespace p5.core
             T defaultValue = default (T),
             bool encode = false)
         {
-            // no possible conversion exists
+            // Checking if value is null
             if (value == null)
                 return defaultValue;
 
-            // checking to see if conversion is even necessary
+            // Checking to see if conversion is even necessary
             if (value is T)
                 return (T) value;
 
-            // trying installed converters from ApplicationContext
+            // Trying installed converters from ApplicationContext
             if (typeof (T) == typeof (string)) {
+
+                // Converting from object, to string
                 var retVal = Convert2String (value, context, encode);
                 if (retVal != null)
                     return (T) (object) retVal;
             } else {
+
+                // Converting from string to object
                 var retVal = Convert2Object<T> (value, context);
                 if (retVal != null && !retVal.Equals (default (T)))
                     return retVal;
             }
 
-            // checking if type is IConvertible
+            // Checking if type is IConvertible
             if (value is IConvertible)
                 return (T) System.Convert.ChangeType (value, typeof (T), CultureInfo.InvariantCulture);
 
-            // stuff like for instance Guids don't implement IConvertible, but still return sane values, if we
+            // Stuff like for instance Guids don't implement IConvertible, but still return sane values, if we
             // first do ToString on them, for then to cast them to object, for then to cast object to T, if the caller
             // is requesting to have them returned as string
             if (typeof (T) == typeof (string))
                 return (T) (object) value.ToString ();
+
+            // Conversion is not possible!
             return defaultValue;
         }
 
@@ -120,13 +135,15 @@ namespace p5.core
                         break;
                     case '\n':
                     case '\r':
-                        throw new ArgumentException ("Syntax error in hyperlisp, single line string literal contains new line");
+                        throw new ArgumentException (
+                            string.Format ("Syntax error in hyperlisp, single line string literal contains new line near '{0}'", builder.ToString ()));
                     default:
                         builder.Append ((char) c);
                         break;
                 }
             }
-            throw new ArgumentException ("Syntax error in hyperlisp, single line string literal not closed before end of input");
+            throw new ArgumentException (
+                string.Format ("Syntax error in hyperlisp, single line string literal not closed before end of input near '{0}'", builder.ToString ()));
         }
 
         /// <summary>
@@ -147,11 +164,12 @@ namespace p5.core
                         }
                         break;
                     case '\n':
-                        builder.Append ("\r\n"); // normalizing carriage return
+                        builder.Append ("\r\n"); // Normalizing carriage return
                         break;
                     case '\r':
                         if ((char) reader.Read () != '\n')
-                            throw new ArgumentException ("syntax error in hyperlisp, carriage return found but no new line character in multi line string literal");
+                            throw new ArgumentException (
+                                string.Format ("Syntax error in hyperlisp, carriage return found but no new line character in multi line string literal near '{0}'", builder.ToString ()));
                         builder.Append ("\r\n");
                         break;
                     default:
@@ -159,7 +177,8 @@ namespace p5.core
                         break;
                 }
             }
-            throw new ArgumentException ("syntax error in hyperlisp, multiline string literal not closed before end of input");
+            throw new ArgumentException (
+                string.Format ("Syntax error in hyperlisp, multiline string literal not closed before end of input near '{0}'", builder.ToString ()));
         }
 
         /*
@@ -170,7 +189,7 @@ namespace p5.core
             var c = reader.Read ();
             switch (c) {
                 case -1:
-                    throw new ArgumentException ("syntax error in hyperlisp, end of input found when looking for escape character in single line string literal");
+                    throw new ArgumentException ("Syntax error in hyperlisp, end of input found when looking for escape character in single line string literal");
                 case '"':
                     return "\"";
                 case '\'':
@@ -192,22 +211,22 @@ namespace p5.core
                 case 'r':
                     // '\r' must be followed by '\n'
                     if ((char) reader.Read () != '\\' || (char) reader.Read () != 'n')
-                        throw new ArgumentException ("syntax error in hyperlisp, carriage return found, but no new line character found");
+                        throw new ArgumentException ("Syntax error in hyperlisp, carriage return found, but no new line character found");
                     return "\r\n";
                 case 'x':
                     return HexaCharacter (reader);
                 default:
-                    throw new ArgumentException (string.Format ("invalid escape sequence found in hyperlisp string literal; '\\{0}'",
+                    throw new ArgumentException (string.Format ("Invalid escape sequence found in hyperlisp string literal; '\\{0}'",
                         (char) c));
             }
         }
 
         /*
-         * returns a character represented as an octal character representation
+         * Returns a character represented as an octal character representation
          */
         private static string HexaCharacter (StringReader reader)
         {
-            var hexNumberString = string.Empty;
+            var hexNumberString = "";
             for (var idxNo = 0; idxNo < 4; idxNo++) {
                 hexNumberString += (char) reader.Read ();
             }
@@ -216,7 +235,7 @@ namespace p5.core
         }
 
         /*
-         * converts value to string using conversion Active Events
+         * Converts value to string using conversion Active Events
          */
         private static string Convert2String (object value, ApplicationContext context, bool encode)
         {
@@ -232,11 +251,11 @@ namespace p5.core
                     }
                     builder.Append (context.RaiseNative (
                         "p5.hyperlisp.get-string-value." +
-                        idx.GetType ().FullName, new Node (string.Empty, idx)).Value);
+                        idx.GetType ().FullName, new Node ("", idx)).Value);
                 }
                 return builder.ToString ();
             }
-            Node node = new Node (string.Empty, value);
+            Node node = new Node ("", value);
             if (encode && value is byte[])
                 node.Add ("encode", true);
             return context.RaiseNative (
@@ -245,7 +264,7 @@ namespace p5.core
         }
 
         /*
-         * converts string to object using conversion Active Events
+         * Converts string to object using conversion Active Events
          */
         private static T Convert2Object<T> (object value, ApplicationContext context, T defaultValue = default (T))
         {
@@ -255,7 +274,7 @@ namespace p5.core
                 return defaultValue;
             return context.RaiseNative (
                 "p5.hyperlisp.get-object-value." +
-                typeName, new Node (string.Empty, value)).Get<T> (context);
+                typeName, new Node ("", value)).Get<T> (context);
         }
     }
 }

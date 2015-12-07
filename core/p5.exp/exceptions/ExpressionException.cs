@@ -7,17 +7,12 @@ using System;
 using p5.core;
 
 /// <summary>
-///     Main namespace for exceptions within the phosphorus.expressions project.
-/// 
-///     Contains the exceptions that "phosphorus.expressions" might throw.
+///     Main namespace for exceptions within the phosphorus.expressions project
 /// </summary>
 namespace p5.exp.exceptions
 {
     /// <summary>
-    ///     Exception thrown when expressions contains syntax errors.
-    /// 
-    ///     Contains some helper logic to see Hyperlisp StackTrace, among other things, in addition to which expression
-    ///     that fissled in your code, and why.
+    ///     Exception thrown when expressions contains syntax errors
     /// </summary>
     public class ExpressionException : ArgumentException
     {
@@ -25,14 +20,14 @@ namespace p5.exp.exceptions
         private readonly string _message;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ExpressionException" /> class.
+        ///     Initializes a new instance of the <see cref="ExpressionException" /> class
         /// </summary>
         /// <param name="expression">Expression that caused exception</param>
         public ExpressionException (string expression)
             : this (expression, null) { }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ExpressionException" /> class.
+        ///     Initializes a new instance of the <see cref="ExpressionException" /> class
         /// </summary>
         /// <param name="expression">Expression that caused exception</param>
         /// <param name="message">Message providing additional information</param>
@@ -45,13 +40,13 @@ namespace p5.exp.exceptions
         }
 
         /*
-         * overriding Message to provide expression that malfunctioned as an additional piece of contextual information
+         * Overriding Message to provide expression that malfunctioned as an additional piece of contextual information
          */
         public override string Message
         {
             get
             {
-                var retVal = string.Format ("Expression '{0}' is not a valid expression.", _expression);
+                var retVal = string.Format ("Expression '{0}' is not a valid expression", _expression);
                 if (_message != null)
                     retVal = _message + "\r\n" + retVal;
                 return retVal;

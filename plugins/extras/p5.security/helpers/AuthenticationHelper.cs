@@ -106,7 +106,7 @@ namespace p5.security
                 cookie.Expires = DateTime.Now.AddDays(context.RaiseNative ("p5.security.get-credential-cookie-days").Get<int> (context));
                 cookie.HttpOnly = true;
                 string salt = userNode["salt"].Get<string>(context);
-                cookie.Value = username + " " + context.RaiseNative ("md5-hash", new Node(string.Empty, salt + password)).Value;
+                cookie.Value = username + " " + context.RaiseNative ("md5-hash", new Node("", salt + password)).Value;
                 HttpContext.Current.Response.Cookies.Add(cookie);
             }
         }
@@ -350,7 +350,7 @@ namespace p5.security
 
                 // Returning file as lambda
                 string users = reader.ReadToEnd();
-                Node usersNode = context.RaiseNative("lisp2lambda", new Node(string.Empty, users));
+                Node usersNode = context.RaiseNative("lisp2lambda", new Node("", users));
                 return usersNode;
             }
         }
@@ -424,7 +424,7 @@ namespace p5.security
             // User exists, retrieving salt and password to see if we have a match
             string salt = userNode["salt"].Get<string> (context);
             string password = userNode["password"].Get<string> (context);
-            string hashSaltedPwd = context.RaiseNative("md5-hash", new Node(string.Empty, salt + password)).Get<string>(context);
+            string hashSaltedPwd = context.RaiseNative("md5-hash", new Node("", salt + password)).Get<string>(context);
 
             // Notice, we do NOT THROW if passwords do not match, since it might simply mean that user has explicitly created a new "salt"
             // to throw out other clients that are currently persistently logged into system under his account

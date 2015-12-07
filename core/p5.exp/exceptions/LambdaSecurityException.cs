@@ -14,7 +14,7 @@ namespace p5.exp.exceptions
     public class LambdaSecurityException : LambdaException
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LambdaSecurityException" /> class.
+        ///     Initializes a new instance of the <see cref="LambdaSecurityException" /> class
         /// </summary>
         /// <param name="message">Message for exception, describing what went wrong</param>
         /// <param name="node">Node where expression was found</param>

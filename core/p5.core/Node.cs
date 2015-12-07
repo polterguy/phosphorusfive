@@ -25,7 +25,7 @@ namespace p5.core
         public Node ()
         {
             _children = new List<Node> ();
-            Name = string.Empty;
+            Name = "";
         }
 
         /// <summary>

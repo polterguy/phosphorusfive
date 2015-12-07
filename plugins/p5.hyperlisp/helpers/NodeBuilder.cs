@@ -39,7 +39,7 @@ namespace p5.hyperlisp.helpers
             get
             {
                 if (string.IsNullOrEmpty (_hyperlisp))
-                    return new List<Node> (new[] {new Node (string.Empty)}); // empty result
+                    return new List<Node> (new[] {new Node ("")}); // empty result
 
                 // Creating root node such that we have access to it outside of iteration of tokens
                 var node = new Node ();
@@ -147,7 +147,7 @@ namespace p5.hyperlisp.helpers
             // converting our string to the actual object, and returning back to caller
             return _context.RaiseNative (
                 "p5.hyperlisp.get-object-value." + (typeInfo == "node" ? "abs." : "") + typeInfo, 
-                new Node (string.Empty, value, new Node [] { new Node ("decode", true) })).Value;
+                new Node ("", value, new Node [] { new Node ("decode", true) })).Value;
         }
     }
 }

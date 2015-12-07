@@ -41,9 +41,9 @@ namespace p5.types
         private static void p5_hyperlisp_get_object_value_node (ApplicationContext context, ActiveEventArgs e)
         {
             var code = e.Args.Get<string> (context);
-            var tmp = new Node (string.Empty, code);
+            var tmp = new Node ("", code);
             context.RaiseNative ("lisp2lambda", tmp);
-            e.Args.Value = tmp.Count > 0 ? new Node (string.Empty, null, tmp.Children) : null;
+            e.Args.Value = tmp.Count > 0 ? new Node ("", null, tmp.Children) : null;
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace p5.types
         private static void p5_hyperlisp_get_object_value_abs_node (ApplicationContext context, ActiveEventArgs e)
         {
             var code = e.Args.Get<string> (context);
-            var tmp = new Node (string.Empty, code);
+            var tmp = new Node ("", code);
             context.RaiseNative ("lisp2lambda", tmp);
             if (tmp.Count == 1) {
                 // if there's only one node, we return that as result

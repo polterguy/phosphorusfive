@@ -12,10 +12,7 @@ using p5.core;
 namespace p5.exp
 {
     /// <summary>
-    ///     Tokenizer for the Expression class.
-    /// 
-    ///     Responsible for tokenizing expressions, by breaking them up into tokens. Not something you'd normally fiddle
-    ///     with yourself, but heavily in use by the p5.lambda expression engine.
+    ///     Tokenizer for the Expression class
     /// </summary>
     public sealed class Tokenizer : IDisposable
     {
@@ -23,7 +20,7 @@ namespace p5.exp
         private bool _disposed;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="phosphorus.expressions.Tokenizer" /> class.
+        ///     Initializes a new instance of the <see cref="phosphorus.expressions.Tokenizer" /> class
         /// </summary>
         /// <param name="expression">Expression to tokenize</param>
         public Tokenizer (string expression)
@@ -32,9 +29,7 @@ namespace p5.exp
         }
 
         /// <summary>
-        ///     Returns all tokens in expression.
-        /// 
-        ///     Iterates through all tokens in your Expression.
+        ///     Returns all tokens in expression
         /// </summary>
         /// <value>The tokens consisting your Expression</value>
         public IEnumerable<string> Tokens
@@ -53,7 +48,7 @@ namespace p5.exp
         }
 
         /*
-         * private implementation of IDisposable interface
+         * Private implementation of IDisposable interface
          */
         void IDisposable.Dispose ()
         {
@@ -61,7 +56,7 @@ namespace p5.exp
         }
         
         /*
-         * disposes the tokenizer
+         * Disposes the tokenizer
          */
         private void Dispose (bool disposing)
         {
@@ -72,11 +67,11 @@ namespace p5.exp
         }
 
         /*
-         * finds next token and returns to caller, returns null if there are no more tokens in expression
+         * Finds next token and returns to caller, returns null if there are no more tokens in expression
          */
         private string GetNextToken (string previousToken)
         {
-            // left trimming white spaces from StringReader, and putting first non-white-space character in "buffer"
+            // Left trimming white spaces from StringReader, and putting first non-white-space character in "buffer"
             var nextChar = _reader.Read ();
             for (; nextChar != -1 && "\r\n \t".IndexOf ((char) nextChar) != -1; nextChar = _reader.Read ())
             { }
@@ -88,18 +83,18 @@ namespace p5.exp
             if ("/|&^!()?".IndexOf ((char)nextChar) != -1) {
                 return builder.ToString (); // single character token
             } else if (nextChar == '"') {
-                return Utilities.ReadSingleLineStringLiteral (_reader); // singleline string literal token
+                return Utilities.ReadSingleLineStringLiteral (_reader); // Singleline string literal token
             } else if (nextChar == '@' && _reader.Peek () == '"') {
                 _reader.Read (); // skipping opening '"'
-                return Utilities.ReadMultiLineStringLiteral (_reader); // multiline string literal token
+                return Utilities.ReadMultiLineStringLiteral (_reader); // Multiline string literal token
             }
 
-            // looping until "end of token", which is defined as either "/|&^!()?" or "end of stream"
+            // Looping until "end of token", which is defined as either "/|&^!()?" or "end of stream"
             for (nextChar = _reader.Peek (); nextChar != -1 && "/|&^!()?".IndexOf ((char) nextChar) == -1; nextChar = _reader.Peek ()) {
                 builder.Append ((char) _reader.Read ());
             }
 
-            // returning token back to caller, making sure we trim any white space characters away,
+            // Returning token back to caller, making sure we trim any white space characters away,
             // to support nicely formatted expressions spanning multiple lines
             return builder.ToString ().TrimEnd (' ', '\r', '\n', '\t');
         }

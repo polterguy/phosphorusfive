@@ -220,10 +220,10 @@ namespace p5.core
                 // Events, that also have "null event handlers", where these null event handlers,
                 // are handling events, existing also as "native Active Event handlers"
                 // Please also notice that we do NOT raise "null handlers" for "protected" Active Events
-                if (!wasProtected && _events.ContainsKey (string.Empty)) {
+                if (!wasProtected && _events.ContainsKey ("")) {
 
                     // Active Event was not protected, and we have a "null event handler"
-                    foreach (var idxMethod in _events [string.Empty].Methods) {
+                    foreach (var idxMethod in _events [""].Methods) {
                         idxMethod.Method.Invoke (idxMethod.Instance, new object[] {context, e});
                     }
                 }

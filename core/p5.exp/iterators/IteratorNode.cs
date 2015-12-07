@@ -10,11 +10,7 @@ using p5.core;
 namespace p5.exp.iterators
 {
     /// <summary>
-    ///     <see cref="phosphorus.core.Node" /> Iterator.
-    /// 
-    ///     This Iterator is never used directly by your code, but implicitly given through your expressions, and normally
-    ///     points to the "identity Node", which is the <see cref="phosphorus.core.Node">Node</see> where your Expression is
-    ///     declared.
+    ///     <see cref="phosphorus.core.Node" /> Iterator
     /// </summary>
     [Serializable]
     public class IteratorNode : Iterator

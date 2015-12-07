@@ -40,7 +40,7 @@ namespace p5.data
 
                     // Looping through database matches and removing nodes while storing which files have been changed
                     var changed = new List<Node> ();
-                    foreach (var idxDest in e.Args.Get<Expression> (context).Evaluate (Common.Database, context, e.Args)) {
+                    foreach (var idxDest in e.Args.Get<Expression> (context).Evaluate (context, Common.Database, e.Args)) {
 
                         // Figuring out which file Node updated belongs to, and storing in changed list
                         Common.AddNodeToChanges (idxDest.Node, changed);
