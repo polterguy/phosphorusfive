@@ -20,7 +20,7 @@ set:x:/../*/create-widget/**/void/=page-url/*/value?value
 /*
  * Setting templates
  */
-list-files:system42/templates
+list-files:/system42/templates/
 for-each:x:/-/*?name
   _lit
     literal

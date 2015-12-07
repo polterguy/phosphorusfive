@@ -610,7 +610,7 @@ foo2:bar2");
         ///     Tries to access another user's data
         /// </summary>
         [Test]
-        [ExpectedException (typeof (LambdaSecurityException))]
+        [ExpectedException (typeof (LambdaException))]
         public void ReadAnotherUsersDataAsRoot ()
         {
             var node = new Node (string.Empty, "/users/foo/foo.txt");

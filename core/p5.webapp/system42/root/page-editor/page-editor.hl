@@ -73,7 +73,7 @@ create-widget:page-editor
                     parent:create-new-page
                     value:_default
                     innerValue:New page ...
-                  list-files:system42/root/page-editor/editors
+                  list-files:/system42/root/page-editor/editors/
                   for-each:x:/-/*?name
                     split:x:/./*/__dp?value
                       =:/

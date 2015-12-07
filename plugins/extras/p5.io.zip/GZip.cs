@@ -84,6 +84,13 @@ namespace p5.io.zip
                                             e.Args,
                                             context);
 
+                                    // Checking that destination is not underneath source
+                                    if (destinationFile.IndexOf (idxSourceFileFolder) == 0)
+                                        throw new LambdaException (
+                                            string.Format ("Destination file '{0}' is underneath source '{1}', which would create a never ending recursive loop", destinationFile, idxSourceFileFolder),
+                                            e.Args, 
+                                            context);
+
                                     // Verify path is correctly ending with a trailing slash "/" if object is a folder
                                     if (Directory.Exists (rootFolder + idxSourceFileFolder)) {
                                         if (!idxSourceFileFolder.EndsWith ("/"))
@@ -93,9 +100,6 @@ namespace p5.io.zip
                                                 context);
                                     }
 
-                                    // Verifying user is authorized to reading from source
-                                    context.RaiseNative ("p5.io.authorize.load-file", new Node ("p5.io.authorize.load-file", idxSourceFileFolder).Add ("args", e.Args));
-
                                     // Verifying file-/folder name is not a "restricted" type of file
                                     if (idxSourceFileFolder.StartsWith (".") || idxSourceFileFolder.EndsWith ("~"))
                                         continue;
@@ -103,7 +107,7 @@ namespace p5.io.zip
                                     var rootSource = idxSourceFileFolder.Trim ('/');
                                     rootSource = rootSource.Substring (rootSource.LastIndexOf ("/") + 1);
 
-                                    AddFileObjectToArchive (archive, rootFolder + idxSourceFileFolder.TrimEnd ('/'), rootSource);
+                                    AddFileObjectToArchive (context, e.Args, archive, rootFolder, rootFolder + idxSourceFileFolder.TrimEnd ('/'), rootSource);
                                 }
                             }
                         }
@@ -177,12 +181,25 @@ namespace p5.io.zip
         /*
          * Helper for above [gzip] Active Event
          */
-        private static void AddFileObjectToArchive (TarArchive archive, string fileFolderPath, string rootPath)
+        private static void AddFileObjectToArchive (
+            ApplicationContext context, 
+            Node args, 
+            TarArchive archive, 
+            string rootFolder, 
+            string fileFolderPath, 
+            string rootPath)
         {
             // Creating TAR entry for main object given
             var tarEntry = TarEntry.CreateEntryFromFile (fileFolderPath);
             tarEntry.Name = tarEntry.Name.Substring (tarEntry.Name.IndexOf (rootPath));
             archive.WriteEntry(tarEntry, false);
+
+            // Verifying user is authorized to reading from source
+            string relativePath = fileFolderPath.Substring (rootFolder.Length);
+            if (Directory.Exists (rootPath))
+                context.RaiseNative ("p5.io.authorize.load-folder", new Node ("p5.io.authorize.load-folder", relativePath).Add ("args", args));
+            else
+                context.RaiseNative ("p5.io.authorize.load-file", new Node ("p5.io.authorize.load-file", relativePath).Add ("args", args));
 
             // Checking if this is directory
             if (Directory.Exists (fileFolderPath)) {
@@ -191,10 +208,10 @@ namespace p5.io.zip
                 foreach (var idxFile in Directory.GetFiles (fileFolderPath)) {
 
                     // Verifying file-/folder name is not a "restricted" type of file
-                    if (idxFile.StartsWith (".") || idxFile.EndsWith ("~"))
+                    if (Path.GetFileName (idxFile).StartsWith (".") || Path.GetFileName (idxFile).EndsWith ("~"))
                         continue;
 
-                    AddFileObjectToArchive (archive, idxFile, rootPath);
+                    AddFileObjectToArchive (context, args, archive, rootFolder, idxFile, rootPath);
                 }
 
                 // Traversing each folder within directory, recursively invoking "self"
@@ -204,7 +221,7 @@ namespace p5.io.zip
                     if (idxFolder.StartsWith (".") || idxFolder.EndsWith ("~"))
                         continue;
 
-                    AddFileObjectToArchive (archive, idxFolder, rootPath);
+                    AddFileObjectToArchive (context, args, archive, rootFolder, idxFolder, rootPath);
                 }
             }
         }

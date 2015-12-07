@@ -41,7 +41,7 @@ namespace p5.io.authorization.helpers
          */
         public static string NormalizeFileName (string file)
         {
-            return file.TrimStart ('/').TrimEnd ('.');
+            return "/" + file.TrimStart ('/').TrimEnd ('.');
         }
     }
 }

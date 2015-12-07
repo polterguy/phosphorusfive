@@ -31,7 +31,7 @@ namespace p5.io.authorization
             if (context.Ticket.Role != "root") {
 
                 // Verifying file is underneath user's folder
-                if (filename.IndexOf (string.Format ("users/{0}/", context.Ticket.Username)) != 0)
+                if (filename.IndexOf (string.Format ("/users/{0}/", context.Ticket.Username)) != 0)
                     throw new LambdaSecurityException (
                         string.Format ("User '{0}' tried to write to file '{1}'", context.Ticket.Username, filename), 
                         stack, 
@@ -50,8 +50,8 @@ namespace p5.io.authorization
             } else {
 
                 // Verifying file is not underneath ANOTHER user's folder, which is not legal even for root account!
-                if (filename.ToLower ().StartsWith ("users/") && 
-                    filename.ToLower ().IndexOf (string.Format ("users/{0}/", context.Ticket.Username)) != 0)
+                if (filename.ToLower ().StartsWith ("/users/") && 
+                      filename.ToLower ().IndexOf (string.Format ("/users/{0}/", context.Ticket.Username)) != 0)
                     throw new LambdaSecurityException (
                         string.Format ("Root user '{0}' tried to write to file '{1}'", context.Ticket.Username, filename), 
                         stack, 

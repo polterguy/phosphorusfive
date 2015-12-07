@@ -42,7 +42,7 @@ set:x:/../*/create-widget/*/parent?value
 /*
  * Populating the "template" drop down select list
  */
-list-files:system42/templates
+list-files:/system42/templates/
 for-each:x:/-/*
   _literal
     literal
