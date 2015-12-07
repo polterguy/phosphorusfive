@@ -102,7 +102,7 @@ namespace p5.data.helpers
         {
             // Finding "file node"
             var dnaFile = idxDest;
-            while (dnaFile.Path.Count > 1) {
+            while (dnaFile.OffsetToRoot > 1) {
                 dnaFile = dnaFile.Parent;
             }
 

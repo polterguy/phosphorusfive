@@ -27,8 +27,8 @@ namespace p5.unittests.plugins
         {
             var tmp = new Node (string.Empty, "x:y");
             Context.RaiseNative ("lisp2lambda", tmp);
-            Assert.AreEqual ("x", tmp [0].Name, "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual ("y", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual ("x", tmp [0].Name);
+            Assert.AreEqual ("y", tmp [0].Value);
         }
 
         /// <summary>
@@ -43,9 +43,9 @@ x:y
 
 ");
             Context.RaiseNative ("lisp2lambda", tmp);
-            Assert.AreEqual (1, tmp.Count, "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual ("x", tmp [0].Name, "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual ("y", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual (1, tmp.Count);
+            Assert.AreEqual ("x", tmp [0].Name);
+            Assert.AreEqual ("y", tmp [0].Value);
         }
 
         /// <summary>
@@ -56,8 +56,8 @@ x:y
         {
             var tmp = new Node (string.Empty, ":y");
             Context.RaiseNative ("lisp2lambda", tmp);
-            Assert.AreEqual (string.Empty, tmp [0].Name, "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual ("y", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual (string.Empty, tmp [0].Name);
+            Assert.AreEqual ("y", tmp [0].Value);
         }
 
         /// <summary>
@@ -70,8 +70,8 @@ x:y
 
 :y");
             Context.RaiseNative ("lisp2lambda", tmp);
-            Assert.AreEqual (string.Empty, tmp [0].Name, "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual ("y", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual (string.Empty, tmp [0].Name);
+            Assert.AreEqual ("y", tmp [0].Value);
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ x:y
         {
             var tmp = new Node {Value = @"x:""y"""};
             Context.RaiseNative ("lisp2lambda", tmp);
-            Assert.AreEqual ("y", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual ("y", tmp [0].Value);
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ x:y
         {
             var tmp = new Node {Value = @"x:""\ny\\\r\n\"""""};
             Context.RaiseNative ("lisp2lambda", tmp);
-            Assert.AreEqual ("\r\ny\\\r\n\"", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual ("\r\ny\\\r\n\"", tmp [0].Value);
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ x:y
         {
             var tmp = new Node {Value = @"x:@""y"""};
             Context.RaiseNative ("lisp2lambda", tmp);
-            Assert.AreEqual ("y", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual ("y", tmp [0].Value);
         }
 
         /// <summary>
@@ -117,7 +117,7 @@ x:y
             var tmp = new Node {Value = string.Format (@"x:@""mumbo
 jumbo""""howdy\r\n{0}""", "\n")};
             Context.RaiseNative ("lisp2lambda", tmp);
-            Assert.AreEqual ("mumbo\r\njumbo\"howdy\\r\\n\r\n", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual ("mumbo\r\njumbo\"howdy\\r\\n\r\n", tmp [0].Value);
         }
 
         /// <summary>
@@ -128,7 +128,7 @@ jumbo""""howdy\r\n{0}""", "\n")};
         {
             var tmp = new Node {Value = @"x:"""""};
             Context.RaiseNative ("lisp2lambda", tmp);
-            Assert.AreEqual ("", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual ("", tmp [0].Value);
         }
 
         /// <summary>
@@ -139,7 +139,7 @@ jumbo""""howdy\r\n{0}""", "\n")};
         {
             var tmp = new Node {Value = @"x:@"""""};
             Context.RaiseNative ("lisp2lambda", tmp);
-            Assert.AreEqual ("", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual ("", tmp [0].Value);
         }
 
         /// <summary>
@@ -157,7 +157,6 @@ _node:node:@""x:z""
 _string:""string:""
 _bool:bool:true
 _guid:guid:E5A53FC9-A306-4609-89E5-9CC2964DA0AC
-_dna:path:0-1
 _long:long:-9223372036854775808
 _ulong:ulong:18446744073709551615
 _uint:uint:4294967295
@@ -171,32 +170,31 @@ _date:date:""2012-12-21T23:59:59""
 _date:date:""2012-12-21T23:59:59.987""
 _time:time:""15.23:57:53.567"""};
             Context.RaiseNative ("lisp2lambda", tmp);
-            Assert.AreEqual ("", tmp [0].Value, "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual ("", tmp [1].Value, "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual (5, tmp [2].Value, "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual (10.55F, tmp [3].Value, "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual (typeof (float), tmp [3].Value.GetType (), "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual (10.54D, tmp [4].Value, "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual (typeof (double), tmp [4].Value.GetType (), "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual (typeof (Node), tmp [5].Value.GetType (), "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual ("x", tmp [5].Get<Node> (Context).Name, "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual ("z", tmp [5].Get<Node> (Context).Value, "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual ("string:", tmp [6].Value, "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual (true, tmp [7].Value, "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual (Guid.Parse ("E5A53FC9-A306-4609-89E5-9CC2964DA0AC"), tmp [8].Value, "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual (new Node.Dna ("0-1"), tmp [9].Value, "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual (-9223372036854775808L, tmp [10].Value, "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual (18446744073709551615L, tmp [11].Value, "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual (4294967295, tmp [12].Value, "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual (-32768, tmp [13].Value, "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual (456.89M, tmp [14].Value, "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual (255, tmp [15].Value, "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual (-128, tmp [16].Value, "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual ('x', tmp [17].Value, "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual (new DateTime (2012, 12, 21), tmp [18].Value, "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual (new DateTime (2012, 12, 21, 23, 59, 59), tmp [19].Value, "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual (new DateTime (2012, 12, 21, 23, 59, 59, 987), tmp [20].Value, "wrong value of node after parsing of hyperlisp");
-            Assert.AreEqual (new TimeSpan (15, 23, 57, 53, 567), tmp [21].Value, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual ("", tmp [0].Value);
+            Assert.AreEqual ("", tmp [1].Value);
+            Assert.AreEqual (5, tmp [2].Value);
+            Assert.AreEqual (10.55F, tmp [3].Value);
+            Assert.AreEqual (typeof (float), tmp [3].Value.GetType ());
+            Assert.AreEqual (10.54D, tmp [4].Value);
+            Assert.AreEqual (typeof (double), tmp [4].Value.GetType ());
+            Assert.AreEqual (typeof (Node), tmp [5].Value.GetType ());
+            Assert.AreEqual ("x", tmp [5].Get<Node> (Context).Name);
+            Assert.AreEqual ("z", tmp [5].Get<Node> (Context).Value);
+            Assert.AreEqual ("string:", tmp [6].Value);
+            Assert.AreEqual (true, tmp [7].Value);
+            Assert.AreEqual (Guid.Parse ("E5A53FC9-A306-4609-89E5-9CC2964DA0AC"), tmp [8].Value);
+            Assert.AreEqual (-9223372036854775808L, tmp [9].Value);
+            Assert.AreEqual (18446744073709551615L, tmp [10].Value);
+            Assert.AreEqual (4294967295, tmp [11].Value);
+            Assert.AreEqual (-32768, tmp [12].Value);
+            Assert.AreEqual (456.89M, tmp [13].Value);
+            Assert.AreEqual (255, tmp [14].Value);
+            Assert.AreEqual (-128, tmp [15].Value);
+            Assert.AreEqual ('x', tmp [16].Value);
+            Assert.AreEqual (new DateTime (2012, 12, 21), tmp [17].Value);
+            Assert.AreEqual (new DateTime (2012, 12, 21, 23, 59, 59), tmp [18].Value);
+            Assert.AreEqual (new DateTime (2012, 12, 21, 23, 59, 59, 987), tmp [19].Value);
+            Assert.AreEqual (new TimeSpan (15, 23, 57, 53, 567), tmp [20].Value);
         }
 
         /// <summary>
@@ -208,10 +206,10 @@ _time:time:""15.23:57:53.567"""};
             var tmp = new Node ();
             tmp.Add (new Node ("_blob", new byte[] {134, 254, 12}));
             Context.RaiseNative ("lambda2lisp", tmp);
-            Assert.AreEqual ("_blob:blob:hv4M", tmp.Value, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual ("_blob:blob:hv4M", tmp.Value);
             tmp = new Node (string.Empty, tmp.Value);
             Context.RaiseNative ("lisp2lambda", tmp);
-            Assert.AreEqual (new byte[] {134, 254, 12}, tmp [0].Value, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual (new byte[] {134, 254, 12}, tmp [0].Value);
         }
         
         /// <summary>
@@ -276,7 +274,7 @@ _exe1
         {
             var tmp = new Node (string.Empty, "//");
             Context.RaiseNative ("lisp2lambda", tmp);
-            Assert.AreEqual (0, tmp.Count, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual (0, tmp.Count);
         }
 
         /// <summary>
@@ -287,7 +285,7 @@ _exe1
         {
             var tmp = new Node (string.Empty, "// comment");
             Context.RaiseNative ("lisp2lambda", tmp);
-            Assert.AreEqual (0, tmp.Count, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual (0, tmp.Count);
         }
 
         /// <summary>
@@ -298,7 +296,7 @@ _exe1
         {
             var tmp = new Node (string.Empty, "/**/");
             Context.RaiseNative ("lisp2lambda", tmp);
-            Assert.AreEqual (0, tmp.Count, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual (0, tmp.Count);
         }
 
         /// <summary>
@@ -309,7 +307,7 @@ _exe1
         {
             var tmp = new Node (string.Empty, "/*comment*/");
             Context.RaiseNative ("lisp2lambda", tmp);
-            Assert.AreEqual (0, tmp.Count, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual (0, tmp.Count);
         }
 
         /// <summary>
@@ -323,7 +321,7 @@ comment
 
 */");
             Context.RaiseNative ("lisp2lambda", tmp);
-            Assert.AreEqual (0, tmp.Count, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual (0, tmp.Count);
         }
 
         /// <summary>
@@ -340,7 +338,7 @@ hello
  * foo bar
  */");
             Context.RaiseNative ("lisp2lambda", tmp);
-            Assert.AreEqual (2, tmp.Count, "wrong value of node after parsing of hyperlisp");
+            Assert.AreEqual (2, tmp.Count);
         }
 
         /// <summary>

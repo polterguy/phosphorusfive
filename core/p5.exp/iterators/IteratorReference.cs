@@ -10,7 +10,7 @@ using p5.core;
 namespace p5.exp.iterators
 {
     /// <summary>
-    ///     Returns all nodes found through value of previous node's matched converted to path or node.
+    ///     Returns all nodes found through value of previous node's matched converted to node.
     /// 
     ///     Example;
     ///     <pre>/#</pre>

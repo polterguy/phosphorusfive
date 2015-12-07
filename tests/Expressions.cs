@@ -47,14 +47,6 @@ namespace p5.unittests
         }
         
         [Test]
-        public void PathExpression ()
-        {
-            var exp = Expression.Create ("/foo?path", Context);
-            Assert.IsNotNull (exp);
-            Assert.AreEqual ("/foo?path", exp.Value);
-        }
-        
-        [Test]
         public void NodeExpression ()
         {
             var exp = Expression.Create ("/foo?node", Context);

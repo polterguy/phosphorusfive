@@ -53,14 +53,7 @@ namespace p5.exp
             /// 
             ///     Declared through the type declaration of '?count'.
             /// </summary>
-            count,
-
-            /// <summary>
-            ///     Returns <see cref="phosphorus.core.Node.Path">count</see> property of matched nodes.
-            /// 
-            ///     Declared through the type declaration of '?path'.
-            /// </summary>
-            path
+            count
         }
 
         /*
@@ -98,9 +91,6 @@ namespace p5.exp
                     break;
                 case MatchType.node:
                     _matchEntities.Add (new MatchNodeEntity (idx, this));
-                    break;
-                case MatchType.path:
-                    _matchEntities.Add (new MatchPathEntity (idx, this));
                     break;
                 case MatchType.count:
                     _matchEntities.Add (new MatchCountEntity (idx, this));

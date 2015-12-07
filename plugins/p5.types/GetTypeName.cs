@@ -52,19 +52,6 @@ namespace p5.types
         }
 
         /// <summary>
-        ///     Returns the Hyperlisp type-name for the DNA type.
-        /// 
-        ///     Returns the Hyperlisp type-name for <see cref="phosphorus.core.Node.Dna">DNA</see>s, which is <em>"path"</em>.
-        /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.p5.core.Node+Dna", Protection = EventProtection.NativeClosed)]
-        private static void p5_hyperlisp_get_type_name_p5_core_Node_DNA (ApplicationContext context, ActiveEventArgs e)
-        {
-            e.Args.Value = "path";
-        }
-
-        /// <summary>
         ///     Returns the Hyperlisp type-name for the Expression type.
         /// 
         ///     Returns the Hyperlisp type-name for <see cref="p5.exp.Expression">Expressions</see>.

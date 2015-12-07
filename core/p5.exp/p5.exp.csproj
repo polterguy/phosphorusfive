@@ -68,7 +68,6 @@
     <Compile Include="exceptions\LambdaException.cs" />
     <Compile Include="matchentities\MatchEntity.cs" />
     <Compile Include="matchentities\MatchNameEntity.cs" />
-    <Compile Include="matchentities\MatchPathEntity.cs" />
     <Compile Include="matchentities\MatchValueEntity.cs" />
     <Compile Include="matchentities\MatchNodeEntity.cs" />
     <Compile Include="matchentities\MatchCountEntity.cs" />

@@ -115,23 +115,6 @@ insert-before:x:/../0
         }
 
         /// <summary>
-        ///     inserts into database, for then to select 'path' to verify select works as it should
-        /// </summary>
-        [Test]
-        public void InsertSelectPath ()
-        {
-            var tmp = ExecuteLambda (@"insert-data
-  _testX
-    howdy:world
-select-data:x:/*/*/_testX/0?path
-insert-before:x:/../0
-  src:x:/../*");
-            Assert.AreEqual (1, tmp [1].Count);
-            Assert.AreEqual (string.Empty, tmp [1] [0].Name);
-            Assert.IsTrue (tmp [1] [0].Value is Node.Dna);
-        }
-
-        /// <summary>
         ///     inserts multiple objects into database, for then to select 'name', having multiple return values, to
         ///     verify select and insert works as it should
         /// </summary>
@@ -173,28 +156,6 @@ insert-before:x:/../0
             Assert.AreEqual ("world1", tmp [1] [0].Value);
             Assert.AreEqual (string.Empty, tmp [1] [1].Name);
             Assert.AreEqual ("world2", tmp [1] [1].Value);
-        }
-
-        /// <summary>
-        ///     inserts multiple objects into database, for then to select 'path', having multiple return values, to
-        ///     verify select and insert works as it should
-        /// </summary>
-        [Test]
-        public void InsertManySelectAllPath ()
-        {
-            var tmp = ExecuteLambda (@"insert-data
-  _testX
-    howdy1:world1
-  _testX
-    howdy2:world2
-select-data:x:/*/*/_testX/0?path
-insert-before:x:/../0
-  src:x:/../*");
-            Assert.AreEqual (2, tmp [1].Count);
-            Assert.AreEqual (string.Empty, tmp [1] [0].Name);
-            Assert.AreEqual (string.Empty, tmp [1] [1].Name);
-            Assert.IsTrue (tmp [1] [0].Value is Node.Dna);
-            Assert.IsTrue (tmp [1] [1].Value is Node.Dna);
         }
 
         /// <summary>

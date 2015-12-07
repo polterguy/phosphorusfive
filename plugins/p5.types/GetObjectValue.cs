@@ -68,17 +68,6 @@ namespace p5.types
         }
 
         /// <summary>
-        ///     Creates a <see cref="phosphorus.core.Node.Dna">DNA</see> from its string representation.
-        /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.path", Protection = EventProtection.NativeClosed)]
-        private static void p5_hyperlisp_get_object_value_path (ApplicationContext context, ActiveEventArgs e)
-        {
-            e.Args.Value = new Node.Dna (e.Args.Get<string> (context));
-        }
-        
-        /// <summary>
         ///     Creates a <see cref="p5.exp.Expression">Expression</see> from its string representation.
         /// </summary>
         /// <param name="context">Application context</param>

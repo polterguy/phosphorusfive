@@ -16,298 +16,6 @@ namespace p5.core
     [Serializable]
     public class Node : IComparable
     {
-        /// <summary>
-        ///     DNA code for Node, or its "Path" property
-        /// </summary>
-        public class Dna : IComparable, IConvertible
-        {
-            internal readonly List<int> Value;
-
-            private Dna ()
-            {
-                Value = new List<int> ();
-            }
-
-            /// <summary>
-            ///     Initializes a new instance of the <see cref="phosphorus.core.Node+Dna"/> class
-            /// </summary>
-            /// <param name="value">Value to create Dna object from</param>
-            public Dna (string value)
-            {
-                Value = new List<int> ();
-                foreach (var idxInt in value.Split (new[] { '-' }, StringSplitOptions.RemoveEmptyEntries)) {
-                    Value.Add (int.Parse (idxInt));
-                }
-            }
-
-            internal Dna (Node node)
-                : this ()
-            {
-                var idxNode = node;
-                while (idxNode.Parent != null) {
-                    for (var idxNo = 0; idxNo < idxNode.Parent._children.Count; idxNo ++) {
-                        if (idxNode == idxNode.Parent._children [idxNo]) {
-                            Value.Insert (0, idxNo);
-                            break;
-                        }
-                    }
-                    idxNode = idxNode.Parent;
-                }
-            }
-
-            /// <summary>
-            ///     Returns the depth of the Dna
-            /// </summary>
-            /// <value>Depth of Dna object</value>
-            public int Count {
-                get {
-                    return Value.Count;
-                }
-            }
-
-            /// <summary>
-            ///     Determines if given value is a Dna path or not
-            /// </summary>
-            /// <returns><c>true</c> if is value is convertible to a Dna object; otherwise, <c>false</c></returns>
-            /// <param name="value">Value to check if is convertible to Dna</param>
-            public static bool IsPath (string value)
-            {
-                return value != null && value.All (idx => "0123456789-".IndexOf (idx) != -1);
-            }
-
-            /// <summary>
-            ///     Compares two Dna objects for equality
-            /// </summary>
-            /// <param name="lhs">Left hand side Dna</param>
-            /// <param name="rhs">Right hand side Dna</param>
-            public static bool operator == (Dna lhs, Dna rhs)
-            {
-                return lhs != null && lhs.CompareTo (rhs) == 0;
-            }
-
-            /// <summary>
-            ///     Compares two Dna objects for not-equality
-            /// </summary>
-            /// <param name="lhs">Left hand side Dna</param>
-            /// <param name="rhs">Right hand side Dna</param>
-            public static bool operator != (Dna lhs, Dna rhs)
-            {
-                return lhs != null && lhs.CompareTo (rhs) != 0;
-            }
-
-            /// <summary>
-            ///     Compares two Dna objects to see if left hand side is "more" than right hand side Dna objects
-            /// </summary>
-            /// <param name="lhs">Left hand side Dna object</param>
-            /// <param name="rhs">Right hand side Dna object</param>
-            public static bool operator > (Dna lhs, Dna rhs)
-            {
-                return lhs.CompareTo (rhs) == 1;
-            }
-
-            /// <summary>
-            ///     Compares two Dna objects to see if left hand side is "less" than right hand side Dna objects
-            /// </summary>
-            /// <param name="lhs">Left hand side Dna object</param>
-            /// <param name="rhs">Right hand side Dna object</param>
-            public static bool operator < (Dna lhs, Dna rhs)
-            {
-                return lhs.CompareTo (rhs) == -1;
-            }
-
-            /// <summary>
-            ///     Compares two Dna objects to see if left hand side is "more than or equal" to right hand side Dna objects
-            /// </summary>
-            /// <param name="lhs">Left hand side Dna object</param>
-            /// <param name="rhs">Right hand side Dna object</param>
-            public static bool operator >= (Dna lhs, Dna rhs)
-            {
-                return lhs.CompareTo (rhs) != -1;
-            }
-
-            /// <summary>
-            ///     Compares two Dna objects to see if left hand side is "less than or equal to" the right hand side Dna objects
-            /// </summary>
-            /// <param name="lhs">Left hand side Dna object</param>
-            /// <param name="rhs">Right hand side Dna object</param>
-            public static bool operator <= (Dna lhs, Dna rhs)
-            {
-                return lhs.CompareTo (rhs) != 1;
-            }
-
-            /// <summary>
-            ///     Returns the logical AND of the given Dna codes
-            /// </summary>
-            /// <param name="lhs">Left hand side Dna</param>
-            /// <param name="rhs">Right hand side Dna</param>
-            public static Dna operator & (Dna lhs, Dna rhs)
-            {
-                var retVal = new Dna ();
-                for (var idxNo = 0; idxNo < lhs.Value.Count && idxNo < rhs.Value.Count; idxNo++) {
-                    if (lhs.Value [idxNo].CompareTo (rhs.Value [idxNo]) == 0)
-                        retVal.Value.Add (idxNo);
-                    else
-                        break;
-                }
-                return retVal;
-            }
-
-            /// <summary>
-            ///     Determines whether the specified <see cref="System.Object"/> is equal to the current <see cref="phosphorus.core.Node+Dna"/>
-            /// </summary>
-            /// <param name="obj">The <see cref="System.Object"/> to compare with the current <see cref="phosphorus.core.Node+Dna"/></param>
-            /// <returns><c>true</c> if the specified <see cref="System.Object"/> is equal to the current
-            /// <see cref="phosphorus.core.Node+Dna"/>; otherwise, <c>false</c></returns>
-            public override bool Equals (object obj)
-            {
-                if (!(obj is Dna))
-                    return false;
-                var rhs = (Dna) obj;
-                if (Count != rhs.Count)
-                    return false;
-                for (var idxNo = 0; idxNo < Count; idxNo++) {
-                    if (Value [idxNo] != rhs.Value [idxNo])
-                        return false;
-                }
-                return true;
-            }
-
-            /// <summary>
-            ///     Serves as a hash function for a <see cref="phosphorus.core.Node+Dna"/> object
-            /// </summary>
-            /// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as
-            /// a hash table</returns>
-            public override int GetHashCode ()
-            {
-                return Value.GetHashCode ();
-            }
-
-            /// <summary>
-            ///     Returns a <see cref="System.String"/> that represents the current <see cref="phosphorus.core.Node+Dna"/>
-            /// </summary>
-            /// <returns>A <see cref="System.String"/> that represents the current <see cref="phosphorus.core.Node+Dna"/></returns>
-            public override string ToString ()
-            {
-                var tmp = Value.Aggregate ("", (current, idx) => current + ("-" + idx));
-                tmp = tmp.Trim ('-');
-                return tmp;
-            }
-
-            /// <summary>
-            ///     Compares the given object with the Dna instance
-            /// </summary>
-            /// <returns>-1, 0 or +1, depending upon which of the two objects are "before" the other</returns>
-            /// <param name="obj">The object to compare against this instance</param>
-            public int CompareTo (object obj)
-            {
-                if (!(obj is Dna))
-                    throw new ArgumentException ("cannot compare Dna to: " + (obj ?? "[null]"));
-                var rhs = (Dna) obj;
-
-                for (var idxNo = 0; idxNo < Value.Count && idxNo < rhs.Value.Count; idxNo ++) {
-                    var cmpVals = Value [idxNo].CompareTo (rhs.Value [idxNo]);
-                    if (cmpVals != 0)
-                        return cmpVals;
-                }
-                if (Value.Count > rhs.Value.Count)
-                    return 1;
-                if (Value.Count < rhs.Value.Count)
-                    return -1;
-                return 0;
-            }
-
-            // \todo Do we really need the IConvertible implementation in Dna?
-            /*
-             * IConvertible implementation, no need to document these parts ...
-             */
-            public TypeCode GetTypeCode ()
-            {
-                return TypeCode.Object;
-            }
-
-            public bool ToBoolean (IFormatProvider provider)
-            {
-                throw new ApplicationException ("cannot convert a Dna path to Boolean");
-            }
-
-            public byte ToByte (IFormatProvider provider)
-            {
-                throw new ApplicationException ("cannot convert a Dna path to byte");
-            }
-
-            public char ToChar (IFormatProvider provider)
-            {
-                throw new ApplicationException ("cannot convert a Dna path to char");
-            }
-
-            public DateTime ToDateTime (IFormatProvider provider)
-            {
-                throw new ApplicationException ("cannot convert a Dna path to DateTime");
-            }
-
-            public decimal ToDecimal (IFormatProvider provider)
-            {
-                throw new ApplicationException ("cannot convert a Dna path to decimal");
-            }
-
-            public double ToDouble (IFormatProvider provider)
-            {
-                throw new ApplicationException ("cannot convert a Dna path to double");
-            }
-
-            public short ToInt16 (IFormatProvider provider)
-            {
-                throw new ApplicationException ("cannot convert a Dna path to short");
-            }
-
-            public int ToInt32 (IFormatProvider provider)
-            {
-                throw new ApplicationException ("cannot convert a Dna path to int");
-            }
-
-            public long ToInt64 (IFormatProvider provider)
-            {
-                throw new ApplicationException ("cannot convert a Dna path to long");
-            }
-
-            public sbyte ToSByte (IFormatProvider provider)
-            {
-                throw new ApplicationException ("cannot convert a Dna path to sbyte");
-            }
-
-            public float ToSingle (IFormatProvider provider)
-            {
-                throw new ApplicationException ("cannot convert a Dna path to float");
-            }
-
-            public string ToString (IFormatProvider provider)
-            {
-                return ToString ();
-            }
-
-            public object ToType (Type conversionType, IFormatProvider provider)
-            {
-                if (conversionType != typeof(string))
-                    throw new ApplicationException ("cannot convert a Dna path to; " + conversionType);
-                return ToString ();
-            }
-
-            public ushort ToUInt16 (IFormatProvider provider)
-            {
-                throw new ApplicationException ("cannot convert a Dna path to ushort");
-            }
-
-            public uint ToUInt32 (IFormatProvider provider)
-            {
-                throw new ApplicationException ("cannot convert a Dna path to uint");
-            }
-
-            public ulong ToUInt64 (IFormatProvider provider)
-            {
-                throw new ApplicationException ("cannot convert a Dna path to ulong");
-            }
-        }
-
         private readonly List<Node> _children;
         private string _name;
 
@@ -423,16 +131,6 @@ namespace p5.core
         }
 
         /// <summary>
-        ///     Returns Dna code for Node
-        /// </summary>
-        /// <value>The Dna code, or position in Node tree</value>
-        public Dna Path {
-            get {
-                return new Dna (this);
-            }
-        }
-
-        /// <summary>
         ///     Returns the parent of current node
         /// </summary>
         /// <value>The parent node of this instance</value>
@@ -543,6 +241,24 @@ namespace p5.core
                 while (idxNode.Parent != null)
                     idxNode = idxNode.Parent;
                 return idxNode;
+            }
+        }
+
+        /// <summary>
+        ///     Gets the number of ancestors from this node to root
+        /// </summary>
+        /// <value>The offset to root</value>
+        public int OffsetToRoot
+        {
+            get {
+                int idxNo = 0;
+                var tmpIdx = this;
+                var root = Root;
+                while (tmpIdx != root) {
+                    tmpIdx = tmpIdx.Parent;
+                    idxNo += 1;
+                }
+                return idxNo;
             }
         }
 
@@ -791,8 +507,6 @@ namespace p5.core
                 retVal += ", Value=" + Value;
             if (Count > 0)
                 retVal += ", Count=" + Count;
-            if (Path.Count > 0)
-                retVal += ", Path=" + Path;
             retVal = retVal.Trim (',', ' ');
             return retVal;
         }

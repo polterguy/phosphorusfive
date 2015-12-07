@@ -102,13 +102,13 @@ namespace p5.hyperlisp.helpers
 
                 // Root node
                 node = node.Root;
-            } else if (previousToken.Type == Token.TokenType.Spacer && node.Path.Count > previousToken.Scope) {
+            } else if (previousToken.Type == Token.TokenType.Spacer && node.OffsetToRoot > previousToken.Scope) {
 
                 // Some ancestor, finding the right one
-                while (node.Path.Count != previousToken.Scope) {
+                while (node.OffsetToRoot != previousToken.Scope) {
                     node = node.Parent;
                 }
-            } else if (previousToken.Type != Token.TokenType.Spacer || node.Path.Count + 1 == previousToken.Scope) {
+            } else if (previousToken.Type != Token.TokenType.Spacer || node.OffsetToRoot + 1 == previousToken.Scope) {
 
                 // More than two consecutive spaces offset from previous token's name, which is a syntax error
                 throw new LambdaException (
