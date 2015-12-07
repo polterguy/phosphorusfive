@@ -37,7 +37,8 @@
         <Command type="AfterBuild" command="cp ${TargetFile} ${SolutionDir}/lib" />
       </CustomCommands>
     </CustomCommands>
-    <Commandlineparameters>-f inspect _file lambda-file</Commandlineparameters>
+    <Commandlineparameters>-f hello.hl</Commandlineparameters>
+    <Externalconsole>true</Externalconsole>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

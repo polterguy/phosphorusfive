@@ -10,136 +10,125 @@ using p5.exp;
 using p5.core;
 
 /// <summary>
-///     Main namespace for the <em>"lambda.exe"</em> console program.
+///     Main namespace for the lambda.exe console program
 /// </summary>
 namespace lambda_exe
 {
     /// <summary>
-    ///     Main class for the p5.lambda console executor.
+    ///     Main class for the lambda console evaluator
     /// </summary>
-    internal static class Program
+    public static class Program
     {
         /// <summary>
-        ///     Returns the application base path as value of given args node.
+        ///     Returns the application base path as value of given args node
         /// </summary>
         /// <param name="context">Application Context.</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.core.application-folder", Protection = EventProtection.NativeClosed)]
         private static void p5_core_application_folder (ApplicationContext context, ActiveEventArgs e)
         {
-            string path = Assembly.GetExecutingAssembly().Location;
-            path = path.Replace ("\\", "//");
+            var path = Assembly.GetExecutingAssembly().Location.Replace ("\\", "//");
             path = path.Substring (0, path.LastIndexOf ("/") + 1);
             e.Args.Value = path;
         }
 
         /// <summary>
-        ///     Allows you to write one line of text back to the console.
+        ///     Allows you to write one line of text back to the console
         /// </summary>
         /// <param name="context">Application context</param>
-        /// <param name="e">Active event arguments.</param>
-        [ActiveEvent (Name = "p5.console.write-line", Protection = EventProtection.LambdaClosed)]
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "p5.console.write", Protection = EventProtection.LambdaClosed)]
         private static void console_write_line (ApplicationContext context, ActiveEventArgs e)
         {
-            var value = XUtil.Single<string> (context, e.Args, false, "");
-            Console.WriteLine (value);
+            Console.WriteLine (XUtil.Single<string> (context, e.Args, true));
         }
 
         /// <summary>
-        ///     Allows you to write any text back to the console.
+        ///     Entry point of the lambda.exe
         /// </summary>
-        /// <param name="context">Application context</param>
-        /// <param name="e">Active event arguments.</param>
-        [ActiveEvent (Name = "p5.console.write", Protection = EventProtection.LambdaClosed)]
-        private static void console_write (ApplicationContext context, ActiveEventArgs e)
-        {
-            var value = XUtil.Single<string> (context, e.Args, false, "");
-            Console.Write (value);
-        }
-
-        /// <summary>
-        ///     The entry point of the program, where the program control starts and ends
-        /// </summary>
-        /// <param name="args">Command-line arguments.</param>
+        /// <param name="args">Command-line arguments</param>
         public static void Main (string[] args)
         {
-            try {
+            try
+            {
+                // Checking to see if we're given any arguments at all
                 if (args == null || args.Length == 0) {
 
-                    // outputting instructions, and then exiting
+                    // No arguments given, outputting instructions, for then to exit
                     OutputInstructions ();
                 } else {
 
-                    // initializing plugins that must be here in order for lambda executioner to function
+                    // Initializing plugins that must be here in order for lambda executioner to function
                     Loader.Instance.LoadAssembly (Assembly.GetExecutingAssembly ());
                     Loader.Instance.LoadAssembly ("plugins/", "p5.hyperlisp");
+                    Loader.Instance.LoadAssembly ("plugins/", "p5.types");
                     Loader.Instance.LoadAssembly ("plugins/", "p5.lambda");
+                    Loader.Instance.LoadAssembly ("plugins/", "p5.math");
                     Loader.Instance.LoadAssembly ("plugins/", "p5.io");
+                    Loader.Instance.LoadAssembly ("plugins/", "p5.crypto");
+                    Loader.Instance.LoadAssembly ("plugins/", "p5.html");
+                    Loader.Instance.LoadAssembly ("plugins/", "p5.io.zip");
+                    Loader.Instance.LoadAssembly ("plugins/", "p5.net");
 
-                    // handling our command-line arguments
+                    // Handling our command-line arguments, which might load up more plugins
                     bool immediate;
                     var exeNode = ParseArguments (args, out immediate);
 
-                    // creating application context after parameters are loaded, since there might be
+                    // Creating application context after parameters are loaded, since there might be
                     // additional plugins requested during the parsing of our command-line arguments
                     var context = Loader.Instance.CreateApplicationContext ();
 
-                    // raising our application startup Active Event, in case there are modules loaded depending upon it
+                    // Raising our application startup Active Event, in case there are modules loaded depending upon it
                     context.RaiseNative ("p5.core.application-start", new Node ());
 
+                    // Checking if we're in "immediate mode" (which means user can type in Hyperlisp into the console to be evaluated)
                     if (immediate) {
 
-                        // starting immediate mode
+                        // Starting immediate mode, allowing user to type in Hyperlisp to be evaluated
                         ImmediateMode (context);
                     } else {
 
-                        // loads and convert file to lambda nodes
-                        var convertExeFile = 
-                            context.RaiseNative ("lisp2lambda", 
-                                           new Node (string.Empty, 
-                                           context.RaiseNative ("load-file", 
-                                               new Node (string.Empty, exeNode.Value)) [0].Get<string> (context)));
+                        // Loads given file as lambda
+                        var convertExeFile = context.RaiseNative ("load-file", new Node ("", exeNode.Value)) [0];
 
-                        // appending nodes from lambda file into execution objects, and execute lambda file given through command-line arguments
+                        // Appending nodes from lambda file into execution objects, and execute lambda file given through command-line arguments
                         exeNode.AddRange (convertExeFile.Children);
                         context.RaiseLambda ("eval", exeNode);
                     }
                 }
-            } catch (Exception err) {
-                while (err.InnerException != null)
-                    err = err.InnerException;
+            }
+            catch (Exception err)
+            {
+                // Writing exception and stack trace to console
                 Console.WriteLine (err.Message);
+                Console.WriteLine ();
                 Console.WriteLine (err.StackTrace);
             }
         }
 
         /*
-         * starts immediate mode, allowing user to type in a bunch of Hyperlisp, executing when empty line is submitted.
-         * to exit program, type "exit" as a line of input.
+         * Starts immediate mode, allowing user to type in a bunch of Hyperlisp, executing when empty line is submitted
          */ 
         private static void ImmediateMode (ApplicationContext context)
         {
+            // Looping until user types "exit"
             while (true) {
-                StringBuilder builder = new StringBuilder ();
-                while (true) {
-                    Console.Write("p5>");
-                    string line = Console.ReadLine ();
-                    if (line == string.Empty)
-                        break; // breaking and executing given code
-                    if (line == "exit") {
 
-                        // discarding input and signaling exit of outer loop
-                        builder = new StringBuilder ("exit");
-                        break;
-                    }
-                    builder.Append (line + "\r\n");
-                }
-                string hyperlisp = builder.ToString ();
-                if (hyperlisp == "exit") {
+                // Retrieving next piece of Hyperlisp to executed from console
+                string hyperlisp = GetNextHyperlisp (context);
+
+                // Checking if user wants to exit program
+                if (hyperlisp.Trim () == "exit") {
+
+                    // Exiting program entirely
                     break;
                 } else if (hyperlisp.Trim () == string.Empty) {
-                    Console.WriteLine ("nothing to do here");
+
+                    // User didn't type anything at all
+                    Console.WriteLine ("Nothing to do here, type 'exit' to exit program");
                 } else {
+
+                    // Converting Hyperlisp collected above to lambda and executing
                     Node convert = context.RaiseNative ("lisp2lambda", new Node (string.Empty, hyperlisp));
                     context.RaiseLambda ("eval", convert);
                     Console.WriteLine ();
@@ -148,7 +137,36 @@ namespace lambda_exe
         }
 
         /*
-         * outputs instructions for how to use the lambda executor to the console
+         * Retrieves Hyperlisp from console
+         */
+        private static string GetNextHyperlisp (ApplicationContext context)
+        {
+            // Used as buffer to hold Hyperlisp
+            StringBuilder builder = new StringBuilder();
+
+            // Looping until user types in empty line or "exit"
+            while (true) {
+
+                // Making sure user understands where he is
+                Console.Write("p5>");
+
+                // Reading next line of input
+                string line = Console.ReadLine ();
+
+                // Checking what to do according to input given
+                if (line == string.Empty)
+                    break; // Breaking and executing given code
+
+                // Appending carriage return, to create understandable Hyperlisp
+                builder.Append (line + "\r\n");
+            }
+
+            // Returning Hyperlisp to caller
+            return builder.ToString ();
+        }
+
+        /*
+         * Outputs instructions for how to use the lambda executor to the console
          */
         private static void OutputInstructions ()
         {
@@ -158,29 +176,28 @@ namespace lambda_exe
             Console.WriteLine ("*****    Instructions for Phosphorus Five command line p5.lambda executor  *****");
             Console.WriteLine ("********************************************************************************");
             Console.WriteLine ();
-            Console.WriteLine ("The lambda executor allows you to execute p5.lambda Hyperlisp files.");
+            Console.WriteLine ("The lambda executor allows you to execute Hyperlisp files or code");
             Console.WriteLine ();
-            Console.WriteLine ("-f is mandatory, unless you're in immediate mode, and is your lambda file, ");
+            Console.WriteLine ("-f Mandatory, unless you're in immediate mode, and is your lambda file, ");
             Console.WriteLine ("   for instance; -f some-lambda-file");
             Console.WriteLine ();
-            Console.WriteLine ("-p allows you to load additional plugins, for instance; -p \"plugins/my.plugin\"");
+            Console.WriteLine ("-p Allows you to load additional plugins, for instance; -p \"plugins/my.plugin\"");
             Console.WriteLine ("   you can repeat the -p argument as many times as you wish");
             Console.WriteLine ();
-            Console.WriteLine ("-i starts 'immediate mode', allowing you to write in any Hyperlisp, ending and");
+            Console.WriteLine ("-i Starts 'immediate mode', allowing you to write in any Hyperlisp, ending and");
             Console.WriteLine ("   executing your code with an empty line. End immediate mode with 'exit'");
             Console.WriteLine ();
-            Console.WriteLine ("All other arguments are passed into the execution tree of the lambda file you "
+            Console.WriteLine ("All other arguments are passed into the execution tree of the Hyperlisp file you "
                                + "are executing as a key/value pair, e.g; _var \"x\" creates a new node for you "
                                + "at the top of your execution file called '_var' with the content of 'x'");
             Console.WriteLine ();
-            Console.WriteLine ("The lambda executor contains two Active Events itself, which you can use from "
-                               + "your lambda execution files called, \"p5.console.write-line\", and "
-                               + "\"p5.console.write\", which allows you to write a text to the console, either "
-                               + "as a line with CR/LF appended at the end, or without CR/LF at the end");
+            Console.WriteLine ("The lambda executor contains one Active Events itself, which you can use from "
+                               + "your lambda execution files called, \"p5.console.write-line\", which allows "
+                               + "you to write text to the console");
         }
 
         /*
-         * creates our node parameter collection to pass into p5.lambda execution engine
+         * Parses command line arguments
          */
         private static Node ParseArguments (string[] args, out bool immediate)
         {
@@ -188,30 +205,51 @@ namespace lambda_exe
             var exeNode = new Node ("input-file");
             var nextIsInput = false;
             var nextIsPlugin = false;
+
+            // Looping through all args
             foreach (var idx in args) {
                 if (nextIsInput && exeNode.Value == null) {
+
+                    // This is an input file
                     exeNode.Value = idx;
                     nextIsInput = false;
                 } else if (nextIsInput) {
-                    throw new ArgumentException ("You cannot submit more than one execution file to the lambda executor. You can though create one Hyperlisp file, that executes multiple files, and execute this file.");
+
+                    // User tried to supply more than one input file
+                    throw new ArgumentException ("You cannot submit more than one execution file to the lambda executor");
                 } else if (idx == "-f") {
+
+                    // Next argument is a path to an input Hyperlisp file
                     nextIsInput = true;
                 } else if (nextIsPlugin) {
+
+                    // This is a plugin declaration, path to a plugin
                     Loader.Instance.LoadAssembly (idx);
                     nextIsPlugin = false;
                 } else if (idx == "-p") {
+
+                    // Next arg is a plugin declaration
                     nextIsPlugin = true;
                 } else if (idx == "-i") {
+
+                    // User wants to enter immediate mode
                     immediate = true;
                 } else if (exeNode.Count == 0 || exeNode [exeNode.Count - 1].Value != null) {
+
+                    // Arbitrary argument name passed into Hyperlisp file
                     exeNode.Add (new Node (idx));
                 } else {
+
+                    // Arbitrary argument value passed into Hyperlisp file
                     exeNode [exeNode.Count - 1].Value = idx;
                 }
             }
 
+            // Basic syntax checking
             if (exeNode.Value == null && !immediate)
                 throw new ArgumentException ("No execution file given to lambda executor, neither was immediate mode chosen");
+
+            // Returning lambda to caller
             return exeNode;
         }
     }

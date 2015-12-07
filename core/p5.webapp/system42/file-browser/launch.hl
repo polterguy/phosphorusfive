@@ -2,7 +2,7 @@
 /*
  * Main entry point for file browser. If there's a value in session
  * called "sys42.download-file", then that file will be directly 
- * downloaded. If not, then file browser will start on page. This is
+ * downloaded. If not, then file browser will start . This is
  * to let the file browser allow for downloading files by simply doing
  * a "[reload-location] invocation
  */
@@ -19,7 +19,7 @@ if:x:/-/*?value
   set-http-header
     Content-Type:x:/./-?value
 
-  // Figuring out filename
+  // Figuring out filename without path
   split:x:/../*/get-session-value/*?value
     =:/
   set-http-header
@@ -55,16 +55,6 @@ else
     // we set the "current folder" to the user's "Home" directory
     set-session-value:sys42.current-folder
       src:users/{0}/documents/
-        :x:/..else/*/get-user/*/username?value
-
-  // Setting "root directory" according to user role
-  if:x:/..else/*/get-user/*/role?value
-    !=:root
-
-    // User is NOT root, therefor we set "root access folder" to
-    // "users/username/"
-    set-session-value:sys42.root-directory
-      src:users/{0}/
         :x:/..else/*/get-user/*/username?value
   else
     set-session-value:sys42.root-directory
