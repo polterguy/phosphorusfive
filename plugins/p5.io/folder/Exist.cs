@@ -6,9 +6,10 @@
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
-using p5.core;
 using p5.exp;
+using p5.core;
 using p5.io.common;
+using p5.exp.exceptions;
 
 namespace p5.io.folder
 {
@@ -37,6 +38,13 @@ namespace p5.io.folder
                 // Multiple folder source, returning existence of all folders
                 e.Args.Value = false;
                 foreach (var idxFolder in sourceFiles) {
+
+                    // Verify foldername is a valid foldername according to conventions
+                    if (!idxFolder.StartsWith ("/") || !idxFolder.EndsWith ("/"))
+                        throw new LambdaException (
+                            string.Format ("Foldername '{0}' was not a valid foldername", idxFolder),
+                            e.Args,
+                            context);
 
                     // Verifying user is authorized to reading from currently iterated folder
                     context.RaiseNative ("p5.io.authorize.load-folder", new Node ("p5.io.authorize.load-folder", idxFolder).Add ("args", e.Args));

@@ -46,7 +46,7 @@ else
     not
     or:x:/..else/*/get-user/*/role?value
       !=:root
-      and:x:/..else/*/get-session-value/*/"=~users/{0}/documents/"
+      and:x:/..else/*/get-session-value/*/"=~/users/{0}/documents/"
         :x:/..else/*/get-user/*/username?value
         not
 
@@ -54,13 +54,10 @@ else
     // was a directory that the user did not have access to. Therefor
     // we set the "current folder" to the user's "Home" directory
     set-session-value:sys42.current-folder
-      src:users/{0}/documents/
+      src:/users/{0}/documents/
         :x:/..else/*/get-user/*/username?value
-  else
-    set-session-value:sys42.root-directory
-      src:
 
   // Starting the actual file-browser implementation
-  sys42.execute-lisp-file:system42/file-browser/file-browser.hl
+  sys42.execute-lisp-file:/system42/file-browser/file-browser.hl
 
 

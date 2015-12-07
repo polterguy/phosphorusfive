@@ -6,9 +6,10 @@
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
-using p5.core;
 using p5.exp;
+using p5.core;
 using p5.io.common;
+using p5.exp.exceptions;
 
 /// <summary>
 ///     Main namespace for all files and folders Active Events
@@ -43,6 +44,13 @@ namespace p5.io.file
 
                     // Verifying user is authorized to reading from currently iterated file
                     context.RaiseNative ("p5.io.authorize.load-file", new Node ("p5.io.authorize.load-file", idxFile).Add ("args", e.Args));
+
+                    // Verify path is correct according to conventions
+                    if (!idxFile.StartsWith ("/"))
+                        throw new LambdaException (
+                            string.Format ("Filename '{0}' was not a valid filename", idxFile),
+                            e.Args,
+                            context);
 
                     // Letting caller know whether or not this file exists
                     if (!File.Exists (rootFolder + idxFile)) {

@@ -13,12 +13,12 @@ set-protected-event:sys42.empty-user-tmp-folder
     not
 
     // User is not default user, deleting all files in user's tmp folder
-    list-files:users/{0}/tmp
+    list-files:/users/{0}/tmp/
       :x:/../*/get-user/*/username?value
     delete-file:x:/-/*?name
 
     // Then deleting all folders in user tmp folder
-    list-folders:users/{0}/tmp
+    list-folders:/users/{0}/tmp/
       :x:/../*/get-user/*/username?value
     delete-folder:x:/-/*?name
 

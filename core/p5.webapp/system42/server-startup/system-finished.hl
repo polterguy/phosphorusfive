@@ -27,7 +27,7 @@ update-data:x:/*/*/p5.page/"=/"
     p5.page:/
       type:html
       name:Welcome to System42
-      template:system42/templates/main.hl
+      template:/system42/templates/main.hl
       content:@"<img src=""/media/images/marvin-headshot.png"" style=""float:right;"" class=""prepend-left"" />
 <blockquote><em>""Hello, my name is Marvin, and I have just been adopted by my owner. That's why things looks a little bit odd here, since
 he still haven't told me what he wants me to do. Until then, I'll just be attending these cars, and speak to this coffe machine. Maybe

@@ -30,8 +30,8 @@ create-widget:file-browser
     sys42.create-current-folder-content
 
     // Making sure selected file gives visual clues, if any files are selected
-    if:x:/../*/get-session-value/[0,1]/*/*/object?value
-      sys42.create-selected-object-clues:x:/../*/get-session-value/[0,1]/*/*/object?value
+    if:x:/../*/get-session-value/*/*/object?value
+      sys42.create-selected-object-clues:x:/../*/get-session-value/*/*/object?value
     sys42.update-file-browser-toolbar
 
     // Checking if we're currently in "edit file mode", and if
@@ -489,7 +489,7 @@ create-widget:file-browser
                 set:x:/../*/split/0/-
 
                 // Figuring out new filename
-                _new-filepath
+                _new-filepath:/
                 for-each:x:/../*/split/*?name
                   set:x:/../*/_new-filepath?value
                     src:{0}{1}/
@@ -673,7 +673,9 @@ create-widget:file-browser
 
                 // Making sure new folder is selected
                 set:x:/+/0/*/object?value
-                  src:x:/../*/create-folder/*?name
+                  src:{0}{1}/
+                    :x:/../*/get-session-value/*?value
+                    :x:/../*/get-widget-property/*/*?value
                 set-session-value:sys42.selected-file-browser-object
                   src
                     type:folder
@@ -743,7 +745,9 @@ create-widget:file-browser
 
                 // Making sure new file is selected
                 set:x:/+/0/*/object?value
-                  src:x:/../*/save-file?value
+                  src:{0}{1}
+                    :x:/../*/get-session-value/*?value
+                    :x:/../*/get-widget-property/*/*?value
                 set-session-value:sys42.selected-file-browser-object
                   src
                     type:file
@@ -938,8 +942,17 @@ create-widget:file-browser
       // Creating bread-crumb home button widget part
       if:x:/../*/get-session-value/*?value
         =:/
+
+        // User is at root, disabling "home" button
         add:x:/../*/create-widget
           src:disabled
+      else
+
+        // Making sure that when bread-crumb is clicked, the folder in the path
+        // we came from becomes selected
+        set:x:/../*/create-widget/*/onclick/*/set-session-value/*/*/object?value
+          src:/{0}/
+            :x:/../*/split/0?name
 
       // Actually creating widget
       create-widget
@@ -952,7 +965,14 @@ create-widget:file-browser
           // Loading root directory
           sys42.change-current-folder:/
           set-session-value:sys42.selected-file-browser-object
+            src
+              type:folder
+              object
+
+          // Making sure folder where we came from becomes selected
+          sys42.create-selected-object-clues:x:/-/*/*/object?value
           sys42.update-file-browser-toolbar
+
 
         widgets
           literal
@@ -1180,9 +1200,6 @@ create-widget:file-browser
             type:file
             object
 
-        // Destroying any existing editors, since selected object changed
-        sys42.destroy-file-editor
-
         // Showing selected object clues
         sys42.create-selected-object-clues:x:/../*/_arg?value
 
@@ -1221,7 +1238,7 @@ create-widget:file-browser
       // Retrieving selected file, and opening up editor
       set:x:/+/0?value
         src:x:/../*/_arg?value
-      sys42.execute-lisp-file:system42/file-editors/launch.hl
+      sys42.execute-lisp-file:/system42/file-editors/launch.hl
         _file
         _parent:file-browser-file-editor
 

@@ -4,10 +4,10 @@
  */
 
 using System.IO;
-using p5.core;
 using p5.exp;
-using p5.exp.exceptions;
+using p5.core;
 using p5.io.common;
+using p5.exp.exceptions;
 
 namespace p5.io.file
 {
@@ -37,7 +37,14 @@ namespace p5.io.file
                 // Verifying user is allowed to save to file
                 context.RaiseNative ("p5.io.authorize.save-file", new Node ("p5.io.authorize.save-file", fileName).Add ("args", e.Args));
 
-                // Getting source
+                // Verify path is correct according to conventions
+                if (!fileName.StartsWith ("/"))
+                    throw new LambdaException (
+                        string.Format ("Filename '{0}' was not a valid filename", fileName),
+                        e.Args,
+                        context);
+
+                // Getting source, or content of file
                 var source = Utilities.Convert<string> (context, XUtil.SourceSingle (context, e.Args));
 
                 // Saving file
@@ -68,7 +75,14 @@ namespace p5.io.file
                 // Verifying user is allowed to save to file
                 context.RaiseNative ("p5.io.authorize.save-file", new Node ("p5.io.authorize.save-file", fileName).Add ("args", e.Args));
 
-                // Getting source
+                // Verify path is correct according to conventions
+                if (!fileName.StartsWith ("/"))
+                    throw new LambdaException (
+                        string.Format ("Filename '{0}' was not a valid filename", fileName),
+                        e.Args,
+                        context);
+
+                // Getting source, or content of file
                 var source = Utilities.Convert<byte[]> (context, XUtil.SourceSingle (context, e.Args));
 
                 // Saving file

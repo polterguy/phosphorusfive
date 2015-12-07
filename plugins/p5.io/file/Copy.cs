@@ -5,9 +5,10 @@
 
 using System;
 using System.IO;
-using p5.core;
 using p5.exp;
+using p5.core;
 using p5.io.common;
+using p5.exp.exceptions;
 
 /// <summary>
 ///     Main namespace for all IO file operations in Phosphorus Five
@@ -43,11 +44,21 @@ namespace p5.io.file
                 // getting root folder
                 var rootFolder = Common.GetRootFolder (context);
 
-                // Getting source
+                // Getting source and verify path is correct according to conventions
                 string sourceFile = XUtil.Single<string> (context, e.Args);
+                if (!sourceFile.StartsWith ("/"))
+                    throw new LambdaException (
+                        string.Format ("Source file '{0}' was not a valid filename", sourceFile),
+                        e.Args,
+                        context);
 
-                // Getting destination
+                // Getting destination and verify path is correct according to conventions
                 string destinationFile = XUtil.Single<string> (context, e.Args ["to"]);
+                if (!destinationFile.StartsWith ("/"))
+                    throw new LambdaException (
+                        string.Format ("Destination file '{0}' was not a valid filename", destinationFile),
+                        e.Args,
+                        context);
 
                 // Verifying user is authorized to both reading from source, and writing to destination
                 context.RaiseNative ("p5.io.authorize.load-file", new Node ("p5.io.authorize.load-file", sourceFile).Add ("args", e.Args));

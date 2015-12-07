@@ -46,11 +46,21 @@ namespace p5.io.folder
                 // Getting root folder
                 var rootFolder = Common.GetRootFolder (context);
 
-                // Getting folder to copy
-                string sourceFolder = XUtil.Single<string> (context, e.Args).Trim ('/') + "/";
+                // Getting source and verify path is correct according to conventions
+                string sourceFolder = XUtil.Single<string> (context, e.Args);
+                if (!sourceFolder.StartsWith ("/") || !sourceFolder.EndsWith ("/"))
+                    throw new LambdaException (
+                        string.Format ("Source folder '{0}' was not a valid foldername", sourceFolder),
+                        e.Args,
+                        context);
 
-                // Getting new path of folder
-                string destinationFolder = XUtil.Single<string> (context, e.Args ["to"]).Trim ('/') + "/";
+                // Getting destination and verify path is correct according to conventions
+                string destinationFolder = XUtil.Single<string> (context, e.Args ["to"]);
+                if (!destinationFolder.StartsWith ("/") || !destinationFolder.EndsWith ("/"))
+                    throw new LambdaException (
+                        string.Format ("Destination folder '{0}' was not a valid foldername", destinationFolder),
+                        e.Args,
+                        context);
 
                 // Verifying user is authorized to both reading from source, and writing to destination
                 context.RaiseNative ("p5.io.authorize.load-folder", new Node ("p5.io.authorize.load-folder", sourceFolder).Add ("args", e.Args));

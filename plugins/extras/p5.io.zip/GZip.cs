@@ -9,8 +9,9 @@ using System.Linq;
 using System.Collections.Generic;
 using ICSharpCode.SharpZipLib.Tar;
 using ICSharpCode.SharpZipLib.GZip;
-using p5.core;
 using p5.exp;
+using p5.core;
+using p5.exp.exceptions;
 
 /// <summary>
 ///     Main namespace for all file operations in Phosphorus Five
@@ -40,8 +41,13 @@ namespace p5.io.zip
                 // Getting root folder
                 var rootFolder = Helpers.GetRootFolder (context);
 
-                // Getting filename of gz file to create
-                var destinationFile = e.Args ["to"].GetExValue<string> (context);
+                // Getting destination and verify path is correct according to conventions
+                string destinationFile = XUtil.Single<string> (context, e.Args ["to"]);
+                if (!destinationFile.StartsWith ("/"))
+                    throw new LambdaException (
+                        string.Format ("Destination file '{0}' was not a valid filename", destinationFile),
+                        e.Args,
+                        context);
 
                 // Verifying user is authorized to writing to destination
                 context.RaiseNative ("p5.io.authorize.save-file", new Node ("p5.io.authorize.save-file", destinationFile).Add ("args", e.Args));
@@ -66,19 +72,26 @@ namespace p5.io.zip
                         using (var archive = TarArchive.CreateOutputTarArchive (gzStream)) {
 
                             // Looping through each input directory given
-                            foreach (var idxSourceFile in XUtil.Iterate<string> (context, e.Args)) {
+                            foreach (var idxSourceFileFolder in XUtil.Iterate<string> (context, e.Args)) {
+
+                                // Verify path is correct according to conventions
+                                if (!idxSourceFileFolder.StartsWith ("/"))
+                                    throw new LambdaException (
+                                        string.Format ("Source file '{0}' was not a valid filename", idxSourceFileFolder),
+                                        e.Args,
+                                        context);
 
                                 // Verifying user is authorized to reading from source
-                                context.RaiseNative ("p5.io.authorize.load-file", new Node ("p5.io.authorize.load-file", idxSourceFile).Add ("args", e.Args));
+                                context.RaiseNative ("p5.io.authorize.load-file", new Node ("p5.io.authorize.load-file", idxSourceFileFolder).Add ("args", e.Args));
 
                                 // Verifying file-/folder name is not a "restricted" type of file
-                                if (idxSourceFile.StartsWith (".") || idxSourceFile.EndsWith ("~"))
+                                if (idxSourceFileFolder.StartsWith (".") || idxSourceFileFolder.EndsWith ("~"))
                                     continue;
 
-                                var rootSource = idxSourceFile.Trim ('/');
+                                var rootSource = idxSourceFileFolder.Trim ('/');
                                 rootSource = rootSource.Substring (rootSource.LastIndexOf ("/") + 1);
 
-                                AddFileObjectToArchive (archive, rootFolder + idxSourceFile.TrimEnd ('/'), rootSource);
+                                AddFileObjectToArchive (archive, rootFolder + idxSourceFileFolder.TrimEnd ('/'), rootSource);
                             }
                         }
                     }

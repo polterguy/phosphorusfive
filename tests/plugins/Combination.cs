@@ -35,7 +35,7 @@ insert-data
   foo1:bar1
     foo-child:bar-child
   foo2:bar2
-save-file:test1.txt
+save-file:/test1.txt
   select-data:x:/*/*(/foo1|/foo2)
 insert-before:x:/../0
   src:x:/../*(!/insert-before)");
@@ -118,14 +118,14 @@ insert-before:x:/../0
         [Test]
         public void IfFileExist ()
         {
-            var node = ExecuteLambda (@"save-file:foo1.txt
+            var node = ExecuteLambda (@"save-file:/foo1.txt
   src:foo
-save-file:foo2.txt
+save-file:/foo2.txt
   src:bar
 if
-  file-exist:foo1.txt
+  file-exist:/foo1.txt
   and
-    file-exist:foo2.txt
+    file-exist:/foo2.txt
   set:x:/..?value
     src:success", "eval-mutable");
             Assert.AreEqual ("success", node.Value);

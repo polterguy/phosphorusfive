@@ -4,10 +4,10 @@
  */
 
 using System.IO;
-using p5.core;
 using p5.exp;
-using p5.exp.exceptions;
+using p5.core;
 using p5.io.common;
+using p5.exp.exceptions;
 
 namespace p5.io.file
 {
@@ -35,6 +35,13 @@ namespace p5.io.file
 
                     // Verifying user is authorized to writing to destination file
                     context.RaiseNative ("p5.io.authorize.save-file", new Node ("p5.io.authorize.save-file", idxFile).Add ("args", e.Args));
+
+                    // Verify path is correct according to conventions
+                    if (!idxFile.StartsWith ("/"))
+                        throw new LambdaException (
+                            string.Format ("Filename '{0}' was not a valid filename", idxFile),
+                            e.Args,
+                            context);
 
                     // Checking if file exist
                     if (File.Exists (rootFolder + idxFile)) {

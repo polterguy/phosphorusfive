@@ -5,10 +5,10 @@
 
 using System.IO;
 using System.Collections.Generic;
-using p5.core;
 using p5.exp;
-using p5.exp.exceptions;
+using p5.core;
 using p5.io.common;
+using p5.exp.exceptions;
 
 namespace p5.io.file
 {
@@ -33,34 +33,41 @@ namespace p5.io.file
                 var rootFolder = Common.GetRootFolder (context);
 
                 // Iterating through each file path given
-                foreach (var idxFilename in Common.GetSource (e.Args, context)) {
+                foreach (var idxFile in Common.GetSource (e.Args, context)) {
 
                     // Verifying user is authorized to reading from currently iterated file
-                    context.RaiseNative ("p5.io.authorize.load-file", new Node ("p5.io.authorize.load-file", idxFilename).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.load-file", new Node ("p5.io.authorize.load-file", idxFile).Add ("args", e.Args));
+
+                    // Verify path is correct according to conventions
+                    if (!idxFile.StartsWith ("/"))
+                        throw new LambdaException (
+                            string.Format ("Filename '{0}' was not a valid filename", idxFile),
+                            e.Args,
+                            context);
 
                     // Checking to see if file exists
-                    if (File.Exists (rootFolder + idxFilename)) {
+                    if (File.Exists (rootFolder + idxFile)) {
 
                         // File exists, loading it as text file, and appending text into node,
                         // with filename as name, and content as value
-                        using (TextReader reader = File.OpenText (rootFolder + idxFilename)) {
+                        using (TextReader reader = File.OpenText (rootFolder + idxFile)) {
 
                             // Reading file content
                             string fileContent = reader.ReadToEnd ();
-                            if (idxFilename.EndsWith (".hl") && e.Args.GetExChildValue ("convert", context, true)) {
+                            if (idxFile.EndsWith (".hl") && e.Args.GetExChildValue ("convert", context, true)) {
 
                                 // Automatically converting to Hyperlisp before returning
-                                e.Args.Add (new Node (idxFilename, null, Utilities.Convert<Node> (context, fileContent).Children));
+                                e.Args.Add (new Node (idxFile, null, Utilities.Convert<Node> (context, fileContent).Children));
                             } else {
 
                                 // Adding file content as string
-                                e.Args.Add (new Node (idxFilename, fileContent));
+                                e.Args.Add (new Node (idxFile, fileContent));
                             }
                         }
                     } else {
 
                         // File didn't exist
-                        throw new LambdaException (string.Format ("Couldn't find file '{0}'", idxFilename), e.Args, context);
+                        throw new LambdaException (string.Format ("Couldn't find file '{0}'", idxFile), e.Args, context);
                     }
                 }
             }

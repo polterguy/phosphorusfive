@@ -39,11 +39,11 @@ namespace p5.unittests.lambda
             }
 
             var result = ExecuteLambda (@"fork
-  save-file:thread-test.txt
+  save-file:/thread-test.txt
     src:hello world
 sleep:10
 if
-  file-exist:thread-test.txt
+  file-exist:/thread-test.txt
   insert-before:x:/../0
     src:success");
             Assert.AreEqual (1, result.Count);
@@ -73,17 +73,17 @@ if
             }
 
             var result = ExecuteLambda (@"_x1
-  save-file:thread-test1.txt
+  save-file:/thread-test1.txt
     src:hello world 1
 _x2
-  save-file:thread-test2.txt
+  save-file:/thread-test2.txt
     src:hello world 2
 fork:x:/../*/~_x
 sleep:10
 if
-  file-exist:thread-test1.txt
+  file-exist:/thread-test1.txt
   and
-    file-exist:thread-test2.txt
+    file-exist:/thread-test2.txt
   add:x:/..
     src:success");
             Assert.AreEqual (1, result.Count);
@@ -110,11 +110,11 @@ if
             var result = ExecuteLambda (@"fork
   if:x:/..?name
     =:fork
-    save-file:thread-test1.txt
+    save-file:/thread-test1.txt
       src:hello world 1
 sleep:20
 if
-  file-exist:thread-test1.txt
+  file-exist:/thread-test1.txt
   insert-before:x:/../0
     src:success");
             Assert.AreEqual (1, result.Count);
@@ -138,15 +138,15 @@ if
             var result = ExecuteLambda (@"wait
   fork
     sleep:10
-    save-file:thread-test1.txt
+    save-file:/thread-test1.txt
       src:hello world 1
   fork
     sleep:10
-    save-file:thread-test2.txt
+    save-file:/thread-test2.txt
       src:hello world 2
 _files
-  thread-test1.txt
-  thread-test2.txt
+  /thread-test1.txt
+  /thread-test2.txt
 if
   file-exist:x:/./-/*?name
   insert-before:x:/../0
@@ -169,10 +169,10 @@ if
   fork
     if:x:/../0?name
       =:wait
-      save-file:thread-test1.txt
+      save-file:/thread-test1.txt
         src:hello world 1
 if
-  file-exist:thread-test1.txt
+  file-exist:/thread-test1.txt
   insert-before:x:/../0
     src:success");
             Assert.AreEqual (1, result.Count);
@@ -271,16 +271,16 @@ wait
     _foo:bar
   fork
     sleep:20
-    save-file:thread-test.txt
+    save-file:/thread-test.txt
       src:foo bar
 if
-  file-exist:thread-test.txt
+  file-exist:/thread-test.txt
   insert-before:x:/../0
     src:error
 else
   sleep:20
   if
-    file-exist:thread-test.txt
+    file-exist:/thread-test.txt
     insert-before:x:/../0
       src:success");
             Assert.AreEqual (1, result.Count);
@@ -303,24 +303,24 @@ else
 wait:x:/{0}?value
   :x:/../*/_minus?value
   fork
-    save-file:thread-test1.txt
+    save-file:/thread-test1.txt
       src:foo bar
   fork
     sleep:20
-    save-file:thread-test2.txt
+    save-file:/thread-test2.txt
       src:foo bar
 if
-  file-exist:thread-test1.txt
+  file-exist:/thread-test1.txt
   and
-    file-exist:thread-test2.txt
+    file-exist:/thread-test2.txt
   insert-before:x:/../0
     src:error
 else
   sleep:20
   if
-    file-exist:thread-test1.txt
+    file-exist:/thread-test1.txt
     and
-      file-exist:thread-test2.txt
+      file-exist:/thread-test2.txt
     insert-before:x:/../0
       src:success
 _minus:-");

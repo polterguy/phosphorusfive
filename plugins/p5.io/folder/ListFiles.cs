@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using p5.exp;
 using p5.core;
 using p5.io.common;
+using p5.exp.exceptions;
 
 namespace p5.io.folder
 {
@@ -46,6 +47,13 @@ namespace p5.io.folder
                 // Iterating through each folder supplied by caller
                 foreach (var idxFolder in Common.GetSource (e.Args, context)) {
 
+                    // Verify foldername is a valid foldername according to conventions
+                    if (!idxFolder.StartsWith ("/") || !idxFolder.EndsWith ("/"))
+                        throw new LambdaException (
+                            string.Format ("Foldername '{0}' was not a valid foldername", idxFolder),
+                            e.Args,
+                            context);
+
                     // Verifying user is authorized to reading from currently iterated folder
                     context.RaiseNative ("p5.io.authorize.load-folder", new Node ("p5.io.authorize.load-folder", idxFolder).Add ("args", e.Args));
 
@@ -63,7 +71,7 @@ namespace p5.io.folder
 
                                 // Returning filename back to caller
                                 var fileName = idxFile.Replace ("\\", "/");
-                                fileName = fileName.Replace (rootFolder, "").TrimStart ('/');
+                                fileName = "/" + fileName.Replace (rootFolder, "").TrimStart ('/');
                                 e.Args.Add (new Node (fileName));
                             }
                         }

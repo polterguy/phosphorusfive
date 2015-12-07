@@ -98,7 +98,7 @@ create-widget:page-editor
                 sys42.create-new-page
                   get-widget-property:create-new-page
                     value
-                  sys42.execute-lisp-file:system42/root/page-editor/templates/create-new-{0}-page.hl
+                  sys42.execute-lisp-file:/system42/root/page-editor/templates/create-new-{0}-page.hl
                     :x:/../*/get-widget-property/*/*?value
                   add:x:/../*/insert-data/0
                     src:"type:{0}"
@@ -274,7 +274,7 @@ create-widget:page-editor
               src:"_id:{0}"
                 :x:/../*/sys42.get-currently-edited-page?value
             sys42.create-editor-toolbar
-            sys42.execute-lisp-file:system42/root/page-editor/editors/{0}.hl
+            sys42.execute-lisp-file:/system42/root/page-editor/editors/{0}.hl
               :x:/..if/*/select-data/*?value
               _parent-widget:page-editor-editor-surface
 
@@ -286,5 +286,5 @@ create-widget:page-editor
         sys42.create-editor-toolbar
           add:x:/+
             src:x:/../*/_id
-          sys42.execute-lisp-file:system42/root/page-editor/editor-toolbar.hl
+          sys42.execute-lisp-file:/system42/root/page-editor/editor-toolbar.hl
 

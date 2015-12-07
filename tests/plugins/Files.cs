@@ -5,8 +5,9 @@
 
 using System.IO;
 using NUnit.Framework;
-using p5.core;
 using p5.exp;
+using p5.core;
+using p5.exp.exceptions;
 
 namespace p5.unittests.plugins
 {
@@ -20,6 +21,13 @@ namespace p5.unittests.plugins
             : base ("p5.io", "p5.hyperlisp", "p5.lambda", "p5.types", "p5.io.authorization")
         { }
 
+        [TestFixtureSetUp]
+        public void Setup()
+        {
+            // Making sure we're root for current operation
+            Context.UpdateTicket (new ApplicationContext.ContextTicket ("root", "root", false));
+        }
+
         /// <summary>
         ///     saves a file for then to check if it exist
         /// </summary>
@@ -27,12 +35,12 @@ namespace p5.unittests.plugins
         public void SaveFileFileExist ()
         {
             // creating file using p5.file
-            var node = new Node (string.Empty, "test1.txt")
+            var node = new Node (string.Empty, "/test1.txt")
                 .Add ("src", "this is a test");
             Context.RaiseNative ("save-file", node);
 
             // checking to see if file exists
-            node = new Node (string.Empty, "test1.txt");
+            node = new Node (string.Empty, "/test1.txt");
             Context.RaiseNative ("file-exist", node);
 
             // verifying [file-exist] returned valid values
@@ -46,18 +54,18 @@ namespace p5.unittests.plugins
         public void SaveTwoFilesFileExist ()
         {
             // creating files using p5.file
-            var node = new Node (string.Empty, "test1.txt")
+            var node = new Node (string.Empty, "/test1.txt")
                 .Add ("src", "this is test 1");
             Context.RaiseNative ("save-file", node);
 
-            node = new Node (string.Empty, "test2.txt")
+            node = new Node (string.Empty, "/test2.txt")
                 .Add ("src", "this is test 2");
             Context.RaiseNative ("save-file", node);
 
             // checking to see if files exists
             node = new Node (string.Empty, Expression.Create ("/*?name", Context))
-                .Add ("test1.txt")
-                .Add ("test2.txt");
+                .Add ("/test1.txt")
+                .Add ("/test2.txt");
             Context.RaiseNative ("file-exist", node);
 
             // verifying [file-exist] returned valid values
@@ -71,18 +79,18 @@ namespace p5.unittests.plugins
         public void SaveTwoFilesFormattedExpressionExist ()
         {
             // creating files using p5.file
-            var node = new Node (string.Empty, "test1.txt")
+            var node = new Node (string.Empty, "/test1.txt")
                 .Add ("src", "this is test 1");
             Context.RaiseNative ("save-file", node);
-            node = new Node (string.Empty, "test1.txt")
+            node = new Node (string.Empty, "/test1.txt")
                 .Add ("src", "this is test 2");
             Context.RaiseNative ("save-file", node);
 
             // checking to see if files exists
-            node = new Node (string.Empty, Expression.Create ("/*!/0?{0}", Context))
+            node = new Node (string.Empty, Expression.Create (@"/*!/0?{0}", Context))
                 .Add (string.Empty, "name")
-                .Add ("test1.txt")
-                .Add ("test2.txt");
+                .Add ("/test1.txt")
+                .Add ("/test2.txt");
             Context.RaiseNative ("file-exist", node);
 
             // verifying [file-exist] returned valid values
@@ -96,12 +104,12 @@ namespace p5.unittests.plugins
         public void SaveFileFormattedStringExist ()
         {
             // creating files using p5.file
-            var node = new Node (string.Empty, "test1.txt")
+            var node = new Node (string.Empty, "/test1.txt")
                 .Add ("src", "this is a test");
             Context.RaiseNative ("save-file", node);
 
             // checking to see if files exists
-            node = new Node (string.Empty, "te{0}.txt")
+            node = new Node (string.Empty, "/te{0}.txt")
                 .Add (string.Empty, "st1");
             Context.RaiseNative ("file-exist", node);
 
@@ -115,16 +123,13 @@ namespace p5.unittests.plugins
         [Test]
         public void DeleteFile ()
         {
-            // Making sure we're root for current operation
-            Context.UpdateTicket (new ApplicationContext.ContextTicket ("root", "root", false));
-
             // creating file using p5.file
-            var node = new Node (string.Empty, "test1.txt")
+            var node = new Node (string.Empty, "/test1.txt")
                 .Add ("src", "this is a test");
             Context.RaiseNative ("save-file", node);
 
             // removing file using Phosphorus Five
-            node = new Node (string.Empty, "test1.txt");
+            node = new Node (string.Empty, "/test1.txt");
             Context.RaiseNative ("delete-file", node);
 
             // verifying removal of file was done correctly
@@ -137,22 +142,19 @@ namespace p5.unittests.plugins
         [Test]
         public void DeleteTwoFilesExpression ()
         {
-            // Making sure we're root for current operation
-            Context.UpdateTicket (new ApplicationContext.ContextTicket ("root", "root", false));
-
             // creating files using p5.file
-            var node = new Node (string.Empty, "test1.txt")
+            var node = new Node (string.Empty, "/test1.txt")
                 .Add ("src", "this is test 1");
             Context.RaiseNative ("save-file", node);
 
-            node = new Node (string.Empty, "test2.txt")
+            node = new Node (string.Empty, "/test2.txt")
                 .Add ("src", "this is test 2");
             Context.RaiseNative ("save-file", node);
 
             // removing files using Phosphorus Five
             node = new Node (string.Empty, Expression.Create ("/0|/1?name", Context))
-                .Add ("test1.txt")
-                .Add ("test2.txt");
+                .Add ("/test1.txt")
+                .Add ("/test2.txt");
             Context.RaiseNative ("delete-file", node);
 
             // verifying removal of files was done correctly
@@ -166,23 +168,20 @@ namespace p5.unittests.plugins
         [Test]
         public void DeleteTwoFilesFormattedExpression ()
         {
-            // Making sure we're root for current operation
-            Context.UpdateTicket (new ApplicationContext.ContextTicket ("root", "root", false));
-
             // creating files using p5.file
-            var node = new Node (string.Empty, "test1.txt")
+            var node = new Node (string.Empty, "/test1.txt")
                 .Add ("src", "this is test 1");
             Context.RaiseNative ("save-file", node);
 
-            node = new Node (string.Empty, "test2.txt")
+            node = new Node (string.Empty, "/test2.txt")
                 .Add ("src", "this is test 2");
             Context.RaiseNative ("save-file", node);
 
             // removing files using Phosphorus Five
             node = new Node (string.Empty, Expression.Create ("/1|{0}?name", Context))
                 .Add (string.Empty, "/2")
-                .Add ("test1.txt")
-                .Add ("test2.txt");
+                .Add ("/test1.txt")
+                .Add ("/test2.txt");
             Context.RaiseNative ("delete-file", node);
 
             // verifying removal of files was done correctly
@@ -196,16 +195,13 @@ namespace p5.unittests.plugins
         [Test]
         public void DeleteFileFormattedString ()
         {
-            // Making sure we're root for current operation
-            Context.UpdateTicket (new ApplicationContext.ContextTicket ("root", "root", false));
-
             // creating files using p5.file
-            var node = new Node (string.Empty, "test1.txt")
+            var node = new Node (string.Empty, "/test1.txt")
                 .Add ("src", "this is a test");
             Context.RaiseNative ("save-file", node);
 
             // removing files using Phosphorus Five
-            node = new Node (string.Empty, "te{0}")
+            node = new Node (string.Empty, "/te{0}")
                 .Add (string.Empty, "st1.txt");
             Context.RaiseNative ("delete-file", node);
 
@@ -225,7 +221,7 @@ namespace p5.unittests.plugins
             }
 
             // creating file using p5.file
-            var node = new Node (string.Empty, "te{0}")
+            var node = new Node (string.Empty, "/te{0}")
                 .Add (string.Empty, "st1.txt")
                 .Add ("src", "this is a test");
             Context.RaiseNative ("save-file", node);
@@ -246,7 +242,7 @@ namespace p5.unittests.plugins
             ExecuteLambda (@"_data
   foo1:bar1
   foo2:bar2
-save-file:test1.txt
+save-file:/test1.txt
   src:x:/../*/_data/*");
             using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
                 Assert.AreEqual ("foo1:bar1\r\nfoo2:bar2", reader.ReadToEnd ());
@@ -262,7 +258,7 @@ save-file:test1.txt
             ExecuteLambda (@"_data
   foo1:bar1
   foo2:bar2
-save-file:test1.txt
+save-file:/test1.txt
   src:x:/../*/_data");
             using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
                 Assert.AreEqual ("_data\r\n  foo1:bar1\r\n  foo2:bar2", reader.ReadToEnd ());
@@ -281,7 +277,7 @@ save-file:test1.txt
         [Test]
         public void SaveSrcActiveEventReturningValue ()
         {
-            ExecuteLambda (@"save-file:test1.txt
+            ExecuteLambda (@"save-file:/test1.txt
   test.save.av1");
             using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
                 Assert.AreEqual ("success", reader.ReadToEnd ());
@@ -301,7 +297,7 @@ save-file:test1.txt
         [Test]
         public void SaveActiveEvent ()
         {
-            ExecuteLambda (@"save-file:test1.txt
+            ExecuteLambda (@"save-file:/test1.txt
   test.save.av2");
             using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
                 Assert.AreEqual (@"""""
@@ -328,7 +324,7 @@ save-file:test1.txt
         [Test]
         public void SaveSrcIsTwoActiveEventsReturningNodes ()
         {
-            ExecuteLambda (@"save-file:test1.txt
+            ExecuteLambda (@"save-file:/test1.txt
   test.save.av3_1
   test.save.av3_2");
             using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
@@ -356,7 +352,7 @@ save-file:test1.txt
         [Test]
         public void SaveSrcIsTwwoActiveEventsReturningSingleValue ()
         {
-            ExecuteLambda (@"save-file:test1.txt
+            ExecuteLambda (@"save-file:/test1.txt
   test.save.av4_1
   test.save.av4_2");
             using (TextReader reader = File.OpenText (GetBasePath () + "test1.txt")) {
@@ -376,11 +372,11 @@ save-file:test1.txt
             }
 
             // creating file using p5.file
-            var node = new Node (string.Empty, "test1.txt")
+            var node = new Node (string.Empty, "/test1.txt")
                 .Add ("src", "this is a LONGER test");
             Context.RaiseNative ("save-file", node);
 
-            node = new Node (string.Empty, "test1.txt")
+            node = new Node (string.Empty, "/test1.txt")
                 .Add ("src", "this is a test");
             Context.RaiseNative ("save-file", node);
 
@@ -407,24 +403,24 @@ save-file:test1.txt
             }
 
             // creating files using p5.file
-            var node = new Node (string.Empty, "test1.txt")
+            var node = new Node (string.Empty, "/test1.txt")
                 .Add ("src", "success1");
             Context.RaiseNative ("save-file", node);
 
-            node = new Node (string.Empty, "test2.txt")
+            node = new Node (string.Empty, "/test2.txt")
                 .Add ("src", "success2");
             Context.RaiseNative ("save-file", node);
 
             // loading file using Phosphorus Five
-            node = new Node (string.Empty, Expression.Create ("/0|/1?name", Context))
-                .Add ("test1.txt")
-                .Add ("test2.txt");
+            node = new Node (string.Empty, Expression.Create (@"/""0""|/""1""?name", Context))
+                .Add ("/test1.txt")
+                .Add ("/test2.txt");
             Context.RaiseNative ("load-file", node);
 
             Assert.AreEqual ("success1", node.LastChild.PreviousNode.Value);
-            Assert.AreEqual ("test1.txt", node.LastChild.PreviousNode.Name);
+            Assert.AreEqual ("/test1.txt", node.LastChild.PreviousNode.Name);
             Assert.AreEqual ("success2", node.LastChild.Value);
-            Assert.AreEqual ("test2.txt", node.LastChild.Name);
+            Assert.AreEqual ("/test2.txt", node.LastChild.Name);
         }
 
         /// <summary>
@@ -439,12 +435,12 @@ save-file:test1.txt
             }
 
             // creating files using p5.file
-            var node = new Node (string.Empty, "test1.txt")
+            var node = new Node (string.Empty, "/test1.txt")
                 .Add ("src", "success");
             Context.RaiseNative ("save-file", node);
 
             // loading file using Phosphorus Five
-            node = new Node (string.Empty, "te{0}1.txt")
+            node = new Node (string.Empty, "/te{0}1.txt")
                 .Add (string.Empty, "st");
             Context.RaiseNative ("load-file", node);
 
@@ -463,14 +459,14 @@ save-file:test1.txt
             }
 
             // creating files using p5.file
-            var node = new Node (string.Empty, "test1.txt")
+            var node = new Node (string.Empty, "/test1.txt")
                 .Add ("src", "success");
             Context.RaiseNative ("save-file", node);
 
             // loading file using Phosphorus Five
-            node = new Node (string.Empty, Expression.Create ("/{0}?name", Context))
+            node = new Node (string.Empty, Expression.Create (@"/""{0}""?name", Context))
                 .Add (string.Empty, "1")
-                .Add ("test1.txt");
+                .Add ("/test1.txt");
             Context.RaiseNative ("load-file", node);
 
             Assert.AreEqual ("success", node [0].Value);
@@ -488,13 +484,13 @@ save-file:test1.txt
             }
 
             // creating files using p5.file
-            var node = new Node (string.Empty, "test1.hl")
+            var node = new Node (string.Empty, "/test1.hl")
                 .Add ("src", @"foo1:bar1
 foo2:bar2");
             Context.RaiseNative ("save-file", node);
 
             // loading file using Phosphorus Five
-            node = new Node ("load-file", "test1.hl");
+            node = new Node ("load-file", "/test1.hl");
             Context.RaiseNative ("load-file", node);
 
             Assert.AreEqual ("foo1", node [0] [0].Name);
@@ -608,6 +604,180 @@ foo2:bar2");
                 _role = "root";
                 _username = "root";
             }
+        }
+
+        /// <summary>
+        ///     Tries to access another user's data
+        /// </summary>
+        [Test]
+        [ExpectedException (typeof (LambdaSecurityException))]
+        public void ReadAnotherUsersDataAsRoot ()
+        {
+            var node = new Node (string.Empty, "/users/foo/foo.txt");
+            Context.RaiseNative ("load-file", node);
+        }
+
+        /// <summary>
+        ///     Tries to write to another user's data
+        /// </summary>
+        [Test]
+        [ExpectedException (typeof (LambdaSecurityException))]
+        public void SaveToAnotherUsersDataAsRoot ()
+        {
+            var node = new Node (string.Empty, "/users/foo/foo.txt");
+            Context.RaiseNative ("save-file", node);
+        }
+
+        /// <summary>
+        ///     Tries to load a file without having an initial "/"
+        /// </summary>
+        [Test]
+        [ExpectedException (typeof (LambdaException))]
+        public void LoadFileWithoutInitialSlash ()
+        {
+            // Creating file using p5.file
+            var node = new Node (string.Empty, "/test1.txt")
+                .Add ("src", "this is a test");
+            Context.RaiseNative ("save-file", node);
+
+            // removing directory using "phosphorus.file"
+            node = new Node (string.Empty, "test1.txt");
+            Context.RaiseNative ("load-file", node);
+        }
+
+        /// <summary>
+        ///     Tries to save a file without having an initial "/"
+        /// </summary>
+        [Test]
+        [ExpectedException (typeof (LambdaException))]
+        public void SaveFileWithoutInitialSlash ()
+        {
+            // Creating file using p5.file
+            var node = new Node (string.Empty, "test1.txt")
+                .Add ("src", "this is a test");
+            Context.RaiseNative ("save-file", node);
+        }
+
+        /// <summary>
+        ///     Tries to check if a file exist without having an initial "/"
+        /// </summary>
+        [Test]
+        [ExpectedException (typeof (LambdaException))]
+        public void FileExistWithoutInitialSlash ()
+        {
+            // Creating file using p5.file
+            var node = new Node (string.Empty, "test1.txt")
+                .Add ("src", "this is a test");
+            Context.RaiseNative ("file-exist", node);
+        }
+
+        /// <summary>
+        ///     Tries to delete a file without having an initial "/"
+        /// </summary>
+        [Test]
+        [ExpectedException (typeof (LambdaException))]
+        public void DeleteFileWithoutInitialSlash ()
+        {
+            // Creating file using p5.file if it does not exist
+            if (!File.Exists (GetBasePath () + "test1.txt")) {
+
+                // File didn't exist, creating it
+                var node = new Node (string.Empty, "/test1.txt")
+                    .Add ("src", "this is a test");
+                Context.RaiseNative ("save-file", node);
+            }
+
+            // removing directory using "phosphorus.file"
+            var result = new Node (string.Empty, "test1.txt");
+            Context.RaiseNative ("delete-file", result);
+        }
+
+        /// <summary>
+        ///     Tries to copy a file without having an initial "/" in source file
+        /// </summary>
+        [Test]
+        [ExpectedException (typeof (LambdaException))]
+        public void CopyFileWithoutInitialSlashInSource ()
+        {
+            // Creating file using p5.file if it does not exist
+            if (!File.Exists (GetBasePath () + "test1.txt")) {
+
+                // File didn't exist, creating it
+                var node = new Node (string.Empty, "/test1.txt")
+                    .Add ("src", "this is a test");
+                Context.RaiseNative ("save-file", node);
+            }
+
+            // Copy file
+            var result = new Node (string.Empty, "test1.txt")
+                .Add ("to", "/test2.txt");
+            Context.RaiseNative ("copy-file", result);
+        }
+
+        /// <summary>
+        ///     Tries to copy a file without having an initial "/" in source file
+        /// </summary>
+        [Test]
+        [ExpectedException (typeof (LambdaException))]
+        public void CopyFileWithoutInitialSlashInDestination ()
+        {
+            // Creating file using p5.file if it does not exist
+            if (!File.Exists (GetBasePath () + "test1.txt")) {
+
+                // File didn't exist, creating it
+                var node = new Node (string.Empty, "/test1.txt")
+                    .Add ("src", "this is a test");
+                Context.RaiseNative ("save-file", node);
+            }
+
+            // Copy file
+            var result = new Node (string.Empty, "/test1.txt")
+                .Add ("to", "test2.txt");
+            Context.RaiseNative ("copy-file", result);
+        }
+
+        /// <summary>
+        ///     Tries to move a file without having an initial "/" in source file
+        /// </summary>
+        [Test]
+        [ExpectedException (typeof (LambdaException))]
+        public void MoveFileWithoutInitialSlashInSource ()
+        {
+            // Creating file using p5.file if it does not exist
+            if (!File.Exists (GetBasePath () + "test1.txt")) {
+
+                // File didn't exist, creating it
+                var node = new Node (string.Empty, "/test1.txt")
+                    .Add ("src", "this is a test");
+                Context.RaiseNative ("save-file", node);
+            }
+
+            // Copy file
+            var result = new Node (string.Empty, "test1.txt")
+                .Add ("to", "/test2.txt");
+            Context.RaiseNative ("move-file", result);
+        }
+
+        /// <summary>
+        ///     Tries to move a file without having an initial "/" in source file
+        /// </summary>
+        [Test]
+        [ExpectedException (typeof (LambdaException))]
+        public void MoveFileWithoutInitialSlashInDestination ()
+        {
+            // Creating file using p5.file if it does not exist
+            if (!File.Exists (GetBasePath () + "test1.txt")) {
+
+                // File didn't exist, creating it
+                var node = new Node (string.Empty, "/test1.txt")
+                    .Add ("src", "this is a test");
+                Context.RaiseNative ("save-file", node);
+            }
+
+            // Copy file
+            var result = new Node (string.Empty, "/test1.txt")
+                .Add ("to", "test2.txt");
+            Context.RaiseNative ("move-file", result);
         }
     }
 }

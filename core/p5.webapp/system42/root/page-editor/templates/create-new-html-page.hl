@@ -7,7 +7,7 @@
 list-files:system42/templates
 if:x:/-/*/"system42/templates/main.hl"
   insert-before:x:/./+2/0/0
-    src:"template:system42/templates/main.hl"
+    src:"template:/system42/templates/main.hl"
 else
   insert-before:x:/./+/0/0
     src:"template:{0}"

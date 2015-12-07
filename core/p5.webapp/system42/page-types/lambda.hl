@@ -24,7 +24,7 @@ if
   eval:x:/../*/_args/*/lambda?value
 
 else
-  sys42.execute-lisp-file:system42/page-types/special-page/p5.no-access.hl
-    _template:system42/templates/main.hl
+  sys42.execute-lisp-file:/system42/page-types/special-page/p5.no-access.hl
+    _template:/system42/templates/main.hl
 
 
