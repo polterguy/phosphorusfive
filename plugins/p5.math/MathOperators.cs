@@ -4,6 +4,7 @@
  */
 
 using System;
+using System.Linq;
 using p5.core;
 using p5.exp;
 
@@ -44,7 +45,7 @@ namespace p5.math
                     result = Convert.ChangeType (result, resultType);
                 }
 
-                foreach (var idxChild in args.FindAll (delegate(Node idx) {return idx.Name != string.Empty && idx.Name != "__pf_type";})) {
+                foreach (var idxChild in args.Children.Where (ix => ix.Name != "" && ix.Name != "__pf_type")) {
 
                     dynamic nextValue;
                     if (idxChild.Name.StartsWith ("_")) {
@@ -69,7 +70,7 @@ namespace p5.math
         ///     Will traverse all children of the given node, change the type of its underlaying values to
         ///     the type of the object in the value of main node, and add these two objects together.
         /// </summary>
-        /// <param name="context">Context.</param>
+        /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "+", Protection = EventProtection.LambdaClosed)]
         private static void math_plus (ApplicationContext context, ActiveEventArgs e)
@@ -85,7 +86,7 @@ namespace p5.math
         ///     Will traverse all children of the given node, change the type of its underlaying values to
         ///     the type of the object in the value of main node, and subtract these two objects from each other.
         /// </summary>
-        /// <param name="context">Context.</param>
+        /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "-", Protection = EventProtection.LambdaClosed)]
         private static void math_minus (ApplicationContext context, ActiveEventArgs e)
@@ -101,7 +102,7 @@ namespace p5.math
         ///     Will traverse all children of the given node, change the type of its underlaying values to
         ///     the type of the object in the value of main node, and multiply these objects together.
         /// </summary>
-        /// <param name="context">Context.</param>
+        /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "*", Protection = EventProtection.LambdaClosed)]
         private static void math_multiply (ApplicationContext context, ActiveEventArgs e)
@@ -117,7 +118,7 @@ namespace p5.math
         ///     Will traverse all children of the given node, change the type of its underlaying values to
         ///     the type of the object in the value of main node, and divide this object with the value from the main node.
         /// </summary>
-        /// <param name="context">Context.</param>
+        /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "/", Protection = EventProtection.LambdaClosed)]
         private static void math_divide (ApplicationContext context, ActiveEventArgs e)
@@ -133,7 +134,7 @@ namespace p5.math
         ///     Will traverse all children of the given node, change the type of its underlaying values to
         ///     the type of the object in the value of main node, and return the modulo of the two objects.
         /// </summary>
-        /// <param name="context">Context.</param>
+        /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "%", Protection = EventProtection.LambdaClosed)]
         private static void math_modulo (ApplicationContext context, ActiveEventArgs e)

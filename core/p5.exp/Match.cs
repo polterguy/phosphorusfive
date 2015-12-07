@@ -114,7 +114,7 @@ namespace p5.exp
         /// 
         ///     This value is the number of nodes you have in your result-set, after evaluating your Expression.
         /// </summary>
-        /// <value>Number of nodes in match.</value>
+        /// <value>Number of nodes in match</value>
         public int Count
         {
             get { return _matchEntities.Count; }
@@ -125,7 +125,7 @@ namespace p5.exp
         /// 
         ///     The type declaration of your match.
         /// </summary>
-        /// <value>The type declaration of your Expression.</value>
+        /// <value>The type declaration of your Expression</value>
         public MatchType TypeOfMatch
         {
             get; 
@@ -143,7 +143,7 @@ namespace p5.exp
         ///     no conversion will occur, and the values of your evaluated expression will be returned "as is".
         /// </summary>
         /// <value>Type to convert to, can be any of your Hyperlisp types, defined through your [p5.hyperlisp.get-type-name.xxx] 
-        /// Active Events.</value>
+        /// Active Events</value>
         public string Convert
         {
             get; 
@@ -159,7 +159,7 @@ namespace p5.exp
         ///     The match class implements IEnumerable, which allows you to iterate over all results, which means you'll very rarely,
         ///     if ever, need to fiddle with this method yourself.
         /// </summary>
-        /// <param name="index">Which position you wish to retrieve.</param>
+        /// <param name="index">Which position you wish to retrieve</param>
         public MatchEntity this [int index]
         {
             get { return _matchEntities [index]; }

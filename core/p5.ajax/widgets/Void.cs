@@ -9,16 +9,7 @@ using System.Web.UI;
 namespace p5.ajax.widgets
 {
     /// <summary>
-    ///     A widget that has neither children controls, nor content.
-    /// 
-    ///     A widget that is neither a Container, nor a Literal, meaning you can set neither its innerValue,
-    ///     nor its children controls. This type of widget is useful for widgets that does not allow for any content,
-    ///     such as input HTML elements of type "button", and "checkbox", etc.
-    /// 
-    ///     By default, this widget is rendered using <em>"RenderingType.open"</em>, which means it won't be closed automatically,
-    ///     neither by adding an end HTML tag, nor by closing the tag immediately. If you wish to be XHTML compliant,
-    ///     you should probably change this logic to let it close either immediately, using <em>"RenderingType.immediate"</em> as its 
-    ///     RenderType property value, or closing it normally, by using <em>"RenderingType.normal"</em>.
+    ///     A widget that has neither children controls, nor content
     /// </summary>
     [ViewStateModeById]
     public class Void : Widget
@@ -28,7 +19,7 @@ namespace p5.ajax.widgets
             RenderType = RenderingType.open;
         }
 
-        // overridden to throw an exception if user tries to explicitly set the innerValue attribute of this control
+        // Overridden to throw an exception if user tries to explicitly set the innerValue attribute of this control
         public override string this [string name]
         {
             get { return base [name]; }

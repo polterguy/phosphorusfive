@@ -26,7 +26,7 @@ namespace p5.exp.iterators
         /// <summary>
         ///     Initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorLeftParent" /> class.
         /// </summary>
-        /// <param name="leftParent">The last iterator of the parent group iterator.</param>
+        /// <param name="leftParent">The last iterator of the parent group iterator</param>
         public IteratorLeftParent (Iterator leftParent)
         {
             _leftParent = leftParent;

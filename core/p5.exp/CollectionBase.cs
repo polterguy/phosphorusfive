@@ -209,7 +209,7 @@ namespace p5.exp
                 } else {
 
                     // More than one source, making sure we clone them, before we return the clones
-                    source = new List<Node> (evaluatedNode.Clone ().UnTieChildren ());
+                    source = evaluatedNode.Clone ().Children;
                 }
             }
 

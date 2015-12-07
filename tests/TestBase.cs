@@ -25,7 +25,7 @@ namespace p5.unittests
         /// initializes a new instance of the <see cref="phosphorus.unittests.TestBase"/> class. pass
         /// in assemblies you wish to load as Active Event handlers
         /// </summary>
-        /// <param name="assemblies">Assemblies.</param>
+        /// <param name="assemblies">Assemblies</param>
         protected TestBase (params string[] assemblies)
         {
             foreach (var idx in assemblies) {

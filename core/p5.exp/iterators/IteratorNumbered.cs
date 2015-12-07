@@ -26,7 +26,7 @@ namespace p5.exp.iterators
         /// <summary>
         ///     Initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorNumbered" /> class.
         /// </summary>
-        /// <param name="number">The n'th child to return, if it exists, from previous result-set.</param>
+        /// <param name="number">The n'th child to return, if it exists, from previous result-set</param>
         public IteratorNumbered (int number)
         {
             _number = number;

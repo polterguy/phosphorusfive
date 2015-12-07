@@ -55,7 +55,7 @@ namespace p5.exp
         /// <summary>
         ///     Returns actual expression in string format.
         /// </summary>
-        /// <value>The expression value.</value>
+        /// <value>The expression value</value>
         public string Value {
             get;
             private set;
@@ -64,7 +64,7 @@ namespace p5.exp
         /// <summary>
         ///     Returns true if Expression is lazy binded.
         /// </summary>
-        /// <value>The value.</value>
+        /// <value>The value</value>
         public bool Lazy {
             get;
             private set;

@@ -19,7 +19,7 @@ namespace p5.webapp.code.configuration
         /// <summary>
         ///     Gets the plugin directory
         /// </summary>
-        /// <value>The plugin directory.</value>
+        /// <value>The plugin directory</value>
         [ConfigurationProperty ("assemblyDirectory", DefaultValue = "~/plugins/", IsRequired = false)]
         public string PluginDirectory
         {
@@ -29,7 +29,7 @@ namespace p5.webapp.code.configuration
         /// <summary>
         ///     Gets the default username used to raise Active Events on behalf of
         /// </summary>
-        /// <value>The plugin directory.</value>
+        /// <value>The plugin directory</value>
         [ConfigurationProperty ("defaultContextUsername", IsRequired = true)]
         public string DefaultContextUsername
         {
@@ -49,7 +49,7 @@ namespace p5.webapp.code.configuration
         /// <summary>
         ///     Gets the path to the file on disc that is used for authenticating and authorizing users
         /// </summary>
-        /// <value>The plugin directory.</value>
+        /// <value>The plugin directory</value>
         [ConfigurationProperty ("authFile", IsRequired = true)]
         public string AuthFile
         {
@@ -59,7 +59,7 @@ namespace p5.webapp.code.configuration
         /// <summary>
         ///     Gets the number of seconds a specific IP address must wait between attempting to login to the system
         /// </summary>
-        /// <value>The plugin directory.</value>
+        /// <value>The plugin directory</value>
         [ConfigurationProperty ("loginCoolOffSeconds", IsRequired = true)]
         public int LoginCoolOffSeconds
         {
@@ -69,7 +69,7 @@ namespace p5.webapp.code.configuration
         /// <summary>
         ///     Gets the number of days a persisted login cookie will be stored and valid on client side
         /// </summary>
-        /// <value>The plugin directory.</value>
+        /// <value>The plugin directory</value>
         [ConfigurationProperty ("persistCredentialCookieDays", IsRequired = true)]
         public int PersistCredentialCookieDays
         {
@@ -79,7 +79,7 @@ namespace p5.webapp.code.configuration
         /// <summary>
         ///     Gets the assemblies
         /// </summary>
-        /// <value>The assemblies.</value>
+        /// <value>The assemblies</value>
         [ConfigurationProperty ("assemblies")]
         public ActiveEventAssemblyCollection Assemblies
         {

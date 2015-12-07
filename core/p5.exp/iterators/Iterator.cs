@@ -48,7 +48,7 @@ namespace p5.exp.iterators
         /// 
         ///     The left iterator is the "previous iterator" in the chain of iterators for your expressions.
         /// </summary>
-        /// <value>Its previous iterator in its chain of iterators.</value>
+        /// <value>Its previous iterator in its chain of iterators</value>
         public Iterator Left { get; set; }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace p5.exp.iterators
         /// 
         ///     Will evaluate your expression, and return a list of nodes, matching your Expression.
         /// </summary>
-        /// <value>The evaluated result, returning a list of <see cref="phosphorus.core.Node" />s.</value>
+        /// <value>The evaluated result, returning a list of <see cref="phosphorus.core.Node" />s</value>
         public abstract IEnumerable<Node> Evaluate (ApplicationContext context);
     }
 }

@@ -11,26 +11,21 @@ using System.Text;
 namespace p5.ajax.core.filters
 {
     /// <summary>
-    ///     An http response filter for rendering plain html back to client.
-    /// 
-    ///     Takes care of including the necessary JavaScript files,
-    ///     StyleSheet files, and any JavaScript content that has been included during the Page lifecycle. Normally you do not need
-    ///     to fiddle with this class yourself, since the framework takes care of initializing instances of this type automatically
-    ///     for you.
+    ///     An http response filter for rendering plain html back to client
     /// </summary>
     public class HtmlFilter : Filter
     {
         /// <summary>
-        ///     Initializes a new instance of the HtmlFilter class.
+        ///     Initializes a new instance of the HtmlFilter class
         /// </summary>
-        /// <param name="manager">The manager this instance is rendering for.</param>
+        /// <param name="manager">The manager this instance is rendering for</param>
         public HtmlFilter (Manager manager)
             : base (manager) { }
 
         /// <summary>
-        ///     Renders the response.
+        ///     Renders the response
         /// </summary>
-        /// <returns>The HTML response returned back to client.</returns>
+        /// <returns>The HTML response returned back to client</returns>
         protected override string RenderResponse ()
         {
             TextReader reader = new StreamReader (this, Encoding);
@@ -49,7 +44,7 @@ namespace p5.ajax.core.filters
             if ((Manager.Page as IAjaxPage).StylesheetFilesToPush.Count == 0)
                 return content; // nothing to do here
 
-            // stripping away "</body>...</html>" from the end, and keeping the "</body>...</html>" parts to concatenate into result after
+            // Stripping away "</body>...</html>" from the end, and keeping the "</body>...</html>" parts to concatenate into result after
             // inserting all JavaScript files inbetween
             var endBuffer = "";
             var idxPosition = 0;
@@ -60,25 +55,25 @@ namespace p5.ajax.core.filters
             }
             var builder = new StringBuilder (endBuffer + "\r\n");
 
-            // including javascript files
+            // Including javascript files
             foreach (var idxFile in (Manager.Page as IAjaxPage).StylesheetFilesToPush) {
                 builder.Append (string.Format ("        <link rel=\"stylesheet\" type=\"text/css\" href=\"{0}\"></link>\r\n", idxFile));
             }
 
-            // adding back up again the "</html>" parts
+            // Adding back up again the "</html>" parts
             builder.Append (content.Substring (idxPosition));
             return builder.ToString ();
         }
 
         /*
-         * includes the JavaScript files we should include for this response
+         * Includes the JavaScript files/content we should include for this response
          */
         private string IncludeJavaScript (string content)
         {
             if ((Manager.Page as IAjaxPage).JavaScriptToPush.Count == 0)
                 return content; // nothing to do here
 
-            // stripping away "</body>...</html>" from the end, and keeping the "</body>...</html>" parts to concatenate into result after
+            // Stripping away "</body>...</html>" from the end, and keeping the "</body>...</html>" parts to concatenate into result after
             // inserting all JavaScript files inbetween
             var endBuffer = "";
             var idxPosition = content.Length - 1;
@@ -89,7 +84,7 @@ namespace p5.ajax.core.filters
             }
             var builder = new StringBuilder (content.Substring (0, idxPosition));
 
-            // including javascript files
+            // Including javascript files
             foreach (var idxFile in (Manager.Page as IAjaxPage).JavaScriptToPush) {
                 if (idxFile.Item2) {
 
@@ -104,21 +99,21 @@ namespace p5.ajax.core.filters
                 }
             }
 
-            // adding back up again the "</html>" parts
+            // Adding back up again the "</html>" parts
             builder.Append (endBuffer);
             return builder.ToString ();
         }
 
         /*
-         * includes the JavaScript content we should include for this response
+         * Includes the JavaScript content we should include for this response
          */
         private string SendJavaScriptContent (string content)
         {
-            if (!Manager.Changes.Contains ("__p5_script"))
+            if (!Manager.Changes.Contains ("_p5_script"))
                 return content; // nothing to do here
 
-            // stripping away "</body>...</html>" from the end, and keeping the "</body>...</html>" parts to concatenate into result after
-            // inserting all JavaScript files inbetween
+            // Stripping away "</body>...</html>" from the end, and keeping the "</body>...</html>" parts to concatenate into result after
+            // inserting all JavaScript inbetween
             var endBuffer = "";
             var idxPosition = content.Length - 1;
             for (; idxPosition >= 0; idxPosition --) {
@@ -128,17 +123,17 @@ namespace p5.ajax.core.filters
             }
             var builder = new StringBuilder (content.Substring (0, idxPosition));
 
-            // including javascript
+            // Including javascript
             builder.Append (@"    <script type=""text/javascript"">window.onload = function() {
 ");
-            foreach (var idxScript in Manager.Changes ["__p5_script"] as List<string>) {
+            foreach (var idxScript in Manager.Changes ["_p5_script"] as List<string>) {
                 builder.Append (idxScript);
                 builder.Append ("\r\n");
             }
             builder.Append (@"}    </script>
 ");
 
-            // adding back up again the "</html>" parts
+            // Adding back up again the "</html>" parts
             builder.Append (endBuffer);
             return builder.ToString ();
         }

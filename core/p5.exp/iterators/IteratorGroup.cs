@@ -45,7 +45,7 @@ namespace p5.exp.iterators
         ///     This constructor is for creating sub-expressions, where each sub-expression is being evaluated from its parent
         ///     group's Expression.
         /// </summary>
-        /// <param name="parent">Parent iterator group.</param>
+        /// <param name="parent">Parent iterator group</param>
         public IteratorGroup (IteratorGroup parent)
         {
             _groupRoot = new IteratorLeftParent (parent.LastIterator);
@@ -109,7 +109,7 @@ namespace p5.exp.iterators
         ///
         ///     Appends a new Iterator at the end of your current iterator chain for evaluation of your Expression.
         /// </summary>
-        /// <param name="iterator">Iterator to append.</param>
+        /// <param name="iterator">Iterator to append</param>
         public void AddIterator (Iterator iterator)
         {
             _logicals [_logicals.Count - 1].AddIterator (iterator);

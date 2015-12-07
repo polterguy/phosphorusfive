@@ -31,13 +31,13 @@ namespace p5.ajax
             /// <summary>
             ///     Maximum number of ViewState entries in Session
             /// </summary>
-            /// <value>The number of valid viewstate entries for each session.</value>
+            /// <value>The number of valid viewstate entries for each session</value>
             public int ViewStateSessionEntries { get; set; }
 
             /// <summary>
             ///     Gets the page state persister
             /// </summary>
-            /// <value>The page state persister.</value>
+            /// <value>The page state persister</value>
             protected override PageStatePersister PageStatePersister
             {
                 get

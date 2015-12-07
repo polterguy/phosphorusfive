@@ -68,7 +68,7 @@ namespace p5.core
             /// <summary>
             ///     Gets a value indicating whether this <see cref="p5.core.ActiveEvents+ActiveEvent"/> is protected or not
             /// </summary>
-            /// <value><c>true</c> if protected; otherwise, <c>false</c>.</value>
+            /// <value><c>true</c> if protected; otherwise, <c>false</c></value>
             public EventProtection Protection {
                 get;
                 private set;
@@ -77,7 +77,7 @@ namespace p5.core
             /// <summary>
             ///     Returns the list of methods tied to this specific Active Event
             /// </summary>
-            /// <value>The methods.</value>
+            /// <value>The methods</value>
             public List<MethodSink> Methods {
                 get;
                 private set;
@@ -143,8 +143,8 @@ namespace p5.core
         /// <summary>
         ///     Determines whether this instance has the event with the specified name.
         /// </summary>
-        /// <returns><c>true</c> if this instance has event with the specified name; otherwise, <c>false</c>.</returns>
-        /// <param name="name">Name.</param>
+        /// <returns><c>true</c> if this instance has event with the specified name; otherwise, <c>false</c></returns>
+        /// <param name="name">Name</param>
         public bool HasEvent (string name)
         {
             return _events.ContainsKey(name);

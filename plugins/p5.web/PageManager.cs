@@ -26,7 +26,7 @@ namespace p5.web
         /// <summary>
         ///     Initializes a new instance of the <see cref="p5.web.widgets.PageManager"/> class
         /// </summary>
-        /// <param name="page">Page.</param>
+        /// <param name="page">Page</param>
         private PageManager (ApplicationContext context, AjaxPage page, Manager manager)
         {
             // Setting Page for instance

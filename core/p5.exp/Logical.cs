@@ -88,7 +88,7 @@ namespace p5.exp
         /// <summary>
         ///     Initializes a new instance of the <see cref="phosphorus.expressions.Logical" /> class.
         /// </summary>
-        /// <param name="type">Type of logical, Or, And, Xor or Not.</param>
+        /// <param name="type">Type of logical, Or, And, Xor or Not</param>
         public Logical (LogicalType type)
         {
             TypeOfLogical = type;
@@ -98,7 +98,7 @@ namespace p5.exp
         ///     Returns the last <see cref="phosphorus.expressions.iterators.Iterator" /> in the list of iterators belonging to
         ///     this logical.
         /// </summary>
-        /// <value>The last iterator in the chain of iterators.</value>
+        /// <value>The last iterator in the chain of iterators</value>
         public Iterator Iterator { get; private set; }
 
         /// <summary>
@@ -106,13 +106,13 @@ namespace p5.exp
         /// 
         ///     Can be either Or, And, Xor or Not.
         /// </summary>
-        /// <value>The type of logical.</value>
+        /// <value>The type of logical</value>
         private LogicalType TypeOfLogical { get; set; }
 
         /// <summary>
         ///     Adds an iterator to the current logical group.
         /// </summary>
-        /// <param name="iterator">Tterator to append to chain of iterators.</param>
+        /// <param name="iterator">Tterator to append to chain of iterators</param>
         public void AddIterator (Iterator iterator)
         {
             iterator.Left = Iterator;

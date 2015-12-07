@@ -27,17 +27,17 @@ namespace p5.exp.exceptions
         /// <summary>
         ///     Initializes a new instance of the <see cref="ExpressionException" /> class.
         /// </summary>
-        /// <param name="expression">Expression that caused exception.</param>
+        /// <param name="expression">Expression that caused exception</param>
         public ExpressionException (string expression)
             : this (expression, null) { }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ExpressionException" /> class.
         /// </summary>
-        /// <param name="expression">Expression that caused exception.</param>
-        /// <param name="message">Message providing additional information.</param>
-        /// <param name="node">Node where expression was found.</param>
-        /// <param name="context">Application context Necessary to perform conversion from p5.lambda to Hyperlisp to show Hyperlisp StackTrace.</param>
+        /// <param name="expression">Expression that caused exception</param>
+        /// <param name="message">Message providing additional information</param>
+        /// <param name="node">Node where expression was found</param>
+        /// <param name="context">Application context Necessary to perform conversion from p5.lambda to Hyperlisp to show Hyperlisp StackTrace</param>
         public ExpressionException (string expression, string message)
         {
             _message = message;

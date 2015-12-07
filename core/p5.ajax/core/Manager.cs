@@ -10,67 +10,65 @@ using p5.ajax.core.filters;
 using p5 = p5.ajax.widgets;
 
 /*
- * making sure we include our "manager.js" JavaScript file as a WebResource
+ * Making sure we include our "manager.js" JavaScript file as a WebResource
  */
 [assembly: WebResource ("p5.ajax.javascript.manager.js", "application/javascript")]
 
 namespace p5.ajax.core
 {
     /// <summary>
-    ///     Manages an IAjaxPage.
-    /// 
-    ///     Manages an IAjaxPage by providing services to the page, and helps render the page correctly, by among other things
-    ///     adding a filter stream in the filtering chain, that renders the page according to how it is supposed to be rendered,
-    ///     depending upon what type of request the http request is.
-    /// 
-    ///     Also contains several useful helper methods for developers.
+    ///     Manages an IAjaxPage
     /// </summary>
     public class Manager
     {
-        // contains all changes that needs to be serialized back to client
+        // Contains all changes that needs to be serialized back to client
         private readonly OrderedDictionary _changes = new OrderedDictionary ();
 
         /// <summary>
-        ///     Initializes a new instance of the Manager class.
+        ///     Initializes a new instance of the Manager class
         /// </summary>
-        /// <param name="page">The page the manager is managing.</param>
+        /// <param name="page">The page the manager is managing</param>
         public Manager (Page page)
         {
             Page = page;
 
-            // determining if we should create an ajax filter or a normal html filter for rendering the response
+            // Determining if we should create an ajax filter or a normal html filter for rendering the response
             if (IsPhosphorusRequest) {
-                // rendering ajax json back to the client
+                
+                // Rendering ajax json back to the client
                 Page.Response.Filter = new JsonFilter (this);
             } else {
-                // rendering plain html back to client
+                
+                // Rendering plain html back to client
                 Page.Response.Filter = new HtmlFilter (this);
             }
 
-            // including main javascript file
+            // Including main p5.ajax javascript file
             Page.Load += delegate {
+
+                // Retrieving JavaScript file as WebResource
                 var coreScriptFileUrl = Page.ClientScript.GetWebResourceUrl (typeof (Manager), "p5.ajax.javascript.manager.js");
                 (Page as IAjaxPage).RegisterJavaScriptFile (coreScriptFileUrl);
             };
         }
 
         /// <summary>
-        ///     Returns the page for this instance.
+        ///     Returns the page for this instance
         /// </summary>
-        /// <value>The page.</value>
+        /// <value>The page</value>
         public Page Page { get; private set; }
 
         /// <summary>
-        ///     Returns true if this request is a Phosphorus Ajax request.
+        ///     Returns true if this request is a Phosphorus Ajax request
         /// </summary>
-        /// <value><c>true</c> if this instance is an ajax request; otherwise, <c>false</c>.</value>
+        /// <value><c>true</c> if this instance is an ajax request; otherwise, <c>false</c></value>
         public bool IsPhosphorusRequest
         {
-            get { return !string.IsNullOrEmpty (Page.Request.Params ["__p5_event"]); }
+            get { return !string.IsNullOrEmpty (Page.Request.Params ["_p5_event"]); }
         }
 
         /*
-         * contains all changes for all widgets for this HTTP request.
+         * Contains everything that needs to be pushed as JSON to client during this request
          */
         internal OrderedDictionary Changes
         {
@@ -78,23 +76,23 @@ namespace p5.ajax.core
         }
 
         /// <summary>
-        ///     Sends the given JavaScript to client for execution.
+        ///     Sends the given JavaScript to client for execution
         /// </summary>
-        /// <param name="script">JavaScript to execute on client-side.</param>
+        /// <param name="script">JavaScript to execute on client-side</param>
         public void SendJavaScriptToClient (string script)
         {
-            if (!_changes.Contains ("__p5_script")) {
-                _changes ["__p5_script"] = new List<string> ();
+            if (!_changes.Contains ("_p5_script")) {
+                _changes ["_p5_script"] = new List<string> ();
             }
-            var lst = _changes ["__p5_script"] as List<string>;
+            var lst = _changes ["_p5_script"] as List<string>;
             lst.Add (script);
         }
 
         /// <summary>
-        ///     Sends an object back to the client as JSON.
+        ///     Sends an object back to the client as JSON
         /// </summary>
-        /// <param name="id">ID of object, must be unique for request.</param>
-        /// <param name="value">Object to serialize back as JSON.</param>
+        /// <param name="id">ID of object, must be unique for request</param>
+        /// <param name="value">Object to serialize back as JSON</param>
         public void SendObject (string id, object value)
         {
             _changes [id] = value;
@@ -122,27 +120,28 @@ namespace p5.ajax.core
                 widgets [id] = new Dictionary<string, object> ();
             }
             var widgetChanges = widgets [id];
-            if (!widgetChanges.ContainsKey ("__p5_del")) {
-                widgetChanges ["__p5_del"] = new List<string> ();
+            if (!widgetChanges.ContainsKey ("_p5_del")) {
+                widgetChanges ["_p5_del"] = new List<string> ();
             }
-            var list = widgetChanges ["__p5_del"] as List<string>;
+            var list = widgetChanges ["_p5_del"] as List<string>;
             list.Add (name);
         }
 
         internal void RegisterDeletedWidget (string id)
         {
-            if (!_changes.Contains ("__p5_del"))
-                _changes ["__p5_del"] = new List<string> ();
-            var list = _changes ["__p5_del"] as List<string>;
+            if (!_changes.Contains ("_p5_del"))
+                _changes ["_p5_del"] = new List<string> ();
+            var list = _changes ["_p5_del"] as List<string>;
             list.Add (id);
         }
 
         private object GetPropertyChanges (string oldValue, string newValue)
         {
             if (oldValue == null || oldValue.Length < 10 || newValue == null || newValue.Length < 10) {
-                return newValue; // no need to reduce size
+                return newValue; // No need to reduce size
             }
-            // finding the position of where the changes start such that we can return 
+
+            // Finding the position of where the changes start such that we can return 
             // as small amounts of changes back to client as possible, to conserve bandwidth and make response smaller
             if (oldValue == newValue) {
                 return null;
@@ -165,7 +164,7 @@ namespace p5.ajax.core
                 return new object[] {newValue.Length};
             }
             if (start < 5) {
-                return newValue; // we cannot save anything here ...
+                return newValue; // We cannot save anything here ...
             }
             return new object[] {start, update};
         }

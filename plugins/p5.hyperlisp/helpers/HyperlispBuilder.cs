@@ -23,8 +23,8 @@ namespace p5.hyperlisp.helpers
         /// <summary>
         ///     Initializes a new instance of the <see cref="HyperlispBuilder" /> class
         /// </summary>
-        /// <param name="context">Application context object.</param>
-        /// <param name="nodes">Nodes to convert into Hyperlisp.</param>
+        /// <param name="context">Application context object</param>
+        /// <param name="nodes">Nodes to convert into Hyperlisp</param>
         public HyperlispBuilder (ApplicationContext context, IEnumerable<Node> nodes)
         {
             _context = context;
@@ -105,7 +105,7 @@ namespace p5.hyperlisp.helpers
             if (node.Value == null)
                 return; // nothing to append here
 
-            var value = node.StringEncodeValue (_context, true);
+            var value = Utilities.Convert<string> (_context, node.Value, null, true);
             if (value.Contains ("\n")) {
                 builder.Append (string.Format (@":@""{0}""", value.Replace (@"""", @"""""")));
             } else if (value.Contains (":") || value.Trim () != value) {

@@ -25,7 +25,7 @@ namespace p5.exp
         /// <summary>
         ///     Initializes a new instance of the <see cref="phosphorus.expressions.Tokenizer" /> class.
         /// </summary>
-        /// <param name="expression">Expression to tokenize.</param>
+        /// <param name="expression">Expression to tokenize</param>
         public Tokenizer (string expression)
         {
             _reader = new StringReader (expression);
@@ -36,7 +36,7 @@ namespace p5.exp
         /// 
         ///     Iterates through all tokens in your Expression.
         /// </summary>
-        /// <value>The tokens consisting your Expression.</value>
+        /// <value>The tokens consisting your Expression</value>
         public IEnumerable<string> Tokens
         {
             get

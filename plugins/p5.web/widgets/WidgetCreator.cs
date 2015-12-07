@@ -24,7 +24,7 @@ namespace p5.web.widgets
         /// <summary>
         ///     Initializes a new instance of the <see cref="p5.web.widgets.WidgetCreator"/> class
         /// </summary>
-        /// <param name="page">Page.</param>
+        /// <param name="page">Page</param>
         public WidgetCreator (ApplicationContext context, PageManager manager)
         {
             // Setting WidgetManager for this instance
@@ -118,7 +118,7 @@ namespace p5.web.widgets
 
             // Initializing Active Events for widget, BEFORE widget is created, 
             // since [oninit] might depend upon Widget events for widget
-            var eventNode = createNode.Find (idx => idx.Name == "events");
+            var eventNode = createNode.Children.FirstOrDefault (ix => ix.Name == "events");
             if (eventNode != null)
                 CreateWidgetLambdaEvents (createNode.Get<string> (context), eventNode.UnTie (), context);
 

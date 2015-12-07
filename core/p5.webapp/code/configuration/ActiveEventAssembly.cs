@@ -20,7 +20,7 @@ namespace p5.webapp.code.configuration
         /// 
         ///     The assembly you wish to use as an Active Event handler assembly.
         /// </summary>
-        /// <value>The assembly.</value>
+        /// <value>The assembly</value>
         [ConfigurationProperty ("assembly", IsRequired = true)]
         public string Assembly
         {

@@ -23,8 +23,8 @@ namespace p5.data.helpers
         /// <summary>
         ///     Initializes the database
         /// </summary>
-        /// <param name="context">Context.</param>
-        /// <param name="e">E.</param>
+        /// <param name="context">Context</param>
+        /// <param name="e">E</param>
         [ActiveEvent (Name = "p5.core.application-start", Protection = EventProtection.LambdaClosed)]
         private static void p5_core_application_start (ApplicationContext context, ActiveEventArgs e)
         {
@@ -116,7 +116,7 @@ namespace p5.data.helpers
         ///     Saves the affected files
         /// </summary>
         /// <param name="context">Application context</param>
-        /// <param name="changed">List of files that were changed, and hence will be saved.</param>
+        /// <param name="changed">List of files that were changed, and hence will be saved</param>
         public static void SaveAffectedFiles (ApplicationContext context, List<Node> changed)
         {
             // Looping through all files that needs to be saved
@@ -134,8 +134,8 @@ namespace p5.data.helpers
         /// <summary>
         ///     Gets the first available file node
         /// </summary>
-        /// <returns>The next available file node.</returns>
-        /// <param name="context">Aplication context.</param>
+        /// <returns>The next available file node</returns>
+        /// <param name="context">Aplication context</param>
         public static Node GetAvailableFileNode (ApplicationContext context)
         {
             // Searching through database to see if there are any nodes we can use from before

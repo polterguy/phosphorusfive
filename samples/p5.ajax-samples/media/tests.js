@@ -344,7 +344,7 @@ tests.invoke_add_remove = function(event) {
             tests.setError('invoke_add_remove');
             return;
           }
-          if (serverReturn.__p5_change.sandbox_invoke_add_remove.__p5_del[0] != 'class') {
+          if (serverReturn.__p5_change.sandbox_invoke_add_remove._p5_del[0] != 'class') {
             tests.setError('invoke_add_remove');
             return;
           }
@@ -445,11 +445,11 @@ tests.invoke_remove_markup_attribute = function(event) {
         tests.setError('invoke_remove_markup_attribute');
         return;
       }
-      if (serverReturn.__p5_change.sandbox_invoke_remove_markup_attribute.__p5_del.length != 1) {
+      if (serverReturn.__p5_change.sandbox_invoke_remove_markup_attribute._p5_del.length != 1) {
         tests.setError('invoke_remove_markup_attribute');
         return;
       }
-      if (serverReturn.__p5_change.sandbox_invoke_remove_markup_attribute.__p5_del[0] != 'class') {
+      if (serverReturn.__p5_change.sandbox_invoke_remove_markup_attribute._p5_del[0] != 'class') {
         tests.setError('invoke_remove_markup_attribute');
         return;
       }
@@ -475,11 +475,11 @@ tests.invoke_remove_add_markup_attribute = function(event) {
         tests.setError('invoke_remove_add_markup_attribute');
         return;
       }
-      if (serverReturn.__p5_change.sandbox_invoke_remove_add_markup_attribute.__p5_del.length != 1) {
+      if (serverReturn.__p5_change.sandbox_invoke_remove_add_markup_attribute._p5_del.length != 1) {
         tests.setError('invoke_remove_add_markup_attribute');
         return;
       }
-      if (serverReturn.__p5_change.sandbox_invoke_remove_add_markup_attribute.__p5_del[0] != 'class') {
+      if (serverReturn.__p5_change.sandbox_invoke_remove_add_markup_attribute._p5_del[0] != 'class') {
         tests.setError('invoke_remove_add_markup_attribute');
         return;
       }
@@ -863,11 +863,11 @@ tests.invoke_append_remove = function(event) {
         tests.setError('invoke_append_remove');
         return;
       }
-      if (serverReturn.__p5_del.length != 1) {
+      if (serverReturn._p5_del.length != 1) {
         tests.setError('invoke_append_remove');
         return;
       }
-      if (serverReturn.__p5_del[0] != 'sandbox_invoke_append_remove_child') {
+      if (serverReturn._p5_del[0] != 'sandbox_invoke_append_remove_child') {
         tests.setError('invoke_append_remove');
         return;
       }
@@ -893,11 +893,11 @@ tests.invoke_remove_child = function(event) {
         tests.setError('invoke_remove_child');
         return;
       }
-      if (serverReturn.__p5_del.length != 1) {
+      if (serverReturn._p5_del.length != 1) {
         tests.setError('invoke_remove_child');
         return;
       }
-      if (serverReturn.__p5_del[0] != 'sandbox_invoke_remove_child_child') {
+      if (serverReturn._p5_del[0] != 'sandbox_invoke_remove_child_child') {
         tests.setError('invoke_remove_child');
         return;
       }
@@ -923,15 +923,15 @@ tests.invoke_remove_multiple = function(event) {
         tests.setError('invoke_remove_multiple');
         return;
       }
-      if (serverReturn.__p5_del.length != 2) {
+      if (serverReturn._p5_del.length != 2) {
         tests.setError('invoke_remove_multiple');
         return;
       }
-      if (serverReturn.__p5_del[0] != 'sandbox_invoke_remove_multiple_child1' && serverReturn.__p5_del[1] != 'sandbox_invoke_remove_multiple_child1') {
+      if (serverReturn._p5_del[0] != 'sandbox_invoke_remove_multiple_child1' && serverReturn._p5_del[1] != 'sandbox_invoke_remove_multiple_child1') {
         tests.setError('invoke_remove_multiple');
         return;
       }
-      if (serverReturn.__p5_del[0] != 'sandbox_invoke_remove_multiple_child2' && serverReturn.__p5_del[1] != 'sandbox_invoke_remove_multiple_child2') {
+      if (serverReturn._p5_del[0] != 'sandbox_invoke_remove_multiple_child2' && serverReturn._p5_del[1] != 'sandbox_invoke_remove_multiple_child2') {
         tests.setError('invoke_remove_multiple');
         return;
       }
@@ -957,19 +957,19 @@ tests.invoke_remove_many = function(event) {
         tests.setError('invoke_remove_many');
         return;
       }
-      if (serverReturn.__p5_del.length != 3) {
+      if (serverReturn._p5_del.length != 3) {
         tests.setError('invoke_remove_many');
         return;
       }
-      if (serverReturn.__p5_del[0] != 'sandbox_invoke_remove_many_2') {
+      if (serverReturn._p5_del[0] != 'sandbox_invoke_remove_many_2') {
         tests.setError('invoke_remove_many');
         return;
       }
-      if (serverReturn.__p5_del[1] != 'sandbox_invoke_remove_many_6') {
+      if (serverReturn._p5_del[1] != 'sandbox_invoke_remove_many_6') {
         tests.setError('invoke_remove_many');
         return;
       }
-      if (serverReturn.__p5_del[2] != 'sandbox_invoke_remove_many_9') {
+      if (serverReturn._p5_del[2] != 'sandbox_invoke_remove_many_9') {
         tests.setError('invoke_remove_many');
         return;
       }
@@ -1015,7 +1015,7 @@ tests.invoke_add_similar = function(event) {
         tests.setError('invoke_add_similar');
         return;
       }
-      if (serverReturn.__p5_del.length != 1) {
+      if (serverReturn._p5_del.length != 1) {
         tests.setError('invoke_add_similar');
         return;
       }

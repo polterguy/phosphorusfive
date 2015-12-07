@@ -24,7 +24,7 @@ namespace p5.web.widgets
         /// <summary>
         ///     Initializes a new instance of the <see cref="p5.web.widgets.WidgetRetriever"/> class
         /// </summary>
-        /// <param name="page">Page.</param>
+        /// <param name="page">Page</param>
         public WidgetRetriever (ApplicationContext context, PageManager manager)
         {
             // Setting WidgetManager for this instance

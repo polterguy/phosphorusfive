@@ -20,12 +20,12 @@ namespace p5.exp
         /// 
         ///     Evaluates node's speecified children node's value with XUtil.Single and returns the result.
         /// </summary>
-        /// <returns>The evaluated result.</returns>
-        /// <param name="node">Node.</param>
-        /// <param name="name">Name of child node to evaluate.</param>
+        /// <returns>The evaluated result</returns>
+        /// <param name="node">Node</param>
+        /// <param name="name">Name of child node to evaluate</param>
         /// <param name="context">Application context</param>
-        /// <param name="defaultValue">Default value to return.</param>
-        /// <typeparam name="T">The type to return the evaluated result as.</typeparam>
+        /// <param name="defaultValue">Default value to return</param>
+        /// <typeparam name="T">The type to return the evaluated result as</typeparam>
         public static T GetExChildValue<T> (
             this Node node, 
             string name, 
@@ -42,12 +42,12 @@ namespace p5.exp
         /// 
         ///     Evaluates the given node's value with XUtil.Single, and returns the result.
         /// </summary>
-        /// <returns>The evaluated result of the node's value.</returns>
-        /// <param name="node">Node to evaluate.</param>
+        /// <returns>The evaluated result of the node's value</returns>
+        /// <param name="node">Node to evaluate</param>
         /// <param name="context">Application context</param>
-        /// <param name="defaultValue">Default value to return.</param>
-        /// <param name="inject">String to inject between entities of expression.</param>
-        /// <typeparam name="T">The type to return the evaluated result as.</typeparam>
+        /// <param name="defaultValue">Default value to return</param>
+        /// <param name="inject">String to inject between entities of expression</param>
+        /// <typeparam name="T">The type to return the evaluated result as</typeparam>
         public static T GetExValue<T> (
             this Node node, 
             ApplicationContext context, 

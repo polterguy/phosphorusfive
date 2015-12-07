@@ -23,7 +23,7 @@ namespace p5.hyperlisp.helpers
         ///     Initializes a new instance of the <see cref="NodeBuilder" /> class
         /// </summary>
         /// <param name="context">Application context</param>
-        /// <param name="hyperlisp">Hyperlisp to convert into a list of nodes.</param>
+        /// <param name="hyperlisp">Hyperlisp to convert into a list of nodes</param>
         public NodeBuilder (ApplicationContext context, string hyperlisp)
         {
             _context = context;

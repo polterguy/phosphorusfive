@@ -37,8 +37,8 @@ namespace p5.core
                     ///     Initializes a new instance of the
                     /// <see cref="p5.core.Loader+ActiveEventTypes+ActiveEventType+ActiveEvent"/> class
                     /// </summary>
-                    /// <param name="atr">Atr.</param>
-                    /// <param name="method">Method.</param>
+                    /// <param name="atr">Atr</param>
+                    /// <param name="method">Method</param>
                     public ActiveEvent(ActiveEventAttribute atr, MethodInfo method)
                     {
                         Attribute = atr;
@@ -48,7 +48,7 @@ namespace p5.core
                     /// <summary>
                     ///     Gets the ActiveEventAttribute for given Active Event
                     /// </summary>
-                    /// <value>The attribute.</value>
+                    /// <value>The attribute</value>
                     public ActiveEventAttribute Attribute {
                         get;
                         private set;
@@ -57,7 +57,7 @@ namespace p5.core
                     /// <summary>
                     ///     Returns the Method for Active Event
                     /// </summary>
-                    /// <value>The method.</value>
+                    /// <value>The method</value>
                     public MethodInfo Method {
                         get;
                         private set;
@@ -75,7 +75,7 @@ namespace p5.core
                 /// <summary>
                 ///     Gets the list of Active Events for given Type
                 /// </summary>
-                /// <value>The events.</value>
+                /// <value>The events</value>
                 public List<ActiveEvent> Events {
                     get;
                     private set;
@@ -84,8 +84,8 @@ namespace p5.core
                 /// <summary>
                 ///     Adds an Active Event for given type
                 /// </summary>
-                /// <param name="atr">Atr.</param>
-                /// <param name="method">Method.</param>
+                /// <param name="atr">Atr</param>
+                /// <param name="method">Method</param>
                 public void AddActiveEvent (ActiveEventAttribute atr, MethodInfo method)
                 {
                     Events.Add(new ActiveEvent(atr, method));
@@ -103,7 +103,7 @@ namespace p5.core
             /// <summary>
             ///     Returns all Types in AppDomain that has Active Event handlers
             /// </summary>
-            /// <value>The types.</value>
+            /// <value>The types</value>
             public Dictionary<Type, ActiveEventType> Types {
                 get;
                 private set;
@@ -128,7 +128,7 @@ namespace p5.core
             /// <summary>
             ///     Removes a type entirely from being able to handle Active Events
             /// </summary>
-            /// <param name="type">Type.</param>
+            /// <param name="type">Type</param>
             public void RemoveType (Type type)
             {
                 if (Types.ContainsKey(type))
@@ -160,7 +160,7 @@ namespace p5.core
         /// <summary>
         ///     Loads an assembly for handling Active Events
         /// </summary>
-        /// <param name="assembly">Assembly to register as Active event handler.</param>
+        /// <param name="assembly">Assembly to register as Active event handler</param>
         public void LoadAssembly (Assembly assembly)
         {
             // Checking to see if assembly is already loaded up, to avoid initializing the same assembly twice
@@ -256,7 +256,7 @@ namespace p5.core
         }
 
         /*
-         * removes an assembly such that all Active Events from given assembly will no longer
+         * Removes an assembly such that all Active Events from given assembly will no longer
          * be a part of our list of potential invocation objects for Active Events
          */
         private void RemoveAssembly (Assembly assembly)
@@ -273,7 +273,7 @@ namespace p5.core
         }
 
         /*
-         * initializes an assembly by looping through all types from it, and see if type has
+         * Initializes an assembly by looping through all types from it, and see if type has
          * Active Event attributes for one or more of its methods, and if it does, we register
          * type as Active Event sink
          */
@@ -301,7 +301,7 @@ namespace p5.core
         }
 
         /*
-         * loops through all MethodInfo objects given, and adds them to the associated dictionary with type as key,
+         * Loops through all MethodInfo objects given, and adds them to the associated dictionary with type as key,
          * if they have Active Event attributes declared
          */
         private void AddActiveEventsForType (
@@ -331,7 +331,7 @@ namespace p5.core
         }
 
         /*
-         * verifies that the signature of our Active Event is correct
+         * Verifies that the signature of our Active Event is correct
          */
         private static void VerifyActiveEventSignature (MethodInfo method)
         {

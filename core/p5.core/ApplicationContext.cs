@@ -90,7 +90,7 @@ namespace p5.core
         /// <summary>
         ///     Returns all Active Events registered within the current ApplicationContext object.
         /// </summary>
-        /// <value>The active events.</value>
+        /// <value>The active events</value>
         public IEnumerable<string> ActiveEvents
         {
             get { return _registeredActiveEvents.GetEvents ().Select (idx => idx.Name); }
@@ -109,7 +109,7 @@ namespace p5.core
         ///     Returns protection level of Active Event
         /// </summary>
         /// <returns><c>true</c> if Active Event is protected; otherwise, <c>false</c></returns>
-        /// <param name="name">Name.</param>
+        /// <param name="name">Name</param>
         public EventProtection GetEventProtection (string activeEventName)
         {
             return _registeredActiveEvents.GetEvents().SingleOrDefault(idx => idx.Name == activeEventName).Protection;
@@ -118,8 +118,8 @@ namespace p5.core
         /// <summary>
         ///     Determines whether this instance has the event with the specified name.
         /// </summary>
-        /// <returns><c>true</c> if this instance has event with the specified name; otherwise, <c>false</c>.</returns>
-        /// <param name="name">Name.</param>
+        /// <returns><c>true</c> if this instance has event with the specified name; otherwise, <c>false</c></returns>
+        /// <param name="name">Name</param>
         public bool HasEvent (string name)
         {
             return _registeredActiveEvents.HasEvent(name);

@@ -3,6 +3,7 @@
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details.
  */
 
+using System.Linq;
 using System.Text;
 using System.Collections.Generic;
 using HtmlAgilityPack;
@@ -55,7 +56,7 @@ namespace p5.html
                     builder.Append (' ', 4);
                 }
                 builder.Append (string.Format ("<{0}{1}>", idxNode.Name, GetAttributes (idxNode)));
-                bool hadChildren = Convert (context, idxNode.FindAll (idx => !idx.Name.StartsWith ("@")), builder, level + 1);
+                bool hadChildren = Convert (context, idxNode.Children.Where (ix => !ix.Name.StartsWith ("@")), builder, level + 1);
                 if (hadChildren) {
                     builder.Append ("\r\n");
                     for (int idxSpacer = 0; idxSpacer < level; idxSpacer++) {
@@ -75,7 +76,7 @@ namespace p5.html
         private static string GetAttributes (Node node)
         {
             string retVal = "";
-            foreach (Node idxAtr in node.FindAll (idx => idx.Name.StartsWith ("@"))) {
+            foreach (Node idxAtr in node.Children.Where (ix => ix.Name.StartsWith ("@"))) {
                 retVal += " " + idxAtr.Name.Substring (1) + "=\"" + idxAtr.Value + "\"";
             }
             return retVal;

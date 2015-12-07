@@ -65,7 +65,7 @@ namespace p5.core
         /// <summary>
         ///     Gets the security entrance associated with Active Event
         /// </summary>
-        /// <value>The entrance.</value>
+        /// <value>The entrance</value>
         public EventProtection Protection {
             get;
             set;

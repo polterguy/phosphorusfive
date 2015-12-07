@@ -18,7 +18,7 @@ namespace p5.web.ui.common
         /// <summary>
         ///     Initializes a new instance of the <see cref="phosphorus.web.ui.common.PhosphorusWebException"/> class.
         /// </summary>
-        /// <param name="msg">Error message.</param>
+        /// <param name="msg">Error message</param>
         public PhosphorusWebException (string msg)
             : base (msg) { }
     }

@@ -48,11 +48,11 @@ namespace p5.core
         /// <summary>
         ///     Converts the given value to type T
         /// </summary>
-        /// <param name="value">Value to convert.</param>
-        /// <param name="context">Application context Needed since it might potentially have to raise "conversion Active Events" to convert your value.</param>
-        /// <param name="defaultValue">Default value to return, if no conversion is possible.</param>
-        /// <param name="encode">If true, then the value will be encoded as base64, if necessary, and value is byte[].</param>
-        /// <typeparam name="T">Type to convert your value to.</typeparam>
+        /// <param name="value">Value to convert</param>
+        /// <param name="context">Application context Needed since it might potentially have to raise "conversion Active Events" to convert your value</param>
+        /// <param name="defaultValue">Default value to return, if no conversion is possible</param>
+        /// <param name="encode">If true, then the value will be encoded as base64, if necessary, and value is byte[]</param>
+        /// <typeparam name="T">Type to convert your value to</typeparam>
         public static T Convert<T> (
             ApplicationContext context,
             object value,
@@ -93,8 +93,8 @@ namespace p5.core
         /// <summary>
         ///     Returns true if string can be converted to an integer
         /// </summary>
-        /// <returns><c>true</c> if this instance is a whole, positive, integer number; otherwise, <c>false</c>.</returns>
-        /// <param name="value">String to check.</param>
+        /// <returns><c>true</c> if this instance is a whole, positive, integer number; otherwise, <c>false</c></returns>
+        /// <param name="value">String to check</param>
         public static bool IsNumber (string value)
         {
             if (value.Any (idx => "0123456789".IndexOf (idx) == -1)) {
@@ -106,8 +106,8 @@ namespace p5.core
         /// <summary>
         ///     Reads a single line string literal token from specified text reader
         /// </summary>
-        /// <returns>The single line string literal, parsed.</returns>
-        /// <param name="reader">Reader to read from.</param>
+        /// <returns>The single line string literal, parsed</returns>
+        /// <param name="reader">Reader to read from</param>
         public static string ReadSingleLineStringLiteral (StringReader reader)
         {
             var builder = new StringBuilder ();
@@ -132,8 +132,8 @@ namespace p5.core
         /// <summary>
         ///     Reads a multi line string literal token from specified text reader
         /// </summary>
-        /// <returns>The single line string literal, parsed.</returns>
-        /// <param name="reader">Reader to read from.</param>
+        /// <returns>The single line string literal, parsed</returns>
+        /// <param name="reader">Reader to read from</param>
         public static string ReadMultiLineStringLiteral (StringReader reader)
         {
             var builder = new StringBuilder ();

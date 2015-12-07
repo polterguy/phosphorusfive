@@ -21,8 +21,8 @@ namespace p5.exp
         /// <summary>
         ///     Returns true if given object is an expression
         /// </summary>
-        /// <returns><c>true</c> if is expression the specified value; otherwise, <c>false</c>.</returns>
-        /// <param name="value">Value.</param>
+        /// <returns><c>true</c> if is expression the specified value; otherwise, <c>false</c></returns>
+        /// <param name="value">Value</param>
         public static bool IsExpression (object value)
         {
             return value is Expression;
@@ -31,15 +31,15 @@ namespace p5.exp
         /// <summary>
         ///     Returns true if given node contains formatting parameters
         /// </summary>
-        /// <returns><c>true</c> if is formatted the specified evaluatedNode; otherwise, <c>false</c>.</returns>
-        /// <param name="evaluatedNode">Evaluated node.</param>
+        /// <returns><c>true</c> if is formatted the specified evaluatedNode; otherwise, <c>false</c></returns>
+        /// <param name="evaluatedNode">Evaluated node</param>
         public static bool IsFormatted (Node evaluatedNode)
         {
             // a formatted node is defined as having one or more children with string.Empty as name
             // and a value which is of type string
             return evaluatedNode.Value is string && 
                 (evaluatedNode.Value as string).Contains ("{0}") && 
-                evaluatedNode.FindAll (string.Empty).GetEnumerator ().MoveNext ();
+                evaluatedNode.Children.Count (ix => ix.Name == "") > 0;
         }
 
         /// <summary>
@@ -114,9 +114,9 @@ namespace p5.exp
         /// <summary>
         ///     Formats the node according to values returned by its children
         /// </summary>
-        /// <returns>The node.</returns>
-        /// <param name="evaluatedNode">Evaluated node.</param>
-        /// <param name="context">Context.</param>
+        /// <returns>The node</returns>
+        /// <param name="evaluatedNode">Evaluated node</param>
+        /// <param name="context">Context</param>
         public static object FormatNode (
             ApplicationContext context,
             Node evaluatedNode)
@@ -127,10 +127,10 @@ namespace p5.exp
         /// <summary>
         ///     Formats the node according to values returned by its children
         /// </summary>
-        /// <returns>The node.</returns>
-        /// <param name="evaluatedNode">Evaluated node.</param>
-        /// <param name="dataSource">Data source.</param>
-        /// <param name="context">Context.</param>
+        /// <returns>The node</returns>
+        /// <param name="evaluatedNode">Evaluated node</param>
+        /// <param name="dataSource">Data source</param>
+        /// <param name="context">Context</param>
         public static object FormatNode (
             ApplicationContext context,
             Node evaluatedNode,
@@ -140,26 +140,13 @@ namespace p5.exp
             if (!IsFormatted (evaluatedNode))
                 return evaluatedNode.Value;
 
-            // retrieving all "formatting values"
-            var childrenValues = new List<object> (evaluatedNode.ConvertChildren (
-                delegate (Node idx) {
-
-                    // we only use nodes who's names are empty as "formatting nodes"
-                    if (idx.Name == string.Empty) {
-
-                        // recursively format and evaluate expressions of children nodes
-                        return FormatNodeRecursively (context, idx, dataSource == evaluatedNode ? idx : dataSource) ?? "";
-                    }
-
-                    // this is not a part of the formatting values for our formating expression,
-                    // since it doesn't have an empty name, hence we return null, to signal to 
-                    // ConvertChildren that this is to be excluded from list
-                    return null;
-            }));
+            var childrenValues = evaluatedNode.Children
+                .Where (ix => ix.Name == "")
+                .Select (ix => FormatNodeRecursively (context, ix, dataSource == evaluatedNode ? ix : dataSource) ?? "").ToArray();
 
             // returning node's value, after being formatted, according to its children node's values
             // PS, at this point all childrenValues have already been converted by the engine itself to string values
-            return string.Format (evaluatedNode.Value as string, childrenValues.ToArray ());
+            return string.Format (evaluatedNode.Value as string, childrenValues);
         }
         
         /*
@@ -191,11 +178,11 @@ namespace p5.exp
         /// <summary>
         ///     Returns one single value by evaluating evaluatedNode
         /// </summary>
-        /// <param name="evaluatedNode">Evaluated node.</param>
-        /// <param name="context">Context.</param>
-        /// <param name="defaultValue">Default value.</param>
-        /// <param name="inject">Inject.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <param name="evaluatedNode">Evaluated node</param>
+        /// <param name="context">Context</param>
+        /// <param name="defaultValue">Default value</param>
+        /// <param name="inject">Inject</param>
+        /// <typeparam name="T">The 1st type parameter</typeparam>
         public static T Single<T> (
             ApplicationContext context,
             Node evaluatedNode,
@@ -208,12 +195,12 @@ namespace p5.exp
         /// <summary>
         ///     Returns one single value by evaluating evaluatedNode
         /// </summary>
-        /// <param name="evaluatedNode">Evaluated node.</param>
-        /// <param name="dataSource">Data source.</param>
-        /// <param name="context">Context.</param>
-        /// <param name="defaultValue">Default value.</param>
-        /// <param name="inject">Inject.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <param name="evaluatedNode">Evaluated node</param>
+        /// <param name="dataSource">Data source</param>
+        /// <param name="context">Context</param>
+        /// <param name="defaultValue">Default value</param>
+        /// <param name="inject">Inject</param>
+        /// <typeparam name="T">The 1st type parameter</typeparam>
         public static T Single<T> (
             ApplicationContext context,
             Node evaluatedNode,
@@ -272,9 +259,9 @@ namespace p5.exp
         /// <summary>
         ///     Iterates the given node, and returns multiple values
         /// </summary>
-        /// <param name="evaluatedNode">Evaluated node.</param>
-        /// <param name="context">Context.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <param name="evaluatedNode">Evaluated node</param>
+        /// <param name="context">Context</param>
+        /// <typeparam name="T">The 1st type parameter</typeparam>
         public static IEnumerable<T> Iterate<T> (
             ApplicationContext context,
             Node evaluatedNode,
@@ -288,10 +275,10 @@ namespace p5.exp
         /// <summary>
         ///     Iterates the given node, and returns multiple values
         /// </summary>
-        /// <param name="evaluatedNode">Evaluated node.</param>
-        /// <param name="dataSource">Data source.</param>
-        /// <param name="context">Context.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <param name="evaluatedNode">Evaluated node</param>
+        /// <param name="dataSource">Data source</param>
+        /// <param name="context">Context</param>
+        /// <typeparam name="T">The 1st type parameter</typeparam>
         public static IEnumerable<T> Iterate<T> (
             ApplicationContext context,
             Node evaluatedNode,
@@ -369,9 +356,9 @@ namespace p5.exp
         /// <summary>
         ///     Will return one single source value from evaluatedNode
         /// </summary>
-        /// <returns>The single.</returns>
-        /// <param name="evaluatedNode">Evaluated node.</param>
-        /// <param name="context">Context.</param>
+        /// <returns>The single</returns>
+        /// <param name="evaluatedNode">Evaluated node</param>
+        /// <param name="context">Context</param>
         public static object SourceSingle (
             ApplicationContext context,
             Node evaluatedNode)
@@ -382,10 +369,10 @@ namespace p5.exp
         /// <summary>
         ///     Will return one single source value from evaluatedNode
         /// </summary>
-        /// <returns>The single.</returns>
-        /// <param name="evaluatedNode">Evaluated node.</param>
-        /// <param name="dataSource">Data source.</param>
-        /// <param name="context">Context.</param>
+        /// <returns>The single</returns>
+        /// <param name="evaluatedNode">Evaluated node</param>
+        /// <param name="dataSource">Data source</param>
+        /// <param name="context">Context</param>
         public static object SourceSingle (
             ApplicationContext context,
             Node evaluatedNode, 
@@ -495,9 +482,9 @@ namespace p5.exp
         /// <summary>
         ///    Will return multiple values if feasable
         /// </summary>
-        /// <returns>The nodes.</returns>
-        /// <param name="evaluatedNode">Evaluated node.</param>
-        /// <param name="context">Context.</param>
+        /// <returns>The nodes</returns>
+        /// <param name="evaluatedNode">Evaluated node</param>
+        /// <param name="context">Context</param>
         public static List<Node> SourceNodes (
             ApplicationContext context,
             Node evaluatedNode)
@@ -508,10 +495,10 @@ namespace p5.exp
         /// <summary>
         ///     Will return multiple values if possible
         /// </summary>
-        /// <returns>The nodes.</returns>
-        /// <param name="evaluatedNode">Evaluated node.</param>
-        /// <param name="dataSource">Data source.</param>
-        /// <param name="context">Context.</param>
+        /// <returns>The nodes</returns>
+        /// <param name="evaluatedNode">Evaluated node</param>
+        /// <param name="dataSource">Data source</param>
+        /// <param name="context">Context</param>
         public static List<Node> SourceNodes (
             ApplicationContext context,
             Node evaluatedNode, 
