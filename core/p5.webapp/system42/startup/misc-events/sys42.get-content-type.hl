@@ -7,7 +7,7 @@
 set-protected-event:sys42.get-content-type
 
   // Loading Content-Type mapping file
-  load-file:system42/misc/content-types.hl
+  load-file:/system42/misc/content-types.hl
   split:x:/../*/_arg?value
     =:.
 

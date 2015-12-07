@@ -8,6 +8,7 @@ using System.Linq;
 using System.Security;
 using System.Reflection;
 using System.Collections.Generic;
+using System.Runtime.ExceptionServices;
 
 namespace p5.core
 {
@@ -233,7 +234,8 @@ namespace p5.core
             catch (System.Reflection.TargetInvocationException err)
             {
                 // Making sure we transform reflection exceptions into actual exceptions thrown
-                throw err.InnerException;
+                ExceptionDispatchInfo.Capture(err.InnerException).Throw();
+                throw; // Never reached, needed for compiler to not choke ...!!
             }
         }
 

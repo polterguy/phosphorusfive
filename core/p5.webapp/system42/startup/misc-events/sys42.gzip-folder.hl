@@ -16,7 +16,7 @@ set-protected-event:sys42.gzip-folder
 
   // GZIP'ing folder
   gzip:x:/../*/_arg?value
-    to:users/{0}/tmp/{1}.tar.gz
+    to:/users/{0}/tmp/{1}.tar.gz
       :x:/../*/get-user/*/username?value
       :x:/../*/split/0/-?name
   set:x:/..?value

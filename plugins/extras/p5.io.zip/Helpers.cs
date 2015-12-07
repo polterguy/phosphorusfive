@@ -33,7 +33,7 @@ namespace p5.io.zip
                 _rootFolder = context.RaiseNative ("p5.core.application-folder").Get<string> (context);
 
                 // Making sure we normalize folder separators, to have uniform folder structure on different operating systems
-                _rootFolder = _rootFolder.Replace ("\\", "/").TrimEnd ('/') + "/";
+                _rootFolder = _rootFolder.Replace ("\\", "/").TrimEnd ('/');
             }
             return _rootFolder;
         }

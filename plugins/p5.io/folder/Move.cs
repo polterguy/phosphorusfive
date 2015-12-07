@@ -25,7 +25,13 @@ namespace p5.io.folder
         [ActiveEvent (Name = "move-folder", Protection = EventProtection.LambdaClosed)]
         private static void move_folder (ApplicationContext context, ActiveEventArgs e)
         {
-            // Basic syntax checking
+            /*
+             * We do not remove value of arguments here, since it is used for returning value of 
+             * new foldername, since it might not necessarily be the same as the one caller requested, 
+             * if folder exist from before
+             */
+
+                        // Basic syntax checking
             if (e.Args.Value == null || e.Args.LastChild == null || e.Args.LastChild.Name != "to")
                 throw new ArgumentException ("[move-folder] needs both a value and a [to] node.");
 
@@ -71,7 +77,7 @@ namespace p5.io.folder
                 }
 
                 // Actually moving (or renaming) folder
-                Directory.Move (rootFolder + sourceFolder.TrimStart('/'), rootFolder + destinationFolder.TrimStart('/'));
+                Directory.Move (rootFolder + sourceFolder, rootFolder + destinationFolder);
 
                 // Returning actual destination foldername used to caller
                 e.Args.Value = destinationFolder;

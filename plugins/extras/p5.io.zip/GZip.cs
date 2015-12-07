@@ -62,42 +62,62 @@ namespace p5.io.zip
                     context.RaiseNative ("p5.io.authorize.save-file", new Node ("p5.io.authorize.save-file", destinationFile).Add ("args", e.Args));
                 }
 
-                // Creating our output stream, which will contain our GZip file
-                using (var output = File.Create (rootFolder + destinationFile)) {
+                // Making sure we are able to delete file, if an exception occurs!
+                try
+                {
+                    // Creating our output stream, which will contain our GZip file
+                    using (var output = File.Create (rootFolder + destinationFile)) {
 
-                    // Creating our GZip stream, wrapping the file stream
-                    using (var gzStream = new GZipOutputStream (output)) {
+                        // Creating our GZip stream, wrapping the file stream
+                        using (var gzStream = new GZipOutputStream (output)) {
 
-                        // Creating TAR archive, wrapping our GZip stream
-                        using (var archive = TarArchive.CreateOutputTarArchive (gzStream)) {
+                            // Creating TAR archive, wrapping our GZip stream
+                            using (var archive = TarArchive.CreateOutputTarArchive (gzStream)) {
 
-                            // Looping through each input directory given
-                            foreach (var idxSourceFileFolder in XUtil.Iterate<string> (context, e.Args)) {
+                                // Looping through each input directory given
+                                foreach (var idxSourceFileFolder in XUtil.Iterate<string> (context, e.Args)) {
 
-                                // Verify path is correct according to conventions
-                                if (!idxSourceFileFolder.StartsWith ("/"))
-                                    throw new LambdaException (
-                                        string.Format ("Source file '{0}' was not a valid filename", idxSourceFileFolder),
-                                        e.Args,
-                                        context);
+                                    // Verify path is correct according to conventions
+                                    if (!idxSourceFileFolder.StartsWith ("/"))
+                                        throw new LambdaException (
+                                            string.Format ("Source file/folder '{0}' was not a valid filename", idxSourceFileFolder),
+                                            e.Args,
+                                            context);
 
-                                // Verifying user is authorized to reading from source
-                                context.RaiseNative ("p5.io.authorize.load-file", new Node ("p5.io.authorize.load-file", idxSourceFileFolder).Add ("args", e.Args));
+                                    // Verify path is correctly ending with a trailing slash "/" if object is a folder
+                                    if (Directory.Exists (rootFolder + idxSourceFileFolder)) {
+                                        if (!idxSourceFileFolder.EndsWith ("/"))
+                                            throw new LambdaException (
+                                                string.Format ("Source folder '{0}' was not a valid filename", idxSourceFileFolder),
+                                                e.Args,
+                                                context);
+                                    }
 
-                                // Verifying file-/folder name is not a "restricted" type of file
-                                if (idxSourceFileFolder.StartsWith (".") || idxSourceFileFolder.EndsWith ("~"))
-                                    continue;
+                                    // Verifying user is authorized to reading from source
+                                    context.RaiseNative ("p5.io.authorize.load-file", new Node ("p5.io.authorize.load-file", idxSourceFileFolder).Add ("args", e.Args));
 
-                                var rootSource = idxSourceFileFolder.Trim ('/');
-                                rootSource = rootSource.Substring (rootSource.LastIndexOf ("/") + 1);
+                                    // Verifying file-/folder name is not a "restricted" type of file
+                                    if (idxSourceFileFolder.StartsWith (".") || idxSourceFileFolder.EndsWith ("~"))
+                                        continue;
 
-                                AddFileObjectToArchive (archive, rootFolder + idxSourceFileFolder.TrimEnd ('/'), rootSource);
+                                    var rootSource = idxSourceFileFolder.Trim ('/');
+                                    rootSource = rootSource.Substring (rootSource.LastIndexOf ("/") + 1);
+
+                                    AddFileObjectToArchive (archive, rootFolder + idxSourceFileFolder.TrimEnd ('/'), rootSource);
+                                }
                             }
                         }
-                    }
 
-                    // Returning filepath of ZIP file actually created to caller
-                    e.Args.Value = destinationFile;
+                        // Returning filepath of ZIP file actually created to caller
+                        e.Args.Value = destinationFile;
+                    }
+                }
+                catch
+                {
+                    // Checking if file exist, and if so, delete it, before we rethrow exception
+                    if (File.Exists (rootFolder + destinationFile))
+                        File.Delete (rootFolder + destinationFile);
+                    throw;
                 }
             }
         }

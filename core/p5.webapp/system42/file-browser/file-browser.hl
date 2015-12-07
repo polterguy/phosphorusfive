@@ -358,6 +358,14 @@ create-widget:file-browser
               :x:/../*/get-session-value/[1,2]/*?value
               :x:/../*/split/0/-?name
 
+          // Making sure we append "/" at end if type of source is a folder
+          if:x:/../*/get-session-value/[0,1]/*/*/type?value
+            =:folder
+            set:x:/../*/_x-copy-move-file/0/0?value
+              src:{0}{1}
+                :x:/../*/_x-copy-move-file/0/0?value
+                :/
+
           // Executing actual move/copy/file/folder operation
           eval:x:/../*/_x-copy-move-file
 
@@ -504,7 +512,7 @@ create-widget:file-browser
                 file-exist:{0}{1}
                   :x:/../*/_new-filepath?value
                   :x:/../*/get-widget-property/*/*/value?value
-                folder-exist:{0}{1}
+                folder-exist:{0}{1}/
                   :x:/../*/_new-filepath?value
                   :x:/../*/get-widget-property/*/*/value?value
                 if:x:/-2?value
@@ -512,7 +520,7 @@ create-widget:file-browser
 
                   // That filename is taken up by another file on system
                   set:x:/+/*/_message?value
-                    src:Sorry, I cannot rename your {0} to <strong>'{1}'</strong>, since there's already another file/folder with that name
+                    src:Sorry, I cannot rename your '{0}' to <strong>'{1}'</strong>, since there's already another file/folder with that name
                       :x:/../*/get-session-value/*/*/type?value
                       :x:/../*/get-widget-property/*/*/value?value
                   sys42.confirm-action
@@ -522,10 +530,14 @@ create-widget:file-browser
                       send-javascript:@"$('#rename-file-object').focus().select();"
                 else
 
-                  // Renaming file
+                  // Renaming file/folder
                   set:x:/..else/*/foo-bar2?name
                     src:move-{0}
                       :x:/../*/get-session-value/*/*/type?value
+                  if:x:/../*/get-session-value/*/*/type?value
+                    =:folder
+                    set:x:/./+/*?value
+                      src:{0}{1}/
                   foo-bar2:x:/../*/get-session-value/*/*/object?value
                     to:{0}{1}
                       :x:/../*/_new-filepath?value
@@ -664,34 +676,53 @@ create-widget:file-browser
                 get-session-value:sys42.current-folder
                 get-widget-property:new-folder-name
                   value
-                create-folder:{0}{1}/
-                  :x:/../*/get-session-value/*?value
-                  :x:/../*/get-widget-property/*/*?value
-
-                // Removing "Create new folder" textbox
-                delete-widget:new-folder-name
-
-                // Making sure new folder is selected
-                set:x:/+/0/*/object?value
-                  src:{0}{1}/
+                if
+                  file-exist:{0}{1}
                     :x:/../*/get-session-value/*?value
                     :x:/../*/get-widget-property/*/*?value
-                set-session-value:sys42.selected-file-browser-object
-                  src
-                    type:folder
-                    object
+                  or
+                    folder-exist:{0}{1}/
+                      :x:/../*/get-session-value/*?value
+                      :x:/../*/get-widget-property/*/*?value
 
-                // Listing current folder's folders and files again, and showing visual clues for
-                // selected item
-                sys42.create-current-folder-content
-                sys42.create-selected-object-clues:x:/../*/create-folder/*?name
+                  // File exist from before, informing user that we can't create it
+                  set:x:/+/*/_message?value
+                    src:Sorry, I cannot create file <strong>'{0}'</strong>, since there's already another file/folder with that name
+                      :x:/../*/get-widget-property/*/*/value?value
+                  sys42.confirm-action
+                    _header:Object exist from before
+                    _message
+                else
+                  create-folder:{0}{1}/
+                    :x:/../*/get-session-value/*?value
+                    :x:/../*/get-widget-property/*/*?value
 
-                // Refreshing toolbar
-                sys42.update-file-browser-toolbar
+                  // Removing "Create new folder" textbox
+                  delete-widget:new-folder-name
 
-                // Showing feedback to user that folder was created
-                sys42.info-feedback:@"Folder '{0}' was succesfully created"
-                  :x:/../*/get-widget-property/*/*?value
+                  // Making sure new folder is selected
+                  set:x:/+/0/*/object?value
+                    src:{0}{1}/
+                      :x:/../*/get-session-value/*?value
+                      :x:/../*/get-widget-property/*/*?value
+                  set-session-value:sys42.selected-file-browser-object
+                    src
+                      type:folder
+                      object
+
+                  // Listing current folder's folders and files again, and showing visual clues for
+                  // selected item
+                  sys42.create-current-folder-content
+                  sys42.create-selected-object-clues:{0}{1}/
+                    :x:/../*/get-session-value/*?value
+                    :x:/../*/get-widget-property/*/*?value
+
+                  // Refreshing toolbar
+                  sys42.update-file-browser-toolbar
+
+                  // Showing feedback to user that folder was created
+                  sys42.info-feedback:@"Folder '{0}' was succesfully created"
+                    :x:/../*/get-widget-property/*/*?value
 
 
         /*
@@ -736,34 +767,55 @@ create-widget:file-browser
                 get-session-value:sys42.current-folder
                 get-widget-property:new-file-name
                   value
-                save-file:{0}{1}
-                  :x:/../*/get-session-value/*?value
-                  :x:/../*/get-widget-property/*/*?value
-
-                // Removing "Create new file" textbox
-                delete-widget:new-file-name
-
-                // Making sure new file is selected
-                set:x:/+/0/*/object?value
-                  src:{0}{1}
+                if
+                  file-exist:{0}{1}
                     :x:/../*/get-session-value/*?value
                     :x:/../*/get-widget-property/*/*?value
-                set-session-value:sys42.selected-file-browser-object
-                  src
-                    type:file
-                    object
+                  or
+                    folder-exist:{0}{1}/
+                      :x:/../*/get-session-value/*?value
+                      :x:/../*/get-widget-property/*/*?value
 
-                // Listing current folder's folders and files again, and showing visual clues for
-                // selected item
-                sys42.create-current-folder-content
-                sys42.create-selected-object-clues:x:/../*/save-file?value
+                  // File exist from before, informing user that we can't create it
+                  set:x:/+/*/_message?value
+                    src:Sorry, I cannot create file <strong>'{0}'</strong>, since there's already another file/folder with that name
+                      :x:/../*/get-widget-property/*/*/value?value
+                  sys42.confirm-action
+                    _header:Object exist from before
+                    _message
+                else
 
-                // Refreshing toolbar
-                sys42.update-file-browser-toolbar
+                  // Creating file
+                  save-file:{0}{1}
+                    :x:/../*/get-session-value/*?value
+                    :x:/../*/get-widget-property/*/*?value
 
-                // Showing feedback to user that file was created
-                sys42.info-feedback:@"File '{0}' was succesfully created"
-                  :x:/../*/get-widget-property/*/*?value
+                  // Removing "Create new file" textbox
+                  delete-widget:new-file-name
+
+                  // Making sure new file is selected
+                  set:x:/+/0/*/object?value
+                    src:{0}{1}
+                      :x:/../*/get-session-value/*?value
+                      :x:/../*/get-widget-property/*/*?value
+                  set-session-value:sys42.selected-file-browser-object
+                    src
+                      type:file
+                      object
+
+                  // Listing current folder's folders and files again, and showing visual clues for
+                  // selected item
+                  sys42.create-current-folder-content
+                  sys42.create-selected-object-clues:{0}{1}
+                    :x:/../*/get-session-value/*?value
+                    :x:/../*/get-widget-property/*/*?value
+
+                  // Refreshing toolbar
+                  sys42.update-file-browser-toolbar
+
+                  // Showing feedback to user that file was created
+                  sys42.info-feedback:@"File '{0}' was succesfully created"
+                    :x:/../*/get-widget-property/*/*?value
 
 
         /*
