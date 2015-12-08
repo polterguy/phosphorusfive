@@ -20,7 +20,7 @@ namespace p5.data
         /// <summary>
         ///     Updates lambda objects in your database
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "update-data", Protection = EventProtection.LambdaClosed)]
         private static void update_data (ApplicationContext context, ActiveEventArgs e)
@@ -30,7 +30,7 @@ namespace p5.data
             if (ex == null)
                 throw new LambdaException ("[update-data] requires an expression to select items from database", e.Args, context);
 
-            // acquiring lock on database
+            // Acquiring lock on database
             lock (Common.Lock) {
 
                 // Used for storing all affected database nodes, such that we know which files to update

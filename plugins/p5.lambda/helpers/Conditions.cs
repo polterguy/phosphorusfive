@@ -11,7 +11,7 @@ using p5.exp;
 using p5.exp.exceptions;
 
 /// <summary>
-///     Contains helper classes for p5.lambda conditional active events
+///     Contains helper classes for p5 lambda conditional active events
 /// </summary>
 namespace p5.lambda.helpers
 {

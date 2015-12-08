@@ -14,7 +14,7 @@ using p5.exp.matchentities;
 namespace p5.exp
 {
     /// <summary>
-    ///     Helper class encapsulating common operations for p5.lambda expressions
+    ///     Helper class encapsulating common operations for p5 lambda expressions
     /// </summary>
     public static class XUtil
     {

@@ -19,7 +19,7 @@ namespace p5.io.folder
         /// <summary>
         ///     Removes folders from disc
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "delete-folder", Protection = EventProtection.LambdaClosed)]
         private static void delete_folder (ApplicationContext context, ActiveEventArgs e)
@@ -41,7 +41,7 @@ namespace p5.io.folder
                             context);
 
                     // Verifying user is authorized to both reading from source, and writing to destination
-                    context.RaiseNative ("p5.io.authorize.save-folder", new Node ("p5.io.authorize.save-folder", idxFolder).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.modify-folder", new Node ("p5.io.authorize.modify-folder", idxFolder).Add ("args", e.Args));
 
                     // Checking to see if folder already exists
                     if (Directory.Exists (rootFolder + idxFolder)) {

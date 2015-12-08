@@ -26,7 +26,7 @@ namespace p5.io.zip
         /// <summary>
         ///     GZips folders and files
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "gzip", Protection = EventProtection.LambdaClosed)]
         private static void gzip (ApplicationContext context, ActiveEventArgs e)
@@ -50,7 +50,7 @@ namespace p5.io.zip
                         context);
 
                 // Verifying user is authorized to writing to destination
-                context.RaiseNative ("p5.io.authorize.save-file", new Node ("p5.io.authorize.save-file", destinationFile).Add ("args", e.Args));
+                context.RaiseNative ("p5.io.authorize.modify-file", new Node ("p5.io.authorize.modify-file", destinationFile).Add ("args", e.Args));
 
                 // Checking if file exist
                 if (File.Exists (rootFolder + destinationFile)) {
@@ -59,7 +59,7 @@ namespace p5.io.zip
                     destinationFile = Helpers.CreateNewUniqueFileName (context, destinationFile);
 
                     // Verifying user is authorized to writing to updated destination
-                    context.RaiseNative ("p5.io.authorize.save-file", new Node ("p5.io.authorize.save-file", destinationFile).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.modify-file", new Node ("p5.io.authorize.modify-file", destinationFile).Add ("args", e.Args));
                 }
 
                 // Making sure we are able to delete file, if an exception occurs!
@@ -129,7 +129,7 @@ namespace p5.io.zip
         /// <summary>
         ///     Unzips folders and files
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "gunzip", Protection = EventProtection.LambdaClosed)]
         private static void gunzip (ApplicationContext context, ActiveEventArgs e)
@@ -148,13 +148,13 @@ namespace p5.io.zip
                 var destinationFolder = "/" + e.Args ["to"].GetExValue<string> (context).Trim ('/') + "/";
 
                 // Verifying user is authorized to writing to destination folder
-                context.RaiseNative ("p5.io.authorize.save-folder", new Node ("p5.io.authorize.save-folder", destinationFolder).Add ("args", e.Args));
+                context.RaiseNative ("p5.io.authorize.modify-folder", new Node ("p5.io.authorize.modify-folder", destinationFolder).Add ("args", e.Args));
 
                 // Looping through each source zip file given
                 foreach (var idxZipFile in XUtil.Iterate<string> (context, e.Args)) {
 
                     // Verifying user is allowed to read from file given
-                    context.RaiseNative ("p5.io.authorize.load-file", new Node ("p5.io.authorize.load-file", idxZipFile).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.read-file", new Node ("p5.io.authorize.read-file", idxZipFile).Add ("args", e.Args));
 
                     // Creating our input stream, which wraps the GZip file given
                     using (var input = File.OpenRead (rootFolder + idxZipFile.TrimStart ('/'))) {
@@ -197,9 +197,9 @@ namespace p5.io.zip
             // Verifying user is authorized to reading from source
             string relativePath = fileFolderPath.Substring (rootFolder.Length);
             if (Directory.Exists (rootPath))
-                context.RaiseNative ("p5.io.authorize.load-folder", new Node ("p5.io.authorize.load-folder", relativePath).Add ("args", args));
+                context.RaiseNative ("p5.io.authorize.read-folder", new Node ("p5.io.authorize.read-folder", relativePath).Add ("args", args));
             else
-                context.RaiseNative ("p5.io.authorize.load-file", new Node ("p5.io.authorize.load-file", relativePath).Add ("args", args));
+                context.RaiseNative ("p5.io.authorize.read-file", new Node ("p5.io.authorize.read-file", relativePath).Add ("args", args));
 
             // Checking if this is directory
             if (Directory.Exists (fileFolderPath)) {

@@ -42,7 +42,7 @@ namespace p5.web.widgets
         #region [ -- Widget lambda events -- ]
 
         /// <summary>
-        ///     Returns the given lambda event(s) for the given widget(s).
+        ///     Returns the given lambda event(s) for the given widget(s)
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -109,7 +109,7 @@ namespace p5.web.widgets
         /// <summary>
         ///     Lists all existing lambda events for given widget(s)
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-widget-lambda-events", Protection = EventProtection.LambdaClosed)]
         private void list_widget_lambda_events (ApplicationContext context, ActiveEventArgs e)

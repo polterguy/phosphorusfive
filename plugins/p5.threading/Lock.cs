@@ -26,7 +26,7 @@ namespace p5.threading
         /// <summary>
         ///     Locks the locker(s) with the given name(s)
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "lock", Protection = EventProtection.LambdaClosed)]
         private static void threading_lock (ApplicationContext context, ActiveEventArgs e)
@@ -40,7 +40,7 @@ namespace p5.threading
         }
 
         /*
-         * Lock first string object in array, and pops it off list, before recursively calling self, until
+         * Locks first string object in array, and pops it off list, before recursively calling self, until
          * no more objects remains. When all objects are unlocked, then it will execute given "functor" delegate
          */
         private static void LockNext (List<string> lockers, LockFunctor functor)

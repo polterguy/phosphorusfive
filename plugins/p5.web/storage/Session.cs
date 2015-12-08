@@ -12,14 +12,14 @@ using p5.core;
 namespace p5.web.storage
 {
     /// <summary>
-    ///     Helper to retrieve and set Session values.
+    ///     Helper to retrieve and set Session values
     /// </summary>
     public static class Session
     {
         /// <summary>
         ///     Sets one or more Session object(s)
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set-session-value", Protection = EventProtection.LambdaClosed)]
         private static void set_session_value (ApplicationContext context, ActiveEventArgs e)
@@ -28,11 +28,11 @@ namespace p5.web.storage
 
                 if (value == null) {
 
-                    // removing object, if it exists
+                    // Removing object, if it exists
                     HttpContext.Current.Session.Remove (key);
                 } else {
 
-                    // adding object
+                    // Adding object
                     HttpContext.Current.Session [key] = value;
                 }
             });
@@ -41,7 +41,7 @@ namespace p5.web.storage
         /// <summary>
         ///     Retrieves Session object(s)
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-session-value", Protection = EventProtection.LambdaClosed)]
         private static void get_session_value (ApplicationContext context, ActiveEventArgs e)
@@ -52,7 +52,7 @@ namespace p5.web.storage
         /// <summary>
         ///     Lists all keys in the Session object
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-session-keys", Protection = EventProtection.LambdaClosed)]
         private static void list_session_keys (ApplicationContext context, ActiveEventArgs e)

@@ -10,14 +10,14 @@ using p5.exp.exceptions;
 namespace p5.lambda.keywords
 {
     /// <summary>
-    ///     Class wrapping the [set] keyword in p5.lambda
+    ///     Class wrapping the [set] keyword in p5 lambda
     /// </summary>
     public static class Set
     {
         /// <summary>
-        ///     The [set] keyword, allows you to change nodes through p5.lambda
+        ///     The [set] keyword, allows you to change nodes through p5 lambda
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set", Protection = EventProtection.LambdaClosed)]
         private static void lambda_set (ApplicationContext context, ActiveEventArgs e)

@@ -20,7 +20,7 @@ namespace p5.data
         /// <summary>
         ///     Deletes items from your database
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "delete-data", Protection = EventProtection.LambdaClosed)]
         private static void delete_data (ApplicationContext context, ActiveEventArgs e)

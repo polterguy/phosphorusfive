@@ -8,13 +8,18 @@ using System.Configuration;
 namespace p5.webapp.code.configuration
 {
     /// <summary>
-    ///     Active event assembly collection.
-    /// 
-    ///     List of Assemblies to use as Active Event handlers.
+    ///     Active event assembly collection
     /// </summary>
     public class ActiveEventAssemblyCollection : ConfigurationElementCollection
     {
-        protected override ConfigurationElement CreateNewElement () { return new ActiveEventAssembly (); }
-        protected override object GetElementKey (ConfigurationElement element) { return ((ActiveEventAssembly) element).Assembly; }
+        protected override ConfigurationElement CreateNewElement ()
+        {
+            return new ActiveEventAssembly ();
+        }
+
+        protected override object GetElementKey (ConfigurationElement element)
+        {
+            return ((ActiveEventAssembly)element).Assembly;
+        }
     }
 }

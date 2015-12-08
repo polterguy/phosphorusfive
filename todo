@@ -2,12 +2,12 @@
 
 * gzip javascript files through pre-build step on Release-Linux
 
-* create support for "array" p5.lambda type, which allows to be used as an expression for Expression.Iterate, such that
+* create support for "array" p5 lambda type, which allows to be used as an expression for Expression.Iterate, such that
   users may submit a static array of values to stuff such as "for-each", "set-session-value-value", etc
 
 * store timezone (GTM+x) in DateTime when serializing and de-serializing from Hyperlisp
 
-* create support for "style" property setters/getters in widgets through p5.lambda optionally can take a list of style names/values, instead
+* create support for "style" property setters/getters in widgets through p5 lambda optionally can take a list of style names/values, instead
   of like it is now where it's "just a string"
 
 * Exception hierarchy
@@ -34,14 +34,14 @@
 * make sure [sys42.show-tree] can "append more results" to itself, such that it keeps the same dialogue for multiple invocations
   during the same, and consecutive request
 
-* plugin architecture for creating custom iterators, both using C# and in p5.lambda
+* plugin architecture for creating custom iterators, both using C# and in p5 lambda
 
 * "-1" property for ViewStateInSession property, to allow "infinite" number of ViewState keys in Session object, with a BIG warning
   to user that this posess a security risk though!
 
 * "sockets" Active Events library, for creating Daemons to listen to ports, and react accordingly
 
-* create support for trapping and throwing exceptions in p5.lambda
+* create support for trapping and throwing exceptions in p5 lambda
 
 * make it possible to create "User Controls Widgets", which are widgets that exists in files, 
   and makes it possible to pass in parameters

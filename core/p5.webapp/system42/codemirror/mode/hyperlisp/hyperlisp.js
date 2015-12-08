@@ -160,7 +160,7 @@ CodeMirror.defineMode("hyperlisp", function() {
     _parseKeyword: function (word, state) {
       switch (word) {
 
-        // first p5.lambda keywords that requires indentation
+        // first p5 lambda keywords that requires indentation
         case 'and':
         case 'or':
         case 'xor':

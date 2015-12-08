@@ -11,14 +11,14 @@ using p5.exp.exceptions;
 namespace p5.lambda.keywords
 {
     /// <summary>
-    ///     Class wrapping the [retrieve] keyword in p5.lambda
+    ///     Class wrapping the [retrieve] keyword in p5 lambda
     /// </summary>
     public static class Retrieve
     {
         /// <summary>
         ///     The [retrieve] keyword, allows you to forward retrieve node results of evaluation of its body
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "retrieve", Protection = EventProtection.LambdaClosed)]
         private static void lambda_retrieve (ApplicationContext context, ActiveEventArgs e)

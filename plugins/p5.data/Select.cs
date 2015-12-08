@@ -19,7 +19,7 @@ namespace p5.data
         /// <summary>
         ///     Selects nodes from your database
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "select-data", Protection = EventProtection.LambdaClosed)]
         private static void select_data (ApplicationContext context, ActiveEventArgs e)

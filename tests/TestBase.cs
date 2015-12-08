@@ -39,7 +39,7 @@ namespace p5.unittests
         /// <summary>
         /// executes the given Hyperlisp, and returns resulting node
         /// </summary>
-        /// <returns>p5.lambda result nodes</returns>
+        /// <returns>p5 lambda result nodes</returns>
         /// <param name="hyperlisp">Hyperlisp you wish to execute</param>
         /// <param name="lambdaActiveEvent">what type of lambda event to raise</param>
         protected Node ExecuteLambda (string hyperlisp, string lambdaActiveEvent = "eval")
@@ -51,9 +51,9 @@ namespace p5.unittests
         }
 
         /// <summary>
-        /// creates a p5.lambda Node from the given Hyperlisp
+        /// creates a p5 lambda Node from the given Hyperlisp
         /// </summary>
-        /// <returns>p5.lambda result nodes</returns>
+        /// <returns>p5 lambda result nodes</returns>
         /// <param name="hyperlisp">Hyperlisp you wish to execute</param>
         protected Node CreateNode (string hyperlisp)
         {

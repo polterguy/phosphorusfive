@@ -1,7 +1,7 @@
 /*
- * Creates the Active Event that allows you to execute Hyperlisp p5.lambda files. the Hyperlisp
+ * Creates the Active Event that allows you to execute Hyperlisp p5 lambda files. the Hyperlisp
  * file(s) you wish to execute is given as value of [sys42.execute-lisp-file], and all nodes benath
- * [sys42.execute-lisp-file] when invoked, will be passed into your p5.lambda file execution. File 
+ * [sys42.execute-lisp-file] when invoked, will be passed into your p5 lambda file execution. File 
  * to exeute can be given either as an expression, or a constant. Multiple files can be executed at 
  * the same time, by providing an expression that leads to multiple results
  */
@@ -21,7 +21,7 @@ set-event:sys42.execute-lisp-file
 
 
 /*
- * Executes all files within given directory recursively, assuming they're Hyperlisp p5.lambda 
+ * Executes all files within given directory recursively, assuming they're Hyperlisp p5 lambda 
  * files. The directory you wish to execute the files within, is given through the value of the 
  * [sys42.execute-lisp-folder] node, which might be either an expression or a constant. You can
  * pass in multiple folders by using expressions as an argument.

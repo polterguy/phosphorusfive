@@ -14,7 +14,7 @@ using p5.exp;
 namespace p5.html
 {
     /// <summary>
-    ///     Class to help transform HTML to a p5.lambda structure
+    ///     Class to help transform HTML to a p5 lambda structure
     /// </summary>
     public static class Html2Lambda
     {
@@ -25,9 +25,9 @@ namespace p5.html
         }
 
         /// <summary>
-        ///     Parses an HTML document, and creates a p5.lambda node structure from the results
+        ///     Parses an HTML document, and creates a p5 lambda node structure from the results
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.html.html2lambda", Protection = EventProtection.LambdaClosed)]
         private static void p5_html_html2lambda (ApplicationContext context, ActiveEventArgs e)

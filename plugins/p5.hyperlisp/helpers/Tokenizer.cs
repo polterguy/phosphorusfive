@@ -20,12 +20,13 @@ namespace p5.hyperlisp.helpers
         private bool _disposed;
 
         /*
-         * Ctor taking Hyperlisp as input. Use the "Tokens" property after creation to parse and access p5.lambda created from Hyperlisp
+         * Ctor taking Hyperlisp as input. Use the "Tokens" property after creation to parse and access p5 lambda 
+         * created from Hyperlisp
          */
         public Tokenizer (string hyperlisp) { _reader = new StringReader (hyperlisp); }
 
         /*
-         * Returns p5.lambda tokens created from Hyperlisp passed in through CTOR.
+         * Returns p5 lambda tokens created from Hyperlisp passed in through CTOR
          */
         internal IEnumerable<Token> Tokens
         {
@@ -41,7 +42,7 @@ namespace p5.hyperlisp.helpers
                     if (token == null)
                         yield break;
 
-                    // Storin previous token as we proceed
+                    // Storing previous token as we proceed
                     previousToken = token;
 
                     // Returning currently iterated token

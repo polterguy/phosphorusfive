@@ -20,7 +20,7 @@ namespace p5.io.file
         /// <summary>
         ///     Loads text files from disc
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "load-file", Protection = EventProtection.LambdaClosed)]
         [ActiveEvent (Name = "load-text-file", Protection = EventProtection.LambdaClosed)]
@@ -36,7 +36,7 @@ namespace p5.io.file
                 foreach (var idxFile in Common.GetSource (e.Args, context)) {
 
                     // Verifying user is authorized to reading from currently iterated file
-                    context.RaiseNative ("p5.io.authorize.load-file", new Node ("p5.io.authorize.load-file", idxFile).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.read-file", new Node ("p5.io.authorize.read-file", idxFile).Add ("args", e.Args));
 
                     // Verify path is correct according to conventions
                     if (!idxFile.StartsWith ("/"))
@@ -76,7 +76,7 @@ namespace p5.io.file
         /// <summary>
         ///     Loads zero or more binary files from disc
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "load-binary-file", Protection = EventProtection.LambdaClosed)]
         private static void load_binary_file (ApplicationContext context, ActiveEventArgs e)
@@ -91,7 +91,7 @@ namespace p5.io.file
                 foreach (var idxFilename in XUtil.Iterate<string> (context, e.Args)) {
 
                     // Verifying user is authorized to reading from currently iterated file
-                    context.RaiseNative ("p5.io.authorize.load-file", new Node ("p5.io.authorize.load-file", idxFilename).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.read-file", new Node ("p5.io.authorize.read-file", idxFilename).Add ("args", e.Args));
 
                     // Checking to see if file exists
                     if (File.Exists (rootFolder + idxFilename)) {

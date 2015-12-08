@@ -19,7 +19,7 @@ namespace p5.io.file
         /// <summary>
         ///     Saves a file to disc
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "save-file", Protection = EventProtection.LambdaClosed)]
         [ActiveEvent (Name = "save-text-file", Protection = EventProtection.LambdaClosed)]
@@ -35,7 +35,7 @@ namespace p5.io.file
                 string fileName = XUtil.Single<string> (context, e.Args);
 
                 // Verifying user is allowed to save to file
-                context.RaiseNative ("p5.io.authorize.save-file", new Node ("p5.io.authorize.save-file", fileName).Add ("args", e.Args));
+                context.RaiseNative ("p5.io.authorize.modify-file", new Node ("p5.io.authorize.modify-file", fileName).Add ("args", e.Args));
 
                 // Verify path is correct according to conventions
                 if (!fileName.StartsWith ("/"))
@@ -58,7 +58,7 @@ namespace p5.io.file
 
         /// <summary>
         ///     Saves a binary file to disc
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "save-binary-file", Protection = EventProtection.LambdaClosed)]
         private static void save_binary_file (ApplicationContext context, ActiveEventArgs e)
@@ -73,7 +73,7 @@ namespace p5.io.file
                 string fileName = XUtil.Single<string> (context, e.Args);
 
                 // Verifying user is allowed to save to file
-                context.RaiseNative ("p5.io.authorize.save-file", new Node ("p5.io.authorize.save-file", fileName).Add ("args", e.Args));
+                context.RaiseNative ("p5.io.authorize.modify-file", new Node ("p5.io.authorize.modify-file", fileName).Add ("args", e.Args));
 
                 // Verify path is correct according to conventions
                 if (!fileName.StartsWith ("/"))

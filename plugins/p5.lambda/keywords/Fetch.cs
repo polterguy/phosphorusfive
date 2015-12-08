@@ -11,14 +11,14 @@ using p5.exp.exceptions;
 namespace p5.lambda.keywords
 {
     /// <summary>
-    ///     Class wrapping the [fetch] keyword in p5.lambda
+    ///     Class wrapping the [fetch] keyword in p5 lambda
     /// </summary>
     public static class Fetch
     {
         /// <summary>
         ///     The [fetch] keyword, allows you to forward retrieve value results of evaluation of its body
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "fetch", Protection = EventProtection.LambdaClosed)]
         private static void lambda_fetch (ApplicationContext context, ActiveEventArgs e)
@@ -33,6 +33,7 @@ namespace p5.lambda.keywords
             if (e.Args.Children.Count (ix => ix.Name == "src") == e.Args.Count)
                 throw new LambdaException ("[fetch] was not given a lambda block to evaluate", e.Args, context);
 
+            // Figuring out offset to start evaluating from
             int offset = 0;
             Node curIdx = e.Args.FirstChild;
 

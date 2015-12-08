@@ -11,32 +11,25 @@ using p5.core;
 namespace p5.web.ui.request
 {
     /// <summary>
-    ///     Helper to retrieve and set Cookie values.
-    /// 
-    ///     Allows for you to retrieve and set items in your user's cookie storage.
-    /// 
-    ///     Cookies allows you to transfer data back to the client's web-browser, that will be transfered back to the server,
-    ///     for consecutive requests.
+    ///     Helper to retrieve and set Cookie values
     /// </summary>
     public static class Cookies
     {
         /// <summary>
-        ///     Retrieves Cookie object(s).
-        /// 
-        ///     Supply one or more keys to which items you wish to retrieve as the value of your main node.
+        ///     Retrieves Cookie object(s)
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-cookie", Protection = EventProtection.LambdaClosed)]
         private static void get_cookie (ApplicationContext context, ActiveEventArgs e)
         {
             CollectionBase.Get (context, e.Args, delegate (string key) {
 
-                //fetching cookie
+                // Fetching cookie
                 var cookie = HttpContext.Current.Request.Cookies.Get (key);
                 if (cookie != null && !string.IsNullOrEmpty (cookie.Value)) {
 
-                    // adding key node, and values beneath key node
+                    // Adding key node, and values beneath key node
                     return HttpUtility.UrlDecode (cookie.Value);
                 }
                 return null;
@@ -44,11 +37,9 @@ namespace p5.web.ui.request
         }
 
         /// <summary>
-        ///     Lists all keys in the Cookie object of client.
-        /// 
-        ///     Returns all keys for all items in your user's Cookie object.
+        ///     Lists all keys in the Cookie object of client
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-cookie-keys", Protection = EventProtection.LambdaClosed)]
         private static void list_cookie_keys (ApplicationContext context, ActiveEventArgs e)

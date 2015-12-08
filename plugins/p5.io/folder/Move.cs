@@ -20,7 +20,7 @@ namespace p5.io.folder
         /// <summary>
         ///     Moves or renames a folder
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "move-folder", Protection = EventProtection.LambdaClosed)]
         private static void move_folder (ApplicationContext context, ActiveEventArgs e)
@@ -31,7 +31,7 @@ namespace p5.io.folder
              * if folder exist from before
              */
 
-                        // Basic syntax checking
+            // Basic syntax checking
             if (e.Args.Value == null || e.Args.LastChild == null || e.Args.LastChild.Name != "to")
                 throw new ArgumentException ("[move-folder] needs both a value and a [to] node.");
 
@@ -59,8 +59,8 @@ namespace p5.io.folder
 
 
                 // Verifying user is authorized to both reading from source, and writing to destination
-                context.RaiseNative ("p5.io.authorize.load-folder", new Node ("p5.io.authorize.load-folder", sourceFolder).Add ("args", e.Args));
-                context.RaiseNative ("p5.io.authorize.save-folder", new Node ("p5.io.authorize.save-folder", destinationFolder).Add ("args", e.Args));
+                context.RaiseNative ("p5.io.authorize.read-folder", new Node ("p5.io.authorize.read-folder", sourceFolder).Add ("args", e.Args));
+                context.RaiseNative ("p5.io.authorize.modify-folder", new Node ("p5.io.authorize.modify-folder", destinationFolder).Add ("args", e.Args));
 
                 // Aborting early if there's nothing to do here ...
                 if (sourceFolder == destinationFolder)
@@ -73,7 +73,7 @@ namespace p5.io.folder
                     destinationFolder = Common.CreateNewUniqueFolderName (context, destinationFolder);
 
                     // Authorizing for new folder name
-                    context.RaiseNative ("p5.io.authorize.save-folder", new Node ("p5.io.authorize.save-folder", destinationFolder).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.modify-folder", new Node ("p5.io.authorize.modify-folder", destinationFolder).Add ("args", e.Args));
                 }
 
                 // Actually moving (or renaming) folder

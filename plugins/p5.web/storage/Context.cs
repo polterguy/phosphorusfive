@@ -12,14 +12,14 @@ using p5.core;
 namespace p5.web.storage
 {
     /// <summary>
-    ///     Helper to retrieve and set HttpContext values.
+    ///     Helper to retrieve and set HttpContext values
     /// </summary>
     public static class Context
     {
         /// <summary>
-        ///     Sets one or more HttpContext object(s).
+        ///     Sets one or more HttpContext object(s)
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set-context-value", Protection = EventProtection.LambdaClosed)]
         private static void set_context_value (ApplicationContext context, ActiveEventArgs e)
@@ -28,11 +28,11 @@ namespace p5.web.storage
 
                 if (value == null) {
 
-                    // removing object, if it exists
+                    // Removing object, if it exists
                     HttpContext.Current.Items.Remove (key);
                 } else {
 
-                    // adding object
+                    // Adding object
                     HttpContext.Current.Items [key] = value;
                 }
             });
@@ -41,7 +41,7 @@ namespace p5.web.storage
         /// <summary>
         ///     Retrieves HttpContext object(s)
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-context-value", Protection = EventProtection.LambdaClosed)]
         private static void get_context_value (ApplicationContext context, ActiveEventArgs e)
@@ -52,7 +52,7 @@ namespace p5.web.storage
         /// <summary>
         ///     Lists all keys in the HttpContext object
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-context-keys", Protection = EventProtection.LambdaClosed)]
         private static void list_context_keys (ApplicationContext context, ActiveEventArgs e)

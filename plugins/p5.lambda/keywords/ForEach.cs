@@ -12,14 +12,14 @@ using p5.exp.exceptions;
 namespace p5.lambda.keywords
 {
     /// <summary>
-    ///     Class wrapping the p5.lambda [for-each] keyword.
+    ///     Class wrapping the p5 lambda [for-each] keyword.
     /// </summary>
     public static class ForEach
     {
         /// <summary>
         ///     The [for-each] keyword allows you to iterate over the results of expressions.
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "for-each", Protection = EventProtection.LambdaClosed)]
         private static void lambda_for_each (ApplicationContext context, ActiveEventArgs e)
@@ -73,7 +73,7 @@ namespace p5.lambda.keywords
                                 IterateForEach (context, e.Args.Value, e.Args, oldForEach);
                             } else if (e.Args.Children.Where (ix => ix.Name != "").GetEnumerator ().MoveNext ()) {
 
-                                // assuming first non-empty name child node of for-each is "source",
+                                // Assuming first non-empty name child node of for-each is "source",
                                 // raising that node's name as Active Event, and iterating on the resulting
                                 // children from that Event invocation
                                 Node sourceNode = e.Args.Children.First(ix=>ix.Name != "");
@@ -81,18 +81,18 @@ namespace p5.lambda.keywords
                                 context.RaiseLambda (sourceNode.Name, sourceNode);
                                 sourceNode.UnTie (); // removing node that was used as source
 
-                                // value has presedence
+                                // Value has presedence
                                 if (sourceNode.Value == null || oldSourceValue == sourceNode.Value) {
 
-                                    // source was returned as nodes
+                                    // Source was returned as nodes
                                     foreach (var idxSource in sourceNode.Children) {
 
-                                        // iterating on the values returned from Active Event invocation
+                                        // Iterating on the values returned from Active Event invocation
                                         IterateForEach (context, idxSource, e.Args, oldForEach);
                                     }
                                 } else {
 
-                                    // source was returned as object in value of Active Event invocation
+                                    // Source was returned as object in value of Active Event invocation
                                     IterateForEach (context, sourceNode.Value, e.Args, oldForEach);
                                 }
                             }
@@ -103,7 +103,7 @@ namespace p5.lambda.keywords
         }
 
         /*
-         * invokes [for-each] scope once, setting the [__dp] correctly and resetting the for-each scope afterwards
+         * Invokes [for-each] scope once, setting the [__dp] correctly and resetting the for-each scope afterwards
          */
         private static void IterateForEach (ApplicationContext context, object source, Node args, Node oldForEach)
         {

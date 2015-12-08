@@ -44,7 +44,7 @@ namespace p5.web.widgets
         /// <summary>
         ///     Returns properties and/or attributes requested by caller as children nodes
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-widget-property", Protection = EventProtection.LambdaClosed)]
         private void get_widget_property (ApplicationContext context, ActiveEventArgs e)
@@ -91,7 +91,7 @@ namespace p5.web.widgets
         /// <summary>
         ///     Sets properties and/or attributes of web widgets
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set-widget-property", Protection = EventProtection.LambdaClosed)]
         private void set_widget_property (ApplicationContext context, ActiveEventArgs e)
@@ -131,7 +131,7 @@ namespace p5.web.widgets
         /// <summary>
         ///     Removes the properties and/or attributes of web widgets
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "delete-widget-property", Protection = EventProtection.LambdaClosed)]
         private void delete_widget_property (ApplicationContext context, ActiveEventArgs e)
@@ -165,7 +165,7 @@ namespace p5.web.widgets
         /// <summary>
         ///     Lists all existing properties for given web widget
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-widget-properties", Protection = EventProtection.LambdaClosed)]
         private void list_widget_properties (ApplicationContext context, ActiveEventArgs e)

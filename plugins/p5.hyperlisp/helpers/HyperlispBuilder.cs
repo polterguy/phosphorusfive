@@ -88,7 +88,7 @@ namespace p5.hyperlisp.helpers
 
             var type = node.Value.GetType ();
             if (type == typeof (string))
-                return; // string is "default" type information
+                return; // String is "default" type information
 
             builder.Append (
                 string.Format (":{0}",
@@ -103,7 +103,7 @@ namespace p5.hyperlisp.helpers
         private void AppendValue (StringBuilder builder, Node node)
         {
             if (node.Value == null)
-                return; // nothing to append here
+                return; // Nothing to append here
 
             var value = Utilities.Convert<string> (_context, node.Value, null, true);
             if (value.Contains ("\n")) {

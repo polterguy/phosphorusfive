@@ -17,7 +17,7 @@ namespace p5.threading
         /// <summary>
         ///     Sleeps the thread you invoke it on for a specified amount of milliseconds
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "sleep", Protection = EventProtection.LambdaClosed)]
         private static void threading_sleep (ApplicationContext context, ActiveEventArgs e)

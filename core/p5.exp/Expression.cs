@@ -86,7 +86,7 @@ namespace p5.exp
         ///     Evaluates expression for given <see cref="phosphorus.core.Node">node</see>
         /// </summary>
         /// <param name="evaluatedNode">Node to evaluate expression for</param>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="exNode">Node that contained expression, optional, necessary for 
         /// formatting operations</param>
         public Match Evaluate (ApplicationContext context, Node evaluatedNode, Node exNode = null)

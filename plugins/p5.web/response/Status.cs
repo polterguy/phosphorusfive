@@ -18,7 +18,7 @@ namespace p5.web.ui.response
         /// <summary>
         ///     Changes the HTTP status code for the current response
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set-http-status-code", Protection = EventProtection.LambdaClosed)]
         private static void set_http_status_code (ApplicationContext context, ActiveEventArgs e)
@@ -29,7 +29,7 @@ namespace p5.web.ui.response
         /// <summary>
         ///     Changes the HTTP status description for the current response
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set-http-status", Protection = EventProtection.LambdaClosed)]
         private static void set_http_status (ApplicationContext context, ActiveEventArgs e)

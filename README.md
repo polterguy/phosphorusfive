@@ -4,19 +4,19 @@ Phosphorus Five
 Phosphorus Five is a web application framework for Mono and ASP.NET. Phosphorus 
 is built around an entirely new axiom for system development based upon a new
 design patter called *"Active Events"*. Active Events, and its off spring,
-p5.lambda, a natural consequence of Active Events, opens up an entirely new 
+p5 lambda, a natural consequence of Active Events, opens up an entirely new 
 doorway to architecting your software solutions.
 
 p5 contains a managed Ajax library, allowing you to automatically map up the
-bridge between the server and the client. It also contains p5.lambda, a 
+bridge between the server and the client. It also contains p5 lambda, a 
 *"non-programming language"*, allowing you to orchestrate your applications
 building blocks together, in an extremely loosely manner. In addition, p5 contains
 Hyperlisp, which is a tree structure file-format, allowing you to easily create
-p5.lambda execution trees, and combine building blocks together, to form your 
+p5 lambda execution trees, and combine building blocks together, to form your 
 end software.
 
-The last and fifth piece in p5, is p5.lambda expressions, allowing for you to
-extract and modify tree structures (such as p5.lambda nodes) using a 
+The last and fifth piece in p5, is p5 lambda expressions, allowing for you to
+extract and modify tree structures (such as p5 lambda nodes) using a 
 Hyperdimensional Boolean Algebraic Graph Object Expression query language. The
 above definition might be a mouthful for you, however, think; *"SQL for Tree 
 Structures"*, and you've got the point.
@@ -34,25 +34,25 @@ out there you've seen previously.
 If you wish to use buzz words, and go all hype, then maybe *"fifth generation 
 non-programming language"* might apply ... ;)
 
-## Getting started with p5.lambda and Hyperlisp
+## Getting started with p5 lambda and Hyperlisp
 
-p5.lambda is a *"non-programming language"* created on top of Active Events. At its core,
+p5 lambda is a *"non-programming language"* created on top of Active Events. At its core,
 it is really nothing but loosely coupled Active Events, capable of executing
 rudimentary programming language constructs, such as *"while"*, *"for-each"*, *"if"*
-and so on. This makes p5.lambda extremely extendible, and allows for you to change
+and so on. This makes p5 lambda extremely extendible, and allows for you to change
 and/or add any keyword(s) you wish to the language, by creating your own Active Events.
 This creates an excellent encironment for you to create your own *"domain-specific
 language"* for your own applications.
 
-p5.lambda is very easy to learn, since it doesn't contain more than ~15 keywords, 
+p5 lambda is very easy to learn, since it doesn't contain more than ~15 keywords, 
 and should be used in symbiosis with your own Active Events, to provide an environment
 where you can *"orchestrate"* your applications together, by combining existing C#
 logic together, to form an *"application"* based upon loosely coupled plugins and
 modules.
 
-p5.lambda can use any file format capable of constructing key/value/children nodes
+p5 lambda can use any file format capable of constructing key/value/children nodes
 as its *"language"*, such as XML or JSON, but by default, a file format called
-*"Hyperlisp"* is being used. Below is a simple p5.lambda program written in Hyperlisp;
+*"Hyperlisp"* is being used. Below is a simple p5 lambda program written in Hyperlisp;
 
 ```
 _x
@@ -67,7 +67,7 @@ for-each:x:/./_x/*/?node
 ```
 
 The above example assumes a handler for *"p5.console.write-line"*, which is implemented
-in the lambda.exe file (phoshorus.exe project), which allows for executing p5.lambda 
+in the lambda.exe file (phoshorus.exe project), which allows for executing p5 lambda 
 files and code directly from a command line shell.
 
 If you create a file called *"hello.hl"* which you save in the same directory as you
@@ -82,7 +82,7 @@ translates into a Node structure with all *"foox"* being children nodes of the *
 Node, and so on. This just so happens to become a tree structure once parsed by the 
 Hyperlisp parser. At the same time, it is also a linear/sequential data structure, due
 to each new node, starting on a new line. This allows us to *"map"* a tree structure
-out for the p5.lambda execution engine, using a linear and human readable approach,
+out for the p5 lambda execution engine, using a linear and human readable approach,
 far easier to read and maintain than for instance both XML and JSON.
 
 Hyperlisp also supports most *"System.x"* types from .Net, such as *"_x:int:5"* 
@@ -92,8 +92,8 @@ create handlers for your own types to be serialized into Hyperlisp. Which makes
 Hyperlisp a *"better BSON than BSON"* one might argue.
 
 Notice how there is no difference between *"data"* and *"code"* from a semantic point
-of view in p5.lambda and Hyperlisp. There is also no difference between *"methods"* 
-and *"keywords"* in p5.lambda. This might for the experienced developer seem like
+of view in p5 lambda and Hyperlisp. There is also no difference between *"methods"* 
+and *"keywords"* in p5 lambda. This might for the experienced developer seem like
 a disadvantage, likely leading to unmaintainable code, and cluttered software 
 solutions, but actually the exact opposite is true.
 
@@ -101,7 +101,7 @@ By unlearning everything you think you knew about software, and attack it from a
 entirely new angle, you will actually discover how the *"everything is one"* 
 approach in p5, opens up an entirely new doorway to thinking about software, far
 superior to all previously learned conventions and best practice. For instance,
-there are no *"design patterns"* in p5.lambda, and neither are any design patterns
+there are no *"design patterns"* in p5 lambda, and neither are any design patterns
 necessary.
 
 ## Getting started with Active Events
@@ -144,10 +144,10 @@ database, config file, allowing the user to type them in through a GUI, etc.
 This feature just so happens to largely replace most features from Object 
 Oriented Programming, with a much better alternative for acomplishing the 
 same things, such as encapsulation and polymorphism. In addition, Active 
-Events is at the core of p5.lambda, allowing for creation of a 
+Events is at the core of p5 lambda, allowing for creation of a 
 *"non-programming language"*, largely replacing 98% of all your code, with 
 a much more flexible, maintainable and easy to understand construct, than 
-your *"code"* such as C# and Java. Hyperlisp and p5.lambda is basically 
+your *"code"* such as C# and Java. Hyperlisp and p5 lambda is basically 
 nothing but a thin abstraction on top of Active Events in fact.
 
 To raise an Active Event, you use the *"Raise"* method on your ApplicationContext
@@ -174,7 +174,7 @@ If you have an instance Active Event (not static method), then you need to use t
 instance of your class you wish to have notified when the Active Event is raised.
 
 Although P5 is largely focused on web application development, there is nothing
-stopping you from using p5.core, p5.exp, p5.lambda, and the rest of the plugins
+stopping you from using p5.core, p5.exp, p5 lambda, and the rest of the plugins
 in for instance a WinForms application, or any other type of app you can build using
 Mono and/or .Net. Which allows you to use Active Events in for instance desktop
 applications.
@@ -217,7 +217,7 @@ Then add the following code in your codebehind
 
 ```csharp
 using p5.ajax.core;
-using p5 = p5.ajax.widgets;
+using p5.= p5.ajax.widgets;
 
 /* ... rest of class ... */
 
@@ -329,9 +329,9 @@ right-clicking "phosphorus.application-pool". To create a release, you must make
 you have "uglifyjs" installed on your system, since the Linux Release configuration 
 of phosphorus.ajax depends upon uglifyjs to minify its javascript.
 
-## Creating an Ajax widget hierarchy with p5.lambda
+## Creating an Ajax widget hierarchy with p5 lambda
 
-Below is an example of a piece of p5.lambda code that allows you to create an
+Below is an example of a piece of p5 lambda code that allows you to create an
 Ajax widget, which once clicked, creates another Ajax widget, and injects it below
 your first widget.
 

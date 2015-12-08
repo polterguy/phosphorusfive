@@ -25,7 +25,7 @@ namespace p5.io.folder
         /// <summary>
         ///     Copies a folder
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "copy-folder", Protection = EventProtection.LambdaClosed)]
         private static void copy_folder (ApplicationContext context, ActiveEventArgs e)
@@ -63,8 +63,8 @@ namespace p5.io.folder
                         context);
 
                 // Verifying user is authorized to both reading from source, and writing to destination
-                context.RaiseNative ("p5.io.authorize.load-folder", new Node ("p5.io.authorize.load-folder", sourceFolder).Add ("args", e.Args));
-                context.RaiseNative ("p5.io.authorize.save-folder", new Node ("p5.io.authorize.save-folder", destinationFolder).Add ("args", e.Args));
+                context.RaiseNative ("p5.io.authorize.read-folder", new Node ("p5.io.authorize.read-folder", sourceFolder).Add ("args", e.Args));
+                context.RaiseNative ("p5.io.authorize.modify-folder", new Node ("p5.io.authorize.modify-folder", destinationFolder).Add ("args", e.Args));
 
                 // Getting new foldername for folder, if needed
                 if (Directory.Exists (rootFolder + destinationFolder)) {
@@ -73,7 +73,7 @@ namespace p5.io.folder
                     destinationFolder = Common.CreateNewUniqueFolderName (context, destinationFolder);
 
                     // Making sure user is authorized to writing to UPDATED folder
-                    context.RaiseNative ("p5.io.authorize.save-folder", new Node ("p5.io.authorize.save-folder", destinationFolder).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.modify-folder", new Node ("p5.io.authorize.modify-folder", destinationFolder).Add ("args", e.Args));
                 }
 
                 // Actually copying folder, getting source first, in case copying implies copy one
@@ -117,6 +117,7 @@ namespace p5.io.folder
                     string fullPath = "";
                     foreach (var idxFolder in entities) {
 
+                        // Checking if currently iterated folder part exist
                         fullPath += idxFolder + "/";
                         if (!Directory.Exists (destination + fullPath))
                             Directory.CreateDirectory (destination + fullPath);

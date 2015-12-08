@@ -21,7 +21,7 @@ namespace p5.io.folder
         /// <summary>
         ///     Checks to see if a folder exists on disc or not
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "folder-exist", Protection = EventProtection.LambdaClosed)]
         private static void folder_exist (ApplicationContext context, ActiveEventArgs e)
@@ -47,7 +47,7 @@ namespace p5.io.folder
                             context);
 
                     // Verifying user is authorized to reading from currently iterated folder
-                    context.RaiseNative ("p5.io.authorize.load-folder", new Node ("p5.io.authorize.load-folder", idxFolder).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.read-folder", new Node ("p5.io.authorize.read-folder", idxFolder).Add ("args", e.Args));
 
                     // Letting caller know whether or not this file exists
                     if (!Directory.Exists (rootFolder + idxFolder)) {

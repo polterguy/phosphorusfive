@@ -22,7 +22,7 @@ namespace p5.hyperlisp.helpers
         /// <summary>
         ///     Initializes a new instance of the <see cref="NodeBuilder" /> class
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="hyperlisp">Hyperlisp to convert into a list of nodes</param>
         public NodeBuilder (ApplicationContext context, string hyperlisp)
         {
@@ -33,13 +33,13 @@ namespace p5.hyperlisp.helpers
         /// <summary>
         ///     Creates a list of <see cref="phosphorus.core.Node" />s from the given Hyperlisp
         /// </summary>
-        /// <returns>The Hyperlisp converted to p5.lambda</returns>
+        /// <returns>The Hyperlisp converted to p5 lambda</returns>
         public List<Node> Nodes
         {
             get
             {
                 if (string.IsNullOrEmpty (_hyperlisp))
-                    return new List<Node> (new[] {new Node ("")}); // empty result
+                    return new List<Node> (new[] {new Node ("")}); // Empty result
 
                 // Creating root node such that we have access to it outside of iteration of tokens
                 var node = new Node ();
@@ -144,7 +144,7 @@ namespace p5.hyperlisp.helpers
             if (typeInfo == "string")
                 return value; // string is default type
 
-            // converting our string to the actual object, and returning back to caller
+            // Converting our string to the actual object, and returning back to caller
             return _context.RaiseNative (
                 "p5.hyperlisp.get-object-value." + (typeInfo == "node" ? "abs." : "") + typeInfo, 
                 new Node ("", value, new Node [] { new Node ("decode", true) })).Value;

@@ -322,7 +322,7 @@ namespace p5.web
             }
 
             // Checking if protected events contains given event name, and if so, returning true, else returning false
-            return context.RaiseNative("p5.lambda.get-protected-events")[evt] == null;
+            return context.RaiseNative("p5 lambda.get-protected-events")[evt] == null;
         }
 
         /*

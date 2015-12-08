@@ -8,17 +8,12 @@ using System.Configuration;
 namespace p5.webapp.code.configuration
 {
     /// <summary>
-    ///     Active event assembly.
-    /// 
-    ///     This defines one Assembly to use as an Active Event plugin assembly. Add a key in your web.config for your assemblies, 
-    ///     if you wish for the framework to automatically load it up, and use your assembly as a source for Active Event handlers.
+    ///     Active event assembly
     /// </summary>
     public class ActiveEventAssembly : ConfigurationElement
     {
         /// <summary>
-        ///     Gets the assembly.
-        /// 
-        ///     The assembly you wish to use as an Active Event handler assembly.
+        ///     Gets the assembly for this instance
         /// </summary>
         /// <value>The assembly</value>
         [ConfigurationProperty ("assembly", IsRequired = true)]

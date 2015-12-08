@@ -41,7 +41,7 @@ namespace p5.web.widgets
         /// <summary>
         ///     Creates an ajax container web widget
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.web.widgets.container", Protection = EventProtection.NativeClosed)]
         private void p5_web_controls_container (ApplicationContext context, ActiveEventArgs e)
@@ -52,7 +52,7 @@ namespace p5.web.widgets
         /// <summary>
         ///     Creates an ajax literal web widget
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.web.widgets.literal", Protection = EventProtection.NativeClosed)]
         private void p5_web_controls_literal (ApplicationContext context, ActiveEventArgs e)
@@ -63,7 +63,7 @@ namespace p5.web.widgets
         /// <summary>
         ///     Creates an ajax void web widget
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.web.widgets.void", Protection = EventProtection.NativeClosed)]
         private void p5_web_controls_void (ApplicationContext context, ActiveEventArgs e)
@@ -178,9 +178,9 @@ namespace p5.web.widgets
         }
 
         /*
-         * Ensuring that the "value" property is the same as the "ID" of the widget, 
-         * but only for widgets that require a value attribute to function properly, and
-         * for widgets that has not explicitly been given a value
+         * Ensuring that the "value" property is the same as the "ID" of the widget.
+         * But only if widget require a value attribute to function properly, and
+         * widget has not explicitly been given a value
          */
         private void EnsureValueProperty (Widget widget, Node node, ApplicationContext context)
         {

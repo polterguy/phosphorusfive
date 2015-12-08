@@ -18,6 +18,9 @@ namespace p5.web.widgets.helpers
     {
         private Dictionary<string, List<Node>> _events = new Dictionary<string, List<Node>>();
 
+        /*
+         * Returns all items that matches "key1"
+         */
         internal IEnumerable<Node> this [string key1]
         {
             get {
@@ -27,6 +30,9 @@ namespace p5.web.widgets.helpers
             }
         }
 
+        /*
+         * Returns item that matches both "key1" and "key2"
+         */
         internal Node this [string key1, string key2]
         {
             get {
@@ -91,7 +97,7 @@ namespace p5.web.widgets.helpers
         }
 
         /*
-         * returns all lambda objects that matches given key2
+         * Returns all lambda objects that matches given key2
          */
         internal IEnumerable<string> FindByKey2 (string key2)
         {

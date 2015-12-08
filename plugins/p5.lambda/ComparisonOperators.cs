@@ -13,14 +13,14 @@ using p5.exp.exceptions;
 namespace p5.lambda
 {
     /// <summary>
-    ///     Class wrapping all comparison operators in p5.lambda.
+    ///     Class wrapping all comparison operators in p5 lambda.
     /// </summary>
     public static class ComparisonOperators
     {
         /// <summary>
         ///     Equal comparison operator, yields true if value equals value of parent
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "equals", Protection = EventProtection.LambdaClosed)]
         [ActiveEvent (Name = "=", Protection = EventProtection.LambdaClosed)]
@@ -33,7 +33,7 @@ namespace p5.lambda
         /// <summary>
         ///     Non-equality comparison operator, yields true if value does not equals value of parent
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "not-equals", Protection = EventProtection.LambdaClosed)]
         [ActiveEvent (Name = "!=", Protection = EventProtection.LambdaClosed)]
@@ -46,7 +46,7 @@ namespace p5.lambda
         /// <summary>
         ///     More than comparison operator, yields true if parent's value is more than value
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "more-than", Protection = EventProtection.LambdaClosed)]
         [ActiveEvent (Name = ">", Protection = EventProtection.LambdaClosed)]
@@ -59,7 +59,7 @@ namespace p5.lambda
         /// <summary>
         ///     Less than comparison operator, yields true if parent's value is less than value
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "less-than", Protection = EventProtection.LambdaClosed)]
         [ActiveEvent (Name = "<", Protection = EventProtection.LambdaClosed)]
@@ -72,7 +72,7 @@ namespace p5.lambda
         /// <summary>
         ///     More than equals comparison operator, yields true if parent's value is more than or equals value
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "more-than-equals", Protection = EventProtection.LambdaClosed)]
         [ActiveEvent (Name = ">=", Protection = EventProtection.LambdaClosed)]
@@ -85,7 +85,7 @@ namespace p5.lambda
         /// <summary>
         ///     Less than equals comparison operator, yields true if parent's value is less than or equals value
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "less-than-equals", Protection = EventProtection.LambdaClosed)]
         [ActiveEvent (Name = "<=", Protection = EventProtection.LambdaClosed)]
@@ -98,7 +98,7 @@ namespace p5.lambda
         /// <summary>
         ///     Returns all comparison operators in Phosphorus Five
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "operators", Protection = EventProtection.LambdaClosedNativeOpen)]
         private static void operators (ApplicationContext context, ActiveEventArgs e)

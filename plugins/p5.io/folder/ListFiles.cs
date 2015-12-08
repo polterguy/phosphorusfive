@@ -21,7 +21,7 @@ namespace p5.io.folder
         /// <summary>
         ///     List all files in folder
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-files", Protection = EventProtection.LambdaClosed)]
         private static void list_files (ApplicationContext context, ActiveEventArgs e)
@@ -55,7 +55,7 @@ namespace p5.io.folder
                             context);
 
                     // Verifying user is authorized to reading from currently iterated folder
-                    context.RaiseNative ("p5.io.authorize.load-folder", new Node ("p5.io.authorize.load-folder", idxFolder).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.read-folder", new Node ("p5.io.authorize.read-folder", idxFolder).Add ("args", e.Args));
 
                     // Iterating all files in current directory, and returning as nodes beneath args given
                     foreach (var idxFile in Directory.GetFiles (rootFolder + idxFolder)) {
@@ -64,7 +64,7 @@ namespace p5.io.folder
                         string[] splits = idxFile.Split (new char[] {'/'});
                         if (!idxFile.EndsWith ("~") && !splits[splits.Length - 1].StartsWith (".")) {
 
-                            // File is not a backup file on Linux
+                            // File is not a backup file on Linux.
                             // Normalizing file path delimiters for both Linux and Windows, before we return it 
                             // back to caller, but first verifying file matches filter given
                             if (filters.Count == 0 || filters.Where (ix => idxFile.EndsWith ("." + ix)).GetEnumerator ().MoveNext ()) {

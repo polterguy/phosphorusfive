@@ -21,7 +21,7 @@ namespace p5.threading
         /// <summary>
         ///     Waits for all [fork] children to finish, or x milliseconds, before allowing execution to pass
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "wait", Protection = EventProtection.LambdaClosed)]
         private static void threading_wait (ApplicationContext context, ActiveEventArgs e)
@@ -55,7 +55,7 @@ namespace p5.threading
                 foreach (var idxThread in Fork.GetForkObjects (context, idxFork)) {
 
                     // Creating a new thread for each lambda object in fork statement, 
-                    // making sure we keep a reference to thread, that we can return to caller once done
+                    // making sure we keep a reference to thread, that we can return to caller once done.
                     // Notice, we cannot use "yield return" here, since that would postpone creation until
                     // IEnumerable is iterated over above, which means threads would be spawned and created
                     // sequentially ...!

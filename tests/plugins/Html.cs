@@ -20,7 +20,7 @@ namespace p5.unittests.plugins
         { }
 
         /// <summary>
-        ///     Converts some HTML to p5.lambda, verifying [p5.html.html2lambda] works as it should.
+        ///     Converts some HTML to p5 lambda, verifying [p5.html.html2lambda] works as it should.
         /// </summary>
         [Test]
         public void Html2Lambda ()
@@ -70,7 +70,7 @@ insert-before:x:/../0
         }
         
         /// <summary>
-        ///     Converts some HTML to p5.lambda and back again, verifying the results are what we started with.
+        ///     Converts some HTML to p5 lambda and back again, verifying the results are what we started with.
         /// </summary>
         [Test]
         public void Html2Lambda2Html ()
@@ -111,7 +111,7 @@ insert-before:x:/../0
         }
         
         /// <summary>
-        ///     Converts some HTML to p5.lambda, containing special characters, 
+        ///     Converts some HTML to p5 lambda, containing special characters, 
         ///     verifying [p5.html.html2lambda] works as it should.
         /// </summary>
         [Test]
@@ -162,7 +162,7 @@ insert-before:x:/../0
         }
         
         /// <summary>
-        ///     Converts some HTML to p5.lambda and back again, containing special characters,
+        ///     Converts some HTML to p5 lambda and back again, containing special characters,
         ///     verifying the results are what we started with.
         /// </summary>
         [Test]
@@ -204,7 +204,7 @@ insert-before:x:/../0
         }
         
         /// <summary>
-        ///     Converts some HTML to p5.lambda and back again, containing special characters,
+        ///     Converts some HTML to p5 lambda and back again, containing special characters,
         ///     verifying the results are what we started with.
         /// </summary>
         [Test]

@@ -12,32 +12,27 @@ using p5.exp;
 namespace p5.types
 {
     /// <summary>
-    ///     Helper class to create string representation of objects of different types.
-    /// 
-    ///     Contains all Active Events necessary to create a string from an object.
+    ///     Helper class to create string representation of objects of different types
     /// </summary>
     public static class GetStringValue
     {
         /*
-         * retrieving value in string format Active Events. all types that support automatic conversion
+         * Retrieving value in string format Active Events. All types that support automatic conversion
          * from their object representation to a string, do not need their own event handlers, since the
-         * default logic is to use "Convert.ChangeType". hence you only need to implement Active Event converters
-         * for types that do not implement IConvertible, or whos default implementation of IConvertible is
-         * not sufficient for creating a [*sane*] string representation of your object. examples are DateTime and 
+         * default logic is to use "Convert.ChangeType". Hence you only need to implement Active Event converters
+         * for types that do not implement IConvertible, or who's default implementation of IConvertible is
+         * not sufficient for creating a [*sane*] string representation of your object. Examples are DateTime and 
          * bool, since it creates a non-ISO date string representation by default, and Boolean, since it creates "True" and
          * "False", instead of "true" and "false" - [capital letters are avoided in hyperlisp, if we can]
          * 
-         * the name of all of these Active Events is "p5.hyperlisp.get-string-value." + the fully qualified name of your type,
+         * The name of all of these Active Events is "p5.hyperlisp.get-string-value." + the fully qualified name of your type,
          * or the return value of "typeof(YourType).FullName"
          */
 
         /// <summary>
-        ///     Creates a string from a Node.
-        /// 
-        ///     Will convert the given <see cref="phosphorus.core.Node">Node</see> to its string representation. The string representation
-        ///     of a node, is Hyperlisp.
+        ///     Creates a string from a Node
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-string-value.p5.core.Node", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_string_value_p5_core_Node (ApplicationContext context, ActiveEventArgs e)
@@ -48,11 +43,9 @@ namespace p5.types
         }
 
         /// <summary>
-        ///     Creates a string from an Expression.
-        /// 
-        ///     Will convert the given <see cref="p5.exp.Expression">Node</see> to its string representation.
+        ///     Creates a string from an Expression
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-string-value.p5.exp.Expression", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_string_value_p5_exp_Expression (ApplicationContext context, ActiveEventArgs e)
@@ -61,13 +54,9 @@ namespace p5.types
         }
 
         /// <summary>
-        ///     Creates a string from a date.
-        /// 
-        ///     Will convert the given System.DateTime object to its string representation. The string representation of a DateTime is
-        ///     its ISO standardized format, meaning for instance; "yy-MM-dd". Its time parts, and milliseconds parts, will only be
-        ///     converted, if they contain anything but "0".
+        ///     Creates a string from a date
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-string-value.System.DateTime", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_string_value_System_DateTime (ApplicationContext context, ActiveEventArgs e)
@@ -82,11 +71,9 @@ namespace p5.types
         }
 
         /// <summary>
-        ///     Creates a string from a timespan.
-        /// 
-        ///     Will convert the given System.TimeSpan to its string representation.
+        ///     Creates a string from a timespan
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-string-value.System.TimeSpan", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_string_value_System_TimeSpan (ApplicationContext context, ActiveEventArgs e)
@@ -95,11 +82,9 @@ namespace p5.types
         }
 
         /// <summary>
-        ///     Creates a string from a bool.
-        /// 
-        ///     Will convert the given System.Boolean to its string representation, meaning either "false" or "true". Notice, no capital letters.
+        ///     Creates a string from a bool
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-string-value.System.Boolean", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_string_value_System_Boolean (ApplicationContext context, ActiveEventArgs e)
@@ -108,12 +93,9 @@ namespace p5.types
         }
 
         /// <summary>
-        ///     Creates a string from a byte array.
-        /// 
-        ///     Will convert the given System.Byte[] to a string. If [encode] is true, then it will base64 encode the
-        ///     string, otherwise it will use Encoding.UTF8.GetString to create a string from the byte array.
+        ///     Creates a string from a byte array
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.hyperlisp.get-string-value.System.Byte[]", Protection = EventProtection.NativeClosed)]
         private static void p5_hyperlisp_get_string_value_System_ByteBlob (ApplicationContext context, ActiveEventArgs e)

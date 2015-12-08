@@ -27,7 +27,7 @@ set-protected-event:sys42.show-code
     set:x:/../**/literal/*/element/=pre/./*/innerValue?value
       src:x:/./-?value
 
-  // creating a widget showing the Hyperlisp code created from the given p5.lambda tree
+  // creating a widget showing the Hyperlisp code created from the given p5 lambda tree
   create-widget
     class:col-xs-12
     style:"position:relative;"

@@ -166,7 +166,7 @@ namespace p5
              */
             private static void ExecuteHyperlispFile (ApplicationContext context, string filePath)
             {
-                // Loading file, converting to Lambda, for then to evaluate as p5.lambda
+                // Loading file, converting to Lambda, for then to evaluate as p5 lambda
                 context.RaiseNative ("eval", context.RaiseNative ("load-file", new Node("", filePath)) [0]);
             }
 

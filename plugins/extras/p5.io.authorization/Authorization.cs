@@ -27,10 +27,10 @@ namespace p5.io.authorization
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.io.authorize.save-file", Protection = EventProtection.NativeClosed)]
-        private static void p5_io_authorize_save_file (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.io.authorize.modify-file", Protection = EventProtection.NativeClosed)]
+        private static void p5_io_authorize_modify_file (ApplicationContext context, ActiveEventArgs e)
         {
-            AuthorizationHelper.AuthorizeSaveFile (
+            AuthorizationHelper.AuthorizeModifyFile (
                 context, 
                 Common.NormalizeFileName (e.Args.Get<string> (context)), 
                 e.Args ["args"].Get<Node> (context));
@@ -41,38 +41,38 @@ namespace p5.io.authorization
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.io.authorize.load-file", Protection = EventProtection.NativeClosed)]
-        private static void p5_io_authorize_load_file (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.io.authorize.read-file", Protection = EventProtection.NativeClosed)]
+        private static void p5_io_authorize_read_file (ApplicationContext context, ActiveEventArgs e)
         {
-            AuthorizationHelper.AuthorizeLoadFile (
+            AuthorizationHelper.AuthorizeReadFile (
                 context, 
                 Common.NormalizeFileName (e.Args.Get<string> (context)), 
                 e.Args ["args"].Get<Node> (context));
         }
 
         /// <summary>
-        ///     Throws an exception if user is not authorized to save the given file
+        ///     Throws an exception if user is not authorized to modify the given folder
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.io.authorize.save-folder", Protection = EventProtection.NativeClosed)]
-        private static void p5_io_authorize_save_folder (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.io.authorize.modify-folder", Protection = EventProtection.NativeClosed)]
+        private static void p5_io_authorize_modify_folder (ApplicationContext context, ActiveEventArgs e)
         {
-            AuthorizationHelper.AuthorizeSaveFolder (
+            AuthorizationHelper.AuthorizeModifyFolder (
                 context, 
                 Common.NormalizeFolderName (e.Args.Get<string> (context)), 
                 e.Args ["args"].Get<Node> (context));
         }
 
         /// <summary>
-        ///     Throws an exception if user is not authorized to read the given file
+        ///     Throws an exception if user is not authorized to read from the given folder
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.io.authorize.load-folder", Protection = EventProtection.NativeClosed)]
-        private static void _authorize_load_folder (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.io.authorize.read-folder", Protection = EventProtection.NativeClosed)]
+        private static void _authorize_read_folder (ApplicationContext context, ActiveEventArgs e)
         {
-            AuthorizationHelper.AuthorizeLoadFolder (
+            AuthorizationHelper.AuthorizeReadFolder (
                 context, 
                 Common.NormalizeFolderName (e.Args.Get<string> (context)), 
                 e.Args ["args"].Get<Node> (context));

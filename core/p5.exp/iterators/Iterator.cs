@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using p5.core;
 
 /// <summary>
-///     Main namespace for all p5.lambda Expression Iterators
+///     Main namespace for all p5 lambda Expression Iterators
 /// </summary>
 namespace p5.exp.iterators
 {

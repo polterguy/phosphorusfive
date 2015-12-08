@@ -41,7 +41,7 @@ namespace p5.hyperlisp.helpers
             /*
              * Type, or content token.
              * Whether or not it's a type or a content token, is defined if another TypeOrContent token follows it.
-             * if another ContentOrType token follows it, with a Separator token between them, but no CarriageReturn
+             * If another ContentOrType token follows it, with a Separator token between them, but no CarriageReturn
              * token between them, the token is a "type token", otherwise it's a "content token" type
              */
             TypeOrContent
@@ -66,8 +66,8 @@ namespace p5.hyperlisp.helpers
         internal TokenType Type { get; private set; }
 
         /*
-         * Value or "content" of token, typically ":", "\r\n", an even number of spaces, or any other arbitrary string value, depending
-         * upon the Type of token
+         * Value or "content" of token, typically ":", "\r\n", an even number of spaces, or any other arbitrary 
+         * string value, depending upon the Type of token
          */
         internal string Value { get; private set; }
 

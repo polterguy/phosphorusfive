@@ -97,7 +97,7 @@ namespace p5.web.widgets
         /// <summary>
         ///     Lists all existing ajax events for given widget(s)
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-widget-ajax-events", Protection = EventProtection.LambdaClosed)]
         private void list_widget_ajax_events (ApplicationContext context, ActiveEventArgs e)

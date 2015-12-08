@@ -31,7 +31,7 @@ namespace p5.exp
         /// <summary>
         ///     Sets one or more values in collection
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="node">Root node of collection Active Event invoker</param>
         /// <param name="functor">Callback functor, will be invoked once for each key</param>
         public static void Set (ApplicationContext context, Node args, SetDelegate functor, bool isNative = false)
@@ -62,7 +62,7 @@ namespace p5.exp
         /// <summary>
         ///     Gets a value from a collection
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="node">Root node of collection Active Event invoker</param>
         /// <param name="functor">Callback functor, will be invoked once for each key</param>
         public static void Get (ApplicationContext context, Node args, GetDelegate functor, bool isNative = false)
@@ -114,7 +114,7 @@ namespace p5.exp
                             } else {
 
                                 // Value is any "other type of value", returning it anyway, even though it
-                                // cannot possibly have come from p5.lambda, to allow user to retrieve "any values"
+                                // cannot possibly have come from p5 lambda, to allow user to retrieve "any values"
                                 // that exists
                                 resultNode.Value = value;
                             }
@@ -131,7 +131,7 @@ namespace p5.exp
         /// <summary>
         ///     Lists all items from a collection
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="node">Root node of Active Event invoked</param>
         /// <param name="functor">Callback functor, will be invoked once to retrieve all keys from collection</param>
         public static void List (ApplicationContext context, Node node, IEnumerable list, bool isNative = false)

@@ -13,14 +13,14 @@ using p5.exp;
 namespace p5.html
 {
     /// <summary>
-    ///     Class to help transform p5.lambda to HTML
+    ///     Class to help transform p5 lambda to HTML
     /// </summary>
     public static class Lambda2Html
     {
         /// <summary>
-        ///     Creates an HTML document from the given p5.lambda object
+        ///     Creates an HTML document from the given p5 lambda object
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.html.lambda2html", Protection = EventProtection.LambdaClosed)]
         private static void p5_html_lambda2html (ApplicationContext context, ActiveEventArgs e)
@@ -40,7 +40,7 @@ namespace p5.html
         }
 
         /*
-         * helper for above
+         * Helper for above
          */
         private static bool Convert (
             ApplicationContext context, 
@@ -71,7 +71,7 @@ namespace p5.html
         }
 
         /*
-         * helper method, to parse and retrieve attributes
+         * Helper method, to parse and retrieve attributes
          */
         private static string GetAttributes (Node node)
         {

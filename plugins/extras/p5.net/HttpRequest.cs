@@ -151,7 +151,7 @@ namespace p5.net
                             stream.Write (byteContent, 0, byteContent.Length);
                         } else {
 
-                            // Some sort of "text" type of content, can also be Hyperlisp
+                            // Some sort of "text" type of content, can also be Hyperlisp.
                             // Setting our Content-Type header, defaulting to "text/plain", unless Hyperlisp is given
                             request.ContentType = args.GetExChildValue (
                                 "Content-Type", 
@@ -161,8 +161,10 @@ namespace p5.net
                             // Setting other headers
                             SetRequestHeaders (context, request, args);
 
-                            // Any other type of content, such as string/integer/boolean etc. Converting to string before we write.
+                            // Any other type of content, such as string/integer/boolean etc
                             using (TextWriter writer = new StreamWriter (stream)) {
+
+                                // Converting to string before we write
                                 writer.Write (Utilities.Convert<string> (context, content, ""));
                             }
                         }
@@ -206,7 +208,7 @@ namespace p5.net
                 throw new LambdaException ("No file given, probably an expression leading into oblivion", args, context);
 
             // Making sure user is authorized to read the file request should send
-            context.RaiseNative ("p5.io.authorize.load-file", new Node ("p5.io.authorize.load-file", file).Add ("args", args));
+            context.RaiseNative ("p5.io.authorize.read-file", new Node ("p5.io.authorize.read-file", file).Add ("args", args));
 
             // Opening request stream, and render file as content of request
             using (Stream stream = request.GetRequestStream ()) {
@@ -325,10 +327,10 @@ namespace p5.net
                     // Hyperlisp, possibly special treatment
                     using (TextReader reader = new StreamReader (stream, Encoding.GetEncoding (response.CharacterSet ?? "UTF8"))) {
 
-                        // Checking if caller wants to automatically convert to p5.lambda, which is default behavior
+                        // Checking if caller wants to automatically convert to p5 lambda, which is default behavior
                         if (args.GetExChildValue ("convert", context, true)) {
 
-                            // Converting from Hyperlisp to p5.lambda
+                            // Converting from Hyperlisp to p5 lambda
                             Node convert = context.RaiseNative ("lisp2lambda", new Node ("content", reader.ReadToEnd ()));
                             convert.Value = null;
                             result.Add (convert);
@@ -371,7 +373,7 @@ namespace p5.net
             var filename = XUtil.Single<string> (context, args ["file"]);
 
             // Making sure user is authorized to write/overwrite the file response should be saved to
-            context.RaiseNative ("p5.io.authorize.save-file", new Node ("p5.io.authorize.save-file", filename).Add ("args", args));
+            context.RaiseNative ("p5.io.authorize.modify-file", new Node ("p5.io.authorize.modify-file", filename).Add ("args", args));
 
             // Retrieving HTTP response
             HttpWebResponse response = (HttpWebResponse)request.GetResponse ();

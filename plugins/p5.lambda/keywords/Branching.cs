@@ -13,14 +13,14 @@ using p5.lambda.helpers;
 namespace p5.lambda.keywords
 {
     /// <summary>
-    ///     Class wrapping conditional p5.lambda keywords, such as [if], [else-if] and [else]
+    ///     Class wrapping conditional p5 lambda keywords, such as [if], [else-if] and [else]
     /// </summary>
     public static class Branching
     {
         /// <summary>
-        ///     The [if] keyword allows for conditional execution of p5.lambda nodes
+        ///     The [if] keyword allows for conditional execution of p5 lambda nodes
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "if", Protection = EventProtection.LambdaClosed)]
         private static void lambda_if (ApplicationContext context, ActiveEventArgs e)
@@ -35,9 +35,9 @@ namespace p5.lambda.keywords
         }
 
         /// <summary>
-        ///     The [else-if] keyword allows for conditional execution of p5.lambda nodes
+        ///     The [else-if] keyword allows for conditional execution of p5 lambda nodes
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "else-if", Protection = EventProtection.LambdaClosed)]
         private static void lambda_else_if (ApplicationContext context, ActiveEventArgs e)
@@ -65,9 +65,9 @@ namespace p5.lambda.keywords
         }
 
         /// <summary>
-        ///     The [else] keyword allows for conditional execution of p5.lambda nodes
+        ///     The [else] keyword allows for conditional execution of p5 lambda nodes
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "else", Protection = EventProtection.LambdaClosed)]
         private static void lambda_else (ApplicationContext context, ActiveEventArgs e)

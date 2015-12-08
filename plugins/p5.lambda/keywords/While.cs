@@ -11,22 +11,22 @@ using p5.lambda.helpers;
 namespace p5.lambda.keywords
 {
     /// <summary>
-    ///     Class wrapping the [while] keyword in p5.lambda.
+    ///     Class wrapping the [while] keyword in p5 lambda
     /// </summary>
     public static class While
     {
         /// <summary>
-        ///     The [while] keyword allows you to loop for as long as some condition is true.
+        ///     The [while] keyword allows you to loop for as long as some condition is true
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "while", Protection = EventProtection.LambdaClosed)]
         private static void lambda_while (ApplicationContext context, ActiveEventArgs e)
         {
-            // storing old while "body"
+            // Storing old while "body" such that we can evaluate [while] immutably for each iteration
             Node oldWhile = e.Args.Clone ();
 
-            // storing old while value, since Evaluate changes it to either true or false
+            // Storing old while value, since Evaluate changes it to either true or false
             var oldWhileValue = e.Args.Value;
 
             // Trying to prevent infinite loops
@@ -37,18 +37,21 @@ namespace p5.lambda.keywords
             var condition = new Conditions ();
             while (condition.Evaluate (context, e.Args)) {
 
-                // changing value back to what it was, to support things like "while:int:5" and so on
+                // Changing value back to what it was, to support things like "while:int:5" and so on
                 e.Args.Value = oldWhileValue;
 
-                // executing current scope as long as while evaluates to true
+                // Executing current scope as long as while evaluates to true
                 condition.ExecuteCurrentScope (context, e.Args);
 
-                // making sure each iteration is immutable
+                // Making sure each iteration is immutable
                 e.Args.Clear ();
                 e.Args.AddRange (oldWhile.Clone ().Children);
 
                 if (!uncheck && iterations++ > 10000)
-                    throw new LambdaException ("Possible infinite loop encountered, more than 10.000 iterations of [while] loop. If this is not correct, then please make sure you invoke your [while] with [_unchecked] equals false", e.Args, context);
+                    throw new LambdaException (
+                        "Possible infinite loop encountered, more than 10.000 iterations of [while] loop", 
+                        e.Args, 
+                        context);
             }
         }
     }

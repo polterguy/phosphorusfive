@@ -20,9 +20,9 @@ namespace p5.hyperlisp
     public static class Hyperlisp
     {
         /// <summary>
-        ///     Tranforms the given Hyperlisp to a p5.lambda node structure
+        ///     Tranforms the given Hyperlisp to a p5 lambda node structure
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "lisp2lambda", Protection = EventProtection.LambdaClosed)]
         private static void lisp2lambda (ApplicationContext context, ActiveEventArgs e)
@@ -42,15 +42,15 @@ namespace p5.hyperlisp
                     builder.Append (idxHyperlisp);
                 }
 
-                // Utilizing NodeBuilder to create our p5.lambda return value
+                // Utilizing NodeBuilder to create our p5 lambda return value
                 e.Args.AddRange (new NodeBuilder (context, builder.ToString ()).Nodes);
             }
         }
 
         /// <summary>
-        ///     Transforms the given p5.lambda node structure to Hyperlisp
+        ///     Transforms the given p5 lambda node structure to Hyperlisp
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "lambda2lisp", Protection = EventProtection.LambdaClosed)]
         private static void lambda2lisp (ApplicationContext context, ActiveEventArgs e)
@@ -58,7 +58,11 @@ namespace p5.hyperlisp
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args)) {
 
-                e.Args.Value = new HyperlispBuilder (context, XUtil.Iterate<Node> (context, e.Args, false, false, true)).Hyperlisp;
+                // Using HyperlispBuilder to create Hyperlisp from p5 lambda
+                e.Args.Value = new HyperlispBuilder (
+                    context, 
+                    XUtil.Iterate<Node> (context, e.Args, false, false, true))
+                    .Hyperlisp;
             }
         }
     }

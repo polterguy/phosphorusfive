@@ -22,7 +22,7 @@ namespace phosphorus.crypto
         /// <summary>
         ///     Creates a base64 encoded MD5 hash string of input given
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "md5-hash", Protection = EventProtection.LambdaClosed)]
         private static void md5_hash (ApplicationContext context, ActiveEventArgs e)

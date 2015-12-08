@@ -67,7 +67,7 @@ namespace p5.webapp.code
         /// <summary>
         ///     Sets one or more page object(s)
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set-page-value", Protection = EventProtection.LambdaClosed)]
         private void set_page_value (ApplicationContext context, ActiveEventArgs e)
@@ -91,7 +91,7 @@ namespace p5.webapp.code
         /// <summary>
         ///     Retrieves page object(s)
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-page-value", Protection = EventProtection.LambdaClosed)]
         private void get_page_value (ApplicationContext context, ActiveEventArgs e)
@@ -102,7 +102,7 @@ namespace p5.webapp.code
         /// <summary>
         ///     Lists all keys in the page object
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-page-keys", Protection = EventProtection.LambdaClosed)]
         private void list_page_keys (ApplicationContext context, ActiveEventArgs e)

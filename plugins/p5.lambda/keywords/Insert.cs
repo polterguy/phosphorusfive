@@ -12,14 +12,14 @@ using p5.exp.exceptions;
 namespace p5.lambda.keywords
 {
     /// <summary>
-    ///     Class wrapping execution engine keyword [insert-before] and [insert-after].
+    ///     Class wrapping execution engine keyword [insert-before] and [insert-after]
     /// </summary>
     public static class Insert
     {
         /// <summary>
-        ///     The [insert-before] keyword allows you to insert nodes before another node.
+        ///     The [insert-before] keyword allows you to insert nodes before another node
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "insert-before", Protection = EventProtection.LambdaClosed)]
         private static void lambda_insert_before (ApplicationContext context, ActiveEventArgs e)
@@ -28,9 +28,9 @@ namespace p5.lambda.keywords
         }
         
         /// <summary>
-        ///     The [insert-after] keyword allows you to insert nodes after another node.
+        ///     The [insert-after] keyword allows you to insert nodes after another node
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "insert-after", Protection = EventProtection.LambdaClosed)]
         private static void lambda_insert_after (ApplicationContext context, ActiveEventArgs e)
@@ -39,7 +39,7 @@ namespace p5.lambda.keywords
         }
 
         /*
-         * commonalities for both Active Events
+         * Commonalities for both Active Events
          */
         private static void InsertNodes (Node args, ApplicationContext context, bool after)
         {
@@ -48,62 +48,62 @@ namespace p5.lambda.keywords
 
             if (args.Count > 0 && args.LastChild.Name == "rel-src") {
 
-                // relative source
+                // Relative source
                 InsertRelativeSource (args, context, after);
             } else {
 
-                // static source
+                // Static source
                 InsertStaticSource (args, context, after);
             }
         }
 
         /*
-         * source is static
+         * Source is static
          */
         private static void InsertStaticSource (Node args, ApplicationContext context, bool after)
         {
-            // retrieving source before we start iterating destination,
+            // Retrieving source before we start iterating destination,
             // in case destination and source overlaps
             var sourceNodes = XUtil.SourceNodes (context, args);
 
-            // making sure there is a source
+            // Making sure there is a source
             if (sourceNodes == null)
                 return;
 
-            // looping through every destination node
+            // Looping through every destination node
             foreach (var idxDestination in args.Get<Expression> (context).Evaluate (context, args, args)) {
 
-                // verifying destination actually is a node
+                // Verifies destination actually is a node
                 var curDest = idxDestination.Value as Node;
                 if (curDest == null)
                     throw new LambdaException ("cannot [insert-before] or [insert-after] into something that's not a node", args, context);
 
-                // looping through each node in source
+                // Looping through each node in source
                 foreach (var idxSourceNode in sourceNodes) {
 
-                    // inserting copy into currently iterated destination
+                    // Inserting copy into currently iterated destination
                     curDest.Parent.Insert (curDest.Parent.IndexOf (curDest) + (after ? 1 : 0), idxSourceNode.Clone ());
                 }
             }
         }
 
         /*
-         * relative source
+         * Relative source
          */
         private static void InsertRelativeSource (Node args, ApplicationContext context, bool after)
         {
-            // looping through each destination first, since source is relative to destination
+            // Looping through each destination first, since source is relative to destination
             foreach (var idxDestination in args.Get<Expression> (context).Evaluate (context, args, args)) {
 
-                // verifying destination actually is a node
+                // Verifies destination actually is a node
                 var curDest = idxDestination.Value as Node;
                 if (curDest == null)
                     throw new LambdaException ("cannot [insert-before] or [insert-after] into something that's not a node", args, context);
 
-                // evaluating source relative to destination, and iterating over each relative source
+                // Evaluating source relative to destination, and iterating over each relative source
                 foreach (var idxSource in XUtil.SourceNodes (context, args, idxDestination.Node)) {
 
-                    // inserting copy of source into currently iterated destination
+                    // Inserting copy of source into currently iterated destination
                     curDest.Parent.Insert (curDest.Parent.IndexOf (curDest) + (after ? 1 : 0), idxSource.Clone ());
                 }
             }

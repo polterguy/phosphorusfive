@@ -1,6 +1,6 @@
 
 /*
- * Allows the user to execute p5.lambda given through a 
+ * Allows the user to execute p5 lambda given through a 
  * syntax highlighted textarea widget, seeing the results 
  * in another textarea result widget. Relies upon CodeMirror.
  */
@@ -110,7 +110,7 @@ create-widget:executor
             set-session-value:executor.current-code
               src
 
-            // Then executing p5.lambda nodes, in such a way that our converted hyperlisp 
+            // Then executing p5 lambda nodes, in such a way that our converted hyperlisp 
             // becomes the "root node", while still reachable after execution is done!
             set:x:/+2/#/*
             add:x:/+/#
@@ -120,7 +120,7 @@ create-widget:executor
             // Notice, [eval-mutable], since we want to retrieve transformed code after execution!
             eval-mutable:x:/-/#
 
-            // Then converting p5.lambda result nodes to text, and returning back to client as JSON
+            // Then converting p5 lambda result nodes to text, and returning back to client as JSON
             lambda2lisp:x:/-2/#/*
             return-response-object:code
               src:x:/./-?value

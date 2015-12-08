@@ -17,13 +17,13 @@ namespace p5.lambda.events
     /// </summary>
     public static class Events
     {
-        // contains our list of dynamically created Active Events
+        // Contains our list of dynamically created Active Events
         private static readonly Dictionary<string, Node> _events = new Dictionary<string, Node> ();
 
-        // used to create lock when creating, deleting and consuming events
+        // Used to create lock when creating, deleting and consuming events
         private static readonly object Lock;
 
-        // necessary to make sure we have a global "lock" object
+        // Necessary to make sure we have a global "lock" object
         static Events ()
         {
             Lock = new object ();
@@ -32,7 +32,7 @@ namespace p5.lambda.events
         /// <summary>
         ///     Creates (or deletes) an Active Event
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set-event", Protection = EventProtection.LambdaClosed)]
         [ActiveEvent (Name = "set-protected-event", Protection = EventProtection.LambdaClosed)]
@@ -53,7 +53,7 @@ namespace p5.lambda.events
         /// <summary>
         ///     Removes dynamically created Active Events
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "delete-events", Protection = EventProtection.LambdaClosed)]
         private static void delete_events (ApplicationContext context, ActiveEventArgs e)
@@ -69,9 +69,9 @@ namespace p5.lambda.events
         /// <summary>
         ///     Returns all protected dynamically created Active Events
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.lambda.get-protected-events", Protection = EventProtection.NativeClosed)]
+        [ActiveEvent (Name = "p5 lambda.get-protected-events", Protection = EventProtection.NativeClosed)]
         private static void p5_lambda_get_protected_events (ApplicationContext context, ActiveEventArgs e)
         {
             foreach (var idxEvt in _events.Keys) {
@@ -83,28 +83,28 @@ namespace p5.lambda.events
         /// <summary>
         ///     Retrieves dynamically created Active Events
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-events", Protection = EventProtection.LambdaClosed)]
         private static void get_event (ApplicationContext context, ActiveEventArgs e)
         {
-            // making sure we clean up and remove all arguments passed in after execution
+            // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
-                // looping through all events caller wish to retrieve
+                // Looping through all events caller wish to retrieve
                 foreach (var idxEventName in XUtil.Iterate<string> (context, e.Args)) {
 
-                    // looping through all existing event keys
+                    // Looping through all existing event keys
                     foreach (var idxKey in _events.Keys) {
 
-                        // checking is current event name contains current filter
+                        // Checking is current event name contains current filter
                         if (idxKey == idxEventName) {
 
-                            // current Active Event contains current filter value in its name, and we have a match
-                            // checking if event is already returned by a previous filter
+                            // Current Active Event contains current filter value in its name, and we have a match.
+                            // Checking if event is already returned by a previous filter, before adding
                             if (!e.Args.Children.Any (idxExisting => idxExisting.Get<string> (context) == idxKey)) {
 
-                                // no previous filter matched Active Event name
+                                // No previous filter matched Active Event name
                                 e.Args.Add (idxKey).LastChild.AddRange (_events [idxKey].Clone ().Children);
                             }
                         }
@@ -116,18 +116,18 @@ namespace p5.lambda.events
         /// <summary>
         ///     Lists all dynamically created Active Events.
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-events", Protection = EventProtection.LambdaClosed)]
         private static void list_events (ApplicationContext context, ActiveEventArgs e)
         {
-            // making sure we clean up and remove all arguments passed in after execution
+            // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
-                // retrieving filter, if any
+                // Retrieving filter, if any
                 var filter = new List<string> (XUtil.Iterate<string> (context, e.Args));
                 if (e.Args.Value != null && filter.Count == 0)
-                    return; // possibly a filter expression, leading into oblivion, since filter still was given, we return "nothing"
+                    return; // Possibly a filter expression, leading into oblivion, since filter still was given, we return "nothing"
 
                 // Getting all dynamic Active Events
                 ListActiveEvents (_events.Keys, e.Args, filter, "dynamic", context);
@@ -142,7 +142,7 @@ namespace p5.lambda.events
          */
         internal static void CreateEvent (string name, Node lambda, bool isProtected, ApplicationContext context)
         {
-            // acquiring lock since we're consuming object shared amongst more than one thread (_events)
+            // Acquire lock since we're consuming object shared amongst more than one thread (_events)
             lock (Lock) {
 
                 // Checking if this is a protected event and there is an existing event with same name, 
@@ -150,23 +150,23 @@ namespace p5.lambda.events
                 if (isProtected && _events.ContainsKey (name) || (_events.ContainsKey (name) && _events[name].Get<bool> (context)))
                     throw new LambdaException (string.Format ("Sorry, '{0}' is a protected event, and cannot be modified", name), lambda, context);
 
-                // making sure we have a key for Active Event name
+                // Making sure we have a key for Active Event name
                 _events [name] = new Node ("", isProtected);
 
-                // adding event to dictionary
+                // Adding event to dictionary
                 _events [name].AddRange (lambda.Children);
             }
         }
 
         /*
-         * removes the given dynamically created Active Event(s)
+         * Removes the given dynamically created Active Event(s)
          */
         internal static void DeleteEvent (string name, ApplicationContext context, Node args)
         {
-            // acquiring lock since we're consuming object shared amongst more than one thread (_events)
+            // Acquire lock since we're consuming object shared amongst more than one thread (_events)
             lock (Lock) {
 
-                // removing event, if it exists
+                // Removing event, if it exists
                 if (_events.ContainsKey (name)) {
 
                     // Checking if event is protected
@@ -227,40 +227,40 @@ namespace p5.lambda.events
         }
 
         /*
-         * responsible for executing all dynamically created Active Events or lambda objects
+         * Responsible for executing all dynamically created Active Events or lambda objects
          */
         [ActiveEvent (Name = "", Protection = EventProtection.NativeOpen)]
         private static void _p5_core_null_active_event (ApplicationContext context, ActiveEventArgs e)
         {
-            // checking if there's an event with given name in dynamically created events
-            // to avoid creating a lock on every single event invocation in system, we create a "double check"
+            // Checking if there's an event with given name in dynamically created events.
+            // To avoid creating a lock on every single event invocation in system, we create a "double check"
             // here, first checking for existance of key, then to create lock, for then to re-check again, which
             // should significantly improve performance of event invocations in the system
             if (_events.ContainsKey (e.Name)) {
 
-                // keep a reference to all lambda objects in current event, such that we can later delete them
+                // Keep a reference to all lambda objects in current event, such that we can later delete them
                 Node lambda = null;
 
-                // acquiring lock to make sure we're thread safe,
-                // this lock must be released before event is invoked, and is only here since we're consuming
+                // Acquire lock to make sure we're thread safe.
+                // This lock must be released before event is invoked, and is only here since we're consuming
                 // an object shared among different threads (_events)
                 lock (Lock) {
 
-                    // then re-checking after lock is acquired, to make sure event is still around
-                    // note, we could acquire lock before checking first time, but that would impose
+                    // Then re-checking after lock is acquired, to make sure event is still around.
+                    // Note, we could acquire lock before checking first time, but that would impose
                     // a significant overhead on all Active Event invocations, since "" (null Active Events)
-                    // are invoked for every single Active Event raised in system
+                    // are invoked for every single Active Event raised in system.
                     // In addition, by releasing the lock before we invoke the Active Event, we further
                     // avoid deadlocks by dynamically created Active Events invoking other dynamically
                     // created Active Events
                     if (_events.ContainsKey (e.Name)) {
 
-                        // adding event into execution lambda
+                        // Adding event into execution lambda
                         lambda = _events [e.Name];
                     }
                 }
 
-                // executing if lambda is around
+                // Executing if lambda is around
                 if (lambda != null) {
 
                     // Raising Active Event

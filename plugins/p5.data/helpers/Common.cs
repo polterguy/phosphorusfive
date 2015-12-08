@@ -115,7 +115,7 @@ namespace p5.data.helpers
         /// <summary>
         ///     Saves the affected files
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="changed">List of files that were changed, and hence will be saved</param>
         public static void SaveAffectedFiles (ApplicationContext context, List<Node> changed)
         {
@@ -290,7 +290,7 @@ namespace p5.data.helpers
         }
 
         /*
-         * helper to create directory
+         * Helper to create directory
          */
         private static void CreateNewDirectory (ApplicationContext context, string directory)
         {

@@ -10,29 +10,25 @@ using p5.exp;
 namespace p5.web.ui.request
 {
     /// <summary>
-    ///     Helper to retrieve HTTP headers.
-    /// 
-    ///     This class allows you to retrieve HTTP headers values for the current request.
+    ///     Helper to retrieve HTTP headers
     /// </summary>
     public static class Headers
     {
         /// <summary>
-        ///     Returns one or more HTTP header(s).
-        /// 
-        ///     The name of the header you wish to retrieve, is given as the value(s) of the main node.
+        ///     Returns one or more HTTP request header(s)
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-http-header", Protection = EventProtection.LambdaClosed)]
         private static void get_http_header (ApplicationContext context, ActiveEventArgs e)
         {
-            // making sure we clean up and remove all arguments passed in after execution
+            // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
-                // looping through each parameter requested by caller
+                // Looping through each parameter requested by caller
                 foreach (var idx in XUtil.Iterate<string> (context, e.Args)) {
 
-                    // adding parameter's name/value as Node return value
+                    // Adding parameter's name/value as Node return value
                     if (HttpContext.Current.Request.Headers [idx] != null)
                         e.Args.Add (idx, HttpContext.Current.Request.Headers [idx]);
                 }
@@ -40,11 +36,9 @@ namespace p5.web.ui.request
         }
 
         /// <summary>
-        ///     Lists all keys for our HTTP headers.
-        /// 
-        ///     Returns all keys for all HTTP headers in current request.
+        ///     Lists all keys for our HTTP headers
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-http-headers", Protection = EventProtection.LambdaClosed)]
         private static void list_http_headers (ApplicationContext context, ActiveEventArgs e)

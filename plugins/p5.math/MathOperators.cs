@@ -9,27 +9,94 @@ using p5.core;
 using p5.exp;
 
 /// <summary>
-///     Main snamespace for all math Active Events.
-/// 
-///     Contains math Active Events and operators.
+///     Main snamespace for all math Active Events
 /// </summary>
 namespace p5.math
 {
     /// <summary>
-    ///     Class wrapping all core math operators.
-    /// 
-    ///     Operators and math Active Events contained in this class are '+', '-', '/' and '*'.
+    ///     Class wrapping all core math operators
     /// </summary>
     public static class MathOperators
     {
+        /*
+         * Functor for calculating single instance
+         */
         private delegate dynamic CalculateFunctor (dynamic sum, dynamic input);
 
+        /// <summary>
+        ///     Adds zero or more objects to another object
+        /// </summary>
+        /// <param name="context">Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "+", Protection = EventProtection.LambdaClosed)]
+        private static void math_plus (ApplicationContext context, ActiveEventArgs e)
+        {
+            Calculate (delegate (dynamic sum, dynamic input) {
+                return sum + input;
+            }, e.Args, context);
+        }
+
+        /// <summary>
+        ///     Subtracts zero or more objects to another object
+        /// </summary>
+        /// <param name="context">Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "-", Protection = EventProtection.LambdaClosed)]
+        private static void math_minus (ApplicationContext context, ActiveEventArgs e)
+        {
+            Calculate (delegate (dynamic sum, dynamic input) {
+                return sum - input;
+            }, e.Args, context);
+        }
+
+        /// <summary>
+        ///     Multiplies zero or more objects with another object
+        /// </summary>
+        /// <param name="context">Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "*", Protection = EventProtection.LambdaClosed)]
+        private static void math_multiply (ApplicationContext context, ActiveEventArgs e)
+        {
+            Calculate (delegate (dynamic sum, dynamic input) {
+                return sum * input;
+            }, e.Args, context);
+        }
+        
+        /// <summary>
+        ///     Divides zero or more objects with another object
+        /// </summary>
+        /// <param name="context">Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "/", Protection = EventProtection.LambdaClosed)]
+        private static void math_divide (ApplicationContext context, ActiveEventArgs e)
+        {
+            Calculate (delegate (dynamic sum, dynamic input) {
+                return sum / input;
+            }, e.Args, context);
+        }
+        
+        /// <summary>
+        ///     Returns the modulo of zero or more objects
+        /// </summary>
+        /// <param name="context">Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "%", Protection = EventProtection.LambdaClosed)]
+        private static void math_modulo (ApplicationContext context, ActiveEventArgs e)
+        {
+            Calculate (delegate (dynamic sum, dynamic input) {
+                return sum % input;
+            }, e.Args, context);
+        }
+
+        /*
+         * Helper method for calculations, pass in specialized delegate for math function you wish to use
+         */
         private static void Calculate (
             CalculateFunctor functor, 
             Node args, 
             ApplicationContext context)
         {
-            // making sure we clean up and remove all arguments passed in after execution
+            // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (args)) {
 
                 dynamic result = args.GetExValue<object> (context, "");
@@ -40,7 +107,7 @@ namespace p5.math
                     resultType = result.GetType ();
                 } else {
 
-                    // type was explicitly passed in due to recursive invocations
+                    // Type was explicitly passed in due to recursive invocations
                     resultType = args ["__pf_type"].Get<Type> (context);
                     result = Convert.ChangeType (result, resultType);
                 }
@@ -62,86 +129,6 @@ namespace p5.math
                 }
                 args.Value = result;
             }
-        }
-
-        /// <summary>
-        ///     Adds zero or more objects to another object.
-        /// 
-        ///     Will traverse all children of the given node, change the type of its underlaying values to
-        ///     the type of the object in the value of main node, and add these two objects together.
-        /// </summary>
-        /// <param name="context">Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "+", Protection = EventProtection.LambdaClosed)]
-        private static void math_plus (ApplicationContext context, ActiveEventArgs e)
-        {
-            Calculate (delegate (dynamic sum, dynamic input) {
-                return sum + input;
-            }, e.Args, context);
-        }
-
-        /// <summary>
-        ///     Subtracts zero or more objects to another object.
-        /// 
-        ///     Will traverse all children of the given node, change the type of its underlaying values to
-        ///     the type of the object in the value of main node, and subtract these two objects from each other.
-        /// </summary>
-        /// <param name="context">Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "-", Protection = EventProtection.LambdaClosed)]
-        private static void math_minus (ApplicationContext context, ActiveEventArgs e)
-        {
-            Calculate (delegate (dynamic sum, dynamic input) {
-                return sum - input;
-            }, e.Args, context);
-        }
-
-        /// <summary>
-        ///     Multiplies zero or more objects with another object.
-        /// 
-        ///     Will traverse all children of the given node, change the type of its underlaying values to
-        ///     the type of the object in the value of main node, and multiply these objects together.
-        /// </summary>
-        /// <param name="context">Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "*", Protection = EventProtection.LambdaClosed)]
-        private static void math_multiply (ApplicationContext context, ActiveEventArgs e)
-        {
-            Calculate (delegate (dynamic sum, dynamic input) {
-                return sum * input;
-            }, e.Args, context);
-        }
-        
-        /// <summary>
-        ///     Divides zero or more objects with another object.
-        /// 
-        ///     Will traverse all children of the given node, change the type of its underlaying values to
-        ///     the type of the object in the value of main node, and divide this object with the value from the main node.
-        /// </summary>
-        /// <param name="context">Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "/", Protection = EventProtection.LambdaClosed)]
-        private static void math_divide (ApplicationContext context, ActiveEventArgs e)
-        {
-            Calculate (delegate (dynamic sum, dynamic input) {
-                return sum / input;
-            }, e.Args, context);
-        }
-        
-        /// <summary>
-        ///     Returns the modulo of zero or more objects.
-        /// 
-        ///     Will traverse all children of the given node, change the type of its underlaying values to
-        ///     the type of the object in the value of main node, and return the modulo of the two objects.
-        /// </summary>
-        /// <param name="context">Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "%", Protection = EventProtection.LambdaClosed)]
-        private static void math_modulo (ApplicationContext context, ActiveEventArgs e)
-        {
-            Calculate (delegate (dynamic sum, dynamic input) {
-                return sum % input;
-            }, e.Args, context);
         }
     }
 }

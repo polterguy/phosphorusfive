@@ -26,17 +26,17 @@ namespace p5.core
         NativeOpen,
 
         /// <summary>
-        ///     Both p5.lambda and native code can invoke this Active, but event cannot be handled multiple times
+        ///     Both p5 lambda and native code can invoke this Active, but event cannot be handled multiple times
         /// </summary>
         LambdaClosed,
 
         /// <summary>
-        ///     Both p5.lambda and native code can invoke this event, and there can exist multiple handlers for it, but only in native code
+        ///     Both p5 lambda and native code can invoke this event, and there can exist multiple handlers for it, but only in native code
         /// </summary>
         LambdaClosedNativeOpen,
 
         /// <summary>
-        ///     Both p5.lambda and native code can invoke and handle this Active, and event can be handled multiple times, also from lambda
+        ///     Both p5 lambda and native code can invoke and handle this Active, and event can be handled multiple times, also from lambda
         /// </summary>
         LambdaOpen
     }

@@ -25,7 +25,7 @@ namespace p5.io.authorization
         /*
          * Verifies user is authorized writing to the specified file
          */
-        internal static void AuthorizeSaveFile (ApplicationContext context, string filename, Node stack)
+        internal static void AuthorizeModifyFile (ApplicationContext context, string filename, Node stack)
         {
             // Checking if user is root (root is authorized to do almost everything!)
             if (context.Ticket.Role != "root") {
@@ -69,7 +69,7 @@ namespace p5.io.authorization
         /*
          * Verifies user is authorized reading from the specified file
          */
-        internal static void AuthorizeLoadFile (ApplicationContext context, string filename, Node stack)
+        internal static void AuthorizeReadFile (ApplicationContext context, string filename, Node stack)
         {
             // Verifying file is underneath authenticated user's folder, if it is underneath "users/" folders
             if (filename.ToLower ().StartsWith ("users/") && 
@@ -90,7 +90,7 @@ namespace p5.io.authorization
         /*
          * Verifies user is authorized writing to the specified folder
          */
-        internal static void AuthorizeSaveFolder (ApplicationContext context, string foldername, Node stack)
+        internal static void AuthorizeModifyFolder (ApplicationContext context, string foldername, Node stack)
         {
             // Checking if user is root (root is authorized to do almost everything!)
             if (context.Ticket.Role != "root") {
@@ -115,7 +115,7 @@ namespace p5.io.authorization
         /*
          * Verifies user is authorized reading from the specified folder
          */
-        internal static void AuthorizeLoadFolder (ApplicationContext context, string foldername, Node stack)
+        internal static void AuthorizeReadFolder (ApplicationContext context, string foldername, Node stack)
         {
             // Verifying file is underneath authorized user's folder, if it is underneath "/users/" folders
             if (foldername.StartsWith ("/users/") && foldername.Length != 7 && foldername.IndexOf (string.Format ("/users/{0}/", context.Ticket.Username)) != 0)

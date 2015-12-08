@@ -35,7 +35,7 @@ namespace lambda_exe
         /// <summary>
         ///     Allows you to write one line of text back to the console
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "p5.console.write", Protection = EventProtection.LambdaClosed)]
         private static void console_write_line (ApplicationContext context, ActiveEventArgs e)
@@ -173,7 +173,7 @@ namespace lambda_exe
             Console.WriteLine ();
             Console.WriteLine ();
             Console.WriteLine ("********************************************************************************");
-            Console.WriteLine ("*****    Instructions for Phosphorus Five command line p5.lambda executor  *****");
+            Console.WriteLine ("*****    Instructions for Phosphorus Five command line p5 lambda executor  *****");
             Console.WriteLine ("********************************************************************************");
             Console.WriteLine ();
             Console.WriteLine ("The lambda executor allows you to execute Hyperlisp files or code");

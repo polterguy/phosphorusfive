@@ -23,7 +23,7 @@ namespace p5.io.file
         /// <summary>
         ///     Copies a file
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "copy-file", Protection = EventProtection.LambdaClosed)]
         private static void copy_file (ApplicationContext context, ActiveEventArgs e)
@@ -38,10 +38,10 @@ namespace p5.io.file
             if (e.Args.Value == null || e.Args.LastChild == null || e.Args.LastChild.Name != "to")
                 throw new ArgumentException ("[copy-file] needs both a value and a [to] node.");
 
-            // making sure we clean up and remove all arguments passed in after execution
+            // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args)) {
 
-                // getting root folder
+                // Getting root folder
                 var rootFolder = Common.GetRootFolder (context);
 
                 // Getting source and verify path is correct according to conventions
@@ -61,8 +61,8 @@ namespace p5.io.file
                         context);
 
                 // Verifying user is authorized to both reading from source, and writing to destination
-                context.RaiseNative ("p5.io.authorize.load-file", new Node ("p5.io.authorize.load-file", sourceFile).Add ("args", e.Args));
-                context.RaiseNative ("p5.io.authorize.save-file", new Node ("p5.io.authorize.save-file", destinationFile).Add ("args", e.Args));
+                context.RaiseNative ("p5.io.authorize.read-file", new Node ("p5.io.authorize.read-file", sourceFile).Add ("args", e.Args));
+                context.RaiseNative ("p5.io.authorize.modify-file", new Node ("p5.io.authorize.modify-file", destinationFile).Add ("args", e.Args));
 
                 // Getting new filename of file, if needed
                 if (File.Exists (rootFolder + destinationFile)) {
@@ -71,7 +71,7 @@ namespace p5.io.file
                     destinationFile = Common.CreateNewUniqueFileName (context, destinationFile);
 
                     // Checking again if user is authorized to writing to new destination filename
-                    context.RaiseNative ("p5.io.authorize.save-file", new Node ("p5.io.authorize.save-file", destinationFile).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.modify-file", new Node ("p5.io.authorize.modify-file", destinationFile).Add ("args", e.Args));
                 }
 
                 // Actually moving (or renaming) file

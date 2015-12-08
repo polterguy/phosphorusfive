@@ -19,7 +19,7 @@ namespace p5.io.file
         /// <summary>
         ///     Removes files from disc
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "delete-file", Protection = EventProtection.LambdaClosed)]
         private static void delete_file (ApplicationContext context, ActiveEventArgs e)
@@ -34,7 +34,7 @@ namespace p5.io.file
                 foreach (var idxFile in Common.GetSource (e.Args, context)) {
 
                     // Verifying user is authorized to writing to destination file
-                    context.RaiseNative ("p5.io.authorize.save-file", new Node ("p5.io.authorize.save-file", idxFile).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.modify-file", new Node ("p5.io.authorize.modify-file", idxFile).Add ("args", e.Args));
 
                     // Verify path is correct according to conventions
                     if (!idxFile.StartsWith ("/"))

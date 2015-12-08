@@ -24,7 +24,7 @@ namespace p5.io.file
         /// <summary>
         ///     Returns true if file(s) exists
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "file-exist", Protection = EventProtection.LambdaClosed)]
         private static void file_exist (ApplicationContext context, ActiveEventArgs e)
@@ -43,7 +43,7 @@ namespace p5.io.file
                 foreach (var idxFile in sourceFiles) {
 
                     // Verifying user is authorized to reading from currently iterated file
-                    context.RaiseNative ("p5.io.authorize.load-file", new Node ("p5.io.authorize.load-file", idxFile).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.read-file", new Node ("p5.io.authorize.read-file", idxFile).Add ("args", e.Args));
 
                     // Verify path is correct according to conventions
                     if (!idxFile.StartsWith ("/"))

@@ -19,7 +19,7 @@ namespace p5.lambda.keywords
         /// <summary>
         ///     The [add] keyword allows you to append a source lambda object into a destination lambda object
         /// </summary>
-        /// <param name="context">Application context</param>
+        /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "add", Protection = EventProtection.LambdaClosed)]
         private static void lambda_add (ApplicationContext context, ActiveEventArgs e)
