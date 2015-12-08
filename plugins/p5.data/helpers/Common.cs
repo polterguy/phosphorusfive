@@ -25,7 +25,7 @@ namespace p5.data.helpers
         /// </summary>
         /// <param name="context">Context</param>
         /// <param name="e">E</param>
-        [ActiveEvent (Name = "p5.core.application-start", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "p5.core.application-start", Protection = EventProtection.NativeOpen)]
         private static void p5_core_application_start (ApplicationContext context, ActiveEventArgs e)
         {
             // Acquiring lock on database
