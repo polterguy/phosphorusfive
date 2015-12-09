@@ -9,7 +9,7 @@ using Org.BouncyCastle.Bcpg.OpenPgp;
 using p5.exp;
 using p5.core;
 
-namespace p5.mail
+namespace p5.mail.helpers
 {
     /// <summary>
     ///     Gnu Privacy Guard context for encrypting and decrypting Mime messages using PGP

@@ -108,7 +108,7 @@ namespace p5.hyperlisp.helpers
             var value = Utilities.Convert<string> (_context, node.Value, null, true);
             if (value.Contains ("\n")) {
                 builder.Append (string.Format (@":@""{0}""", value.Replace (@"""", @"""""")));
-            } else if (value.Contains (":") || value.Trim () != value) {
+            } else if (value.Contains (":") || value.Trim () != value || value.Contains ("\"")) {
                 builder.Append (string.Format (@":""{0}""", value.Replace (@"""", @"\""")));
             } else {
                 builder.Append (string.Format (":{0}", value));

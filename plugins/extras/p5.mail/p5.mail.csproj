@@ -44,9 +44,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SendMail.cs" />
     <Compile Include="helpers\Common.cs" />
     <Compile Include="helpers\GnuPrivacyContext.cs" />
+    <Compile Include="smtp\Send.cs" />
+    <Compile Include="pop3\Get.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -64,5 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="helpers\" />
+    <Folder Include="pop3\" />
+    <Folder Include="smtp\" />
   </ItemGroup>
 </Project>

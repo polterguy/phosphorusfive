@@ -7,7 +7,7 @@ using System;
 using p5.exp;
 using p5.core;
 
-namespace p5.mail
+namespace p5.mail.helpers
 {
     /// <summary>
     ///     Common helper class for email features of Phosphorus Five
