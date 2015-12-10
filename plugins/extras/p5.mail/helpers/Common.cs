@@ -22,7 +22,7 @@ namespace p5.mail.helpers
         public static string GetBaseFolder (ApplicationContext context)
         {
             var baseFolder = context.RaiseNative ("p5.core.application-folder").Get<string> (context);
-            return baseFolder;
+            return baseFolder.TrimEnd ('/');
         }
     }
 }

@@ -43,9 +43,8 @@ namespace p5.mail.pop3
         [ActiveEvent (Name = "p5.mail.pop3.get", Protection = EventProtection.LambdaClosed)]
         private static void p5_mail_pop3_get (ApplicationContext context, ActiveEventArgs e)
         {
-            // Making sure we remove arguments supplied.
-            // This is VERY important since passwords might be sent into this method!
-            using (new p5.core.Utilities.ArgsRemover (e.Args)) {
+            // Making sure we remove arguments supplied
+            using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
 
                 // Creating our POP3 client
                 using (var client = new Pop3Client ()) {
@@ -71,12 +70,14 @@ namespace p5.mail.pop3
                     // Fetching messages from server, but not any more messages than caller requested, or number of available messages
                     for (int idxMsg = 0; idxMsg < Math.Min (client.Count, e.Args.GetChildValue ("count", context, client.Count)); idxMsg++) {
 
-                        // Process message, either return in args, or invoke functor callback
-                        ProcessMessage (
+                        // Process message by building Node structure wrapping message
+                        var mNode = ProcessMessage (
                             context, 
                             e.Args, 
-                            client.GetMessage (idxMsg), 
-                            e.Args.GetChildValue<string>("attachment-directory", context, null));
+                            client.GetMessage (idxMsg));
+
+                        // Handle message after processing
+                        HandleMessage (context, mNode, e.Args);
 
                         // Checking if we should delete message from server
                         if (e.Args.GetChildValue ("delete", context, false)) {
@@ -95,44 +96,40 @@ namespace p5.mail.pop3
         /*
          * Helper to process on message retrieved from POP3 server
          */
-        private static void ProcessMessage (
+        private static Node ProcessMessage (
             ApplicationContext context, 
             Node args, 
-            MimeMessage message,
-            string attachmentDirectory)
+            MimeMessage message)
         {
             // Node structure containing all headers, content, and other properties of message
-            Node mNode = new Node ("message", message.MessageId);
+            Node mNode = new Node ("envelope", message.MessageId);
 
-            // Retrieving headers
-            ProcessMessageHeaders (context, mNode, message);
+            // Checking if caller does NOT want to have message processed in any ways ...
+            if (!args.GetChildValue ("process-envelope", context, true)) {
 
-            // Then content, supplying password for retrieving private key to decrypt
-            ProcessMimeEntity (
-                context, 
-                mNode, 
-                message.Body, 
-                args.GetChildValue<string> ("decryption-password", context, null),
-                attachmentDirectory);
-
-            // Checking what to do with message, alternatives are [functor] which will [eval] piece of code,
-            // or default, which is to simply return message back to caller
-            if (args ["functor"] != null) {
-
-                // Caller supplied [functor] object he wish to have evaluated [eval] for every message retrieved
-                Node exe = args ["functor"].Clone ();
-
-                // Making sure we avoid raising the message node as an Active Event
-                mNode.Insert (0, new Node ("offset", 2 /* Remember the [offset] node */));
-
-                // Adding currently iterated message to [functor] and evaluating using [eval]
-                exe.Add (mNode);
-                context.RaiseLambda ("eval", exe);
+                // Caller does NOT want to have message processed, returning entire message as string
+                mNode.Add ("content", message.ToString ());
             } else {
 
-                // Returning node with message to caller
-                args.Add (mNode);
+                // Processing message, headers first
+                ProcessMessageHeaders (context, mNode, message);
+
+                if (!args.GetChildValue ("process-content", context, true)) {
+
+                    // Caller does NOT want to have content processed, returning entire Body as string
+                    mNode.Add ("content", message.Body.ToString ());
+                } else {
+
+                    // Then content of message
+                    ProcessMimeEntity (
+                        context, 
+                        mNode.Add ("message").LastChild, 
+                        message.Body);
+                }
             }
+
+            // Return node containing processed message
+            return mNode;
         }
 
         /*
@@ -143,6 +140,9 @@ namespace p5.mail.pop3
             Node mNode, 
             MimeMessage message)
         {
+            // Subject
+            mNode.Add ("subject", message.Subject);
+
             // All address fields
             GetAddresses (context, mNode, message.From, "from");
             GetAddresses (context, mNode, message.ResentFrom, "resent-from");
@@ -155,33 +155,30 @@ namespace p5.mail.pop3
             GetAddresses (context, mNode, message.To, "to");
             GetAddresses (context, mNode, message.ResentTo, "resent-to");
 
-            // Subject
-            mNode.Add ("subject", message.Subject);
-
             // Standard headers
             mNode.Add ("date", message.Date.DateTime);
 
             if (!string.IsNullOrEmpty (message.ResentMessageId))
                 mNode.Add ("resent-message-id", message.ResentMessageId);
-            
+
             if (message.Sender != null)
                 mNode.Add ("sender", null, new Node[] { new Node (message.Sender.Name ?? "", message.Sender.Address) });
-            
+
             if (message.ResentSender != null)
                 mNode.Add ("resent-sender", null, new Node[] { new Node (message.ResentSender.Name ?? "", message.ResentSender.Address) });
-            
+
             if (message.MimeVersion != null)
                 mNode.Add ("mime-version", message.MimeVersion.ToString ());
 
             if (message.ResentDate != DateTimeOffset.MinValue)
                 mNode.Add ("resent-date", message.ResentDate.DateTime);
-            
+
             if (message.Importance != MessageImportance.Normal)
                 mNode.Add ("importance", message.Importance.ToString ());
-            
+
             if (!string.IsNullOrEmpty (message.InReplyTo))
                 mNode.Add ("in-reply-to", message.InReplyTo);
-            
+
             if (message.Priority != MessagePriority.Normal)
                 mNode.Add ("priority", message.Priority.ToString ());
 
@@ -201,228 +198,6 @@ namespace p5.mail.pop3
         }
 
         /*
-         * Processes one MimeEntity recursively
-         */
-        private static void ProcessMimeEntity (
-            ApplicationContext context,
-            Node mNode,
-            MimeEntity entity,
-            string decryptPassword,
-            string attachmentDirectory)
-        {
-            // Creating node for "part"
-            var nodePart = mNode.Add ("part").LastChild;
-
-            // Checking to see if message is encrypted
-            if (entity is MultipartEncrypted) {
-
-                // Marking item as Multipart, deferring value till we know if it is ALSO signed!
-                nodePart.Name = "multipart";
-
-                // Decrypting message, transforming the currently iterated entity into result of decryption operation
-                entity = DecryptEntity (
-                    entity as MultipartEncrypted, 
-                    decryptPassword, 
-                    nodePart);
-
-                // Invoking "self" recursively on result of decryption
-                ProcessMimeEntity (
-                    context, 
-                    nodePart, 
-                    entity, 
-                    decryptPassword,
-                    attachmentDirectory);
-            } else if (entity is MultipartSigned) {
-
-                // Marking item as Multipart
-                nodePart.Name = "multipart";
-                nodePart.Value = "signed";
-
-                // Verifies validity of signature(s)
-                VerifySignatures ((entity as MultipartSigned).Verify (), nodePart);
-
-                // Invoking "self" recursively for each entity inside of MultiPart signed
-                foreach (var idxEntity in entity as MultipartSigned) {
-
-                    // Invoking "self" for each entity inside of MultipartSigned
-                    ProcessMimeEntity (
-                        context, 
-                        nodePart, 
-                        idxEntity, 
-                        decryptPassword, 
-                        attachmentDirectory);
-                }
-            } else if (entity is Multipart) {
-
-                // Making sure we return this as correct type
-                nodePart.Name = "multipart";
-                nodePart.Value = (entity as Multipart).ContentType.MediaSubtype;
-
-                // Looping through each MimeEntity in Multipart, invoking "self"
-                foreach (var idxEntity in entity as Multipart) {
-
-                    // Processing individual MimeEntity
-                    ProcessMimeEntity (
-                        context, 
-                        nodePart, 
-                        idxEntity, 
-                        decryptPassword,
-                        attachmentDirectory);
-                }
-            } else {
-
-                // Building node structure to return to caller
-                HandleLeafMimeEntity (context, nodePart, (MimePart)entity, attachmentDirectory);
-            }
-        }
-
-        /*
-         * Decrypts the given MimeEntity
-         */
-        private static MimeEntity DecryptEntity (
-            MultipartEncrypted encrypted, 
-            string decryptPassword, 
-            Node nodePart)
-        {
-            // Decrypting entity using our GnuPG context, with the supplied password
-            using (var ctx = new GnuPrivacyContext ()) {
-
-                // Setting password to retrieve decryption private key from GnuPG context
-                ctx.Password = decryptPassword;
-
-                // Decrypting email, while also retrieving signatures for entity
-                DigitalSignatureCollection signatures = null;
-                MimeEntity decrypted = encrypted.Decrypt (ctx, out signatures);
-
-                // Checking signatures, if there are any
-                if (signatures != null) {
-
-                    // Entity was signed, verifying integrity of all signatures
-                    VerifySignatures (signatures, nodePart);
-
-                    // Signaling to caller entity was signed AND encrypted
-                    nodePart.Value = "signed-and-encrypted";
-                } else {
-
-                    // Signaling to caller entity was encrypted
-                    nodePart.Value = "encrypted";
-                }
-
-                // Returning decrypted entity to caller
-                return decrypted;
-            }
-        }
-
-        /*
-         * Will verify the validity of all signatures
-         */
-        private static void VerifySignatures (
-            DigitalSignatureCollection signed,
-            Node nodePart)
-        {
-            // Sometimes verification process will throw exceptions, at which point the signature is NOT valid.
-            // Making sure we handle those cases here
-            try {
-
-                // Looping through all signatures of message
-                foreach (var signature in signed) {
-
-                    // Verifying currently iterated signature
-                    if (signature.Verify ()) {
-
-                        // Signature was valid, returning data about signing operation and certificate
-                        nodePart.FindOrCreate ("verified-signatures").Add (
-                            signature.SignerCertificate.Email, 
-                            signature.SignerCertificate.Fingerprint,
-                            new Node[] { 
-                                new Node ("creation-date", signature.CreationDate), 
-                                new Node ("digest-algorithm", signature.DigestAlgorithm.ToString()),
-                                new Node ("public-key-algorithm", signature.PublicKeyAlgorithm.ToString()),
-                                new Node ("certificate-expiration-date", signature.SignerCertificate.ExpirationDate),
-                                new Node ("certificate-creation-date", signature.SignerCertificate.CreationDate),
-                                new Node ("certificate-name", signature.SignerCertificate.Name)});
-
-                        // Setting the "root boolean value" to "OK", unless previous iteration has set it to false
-                        if (nodePart.FindOrCreate ("verified-signatures").Value == null)
-                            nodePart.FindOrCreate ("verified-signatures").Value = true;
-                    } else {
-
-                        // Signature was NOT valid! Returning data about signing operation and certificate
-                        nodePart.FindOrCreate ("invalid-signatures").Add (
-                            signature.SignerCertificate.Email, 
-                            signature.SignerCertificate.Fingerprint,
-                            new Node[] { 
-                                new Node ("creation-date", signature.CreationDate), 
-                                new Node ("digest-algorithm", signature.DigestAlgorithm.ToString()),
-                                new Node ("public-key-algorithm", signature.PublicKeyAlgorithm.ToString()),
-                                new Node ("certificate-expiration-date", signature.SignerCertificate.ExpirationDate),
-                                new Node ("certificate-creation-date", signature.SignerCertificate.CreationDate),
-                                new Node ("certificate-name", signature.SignerCertificate.Name)});
-                        nodePart.FindOrCreate ("verified-signatures").Value = false;
-                    }
-                }
-            } catch (DigitalSignatureVerifyException) {
-
-                // Signature was not valid, or could not be verified
-                nodePart.FindOrCreate ("verified-signatures").Value = false;
-                return;
-            }
-        }
-
-        /*
-         * Builds up a node structure from given MimeEntity, after MimeEntity is decrypted
-         * 
-         * entity can be either;
-         * MessagePart (rfc88/news), MessageDeliveryStatus, MessageDispositionNotification, MessagePartial, TextPart (HTML/text),
-         * TnefPart, MultipartAlternative, MultipartRelated
-         * 
-         * MultipartEncrypted and MultipartSigned are already handled at this point!
-         */
-        private static void HandleLeafMimeEntity (
-            ApplicationContext context, 
-            Node mNode, 
-            MimePart entity,
-            string attachmentDirectory)
-        {
-            // Linked Attachments does NOT have the "IsAttachment" property set to true for some reasons ...
-            if (!string.IsNullOrEmpty (entity.FileName)) {
-
-                // This is some sort of attachment
-                string fileName = attachmentDirectory + (entity.FileName);
-
-                // Verify user is authorised to writing to specified filename
-                context.RaiseNative ("p5.io.authorize.modify-file", new Node ("p5.io.authorize.modify-file", fileName).Add ("args", mNode));
-                using (FileStream stream = File.Create (Common.GetBaseFolder (context).TrimEnd ('/') + fileName)) {
-
-                    // Saving attachment to stream
-                    entity.ContentObject.DecodeTo (stream);
-                }
-
-                // Making sure caller gets to know path and type of leaf part
-                mNode.Value = "attachment";
-                mNode.Add ("saved-to", fileName);
-                mNode.Add ("filename", entity.FileName);
-            } else {
-
-                // This is some sort of content, might still be "inline attachment"
-                var textPart = entity as TextPart;
-                if (textPart != null) {
-
-                    // Adding part up as content
-                    if (textPart.IsFlowed)
-                        mNode.Value = "flowed";
-                    else if (textPart.IsHtml)
-                        mNode.Value = "html";
-                    else if (textPart.IsPlain)
-                        mNode.Value = "text";
-                    else if (textPart.IsRichText)
-                        mNode.Value = "rich";
-                    mNode.FindOrCreate ("content").Value = textPart.Text;
-                }
-            }
-        }
-
-        /*
          * Returns all addresses from list as name node
          */
         private static void GetAddresses (
@@ -436,6 +211,124 @@ namespace p5.mail.pop3
 
                 // Appending currently iterated address to args
                 args.FindOrCreate (name).Add (idxAdr.Name, idxAdr.Address);
+            }
+        }
+
+        /*
+         * Processes one MimeEntity and put parsed content into itemNode
+         */
+        private static void ProcessMimeEntity (
+            ApplicationContext context, 
+            Node itemNode,
+            MimeEntity entity)
+        {
+            // Content-Type and wrapper for current MimeEntity
+            Node curNode = itemNode.Add (entity.ContentType.MediaType, entity.ContentType.MediaSubtype).LastChild;
+
+            // Then all other headers
+            foreach (var idxHeader in entity.Headers) {
+
+                // Adding header as child node of main MimeEntity node
+                curNode.Add (idxHeader.Field, idxHeader.Value);
+            }
+
+            // Checking if entity is Multipart, and if so, traversing all children entities
+            Multipart multipart = entity as Multipart;
+            if (multipart != null) {
+
+                // Process Multipart
+                ProcessMultipart (context, curNode, multipart);
+            } else {
+
+                // Entity is some sort of "leaf" entity
+                ProcessLeafEntity (context, curNode, entity as MimePart);
+            }
+        }
+
+        /*
+         * Processes a Multipart recursively
+         */
+        private static void ProcessMultipart (
+            ApplicationContext context,
+            Node curNode,
+            Multipart multipart)
+        {
+            // Adding preamble, if there is any
+            if (!string.IsNullOrEmpty (multipart.Preamble.Trim ()))
+                curNode.Add ("preamble", multipart.Preamble.Trim ());
+
+            // Traversing all children, invoking "self" for each entity
+            foreach (var idxEntity in multipart) {
+
+                // Processing currently iterated MimeEntity child of Multipart
+                ProcessMimeEntity (context, curNode, idxEntity);
+            }
+
+            // Adding epilogue, if there is any
+            if (!string.IsNullOrEmpty (multipart.Epilogue.Trim ()))
+                curNode.Add ("epilogue", multipart.Epilogue.Trim ());
+        }
+
+        /*
+         * Processes a "leaf" MimePart
+         */
+        private static void ProcessLeafEntity (
+            ApplicationContext context,
+            Node curNode,
+            MimePart part)
+        {
+            using (MemoryStream stream = new MemoryStream ()) {
+
+                // Decoding content to memory
+                part.ContentObject.DecodeTo (stream);
+
+                // Resetting position
+                stream.Position = 0;
+
+                // Setting up buffer to hold actual content
+                object buffer = null;
+
+                // Checking how to handle content, either binary or text
+                if (part.ContentType.MediaType == "text") {
+
+                    // Decoding to string through StreamReader
+                    StreamReader reader = new StreamReader (stream);
+                    buffer = reader.ReadToEnd ();
+                } else {
+
+                    // Simply putting raw bytes into buffer
+                    buffer = stream.ToArray ();
+                }
+
+                // Putting content into return node for MimeEntity
+                curNode.Add ("content", buffer);
+            }
+        }
+
+        /*
+         * Handles message, either by returning node to caller, or invoking lambda [functor], depending upn args structure
+         */
+        private static void HandleMessage (
+            ApplicationContext context, 
+            Node mNode,
+            Node args)
+        {
+            // Checking what to do with message, either return as [message] node, or invoke [functor] with [message] as first child
+            if (args ["functor"] != null) {
+
+                // Caller supplied [functor] object he wish to have evaluated [eval] for every message retrieved
+                Node exe = args ["functor"].Clone ();
+
+                // Making sure we avoid raising the message node as an Active Event
+                mNode.Insert (0, new Node ("offset", 2 /* Remember the [offset] node */));
+
+                // Adding currently iterated message to [functor] and evaluating using [eval]
+                exe.Add (mNode);
+                context.RaiseLambda ("eval", exe);
+            } else {
+
+                // Returning node with message to caller
+                args.Add (mNode);
             }
         }
     }

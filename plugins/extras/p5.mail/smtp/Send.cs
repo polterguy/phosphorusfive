@@ -4,6 +4,7 @@
  */
 
 using System;
+using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using MimeKit;
@@ -17,24 +18,13 @@ using p5.mail.helpers;
 /// <summary>
 ///     Main namespace for all features regarding sending and receiving emails
 /// </summary>
-namespace p5.smtp
+namespace p5.mail.smtp
 {
     /// <summary>
     ///     Class wrapping the send email features of Phosphorus Five
     /// </summary>
     public static class Send
     {
-        /// <summary>
-        ///     Invoked during initial startup of application
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.core.application-start", Protection = EventProtection.NativeOpen)]
-        private static void p5_core_application_start (ApplicationContext context, ActiveEventArgs e)
-        {
-            CryptographyContext.Register (typeof (GnuPrivacyContext));
-        }
-
         /// <summary>
         ///     Sends an email
         /// </summary>
@@ -43,187 +33,103 @@ namespace p5.smtp
         [ActiveEvent (Name = "p5.mail.smtp.send", Protection = EventProtection.LambdaClosed)]
         private static void p5_mail_smtp_send (ApplicationContext context, ActiveEventArgs e)
         {
-            // Making sure we remove arguments supplied, 
-            // VERY important since passwords might be sent into this method!
-            using (new p5.core.Utilities.ArgsRemover (e.Args)) {
+            // Making sure we remove arguments supplied
+            using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
 
-                // Creates MimeMessage according to args given
-                var message = CreateAndDecorateMessage (context, e.Args);
+                // Making sure we keep track of all streams created during process
+                List<Stream> streams = new List<Stream> ();
+                try {
 
-                // Sends MimeMessage
-                SendMessage (context, e.Args, message);
+                    // Creates, decorates and send a MimeMessage according to given args
+                    SendMessage (context, e.Args, CreateAndDecorateMessage (context, e.Args, streams));
+                } finally {
+
+                    // Disposing all streams created during process
+                    foreach (var idxStream in streams) {
+
+                        // Closing and disposing currently iterated stream
+                        idxStream.Close ();
+                        idxStream.Dispose ();
+                    }
+                }
             }
         }
 
         #region [ -- Private helper methods -- ]
 
         /*
-         * Creates and decorates MimeMessage according to args given
+         * Creates and decorates MimeMessage according to given args
          */
-        private static MimeMessage CreateAndDecorateMessage (ApplicationContext context, Node args)
+        private static MimeMessage CreateAndDecorateMessage (
+            ApplicationContext context, 
+            Node args,
+            List<Stream> streams)
         {
             // Creating message to return
             var message = new MimeMessage ();
 
-            // Getting all to/from/cc/etc addresses for message
-            message.From.AddRange (GetAddresses (context, args, "from"));
-            message.ResentFrom.AddRange (GetAddresses (context, args, "resent-from"));
-
-            message.To.AddRange (GetAddresses (context, args, "to"));
-            message.ResentTo.AddRange (GetAddresses (context, args, "resent-to"));
-
-            message.Cc.AddRange (GetAddresses (context, args, "cc"));
-            message.ResentCc.AddRange (GetAddresses (context, args, "resent-cc"));
-
-            message.Bcc.AddRange (GetAddresses (context, args, "bcc"));
-            message.ResentBcc.AddRange (GetAddresses (context, args, "resent-bcc"));
-
-            message.ReplyTo.AddRange (GetAddresses (context, args, "reply-to"));
-            message.ResentReplyTo.AddRange (GetAddresses (context, args, "resent-reply-to"));
-
             // Getting subject of message
             message.Subject = args.GetChildValue ("subject", context, "[No subject]");
 
-            // Setting "Sender" header, if given
-            if (args ["sender"] != null)
-                message.Sender = new MailboxAddress (args ["sender"] [0].Name, args ["sender"] [0].Get<string> (context));
+            // Deocrates headers of email
+            DecorateHeaders (context, args, message);
 
-            // Setting "In-Reply-To" header, if given
-            if (args ["in-reply-to"] != null)
-                message.InReplyTo = args.GetChildValue ("in-reply-to", context, "");
-
-            // Setting "Resent-MessageID" header, if given
-            if (args ["resent-message-id"] != null)
-                message.ResentMessageId = args.GetChildValue ("resent-message-id", context, "");
-
-            // Setting "Resent-Sender" header, if given
-            if (args ["resent-sender"] != null)
-                message.ResentSender = new MailboxAddress (args ["resent-sender"] [0].Name, args ["resent-sender"] [0].Get<string> (context));
-
-            // Setting "Importance" header, if given
-            if (args ["importance"] != null)
-                message.Importance = (MessageImportance)Enum.Parse (typeof(MessageImportance), args.GetChildValue ("importance", context, ""));
-
-            // Setting "Priority" header, if given
-            if (args ["priority"] != null)
-                message.Priority = (MessagePriority)Enum.Parse (typeof(MessagePriority), args.GetChildValue ("priority", context, ""));
-
-            // Checking if there are any "custom headers" in message
-            if (args ["headers"] != null) {
-
-                // Looping through all custom headers in message, adding them to message
-                foreach (var idxHeader in args ["headers"].Children) {
-                    message.Headers.Add (new Header (idxHeader.Name, idxHeader.Get<string> (context)));
-                }
-            }
-
-            // Getting bodies (HTML and Text) of message using BodyBuilder
-            var builder = new BodyBuilder ();
-            builder.TextBody = args.GetChildValue<string> ("body-text", context, null);
-            builder.HtmlBody = args.GetChildValue<string> ("body-html", context, null);
-
-            // Getting resources, both linked resources and normal attachments
-            GetResources (context, args, "linked-resources", builder.LinkedResources);
-            GetResources (context, args, "attachments", builder.Attachments);
-
-            // Signing and encrypting message if we should
-            message.Body = SignAndEncryptEntity (
-                context, 
-                args, 
-                message.To.Mailboxes, 
-                builder.ToMessageBody ());
+            // Creating MIME message
+            args["message"].Value = streams;
+            message.Body = context.RaiseNative ("p5.mail.mime.create-native", args["message"]).Get<MimeEntity> (context);
 
             // Returning message
             return message;
         }
 
         /*
-         * Signs and encrypts MimeEntity, if requested
+         * Decorates headers of MimeMessage
          */
-        private static MimeEntity SignAndEncryptEntity (
+        static void DecorateHeaders (
             ApplicationContext context, 
             Node args, 
-            IEnumerable<MailboxAddress> recipients, 
-            MimeEntity entity)
+            MimeMessage message)
         {
-            // Getting MailboxAddress to use for signing, if any
-            MailboxAddress signersEmail = null;
-            string signingPrivateKeyPassword = null;
-            DigestAlgorithm algo = DigestAlgorithm.Sha1;
-            if (args ["signature"] != null) {
+            message.From.AddRange (GetAddresses (context, args, "from"));
+            message.ResentFrom.AddRange (GetAddresses (context, args, "resent-from"));
+            message.To.AddRange (GetAddresses (context, args, "to"));
+            message.ResentTo.AddRange (GetAddresses (context, args, "resent-to"));
+            message.Cc.AddRange (GetAddresses (context, args, "cc"));
+            message.ResentCc.AddRange (GetAddresses (context, args, "resent-cc"));
+            message.Bcc.AddRange (GetAddresses (context, args, "bcc"));
+            message.ResentBcc.AddRange (GetAddresses (context, args, "resent-bcc"));
+            message.ReplyTo.AddRange (GetAddresses (context, args, "reply-to"));
+            message.ResentReplyTo.AddRange (GetAddresses (context, args, "resent-reply-to"));
 
-                // Finding name to use for signing
-                string nameToSignFor = args ["signature"].Get<string> (context);
-
-                // Finding email to use for signing
-                string emailToSignFor = args ["signature"].GetChildValue<string> ("email", context);
-
-                // Finding thumbprint to use for signing, which overrides email!
-                string keyFingerPrint = args ["signature"].GetChildValue<string> ("fingerprint", context);
-
-                // Creating our signing MailboxAddress
-                if (!string.IsNullOrEmpty (keyFingerPrint))
-                    signersEmail = new SecureMailboxAddress (nameToSignFor, emailToSignFor ?? "", keyFingerPrint);
-                else
-                    signersEmail = new MailboxAddress (nameToSignFor, emailToSignFor);
-
-                // Figuring out which DigestAlgorithm to use (defaulting to Sha1)
-                if (args ["signature"] ["digest-algorithm"] != null)
-                    algo = (DigestAlgorithm)Enum.Parse (typeof(DigestAlgorithm), args ["signature"] ["digest-algorithm"].Get<string> (context));
-
-                // Setting password to retrieve signing certificate from GnuPG context
-                signingPrivateKeyPassword = (args["signature"] ["fingerprint"] ?? args["signature"] ["email"])["password"].Get<string> (context);
-
-            }
-
-            // Checking if we should encrypt message with public certificate beloning to recipients
-            if (args.GetChildValue<bool> ("encrypt", context, false)) {
-
-                // Caller requested that he wished to have message encrypted, hence we encrypt, 
-                using (var ctx = new GnuPrivacyContext ()) {
-
-                    // Checking if user also wants to sign message
-                    if (args["signature"] != null) {
-
-                        // Setting password to retrieve signing certificate from GnuPG context
-                        ctx.Password = signingPrivateKeyPassword;
-
-                        // Signing and Encrypting content of email
-                        entity = MultipartEncrypted.SignAndEncrypt (
-                            ctx, 
-                            signersEmail, 
-                            algo, 
-                            recipients, 
-                            entity);
-                    } else {
-
-                        // Encrypting content of email, without any signatures
-                        entity = MultipartEncrypted.Encrypt (ctx, recipients, entity);
-                    }
-                }
-            } else if (args.GetChildValue<string> ("signature", context, null) != null) {
-
-                // Caller requested that he wished to have message signed, hence we sign
-                using (var ctx = new GnuPrivacyContext ()) {
-
-                    // Setting password to retrieve signing certificate from GnuPG context
-                    ctx.Password = signingPrivateKeyPassword;
-
-                    // Signing content of email
-                    entity = MultipartSigned.Create (
-                        ctx, 
-                        signersEmail,
-                        algo, 
-                        entity);
+            if (args ["sender"] != null)
+                message.Sender = new MailboxAddress (args ["sender"] [0].Name, args ["sender"] [0].Get<string> (context));
+            
+            if (args ["in-reply-to"] != null)
+                message.InReplyTo = args.GetChildValue ("in-reply-to", context, "");
+            
+            if (args ["resent-message-id"] != null)
+                message.ResentMessageId = args.GetChildValue ("resent-message-id", context, "");
+            
+            if (args ["resent-sender"] != null)
+                message.ResentSender = new MailboxAddress (args ["resent-sender"] [0].Name, args ["resent-sender"] [0].Get<string> (context));
+            
+            if (args ["importance"] != null)
+                message.Importance = (MessageImportance)Enum.Parse (typeof(MessageImportance), args.GetChildValue ("importance", context, ""));
+            
+            if (args ["priority"] != null)
+                message.Priority = (MessagePriority)Enum.Parse (typeof(MessagePriority), args.GetChildValue ("priority", context, ""));
+            
+            if (args ["headers"] != null) {
+                
+                // Looping through all custom headers in message, adding them to message
+                foreach (var idxHeader in args ["headers"].Children) {
+                    message.Headers.Add (new Header (idxHeader.Name, idxHeader.Get<string> (context)));
                 }
             }
-
-            // Returning MimeEntity
-            return entity;
         }
 
         /*
-         * Retrieves all emails beneath the args node's name child
+         * Retrieves all emails beneath the args node's child with the given name
          */
         private static IEnumerable<MailboxAddress> GetAddresses (
             ApplicationContext context, 
@@ -242,28 +148,12 @@ namespace p5.smtp
         }
 
         /*
-         * Retrieves all resources of specified type and puts into collection
-         */
-        private static void GetResources (
-            ApplicationContext context, 
-            Node args, 
-            string name, 
-            AttachmentCollection collection)
-        {
-            // Checking if there is a declaration for this type of resource
-            if (args [name] != null) {
-
-                // Looping through each resource of the specified type
-                foreach (var idxRes in args[name].Children) {
-                    collection.Add (Common.GetBaseFolder (context) + idxRes.Get<string> (context));
-                }
-            }
-        }
-
-        /*
          * Sends a MimeMessage
          */
-        private static void SendMessage (ApplicationContext context, Node args, MimeMessage message)
+        private static void SendMessage (
+            ApplicationContext context, 
+            Node args, 
+            MimeMessage message)
         {
             // Sending message
             using (var client = new SmtpClient ()) {
