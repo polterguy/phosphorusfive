@@ -26,7 +26,7 @@ namespace p5.lambda.keywords
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // Figuring out source value of [split]
-                string source = XUtil.Single<string> (context, e.Args);
+                string source = XUtil.Single<string> (context, e.Args, true);
                 if (source == null)
                     return; // Nothing to split
 

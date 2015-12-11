@@ -6,7 +6,9 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using p5.exp;
 using p5.core;
+using p5.mail.helpers;
 using MimeKit;
 using MimeKit.Cryptography;
 
@@ -44,7 +46,7 @@ namespace p5.mail.mime
             using (new Utilities.ArgsRemover (e.Args)) {
 
                 // Creating and returning MIME message to caller, in addition to all streams created during process
-                e.Args.Value = MimeCreator.Create (context, e.Args, (List<Stream>)e.Args.Value);
+                e.Args.Value = CreateMime.CreateMimeEntity (context, e.Args, (List<Stream>)e.Args.Value);
             }
         }
 
@@ -64,7 +66,7 @@ namespace p5.mail.mime
                 try {
 
                     // Creating and returning MIME message to caller
-                    e.Args.Value = MimeCreator.Create (context, e.Args, streams).ToString ();
+                    e.Args.Value = CreateMime.CreateMimeEntity (context, e.Args, streams).ToString ();
                 } finally {
 
                     // Disposing all streams created during process
@@ -74,6 +76,32 @@ namespace p5.mail.mime
                         idxStream.Close ();
                         idxStream.Dispose ();
                     }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Loads and parses a MIME message from given file
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "p5.mail.mime.load", Protection = EventProtection.LambdaClosed)]
+        private static void p5_mail_mime_load (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Making sure we clean up after ourselves
+            using (new Utilities.ArgsRemover (e.Args, true)) {
+
+                // Keeping base folder to application around
+                string baseFolder = Common.GetBaseFolder (context);
+
+                // Looping through each filename supplied by caller
+                foreach (var idxFilename in XUtil.Iterate<string> (context, e.Args, true)) {
+
+                    // Loading, processing and returning currently iterated message
+                    ParseMime.ParseMimeEntity (
+                        context,
+                        e.Args.Add ("message").LastChild,
+                        MimeEntity.Load (baseFolder + idxFilename));
                 }
             }
         }

@@ -23,6 +23,12 @@
             <xs:attribute name="authFile" type="xs:string" use="required" />
             <xs:attribute name="loginCoolOffSeconds" type="xs:int” use="required" />
             <xs:attribute name="persistCredentialCookieDays" type="xs:int” use="required" />
+            <xs:attribute name=“smtpServer” type="xs:string" use="required" />
+            <xs:attribute name=“smtpPort” type="xs:int” use="required" />
+            <xs:attribute name=“smtpUseSsl” type="xs:bool” use="required" />
+            <xs:attribute name=“pop3Server” type="xs:string" use="required" />
+            <xs:attribute name=“pop3Port” type="xs:int” use="required" />
+            <xs:attribute name=“pop3UseSsl” type="xs:bool” use="required" />
             <xs:sequence>
               <xs:element name="assemblies">
                 <xs:complexType>

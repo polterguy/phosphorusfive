@@ -20,12 +20,12 @@ namespace p5.mail.mime
     /// <summary>
     ///     Helper to create a MimeEntity
     /// </summary>
-    public static class MimeCreator
+    public static class CreateMime
     {
         /*
          * Creates a MimeEntity from given args node, while keeping track of all stream created during process in "streams"
          */
-        public static MimeEntity Create (
+        public static MimeEntity CreateMimeEntity (
             ApplicationContext context, 
             Node args,
             List<Stream> streams)
@@ -80,7 +80,7 @@ namespace p5.mail.mime
             MimePart retVal = new MimePart (ContentType.Parse (mimeNode.Name + "/" + mimeNode.Value));
 
             // Adding headers
-            DecorateHeaders (context, retVal, mimeNode, "content", "filename");
+            DecorateEntityHeaders (context, retVal, mimeNode, "content", "filename");
 
             // Checking which type of content is provided, [content] or [filename]
             if (mimeNode ["content"] != null) {
@@ -116,7 +116,7 @@ namespace p5.mail.mime
             Multipart retVal = new Multipart ();
 
             // Adding headers
-            DecorateHeaders (
+            DecorateEntityHeaders (
                 context, 
                 retVal, 
                 mimeNode, 
@@ -166,15 +166,15 @@ namespace p5.mail.mime
                     multipart = EncryptEntity (context, mimeNode ["encryption"], multipart);
                 }
 
-                // Retrieving preamble, creating our own little "easter egg" if not given
+                // Retrieving preamble, creating our own little "easter egg" if none is given
                 multipart.Preamble = mimeNode.GetChildValue ("preamble", context, "Cryptoxified by Phosphorus Five");
             } else if (mimeNode ["signature"] != null) {
 
                 // Caller requested Multipart to be signed, without encryption
                 multipart = SignEntity (context, mimeNode ["signature"], multipart);
 
-                // Retrieving preamble, creating our own little "easter egg" if not given
-                multipart.Preamble = mimeNode.GetChildValue ("preamble", context, "Verifixed by Phosphorus Five");
+                // Retrieving preamble, creating our own little "easter egg" if none is given
+                multipart.Preamble = mimeNode.GetChildValue ("preamble", context, "Veryfixed by Phosphorus Five");
             } else {
 
                 // Making sure we set preamble if given
@@ -321,7 +321,7 @@ namespace p5.mail.mime
         /*
          * Decorates headers for given MimeEntity
          */
-        private static void DecorateHeaders (
+        private static void DecorateEntityHeaders (
             ApplicationContext context, 
             MimeEntity entity, 
             Node mimeNode,

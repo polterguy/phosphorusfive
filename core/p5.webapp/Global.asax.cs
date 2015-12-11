@@ -157,6 +157,126 @@ namespace p5
                 e.Args.Value = configuration.LoginCoolOffSeconds;
             }
 
+            /// <summary>
+            ///     Returns the default SMTP server URL
+            /// </summary>
+            /// <param name="context">Application Context</param>
+            /// <param name="e">Parameters passed into Active Event</param>
+            [ActiveEvent (Name = "p5.mail.get-smtp-server", Protection = EventProtection.NativeClosed)]
+            private static void p5_mail_get_smtp_server (ApplicationContext context, ActiveEventArgs e)
+            {
+                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
+                e.Args.Value = configuration.SmtpServer;
+            }
+
+            /// <summary>
+            ///     Returns the default SMTP server port
+            /// </summary>
+            /// <param name="context">Application Context</param>
+            /// <param name="e">Parameters passed into Active Event</param>
+            [ActiveEvent (Name = "p5.mail.get-smtp-port", Protection = EventProtection.NativeClosed)]
+            private static void p5_mail_get_smtp_port (ApplicationContext context, ActiveEventArgs e)
+            {
+                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
+                e.Args.Value = configuration.SmtpPort;
+            }
+
+            /// <summary>
+            ///     Returns the default SMTP use SSL property
+            /// </summary>
+            /// <param name="context">Application Context</param>
+            /// <param name="e">Parameters passed into Active Event</param>
+            [ActiveEvent (Name = "p5.mail.get-smtp-use-ssl", Protection = EventProtection.NativeClosed)]
+            private static void p5_mail_get_smtp_use_ssl (ApplicationContext context, ActiveEventArgs e)
+            {
+                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
+                e.Args.Value = configuration.SmtpUseSsl;
+            }
+
+            /// <summary>
+            ///     Returns the default SMTP username
+            /// </summary>
+            /// <param name="context">Application Context</param>
+            /// <param name="e">Parameters passed into Active Event</param>
+            [ActiveEvent (Name = "p5.mail.get-smtp-username", Protection = EventProtection.NativeClosed)]
+            private static void p5_mail_get_smtp_username (ApplicationContext context, ActiveEventArgs e)
+            {
+                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
+                e.Args.Value = configuration.SmtpUsername;
+            }
+
+            /// <summary>
+            ///     Returns the default SMTP username
+            /// </summary>
+            /// <param name="context">Application Context</param>
+            /// <param name="e">Parameters passed into Active Event</param>
+            [ActiveEvent (Name = "p5.mail.get-smtp-password", Protection = EventProtection.NativeClosed)]
+            private static void p5_mail_get_smtp_password (ApplicationContext context, ActiveEventArgs e)
+            {
+                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
+                e.Args.Value = configuration.SmtpPassword;
+            }
+
+            /// <summary>
+            ///     Returns the default POP3 server URL
+            /// </summary>
+            /// <param name="context">Application Context</param>
+            /// <param name="e">Parameters passed into Active Event</param>
+            [ActiveEvent (Name = "p5.mail.get-pop3-server", Protection = EventProtection.NativeClosed)]
+            private static void p5_mail_get_pop3_server (ApplicationContext context, ActiveEventArgs e)
+            {
+                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
+                e.Args.Value = configuration.Pop3Server;
+            }
+
+            /// <summary>
+            ///     Returns the default POP3 server port
+            /// </summary>
+            /// <param name="context">Application Context</param>
+            /// <param name="e">Parameters passed into Active Event</param>
+            [ActiveEvent (Name = "p5.mail.get-pop3-port", Protection = EventProtection.NativeClosed)]
+            private static void p5_mail_get_pop3_port (ApplicationContext context, ActiveEventArgs e)
+            {
+                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
+                e.Args.Value = configuration.Pop3Port;
+            }
+
+            /// <summary>
+            ///     Returns the default POP3 use SSL property
+            /// </summary>
+            /// <param name="context">Application Context</param>
+            /// <param name="e">Parameters passed into Active Event</param>
+            [ActiveEvent (Name = "p5.mail.get-pop3-use-ssl", Protection = EventProtection.NativeClosed)]
+            private static void p5_mail_get_pop3_use_ssl (ApplicationContext context, ActiveEventArgs e)
+            {
+                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
+                e.Args.Value = configuration.Pop3UseSsl;
+            }
+
+            /// <summary>
+            ///     Returns the default POP3 username
+            /// </summary>
+            /// <param name="context">Application Context</param>
+            /// <param name="e">Parameters passed into Active Event</param>
+            [ActiveEvent (Name = "p5.mail.get-pop3-username", Protection = EventProtection.NativeClosed)]
+            private static void p5_mail_get_pop3_username (ApplicationContext context, ActiveEventArgs e)
+            {
+                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
+                e.Args.Value = configuration.Pop3Username;
+            }
+
+            /// <summary>
+            ///     Returns the default POP3 username
+            /// </summary>
+            /// <param name="context">Application Context</param>
+            /// <param name="e">Parameters passed into Active Event</param>
+            [ActiveEvent (Name = "p5.mail.get-pop3-password", Protection = EventProtection.NativeClosed)]
+            private static void p5_mail_get_pop3_password (ApplicationContext context, ActiveEventArgs e)
+            {
+                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
+                e.Args.Value = configuration.Pop3Password;
+            }
+
             #endregion
 
             #region [ -- Private helper methods -- ]

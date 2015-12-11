@@ -45,11 +45,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="helpers\Common.cs" />
-    <Compile Include="smtp\Send.cs" />
-    <Compile Include="pop3\Get.cs" />
     <Compile Include="mime\Mime.cs" />
-    <Compile Include="mime\MimeCreator.cs" />
     <Compile Include="mime\GnuPrivacyContext.cs" />
+    <Compile Include="mime\ParseMime.cs" />
+    <Compile Include="mime\CreateMime.cs" />
+    <Compile Include="Pop3.cs" />
+    <Compile Include="Smtp.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -67,8 +68,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="helpers\" />
-    <Folder Include="pop3\" />
-    <Folder Include="smtp\" />
     <Folder Include="mime\" />
   </ItemGroup>
 </Project>

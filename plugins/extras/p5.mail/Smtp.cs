@@ -13,38 +13,72 @@ using MailKit.Net.Smtp;
 using MimeKit.Cryptography;
 using p5.exp;
 using p5.core;
+using p5.exp.exceptions;
 using p5.mail.helpers;
 
 /// <summary>
 ///     Main namespace for all features regarding sending and receiving emails
 /// </summary>
-namespace p5.mail.smtp
+namespace p5.mail
 {
     /// <summary>
     ///     Class wrapping the send email features of Phosphorus Five
     /// </summary>
-    public static class Send
+    public static class Smtp
     {
         /// <summary>
-        ///     Sends an email
+        ///     Sends emails
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.mail.smtp.send", Protection = EventProtection.LambdaClosed)]
-        private static void p5_mail_smtp_send (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.mail.smtp.send-email", Protection = EventProtection.LambdaClosed)]
+        private static void p5_mail_smtp_send_email (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we remove arguments supplied
             using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
 
-                // Making sure we keep track of all streams created during process
-                List<Stream> streams = new List<Stream> ();
+                // Sending message
+                using (var client = new SmtpClient ()) {
+
+                    // Connecting to SMTP server
+                    Common.ConnectServer (context, client, e.Args, "smtp");
+
+                    // Making sure we're able to post QUIT signal when done, regardless of what happens inside of this code
+                    try {
+
+                        // Loops through all [envelopes], and creates and sends as email message
+                        SendMessages (context, e.Args, client);
+                    } finally {
+
+                        // Disconnecting client, making sure we send QUIT signal
+                        client.Disconnect (true);
+                    }
+                }
+            }
+        }
+
+        #region [ -- Private helper methods -- ]
+
+        /*
+         * Sends all [envelopes] found
+         */
+        private static void SendMessages (
+            ApplicationContext context, 
+            Node args, 
+            SmtpClient client)
+        {
+            // Looping through each message caller wants to send
+            foreach (var idxEnvelopeNode in args.Children.Where (ix => ix.Name == "envelope")) {
+
+                // Keeping track of any streams created during creation process
+                var streams = new List<Stream> ();
                 try {
 
-                    // Creates, decorates and send a MimeMessage according to given args
-                    SendMessage (context, e.Args, CreateAndDecorateMessage (context, e.Args, streams));
+                    // Sending currently iterated message
+                    client.Send (CreateMessage (context, idxEnvelopeNode, streams));
                 } finally {
 
-                    // Disposing all streams created during process
+                    // Disposing all streams created during process of creating message
                     foreach (var idxStream in streams) {
 
                         // Closing and disposing currently iterated stream
@@ -55,28 +89,34 @@ namespace p5.mail.smtp
             }
         }
 
-        #region [ -- Private helper methods -- ]
-
         /*
          * Creates and decorates MimeMessage according to given args
          */
-        private static MimeMessage CreateAndDecorateMessage (
+        private static MimeMessage CreateMessage (
             ApplicationContext context, 
-            Node args,
+            Node envelopeNode,
             List<Stream> streams)
         {
             // Creating message to return
             var message = new MimeMessage ();
 
-            // Getting subject of message
-            message.Subject = args.GetChildValue ("subject", context, "[No subject]");
-
             // Deocrates headers of email
-            DecorateHeaders (context, args, message);
+            DecorateMessageEnvelope (context, envelopeNode, message);
 
-            // Creating MIME message
-            args["message"].Value = streams;
-            message.Body = context.RaiseNative ("p5.mail.mime.create-native", args["message"]).Get<MimeEntity> (context);
+            // Retrieving [content] node of envelope, and doing basic sytntax checking
+            Node body = envelopeNode["body"];
+            if (body == null)
+                throw new LambdaException (
+                    "No [body] found inside of [envelope]",
+                    envelopeNode,
+                    context);
+
+            // Making sure we pass in our streams to creator, such that we can dispose them after message is sent
+            body.Value = streams;
+
+            // Creating MIME message by using [create-native] MIME Active Event
+            message.Body = context.RaiseNative ("p5.mail.mime.create-native", body)
+                .Get<MimeEntity> (context);
 
             // Returning message
             return message;
@@ -85,11 +125,13 @@ namespace p5.mail.smtp
         /*
          * Decorates headers of MimeMessage
          */
-        static void DecorateHeaders (
+        static void DecorateMessageEnvelope (
             ApplicationContext context, 
             Node args, 
             MimeMessage message)
         {
+            message.Subject = args.GetChildValue ("subject", context, "");
+
             message.From.AddRange (GetAddresses (context, args, "from"));
             message.ResentFrom.AddRange (GetAddresses (context, args, "resent-from"));
             message.To.AddRange (GetAddresses (context, args, "to"));
@@ -145,41 +187,6 @@ namespace p5.mail.smtp
 
             // No addresses for this request
             return new MailboxAddress[] { };
-        }
-
-        /*
-         * Sends a MimeMessage
-         */
-        private static void SendMessage (
-            ApplicationContext context, 
-            Node args, 
-            MimeMessage message)
-        {
-            // Sending message
-            using (var client = new SmtpClient ()) {
-
-                // Connecting to SMTP server
-                client.Connect (
-                    args.GetChildValue("server", context, ""), 
-                    args.GetChildValue("port", context, 25),
-                    args.GetChildValue("ssl", context, true));
-
-                // Fuck OATH2!! [quote; its creator!]
-                client.AuthenticationMechanisms.Remove ("XOAUTH2");
-
-                // Checking if caller supplied username, and if so, authenticate against SMTP server
-                if (args ["username"] != null) {
-
-                    // Authenticating
-                    client.Authenticate (
-                        args.GetChildValue ("username", context, ""), 
-                        args.GetChildValue ("password", context, ""));
-                }
-
-                // Sending message
-                client.Send (message);
-                client.Disconnect (true);
-            }
         }
 
         #endregion

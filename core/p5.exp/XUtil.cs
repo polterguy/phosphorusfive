@@ -246,10 +246,6 @@ namespace p5.exp
             // converted into a string
             var retVal = Utilities.Convert (context, multipleRetVal ?? singleRetVal, defaultValue);
 
-            // Checking to see if caller explicitly assumes a value, and if so, running our assert
-            if (mustHaveValue)
-                AssertHasValue (context, evaluatedNode, retVal, evaluatedNode.Name);
-
             // Returning result
             return retVal;
         }

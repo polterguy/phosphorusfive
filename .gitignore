@@ -196,3 +196,5 @@ core/p5.webapp/users
 
 #auth file
 core/p5.webapp/_auth.hl
+
+core/p5.webapp/users.tar.gz

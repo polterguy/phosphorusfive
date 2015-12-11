@@ -15,18 +15,25 @@ using MimeKit.Cryptography;
 using p5.exp;
 using p5.core;
 using p5.mail.helpers;
+using p5.mail.mime;
 
-namespace p5.mail.pop3
+/// <summary>
+///     Main namespace regarding all POP3 features of Phosphorus Five
+/// </summary>
+namespace p5.mail
 {
     /// <summary>
     ///     Class wrapping the pop3 email features of Phosphorus Five
     /// </summary>
-    public static class Get
+    public static class Pop3
     {
         // Contains all "standard headers", which we handle in special cases, and should not be handled by generic header handler
         private static List<HeaderId> _excludedHeaders;
 
-        static Get ()
+        /*
+         * Static CTOR to initialize _excludedHeaders, containing list of all headers to not handle in generic handler
+         */
+        static Pop3 ()
         {
             _excludedHeaders = new List<HeaderId> (new HeaderId [] {
                 HeaderId.Bcc, HeaderId.Cc, HeaderId.Date, HeaderId.From, HeaderId.Importance, HeaderId.InReplyTo, HeaderId.MessageId, 
@@ -40,8 +47,8 @@ namespace p5.mail.pop3
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.mail.pop3.get", Protection = EventProtection.LambdaClosed)]
-        private static void p5_mail_pop3_get (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.mail.pop3.get-emails", Protection = EventProtection.LambdaClosed)]
+        private static void p5_mail_pop3_get_emails (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we remove arguments supplied
             using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
@@ -49,26 +56,15 @@ namespace p5.mail.pop3
                 // Creating our POP3 client
                 using (var client = new Pop3Client ()) {
 
-                    // Connecting to POP3 server
-                    client.Connect (
-                        e.Args.GetChildValue ("server", context, ""), 
-                        e.Args.GetChildValue ("port", context, 25),
-                        e.Args.GetChildValue ("ssl", context, true));
+                    // Connecting to SMTP server
+                    Common.ConnectServer (context, client, e.Args, "pop3");
 
-                    // Fuck OATH2!! [quote; its creator!]
-                    client.AuthenticationMechanisms.Remove ("XOAUTH2");
-
-                    // Checking if caller supplied username, and if so, authenticate against POP3 server
-                    if (e.Args ["username"] != null) {
-
-                        // Authenticating
-                        client.Authenticate (
-                            e.Args.GetChildValue ("username", context, ""), 
-                            e.Args.GetChildValue ("password", context, ""));
-                    }
+                    // Figuring out how many messages to retrieve, defaulting to "5" if not explicitly told something else by caller,
+                    // making sure we never try to retrieve more messages than server actually has
+                    int noMessages = Math.Min (client.Count, e.Args.GetChildValue ("count", context, 5));
 
                     // Fetching messages from server, but not any more messages than caller requested, or number of available messages
-                    for (int idxMsg = 0; idxMsg < Math.Min (client.Count, e.Args.GetChildValue ("count", context, client.Count)); idxMsg++) {
+                    for (int idxMsg = 0; idxMsg < noMessages; idxMsg++) {
 
                         // Process message by building Node structure wrapping message
                         var mNode = ProcessMessage (
@@ -121,9 +117,9 @@ namespace p5.mail.pop3
                 } else {
 
                     // Then content of message
-                    ProcessMimeEntity (
+                    ParseMime.ParseMimeEntity (
                         context, 
-                        mNode.Add ("message").LastChild, 
+                        mNode.Add ("body").LastChild, 
                         message.Body);
                 }
             }
@@ -211,97 +207,6 @@ namespace p5.mail.pop3
 
                 // Appending currently iterated address to args
                 args.FindOrCreate (name).Add (idxAdr.Name, idxAdr.Address);
-            }
-        }
-
-        /*
-         * Processes one MimeEntity and put parsed content into itemNode
-         */
-        private static void ProcessMimeEntity (
-            ApplicationContext context, 
-            Node itemNode,
-            MimeEntity entity)
-        {
-            // Content-Type and wrapper for current MimeEntity
-            Node curNode = itemNode.Add (entity.ContentType.MediaType, entity.ContentType.MediaSubtype).LastChild;
-
-            // Then all other headers
-            foreach (var idxHeader in entity.Headers) {
-
-                // Adding header as child node of main MimeEntity node
-                curNode.Add (idxHeader.Field, idxHeader.Value);
-            }
-
-            // Checking if entity is Multipart, and if so, traversing all children entities
-            Multipart multipart = entity as Multipart;
-            if (multipart != null) {
-
-                // Process Multipart
-                ProcessMultipart (context, curNode, multipart);
-            } else {
-
-                // Entity is some sort of "leaf" entity
-                ProcessLeafEntity (context, curNode, entity as MimePart);
-            }
-        }
-
-        /*
-         * Processes a Multipart recursively
-         */
-        private static void ProcessMultipart (
-            ApplicationContext context,
-            Node curNode,
-            Multipart multipart)
-        {
-            // Adding preamble, if there is any
-            if (!string.IsNullOrEmpty (multipart.Preamble.Trim ()))
-                curNode.Add ("preamble", multipart.Preamble.Trim ());
-
-            // Traversing all children, invoking "self" for each entity
-            foreach (var idxEntity in multipart) {
-
-                // Processing currently iterated MimeEntity child of Multipart
-                ProcessMimeEntity (context, curNode, idxEntity);
-            }
-
-            // Adding epilogue, if there is any
-            if (!string.IsNullOrEmpty (multipart.Epilogue.Trim ()))
-                curNode.Add ("epilogue", multipart.Epilogue.Trim ());
-        }
-
-        /*
-         * Processes a "leaf" MimePart
-         */
-        private static void ProcessLeafEntity (
-            ApplicationContext context,
-            Node curNode,
-            MimePart part)
-        {
-            using (MemoryStream stream = new MemoryStream ()) {
-
-                // Decoding content to memory
-                part.ContentObject.DecodeTo (stream);
-
-                // Resetting position
-                stream.Position = 0;
-
-                // Setting up buffer to hold actual content
-                object buffer = null;
-
-                // Checking how to handle content, either binary or text
-                if (part.ContentType.MediaType == "text") {
-
-                    // Decoding to string through StreamReader
-                    StreamReader reader = new StreamReader (stream);
-                    buffer = reader.ReadToEnd ();
-                } else {
-
-                    // Simply putting raw bytes into buffer
-                    buffer = stream.ToArray ();
-                }
-
-                // Putting content into return node for MimeEntity
-                curNode.Add ("content", buffer);
             }
         }
 
