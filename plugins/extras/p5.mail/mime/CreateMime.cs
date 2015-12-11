@@ -15,6 +15,9 @@ using p5.core;
 using p5.mail.helpers;
 using p5.exp.exceptions;
 
+/// <summary>
+///     Main namespace regarding all MIME features in Phosphorus Five
+/// </summary>
 namespace p5.mail.mime
 {
     /// <summary>
@@ -22,9 +25,13 @@ namespace p5.mail.mime
     /// </summary>
     public static class CreateMime
     {
-        /*
-         * Recursively creates a MimeEntity and returns to caller
-         */
+        /// <summary>
+        ///     Recursively creates a MimeEntity, and returns to caller according to given args
+        /// </summary>
+        /// <returns>The MimeEntity</returns>
+        /// <param name="context">Application Context</param>
+        /// <param name="mimeNode">[body] node, containing MIME entity/entities</param>
+        /// <param name="streams">List of streams supplied by caller such that caller can dispose after finishing with MimeEntity</param>
         public static MimeEntity CreateEntity (
             ApplicationContext context, 
             Node mimeNode,
@@ -32,20 +39,10 @@ namespace p5.mail.mime
         {
             // Figuring out which type to create
             switch (mimeNode.Name) {
-                case "audio":
-                case "image":
-                case "message":
-                case "application":
-                case "text":
-                case "video":
-                    return CreateLeafPart (context, mimeNode, streams);
                 case "multipart":
                     return CreateMultipart (context, mimeNode, streams);
                 default:
-                    throw new LambdaException (
-                        string.Format ("Sorry, I do not know how to create a '{0}' type of MIME entity", mimeNode.Name),
-                        mimeNode,
-                        context);
+                    return CreateLeafPart (context, mimeNode, streams);
             }
         }
 
@@ -61,7 +58,7 @@ namespace p5.mail.mime
             MimePart retVal = new MimePart (ContentType.Parse (mimeNode.Name + "/" + mimeNode.Value));
 
             // Adding headers
-            DecorateEntityHeaders (context, retVal, mimeNode, "content", "filename");
+            DecorateEntityHeaders (context, retVal, mimeNode);
 
             // Checking which type of content is provided, [content] or [filename]
             if (mimeNode ["content"] != null) {
@@ -94,87 +91,86 @@ namespace p5.mail.mime
             List<Stream> streams)
         {
             // Setting up a return value
-            Multipart retVal = new Multipart ();
+            Multipart multipart = new Multipart ();
 
             // Adding headers
-            DecorateEntityHeaders (
-                context, 
-                retVal, 
-                mimeNode, 
-                "text", "multipart", "application", "video", "audio", "image", "message", "signature", "encryption", "preamble", "epilogue");
+            DecorateEntityHeaders (context, multipart, mimeNode);
 
-            // Looping through all children nodes that are content recursively, and adding up to Multipart
+            // Looping through all children nodes that are content recursively, and adding up to Multipart as child MimeParts
+            // Logic here is to use everything that is not [signature], [encryption], [preamble], [epilogue] and that has no
+            // capital letters in MIME media type, since all MIME headers have capital letters in them, which means that everything
+            // that contains a capital letter is treated like a MIME header, and appended into the headers collection of the Multipart
             foreach (var idxChildNode in mimeNode.Children.Where (
-                ix => 
-                ix.Name == "text"  || 
-                ix.Name == "multipart" || 
-                ix.Name == "application" ||
-                ix.Name == "video" || 
-                ix.Name == "audio" || 
-                ix.Name == "image" || 
-                ix.Name == "message")) {
+                ix => ix.Name != "signature" && 
+                ix.Name != "encryption" && 
+                ix.Name != "preamble" &&
+                ix.Name != "epilogue" &&
+                ix.Name.ToLower () == ix.Name)) {
 
                 // Adding currently iterated part
-                retVal.Add (CreateEntity (context, idxChildNode, streams));
+                multipart.Add (CreateEntity (context, idxChildNode, streams));
             }
 
             // Processes multipart, adding preamble, epilogue, and encrypts and/or signs if requested
-            retVal = (Multipart)ProcessEntity (context, mimeNode, retVal);
+            // ProcessEntity will eitehr return the same MimeEntity given (which is "retVal") or it will
+            // return a MultipartSigned or MultipartEncrypted, hence casting value to Multipart should
+            // be perfectly safe in this context
+            multipart = (Multipart)ProcessEntity (context, mimeNode, multipart);
 
             // Returning TextPart to caller
-            return retVal;
+            return multipart;
         }
 
         /*
          * Encrypts and signs given MimePart, if we should
          */
-        static MimeEntity ProcessEntity (
+        private static MimeEntity ProcessEntity (
             ApplicationContext context, 
             Node mimeNode, 
             MimeEntity mimePart)
         {
-            // Return value, by default we return what came in, 
-            // only if encryption and/or signatures are specified, we return something else
+            // Return by default what came in.
+            // Only if encryption and/or signatures are specified, we return something else
             MimeEntity retVal = mimePart;
 
             // Checking if we should encrypt MimePart
             if (mimeNode ["encryption"] != null) {
 
                 // Caller requested entity to be encrypted, setting up a new value to return, and checking if we should also sign entity
-                Multipart multipartEncrypted = null;
+                Multipart mEnc = null;
                 if (mimeNode ["signature"] != null) {
 
                     // Signing and encrypting
-                    multipartEncrypted = SignAndEncryptEntity (context, mimeNode ["encryption"], mimeNode ["signature"], retVal);
+                    mEnc = SignAndEncryptEntity (context, mimeNode ["encryption"], mimeNode ["signature"], retVal);
                 } else {
 
                     // Only encrypting
-                    multipartEncrypted = EncryptEntity (context, mimeNode ["encryption"], retVal);
+                    mEnc = EncryptEntity (context, mimeNode ["encryption"], retVal);
                 }
 
                 // Retrieving preamble and epilogue, creating our own little "easter egg" if none is given
-                multipartEncrypted.Preamble = mimeNode.GetChildValue ("preamble", context, "Cryptoxified by Phosphorus Five");
-                multipartEncrypted.Epilogue = mimeNode.GetChildValue<string> ("epilogue", context);
+                mEnc.Preamble = mimeNode.GetChildValue ("preamble", context, "Cryptoxified by Phosphorus Five");
+                mEnc.Epilogue = mimeNode.GetChildValue<string> ("epilogue", context);
 
                 // Making sure retVal is update to encrypted, and possibly also signed version
-                retVal = multipartEncrypted;
+                retVal = mEnc;
             } else if (mimeNode ["signature"] != null) {
 
                 // Caller requested MimePart to be signed, without encryption
-                var multipartSigned = SignEntity (context, mimeNode ["signature"], retVal);
+                var mSign = SignEntity (context, mimeNode ["signature"], retVal);
 
                 // Retrieving preamble and epilogue, creating our own little "easter egg" if none is given
-                multipartSigned.Preamble = mimeNode.GetChildValue ("preamble", context, "Veryfixed by Phosphorus Five");
-                multipartSigned.Epilogue = mimeNode.GetChildValue<string> ("epilogue", context);
+                mSign.Preamble = mimeNode.GetChildValue ("preamble", context, "Veryfixed by Phosphorus Five");
+                mSign.Epilogue = mimeNode.GetChildValue<string> ("epilogue", context);
 
                 // Making sure retVal is update to signed version
-                retVal = multipartSigned;
+                retVal = mSign;
             } else if (retVal is Multipart) {
 
                 // Retrieving preamble and epilogue
-                var multipart = retVal as Multipart;
-                multipart.Preamble = mimeNode.GetChildValue<string> ("preamble", context);
-                multipart.Epilogue = mimeNode.GetChildValue<string> ("epilogue", context);
+                var multi = retVal as Multipart;
+                multi.Preamble = mimeNode.GetChildValue<string> ("preamble", context);
+                multi.Epilogue = mimeNode.GetChildValue<string> ("epilogue", context);
             }
 
             // Returning processed MimeEntity to caller
@@ -186,53 +182,62 @@ namespace p5.mail.mime
          */
         private static MultipartEncrypted SignAndEncryptEntity (
             ApplicationContext context,
-            Node encryptionNode,
-            Node signatureNode,
-            MimeEntity mimeEntity)
+            Node encNode,
+            Node signNode,
+            MimeEntity entity)
         {
+            // Basic syntax checking
+            if (signNode.Count != 1 || (signNode.FirstChild.Name != "email" && signNode.FirstChild.Name != "fingerprint"))
+                throw new LambdaException (
+                    "No [email] or [fingerprint] supplied to [signature], supply one of these, and ONLY one of these",
+                    signNode,
+                    context);
+            if (signNode.FirstChild.Count != 1 && signNode.FirstChild.FirstChild.Name != "password")
+                throw new LambdaException (
+                    "No [password] supplied to [signature], supply password beneath either [email] or [fingerprint], and ONLY [password]",
+                    signNode,
+                    context);
+
             // Creating our Gnu Privacy Guard context
             using (var ctx = new GnuPrivacyContext ()) {
 
                 // Setting password to retrieve signing certificate from GnuPG context
-                ctx.Password = signatureNode.GetChildValue ("password", context, "");
+                ctx.Password = signNode [0].GetChildValue ("password", context, "");
 
                 // Creating a MailboxAddress to sign Multipart on behalf of
-                SecureMailboxAddress signerAdr = new SecureMailboxAddress (
+                SecureMailboxAddress sigAdr = new SecureMailboxAddress (
                     "", 
-                    signatureNode.GetChildValue ("email", context, "foo@bar.com"),
-                    signatureNode.GetChildValue ("fingerprint", context, ""));
+                    signNode.GetChildValue ("email", context, "foo@bar.com"), // Even though Sec
+                    signNode.GetChildValue ("fingerprint", context, ""));
 
                 // Retrieving MailboxAddresses to encrypt message for
-                var recipients = new List<MailboxAddress> ();
-                foreach (var idxRecipientNode in encryptionNode.Children) {
+                var rec = new List<MailboxAddress> ();
+                foreach (var idxRec in encNode.Children) {
 
                     // Checking if email address was given, or if fingerprint was given
-                    if (idxRecipientNode.Name == "email")
-                        recipients.Add (new MailboxAddress ("", idxRecipientNode.Get<string> (context)));
-                    else if (idxRecipientNode.Name == "fingerprint")
-                        recipients.Add (new SecureMailboxAddress ("", "foo@bar.com", idxRecipientNode.Get<string> (context)));
+                    if (idxRec.Name == "email")
+                        rec.Add (new MailboxAddress ("", idxRec.Get<string> (context)));
+                    else if (idxRec.Name == "fingerprint")
+                        rec.Add (new SecureMailboxAddress ("", "foo@bar.com", idxRec.Get<string> (context)));
                     else
                         throw new LambdaException (
-                            string.Format ("Sorry, don't know how to encrypt for a [{0}] type of node", idxRecipientNode.Name),
-                            idxRecipientNode,
+                            string.Format ("Sorry, don't know how to encrypt for a [{0}] type of node, I only understand [email] or [fingerprint]", idxRec.Name),
+                            idxRec,
                             context);
                 }
 
                 // Figuring out signature Digest Algorithm to use for signature
                 DigestAlgorithm algo = DigestAlgorithm.Sha1;
-                if (signatureNode ["digest-algorithm"] != null)
-                    algo = (DigestAlgorithm)Enum.Parse (typeof (DigestAlgorithm), signatureNode ["digest-algorithm"].Get<string> (context));
+                if (signNode ["digest-algorithm"] != null)
+                    algo = (DigestAlgorithm)Enum.Parse (typeof (DigestAlgorithm), signNode ["digest-algorithm"].Get<string> (context));
 
                 // Signing and Encrypting content of email
-                var multipartSignedAndEncrypted = MultipartEncrypted.SignAndEncrypt (
+                return MultipartEncrypted.SignAndEncrypt (
                     ctx, 
-                    signerAdr, 
+                    sigAdr, 
                     algo, 
-                    recipients, 
-                    mimeEntity);
-
-                // Returning encrypted Multipart to caller
-                return multipartSignedAndEncrypted;
+                    rec, 
+                    entity);
             }
         }
 
@@ -241,36 +246,33 @@ namespace p5.mail.mime
          */
         private static MultipartEncrypted EncryptEntity (
             ApplicationContext context,
-            Node encryptionNode,
-            MimeEntity mimeEntity)
+            Node encNode,
+            MimeEntity entity)
         {
             // Creating our Gnu Privacy Guard context
             using (var ctx = new GnuPrivacyContext ()) {
 
                 // Retrieving MailboxAddresses to encrypt message for
-                var recipients = new List<MailboxAddress> ();
-                foreach (var idxRecipientNode in encryptionNode.Children) {
+                var rec = new List<MailboxAddress> ();
+                foreach (var idxRec in encNode.Children) {
 
                     // Checking if email address was given, or if fingerprint was given
-                    if (idxRecipientNode.Name == "email")
-                        recipients.Add (new MailboxAddress ("", idxRecipientNode.Get<string> (context)));
-                    else if (idxRecipientNode.Name == "fingerprint")
-                        recipients.Add (new SecureMailboxAddress ("", "foo@bar.com", idxRecipientNode.Get<string> (context)));
+                    if (idxRec.Name == "email")
+                        rec.Add (new MailboxAddress ("", idxRec.Get<string> (context)));
+                    else if (idxRec.Name == "fingerprint")
+                        rec.Add (new SecureMailboxAddress ("", "foo@bar.com", idxRec.Get<string> (context)));
                     else
                         throw new LambdaException (
-                            string.Format ("Sorry, don't know how to encrypt for a [{0}] type of node", idxRecipientNode.Name),
-                            idxRecipientNode,
+                            string.Format ("Sorry, don't know how to encrypt for a [{0}] type of node", idxRec.Name),
+                            idxRec,
                             context);
                 }
 
-                // Encrypting content of email
-                var multipartEncrypted = MultipartEncrypted.Encrypt (
+                // Encrypting content of email and returning to caller
+                return MultipartEncrypted.Encrypt (
                     ctx, 
-                    recipients, 
-                    mimeEntity);
-
-                // Returning encrypted Multipart to caller
-                return multipartEncrypted;
+                    rec, 
+                    entity);
             }
         }
 
@@ -279,35 +281,44 @@ namespace p5.mail.mime
          */
         private static MultipartSigned SignEntity (
             ApplicationContext context,
-            Node signatureNode,
-            MimeEntity mimeEntity)
+            Node signNode,
+            MimeEntity entity)
         {
+            // Basic syntax checking
+            if (signNode.Count != 1 || (signNode.FirstChild.Name != "email" && signNode.FirstChild.Name != "fingerprint"))
+                throw new LambdaException (
+                    "No [email] or [fingerprint] supplied to [signature], supply one of these, and ONLY one of these",
+                    signNode,
+                    context);
+            if (signNode.FirstChild.Count != 1 || signNode.FirstChild.FirstChild.Name != "password")
+                throw new LambdaException (
+                    "No [password] supplied to [signature], supply password beneath either [email] or [fingerprint], and ONLY [password]",
+                    signNode,
+                    context);
+
             // Creating our Gnu Privacy Guard context
             using (var ctx = new GnuPrivacyContext ()) {
 
                 // Setting password to retrieve signing certificate from GnuPG context
-                ctx.Password = signatureNode.GetChildValue ("password", context, "");
+                ctx.Password = signNode[0].GetChildValue ("password", context, "");
 
                 // Creating a MailboxAddress to sign Multipart on behalf of
-                SecureMailboxAddress signerAdr = new SecureMailboxAddress (
+                SecureMailboxAddress signAdr = new SecureMailboxAddress (
                     "", 
-                    signatureNode.GetChildValue ("email", context, "foo@bar.com"),
-                    signatureNode.GetChildValue ("fingerprint", context, ""));
+                    signNode.GetChildValue ("email", context, "foo@bar.com"),
+                    signNode.GetChildValue ("fingerprint", context, ""));
 
                 // Figuring out signature Digest Algorithm to use for signature, defaulting to Sha1
                 DigestAlgorithm algo = DigestAlgorithm.Sha1;
-                if (signatureNode ["digest-algorithm"] != null)
-                    algo = (DigestAlgorithm)Enum.Parse (typeof (DigestAlgorithm), signatureNode ["digest-algorithm"].Get<string> (context));
+                if (signNode ["digest-algorithm"] != null)
+                    algo = (DigestAlgorithm)Enum.Parse (typeof (DigestAlgorithm), signNode ["digest-algorithm"].Get<string> (context));
 
-                // Signing content of email
-                var multipartSigned = MultipartSigned.Create (
+                // Signing content of email and returning to caller
+                return MultipartSigned.Create (
                     ctx, 
-                    signerAdr, 
+                    signAdr, 
                     algo, 
-                    mimeEntity);
-
-                // Returning signed Multipart to caller
-                return multipartSigned;
+                    entity);
             }
         }
 
@@ -317,11 +328,10 @@ namespace p5.mail.mime
         private static void DecorateEntityHeaders (
             ApplicationContext context, 
             MimeEntity entity, 
-            Node mimeNode,
-            params string[] exclude)
+            Node entityNode)
         {
             // Getting the Content-Type correct according to arguments supplied
-            ContentType type = ContentType.Parse (mimeNode.Name + "/" + mimeNode.Value);
+            ContentType type = ContentType.Parse (entityNode.Name + "/" + entityNode.Value);
             entity.ContentType.MediaSubtype = type.MediaSubtype;
 
             // Adding all supplied parameters, if any, for entity's Content-Type
@@ -329,10 +339,9 @@ namespace p5.mail.mime
                 entity.ContentType.Parameters.Add (idxArg);
             }
 
-            // Looping through all child nodes of MimeEntity node, excluding the nodes with the given "exclude" names
-            // and adding up as Headers of entity
-            List<string> excludeList = new List<string> (exclude);
-            foreach (var idxHeader in mimeNode.Children.Where (ix => excludeList.IndexOf (ix.Name) == -1 && ix.Name != "")) {
+            // Looping through all child nodes of MimeEntity node, making sure ONLY use those children that
+            // have Capital letters in them
+            foreach (var idxHeader in entityNode.Children.Where (ix => ix.Name.ToLower () != ix.Name)) {
 
                 // Adding currently iterated MIME header to entity
                 entity.Headers.Add (idxHeader.Name, idxHeader.Get<string> (context));

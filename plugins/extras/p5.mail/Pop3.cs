@@ -86,6 +86,8 @@ namespace p5.mail
             }
         }
 
+        #region [ -- Private helper methods -- ]
+
         /*
          * Helper to process on message retrieved from POP3 server
          */
@@ -234,6 +236,8 @@ namespace p5.mail
                 args.Add (mNode);
             }
         }
+
+        #endregion
     }
 }
 

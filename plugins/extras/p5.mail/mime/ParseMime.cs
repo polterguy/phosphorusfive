@@ -22,9 +22,12 @@ namespace p5.mail.mime
     /// </summary>
     public static class ParseMime
     {
-        /*
-         * Processes one MimeEntity and put parsed content into itemNode
-         */
+        /// <summary>
+        ///     Parses a MIME entity and returns as node structure
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="itemNode">Node where to put parsed MimeEntity</param>
+        /// <param name="entity">MIME entity to parse</param>
         public static void ParseMimeEntity (
             ApplicationContext context, 
             Node itemNode,
@@ -54,7 +57,7 @@ namespace p5.mail.mime
         }
 
         /*
-         * Processes a Multipart recursively
+         * Parses a Multipart recursively
          */
         private static void ParseMultipart (
             ApplicationContext context,
@@ -62,7 +65,7 @@ namespace p5.mail.mime
             Multipart multipart)
         {
             // Adding preamble, if there is any
-            if (!string.IsNullOrEmpty (multipart.Preamble.Trim ()))
+            if (!string.IsNullOrEmpty ((multipart.Preamble ?? "").Trim ()))
                 curNode.Add ("preamble", multipart.Preamble.Trim ());
 
             // Traversing all children, invoking "self" for each entity
@@ -73,12 +76,12 @@ namespace p5.mail.mime
             }
 
             // Adding epilogue, if there is any
-            if (!string.IsNullOrEmpty (multipart.Epilogue.Trim ()))
+            if (!string.IsNullOrEmpty ((multipart.Epilogue ?? "").Trim ()))
                 curNode.Add ("epilogue", multipart.Epilogue.Trim ());
         }
 
         /*
-         * Processes a "leaf" MimePart
+         * Parses a "leaf" MimePart
          */
         private static void ParseLeafEntity (
             ApplicationContext context,
@@ -97,14 +100,34 @@ namespace p5.mail.mime
                 object buffer = null;
 
                 // Checking how to handle content, either binary or text
-                if (part.ContentType.MediaType == "text") {
+                bool isText = false;
+                switch (part.ContentType.MediaType + "/" + part.ContentType.MediaSubtype) {
 
-                    // Decoding to string through StreamReader
+                    // Some "application" types are actually text, and should be handled as such
+                    // Make sure we handle the most common text types as text, to save coders from a roundtrip through conversion
+                    case "application/x-hyperlisp":
+                    case "application/javascript":
+                    case "application/x-javascript":
+                    case "application/ecmascript":
+                    case "application/json":
+                        isText = true;
+                        break;
+                    default:
+                        if (part.ContentType.MediaType == "text") {
+                            isText = true;
+                        }
+                        break;
+                }
+
+                // Now we know how to handle content, which is as text or as binary content
+                if (isText) {
+
+                    // Content is text of some kind, decoding to text through StringReader
                     StreamReader reader = new StreamReader (stream);
                     buffer = reader.ReadToEnd ();
                 } else {
 
-                    // Simply putting raw bytes into buffer
+                    // Content is binary, simply returning byte[] value raw
                     buffer = stream.ToArray ();
                 }
 
