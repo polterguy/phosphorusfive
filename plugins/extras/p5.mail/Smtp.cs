@@ -16,13 +16,10 @@ using p5.core;
 using p5.exp.exceptions;
 using p5.mail.helpers;
 
-/// <summary>
-///     Main namespace for all features regarding sending and receiving emails
-/// </summary>
 namespace p5.mail
 {
     /// <summary>
-    ///     Class wrapping the send email features of Phosphorus Five
+    ///     Class wrapping the sending and receiving emails in Phosphorus Five
     /// </summary>
     public static class Smtp
     {
@@ -34,10 +31,17 @@ namespace p5.mail
         [ActiveEvent (Name = "p5.mail.smtp.send-email", Protection = EventProtection.LambdaClosed)]
         private static void p5_mail_smtp_send_email (ApplicationContext context, ActiveEventArgs e)
         {
+            // Basic syntax checking
+            if (e.Args.Children.Count (ix => ix.Name == "envelope") == 0)
+                throw new LambdaException (
+                    "No [envelope] nodes found",
+                    e.Args,
+                    context);
+
             // Making sure we remove arguments supplied
             using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
 
-                // Sending message
+                // Creating our SMTP client
                 using (var client = new SmtpClient ()) {
 
                     // Connecting to SMTP server
@@ -46,7 +50,7 @@ namespace p5.mail
                     // Making sure we're able to post QUIT signal when done, regardless of what happens inside of this code
                     try {
 
-                        // Loops through all [envelopes], and creates and sends as email message
+                        // Loops through all [envelopes], and creates and sends as email message over given client
                         SendMessages (context, e.Args, client);
                     } finally {
 
@@ -70,11 +74,11 @@ namespace p5.mail
             // Looping through each message caller wants to send
             foreach (var idxEnvelopeNode in args.Children.Where (ix => ix.Name == "envelope")) {
 
-                // Keeping track of any streams created during creation process
+                // Keeping track of any streams created during creation process of message
                 var streams = new List<Stream> ();
                 try {
 
-                    // Sending currently iterated message
+                    // Creating and sending our currently iterated message
                     client.Send (CreateMessage (context, idxEnvelopeNode, streams));
                 } finally {
 
@@ -103,7 +107,7 @@ namespace p5.mail
             // Deocrates headers of email
             DecorateMessageEnvelope (context, envelopeNode, message);
 
-            // Retrieving [content] node of envelope, and doing basic sytntax checking
+            // Retrieving [body] node of envelope, and doing basic syntax checking
             Node body = envelopeNode["body"];
             if (body == null)
                 throw new LambdaException (
@@ -115,8 +119,7 @@ namespace p5.mail
             body.Value = streams;
 
             // Creating MIME message by using [create-native] MIME Active Event
-            message.Body = context.RaiseNative ("p5.mail.mime.create-native", body)
-                .Get<MimeEntity> (context);
+            message.Body = context.RaiseNative ("p5.mail.mime.create-native", body).Get<MimeEntity> (context);
 
             // Returning message
             return message;
@@ -130,36 +133,36 @@ namespace p5.mail
             Node args, 
             MimeMessage message)
         {
-            message.Subject = args.GetChildValue ("subject", context, "");
+            message.Subject = args.GetChildValue ("Subject", context, "");
 
-            message.From.AddRange (GetAddresses (context, args, "from"));
-            message.ResentFrom.AddRange (GetAddresses (context, args, "resent-from"));
-            message.To.AddRange (GetAddresses (context, args, "to"));
-            message.ResentTo.AddRange (GetAddresses (context, args, "resent-to"));
-            message.Cc.AddRange (GetAddresses (context, args, "cc"));
-            message.ResentCc.AddRange (GetAddresses (context, args, "resent-cc"));
-            message.Bcc.AddRange (GetAddresses (context, args, "bcc"));
-            message.ResentBcc.AddRange (GetAddresses (context, args, "resent-bcc"));
-            message.ReplyTo.AddRange (GetAddresses (context, args, "reply-to"));
-            message.ResentReplyTo.AddRange (GetAddresses (context, args, "resent-reply-to"));
+            message.From.AddRange (GetAddresses (context, args, "From"));
+            message.ResentFrom.AddRange (GetAddresses (context, args, "Resent-From"));
+            message.To.AddRange (GetAddresses (context, args, "To"));
+            message.ResentTo.AddRange (GetAddresses (context, args, "Resent-To"));
+            message.Cc.AddRange (GetAddresses (context, args, "Cc"));
+            message.ResentCc.AddRange (GetAddresses (context, args, "Resent-Cc"));
+            message.Bcc.AddRange (GetAddresses (context, args, "Bcc"));
+            message.ResentBcc.AddRange (GetAddresses (context, args, "Resent-Bcc"));
+            message.ReplyTo.AddRange (GetAddresses (context, args, "Reply-To"));
+            message.ResentReplyTo.AddRange (GetAddresses (context, args, "Resent-Reply-To"));
 
-            if (args ["sender"] != null)
-                message.Sender = new MailboxAddress (args ["sender"] [0].Name, args ["sender"] [0].Get<string> (context));
+            if (args ["Sender"] != null)
+                message.Sender = new MailboxAddress (args ["Sender"] [0].Name, args ["Sender"] [0].Get<string> (context));
             
-            if (args ["in-reply-to"] != null)
-                message.InReplyTo = args.GetChildValue ("in-reply-to", context, "");
+            if (args ["In-Reply-To"] != null)
+                message.InReplyTo = args.GetChildValue ("In-Reply-To", context, "");
             
-            if (args ["resent-message-id"] != null)
-                message.ResentMessageId = args.GetChildValue ("resent-message-id", context, "");
+            if (args ["Resent-Message-ID"] != null)
+                message.ResentMessageId = args.GetChildValue ("Resent-Message-Id", context, "");
             
-            if (args ["resent-sender"] != null)
-                message.ResentSender = new MailboxAddress (args ["resent-sender"] [0].Name, args ["resent-sender"] [0].Get<string> (context));
+            if (args ["Resent-Sender"] != null)
+                message.ResentSender = new MailboxAddress (args ["Resent-Sender"] [0].Name, args ["Resent-Sender"] [0].Get<string> (context));
             
-            if (args ["importance"] != null)
-                message.Importance = (MessageImportance)Enum.Parse (typeof(MessageImportance), args.GetChildValue ("importance", context, ""));
+            if (args ["Importance"] != null)
+                message.Importance = (MessageImportance)Enum.Parse (typeof(MessageImportance), args.GetChildValue ("Importance", context, ""));
             
-            if (args ["priority"] != null)
-                message.Priority = (MessagePriority)Enum.Parse (typeof(MessagePriority), args.GetChildValue ("priority", context, ""));
+            if (args ["Priority"] != null)
+                message.Priority = (MessagePriority)Enum.Parse (typeof(MessagePriority), args.GetChildValue ("Priority", context, ""));
             
             if (args ["headers"] != null) {
                 

@@ -8,14 +8,16 @@ using System.IO;
 using System.Collections.Generic;
 using p5.exp;
 using p5.core;
+using p5.exp.exceptions;
+using p5.mail.mime;
 using p5.mail.helpers;
 using MimeKit;
 using MimeKit.Cryptography;
 
 /// <summary>
-///     Main namespace for all features regarding MIME
+///     Main namespace regarding all email features of Phosphorus Five
 /// </summary>
-namespace p5.mail.mime
+namespace p5.mail
 {
     /// <summary>
     ///     Class wrapping the MIME features of Phosphorus Five
@@ -30,23 +32,30 @@ namespace p5.mail.mime
         [ActiveEvent (Name = "p5.core.application-start", Protection = EventProtection.NativeOpen)]
         private static void p5_core_application_start (ApplicationContext context, ActiveEventArgs e)
         {
-            // Registers our Cryptography context, which is the local installation of Gnu Privacy Guard
+            // Registering our Cryptography context, which is the local installation of Gnu Privacy Guard
             CryptographyContext.Register (typeof (GnuPrivacyContext));
         }
 
         /// <summary>
-        ///     Creates a native MimeEntity according to given arguments and returns to caller
+        ///     Creates a native MimeEntity according to given arguments and returns to caller as MimeEntity
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "p5.mail.mime.create-native", Protection = EventProtection.NativeClosed)]
         private static void p5_mail_mime_create_native (ApplicationContext context, ActiveEventArgs e)
         {
+            // Basic syntax checking
+            if (e.Args.Count != 1)
+                throw new LambdaException (
+                    "You must have one root node of your MIME message, use [multipart] as root to associate multiple objects with your message",
+                    e.Args,
+                    context);
+
             // Making sure we clean up after ourselves
             using (new Utilities.ArgsRemover (e.Args)) {
 
                 // Creating and returning MIME message to caller, in addition to all streams created during process
-                e.Args.Value = CreateMime.CreateMimeEntity (context, e.Args, (List<Stream>)e.Args.Value);
+                e.Args.Value = CreateMime.CreateEntity (context, e.Args.FirstChild, (List<Stream>)e.Args.Value);
             }
         }
 
@@ -58,6 +67,13 @@ namespace p5.mail.mime
         [ActiveEvent (Name = "p5.mail.mime.create", Protection = EventProtection.LambdaClosed)]
         private static void p5_mail_mime_create (ApplicationContext context, ActiveEventArgs e)
         {
+            // Basic syntax checking
+            if (e.Args.Count != 1)
+                throw new LambdaException (
+                    "You must have one root node of your MIME message, use [multipart] as root to associate multiple objects with your message",
+                    e.Args,
+                    context);
+
             // Making sure we clean up after ourselves
             using (new Utilities.ArgsRemover (e.Args)) {
 
@@ -66,7 +82,7 @@ namespace p5.mail.mime
                 try {
 
                     // Creating and returning MIME message to caller
-                    e.Args.Value = CreateMime.CreateMimeEntity (context, e.Args, streams).ToString ();
+                    e.Args.Value = CreateMime.CreateEntity (context, e.Args.FirstChild, streams).ToString ();
                 } finally {
 
                     // Disposing all streams created during process
@@ -81,7 +97,7 @@ namespace p5.mail.mime
         }
 
         /// <summary>
-        ///     Loads and parses a MIME message from given file
+        ///     Loads and parses a MIME message from given file(s)
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
@@ -100,7 +116,7 @@ namespace p5.mail.mime
                     // Loading, processing and returning currently iterated message
                     ParseMime.ParseMimeEntity (
                         context,
-                        e.Args.Add ("message").LastChild,
+                        e.Args.Add ("body").LastChild,
                         MimeEntity.Load (baseFolder + idxFilename));
                 }
             }

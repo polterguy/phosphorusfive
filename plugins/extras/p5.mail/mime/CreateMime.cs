@@ -23,28 +23,9 @@ namespace p5.mail.mime
     public static class CreateMime
     {
         /*
-         * Creates a MimeEntity from given args node, while keeping track of all stream created during process in "streams"
-         */
-        public static MimeEntity CreateMimeEntity (
-            ApplicationContext context, 
-            Node args,
-            List<Stream> streams)
-        {
-            // Basic syntax checking
-            if (args.Count != 1)
-                throw new LambdaException (
-                    "You must have one root node of your message, use [multipart] as root to associate multiple objects with your message",
-                    args,
-                    context);
-
-            // Recursively create MIME message
-            return CreateEntity (context, args.FirstChild, streams);
-        }
-
-        /*
          * Recursively creates a MimeEntity and returns to caller
          */
-        private static MimeEntity CreateEntity (
+        public static MimeEntity CreateEntity (
             ApplicationContext context, 
             Node mimeNode,
             List<Stream> streams)
@@ -71,7 +52,7 @@ namespace p5.mail.mime
         /*
          * Creates a text part and returns to caller
          */
-        private static MimePart CreateLeafPart (
+        private static MimeEntity CreateLeafPart (
             ApplicationContext context, 
             Node mimeNode,
             List<Stream> streams)
@@ -100,10 +81,10 @@ namespace p5.mail.mime
                     context);
             }
 
-            // Returning MimePart to caller
-            return retVal;
+            // Processing MimePart, possibly encrypting and signing, and returning the results to caller
+            return ProcessEntity (context, mimeNode, retVal);
         }
-
+           
         /*
          * Creates a multipart and returns to caller
          */
@@ -138,54 +119,66 @@ namespace p5.mail.mime
             }
 
             // Processes multipart, adding preamble, epilogue, and encrypts and/or signs if requested
-            retVal = ProcessMultipart (context, mimeNode, retVal);
+            retVal = (Multipart)ProcessEntity (context, mimeNode, retVal);
 
             // Returning TextPart to caller
             return retVal;
         }
 
         /*
-         * Encrypts and signs given Multipart, if we should, in addition to adding preamble and epilogue
+         * Encrypts and signs given MimePart, if we should
          */
-        static Multipart ProcessMultipart (
+        static MimeEntity ProcessEntity (
             ApplicationContext context, 
             Node mimeNode, 
-            Multipart multipart)
+            MimeEntity mimePart)
         {
-            // Checking if we should encrypt Multipart
+            // Return value, by default we return what came in, 
+            // only if encryption and/or signatures are specified, we return something else
+            MimeEntity retVal = mimePart;
+
+            // Checking if we should encrypt MimePart
             if (mimeNode ["encryption"] != null) {
 
-                // Caller requested Multipart to be encrypted, now checking if he wants it signed at the same time
+                // Caller requested entity to be encrypted, setting up a new value to return, and checking if we should also sign entity
+                Multipart multipartEncrypted = null;
                 if (mimeNode ["signature"] != null) {
 
                     // Signing and encrypting
-                    multipart = SignAndEncryptEntity (context, mimeNode ["encryption"], mimeNode ["signature"], multipart);
+                    multipartEncrypted = SignAndEncryptEntity (context, mimeNode ["encryption"], mimeNode ["signature"], retVal);
                 } else {
 
                     // Only encrypting
-                    multipart = EncryptEntity (context, mimeNode ["encryption"], multipart);
+                    multipartEncrypted = EncryptEntity (context, mimeNode ["encryption"], retVal);
                 }
 
-                // Retrieving preamble, creating our own little "easter egg" if none is given
-                multipart.Preamble = mimeNode.GetChildValue ("preamble", context, "Cryptoxified by Phosphorus Five");
+                // Retrieving preamble and epilogue, creating our own little "easter egg" if none is given
+                multipartEncrypted.Preamble = mimeNode.GetChildValue ("preamble", context, "Cryptoxified by Phosphorus Five");
+                multipartEncrypted.Epilogue = mimeNode.GetChildValue<string> ("epilogue", context);
+
+                // Making sure retVal is update to encrypted, and possibly also signed version
+                retVal = multipartEncrypted;
             } else if (mimeNode ["signature"] != null) {
 
-                // Caller requested Multipart to be signed, without encryption
-                multipart = SignEntity (context, mimeNode ["signature"], multipart);
+                // Caller requested MimePart to be signed, without encryption
+                var multipartSigned = SignEntity (context, mimeNode ["signature"], retVal);
 
-                // Retrieving preamble, creating our own little "easter egg" if none is given
-                multipart.Preamble = mimeNode.GetChildValue ("preamble", context, "Veryfixed by Phosphorus Five");
-            } else {
+                // Retrieving preamble and epilogue, creating our own little "easter egg" if none is given
+                multipartSigned.Preamble = mimeNode.GetChildValue ("preamble", context, "Veryfixed by Phosphorus Five");
+                multipartSigned.Epilogue = mimeNode.GetChildValue<string> ("epilogue", context);
 
-                // Making sure we set preamble if given
-                multipart.Preamble = mimeNode.GetChildValue ("preamble", context, "");
+                // Making sure retVal is update to signed version
+                retVal = multipartSigned;
+            } else if (retVal is Multipart) {
+
+                // Retrieving preamble and epilogue
+                var multipart = retVal as Multipart;
+                multipart.Preamble = mimeNode.GetChildValue<string> ("preamble", context);
+                multipart.Epilogue = mimeNode.GetChildValue<string> ("epilogue", context);
             }
 
-            // Adding up Epilogue, if given
-            multipart.Epilogue = mimeNode.GetChildValue ("epilogue", context, "");
-
-            // Returning processed Multipart to caller
-            return multipart;
+            // Returning processed MimeEntity to caller
+            return retVal;
         }
 
         /*
@@ -270,7 +263,7 @@ namespace p5.mail.mime
                             context);
                 }
 
-                // Signing and Encrypting content of email
+                // Encrypting content of email
                 var multipartEncrypted = MultipartEncrypted.Encrypt (
                     ctx, 
                     recipients, 
@@ -301,19 +294,19 @@ namespace p5.mail.mime
                     signatureNode.GetChildValue ("email", context, "foo@bar.com"),
                     signatureNode.GetChildValue ("fingerprint", context, ""));
 
-                // Figuring out signature Digest Algorithm to use for signature
+                // Figuring out signature Digest Algorithm to use for signature, defaulting to Sha1
                 DigestAlgorithm algo = DigestAlgorithm.Sha1;
                 if (signatureNode ["digest-algorithm"] != null)
                     algo = (DigestAlgorithm)Enum.Parse (typeof (DigestAlgorithm), signatureNode ["digest-algorithm"].Get<string> (context));
 
-                // Signing and Encrypting content of email
+                // Signing content of email
                 var multipartSigned = MultipartSigned.Create (
                     ctx, 
                     signerAdr, 
                     algo, 
                     mimeEntity);
 
-                // Returning encrypted Multipart to caller
+                // Returning signed Multipart to caller
                 return multipartSigned;
             }
         }
@@ -403,7 +396,8 @@ namespace p5.mail.mime
                 entity.ContentDisposition.FileName = Path.GetFileName (fileName);
             }
 
-            // Applying content object
+            // Applying content object, notice that the stream created here, is owned by the caller, hence there is
+            // no disposal done
             Stream stream = File.OpenRead (Common.GetBaseFolder (context) + fileName);
             streams.Add (stream);
             entity.ContentObject = new ContentObject (stream, encoding);
