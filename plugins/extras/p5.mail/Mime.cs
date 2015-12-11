@@ -113,12 +113,60 @@ namespace p5.mail
                 // Looping through each filename supplied by caller
                 foreach (var idxFilename in XUtil.Iterate<string> (context, e.Args, true)) {
 
+                    // Verifying user is authorized to reading from currently iterated file
+                    context.RaiseNative ("p5.io.authorize.read-file", new Node ("p5.io.authorize.read-file", idxFilename).Add ("args", e.Args));
+
                     // Loading, processing and returning currently iterated message
                     ParseMime.ParseMimeEntity (
                         context,
                         e.Args.Add ("body").LastChild,
                         MimeEntity.Load (baseFolder + idxFilename));
                 }
+            }
+        }
+
+        /// <summary>
+        ///     Parsess the MIME message given
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "p5.mail.mime.parse", Protection = EventProtection.LambdaClosed)]
+        private static void p5_mail_mime_parse (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Making sure we clean up after ourselves
+            using (new Utilities.ArgsRemover (e.Args, true)) {
+
+                // Retrieving MimeEntity from caller's arguments
+                using (var writer = new StreamWriter (new MemoryStream ())) {
+                    writer.Write (e.Args.GetExValue (context, ""));
+                    writer.Flush ();
+                    writer.BaseStream.Position = 0;
+                    var entity = MimeEntity.Load (writer.BaseStream);
+                    ParseMime.ParseMimeEntity (
+                        context, 
+                        e.Args,
+                        entity);
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Parses the MIME message given
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "p5.mail.mime.parse-native", Protection = EventProtection.NativeClosed)]
+        private static void p5_mail_mime_parse_native (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Making sure we clean up after ourselves
+            using (new Utilities.ArgsRemover (e.Args, true)) {
+
+                // Retrieving MimeEntity from caller's arguments
+                var entity = e.Args.Get<MimeEntity> (context);
+                ParseMime.ParseMimeEntity (
+                    context, 
+                    e.Args.Add ("body").LastChild,
+                    entity);
             }
         }
     }

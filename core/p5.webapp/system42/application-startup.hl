@@ -1,5 +1,5 @@
 /*
- * Creates the Active Event that allows you to execute Hyperlisp p5 lambda files. the Hyperlisp
+ * Creates the Active Event that allows you to execute Hyperlisp p5 lambda files. The Hyperlisp
  * file(s) you wish to execute is given as value of [sys42.execute-lisp-file], and all nodes benath
  * [sys42.execute-lisp-file] when invoked, will be passed into your p5 lambda file execution. File 
  * to exeute can be given either as an expression, or a constant. Multiple files can be executed at 

@@ -341,7 +341,7 @@ namespace p5.mail.mime
 
             // Looping through all child nodes of MimeEntity node, making sure ONLY use those children that
             // have Capital letters in them
-            foreach (var idxHeader in entityNode.Children.Where (ix => ix.Name.ToLower () != ix.Name)) {
+            foreach (var idxHeader in entityNode.Children.Where (ix => ix.Name.ToLower () != ix.Name && ix.Name != "Content-Type")) {
 
                 // Adding currently iterated MIME header to entity
                 entity.Headers.Add (idxHeader.Name, idxHeader.Get<string> (context));
