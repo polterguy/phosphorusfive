@@ -28,7 +28,7 @@ namespace p5.unittests.lambda
 insert-before:x:/../0
   split:x:/./-?value
     =:"" """);
-            Assert.AreEqual (2, node.Count);
+            Assert.AreEqual (2, node.Children.Count);
             Assert.AreEqual ("foo", node [0].Name);
             Assert.AreEqual ("bar", node [1].Name);
         }
@@ -44,7 +44,7 @@ _data2:foo2 bar2
 insert-before:x:/../0
   split:x:/./-2|/./-?value
     =:"" """);
-            Assert.AreEqual (4, node.Count);
+            Assert.AreEqual (4, node.Children.Count);
             Assert.AreEqual ("foo1", node [0].Name);
             Assert.AreEqual ("bar1", node [1].Name);
             Assert.AreEqual ("foo2", node [2].Name);

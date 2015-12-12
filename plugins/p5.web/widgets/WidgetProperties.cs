@@ -52,7 +52,7 @@ namespace p5.web.widgets
             // Making sure we clean up and remove all arguments passed in after execution
             using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
 
-                if (e.Args.Value == null || e.Args.Count == 0)
+                if (e.Args.Value == null || e.Args.Children.Count == 0)
                     return; // Nothing to do here ...
 
                 // Looping through all widget IDs given by caller
@@ -96,7 +96,7 @@ namespace p5.web.widgets
         [ActiveEvent (Name = "set-widget-property", Protection = EventProtection.LambdaClosed)]
         private void set_widget_property (ApplicationContext context, ActiveEventArgs e)
         {
-            if (e.Args.Value == null || e.Args.Count == 0)
+            if (e.Args.Value == null || e.Args.Children.Count == 0)
                 return; // Nothing to do here ...
 
             // Looping through all widget IDs given by caller
@@ -136,7 +136,7 @@ namespace p5.web.widgets
         [ActiveEvent (Name = "delete-widget-property", Protection = EventProtection.LambdaClosed)]
         private void delete_widget_property (ApplicationContext context, ActiveEventArgs e)
         {
-            if (e.Args.Value == null || e.Args.Count == 0)
+            if (e.Args.Value == null || e.Args.Children.Count == 0)
                 return; // Nothing to do here ...
 
             // Looping through all widgets supplied by caller

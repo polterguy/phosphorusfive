@@ -27,7 +27,7 @@ namespace p5.unittests.lambda
   add:x:/..
     src
       _foo1:bar1");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
         }
@@ -42,7 +42,7 @@ namespace p5.unittests.lambda
   add:x:/..
     src
       _foo1:bar1");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
         }
@@ -58,7 +58,7 @@ namespace p5.unittests.lambda
   add:x:/..
     src
       _foo1:bar1");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
         }
@@ -74,7 +74,7 @@ namespace p5.unittests.lambda
   add:x:/..
     src
       _foo1:bar1");
-            Assert.AreEqual (0, result.Count);
+            Assert.AreEqual (0, result.Children.Count);
         }
         
         /// <summary>
@@ -90,7 +90,7 @@ if:x:/-2?value
   add:x:/..
     src
       _foo1:bar1");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
         }
@@ -108,7 +108,7 @@ if:x:/-2?value
   add:x:/..
     src
       _foo1:bar1");
-            Assert.AreEqual (0, result.Count);
+            Assert.AreEqual (0, result.Children.Count);
         }
         
         /// <summary>
@@ -126,7 +126,7 @@ if:x:/-2?value
   add:x:/..
     src
       _foo1:bar1");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
         }
@@ -146,7 +146,7 @@ if:x:/-2?value
   add:x:/..
     src
       _foo1:bar1");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
         }
@@ -170,7 +170,7 @@ if:x:/-2?value
   add:x:/..
     src
       _foo1:bar1");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
         }
@@ -192,7 +192,7 @@ if:x:/-2?value
   add:x:/..
     src
       _foo1:bar1");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
         }
@@ -217,7 +217,7 @@ if:x:/-2?value
   add:x:/..
     src
       _foo1:bar1");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
         }
@@ -242,7 +242,7 @@ if:x:/-2?value
   add:x:/..
     src
       _foo1:bar1");
-            Assert.AreEqual (0, result.Count);
+            Assert.AreEqual (0, result.Children.Count);
         }
         
         /// <summary>
@@ -258,7 +258,7 @@ else
   add:x:/..
     src
       _foo1:bar1");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
         }
@@ -276,7 +276,7 @@ else-if:bool:true
   add:x:/..
     src
       _foo1:bar1");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
         }

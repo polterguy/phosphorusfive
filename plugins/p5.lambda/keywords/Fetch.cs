@@ -26,11 +26,11 @@ namespace p5.lambda.keywords
             // Basic syntax checking
             if (e.Args.Value != null)
                 throw new LambdaException ("[fetch] does not take arguments as value, use [src] nodes for supplying arguments", e.Args, context);
-            if (e.Args.Count == 0)
+            if (e.Args.Children.Count == 0)
                 throw new LambdaException ("[fetch] was not given any arguments at all, neither [src] nor lambda to evaluate", e.Args, context);
             if (e.Args.Children.Count (ix => ix.Name == "src") == 0)
                 throw new LambdaException ("[fetch] was not given any [src] arguments", e.Args, context);
-            if (e.Args.Children.Count (ix => ix.Name == "src") == e.Args.Count)
+            if (e.Args.Children.Count (ix => ix.Name == "src") == e.Args.Children.Count)
                 throw new LambdaException ("[fetch] was not given a lambda block to evaluate", e.Args, context);
 
             // Figuring out offset to start evaluating from

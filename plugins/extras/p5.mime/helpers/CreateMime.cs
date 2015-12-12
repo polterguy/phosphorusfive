@@ -185,7 +185,7 @@ namespace p5.mime.helpers
             MimeEntity entity)
         {
             // Basic syntax checking
-            if (signNode.Count != 1 || (signNode.FirstChild.Name != "email" && signNode.FirstChild.Name != "fingerprint"))
+            if (signNode.Children.Count != 1 || (signNode.FirstChild.Name != "email" && signNode.FirstChild.Name != "fingerprint"))
                 throw new LambdaException (
                     "No [email] or [fingerprint] supplied to [signature], supply one of these, and ONLY one of these",
                     signNode,
@@ -283,7 +283,7 @@ namespace p5.mime.helpers
             MimeEntity entity)
         {
             // Basic syntax checking
-            if (signNode.Count != 1 || (signNode.FirstChild.Name != "email" && signNode.FirstChild.Name != "fingerprint"))
+            if (signNode.Children.Count != 1 || (signNode.FirstChild.Name != "email" && signNode.FirstChild.Name != "fingerprint"))
                 throw new LambdaException (
                     "No [email] or [fingerprint] supplied to [signature], supply one of these, and ONLY one of these",
                     signNode,

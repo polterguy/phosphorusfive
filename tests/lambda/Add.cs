@@ -5,6 +5,7 @@
 
 using NUnit.Framework;
 using p5.core;
+using p5.exp.exceptions;
 
 namespace p5.unittests.lambda
 {
@@ -28,7 +29,7 @@ namespace p5.unittests.lambda
   src
     _foo1:bar1
     _foo2:bar2");
-            Assert.AreEqual (2, result.Count);
+            Assert.AreEqual (2, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
             Assert.AreEqual ("_foo2", result [1].Name);
@@ -46,7 +47,7 @@ namespace p5.unittests.lambda
   _foo2:bar2
 add:x:/..
   src:x:/./-/*");
-            Assert.AreEqual (2, result.Count);
+            Assert.AreEqual (2, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
             Assert.AreEqual ("_foo2", result [1].Name);
@@ -68,7 +69,7 @@ add:x:/..
         {
             var result = ExecuteLambda (@"add:x:/..
   add.test1");
-            Assert.AreEqual (2, result.Count);
+            Assert.AreEqual (2, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
             Assert.AreEqual ("_foo2", result [1].Name);
@@ -90,7 +91,7 @@ _foo2:bar2";
         {
             var result = ExecuteLambda (@"add:x:/..
   add.test2");
-            Assert.AreEqual (2, result.Count);
+            Assert.AreEqual (2, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
             Assert.AreEqual ("_foo2", result [1].Name);
@@ -106,7 +107,7 @@ _foo2:bar2";
             var result = ExecuteLambda (@"add:x:/..
   src:@""_foo1:bar1
 _foo2:bar2""");
-            Assert.AreEqual (2, result.Count);
+            Assert.AreEqual (2, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
             Assert.AreEqual ("_foo2", result [1].Name);
@@ -123,7 +124,7 @@ _foo2:bar2""");
 _foo2:bar2""
 add:x:/..
   src:x:/./-?value");
-            Assert.AreEqual (2, result.Count);
+            Assert.AreEqual (2, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
             Assert.AreEqual ("_foo2", result [1].Name);
@@ -141,7 +142,7 @@ add:x:/..
   _foo2:bar2""
 add:x:/..
   src:x:/./-?value");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("_wrapper", result [0].Name);
             Assert.AreEqual ("_foo1", result [0] [0].Name);
             Assert.AreEqual ("bar1", result [0] [0].Value);
@@ -160,7 +161,7 @@ add:x:/..
   _foo2:bar2""
 add:x:/..
   src:x:/./-/#/*");
-            Assert.AreEqual (2, result.Count);
+            Assert.AreEqual (2, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
             Assert.AreEqual ("_foo2", result [1].Name);
@@ -178,7 +179,7 @@ add:x:/..
     _foo1:bar1
   src
     _foo2:bar2");
-            Assert.AreEqual (2, result.Count);
+            Assert.AreEqual (2, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
             Assert.AreEqual ("_foo2", result [1].Name);
@@ -198,7 +199,7 @@ _x2
 add:x:/..
   src:x:/../*/_x1/*
   src:x:/../*/_x2/*");
-            Assert.AreEqual (2, result.Count);
+            Assert.AreEqual (2, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
             Assert.AreEqual ("_foo2", result [1].Name);
@@ -217,7 +218,7 @@ add:x:/..
   src:x:/../*/_x1/*
   src
     _foo2:bar2");
-            Assert.AreEqual (2, result.Count);
+            Assert.AreEqual (2, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
             Assert.AreEqual ("_foo2", result [1].Name);
@@ -228,13 +229,14 @@ add:x:/..
         ///     Verifies mixing [src] and [rel-src] in same [add] operation throws an exception
         /// </summary>
         [Test]
-        [ExpectedException(typeof(p5.exp.exceptions.LambdaException))]
         public void AddWithRelSrcAndSrcThrows ()
         {
-            ExecuteLambda (@"add:x:/..
+            Assert.Throws<LambdaException> (delegate {
+                ExecuteLambda (@"add:x:/..
   src
     x
   rel-src:x:/..");
+            });
         }
     }
 }

@@ -31,7 +31,7 @@ namespace p5.lambda.keywords
                     context);
 
             // Figuring out source type, for then to execute the corresponding logic
-            if (e.Args.Count > 0 && e.Args.LastChild.Name == "rel-src") {
+            if (e.Args.Children.Count > 0 && e.Args.LastChild.Name == "rel-src") {
 
                 // Iterating through all destinations, figuring out source relative to each destinations
                 foreach (var idxDestination in destEx.Evaluate (context, e.Args, e.Args)) {

@@ -46,7 +46,7 @@ if
   file-exist:/thread-test.txt
   insert-before:x:/../0
     src:success");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("success", result [0].Name);
         }
         
@@ -86,7 +86,7 @@ if
     file-exist:/thread-test2.txt
   add:x:/..
     src:success");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("success", result [0].Name);
         }
 
@@ -117,7 +117,7 @@ if
   file-exist:/thread-test1.txt
   insert-before:x:/../0
     src:success");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("success", result [0].Name);
         }
 
@@ -151,7 +151,7 @@ if
   file-exist:x:/./-/*?name
   insert-before:x:/../0
     src:success");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("success", result [0].Name);
         }
         
@@ -175,7 +175,7 @@ if
   file-exist:/thread-test1.txt
   insert-before:x:/../0
     src:success");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("success", result [0].Name);
         }
 
@@ -283,7 +283,7 @@ else
     file-exist:/thread-test.txt
     insert-before:x:/../0
       src:success");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("success", result [0].Name);
         }
         
@@ -324,7 +324,7 @@ else
     insert-before:x:/../0
       src:success
 _minus:-");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("success", result [0].Name);
         }
     }

@@ -126,7 +126,7 @@ namespace p5.data.helpers
                 SaveFileNode (context, idxNode);
 
                 // Removing node entirely from database, if file node was empty, at which case the file was deleted above
-                if (idxNode.Count == 0)
+                if (idxNode.Children.Count == 0)
                     idxNode.UnTie ();
             }
         }
@@ -143,7 +143,7 @@ namespace p5.data.helpers
             foreach (var idxFileNode in Database.Children) {
 
                 // Checking if currently iterated file has room for more data
-                if (idxFileNode.Count < objectsPerFile)
+                if (idxFileNode.Children.Count < objectsPerFile)
                     return idxFileNode; // We found an available node
             }
 
@@ -165,7 +165,7 @@ namespace p5.data.helpers
         private static void SaveFileNode (ApplicationContext context, Node fileNode)
         {
             // Checking to see if we should remove file entirely, due to it having no more content
-            if (fileNode.Count == 0) {
+            if (fileNode.Children.Count == 0) {
 
                 // Removing file since it no longer has any data
                 File.Delete (_dbFullPath + fileNode.Value);

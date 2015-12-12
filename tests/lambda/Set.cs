@@ -30,7 +30,7 @@ set:x:/-/0?value
   src:success
 add:x:/..
   src:x:/./-2/*");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("success", result [0].Value);
         }
@@ -48,7 +48,7 @@ set:x:/-/0?value
   src:x:/./-/1?value
 add:x:/..
   src:x:/./-2/0");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("_dest", result [0].Name);
             Assert.AreEqual ("success", result [0].Value);
         }
@@ -70,7 +70,7 @@ set:x:/-?value
   set.test1
 add:x:/..
   src:x:/./-2");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("_dest", result [0].Name);
             Assert.AreEqual ("success", result [0].Value);
         }
@@ -93,7 +93,7 @@ set:x:/-?value
   set.test2
 add:x:/..
   src:x:/./-2");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("_dest", result [0].Name);
             Assert.AreEqual ("", result[0].Get<Node> (Context).Name);
             Assert.IsNull (result[0].Get<Node> (Context).Value);
@@ -121,7 +121,7 @@ set:x:/-?value
   set.test3
 add:x:/..
   src:x:/./-2");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("_dest", result [0].Name);
             Assert.IsTrue (result [0].Value is Node);
             Assert.AreEqual ("_foo1", result [0].Get<Node> (Context).Name);
@@ -142,7 +142,7 @@ set:x:/-?value
     _:5
 add:x:/..
   src:x:/./-2");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("_dest", result [0].Name);
             Assert.AreEqual (10, result [0].Value);
         }
@@ -160,7 +160,7 @@ set:x:/-?value
     _:5
 add:x:/..
   src:x:/./-2");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("_dest", result [0].Name);
             Assert.AreEqual (10, result [0].Value);
         }
@@ -201,12 +201,12 @@ set:x:/-?value
   set.test3
 add:x:/..
   src:x:/./-2");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("_dest", result [0].Name);
             Assert.IsTrue (result [0].Value is Node);
             Assert.AreEqual ("", result [0].Get<Node> (Context).Name);
             Assert.IsNull (result [0].Get<Node> (Context).Value);
-            Assert.AreEqual (2, result [0].Get<Node> (Context).Count);
+            Assert.AreEqual (2, result [0].Get<Node> (Context).Children.Count);
 
             Assert.AreEqual ("_foo1", result [0].Get<Node> (Context)[0].Name);
             Assert.AreEqual ("bar1", result [0].Get<Node> (Context)[0].Value);

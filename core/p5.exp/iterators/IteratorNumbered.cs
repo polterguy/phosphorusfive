@@ -29,7 +29,7 @@ namespace p5.exp.iterators
 
         public override IEnumerable<Node> Evaluate (ApplicationContext context)
         {
-            return from idxCurrent in Left.Evaluate (context) where idxCurrent.Count > _number select idxCurrent [_number];
+            return from idxCurrent in Left.Evaluate (context) where idxCurrent.Children.Count > _number select idxCurrent [_number];
         }
     }
 }

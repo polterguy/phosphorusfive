@@ -87,7 +87,7 @@ namespace p5.exp
             Node args, 
             string activeEventName)
         {
-            if (args.Count == 0)
+            if (args.Children.Count == 0)
                 throw new LambdaException (
                     string.Format ("No arguments supplied to [{0}]", activeEventName), 
                     args, 
@@ -104,7 +104,7 @@ namespace p5.exp
             Node args, 
             string activeEventName)
         {
-            if (args.Value == null && args.Count == 0)
+            if (args.Value == null && args.Children.Count == 0)
                 throw new LambdaException (
                     string.Format ("No arguments or children nodes supplied to [{0}]", activeEventName), 
                     args, 
@@ -465,7 +465,7 @@ namespace p5.exp
             } else {
 
                 // There are no values in [src] node, trying to create source out of [src]'s children
-                if (evaluatedNode.Count == 1) {
+                if (evaluatedNode.Children.Count == 1) {
 
                     // Source is a constant node, making sure we clone it, in case source and destination overlaps
                     return evaluatedNode.FirstChild.Clone ();

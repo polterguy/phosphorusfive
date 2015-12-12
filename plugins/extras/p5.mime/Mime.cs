@@ -44,18 +44,14 @@ namespace p5.mime
         private static void p5_mime_create_native (ApplicationContext context, ActiveEventArgs e)
         {
             // Basic syntax checking
-            if (e.Args.Count != 1)
+            if (e.Args.Children.Count != 1)
                 throw new LambdaException (
                     "You must have exactly one root node of your MIME message",
                     e.Args,
                     context);
 
-            // Making sure we clean up after ourselves
-            using (new Utilities.ArgsRemover (e.Args)) {
-
-                // Creating and returning MIME message to caller as MimeEntity
-                e.Args.Value = CreateMime.CreateEntity (context, e.Args.FirstChild, (List<Stream>)e.Args.Value);
-            }
+            // Creating and returning MIME message to caller as MimeEntity
+            e.Args.Value = CreateMime.CreateEntity (context, e.Args.FirstChild, (List<Stream>)e.Args.Value);
         }
 
         /// <summary>
@@ -67,7 +63,7 @@ namespace p5.mime
         private static void p5_mime_create (ApplicationContext context, ActiveEventArgs e)
         {
             // Basic syntax checking
-            if (e.Args.Count != 1)
+            if (e.Args.Children.Count != 1)
                 throw new LambdaException (
                     "You must have exactly one root node of your MIME message",
                     e.Args,
@@ -103,16 +99,12 @@ namespace p5.mime
         [ActiveEvent (Name = "p5.mime.parse-native", Protection = EventProtection.NativeClosed)]
         private static void p5_mime_parse_native (ApplicationContext context, ActiveEventArgs e)
         {
-            // Making sure we clean up after ourselves
-            using (new Utilities.ArgsRemover (e.Args, true)) {
-
-                // Retrieving MimeEntity from caller's arguments
-                var entity = e.Args.Get<MimeEntity> (context);
-                ParseMime.ParseMimeEntity (
-                    context, 
-                    e.Args,
-                    entity);
-            }
+            // Retrieving MimeEntity from caller's arguments
+            var entity = e.Args.Get<MimeEntity> (context);
+            ParseMime.ParseMimeEntity (
+                context, 
+                e.Args,
+                entity);
         }
 
         /// <summary>

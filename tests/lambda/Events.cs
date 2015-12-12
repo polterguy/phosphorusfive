@@ -3,6 +3,7 @@
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
+using System.Security;
 using System.Linq;
 using NUnit.Framework;
 using p5.core;
@@ -108,7 +109,7 @@ insert-before:x:/../0
 delete-events:events.test5
 insert-before:x:/../0
   get-events:events.test5");
-            Assert.AreEqual (0, result.Count);
+            Assert.AreEqual (0, result.Children.Count);
         }
 
         /// <summary>
@@ -122,8 +123,8 @@ insert-before:x:/../0
     src:success
 insert-before:x:/../0
   events.test5_3");
-            Assert.AreEqual (1, result.Count);
-            Assert.AreEqual (0, result [0].Count);
+            Assert.AreEqual (1, result.Children.Count);
+            Assert.AreEqual (0, result [0].Children.Count);
             Assert.AreEqual ("success", result [0].Name);
             Assert.IsNull (result [0].Value);
         }
@@ -141,9 +142,9 @@ insert-before:x:/../0
   events.test5_2
 insert-before:x:/../0
   events.test5_2");
-            Assert.AreEqual (2, result.Count);
-            Assert.AreEqual (0, result [0].Count);
-            Assert.AreEqual (0, result [1].Count);
+            Assert.AreEqual (2, result.Children.Count);
+            Assert.AreEqual (0, result [0].Children.Count);
+            Assert.AreEqual (0, result [1].Children.Count);
             Assert.AreEqual ("success", result [0].Name);
             Assert.AreEqual ("success", result [1].Name);
             Assert.IsNull (result [0].Value);
@@ -161,8 +162,8 @@ insert-before:x:/../0
     src:node:""success:foo-bar""
 insert-before:x:/../0
   events.test6");
-            Assert.AreEqual (1, result.Count);
-            Assert.AreEqual (0, result [0].Count);
+            Assert.AreEqual (1, result.Children.Count);
+            Assert.AreEqual (0, result [0].Children.Count);
             Assert.AreEqual ("success", result [0].Name);
             Assert.AreEqual ("foo-bar", result [0].Value);
         }
@@ -181,8 +182,8 @@ insert-before:x:/../0
   src:foo
 set:x:/../0?value
   src:x:/./-2?value");
-            Assert.AreEqual (1, result.Count);
-            Assert.AreEqual (0, result [0].Count);
+            Assert.AreEqual (1, result.Children.Count);
+            Assert.AreEqual (0, result [0].Children.Count);
             Assert.AreEqual ("foo", result [0].Name);
             Assert.AreEqual (5, result [0].Value);
         }
@@ -202,8 +203,8 @@ insert-before:x:/../0
   src:foo
 set:x:/../0?value
   src:x:/./-2?value");
-            Assert.AreEqual (1, result.Count);
-            Assert.AreEqual (0, result [0].Count);
+            Assert.AreEqual (1, result.Children.Count);
+            Assert.AreEqual (0, result [0].Children.Count);
             Assert.AreEqual ("foo", result [0].Name);
             Assert.IsTrue (result [0].Value is Expression);
             Assert.AreEqual ("/foo?value", result [0].Get<string> (Context).ToString ());
@@ -221,8 +222,8 @@ set:x:/../0?value
       _foo1:bar1
 insert-before:x:/../0
   events.test9");
-            Assert.AreEqual (1, result.Count);
-            Assert.AreEqual (0, result [0].Count);
+            Assert.AreEqual (1, result.Children.Count);
+            Assert.AreEqual (0, result [0].Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
         }
@@ -240,9 +241,9 @@ insert-before:x:/../0
       _foo2:bar2
 insert-before:x:/../0
   events.test10");
-            Assert.AreEqual (2, result.Count);
-            Assert.AreEqual (0, result [0].Count);
-            Assert.AreEqual (0, result [1].Count);
+            Assert.AreEqual (2, result.Children.Count);
+            Assert.AreEqual (0, result [0].Children.Count);
+            Assert.AreEqual (0, result [1].Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
             Assert.AreEqual ("_foo2", result [1].Name);
@@ -261,8 +262,8 @@ insert-before:x:/../0
 insert-before:x:/../0
   events.test11
     _input:success");
-            Assert.AreEqual (1, result.Count);
-            Assert.AreEqual (0, result [0].Count);
+            Assert.AreEqual (1, result.Children.Count);
+            Assert.AreEqual (0, result [0].Children.Count);
             Assert.AreEqual ("success", result [0].Name);
             Assert.IsNull (result [0].Value);
         }
@@ -280,8 +281,8 @@ insert-before:x:/../0
   events.test12
     _input1:succ
     _input2:ess");
-            Assert.AreEqual (1, result.Count);
-            Assert.AreEqual (0, result [0].Count);
+            Assert.AreEqual (1, result.Children.Count);
+            Assert.AreEqual (0, result [0].Children.Count);
             Assert.AreEqual ("success", result [0].Name);
             Assert.IsNull (result [0].Value);
         }
@@ -297,8 +298,8 @@ insert-before:x:/../0
     src:x:/../*/_arg?value
 insert-before:x:/../0
   events.test13:success");
-            Assert.AreEqual (1, result.Count);
-            Assert.AreEqual (0, result [0].Count);
+            Assert.AreEqual (1, result.Children.Count);
+            Assert.AreEqual (0, result [0].Children.Count);
             Assert.AreEqual ("success", result [0].Name);
             Assert.IsNull (result [0].Value);
         }
@@ -317,8 +318,8 @@ insert-before:x:/../0
 insert-before:x:/../0
   events.test13_2:succ{0}
     :ess");
-            Assert.AreEqual (1, result.Count);
-            Assert.AreEqual (0, result [0].Count);
+            Assert.AreEqual (1, result.Children.Count);
+            Assert.AreEqual (0, result [0].Children.Count);
             Assert.AreEqual ("success", result [0].Name);
             Assert.IsNull (result [0].Value);
         }
@@ -338,9 +339,9 @@ _x
   _foo2:bar2
 insert-before:x:/../0
   events.test14:x:/./-");
-            Assert.AreEqual (2, result.Count);
-            Assert.AreEqual (0, result [0].Count);
-            Assert.AreEqual (0, result [1].Count);
+            Assert.AreEqual (2, result.Children.Count);
+            Assert.AreEqual (0, result [0].Children.Count);
+            Assert.AreEqual (0, result [1].Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
             Assert.AreEqual ("_foo2", result [1].Name);
@@ -361,8 +362,8 @@ insert-before:x:/../0
 _x:_foo1
 insert-before:x:/../0
   events.test14_3:x:/./-?value");
-            Assert.AreEqual (1, result.Count);
-            Assert.AreEqual (0, result [0].Count);
+            Assert.AreEqual (1, result.Children.Count);
+            Assert.AreEqual (0, result [0].Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.IsNull (result [0].Value);
         }
@@ -383,9 +384,9 @@ _x
 insert-before:x:/../0
   events.test14_2:x:/{0}/-
     :.");
-            Assert.AreEqual (2, result.Count);
-            Assert.AreEqual (0, result [0].Count);
-            Assert.AreEqual (0, result [1].Count);
+            Assert.AreEqual (2, result.Children.Count);
+            Assert.AreEqual (0, result [0].Children.Count);
+            Assert.AreEqual (0, result [1].Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
             Assert.AreEqual ("_foo2", result [1].Name);
@@ -410,11 +411,11 @@ _x
   _foo4:bar4
 insert-before:x:/../0
   events.test15:x:/./-2|/./-");
-            Assert.AreEqual (4, result.Count);
-            Assert.AreEqual (0, result [0].Count);
-            Assert.AreEqual (0, result [1].Count);
-            Assert.AreEqual (0, result [2].Count);
-            Assert.AreEqual (0, result [3].Count);
+            Assert.AreEqual (4, result.Children.Count);
+            Assert.AreEqual (0, result [0].Children.Count);
+            Assert.AreEqual (0, result [1].Children.Count);
+            Assert.AreEqual (0, result [2].Children.Count);
+            Assert.AreEqual (0, result [3].Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
             Assert.AreEqual ("_foo2", result [1].Name);
@@ -443,11 +444,11 @@ _x
   _foo4:bar4
 insert-before:x:/../0
   events.test16:x:/./-2/*|/./-/*?name");
-            Assert.AreEqual (4, result.Count);
-            Assert.AreEqual (0, result [0].Count);
-            Assert.AreEqual (0, result [1].Count);
-            Assert.AreEqual (0, result [2].Count);
-            Assert.AreEqual (0, result [3].Count);
+            Assert.AreEqual (4, result.Children.Count);
+            Assert.AreEqual (0, result [0].Children.Count);
+            Assert.AreEqual (0, result [1].Children.Count);
+            Assert.AreEqual (0, result [2].Children.Count);
+            Assert.AreEqual (0, result [3].Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("_foo2", result [1].Name);
             Assert.AreEqual ("_foo3", result [2].Name);
@@ -476,39 +477,42 @@ insert-before:x:/../0
         ///     Creates a protected event, twice, and verifies an exception is thrown
         /// </summary>
         [Test]
-        [ExpectedException]
         public void CreateProtectedEventTwice ()
         {
-            ExecuteLambda (@"set-protected-event:events.test18
+            Assert.Throws<SecurityException> (delegate {
+                ExecuteLambda (@"set-protected-event:events.test18
   foo-bar
 set-protected-event:events.test18
   foo-bar");
+            });
         }
 
         /// <summary>
         ///     Creates a protected event, then tries to overwrite event, and verifies an exception is thrown
         /// </summary>
         [Test]
-        [ExpectedException]
         public void CreateProtectedEventThenOverwrite ()
         {
-            ExecuteLambda (@"set-protected-event:events.test19
+            Assert.Throws<SecurityException> (delegate {
+                ExecuteLambda (@"set-protected-event:events.test19
   foo-bar
 set-event:events.test19
   foo-bar");
+            });
         }
 
         /// <summary>
         ///     Creates a protected event, then tries to overwrite event, and verifies an exception is thrown
         /// </summary>
         [Test]
-        [ExpectedException]
         public void CreateEventThenOverwriteWithProtectedEvent ()
         {
-            ExecuteLambda (@"set-event:events.test20
+            Assert.Throws<SecurityException> (delegate {
+                ExecuteLambda (@"set-event:events.test20
   foo-bar
 set-protected-event:events.test20
   foo-bar");
+            });
         }
     }
 }

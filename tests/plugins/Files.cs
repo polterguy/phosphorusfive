@@ -21,7 +21,7 @@ namespace p5.unittests.plugins
             : base ("p5.io", "p5.hyperlisp", "p5.lambda", "p5.types", "p5.io.authorization")
         { }
 
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void Setup()
         {
             // Making sure we're root for current operation
@@ -503,136 +503,144 @@ foo2:bar2");
         ///     Tries to acces "auth" file
         /// </summary>
         [Test]
-        [ExpectedException (typeof (p5.exp.exceptions.LambdaSecurityException))]
         public void ReadAuthFileAsGuest ()
         {
-            _role = "guest";
-            _username = "guest";
-            try
-            {
-                var node = new Node ("", _auth);
-                Context.RaiseNative ("load-file", node);
-            }
-            finally 
-            {
-                _role = "root";
-                _username = "root";
-            }
+            Assert.Throws<LambdaSecurityException> (delegate {
+                _role = "guest";
+                _username = "guest";
+                try
+                {
+                    var node = new Node ("", _auth);
+                    Context.RaiseNative ("load-file", node);
+                }
+                finally 
+                {
+                    _role = "root";
+                    _username = "root";
+                }
+            });
         }
 
         /// <summary>
         ///     Tries to acces "auth" file
         /// </summary>
         [Test]
-        [ExpectedException (typeof (p5.exp.exceptions.LambdaSecurityException))]
         public void ReadAuthFileAsGuestFileNameUppers ()
         {
-            _role = "guest";
-            _username = "guest";
-            try
-            {
-                var node = new Node ("", _auth.ToUpper ());
-                Context.RaiseNative ("load-file", node);
-            }
-            finally 
-            {
-                _role = "root";
-                _username = "root";
-            }
+            Assert.Throws<LambdaSecurityException> (delegate {
+                _role = "guest";
+                _username = "guest";
+                try
+                {
+                    var node = new Node ("", _auth.ToUpper ());
+                    Context.RaiseNative ("load-file", node);
+                }
+                finally 
+                {
+                    _role = "root";
+                    _username = "root";
+                }
+            });
         }
 
         /// <summary>
         ///     Tries to acces "auth" file
         /// </summary>
         [Test]
-        [ExpectedException (typeof (p5.exp.exceptions.LambdaSecurityException))]
         public void ReadAuthFileAsRoot ()
         {
-            var node = new Node ("", _auth);
-            Context.RaiseNative ("load-file", node);
+            Assert.Throws<LambdaSecurityException> (delegate {
+                var node = new Node ("", _auth);
+                Context.RaiseNative ("load-file", node);
+            });
         }
 
         /// <summary>
         ///     Tries to acces "auth" file
         /// </summary>
         [Test]
-        [ExpectedException (typeof (p5.exp.exceptions.LambdaSecurityException))]
         public void ReadAuthFileWithSlash ()
         {
-            var node = new Node ("", "/" + _auth);
-            Context.RaiseNative ("load-file", node);
+            Assert.Throws<LambdaSecurityException> (delegate {
+                var node = new Node ("", "/" + _auth);
+                Context.RaiseNative ("load-file", node);
+            });
         }
 
         /// <summary>
         ///     Tries to acces "auth" file
         /// </summary>
         [Test]
-        [ExpectedException (typeof (p5.exp.exceptions.LambdaSecurityException))]
         public void ReadAuthFileWithDot ()
         {
-            var node = new Node ("", _auth + ".");
-            Context.RaiseNative ("load-file", node);
+            Assert.Throws<LambdaSecurityException> (delegate {
+                var node = new Node ("", _auth + ".");
+                Context.RaiseNative ("load-file", node);
+            });
         }
 
         /// <summary>
         ///     Tries to write to "auth" file
         /// </summary>
         [Test]
-        [ExpectedException (typeof (p5.exp.exceptions.LambdaSecurityException))]
         public void WriteAuthFileAsRoot ()
         {
-            var node = new Node ("", _auth + ".");
-            Context.RaiseNative ("save-file", node);
+            Assert.Throws<LambdaSecurityException> (delegate {
+                var node = new Node ("", _auth + ".");
+                Context.RaiseNative ("save-file", node);
+            });
         }
 
         /// <summary>
         ///     Tries to acces "auth" file
         /// </summary>
         [Test]
-        [ExpectedException (typeof (p5.exp.exceptions.LambdaSecurityException))]
         public void WriteAuthFileUppersAsGuest ()
         {
-            _role = "guest";
-            _username = "guest";
-            try
-            {
-                var node = new Node ("", _auth.ToUpper ());
-                Context.RaiseNative ("save-file", node);
-            }
-            finally 
-            {
-                _role = "root";
-                _username = "root";
-            }
+            Assert.Throws<LambdaSecurityException> (delegate {
+                _role = "guest";
+                _username = "guest";
+                try
+                {
+                    var node = new Node ("", _auth.ToUpper ());
+                    Context.RaiseNative ("save-file", node);
+                }
+                finally 
+                {
+                    _role = "root";
+                    _username = "root";
+                }
+            });
         }
 
         /// <summary>
         ///     Tries to access another user's data
         /// </summary>
         [Test]
-        [ExpectedException (typeof (LambdaException))]
         public void ReadAnotherUsersDataAsRoot ()
         {
-            var node = new Node ("", "/users/foo/foo.txt");
-            Context.RaiseNative ("load-file", node);
+            Assert.Throws<LambdaSecurityException> (delegate {
+                var node = new Node ("", "/users/foo/foo.txt");
+                Context.RaiseNative ("load-file", node);
+            });
         }
 
         /// <summary>
         ///     Tries to write to another user's data
         /// </summary>
         [Test]
-        [ExpectedException (typeof (LambdaSecurityException))]
         public void SaveToAnotherUsersDataAsRoot ()
         {
-            var node = new Node ("", "/users/foo/foo.txt");
-            Context.RaiseNative ("save-file", node);
+            Assert.Throws<LambdaSecurityException> (delegate {
+                var node = new Node ("", "/users/foo/foo.txt");
+                Context.RaiseNative ("save-file", node);
+            });
         }
 
         /// <summary>
         ///     Tries to load a file without having an initial "/"
         /// </summary>
         [Test]
-        [ExpectedException (typeof (LambdaException))]
         public void LoadFileWithoutInitialSlash ()
         {
             // Creating file using p5.file
@@ -642,40 +650,43 @@ foo2:bar2");
 
             // removing directory using "phosphorus.file"
             node = new Node ("", "test1.txt");
-            Context.RaiseNative ("load-file", node);
+            Assert.Throws<LambdaException> (delegate {
+                Context.RaiseNative ("load-file", node);
+            });
         }
 
         /// <summary>
         ///     Tries to save a file without having an initial "/"
         /// </summary>
         [Test]
-        [ExpectedException (typeof (LambdaException))]
         public void SaveFileWithoutInitialSlash ()
         {
-            // Creating file using p5.file
-            var node = new Node ("", "test1.txt")
-                .Add ("src", "this is a test");
-            Context.RaiseNative ("save-file", node);
+            Assert.Throws<LambdaSecurityException> (delegate {
+                // Creating file using p5.file
+                var node = new Node ("", "test1.txt")
+                    .Add ("src", "this is a test");
+                Context.RaiseNative ("save-file", node);
+            });
         }
 
         /// <summary>
         ///     Tries to check if a file exist without having an initial "/"
         /// </summary>
         [Test]
-        [ExpectedException (typeof (LambdaException))]
         public void FileExistWithoutInitialSlash ()
         {
-            // Creating file using p5.file
-            var node = new Node ("", "test1.txt")
-                .Add ("src", "this is a test");
-            Context.RaiseNative ("file-exist", node);
+            Assert.Throws<LambdaSecurityException> (delegate {
+                // Creating file using p5.file
+                var node = new Node ("", "test1.txt")
+                    .Add ("src", "this is a test");
+                Context.RaiseNative ("file-exist", node);
+            });
         }
 
         /// <summary>
         ///     Tries to delete a file without having an initial "/"
         /// </summary>
         [Test]
-        [ExpectedException (typeof (LambdaException))]
         public void DeleteFileWithoutInitialSlash ()
         {
             // Creating file using p5.file if it does not exist
@@ -687,16 +698,16 @@ foo2:bar2");
                 Context.RaiseNative ("save-file", node);
             }
 
-            // removing directory using "phosphorus.file"
-            var result = new Node ("", "test1.txt");
-            Context.RaiseNative ("delete-file", result);
+            Assert.Throws<LambdaSecurityException> (delegate {
+                var result = new Node ("", "test1.txt");
+                Context.RaiseNative ("delete-file", result);
+            });
         }
 
         /// <summary>
         ///     Tries to copy a file without having an initial "/" in source file
         /// </summary>
         [Test]
-        [ExpectedException (typeof (LambdaException))]
         public void CopyFileWithoutInitialSlashInSource ()
         {
             // Creating file using p5.file if it does not exist
@@ -711,14 +722,15 @@ foo2:bar2");
             // Copy file
             var result = new Node ("", "test1.txt")
                 .Add ("to", "/test2.txt");
-            Context.RaiseNative ("copy-file", result);
+            Assert.Throws<LambdaException> (delegate {
+                Context.RaiseNative ("copy-file", result);
+            });
         }
 
         /// <summary>
         ///     Tries to copy a file without having an initial "/" in source file
         /// </summary>
         [Test]
-        [ExpectedException (typeof (LambdaException))]
         public void CopyFileWithoutInitialSlashInDestination ()
         {
             // Creating file using p5.file if it does not exist
@@ -733,14 +745,15 @@ foo2:bar2");
             // Copy file
             var result = new Node ("", "/test1.txt")
                 .Add ("to", "test2.txt");
-            Context.RaiseNative ("copy-file", result);
+            Assert.Throws<LambdaSecurityException> (delegate {
+                Context.RaiseNative ("copy-file", result);
+            });
         }
 
         /// <summary>
         ///     Tries to move a file without having an initial "/" in source file
         /// </summary>
         [Test]
-        [ExpectedException (typeof (LambdaException))]
         public void MoveFileWithoutInitialSlashInSource ()
         {
             // Creating file using p5.file if it does not exist
@@ -755,14 +768,15 @@ foo2:bar2");
             // Copy file
             var result = new Node ("", "test1.txt")
                 .Add ("to", "/test2.txt");
-            Context.RaiseNative ("move-file", result);
+            Assert.Throws<LambdaSecurityException> (delegate {
+                Context.RaiseNative ("move-file", result);
+            });
         }
 
         /// <summary>
         ///     Tries to move a file without having an initial "/" in source file
         /// </summary>
         [Test]
-        [ExpectedException (typeof (LambdaException))]
         public void MoveFileWithoutInitialSlashInDestination ()
         {
             // Creating file using p5.file if it does not exist
@@ -777,7 +791,9 @@ foo2:bar2");
             // Copy file
             var result = new Node ("", "/test1.txt")
                 .Add ("to", "test2.txt");
-            Context.RaiseNative ("move-file", result);
+            Assert.Throws<LambdaSecurityException> (delegate {
+                Context.RaiseNative ("move-file", result);
+            });
         }
     }
 }

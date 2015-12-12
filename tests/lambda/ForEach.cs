@@ -30,7 +30,7 @@ namespace p5.unittests.lambda
 for-each:x:/-/*
   add:x:/..
     src:x:/././*/__dp/#");
-            Assert.AreEqual (2, result.Count);
+            Assert.AreEqual (2, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
             Assert.AreEqual ("_foo2", result [1].Name);
@@ -49,7 +49,7 @@ for-each:x:/-/*
 for-each:x:/-/*?name
   add:x:/..
     src:x:/././*/__dp?value");
-            Assert.AreEqual (2, result.Count);
+            Assert.AreEqual (2, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.IsNull (result [0].Value);
             Assert.AreEqual ("_foo2", result [1].Name);
@@ -68,7 +68,7 @@ for-each:x:/-/*?name
 for-each:x:/-/*?value
   add:x:/..
     src:x:/././*/__dp?value");
-            Assert.AreEqual (2, result.Count);
+            Assert.AreEqual (2, result.Children.Count);
             Assert.AreEqual ("bar1", result [0].Name);
             Assert.IsNull (result [0].Value);
             Assert.AreEqual ("bar2", result [1].Name);
@@ -86,7 +86,7 @@ for-each:x:/-/*?value
   _foo2:bar2""
   add:x:/..
     src:x:/././*/__dp/#");
-            Assert.AreEqual (2, result.Count);
+            Assert.AreEqual (2, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
             Assert.AreEqual ("_foo2", result [1].Name);
@@ -103,7 +103,7 @@ for-each:x:/-/*?value
 _foo2:bar2""
   add:x:/..
     src:x:/././*/__dp/#");
-            Assert.AreEqual (2, result.Count);
+            Assert.AreEqual (2, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
             Assert.AreEqual ("_foo2", result [1].Name);
@@ -127,7 +127,7 @@ _foo2:bar2""
   for-each.test1
   add:x:/..
     src:x:/././*/__dp/#");
-            Assert.AreEqual (2, result.Count);
+            Assert.AreEqual (2, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
             Assert.AreEqual ("_foo2", result [1].Name);
@@ -149,7 +149,7 @@ for-each
   for-each.test2
   add:x:/..
     src:x:/././*/__dp/#");
-            Assert.AreEqual (2, result.Count);
+            Assert.AreEqual (2, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
             Assert.AreEqual ("_foo2", result [1].Name);
@@ -171,7 +171,7 @@ for-each
   for-each.test3
   add:x:/..
     src:x:/././*/__dp?value");
-            Assert.AreEqual (2, result.Count);
+            Assert.AreEqual (2, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
             Assert.AreEqual ("_foo2", result [1].Name);
@@ -194,7 +194,7 @@ for-each:x:/-/*?name
       :x:/..for-each/*/__dp?value
 add:x:/..
   src:x:/../0?value");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("foo1foo2", result [0].Name);
             Assert.IsNull (result [0].Value);
         }

@@ -92,16 +92,6 @@ namespace p5.core
         }
 
         /// <summary>
-        ///     Returns the number of children nodes the node has
-        /// </summary>
-        /// <value>Number of children</value>
-        public int Count {
-            get {
-                return _children.Count;
-            }
-        }
-
-        /// <summary>
         ///     Returns the index of the given node in children collection
         /// </summary>
         /// <returns>The of</returns>
@@ -124,7 +114,7 @@ namespace p5.core
         ///     Returns the children of this instance
         /// </summary>
         /// <value>Its children nodes</value>
-        public IEnumerable<Node> Children {
+        public List<Node> Children {
             get {
                 return _children;
             }
@@ -200,8 +190,8 @@ namespace p5.core
             get {
                 var idx = PreviousSibling;
                 if (idx != null) {
-                    while (idx.Count > 0) {
-                        idx = idx [idx.Count - 1];
+                    while (idx.Children.Count > 0) {
+                        idx = idx [idx.Children.Count - 1];
                     }
                     return idx;
                 }
@@ -215,7 +205,7 @@ namespace p5.core
         /// <value>The current node's next node</value>
         public Node NextNode {
             get {
-                if (Count > 0)
+                if (Children.Count > 0)
                     return FirstChild;
                 var nextSibling = NextSibling;
                 if (nextSibling != null)
@@ -457,7 +447,7 @@ namespace p5.core
             } else if (rhs._children.Count < _children.Count) {
                 return 1;
             } else {
-                for (var idxNo = 0; idxNo < Count; idxNo ++) {
+                for (var idxNo = 0; idxNo < Children.Count; idxNo ++) {
                     retVal = _children [idxNo].CompareTo (rhs._children [idxNo]);
                     if (retVal != 0)
                         return retVal;
@@ -505,8 +495,8 @@ namespace p5.core
                 retVal += "Name=" + Name;
             if (Value != null)
                 retVal += ", Value=" + Value;
-            if (Count > 0)
-                retVal += ", Count=" + Count;
+            if (Children.Count > 0)
+                retVal += ", Count=" + Children.Count;
             retVal = retVal.Trim (',', ' ');
             return retVal;
         }

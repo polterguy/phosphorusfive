@@ -29,7 +29,7 @@ namespace p5.unittests.lambda
   foo2
 insert-before:x:/../0
   join:x:/./-/*?name");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("foo1foo2", result [0].Name);
         }
         
@@ -45,7 +45,7 @@ insert-before:x:/../0
 insert-before:x:/../0
   join:x:/./-/*?name
     =:,");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("foo1,foo2", result [0].Name);
         }
         
@@ -60,7 +60,7 @@ insert-before:x:/../0
   foo2:bar2
 insert-before:x:/../0
   join:x:/./-/*");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("foo1bar1foo2bar2", result [0].Name);
         }
         
@@ -76,7 +76,7 @@ insert-before:x:/../0
 insert-before:x:/../0
   join:x:/./-/*
     =:,");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("foo1bar1,foo2bar2", result [0].Name);
         }
         
@@ -93,7 +93,7 @@ insert-before:x:/../0
   join:x:/./-/*
     =:,
     ==:-");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("foo1-bar1,foo2-bar2", result [0].Name);
         }
     }

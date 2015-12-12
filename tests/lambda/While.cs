@@ -29,7 +29,7 @@ namespace p5.unittests.lambda
   add:x:/..
     src:_foo1
   set:x:/.?value");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.IsNull (result [0].Value);
         }
@@ -48,7 +48,7 @@ while:x:/-?value
   set:x:/./-?value
     -:x:/././-?value
       _:1");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.IsNull (result [0].Value);
         }
@@ -66,7 +66,7 @@ while:x:/-?value
   set:x:/.?value
     -:x:/./.?value
       _:1");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.IsNull (result [0].Value);
         }
@@ -80,7 +80,7 @@ while:x:/-?value
             var result = ExecuteLambda (@"while:bool:false
   add:x:/..
     src:_foo1");
-            Assert.AreEqual (0, result.Count);
+            Assert.AreEqual (0, result.Children.Count);
         }
         
         /// <summary>
@@ -94,7 +94,7 @@ while:x:/-?value
     src:_foo1
   set:x:/.?value
     src:bool:false");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.IsNull (result [0].Value);
         }
@@ -112,7 +112,7 @@ while:x:/-?value
     src:_foo1
   set:x:/.?value
     src:bool:false");
-            Assert.AreEqual (0, result.Count);
+            Assert.AreEqual (0, result.Children.Count);
         }
     }
 }

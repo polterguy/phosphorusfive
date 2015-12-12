@@ -3,6 +3,7 @@
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
+using System.Security;
 using NUnit.Framework;
 using p5.core;
 
@@ -26,7 +27,7 @@ namespace p5.unittests.lambda
             var result = ExecuteLambda (@"_data:success
 set:x:/-?value
   src:error");
-            Assert.AreEqual (0, result.Count);
+            Assert.AreEqual (0, result.Children.Count);
         }
         
         /// <summary>
@@ -39,7 +40,7 @@ set:x:/-?value
   src
     _foo1:bar1
     _foo2:bar2");
-            Assert.AreEqual (2, result.Count);
+            Assert.AreEqual (2, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
             Assert.AreEqual ("_foo2", result [1].Name);
@@ -54,7 +55,7 @@ set:x:/-?value
         {
             var result = ExecuteLambda (@"set:x:/..?value
   src:success");
-            Assert.AreEqual (0, result.Count);
+            Assert.AreEqual (0, result.Children.Count);
             Assert.AreEqual ("success", result.Value);
         }
 
@@ -71,7 +72,7 @@ set:x:/-?value
 eval:x:/-
 add:x:/..
   src:x:/./-/*");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
         }
@@ -88,7 +89,7 @@ add:x:/..
 eval:x:/-
 add:x:/..
   src:x:/./-?value");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("_foo", result [0].Name);
             Assert.AreEqual ("bar", result [0].Value);
         }
@@ -112,7 +113,7 @@ add:x:/..
 eval:x:/-
 add:x:/..
   src:x:/./-/*");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("eval.test1", result [0].Name);
             Assert.AreEqual ("foo2", result [0].Value);
         }
@@ -130,7 +131,7 @@ add:x:/..
 eval:x:/-
 insert-before:x:/../0
   src:x:/./-/*");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("eval.test1", result [0].Name);
             Assert.AreEqual ("foo1", result [0].Value);
         }
@@ -146,7 +147,7 @@ insert-before:x:/../0
     src:_foo1
 add:x:/..
   eval:x:/./-");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.IsNull (result [0].Value);
         }
@@ -166,7 +167,7 @@ eval:x:/-
   _input:_foo1
 add:x:/..
   src:x:/./-/*");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.IsNull (result [0].Value);
         }
@@ -192,8 +193,8 @@ set:x:/..?value
             Assert.IsNull (result.Get<Node>(Context)[0].Value);
             Assert.AreEqual ("ess", result.Get<Node>(Context)[1].Name);
             Assert.AreEqual ("yup!", result.Get<Node>(Context)[1].Value);
-            Assert.AreEqual (2, result.Get<Node>(Context).Count);
-            Assert.AreEqual (0, result.Count);
+            Assert.AreEqual (2, result.Get<Node>(Context).Children.Count);
+            Assert.AreEqual (0, result.Children.Count);
         }
         
         /// <summary>
@@ -209,38 +210,41 @@ set:x:/..?value
   eval:x:/./-1?value");
             Assert.IsTrue (result.Value is Node);
             Assert.AreEqual ("success", result.Get<Node> (Context).Name);
-            Assert.AreEqual (0, result.Count);
+            Assert.AreEqual (0, result.Children.Count);
         }
 
         /// <summary>
         ///     Verifies that protected events cannot be invoked by lambda code
         /// </summary>
         [Test]
-        [ExpectedException (typeof (System.Security.SecurityException))]
         public void EvalCannotExecuteProtectedActiveEvents ()
         {
-            ExecuteLambda (@"p5.hyperlisp.get-type-name.System.UInt64");
+            Assert.Throws<SecurityException> (delegate {
+                ExecuteLambda (@"p5.hyperlisp.get-type-name.System.UInt64");
+            });
         }
 
         /// <summary>
         ///     Verifies that protected events cannot be invoked by lambda code that raises [eval]
         /// </summary>
         [Test]
-        [ExpectedException (typeof (System.Security.SecurityException))]
         public void EvalEvalCannotExecuteProtectedActiveEvents ()
         {
-            ExecuteLambda (@"eval
+            Assert.Throws<SecurityException> (delegate {
+                ExecuteLambda (@"eval
   p5.hyperlisp.get-type-name.System.UInt64");
+                            });
         }
 
         /// <summary>
         ///     Verifies that protected events cannot be invoked by lambda code
         /// </summary>
         [Test]
-        [ExpectedException (typeof (System.Security.SecurityException))]
         public void EvalMutableCannotExecuteProtectedActiveEvents ()
         {
-            ExecuteLambda (@"p5.hyperlisp.get-type-name.System.UInt64", "eval-mutable");
+            Assert.Throws<SecurityException> (delegate {
+                ExecuteLambda (@"p5.hyperlisp.get-type-name.System.UInt64", "eval-mutable");
+            });
         }
     }
 }

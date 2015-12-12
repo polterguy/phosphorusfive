@@ -22,7 +22,7 @@ namespace p5.mime.plugins
     public static class HttpRequest
     {
         // Specialized delegate functors for rendering request and response
-        private delegate void RenderRequestFunctor (ApplicationContext context, MimeEntity entity, HttpWebRequest request, Node args, string method);
+        private delegate void RenderRequestFunctor (ApplicationContext context, HttpWebRequest request, Node args, string method);
         private delegate void RenderResponseFunctor (ApplicationContext context, HttpWebRequest request, Node args);
 
         /// <summary>
@@ -33,14 +33,31 @@ namespace p5.mime.plugins
         private static void p5_net_http_post_put_mime (ApplicationContext context, ActiveEventArgs e)
         {
             // Basic syntax checking
-            if (e.Args.Count != 1)
+            if (e.Args.Children.Count (ix => ix.Name != "") != 1)
                 throw new LambdaException (
-                    "You can only post and put one MIME entity when creating HTTP requests, to post multiple values, use [multipart] as your root",
+                    "You can only post and put one root MIME entity",
                     e.Args,
                     context);
 
             // Creating request, with delegate writing MimeEntity
-            CreateRequest (context, e.Args, RenderRequest, RenderResponse);
+            CreateRequest (context, e.Args, RenderMimeRequest, RenderMimeResponse);
+        }
+
+        /// <summary>
+        ///     Posts or puts a MIME message over an HTTP request
+        /// </summary>
+        [ActiveEvent (Name = "p5.net.http-get-mime", Protection = EventProtection.LambdaClosed)]
+        private static void p5_net_http_get_mime (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Basic syntax checking
+            if (e.Args.Children.Count (ix => ix.Name != "") != 0)
+                throw new LambdaException (
+                    "You cannot have content of a GET HTTP request",
+                    e.Args,
+                    context);
+
+            // Creating request, with delegate writing MimeEntity
+            CreateRequest (context, e.Args, RenderMimeRequest, RenderMimeResponse);
         }
 
         /*
@@ -64,38 +81,17 @@ namespace p5.mime.plugins
                     // Iterating through each request URL given
                     foreach (var idxUrl in XUtil.Iterate<string> (context, args, true)) {
 
-                        // List of streams created during creation of MimeEntity.
-                        // We need to keep track of this, such that we can close and dispose all streams after we're done with them
-                        var streams = new List<Stream> ();
+                        // Creating request
+                        HttpWebRequest request = WebRequest.Create (idxUrl) as HttpWebRequest;
 
-                        // Creating MIME entity, making sure we pass in a list of streams, such that we can clean up after ourselves
-                        args.Value = streams;
+                        // Setting HTTP method
+                        request.Method = method;
 
-                        try {
-                            var entity = context.RaiseNative ("p5.mime.create-native", args).Get<MimeEntity> (context);
+                        // Writing content to request, if any
+                        renderRequest (context, request, args, method);
 
-                            // Creating request
-                            HttpWebRequest request = WebRequest.Create (idxUrl) as HttpWebRequest;
-
-                            // Setting HTTP method
-                            request.Method = method;
-
-                            // Writing content to request, if any
-                            renderRequest (context, entity, request, args, method);
-
-                            // Returning response to caller
-                            renderResponse (context, request, args);
-                        } finally {
-
-                            // Closing and disposing all streams created during creation of MimeEntity
-                            foreach (var idxStream in streams) {
-
-                                // Closing and disposing currently iterated stream
-                                idxStream.Close ();
-                                idxStream.Dispose ();
-                            }
-
-                        }
+                        // Returning response to caller
+                        renderResponse (context, request, args);
                     }
                 } catch (Exception err) {
 
@@ -168,33 +164,56 @@ namespace p5.mime.plugins
         /*
          * Renders MIME request
          */
-        private static void RenderRequest (
+        private static void RenderMimeRequest (
             ApplicationContext context, 
-            MimeEntity entity,
             HttpWebRequest request, 
             Node args, 
             string method)
         {
-            using (Stream stream = request.GetRequestStream ()) {
+            // List of streams created during creation of MimeEntity.
+            // We need to keep track of this, such that we can close and dispose all streams after we're done with them
+            var bufferStreams = new List<Stream> ();
 
-                // Setting our Content-Type header, defaulting to Entity's Content-Type, in addition to other headers
-                request.ContentType = args.GetExChildValue (
-                    "Content-Type", 
-                    context, 
-                    entity.ContentType.ToString ());
+            try {
+                // Creating MIME entity, making sure we pass in a list of streams, such that we can clean up after ourselves
+                args.Value = bufferStreams;
 
-                // Setting other headers
-                SetRequestHeaders (context, request, args);
+                // Retrieving MimeEntity
+                var entity = context.RaiseNative ("p5.mime.create-native", args).Get<MimeEntity> (context);
 
-                // Writing MIME entity to request stream
-                entity.WriteTo (stream);
+                using (Stream stream = request.GetRequestStream ()) {
+
+                    // Setting our Content-Type header, defaulting to Entity's Content-Type, in addition to other headers
+                    request.ContentType = args.GetExChildValue (
+                        "Content-Type", 
+                        context, 
+                        entity.ContentType.ToString ());
+
+                    // Setting other headers
+                    SetRequestHeaders (context, request, args);
+
+                    // Writing MIME entity to request stream
+                    entity.WriteTo (stream);
+                }
+            } finally {
+
+                // Making sure list of streams never leaves this method
+                args.Value = null;
+
+                // Closing and disposing all streams created during creation of MimeEntity
+                foreach (var idxStream in bufferStreams) {
+
+                    // Closing and disposing currently iterated stream
+                    idxStream.Close ();
+                    idxStream.Dispose ();
+                }
             }
         }
 
         /*
          * Renders response into given Node
          */
-        private static void RenderResponse (
+        private static void RenderMimeResponse (
             ApplicationContext context, 
             HttpWebRequest request, 
             Node args)
@@ -210,12 +229,12 @@ namespace p5.mime.plugins
                 using (Stream stream = response.GetResponseStream ()) {
 
                     // Retrieving response by reading stream and creating MimeEntity
-                    result.Value = MimeEntity.Load (ContentType.Parse (response.ContentType), stream);
+                    result.Value = MimeEntity.Load (stream);
                     context.RaiseNative ("p5.mime.parse-native", result);
                 }
             } finally {
 
-                // Making sure [result] node's value is URL of response
+                // Making sure [result] node's value is URL of request
                 result.Value = request.RequestUri.ToString ();
             }
         }

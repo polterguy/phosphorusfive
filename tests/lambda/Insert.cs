@@ -25,7 +25,7 @@ namespace p5.unittests.lambda
             var result = ExecuteLambda (@"insert-before:x:/../0
   src
     foo1:bar1");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
         }
@@ -36,7 +36,7 @@ namespace p5.unittests.lambda
             var result = ExecuteLambda (@"insert-after:x:/../0
   src
     _foo1:bar1");
-            Assert.AreEqual (1, result.Count);
+            Assert.AreEqual (1, result.Children.Count);
             Assert.AreEqual ("_foo1", result [0].Name);
             Assert.AreEqual ("bar1", result [0].Value);
         }

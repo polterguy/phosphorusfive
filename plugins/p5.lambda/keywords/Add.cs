@@ -29,7 +29,7 @@ namespace p5.lambda.keywords
                 throw new LambdaException ("[add] was not given a destination expression", e.Args, context);
 
             // Figuring out source type
-            if (e.Args.Count > 0 && e.Args.LastChild.Name == "rel-src") {
+            if (e.Args.Children.Count > 0 && e.Args.LastChild.Name == "rel-src") {
 
                 // Relative source
                 AppendRelativeSource (e.Args, context);

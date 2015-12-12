@@ -8,6 +8,7 @@ using System.Linq;
 using NUnit.Framework;
 using p5.core;
 using p5.exp;
+using p5.exp.exceptions;
 
 namespace p5.unittests
 {
@@ -63,24 +64,27 @@ namespace p5.unittests
         }
 
         [Test]
-        [ExpectedException (typeof (p5.exp.exceptions.ExpressionException))]
         public void NonExistingType ()
         {
-            Expression.Create ("/foo?valuXX", Context);
+            Assert.Throws<ExpressionException> (delegate {
+                Expression.Create ("/foo?valuXX", Context);
+            });
         }
         
         [Test]
-        [ExpectedException (typeof (p5.exp.exceptions.ExpressionException))]
         public void CaseSensitiveType ()
         {
-            Expression.Create ("/foo?Value", Context);
+            Assert.Throws<ExpressionException> (delegate {
+                Expression.Create ("/foo?Value", Context);
+            });
         }
 
         [Test]
-        [ExpectedException (typeof (p5.exp.exceptions.ExpressionException))]
         public void MissingIteratorDeclaration ()
         {
-            Expression.Create ("foo?value", Context);
+            Assert.Throws<ExpressionException> (delegate {
+                Expression.Create ("foo?value", Context);
+            });
         }
         
         [Test]

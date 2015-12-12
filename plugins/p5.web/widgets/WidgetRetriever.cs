@@ -67,7 +67,7 @@ namespace p5.web.widgets
             }
 
             // Making sure we set value of main event node to widget's ID if only one widget was requested
-            if (e.Args.Count == 1)
+            if (e.Args.Children.Count == 1)
                 e.Args.Value = e.Args.FirstChild.Value;
             else
                 e.Args.Value = null; // Making sure we remove arguments if there are multiple return values
@@ -133,7 +133,7 @@ namespace p5.web.widgets
             }
 
             // Making sure we set value of main event node to widget's ID if only one widget was found
-            if (e.Args.Count == 1)
+            if (e.Args.Children.Count == 1)
                 e.Args.Value = e.Args.FirstChild.Value;
             else
                 e.Args.Value = null; // Making sure we remove arguments if there are multiple return values

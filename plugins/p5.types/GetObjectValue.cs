@@ -44,7 +44,7 @@ namespace p5.types
             var code = e.Args.Get<string> (context);
             var tmp = new Node ("", code);
             context.RaiseNative ("lisp2lambda", tmp);
-            e.Args.Value = tmp.Count > 0 ? new Node ("", null, tmp.Children) : null;
+            e.Args.Value = tmp.Children.Count > 0 ? new Node ("", null, tmp.Children) : null;
         }
 
         /// <summary>
@@ -60,11 +60,11 @@ namespace p5.types
             context.RaiseNative ("lisp2lambda", tmp);
 
             // Different logic if there's one node or multiple nodes!
-            if (tmp.Count == 1) {
+            if (tmp.Children.Count == 1) {
 
                 // If there's only one node, we return that as result
                 e.Args.Value = tmp [0].Clone ();
-            } else if (tmp.Count > 1) {
+            } else if (tmp.Children.Count > 1) {
 
                 // Oops, error!
                 throw new LambdaException (

@@ -119,7 +119,7 @@ namespace p5.hyperlisp.helpers
 
             // Now that we have position we can add new node
             node.Add (new Node (token.Value));
-            node = node [node.Count - 1];
+            node = node [node.Children.Count - 1];
             return node;
         }
 

@@ -141,7 +141,7 @@ namespace p5.lambda
                 int offset = exe ["offset"].Get<int> (context);
 
                 // Checking offset is not larger than number of children in current lambda
-                if (offset >= exe.Count)
+                if (offset >= exe.Children.Count)
                     throw new LambdaException ("[offset] was too large for lambda block, couldn't find that many children", exe, context);
 
                 // Setting first execution statement as the offset node

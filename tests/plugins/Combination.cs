@@ -64,7 +64,7 @@ add:x:/../0
   select-data:x:/*/*(/foo1|/foo2)
 insert-before:x:/../0
   src:x:/../*(!/insert-before)");
-            Assert.AreEqual (2, node [0].Count);
+            Assert.AreEqual (2, node [0].Children.Count);
             Assert.AreEqual ("foo1", node [0] [0].Name);
             Assert.AreEqual ("bar1", node [0] [0].Value);
             Assert.AreEqual ("foo-child", node [0] [0] [0].Name);
@@ -87,7 +87,7 @@ add:x:/-
 _data:howdy world
 insert-before:x:/../0
   src:x:/../*(!/insert-before)");
-            Assert.AreEqual (2, node [0].Count);
+            Assert.AreEqual (2, node [0].Children.Count);
             Assert.AreEqual ("howdy", node [0] [0].Name);
             Assert.AreEqual ("world", node [0] [1].Name);
         }

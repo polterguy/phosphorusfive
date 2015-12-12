@@ -127,7 +127,7 @@ namespace p5.net
                 var content = GetRequestContent (context, args ["content"]);
 
                 // Checking to see if this is Hyperlisp content, since we're b y default setting Content-Type to application/x-hyperlisp if it is
-                bool isHyperlisp = args ["content"].Value == null && args ["content"].Count > 0;
+                bool isHyperlisp = args ["content"].Value == null && args ["content"].Children.Count > 0;
 
                 if (content != null) {
 
@@ -241,7 +241,7 @@ namespace p5.net
             ApplicationContext context, 
             Node content)
         {
-            if (content.Value == null && content.Count > 0) {
+            if (content.Value == null && content.Children.Count > 0) {
 
                 // Hyperlisp content
                 return context.RaiseNative ("lambda2lisp", content.Clone ()).Value;

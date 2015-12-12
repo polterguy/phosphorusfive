@@ -6,6 +6,7 @@
 using System;
 using NUnit.Framework;
 using p5.core;
+using p5.exp.exceptions;
 
 namespace p5.unittests.plugins
 {
@@ -43,7 +44,7 @@ x:y
 
 ");
             Context.RaiseNative ("lisp2lambda", tmp);
-            Assert.AreEqual (1, tmp.Count);
+            Assert.AreEqual (1, tmp.Children.Count);
             Assert.AreEqual ("x", tmp [0].Name);
             Assert.AreEqual ("y", tmp [0].Value);
         }
@@ -274,7 +275,7 @@ _exe1
         {
             var tmp = new Node ("", "//");
             Context.RaiseNative ("lisp2lambda", tmp);
-            Assert.AreEqual (0, tmp.Count);
+            Assert.AreEqual (0, tmp.Children.Count);
         }
 
         /// <summary>
@@ -285,7 +286,7 @@ _exe1
         {
             var tmp = new Node ("", "// comment");
             Context.RaiseNative ("lisp2lambda", tmp);
-            Assert.AreEqual (0, tmp.Count);
+            Assert.AreEqual (0, tmp.Children.Count);
         }
 
         /// <summary>
@@ -296,7 +297,7 @@ _exe1
         {
             var tmp = new Node ("", "/**/");
             Context.RaiseNative ("lisp2lambda", tmp);
-            Assert.AreEqual (0, tmp.Count);
+            Assert.AreEqual (0, tmp.Children.Count);
         }
 
         /// <summary>
@@ -307,7 +308,7 @@ _exe1
         {
             var tmp = new Node ("", "/*comment*/");
             Context.RaiseNative ("lisp2lambda", tmp);
-            Assert.AreEqual (0, tmp.Count);
+            Assert.AreEqual (0, tmp.Children.Count);
         }
 
         /// <summary>
@@ -321,7 +322,7 @@ comment
 
 */");
             Context.RaiseNative ("lisp2lambda", tmp);
-            Assert.AreEqual (0, tmp.Count);
+            Assert.AreEqual (0, tmp.Children.Count);
         }
 
         /// <summary>
@@ -338,7 +339,7 @@ hello
  * foo bar
  */");
             Context.RaiseNative ("lisp2lambda", tmp);
-            Assert.AreEqual (2, tmp.Count);
+            Assert.AreEqual (2, tmp.Children.Count);
         }
 
         /// <summary>
@@ -355,12 +356,12 @@ _exe2
 lisp2lambda:x:/-2|/-?value
 insert-before:x:/../0
   src:x:/../*(!/insert-before)");
-            Assert.AreEqual (2, node [2].Count);
+            Assert.AreEqual (2, node [2].Children.Count);
             Assert.AreEqual ("_exe1", node [2] [0].Name);
-            Assert.AreEqual (1, node [2] [0].Count);
+            Assert.AreEqual (1, node [2] [0].Children.Count);
             Assert.AreEqual ("bar1", node [2] [0] [0].Value);
             Assert.AreEqual ("_exe2", node [2] [1].Name);
-            Assert.AreEqual (1, node [2] [1].Count);
+            Assert.AreEqual (1, node [2] [1].Children.Count);
             Assert.AreEqual ("bar2", node [2] [1] [0].Value);
         }
         
@@ -379,12 +380,12 @@ _exe1
 lisp2lambda:x:/-|/-2?value
 insert-before:x:/../0
   src:x:/../*(!/insert-before)");
-            Assert.AreEqual (2, node [2].Count);
+            Assert.AreEqual (2, node [2].Children.Count);
             Assert.AreEqual ("_exe1", node [2] [0].Name);
-            Assert.AreEqual (1, node [2] [0].Count);
+            Assert.AreEqual (1, node [2] [0].Children.Count);
             Assert.AreEqual ("bar1", node [2] [0] [0].Value);
             Assert.AreEqual ("_exe2", node [2] [1].Name);
-            Assert.AreEqual (1, node [2] [1].Count);
+            Assert.AreEqual (1, node [2] [1].Children.Count);
             Assert.AreEqual ("bar2", node [2] [1] [0].Value);
         }
 
@@ -392,104 +393,113 @@ insert-before:x:/../0
         ///     Parses Hyperlisp where there is one space too much in front of name
         /// </summary>
         [Test]
-        [ExpectedException]
         public void ParseErrorWrongSpacing ()
         {
             var tmp = new Node ("", " x:y"); // one space before token
-            Context.RaiseNative ("lisp2lambda", tmp);
+            Assert.Throws<LambdaException> (delegate {
+                Context.RaiseNative ("lisp2lambda", tmp);
+            });
         }
 
         /// <summary>
         ///     Parses Hyperlisp where there is one space too much in front of name
         /// </summary>
         [Test]
-        [ExpectedException]
         public void ParseErrorWrongSpacingOfChildTooLittle ()
         {
             var tmp = new Node ("", @"x:y
  z:q"); // only one space when opening children collection
-            Context.RaiseNative ("lisp2lambda", tmp);
+            Assert.Throws<LambdaException> (delegate {
+                Context.RaiseNative ("lisp2lambda", tmp);
+            });
         }
 
         /// <summary>
         ///     Parses Hyperlisp where there is three spaces too much in front of name
         /// </summary>
         [Test]
-        [ExpectedException]
         public void ParseErrorWrongSpacingOfChildTooMuch ()
         {
             var tmp = new Node ("", @"x:y
    z:q"); // three spaces when opening children collection
-            Context.RaiseNative ("lisp2lambda", tmp);
+            Assert.Throws<LambdaException> (delegate {
+                Context.RaiseNative ("lisp2lambda", tmp);
+            });
         }
 
         /// <summary>
         ///     Parses Hyperlisp where there is an open string literal
         /// </summary>
         [Test]
-        [ExpectedException]
         public void ParseErrorOpenStringLiteral ()
         {
             var tmp = new Node ("", "z:\"howdy"); // open string literal
-            Context.RaiseNative ("lisp2lambda", tmp);
+            Assert.Throws<LambdaException> (delegate {
+                Context.RaiseNative ("lisp2lambda", tmp);
+            });
         }
 
         /// <summary>
         ///     Parses Hyperlisp where there is an empty open string literal
         /// </summary>
         [Test]
-        [ExpectedException]
         public void ParseErrorOpenEmptyStringLiteral ()
         {
             var tmp = new Node ("", @"z:"""); // empty and open string literal
-            Context.RaiseNative ("lisp2lambda", tmp);
+            Assert.Throws<LambdaException> (delegate {
+                Context.RaiseNative ("lisp2lambda", tmp);
+            });
         }
 
         /// <summary>
         ///     Parses Hyperlisp where there is an empty open multiline string literal
         /// </summary>
         [Test]
-        [ExpectedException]
         public void ParseErrorOpenEmptyMultiLineString ()
         {
             var tmp = new Node ("", @"z:@"""); // empty and open multiline string literal
-            Context.RaiseNative ("lisp2lambda", tmp);
+            Assert.Throws<LambdaException> (delegate {
+                Context.RaiseNative ("lisp2lambda", tmp);
+            });
         }
 
         /// <summary>
         ///     Parses Hyperlisp where there is an open multiline string literal
         /// </summary>
         [Test]
-        [ExpectedException]
         public void ParseErrorOpenMultiLineString ()
         {
             var tmp = new Node ("", @"z:@""howdy"); // open multiline string literal
-            Context.RaiseNative ("lisp2lambda", tmp);
+            Assert.Throws<LambdaException> (delegate {
+                Context.RaiseNative ("lisp2lambda", tmp);
+            });
         }
 
         /// <summary>
         ///     Parses Hyperlisp where there is an open multiline string literal on multiple lines
         /// </summary>
         [Test]
-        [ExpectedException]
         public void ParseErrorOpenMultiLineStringMultiLines ()
         {
             var tmp = new Node ("", @"z:@""howdy
 qwertyuiop
                     "); // open multiline string literal
-            Context.RaiseNative ("lisp2lambda", tmp);
+            Assert.Throws<LambdaException> (delegate {
+                Context.RaiseNative ("lisp2lambda", tmp);
+            });
         }
 
         /// <summary>
         ///     Parses Hyperlisp where there is a space too much in reference node value
         /// </summary>
         [Test]
-        [ExpectedException]
         public void ParseErrorNodeValueNotValid ()
         {
             var tmp = new Node ("", @"z:node:@""howdy:x
  f:g"""); // syntax error in hyperlisp node content, only one space while opening child collection of "howdy" node
-            Context.RaiseNative ("lisp2lambda", tmp);
+            Assert.Throws<LambdaException> (delegate {
+                Context.RaiseNative ("lisp2lambda", tmp);
+            });
         }
     }
 }

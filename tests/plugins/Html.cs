@@ -42,9 +42,9 @@ namespace p5.unittests.plugins
 </html>""
 insert-before:x:/../0
   src:x:/../*");
-            Assert.AreEqual (1, node [0].Count);
+            Assert.AreEqual (1, node [0].Children.Count);
             Assert.AreEqual ("html", node [0] [0].Name);
-            Assert.AreEqual (2, node [0] [0].Count);
+            Assert.AreEqual (2, node [0] [0].Children.Count);
             Assert.AreEqual ("head", node [0] [0] [0].Name);
             Assert.AreEqual ("title", node [0] [0] [0] [0].Name);
             Assert.AreEqual ("foo bar", node [0] [0] [0] [0].Value);
@@ -134,9 +134,9 @@ insert-before:x:/../0
 </html>""
 insert-before:x:/../0
   src:x:/../*(!/insert-before)");
-            Assert.AreEqual (1, node.Count);
+            Assert.AreEqual (1, node.Children.Count);
             Assert.AreEqual ("html", node [0] [0].Name);
-            Assert.AreEqual (2, node [0] [0].Count);
+            Assert.AreEqual (2, node [0] [0].Children.Count);
             Assert.AreEqual ("head", node [0] [0] [0].Name);
             Assert.AreEqual ("title", node [0] [0] [0] [0].Name);
             Assert.AreEqual ("foo <bar", node [0] [0] [0] [0].Value);

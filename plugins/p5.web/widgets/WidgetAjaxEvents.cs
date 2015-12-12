@@ -81,7 +81,7 @@ namespace p5.web.widgets
                 foreach (var idxEventNameNode in e.Args.Children) {
 
                     // Checking if we should delete existing event
-                    if (idxEventNameNode.Count == 0) {
+                    if (idxEventNameNode.Children.Count == 0) {
 
                         // Deleting existing ajax event
                         Manager.WidgetAjaxEventStorage.Remove (idxWidget.ID, idxEventNameNode.Name);
@@ -121,7 +121,7 @@ namespace p5.web.widgets
                         curNode.Add("oninit");
 
                     // Checking if we've got more than zero events for given widget, and if so, adding event node, containing list of events
-                    if (curNode.Count > 0)
+                    if (curNode.Children.Count > 0)
                         e.Args.Add(curNode);
                 }
             }

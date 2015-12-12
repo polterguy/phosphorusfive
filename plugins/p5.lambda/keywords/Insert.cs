@@ -46,7 +46,7 @@ namespace p5.lambda.keywords
             if (!(args.Value is Expression))
                 throw new LambdaException ("Not a valid destination expression given, make sure you set [" + args.Name + "]'s value to an expression using :x:", args, context);
 
-            if (args.Count > 0 && args.LastChild.Name == "rel-src") {
+            if (args.Children.Count > 0 && args.LastChild.Name == "rel-src") {
 
                 // Relative source
                 InsertRelativeSource (args, context, after);

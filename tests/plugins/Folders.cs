@@ -21,7 +21,7 @@ namespace p5.unittests.plugins
             : base ("p5.io", "p5.hyperlisp", "p5.lambda", "p5.types", "p5.security", "p5.io.authorization")
         { }
 
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void Setup()
         {
             // Making sure we're root for current operation
@@ -102,7 +102,6 @@ namespace p5.unittests.plugins
         ///     Creates three folders using an expression, where one folder exist from before
         /// </summary>
         [Test]
-        [ExpectedException(typeof(LambdaException))]
         public void CreateThreeFoldersExpressionOneExist ()
         {
             // deleting folder if it already exists
@@ -123,7 +122,9 @@ namespace p5.unittests.plugins
                 .Add ("/test1")
                 .Add ("/test2")
                 .Add ("/test3");
-            Context.RaiseNative ("create-folder", node);
+            Assert.Throws<LambdaException> (delegate {
+                Context.RaiseNative ("create-folder", node);
+            });
         }
 
         /// <summary>
@@ -622,7 +623,6 @@ insert-before:x:/../0
         ///     Tries to list files in folder without having a trailing "/"
         /// </summary>
         [Test]
-        [ExpectedException (typeof (LambdaException))]
         public void ListFilesWithoutTrailingSlash ()
         {
             // creating directories to remove
@@ -632,14 +632,15 @@ insert-before:x:/../0
 
             // removing directory using "phosphorus.file"
             var node = new Node ("", "/test1");
-            Context.RaiseNative ("list-files", node);
+            Assert.Throws<LambdaException> (delegate {
+                Context.RaiseNative ("list-files", node);
+            });
         }
 
         /// <summary>
         ///     Tries to list folders in folder without having a trailing "/"
         /// </summary>
         [Test]
-        [ExpectedException (typeof (LambdaException))]
         public void ListFoldersWithoutTrailingSlash ()
         {
             // creating directories to remove
@@ -649,14 +650,15 @@ insert-before:x:/../0
 
             // removing directory using "phosphorus.file"
             var node = new Node ("", "/test1");
-            Context.RaiseNative ("list-folders", node);
+            Assert.Throws<LambdaException> (delegate {
+                Context.RaiseNative ("list-folders", node);
+            });
         }
 
         /// <summary>
         ///     Tries to list files in folder without having an initial "/"
         /// </summary>
         [Test]
-        [ExpectedException (typeof (LambdaException))]
         public void ListFilesWithoutInitialSlash ()
         {
             // creating directories to remove
@@ -666,14 +668,15 @@ insert-before:x:/../0
 
             // removing directory using "phosphorus.file"
             var node = new Node ("", "test1/");
-            Context.RaiseNative ("list-files", node);
+            Assert.Throws<LambdaException> (delegate {
+                Context.RaiseNative ("list-files", node);
+            });
         }
 
         /// <summary>
         ///     Tries to list folders in folder without having an initial "/"
         /// </summary>
         [Test]
-        [ExpectedException (typeof (LambdaException))]
         public void ListFoldersWithoutInitialSlash ()
         {
             // creating directories to remove
@@ -683,14 +686,15 @@ insert-before:x:/../0
 
             // removing directory using "phosphorus.file"
             var node = new Node ("", "test1/");
-            Context.RaiseNative ("list-folders", node);
+            Assert.Throws<LambdaException> (delegate {
+                Context.RaiseNative ("list-folders", node);
+            });
         }
 
         /// <summary>
         ///     Tries to check if a folder exist without having an initial "/"
         /// </summary>
         [Test]
-        [ExpectedException (typeof (LambdaException))]
         public void FolderExistWithoutInitialSlash ()
         {
             if (!Directory.Exists ("test1")) {
@@ -700,14 +704,15 @@ insert-before:x:/../0
 
             // removing directory using "phosphorus.file"
             var result = new Node ("", "test1/");
-            Context.RaiseNative ("folder-exist", result);
+            Assert.Throws<LambdaException> (delegate {
+                Context.RaiseNative ("folder-exist", result);
+            });
         }
 
         /// <summary>
         ///     Tries to check if a folder exist without having a trailing "/"
         /// </summary>
         [Test]
-        [ExpectedException (typeof (LambdaException))]
         public void FolderExistWithoutTrailingSlash ()
         {
             if (!Directory.Exists ("test1")) {
@@ -717,14 +722,15 @@ insert-before:x:/../0
 
             // removing directory using "phosphorus.file"
             var result = new Node ("", "/test1");
-            Context.RaiseNative ("folder-exist", result);
+            Assert.Throws<LambdaException> (delegate {
+                Context.RaiseNative ("folder-exist", result);
+            });
         }
 
         /// <summary>
         ///     Tries to delete a folder without having an initial "/"
         /// </summary>
         [Test]
-        [ExpectedException (typeof (LambdaException))]
         public void DeleteFolderWithoutInitialSlash ()
         {
             if (!Directory.Exists ("test1")) {
@@ -734,14 +740,15 @@ insert-before:x:/../0
 
             // removing directory using "phosphorus.file"
             var result = new Node ("", "test1/");
-            Context.RaiseNative ("delete-folder", result);
+            Assert.Throws<LambdaException> (delegate {
+                Context.RaiseNative ("delete-folder", result);
+            });
         }
 
         /// <summary>
         ///     Tries to delete a folder without having a trailing "/"
         /// </summary>
         [Test]
-        [ExpectedException (typeof (LambdaException))]
         public void DeleteFolderWithoutTrailingSlash ()
         {
             if (!Directory.Exists ("test1")) {
@@ -751,14 +758,15 @@ insert-before:x:/../0
 
             // removing directory using "phosphorus.file"
             var result = new Node ("", "/test1");
-            Context.RaiseNative ("delete-folder", result);
+            Assert.Throws<LambdaException> (delegate {
+                Context.RaiseNative ("delete-folder", result);
+            });
         }
 
         /// <summary>
         ///     Tries to create a folder without having an initial "/"
         /// </summary>
         [Test]
-        [ExpectedException (typeof (LambdaException))]
         public void CreateFolderWithoutInitialSlash ()
         {
             if (Directory.Exists ("test1")) {
@@ -766,14 +774,15 @@ insert-before:x:/../0
                 Context.RaiseNative ("delete-folder", node);
             }
             var result = new Node ("", "test1/");
-            Context.RaiseNative ("create-folder", result);
+            Assert.Throws<LambdaException> (delegate {
+                Context.RaiseNative ("create-folder", result);
+            });
         }
 
         /// <summary>
         ///     Tries to create a folder without having a trailing "/"
         /// </summary>
         [Test]
-        [ExpectedException (typeof (LambdaException))]
         public void CreateFolderWithoutTrailingSlash ()
         {
             if (Directory.Exists ("test1")) {
@@ -781,14 +790,15 @@ insert-before:x:/../0
                 Context.RaiseNative ("delete-folder", node);
             }
             var result = new Node ("", "/test1");
-            Context.RaiseNative ("create-folder", result);
+            Assert.Throws<LambdaException> (delegate {
+                Context.RaiseNative ("create-folder", result);
+            });
         }
 
         /// <summary>
         ///     Tries to copy a folder without having an initial "/" in source
         /// </summary>
         [Test]
-        [ExpectedException (typeof (LambdaException))]
         public void CopyFolderWithoutInitialSlashInSource ()
         {
             if (!Directory.Exists ("test1")) {
@@ -801,14 +811,15 @@ insert-before:x:/../0
             }
             var result = new Node ("", "test1/")
                 .Add ("to", "/test2/");
-            Context.RaiseNative ("copy-folder", result);
+            Assert.Throws<LambdaException> (delegate {
+                Context.RaiseNative ("copy-folder", result);
+            });
         }
 
         /// <summary>
         ///     Tries to copy a folder without having aa trailing "/" in source
         /// </summary>
         [Test]
-        [ExpectedException (typeof (LambdaException))]
         public void CopyFolderWithoutTrailingSlashInSource ()
         {
             if (!Directory.Exists ("test1")) {
@@ -821,14 +832,15 @@ insert-before:x:/../0
             }
             var result = new Node ("", "/test1")
                 .Add ("to", "/test2/");
-            Context.RaiseNative ("copy-folder", result);
+            Assert.Throws<LambdaException> (delegate {
+                Context.RaiseNative ("copy-folder", result);
+            });
         }
 
         /// <summary>
         ///     Tries to copy a folder without having an initial "/" in destination
         /// </summary>
         [Test]
-        [ExpectedException (typeof (LambdaException))]
         public void CopyFolderWithoutInitialSlashInDestinatio  ()
         {
             if (!Directory.Exists ("test1")) {
@@ -841,14 +853,15 @@ insert-before:x:/../0
             }
             var result = new Node ("", "/test1/")
                 .Add ("to", "test2/");
-            Context.RaiseNative ("copy-folder", result);
+            Assert.Throws<LambdaException> (delegate {
+                Context.RaiseNative ("copy-folder", result);
+            });
         }
 
         /// <summary>
         ///     Tries to copy a folder without having a trailing "/" in destination
         /// </summary>
         [Test]
-        [ExpectedException (typeof (LambdaException))]
         public void CopyFolderWithoutTrailingSlashInDestination ()
         {
             if (!Directory.Exists ("test1")) {
@@ -861,14 +874,15 @@ insert-before:x:/../0
             }
             var result = new Node ("", "/test1/")
                 .Add ("to", "/test2");
-            Context.RaiseNative ("copy-folder", result);
+            Assert.Throws<LambdaException> (delegate {
+                Context.RaiseNative ("copy-folder", result);
+            });
         }
 
         /// <summary>
         ///     Tries to move a folder without having an initial "/" in source
         /// </summary>
         [Test]
-        [ExpectedException (typeof (LambdaException))]
         public void MoveFolderWithoutInitialSlashInSource ()
         {
             if (!Directory.Exists ("test1")) {
@@ -881,14 +895,15 @@ insert-before:x:/../0
             }
             var result = new Node ("", "test1/")
                 .Add ("to", "/test2/");
-            Context.RaiseNative ("move-folder", result);
+            Assert.Throws<LambdaException> (delegate {
+                Context.RaiseNative ("move-folder", result);
+            });
         }
 
         /// <summary>
         ///     Tries to move a folder without having aa trailing "/" in source
         /// </summary>
         [Test]
-        [ExpectedException (typeof (LambdaException))]
         public void MoveFolderWithoutTrailingSlashInSource ()
         {
             if (!Directory.Exists ("test1")) {
@@ -901,14 +916,15 @@ insert-before:x:/../0
             }
             var result = new Node ("", "/test1")
                 .Add ("to", "/test2/");
-            Context.RaiseNative ("move-folder", result);
+            Assert.Throws<LambdaException> (delegate {
+                Context.RaiseNative ("move-folder", result);
+            });
         }
 
         /// <summary>
         ///     Tries to move a folder without having an initial "/" in destination
         /// </summary>
         [Test]
-        [ExpectedException (typeof (LambdaException))]
         public void MoveFolderWithoutInitialSlashInDestinatio  ()
         {
             if (!Directory.Exists ("test1")) {
@@ -921,14 +937,15 @@ insert-before:x:/../0
             }
             var result = new Node ("", "/test1/")
                 .Add ("to", "test2/");
-            Context.RaiseNative ("move-folder", result);
+            Assert.Throws<LambdaException> (delegate {
+                Context.RaiseNative ("move-folder", result);
+            });
         }
 
         /// <summary>
         ///     Tries to move a folder without having a trailing "/" in destination
         /// </summary>
         [Test]
-        [ExpectedException (typeof (LambdaException))]
         public void MoveFolderWithoutTrailingSlashInDestination ()
         {
             if (!Directory.Exists ("test1")) {
@@ -941,7 +958,9 @@ insert-before:x:/../0
             }
             var result = new Node ("", "/test1/")
                 .Add ("to", "/test2");
-            Context.RaiseNative ("move-folder", result);
+            Assert.Throws<LambdaException> (delegate {
+                Context.RaiseNative ("move-folder", result);
+            });
         }
     }
 }

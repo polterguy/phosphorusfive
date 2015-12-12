@@ -72,7 +72,7 @@ namespace p5.lambda.helpers
                     TryEvaluateSimpleExist (context, args);
 
                     // Basic syntax checking
-                    if (idx.Value != null || idx.Count != 0)
+                    if (idx.Value != null || idx.Children.Count != 0)
                         throw new LambdaException ("Operator [not] cannot have neither any value, nor any children", idx, context);
 
                     // Simply "negates" the previously evaluated condition
@@ -104,7 +104,7 @@ namespace p5.lambda.helpers
         public void ExecuteCurrentScope (ApplicationContext context, Node args)
         {
             // Making sure there actually is something to evaluate
-            if (args.Count == 0)
+            if (args.Children.Count == 0)
                 return;
 
             // Storing offset temporary in args, making sure we clean up afterwards
@@ -182,7 +182,7 @@ namespace p5.lambda.helpers
             if (args.Value == null) {
 
                 // Basic syntax checking
-                if (args.Count == 0)
+                if (args.Children.Count == 0)
                     throw new LambdaException ("Nothing to conditionally use for branching in conditional statement", args, context);
 
                 // Retrieving first child as Active Event operator, but making sure we do NOT return "" events!

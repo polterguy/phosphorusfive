@@ -47,7 +47,7 @@ namespace p5.exp.matchentities
 
                         // Node was created from a conversion from string, making sure that we discard
                         // the automatically created "root node" in object
-                        if (tmp.Count != 1)
+                        if (tmp.Children.Count != 1)
                             throw new ApplicationException ("Tried to convert a string that would create multiple nodes to one node");
                         tmp = tmp [0];
                         Node.Replace (tmp); // ps, NOT cloned!

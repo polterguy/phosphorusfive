@@ -93,7 +93,7 @@ namespace p5.web.widgets
                             context);
 
                     // Checking if this is actually a deletion invocation
-                    if (idxEventNameNode.Count == 0) {
+                    if (idxEventNameNode.Children.Count == 0) {
 
                         // Deleting existing event
                         Manager.WidgetLambdaEventStorage.Remove (idxEventNameNode.Name, idxWidget.ID);
@@ -130,7 +130,7 @@ namespace p5.web.widgets
 
                     // Checking if we've got more than zero events for given widget, and if so, 
                     // adding event node, containing list of events
-                    if (curNode.Count > 0)
+                    if (curNode.Children.Count > 0)
                         e.Args.Add(curNode);
                 }
             }

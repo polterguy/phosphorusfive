@@ -3,6 +3,7 @@
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
+using System.Security;
 using NUnit.Framework;
 using p5.core;
 
@@ -109,12 +110,15 @@ namespace p5.unittests
         ///     raise it
         /// </summary>
         [Test]
-        [ExpectedException (typeof (System.Security.SecurityException))]
         public void RaiseStaticNativeClosedFromLambda ()
         {
             var context = Loader.Instance.CreateApplicationContext ();
             var tmp = new Node ();
-            context.RaiseLambda ("core.foo", tmp);
+
+            // Throws
+            Assert.Throws<SecurityException> (delegate {
+                context.RaiseLambda ("core.foo", tmp);
+            });
         }
 
         private class FooClass
@@ -131,14 +135,15 @@ namespace p5.unittests
         ///     event is registered as NativeClosed
         /// </summary>
         [Test]
-        [ExpectedException (typeof (System.Security.SecurityException))]
         public void RegisterListenerNativeClosed ()
         {
             var context = Loader.Instance.CreateApplicationContext ();
             var x = new FooClass ();
 
             // Should throw!
-            context.RegisterListeningObject (x);
+            Assert.Throws<SecurityException> (delegate {
+                context.RegisterListeningObject (x);
+            });
         }
 
         [ActiveEvent (Name = "core.foo2", Protection = EventProtection.NativeOpen)]
@@ -446,12 +451,14 @@ namespace p5.unittests
         ///     Verifies that registering same listener twice creates a security exception when event is closed
         /// </summary>
         [Test]
-        [ExpectedException (typeof (System.Security.SecurityException))]
         public void ExtendingClosedEventThrows ()
         {
             var context = Loader.Instance.CreateApplicationContext ();
             context.RegisterListeningObject (new Foo12 ());
-            context.RegisterListeningObject (new Foo12 ());
+
+            Assert.Throws<SecurityException> (delegate {
+                context.RegisterListeningObject (new Foo12 ());
+            });
         }
 
         private class Foo13
@@ -494,14 +501,14 @@ namespace p5.unittests
         ///     Verifies that a registering an instance handler where a closed static handler exist from before throws
         /// </summary>
         [Test]
-        [ExpectedException (typeof (System.Security.SecurityException))]
         public void ExtendingClosedStaticWithInstanceThrows ()
         {
             var context = Loader.Instance.CreateApplicationContext ();
             Assert.AreEqual ("success", context.RaiseLambda ("core.foo14").Value);
 
-            // Should throw!!
-            context.RegisterListeningObject (new Foo14 ());
+            Assert.Throws<SecurityException> (delegate {
+                context.RegisterListeningObject (new Foo14 ());
+            });
         }
 
         private class Foo15
@@ -519,14 +526,14 @@ namespace p5.unittests
         ///     Verifies that a registering a closed instance handler where an open static handler exist from before throws
         /// </summary>
         [Test]
-        [ExpectedException]
         public void ExtendingOpenStaticWithClosedInstanceThrows ()
         {
             var context = Loader.Instance.CreateApplicationContext ();
             Assert.AreEqual ("success", context.RaiseLambda ("core.foo15").Value);
 
-            // Should throw!!
-            context.RegisterListeningObject (new Foo15 ());
+            Assert.Throws<SecurityException> (delegate {
+                context.RegisterListeningObject (new Foo15 ());
+            });
         }
     }
 }

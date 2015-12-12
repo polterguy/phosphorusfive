@@ -32,7 +32,7 @@ add:x:/-
       _foo:bar", "eval-mutable");
             Assert.AreEqual ("_foo", result [0] [0].Name);
             Assert.AreEqual ("bar", result [0] [0].Value);
-            Assert.AreEqual (0, result [0] [0].Count);
+            Assert.AreEqual (0, result [0] [0].Children.Count);
         }
 
         /// <summary>
@@ -48,13 +48,13 @@ add:x:/-
     _tmp
       _foo1:bar1
       _foo2:bar2", "eval-mutable");
-            Assert.AreEqual (2, result [0].Count);
+            Assert.AreEqual (2, result [0].Children.Count);
             Assert.AreEqual ("_foo1", result [0] [0].Name);
             Assert.AreEqual ("bar1", result [0] [0].Value);
-            Assert.AreEqual (0, result [0] [0].Count);
+            Assert.AreEqual (0, result [0] [0].Children.Count);
             Assert.AreEqual ("_foo2", result [0] [1].Name);
             Assert.AreEqual ("bar2", result [0] [1].Value);
-            Assert.AreEqual (0, result [0] [1].Count);
+            Assert.AreEqual (0, result [0] [1].Children.Count);
         }
 
         /// <summary>
@@ -72,13 +72,13 @@ add:x:/-
     src:x:/+/*
     _tmp
       _foo2:bar2", "eval-mutable");
-            Assert.AreEqual (2, result [0].Count);
+            Assert.AreEqual (2, result [0].Children.Count);
             Assert.AreEqual ("_foo1", result [0] [0].Name);
             Assert.AreEqual ("bar1", result [0] [0].Value);
-            Assert.AreEqual (0, result [0] [0].Count);
+            Assert.AreEqual (0, result [0] [0].Children.Count);
             Assert.AreEqual ("_foo2", result [0] [1].Name);
             Assert.AreEqual ("bar2", result [0] [1].Value);
-            Assert.AreEqual (0, result [0] [1].Count);
+            Assert.AreEqual (0, result [0] [1].Children.Count);
         }
 
         [ActiveEvent (Name = "retrieve.test1", Protection = EventProtection.LambdaClosedNativeOpen)]
@@ -100,13 +100,13 @@ add:x:/-
   retrieve
     src:x:/+/*/*
     retrieve.test1", "eval-mutable");
-            Assert.AreEqual (2, result [0].Count);
+            Assert.AreEqual (2, result [0].Children.Count);
             Assert.AreEqual ("_foo1", result [0] [0].Name);
             Assert.AreEqual ("bar1", result [0] [0].Value);
-            Assert.AreEqual (0, result [0] [0].Count);
+            Assert.AreEqual (0, result [0] [0].Children.Count);
             Assert.AreEqual ("_foo2", result [0] [1].Name);
             Assert.AreEqual ("bar2", result [0] [1].Value);
-            Assert.AreEqual (0, result [0] [1].Count);
+            Assert.AreEqual (0, result [0] [1].Children.Count);
         }
     }
 }

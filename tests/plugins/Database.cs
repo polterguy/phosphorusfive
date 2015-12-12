@@ -6,6 +6,7 @@
 using System;
 using NUnit.Framework;
 using p5.core;
+using p5.exp.exceptions;
 
 namespace p5.unittests.plugins
 {
@@ -38,7 +39,7 @@ namespace p5.unittests.plugins
             var tmp = ExecuteLambda (@"
 add:x:/..
   select-data:x:/*/*/_mumbo_field/=jumbo_value");
-            Assert.AreEqual (0, tmp.Count);
+            Assert.AreEqual (0, tmp.Children.Count);
         }
 
         /// <summary>
@@ -56,12 +57,12 @@ delete-data:x:/*/*/_test1
 select-data:x:/*/*/_test1
 insert-before:x:/../0
   src:x:/../*");
-            Assert.AreEqual (1, tmp [1].Count);
+            Assert.AreEqual (1, tmp [1].Children.Count);
             Assert.AreEqual ("_test1", tmp [1] [0].Name);
             Assert.AreEqual (typeof (Guid), tmp [1] [0].Value.GetType ());
             Assert.AreEqual ("howdy", tmp [1] [0] [0].Name);
             Assert.AreEqual ("world", tmp [1] [0] [0].Value);
-            Assert.AreEqual (0, tmp [3].Count);
+            Assert.AreEqual (0, tmp [3].Children.Count);
         }
 
         /// <summary>
@@ -76,7 +77,7 @@ insert-before:x:/../0
 select-data:x:/*/*/_testX/0?name
 insert-before:x:/../0
   src:x:/../*");
-            Assert.AreEqual (1, tmp [1].Count);
+            Assert.AreEqual (1, tmp [1].Children.Count);
             Assert.AreEqual ("", tmp [1] [0].Name);
             Assert.AreEqual ("howdy", tmp [1] [0].Value);
         }
@@ -93,7 +94,7 @@ insert-before:x:/../0
 select-data:x:/*/*/_testX/0?value
 insert-before:x:/../0
   src:x:/../*");
-            Assert.AreEqual (1, tmp [1].Count);
+            Assert.AreEqual (1, tmp [1].Children.Count);
             Assert.AreEqual ("", tmp [1] [0].Name);
             Assert.AreEqual ("world", tmp [1] [0].Value);
         }
@@ -110,7 +111,7 @@ insert-before:x:/../0
 select-data:x:/*/*/_testX/0?count
 insert-before:x:/../0
   src:x:/../*");
-            Assert.AreEqual (0, tmp [1].Count);
+            Assert.AreEqual (0, tmp [1].Children.Count);
             Assert.AreEqual (1, tmp [1].Value);
         }
 
@@ -129,7 +130,7 @@ insert-before:x:/../0
 select-data:x:/*/*/_testX/0?name
 insert-before:x:/../0
   src:x:/../*");
-            Assert.AreEqual (2, tmp [1].Count);
+            Assert.AreEqual (2, tmp [1].Children.Count);
             Assert.AreEqual ("", tmp [1] [0].Name);
             Assert.AreEqual ("howdy1", tmp [1] [0].Value);
             Assert.AreEqual ("", tmp [1] [1].Name);
@@ -151,7 +152,7 @@ insert-before:x:/../0
 select-data:x:/*/*/_testX/0?value
 insert-before:x:/../0
   src:x:/../*");
-            Assert.AreEqual (2, tmp [1].Count);
+            Assert.AreEqual (2, tmp [1].Children.Count);
             Assert.AreEqual ("", tmp [1] [0].Name);
             Assert.AreEqual ("world1", tmp [1] [0].Value);
             Assert.AreEqual ("", tmp [1] [1].Name);
@@ -173,7 +174,7 @@ insert-before:x:/../0
 select-data:x:/*/*/_testX?count
 insert-before:x:/../0
   src:x:/../*");
-            Assert.AreEqual (0, tmp [1].Count);
+            Assert.AreEqual (0, tmp [1].Children.Count);
             Assert.AreEqual (2, tmp [1].Value);
         }
 
@@ -196,7 +197,7 @@ insert-before:x:/../0
 select-data:x:/*/*/_test4/*/query_field/*/x/=y/./.
 insert-before:x:/../0
   src:x:/../*");
-            Assert.AreEqual (1, tmp [1].Count);
+            Assert.AreEqual (1, tmp [1].Children.Count);
             Assert.AreEqual ("_test4", tmp [1] [0].Name);
             Assert.AreEqual ("world2", tmp [1] [0] [0].Value);
             Assert.AreEqual ("x", tmp [1] [0] [1] [0].Name);
@@ -217,7 +218,7 @@ select-data:x:/*/*/{0}
   :x:/../0/0?name
 insert-before:x:/../0
   src:x:/../*");
-            Assert.AreEqual (1, tmp [1].Count);
+            Assert.AreEqual (1, tmp [1].Children.Count);
             Assert.AreEqual ("_test4", tmp [1] [0].Name);
             Assert.AreEqual ("howdy", tmp [1] [0] [0].Name);
             Assert.AreEqual ("world", tmp [1] [0] [0].Value);
@@ -254,7 +255,7 @@ delete-data:x:/*/*/{0}
 select-data:x:/*/*/_test4
 insert-before:x:/../0
   src:x:/../*");
-            Assert.AreEqual (0, tmp [2].Count);
+            Assert.AreEqual (0, tmp [2].Children.Count);
         }
 
         /// <summary>
@@ -269,7 +270,7 @@ _testX
 select-data:x:/*/*/_testX
 insert-before:x:/../0
   src:x:/../*");
-            Assert.AreEqual (1, tmp [2].Count);
+            Assert.AreEqual (1, tmp [2].Children.Count);
             Assert.AreEqual ("_testX", tmp [2] [0].Name);
             Assert.AreEqual (typeof (Guid), tmp [2] [0].Value.GetType ());
             Assert.AreEqual ("howdy", tmp [2] [0] [0].Name);
@@ -290,7 +291,7 @@ _testX
 select-data:x:/*/*/_testX
 insert-before:x:/../0
   src:x:/../*");
-            Assert.AreEqual (2, tmp [3].Count);
+            Assert.AreEqual (2, tmp [3].Children.Count);
             Assert.AreEqual ("_testX", tmp [3] [0].Name);
             Assert.AreEqual (typeof (Guid), tmp [3] [0].Value.GetType ());
             Assert.AreEqual ("howdy", tmp [3] [0] [0].Name);
@@ -313,7 +314,7 @@ insert-before:x:/../0
 select-data:x:/*/*/_testX
 insert-before:x:/../0
   src:x:/../*");
-            Assert.AreEqual (1, tmp [1].Count);
+            Assert.AreEqual (1, tmp [1].Children.Count);
             Assert.AreEqual ("_testX", tmp [1] [0].Name);
             Assert.AreEqual (typeof (Guid), tmp [1] [0].Value.GetType ());
             Assert.AreEqual ("howdy", tmp [1] [0] [0].Name);
@@ -334,7 +335,7 @@ _testX
 select-data:x:/*/*/_testX
 insert-before:x:/../0
   src:x:/../*");
-            Assert.AreEqual (2, tmp [1].Count);
+            Assert.AreEqual (2, tmp [1].Children.Count);
             Assert.AreEqual ("_testX", tmp [1] [0].Name);
             Assert.AreEqual (typeof (Guid), tmp [1] [0].Value.GetType ());
             Assert.AreEqual ("howdy", tmp [1] [0] [0].Name);
@@ -345,12 +346,13 @@ insert-before:x:/../0
         ///     inserts two items with the same ID, expecting an exception
         /// </summary>
         [Test]
-        [ExpectedException]
         public void InsertTwoItemsWithSameID ()
         {
-            ExecuteLambda (@"insert-data
+            Assert.Throws<LambdaException> (delegate {
+                ExecuteLambda (@"insert-data
   foo1:bar_x
   foo2:bar_x");
+            });
         }
 
         /// <summary>
@@ -376,7 +378,7 @@ update-data:x:/*/*/_test5/*/query_field
 select-data:x:/*/*/_test5/*/query_field2/*/x/=zz/./.
 insert-before:x:/../0
   src:x:/../*");
-            Assert.AreEqual (1, tmp [2].Count);
+            Assert.AreEqual (1, tmp [2].Children.Count);
             Assert.AreEqual ("_test5", tmp [2] [0].Name);
             Assert.AreEqual ("world2", tmp [2] [0] [0].Value);
             Assert.AreEqual ("x", tmp [2] [0] [1] [0].Name);
@@ -405,12 +407,12 @@ select-data:x:/*/*/_test6_update
 select-data:x:/*/*/_test6
 insert-before:x:/../0
   src:x:/../*");
-            Assert.AreEqual (3, tmp [2].Count);
+            Assert.AreEqual (3, tmp [2].Children.Count);
             Assert.AreEqual ("_test6_update", tmp [2] [0].Name);
             Assert.AreEqual ("worldZZ", tmp [2] [0] [0].Value);
             Assert.AreEqual ("worldZZ", tmp [2] [1] [0].Value);
             Assert.AreEqual ("worldZZ", tmp [2] [2] [0].Value);
-            Assert.AreEqual (0, tmp [3].Count);
+            Assert.AreEqual (0, tmp [3].Children.Count);
         }
 
         /// <summary>
@@ -429,7 +431,7 @@ update-data:x:/*/*/_testX?value
 select-data:x:/*/*/_testX
 insert-before:x:/../0
   src:x:/../*");
-            Assert.AreEqual (1, tmp [2].Count);
+            Assert.AreEqual (1, tmp [2].Children.Count);
             Assert.AreEqual ("_testX", tmp [2] [0].Name);
             Assert.AreEqual ("hello world", tmp [2] [0].Value);
         }
@@ -452,11 +454,11 @@ select-data:x:/*/*/_test7_update
 select-data:x:/*/*/_test7
 insert-before:x:/../0
   src:x:/../*");
-            Assert.AreEqual (1, tmp [3].Count);
+            Assert.AreEqual (1, tmp [3].Children.Count);
             Assert.AreEqual ("_test7_update", tmp [3] [0].Name);
             Assert.AreEqual ("howdy2", tmp [3] [0] [0].Name);
             Assert.AreEqual ("world2", tmp [3] [0] [0].Value);
-            Assert.AreEqual (0, tmp [4].Count);
+            Assert.AreEqual (0, tmp [4].Children.Count);
         }
 
         /// <summary>
@@ -475,12 +477,12 @@ _howdy:world
 select-data:x:/*/*/_test9
 insert-before:x:/../0
   src:x:/../*");
-            Assert.AreEqual (1, tmp [3].Count);
+            Assert.AreEqual (1, tmp [3].Children.Count);
             Assert.AreEqual ("_test9", tmp [3] [0].Name);
             Assert.AreEqual ("howdy", tmp [3] [0] [0].Name);
             Assert.AreEqual ("_howdy", tmp [3] [0] [0].Get<Node> (Context).Name);
             Assert.AreEqual ("world", tmp [3] [0] [0].Get<Node> (Context).Value);
-            Assert.AreEqual (0, tmp [3] [0] [0].Get<Node> (Context).Count);
+            Assert.AreEqual (0, tmp [3] [0] [0].Get<Node> (Context).Children.Count);
         }
 
         /// <summary>
@@ -498,7 +500,7 @@ update-data:x:/*/*/_test9/*/howdy?value
 select-data:x:/*/*/_test9
 insert-before:x:/../0
   src:x:/../*");
-            Assert.AreEqual (1, tmp [2].Count);
+            Assert.AreEqual (1, tmp [2].Children.Count);
             Assert.AreEqual ("_test9", tmp [2] [0].Name);
             Assert.AreEqual ("howdy", tmp [2] [0] [0].Name);
             Assert.AreEqual ("_test9", tmp [2] [0] [0].Value);
@@ -521,7 +523,7 @@ update-data:x:/*/*/_test9/*/howdy?value
 select-data:x:/*/*/_test9
 insert-before:x:/../0
   src:x:/../*");
-            Assert.AreEqual (1, tmp [2].Count);
+            Assert.AreEqual (1, tmp [2].Children.Count);
             Assert.AreEqual ("_test9", tmp [2] [0].Name);
             Assert.AreEqual ("howdy", tmp [2] [0] [0].Name);
             Assert.AreEqual ("_test9world", tmp [2] [0] [0].Value);
@@ -544,7 +546,7 @@ update-data:x:/*/*/_test9/*/_dest?value
 select-data:x:/*/*/_test9
 insert-before:x:/../0
   src:x:/../*");
-            Assert.AreEqual (1, tmp [2].Count);
+            Assert.AreEqual (1, tmp [2].Children.Count);
             Assert.AreEqual ("_test9", tmp [2] [0].Name);
             Assert.AreEqual ("howdy ", tmp [2] [0] [0].Value);
             Assert.AreEqual ("world", tmp [2] [0] [1].Value);
@@ -556,24 +558,26 @@ insert-before:x:/../0
         ///     tries to insert one item into database with no name
         /// </summary>
         [Test]
-        [ExpectedException]
         public void InsertItemWithNoName ()
         {
-            ExecuteLambda (@"insert-data
+            Assert.Throws<LambdaException> (delegate {
+                ExecuteLambda (@"insert-data
   :bar1");
+            });
         }
 
         /// <summary>
         ///     tries to update an item without submitting a [source] or [rel-source]
         /// </summary>
         [Test]
-        [ExpectedException]
         public void InsertUpdateWithoutSource ()
         {
-            ExecuteLambda (@"insert-data
+            Assert.Throws<LambdaException> (delegate {
+                ExecuteLambda (@"insert-data
   foo1:bar1");
-            ExecuteLambda (@"update-data:@/*/*/foo1/?value
+                ExecuteLambda (@"update-data:@/*/*/foo1/?value
   bar2");
+            });
         }
     }
 }

@@ -236,14 +236,14 @@ namespace lambda_exe
 
                     // User wants to enter immediate mode
                     immediate = true;
-                } else if (exeNode.Count == 0 || exeNode [exeNode.Count - 1].Value != null) {
+                } else if (exeNode.Children.Count == 0 || exeNode [exeNode.Children.Count - 1].Value != null) {
 
                     // Arbitrary argument name passed into Hyperlisp file
                     exeNode.Add (new Node (idx));
                 } else {
 
                     // Arbitrary argument value passed into Hyperlisp file
-                    exeNode [exeNode.Count - 1].Value = idx;
+                    exeNode [exeNode.Children.Count - 1].Value = idx;
                 }
             }
 

@@ -44,7 +44,19 @@ namespace p5.mime.plugins
                     e.Args.Value = streams;
                     var entity = context.RaiseNative ("p5.mime.create-native", e.Args).Get<MimeEntity> (context);
 
-                    // Serialising entity to Response Stream
+                    // Making sure we render the headers of root MimeEntity to response headers, although this is 
+                    // technically duplication of what occurs below, where we are rendering entire entity to reponse stream,
+                    // it still makes sense to be clear about what type of response this is for the client, such that
+                    // client can figure out correct action to take, before starting parsing the stream
+                    RenderHeaders (entity);
+
+                    // Serialising entity to Response Stream.
+                    // Note that this serializes ENTIRE MimeEntity to response, including Content-Type and other headers,
+                    // which technically might be perceived as redundant, since we could add up all root MIME entity headers
+                    // to HTTP response header collection. But for simplicity reasons, we choose to do it like this.
+                    // This way, anyone wanting to parse the results, can assert everything needed to decode the MIME entity
+                    // is in the content. Besides, some proxy servers and such, might strip away "unrecognized HTTP headers".
+                    // By having 
                     entity.WriteTo (HttpContext.Current.Response.OutputStream);
 
                     // Flushing response, and making sure default content is never rendered
@@ -58,6 +70,23 @@ namespace p5.mime.plugins
                         idxStream.Close ();
                         idxStream.Dispose ();
                     }
+                }
+            }
+        }
+
+        /*
+         * Will render all headers from MimeEntity into HTTP response header collection
+         */
+        private static void RenderHeaders (MimeEntity entity)
+        {
+            foreach (var idxHeader in entity.Headers) {
+                switch (idxHeader.Id) {
+                case HeaderId.ContentType:
+                    HttpContext.Current.Response.ContentType = idxHeader.Value;
+                    break;
+                default:
+                    HttpContext.Current.Response.Headers.Add (idxHeader.Field, idxHeader.Value);
+                    break;
                 }
             }
         }

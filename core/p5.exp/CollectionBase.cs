@@ -202,7 +202,7 @@ namespace p5.exp
             } else {
 
                 // There are no value in [src] node, trying to create source out of [src]'s children
-                if (evaluatedNode.Count == 1) {
+                if (evaluatedNode.Children.Count == 1) {
 
                     // Source is a constant node, making sure we clone it, in case source and destination overlaps
                     source = evaluatedNode.FirstChild.Clone ();
