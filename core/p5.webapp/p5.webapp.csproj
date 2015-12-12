@@ -263,6 +263,10 @@
       <Project>{2ED69FBE-C3DF-434D-9C30-6641B79C4A64}</Project>
       <Name>p5.mail</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\plugins\extras\p5.mime\p5.mime.csproj">
+      <Project>{2D694F51-5055-4EC8-8767-C2011E010DD5}</Project>
+      <Name>p5.mime</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="system42\application-startup.hl" />

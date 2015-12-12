@@ -8,17 +8,15 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using MimeKit;
-using MailKit;
 using MimeKit.Cryptography;
 using p5.exp;
 using p5.core;
-using p5.mail.helpers;
 using p5.exp.exceptions;
 
 /// <summary>
 ///     Main namespace regarding all MIME features in Phosphorus Five
 /// </summary>
-namespace p5.mail.mime
+namespace p5.mime.helpers
 {
     /// <summary>
     ///     Helper to create a MimeEntity
@@ -192,9 +190,9 @@ namespace p5.mail.mime
                     "No [email] or [fingerprint] supplied to [signature], supply one of these, and ONLY one of these",
                     signNode,
                     context);
-            if (signNode.FirstChild.Count != 1 && signNode.FirstChild.FirstChild.Name != "password")
+            if (signNode.FirstChild["password"] == null)
                 throw new LambdaException (
-                    "No [password] supplied to [signature], supply password beneath either [email] or [fingerprint], and ONLY [password]",
+                    "No [password] supplied to [signature], supply password beneath [email] or [fingerprint] supplied",
                     signNode,
                     context);
 
@@ -228,8 +226,8 @@ namespace p5.mail.mime
 
                 // Figuring out signature Digest Algorithm to use for signature
                 DigestAlgorithm algo = DigestAlgorithm.Sha1;
-                if (signNode ["digest-algorithm"] != null)
-                    algo = (DigestAlgorithm)Enum.Parse (typeof (DigestAlgorithm), signNode ["digest-algorithm"].Get<string> (context));
+                if (signNode.FirstChild ["digest-algorithm"] != null)
+                    algo = (DigestAlgorithm)Enum.Parse (typeof (DigestAlgorithm), signNode.FirstChild ["digest-algorithm"].Get<string> (context));
 
                 // Signing and Encrypting content of email
                 return MultipartEncrypted.SignAndEncrypt (
@@ -290,9 +288,9 @@ namespace p5.mail.mime
                     "No [email] or [fingerprint] supplied to [signature], supply one of these, and ONLY one of these",
                     signNode,
                     context);
-            if (signNode.FirstChild.Count != 1 || signNode.FirstChild.FirstChild.Name != "password")
+            if (signNode.FirstChild["password"] == null)
                 throw new LambdaException (
-                    "No [password] supplied to [signature], supply password beneath either [email] or [fingerprint], and ONLY [password]",
+                    "No [password] supplied to [signature], supply password beneath [email] or [fingerprint] supplied",
                     signNode,
                     context);
 
@@ -310,8 +308,8 @@ namespace p5.mail.mime
 
                 // Figuring out signature Digest Algorithm to use for signature, defaulting to Sha1
                 DigestAlgorithm algo = DigestAlgorithm.Sha1;
-                if (signNode ["digest-algorithm"] != null)
-                    algo = (DigestAlgorithm)Enum.Parse (typeof (DigestAlgorithm), signNode ["digest-algorithm"].Get<string> (context));
+                if (signNode.FirstChild ["digest-algorithm"] != null)
+                    algo = (DigestAlgorithm)Enum.Parse (typeof (DigestAlgorithm), signNode.FirstChild ["digest-algorithm"].Get<string> (context));
 
                 // Signing content of email and returning to caller
                 return MultipartSigned.Create (

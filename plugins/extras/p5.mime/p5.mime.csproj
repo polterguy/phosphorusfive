@@ -3,12 +3,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{2ED69FBE-C3DF-434D-9C30-6641B79C4A64}</ProjectGuid>
+    <ProjectGuid>{2D694F51-5055-4EC8-8767-C2011E010DD5}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>p5.mail</RootNamespace>
-    <AssemblyName>p5.mail</AssemblyName>
-    <ReleaseVersion>1.0</ReleaseVersion>
+    <RootNamespace>p5.mime</RootNamespace>
+    <AssemblyName>p5.mime</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <ReleaseVersion>1.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,25 +30,25 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Security" />
-    <Reference Include="MailKit">
-      <HintPath>..\..\..\packages\MailKit.1.2.15\lib\net45\MailKit.dll</HintPath>
-    </Reference>
     <Reference Include="BouncyCastle">
       <HintPath>..\..\..\packages\MimeKit.1.2.17.3\lib\net45\BouncyCastle.dll</HintPath>
     </Reference>
     <Reference Include="MimeKit">
       <HintPath>..\..\..\packages\MimeKit.1.2.17.3\lib\net45\MimeKit.dll</HintPath>
     </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="helpers\Common.cs" />
-    <Compile Include="Pop3.cs" />
-    <Compile Include="Smtp.cs" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Security" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Compile Include="HttpRequest.cs" />
+    <Compile Include="Mime.cs" />
+    <Compile Include="helpers\CreateMime.cs" />
+    <Compile Include="helpers\GnuPrivacyContext.cs" />
+    <Compile Include="helpers\ParseMime.cs" />
+    <Compile Include="helpers\Common.cs" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\core\p5.core\p5.core.csproj">
       <Project>{C783FEDB-C973-4F38-8EBB-55A0163612F5}</Project>

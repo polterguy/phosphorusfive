@@ -102,7 +102,7 @@ namespace p5.web.ui.response
 
                     // Creating MIME message
                     e.Args.Value = streams;
-                    var entity = context.RaiseNative ("p5.mail.mime.create-native", e.Args).Get<MimeEntity> (context);
+                    var entity = context.RaiseNative ("p5.mime.create-native", e.Args).Get<MimeEntity> (context);
 
                     // Serialising entity to Response Stream
                     entity.WriteTo (HttpContext.Current.Response.OutputStream);

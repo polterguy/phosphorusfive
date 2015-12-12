@@ -19,7 +19,7 @@ using p5.mail.helpers;
 namespace p5.mail
 {
     /// <summary>
-    ///     Class wrapping the sending and receiving emails in Phosphorus Five
+    ///     Class wrapping the SMTP email features of Phosphorus Five
     /// </summary>
     public static class Smtp
     {
@@ -119,7 +119,7 @@ namespace p5.mail
             body.Value = streams;
 
             // Creating MIME message by using [create-native] MIME Active Event
-            message.Body = context.RaiseNative ("p5.mail.mime.create-native", body).Get<MimeEntity> (context);
+            message.Body = context.RaiseNative ("p5.mime.create-native", body).Get<MimeEntity> (context);
 
             // Returning message
             return message;

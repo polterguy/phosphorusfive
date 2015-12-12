@@ -8,14 +8,12 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using MimeKit;
-using MailKit;
 using MimeKit.Cryptography;
 using p5.exp;
 using p5.core;
-using p5.mail.helpers;
 using p5.exp.exceptions;
 
-namespace p5.mail.mime
+namespace p5.mime.helpers
 {
     /// <summary>
     ///     Helper to parse a MimeEntity

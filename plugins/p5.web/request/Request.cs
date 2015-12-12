@@ -78,7 +78,7 @@ namespace p5.web.ui.request
 
                 var entity = MimeEntity.Load (HttpContext.Current.Request.InputStream);
                 e.Args.Value = entity;
-                context.RaiseNative ("p5.mail.mime.parse-native", e.Args);
+                context.RaiseNative ("p5.mime.parse-native", e.Args);
             }
         }
 

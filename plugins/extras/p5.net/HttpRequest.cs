@@ -12,7 +12,6 @@ using System.Collections.Generic;
 using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
-using MimeKit;
 
 /// <summary>
 ///     Namespace wrapping Active Events related to networking
@@ -57,64 +56,6 @@ namespace p5.net
         private static void p5_net_http_get_file (ApplicationContext context, ActiveEventArgs e)
         {
             CreateRequest (context, e.Args, RenderRequest, RenderFileResponse);
-        }
-
-        /// <summary>
-        ///     Posts or puts a MIME message over an HTTP request
-        /// </summary>
-        [ActiveEvent (Name = "p5.net.http-post-mime", Protection = EventProtection.LambdaClosed)]
-        [ActiveEvent (Name = "p5.net.http-put-mime", Protection = EventProtection.LambdaClosed)]
-        private static void p5_net_http_post_put_mime (ApplicationContext context, ActiveEventArgs e)
-        {
-            // Basic syntax checking
-            if (e.Args["content"] == null)
-                throw new LambdaException (
-                    "No [content] node found to post or put to server end-point",
-                    e.Args,
-                    context);
-
-            // List of streams created during creation of MimeEntity.
-            // We need to keep track of this, such that we can close and dispose all streams after we're done with them
-            var streams = new List<Stream> ();
-
-            // Making sure we can clean up after ourselves
-            try {
-                // Creating MIME entity, making sure we pass in a list of streams, such that we can clean up after ourselves
-                e.Args ["content"].Value = streams;
-                var entity = context.RaiseNative ("p5.mail.mime.create-native", e.Args ["content"]).UnTie ().Get<MimeEntity> (context);
-
-                // Creating request, with delegate writing MimeEntity acquired above
-                CreateRequest (context, e.Args, delegate (
-                    ApplicationContext ctx, 
-                    HttpWebRequest request, 
-                    Node args, 
-                    string method) {
-                    using (Stream stream = request.GetRequestStream ()) {
-
-                        // Setting our Content-Type header, defaulting to "application/octet-stream", in addition to other headers
-                        request.ContentType = args.GetExChildValue (
-                            "Content-Type", 
-                            context, 
-                            "multipart/mixed");
-
-                        // Setting other headers
-                        SetRequestHeaders (context, request, args);
-
-                        // Writing MIME entity to request stream
-                        entity.WriteTo (stream);
-                    }
-
-                }, RenderResponse);
-            } finally {
-
-                // Closing and disposing all streams created during creation of MimeEntity
-                foreach (var idxStream in streams) {
-
-                    // Closing and disposing currently iterated stream
-                    idxStream.Close ();
-                    idxStream.Dispose ();
-                }
-            }
         }
 
         /*

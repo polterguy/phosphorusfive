@@ -11,16 +11,17 @@ using System.Collections.Generic;
 using MimeKit;
 using MailKit;
 using MailKit.Net.Pop3;
-using MimeKit.Cryptography;
 using p5.exp;
 using p5.core;
 using p5.mail.helpers;
-using p5.mail.mime;
 
+/// <summary>
+///     Main namespace for everything related to sending and retrieving emails in Phosphorus Five
+/// </summary>
 namespace p5.mail
 {
     /// <summary>
-    ///     Class wrapping the pop3 email features of Phosphorus Five
+    ///     Class wrapping the POP3 email features of Phosphorus Five
     /// </summary>
     public static class Pop3
     {
@@ -64,13 +65,14 @@ namespace p5.mail
                     for (int idxMsg = 0; idxMsg < noMessages; idxMsg++) {
 
                         // Process message returned from POP3 server by building Node structure wrapping message
-                        var mNode = ProcessMessage (
+                        var msgNode = ProcessMessage (
                             context, 
-                            e.Args, 
-                            client.GetMessage (idxMsg));
+                            client.GetMessage (idxMsg),
+                            e.Args.GetChildValue ("process-envelope", context, true),
+                            e.Args.GetChildValue ("process-body", context, true));
 
                         // Handle message after processing
-                        HandleMessage (context, mNode, e.Args);
+                        HandleMessage (context, msgNode, e.Args);
 
                         // Checking if we should delete message from server
                         if (e.Args.GetChildValue ("delete", context, false)) {
@@ -93,39 +95,41 @@ namespace p5.mail
          */
         private static Node ProcessMessage (
             ApplicationContext context, 
-            Node args, 
-            MimeMessage message)
+            MimeMessage message,
+            bool processEnvelope,
+            bool processBody)
         {
             // Node structure containing all headers, content, and other properties of message
-            Node mNode = new Node ("envelope", message.MessageId);
+            Node msgNode = new Node ("envelope");
 
             // Checking if caller does NOT want to have message processed in any ways ...
-            if (!args.GetChildValue ("process-envelope", context, true)) {
+            if (!processEnvelope) {
 
                 // Caller does NOT want to have message processed, returning entire message as string
-                mNode.Add ("raw-envelope", message.ToString ());
+                msgNode.Add ("raw-envelope", message.ToString ());
             } else {
 
                 // Processing message, headers first
-                ProcessMessageHeaders (context, mNode, message);
+                ProcessMessageHeaders (context, msgNode, message);
 
                 // Checking if caller wants to have body processed
-                if (!args.GetChildValue ("process-body", context, true)) {
+                if (!processBody) {
 
                     // Caller does NOT want to have content processed, returning entire Body as string
-                    mNode.Add ("raw-body", message.Body.ToString ());
+                    msgNode.Add ("raw-body", message.Body.ToString ());
                 } else {
 
                     // Then content of message
-                    ParseMime.ParseMimeEntity (
-                        context, 
-                        mNode.Add ("body").LastChild, 
-                        message.Body);
+                    msgNode.Value = message.Body;
+                    context.RaiseNative("p5.mime.parse-native", msgNode);
                 }
             }
 
+            // Making sure ID of email is value of [envelope] node
+            msgNode.Value = message.MessageId;
+
             // Return node containing processed message
-            return mNode;
+            return msgNode;
         }
 
         /*
@@ -133,63 +137,63 @@ namespace p5.mail
          */
         private static void ProcessMessageHeaders (
             ApplicationContext context, 
-            Node mNode, 
+            Node msgNode, 
             MimeMessage message)
         {
             // Subject
-            mNode.Add ("Subject", message.Subject);
+            msgNode.Add ("Subject", message.Subject);
 
             // All address fields
-            GetAddresses (context, mNode, message.From, "From");
-            GetAddresses (context, mNode, message.ResentFrom, "Resent-From");
-            GetAddresses (context, mNode, message.Bcc, "Bcc");
-            GetAddresses (context, mNode, message.ResentBcc, "Resent-Bcc");
-            GetAddresses (context, mNode, message.Cc, "Cc");
-            GetAddresses (context, mNode, message.ResentCc, "Resent-Cc");
-            GetAddresses (context, mNode, message.ReplyTo, "Reply-To");
-            GetAddresses (context, mNode, message.ResentReplyTo, "Resent-Reply-To");
-            GetAddresses (context, mNode, message.To, "To");
-            GetAddresses (context, mNode, message.ResentTo, "Resent-To");
+            GetAddresses (context, msgNode, message.From, "From");
+            GetAddresses (context, msgNode, message.ResentFrom, "Resent-From");
+            GetAddresses (context, msgNode, message.Bcc, "Bcc");
+            GetAddresses (context, msgNode, message.ResentBcc, "Resent-Bcc");
+            GetAddresses (context, msgNode, message.Cc, "Cc");
+            GetAddresses (context, msgNode, message.ResentCc, "Resent-Cc");
+            GetAddresses (context, msgNode, message.ReplyTo, "Reply-To");
+            GetAddresses (context, msgNode, message.ResentReplyTo, "Resent-Reply-To");
+            GetAddresses (context, msgNode, message.To, "To");
+            GetAddresses (context, msgNode, message.ResentTo, "Resent-To");
 
             // Other standard headers
-            mNode.Add ("Date", message.Date.DateTime);
+            msgNode.Add ("Date", message.Date.DateTime);
 
             if (!string.IsNullOrEmpty (message.ResentMessageId))
-                mNode.Add ("Resent-Message-ID", message.ResentMessageId);
+                msgNode.Add ("Resent-Message-ID", message.ResentMessageId);
 
             if (message.Sender != null)
-                mNode.Add ("Sender", null, new Node[] { new Node (message.Sender.Name ?? "", message.Sender.Address) });
+                msgNode.Add ("Sender", null, new Node[] { new Node (message.Sender.Name ?? "", message.Sender.Address) });
 
             if (message.ResentSender != null)
-                mNode.Add ("Resent-Sender", null, new Node[] { new Node (message.ResentSender.Name ?? "", message.ResentSender.Address) });
+                msgNode.Add ("Resent-Sender", null, new Node[] { new Node (message.ResentSender.Name ?? "", message.ResentSender.Address) });
 
             if (message.MimeVersion != null)
-                mNode.Add ("MIME-Version", message.MimeVersion.ToString ());
+                msgNode.Add ("MIME-Version", message.MimeVersion.ToString ());
 
             if (message.ResentDate != DateTimeOffset.MinValue)
-                mNode.Add ("Resent-Date", message.ResentDate.DateTime);
+                msgNode.Add ("Resent-Date", message.ResentDate.DateTime);
 
             if (message.Importance != MessageImportance.Normal)
-                mNode.Add ("Importance", message.Importance.ToString ());
+                msgNode.Add ("Importance", message.Importance.ToString ());
 
             if (!string.IsNullOrEmpty (message.InReplyTo))
-                mNode.Add ("In-Reply-To", message.InReplyTo);
+                msgNode.Add ("In-Reply-To", message.InReplyTo);
 
             if (message.Priority != MessagePriority.Normal)
-                mNode.Add ("Priority", message.Priority.ToString ());
+                msgNode.Add ("Priority", message.Priority.ToString ());
 
             // Looping through and adding all IDs for messages this message is referencing
             foreach (var id in message.References) {
 
                 // Adding currently iterated References ID back to caller
-                mNode.FindOrCreate ("References").Add (id);
+                msgNode.FindOrCreate ("References").Add (id);
             }
 
             // Non-standard headers
             foreach (var idxHeader in message.Headers.Where (ix => _excludedHeaders.IndexOf (ix.Id) == -1)) {
 
                 // Retrieving currently iterated header
-                mNode.FindOrCreate ("X-Headers").Add (idxHeader.Field, idxHeader.Value);
+                msgNode.FindOrCreate ("X-Headers").Add (idxHeader.Field, idxHeader.Value);
             }
         }
 
@@ -198,7 +202,7 @@ namespace p5.mail
          */
         private static void GetAddresses (
             ApplicationContext context, 
-            Node args, 
+            Node msgNode, 
             InternetAddressList list, 
             string name)
         {
@@ -206,7 +210,7 @@ namespace p5.mail
             foreach (MailboxAddress idxAdr in list) {
 
                 // Appending currently iterated address to args
-                args.FindOrCreate (name).Add (idxAdr.Name, idxAdr.Address);
+                msgNode.FindOrCreate (name).Add (idxAdr.Name, idxAdr.Address);
             }
         }
 
@@ -215,25 +219,26 @@ namespace p5.mail
          */
         private static void HandleMessage (
             ApplicationContext context, 
-            Node mNode,
+            Node msgNode,
             Node args)
         {
-            // Checking what to do with message, either return as [message] node, or invoke [functor] with [message] as first child
+            // Checking what to do with message, either return as [message] node to caller, 
+            // or invoke [functor] with [message] as first child
             if (args ["functor"] != null) {
 
                 // Caller supplied [functor] object he wish to have evaluated [eval] for every message retrieved
                 Node exe = args ["functor"].Clone ();
 
                 // Making sure we avoid raising the message node as an Active Event
-                mNode.Insert (0, new Node ("offset", 2 /* Remember the [offset] node itself! */));
+                msgNode.Insert (0, new Node ("offset", 2 /* Remember the [offset] node itself! */));
 
                 // Adding currently iterated message to [functor] and evaluating using [eval]
-                exe.Add (mNode);
+                exe.Add (msgNode);
                 context.RaiseLambda ("eval", exe);
             } else {
 
                 // Returning node with message to caller
-                args.Add (mNode);
+                args.Add (msgNode);
             }
         }
 
