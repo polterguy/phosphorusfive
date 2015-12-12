@@ -14,15 +14,15 @@ using p5.core;
 using p5.exp.exceptions;
 using MimeKit;
 
-namespace p5.mime
+namespace p5.mime.plugins
 {
     /// <summary>
-    ///     Class wrapping the [p5.net.http-post-mime/put-mime] Active Events
+    ///     Class wrapping the [p5.net.http-post-mime/put-mime] Active Events for creating HTTP requests that posts/puts MIME
     /// </summary>
     public static class HttpRequest
     {
         // Specialized delegate functors for rendering request and response
-        private delegate void RenderRequestFunctor (ApplicationContext context, HttpWebRequest request, Node args, string method);
+        private delegate void RenderRequestFunctor (ApplicationContext context, MimeEntity entity, HttpWebRequest request, Node args, string method);
         private delegate void RenderResponseFunctor (ApplicationContext context, HttpWebRequest request, Node args);
 
         /// <summary>
@@ -33,54 +33,14 @@ namespace p5.mime
         private static void p5_net_http_post_put_mime (ApplicationContext context, ActiveEventArgs e)
         {
             // Basic syntax checking
-            if (e.Args["content"] == null)
+            if (e.Args.Count != 1)
                 throw new LambdaException (
-                    "No [content] node found to post or put to server end-point",
+                    "You can only post and put one MIME entity when creating HTTP requests, to post multiple values, use [multipart] as your root",
                     e.Args,
                     context);
 
-            // List of streams created during creation of MimeEntity.
-            // We need to keep track of this, such that we can close and dispose all streams after we're done with them
-            var streams = new List<Stream> ();
-
-            // Making sure we can clean up after ourselves
-            try {
-                // Creating MIME entity, making sure we pass in a list of streams, such that we can clean up after ourselves
-                e.Args ["content"].Value = streams;
-                var entity = context.RaiseNative ("p5.mime.create-native", e.Args ["content"]).UnTie ().Get<MimeEntity> (context);
-
-                // Creating request, with delegate writing MimeEntity acquired above
-                CreateRequest (context, e.Args, delegate (
-                    ApplicationContext ctx, 
-                    HttpWebRequest request, 
-                    Node args, 
-                    string method) {
-                    using (Stream stream = request.GetRequestStream ()) {
-
-                        // Setting our Content-Type header, defaulting to "application/octet-stream", in addition to other headers
-                        request.ContentType = args.GetExChildValue (
-                            "Content-Type", 
-                            context, 
-                            "multipart/mixed");
-
-                        // Setting other headers
-                        SetRequestHeaders (context, request, args);
-
-                        // Writing MIME entity to request stream
-                        entity.WriteTo (stream);
-                    }
-
-                }, RenderResponse);
-            } finally {
-
-                // Closing and disposing all streams created during creation of MimeEntity
-                foreach (var idxStream in streams) {
-
-                    // Closing and disposing currently iterated stream
-                    idxStream.Close ();
-                    idxStream.Dispose ();
-                }
-            }
+            // Creating request, with delegate writing MimeEntity
+            CreateRequest (context, e.Args, RenderRequest, RenderResponse);
         }
 
         /*
@@ -99,26 +59,46 @@ namespace p5.mime
                 string method = args.Name.Substring (args.Name.IndexOf ("-") + 1).ToUpper ();
                 if (method.Contains ("-"))
                     method = method.Substring (0, method.IndexOf ("-"));
-                try
-                {
+                try {
+
                     // Iterating through each request URL given
                     foreach (var idxUrl in XUtil.Iterate<string> (context, args, true)) {
 
-                        // Creating request
-                        HttpWebRequest request = WebRequest.Create (idxUrl) as HttpWebRequest;
+                        // List of streams created during creation of MimeEntity.
+                        // We need to keep track of this, such that we can close and dispose all streams after we're done with them
+                        var streams = new List<Stream> ();
 
-                        // Setting HTTP method
-                        request.Method = method;
+                        // Creating MIME entity, making sure we pass in a list of streams, such that we can clean up after ourselves
+                        args.Value = streams;
 
-                        // Writing content to request, if any
-                        renderRequest (context, request, args, method);
+                        try {
+                            var entity = context.RaiseNative ("p5.mime.create-native", args).Get<MimeEntity> (context);
 
-                        // Returning response to caller
-                        renderResponse (context, request, args);
+                            // Creating request
+                            HttpWebRequest request = WebRequest.Create (idxUrl) as HttpWebRequest;
+
+                            // Setting HTTP method
+                            request.Method = method;
+
+                            // Writing content to request, if any
+                            renderRequest (context, entity, request, args, method);
+
+                            // Returning response to caller
+                            renderResponse (context, request, args);
+                        } finally {
+
+                            // Closing and disposing all streams created during creation of MimeEntity
+                            foreach (var idxStream in streams) {
+
+                                // Closing and disposing currently iterated stream
+                                idxStream.Close ();
+                                idxStream.Dispose ();
+                            }
+
+                        }
                     }
-                }
-                catch (Exception err)
-                {
+                } catch (Exception err) {
+
                     // Trying to avoid throwing a new exception, unless we have to
                     if (err is LambdaException)
                         throw;
@@ -186,6 +166,32 @@ namespace p5.mime
         }
 
         /*
+         * Renders MIME request
+         */
+        private static void RenderRequest (
+            ApplicationContext context, 
+            MimeEntity entity,
+            HttpWebRequest request, 
+            Node args, 
+            string method)
+        {
+            using (Stream stream = request.GetRequestStream ()) {
+
+                // Setting our Content-Type header, defaulting to Entity's Content-Type, in addition to other headers
+                request.ContentType = args.GetExChildValue (
+                    "Content-Type", 
+                    context, 
+                    entity.ContentType.ToString ());
+
+                // Setting other headers
+                SetRequestHeaders (context, request, args);
+
+                // Writing MIME entity to request stream
+                entity.WriteTo (stream);
+            }
+        }
+
+        /*
          * Renders response into given Node
          */
         private static void RenderResponse (
@@ -194,51 +200,23 @@ namespace p5.mime
             Node args)
         {
             HttpWebResponse response = (HttpWebResponse)request.GetResponse ();
-            Node result = args.Add ("result", request.RequestUri.ToString ()).LastChild;
+            Node result = args.Add ("result").LastChild;
 
             // Getting response HTTP headers
             GetResponseHeaders (context, response, result, request);
 
-            // Retrieving response stream, and parsing content
-            using (Stream stream = response.GetResponseStream ()) {
+            // Retrieving response stream, and parsing content, making sure MimeEntity never leaves this method
+            try {
+                using (Stream stream = response.GetResponseStream ()) {
 
-                // Checking type of response
-                if (response.ContentType.StartsWith ("application/x-hyperlisp")) {
-
-                    // Hyperlisp, possibly special treatment
-                    using (TextReader reader = new StreamReader (stream, Encoding.GetEncoding (response.CharacterSet ?? "UTF8"))) {
-
-                        // Checking if caller wants to automatically convert to p5 lambda, which is default behavior
-                        if (args.GetExChildValue ("convert", context, true)) {
-
-                            // Converting from Hyperlisp to p5 lambda
-                            Node convert = context.RaiseNative ("lisp2lambda", new Node ("content", reader.ReadToEnd ()));
-                            convert.Value = null;
-                            result.Add (convert);
-                        } else {
-
-                            // Caller explicitly said he did NOT want to convert
-                            result.Add ("content", reader.ReadToEnd());
-                        }
-                    }
-                } else if (response.ContentType.StartsWith ("text")) {
-
-                    // Text response
-                    using (TextReader reader = new StreamReader (stream, Encoding.GetEncoding (response.CharacterSet ?? "UTF8"))) {
-
-                        // Simply adding as text
-                        result.Add ("content", reader.ReadToEnd ());
-                    }
-                } else {
-
-                    // Defaulting to binary
-                    using (MemoryStream memStream = new MemoryStream ()) {
-
-                        // Simply adding as byte[]
-                        stream.CopyTo (memStream);
-                        result.Add ("content", memStream.GetBuffer ());
-                    }
+                    // Retrieving response by reading stream and creating MimeEntity
+                    result.Value = MimeEntity.Load (ContentType.Parse (response.ContentType), stream);
+                    context.RaiseNative ("p5.mime.parse-native", result);
                 }
+            } finally {
+
+                // Making sure [result] node's value is URL of response
+                result.Value = request.RequestUri.ToString ();
             }
         }
 

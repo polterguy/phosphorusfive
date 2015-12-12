@@ -39,15 +39,18 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Web" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Compile Include="HttpRequest.cs" />
     <Compile Include="Mime.cs" />
     <Compile Include="helpers\CreateMime.cs" />
     <Compile Include="helpers\GnuPrivacyContext.cs" />
     <Compile Include="helpers\ParseMime.cs" />
     <Compile Include="helpers\Common.cs" />
+    <Compile Include="plugins\Echo.cs" />
+    <Compile Include="plugins\HttpRequest.cs" />
+    <Compile Include="plugins\Request.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\core\p5.core\p5.core.csproj">
@@ -64,5 +67,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="helpers\" />
+    <Folder Include="plugins\" />
   </ItemGroup>
 </Project>

@@ -17,23 +17,21 @@ CodeMirror.defineMode("hyperlisp", function() {
   return {
 
     /*
-     * defines the different CSS class names for the different types of entities in Hyperlisp
+     * Defines the different CSS class names for the different types of entities in Hyperlisp
      */
     styles: {
       comment:'comment',
-      mcomment:'comment',
-      operator:'atom',
-      type:'atom',
+      mcomment:'comment mcomment',
       keyword:'keyword',
+      operator:'operator',
+      string:'string',
+      mstring:'string mstring',
       activeevent:'property',
       variable:'variable',
-      lesser_keyword:'variable-2',
-      string:'string',
-      mstring:'string',
-      expression:'atom',
+      type:'atom',
+      expression:'variable-2 expression',
       value:'attribute',
-      error:'error',
-      property:'number'
+      error:'error'
     },
 
     /*
@@ -174,7 +172,6 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'add':
         case 'retrieve':
         case 'fetch':
-        case 'src':
         case 'while':
         case 'for-each':
         case 'insert-before':
@@ -189,27 +186,6 @@ CodeMirror.defineMode("hyperlisp", function() {
         case '/': // TODO: why doesn't this work ...?
         case '*':
         case '%':
-          state.indent += 2;
-          return this.styles.keyword;
-
-        // Afterwards keywords not needing indentation
-        case 'operators':
-        case 'sleep':
-        case 'equals':
-        case '=':
-        case 'not-equals':
-        case '!=':
-        case 'more-than':
-        case '>':
-        case 'less-than':
-        case '<':
-        case 'more-than-equals':
-        case '>=':
-        case 'less-than-equals':
-        case '<=':
-          return this.styles.keyword;
-
-        // Then "lesser" keywords that needs indentation
         case 'lambda2lisp':
         case 'set-event':
         case 'set-protected-event':
@@ -242,9 +218,23 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'gunzip':
         case 'set-page-value':
           state.indent += 2;
-          return this.styles.lesser_keyword;
+          return this.styles.keyword;
 
-        // lesser keywords not needing indentation
+        // Afterwards keywords not needing indentation
+        case 'src':
+        case 'sleep':
+        case 'equals':
+        case '=':
+        case 'not-equals':
+        case '!=':
+        case 'more-than':
+        case '>':
+        case 'less-than':
+        case '<':
+        case 'more-than-equals':
+        case '>=':
+        case 'less-than-equals':
+        case '<=':
         case 'lisp2lambda':
         case 'md5-hash':
         case 'widget-exist':
@@ -313,62 +303,13 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'list-events':
         case 'set-http-status':
         case 'set-http-status-code':
-          return this.styles.lesser_keyword;
-
-        // then "widget types"
-        case 'literal':
-        case 'container':
-        case 'void':
-          state.indent += 2;
-          return this.styles.lesser_keyword;
-
-        // then DOM events
-        case 'oninit':
-        case 'onclick':
-        case 'ondblclick':
-        case 'onmouseover':
-        case 'onmouseout':
-        case 'onfocus':
-        case 'onblur':
-        case 'onmousedown':
-        case 'onmouseenter':
-        case 'onmouseleave':
-        case 'onmousemove':
-        case 'onmouseover':
-        case 'onmouseout':
-        case 'onmouseup':
-        case 'onkeydown':
-        case 'onkeypress':
-        case 'onkeyup':
-        case 'onchange':
-          state.indent += 2;
-          return this.styles.property;
-
-        // Then DOM attributes and widget properties
-        case 'parent':
-        case 'position':
-        case 'element':
-        case 'class':
-        case 'style':
-        case 'src':
-        case 'href':
-        case 'type':
-        case 'target':
-          // TODO: finsish list ...!
-          return this.styles.property;
-
-        // then "custom properties" that requires indentation
-        case 'widgets':
-        case 'events':
-          state.indent += 2;
-          return this.styles.lesser_keyword;
+          return this.styles.keyword;
 
         // default handling
         default:
           if (word[0] == '_') {
             return this.styles.variable;
           } else if (word.indexOf('.') != -1) {
-            /// \todo check for existing Active Event
             state.indent += 2;
             return this.styles.activeevent;
           }

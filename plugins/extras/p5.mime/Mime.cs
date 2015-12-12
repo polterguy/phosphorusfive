@@ -110,7 +110,7 @@ namespace p5.mime
                 var entity = e.Args.Get<MimeEntity> (context);
                 ParseMime.ParseMimeEntity (
                     context, 
-                    e.Args.Add ("body").LastChild,
+                    e.Args,
                     entity);
             }
         }
@@ -138,7 +138,7 @@ namespace p5.mime
                     var entity = MimeEntity.Load (writer.BaseStream);
                     ParseMime.ParseMimeEntity (
                         context, 
-                        e.Args.Add ("body").LastChild,
+                        e.Args,
                         entity);
                 }
             }
@@ -167,7 +167,7 @@ namespace p5.mime
                     // Loading, processing and returning currently iterated message
                     ParseMime.ParseMimeEntity (
                         context,
-                        e.Args.Add ("body").LastChild,
+                        e.Args,
                         MimeEntity.Load (baseFolder + idxFilename));
                 }
             }

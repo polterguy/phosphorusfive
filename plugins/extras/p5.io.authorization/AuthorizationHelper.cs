@@ -85,6 +85,14 @@ namespace p5.io.authorization
                     string.Format ("User '{0}' tried to access auth file", context.Ticket.Username, filename), 
                     stack, 
                     context);
+
+            // Verifying only root can read web.config
+            if (context.Ticket.Role != "root")
+            if (filename.ToLower () == "/web.config")
+                throw new LambdaSecurityException (
+                    string.Format ("User '{0}' tried to access web.config", context.Ticket.Username, filename), 
+                    stack, 
+                    context);
         }
 
         /*

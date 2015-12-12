@@ -10,7 +10,6 @@ using System.Web;
 using System.Collections.Generic;
 using p5.exp;
 using p5.core;
-using MimeKit;
 
 /// <summary>
 ///     Main namespace for everything related to the current HTTP request
@@ -57,28 +56,6 @@ namespace p5.web.ui.request
                 var rawBytes = new byte [HttpContext.Current.Request.InputStream.Length];
                 HttpContext.Current.Request.InputStream.Read (rawBytes, 0, rawBytes.Length);
                 e.Args.Value = rawBytes;
-            }
-        }
-
-        /// <summary>
-        ///     Returns the current HTTP request's body as parsed MIME
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.web.request.parse-mime", Protection = EventProtection.LambdaClosed)]
-        private static void p5_web_request_parse_mime (ApplicationContext context, ActiveEventArgs e)
-        {
-            // Nothing to do here if this is true
-            if (HttpContext.Current.Request.InputStream.Length == 0) {
-                return; // Nothing to do here ...
-            }
-
-            // Making sure we clean up after ourselves
-            using (new Utilities.ArgsRemover (e.Args, true)) {
-
-                var entity = MimeEntity.Load (HttpContext.Current.Request.InputStream);
-                e.Args.Value = entity;
-                context.RaiseNative ("p5.mime.parse-native", e.Args);
             }
         }
 

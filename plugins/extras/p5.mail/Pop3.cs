@@ -119,9 +119,14 @@ namespace p5.mail
                     msgNode.Add ("raw-body", message.Body.ToString ());
                 } else {
 
-                    // Then content of message
-                    msgNode.Value = message.Body;
-                    context.RaiseNative("p5.mime.parse-native", msgNode);
+                    // Then content of message, making sure MimeEntity never leaves this method
+                    var bodyNode = msgNode.Add ("body").LastChild;
+                    bodyNode.Value = message.Body;
+                    try {
+                        context.RaiseNative("p5.mime.parse-native", bodyNode);
+                    } finally {
+                        bodyNode.Value = null;
+                    }
                 }
             }
 

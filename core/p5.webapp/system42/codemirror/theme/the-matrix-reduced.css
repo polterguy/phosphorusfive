@@ -4,7 +4,7 @@
  */
 
 .cm-s-the-matrix-reduced.CodeMirror { background: #000000; color: #008803; }
-.cm-s-the-matrix-reduced div.CodeMirror-selected { background: #2D2D2D; }
+.cm-s-the-matrix-reduced div.CodeMirror-selected { background: #055; }
 .cm-s-the-matrix-reduced .CodeMirror-line::selection, .cm-s-the-matrix-reduced .CodeMirror-line > span::selection, .cm-s-the-matrix-reduced .CodeMirror-line > span > span::selection { background: rgba(45, 45, 45, 0.99); }
 .cm-s-the-matrix-reduced .CodeMirror-line::-moz-selection, .cm-s-the-matrix-reduced .CodeMirror-line > span::-moz-selection, .cm-s-the-matrix-reduced .CodeMirror-line > span > span::-moz-selection { background: rgba(45, 45, 45, 0.99); }
 .cm-s-the-matrix-reduced .CodeMirror-gutters { background: #030; border-right: 0 none; }
@@ -13,17 +13,21 @@
 .cm-s-the-matrix-reduced .CodeMirror-linenumber { color: #575; }
 .cm-s-the-matrix-reduced .CodeMirror-cursor { border-left: 1px solid #00FF00; }
 
+.cm-s-the-matrix-reduced span.cm-comment { color: #555; }
+.cm-s-the-matrix-reduced span.cm-mcomment { color: #777; }
 .cm-s-the-matrix-reduced span.cm-keyword { color: #C6F; }
+.cm-s-the-matrix-reduced span.cm-operator { color: #999; }
+.cm-s-the-matrix-reduced span.cm-string { color: #39C; }
+.cm-s-the-matrix-reduced span.cm-mstring { color: #37C; }
 .cm-s-the-matrix-reduced span.cm-atom { color: #3FF; }
+.cm-s-the-matrix-reduced span.cm-variable-2 { color: #00FF00; }
+.cm-s-the-matrix-reduced span.cm-expression { color: #848; }
+
 .cm-s-the-matrix-reduced span.cm-number { color: #FFB94F; }
 .cm-s-the-matrix-reduced span.cm-def { color: #99C; }
 .cm-s-the-matrix-reduced span.cm-variable { color: #F6C; }
-.cm-s-the-matrix-reduced span.cm-variable-2 { color: #00FF00; }
 .cm-s-the-matrix-reduced span.cm-variable-3 { color: #96F; }
 .cm-s-the-matrix-reduced span.cm-property { color: #62FFA0; }
-.cm-s-the-matrix-reduced span.cm-operator { color: #999; }
-.cm-s-the-matrix-reduced span.cm-comment { color: #555; }
-.cm-s-the-matrix-reduced span.cm-string { color: #39C; }
 .cm-s-the-matrix-reduced span.cm-meta { color: #C9F; }
 .cm-s-the-matrix-reduced span.cm-qualifier { color: #FFF700; }
 .cm-s-the-matrix-reduced span.cm-builtin { color: #30a; }
