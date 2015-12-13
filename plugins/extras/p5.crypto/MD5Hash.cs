@@ -9,9 +9,6 @@ using System.Security.Cryptography;
 using p5.core;
 using p5.exp;
 
-/// <summary>
-///     Main namespace for everything related to cryptographic services
-/// </summary>
 namespace phosphorus.crypto
 {
     /// <summary>

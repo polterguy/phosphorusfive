@@ -30,33 +30,32 @@ namespace p5.io.authorization
             // Checking if user is root (root is authorized to do almost everything!)
             if (context.Ticket.Role != "root") {
 
-                // Verifying file is underneath user's folder
-                if (filename.IndexOf (string.Format ("/users/{0}/", context.Ticket.Username)) != 0)
-                    throw new LambdaSecurityException (
-                        string.Format ("User '{0}' tried to write to file '{1}'", context.Ticket.Username, filename), 
-                        stack, 
-                        context);
-
                 // Verifying suffix of file is a type of file that user is allowed to save
                 switch (Path.GetExtension (filename)) {
 
-                // Blacklisted ...!
-                case ".config":
-                    throw new LambdaSecurityException (
-                        string.Format ("User '{0}' tried to write to file '{1}'", context.Ticket.Username, filename), 
-                        stack, 
-                        context);
+                    // Blacklisted ...!
+                    case ".config":
+                        throw new LambdaSecurityException (
+                            string.Format ("User '{0}' tried to write to file '{1}'", context.Ticket.Username, filename), 
+                            stack, 
+                            context);
                 }
-            } else {
 
-                // Verifying file is not underneath ANOTHER user's folder, which is not legal even for root account!
-                if (filename.ToLower ().StartsWith ("/users/") && 
-                      filename.ToLower ().IndexOf (string.Format ("/users/{0}/", context.Ticket.Username)) != 0)
+                // Verify all database files are safe
+                if (filename.ToLower ().StartsWith ((ConfigurationManager.AppSettings ["database-path"].Replace ("~", "") ?? "/db/")))
                     throw new LambdaSecurityException (
-                        string.Format ("Root user '{0}' tried to write to file '{1}'", context.Ticket.Username, filename), 
+                        string.Format ("User '{0}' tried to write to database file '{1}'", context.Ticket.Username, filename), 
                         stack, 
                         context);
             }
+
+            // Verifying file is not underneath ANOTHER user's folder, which is not legal even for root account!
+            if (filename.ToLower ().StartsWith ("/users/") && 
+                filename.ToLower ().IndexOf (string.Format ("/users/{0}/", context.Ticket.Username.ToLower ())) != 0)
+                throw new LambdaSecurityException (
+                    string.Format ("Root user '{0}' tried to write to file '{1}'", context.Ticket.Username, filename), 
+                    stack, 
+                    context);
 
             // Verifying "auth file" is safe
             if (filename.ToLower () == Common.NormalizeFileName (Common.GetAuthFile (context)).ToLower ())
@@ -71,7 +70,7 @@ namespace p5.io.authorization
          */
         internal static void AuthorizeReadFile (ApplicationContext context, string filename, Node stack)
         {
-            // Verifying file is underneath authenticated user's folder, if it is underneath "users/" folders
+            // Verifying file is underneath authenticated user's folder, if it is underneath "/users/" folder
             if (filename.ToLower ().StartsWith ("users/") && 
                 filename.ToLower ().IndexOf (string.Format ("users/{0}/", context.Ticket.Username)) != 0)
                 throw new LambdaSecurityException (
@@ -87,10 +86,16 @@ namespace p5.io.authorization
                     context);
 
             // Verifying only root can read web.config
-            if (context.Ticket.Role != "root")
-            if (filename.ToLower () == "/web.config")
+            if (context.Ticket.Role != "root" && filename.ToLower () == "/web.config")
                 throw new LambdaSecurityException (
                     string.Format ("User '{0}' tried to access web.config", context.Ticket.Username, filename), 
+                    stack, 
+                    context);
+
+            // Verify all database files are safe
+            if (context.Ticket.Role != "root" && filename.ToLower ().StartsWith ((ConfigurationManager.AppSettings ["database-path"].Replace ("~", "") ?? "/db/")))
+                throw new LambdaSecurityException (
+                    string.Format ("User '{0}' tried to read from database file '{1}'", context.Ticket.Username, filename), 
                     stack, 
                     context);
         }
@@ -103,21 +108,20 @@ namespace p5.io.authorization
             // Checking if user is root (root is authorized to do almost everything!)
             if (context.Ticket.Role != "root") {
 
-                // Verifying file is underneath user's folder
-                if (foldername.IndexOf (string.Format ("/users/{0}/", context.Ticket.Username)) != 0)
+                // Verifies nobody but root account can write to database folder
+                if (foldername.StartsWith ((ConfigurationManager.AppSettings ["database-path"].Replace ("~", "") ?? "/db/")))
                     throw new LambdaSecurityException (
-                        string.Format ("User '{0}' tried to write to folder '{1}'", context.Ticket.Username, foldername), 
-                        stack, 
-                        context);
-            } else {
-
-                // Verifying folder is not underneath ANOTHER user's folder, which is not legal even for root account!
-                if (foldername.StartsWith ("/users/") && foldername.IndexOf (string.Format ("/users/{0}/", context.Ticket.Username)) != 0)
-                    throw new LambdaSecurityException (
-                        string.Format ("Root user '{0}' tried to write to folder '{1}'", context.Ticket.Username, foldername), 
+                        string.Format ("User '{0}' tried to write to database folder '{1}'", context.Ticket.Username, foldername), 
                         stack, 
                         context);
             }
+
+            // Verifying folder is not underneath ANOTHER user's folder, which is not legal even for root account!
+            if (foldername.StartsWith ("/users/") && foldername.IndexOf (string.Format ("/users/{0}/", context.Ticket.Username)) != 0)
+                throw new LambdaSecurityException (
+                    string.Format ("Root user '{0}' tried to write to folder '{1}'", context.Ticket.Username, foldername), 
+                    stack, 
+                    context);
         }
 
         /*
@@ -125,10 +129,17 @@ namespace p5.io.authorization
          */
         internal static void AuthorizeReadFolder (ApplicationContext context, string foldername, Node stack)
         {
-            // Verifying file is underneath authorized user's folder, if it is underneath "/users/" folders
+            // Verifies file is underneath authorized user's folder, if it is underneath "/users/" folders
             if (foldername.StartsWith ("/users/") && foldername.Length != 7 && foldername.IndexOf (string.Format ("/users/{0}/", context.Ticket.Username)) != 0)
                 throw new LambdaSecurityException (
                     string.Format ("User '{0}' tried to read from folder '{1}'", context.Ticket.Username, foldername), 
+                    stack, 
+                    context);
+
+            // Verifies nobody but root account can read from database folder
+            if (context.Ticket.Role != "root" && foldername.StartsWith ((ConfigurationManager.AppSettings ["database-path"].Replace ("~", "") ?? "/db/")))
+                throw new LambdaSecurityException (
+                    string.Format ("User '{0}' tried to read from database folder '{1}'", context.Ticket.Username, foldername), 
                     stack, 
                     context);
         }

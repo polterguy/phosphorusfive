@@ -19,7 +19,9 @@ if:x:/-?value
       template:/system42/templates/main.hl
       lambda:@"
 /*
- * Executes the ""server startup"" file
+ * Executes the ""server startup"" file by default.
+ * Notice, after system is finished installed, this
+ * page will be overwritten with another ""default page""
  */
 sys42.execute-lisp-file:/system42/server-startup/launch-server.hl"
 
@@ -36,11 +38,11 @@ sys42.execute-lisp-file:/system42/server-startup/launch-server.hl"
 sys42.execute-lisp-file:/system42/root/page-editor/page-editor.hl
 "
 
-    p5.page:/superuser/executor
+    p5.page:/root/executor
       type:lambda
       name:Evaluator
       template:/system42/templates/main.hl
-      role:superuser
+      role:root
       lambda:@"
 
 /*

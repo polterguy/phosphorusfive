@@ -29,28 +29,51 @@ namespace p5.mime.helpers
         public static void ParseMimeEntity (
             ApplicationContext context, 
             Node itemNode,
-            MimeEntity entity)
+            MimeEntity entity,
+            bool parentIsCryptoMultipart = false,
+            string pgpPrivateKey = null,
+            string pgpPassword = null)
         {
-            // Content-Type and wrapper for current MimeEntity
-            Node curNode = itemNode.Add (entity.ContentType.MediaType, entity.ContentType.MediaSubtype).LastChild;
+            // Checking if entity was encrypted, and user supplied a PGP private key and password, and if so,
+            // automatically decrypting entity
+            if (pgpPrivateKey != null && entity is MultipartEncrypted) {
 
-            // Then all other headers
-            foreach (var idxHeader in entity.Headers) {
-
-                // Adding header as child node of main MimeEntity node
-                curNode.Add (idxHeader.Field, idxHeader.Value);
-            }
-
-            // Checking if entity is Multipart, and if so, traversing all children entities
-            Multipart multipart = entity as Multipart;
-            if (multipart != null) {
-
-                // Process Multipart
-                ParseMultipart (context, curNode, multipart);
+                // Decrypting and invoking "self"
+                var plainTextEntity = DecryptMultipart (
+                    context, 
+                    entity as MultipartEncrypted, 
+                    pgpPrivateKey, 
+                    pgpPassword);
+                ParseMimeEntity (
+                    context, 
+                    itemNode, 
+                    plainTextEntity, 
+                    parentIsCryptoMultipart, 
+                    pgpPrivateKey, 
+                    pgpPassword);
             } else {
 
-                // Entity is some sort of "leaf" entity
-                ParseLeafEntity (context, curNode, entity as MimePart);
+                // Content-Type and wrapper for current MimeEntity
+                Node curNode = itemNode.Add (entity.ContentType.MediaType, entity.ContentType.MediaSubtype).LastChild;
+
+                // Then all other headers
+                foreach (var idxHeader in entity.Headers) {
+
+                    // Adding header as child node of main MimeEntity node
+                    curNode.Add (idxHeader.Field, idxHeader.Value);
+                }
+
+                // Checking if entity is Multipart, and if so, traversing all children entities
+                Multipart multipart = entity as Multipart;
+                if (multipart != null) {
+
+                    // Process Multipart
+                    ParseMultipart (context, curNode, multipart, pgpPrivateKey, pgpPassword);
+                } else {
+
+                    // Entity is some sort of "leaf" entity
+                    ParseLeafEntity (context, curNode, entity as MimePart, parentIsCryptoMultipart);
+                }
             }
         }
 
@@ -60,7 +83,9 @@ namespace p5.mime.helpers
         private static void ParseMultipart (
             ApplicationContext context,
             Node curNode,
-            Multipart multipart)
+            Multipart multipart,
+            string pgpPrivateKey,
+            string pgpPassword)
         {
             // Adding preamble, if there is any
             if (!string.IsNullOrEmpty ((multipart.Preamble ?? "").Trim ()))
@@ -70,7 +95,13 @@ namespace p5.mime.helpers
             foreach (var idxEntity in multipart) {
 
                 // Processing currently iterated MimeEntity child of Multipart
-                ParseMimeEntity (context, curNode, idxEntity);
+                ParseMimeEntity (
+                    context, 
+                    curNode, 
+                    idxEntity, 
+                    multipart is MultipartEncrypted, 
+                    pgpPrivateKey, 
+                    pgpPassword);
             }
 
             // Adding epilogue, if there is any
@@ -79,12 +110,29 @@ namespace p5.mime.helpers
         }
 
         /*
+         * Decrypts a MIME entity and returns result
+         */
+        private static MimeEntity DecryptMultipart (
+            ApplicationContext context,
+            MultipartEncrypted encryptedEntity,
+            string pgpPrivateKey,
+            string pgpPassword)
+        {
+            using (var ctx = new GnuPrivacyContext ()) {
+                ctx.Password = pgpPassword;
+                var result = encryptedEntity.Decrypt (ctx);
+                return result;
+            }
+        }
+
+        /*
          * Parses a "leaf" MimePart
          */
         private static void ParseLeafEntity (
             ApplicationContext context,
             Node curNode,
-            MimePart part)
+            MimePart part,
+            bool parentIsCryptoMultipart)
         {
             using (MemoryStream stream = new MemoryStream ()) {
 
@@ -108,10 +156,11 @@ namespace p5.mime.helpers
                     case "application/x-javascript":
                     case "application/ecmascript":
                     case "application/json":
+                    case "application/pgp-signature":
                         isText = true;
                         break;
                     default:
-                        if (part.ContentType.MediaType == "text") {
+                    if (parentIsCryptoMultipart || part.ContentType.MediaType == "text") {
                             isText = true;
                         }
                         break;

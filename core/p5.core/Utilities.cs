@@ -106,6 +106,42 @@ namespace p5.core
         }
 
         /// <summary>
+        ///     Encrypts the specified plainText and returns ciphertext
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="plainText">Plain text to encrypt</param>
+        public static string Encrypt (ApplicationContext context, string plainText)
+        {
+            // Retrieving default server PGP key
+            string marvinPgpKey = context.RaiseNative("p5.security.get-marvin-pgp-key").Get<string>(context);
+
+            // Invoking [p5.mime.encrypt] Active Event, passing in email to use for retrieving public
+            // key from Gnu Privacy Guard
+            Node cryptNode = new Node("", plainText)
+                .Add ("email", marvinPgpKey);
+            return context.RaiseNative("p5.crypto.encrypt", cryptNode).Get<string> (context);
+        }
+
+        /// <summary>
+        ///     Decrypts the specified ciphertext and returns as plain text
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="cipherText">Ciphertext text to decrypt</param>
+        public static string Decrypt (ApplicationContext context, string cipherText)
+        {
+            // Retrieving default server PGP key and password
+            string marvinPgpKey = context.RaiseNative("p5.security.get-marvin-pgp-key").Get<string>(context);
+            string marvinPgpKeyPassword = context.RaiseNative("p5.security.get-marvin-pgp-key-password").Get<string>(context);
+
+            // Invoking [p5.mime.decrypt] Active Event, passing in email and password to use for retrieving private
+            // key from Gnu Privacy Guard
+            Node cryptNode = new Node("", cipherText)
+                .Add ("email", marvinPgpKey).LastChild
+                    .Add ("password", marvinPgpKeyPassword).Root;
+            return context.RaiseNative("p5.crypto.decrypt", cryptNode).Get<string> (context);
+        }
+
+        /// <summary>
         ///     Returns true if string can be converted to an integer
         /// </summary>
         /// <returns><c>true</c> if this instance is a whole, positive, integer number; otherwise, <c>false</c></returns>

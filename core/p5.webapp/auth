@@ -1,9 +1,38 @@
-users
-  root
-    salt:d630107dfc75498085d194c7f913af680ce34bc7375946fa8159972349ec335920ac27ca968b4de6b6f69a2e52578b5c
-    password:foo
-    role:root
-  thomas
-    salt:a6108655-1265-46ca-923d-3640527f7fbe
-    password:foo
-    role:superuser
+Content-Type: multipart/encrypted; boundary="=-tPSpoPw7j6GzFNaG406+JQ==";
+	protocol="application/pgp-encrypted"
+
+Cryptoxified by Phosphorus Five
+--=-tPSpoPw7j6GzFNaG406+JQ==
+Content-Type: application/pgp-encrypted
+Content-Disposition: attachment
+Content-Transfer-Encoding: 7bit
+
+Version: 1
+
+--=-tPSpoPw7j6GzFNaG406+JQ==
+Content-Type: application/octet-stream
+Content-Disposition: attachment
+
+-----BEGIN PGP MESSAGE-----
+Version: BCPG C# v1.8.0.0
+
+hQIMAxFukyGjejUvAQ/9Eqz13ZeXXgL0b1MRRO0z5J1dUwx4428o4/hX2vV2vWyK
+2OPa/u9aLT1jDHk6PYMmwfskoU4xf69xSJJSlbysUzVs2gnft3iQoevjcSBPdSYH
+ZrifjuiDR9NGzv3gnkwwV9aKQGSfCcKB3BUJg35D0KIjYBAu7OF8M4/0SUgeIUVU
+j8AGTEHKYTNwKpd1cbO79IaPCCK94Nnt7YjSmg7KmJCkbtsyfVTLdb2TYDvahMXp
+F6JQeJOnUeNlIMIuoYnQQpHYw135mHOclJZgaYLxZcN66VrR9MdUDLGo0oawx8b+
+LRpMcp0Y386VWaoYbWS19pqgSzNU5/kyvSyVO2NZO0Thfv7L3pVDo0YLMRSL29Hf
+CtQVMXIoPBSyX7ruMNorwfk/uRPVCZEAmcmtbyKfX9RfBOcOPjWrU3wj0a6PeNTE
+96LMZgkyJzMBWEzFsUzC8BNjd/Uugd03F+aA0EynLPKCX5tRb8KFLHxU+OUcFO79
+yJ30L6E6voOMZeiTQ9pm8OdfM0jUlrZhtE7Ib++14C6dyKW8qEA6Y3dJ7KAygPzl
+0F2b10odBuawoMhP5/FrDF7zK87rNiHTRDmeCDF2/OxBTR9HJNxJIhPh6eGJ1dxm
+AUtnx0zHUXOKgCjCJM3ND2uPco1Kp2UmcHNEUUD1LvkY85TGoduWOQTe/6uyIhXS
+wA4BlMKCJWwOFlOFDFsTVtq+gXO6cHRHOh/CiSqsYrMgSG2nCSAkzDiWyy8Ymf9f
+95qKUzLfCRjFNwAEZiibLxJZmG8ykfFI59Pj48vxIe4ILqbXluy9b6xWFvlVBjWA
+gsFp+HzjDtVLxeBMIvY2JReBcp5e765L3HxLrqidp4vjzhhU9ELOUePyEWsAs4ln
+CeLU8hijpFwaTdXb+6Z/fP6zHE4K6ljQ8mGuZRV0RF44icRgxW0/McolCJa0iv1n
+2xrrgiROOwSFRhLSkLhJfw==
+=4uKV
+-----END PGP MESSAGE-----
+
+--=-tPSpoPw7j6GzFNaG406+JQ==--

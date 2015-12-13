@@ -355,16 +355,29 @@ namespace p5.mime.helpers
             List<Stream> streams,
             MimePart entity)
         {
-            // Applying content object
-            StreamWriter streamWriter = new StreamWriter(new MemoryStream ());
+            // Creating stream to hold content
+            var stream = new MemoryStream ();
 
-            // This is probably not much point, but for consistency, we do it anyway!
-            streams.Add (streamWriter.BaseStream);
+            // This is probably not much point, but for consistency reasons, we still choose to do it
+            streams.Add (stream);
 
-            // Writing content to streamWrite
-            streamWriter.Write (contentNode.Value);
-            streamWriter.Flush ();
-            streamWriter.BaseStream.Position = 0;
+            // Applying content object, but first checking type of object, special handling of blob/byte[]
+            if (contentNode.Value is byte[]) {
+
+                // This is byte[] array (blob)
+                byte[] value = contentNode.Value as byte [];
+                stream.Write (value, 0, value.Length);
+            } else {
+
+                // Anything BUT byte[]
+                // Here we rely on conversion Active Events, making "everything else" serialise as strings
+                StreamWriter streamWriter = new StreamWriter (stream);
+
+                // Writing content to streamWrite
+                streamWriter.Write (contentNode.Get<string> (context));
+                streamWriter.Flush ();
+                streamWriter.BaseStream.Position = 0;
+            }
 
             // Retrieving ContentEncoding to use for reading stream
             ContentEncoding encoding = ContentEncoding.Default;
@@ -372,7 +385,7 @@ namespace p5.mime.helpers
                 encoding = (ContentEncoding)Enum.Parse (typeof(ContentEncoding), contentNode ["Content-Encoding"].Get<string> (context));
 
             // Creating a ContentObject for MimePart from MemoryStream in StreamWriter
-            entity.ContentObject = new ContentObject (streamWriter.BaseStream, encoding);
+            entity.ContentObject = new ContentObject (stream, encoding);
         }
 
         /*

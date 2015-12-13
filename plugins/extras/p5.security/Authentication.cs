@@ -31,8 +31,19 @@ namespace p5.security
         [ActiveEvent (Name = "p5.core.initialize-application-context", Protection = EventProtection.NativeOpen)]
         private static void p5_core_initialize_application_context (ApplicationContext context, ActiveEventArgs e)
         {
-            if (!AuthenticationHelper.TryLoginFromPersistentCookie (context))
+            // Checking if session is null, which it might be, during for instance [p5.core.application-start]
+            if (HttpContext.Current.Session != null) {
+
+                // Checking if ContextTicket is already set, and if not, we try to login user from persistent cookie
+                if (!AuthenticationHelper.ContextTicketIsSet) {
+
+                    // No Context Ticket, try to login user from persistent cookie
+                    AuthenticationHelper.TryLoginFromPersistentCookie (context);
+                }
+
+                // Updating Application Context ticket with ticket from AuthenticationHelper
                 context.UpdateTicket (AuthenticationHelper.GetTicket (context));
+            }
         }
 
         /// <summary>

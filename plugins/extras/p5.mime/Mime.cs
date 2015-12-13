@@ -126,12 +126,25 @@ namespace p5.mime
                     writer.Flush ();
                     writer.BaseStream.Position = 0;
 
+                    // Figuring out if user supplied a PGP private key email address, and password, and if so, passing these into
+                    // the parse method, to automatically decrypt MIME entity
+                    string pgpPrivateKey = null, pgpPassword = null;
+                    if (e.Args ["email"] != null) {
+
+                        // Fetching private key and password from args
+                        pgpPrivateKey = e.Args.GetChildValue<string> ("email", context, null);
+                        pgpPassword = e.Args ["email"].GetChildValue<string> ("password", context, null);
+                    }
+
                     // Loading MimeEntity from MemoryStream before parsing, and putting results into args returns value
                     var entity = MimeEntity.Load (writer.BaseStream);
                     ParseMime.ParseMimeEntity (
                         context, 
                         e.Args,
-                        entity);
+                        entity,
+                        false, 
+                        pgpPrivateKey,
+                        pgpPassword);
                 }
             }
         }

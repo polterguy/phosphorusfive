@@ -11,7 +11,7 @@ sys42.execute-lisp-file:/system42/codemirror/include-codemirror.hl
   _editor
     editor_surface
       mode:hyperlisp
-      theme:bespin
+      theme:the-matrix-reduced
       autofocus:true
       fullscreen:true
       height:484px

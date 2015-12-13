@@ -21,9 +21,6 @@ namespace p5.security
     /// </summary>
     internal static class AuthenticationHelper
     {
-        // Used to lock access to password file
-        private static object _passwordFileLocker = new object ();
-
         // Name of credential cookie, used to store username and hashsalted password
         private const string _credentialCookieName = "_p5_user";
 
@@ -32,16 +29,22 @@ namespace p5.security
          */
         internal static ApplicationContext.ContextTicket GetTicket (ApplicationContext context)
         {
-            // If we have no session or HttpContext, we login "default impersonated user" automatically
-            if (HttpContext.Current == null || HttpContext.Current.Session == null)
-                return CreateDefaultTicket (context);
-
             if (HttpContext.Current.Session["_ContextTicket"] == null) {
 
                 // No user is logged in, using default impersonated user
                 HttpContext.Current.Session ["_ContextTicket"] = CreateDefaultTicket (context);
             }
             return HttpContext.Current.Session["_ContextTicket"] as ApplicationContext.ContextTicket;
+        }
+
+        /*
+         * Returns true if Context Ticket is already set
+         */
+        internal static bool ContextTicketIsSet
+        {
+            get {
+                return HttpContext.Current.Session != null && HttpContext.Current.Session ["_ContextTicket"] != null;
+            }
         }
 
         /*
@@ -69,10 +72,7 @@ namespace p5.security
             bool persist = args.GetExChildValue ("persist", context, false);
 
             // Getting password file in Node format, but locking file access as we retrieve it
-            Node pwdFile = null;
-            lock (_passwordFileLocker) {
-                pwdFile = GetPasswordFile(context);
-            }
+            Node pwdFile = AuthFile.GetAuthFile(context);
 
             // Checking for match on specified username
             Node userNode = pwdFile["users"][username];
@@ -85,10 +85,7 @@ namespace p5.security
 
             // Success, creating our ticket
             string role = userNode["role"].Get<string>(context);
-            SetTicket (new ApplicationContext.ContextTicket(
-                username, 
-                role, 
-                false));
+            SetTicket (new ApplicationContext.ContextTicket(username, role, false));
             args.Value = true;
 
             // Removing last login attempt, to reset brute force login cool off seconds for user's IP address
@@ -98,8 +95,7 @@ namespace p5.security
             context.UpdateTicket (GetTicket (context));
 
             // Checking if we should create persistent cookie on disc to remember username for given client
-            // Notice, we do NOT allow root account to persist to cookie
-            if (role != "root" && persist) {
+            if (persist) {
 
                 // Caller wants to create persistent cookie to remember username/password
                 HttpCookie cookie = new HttpCookie(_credentialCookieName);
@@ -146,32 +142,19 @@ namespace p5.security
             // Verifying username is valid, since we'll need to create a folder for user
             VerifyUsernameValid (username);
 
-            // Locking access to password file
-            lock (_passwordFileLocker) {
+            // Locking access to password file as we create new user object
+            AuthFile.ModifyAuthFile (
+                context, 
+                delegate (Node authFile) {
+                    if (authFile["users"][username] != null)
+                        throw new ApplicationException("Sorry, that username is already taken by another user in the system");
+                    authFile["users"].Add(username);
 
-                Node pwdFile = GetPasswordFile(context);
-                if (pwdFile["users"][username] != null)
-                    throw new ApplicationException("Sorry, that username is already taken by another user in the system");
-                pwdFile["users"].Add(username);
-
-                // Creates a salt for user
-                var salt = CreateNewSalt ();
-                pwdFile ["users"].LastChild.Add("salt", salt);
-                pwdFile ["users"].LastChild.Add("password", password);
-                pwdFile ["users"].LastChild.Add("role", role);
-
-                // Getting path to 'auth' file
-                string pwdFilePath = context.RaiseNative ("p5.security.get-auth-file").Get<string> (context).Replace("~/", rootFolder);
-
-                // Saving password file
-                using (TextWriter writer = File.CreateText(pwdFilePath)) {
-
-                    // Converting lambda to Hyperlisp
-                    Node lambdaNode = new Node();
-                    lambdaNode.AddRange(pwdFile.Children);
-                    writer.Write(context.RaiseNative ("lambda2lisp", lambdaNode).Get<string> (context));
-                }
-            }
+                    // Creates a salt for user
+                    authFile ["users"].LastChild.Add("salt", AuthFile.CreateNewSalt ());
+                    authFile ["users"].LastChild.Add("password", password);
+                    authFile ["users"].LastChild.Add("role", role);
+                });
 
             // Creating newly created user's directory structure
             CreateUserDirectory (rootFolder, username);
@@ -221,14 +204,7 @@ namespace p5.security
         internal static void GetRoles (ApplicationContext context, Node args)
         {
             // Getting password file in Node format, such that we can traverse file for all roles
-            Node pwdFile = null;
-
-            // Locking access to password file as we retrieve it
-            lock (_passwordFileLocker) {
-
-                // Retrieving password file
-                pwdFile = GetPasswordFile(context);
-            }
+            Node pwdFile = AuthFile.GetAuthFile(context);
 
             // Looping through each user object in password file, retrieving all roles
             foreach (var idxUserNode in pwdFile["users"].Children) {
@@ -266,26 +242,15 @@ namespace p5.security
                 throw new SecurityException("You cannot set the root password to empty");
 
             // Retrieving password file, locking access to it as we do, such that we can verify root account's password is null
-            Node rootPwdNode = null;
-            lock (_passwordFileLocker) {
-                rootPwdNode = GetPasswordFile(context)["users"]["root"];
-            }
-            if (rootPwdNode["password"].Value != null)
-                throw new SecurityException("Somebody tried to use installation Active event [p5.web.set-root-password] to change password of existing root account");
+            AuthFile.ModifyAuthFile (
+                context,
+                delegate (Node authFile) {
+                    if (authFile["users"]["root"]["password"].Value != null)
+                        throw new SecurityException("Somebody tried to use installation Active event [p5.web.set-root-password] to change password of existing root account");
 
-            // Temporary logging in root user now, before changing password, 
-            // since passwords can only be changed for "currently logged in user"
-            SetTicket (new ApplicationContext.ContextTicket("root", "root", false));
-            context.UpdateTicket(GetTicket (context));
-            try {
-
-                // Changing password of "root"
-                ChangePassword(context, password);
-            } finally {
-
-                // Making sure we log OUT root account again, before returning ...
-                Logout (context);
-            }
+                    // Changing password of root account
+                    authFile["users"]["root"]["password"].Value = password;
+                });
         }
 
         /*
@@ -294,92 +259,26 @@ namespace p5.security
         internal static bool RootPasswordIsNull (ApplicationContext context)
         {
             // Retrieving password file, and making sure we lock access to file as we do
-            Node rootPwdNode = null;
-            lock (_passwordFileLocker) {
-                rootPwdNode = GetPasswordFile(context)["users"]["root"];
-            }
+            Node rootPwdNode = AuthFile.GetAuthFile(context)["users"]["root"];
 
             // Returning true if root account's password is null
             return rootPwdNode["password"].Value == null;
         }
 
         /*
-         * Changes password of the currently logged in Context user account
-         */
-        internal static void ChangePassword (ApplicationContext context, string newPwd)
-        {
-            // Getting root folder of app, needed to save passwords file later
-            string rootFolder = context.RaiseNative("p5.core.application-folder").Get<string>(context);
-
-            // Locking access to password file
-            lock (_passwordFileLocker) {
-
-                // Retrieving password file
-                Node pwdFile = GetPasswordFile(context);
-
-                // Changing user's password
-                pwdFile["users"][context.Ticket.Username]["password"].Value = newPwd;
-
-                // Saving password file to disc
-                using (TextWriter writer = File.CreateText(
-                    context.RaiseNative ("p5.security.get-auth-file").Get<string> (context).Replace("~/", rootFolder))) {
-
-                    // Creating Hyperlisp out of lambda password file
-                    Node lambdaNode = new Node();
-                    lambdaNode.AddRange(pwdFile.Children);
-                    writer.Write(context.RaiseNative ("lambda2lisp", lambdaNode).Get<string> (context));
-                }
-            }
-        }
-
-        /*
-         * Helper to retrieve "_passwords" file as lambda object
-         */
-        internal static Node GetPasswordFile (ApplicationContext context)
-        {
-            // Getting filepath to pwd file
-            string rootFolder = context.RaiseNative("p5.core.application-folder").Get<string>(context);
-            string pwdFilePath = context.RaiseNative ("p5.security.get-auth-file").Get<string>(context).Replace("~", rootFolder);
-
-            // Checking file exist
-            if (!File.Exists(pwdFilePath))
-                CreateDefaultPasswordFile (context, pwdFilePath);
-
-            // Reading up passwords file
-            using (TextReader reader = new StreamReader(File.OpenRead(pwdFilePath))) {
-
-                // Returning file as lambda
-                string users = reader.ReadToEnd();
-                Node usersNode = context.RaiseNative("lisp2lambda", new Node("", users));
-                return usersNode;
-            }
-        }
-
-        /*
          * Will try to login from persistent cookie
          */
-        internal static bool TryLoginFromPersistentCookie(ApplicationContext context)
+        internal static void TryLoginFromPersistentCookie(ApplicationContext context)
         {
-            // Checking if we have any session associated with current invocation, which is NOT the case if this is the
-            // ApplicationContext created during "application-startup"
-            if (HttpContext.Current == null || HttpContext.Current.Session == null)
-                return false; // Creation of ApplicationContext from [p5.core.application-start], before we have any session available - Ignoring ...
-
-            try
-            {
-
+            try {
                 // Checking if client has persistent cookie
                 HttpCookie cookie = HttpContext.Current.Request.Cookies.Get(_credentialCookieName);
                 if (cookie != null) {
 
                     // We have a cookie, try to use it as credentials
-                    if (LoginFromCookie (cookie, context))
-                        return true;
+                    LoginFromCookie (cookie, context);
                 }
-            } 
-            catch
-            {
-
+            } catch {
                 // Making sure we delete cookie
                 // We do not rethrow this, since reason might be because "salt" has changed, to explicitly log user
                 // out, and that is actually not a "security issue", but a "feature". Besides, login-cooloff-seconds
@@ -388,7 +287,6 @@ namespace p5.security
                 cookie.Expires = DateTime.Now.AddDays(-1);
                 HttpContext.Current.Response.Cookies.Add(cookie);
             }
-            return false;
         }
 
         #region [ -- Private helper methods -- ]
@@ -396,7 +294,7 @@ namespace p5.security
         /*
          * Tries to login with the given cookie as credentials
          */
-        private static bool LoginFromCookie (HttpCookie cookie, ApplicationContext context)
+        private static void LoginFromCookie (HttpCookie cookie, ApplicationContext context)
         {
             // Making sure nobody can reach us by brute force, by supplying a new 
             // cookie in a "brute force cookie login" attempt
@@ -409,12 +307,7 @@ namespace p5.security
 
             string cookieUsername = cookieSplits[0];
             string cookieHashSaltedPwd = cookieSplits[1];
-            Node pwdFile = null;
-
-            // Locking access to password file
-            lock (_passwordFileLocker) {
-                pwdFile = GetPasswordFile(context);
-            }
+            Node pwdFile = AuthFile.GetAuthFile(context);
 
             // Checking if user exist
             Node userNode = pwdFile["users"][cookieUsername];
@@ -436,10 +329,7 @@ namespace p5.security
                     userNode ["role"].Get<string>(context), 
                     false));
                 LastLoginAttemptForIP = DateTime.MinValue;
-                context.UpdateTicket (AuthenticationHelper.GetTicket (context));
-                return true;
             }
-            return false;
         }
 
         /*
@@ -454,43 +344,17 @@ namespace p5.security
         }
 
         /*
-         * Creates a new "salt" for use with hashing of passwords of random size. Salt is randomly created as concatenated GUIDs
-         * between 128 and 640 Bits long
-         */
-        private static string CreateNewSalt()
-        {
-            var salt = "";
-            for (var idxRndNo = 0; idxRndNo < new Random (DateTime.Now.Millisecond).Next (1,5); idxRndNo++) {
-                salt += Guid.NewGuid().ToString();
-            }
-            return salt;
-        }
-
-        /*
-         * Creates a default authentication/authorization file, and a default "root" user, with a "null" password
-         */
-        private static void CreateDefaultPasswordFile (ApplicationContext context, string pwdFile)
-        {
-            // Creates a default authentication/authorization file
-            using (TextWriter writer = File.CreateText(pwdFile)) {
-
-                // Creating default root password, salt unique to user, and writing to file
-                var salt = CreateNewSalt ();
-                salt = salt.Replace("-", "");
-                writer.WriteLine(@"users");
-                writer.WriteLine(@"  root");
-                writer.WriteLine(@"    salt:" + salt);
-                writer.WriteLine(@"    password");
-                writer.WriteLine(@"    role:root");
-            }
-        }
-
-        /*
          * Helper to guard against brute force login attempt. Basically denies an IP address to attempt to login without having
          * to wait a configurable amount of seconds between each attempt
          */
         private static void GuardAgainstBruteForce(ApplicationContext context)
         {
+            // We only "turn on" guard after root password has been set, since during installation process of server,
+            // user will sign in and out multiple times
+            if (AuthenticationHelper.RootPasswordIsNull (context))
+                return;
+
+            // Finding delta from last login attempt and "now"
             TimeSpan span = DateTime.Now - LastLoginAttemptForIP;
 
             // Verifying delta is lower than threshold accepted

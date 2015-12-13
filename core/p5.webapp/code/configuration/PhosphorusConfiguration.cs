@@ -176,6 +176,26 @@ namespace p5.webapp.code.configuration
         }
 
         /// <summary>
+        ///     Gets the name of the server PGP private/public key to use for encryption/signature operations
+        /// </summary>
+        /// <value>Default password to use when connecting to POP3 server</value>
+        [ConfigurationProperty ("marvinPgpKey", IsRequired = false)]
+        public string MarvinPgpKey
+        {
+            get { return (string)this ["marvinPgpKey"]; }
+        }
+
+        /// <summary>
+        ///     Gets the password of the server PGP private/public key to use for encryption/signature operations
+        /// </summary>
+        /// <value>Default password to use when connecting to POP3 server</value>
+        [ConfigurationProperty ("marvinPgpKeyPassword", IsRequired = false)]
+        public string MarvinPgpKeyPassword
+        {
+            get { return (string)this ["marvinPgpKeyPassword"]; }
+        }
+
+        /// <summary>
         ///     Gets the assemblies
         /// </summary>
         /// <value>The assemblies</value>

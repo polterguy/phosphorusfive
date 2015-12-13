@@ -69,7 +69,7 @@ namespace p5.data.helpers
                 Database = new Node ();
 
                 // Finding and setting our database root directory
-                _dbFullPath = (ConfigurationManager.AppSettings ["database-path"] ?? "~/_database/");
+                _dbFullPath = (ConfigurationManager.AppSettings ["database-path"] ?? "~/db/");
                 _dbFullPath = _dbFullPath.Replace ("~/", GetRootFolder (context));
 
                 // Checking to see if database directory exist

@@ -29,6 +29,8 @@
             <xs:attribute name=“pop3Server” type="xs:string" use="required" />
             <xs:attribute name=“pop3Port” type="xs:int” use="required" />
             <xs:attribute name=“pop3UseSsl” type="xs:bool” use="required" />
+            <xs:attribute name=“marvinPgpKey” type="xs:string" />
+            <xs:attribute name=“marvinPgpKeyPassword” type="xs:string" />
             <xs:sequence>
               <xs:element name="assemblies">
                 <xs:complexType>
