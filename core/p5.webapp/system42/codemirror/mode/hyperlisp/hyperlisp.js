@@ -237,6 +237,8 @@ CodeMirror.defineMode("hyperlisp", function() {
         case '<=':
         case 'lisp2lambda':
         case 'md5-hash':
+        case 'sha1-hash':
+        case 'sha256-hash':
         case 'widget-exist':
         case 'find-widget':
         case 'reload-location':

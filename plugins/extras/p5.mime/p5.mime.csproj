@@ -43,14 +43,17 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Compile Include="Mime.cs" />
-    <Compile Include="helpers\CreateMime.cs" />
     <Compile Include="helpers\GnuPrivacyContext.cs" />
-    <Compile Include="helpers\ParseMime.cs" />
     <Compile Include="helpers\Common.cs" />
     <Compile Include="plugins\Echo.cs" />
     <Compile Include="plugins\HttpRequest.cs" />
     <Compile Include="plugins\Request.cs" />
+    <Compile Include="helpers\MimeParser.cs" />
+    <Compile Include="MimeCreate.cs" />
+    <Compile Include="MimeParse.cs" />
+    <Compile Include="MimeLoad.cs" />
+    <Compile Include="helpers\MimeCreator.cs" />
+    <Compile Include="MimeInit.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\core\p5.core\p5.core.csproj">

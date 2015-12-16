@@ -6,10 +6,12 @@
 using System;
 using System.IO;
 using System.Web;
+using System.Text;
 using System.Linq;
 using System.Security;
 using System.Configuration;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
@@ -71,6 +73,14 @@ namespace p5.security
             string password = args.GetExChildValue<string> ("password", context);
             bool persist = args.GetExChildValue ("persist", context, false);
 
+            // Creating Hash of password, with salt from web.config
+            using (var md5 = MD5.Create ()) {
+
+                // Returning MD5 hash as base64 encoded string
+                var saltAndPassword = context.RaiseNative ("p5.security.get-password-salt").Get<string> (context) + password;
+                password = Convert.ToBase64String (md5.ComputeHash (Encoding.UTF8.GetBytes (saltAndPassword)));
+            }
+
             // Getting password file in Node format, but locking file access as we retrieve it
             Node pwdFile = AuthFile.GetAuthFile(context);
 
@@ -101,8 +111,8 @@ namespace p5.security
                 HttpCookie cookie = new HttpCookie(_credentialCookieName);
                 cookie.Expires = DateTime.Now.AddDays(context.RaiseNative ("p5.security.get-credential-cookie-days").Get<int> (context));
                 cookie.HttpOnly = true;
-                string salt = userNode["salt"].Get<string>(context);
-                cookie.Value = username + " " + context.RaiseNative ("md5-hash", new Node("", salt + password)).Value;
+                string salt = userNode["cookie-salt"].Get<string>(context);
+                cookie.Value = username + " " + context.RaiseNative ("sha256-hash", new Node("", salt + password)).Value;
                 HttpContext.Current.Response.Cookies.Add(cookie);
             }
         }
@@ -142,6 +152,14 @@ namespace p5.security
             // Verifying username is valid, since we'll need to create a folder for user
             VerifyUsernameValid (username);
 
+            // Creating Hash of password, with salt from web.config
+            using (var md5 = MD5.Create ()) {
+
+                // Returning MD5 hash as base64 encoded string
+                var saltAndPassword = context.RaiseNative ("p5.security.get-password-salt").Get<string> (context) + password;
+                password = Convert.ToBase64String (md5.ComputeHash (Encoding.UTF8.GetBytes (saltAndPassword)));
+            }
+
             // Locking access to password file as we create new user object
             AuthFile.ModifyAuthFile (
                 context, 
@@ -151,7 +169,7 @@ namespace p5.security
                     authFile["users"].Add(username);
 
                     // Creates a salt for user
-                    authFile ["users"].LastChild.Add("salt", AuthFile.CreateNewSalt ());
+                    authFile ["users"].LastChild.Add("cookie-salt", AuthFile.CreateNewSalt ());
                     authFile ["users"].LastChild.Add("password", password);
                     authFile ["users"].LastChild.Add("role", role);
                 });
@@ -241,7 +259,16 @@ namespace p5.security
             if (string.IsNullOrEmpty(password))
                 throw new SecurityException("You cannot set the root password to empty");
 
-            // Retrieving password file, locking access to it as we do, such that we can verify root account's password is null
+            // Creating Hash of password, with salt from web.config
+            using (var md5 = MD5.Create ()) {
+
+                // Returning MD5 hash as base64 encoded string
+                var saltAndPassword = context.RaiseNative ("p5.security.get-password-salt").Get<string> (context) + password;
+                password = Convert.ToBase64String (md5.ComputeHash (Encoding.UTF8.GetBytes (saltAndPassword)));
+            }
+
+            // Retrieving password file, locking access to it as we do, such that we can change root account's password
+            // after first checking that password is actually null!
             AuthFile.ModifyAuthFile (
                 context,
                 delegate (Node authFile) {
@@ -314,10 +341,10 @@ namespace p5.security
             if (userNode == null)
                 throw new SecurityException ("Cookie not accepted");
 
-            // User exists, retrieving salt and password to see if we have a match
-            string salt = userNode["salt"].Get<string> (context);
+            // User exist, retrieving salt and password to see if we have a match
+            string salt = userNode["cookie-salt"].Get<string> (context);
             string password = userNode["password"].Get<string> (context);
-            string hashSaltedPwd = context.RaiseNative("md5-hash", new Node("", salt + password)).Get<string>(context);
+            string hashSaltedPwd = context.RaiseNative("sha256-hash", new Node("", salt + password)).Get<string>(context);
 
             // Notice, we do NOT THROW if passwords do not match, since it might simply mean that user has explicitly created a new "salt"
             // to throw out other clients that are currently persistently logged into system under his account

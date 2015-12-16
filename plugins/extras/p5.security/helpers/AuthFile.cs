@@ -28,7 +28,7 @@ namespace p5.security
         private static object _passwordFileLocker = new object ();
 
         // Used to cache password file, for faster access
-        private static Node _passwordFile = null;
+        private static Node _authFileContent = null;
 
         /*
          * Helper to retrieve "auth" file as lambda object
@@ -78,8 +78,8 @@ namespace p5.security
         private static Node GetAuthFileInternal (ApplicationContext context)
         {
             // Checking if we can return cached version
-            if (_passwordFile != null)
-                return _passwordFile;
+            if (_authFileContent != null)
+                return _authFileContent;
 
             // Getting path
             string pwdFilePath = GetAuthFilePath (context);
@@ -92,10 +92,10 @@ namespace p5.security
             using (TextReader reader = new StreamReader (File.OpenRead (pwdFilePath))) {
 
                 // Returning file as lambda, making sure we decrypt it first
-                _passwordFile = Utilities.Convert<Node> (context, Utilities.Decrypt (context, reader.ReadToEnd ()));
+                _authFileContent = Utilities.Convert<Node> (context, Utilities.DecryptMarvin (context, reader.ReadToEnd ()));
 
                 // Returning cached version
-                return _passwordFile;
+                return _authFileContent;
             }
         }
 
@@ -105,7 +105,7 @@ namespace p5.security
         private static void SaveAuthFileInternal (ApplicationContext context, Node authFileNode)
         {
             // Updating cached version
-            _passwordFile = authFileNode.Clone ();
+            _authFileContent = authFileNode.Clone ();
 
             // Getting path
             string pwdFilePath = GetAuthFilePath (context);
@@ -114,7 +114,7 @@ namespace p5.security
             using (TextWriter writer = new StreamWriter (File.Create (pwdFilePath))) {
             
                 // Writing auth file content to disc, making sure we store it encrypted
-                writer.Write (Utilities.Encrypt (context, Utilities.Convert<string> (context, authFileNode.Children)));
+                writer.Write (Utilities.EncryptMarvin (context, Utilities.Convert<string> (context, authFileNode.Children)));
             }
         }
 
@@ -141,14 +141,14 @@ namespace p5.security
             var salt = CreateNewSalt ();
             string plainText = string.Format (@"users
   root
-    salt:{0}
+    cookie-salt:{0}
     password
     role:root", salt);
             // Creates a default authentication/authorization file
             using (TextWriter writer = File.CreateText(pwdFile)) {
 
                 // Creating default root password, salt unique to user, and writing to file
-                writer.WriteLine(Utilities.Encrypt (context, plainText));
+                writer.WriteLine(Utilities.EncryptMarvin (context, plainText));
             }
         }
 

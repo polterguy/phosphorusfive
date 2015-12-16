@@ -301,6 +301,18 @@ namespace p5
                 e.Args.Value = configuration.MarvinPgpKeyPassword;
             }
 
+            /// <summary>
+            ///     Returns the password salt for the server to use when storing passwords in "auth" file
+            /// </summary>
+            /// <param name="context">Application Context</param>
+            /// <param name="e">Parameters passed into Active Event</param>
+            [ActiveEvent (Name = "p5.security.get-password-salt", Protection = EventProtection.NativeClosed)]
+            private static void p5_security_get_password_salt (ApplicationContext context, ActiveEventArgs e)
+            {
+                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
+                e.Args.Value = configuration.PasswordSalt;
+            }
+
             #endregion
 
             #region [ -- Private helper methods -- ]

@@ -206,14 +206,10 @@ namespace p5.exp
             bool mustHaveValue = false,
             T defaultValue = default (T))
         {
-            // Checking if node must have a value, and if so, running our assert
-            if (mustHaveValue)
-                AssertHasValue (context, evaluatedNode, evaluatedNode.Name);
-
             object singleRetVal = null;
             string multipleRetVal = null;
             var firstRun = true;
-            foreach (var idx in Iterate<T> (context, evaluatedNode, dataSource)) {
+            foreach (var idx in Iterate<T> (context, evaluatedNode, dataSource, mustHaveValue)) {
 
                 // To make sure we never convert object to string, unless absolutely necessary
                 if (firstRun) {

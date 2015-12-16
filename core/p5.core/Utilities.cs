@@ -47,7 +47,8 @@ namespace p5.core
             void IDisposable.Dispose ()
             {
                 foreach (var idx in _nodes) {
-                    idx.UnTie ();
+                    if (idx.Parent != null)
+                        idx.UnTie();
                 }
                 if (_args != null)
                     _args.Value = null;
@@ -110,16 +111,23 @@ namespace p5.core
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="plainText">Plain text to encrypt</param>
-        public static string Encrypt (ApplicationContext context, string plainText)
+        public static string EncryptMarvin (
+            ApplicationContext context, 
+            string plainText)
         {
-            // Retrieving default server PGP key
-            string marvinPgpKey = context.RaiseNative("p5.security.get-marvin-pgp-key").Get<string>(context);
+            // Retrieving default server GnuPG email to use for encryption
+            var gpgEmailAddress = context.RaiseNative("p5.security.get-marvin-pgp-key").Get<string>(context);
 
-            // Invoking [p5.mime.encrypt] Active Event, passing in email to use for retrieving public
+            // Invoking [p5.mime.create] Active Event, passing in email to use for retrieving public
             // key from Gnu Privacy Guard
-            Node cryptNode = new Node("", plainText)
-                .Add ("email", marvinPgpKey);
-            return context.RaiseNative("p5.crypto.encrypt", cryptNode).Get<string> (context);
+            var mimeEntity = new Node ("p5.mime.create")
+                .Add ("text", "plain").LastChild
+                    .Add ("encryption").LastChild
+                        .Add ("email", gpgEmailAddress).Parent
+                    .Add ("content", plainText).Root;
+
+            // Using [p5.mime.create] as actual encryption implementation
+            return context.RaiseNative (mimeEntity.Name, mimeEntity)["result"].Get<string> (context);
         }
 
         /// <summary>
@@ -127,18 +135,26 @@ namespace p5.core
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="cipherText">Ciphertext text to decrypt</param>
-        public static string Decrypt (ApplicationContext context, string cipherText)
+        public static string DecryptMarvin (
+            ApplicationContext context, 
+            string cipherText)
         {
-            // Retrieving default server PGP key and password
-            string marvinPgpKey = context.RaiseNative("p5.security.get-marvin-pgp-key").Get<string>(context);
-            string marvinPgpKeyPassword = context.RaiseNative("p5.security.get-marvin-pgp-key-password").Get<string>(context);
+            // Retrieving default server GnuPG password and email to use for decryption
+            var gpgEmailAddress = context.RaiseNative("p5.security.get-marvin-pgp-key").Get<string>(context);
+            var gpgPassword = context.RaiseNative("p5.security.get-marvin-pgp-key-password").Get<string>(context);
 
-            // Invoking [p5.mime.decrypt] Active Event, passing in email and password to use for retrieving private
+            // Invoking [p5.mime.parse] Active Event, passing in password to use for retrieving private
             // key from Gnu Privacy Guard
-            Node cryptNode = new Node("", cipherText)
-                .Add ("email", marvinPgpKey).LastChild
-                    .Add ("password", marvinPgpKeyPassword).Root;
-            return context.RaiseNative("p5.crypto.decrypt", cryptNode).Get<string> (context);
+            Node decryptNode = new Node ("p5.mime.parse", cipherText)
+                .Add ("decryption-keys").LastChild
+                    .Add ("email", gpgEmailAddress).LastChild
+                        .Add("password", gpgPassword).Root;
+
+            // Using [p5.mime.parse] as actual decryption implementation
+            var resultNode = context.RaiseNative (decryptNode.Name, decryptNode);
+
+            // Returning first [text] part found in multipart/encrypted
+            return resultNode.FirstChild["text"]["content"].Get<string>(context);
         }
 
         /// <summary>

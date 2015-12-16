@@ -48,10 +48,26 @@ if:x:/-/*/role?value
 <blockquote><em>""""Hi there owner. I am so pleased to see you! [<strong>*wagging tail*</strong>]! Please tell me what to do! 
 I am your servant! FYI, the first thing you will notice with me, is that this page is only visible for you! If you log out
 and refresh the page, you will see a completely different page, showing the <em>""""dynamic features"""" of Phosphorus Five!</em>""""</em></blockquote>""
+
+else-if:x:/-2/*/role?value
+  =:superuser
+
+  /*
+   * A close and personal friend of my owner possibly!
+   */
+  create-widget:foo
+    parent:content
+    class:col-xs-12
+    widgets
+      literal:bar
+        innerValue:@""<img src=""""/media/images/marvin-headshot.png"""" style=""""float:right;"""" class=""""prepend-left"""" />
+<blockquote><em>""""Hi there friend. My name is Marving, and since you are a friend of my owner, feel free to use my brain. A great
+place for you to start, is probably the <a href=""""/superuser/files"""">file system</a>, where you can upload and store files in a secure manner""""</em></blockquote>""
+
 else
 
   /*
-   * Possibly some random visitor, or at the very least, NOT root account!
+   * Probably some random visitor
    */
   create-widget:foo
     parent:content

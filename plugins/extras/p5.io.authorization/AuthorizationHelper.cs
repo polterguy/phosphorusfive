@@ -47,6 +47,13 @@ namespace p5.io.authorization
                         string.Format ("User '{0}' tried to write to database file '{1}'", context.Ticket.Username, filename), 
                         stack, 
                         context);
+
+                // Verifies only root account can write to anything but "user files"
+                if (!filename.ToLower ().StartsWith ("/users/"))
+                    throw new LambdaSecurityException (
+                        string.Format ("User '{0}' tried to write to file '{1}'", context.Ticket.Username, filename), 
+                        stack, 
+                        context);
             }
 
             // Verifying file is not underneath ANOTHER user's folder, which is not legal even for root account!

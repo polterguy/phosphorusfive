@@ -31,6 +31,7 @@
             <xs:attribute name=“pop3UseSsl” type="xs:bool” use="required" />
             <xs:attribute name=“marvinPgpKey” type="xs:string" />
             <xs:attribute name=“marvinPgpKeyPassword” type="xs:string" />
+            <xs:attribute name=“passwordSalt” type="xs:string" use="required" />
             <xs:sequence>
               <xs:element name="assemblies">
                 <xs:complexType>

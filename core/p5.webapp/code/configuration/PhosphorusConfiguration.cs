@@ -196,6 +196,16 @@ namespace p5.webapp.code.configuration
         }
 
         /// <summary>
+        ///     Gets the password salt to use for storing passwords
+        /// </summary>
+        /// <value>Default password to use when connecting to POP3 server</value>
+        [ConfigurationProperty ("passwordSalt", IsRequired = false)]
+        public string PasswordSalt
+        {
+            get { return (string)this ["passwordSalt"]; }
+        }
+
+        /// <summary>
         ///     Gets the assemblies
         /// </summary>
         /// <value>The assemblies</value>
