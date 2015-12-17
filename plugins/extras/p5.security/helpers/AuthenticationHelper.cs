@@ -74,11 +74,11 @@ namespace p5.security
             bool persist = args.GetExChildValue ("persist", context, false);
 
             // Creating Hash of password, with salt from web.config
-            using (var md5 = MD5.Create ()) {
+            using (var sha256 = SHA256.Create ()) {
 
-                // Returning MD5 hash as base64 encoded string
+                // Returning Sha256 hash as base64 encoded string
                 var saltAndPassword = context.RaiseNative ("p5.security.get-password-salt").Get<string> (context) + password;
-                password = Convert.ToBase64String (md5.ComputeHash (Encoding.UTF8.GetBytes (saltAndPassword)));
+                password = Convert.ToBase64String (sha256.ComputeHash (Encoding.UTF8.GetBytes (saltAndPassword)));
             }
 
             // Getting password file in Node format, but locking file access as we retrieve it
@@ -153,11 +153,11 @@ namespace p5.security
             VerifyUsernameValid (username);
 
             // Creating Hash of password, with salt from web.config
-            using (var md5 = MD5.Create ()) {
+            using (var sha256 = SHA256.Create ()) {
 
-                // Returning MD5 hash as base64 encoded string
+                // Returning Sha256 hash as base64 encoded string
                 var saltAndPassword = context.RaiseNative ("p5.security.get-password-salt").Get<string> (context) + password;
-                password = Convert.ToBase64String (md5.ComputeHash (Encoding.UTF8.GetBytes (saltAndPassword)));
+                password = Convert.ToBase64String (sha256.ComputeHash (Encoding.UTF8.GetBytes (saltAndPassword)));
             }
 
             // Locking access to password file as we create new user object
@@ -195,25 +195,25 @@ namespace p5.security
         private static void CreateUserDirectory (string rootFolder, string username)
         {
             // Creating folders for user, and making sure private directory stays private ...
-            if (!Directory.Exists (rootFolder + "users/" + username))
-                Directory.CreateDirectory (rootFolder + "users/" + username);
+            if (!Directory.Exists (rootFolder + "/users/" + username))
+                Directory.CreateDirectory (rootFolder + "/users/" + username);
 
-            if (!Directory.Exists (rootFolder + "users/" + username + "/documents"))
-                Directory.CreateDirectory(rootFolder + "users/" + username + "/documents");
+            if (!Directory.Exists (rootFolder + "/users/" + username + "/documents"))
+                Directory.CreateDirectory(rootFolder + "/users/" + username + "/documents");
 
-            if (!Directory.Exists (rootFolder + "users/" + username + "/documents/private"))
-                Directory.CreateDirectory(rootFolder + "users/" + username + "/documents/private");
+            if (!Directory.Exists (rootFolder + "/users/" + username + "/documents/private"))
+                Directory.CreateDirectory(rootFolder + "/users/" + username + "/documents/private");
 
-            if (!Directory.Exists (rootFolder + "users/" + username + "/documents/public"))
-                Directory.CreateDirectory(rootFolder + "users/" + username + "/documents/public");
+            if (!Directory.Exists (rootFolder + "/users/" + username + "/documents/public"))
+                Directory.CreateDirectory(rootFolder + "/users/" + username + "/documents/public");
 
-            if (!Directory.Exists (rootFolder + "users/" + username + "/tmp"))
-                Directory.CreateDirectory(rootFolder + "users/" + username + "/tmp");
+            if (!Directory.Exists (rootFolder + "/users/" + username + "/tmp"))
+                Directory.CreateDirectory(rootFolder + "/users/" + username + "/tmp");
 
-            if (!File.Exists (rootFolder + "users/" + username + "/documents/private/web.config"))
+            if (!File.Exists (rootFolder + "/users/" + username + "/documents/private/web.config"))
                 File.Copy (
-                    rootFolder + "users/root/documents/private/web.config", 
-                    rootFolder + "users/" + username + "/documents/private/web.config");
+                    rootFolder + "/users/root/documents/private/web.config", 
+                    rootFolder + "/users/" + username + "/documents/private/web.config");
         }
 
         /*
@@ -260,11 +260,11 @@ namespace p5.security
                 throw new SecurityException("You cannot set the root password to empty");
 
             // Creating Hash of password, with salt from web.config
-            using (var md5 = MD5.Create ()) {
+            using (var sha256 = SHA256.Create ()) {
 
-                // Returning MD5 hash as base64 encoded string
+                // Returning Sha256 hash as base64 encoded string
                 var saltAndPassword = context.RaiseNative ("p5.security.get-password-salt").Get<string> (context) + password;
-                password = Convert.ToBase64String (md5.ComputeHash (Encoding.UTF8.GetBytes (saltAndPassword)));
+                password = Convert.ToBase64String (sha256.ComputeHash (Encoding.UTF8.GetBytes (saltAndPassword)));
             }
 
             // Retrieving password file, locking access to it as we do, such that we can change root account's password
@@ -277,6 +277,7 @@ namespace p5.security
 
                     // Changing password of root account
                     authFile["users"]["root"]["password"].Value = password;
+                    authFile["users"]["root"]["cookie-salt"].Value = AuthFile.CreateNewSalt ();
                 });
         }
 

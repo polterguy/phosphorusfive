@@ -60,13 +60,7 @@ namespace p5.web.ui.response
             HttpContext.Current.Response.ClearContent ();
 
             // Retrieving root node of web application
-            var rootNode = new Node ();
-            context.RaiseNative ("p5.core.application-folder", rootNode);
-            var rootFolder = rootNode.Get<string> (context);
-
-            // Making sure we normalize folder separators, to have uniform folder structure
-            // for both Linux and Windows
-            rootFolder = rootFolder.Replace ("\\", "/");
+            var rootFolder = context.RaiseNative ("p5.core.application-folder").Get<string> (context);
 
             // Rendering file back to client over response
             var fullPath = rootFolder + XUtil.Single<string> (context, e.Args);

@@ -19,6 +19,11 @@ namespace p5.exp.iterators
         {
             foreach (var idxCurrent in Left.Evaluate (context)) {
                 var stop = idxCurrent.NextSibling;
+                var curIdx = idxCurrent.Parent;
+                while (stop == null && curIdx != null) {
+                    stop = curIdx.NextNode;
+                    curIdx = curIdx.Parent;
+                }
                 for (var idxNext = idxCurrent; idxNext != null && !idxNext.Equals (stop); idxNext = idxNext.NextNode) {
                     yield return idxNext;
                 }

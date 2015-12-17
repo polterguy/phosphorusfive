@@ -214,8 +214,8 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'set-widget-ajax-event':
         case 'set-widget-lambda-event':
         case 'return-response-object':
-        case 'gzip':
-        case 'gunzip':
+        case 'zip':
+        case 'unzip':
         case 'set-page-value':
           state.indent += 2;
           return this.styles.keyword;

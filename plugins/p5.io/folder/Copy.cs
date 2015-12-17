@@ -63,8 +63,8 @@ namespace p5.io.folder
                         context);
 
                 // Verifying user is authorized to both reading from source, and writing to destination
-                context.RaiseNative ("p5.io.authorize.read-folder", new Node ("p5.io.authorize.read-folder", sourceFolder).Add ("args", e.Args));
-                context.RaiseNative ("p5.io.authorize.modify-folder", new Node ("p5.io.authorize.modify-folder", destinationFolder).Add ("args", e.Args));
+                context.RaiseNative ("p5.io.authorize.read-folder", new Node ("", sourceFolder).Add ("args", e.Args));
+                context.RaiseNative ("p5.io.authorize.modify-folder", new Node ("", destinationFolder).Add ("args", e.Args));
 
                 // Getting new foldername for folder, if needed
                 if (Directory.Exists (rootFolder + destinationFolder)) {
@@ -73,7 +73,7 @@ namespace p5.io.folder
                     destinationFolder = Common.CreateNewUniqueFolderName (context, destinationFolder);
 
                     // Making sure user is authorized to writing to UPDATED folder
-                    context.RaiseNative ("p5.io.authorize.modify-folder", new Node ("p5.io.authorize.modify-folder", destinationFolder).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.modify-folder", new Node ("", destinationFolder).Add ("args", e.Args));
                 }
 
                 // Actually copying folder, getting source first, in case copying implies copy one

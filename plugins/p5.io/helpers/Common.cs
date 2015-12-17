@@ -18,11 +18,6 @@ namespace p5.io.common
     /// </summary>
     internal static class Common
     {
-        /*
-         * Contains our root folder
-         */
-        private static string _rootFolder;
-
         /// <summary>
         ///     Returns the root folder of application pool back to caller
         /// </summary>
@@ -30,15 +25,7 @@ namespace p5.io.common
         /// <param name="context">application context</param>
         public static string GetRootFolder (ApplicationContext context)
         {
-            if (_rootFolder == null) {
-
-                // This is the first time we invoke this guy
-                _rootFolder = context.RaiseNative ("p5.core.application-folder").Get<string> (context);
-
-                // Making sure we normalize folder separators, to have uniform folder structure on different operating systems
-                _rootFolder = _rootFolder.Replace ("\\", "/").TrimEnd ('/');
-            }
-            return _rootFolder;
+            return context.RaiseNative ("p5.core.application-folder").Get<string> (context);
         }
 
         /*

@@ -228,7 +228,7 @@ create-widget:file-browser
           element:button
           class:btn btn-default
           accesskey:Z
-          title:Gzip - Z
+          title:Zip - Z
           onclick
             sys42.zip-file
           widgets
@@ -238,19 +238,19 @@ create-widget:file-browser
 
 
         /*
-         * "GUNZIP file" button
+         * "UNZIP file" button
          */
         container:unzip-file-button
           element:button
           class:btn btn-default
           accesskey:U
-          title:Gunzip - U
+          title:Unzip - U
           onclick
-            sys42.gunzip-file
+            sys42.unzip-file
           widgets
             literal
               element:span
-              class:glyphicon glyphicon-folder-open
+              class:glyphicon glyphicon-share
 
 
         /*
@@ -422,10 +422,20 @@ create-widget:file-browser
 
           else
 
-            // Downloading folder by GZIP'ing it first into "temp" directory
-            sys42.gzip-folder:x:/../*/get-session-value/*/*/object?value
+            // Downloading folder by ziping it first into "temp" directory
+            // Retrieving username, such that we can find correct "temp" folder
+            get-user
+
+            // Finding name of folder being zipped, to create a "sane" zip filename
+            split:x:/../*/get-session-value/*/*/object?value
+              =:/
+
+            zip:x:/../*/get-session-value/*/*/object?value
+              to:/users/{0}/tmp/{1}.zip
+                :x:/..else/*/get-user/*/username?value
+                :x:/..else/*/split/0/-?name
             set-session-value:sys42.download-file
-              src:x:/..else/*/sys42.gzip-folder?value
+              src:x:/..else/*/zip?value
             reload-location
 
 
@@ -829,43 +839,48 @@ create-widget:file-browser
           // Retrieving current folder, which will be the folder we zip file to
           get-session-value:sys42.current-folder
 
-          // gzipping file
+          // zipping file
           split:x:/../*/get-session-value/[0,1]/*/*/object?value
             =:/
-          gzip:x:/../*/get-session-value/[0,1]/*/*/object?value
-            to:{0}{1}.tar.gz
+          eval-x:x:/+/*/_to
+          sys42.zip-with-password:x:/../*/get-session-value/[0,1]/*/*/object?value
+            _to:{0}{1}.zip
               :x:/../*/get-session-value/[1,2]/*?value
               :x:/../*/split/[0,1]/0/-?name
+            _onok
+              // Making sure ZIP file becomes selected file
+              set:x:/+/*/*/object?value
+                src:x:/../*/zip?value
+              set-session-value:sys42.selected-file-browser-object
+                src
+                  type:file
+                  object
 
-          // Making sure GZIP file becomes selected file
-          set:x:/+/*/*/object?value
-            src:x:/../*/gzip?value
-          set-session-value:sys42.selected-file-browser-object
-            src
-              type:file
-              object
+              // Re-creating current folder's content, since it now has also all the files from the GZIP archive
+              sys42.create-current-folder-content
 
-          // Re-creating current folder's content, since it now has also all the files from the GZIP archive
-          sys42.create-current-folder-content
+              // Making sure currently selected object is still selected
+              sys42.create-selected-object-clues:x:/../*/zip?value
 
-          // Making sure currently selected object is still selected
-          sys42.create-selected-object-clues:x:/../*/gzip?value
+              // Giving user feedback of that operation was successful
+              split:x:/../*/zip?value
+                =:/
 
-          // Giving user feedback of that operation was successful
-          split:x:/../*/gzip?value
-            =:/
-          sys42.info-feedback:@"{0} '{1}' was successfully zipped"
-            :x:/../*/get-session-value/[0,1]/*/*/type?value
-            :x:/../*/split/[1,2]/0/-?name
+              // Retrieving currently selected file, which will be the file we zip
+              get-session-value:sys42.selected-file-browser-object
 
-          // Updating toolbar, since we've now selected a ZIP file
-          sys42.update-file-browser-toolbar
+              sys42.info-feedback:@"{0} '{1}' was successfully zipped"
+                :x:/../*/get-session-value/*/*/type?value
+                :x:/../*/split/0/-?name
+
+              // Updating toolbar, since we've now selected a ZIP file
+              sys42.update-file-browser-toolbar
 
 
         /*
          * Raised when "Unzip file" button is clicked
          */
-        sys42.gunzip-file
+        sys42.unzip-file
 
           // Retrieving currently selected file, which will be the file we unzip
           get-session-value:sys42.selected-file-browser-object
@@ -873,21 +888,23 @@ create-widget:file-browser
           // Retrieving current folder, which will be the folder we unzip file to
           get-session-value:sys42.current-folder
 
-          // gunzipping file
-          gunzip:x:/../*/get-session-value/[0,1]/*/*/object?value
-            to:x:/../*/get-session-value/[1,2]/*?value
+          // Unzipping file
+          eval-x:x:/+|/+/*/_to|/+/*/_onok(/1|/2)
+          sys42.unzip-with-password:x:/../*/get-session-value/[0,1]/*/*/object?value
+            _to:x:/../*/get-session-value/[1,2]/*?value
+            _onok
 
-          // Re-creating current folder's content, since it now has also all the files from the GZIP archive
-          sys42.create-current-folder-content
+              // Re-creating current folder's content, since it now has also all the files from the GZIP archive
+              sys42.create-current-folder-content
 
-          // Making sure currently selected object is still selected
-          sys42.create-selected-object-clues:x:/../*/get-session-value/[0,1]/*/*/object?value
+              // Making sure currently selected object is still selected
+              sys42.create-selected-object-clues:x:/../*/get-session-value/[0,1]/*/*/object?value
 
-          // Giving user feedback of that operation was successful
-          split:x:/../*/get-session-value/[0,1]/*/*/object?value
-            =:/
-          sys42.info-feedback:@"'{0}' was successfully gunzipped"
-            :x:/../*/split/0/-?name
+              // Giving user feedback of that operation was successful
+              split:x:/../*/get-session-value/[0,1]/*/*/object?value
+                =:/
+              sys42.info-feedback:@"'{0}' was successfully unzipped"
+                :x:/../*/split/0/-?name
 
 
     /*
@@ -941,21 +958,21 @@ create-widget:file-browser
         delete-widget-property:x:/../*/_widgets/*(!/unzip-file-button)?name
           disabled
 
-        // Checking if this is a file, and if it ends with "gz", at which point
+        // Checking if this is a file, and if it ends with "zip", at which point
         // "Unzip file" button should be enabled
         if:x:/../*/get-session-value/*/*/type?value
           =:file
           split:x:/../*/get-session-value/*/*/object?value
             =:.
           if:x:/-/0/-?name
-            =:gz
+            =:zip
 
-            // This is a GunZipped file
+            // This is a zipped file
             delete-widget-property:unzip-file-button
               disabled
         else
 
-          // This is NOT a gunzipped file
+          // This is NOT a zipped file
           set-widget-property:unzip-file-button
             disabled
 

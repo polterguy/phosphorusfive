@@ -54,7 +54,10 @@ namespace p5.hyperlisp.helpers
         /*
          * Private implementation of IDisposable interface
          */
-        void IDisposable.Dispose () { Dispose (true); }
+        void IDisposable.Dispose ()
+        {
+            Dispose (true);
+        }
 
         /*
          * Actual implementation of Dispose method

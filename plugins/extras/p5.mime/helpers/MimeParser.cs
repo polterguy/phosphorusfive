@@ -197,7 +197,7 @@ namespace p5.mime.helpers
             }
 
             // Verifying user is authorized to writing to destination file
-            Context.RaiseNative ("p5.io.authorize.modify-file", new Node ("p5.io.authorize.modify-file", AttachmentFolder + fileName).Add ("args", Args));
+            Context.RaiseNative ("p5.io.authorize.modify-file", new Node ("", AttachmentFolder + fileName).Add ("args", Args));
 
             // Saving attachment to disc
             using (FileStream stream = File.Create (baseFolder + AttachmentFolder + fileName)) {
@@ -218,7 +218,7 @@ namespace p5.mime.helpers
                 return;
             
             // Verifying user is authorized to writing to destination folder
-            Context.RaiseNative ("p5.io.authorize.modify-folder", new Node ("p5.io.authorize.modify-folder", AttachmentFolder).Add ("args", Args));
+            Context.RaiseNative ("p5.io.authorize.modify-folder", new Node ("", AttachmentFolder).Add ("args", Args));
 
             // Verifies folder exist, and creates entire path if not
             string baseFolder = Common.GetBaseFolder (Context).TrimEnd ('/') + "/";

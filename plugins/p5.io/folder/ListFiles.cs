@@ -55,7 +55,7 @@ namespace p5.io.folder
                             context);
 
                     // Verifying user is authorized to reading from currently iterated folder
-                    context.RaiseNative ("p5.io.authorize.read-folder", new Node ("p5.io.authorize.read-folder", idxFolder).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.read-folder", new Node ("", idxFolder).Add ("args", e.Args));
 
                     // Iterating all files in current directory, and returning as nodes beneath args given
                     foreach (var idxFile in Directory.GetFiles (rootFolder + idxFolder)) {
@@ -71,8 +71,8 @@ namespace p5.io.folder
 
                                 // Returning filename back to caller
                                 var fileName = idxFile.Replace ("\\", "/");
-                                fileName = "/" + fileName.Replace (rootFolder, "").TrimStart ('/');
-                                e.Args.Add (new Node (fileName));
+                                fileName = fileName.Replace (rootFolder, "");
+                                e.Args.Add (fileName);
                             }
                         }
                     }

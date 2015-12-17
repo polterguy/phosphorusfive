@@ -35,7 +35,7 @@ namespace p5.io.file
                 string fileName = XUtil.Single<string> (context, e.Args);
 
                 // Verifying user is allowed to save to file
-                context.RaiseNative ("p5.io.authorize.modify-file", new Node ("p5.io.authorize.modify-file", fileName).Add ("args", e.Args));
+                context.RaiseNative ("p5.io.authorize.modify-file", new Node ("", fileName).Add ("args", e.Args));
 
                 // Verify path is correct according to conventions
                 if (!fileName.StartsWith ("/"))
@@ -73,7 +73,7 @@ namespace p5.io.file
                 string fileName = XUtil.Single<string> (context, e.Args);
 
                 // Verifying user is allowed to save to file
-                context.RaiseNative ("p5.io.authorize.modify-file", new Node ("p5.io.authorize.modify-file", fileName).Add ("args", e.Args));
+                context.RaiseNative ("p5.io.authorize.modify-file", new Node ("", fileName).Add ("args", e.Args));
 
                 // Verify path is correct according to conventions
                 if (!fileName.StartsWith ("/"))

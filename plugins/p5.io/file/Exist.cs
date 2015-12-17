@@ -43,7 +43,7 @@ namespace p5.io.file
                 foreach (var idxFile in sourceFiles) {
 
                     // Verifying user is authorized to reading from currently iterated file
-                    context.RaiseNative ("p5.io.authorize.read-file", new Node ("p5.io.authorize.read-file", idxFile).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.read-file", new Node ("", idxFile).Add ("args", e.Args));
 
                     // Verify path is correct according to conventions
                     if (!idxFile.StartsWith ("/"))

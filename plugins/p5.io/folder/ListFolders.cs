@@ -41,7 +41,7 @@ namespace p5.io.folder
                             context);
 
                     // Verifying user is authorized to reading from currently iterated folder
-                    context.RaiseNative ("p5.io.authorize.read-folder", new Node ("p5.io.authorize.read-folder", idxFolder).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.read-folder", new Node ("", idxFolder).Add ("args", e.Args));
 
                     // Iterating all folders in current directory, and returning as nodes beneath args given
                     foreach (var idxInnerFolder in Directory.GetDirectories (rootFolder + idxFolder)) {
@@ -49,7 +49,7 @@ namespace p5.io.folder
                         // Normalizing file path delimiters for both Linux and Windows
                         var folderName = idxInnerFolder.Replace ("\\", "/");
                         folderName = folderName.Replace (rootFolder, "");
-                        e.Args.Add (new Node ("/" + folderName.Trim ('/') + "/"));
+                        e.Args.Add (folderName.TrimEnd ('/') + "/");
                     }
                 }
             }

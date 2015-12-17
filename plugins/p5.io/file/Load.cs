@@ -36,7 +36,7 @@ namespace p5.io.file
                 foreach (var idxFile in Common.GetSource (e.Args, context)) {
 
                     // Verifying user is authorized to reading from currently iterated file
-                    context.RaiseNative ("p5.io.authorize.read-file", new Node ("p5.io.authorize.read-file", idxFile).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.read-file", new Node ("", idxFile).Add ("args", e.Args));
 
                     // Verify path is correct according to conventions
                     if (!idxFile.StartsWith ("/"))
@@ -91,7 +91,7 @@ namespace p5.io.file
                 foreach (var idxFilename in XUtil.Iterate<string> (context, e.Args)) {
 
                     // Verifying user is authorized to reading from currently iterated file
-                    context.RaiseNative ("p5.io.authorize.read-file", new Node ("p5.io.authorize.read-file", idxFilename).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.read-file", new Node ("", idxFilename).Add ("args", e.Args));
 
                     // Checking to see if file exists
                     if (File.Exists (rootFolder + idxFilename)) {

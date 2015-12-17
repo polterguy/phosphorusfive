@@ -27,9 +27,10 @@ namespace lambda_exe
         [ActiveEvent (Name = "p5.core.application-folder", Protection = EventProtection.NativeClosed)]
         private static void p5_core_application_folder (ApplicationContext context, ActiveEventArgs e)
         {
-            var path = Assembly.GetExecutingAssembly().Location.Replace ("\\", "//");
-            path = path.Substring (0, path.LastIndexOf ("/") + 1);
-            e.Args.Value = path;
+            string retVal = Assembly.GetExecutingAssembly().Location.Replace ("\\", "/");
+            if (retVal.EndsWith("/"))
+                retVal = retVal.Substring(0, retVal.Length - 1);
+            e.Args.Value = retVal;
         }
 
         /// <summary>

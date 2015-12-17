@@ -41,8 +41,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Compile Include="GZip.cs" />
-    <Compile Include="Helpers.cs" />
+    <Compile Include="Zipper.cs" />
+    <Compile Include="UnZipper.cs" />
+    <Compile Include="Helpers\ZipCreator.cs" />
+    <Compile Include="Helpers\Helpers.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\core\p5.core\p5.core.csproj">
@@ -56,5 +58,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Helpers\" />
   </ItemGroup>
 </Project>

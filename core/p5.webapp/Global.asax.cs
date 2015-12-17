@@ -34,8 +34,11 @@ namespace p5
              */
             protected void Application_Start (Object sender, EventArgs e)
             {
-                // Storing application base path for later usage
+                // Storing application base path for later usage, making sure we normalize path across operating systems
                 _applicationBasePath = Server.MapPath ("~");
+                _applicationBasePath.Replace("\\", "/");
+                if (_applicationBasePath.EndsWith("/"))
+                    _applicationBasePath = _applicationBasePath.Substring(0, _applicationBasePath.Length - 1);
 
                 // Adding up executing (this) assembly as Active Event handler
                 Loader.Instance.LoadAssembly (Assembly.GetExecutingAssembly ());

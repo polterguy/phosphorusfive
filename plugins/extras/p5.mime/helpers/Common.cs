@@ -21,8 +21,7 @@ namespace p5.mime.helpers
         /// <param name="context">Application Context</param>
         public static string GetBaseFolder (ApplicationContext context)
         {
-            var baseFolder = context.RaiseNative ("p5.core.application-folder").Get<string> (context);
-            return baseFolder.TrimEnd ('/');
+            return context.RaiseNative ("p5.core.application-folder").Get<string> (context);
         }
     }
 }

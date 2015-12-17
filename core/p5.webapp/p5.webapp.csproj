@@ -293,11 +293,9 @@
     <None Include="system42\misc\content-types.hl" />
     <None Include="system42\codemirror\include-codemirror.hl" />
     <None Include="system42\startup\misc-dialog-events\sys42.info-feedback.hl" />
-    <None Include="system42\startup\misc-events\sys42.gzip-folder.hl" />
     <None Include="system42\file-browser\file-browser.hl" />
     <None Include="system42\file-browser\launch.hl" />
     <None Include="system42\file-editors\code-mirror-editor.hl" />
-    <None Include="system42\file-editors\gz-editor.hl" />
     <None Include="system42\file-editors\html-editor.hl" />
     <None Include="system42\file-editors\launch.hl" />
     <None Include="system42\ckeditor\README.md" />
@@ -316,6 +314,11 @@
     <None Include="system42\server-startup\launch-server.hl" />
     <None Include="system42\server-startup\set-root-password.hl" />
     <None Include="system42\server-startup\system-finished.hl" />
+    <None Include="system42\startup\misc-dialog-events\sys42.create-new-password.hl" />
+    <None Include="system42\startup\misc-events\sys42.zip-with-password.hl" />
+    <None Include="system42\startup\misc-events\sys42.unzip-with-password.hl" />
+    <None Include="system42\startup\misc-dialog-events\sys42.get-password.hl" />
+    <None Include="system42\file-editors\zip-editor.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />

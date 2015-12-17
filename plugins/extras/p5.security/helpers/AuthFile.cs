@@ -9,6 +9,7 @@ using System.Web;
 using System.Linq;
 using System.Security;
 using System.Configuration;
+using System.Security.Cryptography;
 using System.Collections.Generic;
 using p5.exp;
 using p5.core;
@@ -67,7 +68,11 @@ namespace p5.security
          */
         internal static string CreateNewSalt()
         {
-            return Guid.NewGuid().ToString().Replace("-", "");
+            // Generate a random salt
+            RNGCryptoServiceProvider csprng = new RNGCryptoServiceProvider ();
+            byte[] salt = new byte [24];
+            csprng.GetBytes (salt);
+            return Convert.ToBase64String (salt);
         }
 
         #region [ -- Private helper methods -- ]

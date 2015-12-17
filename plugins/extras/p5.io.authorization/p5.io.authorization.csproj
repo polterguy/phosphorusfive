@@ -40,8 +40,7 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Compile Include="Authorization.cs" />
-    <Compile Include="AuthorizationHelper.cs" />
-    <Compile Include="helpers\Common.cs" />
+    <Compile Include="helpers\AuthorizationHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\core\p5.core\p5.core.csproj">

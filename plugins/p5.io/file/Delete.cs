@@ -34,7 +34,7 @@ namespace p5.io.file
                 foreach (var idxFile in Common.GetSource (e.Args, context)) {
 
                     // Verifying user is authorized to writing to destination file
-                    context.RaiseNative ("p5.io.authorize.modify-file", new Node ("p5.io.authorize.modify-file", idxFile).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.modify-file", new Node ("", idxFile).Add ("args", e.Args));
 
                     // Verify path is correct according to conventions
                     if (!idxFile.StartsWith ("/"))

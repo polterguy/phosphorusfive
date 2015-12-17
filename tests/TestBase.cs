@@ -69,7 +69,8 @@ namespace p5.unittests
         protected static string GetBasePath ()
         {
             string retVal = Assembly.GetExecutingAssembly ().Location.Replace ("\\", "/");
-            retVal = retVal.Substring (0, retVal.LastIndexOf("/", StringComparison.Ordinal) + 1);
+            if (retVal.EndsWith ("/"))
+                retVal = retVal.Substring (0, retVal.Length - 1);
             return retVal;
         }
 
@@ -79,7 +80,10 @@ namespace p5.unittests
         [ActiveEvent (Name = "p5.core.application-folder", Protection = EventProtection.NativeClosed)]
         private static void p5_core_application_folder (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = GetBasePath ();
+            var retVal = GetBasePath ().Replace ("\\", "/");
+            if (retVal.EndsWith ("/"))
+                retVal = retVal.Substring (0, retVal.Length - 1);
+            e.Args.Value = retVal;
         }
 
         [ActiveEvent (Name = "p5.security.get-auth-file", Protection = EventProtection.NativeClosed)]

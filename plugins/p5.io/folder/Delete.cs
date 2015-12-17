@@ -41,7 +41,7 @@ namespace p5.io.folder
                             context);
 
                     // Verifying user is authorized to both reading from source, and writing to destination
-                    context.RaiseNative ("p5.io.authorize.modify-folder", new Node ("p5.io.authorize.modify-folder", idxFolder).Add ("args", e.Args));
+                    context.RaiseNative ("p5.io.authorize.modify-folder", new Node ("", idxFolder).Add ("args", e.Args));
 
                     // Checking to see if folder already exists
                     if (Directory.Exists (rootFolder + idxFolder)) {
