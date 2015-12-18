@@ -9,34 +9,44 @@ set-protected-event:p5.web.load-ui
   p5.web.include-stylesheets
   p5.web.include-javascript
 
-  // Figuring out which page to load according to argument supplied in [_form]
-  select-data:x:/*/*/p5.page/"={0}"
-    :x:/../*/_form?value
+  // Checking that the root password is not null, which might happen if
+  // owner has explicitly chosen to delete "auth" file, to go through
+  // installation process again
+  if
+    p5.web.root-password-is-null
 
-  // Checking if page exists
-  if:x:/../*/select-data/*?count
-    equals:int:0
-
-    // Page not found, loading up our "404 page"
-    sys42.execute-lisp-file:/system42/page-types/special-page/not-found.hl
-      _template:/system42/templates/main.hl
+    // Root password is null, making sure we go through installation process
+    sys42.execute-lisp-file:/system42/server-startup/launch-server.hl
   else
 
-    // Adding up all nodes from results of select-data into [execute-lisp-file]
-    add:x:/+2/*/_args
-      src:x:/../*/select-data/*/*
+    // Figuring out which page to load according to argument supplied in [_form]
+    select-data:x:/*/*/p5.page/"={0}"
+      :x:/../*/_form?value
 
-    // Setting value of [execute-lisp-file] to type of page we're loading
-    // If you look in "system42/page-types/" folder, you will see all the
-    // different types of pages that exist in the system. These types of
-    // pages are extendible, and can be added to to create custom types of
-    // pages. If you extend them, you should probably also create an editor
-    // for your page type
-    set:x:/+?value
-      src:/system42/page-types/{0}.hl
-        :x:/../*/select-data/*/*/type?value
-    sys42.execute-lisp-file
-      _args
+    // Checking if page exists
+    if:x:/..else/*/select-data/*?count
+      equals:int:0
+
+      // Page not found, loading up our "404 page"
+      sys42.execute-lisp-file:/system42/page-types/special-page/not-found.hl
+        _template:/system42/templates/main.hl
+    else
+
+      // Adding up all nodes from results of select-data into [execute-lisp-file]
+      add:x:/+2/*/_args
+        src:x:/..else/..else/*/select-data/*/*
+
+      // Setting value of [execute-lisp-file] to type of page we're loading
+      // If you look in "system42/page-types/" folder, you will see all the
+      // different types of pages that exist in the system. These types of
+      // pages are extendible, and can be added to to create custom types of
+      // pages. If you extend them, you should probably also create an editor
+      // for your page type
+      set:x:/+?value
+        src:/system42/page-types/{0}.hl
+          :x:/..else/..else/*/select-data/*/*/type?value
+      sys42.execute-lisp-file
+        _args
 
 
 /*

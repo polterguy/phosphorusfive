@@ -6,6 +6,17 @@
 
 
 /*
+ * Loading up main template
+ */
+load-file:/system42/templates/main.hl
+
+// Removing {content} and setting {header} before evaluating template
+set:x:/-/*/*/create-widget/*/widgets/**/={header}?value
+  src:Installation Guide
+set:x:/-2/*/*/create-widget/*/widgets/**/={content}/.
+eval:x:/./*/load-file/*
+
+/*
  * Creating actual guide form
  */
 create-widget:guide

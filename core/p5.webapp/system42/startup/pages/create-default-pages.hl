@@ -1,29 +1,70 @@
 
 /*
- * creates the default pages for our CMS if no pages exists in our database
- * will create 5 pages, three of type [html] and one each of [lambda] and [controls]
- * that will serve as examples of how to create pages in your system
+ * Creates the default pages for our CMS if no pages exists in our database
  */
 
-// checking to see if there exists any [p5.page] objects in database from before
+// Checking to see if there exists any [p5.page] objects in database from before
 select-data:x:/*/*/p5.page?count
 if:x:/-?value
   equals:int:0
 
-  // there were no [p5.page] objects in database, creating 5 default pages, just to show some features from system42
+  // Default landing page
   insert-data
-
     p5.page:/
       type:lambda
-      name:Welcome to System42
+      name:Home
       template:/system42/templates/main.hl
-      lambda:@"
-/*
- * Executes the ""server startup"" file by default.
- * Notice, after system is finished installed, this
- * page will be overwritten with another ""default page""
+      lambda:@"/*
+ * Default landing page for your system, automatically 
+ * created by your own personal Marvin!
  */
-sys42.execute-lisp-file:/system42/server-startup/launch-server.hl"
+get-user
+if:x:/-/*/role?value
+  =:root
+
+  /*
+   * Hey, my owner just paid a visit! I am so happy today!!
+   */
+  create-widget:foo
+    parent:content
+    class:col-xs-12
+    widgets
+      literal:bar
+        innerValue:@""<img src=""""/media/images/marvin-headshot.png"""" style=""""float:right;"""" class=""""prepend-left"""" />
+<blockquote><em>""""Hi there owner. I am so pleased to see you! [<strong>*wagging tail*</strong>]! Please tell me what to do! 
+I am your servant! FYI, the first thing you will notice with me, is that this page is only visible for you! If you log out
+and refresh the page, you will see a completely different page, showing the <em>""""dynamic features"""" of Phosphorus Five!</em>""""</em></blockquote>""
+
+else-if:x:/-2/*/role?value
+  =:superuser
+
+  /*
+   * A close and personal friend of my owner possibly!
+   */
+  create-widget:foo
+    parent:content
+    class:col-xs-12
+    widgets
+      literal:bar
+        innerValue:@""<img src=""""/media/images/marvin-headshot.png"""" style=""""float:right;"""" class=""""prepend-left"""" />
+<blockquote><em>""""Hi there friend. My name is Marving, and since you are a friend of my owner, feel free to use my brain. A great
+place for you to start, is probably the <a href=""""/superuser/files"""">file system</a>, where you can upload and store files in a secure manner""""</em></blockquote>""
+
+else
+
+  /*
+   * Probably some random visitor
+   */
+  create-widget:foo
+    parent:content
+    class:col-xs-12
+    widgets
+      literal:bar
+        innerValue:@""<img src=""""/media/images/marvin-headshot.png"""" style=""""float:right;"""" class=""""prepend-left"""" />
+<blockquote><em>""""Hello, my name is Marvin, and I have just been adopted by my owner. That's why things looks a little bit odd here, since
+he still haven't told me what he wants me to do. Until then, I'll just be attending these cars, and speak to this coffee machine. Maybe
+this coffee machine would want to listen to my troubles ...""""</em></blockquote>"""
+
 
     p5.page:/root/editor
       type:lambda
@@ -63,3 +104,43 @@ sys42.execute-lisp-file:/system42/root/executor.hl
  */
 sys42.execute-lisp-file:/system42/file-browser/launch.hl
 "
+
+
+    p5.page:/about
+      type:html
+      name:About
+      template:/system42/templates/main.hl
+      content:@"<p>Although Phosphorus Five and System42, is the architecture and creation of one single person, me that is, there are numerous others who have one way or another contributed. This page is to say thank you to all of these people.</p>
+
+<ul>
+	<li><a href=""https://github.com/jstedfast/MimeKit/"">MimeKit</a>, <a href=""https://github.com/jstedfast/MailKit"">MailKit</a> and its brilliant creator, Jeffrey Steadfast</li>
+	<li><a href=""https://www.bouncycastle.org/"">The Legion of the Bouncy Castle</a>, and all who contributes to it</li>
+	<li><a href=""http://xamarin.com/"">Xamarin</a>, <a href=""http://www.mono-project.com/"">Mono</a>, and all the other people working on both of these great projects</li>
+	<li><a href=""https://github.com/icsharpcode/SharpZipLib"">SharpZipLib</a>, Mike Krueger and David Pierson, in addition to everyone contributing to this awesome library</li>
+	<li><a href=""http://ckeditor.com/"">CKEditor</a> and Frederico Knabben, its creator</li>
+	<li><a href=""https://codemirror.net/"">CodeMirror</a>, and Marijn Haverbeke</li>
+	<li><a href=""https://htmlagilitypack.codeplex.com/"">HtmlAgilityPack</a> and all participants</li>
+	<li><a href=""http://getbootstrap.com/"">Bootstrap</a>, the CSS framework</li>
+	<li><a href=""https://jquery.com/"">jQuery</a></li>
+	<li>Members of the <a href=""http://stackoverflow.com/"">StackOverflow community</a>, for literally bombing my SERP with great answers, everytime I got stuck at some problem</li>
+	<li>Richard M. Stallman, for having a lengthy discussion with me about my architecture, and providing good advice, as early 2009/2010</li>
+	<li>Bjarne Stroustrup for taking my feedback about the 0x C++ standard serious back in 2006/2007, and actually incorporating some of my requests</li>
+	<li>Alan Kay for inspiring me to perceive computing in an evolutionary perspective</li>
+</ul>
+<p>There are hundreds of others too, which one way or another have contributed.</p>
+
+<p>The above list of people, which includes hundreds of others, contributing to these projects again, proves the importance of Free and Open Source Software. In
+addition, I could have mentioned Tim Berner-Lee for having invented the World Wide Web, and Håkon Wium-Lie for inventing CSS, but I think you get the idea.
+Creating a project of such proportions as I have done with Phosphorus Five and System42, is literally impossible unless you have access to great Open Source
+software tools and libraries. I would want this to be a reminder for those who choose to use Phosphorus Five. Even though I have explicitly chosen the
+most permissive Open Source license out there, this was not necessarily the obvious choice for me, if my goals were to make money. However, I chose the
+MITx11 licensen, because I believe in sharing. Now you are free to use Phosphorus Five and System42 as you see fit, also in closed source projects. 
+I guess what I am trying to say though, to sum it up, is this; Keep the World Wide Web Open and standardised, keep your data encrypted and safe, 
+and share your innovations with others! The same way others have shared their innovations with you! Only through this sharing, a project like
+Phosphorus Five was even possible.</p>
+
+<p>If you want to be on this list, but have no intellectual capital to contribute with of any relevance, but possess monetary resources of some
+significance, you can become a sponsor of my project, by donating money to me, to make sure I can keep the project going. You can also pay and
+purchase specific features, and such adopt a specific module, to have your name forever remembered as a contributor to Phosphorus Five and System42!</p>
+
+<p>Send me an <a href=""mailto:phosphorusfive@gmail.com"">email</a> if you wish to talk about such a proposal!</p>"

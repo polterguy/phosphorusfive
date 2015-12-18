@@ -30,5 +30,16 @@ namespace p5.security
         {
             AuthenticationHelper.CreateUser (context, e.Args);
         }
+
+        /// <summary>
+        ///     Lists all users in system
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "list-users", Protection = EventProtection.LambdaClosed)]
+        private static void list_users (ApplicationContext context, ActiveEventArgs e)
+        {
+            AuthenticationHelper.ListUsers (context, e.Args);
+        }
     }
 }

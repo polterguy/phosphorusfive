@@ -136,6 +136,17 @@ namespace p5.security
         }
 
         /*
+         * Lists all users in system
+         */
+        internal static void ListUsers (ApplicationContext context, Node args)
+        {
+            var authFile = AuthFile.GetAuthFile (context);
+            foreach (var idxUserNode in authFile["users"].Children) {
+                args.Add (idxUserNode.Name);
+            }
+        }
+
+        /*
          * Creates a new user
          */
         internal static void CreateUser (ApplicationContext context, Node args)
@@ -299,21 +310,37 @@ namespace p5.security
         internal static void TryLoginFromPersistentCookie(ApplicationContext context)
         {
             try {
-                // Checking if client has persistent cookie
-                HttpCookie cookie = HttpContext.Current.Request.Cookies.Get(_credentialCookieName);
-                if (cookie != null) {
+                // Making sure we do NOT try to login from persistent cookie if root password is null, at which
+                // case the system has been reset, and cookie (obviously) is not valid!
+                if (RootPasswordIsNull (context)) {
 
-                    // We have a cookie, try to use it as credentials
-                    LoginFromCookie (cookie, context);
+                    // Making sure we delete cookie, since (obviously) it is no longer valid!
+                    // The simplest way to do this, is simply to throw exception, which will be handled 
+                    // further down, and deletes current cookie!
+                    throw new Exception ("foo/bar");
+                } else {
+
+                    // Checking if client has persistent cookie
+                    HttpCookie cookie = HttpContext.Current.Request.Cookies.Get(_credentialCookieName);
+                    if (cookie != null) {
+
+                        // We have a cookie, try to use it as credentials
+                        LoginFromCookie (cookie, context);
+                    }
                 }
             } catch {
+
                 // Making sure we delete cookie
                 // We do not rethrow this, since reason might be because "salt" has changed, to explicitly log user
                 // out, and that is actually not a "security issue", but a "feature". Besides, login-cooloff-seconds
                 // will make sure "brute force" login through cookies are virtually impossible
                 HttpCookie cookie = HttpContext.Current.Request.Cookies.Get(_credentialCookieName);
-                cookie.Expires = DateTime.Now.AddDays(-1);
-                HttpContext.Current.Response.Cookies.Add(cookie);
+                if (cookie != null) {
+
+                    // Deleting cookie!
+                    cookie.Expires = DateTime.Now.AddDays (-1);
+                    HttpContext.Current.Response.Cookies.Add (cookie);
+                }
             }
         }
 
