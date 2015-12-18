@@ -10,14 +10,19 @@ set-protected-event:p5.web.load-ui
   p5.web.include-javascript
 
   /* 
-   * Checking if there are zero users, which might happen if
+   * Checking if there are less than 2 users, which might happen if
    * owner has explicitly chosen to delete "auth" file, to go through
    * installation process again, or never in fact gone through installation
-   * process at all
+   * process at all. When system is installed, there must be at least 2 users!
    */
+  whoami
   list-users
   if:x:/-/*?count
-    =:int:0
+    <:int:2
+    and:x:/./-2/*/username?value
+      =:root
+    or:x:/./-/*?count
+      =:int:0
 
     // Root password is null, making sure we go through installation process
     sys42.execute-lisp-file:/system42/server-startup/launch-server.hl

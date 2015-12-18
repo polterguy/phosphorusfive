@@ -12,6 +12,7 @@ using System.Configuration;
 using System.Collections.Generic;
 using p5.exp;
 using p5.core;
+using p5.security.helpers;
 
 namespace p5.security
 {
@@ -20,6 +21,28 @@ namespace p5.security
     /// </summary>
     internal static class Users
     {
+        /// <summary>
+        ///     Logs in a user to be associated with the ApplicationContext
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "login", Protection = EventProtection.LambdaClosed)]
+        private static void login (ApplicationContext context, ActiveEventArgs e)
+        {
+            AuthenticationHelper.Login (context, e.Args);
+        }
+
+        /// <summary>
+        ///     Logs out a user from the ApplicationContext
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "logout", Protection = EventProtection.LambdaClosed)]
+        private static void logout (ApplicationContext context, ActiveEventArgs e)
+        {
+            AuthenticationHelper.Logout (context);
+        }
+
         /// <summary>
         ///     Creates a new user
         /// </summary>
@@ -40,6 +63,19 @@ namespace p5.security
         private static void list_users (ApplicationContext context, ActiveEventArgs e)
         {
             AuthenticationHelper.ListUsers (context, e.Args);
+        }
+
+        /// <summary>
+        ///     Returns the currently logged in Context user
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "whoami", Protection = EventProtection.LambdaClosed)]
+        private static void whoami (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Add("username", AuthenticationHelper.GetTicket (context).Username);
+            e.Args.Add("role", AuthenticationHelper.GetTicket (context).Role);
+            e.Args.Add("default", AuthenticationHelper.GetTicket (context).IsDefault);
         }
     }
 }

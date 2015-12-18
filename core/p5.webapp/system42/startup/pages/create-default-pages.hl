@@ -18,7 +18,7 @@ if:x:/-?value
  * Default landing page for your system, automatically 
  * created by your own personal Marvin!
  */
-get-user
+whoami
 if:x:/-/*/role?value
   =:root
 
@@ -122,25 +122,19 @@ sys42.execute-lisp-file:/system42/file-browser/launch.hl
 	<li><a href=""https://htmlagilitypack.codeplex.com/"">HtmlAgilityPack</a> and all participants</li>
 	<li><a href=""http://getbootstrap.com/"">Bootstrap</a>, the CSS framework</li>
 	<li><a href=""https://jquery.com/"">jQuery</a></li>
-	<li>Members of the <a href=""http://stackoverflow.com/"">StackOverflow community</a>, for literally bombing my SERP with great answers, everytime I got stuck at some problem</li>
-	<li>Richard M. Stallman, for having a lengthy discussion with me about my architecture, and providing good advice, as early 2009/2010</li>
+	<li>Members of the <a href=""http://stackoverflow.com/"">StackOverflow community</a>, for literally bombing my SERP with great answers, everytime I got stuck with a problem</li>
+	<li>Richard M. Stallman, for having a lengthy discussion with me about privacy, and providing good advice to me, as early 2009/2010</li>
 	<li>Bjarne Stroustrup for taking my feedback about the 0x C++ standard serious back in 2006/2007, and actually incorporating some of my requests</li>
 	<li>Alan Kay for inspiring me to perceive computing in an evolutionary perspective</li>
+	<li>Many, many, many developers, all around the world, including most readers of <a href=""http://digi.no"">digi.no</a>, which provided me with valuable feedback</li>
 </ul>
-<p>There are hundreds of others too, which one way or another have contributed.</p>
-
-<p>The above list of people, which includes hundreds of others, contributing to these projects again, proves the importance of Free and Open Source Software. In
-addition, I could have mentioned Tim Berner-Lee for having invented the World Wide Web, and Håkon Wium-Lie for inventing CSS, but I think you get the idea.
-Creating a project of such proportions as I have done with Phosphorus Five and System42, is literally impossible unless you have access to great Open Source
-software tools and libraries. I would want this to be a reminder for those who choose to use Phosphorus Five. Even though I have explicitly chosen the
-most permissive Open Source license out there, this was not necessarily the obvious choice for me, if my goals were to make money. However, I chose the
-MITx11 licensen, because I believe in sharing. Now you are free to use Phosphorus Five and System42 as you see fit, also in closed source projects. 
-I guess what I am trying to say though, to sum it up, is this; Keep the World Wide Web Open and standardised, keep your data encrypted and safe, 
-and share your innovations with others! The same way others have shared their innovations with you! Only through this sharing, a project like
-Phosphorus Five was even possible.</p>
+<p>There are hundreds of others too, which one way or another have contributed. You know who you are.</p>
 
 <p>If you want to be on this list, but have no intellectual capital to contribute with of any relevance, but possess monetary resources of some
-significance, you can become a sponsor of my project, by donating money to me, to make sure I can keep the project going. You can also pay and
-purchase specific features, and such adopt a specific module, to have your name forever remembered as a contributor to Phosphorus Five and System42!</p>
+significance, you can become a sponsor of the project. By donating money to the project, you help sustain mankind and humanity, and help prevent 
+Technical Armageddon and runaway AI as we enter the Technological Singularity. You can also pay and purchase specific features, and such adopt a 
+specific module, to have your name forever remembered as a contributor to Phosphorus Five and System42. This way you can write your name into 
+eternity, and ensure you are immortalised through Phosphorus Five and System42. You can of course also donate money to the project, and/or purchase
+specific modules or features, and chose to stay anonymous too, if you like</p>
 
-<p>Send me an <a href=""mailto:phosphorusfive@gmail.com"">email</a> if you wish to talk about such a proposal!</p>"
+<p>Send me an <a href=""mailto:phosphorusfive@gmail.com"">email</a> if you wish to talk about such a proposal</p>"

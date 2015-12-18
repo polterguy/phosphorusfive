@@ -16,7 +16,7 @@ using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
 
-namespace p5.security
+namespace p5.security.helpers
 {
     /// <summary>
     ///     Class wrapping authentication helper features of Phosphorus Five
@@ -29,7 +29,7 @@ namespace p5.security
         /*
          * Returns user Context Ticket (Context "user")
          */
-        internal static ApplicationContext.ContextTicket GetTicket (ApplicationContext context)
+        public static ApplicationContext.ContextTicket GetTicket (ApplicationContext context)
         {
             if (HttpContext.Current.Session["_ContextTicket"] == null) {
 
@@ -42,7 +42,7 @@ namespace p5.security
         /*
          * Returns true if Context Ticket is already set
          */
-        internal static bool ContextTicketIsSet
+        public static bool ContextTicketIsSet
         {
             get {
                 return HttpContext.Current.Session != null && HttpContext.Current.Session ["_ContextTicket"] != null;
@@ -50,17 +50,9 @@ namespace p5.security
         }
 
         /*
-         * Sets user Context Ticket (context "user")
-         */
-        internal static void SetTicket (ApplicationContext.ContextTicket ticket)
-        { 
-            HttpContext.Current.Session["_ContextTicket"] = ticket;
-        }
-
-        /*
          * Tries to login user according to given user credentials
          */
-        internal static void Login (ApplicationContext context, Node args)
+        public static void Login (ApplicationContext context, Node args)
         {
             // Checking for a brute force login attack
             GuardAgainstBruteForce(context);
@@ -73,13 +65,9 @@ namespace p5.security
             string password = args.GetExChildValue<string> ("password", context);
             bool persist = args.GetExChildValue ("persist", context, false);
 
-            // Creating Hash of password, with salt from web.config
-            using (var sha256 = SHA256.Create ()) {
-
-                // Returning Sha256 hash as base64 encoded string
-                var saltAndPassword = context.RaiseNative ("p5.security.get-password-salt").Get<string> (context) + password;
-                password = Convert.ToBase64String (sha256.ComputeHash (Encoding.UTF8.GetBytes (saltAndPassword)));
-            }
+            // Returning Sha256 hash as base64 encoded string
+            var saltAndPassword = context.RaiseNative ("p5.security.get-password-salt").Get<string> (context) + password;
+            var passwordFingerprint = context.RaiseNative ("sha256-hash", new Node("", saltAndPassword)).Get<string> (context);
 
             // Getting password file in Node format, but locking file access as we retrieve it
             Node pwdFile = AuthFile.GetAuthFile(context);
@@ -90,8 +78,8 @@ namespace p5.security
                 throw new SecurityException("Credentials not accepted");
 
             // Checking for match on password
-            if (userNode["password"].Get<string> (context) != password)
-                throw new SecurityException("Credentials not accepted");
+            if (userNode["password"].Get<string> (context) != passwordFingerprint)
+                throw new SecurityException("Credentials not accepted"); // Exact same wording as above! IMPORTANT!!
 
             // Success, creating our ticket
             string role = userNode["role"].Get<string>(context);
@@ -110,8 +98,10 @@ namespace p5.security
                 // Caller wants to create persistent cookie to remember username/password
                 HttpCookie cookie = new HttpCookie(_credentialCookieName);
                 cookie.Expires = DateTime.Now.AddDays(context.RaiseNative ("p5.security.get-credential-cookie-days").Get<int> (context));
-                cookie.HttpOnly = true;
+                cookie.HttpOnly = true; // To avoid JavaScript access to credentials!
                 string salt = userNode["cookie-salt"].Get<string>(context);
+
+                // Notice, we use a DIFFERENT fingerprint as password for cookie than what we use for storing cookie in auth file
                 cookie.Value = username + " " + context.RaiseNative ("sha256-hash", new Node("", salt + password)).Value;
                 HttpContext.Current.Response.Cookies.Add(cookie);
             }
@@ -120,7 +110,7 @@ namespace p5.security
         /*
          * Logs out user
          */
-        internal static void Logout (ApplicationContext context)
+        public static void Logout (ApplicationContext context)
         {
             // By destroying Ticket, default user will be used for current session, until user logs in again
             SetTicket (null);
@@ -138,18 +128,18 @@ namespace p5.security
         /*
          * Lists all users in system
          */
-        internal static void ListUsers (ApplicationContext context, Node args)
+        public static void ListUsers (ApplicationContext context, Node args)
         {
             var authFile = AuthFile.GetAuthFile (context);
             foreach (var idxUserNode in authFile["users"].Children) {
-                args.Add (idxUserNode.Name);
+                args.Add (idxUserNode.Name, idxUserNode["role"].Value);
             }
         }
 
         /*
          * Creates a new user
          */
-        internal static void CreateUser (ApplicationContext context, Node args)
+        public static void CreateUser (ApplicationContext context, Node args)
         {
             string username = args.GetExChildValue<string>("username", context);
             string password = args.GetExChildValue<string>("password", context);
@@ -161,13 +151,9 @@ namespace p5.security
             // Verifying username is valid, since we'll need to create a folder for user
             VerifyUsernameValid (username);
 
-            // Creating Hash of password, with salt from web.config
-            using (var sha256 = SHA256.Create ()) {
-
-                // Returning Sha256 hash as base64 encoded string
-                var saltAndPassword = context.RaiseNative ("p5.security.get-password-salt").Get<string> (context) + password;
-                password = Convert.ToBase64String (sha256.ComputeHash (Encoding.UTF8.GetBytes (saltAndPassword)));
-            }
+            // Returning Sha256 hash as base64 encoded string
+            var saltAndPassword = context.RaiseNative ("p5.security.get-password-salt").Get<string> (context) + password;
+            var passwordFingerprint = context.RaiseNative ("sha256-hash", new Node ("", saltAndPassword)).Get<string> (context);
 
             // Locking access to password file as we create new user object
             AuthFile.ModifyAuthFile (
@@ -182,12 +168,140 @@ namespace p5.security
 
                     // Creates a salt for user
                     authFile ["users"].LastChild.Add("cookie-salt", AuthFile.CreateNewSalt ());
-                    authFile ["users"].LastChild.Add("password", password);
+                    authFile ["users"].LastChild.Add("password", passwordFingerprint);
                     authFile ["users"].LastChild.Add("role", role);
                 });
 
             // Creating newly created user's directory structure
             CreateUserDirectory (rootFolder, username);
+        }
+
+        /*
+         * Returns all existing roles in system
+         */
+        public static void GetRoles (ApplicationContext context, Node args)
+        {
+            // Getting password file in Node format, such that we can traverse file for all roles
+            Node pwdFile = AuthFile.GetAuthFile(context);
+
+            // Looping through each user object in password file, retrieving all roles
+            foreach (var idxUserNode in pwdFile["users"].Children) {
+
+                // Checking if currently iterated user's role was already added
+                if (args.Children.FirstOrDefault(ix => ix.Name == idxUserNode["role"].Get<string>(context)) == null) {
+
+                    // Default Context role was not already added
+                    args.Add(idxUserNode["role"].Get<string>(context));
+                }
+            }
+
+            // Making sure default role is added
+            string defaultRole = context.RaiseNative ("p5.security.get-default-context-role").Get<string> (context);
+            if (!string.IsNullOrEmpty(defaultRole)) {
+
+                // There exist a default role, checking if it's already added
+                if (args.Children.FirstOrDefault(ix => ix.Name == defaultRole) == null) {
+
+                    // Default Role was not already added, therefor we add it to return lambda node
+                    args.Add(defaultRole);
+                }
+            }
+        }
+
+        /*
+         * Changes password of "root" account, but only if existing root account's password 
+         * is null. Used during setup of server
+         */
+        public static void SetRootPassword (ApplicationContext context, Node args)
+        {
+            // Retrieving password given
+            string password = args.GetExChildValue<string>("password", context);
+            if (string.IsNullOrEmpty(password))
+                throw new SecurityException("You cannot set the root password to empty");
+
+            // Returning Sha256 hash as base64 encoded string
+            var saltAndPassword = context.RaiseNative ("p5.security.get-password-salt").Get<string> (context) + password;
+            var passwordFingerprint = context.RaiseNative ("sha256-hash", new Node ("", saltAndPassword)).Get<string> (context);
+
+            // Retrieving password file, locking access to it as we do, such that we can change root account's password
+            // after first checking that password is actually null!
+            AuthFile.ModifyAuthFile (
+                context,
+                delegate (Node authFile) {
+                    if (authFile["users"]["root"] != null)
+                        throw new LambdaSecurityException(
+                            "Somebody tried to use installation Active event [p5.web.set-root-password] to change password of existing root account",
+                            args,
+                            context);
+
+                    // Changing password of root account
+                    authFile["users"].Add ("root");
+                    authFile["users"]["root"].Add ("password", passwordFingerprint);
+                    authFile["users"]["root"].Add ("cookie-salt", AuthFile.CreateNewSalt ());
+                    authFile["users"]["root"].Add ("role", "root");
+                });
+        }
+
+        /*
+         * Returns true if root account's password is null, which means that server is not setup yet
+         */
+        public static bool NoExistingRootAccount (ApplicationContext context)
+        {
+            // Retrieving password file, and making sure we lock access to file as we do
+            Node rootPwdNode = AuthFile.GetAuthFile(context)["users"]["root"];
+
+            // Returning true if root account does not exist
+            return rootPwdNode == null;
+        }
+
+        /*
+         * Will try to login from persistent cookie
+         */
+        public static void TryLoginFromPersistentCookie(ApplicationContext context)
+        {
+            try {
+                // Making sure we do NOT try to login from persistent cookie if root password is null, at which
+                // case the system has been reset, and cookie (obviously) is not valid!
+                if (NoExistingRootAccount (context)) {
+
+                    // Making sure we delete cookie, since (obviously) it is no longer valid!
+                    // The simplest way to do this, is simply to throw exception, which will be handled 
+                    // further down, and deletes current cookie!
+                    throw null;
+                } else {
+
+                    // Checking if client has persistent cookie
+                    HttpCookie cookie = HttpContext.Current.Request.Cookies.Get(_credentialCookieName);
+                    if (cookie != null) {
+
+                        // We have a cookie, try to use it as credentials
+                        LoginFromCookie (cookie, context);
+                    }
+                }
+            } catch {
+
+                // Making sure we delete cookie
+                // We do not rethrow this, since reason might be because "salt" has changed, to explicitly log user
+                // out, and that is actually not a "security issue", but a "feature". Besides, login-cooloff-seconds
+                // will make sure "brute force" login through cookies are virtually impossible
+                HttpCookie cookie = HttpContext.Current.Request.Cookies.Get(_credentialCookieName);
+                if (cookie != null) {
+
+                    // Deleting cookie!
+                    cookie.Expires = DateTime.Now.AddDays (-1);
+                    HttpContext.Current.Response.Cookies.Add (cookie);
+                }
+            }
+        }
+
+        #region [ -- Private helper methods -- ]
+
+        /*
+         * Sets user Context Ticket (context "user")
+         */
+        private static void SetTicket (ApplicationContext.ContextTicket ticket)
+        { 
+            HttpContext.Current.Session["_ContextTicket"] = ticket;
         }
 
         /*
@@ -227,127 +341,6 @@ namespace p5.security
                     rootFolder + "/users/root/documents/private/web.config", 
                     rootFolder + "/users/" + username + "/documents/private/web.config");
         }
-
-        /*
-         * Returns all existing roles in system
-         */
-        internal static void GetRoles (ApplicationContext context, Node args)
-        {
-            // Getting password file in Node format, such that we can traverse file for all roles
-            Node pwdFile = AuthFile.GetAuthFile(context);
-
-            // Looping through each user object in password file, retrieving all roles
-            foreach (var idxUserNode in pwdFile["users"].Children) {
-
-                // Checking if currently iterated user's role was already added
-                if (args.Children.FirstOrDefault(ix => ix.Name == idxUserNode["role"].Get<string>(context)) == null) {
-
-                    // Default Context role was not already added
-                    args.Add(idxUserNode["role"].Get<string>(context));
-                }
-            }
-
-            // Making sure default role is added
-            string defaultRole = context.RaiseNative ("p5.security.get-default-context-role").Get<string> (context);
-            if (!string.IsNullOrEmpty(defaultRole)) {
-
-                // There exist a default role, checking if it's already added
-                if (args.Children.FirstOrDefault(ix => ix.Name == defaultRole) == null) {
-
-                    // Default Role was not already added, therefor we add it to return lambda node
-                    args.Add(defaultRole);
-                }
-            }
-        }
-
-        /*
-         * Changes password of "root" account, but only if existing root account's password 
-         * is null. Used during setup of server
-         */
-        internal static void SetRootPassword (ApplicationContext context, Node args)
-        {
-            // Retrieving password given
-            string password = args.GetExChildValue<string>("password", context);
-            if (string.IsNullOrEmpty(password))
-                throw new SecurityException("You cannot set the root password to empty");
-
-            // Creating Hash of password, with salt from web.config
-            using (var sha256 = SHA256.Create ()) {
-
-                // Returning Sha256 hash as base64 encoded string
-                var saltAndPassword = context.RaiseNative ("p5.security.get-password-salt").Get<string> (context) + password;
-                password = Convert.ToBase64String (sha256.ComputeHash (Encoding.UTF8.GetBytes (saltAndPassword)));
-            }
-
-            // Retrieving password file, locking access to it as we do, such that we can change root account's password
-            // after first checking that password is actually null!
-            AuthFile.ModifyAuthFile (
-                context,
-                delegate (Node authFile) {
-                    if (authFile["users"]["root"] != null)
-                        throw new SecurityException("Somebody tried to use installation Active event [p5.web.set-root-password] to change password of existing root account");
-
-                    // Changing password of root account
-                    authFile["users"].Add ("root");
-                    authFile["users"]["root"].Add ("password", password);
-                    authFile["users"]["root"].Add ("cookie-salt", AuthFile.CreateNewSalt ());
-                    authFile["users"]["root"].Add ("role", "root");
-                });
-        }
-
-        /*
-         * Returns true if root account's password is null, which means that server is not setup yet
-         */
-        internal static bool RootPasswordIsNull (ApplicationContext context)
-        {
-            // Retrieving password file, and making sure we lock access to file as we do
-            Node rootPwdNode = AuthFile.GetAuthFile(context)["users"]["root"];
-
-            // Returning true if root account's password is null
-            return rootPwdNode == null;
-        }
-
-        /*
-         * Will try to login from persistent cookie
-         */
-        internal static void TryLoginFromPersistentCookie(ApplicationContext context)
-        {
-            try {
-                // Making sure we do NOT try to login from persistent cookie if root password is null, at which
-                // case the system has been reset, and cookie (obviously) is not valid!
-                if (RootPasswordIsNull (context)) {
-
-                    // Making sure we delete cookie, since (obviously) it is no longer valid!
-                    // The simplest way to do this, is simply to throw exception, which will be handled 
-                    // further down, and deletes current cookie!
-                    throw new Exception ("foo/bar");
-                } else {
-
-                    // Checking if client has persistent cookie
-                    HttpCookie cookie = HttpContext.Current.Request.Cookies.Get(_credentialCookieName);
-                    if (cookie != null) {
-
-                        // We have a cookie, try to use it as credentials
-                        LoginFromCookie (cookie, context);
-                    }
-                }
-            } catch {
-
-                // Making sure we delete cookie
-                // We do not rethrow this, since reason might be because "salt" has changed, to explicitly log user
-                // out, and that is actually not a "security issue", but a "feature". Besides, login-cooloff-seconds
-                // will make sure "brute force" login through cookies are virtually impossible
-                HttpCookie cookie = HttpContext.Current.Request.Cookies.Get(_credentialCookieName);
-                if (cookie != null) {
-
-                    // Deleting cookie!
-                    cookie.Expires = DateTime.Now.AddDays (-1);
-                    HttpContext.Current.Response.Cookies.Add (cookie);
-                }
-            }
-        }
-
-        #region [ -- Private helper methods -- ]
 
         /*
          * Tries to login with the given cookie as credentials

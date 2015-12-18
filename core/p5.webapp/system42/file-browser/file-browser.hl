@@ -424,7 +424,7 @@ create-widget:file-browser
 
             // Downloading folder by ziping it first into "temp" directory
             // Retrieving username, such that we can find correct "temp" folder
-            get-user
+            whoami
 
             // Finding name of folder being zipped, to create a "sane" zip filename
             split:x:/../*/get-session-value/*/*/object?value
@@ -432,7 +432,7 @@ create-widget:file-browser
 
             zip:x:/../*/get-session-value/*/*/object?value
               to:/users/{0}/tmp/{1}.zip
-                :x:/..else/*/get-user/*/username?value
+                :x:/..else/*/whoami/*/username?value
                 :x:/..else/*/split/0/-?name
             set-session-value:sys42.download-file
               src:x:/..else/*/zip?value

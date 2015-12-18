@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
+using p5.security.helpers;
 
 namespace p5.security
 {
@@ -27,10 +28,12 @@ namespace p5.security
         [ActiveEvent (Name = "p5.web.set-root-password", Protection = EventProtection.LambdaClosed)]
         private static void p5_web_set_root_password (ApplicationContext context, ActiveEventArgs e)
         {
-            // If root account's password is not null, then if this Active Event is 
-            // invoked, it is a major security concern! Only supposed to be executed during 
-            // initial installation of system
-            if (!AuthenticationHelper.RootPasswordIsNull (context))
+            /*
+             * If root account's password is not null, and this Active Event is 
+             * invoked, it is a major security concern! This Active Event is only
+             * supposed to be raised during installation of system!
+             */
+            if (!AuthenticationHelper.NoExistingRootAccount (context))
                 throw new LambdaSecurityException ("[p5.web.set-root-password] was invoked for root account while root account's password was not null!", e.Args, context);
 
             AuthenticationHelper.SetRootPassword (context, e.Args);

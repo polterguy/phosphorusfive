@@ -15,7 +15,7 @@ using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
 
-namespace p5.security
+namespace p5.security.helpers
 {
     /// <summary>
     ///     Class wrapping access to read and write operations to and from "auth" file

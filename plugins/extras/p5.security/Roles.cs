@@ -12,6 +12,7 @@ using System.Configuration;
 using System.Collections.Generic;
 using p5.exp;
 using p5.core;
+using p5.security.helpers;
 
 namespace p5.security
 {

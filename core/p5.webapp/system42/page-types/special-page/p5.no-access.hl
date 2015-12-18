@@ -20,8 +20,8 @@ set:x:/-/*/*/create-widget/*/widgets/**/={header}?value
 /*
  * Checking if there's a user logged in, and if so, showing relevant feedback to user
  */
-get-user
-if:x:/../*/get-user/*/default?value
+whoami
+if:x:/../*/whoami/*/default?value
   not
 
   /*

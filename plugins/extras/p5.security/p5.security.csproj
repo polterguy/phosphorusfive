@@ -39,12 +39,12 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Authentication.cs" />
     <Compile Include="helpers\AuthenticationHelper.cs" />
     <Compile Include="Root.cs" />
     <Compile Include="Users.cs" />
     <Compile Include="Roles.cs" />
     <Compile Include="helpers\AuthFile.cs" />
+    <Compile Include="Common.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

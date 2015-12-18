@@ -12,6 +12,7 @@ using System.Configuration;
 using System.Collections.Generic;
 using p5.exp;
 using p5.core;
+using p5.security.helpers;
 
 /// <summary>
 ///     Main namespace for security features of Phosphorus Five
@@ -21,7 +22,7 @@ namespace p5.security
     /// <summary>
     ///     Class wrapping authentication features of Phosphorus Five
     /// </summary>
-    internal static class Authentication
+    internal static class Common
     {
         /// <summary>
         ///     Sink to associate a Ticket with ApplicationContext
@@ -44,41 +45,6 @@ namespace p5.security
                 // Updating Application Context ticket with ticket from AuthenticationHelper
                 context.UpdateTicket (AuthenticationHelper.GetTicket (context));
             }
-        }
-
-        /// <summary>
-        ///     Returns the currently logged in Context user
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "get-user", Protection = EventProtection.LambdaClosed)]
-        private static void get_user (ApplicationContext context, ActiveEventArgs e)
-        {
-            e.Args.Add("username", AuthenticationHelper.GetTicket (context).Username);
-            e.Args.Add("role", AuthenticationHelper.GetTicket (context).Role);
-            e.Args.Add("default", AuthenticationHelper.GetTicket (context).IsDefault);
-        }
-
-        /// <summary>
-        ///     Logs in a user to be associated with the ApplicationContext
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "login", Protection = EventProtection.LambdaClosed)]
-        private static void login (ApplicationContext context, ActiveEventArgs e)
-        {
-            AuthenticationHelper.Login (context, e.Args);
-        }
-
-        /// <summary>
-        ///     Logs out a user from the ApplicationContext
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "logout", Protection = EventProtection.LambdaClosed)]
-        private static void logout (ApplicationContext context, ActiveEventArgs e)
-        {
-            AuthenticationHelper.Logout (context);
         }
     }
 }

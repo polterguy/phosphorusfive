@@ -241,7 +241,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'widget-exist':
         case 'find-widget':
         case 'reload-location':
-        case 'get-user':
+        case 'whoami':
         case 'logout':
         case 'get-roles':
         case 'sleep':
