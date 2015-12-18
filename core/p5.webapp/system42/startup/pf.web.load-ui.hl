@@ -9,11 +9,15 @@ set-protected-event:p5.web.load-ui
   p5.web.include-stylesheets
   p5.web.include-javascript
 
-  // Checking that the root password is not null, which might happen if
-  // owner has explicitly chosen to delete "auth" file, to go through
-  // installation process again
-  if
-    p5.web.root-password-is-null
+  /* 
+   * Checking if there are zero users, which might happen if
+   * owner has explicitly chosen to delete "auth" file, to go through
+   * installation process again, or never in fact gone through installation
+   * process at all
+   */
+  list-users
+  if:x:/-/*?count
+    =:int:0
 
     // Root password is null, making sure we go through installation process
     sys42.execute-lisp-file:/system42/server-startup/launch-server.hl

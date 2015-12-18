@@ -217,6 +217,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'zip':
         case 'unzip':
         case 'set-page-value':
+        case 'list-users':
           state.indent += 2;
           return this.styles.keyword;
 
@@ -236,8 +237,6 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'less-than-equals':
         case '<=':
         case 'lisp2lambda':
-        case 'md5-hash':
-        case 'sha1-hash':
         case 'sha256-hash':
         case 'widget-exist':
         case 'find-widget':

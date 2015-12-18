@@ -154,8 +154,6 @@ namespace p5.security
             string username = args.GetExChildValue<string>("username", context);
             string password = args.GetExChildValue<string>("password", context);
             string role = args.GetExChildValue<string>("role", context);
-            if (role == "root")
-                throw new LambdaSecurityException("[create-user] Active Event tried to create 'root' user", args, context);
 
             // We need this guy to save passwords file, and create user folder structure
             string rootFolder = context.RaiseNative("p5.core.application-folder").Get<string>(context);
@@ -176,7 +174,10 @@ namespace p5.security
                 context, 
                 delegate (Node authFile) {
                     if (authFile["users"][username] != null)
-                        throw new ApplicationException("Sorry, that username is already taken by another user in the system");
+                        throw new LambdaException(
+                            "Sorry, that username is already taken by another user in the system", 
+                            args, 
+                            context);
                     authFile["users"].Add(username);
 
                     // Creates a salt for user
@@ -283,12 +284,14 @@ namespace p5.security
             AuthFile.ModifyAuthFile (
                 context,
                 delegate (Node authFile) {
-                    if (authFile["users"]["root"]["password"].Value != null)
+                    if (authFile["users"]["root"] != null)
                         throw new SecurityException("Somebody tried to use installation Active event [p5.web.set-root-password] to change password of existing root account");
 
                     // Changing password of root account
-                    authFile["users"]["root"]["password"].Value = password;
-                    authFile["users"]["root"]["cookie-salt"].Value = AuthFile.CreateNewSalt ();
+                    authFile["users"].Add ("root");
+                    authFile["users"]["root"].Add ("password", password);
+                    authFile["users"]["root"].Add ("cookie-salt", AuthFile.CreateNewSalt ());
+                    authFile["users"]["root"].Add ("role", "root");
                 });
         }
 
@@ -301,7 +304,7 @@ namespace p5.security
             Node rootPwdNode = AuthFile.GetAuthFile(context)["users"]["root"];
 
             // Returning true if root account's password is null
-            return rootPwdNode["password"].Value == null;
+            return rootPwdNode == null;
         }
 
         /*
@@ -404,11 +407,6 @@ namespace p5.security
          */
         private static void GuardAgainstBruteForce(ApplicationContext context)
         {
-            // We only "turn on" guard after root password has been set, since during installation process of server,
-            // user will sign in and out multiple times
-            if (AuthenticationHelper.RootPasswordIsNull (context))
-                return;
-
             // Finding delta from last login attempt and "now"
             TimeSpan span = DateTime.Now - LastLoginAttemptForIP;
 
@@ -417,7 +415,7 @@ namespace p5.security
             if (span.TotalSeconds < seconds)
                 throw new SecurityException (
                     string.Format (
-                        "Your IP address is trying to login to frequently, please wait {0} seconds before trying again.", 
+                        "Your IP address is trying unsuccessfully to login too frequently, please wait '{0}' seconds before trying again.", 
                         seconds));
 
             // Making sure we set the last login attempt to now!

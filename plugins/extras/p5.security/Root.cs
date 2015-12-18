@@ -35,14 +35,5 @@ namespace p5.security
 
             AuthenticationHelper.SetRootPassword (context, e.Args);
         }
-
-        /*
-         * Useful during installation. Returns true if root password is null (server needs setup)
-         */
-        [ActiveEvent (Name = "p5.web.root-password-is-null", Protection = EventProtection.LambdaClosed)]
-        private static void p5_web_root_password_is_null (ApplicationContext context, ActiveEventArgs e)
-        {
-            e.Args.Value = AuthenticationHelper.RootPasswordIsNull (context);
-        }
     }
 }

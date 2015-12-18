@@ -36,23 +36,23 @@ create-widget:guide
 
 
 /*
- * Checking if user is logged in
+ * Checking if user is logged in, and that there exist users in the system
  */
 get-user
-
-if
-  p5.web.root-password-is-null
+list-users
+if:x:/-/*?count
+  =:int:0
 
   // Need to set root password, and do other types of installation setup things
   sys42.execute-lisp-file:/system42/server-startup/set-root-password.hl
 else-if:x:/../*/get-user/*/role?value
   =:root
 
-  // Possibly a refresh of page, or aborted setup installation process. Continuing from where we left off
+  // Possibly a refresh of page, or abandoned setup installation process. Continuing from where we left off
   sys42.execute-lisp-file:/system42/server-startup/create-initial-user.hl
 else
 
-  // Informing current visitor that server is currently being maintained
+  // Informing current visitor that server is currently being maintained, and that he needs to come back later
   create-widget:feedback
     parent:guide
     class:flash-from-right

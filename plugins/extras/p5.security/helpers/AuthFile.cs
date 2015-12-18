@@ -91,7 +91,7 @@ namespace p5.security
 
             // Checking file exist
             if (!File.Exists (pwdFilePath))
-                CreateDefaultAuthFile (context, pwdFilePath);
+                return new Node ("").Add ("users"); // No users in system
 
             // Reading up passwords file
             using (TextReader reader = new StreamReader (File.OpenRead (pwdFilePath))) {
@@ -136,25 +136,6 @@ namespace p5.security
 
             // Returning path to caller
             return pwdFilePath;
-        }
-
-        /*
-         * Creates a default authentication/authorization file, and a default "root" user, with a "null" password
-         */
-        private static void CreateDefaultAuthFile (ApplicationContext context, string pwdFile)
-        {
-            var salt = CreateNewSalt ();
-            string plainText = string.Format (@"users
-  root
-    cookie-salt:{0}
-    password
-    role:root", salt);
-            // Creates a default authentication/authorization file
-            using (TextWriter writer = File.CreateText(pwdFile)) {
-
-                // Creating default root password, salt unique to user, and writing to file
-                writer.WriteLine(Utilities.EncryptMarvin (context, plainText));
-            }
         }
 
         #endregion
