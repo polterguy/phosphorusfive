@@ -47,7 +47,7 @@ set-protected-event:sys42.get-widget
     // loop during conversion to hyperlisp, since it contains a node value, referencing code executed
     if:x:/../*/list-widgets/0?value
       equals:execute
-      set:x:/../0/-/*/onclick_/*/_exe?value
+      set:x:/../0/-/*/_onclick/*/_exe?value
         src:node:"_executed-code"
 
     // Looping through all children, recursively invoking self

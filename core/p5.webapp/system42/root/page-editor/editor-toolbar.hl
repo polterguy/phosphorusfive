@@ -5,19 +5,6 @@
 
 
 /*
- * Loading page from database, and setting
- * widget values accordingly
- * TODO: Why can't we do this in oninit of main widget?
- */
-select-data:x:/*/*/p5.page/"={0}"
-  :x:/../*/_id?value
-set:x:/../*/create-widget/**/void/=page-name/*/value?value
-  src:x:/../*/select-data/[0,1]/*/*/name?value
-set:x:/../*/create-widget/**/void/=page-url/*/value?value
-  src:x:/../*/select-data/[0,1]/*?value
-
-
-/*
  * Setting templates
  */
 list-files:/system42/templates/
@@ -69,10 +56,35 @@ for-each:x:/-/*?name
 
 
 /*
+ * Making sure [oninit] event handler knows ID of page edited
+ */
+set:x:/../*/create-widget/*/oninit/**/={_id}?value
+  src:x:/../*/_id?value
+
+/*
  * Creating actual toolbar
  */
 create-widget
   parent:page-editor-surface
+
+
+  /*
+   * Ajax events for widget
+   */
+  oninit
+
+
+    /*
+     * Loading page from database, and setting widget values accordingly
+     */
+    select-data:x:/*/*/p5.page/"={0}"
+      :{_id}
+    set-widget-property:page-name
+      value:x:/../*/select-data/*/*/name?value
+    set-widget-property:page-url
+      value:x:/../*/select-data/*?value
+
+
   widgets
 
 
@@ -94,7 +106,6 @@ create-widget
               type:text
               class:form-control
               placeholder:Page name ...
-              value
 
 
     /*
@@ -116,7 +127,6 @@ create-widget
               type:text
               class:form-control
               placeholder:URL ...
-              value
 
 
     /*

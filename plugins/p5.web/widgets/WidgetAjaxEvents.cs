@@ -38,7 +38,7 @@ namespace p5.web.widgets
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-widget-ajax-event", Protection = EventProtection.LambdaClosed)]
-        private void get_widget_ajax_event (ApplicationContext context, ActiveEventArgs e)
+        public void get_widget_ajax_event (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
@@ -63,7 +63,7 @@ namespace p5.web.widgets
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set-widget-ajax-event", Protection = EventProtection.LambdaClosed)]
-        private void set_widget_ajax_event (ApplicationContext context, ActiveEventArgs e)
+        public void set_widget_ajax_event (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through all widgets
             foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "set-widget-ajax-event")) {
@@ -91,7 +91,7 @@ namespace p5.web.widgets
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-widget-ajax-events", Protection = EventProtection.LambdaClosed)]
-        private void list_widget_ajax_events (ApplicationContext context, ActiveEventArgs e)
+        public void list_widget_ajax_events (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new p5.core.Utilities.ArgsRemover(e.Args, true)) {

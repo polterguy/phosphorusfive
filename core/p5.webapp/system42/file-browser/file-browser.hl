@@ -1285,7 +1285,7 @@ create-widget:file-browser
       get-widget-property:x:/-/*/*?value
         class
         innerValue
-      split::x:/-/*/*/"=~ active-file-object"?value
+      split::x:/-/*/*/class/"=~ active-file-object"?value
         =:" active-file-object"
       set-widget-property:x:/-2/*/*/class/"=~ active-file-object"/.?name
         class:x:/./-/0?name

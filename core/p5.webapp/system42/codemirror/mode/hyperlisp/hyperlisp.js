@@ -240,6 +240,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'sha256-hash':
         case 'widget-exist':
         case 'find-widget':
+        case 'find-widget-like':
         case 'reload-location':
         case 'whoami':
         case 'logout':

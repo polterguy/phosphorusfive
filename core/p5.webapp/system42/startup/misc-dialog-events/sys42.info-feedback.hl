@@ -12,7 +12,8 @@ set-protected-event:sys42.info-feedback
    * we create any new ones
    */
   if
-    widget-exist:info-feedback
+    fetch:x:/0/0?value
+      widget-exist:info-feedback
     delete-widget:info-feedback
 
   /*

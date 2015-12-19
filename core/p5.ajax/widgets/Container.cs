@@ -130,7 +130,9 @@ namespace p5.ajax.widgets
         /// <param name="onLoad">Event handler callback for what to do during OnLoad. If you supply an event handler here, then your 
         /// method will be invoked during LoadComplete of your Page, allowing you to have initialization functionality for your control</param>
         /// <typeparam name="T">The type of control you wish to create</typeparam>
-        public T CreatePersistentControl<T> (string id = null, int index = -1, EventHandler onLoad = null) where T : Control, new ()
+        public T CreatePersistentControl<T> (
+            string id = null, 
+            int index = -1) where T : Control, new ()
         {
             StoreOriginalControls ();
             ReRenderChildren ();
@@ -138,12 +140,6 @@ namespace p5.ajax.widgets
             // Creating new control, and adding to the controls collection
             var control = GetCreator<T> ().Create () as T;
             control.ID = string.IsNullOrEmpty (id) ? CreateUniqueId () : id;
-
-            if (onLoad != null) {
-                control.Load += delegate {
-                    onLoad (control, new EventArgs ());
-                };
-            }
 
             if (index == -1)
                 Controls.Add (control);

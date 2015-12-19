@@ -38,30 +38,18 @@ namespace p5.web.widgets
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-parent-widget", Protection = EventProtection.LambdaClosed)]
-        private void get_parent_widget (ApplicationContext context, ActiveEventArgs e)
+        public void get_parent_widget (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new p5.core.Utilities.ArgsRemover (e.Args)) {
+            using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
 
                 // Looping through all IDs given
                 foreach (var idxWidget in FindWidgets <Control> (context, e.Args, "get-parent-widget")) {
 
-                    // Finding parent and returning type as Name and ID as Value
-                    var parent = idxWidget.Parent;
-                    string type = parent.GetType().FullName;
-
-                    // Checking if type is from p5 Ajax, and if so, returning "condensed" typename
-                    if (parent is Widget)
-                        type = type.Substring(type.LastIndexOf(".") + 1).ToLower();
-                    e.Args.Add(type, parent.ID);
+                    // Returning parent of widget, and parent's typename
+                    e.Args.Add(GetTypeName (idxWidget.Parent), idxWidget.Parent.ID);
                 }
             }
-
-            // Making sure we set value of main event node to widget's ID if only one widget was requested
-            if (e.Args.Children.Count == 1)
-                e.Args.Value = e.Args.FirstChild.Value;
-            else
-                e.Args.Value = null; // Making sure we remove arguments if there are multiple return values
         }
 
         /// <summary>
@@ -70,7 +58,7 @@ namespace p5.web.widgets
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-children-widgets", Protection = EventProtection.LambdaClosed)]
-        private void get_children_widgets (ApplicationContext context, ActiveEventArgs e)
+        public void get_children_widgets (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
@@ -85,12 +73,7 @@ namespace p5.web.widgets
                     foreach (Control idxCtrl in idxWidget.Controls) {
 
                         // Adding type of widget as name, and ID as value
-                        string type = idxCtrl.GetType().FullName;
-
-                        // Making sure we return "condensed typename" if widget type is from p5 Ajax
-                        if (idxCtrl is Widget)
-                            type = type.Substring(type.LastIndexOf(".") + 1).ToLower();
-                        e.Args.LastChild.Add(type, idxCtrl.ID);
+                        e.Args.LastChild.Add(GetTypeName (idxCtrl), idxCtrl.ID);
                     }
                 }
             }
@@ -102,32 +85,22 @@ namespace p5.web.widgets
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "find-widget", Protection = EventProtection.LambdaClosed)]
-        private void find_widget (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "find-widget-like", Protection = EventProtection.LambdaClosed)]
+        public void find_widget (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new p5.core.Utilities.ArgsRemover (e.Args)) {
+            using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
 
-                // Retrieving where to start looking
-                var root = FindControl<Widget> (e.Args.GetExValue (context, "cnt"), Manager.AjaxPage);
+                // Retrieving widget from where to start search, defaulting to "cnt"
+                var rootCtrl = FindControl<Widget> (e.Args.GetExValue (context, "cnt"), Manager.AjaxPage);
 
                 // Retrieving all controls having properties matching whatever arguments supplied
-                foreach (var idxWidget in FindWidgetsBy <Widget> (e.Args, root, context)) {
+                foreach (var idxWidget in FindWidgetsBy (e.Args, rootCtrl, context, e.Name == "find-widget-like")) {
 
                     // Adding type of widget as name, and ID as value
-                    string type = idxWidget.GetType().FullName;
-
-                    // Making sure we return "condensed typename" if widget type is from p5 Ajax
-                    if (idxWidget is Widget)
-                        type = type.Substring(type.LastIndexOf(".") + 1).ToLower();
-                    e.Args.Add (type, idxWidget.ID);
+                    e.Args.Add (GetTypeName (idxWidget), idxWidget.ID);
                 }
             }
-
-            // Making sure we set value of main event node to widget's ID if only one widget was found
-            if (e.Args.Children.Count == 1)
-                e.Args.Value = e.Args.FirstChild.Value;
-            else
-                e.Args.Value = null; // Making sure we remove arguments if there are multiple return values
         }
 
         /// <summary>
@@ -136,7 +109,7 @@ namespace p5.web.widgets
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-widgets", Protection = EventProtection.LambdaClosed)]
-        private void list_widgets (ApplicationContext context, ActiveEventArgs e)
+        public void list_widgets (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
@@ -146,7 +119,7 @@ namespace p5.web.widgets
                 if (e.Args.Value != null && filter.Count == 0)
                     return; // Possibly a filter expression, leading into oblivion
 
-                // Recursively retrieving all widgets on page
+                // Recursively retrieving all widgets on page, matching filter, or all, if there is no filters
                 ListWidgets(filter, e.Args, Manager.AjaxPage);
             }
         }
@@ -157,10 +130,10 @@ namespace p5.web.widgets
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "widget-exist", Protection = EventProtection.LambdaClosed)]
-        private void widget_exist (ApplicationContext context, ActiveEventArgs e)
+        public void widget_exist (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
-            using (new p5.core.Utilities.ArgsRemover(e.Args)) {
+            using (new p5.core.Utilities.ArgsRemover(e.Args, true)) {
 
                 // Looping through all IDs given
                 foreach (var widgetId in XUtil.Iterate<string> (context, e.Args, true)) {
@@ -168,9 +141,6 @@ namespace p5.web.widgets
                     // Adding a boolean as result node, with widget's ID as name, indicating existence of widget
                     e.Args.Add(widgetId, FindControl<Control>(widgetId, Manager.AjaxPage) != null);
                 }
-
-                // Return true as main Active Event node if ALL widgets existed, otherwise returning false
-                e.Args.Value = !e.Args.Children.Where(ix => !ix.Get<bool> (context)).GetEnumerator().MoveNext();
             }
         }
 
@@ -181,44 +151,72 @@ namespace p5.web.widgets
         /*
          * Recursively traverses entire Control hierarchy on page, and adds up into result node
          */
-        private static void ListWidgets (List<string> filter, Node args, Control current)
+        private static void ListWidgets (
+            List<string> filter, 
+            Node args, 
+            Control ctrl)
         {
-            if (filter.Count == 0 || filter.Count(ix => ix == current.ID) > 0) {
+            // Checking if current ctrl is mathing filters supplied, 
+            // alternative there are no filters, at which point everything should match
+            if (filter.Count == 0 || filter.Count(ix => ix == ctrl.ID) > 0) {
 
                 // Current Control is matching one of our filters, or there are no filters
-                string typeString = current.GetType().FullName;
-                if (current is Widget)
-                    typeString = typeString.Substring(typeString.LastIndexOf(".") + 1).ToLower();
-
-                args.Add(typeString, current.ID);
+                args.Add(GetTypeName (ctrl), ctrl.ID);
             }
-            foreach (Control idxChild in current.Controls) {
+
+            // Looping through each child control of current control, recursively invoking "self" to check for match
+            foreach (Control idxChildCtrl in ctrl.Controls) {
 
                 // Recursively invoking "self"
-                ListWidgets (filter, args, idxChild);
+                ListWidgets (filter, args, idxChildCtrl);
             }
         }
 
         /*
          * Helper to retrieve a list of widgets from a Node that serves as criteria
          */
-        private IEnumerable<T> FindWidgetsBy<T> (Node args, Widget idx, ApplicationContext context) where T : Widget
+        private IEnumerable<Widget> FindWidgetsBy (
+            Node args, 
+            Control ctrl, 
+            ApplicationContext context,
+            bool like = false)
         {
-            if (idx == null)
-                yield break;
+            // Checking if current ctrl Widget, at which point we can check for match against criteria
+            var widget = ctrl as Widget;
+            if (widget != null) {
 
-            bool match = true;
-            foreach (var idxNode in args.Children) {
-                if (!idx.HasAttribute(idxNode.Name) || idx[idxNode.Name] != idxNode.GetExValue<string>(context, null)) {
-                    match = false;
-                    break;
+                // Looping through each criteria, to check for match
+                // Notice, ALL specified criteria must match for control to yield a match
+                // If "like" is true, then it will look for a "like" condition, meaning not exact match of criteria, but rather 
+                // if attribute "contains" value of criteria
+                bool match = true;
+                foreach (var idxNode in args.Children) {
+                    if (!widget.HasAttribute (idxNode.Name)) {
+                        match = false;
+                        break;
+                    } else {
+                        if (!like && widget [idxNode.Name] != idxNode.GetExValue<string> (context, null)) {
+                            match = false;
+                            break;
+                        } else if (like && !widget [idxNode.Name].Contains (idxNode.GetExValue<string> (context, null))) {
+                            match = false;
+                            break;
+                        }
+                    }
                 }
+
+                // Checking if criteria search above gave us a match
+                if (match)
+                    yield return widget; // We have a match!
             }
-            if (match)
-                yield return idx as T;
-            foreach (var idxChild in idx.Controls) {
-                foreach (var idxSubFind in FindWidgetsBy<T> (args, idxChild as T, context)) {
-                    yield return idxSubFind;
+
+            // Regardless of whether or not current control gave us a match, we still search children collection for matches
+            foreach (Control idxChildCtrl in ctrl.Controls) {
+
+                // Recursively invoking "self" with currently iterated child control
+                // Notice, the "ToList" parts are important here, to not break enumeration upon finding a match
+                foreach (var idxSubFind in FindWidgetsBy (args, idxChildCtrl, context, like).ToList ()) {
+                    yield return idxSubFind; // We have a match!
                 }
             }
         }

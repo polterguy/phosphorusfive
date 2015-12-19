@@ -12,7 +12,8 @@ set-protected-event:sys42.confirm-action
    * we create any new ones
    */
   if
-    widget-exist:modal-confirmation
+    fetch:x:/0/0?value
+      widget-exist:modal-confirmation
     delete-widget:modal-confirmation
 
   /*

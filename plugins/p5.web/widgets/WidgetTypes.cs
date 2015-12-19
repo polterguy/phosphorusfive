@@ -35,9 +35,9 @@ namespace p5.web.widgets
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.web.widgets.container", Protection = EventProtection.NativeClosed)]
-        private void p5_web_controls_container (ApplicationContext context, ActiveEventArgs e)
+        public void p5_web_controls_container (ApplicationContext context, ActiveEventArgs e)
         {
-            CreateWidget<Container> (context, e.Args, "div");
+            e.Args.Value = CreateWidget<Container> (context, e.Args, "div");
         }
 
         /// <summary>
@@ -46,9 +46,9 @@ namespace p5.web.widgets
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.web.widgets.literal", Protection = EventProtection.NativeClosed)]
-        private void p5_web_controls_literal (ApplicationContext context, ActiveEventArgs e)
+        public void p5_web_controls_literal (ApplicationContext context, ActiveEventArgs e)
         {
-            CreateWidget<Literal> (context, e.Args, "p");
+            e.Args.Value = CreateWidget<Literal> (context, e.Args, "p");
         }
 
         /// <summary>
@@ -57,15 +57,15 @@ namespace p5.web.widgets
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.web.widgets.void", Protection = EventProtection.NativeClosed)]
-        private void p5_web_controls_void (ApplicationContext context, ActiveEventArgs e)
+        public void p5_web_controls_void (ApplicationContext context, ActiveEventArgs e)
         {
-            CreateWidget<Void> (context, e.Args, "input");
+            e.Args.Value = CreateWidget<Void> (context, e.Args, "input");
         }
 
         /*
          * Creates a widget from the given node
          */
-        private void CreateWidget<T> (
+        private Widget CreateWidget<T> (
             ApplicationContext context, 
             Node args, 
             string elementType) where T : Widget, new ()
@@ -74,44 +74,17 @@ namespace p5.web.widgets
             var parent = args.GetChildValue<Container> ("_parent", context);
             var position = args.GetChildValue ("position", context, -1);
 
-            // Getting [oninit], if any
-            var onInitialLoad = CreateLoadingEvents (context, args);
-            EventHandler handler = null;
-            if (onInitialLoad != null) {
-                handler = delegate (object sender, EventArgs e) {
-                    onInitialLoad.Insert (0, new Node ("_event", ((Control)sender).ID));
-                    context.RaiseLambda ("eval", onInitialLoad);
-                };
-            }
-
-            // Creating control as persistent control
+            // Creating control as persistent control, and setting HTML element type
             var widget = parent.CreatePersistentControl<T> (
                 args.Get<string> (context),
-                position,
-                handler);
-
-            // Setting ElementType (html element) of Widget
+                position);
             widget.ElementType = elementType;
 
-            // Making sure main widget ID is passed into decoration process
+            // Decorating widget properties/events, and create child widgets
             DecorateWidget (context, widget, args);
 
             // Making sure we return Widget to caller
-            args.Value = widget;
-        }
-
-        /*
-         * Creates the [oninit] event for widget, if there is one defined
-         */
-        private Node CreateLoadingEvents (ApplicationContext context, Node node)
-        {
-            // Checking to see if we've got an "oninit" Active Event for widget, and if so, return lambda for it
-            var onInitialLoad = node["oninit"];
-            if (onInitialLoad == null)
-                return null;
-
-            // Returning lambda object
-            return onInitialLoad.UnTie ();
+            return widget;
         }
 
         /*
@@ -148,7 +121,8 @@ namespace p5.web.widgets
                     case "position":
                     case "parent":
                     case "has-name":
-                        // Skipping these buggers, since they're not supposed to be handled here
+                    case "oninit":
+                        // Skipping these buggers, since they're handled elsewhere
                         break;
                     default:
 
@@ -216,6 +190,7 @@ namespace p5.web.widgets
             // Looping through all child widgets declared in lambda object
             foreach (var idxChild in children.Children) {
 
+                // Passing in parent widget, when invoking creational Active Event for currently iterated widget
                 idxChild.Insert (0, new Node ("_parent", widget));
                 context.RaiseNative ("p5.web.widgets." + idxChild.Name, idxChild);
             }
@@ -246,8 +221,8 @@ namespace p5.web.widgets
          */
         private void HandleDefaultProperty (ApplicationContext context, Widget widget, Node node)
         {
-            // Checking if this is a declaration of an event handler
-            if (node.Name.StartsWith ("on")) {
+            // Checking if this is a declaration of an event handler, either "visible" or "invisible server-side"
+            if (node.Name.StartsWith ("on") || node.Name.StartsWith ("_on")) {
 
                 // This is an event, creating it
                 CreateEventHandler (context, widget, node);

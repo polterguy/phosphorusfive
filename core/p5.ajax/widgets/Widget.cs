@@ -103,7 +103,8 @@ namespace p5.ajax.widgets
         /// </summary>
         /// <value>The render mode</value>
         protected RenderingMode RenderMode {
-            get; set;
+            get;
+            set;
         }
 
         /// <summary>

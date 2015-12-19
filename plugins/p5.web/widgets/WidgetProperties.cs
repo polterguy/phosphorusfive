@@ -30,7 +30,7 @@ namespace p5.web.widgets
             : base (context, manager)
         { }
 
-        #region [ -- Widget properties -- ]
+        #region [ -- Widget property getters and setters -- ]
 
         /// <summary>
         ///     Returns properties and/or attributes requested by caller as children nodes
@@ -38,13 +38,10 @@ namespace p5.web.widgets
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-widget-property", Protection = EventProtection.LambdaClosed)]
-        private void get_widget_property (ApplicationContext context, ActiveEventArgs e)
+        public void get_widget_property (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
-
-                if (e.Args.Value == null || e.Args.Children.Count == 0)
-                    return; // Nothing to do here ...
 
                 // Looping through all widget IDs given by caller
                 foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "get-widget-property")) {
@@ -85,11 +82,8 @@ namespace p5.web.widgets
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set-widget-property", Protection = EventProtection.LambdaClosed)]
-        private void set_widget_property (ApplicationContext context, ActiveEventArgs e)
+        public void set_widget_property (ApplicationContext context, ActiveEventArgs e)
         {
-            if (e.Args.Value == null || e.Args.Children.Count == 0)
-                return; // Nothing to do here ...
-
             // Looping through all widget IDs given by caller
             foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "set-widget-property")) {
 
@@ -125,7 +119,7 @@ namespace p5.web.widgets
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "delete-widget-property", Protection = EventProtection.LambdaClosed)]
-        private void delete_widget_property (ApplicationContext context, ActiveEventArgs e)
+        public void delete_widget_property (ApplicationContext context, ActiveEventArgs e)
         {
             if (e.Args.Value == null || e.Args.Children.Count == 0)
                 return; // Nothing to do here ...
@@ -144,7 +138,7 @@ namespace p5.web.widgets
                     case "has-id":
                     case "has-name":
                     case "render-type":
-                        throw new LambdaException ("Cannot remove property; '" + nameNode.Name + "' of widget", e.Args, context);
+                        throw new LambdaException ("Cannot remove property '" + nameNode.Name + "' of widget", e.Args, context);
                     default:
                         widget.RemoveAttribute (nameNode.Name);
                         break;
@@ -159,13 +153,10 @@ namespace p5.web.widgets
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-widget-properties", Protection = EventProtection.LambdaClosed)]
-        private void list_widget_properties (ApplicationContext context, ActiveEventArgs e)
+        public void list_widget_properties (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
-
-                if (e.Args.Value == null)
-                    return; // Nothing to do here ...
 
                 // Looping through all widgets
                 foreach (var widget in FindWidgets<Widget> (context, e.Args, "list-widget-properties")) {

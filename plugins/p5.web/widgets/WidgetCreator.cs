@@ -40,13 +40,13 @@ namespace p5.web.widgets
         [ActiveEvent (Name = "create-widget", Protection = EventProtection.LambdaClosed)]
         [ActiveEvent (Name = "create-void-widget", Protection = EventProtection.LambdaClosed)]
         [ActiveEvent (Name = "create-literal-widget", Protection = EventProtection.LambdaClosed)]
-        private void create_widget (ApplicationContext context, ActiveEventArgs e)
+        public void create_widget (ApplicationContext context, ActiveEventArgs e)
         {
             // Figuring out which type of widget we're creating
             var splits = e.Name.Split('-');
             string type = splits.Length == 2 ? "container" : splits[1];
 
-            // Creating specified type of widget
+            // Creating widget of specified type
             CreateWidget (context, e.Args, type);
         }
 
@@ -56,7 +56,7 @@ namespace p5.web.widgets
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "delete-widget", Protection = EventProtection.LambdaClosed)]
-        private void delete_widget (ApplicationContext context, ActiveEventArgs e)
+        public void delete_widget (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through all IDs given
             foreach (var idxWidget in FindWidgets<Control> (context, e.Args, "delete-widget")) {
@@ -72,7 +72,7 @@ namespace p5.web.widgets
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "clear-widget", Protection = EventProtection.LambdaClosed)]
-        private void clear_widget (ApplicationContext context, ActiveEventArgs e)
+        public void clear_widget (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through all IDs given
             foreach (var idxWidget in FindWidgets<Container> (context, e.Args, "clear-widget")) {
@@ -93,7 +93,10 @@ namespace p5.web.widgets
         /*
          * Helper method for creating widgets
          */
-        private void CreateWidget (ApplicationContext context, Node args, string type)
+        private void CreateWidget (
+            ApplicationContext context, 
+            Node args, 
+            string type)
         {
             // Finding parent widget first, which defaults to "main container" widget, if no parent is given
             var parent = FindControl<Widget>(args.GetChildValue ("parent", context, "cnt"), Manager.AjaxPage);
@@ -118,12 +121,27 @@ namespace p5.web.widgets
 
             createNode.Insert (0, new Node ("_parent", parent));
             context.RaiseNative ("p5.web.widgets." + type, createNode);
+
+            // Getting [oninit], if any, for entire hierarchy, and invoking each of them, in "breadth first" order
+            // Notice that since this is done AFTER creation of entire hierarchy, then each [oninit] can invoke dynamically 
+            // created widget lambda events, declared in completely different widgets, both up and down hierarchy. Which
+            // completely eliminates any "cohesion" problems, besides remembering that all [oninit] events are raised in 
+            // "breadth first" order
+            foreach (var idxOnInit in GetInitMethods (createNode)) {
+
+                // Invoking currently iterated [oninit] lambda event
+                idxOnInit.Insert (0, new Node ("_event", idxOnInit.Parent.Get<Widget> (context).ID));
+                context.RaiseLambda ("eval", idxOnInit.Clone ());
+            }
         }
 
         /*
          * Creates local widget events for web widgets created through [create-widget]
          */
-        private void CreateWidgetLambdaEvents (string widgetId, Node eventNode, ApplicationContext context)
+        private void CreateWidgetLambdaEvents (
+            string widgetId, 
+            Node eventNode, 
+            ApplicationContext context)
         {
             // Looping through each event in args
             foreach (var idxEvt in eventNode.Children.ToList ()) {
@@ -141,15 +159,52 @@ namespace p5.web.widgets
         }
 
         /*
+         * Retrieves all [oninit] lambda events for widget hierarchy, in "breadth first" order
+         */
+        private IEnumerable<Node> GetInitMethods (Node args)
+        {
+            // This is a literal/container/void/create-x-widget node, looping through all children to
+            // find any potential [oninit] lambda events
+            foreach (var idxNode in args.Children) {
+
+                // Checking name of currently iterated node
+                if (idxNode.Name == "oninit") {
+
+                    // And we have a MATCH! (this is an [oninit] lambda event
+                    yield return idxNode;
+                }
+            }
+
+            // Checking if currently iterated widget has children widgets
+            if (args ["widgets"] != null) {
+
+                // Looping through all child widgets of currently handled widget
+                foreach (var idxNode in args["widgets"].Children) {
+
+                    // Recursively invoking "self" to retrieve [oninit] of children widgets of currentl handled widget
+                    // Notice "ToList", which makes sure enumeration doesn't halt when finding our first candidate
+                    foreach (var idxInner in GetInitMethods (idxNode).ToList ()) {
+
+                        // And we have a MATCH! (this is an [oninit] lambda event, found in recursive invocation of "self"
+                        yield return idxInner;
+                    }
+                }
+            }
+        }
+
+        /*
          * Helper to remove a widget from Page control collection
          */
-        private void RemoveWidget (ApplicationContext context, Node args, Control widget)
+        private void RemoveWidget (
+            ApplicationContext context, 
+            Node args, 
+            Control widget)
         {
             // Basic logical error checking
             var parent = widget.Parent as Container;
             if (parent == null)
                 throw new LambdaException (
-                    "You cannot delete a widget who's parent is not a Phosphorus Five Ajax Container widget. Tried to delete; " + widget.ID + " which is of type " + widget.GetType().FullName,
+                    "You cannot delete a widget who's parent is not a Phosphorus Five Ajax Container widget",
                     args,
                     context);
 
@@ -165,6 +220,8 @@ namespace p5.web.widgets
          */
         private void RemoveAllEventsRecursive (Control widget)
         {
+            // Checking if currently iterated Control is Widget, since only Widgets have
+            // ajax and lambda events
             if (widget is Widget) {
 
                 // Removing all Ajax Events for widget

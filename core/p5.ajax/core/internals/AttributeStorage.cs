@@ -262,8 +262,9 @@ namespace p5.ajax.core.internals
                     lst.Add (idx);
             }
 
-            // Removing stuff that's not actually attributes, but still persisted here for convenience
-            lst.RemoveAll (idx => idx.Name == "outerHTML" || idx.Name == "innerValue" || idx.Name == "Tag");
+            // Removing stuff that's not actually attributes, but still persisted here for convenience,
+            // in addition to all "private attributes" (meaning server-side only attributes)
+            lst.RemoveAll (ix => ix.Name == "outerHTML" || ix.Name == "innerValue" || ix.Name == "Tag" || ix.Name.StartsWith ("_"));
 
             // Rendering to html writer
             foreach (var idx in lst) {
@@ -272,12 +273,8 @@ namespace p5.ajax.core.internals
                 if (idx.Name.StartsWith ("on") && Utilities.IsLegalMethodName (idx.Value)) {
                     if (!widget.HasID)
                         throw new ArgumentException ("You cannot declare events on Widgets that does not render its ID attribute");
-                    if (name.EndsWith ("_"))
-                        continue; // "invisible" event, only used server-side
                     value = "p5.e(event)";
                 } else {
-                    if (name.EndsWith ("_"))
-                        continue; // "invisible" attribute, only used server-side
                     value = idx.Value;
                 }
                 writer.Write (" ");

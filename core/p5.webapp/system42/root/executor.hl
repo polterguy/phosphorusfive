@@ -33,7 +33,7 @@ sys42.execute-lisp-file:/system42/codemirror/include-codemirror.hl
  */
 include-javascript:@"window._execute_lambda = function (e) {
   var el = p5.$('execute');
-  el.raise('onclick_', {
+  el.raise('_onclick', {
     onsuccess:function(ret, evt) {
       window.execute_output.getDoc().setValue(ret.code);
     }});
@@ -89,7 +89,7 @@ create-widget:executor
           /*
            * Trickery to make sure we can handle our event in JavaScript
            * to retrieve custom JSON return values from server in JavaScript
-           * the actual event handler is "onclick_", but this event is hidden,
+           * the actual event handler is "_onclick", but this event is hidden,
            * and won't be rendered to the browser since it ends with "_".
            * the DOM javascript onclick event handler though, invokes a JavaScript function,
            * which actually invokes the actual server-side event, which again returns
@@ -97,7 +97,7 @@ create-widget:executor
            * again puts into the "execute_output" CodeMirror widget.
            */
           onclick:"window._execute_lambda(event);"
-          onclick_
+          _onclick
 
             // First retrieving text from execute_input textarea and converting to nodes
             get-widget-property:execute_input

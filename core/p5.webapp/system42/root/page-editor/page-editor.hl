@@ -149,7 +149,7 @@ create-widget:page-editor
 
 
               /*
-               * Here we selected the currently edited page, if any, and 
+               * Here we select the currently edited page, if any, and 
                * load up the correct page editor
                */
               oninit
@@ -157,6 +157,7 @@ create-widget:page-editor
                 if
                   sys42.get-currently-edited-page
                   sys42.edit-page
+
 
               /*
                * Here we start editing the selected page
