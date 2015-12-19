@@ -1,0 +1,112 @@
+/*
+ * Phosphorus Five, copyright 2014 - 2015, Thomas Hansen, phosphorusfive@gmail.com
+ * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
+ */
+
+using System;
+using System.IO;
+using System.Text;
+using System.Globalization;
+using System.Runtime.InteropServices;
+using p5.exp;
+using p5.core;
+using p5.exp.exceptions;
+
+namespace p5.types.types
+{
+    /// <summary>
+    ///     Class helps converts from float to object, and vice versa
+    /// </summary>
+    public static class FloatConversion
+    {
+        /// <summary>
+        ///     Creates a single from its string/byte[] representation
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.float", Protection = EventProtection.NativeClosed)]
+        private static void p5_hyperlisp_get_object_value_float (ApplicationContext context, ActiveEventArgs e)
+        {
+            var strValue = e.Args.Value as string;
+            if (strValue != null) {
+                e.Args.Value = float.Parse (strValue, CultureInfo.InvariantCulture);
+            } else {
+                throw new LambdaException (
+                    "Don't know how to convert that to a float",
+                    e.Args, 
+                    context);
+            }
+        }
+
+        /// <summary>
+        ///     Creates a double from its string/byte[] representation
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.double", Protection = EventProtection.NativeClosed)]
+        private static void p5_hyperlisp_get_object_value_double (ApplicationContext context, ActiveEventArgs e)
+        {
+            var strValue = e.Args.Value as string;
+            if (strValue != null) {
+                e.Args.Value = double.Parse (strValue, CultureInfo.InvariantCulture);
+            } else {
+                throw new LambdaException (
+                    "Don't know how to convert that to a double",
+                    e.Args, 
+                    context);
+            }
+        }
+
+        /// <summary>
+        ///     Creates a decimal from its string/byte[] representation
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.decimal", Protection = EventProtection.NativeClosed)]
+        private static void p5_hyperlisp_get_object_value_decimal (ApplicationContext context, ActiveEventArgs e)
+        {
+            var strValue = e.Args.Value as string;
+            if (strValue != null) {
+                e.Args.Value = decimal.Parse (strValue, CultureInfo.InvariantCulture);
+            } else {
+                throw new LambdaException (
+                    "Don't know how to convert that to a decimal",
+                    e.Args, 
+                    context);
+            }
+        }
+
+        /// <summary>
+        ///     Returns the Hyperlisp type-name for the single type
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Single", Protection = EventProtection.NativeClosed)]
+        private static void p5_hyperlisp_get_type_name_System_Single (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "float";
+        }
+
+        /// <summary>
+        ///     Returns the Hyperlisp type-name for the double type
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Double", Protection = EventProtection.NativeClosed)]
+        private static void p5_hyperlisp_get_type_name_System_Double (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "double";
+        }
+
+        /// <summary>
+        ///     Returns the Hyperlisp type-name for the decimal type
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Decimal", Protection = EventProtection.NativeClosed)]
+        private static void p5_hyperlisp_get_type_name_System_Decimal (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = "decimal";
+        }
+    }
+}

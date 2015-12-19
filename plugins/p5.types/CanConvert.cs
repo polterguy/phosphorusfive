@@ -11,6 +11,9 @@ using System.Runtime.InteropServices;
 using p5.core;
 using p5.exp;
 
+/// <summary>
+///     Main namespace for types and type-conversions in Phosphorus Five
+/// </summary>
 namespace p5.types
 {
     /// <summary>
@@ -37,17 +40,17 @@ namespace p5.types
                 string type = e.Args.GetExChildValue<string> ("type", context);
 
                 // Exploiting the fact that conversions will throw exception if conversion is not possible
-                try
-                {
-                    foreach (var idx in XUtil.Iterate<object> (context, e.Args)) {
+                try {
+
+                    // Looping through all arguments supplied
+                    foreach (var idx in XUtil.Iterate<object> (context, e.Args, true)) {
                         var objValue = context.RaiseNative ("p5.hyperlisp.get-object-value." + type, new Node ("", idx)).Value;
                     }
 
                     // No exception occurred, conversion is possible
                     e.Args.Value = true;
-                }
-                catch
-                {
+                } catch {
+
                     // Oops, conversion is not possible!
                     e.Args.Value = false;
                 }

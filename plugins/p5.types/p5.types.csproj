@@ -42,10 +42,17 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GetTypeName.cs" />
-    <Compile Include="GetStringValue.cs" />
-    <Compile Include="GetObjectValue.cs" />
     <Compile Include="CanConvert.cs" />
+    <Compile Include="types\NodeConversion.cs" />
+    <Compile Include="types\ExpressionConversion.cs" />
+    <Compile Include="types\GuidConversion.cs" />
+    <Compile Include="types\LongConversion.cs" />
+    <Compile Include="types\IntConversion.cs" />
+    <Compile Include="types\ShortConversion.cs" />
+    <Compile Include="types\FloatConversion.cs" />
+    <Compile Include="types\ByteConversion.cs" />
+    <Compile Include="types\DateConversion.cs" />
+    <Compile Include="types\BoolConversion.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -57,5 +64,8 @@
       <Project>{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}</Project>
       <Name>p5.exp</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="types\" />
   </ItemGroup>
 </Project>

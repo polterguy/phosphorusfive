@@ -126,7 +126,7 @@ namespace p5.web.widgets
             // Notice that since this is done AFTER creation of entire hierarchy, then each [oninit] can invoke dynamically 
             // created widget lambda events, declared in completely different widgets, both up and down hierarchy. Which
             // completely eliminates any "cohesion" problems, besides remembering that all [oninit] events are raised in 
-            // "breadth first" order
+            // "breadth first" order though. FUCK THE PAGE LIFECYCLE! :D
             foreach (var idxOnInit in GetInitMethods (createNode)) {
 
                 // Invoking currently iterated [oninit] lambda event
@@ -165,14 +165,10 @@ namespace p5.web.widgets
         {
             // This is a literal/container/void/create-x-widget node, looping through all children to
             // find any potential [oninit] lambda events
-            foreach (var idxNode in args.Children) {
+            foreach (var idxNode in args.Children.Where (ix => ix.Name == "oninit")) {
 
-                // Checking name of currently iterated node
-                if (idxNode.Name == "oninit") {
-
-                    // And we have a MATCH! (this is an [oninit] lambda event
-                    yield return idxNode;
-                }
+                // And we have a MATCH! (this is an [oninit] lambda event
+                yield return idxNode;
             }
 
             // Checking if currently iterated widget has children widgets
