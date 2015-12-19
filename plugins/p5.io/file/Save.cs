@@ -37,13 +37,6 @@ namespace p5.io.file
                 // Verifying user is allowed to save to file
                 context.RaiseNative ("p5.io.authorize.modify-file", new Node ("", fileName).Add ("args", e.Args));
 
-                // Verify path is correct according to conventions
-                if (!fileName.StartsWith ("/"))
-                    throw new LambdaException (
-                        string.Format ("Filename '{0}' was not a valid filename", fileName),
-                        e.Args,
-                        context);
-
                 // Getting source, or content of file
                 var source = Utilities.Convert<string> (context, XUtil.SourceSingle (context, e.Args));
 
@@ -74,13 +67,6 @@ namespace p5.io.file
 
                 // Verifying user is allowed to save to file
                 context.RaiseNative ("p5.io.authorize.modify-file", new Node ("", fileName).Add ("args", e.Args));
-
-                // Verify path is correct according to conventions
-                if (!fileName.StartsWith ("/"))
-                    throw new LambdaException (
-                        string.Format ("Filename '{0}' was not a valid filename", fileName),
-                        e.Args,
-                        context);
 
                 // Getting source, or content of file
                 var source = Utilities.Convert<byte[]> (context, XUtil.SourceSingle (context, e.Args));

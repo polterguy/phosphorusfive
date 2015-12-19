@@ -45,13 +45,6 @@ namespace p5.io.file
                     // Verifying user is authorized to reading from currently iterated file
                     context.RaiseNative ("p5.io.authorize.read-file", new Node ("", idxFile).Add ("args", e.Args));
 
-                    // Verify path is correct according to conventions
-                    if (!idxFile.StartsWith ("/"))
-                        throw new LambdaException (
-                            string.Format ("Filename '{0}' was not a valid filename", idxFile),
-                            e.Args,
-                            context);
-
                     // Letting caller know whether or not this file exists
                     if (!File.Exists (rootFolder + idxFile)) {
 

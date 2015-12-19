@@ -38,23 +38,15 @@ namespace p5.io.zip.helpers
             string rootFolder, 
             string destinationFile)
         {
-            // Verifies destination file is legal path
-            if (!destinationFile.StartsWith ("/"))
-                throw new LambdaException (string.Format ("Destination file '{0}' was not a valid filename", destinationFile), args, context);
-
             // Checking if file exist
             if (File.Exists (rootFolder + destinationFile)) {
 
                 // Destination file exist from before, creating a new unique destination filename
                 destinationFile = Helpers.CreateNewUniqueFileName (context, destinationFile);
-
-                // Verifying user is authorized to writing to new destination file
-                context.RaiseNative ("p5.io.authorize.modify-file", new Node ("", destinationFile).Add ("args", args));
-            } else {
-
-                // Verifying user is authorized to writing to destination
-                context.RaiseNative ("p5.io.authorize.modify-file", new Node ("", destinationFile).Add ("args", args));
             }
+
+            // Verifying user is authorized to writing to destination
+            context.RaiseNative ("p5.io.authorize.modify-file", new Node ("", destinationFile).Add ("args", args));
 
             // Returning possibly new path to caller
             return destinationFile;
@@ -70,29 +62,8 @@ namespace p5.io.zip.helpers
             string destinationFile, 
             string sourceFileFolder)
         {
-            // Verify path is correct according to conventions
-            if (!sourceFileFolder.StartsWith ("/"))
-                throw new LambdaException (
-                    string.Format ("Source file/folder '{0}' was not a valid filename/foldername", sourceFileFolder), 
-                    args, 
-                    context);
-
-            // Checking that destination is not underneath source
-            if (destinationFile.IndexOf (sourceFileFolder) == 0 && destinationFile.Length != sourceFileFolder.Length + 4)
-                throw new LambdaException (
-                    string.Format ("Destination file '{0}' is beneath source '{1}', which is logically impossible to perform", destinationFile, sourceFileFolder), 
-                    args, 
-                    context);
-
             // Verify path is correctly ending with a trailing slash "/" if object is a folder
             if (Directory.Exists (rootFolder + sourceFileFolder)) {
-
-                // Making sure foldername is legal format
-                if (!sourceFileFolder.EndsWith ("/"))
-                    throw new LambdaException (
-                        string.Format ("Source folder '{0}' was not a valid filename", sourceFileFolder), 
-                        args, 
-                        context);
 
                 // Verifies user is authorised to reading folder
                 context.RaiseNative ("p5.io.authorize.read-folder", new Node ("", sourceFileFolder).Add ("args", args));
@@ -101,6 +72,13 @@ namespace p5.io.zip.helpers
                 // Verifies user is authorised to reading file
                 context.RaiseNative ("p5.io.authorize.read-file", new Node ("", sourceFileFolder).Add ("args", args));
             }
+
+            // Checking that destination is not underneath source
+            if (destinationFile.IndexOf (sourceFileFolder) == 0 && destinationFile.Length != sourceFileFolder.Length + 4)
+                throw new LambdaException (
+                    string.Format ("Destination file '{0}' is beneath source '{1}', which is logically impossible to perform", destinationFile, sourceFileFolder), 
+                    args, 
+                    context);
         }
 
         /*

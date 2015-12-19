@@ -234,7 +234,7 @@ namespace p5.ajax.widgets
         {
             // Making sure all the automatically generated LiteralControls are removed, since they mess up their IDs,
             // but not in a normal postback, or initial loading of the page, since we need the formatting they provide
-            if ((Page as IAjaxPage).Manager.IsPhosphorusRequest) {
+            if ((Page as IAjaxPage).Manager.IsPhosphorusAjaxRequest) {
                 var ctrls = Controls.Cast<Control> ().Where (idx => string.IsNullOrEmpty (idx.ID)).ToList ();
                 foreach (var idx in ctrls) {
                     Controls.Remove (idx);

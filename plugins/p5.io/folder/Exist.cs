@@ -39,13 +39,6 @@ namespace p5.io.folder
                 e.Args.Value = false;
                 foreach (var idxFolder in sourceFiles) {
 
-                    // Verify foldername is a valid foldername according to conventions
-                    if (!idxFolder.StartsWith ("/") || !idxFolder.EndsWith ("/"))
-                        throw new LambdaException (
-                            string.Format ("Foldername '{0}' was not a valid foldername", idxFolder),
-                            e.Args,
-                            context);
-
                     // Verifying user is authorized to reading from currently iterated folder
                     context.RaiseNative ("p5.io.authorize.read-folder", new Node ("", idxFolder).Add ("args", e.Args));
 

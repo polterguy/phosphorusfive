@@ -34,7 +34,7 @@ namespace p5.mime
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // Keeping base folder to application around
-                string baseFolder = Common.GetBaseFolder (context).TrimEnd ('/');
+                string baseFolder = Common.GetRootFolder (context).TrimEnd ('/');
 
                 // Looping through each filename supplied by caller
                 foreach (var idxFilename in XUtil.Iterate<string> (context, e.Args, true)) {

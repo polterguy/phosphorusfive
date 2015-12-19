@@ -65,10 +65,6 @@ namespace p5.security.helpers
             string password = args.GetExChildValue<string> ("password", context);
             bool persist = args.GetExChildValue ("persist", context, false);
 
-            // Returning Sha256 hash as base64 encoded string
-            var saltAndPassword = context.RaiseNative ("p5.security.get-password-salt").Get<string> (context) + password;
-            var passwordFingerprint = context.RaiseNative ("sha256-hash", new Node("", saltAndPassword)).Get<string> (context);
-
             // Getting password file in Node format, but locking file access as we retrieve it
             Node pwdFile = AuthFile.GetAuthFile(context);
 
@@ -77,8 +73,16 @@ namespace p5.security.helpers
             if (userNode == null)
                 throw new SecurityException("Credentials not accepted");
 
+            // Getting system salt
+            var serverSalt = context.RaiseNative ("p5.security.get-password-salt").Get<string> (context);
+
+            // Then creating system fingerprint from given password
+            var userSalt = pwdFile["users"][username]["cookie-salt"].Get<string>(context);
+            var userPasswordFingerprint = context.RaiseNative ("sha256-hash", new Node ("", userSalt + password)).Get<string> (context);
+            var systemFingerprint = context.RaiseNative ("sha256-hash", new Node ("", serverSalt + userPasswordFingerprint)).Get<string> (context);
+
             // Checking for match on password
-            if (userNode["password"].Get<string> (context) != passwordFingerprint)
+            if (userNode["password"].Get<string> (context) != systemFingerprint)
                 throw new SecurityException("Credentials not accepted"); // Exact same wording as above! IMPORTANT!!
 
             // Success, creating our ticket
@@ -98,11 +102,11 @@ namespace p5.security.helpers
                 // Caller wants to create persistent cookie to remember username/password
                 HttpCookie cookie = new HttpCookie(_credentialCookieName);
                 cookie.Expires = DateTime.Now.AddDays(context.RaiseNative ("p5.security.get-credential-cookie-days").Get<int> (context));
-                cookie.HttpOnly = true; // To avoid JavaScript access to credentials!
-                string salt = userNode["cookie-salt"].Get<string>(context);
+                cookie.HttpOnly = true; // To avoid JavaScript access to credential cookie
 
-                // Notice, we use a DIFFERENT fingerprint as password for cookie than what we use for storing cookie in auth file
-                cookie.Value = username + " " + context.RaiseNative ("sha256-hash", new Node("", salt + password)).Value;
+                // Notice, we use another fingerprint as password for cookie than what we use for storing cookie in auth file
+                // The "system salt" never leaves the server
+                cookie.Value = username + " " + userPasswordFingerprint;
                 HttpContext.Current.Response.Cookies.Add(cookie);
             }
         }
@@ -145,15 +149,16 @@ namespace p5.security.helpers
             string password = args.GetExChildValue<string>("password", context);
             string role = args.GetExChildValue<string>("role", context);
 
-            // We need this guy to save passwords file, and create user folder structure
-            string rootFolder = context.RaiseNative("p5.core.application-folder").Get<string>(context);
-
             // Verifying username is valid, since we'll need to create a folder for user
             VerifyUsernameValid (username);
 
-            // Returning Sha256 hash as base64 encoded string
-            var saltAndPassword = context.RaiseNative ("p5.security.get-password-salt").Get<string> (context) + password;
-            var passwordFingerprint = context.RaiseNative ("sha256-hash", new Node ("", saltAndPassword)).Get<string> (context);
+            // Creating user salt, and retrieving system salt
+            var userSalt = AuthFile.CreateNewSalt ();
+            var serverSalt = context.RaiseNative ("p5.security.get-password-salt").Get<string> (context);
+
+            // Then salting password with user salt, before salting it with system salt
+            var userPasswordFingerprint = context.RaiseNative ("sha256-hash", new Node ("", userSalt + password)).Get<string> (context);
+            var systemFingerprint = context.RaiseNative ("sha256-hash", new Node ("", serverSalt + userPasswordFingerprint)).Get<string> (context);
 
             // Locking access to password file as we create new user object
             AuthFile.ModifyAuthFile (
@@ -167,13 +172,13 @@ namespace p5.security.helpers
                     authFile["users"].Add(username);
 
                     // Creates a salt for user
-                    authFile ["users"].LastChild.Add("cookie-salt", AuthFile.CreateNewSalt ());
-                    authFile ["users"].LastChild.Add("password", passwordFingerprint);
+                    authFile ["users"].LastChild.Add("password", systemFingerprint);
+                    authFile ["users"].LastChild.Add("cookie-salt", userSalt);
                     authFile ["users"].LastChild.Add("role", role);
                 });
 
             // Creating newly created user's directory structure
-            CreateUserDirectory (rootFolder, username);
+            CreateUserDirectory (context.RaiseNative("p5.core.application-folder").Get<string>(context), username);
         }
 
         /*
@@ -210,7 +215,7 @@ namespace p5.security.helpers
 
         /*
          * Changes password of "root" account, but only if existing root account's password 
-         * is null. Used during setup of server
+         * is null. Used during setup of system
          */
         public static void SetRootPassword (ApplicationContext context, Node args)
         {
@@ -219,27 +224,12 @@ namespace p5.security.helpers
             if (string.IsNullOrEmpty(password))
                 throw new SecurityException("You cannot set the root password to empty");
 
-            // Returning Sha256 hash as base64 encoded string
-            var saltAndPassword = context.RaiseNative ("p5.security.get-password-salt").Get<string> (context) + password;
-            var passwordFingerprint = context.RaiseNative ("sha256-hash", new Node ("", saltAndPassword)).Get<string> (context);
-
-            // Retrieving password file, locking access to it as we do, such that we can change root account's password
-            // after first checking that password is actually null!
-            AuthFile.ModifyAuthFile (
-                context,
-                delegate (Node authFile) {
-                    if (authFile["users"]["root"] != null)
-                        throw new LambdaSecurityException(
-                            "Somebody tried to use installation Active event [p5.web.set-root-password] to change password of existing root account",
-                            args,
-                            context);
-
-                    // Changing password of root account
-                    authFile["users"].Add ("root");
-                    authFile["users"]["root"].Add ("password", passwordFingerprint);
-                    authFile["users"]["root"].Add ("cookie-salt", AuthFile.CreateNewSalt ());
-                    authFile["users"]["root"].Add ("role", "root");
-                });
+            // Creating root account
+            Node rootAccountNode = new Node ();
+            rootAccountNode.Add ("username", "root");
+            rootAccountNode.Add ("password", password);
+            rootAccountNode.Add ("role", "root");
+            CreateUser (context, rootAccountNode);
         }
 
         /*
@@ -365,14 +355,15 @@ namespace p5.security.helpers
             if (userNode == null)
                 throw new SecurityException ("Cookie not accepted");
 
-            // User exist, retrieving salt and password to see if we have a match
-            string salt = userNode["cookie-salt"].Get<string> (context);
-            string password = userNode["password"].Get<string> (context);
-            string hashSaltedPwd = context.RaiseNative("sha256-hash", new Node("", salt + password)).Get<string>(context);
+            // Getting system salt
+            var serverSalt = context.RaiseNative ("p5.security.get-password-salt").Get<string> (context);
+
+            // Then creating system fingerprint from given password
+            var systemFingerprint = context.RaiseNative ("sha256-hash", new Node ("", serverSalt + cookieHashSaltedPwd)).Get<string> (context);
 
             // Notice, we do NOT THROW if passwords do not match, since it might simply mean that user has explicitly created a new "salt"
             // to throw out other clients that are currently persistently logged into system under his account
-            if (hashSaltedPwd == cookieHashSaltedPwd) {
+            if (systemFingerprint == userNode["password"].Get<string> (context)) {
 
                 // MATCH, discarding previous Context Ticket and creating a new Ticket
                 SetTicket (new ApplicationContext.ContextTicket(

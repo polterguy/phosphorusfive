@@ -33,9 +33,9 @@ namespace p5.io.zip
         private static void unzip (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving password, if there is one, and untying it, 
-            // to make sure it never leaves method, in case of exceptions, etc
+            // to make sure it never leaves method, in case of an exception, etc
             string password = e.Args.GetExChildValue<string>("password", context, null);
-            e.Args.FindOrCreate ("password").UnTie (); // Making sure pasword NEVER LEAVES METHOD!!
+            e.Args.FindOrCreate ("password").UnTie (); // Making sure password NEVER LEAVES METHOD!!
 
             // Basic syntax checking
             if (e.Args.Value == null || e.Args.LastChild == null || e.Args ["to"] == null)
@@ -51,15 +51,7 @@ namespace p5.io.zip
                 var rootFolder = Helpers.GetBaseFolder (context);
 
                 // Getting destination folder
-                var destPath = e.Args.GetExChildValue<string> ("to", context);
-                if (string.IsNullOrEmpty(destPath) || destPath [0] != '/' || destPath [destPath.Length - 1] != '/')
-                    throw new LambdaException (
-                        "Destination folder was not a valid foldername", 
-                        e.Args, 
-                        context);
-
-                // Verifying user is authorized to writing to destination folder
-                context.RaiseNative ("p5.io.authorize.modify-folder", new Node ("", destPath).Add ("args", e.Args));
+                var destFolder = GetDestinationFolder (context, e);
 
                 // Looping through each source zip file given
                 foreach (var idxZipFilePath in XUtil.Iterate<string> (context, e.Args)) {
@@ -70,13 +62,26 @@ namespace p5.io.zip
                         e.Args,
                         rootFolder,
                         idxZipFilePath,
-                        destPath,
+                        destFolder,
                         password);
                 }
 
                 // Returning folder path of where files where unzipped to caller
-                e.Args.Value = destPath;
+                e.Args.Value = destFolder;
             }
+        }
+
+        /*
+         * Retrieves destination folder, and verifies user has write access to it
+         */
+        private static string GetDestinationFolder (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Retrieving detination folder
+            var destFolder = e.Args.GetExChildValue<string> ("to", context);
+
+            // Verifying user is authorized to writing to destination folder
+            context.RaiseNative ("p5.io.authorize.modify-folder", new Node ("", destFolder).Add ("args", e.Args));
+            return destFolder;
         }
 
         /*
@@ -127,7 +132,7 @@ namespace p5.io.zip
         }
 
         /*
-         * Ensures that the given destination folder exist
+         * Ensures that the given file's folder exist, and creates it if necessary
          */
         static void EnsureFolderExist (
             ApplicationContext context, 

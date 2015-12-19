@@ -19,25 +19,16 @@ namespace p5.web.widgets
     /// <summary>
     ///     Class encapsulating lambda events of widgets
     /// </summary>
-    public class WidgetLambdaEvents
+    public class WidgetLambdaEvents : BaseWidget
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="p5.web.widgets.WidgetLambdaEvents"/> class
         /// </summary>
-        /// <param name="page">Page</param>
+        /// <param name="context">Application Context</param>
+        /// <param name="manager">PageManager owning this instance</param>
         public WidgetLambdaEvents (ApplicationContext context, PageManager manager)
-        {
-            // Setting WidgetManager for this instance
-            Manager = manager;
-        }
-
-        /*
-         * PageManager for this instance
-         */
-        private PageManager Manager {
-            get;
-            set;
-        }
+            : base (context, manager)
+        { }
 
         #region [ -- Widget lambda events -- ]
 
@@ -53,7 +44,7 @@ namespace p5.web.widgets
             using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
 
                 // Looping through all widgets
-                foreach (var idxWidget in Manager.FindWidgets<Widget> (context, e.Args, "get-widget-lambda-event")) {
+                foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "get-widget-lambda-event")) {
 
                     // Looping through events requested by caller
                     foreach (var idxEventNameNode in e.Args.Children.ToList ()) {
@@ -80,13 +71,13 @@ namespace p5.web.widgets
         private void set_widget_lambda_event (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through all widget IDs
-            foreach (var idxWidget in Manager.FindWidgets<Widget> (context, e.Args, "set-widget-lambda-event")) {
+            foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "set-widget-lambda-event")) {
 
                 // Looping through events requested by caller
                 foreach (var idxEventNameNode in e.Args.Children) {
 
                     // Verifying Active Event is not protected
-                    if (!Manager.CanOverrideEventInLambda (context, idxEventNameNode.Name))
+                    if (!CanOverrideEventInLambda (context, idxEventNameNode.Name))
                         throw new LambdaSecurityException(
                             string.Format ("You cannot override Active Event '{0}' since it is protected", e.Args.Name),
                             e.Args,
@@ -118,7 +109,7 @@ namespace p5.web.widgets
             using (new p5.core.Utilities.ArgsRemover(e.Args, true)) {
 
                 // Looping through all widgets
-                foreach (var idxWidget in Manager.FindWidgets<Widget> (context, e.Args, "list-widget-lambda-events")) {
+                foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "list-widget-lambda-events")) {
 
                     // Then looping through all attribute keys, filtering everything out that does not start with "on"
                     Node curNode = new Node(idxWidget.ID);

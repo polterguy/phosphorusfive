@@ -18,25 +18,16 @@ namespace p5.web.widgets
     /// <summary>
     ///     Class encapsulating creation of web widget types
     /// </summary>
-    public class WidgetTypes
+    public class WidgetTypes : BaseWidget
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="p5.web.widgets.WidgetRetriever"/> class
         /// </summary>
-        /// <param name="page">Page</param>
+        /// <param name="context">Application Context</param>
+        /// <param name="manager">PageManager owning this instance</param>
         public WidgetTypes (ApplicationContext context, PageManager manager)
-        {
-            // Setting WidgetManager for this instance
-            Manager = manager;
-        }
-
-        /*
-         * PageManager for this instance
-         */
-        private PageManager Manager {
-            get;
-            set;
-        }
+            : base (context, manager)
+        { }
 
         /// <summary>
         ///     Creates an ajax container web widget
@@ -239,7 +230,7 @@ namespace p5.web.widgets
             foreach (var idxEvt in events.Children.ToList ()) {
 
                 // Verifying Active Event is not protected
-                if (!Manager.CanOverrideEventInLambda(context, idxEvt.Name))
+                if (!CanOverrideEventInLambda(context, idxEvt.Name))
                     throw new LambdaException(
                         string.Format ("You cannot override Active Event '{0}' since it is protected", idxEvt.Name),
                         idxEvt,

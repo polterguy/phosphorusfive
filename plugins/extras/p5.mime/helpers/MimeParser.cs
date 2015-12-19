@@ -185,7 +185,7 @@ namespace p5.mime.helpers
             EnsureAttachmentFolderExist ();
 
             // Creating an intelligent filename
-            string baseFolder = Common.GetBaseFolder (Context).TrimEnd ('/');
+            string rootFolder = Common.GetRootFolder (Context).TrimEnd ('/');
             string fileName = "";
             if (part.ContentDisposition == null || string.IsNullOrEmpty (part.ContentDisposition.FileName)) {
                 fileName = "noname";
@@ -200,7 +200,7 @@ namespace p5.mime.helpers
             Context.RaiseNative ("p5.io.authorize.modify-file", new Node ("", AttachmentFolder + fileName).Add ("args", Args));
 
             // Saving attachment to disc
-            using (FileStream stream = File.Create (baseFolder + AttachmentFolder + fileName)) {
+            using (FileStream stream = File.Create (rootFolder + AttachmentFolder + fileName)) {
                 part.ContentObject.DecodeTo (stream);
             }
 
@@ -221,7 +221,7 @@ namespace p5.mime.helpers
             Context.RaiseNative ("p5.io.authorize.modify-folder", new Node ("", AttachmentFolder).Add ("args", Args));
 
             // Verifies folder exist, and creates entire path if not
-            string baseFolder = Common.GetBaseFolder (Context).TrimEnd ('/') + "/";
+            string baseFolder = Common.GetRootFolder (Context).TrimEnd ('/') + "/";
             string[] folderSplits = AttachmentFolder.Split (new char [] {'/'}, StringSplitOptions.RemoveEmptyEntries);
             foreach (var idxFolder in folderSplits) {
 

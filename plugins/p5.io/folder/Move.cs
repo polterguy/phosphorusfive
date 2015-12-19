@@ -43,20 +43,9 @@ namespace p5.io.folder
 
                 // Getting source and verify path is correct according to conventions
                 string sourceFolder = XUtil.Single<string> (context, e.Args);
-                if (!sourceFolder.StartsWith ("/") || !sourceFolder.EndsWith ("/"))
-                    throw new LambdaException (
-                        string.Format ("Source folder '{0}' was not a valid foldername", sourceFolder),
-                        e.Args,
-                        context);
 
                 // Getting destination and verify path is correct according to conventions
                 string destinationFolder = XUtil.Single<string> (context, e.Args ["to"]);
-                if (!destinationFolder.StartsWith ("/") || !destinationFolder.EndsWith ("/"))
-                    throw new LambdaException (
-                        string.Format ("Destination folder '{0}' was not a valid foldername", destinationFolder),
-                        e.Args,
-                        context);
-
 
                 // Verifying user is authorized to both reading from source, and writing to destination
                 context.RaiseNative ("p5.io.authorize.read-folder", new Node ("", sourceFolder).Add ("args", e.Args));

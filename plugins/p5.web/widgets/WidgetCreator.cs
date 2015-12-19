@@ -19,25 +19,16 @@ namespace p5.web.widgets
     /// <summary>
     ///     Class encapsulating creation of web widgets
     /// </summary>
-    public class WidgetCreator
+    public class WidgetCreator : BaseWidget
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="p5.web.widgets.WidgetCreator"/> class
         /// </summary>
-        /// <param name="page">Page</param>
+        /// <param name="context">Application Context</param>
+        /// <param name="manager">PageManager owning this instance</param>
         public WidgetCreator (ApplicationContext context, PageManager manager)
-        {
-            // Setting WidgetManager for this instance
-            Manager = manager;
-        }
-
-        /*
-         * PageManager for this instance
-         */
-        private PageManager Manager {
-            get;
-            set;
-        }
+            : base (context, manager)
+        { }
 
         #region [ -- Active events for creating and deleting widgets -- ]
 
@@ -51,8 +42,11 @@ namespace p5.web.widgets
         [ActiveEvent (Name = "create-literal-widget", Protection = EventProtection.LambdaClosed)]
         private void create_widget (ApplicationContext context, ActiveEventArgs e)
         {
+            // Figuring out which type of widget we're creating
             var splits = e.Name.Split('-');
             string type = splits.Length == 2 ? "container" : splits[1];
+
+            // Creating specified type of widget
             CreateWidget (context, e.Args, type);
         }
 
@@ -65,7 +59,7 @@ namespace p5.web.widgets
         private void delete_widget (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through all IDs given
-            foreach (var idxWidget in Manager.FindWidgets<Control> (context, e.Args, "delete-widget")) {
+            foreach (var idxWidget in FindWidgets<Control> (context, e.Args, "delete-widget")) {
 
                 // Removing widget
                 RemoveWidget (context, e.Args, idxWidget);
@@ -81,7 +75,7 @@ namespace p5.web.widgets
         private void clear_widget (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through all IDs given
-            foreach (var idxWidget in Manager.FindWidgets<Container> (context, e.Args, "clear-widget")) {
+            foreach (var idxWidget in FindWidgets<Container> (context, e.Args, "clear-widget")) {
 
                 // Then looping through all of its children controls
                 foreach (Control idxChildWidget in new ArrayList(idxWidget.Controls)) {
@@ -102,7 +96,7 @@ namespace p5.web.widgets
         private void CreateWidget (ApplicationContext context, Node args, string type)
         {
             // Finding parent widget first, which defaults to "main container" widget, if no parent is given
-            var parent = Manager.FindControl<Widget>(args.GetChildValue ("parent", context, "cnt"), Manager.AjaxPage);
+            var parent = FindControl<Widget>(args.GetChildValue ("parent", context, "cnt"), Manager.AjaxPage);
 
             // Creating our widget by raising the active event responsible for creating it
             var createNode = args.Clone ();
@@ -135,7 +129,7 @@ namespace p5.web.widgets
             foreach (var idxEvt in eventNode.Children.ToList ()) {
 
                 // Verifying Active Event is not protected
-                if (!Manager.CanOverrideEventInLambda (context, idxEvt.Name))
+                if (!CanOverrideEventInLambda (context, idxEvt.Name))
                     throw new LambdaException(
                         string.Format ("You cannot override Active Event '{0}' since it is protected", idxEvt.Name),
                         eventNode,

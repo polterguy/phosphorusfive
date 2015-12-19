@@ -200,12 +200,13 @@ namespace p5.net
         {
             // Verifying caller supplied [file] node
             if (args["file"] == null)
-                throw new LambdaException ("No [file] node given", args, context);
+                throw new LambdaException (
+                    "No [file] node given", 
+                    args, 
+                    context);
 
             // Getting file to post or put, verifying expression does not lead into oblivion
             var file = XUtil.Single<string> (context, args ["file"]);
-            if (file == null)
-                throw new LambdaException ("No file given, probably an expression leading into oblivion", args, context);
 
             // Making sure user is authorized to read the file request should send
             context.RaiseNative ("p5.io.authorize.read-file", new Node ("", file).Add ("args", args));

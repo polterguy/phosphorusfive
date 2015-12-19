@@ -33,13 +33,6 @@ namespace p5.io.folder
                 // Iterating through each folder caller wants to create
                 foreach (var idxFolder in Common.GetSource (e.Args, context)) {
 
-                    // Verify foldername is a valid foldername according to conventions
-                    if (!idxFolder.StartsWith ("/") || !idxFolder.EndsWith ("/"))
-                        throw new LambdaException (
-                            string.Format ("Foldername '{0}' was not a valid foldername", idxFolder),
-                            e.Args,
-                            context);
-
                     // Verifying user is authorized to both reading from source, and writing to destination
                     context.RaiseNative ("p5.io.authorize.modify-folder", new Node ("", idxFolder).Add ("args", e.Args));
 

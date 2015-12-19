@@ -33,7 +33,7 @@ namespace p5.ajax.core
             Page = page;
 
             // Determining if we should create an ajax filter or a normal html filter for rendering the response
-            if (IsPhosphorusRequest) {
+            if (IsPhosphorusAjaxRequest) {
                 
                 // Rendering ajax json back to the client
                 Page.Response.Filter = new JsonFilter (this);
@@ -62,7 +62,7 @@ namespace p5.ajax.core
         ///     Returns true if this request is a Phosphorus Ajax request
         /// </summary>
         /// <value><c>true</c> if this instance is an ajax request; otherwise, <c>false</c></value>
-        public bool IsPhosphorusRequest
+        public bool IsPhosphorusAjaxRequest
         {
             get { return !string.IsNullOrEmpty (Page.Request.Params ["_p5_event"]); }
         }

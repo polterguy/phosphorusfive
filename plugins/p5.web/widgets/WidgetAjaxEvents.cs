@@ -19,25 +19,16 @@ namespace p5.web.widgets
     /// <summary>
     ///     Class encapsulating ajax events of widgets
     /// </summary>
-    public class WidgetAjaxEvents
+    public class WidgetAjaxEvents : BaseWidget
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="p5.web.widgets.WidgetAjaxEvents"/> class
         /// </summary>
-        /// <param name="page">Page</param>
+        /// <param name="context">Application Context</param>
+        /// <param name="manager">PageManager owning this instance</param>
         public WidgetAjaxEvents (ApplicationContext context, PageManager manager)
-        {
-            // Setting WidgetManager for this instance
-            Manager = manager;
-        }
-
-        /*
-         * PageManager for this instance
-         */
-        private PageManager Manager {
-            get;
-            set;
-        }
+            : base (context, manager)
+        { }
 
         #region [ -- Widget Ajax events -- ]
 
@@ -53,7 +44,7 @@ namespace p5.web.widgets
             using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
 
                 // Looping through all widgets
-                foreach (var idxWidget in Manager.FindWidgets<Widget> (context, e.Args, "get-widget-ajax-event")) {
+                foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "get-widget-ajax-event")) {
 
                     // Looping through events requested by caller
                     foreach (var idxEventNameNode in e.Args.Children.Where (ix => ix.Name != "").ToList ()) {
@@ -75,7 +66,7 @@ namespace p5.web.widgets
         private void set_widget_ajax_event (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through all widgets
-            foreach (var idxWidget in Manager.FindWidgets<Widget> (context, e.Args, "set-widget-ajax-event")) {
+            foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "set-widget-ajax-event")) {
 
                 // Looping through events requested by caller
                 foreach (var idxEventNameNode in e.Args.Children) {
@@ -106,7 +97,7 @@ namespace p5.web.widgets
             using (new p5.core.Utilities.ArgsRemover(e.Args, true)) {
 
                 // Looping through all widgets supplied
-                foreach (var idxWidget in Manager.FindWidgets<Widget> (context, e.Args, "list-widget-ajax-events")) {
+                foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "list-widget-ajax-events")) {
 
                     // Then looping through all attribute keys, filtering everything out that does not start with "on"
                     Node curNode = new Node(idxWidget.ID);

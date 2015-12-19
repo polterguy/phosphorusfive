@@ -19,25 +19,16 @@ namespace p5.web.widgets
     /// <summary>
     ///     Class encapsulating retrieving web widgets
     /// </summary>
-    public class WidgetRetriever
+    public class WidgetRetriever : BaseWidget
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="p5.web.widgets.WidgetRetriever"/> class
         /// </summary>
-        /// <param name="page">Page</param>
+        /// <param name="context">Application Context</param>
+        /// <param name="manager">PageManager owning this instance</param>
         public WidgetRetriever (ApplicationContext context, PageManager manager)
-        {
-            // Setting WidgetManager for this instance
-            Manager = manager;
-        }
-
-        /*
-         * PageManager for this instance
-         */
-        private PageManager Manager {
-            get;
-            set;
-        }
+            : base (context, manager)
+        { }
 
         #region [ -- Active Events for retrieving widgets -- ]
 
@@ -53,7 +44,7 @@ namespace p5.web.widgets
             using (new p5.core.Utilities.ArgsRemover (e.Args)) {
 
                 // Looping through all IDs given
-                foreach (var idxWidget in Manager.FindWidgets <Control> (context, e.Args, "get-parent-widget")) {
+                foreach (var idxWidget in FindWidgets <Control> (context, e.Args, "get-parent-widget")) {
 
                     // Finding parent and returning type as Name and ID as Value
                     var parent = idxWidget.Parent;
@@ -85,7 +76,7 @@ namespace p5.web.widgets
             using (new p5.core.Utilities.ArgsRemover (e.Args, true)) {
 
                 // Looping through all IDs given
-                foreach (var idxWidget in Manager.FindWidgets <Control> (context, e.Args, "get-children-widgets")) {
+                foreach (var idxWidget in FindWidgets <Control> (context, e.Args, "get-children-widgets")) {
 
                     // Adding currently iterated widget's ID
                     e.Args.Add(idxWidget.ID);
@@ -117,7 +108,7 @@ namespace p5.web.widgets
             using (new p5.core.Utilities.ArgsRemover (e.Args)) {
 
                 // Retrieving where to start looking
-                var root = Manager.FindControl<Widget> (e.Args.GetExValue (context, "cnt"), Manager.AjaxPage);
+                var root = FindControl<Widget> (e.Args.GetExValue (context, "cnt"), Manager.AjaxPage);
 
                 // Retrieving all controls having properties matching whatever arguments supplied
                 foreach (var idxWidget in FindWidgetsBy <Widget> (e.Args, root, context)) {
@@ -175,7 +166,7 @@ namespace p5.web.widgets
                 foreach (var widgetId in XUtil.Iterate<string> (context, e.Args, true)) {
 
                     // Adding a boolean as result node, with widget's ID as name, indicating existence of widget
-                    e.Args.Add(widgetId, Manager.FindControl<Control>(widgetId, Manager.AjaxPage) != null);
+                    e.Args.Add(widgetId, FindControl<Control>(widgetId, Manager.AjaxPage) != null);
                 }
 
                 // Return true as main Active Event node if ALL widgets existed, otherwise returning false

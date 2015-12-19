@@ -66,6 +66,8 @@
     <Compile Include="widgets\WidgetLambdaEvents.cs" />
     <Compile Include="PageManager.cs" />
     <Compile Include="widgets\helpers\WidgetEventStorage.cs" />
+    <Compile Include="Initialiser.cs" />
+    <Compile Include="widgets\BaseWidget.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

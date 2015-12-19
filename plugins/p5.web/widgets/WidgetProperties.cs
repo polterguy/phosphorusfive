@@ -19,25 +19,16 @@ namespace p5.web.widgets
     /// <summary>
     ///     Class encapsulating properties of widgets
     /// </summary>
-    public class WidgetProperties
+    public class WidgetProperties : BaseWidget
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="p5.web.widgets.WidgetProperties"/> class
         /// </summary>
-        /// <param name="page">Page</param>
+        /// <param name="context">Application Context</param>
+        /// <param name="manager">PageManager owning this instance</param>
         public WidgetProperties (ApplicationContext context, PageManager manager)
-        {
-            // Setting WidgetManager for this instance
-            Manager = manager;
-        }
-
-        /*
-         * PageManager for this instance
-         */
-        private PageManager Manager {
-            get;
-            set;
-        }
+            : base (context, manager)
+        { }
 
         #region [ -- Widget properties -- ]
 
@@ -56,7 +47,7 @@ namespace p5.web.widgets
                     return; // Nothing to do here ...
 
                 // Looping through all widget IDs given by caller
-                foreach (var idxWidget in Manager.FindWidgets<Widget> (context, e.Args, "get-widget-property")) {
+                foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "get-widget-property")) {
 
                     // Looping through all properties requested by caller
                     foreach (var nameNode in e.Args.Children.Where (ix => ix.Name != "").ToList ()) {
@@ -100,7 +91,7 @@ namespace p5.web.widgets
                 return; // Nothing to do here ...
 
             // Looping through all widget IDs given by caller
-            foreach (var idxWidget in Manager.FindWidgets<Widget> (context, e.Args, "set-widget-property")) {
+            foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "set-widget-property")) {
 
                 // Looping through all properties requested by caller
                 foreach (var valueNode in e.Args.Children.Where (ix => ix.Name != "")) {
@@ -140,7 +131,7 @@ namespace p5.web.widgets
                 return; // Nothing to do here ...
 
             // Looping through all widgets supplied by caller
-            foreach (var widget in Manager.FindWidgets<Widget> (context, e.Args, "delete-widget-property")) {
+            foreach (var widget in FindWidgets<Widget> (context, e.Args, "delete-widget-property")) {
 
                 // Looping through each property to remove
                 foreach (var nameNode in e.Args.Children.Where (ix => ix.Name != "")) {
@@ -177,7 +168,7 @@ namespace p5.web.widgets
                     return; // Nothing to do here ...
 
                 // Looping through all widgets
-                foreach (var widget in Manager.FindWidgets<Widget> (context, e.Args, "list-widget-properties")) {
+                foreach (var widget in FindWidgets<Widget> (context, e.Args, "list-widget-properties")) {
 
                     // Creating our "return node" for currently handled widget
                     Node curNode = e.Args.Add (widget.ID).LastChild;

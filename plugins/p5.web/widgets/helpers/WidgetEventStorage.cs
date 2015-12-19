@@ -14,7 +14,7 @@ namespace p5.web.widgets.helpers
      * Used as storage for Ajax and lambda events for Widgets
      */
     [Serializable]
-    internal class WidgetEventStorage
+    public class WidgetEventStorage
     {
         private Dictionary<string, List<Node>> _events = new Dictionary<string, List<Node>>();
 

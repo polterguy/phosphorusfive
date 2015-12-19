@@ -43,19 +43,9 @@ namespace p5.io.file
 
                 // Getting source and verify path is correct according to conventions
                 string sourceFile = XUtil.Single<string> (context, e.Args);
-                if (!sourceFile.StartsWith ("/"))
-                    throw new LambdaException (
-                        string.Format ("Source file '{0}' was not a valid filename", sourceFile),
-                        e.Args,
-                        context);
 
                 // Getting destination and verify path is correct according to conventions
                 string destinationFile = XUtil.Single<string> (context, e.Args ["to"]);
-                if (!destinationFile.StartsWith ("/"))
-                    throw new LambdaException (
-                        string.Format ("Destination file '{0}' was not a valid filename", destinationFile),
-                        e.Args,
-                        context);
 
                 // Verifying user is authorized to both reading from source, and writing to destination
                 context.RaiseNative ("p5.io.authorize.read-file", new Node ("", sourceFile).Add ("args", e.Args));

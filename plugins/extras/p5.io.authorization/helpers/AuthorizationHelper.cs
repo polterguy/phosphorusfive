@@ -25,8 +25,18 @@ namespace p5.io.authorization.helpers
         /*
          * Verifies user is authorized reading from the specified file
          */
-        internal static void AuthorizeReadFile (ApplicationContext context, string filename, Node stack)
+        internal static void AuthorizeReadFile (
+            ApplicationContext context, 
+            string filename, 
+            Node stack)
         {
+            // Verifies filename is a valid filename
+            if (string.IsNullOrEmpty (filename) || !filename.StartsWith ("/"))
+                throw new LambdaException (
+                    string.Format ("Path '{0}' was not a valid file path", filename), 
+                    stack, 
+                    context);
+
             // Extra security for non-root users
             if (context.Ticket.Role != "root") {
 
@@ -64,8 +74,18 @@ namespace p5.io.authorization.helpers
         /*
          * Verifies user is authorized writing to the specified file
          */
-        internal static void AuthorizeModifyFile (ApplicationContext context, string filename, Node stack)
+        internal static void AuthorizeModifyFile (
+            ApplicationContext context, 
+            string filename, 
+            Node stack)
         {
+            // Verifies filename is a valid filename
+            if (string.IsNullOrEmpty (filename) || !filename.StartsWith ("/"))
+                throw new LambdaException (
+                    string.Format ("Path '{0}' was not a valid file path", filename), 
+                    stack, 
+                    context);
+
             // Extra security for non-root users
             if (context.Ticket.Role != "root") {
 
@@ -107,8 +127,18 @@ namespace p5.io.authorization.helpers
         /*
          * Verifies user is authorized reading from the specified folder
          */
-        internal static void AuthorizeReadFolder (ApplicationContext context, string foldername, Node stack)
+        internal static void AuthorizeReadFolder (
+            ApplicationContext context, 
+            string foldername, 
+            Node stack)
         {
+            // Verifies foldername is a valid foldername
+            if (string.IsNullOrEmpty (foldername) || !foldername.StartsWith ("/") || !foldername.EndsWith ("/"))
+                throw new LambdaException (
+                    string.Format ("Path '{0}' was not a valid folder path", foldername), 
+                    stack, 
+                    context);
+
             // Extra security for non-root users
             if (context.Ticket.Role != "root") {
 
@@ -132,8 +162,18 @@ namespace p5.io.authorization.helpers
         /*
          * Verifies user is authorized writing to the specified folder
          */
-        internal static void AuthorizeModifyFolder (ApplicationContext context, string foldername, Node stack)
+        internal static void AuthorizeModifyFolder (
+            ApplicationContext context, 
+            string foldername, 
+            Node stack)
         {
+            // Verifies foldername is a valid foldername
+            if (string.IsNullOrEmpty (foldername) || !foldername.StartsWith ("/") || !foldername.EndsWith ("/"))
+                throw new LambdaException (
+                    string.Format ("Path '{0}' was not a valid folder path", foldername), 
+                    stack, 
+                    context);
+
             // Checking if user is root (root is authorized to do almost everything!)
             if (context.Ticket.Role != "root") {
 

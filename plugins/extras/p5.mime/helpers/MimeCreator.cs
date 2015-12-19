@@ -418,7 +418,7 @@ namespace p5.mime.helpers
 
             // Applying content object, notice that the stream created here, is owned by the caller, hence there is
             // no disposal done
-            Stream stream = File.OpenRead (Common.GetBaseFolder (Context) + fileName);
+            Stream stream = File.OpenRead (Common.GetRootFolder (Context) + fileName);
             Streams.Add (stream);
             entity.ContentObject = new ContentObject (stream, encoding);
         }

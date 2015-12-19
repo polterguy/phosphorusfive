@@ -51,7 +51,6 @@ namespace p5.webapp.code
             // Creating args for event
             var args = new Node();
             args.Add ("page", this);
-            args.Add ("manager", Manager);
 
             // Raising our "page initialized" active event
             ApplicationContext.RaiseNative ("p5.web.initialize-page", args);
@@ -126,7 +125,7 @@ namespace p5.webapp.code
             var title = XUtil.Single<string>(context, e.Args, true);
 
             // Checking if this is ajax request, at which point we'll have to update title using JavaScript
-            if (Manager.IsPhosphorusRequest) {
+            if (Manager.IsPhosphorusAjaxRequest) {
 
                 // Passing title to client as JavaScript update, making sure we escape string
                 Manager.SendJavaScriptToClient(

@@ -31,7 +31,7 @@ namespace p5.ajax.core.internals
             _numberOfViewStateEntries = numberOfViewStateEntries;
 
             _viewStateId = page.IsPostBack ? new Guid (page.Request ["__p5_state_key"]) : Guid.NewGuid ();
-            if ((page as IAjaxPage).Manager.IsPhosphorusRequest) return;
+            if ((page as IAjaxPage).Manager.IsPhosphorusAjaxRequest) return;
 
             // Adding the viewstate ID to the form, such that we can retrieve it again when the client does a postback
             var literal = new LiteralControl {Text = string.Format (@"
