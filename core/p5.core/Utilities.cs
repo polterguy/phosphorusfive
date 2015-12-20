@@ -84,7 +84,7 @@ namespace p5.core
                 var retVal = Convert2String (value, context, encode);
                 if (retVal != null)
                     return (T) (object) retVal;
-            } else {
+            } else if (value.GetType () == typeof (string)) {
 
                 // Converting from string to object
                 var retVal = Convert2Object<T> (value, context);

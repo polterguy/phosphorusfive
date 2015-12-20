@@ -186,6 +186,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case '/': // TODO: why doesn't this work ...?
         case '*':
         case '%':
+        case '^':
         case 'lambda2lisp':
         case 'set-event':
         case 'set-protected-event':
@@ -308,6 +309,22 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'set-http-status-code':
         case 'date-now':
         case 'create-cs-random-string':
+        case 'abs':
+        case 'acos':
+        case 'asin':
+        case 'atan':
+        case 'ceiling':
+        case 'floor':
+        case 'cos':
+        case 'cosh':
+        case 'log':
+        case 'log10':
+        case 'round':
+        case 'sin':
+        case 'sinh':
+        case 'sqrt':
+        case 'tan':
+        case 'tanh':
           return this.styles.keyword;
 
         // default handling

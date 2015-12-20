@@ -12,9 +12,6 @@ using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
 
-/// <summary>
-///     Main namespace for all the different types Phosphorus Five supports
-/// </summary>
 namespace p5.types.types
 {
     /// <summary>

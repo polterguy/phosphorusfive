@@ -5,12 +5,10 @@
 
 using System;
 using System.Linq;
+using System.Numerics;
 using p5.core;
 using p5.exp;
 
-/// <summary>
-///     Main snamespace for all math Active Events
-/// </summary>
 namespace p5.math
 {
     /// <summary>
@@ -29,13 +27,13 @@ namespace p5.math
         /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "+", Protection = EventProtection.LambdaClosed)]
-        private static void math_plus (ApplicationContext context, ActiveEventArgs e)
+        private static void plus (ApplicationContext context, ActiveEventArgs e)
         {
             Calculate (
                 context,
                 e.Args,
                 delegate (dynamic sum, dynamic input) {
-                    return sum + input;
+                    return sum + ChangeType (input, sum.GetType ());
                 });
         }
 
@@ -45,13 +43,13 @@ namespace p5.math
         /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "-", Protection = EventProtection.LambdaClosed)]
-        private static void math_minus (ApplicationContext context, ActiveEventArgs e)
+        private static void minus (ApplicationContext context, ActiveEventArgs e)
         {
             Calculate (
                 context,
                 e.Args,
                 delegate (dynamic sum, dynamic input) {
-                    return sum - input;
+                    return sum - ChangeType (input, sum.GetType ());
                 });
         }
 
@@ -61,13 +59,13 @@ namespace p5.math
         /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "*", Protection = EventProtection.LambdaClosed)]
-        private static void math_multiply (ApplicationContext context, ActiveEventArgs e)
+        private static void multiply (ApplicationContext context, ActiveEventArgs e)
         {
             Calculate (
                 context,
                 e.Args,
                 delegate (dynamic sum, dynamic input) {
-                    return sum * input;
+                    return sum * ChangeType (input, sum.GetType ());
                 });
         }
         
@@ -77,29 +75,49 @@ namespace p5.math
         /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "/", Protection = EventProtection.LambdaClosed)]
-        private static void math_divide (ApplicationContext context, ActiveEventArgs e)
+        private static void divide (ApplicationContext context, ActiveEventArgs e)
         {
             Calculate (
                 context,
                 e.Args,
                 delegate (dynamic sum, dynamic input) {
-                    return sum / input;
+                    return sum / ChangeType (input, sum.GetType ());
                 });
         }
         
+        /// <summary>
+        ///     Returns the exponent of zero or more objects
+        /// </summary>
+        /// <param name="context">Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "^", Protection = EventProtection.LambdaClosed)]
+        private static void exponent (ApplicationContext context, ActiveEventArgs e)
+        {
+            Calculate (
+                context,
+                e.Args,
+                delegate (dynamic sum, dynamic input) {
+                    if (sum is BigInteger) {
+                        return BigInteger.Pow (sum, ChangeType (input, typeof (int)));
+                    } else {
+                        return Math.Pow (ChangeType (sum, typeof(double)), ChangeType (input, typeof(double)));
+                    }
+                });
+        }
+
         /// <summary>
         ///     Returns the modulo of zero or more objects
         /// </summary>
         /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "%", Protection = EventProtection.LambdaClosed)]
-        private static void math_modulo (ApplicationContext context, ActiveEventArgs e)
+        private static void modulo (ApplicationContext context, ActiveEventArgs e)
         {
             Calculate (
                 context,
                 e.Args,
                 delegate (dynamic sum, dynamic input) {
-                    return sum % input;
+                    return sum % ChangeType (input, sum.GetType ());
                 });
         }
 
@@ -114,18 +132,8 @@ namespace p5.math
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (args)) {
 
+                // Getting lhs, or existing result
                 dynamic result = args.GetExValue<object> (context, "");
-                Type resultType = null;
-                if (args ["_pf_type"] == null) {
-
-                    // Using left most type as guiding type for result
-                    resultType = result.GetType ();
-                } else {
-
-                    // Type was explicitly passed in due to recursive invocations
-                    resultType = args ["_pf_type"].Get<Type> (context);
-                    result = Convert.ChangeType (result, resultType);
-                }
 
                 // Looping through each child node, and evaluating value of node with existing result
                 // Avoiding explicit type declarations and formatting parameters
@@ -140,18 +148,27 @@ namespace p5.math
                     } else {
 
                         // Active Event invocation to retrieve value to use
-                        idxChild.FindOrCreate ("_pf_type").Value = resultType;
                         nextValue = context.RaiseLambda (idxChild.Name, idxChild).Get<object> (context, 0);
                     }
 
                     // Now evaluating result of above node's value with existing result, evaluating the "functor" passed
                     // in as evaluation functor
-                    result = functor (result, Convert.ChangeType (nextValue, resultType));
+                    result = functor (result, nextValue);
                 }
 
                 // Returning result as value of node
                 args.Value = result;
             }
+        }
+
+        /*
+         * Changes type of value to given resultType
+         */
+        internal static object ChangeType (object value, Type resultType)
+        {
+            if (value.GetType () == resultType)
+                return value;
+            return Convert.ChangeType (value, resultType);
         }
     }
 }

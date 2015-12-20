@@ -17,7 +17,7 @@ namespace phosphorus.crypto
     public static class CSRandomString
     {
         /// <summary>
-        ///     Creates a Cryptographic Random array of bytes, and returns as base64 encoded string
+        ///     Creates a Cryptographically Secure Random array of bytes, and returns as base64 encoded string
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
