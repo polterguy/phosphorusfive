@@ -15,38 +15,38 @@ using p5.exp.exceptions;
 namespace p5.types.types
 {
     /// <summary>
-    ///     Class helps converts from Guid to string, and vice versa
+    ///     Class helps converts from char to string, and vice versa
     /// </summary>
-    public static class GuidConversion
+    public static class CharConversion
     {
         /// <summary>
-        ///     Creates a Guid from its string representation
+        ///     Creates a char from its string representation
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.guid", Protection = EventProtection.NativeClosed)]
-        private static void p5_hyperlisp_get_object_value_guid (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.char", Protection = EventProtection.NativeClosed)]
+        private static void p5_hyperlisp_get_object_value_char (ApplicationContext context, ActiveEventArgs e)
         {
             var strValue = e.Args.Value as string;
             if (strValue != null) {
-                e.Args.Value = Guid.Parse (strValue);
+                e.Args.Value = char.Parse (strValue);
             } else {
                 throw new LambdaException (
-                    "Don't know how to convert that to a guid",
+                    "Don't know how to convert that to a char",
                     e.Args, 
                     context);
             }
         }
 
         /// <summary>
-        ///     Returns the Hyperlisp type-name for the Guid type
+        ///     Returns the Hyperlisp type-name for the char type
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Guid", Protection = EventProtection.NativeClosed)]
-        private static void p5_hyperlisp_get_type_name_System_Guid (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Char", Protection = EventProtection.NativeClosed)]
+        private static void p5_hyperlisp_get_type_name_System_Char (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = "guid";
+            e.Args.Value = "char";
         }
     }
 }

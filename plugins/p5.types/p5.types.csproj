@@ -53,6 +53,15 @@
     <Compile Include="types\ByteConversion.cs" />
     <Compile Include="types\DateConversion.cs" />
     <Compile Include="types\BoolConversion.cs" />
+    <Compile Include="types\BlobConversion.cs" />
+    <Compile Include="types\CharConversion.cs" />
+    <Compile Include="types\TimeConversion.cs" />
+    <Compile Include="types\DecimalConversion.cs" />
+    <Compile Include="types\SByteConversion.cs" />
+    <Compile Include="types\DoubleConversion.cs" />
+    <Compile Include="types\UIntConversion.cs" />
+    <Compile Include="types\ULongConversion.cs" />
+    <Compile Include="types\UShortConversion.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

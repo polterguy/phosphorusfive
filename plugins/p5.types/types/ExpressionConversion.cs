@@ -15,7 +15,7 @@ using p5.exp.exceptions;
 namespace p5.types.types
 {
     /// <summary>
-    ///     Class helps converts from expression to object, and vice versa
+    ///     Class helps converts from expression to string, and vice versa
     /// </summary>
     public static class ExpressionConversion
     {
@@ -31,7 +31,7 @@ namespace p5.types.types
         }
 
         /// <summary>
-        ///     Creates a string from an Expression
+        ///     Creates a string from an <see cref="p5.exp.Expression">Expression</see>
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -42,7 +42,7 @@ namespace p5.types.types
         }
 
         /// <summary>
-        ///     Returns the Hyperlisp type-name for the Expression type
+        ///     Returns the Hyperlisp type-name for the <see cref="p5.exp.Expression">Expression</see> type
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>

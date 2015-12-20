@@ -15,12 +15,12 @@ using p5.exp.exceptions;
 namespace p5.types.types
 {
     /// <summary>
-    ///     Class helps converts from short, and associated types, to object, and vice versa
+    ///     Class helps converts from short to string, and vice versa
     /// </summary>
     public static class ShortConversion
     {
         /// <summary>
-        ///     Creates a short from its string/byte[] representation
+        ///     Creates a short from its string representation
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -39,25 +39,6 @@ namespace p5.types.types
         }
 
         /// <summary>
-        ///     Creates a short from its string/byte[] representation
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.ushort", Protection = EventProtection.NativeClosed)]
-        private static void p5_hyperlisp_get_object_value_ushort (ApplicationContext context, ActiveEventArgs e)
-        {
-            var strValue = e.Args.Value as string;
-            if (strValue != null) {
-                e.Args.Value = ushort.Parse (strValue, CultureInfo.InvariantCulture);
-            } else {
-                throw new LambdaException (
-                    "Don't know how to convert that to a ushort",
-                    e.Args, 
-                    context);
-            }
-        }
-
-        /// <summary>
         ///     Returns the Hyperlisp type-name for the short type
         /// </summary>
         /// <param name="context">Application Context</param>
@@ -66,17 +47,6 @@ namespace p5.types.types
         private static void p5_hyperlisp_get_type_name_System_Int16 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "short";
-        }
-
-        /// <summary>
-        ///     Returns the Hyperlisp type-name for the ushort type
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.UInt16", Protection = EventProtection.NativeClosed)]
-        private static void p5_hyperlisp_get_type_name_System_UInt16 (ApplicationContext context, ActiveEventArgs e)
-        {
-            e.Args.Value = "ushort";
         }
     }
 }

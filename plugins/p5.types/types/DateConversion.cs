@@ -15,7 +15,7 @@ using p5.exp.exceptions;
 namespace p5.types.types
 {
     /// <summary>
-    ///     Class helps converts from DateTime and associated types, to object, and vice versa
+    ///     Class helps converts from DateTime to string, and vice versa
     /// </summary>
     public static class DateConversion
     {
@@ -46,25 +46,6 @@ namespace p5.types.types
         }
 
         /// <summary>
-        ///     Creates a timespan from its string representation
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.time", Protection = EventProtection.NativeClosed)]
-        private static void p5_hyperlisp_get_object_value_time (ApplicationContext context, ActiveEventArgs e)
-        {
-            var strValue = e.Args.Value as string;
-            if (strValue != null) {
-                e.Args.Value = TimeSpan.ParseExact (strValue, "c", CultureInfo.InvariantCulture);
-            } else {
-                throw new LambdaException (
-                    "Don't know how to convert that to a time",
-                    e.Args, 
-                    context);
-            }
-        }
-
-        /// <summary>
         ///     Creates a string from a date
         /// </summary>
         /// <param name="context">Application Context</param>
@@ -82,17 +63,6 @@ namespace p5.types.types
         }
 
         /// <summary>
-        ///     Creates a string from a timespan
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-string-value.System.TimeSpan", Protection = EventProtection.NativeClosed)]
-        private static void p5_hyperlisp_get_string_value_System_TimeSpan (ApplicationContext context, ActiveEventArgs e)
-        {
-            e.Args.Value = e.Args.Get<TimeSpan> (context).ToString ("c", CultureInfo.InvariantCulture);
-        }
-
-        /// <summary>
         ///     Returns the Hyperlisp type-name for the date type
         /// </summary>
         /// <param name="context">Application Context</param>
@@ -101,17 +71,6 @@ namespace p5.types.types
         private static void p5_hyperlisp_get_type_name_System_DateTime (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "date";
-        }
-
-        /// <summary>
-        ///     Returns the Hyperlisp type-name for the timespan type
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.TimeSpan", Protection = EventProtection.NativeClosed)]
-        private static void p5_hyperlisp_get_type_name_System_TimeSpan (ApplicationContext context, ActiveEventArgs e)
-        {
-            e.Args.Value = "time";
         }
     }
 }

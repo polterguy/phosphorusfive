@@ -12,13 +12,10 @@ using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
 
-/// <summary>
-///     Main namespace for all the different types Phosphorus Five supports
-/// </summary>
 namespace p5.types.types
 {
     /// <summary>
-    ///     Class helps converts from node to object, and vice versa
+    ///     Class helps converts from node to string, and vice versa
     /// </summary>
     public static class NodeConversion
     {
@@ -68,7 +65,7 @@ namespace p5.types.types
         }
 
         /// <summary>
-        ///     Creates a string from a Node
+        ///     Creates a string from a <see cref="phosphorus.core.Node">Node</see>
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -81,7 +78,7 @@ namespace p5.types.types
         }
 
         /// <summary>
-        ///     Returns the Hyperlisp type-name for the Node type
+        ///     Returns the Hyperlisp type-name for the <see cref="phosphorus.core.Node">Node</see> type
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>

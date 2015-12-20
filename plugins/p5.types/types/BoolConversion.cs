@@ -15,7 +15,7 @@ using p5.exp.exceptions;
 namespace p5.types.types
 {
     /// <summary>
-    ///     Class helps converts from boolean to object, and vice versa
+    ///     Class helps converts from boolean to string, and vice versa
     /// </summary>
     public static class BoolConversion
     {

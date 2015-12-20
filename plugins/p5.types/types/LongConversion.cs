@@ -15,7 +15,7 @@ using p5.exp.exceptions;
 namespace p5.types.types
 {
     /// <summary>
-    ///     Class helps converts from long, and associated types, to object, and vice versa
+    ///     Class helps converts from long to string, and vice versa
     /// </summary>
     public static class LongConversion
     {
@@ -39,25 +39,6 @@ namespace p5.types.types
         }
 
         /// <summary>
-        ///     Creates a ulong from its string/byte[] representation
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.ulong", Protection = EventProtection.NativeClosed)]
-        private static void p5_hyperlisp_get_object_value_ulong (ApplicationContext context, ActiveEventArgs e)
-        {
-            var strValue = e.Args.Value as string;
-            if (strValue != null) {
-                e.Args.Value = ulong.Parse (strValue, CultureInfo.InvariantCulture);
-            } else {
-                throw new LambdaException (
-                    "Don't know how to convert that to a ulong",
-                    e.Args, 
-                    context);
-            }
-        }
-
-        /// <summary>
         ///     Returns the Hyperlisp type-name for the long type
         /// </summary>
         /// <param name="context">Application Context</param>
@@ -66,17 +47,6 @@ namespace p5.types.types
         private static void p5_hyperlisp_get_type_name_System_Int64 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "long";
-        }
-
-        /// <summary>
-        ///     Returns the Hyperlisp type-name for the ulong type
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.UInt64", Protection = EventProtection.NativeClosed)]
-        private static void p5_hyperlisp_get_type_name_System_UInt64 (ApplicationContext context, ActiveEventArgs e)
-        {
-            e.Args.Value = "ulong";
         }
     }
 }
