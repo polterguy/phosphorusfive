@@ -17,7 +17,7 @@ namespace p5.types.types
     /// <summary>
     ///     Class helps converts from boolean to string, and vice versa
     /// </summary>
-    public static class BoolConversion
+    public static class BoolType
     {
         /// <summary>
         ///     Creates a bool from its string representation

@@ -15,38 +15,38 @@ using p5.exp.exceptions;
 namespace p5.types.types
 {
     /// <summary>
-    ///     Class helps converts from long to string, and vice versa
+    ///     Class helps converts from decimal to string, and vice versa
     /// </summary>
-    public static class LongConversion
+    public static class DecimalType
     {
         /// <summary>
-        ///     Creates a long from its string representation
+        ///     Creates a decimal from its string representation
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.long", Protection = EventProtection.NativeClosed)]
-        private static void p5_hyperlisp_get_object_value_long (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.decimal", Protection = EventProtection.NativeClosed)]
+        private static void p5_hyperlisp_get_object_value_decimal (ApplicationContext context, ActiveEventArgs e)
         {
             var strValue = e.Args.Value as string;
             if (strValue != null) {
-                e.Args.Value = long.Parse (strValue, CultureInfo.InvariantCulture);
+                e.Args.Value = decimal.Parse (strValue, CultureInfo.InvariantCulture);
             } else {
                 throw new LambdaException (
-                    "Don't know how to convert that to a long",
+                    "Don't know how to convert that to a decimal",
                     e.Args, 
                     context);
             }
         }
 
         /// <summary>
-        ///     Returns the Hyperlisp type-name for the long type
+        ///     Returns the Hyperlisp type-name for the decimal type
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Int64", Protection = EventProtection.NativeClosed)]
-        private static void p5_hyperlisp_get_type_name_System_Int64 (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Decimal", Protection = EventProtection.NativeClosed)]
+        private static void p5_hyperlisp_get_type_name_System_Decimal (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = "long";
+            e.Args.Value = "decimal";
         }
     }
 }

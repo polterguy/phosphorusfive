@@ -46,6 +46,7 @@
     <Compile Include="Sleep.cs" />
     <Compile Include="Wait.cs" />
     <Compile Include="Fork.cs" />
+    <Compile Include="helpers\Thread.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
@@ -68,5 +69,8 @@
       <Project>{1BD93466-D6D0-4E33-AC34-CA61DB5F3C1C}</Project>
       <Name>p5.exp</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="helpers\" />
   </ItemGroup>
 </Project>

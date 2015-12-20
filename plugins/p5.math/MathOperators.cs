@@ -31,9 +31,12 @@ namespace p5.math
         [ActiveEvent (Name = "+", Protection = EventProtection.LambdaClosed)]
         private static void math_plus (ApplicationContext context, ActiveEventArgs e)
         {
-            Calculate (delegate (dynamic sum, dynamic input) {
-                return sum + input;
-            }, e.Args, context);
+            Calculate (
+                context,
+                e.Args,
+                delegate (dynamic sum, dynamic input) {
+                    return sum + input;
+                });
         }
 
         /// <summary>
@@ -44,9 +47,12 @@ namespace p5.math
         [ActiveEvent (Name = "-", Protection = EventProtection.LambdaClosed)]
         private static void math_minus (ApplicationContext context, ActiveEventArgs e)
         {
-            Calculate (delegate (dynamic sum, dynamic input) {
-                return sum - input;
-            }, e.Args, context);
+            Calculate (
+                context,
+                e.Args,
+                delegate (dynamic sum, dynamic input) {
+                    return sum - input;
+                });
         }
 
         /// <summary>
@@ -57,9 +63,12 @@ namespace p5.math
         [ActiveEvent (Name = "*", Protection = EventProtection.LambdaClosed)]
         private static void math_multiply (ApplicationContext context, ActiveEventArgs e)
         {
-            Calculate (delegate (dynamic sum, dynamic input) {
-                return sum * input;
-            }, e.Args, context);
+            Calculate (
+                context,
+                e.Args,
+                delegate (dynamic sum, dynamic input) {
+                    return sum * input;
+                });
         }
         
         /// <summary>
@@ -70,9 +79,12 @@ namespace p5.math
         [ActiveEvent (Name = "/", Protection = EventProtection.LambdaClosed)]
         private static void math_divide (ApplicationContext context, ActiveEventArgs e)
         {
-            Calculate (delegate (dynamic sum, dynamic input) {
-                return sum / input;
-            }, e.Args, context);
+            Calculate (
+                context,
+                e.Args,
+                delegate (dynamic sum, dynamic input) {
+                    return sum / input;
+                });
         }
         
         /// <summary>
@@ -83,37 +95,43 @@ namespace p5.math
         [ActiveEvent (Name = "%", Protection = EventProtection.LambdaClosed)]
         private static void math_modulo (ApplicationContext context, ActiveEventArgs e)
         {
-            Calculate (delegate (dynamic sum, dynamic input) {
-                return sum % input;
-            }, e.Args, context);
+            Calculate (
+                context,
+                e.Args,
+                delegate (dynamic sum, dynamic input) {
+                    return sum % input;
+                });
         }
 
         /*
-         * Helper method for calculations, pass in specialized delegate for math function you wish to use
+         * Helper method for calculations, pass in specialized delegate for math function you wish to apply
          */
         private static void Calculate (
-            CalculateFunctor functor, 
-            Node args, 
-            ApplicationContext context)
+            ApplicationContext context,
+            Node args,
+            CalculateFunctor functor)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (args)) {
 
                 dynamic result = args.GetExValue<object> (context, "");
                 Type resultType = null;
-                if (args ["__pf_type"] == null) {
+                if (args ["_pf_type"] == null) {
 
                     // Using left most type as guiding type for result
                     resultType = result.GetType ();
                 } else {
 
                     // Type was explicitly passed in due to recursive invocations
-                    resultType = args ["__pf_type"].Get<Type> (context);
+                    resultType = args ["_pf_type"].Get<Type> (context);
                     result = Convert.ChangeType (result, resultType);
                 }
 
-                foreach (var idxChild in args.Children.Where (ix => ix.Name != "" && ix.Name != "__pf_type")) {
+                // Looping through each child node, and evaluating value of node with existing result
+                // Avoiding explicit type declarations and formatting parameters
+                foreach (var idxChild in args.Children.Where (ix => ix.Name != "" && ix.Name != "_pf_type")) {
 
+                    // Finding value of object, which might be an Active Event invocation, a constant, or an expression
                     dynamic nextValue;
                     if (idxChild.Name.StartsWith ("_")) {
 
@@ -122,11 +140,16 @@ namespace p5.math
                     } else {
 
                         // Active Event invocation to retrieve value to use
-                        idxChild.FindOrCreate ("__pf_type").Value = resultType;
+                        idxChild.FindOrCreate ("_pf_type").Value = resultType;
                         nextValue = context.RaiseLambda (idxChild.Name, idxChild).Get<object> (context, 0);
                     }
+
+                    // Now evaluating result of above node's value with existing result, evaluating the "functor" passed
+                    // in as evaluation functor
                     result = functor (result, Convert.ChangeType (nextValue, resultType));
                 }
+
+                // Returning result as value of node
                 args.Value = result;
             }
         }

@@ -17,7 +17,7 @@ namespace p5.types.types
     /// <summary>
     ///     Class helps converts from TimeSpan to string, and vice versa
     /// </summary>
-    public static class TimeConversion
+    public static class TimeType
     {
         /// <summary>
         ///     Creates a time from its string representation

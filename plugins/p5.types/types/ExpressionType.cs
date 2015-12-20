@@ -17,7 +17,7 @@ namespace p5.types.types
     /// <summary>
     ///     Class helps converts from expression to string, and vice versa
     /// </summary>
-    public static class ExpressionConversion
+    public static class ExpressionType
     {
         /// <summary>
         ///     Creates a <see cref="p5.exp.Expression">Expression</see> from its string representation

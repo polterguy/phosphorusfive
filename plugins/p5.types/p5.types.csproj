@@ -43,25 +43,25 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CanConvert.cs" />
-    <Compile Include="types\NodeConversion.cs" />
-    <Compile Include="types\ExpressionConversion.cs" />
-    <Compile Include="types\GuidConversion.cs" />
-    <Compile Include="types\LongConversion.cs" />
-    <Compile Include="types\IntConversion.cs" />
-    <Compile Include="types\ShortConversion.cs" />
-    <Compile Include="types\FloatConversion.cs" />
-    <Compile Include="types\ByteConversion.cs" />
-    <Compile Include="types\DateConversion.cs" />
-    <Compile Include="types\BoolConversion.cs" />
-    <Compile Include="types\BlobConversion.cs" />
-    <Compile Include="types\CharConversion.cs" />
-    <Compile Include="types\TimeConversion.cs" />
-    <Compile Include="types\DecimalConversion.cs" />
-    <Compile Include="types\SByteConversion.cs" />
-    <Compile Include="types\DoubleConversion.cs" />
-    <Compile Include="types\UIntConversion.cs" />
-    <Compile Include="types\ULongConversion.cs" />
-    <Compile Include="types\UShortConversion.cs" />
+    <Compile Include="types\BlobType.cs" />
+    <Compile Include="types\BoolType.cs" />
+    <Compile Include="types\ByteType.cs" />
+    <Compile Include="types\CharType.cs" />
+    <Compile Include="types\DateType.cs" />
+    <Compile Include="types\DecimalType.cs" />
+    <Compile Include="types\DoubleType.cs" />
+    <Compile Include="types\ExpressionType.cs" />
+    <Compile Include="types\FloatType.cs" />
+    <Compile Include="types\GuidType.cs" />
+    <Compile Include="types\IntType.cs" />
+    <Compile Include="types\LongType.cs" />
+    <Compile Include="types\NodeType.cs" />
+    <Compile Include="types\SByteType.cs" />
+    <Compile Include="types\ShortType.cs" />
+    <Compile Include="types\TimeType.cs" />
+    <Compile Include="types\UIntType.cs" />
+    <Compile Include="types\ULongType.cs" />
+    <Compile Include="types\UShortType.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -15,39 +15,38 @@ using p5.exp.exceptions;
 namespace p5.types.types
 {
     /// <summary>
-    ///     Class helps converts from unsigned int to string, and vice versa
+    ///     Class helps converts from int to string, and vice versa
     /// </summary>
-    public static class UIntConversion
+    public static class IntType
     {
-
         /// <summary>
-        ///     Creates a uint from its string representation
+        ///     Creates an int from its string representation
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.uint", Protection = EventProtection.NativeClosed)]
-        private static void p5_hyperlisp_get_object_value_uint (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.int", Protection = EventProtection.NativeClosed)]
+        private static void p5_hyperlisp_get_object_value_int (ApplicationContext context, ActiveEventArgs e)
         {
             var strValue = e.Args.Value as string;
             if (strValue != null) {
-                e.Args.Value = uint.Parse (strValue, CultureInfo.InvariantCulture);
+                e.Args.Value = int.Parse (strValue, CultureInfo.InvariantCulture);
             } else {
                 throw new LambdaException (
-                    "Don't know how to convert that to a uint",
+                    "Don't know how to convert that to an int",
                     e.Args, 
                     context);
             }
         }
 
         /// <summary>
-        ///     Returns the Hyperlisp type-name for the uint type
+        ///     Returns the Hyperlisp type-name for the int type
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.UInt32", Protection = EventProtection.NativeClosed)]
-        private static void p5_hyperlisp_get_type_name_System_UInt32 (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Int32", Protection = EventProtection.NativeClosed)]
+        private static void p5_hyperlisp_get_type_name_System_Int32 (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = "uint";
+            e.Args.Value = "int";
         }
     }
 }

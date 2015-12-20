@@ -29,14 +29,16 @@ namespace p5.threading
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "lock", Protection = EventProtection.LambdaClosed)]
-        private static void threading_lock (ApplicationContext context, ActiveEventArgs e)
+        public static void p5_lock (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving all lockers caller wants to lock
             var lockers = new List<string> (XUtil.Iterate<string> (context, e.Args));
 
-            // Recursively waits for each locker to be unlocked, evaluating given lambda, once
-            // all lockers are unlocked
-            LockNext (lockers, delegate { context.RaiseLambda ("eval-mutable", e.Args); });
+            // Recursively waits for each locker to be unlocked, evaluating given lambda, once all lockers are unlocked
+            LockNext (
+                lockers, delegate {
+                    context.RaiseLambda ("eval-mutable", e.Args);
+                });
         }
 
         /*
@@ -45,9 +47,10 @@ namespace p5.threading
          */
         private static void LockNext (List<string> lockers, LockFunctor functor)
         {
+            // Checking if there are any more lockers to wait for
             if (lockers.Count == 0) {
 
-                // No more lockers to wait for
+                // No more lockers to wait for, evaluating lambda
                 functor ();
             } else {
 
@@ -69,7 +72,7 @@ namespace p5.threading
         private static object GetLocker (string name)
         {
             // Locking access to lockers, to avoid race conditions by multiple threads 
-            // trying to create or retrieve the same locker(s)
+            // trying to create or retrieve locker(s)
             lock (GlobalLocker) {
 
                 // Making sure currently requested locker is created if it does not exist

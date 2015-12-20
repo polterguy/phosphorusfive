@@ -20,7 +20,7 @@ namespace p5.types.types
     /// <summary>
     ///     Class helps converts from blob/byte[] to string, and vice versa
     /// </summary>
-    public static class BlobConversion
+    public static class BlobType
     {
         /// <summary>
         ///     Creates a byte array from its string representation

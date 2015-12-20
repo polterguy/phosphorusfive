@@ -17,7 +17,7 @@ namespace p5.types.types
     /// <summary>
     ///     Class helps converts from node to string, and vice versa
     /// </summary>
-    public static class NodeConversion
+    public static class NodeType
     {
         /// <summary>
         ///     Creates a <see cref="phosphorus.core.Node">Node</see> list from its string representation
@@ -49,7 +49,7 @@ namespace p5.types.types
             if (tmp.Children.Count == 1) {
 
                 // If there's only one node, we return that as result
-                e.Args.Value = tmp [0];
+                e.Args.Value = tmp [0].UnTie ();
             } else if (tmp.Children.Count > 1) {
 
                 // Oops, error!

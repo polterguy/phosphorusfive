@@ -218,6 +218,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'unzip':
         case 'set-page-value':
         case 'list-users':
+        case 'format-date':
           state.indent += 2;
           return this.styles.keyword;
 
@@ -305,6 +306,8 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'list-events':
         case 'set-http-status':
         case 'set-http-status-code':
+        case 'date-now':
+        case 'create-cs-random-string':
           return this.styles.keyword;
 
         // default handling

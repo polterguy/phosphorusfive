@@ -17,8 +17,39 @@ namespace p5.types.types
     /// <summary>
     ///     Class helps converts from DateTime to string, and vice versa
     /// </summary>
-    public static class DateConversion
+    public static class DateType
     {
+        /// <summary>
+        ///     Returns the current server date and time
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "date-now", Protection = EventProtection.LambdaClosed)]
+        public static void date_now (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = DateTime.Now;
+        }
+
+        /// <summary>
+        ///     Formats date according to [format] and/or [culture], which both are optional
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "format-date", Protection = EventProtection.LambdaClosed)]
+        public static void format_date (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Making sure we clean up arguments afterwards
+            using (new Utilities.ArgsRemover (e.Args)) {
+
+                // Retrieving DateTime given, and returning formatted date accordingly, defaulting to "full date and time" format
+                DateTime date = e.Args.GetExValue<DateTime> (context);
+                CultureInfo culture = 
+                    CultureInfo.CreateSpecificCulture (
+                        e.Args.GetExChildValue ("culture", context, CultureInfo.CurrentUICulture.Name));
+                e.Args.Value = date.ToString (e.Args.GetExChildValue ("format", context, "f"), culture);
+            }
+        }
+
         /// <summary>
         ///     Creates a date from its string representation
         /// </summary>

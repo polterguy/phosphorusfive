@@ -17,7 +17,7 @@ namespace p5.types.types
     /// <summary>
     ///     Class helps converts from char to string, and vice versa
     /// </summary>
-    public static class CharConversion
+    public static class CharType
     {
         /// <summary>
         ///     Creates a char from its string representation

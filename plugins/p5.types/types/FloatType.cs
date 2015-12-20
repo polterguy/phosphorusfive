@@ -15,38 +15,38 @@ using p5.exp.exceptions;
 namespace p5.types.types
 {
     /// <summary>
-    ///     Class helps converts from int to string, and vice versa
+    ///     Class helps converts from float to string, and vice versa
     /// </summary>
-    public static class IntConversion
+    public static class FloatType
     {
         /// <summary>
-        ///     Creates an int from its string representation
+        ///     Creates a float from its string representation
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.int", Protection = EventProtection.NativeClosed)]
-        private static void p5_hyperlisp_get_object_value_int (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.float", Protection = EventProtection.NativeClosed)]
+        private static void p5_hyperlisp_get_object_value_float (ApplicationContext context, ActiveEventArgs e)
         {
             var strValue = e.Args.Value as string;
             if (strValue != null) {
-                e.Args.Value = int.Parse (strValue, CultureInfo.InvariantCulture);
+                e.Args.Value = float.Parse (strValue, CultureInfo.InvariantCulture);
             } else {
                 throw new LambdaException (
-                    "Don't know how to convert that to an int",
+                    "Don't know how to convert that to a float",
                     e.Args, 
                     context);
             }
         }
 
         /// <summary>
-        ///     Returns the Hyperlisp type-name for the int type
+        ///     Returns the Hyperlisp type-name for the float type
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Int32", Protection = EventProtection.NativeClosed)]
-        private static void p5_hyperlisp_get_type_name_System_Int32 (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Single", Protection = EventProtection.NativeClosed)]
+        private static void p5_hyperlisp_get_type_name_System_Single (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = "int";
+            e.Args.Value = "float";
         }
     }
 }

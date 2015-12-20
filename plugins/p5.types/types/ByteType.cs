@@ -15,38 +15,38 @@ using p5.exp.exceptions;
 namespace p5.types.types
 {
     /// <summary>
-    ///     Class helps converts from double to string, and vice versa
+    ///     Class helps converts from byte to string, and vice versa
     /// </summary>
-    public static class DoubleConversion
+    public static class ByteType
     {
         /// <summary>
-        ///     Creates a double from its string representation
+        ///     Creates a byte from its string representation
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.double", Protection = EventProtection.NativeClosed)]
-        private static void p5_hyperlisp_get_object_value_double (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.byte", Protection = EventProtection.NativeClosed)]
+        private static void p5_hyperlisp_get_object_value_byte (ApplicationContext context, ActiveEventArgs e)
         {
             var strValue = e.Args.Value as string;
             if (strValue != null) {
-                e.Args.Value = double.Parse (strValue, CultureInfo.InvariantCulture);
+                e.Args.Value = byte.Parse (strValue, CultureInfo.InvariantCulture);
             } else {
                 throw new LambdaException (
-                    "Don't know how to convert that to a double",
+                    "Don't know how to convert that to a byte",
                     e.Args, 
                     context);
             }
         }
 
         /// <summary>
-        ///     Returns the Hyperlisp type-name for the double type
+        ///     Returns the Hyperlisp type-name for the byte type
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Double", Protection = EventProtection.NativeClosed)]
-        private static void p5_hyperlisp_get_type_name_System_Double (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.Byte", Protection = EventProtection.NativeClosed)]
+        private static void p5_hyperlisp_get_type_name_System_Byte (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = "double";
+            e.Args.Value = "byte";
         }
     }
 }

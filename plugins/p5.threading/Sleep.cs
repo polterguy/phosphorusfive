@@ -20,10 +20,9 @@ namespace p5.threading
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "sleep", Protection = EventProtection.LambdaClosed)]
-        private static void threading_sleep (ApplicationContext context, ActiveEventArgs e)
+        public static void sleep (ApplicationContext context, ActiveEventArgs e)
         {
-            var milliseconds = XUtil.Single<int> (context, e.Args, true);
-            Thread.Sleep (milliseconds);
+            Thread.Sleep (XUtil.Single<int> (context, e.Args, true));
         }
     }
 }

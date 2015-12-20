@@ -112,16 +112,16 @@ create-widget:executor
 
             // Then executing p5 lambda nodes, in such a way that our converted hyperlisp 
             // becomes the "root node", while still reachable after execution is done!
-            set:x:/+2/#/*
-            add:x:/+/#
+            set:x:/../*/_exe/#/*
+            add:x:/../*/_exe/#
               src:x:/../*/lisp2lambda/*
             _exe:node:""
 
             // Notice, [eval-mutable], since we want to retrieve transformed code after execution!
-            eval-mutable:x:/-/#
+            eval-mutable:x:/../*/_exe/#
 
             // Then converting p5 lambda result nodes to text, and returning back to client as JSON
-            lambda2lisp:x:/-2/#/*
+            lambda2lisp:x:/../*/_exe/#/*
             return-response-object:code
               src:x:/./-?value
             sys42.info-feedback:@"Code was successfully executed"

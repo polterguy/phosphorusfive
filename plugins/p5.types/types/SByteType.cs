@@ -15,38 +15,38 @@ using p5.exp.exceptions;
 namespace p5.types.types
 {
     /// <summary>
-    ///     Class helps converts from ushort to string, and vice versa
+    ///     Class helps converts from signed byte to string, and vice versa
     /// </summary>
-    public static class UShortConversion
+    public static class SByteType
     {
         /// <summary>
-        ///     Creates an ushort from its string representation
+        ///     Creates an sbyte from its string representation
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.ushort", Protection = EventProtection.NativeClosed)]
-        private static void p5_hyperlisp_get_object_value_ushort (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.hyperlisp.get-object-value.sbyte", Protection = EventProtection.NativeClosed)]
+        private static void p5_hyperlisp_get_object_value_sbyte (ApplicationContext context, ActiveEventArgs e)
         {
             var strValue = e.Args.Value as string;
             if (strValue != null) {
-                e.Args.Value = ushort.Parse (strValue, CultureInfo.InvariantCulture);
+                e.Args.Value = sbyte.Parse (strValue, CultureInfo.InvariantCulture);
             } else {
                 throw new LambdaException (
-                    "Don't know how to convert that to a ushort",
+                    "Don't know how to convert that to a sbyte",
                     e.Args, 
                     context);
             }
         }
 
         /// <summary>
-        ///     Returns the Hyperlisp type-name for the ushort type
+        ///     Returns the Hyperlisp type-name for the sbyte type
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.UInt16", Protection = EventProtection.NativeClosed)]
-        private static void p5_hyperlisp_get_type_name_System_UInt16 (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.hyperlisp.get-type-name.System.SByte", Protection = EventProtection.NativeClosed)]
+        private static void p5_hyperlisp_get_type_name_System_SByte (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = "ushort";
+            e.Args.Value = "sbyte";
         }
     }
 }
