@@ -111,7 +111,7 @@ _foo2:bar2""
         }
         
         [ActiveEvent (Name = "for-each.test1", Protection = EventProtection.LambdaClosed)]
-        private static void for_each_test1 (ApplicationContext context, ActiveEventArgs e)
+        public static void for_each_test1 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Add ("_foo1", "bar1");
             e.Args.Add ("_foo2", "bar2");

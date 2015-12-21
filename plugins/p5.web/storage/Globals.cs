@@ -23,7 +23,7 @@ namespace p5.web.storage
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set-global-value", Protection = EventProtection.LambdaClosed)]
-        private static void set_global_value (ApplicationContext context, ActiveEventArgs e)
+        public static void set_global_value (ApplicationContext context, ActiveEventArgs e)
         {
             CollectionBase.Set (context, e.Args, delegate (string key, object value) {
                 if (value == null) {
@@ -42,7 +42,7 @@ namespace p5.web.storage
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-global-value", Protection = EventProtection.LambdaClosed)]
-        private static void get_global_value (ApplicationContext context, ActiveEventArgs e)
+        public static void get_global_value (ApplicationContext context, ActiveEventArgs e)
         {
             CollectionBase.Get (context, e.Args, key => HttpContext.Current.Application [key]);
         }
@@ -53,7 +53,7 @@ namespace p5.web.storage
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-global-keys", Protection = EventProtection.LambdaClosed)]
-        private static void list_global_keys (ApplicationContext context, ActiveEventArgs e)
+        public static void list_global_keys (ApplicationContext context, ActiveEventArgs e)
         {
             CollectionBase.List (context, e.Args, HttpContext.Current.Application.AllKeys);
         }

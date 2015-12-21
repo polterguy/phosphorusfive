@@ -30,7 +30,7 @@ namespace p5.mime.plugins
         /// </summary>
         [ActiveEvent (Name = "p5.net.http-post-mime", Protection = EventProtection.LambdaClosed)]
         [ActiveEvent (Name = "p5.net.http-put-mime", Protection = EventProtection.LambdaClosed)]
-        private static void p5_net_http_post_put_mime (ApplicationContext context, ActiveEventArgs e)
+        public static void p5_net_http_post_put_mime (ApplicationContext context, ActiveEventArgs e)
         {
             // Basic syntax checking
             if (e.Args.Children.Count (ix => ix.Name != "") != 1)
@@ -47,7 +47,7 @@ namespace p5.mime.plugins
         ///     Posts or puts a MIME message over an HTTP request
         /// </summary>
         [ActiveEvent (Name = "p5.net.http-get-mime", Protection = EventProtection.LambdaClosed)]
-        private static void p5_net_http_get_mime (ApplicationContext context, ActiveEventArgs e)
+        public static void p5_net_http_get_mime (ApplicationContext context, ActiveEventArgs e)
         {
             // Basic syntax checking
             if (e.Args.Children.Count (ix => ix.Name != "") != 0)

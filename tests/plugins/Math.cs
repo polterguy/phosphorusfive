@@ -236,7 +236,7 @@ insert-before:x:/../0
         }
 
         [ActiveEvent (Name = "p5.math.test-av", Protection = EventProtection.LambdaClosed)]
-        private static void p5_math_test_av (ApplicationContext context, ActiveEventArgs e)
+        public static void p5_math_test_av (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = 5;
         }

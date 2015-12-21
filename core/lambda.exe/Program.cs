@@ -39,7 +39,7 @@ namespace lambda_exe
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "p5.console.write", Protection = EventProtection.LambdaClosed)]
-        private static void console_write_line (ApplicationContext context, ActiveEventArgs e)
+        public static void console_write_line (ApplicationContext context, ActiveEventArgs e)
         {
             Console.WriteLine (XUtil.Single<string> (context, e.Args, true));
         }

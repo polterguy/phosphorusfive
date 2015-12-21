@@ -95,7 +95,7 @@ add:x:/..
         }
 
         [ActiveEvent (Name = "eval.test1", Protection = EventProtection.LambdaClosed)]
-        private static void eval_test1 (ApplicationContext context, ActiveEventArgs e)
+        public static void eval_test1 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "foo2";
         }

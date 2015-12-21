@@ -25,7 +25,7 @@ namespace p5.mime
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "p5.web.request.parse-mime", Protection = EventProtection.LambdaClosed)]
-        private static void p5_web_request_parse_mime (ApplicationContext context, ActiveEventArgs e)
+        public static void p5_web_request_parse_mime (ApplicationContext context, ActiveEventArgs e)
         {
             // Nothing to do here if this is true
             if (HttpContext.Current.Request.InputStream.Length == 0) {

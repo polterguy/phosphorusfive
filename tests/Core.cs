@@ -294,7 +294,7 @@ namespace p5.unittests
         }
 
         [ActiveEvent (Name = "core.foo7", Protection = EventProtection.LambdaClosed)]
-        private static void core_foo7 (ApplicationContext context, ActiveEventArgs e)
+        public static void core_foo7 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
         }
@@ -366,7 +366,7 @@ namespace p5.unittests
         }
 
         [ActiveEvent (Name = "core.foo10", Protection = EventProtection.LambdaClosed)]
-        private static void core_foo10 (ApplicationContext context, ActiveEventArgs e)
+        public static void core_foo10 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value += "success";
         }
@@ -464,7 +464,7 @@ namespace p5.unittests
         private class Foo13
         {
             [ActiveEvent (Name = "core.foo13", Protection = EventProtection.LambdaClosed)]
-            private static void core_foo13 (ApplicationContext context, ActiveEventArgs e)
+            public static void core_foo13 (ApplicationContext context, ActiveEventArgs e)
             {
                 e.Args.Value += "success";
             }

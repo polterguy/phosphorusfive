@@ -26,7 +26,7 @@ namespace p5.security
          * Useful during installation. Sets root password, but only if existing password is null!
          */
         [ActiveEvent (Name = "p5.web.set-root-password", Protection = EventProtection.LambdaClosed)]
-        private static void p5_web_set_root_password (ApplicationContext context, ActiveEventArgs e)
+        public static void p5_web_set_root_password (ApplicationContext context, ActiveEventArgs e)
         {
             /*
              * If root account's password is not null, and this Active Event is 

@@ -69,7 +69,7 @@ namespace p5.webapp.code
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set-page-value", Protection = EventProtection.LambdaClosed)]
-        private void set_page_value (ApplicationContext context, ActiveEventArgs e)
+        public void set_page_value (ApplicationContext context, ActiveEventArgs e)
         {
             // Using collection helper to traverse all keys supplied by caller
             p5.exp.CollectionBase.Set (context, e.Args, (key, value) => {
@@ -93,7 +93,7 @@ namespace p5.webapp.code
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-page-value", Protection = EventProtection.LambdaClosed)]
-        private void get_page_value (ApplicationContext context, ActiveEventArgs e)
+        public void get_page_value (ApplicationContext context, ActiveEventArgs e)
         {
             p5.exp.CollectionBase.Get (context, e.Args, key => ViewState [key], e.NativeSource);
         }
@@ -104,7 +104,7 @@ namespace p5.webapp.code
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-page-keys", Protection = EventProtection.LambdaClosed)]
-        private void list_page_keys (ApplicationContext context, ActiveEventArgs e)
+        public void list_page_keys (ApplicationContext context, ActiveEventArgs e)
         {
             p5.exp.CollectionBase.List (context, e.Args, ViewState.Keys, e.NativeSource);
         }
@@ -119,7 +119,7 @@ namespace p5.webapp.code
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set-title", Protection = EventProtection.LambdaClosed)]
-        private void set_title (ApplicationContext context, ActiveEventArgs e)
+        public void set_title (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving new Title of page
             var title = XUtil.Single<string>(context, e.Args, true);
@@ -146,7 +146,7 @@ namespace p5.webapp.code
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-title", Protection = EventProtection.LambdaClosed)]
-        private void get_title (ApplicationContext context, ActiveEventArgs e)
+        public void get_title (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new p5.core.Utilities.ArgsRemover(e.Args)) {

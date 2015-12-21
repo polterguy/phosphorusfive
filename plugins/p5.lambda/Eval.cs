@@ -33,52 +33,32 @@ namespace p5.lambda
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "eval", Protection = EventProtection.LambdaClosed)]
-        private static void eval (ApplicationContext context, ActiveEventArgs e)
+        public static void eval (ApplicationContext context, ActiveEventArgs e)
         {
             Executor (ExecuteBlockCopy, context, e.Args, e.Args.Name != "eval");
         }
         
         /// <summary>
-        ///     Executes a specified piece of p5 lambda block mutably
+        ///     Executes a specified piece of p5 lambda block as mutable
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "eval-mutable", Protection = EventProtection.LambdaClosed)]
-        private static void eval_mutable (ApplicationContext context, ActiveEventArgs e)
+        public static void eval_mutable (ApplicationContext context, ActiveEventArgs e)
         {
             Executor (ExecuteBlockMutable, context, e.Args, e.Args.Name != "eval-mutable");
-        }
-
-        /// <summary>
-        ///     Forward evaluates all expressions in values of result
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "eval-x", Protection = EventProtection.LambdaClosed)]
-        private static void eval_x (ApplicationContext context, ActiveEventArgs e)
-        {
-            foreach (var idxNode in XUtil.Iterate<Node> (context, e.Args, true)) {
-
-                // Checking if value of current node is an expression, and if so, evaluates expression and substitues
-                // the value of node with expression result
-                if (XUtil.IsExpression (idxNode.Value)) {
-
-                    // Evaluates result of expression, and substitues value with expression result
-                    idxNode.Value = idxNode.GetExValue<object> (context, null);
-                } else if (XUtil.IsFormatted (idxNode)) {
-
-                    // Formats value, and substitutes value with formatted value
-                    idxNode.Value = XUtil.FormatNode (context, idxNode);
-                    idxNode.Children.RemoveAll (ix => ix.Name == "");
-                }
-            }
         }
 
         /*
          * Worker method for [eval]
          */
-        private static void Executor (ExecuteFunctor functor, ApplicationContext context, Node args, bool forceChildren)
+        private static void Executor (
+            ExecuteFunctor functor, 
+            ApplicationContext context, 
+            Node args, 
+            bool forceChildren)
         {
+            // Checking if we should foce execution of children nodes, and not evaluate expressions in main node
             if (forceChildren || args.Value == null) {
 
                 // Evaluating current scope

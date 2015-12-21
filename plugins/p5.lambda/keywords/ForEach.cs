@@ -22,7 +22,7 @@ namespace p5.lambda.keywords
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "for-each", Protection = EventProtection.LambdaClosed)]
-        private static void lambda_for_each (ApplicationContext context, ActiveEventArgs e)
+        public static void lambda_for_each (ApplicationContext context, ActiveEventArgs e)
         {
             // storing old for-each "body"
             Node oldForEach = e.Args.Clone ();

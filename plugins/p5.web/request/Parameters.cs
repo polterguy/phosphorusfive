@@ -20,7 +20,7 @@ namespace p5.web.ui.request
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-http-param", Protection = EventProtection.LambdaClosed)]
-        private static void get_http_param (ApplicationContext context, ActiveEventArgs e)
+        public static void get_http_param (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args, true)) {
@@ -41,7 +41,7 @@ namespace p5.web.ui.request
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-http-params", Protection = EventProtection.LambdaClosed)]
-        private static void list_http_params (ApplicationContext context, ActiveEventArgs e)
+        public static void list_http_params (ApplicationContext context, ActiveEventArgs e)
         {
             CollectionBase.List (context, e.Args, HttpContext.Current.Request.Params.AllKeys);
         }

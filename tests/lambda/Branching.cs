@@ -176,7 +176,7 @@ if:x:/-2?value
         }
 
         [ActiveEvent (Name = "if.test1", Protection = EventProtection.LambdaClosed)]
-        private static void if_test1 (ApplicationContext context, ActiveEventArgs e)
+        public static void if_test1 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = true;
         }
@@ -198,7 +198,7 @@ if:x:/-2?value
         }
         
         [ActiveEvent (Name = "if.test2", Protection = EventProtection.LambdaClosed)]
-        private static void if_test2 (ApplicationContext context, ActiveEventArgs e)
+        public static void if_test2 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = true;
         }
@@ -223,7 +223,7 @@ if:x:/-2?value
         }
         
         [ActiveEvent (Name = "if.test3", Protection = EventProtection.LambdaClosed)]
-        private static void if_test3 (ApplicationContext context, ActiveEventArgs e)
+        public static void if_test3 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = false;
         }

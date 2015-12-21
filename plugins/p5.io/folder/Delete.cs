@@ -22,7 +22,7 @@ namespace p5.io.folder
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "delete-folder", Protection = EventProtection.LambdaClosed)]
-        private static void delete_folder (ApplicationContext context, ActiveEventArgs e)
+        public static void delete_folder (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args, true)) {

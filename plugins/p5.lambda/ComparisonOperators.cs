@@ -6,8 +6,8 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using p5.core;
 using p5.exp;
+using p5.core;
 using p5.exp.exceptions;
 
 namespace p5.lambda
@@ -24,7 +24,7 @@ namespace p5.lambda
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "equals", Protection = EventProtection.LambdaClosed)]
         [ActiveEvent (Name = "=", Protection = EventProtection.LambdaClosed)]
-        private static void equals (ApplicationContext context, ActiveEventArgs e)
+        public static void equals (ApplicationContext context, ActiveEventArgs e)
         {
             var sides = GetBothSides (e.Args, context);
             e.Args.Value = CompareValues (sides.Item1, sides.Item2) == 0;
@@ -37,7 +37,7 @@ namespace p5.lambda
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "not-equals", Protection = EventProtection.LambdaClosed)]
         [ActiveEvent (Name = "!=", Protection = EventProtection.LambdaClosed)]
-        private static void not_equals (ApplicationContext context, ActiveEventArgs e)
+        public static void not_equals (ApplicationContext context, ActiveEventArgs e)
         {
             var sides = GetBothSides (e.Args, context);
             e.Args.Value = CompareValues (sides.Item1, sides.Item2) != 0;
@@ -50,7 +50,7 @@ namespace p5.lambda
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "more-than", Protection = EventProtection.LambdaClosed)]
         [ActiveEvent (Name = ">", Protection = EventProtection.LambdaClosed)]
-        private static void more_than (ApplicationContext context, ActiveEventArgs e)
+        public static void more_than (ApplicationContext context, ActiveEventArgs e)
         {
             var sides = GetBothSides (e.Args, context);
             e.Args.Value = CompareValues (sides.Item1, sides.Item2) > 0;
@@ -63,7 +63,7 @@ namespace p5.lambda
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "less-than", Protection = EventProtection.LambdaClosed)]
         [ActiveEvent (Name = "<", Protection = EventProtection.LambdaClosed)]
-        private static void less_than (ApplicationContext context, ActiveEventArgs e)
+        public static void less_than (ApplicationContext context, ActiveEventArgs e)
         {
             var sides = GetBothSides (e.Args, context);
             e.Args.Value = CompareValues (sides.Item1, sides.Item2) < 0;
@@ -76,7 +76,7 @@ namespace p5.lambda
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "more-than-equals", Protection = EventProtection.LambdaClosed)]
         [ActiveEvent (Name = ">=", Protection = EventProtection.LambdaClosed)]
-        private static void more_than_equals (ApplicationContext context, ActiveEventArgs e)
+        public static void more_than_equals (ApplicationContext context, ActiveEventArgs e)
         {
             var sides = GetBothSides (e.Args, context);
             e.Args.Value = CompareValues (sides.Item1, sides.Item2) >= 0;
@@ -89,7 +89,7 @@ namespace p5.lambda
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "less-than-equals", Protection = EventProtection.LambdaClosed)]
         [ActiveEvent (Name = "<=", Protection = EventProtection.LambdaClosed)]
-        private static void less_than_equals (ApplicationContext context, ActiveEventArgs e)
+        public static void less_than_equals (ApplicationContext context, ActiveEventArgs e)
         {
             var sides = GetBothSides (e.Args, context);
             e.Args.Value = CompareValues (sides.Item1, sides.Item2) <= 0;

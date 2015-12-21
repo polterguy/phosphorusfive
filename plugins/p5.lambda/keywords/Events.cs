@@ -36,7 +36,7 @@ namespace p5.lambda.events
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set-event", Protection = EventProtection.LambdaClosed)]
         [ActiveEvent (Name = "set-protected-event", Protection = EventProtection.LambdaClosed)]
-        private static void set_event (ApplicationContext context, ActiveEventArgs e)
+        public static void set_event (ApplicationContext context, ActiveEventArgs e)
         {
             // Checking to see if this event has no lambda objects, and is not protected, at which case it is a "delete event" invocation
             if (e.Args.Children.Count == 0 && e.Name == "set-event") {
@@ -56,7 +56,7 @@ namespace p5.lambda.events
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "delete-events", Protection = EventProtection.LambdaClosed)]
-        private static void delete_events (ApplicationContext context, ActiveEventArgs e)
+        public static void delete_events (ApplicationContext context, ActiveEventArgs e)
         {
             // Iterating through all events to delete
             foreach (var idxName in XUtil.Iterate<string> (context, e.Args)) {
@@ -71,7 +71,7 @@ namespace p5.lambda.events
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5 lambda.get-protected-events", Protection = EventProtection.NativeClosed)]
+        [ActiveEvent (Name = "p5.lambda.get-protected-events", Protection = EventProtection.NativeClosed)]
         private static void p5_lambda_get_protected_events (ApplicationContext context, ActiveEventArgs e)
         {
             foreach (var idxEvt in _events.Keys) {
@@ -86,7 +86,7 @@ namespace p5.lambda.events
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-events", Protection = EventProtection.LambdaClosed)]
-        private static void get_event (ApplicationContext context, ActiveEventArgs e)
+        public static void get_event (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args, true)) {
@@ -119,7 +119,7 @@ namespace p5.lambda.events
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-events", Protection = EventProtection.LambdaClosed)]
-        private static void list_events (ApplicationContext context, ActiveEventArgs e)
+        public static void list_events (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args, true)) {

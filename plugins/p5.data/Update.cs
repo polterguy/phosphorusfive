@@ -23,7 +23,7 @@ namespace p5.data
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "update-data", Protection = EventProtection.LambdaClosed)]
-        private static void update_data (ApplicationContext context, ActiveEventArgs e)
+        public static void update_data (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving expression and doing some basic syntax checking
             var ex = e.Args.Value as Expression;

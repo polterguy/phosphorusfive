@@ -27,7 +27,7 @@ namespace p5.math
         /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "+", Protection = EventProtection.LambdaClosed)]
-        private static void plus (ApplicationContext context, ActiveEventArgs e)
+        public static void plus (ApplicationContext context, ActiveEventArgs e)
         {
             Calculate (
                 context,
@@ -43,7 +43,7 @@ namespace p5.math
         /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "-", Protection = EventProtection.LambdaClosed)]
-        private static void minus (ApplicationContext context, ActiveEventArgs e)
+        public static void minus (ApplicationContext context, ActiveEventArgs e)
         {
             Calculate (
                 context,
@@ -59,7 +59,7 @@ namespace p5.math
         /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "*", Protection = EventProtection.LambdaClosed)]
-        private static void multiply (ApplicationContext context, ActiveEventArgs e)
+        public static void multiply (ApplicationContext context, ActiveEventArgs e)
         {
             Calculate (
                 context,
@@ -75,7 +75,7 @@ namespace p5.math
         /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "/", Protection = EventProtection.LambdaClosed)]
-        private static void divide (ApplicationContext context, ActiveEventArgs e)
+        public static void divide (ApplicationContext context, ActiveEventArgs e)
         {
             Calculate (
                 context,
@@ -91,7 +91,7 @@ namespace p5.math
         /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "^", Protection = EventProtection.LambdaClosed)]
-        private static void exponent (ApplicationContext context, ActiveEventArgs e)
+        public static void exponent (ApplicationContext context, ActiveEventArgs e)
         {
             Calculate (
                 context,
@@ -111,7 +111,7 @@ namespace p5.math
         /// <param name="context">Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "%", Protection = EventProtection.LambdaClosed)]
-        private static void modulo (ApplicationContext context, ActiveEventArgs e)
+        public static void modulo (ApplicationContext context, ActiveEventArgs e)
         {
             Calculate (
                 context,

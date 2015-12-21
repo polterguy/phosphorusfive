@@ -478,7 +478,7 @@ namespace p5.unittests.plugins
         }
 
         [ActiveEvent (Name = "test.list-folders-1", Protection = EventProtection.LambdaClosed)]
-        private static void ListFolderEvent (ApplicationContext context, ActiveEventArgs e)
+        public static void ListFolderEvent (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "/test1/";
         }

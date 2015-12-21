@@ -27,7 +27,7 @@ namespace p5.security
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "login", Protection = EventProtection.LambdaClosed)]
-        private static void login (ApplicationContext context, ActiveEventArgs e)
+        public static void login (ApplicationContext context, ActiveEventArgs e)
         {
             AuthenticationHelper.Login (context, e.Args);
         }
@@ -38,7 +38,7 @@ namespace p5.security
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "logout", Protection = EventProtection.LambdaClosed)]
-        private static void logout (ApplicationContext context, ActiveEventArgs e)
+        public static void logout (ApplicationContext context, ActiveEventArgs e)
         {
             AuthenticationHelper.Logout (context);
         }
@@ -49,7 +49,7 @@ namespace p5.security
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "create-user", Protection = EventProtection.LambdaClosed)]
-        private static void create_user (ApplicationContext context, ActiveEventArgs e)
+        public static void create_user (ApplicationContext context, ActiveEventArgs e)
         {
             AuthenticationHelper.CreateUser (context, e.Args);
         }
@@ -60,7 +60,7 @@ namespace p5.security
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "list-users", Protection = EventProtection.LambdaClosed)]
-        private static void list_users (ApplicationContext context, ActiveEventArgs e)
+        public static void list_users (ApplicationContext context, ActiveEventArgs e)
         {
             AuthenticationHelper.ListUsers (context, e.Args);
         }
@@ -71,7 +71,7 @@ namespace p5.security
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "whoami", Protection = EventProtection.LambdaClosed)]
-        private static void whoami (ApplicationContext context, ActiveEventArgs e)
+        public static void whoami (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Add("username", AuthenticationHelper.GetTicket (context).Username);
             e.Args.Add("role", AuthenticationHelper.GetTicket (context).Role);

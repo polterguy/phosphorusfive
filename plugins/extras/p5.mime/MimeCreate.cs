@@ -23,35 +23,12 @@ namespace p5.mime
     public static class MimeCreate
     {
         /// <summary>
-        ///     Creates a native MimeEntity according to given arguments and returns to caller as MimeEntity
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.mime.create-native", Protection = EventProtection.NativeClosed)]
-        private static void p5_mime_create_native (ApplicationContext context, ActiveEventArgs e)
-        {
-            // Basic syntax checking
-            if (e.Args.Children.Count != 1)
-                throw new LambdaException (
-                    "You must have exactly one root node of your MIME message",
-                    e.Args,
-                    context);
-
-            // Creating and returning MIME message to caller as MimeEntity
-            MimeCreator creator = new MimeCreator (
-                context, 
-                e.Args.FirstChild,
-                (List<Stream>)e.Args.Value);
-            e.Args.Value = creator.Create ();
-        }
-
-        /// <summary>
         ///     Creates a MIME message according to given arguments and returns as string
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "p5.mime.create", Protection = EventProtection.LambdaClosed)]
-        private static void p5_mime_create (ApplicationContext context, ActiveEventArgs e)
+        public static void p5_mime_create (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves
             using (new Utilities.ArgsRemover (e.Args, true)) {
@@ -81,6 +58,29 @@ namespace p5.mime
                     }
                 }
             }
+        }
+
+        /// <summary>
+        ///     Creates a native MimeEntity according to given arguments and returns to caller as MimeEntity
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "p5.mime.create-native", Protection = EventProtection.NativeClosed)]
+        private static void p5_mime_create_native (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Basic syntax checking
+            if (e.Args.Children.Count != 1)
+                throw new LambdaException (
+                    "You must have exactly one root node of your MIME message",
+                    e.Args,
+                    context);
+
+            // Creating and returning MIME message to caller as MimeEntity
+            MimeCreator creator = new MimeCreator (
+                context, 
+                e.Args.FirstChild,
+                (List<Stream>)e.Args.Value);
+            e.Args.Value = creator.Create ();
         }
     }
 }

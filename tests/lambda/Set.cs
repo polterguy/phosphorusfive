@@ -54,7 +54,7 @@ add:x:/..
         }
         
         [ActiveEvent (Name = "set.test1", Protection = EventProtection.LambdaClosed)]
-        private static void set_test1 (ApplicationContext context, ActiveEventArgs e)
+        public static void set_test1 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "success";
         }
@@ -76,7 +76,7 @@ add:x:/..
         }
         
         [ActiveEvent (Name = "set.test2", Protection = EventProtection.LambdaClosed)]
-        private static void set_test2 (ApplicationContext context, ActiveEventArgs e)
+        public static void set_test2 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Add (new Node ("_foo1", "bar1"));
             e.Args.Add (new Node ("_foo2", "bar2"));
@@ -104,7 +104,7 @@ add:x:/..
         }
         
         [ActiveEvent (Name = "set.test3", Protection = EventProtection.LambdaClosed)]
-        private static void set_test3 (ApplicationContext context, ActiveEventArgs e)
+        public static void set_test3 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Add (new Node ("_foo1", "bar1"));
             e.Args [0].Add ("_foo2", "bar2");
@@ -166,13 +166,13 @@ add:x:/..
         }
 
         [ActiveEvent (Name = "set.test4", Protection = EventProtection.LambdaClosed)]
-        private static void set_test4 (ApplicationContext context, ActiveEventArgs e)
+        public static void set_test4 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "succ";
         }
 
         [ActiveEvent (Name = "set.test5", Protection = EventProtection.LambdaClosed)]
-        private static void set_test5 (ApplicationContext context, ActiveEventArgs e)
+        public static void set_test5 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = "ess";
         }

@@ -30,7 +30,7 @@ namespace p5.io.zip
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "unzip", Protection = EventProtection.LambdaClosed)]
-        private static void unzip (ApplicationContext context, ActiveEventArgs e)
+        public static void unzip (ApplicationContext context, ActiveEventArgs e)
         {
             // Retrieving password, if there is one, and untying it, 
             // to make sure it never leaves method, in case of an exception, etc

@@ -24,7 +24,7 @@ namespace p5.io.folder
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-files", Protection = EventProtection.LambdaClosed)]
-        private static void list_files (ApplicationContext context, ActiveEventArgs e)
+        public static void list_files (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args, true)) {

@@ -22,7 +22,7 @@ namespace p5.web.storage
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "set-cache-value", Protection = EventProtection.LambdaClosed)]
-        private static void set_cache_value (ApplicationContext context, ActiveEventArgs e)
+        public static void set_cache_value (ApplicationContext context, ActiveEventArgs e)
         {
             p5.exp.CollectionBase.Set (context, e.Args, delegate (string key, object value) {
                 if (value == null) {
@@ -43,7 +43,7 @@ namespace p5.web.storage
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "get-cache-value", Protection = EventProtection.LambdaClosed)]
-        private static void get_cache_value (ApplicationContext context, ActiveEventArgs e)
+        public static void get_cache_value (ApplicationContext context, ActiveEventArgs e)
         {
             p5.exp.CollectionBase.Get (context, e.Args, key => HttpContext.Current.Cache [key]);
         }
@@ -54,7 +54,7 @@ namespace p5.web.storage
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "list-cache-keys", Protection = EventProtection.LambdaClosed)]
-        private static void list_cache_keys (ApplicationContext context, ActiveEventArgs e)
+        public static void list_cache_keys (ApplicationContext context, ActiveEventArgs e)
         {
             var retVal = new List<string> ();
             foreach (DictionaryEntry idx in HttpContext.Current.Cache) {

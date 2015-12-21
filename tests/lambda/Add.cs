@@ -55,7 +55,7 @@ add:x:/..
         }
         
         [ActiveEvent (Name = "add.test1", Protection = EventProtection.LambdaClosed)]
-        private static void add_test1 (ApplicationContext context, ActiveEventArgs e)
+        public static void add_test1 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Add ("_foo1", "bar1");
             e.Args.Add ("_foo2", "bar2");
@@ -77,7 +77,7 @@ add:x:/..
         }
         
         [ActiveEvent (Name = "add.test2", Protection = EventProtection.LambdaClosed)]
-        private static void add_test2 (ApplicationContext context, ActiveEventArgs e)
+        public static void add_test2 (ApplicationContext context, ActiveEventArgs e)
         {
             e.Args.Value = @"_foo1:bar1
 _foo2:bar2";

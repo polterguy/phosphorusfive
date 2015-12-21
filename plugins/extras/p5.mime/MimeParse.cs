@@ -48,7 +48,7 @@ namespace p5.mime
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "p5.mime.parse", Protection = EventProtection.LambdaClosed)]
-        private static void p5_mime_parse (ApplicationContext context, ActiveEventArgs e)
+        public static void p5_mime_parse (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves
             using (new Utilities.ArgsRemover (e.Args, true)) {

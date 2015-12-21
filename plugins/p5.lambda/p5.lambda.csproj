@@ -57,6 +57,7 @@
     <Compile Include="keywords\Retrieve.cs" />
     <Compile Include="ComparisonOperators.cs" />
     <Compile Include="keywords\Fetch.cs" />
+    <Compile Include="EvalExpression.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

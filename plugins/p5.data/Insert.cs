@@ -26,7 +26,7 @@ namespace p5.data
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "insert-data", Protection = EventProtection.LambdaClosed)]
-        private static void insert_data (ApplicationContext context, ActiveEventArgs e)
+        public static void insert_data (ApplicationContext context, ActiveEventArgs e)
         {
             /*
              * Note, since [insert-data] creates an ID for items not explicitly giving an ID,

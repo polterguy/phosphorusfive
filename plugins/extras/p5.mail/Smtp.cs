@@ -29,7 +29,7 @@ namespace p5.mail
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
         [ActiveEvent (Name = "p5.mail.smtp.send-email", Protection = EventProtection.LambdaClosed)]
-        private static void p5_mail_smtp_send_email (ApplicationContext context, ActiveEventArgs e)
+        public static void p5_mail_smtp_send_email (ApplicationContext context, ActiveEventArgs e)
         {
             // Basic syntax checking
             if (e.Args.Children.Count (ix => ix.Name == "envelope") == 0)

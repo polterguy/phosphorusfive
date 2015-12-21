@@ -26,7 +26,7 @@ namespace p5.io.file
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "copy-file", Protection = EventProtection.LambdaClosed)]
-        private static void copy_file (ApplicationContext context, ActiveEventArgs e)
+        public static void copy_file (ApplicationContext context, ActiveEventArgs e)
         {
             /*
              * We do not remove value of arguments here, since it is used for returning value of 

@@ -27,7 +27,7 @@ namespace p5.io.zip
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "zip", Protection = EventProtection.LambdaClosed)]
-        private static void zip (ApplicationContext context, ActiveEventArgs e)
+        public static void zip (ApplicationContext context, ActiveEventArgs e)
         {
             /*
              * Notice, since zip might zip another file than requested by the user, we return that filepath

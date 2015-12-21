@@ -27,7 +27,7 @@ namespace p5.mime.plugins
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "echo-mime", Protection = EventProtection.LambdaClosed)]
-        private static void echo_mime (ApplicationContext context, ActiveEventArgs e)
+        public static void echo_mime (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves
             using (new Utilities.ArgsRemover (e.Args, true)) {
