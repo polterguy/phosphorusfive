@@ -287,6 +287,7 @@ namespace p5.core
                     BindingFlags.FlattenHierarchy |
                     BindingFlags.Instance |
                     BindingFlags.NonPublic |
+                    BindingFlags.DeclaredOnly |
                     BindingFlags.Public);
                 AddActiveEventsForType (idxType, instanceMethods, _instanceActiveEvents);
 
@@ -295,6 +296,7 @@ namespace p5.core
                     BindingFlags.FlattenHierarchy |
                     BindingFlags.Static |
                     BindingFlags.NonPublic |
+                    BindingFlags.DeclaredOnly |
                     BindingFlags.Public);
                 AddActiveEventsForType (idxType, staticMethods, _staticActiveEvents);
             }
