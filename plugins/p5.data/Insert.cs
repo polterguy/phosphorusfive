@@ -117,13 +117,14 @@ namespace p5.data
             } else {
 
                 // An ID was given, making sure it doesn't exist from before
-                var tmpId = node.Get<string> (context);
-                if (Expression.Create (string.Format (@"/*/*/""={0}""", tmpId), context)
+                // TODO: fix!!
+                /*var tmpId = node.Get<string> (context);
+                if (Expression.Create (string.Format (@"/* /* /""={0}""", tmpId), context)
                     .Evaluate (context, Common.Database)
                     .GetEnumerator ()
                     .MoveNext ()) {
                     throw new LambdaException ("ID exists from before in database", node, context);
-                }
+                }*/
             }
         }
     }

@@ -134,10 +134,10 @@ namespace p5.web.widgets
         private void null_handler (ApplicationContext context, ActiveEventArgs e)
         {
             // Looping through each lambda event handler for given event
-            foreach (var idxLambda in Manager.WidgetLambdaEventStorage [e.Name].ToList ()) {
+            foreach (var idxLambda in Manager.WidgetLambdaEventStorage [e.Name]) {
 
                 // Raising Active Event
-                XUtil.RaiseEvent (context, e.Args, idxLambda, e.Name);
+                XUtil.RaiseEvent (context, e.Args, idxLambda.Clone (), e.Name);
             }
         }
 

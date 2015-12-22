@@ -264,7 +264,7 @@ namespace p5.lambda.events
                 if (lambda != null) {
 
                     // Raising Active Event
-                    XUtil.RaiseEvent (context, e.Args, lambda, e.Name);
+                    XUtil.RaiseEvent (context, e.Args, lambda.Clone (), e.Name);
                 }
             }
         }

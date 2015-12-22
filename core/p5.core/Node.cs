@@ -403,7 +403,7 @@ namespace p5.core
         /// </summary>
         public Node Clone ()
         {
-            var retVal = new Node {Name = Name, Value = Value};
+            var retVal = new Node (Name, Value);
             foreach (var idxChild in _children) {
                 retVal.Add (idxChild.Clone ());
             }

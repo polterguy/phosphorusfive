@@ -22,8 +22,15 @@ namespace p5.exp
     [Serializable]
     public class Expression : IComparable
     {
-        // Holds the root group iterator of expression
-        private IteratorGroup _rootGroup;
+        // If expression is referencing other expressions, this field is true
+        private bool _isReferenceExpression;
+
+        // Type of expression (node, value, name, count)
+        private Match.MatchType _expressionType;
+
+        // If value(s) of expression results should be converted to another type, this will contains
+        // the Hyperlisp type name (int, float, bool, etc)
+        private string _convertResultsType;
 
         /*
          * Private ctor, use static Create method to create instances.
@@ -31,12 +38,15 @@ namespace p5.exp
         private Expression (string expression, ApplicationContext context)
         {
             Value = expression;
+        }
 
-            // Checking to see if we should lazy build expression
-            if (Value.Contains ("{0}"))
-                Lazy = true;
-            else
-                BuildExpression (context); // Building immediately, since there are no formatting parameters
+        /// <summary>
+        ///     Returns actual expression in string format
+        /// </summary>
+        /// <value>The expression value</value>
+        public string Value {
+            get;
+            private set;
         }
 
         /// <summary>
@@ -50,79 +60,45 @@ namespace p5.exp
         }
 
         /// <summary>
-        ///     Returns actual expression in string format
-        /// </summary>
-        /// <value>The expression value</value>
-        public string Value {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        ///     Returns true if Expression is lazy binded
-        /// </summary>
-        /// <value>The value</value>
-        private bool Lazy {
-            get;
-            set;
-        }
-
-        private bool Reference {
-            get;
-            set;
-        }
-
-        private Match.MatchType ExpressionType {
-            get;
-            set;
-        }
-
-        private string Casting {
-            get;
-            set;
-        }
-
-        /// <summary>
         ///     Evaluates expression for given <see cref="phosphorus.core.Node">node</see>
         /// </summary>
         /// <param name="evaluatedNode">Node to evaluate expression for</param>
         /// <param name="context">Application Context</param>
         /// <param name="exNode">Node that contained expression, optional, necessary for 
         /// formatting operations</param>
-        public Match Evaluate (ApplicationContext context, Node evaluatedNode, Node exNode = null)
+        public Match Evaluate (ApplicationContext context, Node evaluatedNode, Node exNode)
         {
-            if (evaluatedNode == null)
-                throw new ArgumentException ("No actual node given to evaluate.", "node");
+            if (evaluatedNode == null || exNode == null)
+                throw new ExpressionException ("[null]", "No actual node or expression node given to evaluate");
 
-            // Checking to see if we're in lazy build mode ...
-            if (Lazy)
-                BuildExpression (context, exNode);
+            // Building expression
+            var iteratorGroup = BuildExpression (context, evaluatedNode, exNode);
 
             // Creating a Match object, and returning to caller.
-            // At this point, the entire Iterator hierarchy is already built, and the only remaining parts
-            // is to set the node for the root group iterator and start evaluating, and pass the results to Match
-            _rootGroup.GroupRootNode = evaluatedNode;
-            return new Match (@_rootGroup.Evaluate (context), ExpressionType, context, Casting, Reference);
+            return new Match (iteratorGroup.Evaluate (context), _expressionType, context, _convertResultsType, _isReferenceExpression);
         }
 
         /*
          * Tokenizes and initializes expression object
          */
-        private void BuildExpression (ApplicationContext context, Node exNode = null)
+        private IteratorGroup BuildExpression (
+            ApplicationContext context, 
+            Node evaluatedNode, 
+            Node exNode)
         {
+            // Setting up a return value
+            var retVal = new IteratorGroup ();
+
             // Checking to see if we should run formatting logic on expression before parsing iterators
-            var expression = Value;
-            if (Lazy)
-                expression = FormatExpression (context, exNode); // Lazy building, needs to apply formatting parameters
+            var expression = FormatExpression (context, exNode);
 
             if (expression.StartsWith ("@")) {
                 expression = expression.Substring (1);
-                Reference = true;
+                _isReferenceExpression = true;
             }
 
-            _rootGroup = new IteratorGroup ();
             string previousToken = null; // Needed to keep track of previous token
-            var current = _rootGroup; // Used as index iterator during tokenizing process
+            var current = retVal; // Used as index iterator during tokenizing process
 
             // Tokenizer uses StringReader to tokenize, making sure tokenizer is disposed when finished
             using (var tokenizer = new Tokenizer (expression)) {
@@ -155,6 +131,10 @@ namespace p5.exp
             // Checking to see if we have open groups, which is an error
             if (current.ParentGroup != null)
                 throw new ExpressionException (Value, "Group in expression was not closed. Probably missing ')' token, after evaluation expression yields; " + expression);
+
+            // Returning IteratorGroup to caller, but first making sure it has the right Root Group Iterator
+            retVal.GroupRootNode = evaluatedNode;
+            return retVal;
         }
 
         /*
@@ -191,7 +171,7 @@ namespace p5.exp
             // this is our last token, storing it as "expression type", and optionally a "convert", before ending iteration
             string typeOfExpression = null;
             if (token.IndexOf ('.') != -1) {
-                Casting = token.Substring (token.IndexOf ('.') + 1);
+                _convertResultsType = token.Substring (token.IndexOf ('.') + 1);
                 typeOfExpression = token.Substring (0, token.IndexOf ('.'));
             } else {
                 typeOfExpression = token;
@@ -205,7 +185,7 @@ namespace p5.exp
                 default:
                     throw new ExpressionException (Value, "Type declaration of expression was not valid");
             }
-            ExpressionType = (Match.MatchType)Enum.Parse (typeof(Match.MatchType), typeOfExpression);
+            _expressionType = (Match.MatchType)Enum.Parse (typeof(Match.MatchType), typeOfExpression);
         }
 
         /*
@@ -472,12 +452,12 @@ namespace p5.exp
         
         public int CompareTo (Expression rhs)
         {
-            if (ExpressionType != rhs.ExpressionType)
-                return ExpressionType.CompareTo (rhs.ExpressionType);
-            if (Reference != rhs.Reference)
-                return Reference.CompareTo (rhs.Reference);
-            if (Casting != rhs.Casting)
-                return Casting.CompareTo (rhs.Casting);
+            if (_expressionType != rhs._expressionType)
+                return _expressionType.CompareTo (rhs._expressionType);
+            if (_isReferenceExpression != rhs._isReferenceExpression)
+                return _isReferenceExpression.CompareTo (rhs._isReferenceExpression);
+            if (_convertResultsType != rhs._convertResultsType)
+                return _convertResultsType.CompareTo (rhs._convertResultsType);
             return Value.CompareTo (rhs.Value);
         }
 

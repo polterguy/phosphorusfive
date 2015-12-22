@@ -44,7 +44,7 @@ namespace p5.lambda.keywords
                 StringBuilder result = new StringBuilder ();
 
                 // Cannot use XUtil here, since we're handling Nodes different than other types
-                foreach (var idx in ex.Evaluate (context, e.Args)) {
+                foreach (var idx in ex.Evaluate (context, e.Args, e.Args)) {
 
                     if (result.Length != 0)
                         result.Append (insertBetweenNodes);

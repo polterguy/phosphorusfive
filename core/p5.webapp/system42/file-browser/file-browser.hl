@@ -8,6 +8,60 @@ include-stylesheet-file:/system42/file-browser/media/files.css
 
 
 /*
+ * Including JavaScript fo allow for dragging and 
+ * dropping files to upload them
+ */
+include-javascript:@"
+var dz = p5.$('file-browser');
+dz.files = [];
+
+dz.el.addEventListener('dragover', function(e) {
+  e.preventDefault();
+  dz.el.className = 'col-xs-12 file-browser dropover';
+}, false);
+
+dz.el.addEventListener('dragleave', function(e) {
+  e.preventDefault();
+  dz.el.className = 'col-xs-12 file-browser';
+}, false);
+
+dz.el.addEventListener('drop', function(e) {
+  e.preventDefault();
+  dz.className = 'col-xs-12 file-browser dropover-dropped';
+  var startPush = dz.files.length == 0;
+  var files = e.dataTransfer.files;
+  for(var i = 0; i < files.length; i++) {
+    dz.files.push(files[i]);
+  }
+  if(startPush) {
+    dz.processNextFile();
+  }
+}, false);
+
+dz.processNextFile = function () {
+  var f = dz.files.splice(0,1)[0];
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var upln = p5.$('file-name');
+    upln.el.value = f.name;
+    upln.raise('_onupload', {
+      onsuccess: function (serverReturn, evt) {
+        if(dz.files.length > 0) {
+          dz.processNextFile();
+        } else {
+          dz.el.className = 'col-xs-12 file-browser';
+        }
+      },
+      onbefore: function (pars, evt) {
+        pars.push(['file-data', btoa(e.target.result)]);
+      }});
+  };
+  reader.readAsBinaryString(f);
+};
+"
+
+
+/*
  * Creating main file system browser widget
  */
 create-widget:file-browser
@@ -44,6 +98,58 @@ create-widget:file-browser
 
 
   widgets
+
+    /*
+     * Hidden input element to contain file name
+     */
+    void:file-name
+      type:hidden
+      _onupload
+        sys42.save-uploaded-file
+      events
+
+        /*
+         * Saves the currently uploaded file
+         */
+        sys42.save-uploaded-file
+
+          // Retrieving file name and content
+          get-widget-property:file-name
+            value
+          get-http-param:file-data
+
+          // Decoding file from base64 and getting current folder
+          p5.string.decode-base64:x:/../*/get-http-param/*/file-data?value
+          get-session-value:sys42.current-folder
+
+          // Saving files
+          save-binary-file:{0}{1}
+            :x:/../*/get-session-value/*?value
+            :x:/../*/get-widget-property/*/file-name/*?value
+            src:x:/../*/p5.string.decode-base64/*?value
+
+          // Re-creating current folder's content
+          sys42.create-current-folder-content
+
+          // Updating selected file to newly uploaded file
+          eval-x:x:/+/**/object
+          set-session-value:sys42.selected-file-browser-object
+            src
+              type:file
+              object:{0}{1}
+                :x:/../*/get-session-value/*?value
+                :x:/../*/get-widget-property/*/file-name/*?value
+          sys42.create-selected-object-clues:{0}{1}
+            :x:/../*/get-session-value/*/*?value
+            :x:/../*/get-widget-property/*/file-name/*?value
+          sys42.update-file-browser-toolbar
+
+          // Showing feedback to user
+          sys42.info-feedback:File '{0}' was successfully uploaded
+            :x:/../*/get-widget-property/*/file-name/*?value
+          delete-widget-property:file-name
+            value
+
 
     /*
      * "Show toolbar" button

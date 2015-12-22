@@ -4,6 +4,15 @@
     -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none;
+    min-height:400px;
+}
+
+.dropover {
+    background:rgba(255,255,0,.2) url(/media/images/marvin-headshot-transparent.png) no-repeat top right;
+}
+
+.dropover-dropped {
+    background-color:rgba(128,255,0,.2);
 }
 
 .toolbar {

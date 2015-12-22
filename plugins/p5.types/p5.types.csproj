@@ -64,6 +64,7 @@
     <Compile Include="types\ULongType.cs" />
     <Compile Include="types\UShortType.cs" />
     <Compile Include="types\BigIntType.cs" />
+    <Compile Include="types\StringType.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

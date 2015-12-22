@@ -16,7 +16,7 @@ namespace p5.ajax.core.internals
     /// </summary>
     internal class StatePersister : PageStatePersister
     {
-        private const string SessionKey = "__p5_viewstate_session_key";
+        private const string SessionKey = "_p5_viewstate_session_key";
         private readonly int _numberOfViewStateEntries;
         private readonly Guid _viewStateId;
 
@@ -30,12 +30,12 @@ namespace p5.ajax.core.internals
         {
             _numberOfViewStateEntries = numberOfViewStateEntries;
 
-            _viewStateId = page.IsPostBack ? new Guid (page.Request ["__p5_state_key"]) : Guid.NewGuid ();
+            _viewStateId = page.IsPostBack ? new Guid (page.Request ["_p5_state_key"]) : Guid.NewGuid ();
             if ((page as IAjaxPage).Manager.IsPhosphorusAjaxRequest) return;
 
             // Adding the viewstate ID to the form, such that we can retrieve it again when the client does a postback
             var literal = new LiteralControl {Text = string.Format (@"
-            <input type=""hidden"" value=""{0}"" name=""__p5_state_key"">
+            <input type=""hidden"" value=""{0}"" name=""_p5_state_key"">
         ", _viewStateId)};
             page.Form.Controls.Add (literal);
         }
@@ -43,7 +43,7 @@ namespace p5.ajax.core.internals
         public override void Load ()
         {
             if (Page.Session [SessionKey] == null)
-                throw new ApplicationException ("session timeout");
+                throw new ApplicationException ("Session timeout");
 
             // To avoid session clogging up with an infinite number of viewstate values, one for each initial loading of a page,
             // we have a list of viewstates, not allowing to exceed "_numberOfViewStateEntries" per session.
@@ -53,7 +53,7 @@ namespace p5.ajax.core.internals
 
             var entry = viewState.Find (idx => idx.Item1 == _viewStateId);
             if (entry == null) {
-                throw new ApplicationException (@"The state for this page is not longer valid, please reload page");
+                throw new ApplicationException ("The state for this page is not longer valid, please reload page");
             }
 
             var formatter = new LosFormatter ();

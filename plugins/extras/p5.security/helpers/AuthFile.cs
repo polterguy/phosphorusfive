@@ -97,8 +97,7 @@ namespace p5.security.helpers
             using (TextReader reader = new StreamReader (File.OpenRead (pwdFilePath))) {
 
                 // Returning file as lambda, making sure we decrypt it first
-                //_authFileContent = Utilities.Convert<Node> (context, Utilities.DecryptMarvin (context, reader.ReadToEnd ()));
-                _authFileContent = Utilities.Convert<Node> (context, reader.ReadToEnd ());
+                _authFileContent = Utilities.Convert<Node> (context, Utilities.DecryptMarvin (context, reader.ReadToEnd ()));
 
                 // Returning cached version
                 return _authFileContent;
@@ -120,8 +119,7 @@ namespace p5.security.helpers
             using (TextWriter writer = new StreamWriter (File.Create (pwdFilePath))) {
             
                 // Writing auth file content to disc, making sure we store it encrypted
-                //writer.Write (Utilities.EncryptMarvin (context, Utilities.Convert<string> (context, authFileNode.Children)));
-                writer.Write (Utilities.Convert<string> (context, authFileNode.Children));
+                writer.Write (Utilities.EncryptMarvin (context, Utilities.Convert<string> (context, authFileNode.Children)));
             }
         }
 

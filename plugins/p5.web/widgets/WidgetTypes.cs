@@ -108,6 +108,9 @@ namespace p5.web.widgets
                     case "has-id":
                         widget.HasID = idxArg.Get<bool> (context);
                         break;
+                    case "enable-viewstate":
+                        widget.EnableViewState = idxArg.Get<bool> (context);
+                        break;
                     case "render-type":
                         widget.RenderType = (Widget.RenderingType) Enum.Parse (typeof (Widget.RenderingType), idxArg.Get<string> (context));
                         break;

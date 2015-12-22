@@ -643,7 +643,11 @@ namespace p5.exp
         /// <param name="args">Arguments to pass into event</param>
         /// <param name="lambda">Lambda object to evaluate</param>
         /// <param name="eventName">Name of Active Event to raise</param>
-        public static void RaiseEvent (ApplicationContext context, Node args, Node lambda, string eventName)
+        public static void RaiseEvent (
+            ApplicationContext context, 
+            Node args, 
+            Node lambda, 
+            string eventName)
         {
             // Creating an "executable" lambda node, which becomes the node that is finally executed, after 
             // arguments is passed in and such. This is because we want the arguments at the TOP of the lambda node
@@ -677,7 +681,7 @@ namespace p5.exp
             }
 
             // Then adding actual Active Event code, to make sure lambda event is at the END of entire node structure, after arguments
-            exeLambda.AddRange (lambda.Clone ().Children);
+            exeLambda.AddRange (lambda.Children);
 
             // Storing lambda block and value, such that we can "diff" after execution, 
             // and only return the nodes added during execution, and the value if it was changed
@@ -685,10 +689,10 @@ namespace p5.exp
             args.Value = null; // To make sure we don't return what we came in with!
 
             // Executing lambda children, and not evaluating any expression in evaluated node!
-            context.RaiseLambda ("eval-mutable", exeLambda);
+            context.RaiseLambda ("eval", exeLambda);
 
             // Making sure we return all nodes that was created during execution of event back to caller
-            // in addition to value, but only if it was changed
+            // in addition to value
             args.Clear ().AddRange (exeLambda.Children.Where (ix => oldLambdaNode.IndexOf (ix) == -1));
             if (exeLambda.Value != null)
                 args.Value = exeLambda.Value;
