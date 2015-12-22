@@ -10,9 +10,6 @@ using p5.core;
 using p5.io.common;
 using p5.exp.exceptions;
 
-/// <summary>
-///     Main namespace for all IO file operations in Phosphorus Five
-/// </summary>
 namespace p5.io.file
 {
     /// <summary>
@@ -36,7 +33,7 @@ namespace p5.io.file
 
             // Basic syntax checking
             if (e.Args.Value == null || e.Args.LastChild == null || e.Args.LastChild.Name != "to")
-                throw new ArgumentException ("[copy-file] needs both a value and a [to] node.");
+                throw new ArgumentException ("[copy-file] needs both a value and a [to] node");
 
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args)) {

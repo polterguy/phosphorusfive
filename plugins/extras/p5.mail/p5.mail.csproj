@@ -37,10 +37,10 @@
       <HintPath>..\..\..\packages\MailKit.1.2.15\lib\net45\MailKit.dll</HintPath>
     </Reference>
     <Reference Include="BouncyCastle">
-      <HintPath>..\..\..\packages\MimeKit.1.2.17.3\lib\net45\BouncyCastle.dll</HintPath>
+      <HintPath>..\..\..\packages\MimeKit.1.2.18\lib\net45\BouncyCastle.dll</HintPath>
     </Reference>
     <Reference Include="MimeKit">
-      <HintPath>..\..\..\packages\MimeKit.1.2.17.3\lib\net45\MimeKit.dll</HintPath>
+      <HintPath>..\..\..\packages\MimeKit.1.2.18\lib\net45\MimeKit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

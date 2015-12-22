@@ -12,12 +12,12 @@ using p5.exp.exceptions;
 namespace p5.io.file
 {
     /// <summary>
-    ///     Class to help remove files
+    ///     Class to help delete files
     /// </summary>
     public static class Delete
     {
         /// <summary>
-        ///     Removes files from disc
+        ///     Delete files from disc
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -44,7 +44,10 @@ namespace p5.io.file
                     } else {
 
                         // Oops, file didn't exist, throwing an exception
-                        throw new LambdaException  (string.Format ("Tried to delete non-existing file - '{0}'", idxFile), e.Args, context);
+                        throw new LambdaException  (
+                            string.Format ("Tried to delete non-existing file '{0}'", idxFile), 
+                            e.Args, 
+                            context);
                     }
                 }
             }

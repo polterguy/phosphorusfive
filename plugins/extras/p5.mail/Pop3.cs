@@ -67,6 +67,7 @@ namespace p5.mail
                         // Process message returned from POP3 server by building Node structure wrapping message
                         var msgNode = ProcessMessage (
                             context, 
+                            e.Args,
                             client.GetMessage (idxMsg),
                             e.Args.GetChildValue ("process-envelope", context, true),
                             e.Args.GetChildValue ("process-body", context, true));
@@ -95,6 +96,7 @@ namespace p5.mail
          */
         private static Node ProcessMessage (
             ApplicationContext context, 
+            Node args,
             MimeMessage message,
             bool processEnvelope,
             bool processBody)
@@ -115,17 +117,21 @@ namespace p5.mail
                 // Checking if caller wants to have body processed
                 if (!processBody) {
 
-                    // Caller does NOT want to have content processed, returning entire Body as string
+                    // Caller does NOT want to have content processed, returning raw Body as string
                     msgNode.Add ("raw-body", message.Body.ToString ());
                 } else {
 
                     // Then content of message, making sure MimeEntity never leaves this method
-                    var bodyNode = msgNode.Add ("body").LastChild;
-                    bodyNode.Value = message.Body;
+                    msgNode.Value = message.Body;
+                    var oldValue = msgNode.Value;
                     try {
-                        context.RaiseNative("p5.mime.parse-native", bodyNode);
+                        foreach (var idxNode in args.Children.Where (ix => ix.Name == "attachment-folder" || ix.Name == "decryption-keys")) {
+                            msgNode.Add (idxNode.Clone ());
+                        }
+                        context.RaiseNative("p5.mime.parse-native", msgNode);
                     } finally {
-                        bodyNode.Value = null;
+                        msgNode.Value = oldValue;
+                        msgNode.Children.RemoveAll (ix => ix.Name == "attachment-folder" || ix.Name == "decryption-keys");
                     }
                 }
             }

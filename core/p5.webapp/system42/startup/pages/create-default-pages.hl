@@ -123,9 +123,9 @@ sys42.execute-lisp-file:/system42/file-browser/launch.hl
 	<li><a href=""http://getbootstrap.com/"">Bootstrap</a>, the CSS framework</li>
 	<li><a href=""https://jquery.com/"">jQuery</a></li>
 	<li>Members of the <a href=""http://stackoverflow.com/"">StackOverflow community</a>, for literally bombing my SERP with great answers, everytime I got stuck with a problem</li>
-	<li>Richard M. Stallman, for having a lengthy discussion with me about privacy, and providing good advice to me, as early 2009/2010</li>
-	<li>Bjarne Stroustrup for taking my feedback about the 0x C++ standard serious back in 2006/2007, and actually incorporating some of my requests</li>
-	<li>Alan Kay for inspiring me to perceive computing in an evolutionary perspective</li>
+	<li><a href=""https://stallman.org/"">Richard M. Stallman</a>, for having a lengthy discussion with me about privacy, and providing good advice to me, as early 2009/2010</li>
+	<li><a href=""http://www.stroustrup.com/"">Bjarne Stroustrup</a> for taking my feedback about the 0x C++ standard serious back in 2006/2007, and actually incorporating some of my requests</li>
+	<li><a href=""https://www.ted.com/talks/alan_kay_shares_a_powerful_idea_about_ideas"">Alan Kay</a> for inspiring me to perceive computing in an evolutionary perspective</li>
 	<li>Many, many, many developers, all around the world, including most readers of <a href=""http://digi.no"">digi.no</a>, which provided me with valuable feedback</li>
 </ul>
 <p>There are hundreds of others too, which one way or another have contributed. You know who you are.</p>

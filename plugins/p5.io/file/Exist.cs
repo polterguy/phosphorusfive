@@ -11,9 +11,6 @@ using p5.core;
 using p5.io.common;
 using p5.exp.exceptions;
 
-/// <summary>
-///     Main namespace for all files and folders Active Events
-/// </summary>
 namespace p5.io.file
 {
     /// <summary>
