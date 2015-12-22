@@ -636,7 +636,8 @@ create-widget:file-browser
 
                   // That filename is taken up by another file on system
                   set:x:/+/*/_message?value
-                    src:Sorry, I cannot rename your '{0}' to <strong>'{1}'</strong>, since there's already another file/folder with that name
+                    src:@"Sorry, I cannot rename your '{0}' to <strong>'{1}'</strong>, since there's already 
+another file/folder with that name"
                       :x:/../*/get-session-value/*/*/type?value
                       :x:/../*/get-widget-property/*/*/value?value
                   sys42.confirm-action
@@ -803,7 +804,8 @@ create-widget:file-browser
 
                   // File exist from before, informing user that we can't create it
                   set:x:/+/*/_message?value
-                    src:Sorry, I cannot create file <strong>'{0}'</strong>, since there's already another file/folder with that name
+                    src:@"Sorry, I cannot create file <strong>'{0}'</strong>, since there's already another 
+file/folder with that name"
                       :x:/../*/get-widget-property/*/*/value?value
                   sys42.confirm-action
                     _header:Object exist from before
@@ -894,7 +896,8 @@ create-widget:file-browser
 
                   // File exist from before, informing user that we can't create it
                   set:x:/+/*/_message?value
-                    src:Sorry, I cannot create file <strong>'{0}'</strong>, since there's already another file/folder with that name
+                    src:@"Sorry, I cannot create file <strong>'{0}'</strong>, since there's already another 
+file/folder with that name"
                       :x:/../*/get-widget-property/*/*/value?value
                   sys42.confirm-action
                     _header:Object exist from before

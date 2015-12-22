@@ -1,4 +1,3 @@
-
 /*
  * Template for showing any type of page
  */
@@ -130,7 +129,7 @@ create-widget:template-root
 
     /*
      * Page content starts here, header and login/logout wrapper first
-     */    
+     */
     container
       has-id:false
       class:row
@@ -222,7 +221,8 @@ create-widget:template-root
         literal
           element:small
           class:col-md-6 text-muted text-center col-md-push-3 prepend-top col-xs-12
-          innerValue:@"Liberated Software, Copyleft © <a href=""https://phosphorusfive.wordpress.com/2015/11/22/liberated-software-defined/"">Thomas Hansen</a>"
+          innerValue:@"Liberated Software, Copyleft © 
+<a href=""https://phosphorusfive.wordpress.com/2015/11/22/liberated-software-defined/"">Thomas Hansen</a>"
 
 
 /*
