@@ -288,6 +288,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'list-global-keys':
         case 'echo':
         case 'echo-file':
+        case 'echo-mime':
         case 'get-widget-property':
         case 'delete-widget-property':
         case 'list-widget-properties':

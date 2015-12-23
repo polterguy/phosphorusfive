@@ -85,7 +85,14 @@ namespace p5.mime.helpers
                 case "multipart":
                 retVal = CreateMultipart (entityNode);
                     break;
-                default:
+                case "text":
+                case "image":
+                case "application":
+                case "audio":
+                case "video":
+                case "message":
+                case "example":
+                case "model":
                     retVal = CreateLeafPart (entityNode);
                     break;
             }
@@ -342,10 +349,10 @@ namespace p5.mime.helpers
         {
             // Looping through all child nodes of MimeEntity node, making sure ONLY use those children that
             // have Capital letters in them, since MIME headers all have some sort of Capital letters in them
-            foreach (var idxHeader in entityNode.Children.Where (ix => ix.Name.ToLower () != ix.Name)) {
+            foreach (var idxHeader in entityNode.Children.Where (ix => ix.Name.ToLower () != ix.Name && ix.Name != "Content-Type")) {
 
                 // Adding currently iterated MIME header to entity
-                entity.Headers.Add (idxHeader.Name, idxHeader.Get<string> (Context));
+                entity.Headers.Replace (idxHeader.Name, idxHeader.Get<string> (Context));
             }
         }
 

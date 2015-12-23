@@ -356,7 +356,7 @@ namespace p5.net
 
                         // Simply adding as byte[]
                         stream.CopyTo (memStream);
-                        result.Add ("content", memStream.GetBuffer ());
+                        result.Add ("content", memStream.ToArray ());
                     }
                 }
             }

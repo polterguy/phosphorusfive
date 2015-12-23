@@ -32,13 +32,6 @@ namespace p5.mime.plugins
         [ActiveEvent (Name = "p5.net.http-put-mime", Protection = EventProtection.LambdaClosed)]
         public static void p5_net_http_post_put_mime (ApplicationContext context, ActiveEventArgs e)
         {
-            // Basic syntax checking
-            if (e.Args.Children.Count (ix => ix.Name != "") != 1)
-                throw new LambdaException (
-                    "You can only post and put one root MIME entity",
-                    e.Args,
-                    context);
-
             // Creating request, with delegate writing MimeEntity
             CreateRequest (context, e.Args, RenderMimeRequest, RenderMimeResponse);
         }
@@ -49,15 +42,8 @@ namespace p5.mime.plugins
         [ActiveEvent (Name = "p5.net.http-get-mime", Protection = EventProtection.LambdaClosed)]
         public static void p5_net_http_get_mime (ApplicationContext context, ActiveEventArgs e)
         {
-            // Basic syntax checking
-            if (e.Args.Children.Count (ix => ix.Name != "") != 0)
-                throw new LambdaException (
-                    "You cannot have content of a GET HTTP request",
-                    e.Args,
-                    context);
-
             // Creating request, with delegate writing MimeEntity
-            CreateRequest (context, e.Args, RenderMimeRequest, RenderMimeResponse);
+            CreateRequest (context, e.Args, null, RenderMimeResponse);
         }
 
         /*
@@ -88,7 +74,8 @@ namespace p5.mime.plugins
                         request.Method = method;
 
                         // Writing content to request, if any
-                        renderRequest (context, request, args, method);
+                        if (renderRequest != null)
+                            renderRequest (context, request, args, method);
 
                         // Returning response to caller
                         renderResponse (context, request, args);
@@ -179,7 +166,11 @@ namespace p5.mime.plugins
                 args.Value = bufferStreams;
 
                 // Retrieving MimeEntity
+                Node decryptionKeys = args.Children.FirstOrDefault (ix => ix.Name == "decryption-keys");
+                if (decryptionKeys != null)
+                    decryptionKeys.UnTie ();
                 var entity = context.RaiseNative ("p5.mime.create-native", args).Get<MimeEntity> (context);
+                args.Add (decryptionKeys);
 
                 using (Stream stream = request.GetRequestStream ()) {
 
@@ -187,13 +178,13 @@ namespace p5.mime.plugins
                     request.ContentType = args.GetExChildValue (
                         "Content-Type", 
                         context, 
-                        entity.ContentType.ToString ());
+                        (entity.ContentType.MediaType + "/" + entity.ContentType.MediaSubtype + entity.ContentType.Parameters));
 
                     // Setting other headers
                     SetRequestHeaders (context, request, args);
 
                     // Writing MIME entity to request stream
-                    entity.WriteTo (stream);
+                    entity.WriteTo (stream, true);
                 }
             } finally {
 
@@ -229,13 +220,15 @@ namespace p5.mime.plugins
                 using (Stream stream = response.GetResponseStream ()) {
 
                     // Retrieving response by reading stream and creating MimeEntity
-                    result.Value = MimeEntity.Load (stream);
+                    result.Value = MimeEntity.Load (ContentType.Parse (response.ContentType), stream);
+                    result.AddRange (args.Children.Where (ix => ix.Name == "decryption-keys"));
                     context.RaiseNative ("p5.mime.parse-native", result);
                 }
             } finally {
 
                 // Making sure [result] node's value is URL of request
                 result.Value = request.RequestUri.ToString ();
+                result.Children.RemoveAll (ix => ix.Name == "decryption-keys");
             }
         }
 

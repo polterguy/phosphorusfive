@@ -47,13 +47,8 @@ namespace p5.mime.plugins
                     // Making sure we render the headers of root MimeEntity to response headers
                     RenderHeaders (entity);
 
-                    // Serialising entity to Response Stream.
-                    // Note that this serializes ENTIRE MimeEntity to response, including Content-Type and other headers,
-                    // which technically might be perceived as redundant, since we could add up all root MIME entity headers
-                    // to HTTP response header collection. But for simplicity reasons, we choose to do it like this.
-                    // This way, anyone wanting to parse the results, can assert everything needed to decode the MIME entity
-                    // is in the content. Besides, some proxy servers and such, might strip away "unrecognized HTTP headers".
-                    entity.WriteTo (HttpContext.Current.Response.OutputStream);
+                    // Serialising entity to Response Stream, making sure we render ONLY "content"
+                    entity.WriteTo (HttpContext.Current.Response.OutputStream, true);
 
                     // Flushing response, and making sure default content is never rendered
                     HttpContext.Current.Response.OutputStream.Flush ();

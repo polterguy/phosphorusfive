@@ -302,7 +302,7 @@ namespace p5.mime.helpers
             if (!string.IsNullOrEmpty ((multipart.Preamble ?? "").Trim ()))
                 entityNode.Add ("preamble", multipart.Preamble.Trim ());
 
-            if (multipart is MultipartEncrypted) {
+            if (multipart is MultipartEncrypted && Passwords != null && Passwords.Count > 0) {
 
                 // Encrypted Multipart, might also be signed
                 ProcessEncryptedMultipart (multipart as MultipartEncrypted, entityNode);

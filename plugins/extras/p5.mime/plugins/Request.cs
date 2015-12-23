@@ -36,7 +36,8 @@ namespace p5.mime
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // Loading MimeEntity from request stream
-                var entity = MimeEntity.Load (HttpContext.Current.Request.InputStream);
+                ContentType type = ContentType.Parse (HttpContext.Current.Request.ContentType);
+                var entity = MimeEntity.Load (type, HttpContext.Current.Request.InputStream);
                 e.Args.Value = entity;
                 context.RaiseNative ("p5.mime.parse-native", e.Args);
             }
