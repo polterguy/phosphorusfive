@@ -65,7 +65,11 @@ namespace p5.mime
                         writer.BaseStream.Position = 0;
 
                         // Loading MimeEntity from MemoryStream
-                        var entity = MimeEntity.Load (writer.BaseStream);
+                        MimeEntity entity = null;
+                        if (e.Args["Content-Type"] != null)
+                            entity = MimeEntity.Load (ContentType.Parse (e.Args["Content-Type"].Get<string> (context)), writer.BaseStream);
+                        else
+                            entity = MimeEntity.Load (writer.BaseStream);
                         var parser = new helpers.MimeParser (
                             context, 
                             e.Args, 

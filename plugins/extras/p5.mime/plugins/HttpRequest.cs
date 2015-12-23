@@ -21,10 +21,6 @@ namespace p5.mime.plugins
     /// </summary>
     public static class HttpRequest
     {
-        // Specialized delegate functors for rendering request and response
-        private delegate void RenderRequestFunctor (ApplicationContext context, HttpWebRequest request, Node args, string method);
-        private delegate void RenderResponseFunctor (ApplicationContext context, HttpWebRequest request, Node args);
-
         /// <summary>
         ///     Posts or puts a MIME message over an HTTP request
         /// </summary>
@@ -32,130 +28,33 @@ namespace p5.mime.plugins
         [ActiveEvent (Name = "p5.net.http-put-mime", Protection = EventProtection.LambdaClosed)]
         public static void p5_net_http_post_put_mime (ApplicationContext context, ActiveEventArgs e)
         {
-            // Creating request, with delegate writing MimeEntity
-            CreateRequest (context, e.Args, RenderMimeRequest, RenderMimeResponse);
-        }
+            // Making sure we clean up after ourselves
+            using (new Utilities.ArgsRemover (e.Args, true)) {
 
-        /// <summary>
-        ///     Posts or puts a MIME message over an HTTP request
-        /// </summary>
-        [ActiveEvent (Name = "p5.net.http-get-mime", Protection = EventProtection.LambdaClosed)]
-        public static void p5_net_http_get_mime (ApplicationContext context, ActiveEventArgs e)
-        {
-            // Creating request, with delegate writing MimeEntity
-            CreateRequest (context, e.Args, null, RenderMimeResponse);
-        }
-
-        /*
-         * Actual implementation of creation of HTTP request
-         */
-        private static void CreateRequest (
-            ApplicationContext context, 
-            Node args, 
-            RenderRequestFunctor renderRequest, 
-            RenderResponseFunctor renderResponse)
-        {
-            // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (args, true)) {
+                // Storing decryption keys to be able to decrypt result
+                var decryptionKeys = e.Args ["decryption-keys"];
+                if (decryptionKeys != null)
+                    decryptionKeys.UnTie (); // Don't want passwords to leave method in case of exceptions
 
                 // Figuring out which HTTP method to use
-                string method = args.Name.Substring (args.Name.IndexOf ("-") + 1).ToUpper ();
-                if (method.Contains ("-"))
-                    method = method.Substring (0, method.IndexOf ("-"));
-                try {
+                string method = e.Args.Name.Substring (e.Args.Name.IndexOf ("-") + 1);
+                method = method.Substring (0, method.IndexOf ("-"));
 
-                    // Iterating through each request URL given
-                    foreach (var idxUrl in XUtil.Iterate<string> (context, args, true)) {
+                // Creating request MimeEntity
+                var requestEntity = CreateEntity (context, e.Args);
 
-                        // Creating request
-                        HttpWebRequest request = WebRequest.Create (idxUrl) as HttpWebRequest;
+                // Creating HTTP request(s), and retrieving result
+                var result = CreateHttpRequest (context, e.Args, requestEntity, method);
 
-                        // Setting HTTP method
-                        request.Method = method;
-
-                        // Writing content to request, if any
-                        if (renderRequest != null)
-                            renderRequest (context, request, args, method);
-
-                        // Returning response to caller
-                        renderResponse (context, request, args);
-                    }
-                } catch (Exception err) {
-
-                    // Trying to avoid throwing a new exception, unless we have to
-                    if (err is LambdaException)
-                        throw;
-
-                    // Making sure we re-throw as LambdaException, to get more detailed information about what went wrong ...
-                    throw new LambdaException (
-                        string.Format ("Something went wrong with request, error message was; '{0}'", err.Message), 
-                        args, 
-                        context, 
-                        err);
-                }
+                // Parsing response as MIME and returning to caller
+                ParseResponse (context, e.Args, result, decryptionKeys);
             }
         }
 
         /*
-         * Decorates all headers for request, except Content-Type, which should be handled by caller
+         * Creates a MimeEntity acccording to given args
          */
-        private static void SetRequestHeaders (
-            ApplicationContext context, 
-            HttpWebRequest request, 
-            Node args)
-        {
-            // Redmond, this is ridiculous! Why can't we set headers in a uniform way ...?
-            foreach (var idxHeader in 
-                     args.Children.Where (idxArg => idxArg.Name != "content" && idxArg.Name != "Content-Type" && idxArg.Name != "")) {
-                switch (idxHeader.Name) {
-                case "Accept":
-                    request.Accept = XUtil.Single<string> (context, idxHeader, idxHeader);
-                    break;
-                case "Connection":
-                    request.Connection = XUtil.Single<string> (context, idxHeader, idxHeader);
-                    break;
-                case "Content-Length":
-                    request.ContentLength = XUtil.Single<long> (context, idxHeader, idxHeader);
-                    break;
-                case "Content-Type":
-                    request.ContentType = XUtil.Single<string> (context, idxHeader, idxHeader);
-                    break;
-                case "Date":
-                    request.Date = XUtil.Single<DateTime> (context, idxHeader, idxHeader);
-                    break;
-                case "Expect":
-                    request.Expect = XUtil.Single<string> (context, idxHeader, idxHeader);
-                    break;
-                case "Host":
-                    request.Host = XUtil.Single<string> (context, idxHeader, idxHeader);
-                    break;
-                case "If-Modifies-Since":
-                    request.IfModifiedSince = XUtil.Single<DateTime> (context, idxHeader, idxHeader);
-                    break;
-                case "Referer":
-                    request.Referer = XUtil.Single<string> (context, idxHeader, idxHeader);
-                    break;
-                case "Transfer-Encoding":
-                    request.TransferEncoding = XUtil.Single<string> (context, idxHeader, idxHeader);
-                    break;
-                case "User-Agent":
-                    request.UserAgent = XUtil.Single<string> (context, idxHeader, idxHeader);
-                    break;
-                default:
-                    request.Headers.Add (idxHeader.Name, XUtil.Single<string> (context, idxHeader, idxHeader));
-                    break;
-                }
-            }
-        }
-
-        /*
-         * Renders MIME request
-         */
-        private static void RenderMimeRequest (
-            ApplicationContext context, 
-            HttpWebRequest request, 
-            Node args, 
-            string method)
+        private static MimeEntity CreateEntity (ApplicationContext context, Node args)
         {
             // List of streams created during creation of MimeEntity.
             // We need to keep track of this, such that we can close and dispose all streams after we're done with them
@@ -163,33 +62,14 @@ namespace p5.mime.plugins
 
             try {
                 // Creating MIME entity, making sure we pass in a list of streams, such that we can clean up after ourselves
-                args.Value = bufferStreams;
+                var createMimeNode = new Node ("", bufferStreams);
 
-                // Retrieving MimeEntity
-                Node decryptionKeys = args.Children.FirstOrDefault (ix => ix.Name == "decryption-keys");
-                if (decryptionKeys != null)
-                    decryptionKeys.UnTie ();
-                var entity = context.RaiseNative ("p5.mime.create-native", args).Get<MimeEntity> (context);
-                args.Add (decryptionKeys);
+                // Removing [decryption-keys] to not confuse mime creator
+                createMimeNode.AddRange (args.Children.Where (ix => ix.Name != "decryption-keys"));
 
-                using (Stream stream = request.GetRequestStream ()) {
-
-                    // Setting our Content-Type header, defaulting to Entity's Content-Type, in addition to other headers
-                    request.ContentType = args.GetExChildValue (
-                        "Content-Type", 
-                        context, 
-                        (entity.ContentType.MediaType + "/" + entity.ContentType.MediaSubtype + entity.ContentType.Parameters));
-
-                    // Setting other headers
-                    SetRequestHeaders (context, request, args);
-
-                    // Writing MIME entity to request stream
-                    entity.WriteTo (stream, true);
-                }
+                // Returning MimeEntity to caller
+                return context.RaiseNative ("p5.mime.create-native", createMimeNode).Get<MimeEntity> (context);
             } finally {
-
-                // Making sure list of streams never leaves this method
-                args.Value = null;
 
                 // Closing and disposing all streams created during creation of MimeEntity
                 foreach (var idxStream in bufferStreams) {
@@ -202,77 +82,65 @@ namespace p5.mime.plugins
         }
 
         /*
-         * Renders response into given Node
+         * Creates HTTP request, passing in MimeEntity
          */
-        private static void RenderMimeResponse (
+        private static Node CreateHttpRequest (
             ApplicationContext context, 
-            HttpWebRequest request, 
-            Node args)
+            Node args, 
+            MimeEntity entity, 
+            string method)
         {
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse ();
-            Node result = args.Add ("result").LastChild;
+            // Figuring out Content-Type HTTP header to use, and creating Node to use for HTTP request invocation Active Event
+            var contentType = entity.ContentType.MediaType + "/" + entity.ContentType.MediaSubtype + entity.ContentType.Parameters;
+            var activeEventName = string.Format ("p5.net.http-{0}", method);
+            var requestNode = new Node (activeEventName, args.Value);
 
-            // Getting response HTTP headers
-            GetResponseHeaders (context, response, result, request);
-
-            // Retrieving response stream, and parsing content, making sure MimeEntity never leaves this method
-            try {
-                using (Stream stream = response.GetResponseStream ()) {
-
-                    // Retrieving response by reading stream and creating MimeEntity
-                    result.Value = MimeEntity.Load (ContentType.Parse (response.ContentType), stream);
-                    result.AddRange (args.Children.Where (ix => ix.Name == "decryption-keys"));
-                    context.RaiseNative ("p5.mime.parse-native", result);
-                }
-            } finally {
-
-                // Making sure [result] node's value is URL of request
-                result.Value = request.RequestUri.ToString ();
-                result.Children.RemoveAll (ix => ix.Name == "decryption-keys");
+            // Streaming MimeEntity to memory, before invoking Active Event that creates HTTP request
+            using (var stream = new MemoryStream()) {
+                entity.WriteTo (stream, true);
+                requestNode.Add ("Content-Type", contentType);
+                requestNode.Add ("content", stream.ToArray ());
             }
+
+            // Invoking Active Event that create HTTP request
+            return context.RaiseNative(activeEventName, requestNode);
         }
 
         /*
-         * Returns the HTTP response headers into node given
+         * Parses results, and puts into args
          */
-        private static void GetResponseHeaders (
+        private static void ParseResponse (
             ApplicationContext context, 
-            HttpWebResponse response, 
             Node args, 
-            HttpWebRequest request)
+            Node result, 
+            Node decryptionKeys)
         {
-            // We only add [Status] node if status was NOT OK! At which point we also supply the error description to caller
-            if (response.StatusCode != HttpStatusCode.OK) {
+            // Moving entire result into args
+            args.AddRange (result.Children);
 
-                args.Add ("status", response.StatusCode.ToString ());
-                args.Add ("Status-Description", response.StatusDescription);
-            }
+            // Looping through each [result] node, parsing [content] as MIME if it is multipart, and returning parsed content
+            foreach (var idxResult in args.Children.Where (ix => ix.Name == "result")) {
 
-            // Checking to see if Content-Type is given, and if so, adding header to caller
-            if (!string.IsNullOrEmpty (response.ContentType))
-                args.Add ("Content-Type", response.ContentType);
+                // Making sure we only handle multipart types
+                if (idxResult.GetChildValue ("Content-Type", context, "").StartsWith ("multipart")) {
 
-            // Content-Encoding
-            if (!string.IsNullOrEmpty (response.ContentEncoding))
-                args.Add ("Content-Encoding", response.ContentEncoding);
+                    // Creating parse mime node, retrieving [content] and using as MIME value for Active Event invocation
+                    var parseMimeNode = new Node ("", idxResult.GetChildValue ("content", context, ""));
 
-            // Last-Modified
-            if (response.LastModified != DateTime.MinValue)
-                args.Add ("Last-Modified", response.LastModified);
+                    // Making sure we pass in decryption keys, if there are any
+                    if (decryptionKeys != null)
+                        parseMimeNode.Add (decryptionKeys);
 
-            // Response-Uri
-            if (response.ResponseUri.ToString () != request.RequestUri.ToString ())
-                args.Add ("Response-Uri", response.ResponseUri.ToString ());
+                    // Making sure pass in Content-Type header from response
+                    parseMimeNode.Add ("Content-Type", idxResult["Content-Type"].Value);
 
-            // Server
-            args.Add ("Server", response.Server);
+                    // Raising Active Event that will parse MIME content
+                    context.RaiseNative ("p5.mime.parse", parseMimeNode);
 
-            // The rest of the HTTP headers
-            foreach (string idxHeader in response.Headers.Keys) {
-
-                // Checking if header is not one of those already handled, and if not, handling it
-                if (idxHeader != "Server" && idxHeader != "Content-Type")
-                    args.Add (idxHeader, response.Headers [idxHeader]);
+                    // Removing [content] value, and adding result from parsing mime as children of [content]
+                    idxResult["content"].Value = null;
+                    idxResult ["content"].AddRange (parseMimeNode.Children);
+                }
             }
         }
     }
