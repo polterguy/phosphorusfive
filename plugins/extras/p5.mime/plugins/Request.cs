@@ -27,11 +27,6 @@ namespace p5.mime
         [ActiveEvent (Name = "p5.web.request.parse-mime", Protection = EventProtection.LambdaClosed)]
         public static void p5_web_request_parse_mime (ApplicationContext context, ActiveEventArgs e)
         {
-            // Nothing to do here if this is true
-            if (HttpContext.Current.Request.InputStream.Length == 0) {
-                return; // Nothing to do here ...
-            }
-
             // Making sure we clean up after ourselves
             using (new Utilities.ArgsRemover (e.Args, true)) {
 

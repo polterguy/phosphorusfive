@@ -328,6 +328,8 @@ namespace p5.core
         /// <param name="node">node to add</param>
         public Node Add (Node node)
         {
+            if (node == null)
+                return this;
             if (node.Parent != null)
                 node.Parent.Remove (node);
             node.Parent = this;

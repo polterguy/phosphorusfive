@@ -44,7 +44,7 @@ namespace p5.mime.plugins
 
                 // Retrieving all HTTP headers, which are defined as children with Capital letters, and untying them,
                 // to not confuse creation of MimeEntity
-                var headerList = (from x in e.Args.Children where x.Name != x.Name.ToLower () select x).ToList ();
+                var headerList = e.Args.Children.Where (ix => ix.Name != ix.Name.ToLower ()).ToList ();
                 foreach (var idxHeader in headerList) {
                     idxHeader.UnTie ();
                 }
@@ -57,10 +57,7 @@ namespace p5.mime.plugins
                 var requestEntity = method == "get" ? null : CreateEntity (context, e.Args);
 
                 // Creating HTTP request(s), and retrieving result
-                var result = CreateHttpRequest (context, e.Args, requestEntity, method, headerList);
-
-                // Parsing response as MIME and returning to caller
-                ParseResponse (context, e.Args, result, decryptionKeys, attachmentFolder);
+                CreateHttpRequest (context, e.Args, requestEntity, method, headerList, decryptionKeys, attachmentFolder);
             }
         }
 
@@ -97,15 +94,17 @@ namespace p5.mime.plugins
         /*
          * Creates HTTP request, passing in MimeEntity
          */
-        private static Node CreateHttpRequest (
+        private static void CreateHttpRequest (
             ApplicationContext context, 
             Node args, 
             MimeEntity entity, 
             string method,
-            IEnumerable<Node> headerList)
+            IEnumerable<Node> headerList,
+            Node decryptionKeys,
+            Node attachmentFolder)
         {
             // Figuring out Content-Type HTTP header to use, and creating Node to use for HTTP request invocation Active Event
-            var activeEventName = string.Format ("p5.net.http-{0}", method);
+            var activeEventName = string.Format ("p5.net.http-{0}-native", method);
             var requestNode = new Node (activeEventName, args.Value);
 
             // Streaming MimeEntity to memory, if we have one, before invoking Active Event that creates HTTP request
@@ -115,18 +114,28 @@ namespace p5.mime.plugins
                 var contentType = entity.ContentType.MediaType + "/" + entity.ContentType.MediaSubtype + entity.ContentType.Parameters;
                 requestNode.Add ("Content-Type", contentType);
 
-                // Making sure content of HTTP request is MimeEntity
-                using (var stream = new MemoryStream ()) {
-                    entity.WriteTo (stream, true);
-                    requestNode.Add ("content", stream.ToArray ());
-                }
+                // Supplying [content] for request node as delegate serialising entity
+                requestNode.Add ("content", (EventHandler)delegate (object sender, EventArgs exp) {
+                    HttpWebRequest request = sender as HttpWebRequest;
+                    request.ContentType = contentType;
+                    using (Stream requestStream = request.GetRequestStream ()) {
+                        entity.WriteTo (requestStream, true);
+                    }
+                });
             }
 
             // Adding all other headers
             requestNode.AddRange (headerList);
 
+            // Adding [response] node as delegate de-serialising response
+            requestNode.Add ("response", (EventHandler)delegate (object sender, EventArgs exp) {
+
+                // Parsing response as MIME and returning to caller
+                ParseResponse (context, args, sender as Node, decryptionKeys, attachmentFolder);
+            });
+
             // Invoking Active Event that create HTTP request
-            return context.RaiseNative(activeEventName, requestNode);
+            context.RaiseNative(activeEventName, requestNode);
         }
 
         /*
@@ -139,35 +148,28 @@ namespace p5.mime.plugins
             Node decryptionKeys,
             Node attachmentFolder)
         {
-            // Moving entire result into args
-            args.AddRange (result.Children);
+            // Retrieving response
+            HttpWebResponse response = result ["response"].UnTie ().Value as HttpWebResponse;
 
-            // Looping through each [result] node, parsing [content] as MIME if it is multipart, and returning parsed content
-            foreach (var idxResult in args.Children.Where (ix => ix.Name == "result")) {
+            // Retrieving MimeEntity from stream
+            using (Stream responseStream = response.GetResponseStream ()) {
+                MimeEntity entity = MimeEntity.Load (
+                    ContentType.Parse (response.ContentType), 
+                    responseStream);
 
-                // Making sure we only handle multipart types
-                if (idxResult.GetChildValue ("Content-Type", context, "").StartsWith ("multipart")) {
+                // Moving entire result into args
+                args.Add (result);
 
-                    // Creating parse mime node, retrieving [content] and using as MIME value for Active Event invocation
-                    var parseMimeNode = new Node ("", idxResult.GetChildValue ("content", context, ""));
-
-                    // Making sure we pass in decryption keys, if there are any
-                    if (decryptionKeys != null)
-                        parseMimeNode.Add (decryptionKeys);
-
-                    // Making sure we pass in [attachment-folder], if there was one declared
-                    if (attachmentFolder != null)
-                        parseMimeNode.Add (attachmentFolder);
-
-                    // Making sure pass in Content-Type header from response
-                    parseMimeNode.Add ("Content-Type", idxResult["Content-Type"].Value);
-
-                    // Raising Active Event that will parse MIME content
-                    context.RaiseNative ("p5.mime.parse", parseMimeNode);
-
-                    // Removing [content] value, and adding result from parsing mime as children of [content]
-                    idxResult["content"].Value = null;
-                    idxResult ["content"].AddRange (parseMimeNode.Children);
+                // Raising Active Event that will parse MIME content
+                var oldValue = result.Value;
+                result.Value = entity;
+                try {
+                    result.Add (decryptionKeys);
+                    result.Add (attachmentFolder);
+                    context.RaiseNative ("p5.mime.parse-native", result);
+                } finally {
+                    result.Value = oldValue;
+                    result.Children.RemoveAll (ix => ix.Name == "decryption-keys" || ix.Name == "attachment-folder");
                 }
             }
         }

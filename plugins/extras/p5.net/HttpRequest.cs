@@ -58,6 +58,17 @@ namespace p5.net
             CreateRequest (context, e.Args, RenderRequest, RenderFileResponse);
         }
 
+        /// <summary>
+        ///     Creates a new HTTP REST request of specified type for native callers, wanting to do their own rendering
+        /// </summary>
+        [ActiveEvent (Name = "p5.net.http-get-native", Protection = EventProtection.NativeClosed)]
+        [ActiveEvent (Name = "p5.net.http-post-native", Protection = EventProtection.NativeClosed)]
+        [ActiveEvent (Name = "p5.net.http-put-native", Protection = EventProtection.NativeClosed)]
+        public static void p5_net_http_request_native (ApplicationContext context, ActiveEventArgs e)
+        {
+            CreateRequest (context, e.Args, RenderRequestNative, RenderResponseNative);
+        }
+
         /*
          * Actual implementation of creation of HTTP request
          */
@@ -117,17 +128,23 @@ namespace p5.net
             Node args, 
             string method)
         {
+            // Setting request headers
+            SetRequestHeaders (context, request, args);
+
             if (args ["content"] != null) {
 
                 // We've got content to post or put, making sure caller is not trying to submit content over HTTP get or delete requests
                 if (method != "PUT" && method != "POST")
-                    throw new LambdaException ("You cannot have content with 'GET' and 'DELETE' types of requests", args, context);
+                    throw new LambdaException (
+                        "You cannot have content with 'GET' and 'DELETE' types of requests", 
+                        args, 
+                        context);
+
+                // Checking to see if this is Hyperlisp content, since we're by default setting Content-Type to application/x-hyperlisp if it is
+                bool isHyperlisp = args ["content"].Value == null && args ["content"].Children.Count > 0;
 
                 // Retrieving actual content to post or put
                 var content = GetRequestContent (context, args ["content"]);
-
-                // Checking to see if this is Hyperlisp content, since we're b y default setting Content-Type to application/x-hyperlisp if it is
-                bool isHyperlisp = args ["content"].Value == null && args ["content"].Children.Count > 0;
 
                 if (content != null) {
 
@@ -144,9 +161,6 @@ namespace p5.net
                                 context, 
                                 "application/octet-stream");
 
-                            // Setting other headers
-                            SetRequestHeaders (context, request, args);
-
                             // Binary content
                             stream.Write (byteContent, 0, byteContent.Length);
                         } else {
@@ -157,9 +171,6 @@ namespace p5.net
                                 "Content-Type", 
                                 context, 
                                 isHyperlisp ? "application/x-hyperlisp" : "text/plain");
-
-                            // Setting other headers
-                            SetRequestHeaders (context, request, args);
 
                             // Any other type of content, such as string/integer/boolean etc
                             using (TextWriter writer = new StreamWriter (stream)) {
@@ -173,22 +184,60 @@ namespace p5.net
 
                     // Checking if this is a POST request, at which case not supplying content is a bug
                     if (method == "POST" || method == "PUT")
-                        throw new LambdaException ("No content supplied with '" + method + "' request", args, context);
-                    
-                    // Only setting headers and returning immediately, since caller supplied empty [content] node, or expression leading into oblivion
-                    SetRequestHeaders (context, request, args);
+                        throw new LambdaException (
+                            "No content supplied with '" + method + "' request", 
+                            args, 
+                            context);
                 }
             } else {
 
                 // Checking if this is a POST request, at which case not supplying content is a bug
                 if (method == "POST" || method == "PUT")
-                    throw new LambdaException ("No content supplied with '" + method + "' request", args, context);
+                    throw new LambdaException (
+                        "No content supplied with '" + method + "' request", 
+                        args, 
+                        context);
+            }
+        }
+
+        /*
+         * Renders normal HTTP request
+         */
+        private static void RenderRequestNative (
+            ApplicationContext context, 
+            HttpWebRequest request, 
+            Node args, 
+            string method)
+        {
+            if (args ["content"] != null) {
+
+                // We've got content to post or put, making sure caller is not trying to submit content over HTTP get requests
+                if (method != "PUT" && method != "POST")
+                    throw new LambdaException (
+                        "You cannot have content with 'GET' type of request", 
+                        args, 
+                        context);
+
+                // Setting request headers
+                SetRequestHeaders (context, request, args);
+
+                // Retrieving delegate which caller should have supplied for rendering request, and invoking it
+                EventHandler functor = args["content"].Value as EventHandler;
+                functor (request, new EventArgs ());
+            } else {
+
+                // Checking if this is a POST request, at which case not supplying content is a bug
+                if (method == "POST" || method == "PUT")
+                    throw new LambdaException (
+                        "No content supplied with '" + method + "' request", 
+                        args, 
+                        context);
 
                 // Only setting headers and returning immediately, since caller didn't supply [content] node
                 SetRequestHeaders (context, request, args);
             }
         }
-        
+
         /*
          * Renders HTTP post/put file request
          */
@@ -199,17 +248,17 @@ namespace p5.net
             string method)
         {
             // Verifying caller supplied [file] node
-            if (args["file"] == null)
+            if (args["filename"] == null)
                 throw new LambdaException (
-                    "No [file] node given", 
+                    "No [filename] node given", 
                     args, 
                     context);
 
             // Getting file to post or put, verifying expression does not lead into oblivion
-            var file = XUtil.Single<string> (context, args ["file"]);
+            var filename = XUtil.Single<string> (context, args ["filename"]);
 
             // Making sure user is authorized to read the file request should send
-            context.RaiseNative ("p5.io.authorize.read-file", new Node ("", file).Add ("args", args));
+            context.RaiseNative ("p5.io.authorize.read-file", new Node ("", filename).Add ("args", args));
 
             // Opening request stream, and render file as content of request
             using (Stream stream = request.GetRequestStream ()) {
@@ -218,7 +267,7 @@ namespace p5.net
                 request.ContentType = args.GetExChildValue (
                     "Content-Type", 
                     context, 
-                    file.EndsWith (".hl") ? "application/x-hyperlisp" : "application/octet-stream");
+                    filename.EndsWith (".hl") ? "application/x-hyperlisp" : "application/octet-stream");
 
                 // Setting other HTTP request headers
                 SetRequestHeaders (context, request, args);
@@ -227,7 +276,7 @@ namespace p5.net
                 var rootFolder = context.RaiseNative ("p5.core.application-folder").Get<string> (context);
 
                 // Copying FileStream to RequestStream
-                using (Stream fileStream = File.OpenRead (rootFolder + file)) {
+                using (Stream fileStream = File.OpenRead (rootFolder + filename)) {
 
                     // Sending file to server end-point
                     fileStream.CopyTo (stream);
@@ -245,7 +294,7 @@ namespace p5.net
             if (content.Value == null && content.Children.Count > 0) {
 
                 // Hyperlisp content
-                return context.RaiseNative ("lambda2lisp", content.Clone ()).Value;
+                return context.RaiseNative ("lambda2lisp", content.UnTie ()).Value;
             } else {
 
                 // Some sort of "value" content, either text or binary (byte[])
@@ -361,7 +410,28 @@ namespace p5.net
                 }
             }
         }
-        
+
+        /*
+         * Renders response into given Node
+         */
+        private static void RenderResponseNative (
+            ApplicationContext context, 
+            HttpWebRequest request, 
+            Node args)
+        {
+            // Retrieving response and creating our [result] node
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse ();
+            Node result = args.Add ("result", request.RequestUri.ToString ()).LastChild;
+
+            // Getting response HTTP headers
+            GetResponseHeaders (context, response, result, request);
+
+            // Invoking callback that should have been supplied by caller
+            EventHandler functor = args["response"].Value as EventHandler;
+            result.Add ("response", response);
+            functor (result, new EventArgs ());
+        }
+
         /*
          * Saves response into filename given
          */
@@ -371,7 +441,7 @@ namespace p5.net
             Node args)
         {
             // Getting filename user wants to save response as
-            var filename = XUtil.Single<string> (context, args ["file"]);
+            var filename = XUtil.Single<string> (context, args ["filename"]);
 
             // Making sure user is authorized to write/overwrite the file response should be saved to
             context.RaiseNative ("p5.io.authorize.modify-file", new Node ("", filename).Add ("args", args));

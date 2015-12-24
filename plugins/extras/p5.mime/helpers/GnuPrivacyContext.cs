@@ -73,11 +73,18 @@ namespace p5.mime.helpers
             set;
         }
 
+        /// <summary>
+        ///     Gets the password for the specified key, used as sink by MimeKit to decrypt private key
+        /// </summary>
+        /// <returns>The password for the requested key</returns>
+        /// <param name="key">The key to retrieve the password for</param>
         protected override string GetPasswordForKey (PgpSecretKey key)
         {
             var enumerator = key.UserIds.GetEnumerator ();
             enumerator.MoveNext ();
             LastUsedUserId = enumerator.Current.ToString ();
+            LastUsedUserId = LastUsedUserId.Substring (LastUsedUserId.IndexOf ("<") + 1);
+            LastUsedUserId = LastUsedUserId.Substring (0, LastUsedUserId.IndexOf (">"));
             if (Passwords != null) {
 
                 // Multiple passwords, need to figure out which to use to release private key
