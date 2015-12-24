@@ -1,0 +1,66 @@
+
+/*
+ * Responsible for creating the Active Event that evaluates
+ * a cryptographically secured web service lambda invocation
+ */
+
+set-protected-event:sys42.evaluate-secure-webservice
+
+  // Retrieving key and password for signing MIME entity
+  p5.security.get-marvin-pgp-key
+  p5.security.get-marvin-pgp-key-password
+
+  /*
+   * Parsing and decrypting incoming MIME message, retrieving the 
+   * given Hyperlisp, transforming to lambda, before evaluating lambda
+   */
+  eval-x:x:/+/**
+  p5.web.request.parse-mime
+    decryption-keys
+      email:x:/../*/p5.security.get-marvin-pgp-key?value
+        password:x:/../*/p5.security.get-marvin-pgp-key-password?value
+
+  /*
+   * Before we evaluate incoming code, we must make sure
+   * it comes from a source we trust, meaning it is cryptographically
+   * signed from a person in our "friend list"
+   */
+  if
+    sys42.verify-signature-is-friend:x:/../*/p5.web.request.parse-mime/**/signature/*
+
+    /*
+     * Now that we have verified that request comes from a source whom
+     * we trust, we can evaluate Hyperlisp. Notice, since clone does not
+     * do a deep clone of node's values, we need to create some "trickery"
+     * here to make sure this event is thread safe
+     */
+    set:x:/+2?value
+      src:x:/./+?value.node
+    set:x:/+/#/*
+    _eval:
+    add:x:/..if/*/_eval/#
+      src:x:/../*/p5.web.request.parse-mime/**/content?value
+    eval-mutable:x:/..if/*/_eval/#
+
+    /*
+     * Echo results of above evaluation back to caller
+     */
+    eval-x:x:/..if/*/echo-mime/**
+    set:x:/..if/*/echo-mime/*/*/content?value
+      src:x:/..if/*/_eval/#/*
+    echo-mime
+      application:x-hyperlisp
+        encryption
+          email:x:/../*/p5.web.request.parse-mime/**/signature/*?name
+        signature
+          email:x:/../*/p5.security.get-marvin-pgp-key?value
+            password:x:/../*/p5.security.get-marvin-pgp-key-password?value
+        content
+  else
+
+    /*
+     * Caller was NOT a friend of us!
+     */
+    set-http-status-code:500
+    set-http-status:500 You are not a trusted friend of us
+

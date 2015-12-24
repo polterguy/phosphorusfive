@@ -90,6 +90,30 @@ namespace p5
             #region [ -- Common helper Active Event sinks to retrieve global settings -- ]
 
             /// <summary>
+            ///     Returns the name of the server PGP key to use for encryption operations
+            /// </summary>
+            /// <param name="context">Application Context</param>
+            /// <param name="e">Parameters passed into Active Event</param>
+            [ActiveEvent (Name = "p5.security.get-marvin-pgp-key", Protection = EventProtection.LambdaClosed)]
+            public static void p5_security_get_marvin_pgp_key (ApplicationContext context, ActiveEventArgs e)
+            {
+                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
+                e.Args.Value = configuration.MarvinPgpKey;
+            }
+
+            /// <summary>
+            ///     Returns the password for the server PGP key to use for encryption operations
+            /// </summary>
+            /// <param name="context">Application Context</param>
+            /// <param name="e">Parameters passed into Active Event</param>
+            [ActiveEvent (Name = "p5.security.get-marvin-pgp-key-password", Protection = EventProtection.LambdaClosed)]
+            public static void p5_security_get_marvin_pgp_key_password (ApplicationContext context, ActiveEventArgs e)
+            {
+                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
+                e.Args.Value = configuration.MarvinPgpKeyPassword;
+            }
+
+            /// <summary>
             ///     Returns the Application base folder
             /// </summary>
             /// <param name="context">Application Context</param>
@@ -278,30 +302,6 @@ namespace p5
             {
                 var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
                 e.Args.Value = configuration.Pop3Password;
-            }
-
-            /// <summary>
-            ///     Returns the name of the server PGP key to use for encryption operations
-            /// </summary>
-            /// <param name="context">Application Context</param>
-            /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.security.get-marvin-pgp-key", Protection = EventProtection.NativeClosed)]
-            private static void p5_security_get_marvin_pgp_key (ApplicationContext context, ActiveEventArgs e)
-            {
-                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
-                e.Args.Value = configuration.MarvinPgpKey;
-            }
-
-            /// <summary>
-            ///     Returns the password for the server PGP key to use for encryption operations
-            /// </summary>
-            /// <param name="context">Application Context</param>
-            /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.security.get-marvin-pgp-key-password", Protection = EventProtection.NativeClosed)]
-            private static void p5_security_get_marvin_pgp_key_password (ApplicationContext context, ActiveEventArgs e)
-            {
-                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
-                e.Args.Value = configuration.MarvinPgpKeyPassword;
             }
 
             /// <summary>

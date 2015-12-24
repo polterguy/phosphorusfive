@@ -1,0 +1,53 @@
+
+/*
+ * Responsible for creating the Active Event that invokes a 
+ * secure web service. Pass in URL (as value), [code] as
+ * Hyperlisp to pass into server end-point and [encryption-key]
+ * as public key to use for encrypting web request
+ */
+
+set-protected-event:sys42.invoke-secure-webservice
+
+  // Retrieving key and password for signing MIME entity
+  p5.security.get-marvin-pgp-key
+  p5.security.get-marvin-pgp-key-password
+
+  /*
+   * Invoking given URL, passing in MIME entity containing given [code], 
+   * making sure request is both encrypted and signed by local machine key
+   */
+  lambda2lisp:x:/../*/code/*
+  eval-x:x:/+/**
+  p5.net.http-post-mime:x:/../*/_arg?value
+    decryption-keys
+      email:x:/../*/p5.security.get-marvin-pgp-key?value
+        password:x:/../*/p5.security.get-marvin-pgp-key-password?value
+    application:x-hyperlisp
+      signature
+        email:x:/../*/p5.security.get-marvin-pgp-key?value
+          password:x:/../*/p5.security.get-marvin-pgp-key-password?value
+      encryption
+        email:x:/../*/encryption-key?value
+      content:x:/../*/lambda2lisp?value
+
+  // Verifies result was cryptographically signed and encrypted
+  if:x:/../*/p5.net.http-post-mime/*/result/**/signature/*?value
+    =:bool:true
+    eval-x:x:/+/*/**
+    add:x:/..
+      src
+        signature:x:/../*/p5.net.http-post-mime/*/result/**/signature/*?name
+          fingerprint:x:/../*/p5.net.http-post-mime/*/result/**/signature/*/*?value
+  if:x:/../*/p5.net.http-post-mime/*/result/**/decryption-key?value
+    add:x:/..
+      src:"encrypted:bool:true"
+
+  /*
+   * Returning results of web service invocation
+   */
+  add:x:/..
+    src:result
+  lisp2lambda:x:/../*/p5.net.http-post-mime/*/result/**/content?value
+  add:x:/../*/result
+    src:x:/./-/*
+

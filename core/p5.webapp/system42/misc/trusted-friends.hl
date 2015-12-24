@@ -1,0 +1,8 @@
+/*
+ * List of all friends that this server trusts.
+ * Value is fingerprint of public cryptography key
+ */
+
+
+friends
+  :223502DD182FEBEC29A0D116E9321A37A352F

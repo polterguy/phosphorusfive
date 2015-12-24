@@ -209,7 +209,11 @@ namespace p5.net
             Node args, 
             string method)
         {
-            if (args ["content"] != null) {
+            // Setting request headers
+            SetRequestHeaders (context, request, args);
+
+            // Retrieving native request delegate, if any
+            if (args ["request-native"] != null) {
 
                 // We've got content to post or put, making sure caller is not trying to submit content over HTTP get requests
                 if (method != "PUT" && method != "POST")
@@ -218,11 +222,8 @@ namespace p5.net
                         args, 
                         context);
 
-                // Setting request headers
-                SetRequestHeaders (context, request, args);
-
                 // Retrieving delegate which caller should have supplied for rendering request, and invoking it
-                EventHandler functor = args["content"].Value as EventHandler;
+                EventHandler functor = args["request-native"].Value as EventHandler;
                 functor (request, new EventArgs ());
             } else {
 
@@ -232,9 +233,6 @@ namespace p5.net
                         "No content supplied with '" + method + "' request", 
                         args, 
                         context);
-
-                // Only setting headers and returning immediately, since caller didn't supply [content] node
-                SetRequestHeaders (context, request, args);
             }
         }
 
@@ -427,8 +425,8 @@ namespace p5.net
             GetResponseHeaders (context, response, result, request);
 
             // Invoking callback that should have been supplied by caller
-            EventHandler functor = args["response"].Value as EventHandler;
-            result.Add ("response", response);
+            EventHandler functor = args["response-native"].Value as EventHandler;
+            result.Add ("response-native", response);
             functor (result, new EventArgs ());
         }
 

@@ -319,6 +319,10 @@
     <None Include="system42\startup\misc-events\sys42.unzip-with-password.hl" />
     <None Include="system42\startup\misc-dialog-events\sys42.get-password.hl" />
     <None Include="system42\file-editors\zip-editor.hl" />
+    <None Include="system42\startup\misc-events\sys42.invoke-secure-webservice.hl" />
+    <None Include="system42\startup\misc-events\sys42.evaluate-secure-webservice.hl" />
+    <None Include="system42\startup\misc-events\sys42.verify-signature-is-friend.hl" />
+    <None Include="system42\misc\trusted-friends.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />

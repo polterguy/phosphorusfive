@@ -92,7 +92,7 @@ namespace p5.mime.plugins
         }
 
         /*
-         * Creates HTTP request, passing in MimeEntity
+         * Creates HTTP request, passing in delegates for rendering request and handling response
          */
         private static void CreateHttpRequest (
             ApplicationContext context, 
@@ -114,8 +114,8 @@ namespace p5.mime.plugins
                 var contentType = entity.ContentType.MediaType + "/" + entity.ContentType.MediaSubtype + entity.ContentType.Parameters;
                 requestNode.Add ("Content-Type", contentType);
 
-                // Supplying [content] for request node as delegate serialising entity
-                requestNode.Add ("content", (EventHandler)delegate (object sender, EventArgs exp) {
+                // Supplying [request-native] for request node as delegate serialising entity
+                requestNode.Add ("request-native", (EventHandler)delegate (object sender, EventArgs exp) {
                     HttpWebRequest request = sender as HttpWebRequest;
                     request.ContentType = contentType;
                     using (Stream requestStream = request.GetRequestStream ()) {
@@ -124,11 +124,11 @@ namespace p5.mime.plugins
                 });
             }
 
-            // Adding all other headers
-            requestNode.AddRange (headerList);
+            // Adding all other headers, but dropping Content-Type, since it is declared in MimeEntity
+            requestNode.AddRange (headerList.Where (ix => ix.Name != "Content-Type"));
 
             // Adding [response] node as delegate de-serialising response
-            requestNode.Add ("response", (EventHandler)delegate (object sender, EventArgs exp) {
+            requestNode.Add ("response-native", (EventHandler)delegate (object sender, EventArgs exp) {
 
                 // Parsing response as MIME and returning to caller
                 ParseResponse (context, args, sender as Node, decryptionKeys, attachmentFolder);
@@ -149,7 +149,7 @@ namespace p5.mime.plugins
             Node attachmentFolder)
         {
             // Retrieving response
-            HttpWebResponse response = result ["response"].UnTie ().Value as HttpWebResponse;
+            HttpWebResponse response = result ["response-native"].UnTie ().Value as HttpWebResponse;
 
             // Retrieving MimeEntity from stream
             using (Stream responseStream = response.GetResponseStream ()) {
@@ -169,7 +169,6 @@ namespace p5.mime.plugins
                     context.RaiseNative ("p5.mime.parse-native", result);
                 } finally {
                     result.Value = oldValue;
-                    result.Children.RemoveAll (ix => ix.Name == "decryption-keys" || ix.Name == "attachment-folder");
                 }
             }
         }
