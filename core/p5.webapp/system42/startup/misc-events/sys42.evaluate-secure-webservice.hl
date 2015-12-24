@@ -1,7 +1,7 @@
 
 /*
  * Responsible for creating the Active Event that evaluates
- * a cryptographically secured web service lambda invocation
+ * a cryptographically secure web service lambda invocation
  */
 
 set-protected-event:sys42.evaluate-secure-webservice
