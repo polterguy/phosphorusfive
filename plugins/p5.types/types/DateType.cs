@@ -27,7 +27,7 @@ namespace p5.types.types
         [ActiveEvent (Name = "date-now", Protection = EventProtection.LambdaClosed)]
         public static void date_now (ApplicationContext context, ActiveEventArgs e)
         {
-            e.Args.Value = DateTime.Now;
+            e.Args.Value = DateTime.Now.ToUniversalTime ();
         }
 
         /// <summary>

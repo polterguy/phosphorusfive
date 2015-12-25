@@ -17,21 +17,22 @@
         </xs:element>
         <xs:element name=“phosphorus”>
           <xs:complexType>
-            <xs:attribute name="assemblyDirectory" type="xs:string" use="required" />
-            <xs:attribute name="defaultContextUsername" type="xs:string" use="required" />
-            <xs:attribute name="defaultContextRole" type="xs:string" use="required" />
-            <xs:attribute name="authFile" type="xs:string" use="required" />
-            <xs:attribute name="loginCoolOffSeconds" type="xs:int” use="required" />
-            <xs:attribute name="persistCredentialCookieDays" type="xs:int” use="required" />
-            <xs:attribute name=“smtpServer” type="xs:string" use="required" />
-            <xs:attribute name=“smtpPort” type="xs:int” use="required" />
-            <xs:attribute name=“smtpUseSsl” type="xs:bool” use="required" />
-            <xs:attribute name=“pop3Server” type="xs:string" use="required" />
-            <xs:attribute name=“pop3Port” type="xs:int” use="required" />
-            <xs:attribute name=“pop3UseSsl” type="xs:bool” use="required" />
+            <xs:attribute name="assemblyDirectory" type="xs:string" />
+            <xs:attribute name="defaultContextUsername" type="xs:string" />
+            <xs:attribute name="defaultContextRole" type="xs:string" />
+            <xs:attribute name="authFile" type="xs:string" />
+            <xs:attribute name="loginCoolOffSeconds" type="xs:int” />
+            <xs:attribute name="persistCredentialCookieDays" type="xs:int” />
+            <xs:attribute name=“smtpServer” type="xs:string" />
+            <xs:attribute name=“smtpPort” type="xs:int” />
+            <xs:attribute name=“smtpUseSsl” type="xs:bool” />
+            <xs:attribute name=“pop3Server” type="xs:string" />
+            <xs:attribute name=“pop3Port” type="xs:int” />
+            <xs:attribute name=“pop3UseSsl” type="xs:bool” />
             <xs:attribute name=“marvinPgpKey” type="xs:string" />
             <xs:attribute name=“marvinPgpKeyPassword” type="xs:string" />
-            <xs:attribute name=“passwordSalt” type="xs:string" use="required" />
+            <xs:attribute name=“passwordSalt” type="xs:string" />
+            <xs:attribute name=“webServiceInvocationsFreshTime” type="xs:string" />
             <xs:sequence>
               <xs:element name="assemblies">
                 <xs:complexType>

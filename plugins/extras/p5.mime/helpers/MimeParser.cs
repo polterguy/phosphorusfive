@@ -402,7 +402,12 @@ namespace p5.mime.helpers
          */
         private void ProcessHeaders (MimeEntity entity, Node args)
         {
+            // Looping through all headers
             foreach (var idxHeader in entity.Headers) {
+
+                // No need to handle Content-Type, since it's already handled as root entity name/value
+                if (idxHeader.Id == HeaderId.ContentType)
+                    continue;
 
                 // Adding header as child node of main MimeEntity node
                 args.Add (idxHeader.Field, idxHeader.Value);

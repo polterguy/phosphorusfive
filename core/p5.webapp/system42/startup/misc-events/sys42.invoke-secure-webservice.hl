@@ -1,9 +1,11 @@
 
 /*
  * Responsible for creating the Active Event that invokes a 
- * secure web service. Pass in URL (as value), [code] as
+ * cryptographically secure web service. Pass in URL (as value), [code] as
  * Hyperlisp to pass into server end-point and [encryption-key]
- * as public key to use for encrypting web request
+ * as public key to use for encrypting web request. [encryption-key]
+ * must be email address identifying the public part of the machine key
+ * of the recipient server
  */
 
 set-protected-event:sys42.invoke-secure-webservice
@@ -13,41 +15,84 @@ set-protected-event:sys42.invoke-secure-webservice
   p5.security.get-marvin-pgp-key-password
 
   /*
+   * Each web service invocation needs a unique ID, and a UTC timestamp to avoid 
+   * somebody snatching up the message, and reposting it, creating damage for the 
+   * web service end-point. Then at the web service end-point, the timestamp will
+   * be checked, and made sure it is within a range of minutes, before code is executed,
+   * and the invocation id will be stored for some time, making sure the same invocation
+   * is not allowed to execute again, before the timestamp has gone "out of date".
+   */
+  create-cs-random-string
+  date-now
+
+  /*
    * Invoking given URL, passing in MIME entity containing given [code], 
    * making sure request is both encrypted and signed by local machine key
    */
+
+  // Creating Hyperlisp out of given [code]
   lambda2lisp:x:/../*/code/*
-  eval-x:x:/+/**
+
+  // Forward evaluates all expressions in [p5.net.http-post-mime]
+  eval-x:x:/../*/p5.net.http-post-mime/**
+
+  // Raising [p5.net.http-post-mime] to HTTP POST MIME message to specified URL
   p5.net.http-post-mime:x:/../*/_arg?value
+
+    // Needed to be able to decrypt the response
     decryption-keys
       email:x:/../*/p5.security.get-marvin-pgp-key?value
         password:x:/../*/p5.security.get-marvin-pgp-key-password?value
-    application:x-hyperlisp
+
+    // Need to create a multipart wrapping our Hyperlisp, such that we can pass in a time stamp
+    // and a unique message ID
+    multipart:mixed
+
+      // Making sure our content is cryptographically signed by machine key
       signature
         email:x:/../*/p5.security.get-marvin-pgp-key?value
           password:x:/../*/p5.security.get-marvin-pgp-key-password?value
+
+      // Encrypts the MIME message with the supplied public key email lookup
       encryption
         email:x:/../*/encryption-key?value
-      content:x:/../*/lambda2lisp?value
 
-  // Verifies result was cryptographically signed and encrypted
-  if:x:/../*/p5.net.http-post-mime/*/result/**/signature/*?value
-    =:bool:true
-    eval-x:x:/+/*/**
-    add:x:/..
-      src
-        signature:x:/../*/p5.net.http-post-mime/*/result/**/signature/*?name
-          fingerprint:x:/../*/p5.net.http-post-mime/*/result/**/signature/*/*?value
-  if:x:/../*/p5.net.http-post-mime/*/result/**/decryption-key?value
-    add:x:/..
-      src:"encrypted:bool:true"
+      // Contains our "invocation ID", which has a unique ID for each invocation,
+      // in addition to a timestamp, making it impossible to execute same message twice
+      application:x-timestamp
+
+        content:@"id:{0}
+timestamp:date:""{1}"""
+          :x:/../*/create-cs-random-string?value
+          :x:/../*/date-now?value.string
+
+      // The actual Hyperlisp content of our MIME message
+      application:x-hyperlisp
+
+        // The actual [code] to execute at web service end-point
+        content:x:/../*/lambda2lisp?value
+
 
   /*
-   * Returning results of web service invocation
+   * Verifies result was cryptographically signed and encrypted, by
+   * the intended recipient of our MIME message, and only if both
+   * of these conditions were true, we return result to caller
    */
-  add:x:/..
-    src:result
-  lisp2lambda:x:/../*/p5.net.http-post-mime/*/result/**/content?value
-  add:x:/../*/result
-    src:x:/./-/*
+  if:x:/../*/p5.net.http-post-mime/*/result/**/signature/*?value
+    =:bool:true
+    and:x:/../*/p5.net.http-post-mime/*/result/**/signature/*?name
+      =:x:/../*/encryption-key?value
+    and:x:/../*/p5.net.http-post-mime/*/result/**/decryption-key?value
+      =:x:/../*/encryption-key?value
+
+    /*
+     * Returning results of web service invocation, now that we have
+     * verified that result was cryptographically signed and encrypted by
+     * intended recipient
+     */
+    insert-before:x:/../0
+      src:result
+    lisp2lambda:x:/../*/p5.net.http-post-mime/*/result/*/multipart/=encrypted/*/application/=x-hyperlisp/*/content?value
+    add:x:/../*/result
+      src:x:/./-/*
 

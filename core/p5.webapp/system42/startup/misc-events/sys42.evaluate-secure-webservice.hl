@@ -1,12 +1,17 @@
 
 /*
  * Responsible for creating the Active Event that evaluates
- * a cryptographically secure web service lambda invocation
+ * a cryptographically secure web service lambda invocation.
+ * Will decrypt the given HTTP request, retrieve the first
+ * "application/x-hyperlisp" MIME entity, and evaluate it,
+ * before encrypting and signing the result and returning
+ * it to caller.
  */
 
 set-protected-event:sys42.evaluate-secure-webservice
 
-  // Retrieving key and password for signing MIME entity
+  // Retrieving key and password for decrypting MIME entity
+  // Later used to sign the result, before returning it to caller
   p5.security.get-marvin-pgp-key
   p5.security.get-marvin-pgp-key-password
 
@@ -29,38 +34,77 @@ set-protected-event:sys42.evaluate-secure-webservice
     sys42.verify-signature-is-friend:x:/../*/p5.web.request.parse-mime/**/signature/*
 
     /*
-     * Now that we have verified that request comes from a source whom
-     * we trust, we can evaluate Hyperlisp. Notice, since clone does not
-     * do a deep clone of node's values, we need to create some "trickery"
-     * here to make sure this event is thread safe
+     * Then we need to check the ID and timestamp of message, to ensure same
+     * message is not posted twice, and that timestamp is within accepted range,
+     * and that invocation has not "expired"
      */
-    set:x:/+2?value
-      src:x:/./+?value.node
-    set:x:/+/#/*
-    _eval:
-    add:x:/..if/*/_eval/#
-      src:x:/../*/p5.web.request.parse-mime/**/content?value
-    eval-mutable:x:/..if/*/_eval/#
+    lisp2lambda:x:/../*/p5.web.request.parse-mime/*/multipart/=encrypted/*/multipart/=mixed/*/application/=x-timestamp/*/content?value
+    get-global-value:sys42.evaluated-webservice-ids
+    if
+      sys42.expired-webservice-invocation:x:/././*/lisp2lambda/*/timestamp?value
+      or:x:/./*/get-global-value/*/*/{0}
+        :x:/././*/lisp2lambda/*/id?value
 
-    /*
-     * Echo results of above evaluation back to caller
-     */
-    eval-x:x:/..if/*/echo-mime/**
-    set:x:/..if/*/echo-mime/*/*/content?value
-      src:x:/..if/*/_eval/#/*
-    echo-mime
-      application:x-hyperlisp
-        encryption
-          email:x:/../*/p5.web.request.parse-mime/**/signature/*?name
-        signature
-          email:x:/../*/p5.security.get-marvin-pgp-key?value
-            password:x:/../*/p5.security.get-marvin-pgp-key-password?value
-        content
+      /*
+       * Oops, this ID has already been executed before, which indicates somebody snatched up our
+       * entire request, and reposted it in an attempt to create confusion! MAJOR SECURITY CONCERN!
+       */
+      set-http-status-code:500
+      set-http-status:500 ID of invocation was reposted or invocation was no longer fresh
+      echo:"Screw you guys, I'm going home!"
+    else
+
+      /*
+       * Making sure ID of current invocation is stored to application globals, 
+       * to avoid evaluating the same code twice. ORDER COUNTS! Since we want to store
+       * the ID before evaluating code, in case evaluated code throws an exception, 
+       * at which point code will be possible to evaluate twice, since ID was never stored
+       * due to the exception choking the rest of the execution of our event
+       */
+      add:x:/..if/*/get-global-value/*
+        src:@"{0}:date:""{1}"""
+          :x:/..if/*/lisp2lambda/*/id?value
+          :x:/..if/*/lisp2lambda/*/timestamp?value.string
+      add:x:/+/*
+        src:x:/..if/*/get-global-value/*/*
+      set-global-value:sys42.evaluated-webservice-ids
+        src
+
+      /*
+       * Now that we have verified that request comes from a source whom
+       * we trust, we can evaluate Hyperlisp. Notice, since clone does not
+       * do a deep clone of node's values, we need to create some "trickery"
+       * here to make sure this event is thread safe, while at the same time
+       * make sure we can retrieve the evaluated code's result
+       */
+      set:x:/..else/*/_eval?value
+        src:x:/..else/*/_eval?value.node
+      set:x:/..else/*/_eval/#/*
+      _eval:
+      add:x:/..else/*/_eval/#
+        src:x:/../*/p5.web.request.parse-mime/*/multipart/=encrypted/*/multipart/=mixed/*/application/=x-hyperlisp/*/content?value
+      eval-mutable:x:/..else/*/_eval/#
+
+      /*
+       * Echo results of above evaluation back to caller
+       */
+      eval-x:x:/..else/*/echo-mime/**
+      set:x:/..else/*/echo-mime/*/*/content?value
+        src:x:/..else/*/_eval/#/*
+      echo-mime
+        application:x-hyperlisp
+          encryption
+            email:x:/../*/p5.web.request.parse-mime/**/signature/*?name
+          signature
+            email:x:/../*/p5.security.get-marvin-pgp-key?value
+              password:x:/../*/p5.security.get-marvin-pgp-key-password?value
+          content
   else
 
     /*
      * Caller was NOT a friend of us!
      */
     set-http-status-code:500
-    set-http-status:500 You are not a trusted friend of us
+    set-http-status:500 Caller was not a trusted friend of us
+    echo:"Screw you guys, I'm going home!"
 
