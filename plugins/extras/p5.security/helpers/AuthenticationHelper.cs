@@ -77,12 +77,12 @@ namespace p5.security.helpers
             var serverSalt = context.RaiseNative ("p5.security.get-password-salt").Get<string> (context);
 
             // Then creating system fingerprint from given password
-            var userSalt = pwdFile["users"][username]["cookie-salt"].Get<string>(context);
-            var userPasswordFingerprint = context.RaiseNative ("sha256-hash", new Node ("", userSalt + password)).Get<string> (context);
-            var systemFingerprint = context.RaiseNative ("sha256-hash", new Node ("", serverSalt + userPasswordFingerprint)).Get<string> (context);
+            var cookieSalt = pwdFile["users"][username]["cookie-salt"].Get<string>(context);
+            var cookiePasswordFingerprint = context.RaiseNative ("sha256-hash", new Node ("", cookieSalt + password)).Get<string> (context);
+            var systemPasswordFingerprint = context.RaiseNative ("sha256-hash", new Node ("", serverSalt + cookiePasswordFingerprint)).Get<string> (context);
 
             // Checking for match on password
-            if (userNode["password"].Get<string> (context) != systemFingerprint)
+            if (userNode["password"].Get<string> (context) != systemPasswordFingerprint)
                 throw new SecurityException("Credentials not accepted"); // Exact same wording as above! IMPORTANT!!
 
             // Success, creating our ticket
@@ -105,8 +105,10 @@ namespace p5.security.helpers
                 cookie.HttpOnly = true; // To avoid JavaScript access to credential cookie
 
                 // Notice, we use another fingerprint as password for cookie than what we use for storing cookie in auth file
-                // The "system salt" never leaves the server
-                cookie.Value = username + " " + userPasswordFingerprint;
+                // The "system salted fingerprint" hence never leaves the server
+                // If this was not the case, then the system fingerprint would effectively BE the password, allowing anyone
+                // who somehow gets access to "auth" file also to log in by creating false cookies
+                cookie.Value = username + " " + cookiePasswordFingerprint;
                 HttpContext.Current.Response.Cookies.Add(cookie);
             }
         }
@@ -134,8 +136,13 @@ namespace p5.security.helpers
          */
         public static void ListUsers (ApplicationContext context, Node args)
         {
+            // Retrieving "auth" file in node format
             var authFile = AuthFile.GetAuthFile (context);
+
+            // Looping through each user in [users] node of "auth" file
             foreach (var idxUserNode in authFile["users"].Children) {
+
+                // Returning user's name, and role he belongs to
                 args.Add (idxUserNode.Name, idxUserNode["role"].Value);
             }
         }
@@ -148,6 +155,16 @@ namespace p5.security.helpers
             string username = args.GetExChildValue<string>("username", context);
             string password = args.GetExChildValue<string>("password", context);
             string role = args.GetExChildValue<string>("role", context);
+
+            // Making sure [password] never leaves method, in case of exceptions
+            args.FindOrCreate ("password").Value = "xxx";
+
+            // Basic syntax checking
+            if (string.IsNullOrEmpty (username) || string.IsNullOrEmpty (password) || string.IsNullOrEmpty (role))
+                throw new LambdaException (
+                    "User must have [username], [password] and [role] at the very least",
+                    args,
+                    context);
 
             // Verifying username is valid, since we'll need to create a folder for user
             VerifyUsernameValid (username);
@@ -164,23 +181,144 @@ namespace p5.security.helpers
             AuthFile.ModifyAuthFile (
                 context, 
                 delegate (Node authFile) {
+
+                    // Checking if user exist from before
                     if (authFile["users"][username] != null)
                         throw new LambdaException(
-                            "Sorry, that username is already taken by another user in the system", 
+                            "Sorry, that [username] is already taken by another user in the system", 
                             args, 
                             context);
+
+                    // Adding user
                     authFile["users"].Add(username);
 
-                    // Creates a salt for user
+                    // Creates a salt and password for user
                     authFile ["users"].LastChild.Add("password", systemFingerprint);
                     authFile ["users"].LastChild.Add("cookie-salt", userSalt);
+
+                    // Adding user to specified role
                     authFile ["users"].LastChild.Add("role", role);
+
+                    // Adding all other specified objects to user
+                    foreach (var idxNode in args.Children.Where (ix => ix.Name != "username" && ix.Name != "password" && ix.Name != "role")) {
+
+                        // Only adding nodes with some sort of actual value
+                        if (idxNode.Value != null || idxNode.Children.Count > 0)
+                            authFile["users"].LastChild.Add (idxNode.Clone ());
+                    }
                 });
 
             // Creating newly created user's directory structure
             CreateUserDirectory (context.RaiseNative("p5.core.application-folder").Get<string>(context), username);
         }
 
+        /*
+         * Retrieves a specific user from system
+         */
+        public static void GetUser (ApplicationContext context, Node args)
+        {
+            // Retrieving "auth" file in node format
+            var authFile = AuthFile.GetAuthFile (context);
+
+            // Iterating all users requested by caller
+            foreach (var idxUsername in XUtil.Iterate<string> (context, args, true)) {
+
+                // Since this method can take expressions, we need to check if currently iterated user has been added before
+                if (args [idxUsername] != null)
+                    continue;
+
+                // Checking if user exist
+                if (authFile ["users"] [idxUsername] == null)
+                    throw new LambdaException (
+                        string.Format ("User '{0}' does not exist", idxUsername),
+                        args,
+                        context);
+
+                // Adding user's node as return value, and each property of user, except [password] and [cookie-salt]
+                args.Add (idxUsername);
+                args [idxUsername].AddRange (authFile["users"][idxUsername].Clone ().Children.Where (ix => ix.Name != "password" && ix.Name != "cookie-salt"));
+            }
+        }
+
+        /*
+         * Retrieves a specific user from system
+         */
+        public static void DeleteUser (ApplicationContext context, Node args)
+        {
+
+            // Locking access to password file as we create new user object
+            AuthFile.ModifyAuthFile (
+                context, 
+                delegate (Node authFile) {
+
+                    // Iterating all users requested deleted by caller
+                    foreach (var idxUsername in XUtil.Iterate<string> (context, args, true)) {
+
+                        // Checking if user exist
+                        if (authFile ["users"] [idxUsername] == null)
+                            throw new LambdaException (
+                                string.Format ("User '{0}' does not exist", idxUsername),
+                                args,
+                                context);
+
+                        // Deleting currently iterated user
+                        authFile["users"][idxUsername].UnTie();
+                    }
+                });
+        }
+
+        /*
+         * Edits an existing user
+         */
+        public static void EditUser (ApplicationContext context, Node args)
+        {
+            string username = args.GetExValue<string>(context);
+            string password = args.GetExChildValue<string>("password", context);
+            string userRole = args.GetExChildValue<string>("role", context);
+
+            // Locking access to password file as we edit user object
+            AuthFile.ModifyAuthFile (
+                context, 
+                delegate (Node authFile) {
+
+                    // Checking to see if user exist
+                    if (authFile["users"][username] == null)
+                        throw new LambdaException(
+                            "Sorry, that user does not exist", 
+                            args, 
+                            context);
+
+                    // Updating user's password, if a new one was given
+                    if (!string.IsNullOrEmpty (password)) {
+
+                        // Changing user's password
+                        // Creating user salt, and retrieving system salt
+                        var userSalt = AuthFile.CreateNewSalt ();
+                        var serverSalt = context.RaiseNative ("p5.security.get-password-salt").Get<string> (context);
+
+                        // Then salting password with user salt and system, before salting it with system salt
+                        var userPasswordFingerprint = context.RaiseNative ("sha256-hash", new Node ("", userSalt + password)).Get<string> (context);
+                        var systemFingerprint = context.RaiseNative ("sha256-hash", new Node ("", serverSalt + userPasswordFingerprint)).Get<string> (context);
+                        authFile ["users"][username]["password"].Value = systemFingerprint;
+                        authFile["users"][username]["cookie-salt"].Value = userSalt;
+                    }
+
+                    // Updating user's role
+                    authFile ["users"][username]["role"].Value = userRole;
+
+                    // Adding all other specified objects to user
+                    foreach (var idxNode in args.Children.Where (ix => ix.Name != "username" && ix.Name != "password" && ix.Name != "role")) {
+
+                        // Removing old value of specified object, if one exist
+                        authFile["users"].FindOrCreate (idxNode.Name).UnTie ();
+
+                        // Only adding nodes with some sort of actual value, which allows for deletion of old values if "null" value nodes are submitted
+                        if (idxNode.Value != null || idxNode.Children.Count > 0)
+                            authFile["users"][username].Add (idxNode.Clone ());
+                    }
+                });
+        }
+            
         /*
          * Returns all existing roles in system
          */
@@ -192,12 +330,11 @@ namespace p5.security.helpers
             // Looping through each user object in password file, retrieving all roles
             foreach (var idxUserNode in pwdFile["users"].Children) {
 
-                // Checking if currently iterated user's role was already added
-                if (args.Children.FirstOrDefault(ix => ix.Name == idxUserNode["role"].Get<string>(context)) == null) {
+                // Retrieving role name of currently iterated user
+                var role = idxUserNode["role"].Get<string>(context);
 
-                    // Default Context role was not already added
-                    args.Add(idxUserNode["role"].Get<string>(context));
-                }
+                // Adding currently iterated role, unless already added, and incrementing user count for it
+                args.FindOrCreate (role).Value = args[role].Get<int> (context, 0) + 1;
             }
 
             // Making sure default role is added

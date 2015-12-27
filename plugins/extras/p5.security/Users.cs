@@ -55,6 +55,17 @@ namespace p5.security
         }
 
         /// <summary>
+        ///     Edits an existing user
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "edit-user", Protection = EventProtection.LambdaClosed)]
+        public static void edit_user (ApplicationContext context, ActiveEventArgs e)
+        {
+            AuthenticationHelper.EditUser (context, e.Args);
+        }
+
+        /// <summary>
         ///     Lists all users in system
         /// </summary>
         /// <param name="context">Application Context</param>
@@ -63,6 +74,30 @@ namespace p5.security
         public static void list_users (ApplicationContext context, ActiveEventArgs e)
         {
             AuthenticationHelper.ListUsers (context, e.Args);
+        }
+
+        /// <summary>
+        ///     Retrieves a specific user in system
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "get-user", Protection = EventProtection.LambdaClosed)]
+        public static void get_user (ApplicationContext context, ActiveEventArgs e)
+        {
+            using (new Utilities.ArgsRemover (e.Args, true)) {
+                AuthenticationHelper.GetUser (context, e.Args);
+            }
+        }
+
+        /// <summary>
+        ///     Deletes a specific user in system
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "delete-user", Protection = EventProtection.LambdaClosed)]
+        public static void delete_user (ApplicationContext context, ActiveEventArgs e)
+        {
+            AuthenticationHelper.DeleteUser (context, e.Args);
         }
 
         /// <summary>

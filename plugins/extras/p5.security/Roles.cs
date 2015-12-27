@@ -26,8 +26,8 @@ namespace p5.security
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "get-roles", Protection = EventProtection.LambdaClosed)]
-        public static void get_roles (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "list-roles", Protection = EventProtection.LambdaClosed)]
+        public static void list_roles (ApplicationContext context, ActiveEventArgs e)
         {
             AuthenticationHelper.GetRoles (context, e.Args);
         }

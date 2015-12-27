@@ -218,8 +218,8 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'zip':
         case 'unzip':
         case 'set-page-value':
-        case 'list-users':
         case 'format-date':
+        case 'edit-user':
           state.indent += 2;
           return this.styles.keyword;
 
@@ -246,7 +246,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'reload-location':
         case 'whoami':
         case 'logout':
-        case 'get-roles':
+        case 'list-roles':
         case 'sleep':
         case 'clear-widget':
         case 'delete-widget':
@@ -310,6 +310,9 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'set-http-status-code':
         case 'date-now':
         case 'create-cs-random-string':
+        case 'list-users':
+        case 'get-user':
+        case 'delete-user':
         case 'abs':
         case 'acos':
         case 'asin':

@@ -82,6 +82,7 @@ create-widget:edit-users
                     delete-widget:edit-user-properties
                   get-widget-property:edit-existing-user-select
                     value
+                  list-users
                   if:x:/../*/get-widget-property/*/*?value
                     !=:_default
                     create-widget:edit-user-properties
@@ -100,7 +101,7 @@ create-widget:edit-users
                                   element:input
                                   type:text
                                   class:form-control
-                                  placeholder:User role ...
+                                  placeholder:Users role ...
                         container
                           class:col-xs-5 form-group
                           widgets
@@ -114,9 +115,86 @@ create-widget:edit-users
                                   element:input
                                   type:text
                                   class:form-control
-                                  placeholder:User email ...
+                                  placeholder:Users email ...
+                        container
+                          class:col-xs-2 form-group
+                          widgets
+                            literal
+                              element:button
+                              class:form-control btn btn-default
+                              innerValue:Save
+                              onclick
+                                sys42.save-edited-user
+
+
+                              /*
+                               * Lambda events for Save button
+                               */
+                              events
+
+
+                                /*
+                                 * Saves currently edited user
+                                 */
+                                sys42.save-edited-user
+                                  _widgets
+                                    edit-existing-user-select
+                                    user-role
+                                    user-email
+                                    user-password
+                                    user-password-repeat
+                                  get-widget-property:x:/../*/_widgets/*?name
+                                    value
+                                  if:x:/../*/get-widget-property/*/user-password/*?value
+                                    !=:x:/../*/get-widget-property/*/user-password-repeat/*?value
+                                    sys42.info-feedback:Passwords does not match
+                                      _error:true
+                                    send-javascript:"$('#user-password').focus().select();"
+                                  else
+                                    edit-user:x:/../*/get-widget-property/*/edit-existing-user-select/*?value
+                                      role:x:/../*/get-widget-property/*/user-role/*?value
+                                      password:x:/../*/get-widget-property/*/user-password/*?value
+                                      email:x:/../*/get-widget-property/*/user-email/*?value
+                                    set-widget-property:x:/../*/_widgets/*/~password?name
+                                      value:
+                                    sys42.info-feedback:User was succesfully saved
+                                    send-javascript:"$('#edit-existing-user-select').focus().select();"
+                        container
+                          class:col-xs-5 form-group
+                          widgets
+                            container
+                              class:input-group
+                              widgets
+                                literal
+                                  class:input-group-addon
+                                  innerValue:Password
+                                literal:user-password
+                                  element:input
+                                  type:password
+                                  class:form-control
+                                  placeholder:Users password ...
+                                  title:Leave blank to keep existing password
+                        container
+                          class:col-xs-5 form-group
+                          widgets
+                            container
+                              class:input-group
+                              widgets
+                                literal
+                                  class:input-group-addon
+                                  innerValue:Repeat
+                                literal:user-password-repeat
+                                  element:input
+                                  type:password
+                                  class:form-control
+                                  placeholder:Password repeat ...
+                                  title:Leave blank to keep existing password
                     set-widget-property:user-role
-                      value:x:/../*/get-widget-property/*/*?value
+                      value:x:/../*/list-users/*/{0}?value
+                        :x:/../*/get-widget-property/*/*?value
+                    get-user:x:/../*/get-widget-property/*/*?value
+                    set-widget-property:user-email
+                      value:x:/..if/*/get-user/*/*/email?value
                     send-javascript:"$('#user-role').focus().select();"
 
 
