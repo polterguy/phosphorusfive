@@ -1,6 +1,6 @@
 /*
  * List of all friends that this server trusts.
- * Value is fingerprint of public cryptography key
+ * Value is fingerprint of public PGP key
  */
 
 

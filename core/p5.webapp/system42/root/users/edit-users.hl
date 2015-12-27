@@ -1,0 +1,133 @@
+
+/*
+ * Creates the web widget that allows for
+ * editing users and roles in the system
+ */
+
+
+create-widget:edit-users
+  parent:content
+  class:form
+  widgets
+
+
+    /*
+     * The "Edit Existing user ..." drop down select list
+     */
+    container
+      class:col-xs-10 form-group
+      widgets
+        container
+          class:input-group
+          widgets
+            literal
+              class:input-group-addon
+              innerValue:Edit user
+            container:edit-existing-user-select
+              element:select
+              class:form-control
+
+
+              /*
+               * Populates the "Edit Existing user" select drop down list
+               */
+              oninit
+                sys42.populate-edit-existing-user
+
+
+              /*
+               * Here we create a new page according to which option item
+               * was selected
+               */
+              onchange
+                sys42.edit-existing-user
+
+
+              /*
+               * Lambda events for "Create new page" widget
+               */
+              events
+
+
+                /*
+                 * Here we loop through all users in system, and create an option
+                 * select list item for each of them
+                 */
+                sys42.populate-edit-existing-user
+                  create-literal-widget
+                    element:option
+                    parent:edit-existing-user-select
+                    value:_default
+                    innerValue:Select user ...
+                  list-users
+                  for-each:x:/-/*?name
+                    add:x:/..for-each/*/create-literal-widget
+                      src:"value:{0}"
+                        :x:/..for-each/*/__dp?value
+                    add:x:/..for-each/*/create-literal-widget
+                      src:"innerValue:{0}"
+                        :x:/..for-each/*/__dp?value
+                    create-literal-widget
+                      element:option
+                      parent:edit-existing-user-select
+
+
+                /*
+                 * Edits an existing user
+                 */
+                sys42.edit-existing-user
+                  if
+                    fetch:x:/0/0?value
+                      widget-exist:edit-user-properties
+                    delete-widget:edit-user-properties
+                  get-widget-property:edit-existing-user-select
+                    value
+                  if:x:/../*/get-widget-property/*/*?value
+                    !=:_default
+                    create-widget:edit-user-properties
+                      parent:content
+                      widgets
+                        container
+                          class:col-xs-5 form-group
+                          widgets
+                            container
+                              class:input-group
+                              widgets
+                                literal
+                                  class:input-group-addon
+                                  innerValue:Role
+                                literal:user-role
+                                  element:input
+                                  type:text
+                                  class:form-control
+                                  placeholder:User role ...
+                        container
+                          class:col-xs-5 form-group
+                          widgets
+                            container
+                              class:input-group
+                              widgets
+                                literal
+                                  class:input-group-addon
+                                  innerValue:Email
+                                literal:user-email
+                                  element:input
+                                  type:text
+                                  class:form-control
+                                  placeholder:User email ...
+                    set-widget-property:user-role
+                      value:x:/../*/get-widget-property/*/*?value
+                    send-javascript:"$('#user-role').focus().select();"
+
+
+    /*
+     * The "Create new user" button
+     */
+    container
+      class:col-xs-2 form-group
+      widgets
+        literal
+          element:button
+          class:form-control btn btn-default
+          innerValue:Create
+

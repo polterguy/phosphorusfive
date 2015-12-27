@@ -324,6 +324,7 @@
     <None Include="system42\startup\misc-events\sys42.verify-signature-is-friend.hl" />
     <None Include="system42\misc\trusted-friends.hl" />
     <None Include="system42\startup\misc-events\sys42.expired-webservice-invocation.hl" />
+    <None Include="system42\root\users\edit-users.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />
@@ -337,5 +338,6 @@
     <Folder Include="system42\root\page-editor\templates\" />
     <Folder Include="system42\server-startup\" />
     <Folder Include="code\configuration\" />
+    <Folder Include="system42\root\users\" />
   </ItemGroup>
 </Project>

@@ -1,4 +1,3 @@
-
 /*
  * Responsible for creating the Active Event that checks a given
  * cryptographic signature, to verify source is a friend whom we
@@ -20,8 +19,17 @@ set-protected-event:sys42.verify-signature-is-friend
     :x:/../*/_arg/*/*?value
     and:x:/../*/_arg/*?value
       =:bool:true
+
+    /*
+     * Cryptographic signature originated from one of our friends, 
+     * according to our "trusted-friends.hl" file
+     */
     set:x:/..?value
       src:bool:true
   else
+
+    /*
+     * Dude was NOT a friend of us!!
+     */
     set:x:/..?value
       src:bool:false

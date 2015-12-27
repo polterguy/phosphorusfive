@@ -1,4 +1,3 @@
-
 /*
  * Creates the default pages for our CMS if no pages exists in our database
  */
@@ -68,7 +67,7 @@ this coffee machine would want to listen to my troubles ...""""</em></blockquote
 
     p5.page:/root/editor
       type:lambda
-      name:Page editor
+      name:Pages
       template:/system42/templates/main.hl
       role:root
       lambda:@"
@@ -90,6 +89,16 @@ sys42.execute-lisp-file:/system42/root/page-editor/page-editor.hl
  * simply executes the file that loads up the 'executor'
  */
 sys42.execute-lisp-file:/system42/root/executor.hl
+"
+
+    p5.page:/root/users
+      name:Users
+      template:/system42/templates/main.hl
+      type:lambda
+      lambda:@"/*
+ * Simply executes the file that loads up the 'Users' page
+ */
+sys42.execute-lisp-file:/system42/root/users/edit-users.hl
 "
 
     p5.page:/superuser/files
