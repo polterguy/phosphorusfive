@@ -101,6 +101,10 @@ body {
     margin-top:-100px;
 }
 
+.info-feedback-more {
+    animation-duration: 6s;
+}
+
 
 /*
  * Blink CSS class animations
@@ -136,5 +140,14 @@ body {
     animation-name:animate-flash-from-right;
     animation-duration:.5s;
     position:relative;
+}
+
+.input-group-addon {
+    min-width:100px;
+    text-align:left;
+}
+
+.error {
+    background-color:rgba(255,0,0,.1);
 }
 

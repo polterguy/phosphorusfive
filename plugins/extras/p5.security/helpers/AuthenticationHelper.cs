@@ -263,6 +263,9 @@ namespace p5.security.helpers
 
                         // Deleting currently iterated user
                         authFile["users"][idxUsername].UnTie();
+
+                        // Deleting user's home directory
+                        context.RaiseNative ("delete-folder", new Node ("", "/users/" + idxUsername + "/"));
                     }
                 });
         }

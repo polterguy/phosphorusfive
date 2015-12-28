@@ -80,7 +80,7 @@ namespace p5.ajax
                 var lst = ViewState ["_p5_js_objects"] as List<Tuple<string, bool>>;
                 if (lst.Find (delegate (Tuple<string, bool> idx) { return idx.Item1 == script; }) == null) {
                     lst.Add (new Tuple<string, bool>(script, false));
-                    _newJavaScriptObjects.Add (new Tuple<string, bool>(script, true));
+                    _newJavaScriptObjects.Add (new Tuple<string, bool>(script, false));
                 }
             }
 

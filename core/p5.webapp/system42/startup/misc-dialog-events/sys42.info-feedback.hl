@@ -31,6 +31,22 @@ set-protected-event:sys42.info-feedback
       src:node:@"style:""color:#e55;"""
 
   /*
+   * Checking if this is a "warning" type of feedback
+   */
+  else-if:x:/../*/_warning?value.bool
+    =:bool:true
+    add:x:/../*/create-widget/*/widgets/*/literal
+      src:node:@"style:""color:#ea5;"""
+
+  /*
+   * Checking if this is feedback needs "more time" to stick on screen
+   */
+  if:x:/../*/_time?value
+    =:more
+    set:x:/../*/create-widget/*/class?value
+      src:info-feedback info-feedback-more
+
+  /*
    * Creating actual window popdown
    */
   create-widget:info-feedback

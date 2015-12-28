@@ -50,8 +50,26 @@ add:x:/../*/create-widget/*/widgets/**/container/=menu/*/widgets
         literal:login-logout-btn
           element:a
           innerValue:Login
-          href:#
-          onclick:"return p5.showLogin();"
+          href:
+          onclick
+            set-widget-property:login-wrapper
+              visible:true
+
+            // JavaScript to make sure we set focus to username input field,
+            // and are able to trap Carriage Return and Escape in username/password fields
+            send-javascript:"$('#toggle-navbar').click();$('#username').focus().select();"
+            include-javascript:@"p5.loginUsernameKeyPressed = function(e) {
+  if(e.keyCode == 13) {
+    p5.$('login').raise('onclick');
+    return false;
+  }
+}
+p5.loginUsernameKeyUp = function(e) {
+  if(e.keyCode == 27) {
+    p5.$('login-hide').raise('onclick');
+  }
+}"
+
 
 
 /*
@@ -64,7 +82,7 @@ if:x:/../*/whoami/*/default?value
   set:x:/../*/create-widget/**/literal/=login-logout-btn/*/innerValue?value
     src:Logout {0}
       :x:/../*/whoami/*/username?value
-  set:x:/../*/create-widget/**/literal/=login-logout-btn/*/onclick?value
+  set:x:/../*/create-widget/**/literal/=login-logout-btn/*/onclick/*
   add:x:/../*/create-widget/**/literal/=login-logout-btn/*/onclick
     src
       list-session-keys
@@ -72,11 +90,7 @@ if:x:/../*/whoami/*/default?value
       sys42.empty-user-tmp-folder
       logout
       reload-location
-else
-  include-javascript:@"
-$('#login-logout-btn').on('click', function(){
-    $('.navbar-toggle').click()
-});"
+  set:x:/../*/create-widget/**/container/=login-wrapper
     
 
 
@@ -102,8 +116,7 @@ create-widget:template-root
               has-id:false
               class:navbar-header
               widgets
-                literal
-                  has-id:false
+                literal:toggle-navbar
                   element:button
                   type:button
                   class:navbar-toggle collapsed
@@ -151,7 +164,8 @@ create-widget:template-root
          * Login/logout widgets and helpers
          */
         container:login-wrapper
-          class:form-inline col-md-5 hidden col-md-push-1 col-xs-3
+          class:form-inline col-md-5 col-md-push-1 col-xs-3 flash-from-right
+          visible:false
           widgets
             container:login-controls
               class:form-group
@@ -161,15 +175,15 @@ create-widget:template-root
                   element:input
                   type:text
                   placeholder:Username ...
-                  onkeypress:"return p5.keyPressed(event);"
-                  onkeyup:"p5.keyUp(event);"
+                  onkeypress:"return p5.loginUsernameKeyPressed(event);"
+                  onkeyup:"p5.loginUsernameKeyUp(event);"
                 void:password
                   class:form-control input-sm
                   element:input
                   type:password
                   placeholder:Password ...
-                  onkeypress:"return p5.keyPressed(event);"
-                  onkeyup:"p5.keyUp(event);"
+                  onkeypress:"return p5.loginUsernameKeyPressed(event);"
+                  onkeyup:"p5.loginUsernameKeyUp(event);"
                 literal:login
                   element:button
                   class:btn btn-default form-control input-sm
@@ -198,6 +212,15 @@ create-widget:template-root
                         class:form-group has-error
                       send-javascript:"p5.wrongCredentials();"
 
+                // Invisible button to be able to hide login wrapper when user presses Escape key
+                void:login-hide
+                  element:input
+                  type:button
+                  style:"display:none;"
+                  onclick
+                    set-widget-property:login-wrapper
+                      visible:false
+
 
     /*
      * Actual dynamic content comes here, after navbar menu at top, 
@@ -223,34 +246,5 @@ create-widget:template-root
           class:col-md-6 text-muted text-center col-md-push-3 prepend-top col-xs-12
           innerValue:@"Liberated Software, Copyleft © 
 <a href=""https://phosphorusfive.wordpress.com/2015/11/22/liberated-software-defined/"">Thomas Hansen</a>"
-
-
-/*
- * Simple inline JavaScript functions, 
- * referenced in event handlers for widgets above
- */
-include-javascript:@"
-p5.showLogin = function() {
-  $('#login-wrapper').toggleClass('hidden');
-  $('#show-login-wrapper').toggleClass('hidden');
-  $('#username').focus().select();
-  return false;
-}
-p5.keyPressed = function(e) {
-  if(e.keyCode == 13) {
-    p5.$('login').raise('onclick');
-    return false;
-  }
-}
-p5.keyUp = function(e) {
-  if(e.keyCode == 27) {
-    $('#login-wrapper').toggleClass('hidden');
-    $('#show-login-wrapper').toggleClass('hidden');
-  }
-}
-p5.wrongCredentials = function() {
-  $('#login-wrapper').effect('shake');
-  $('#username').focus().select();
-};"
 
 

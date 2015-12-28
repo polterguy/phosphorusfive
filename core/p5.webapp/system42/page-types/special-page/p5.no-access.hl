@@ -50,7 +50,7 @@ else
         innerValue:@"Sorry, I cannot give you access to that page, since my owner has restricted access to it.
 Maybe it works if you login ...?"
       container
-        class:form-inline
+        class:form-inline flash-from-right
         widgets
           container
             class:form-group prepend-left-2

@@ -1,4 +1,3 @@
-
 /*
  * Creates the web widget that allows for
  * editing users and roles in the system
@@ -44,7 +43,7 @@ create-widget:edit-users
 
 
               /*
-               * Lambda events for "Create new page" widget
+               * Lambda events for "Edit existing user" widget
                */
               events
 
@@ -54,6 +53,11 @@ create-widget:edit-users
                  * select list item for each of them
                  */
                 sys42.populate-edit-existing-user
+
+                  // Making sure we empty widget, if it has been populated before
+                  clear-widget:edit-existing-user-select
+
+                  // Creating "_default" option element, for "un-selecting" edited user
                   create-literal-widget
                     element:option
                     parent:edit-existing-user-select
@@ -61,6 +65,10 @@ create-widget:edit-users
                     innerValue:Select user ...
                   list-users
                   for-each:x:/-/*?name
+                    if:x:/./*/__dp?value
+                      =:x:/../*/_arg?value
+                      add:x:/..for-each/*/create-literal-widget
+                        src:selected
                     add:x:/..for-each/*/create-literal-widget
                       src:"value:{0}"
                         :x:/..for-each/*/__dp?value
@@ -76,20 +84,35 @@ create-widget:edit-users
                  * Edits an existing user
                  */
                 sys42.edit-existing-user
+
+                  // Checking if there exist an "edit existing user" widget from before, 
+                  // and if so, deletes it
                   if
                     fetch:x:/0/0?value
                       widget-exist:edit-user-properties
                     delete-widget:edit-user-properties
+
+                  // Getting username of currently selected user from "select" widget
                   get-widget-property:edit-existing-user-select
                     value
-                  list-users
+
+                  // Making sure the selected user is not "_default" (which means no user was selected)
                   if:x:/../*/get-widget-property/*/*?value
                     !=:_default
+
+                    /*
+                     * User selected an actual user, now create the widget that shows that user's data
+                     */
                     create-widget:edit-user-properties
                       parent:content
                       widgets
+
+
+                        /*
+                         * Which role user belongs to
+                         */
                         container
-                          class:col-xs-5 form-group
+                          class:col-xs-2 form-group
                           widgets
                             container
                               class:input-group
@@ -102,20 +125,60 @@ create-widget:edit-users
                                   type:text
                                   class:form-control
                                   placeholder:Users role ...
+
+
+                        /*
+                         * Password of user
+                         */
                         container
-                          class:col-xs-5 form-group
+                          class:col-xs-3 form-group
                           widgets
                             container
                               class:input-group
                               widgets
                                 literal
                                   class:input-group-addon
-                                  innerValue:Email
-                                literal:user-email
+                                  innerValue:Password
+                                literal:user-password
                                   element:input
-                                  type:text
+                                  type:password
                                   class:form-control
-                                  placeholder:Users email ...
+                                  placeholder:Users password ...
+                                  title:Leave blank to keep existing password
+                                  onchange
+                                    get-widget-property:user-password
+                                      value
+                                    if:x:/../*/get-widget-property/*/*?value
+                                      !=:
+                                      sys42.info-feedback:@"Unless absolutely necessary, you should NOT change user's password! 
+Leave password field blank to keep existing password!"
+                                        _warning:true
+                                        _time:more
+
+
+                        /*
+                         * Repeat password of user
+                         */
+                        container
+                          class:col-xs-3 form-group
+                          widgets
+                            container
+                              class:input-group
+                              widgets
+                                literal
+                                  class:input-group-addon
+                                  innerValue:Repeat
+                                literal:user-password-repeat
+                                  element:input
+                                  type:password
+                                  class:form-control
+                                  placeholder:Password repeat ...
+                                  title:Leave blank to keep existing password
+
+
+                        /*
+                         * Save user button
+                         */
                         container
                           class:col-xs-2 form-group
                           widgets
@@ -140,61 +203,55 @@ create-widget:edit-users
                                   _widgets
                                     edit-existing-user-select
                                     user-role
-                                    user-email
                                     user-password
                                     user-password-repeat
                                   get-widget-property:x:/../*/_widgets/*?name
                                     value
                                   if:x:/../*/get-widget-property/*/user-password/*?value
                                     !=:x:/../*/get-widget-property/*/user-password-repeat/*?value
-                                    sys42.info-feedback:Passwords does not match
+                                    sys42.info-feedback:Passwords does not match!
                                       _error:true
                                     send-javascript:"$('#user-password').focus().select();"
                                   else
                                     edit-user:x:/../*/get-widget-property/*/edit-existing-user-select/*?value
                                       role:x:/../*/get-widget-property/*/user-role/*?value
                                       password:x:/../*/get-widget-property/*/user-password/*?value
-                                      email:x:/../*/get-widget-property/*/user-email/*?value
                                     set-widget-property:x:/../*/_widgets/*/~password?name
                                       value:
                                     sys42.info-feedback:User was succesfully saved
                                     send-javascript:"$('#edit-existing-user-select').focus().select();"
+
+
+                        /*
+                         * The "Delete user" button
+                         */
                         container
-                          class:col-xs-5 form-group
+                          class:col-xs-2 form-group
                           widgets
-                            container
-                              class:input-group
-                              widgets
-                                literal
-                                  class:input-group-addon
-                                  innerValue:Password
-                                literal:user-password
-                                  element:input
-                                  type:password
-                                  class:form-control
-                                  placeholder:Users password ...
-                                  title:Leave blank to keep existing password
-                        container
-                          class:col-xs-5 form-group
-                          widgets
-                            container
-                              class:input-group
-                              widgets
-                                literal
-                                  class:input-group-addon
-                                  innerValue:Repeat
-                                literal:user-password-repeat
-                                  element:input
-                                  type:password
-                                  class:form-control
-                                  placeholder:Password repeat ...
-                                  title:Leave blank to keep existing password
+                            literal
+                              element:button
+                              class:form-control btn btn-default
+                              innerValue:Delete
+                              onclick
+                                sys42.confirm-action
+                                  _header:Confirm deletion of user
+                                  _message:@"Please confirm that you really wish to delete this user. 
+<strong>All files belonging to user will be deleted</strong>. This action cannot be undone!"
+                                  _onok
+                                    get-widget-property:edit-existing-user-select
+                                      value
+                                    delete-user:x:/../*/get-widget-property/*/*?value
+                                    sys42.populate-edit-existing-user
+                                    delete-widget:edit-user-properties
+
+
+                    /*
+                     * Populating values of widget created above according
+                     * to user's data
+                     */
+                    get-user:x:/../*/get-widget-property/*/edit-existing-user-select/*?value
                     set-widget-property:user-role
-                      value:x:/../*/list-users/*/{0}?value
-                        :x:/../*/get-widget-property/*/*?value
-                    get-user:x:/../*/get-widget-property/*/*?value
-                    set-widget-property:user-email
-                      value:x:/..if/*/get-user/*/*/email?value
+                      value:x:/././*/get-user/*/*/role?value
                     send-javascript:"$('#user-role').focus().select();"
 
 
@@ -208,4 +265,22 @@ create-widget:edit-users
           element:button
           class:form-control btn btn-default
           innerValue:Create
+          onclick
+            sys42.get-text-literal
+              _header:Supply a username
+              _message:@"Please supply a username of new user. Make sure it is correct since usernames 
+cannot be changed once created"
+              _onok
+                eval-x:/+/**(/username|/sys42.populate-edit-existing-user)
+                sys42.get-password
+                  _header:Supply a password
+                  _message:@"Please supply a password for user"
+                  _onok
+                    create-user
+                      username:x:/../*/_text-literal?value
+                      password:xxx
+                      role:user
+                    sys42.populate-edit-existing-user:x:/../*/_text-literal?value
+                    sys42.edit-existing-user
+                    sys42.info-feedback:"User was successfully created"
 

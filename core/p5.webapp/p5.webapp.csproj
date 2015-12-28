@@ -325,6 +325,7 @@
     <None Include="system42\misc\trusted-friends.hl" />
     <None Include="system42\startup\misc-events\sys42.expired-webservice-invocation.hl" />
     <None Include="system42\root\users\edit-users.hl" />
+    <None Include="system42\startup\misc-dialog-events\sys42.modal-wizard.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />

@@ -93,8 +93,8 @@ namespace p5.lambda
             Node exeCopy = exe.Clone ();
 
             // Passing in arguments, if there are any
-            foreach (var idx in args) {
-                exeCopy.Add (idx.Clone ());
+            foreach (var idx in args.Reverse ()) {
+                exeCopy.Insert (0, idx.Clone ());
             }
 
             // Storing the original nodes before execution, such that we can "diff" against nodes after execution,
