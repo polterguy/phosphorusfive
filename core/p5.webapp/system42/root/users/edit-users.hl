@@ -11,10 +11,22 @@ create-widget:edit-users
 
 
     /*
+     * Jesus fucking christ Google Chrome devs, fucking OBEY THE OPEN WEB STANDARDS!!
+     * Not obeying autocomplete="off" is simply not acceptable!!
+     * I don't care if you quote the fucking King of the Universe, Lawrence Lessig or Winnie the Pooh!
+     * THIS IS SIMPLY NOT ACCEPTABLE!!
+     */
+    literal
+      style:"display:none;"
+      element:div
+      innerValue:@"<input><input type=""password"">"
+
+
+    /*
      * The "Edit Existing user ..." drop down select list
      */
     container
-      class:col-xs-10 form-group
+      class:col-xs-11 form-group
       widgets
         container
           class:input-group
@@ -25,6 +37,7 @@ create-widget:edit-users
             container:edit-existing-user-select
               element:select
               class:form-control
+              accesskey:U
 
 
               /*
@@ -101,6 +114,17 @@ create-widget:edit-users
                     !=:_default
 
                     /*
+                     * Include JavaScript to trap Carriage Return in widget
+                     */
+                    include-javascript:@"
+  p5.keyPressEditUser = function(e) {
+    if(e.keyCode == 13) {
+      p5.$('save-user-button').raise('onclick');
+      return false;
+    }
+  }"
+
+                    /*
                      * User selected an actual user, now create the widget that shows that user's data
                      */
                     create-widget:edit-user-properties
@@ -112,7 +136,7 @@ create-widget:edit-users
                          * Which role user belongs to
                          */
                         container
-                          class:col-xs-2 form-group
+                          class:col-xs-3 form-group
                           widgets
                             container
                               class:input-group
@@ -120,11 +144,13 @@ create-widget:edit-users
                                 literal
                                   class:input-group-addon
                                   innerValue:Role
-                                literal:user-role
+                                void:user-role
                                   element:input
                                   type:text
                                   class:form-control
                                   placeholder:Users role ...
+                                  onkeypress:"return p5.keyPressEditUser(event);"
+                                  autocomplete:off
 
 
                         /*
@@ -139,12 +165,14 @@ create-widget:edit-users
                                 literal
                                   class:input-group-addon
                                   innerValue:Password
-                                literal:user-password
+                                void:user-password
                                   element:input
                                   type:password
                                   class:form-control
                                   placeholder:Users password ...
                                   title:Leave blank to keep existing password
+                                  onkeypress:"return p5.keyPressEditUser(event);"
+                                  autocomplete:off
                                   onchange
                                     get-widget-property:user-password
                                       value
@@ -168,12 +196,14 @@ Leave password field blank to keep existing password!"
                                 literal
                                   class:input-group-addon
                                   innerValue:Repeat
-                                literal:user-password-repeat
+                                void:user-password-repeat
                                   element:input
                                   type:password
                                   class:form-control
                                   placeholder:Password repeat ...
                                   title:Leave blank to keep existing password
+                                  onkeypress:"return p5.keyPressEditUser(event);"
+                                  autocomplete:off
 
 
                         /*
@@ -182,10 +212,11 @@ Leave password field blank to keep existing password!"
                         container
                           class:col-xs-2 form-group
                           widgets
-                            literal
+                            literal:save-user-button
                               element:button
-                              class:form-control btn btn-default
+                              class:form-control btn btn-primary
                               innerValue:Save
+                              accesskey:S
                               onclick
                                 sys42.save-edited-user
 
@@ -226,12 +257,14 @@ Leave password field blank to keep existing password!"
                          * The "Delete user" button
                          */
                         container
-                          class:col-xs-2 form-group
+                          class:col-xs-1 form-group
                           widgets
                             literal
                               element:button
                               class:form-control btn btn-default
-                              innerValue:Delete
+                              innerValue:-
+                              accesskey:M
+                              title:Deletes currently selected user
                               onclick
                                 sys42.confirm-action
                                   _header:Confirm deletion of user
@@ -259,28 +292,61 @@ Leave password field blank to keep existing password!"
      * The "Create new user" button
      */
     container
-      class:col-xs-2 form-group
+      class:col-xs-1 form-group
       widgets
         literal
           element:button
           class:form-control btn btn-default
-          innerValue:Create
+          innerValue:+
+          accesskey:P
+          title:Creates a new user
           onclick
-            sys42.get-text-literal
-              _header:Supply a username
-              _message:@"Please supply a username of new user. Make sure it is correct since usernames 
-cannot be changed once created"
-              _onok
-                eval-x:/+/**(/username|/sys42.populate-edit-existing-user)
-                sys42.get-password
-                  _header:Supply a password
-                  _message:@"Please supply a password for user"
-                  _onok
-                    create-user
-                      username:x:/../*/_text-literal?value
-                      password:xxx
-                      role:user
-                    sys42.populate-edit-existing-user:x:/../*/_text-literal?value
-                    sys42.edit-existing-user
-                    sys42.info-feedback:"User was successfully created"
+
+            /*
+             * Displaying modal dialogue to retrieve new user's username and password
+             */
+            sys42.modal-wizard
+              header:Type in username/password of new user
+              body:@"Please supply a username and a password for your new user. <br>
+<strong>Notice that the username cannot be changed after the user has been created!</strong>"
+              controls
+                text:username
+                  label:Username
+                  mandatory:true
+                  placeholder:Please supply a username for user ...
+                  autocomplete:off
+                password:password
+                  label:Password
+                  mandatory:true
+                  placeholder:Please supply a password for user ...
+                  autocomplete:off
+                password:password-repeat
+                  label:Repeat
+                  mandatory:true
+                  placeholder:Please repeat the password for user ...
+                  autocomplete:off
+              onok
+                if:x:/../*/password?value
+                  =:x:/../*/password-repeat?value
+
+                  /*
+                   * Success! Passwords matched! Creating new user.
+                   * While also signaling to moda-wizard that modal dialogue can be closed
+                   */
+                  set:x:/..?value
+                    src:bool:true
+                  create-user
+                    username:x:/../*/username?value
+                    password:x:/../*/password?value
+                    role:user
+                  sys42.populate-edit-existing-user:x:/../*/username?value
+                  sys42.edit-existing-user
+                else
+
+                  /*
+                   * Failure" Passwords did not match! Signaling that fact to caller
+                   */
+                  set:x:/..?value
+                    src:Passwords don't match
+                  send-javascript:@"$('#password').focus().select();"
 

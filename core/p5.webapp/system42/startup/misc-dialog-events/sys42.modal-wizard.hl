@@ -54,7 +54,7 @@ set-protected-event:sys42.modal-wizard
       literal:auto-complete-force-off
         element:div
         style:"display:none;"
-        innerValue:@"<input type=""password"" name=""fuck-auto-complete"" id=""fuck-auto-complete"" autocomplete=""address-level4"" />"
+        innerValue:@"<input><input type=""password"">"
     add:x:/../*/create-widget/*/widgets
       src:x:/././*/_literal/*
 
@@ -103,12 +103,12 @@ set-protected-event:sys42.modal-wizard
       add:x:/./*/_controls/*/container/*/widgets/1
         src:x:/..for-each/*/__dp/#/*(!/label)
 
-      // Checking if this is mandatory field, and if so, adding [onchange] to reset CSS class when changed
+      // Checking if this is mandatory field, and if so, adding [onblur] to reset CSS class when changed
       if:x:/..for-each/*/__dp/#/*/_mandatory?value.bool
         =:bool:true
         add:x:/..if/..if/*/_controls/*/container/*/widgets/*/void
           src
-            onchange
+            onblur
               get-widget-property:x:/../*/_event?value
                 class
                 value
@@ -121,7 +121,8 @@ set-protected-event:sys42.modal-wizard
                 set-widget-property:x:/../*/_event?value
                   class:"{0} error"
                     :x:/../*/get-widget-property/*/*/class?value
-              else
+              else-if:x:/../*/get-widget-property/*/*/value?value
+                !=:
 
                 // Removing "error" class
                 split:x:/../*/get-widget-property/*/*/class?value
@@ -129,8 +130,8 @@ set-protected-event:sys42.modal-wizard
                 set-widget-property:x:/../*/_event?value
                   class:x:/./-/0?name
 
-      // Adding decorated template control to body of modal dialogue
-      add:x:/../*/create-widget/**/container/=modal-wizard-controls/*/widgets
+      // Adding decorated template control to body of modal dialogue, BEFORE error widget
+      insert-before:x:/../*/create-widget/**/container/=modal-wizard-controls/*/widgets/*/literal/=error-txt
         src:x:/..if/*/_controls/*
 
 
@@ -141,7 +142,7 @@ setTimeout (function (){{
 $('#modal-wizard').on('shown.bs.modal', function () {{
     $('#{0}').focus().select();
 }})}}, 250);"
-    :x:/../*/create-widget/**/container/=modal-wizard-controls/*/widgets/**/void/[0,1]?value
+    :x:/../*/create-widget/**(/container/=modal-wizard-controls/*/widgets/**/void|/literal/=modal-wizard-ok)/[0,1]?value
 
 
   /*
@@ -190,6 +191,14 @@ $('#modal-wizard').on('shown.bs.modal', function () {{
                      * Dynamic content of modal dialogue ends up here!
                      */
                     widgets
+
+                      /*
+                       * Error widget, to show explanation of error to user
+                       * Only shown if client evaluation code yields anything but :bool:true
+                       */
+                      literal:error-txt
+                        class:error-text
+                        style:"display:none;"
 
 
               /*
@@ -255,12 +264,20 @@ $('#modal-wizard').on('shown.bs.modal', function () {{
                         // Evaluating callback [onok], makings sure [offset] prevents properties of dynamic controls to be evaluated
                         set:x:/+/*/*/offset?value
                           src:x:/./+/*/*?count
-                        if
-                          eval:x:/././-
-                            offset
+                        eval:x:/./-
+                          offset
+                        if:x:/-?value
+                          =:bool:true
 
                           // Hiding dialog if evaluation of [onok] yields true!
                           send-javascript:@"$('#modal-wizard').modal('toggle');"
+                        else
+
+                          // Client code did not accept values, there should now be some sort of "error text"
+                          // in the return value of evaluation
+                          set-widget-property:error-txt
+                            innerValue:x:/..if/*/eval?value
+                            style:
 
 
   /*

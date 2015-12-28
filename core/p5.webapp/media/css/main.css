@@ -151,3 +151,12 @@ body {
     background-color:rgba(255,0,0,.1);
 }
 
+.error-text {
+    color:rgb(200,0,0);
+    background-color:rgba(255,255,0,.1);
+    padding:10px;
+    border-radius:5px;
+    border:dashed 1px black;
+    font-weight:bold;
+}
+
