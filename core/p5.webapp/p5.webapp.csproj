@@ -314,10 +314,6 @@
     <None Include="system42\server-startup\launch-server.hl" />
     <None Include="system42\server-startup\set-root-password.hl" />
     <None Include="system42\server-startup\system-finished.hl" />
-    <None Include="system42\startup\misc-dialog-events\sys42.create-new-password.hl" />
-    <None Include="system42\startup\misc-events\sys42.zip-with-password.hl" />
-    <None Include="system42\startup\misc-events\sys42.unzip-with-password.hl" />
-    <None Include="system42\startup\misc-dialog-events\sys42.get-password.hl" />
     <None Include="system42\file-editors\zip-editor.hl" />
     <None Include="system42\startup\misc-events\sys42.invoke-secure-webservice.hl" />
     <None Include="system42\startup\misc-events\sys42.evaluate-secure-webservice.hl" />
@@ -326,6 +322,8 @@
     <None Include="system42\startup\misc-events\sys42.expired-webservice-invocation.hl" />
     <None Include="system42\root\users\edit-users.hl" />
     <None Include="system42\startup\misc-dialog-events\sys42.modal-wizard.hl" />
+    <None Include="system42\startup\misc-dialog-events\sys42.unzip-with-password.hl" />
+    <None Include="system42\startup\misc-dialog-events\sys42.zip-with-password.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />

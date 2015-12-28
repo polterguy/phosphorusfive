@@ -959,7 +959,7 @@ file/folder with that name"
             _onok
               // Making sure ZIP file becomes selected file
               set:x:/+/*/*/object?value
-                src:x:/../*/zip?value
+                src:x:/././*/zip?value
               set-session-value:sys42.selected-file-browser-object
                 src
                   type:file
@@ -969,18 +969,18 @@ file/folder with that name"
               sys42.create-current-folder-content
 
               // Making sure currently selected object is still selected
-              sys42.create-selected-object-clues:x:/../*/zip?value
+              sys42.create-selected-object-clues:x:/./*/zip?value
 
               // Giving user feedback of that operation was successful
-              split:x:/../*/zip?value
+              split:x:/./*/zip?value
                 =:/
 
               // Retrieving currently selected file, which will be the file we zip
               get-session-value:sys42.selected-file-browser-object
 
               sys42.info-feedback:@"{0} '{1}' was successfully zipped"
-                :x:/../*/get-session-value/*/*/type?value
-                :x:/../*/split/0/-?name
+                :x:/././*/get-session-value/*/*/type?value
+                :x:/././*/split/0/-?name
 
               // Updating toolbar, since we've now selected a ZIP file
               sys42.update-file-browser-toolbar
