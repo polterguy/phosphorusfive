@@ -96,14 +96,26 @@ namespace p5.security.helpers
             // Reading up passwords file
             using (TextReader reader = new StreamReader (File.OpenRead (pwdFilePath))) {
 
+                // Retrieving content of file
+                var fileContent = reader.ReadToEnd ();
+
                 // Returning file as lambda, making sure we decrypt it first, but only if user has explicitly
                 // declared a decryption key to use through web.config
                 var gpgEmailAddress = context.RaiseNative("p5.security.get-marvin-pgp-key").Get<string>(context);
                 var gpgPassword = context.RaiseNative("p5.security.get-marvin-pgp-key-password").Get<string>(context);
-                if (!string.IsNullOrEmpty (gpgEmailAddress) && !string.IsNullOrEmpty (gpgPassword))
-                    _authFileContent = Utilities.Convert<Node> (context, Utilities.DecryptMarvin (context, reader.ReadToEnd ()));
-                else
-                    _authFileContent = Utilities.Convert<Node> (context, reader.ReadToEnd ());
+                if (!string.IsNullOrEmpty (gpgEmailAddress) && !string.IsNullOrEmpty (gpgPassword)) {
+
+                    // User has a PGP key declared in web.config, try to load and decrypt file first
+                    try {
+                        _authFileContent = Utilities.Convert<Node> (context, Utilities.DecryptMarvin (context, fileContent));
+                    } catch {
+
+                        // File was probably saved unenecypted, and key added afterwards. Try to read file as plain text instead
+                        _authFileContent = Utilities.Convert<Node> (context, fileContent);
+                    }
+                } else {
+                    _authFileContent = Utilities.Convert<Node> (context, fileContent);
+                }
 
                 // Returning cached version
                 return _authFileContent;
