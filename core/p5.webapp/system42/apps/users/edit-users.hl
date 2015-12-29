@@ -178,8 +178,7 @@ create-widget:edit-users
                                       value
                                     if:x:/../*/get-widget-property/*/*?value
                                       !=:
-                                      sys42.info-window:@"Unless absolutely necessary, you should NOT change user's password! 
-Leave password field blank to keep existing password!"
+                                      sys42.info-window:@"Unless absolutely necessary, you should not change a user's password!"
                                         _warning:true
                                         _time:more
 

@@ -1,6 +1,6 @@
 
 /*
- * Checks to see if the user has access to the given page object
+ * Checks to see if the user has access to the given object
  */
 
 set-protected-event:sys42.verify-access

@@ -45,10 +45,10 @@ if:x:/-/*?count
   =:int:0
 
   // Need to set root password, and do other types of installation setup things
-  sys42.execute-lisp-file:/system42/server-startup/set-root-password.hl
+  sys42.execute-lisp-file:/system42/installation/set-root-password.hl
 else-if:x:/../*/whoami/*/role?value
   =:root
 
   // Possibly a refresh of page, or previously abandoned setup installation process
   // Continuing from where we left off, which is creating initial non-root user
-  sys42.execute-lisp-file:/system42/server-startup/create-initial-user.hl
+  sys42.execute-lisp-file:/system42/installation/create-initial-user.hl

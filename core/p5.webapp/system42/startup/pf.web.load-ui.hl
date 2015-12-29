@@ -27,7 +27,7 @@ set-protected-event:p5.web.load-ui
 
     // Root password is null, or there are less than two user in system, and logged in user is root
     // Making sure we go through installation process, to finish setup of system
-    sys42.execute-lisp-file:/system42/server-startup/install-server.hl
+    sys42.execute-lisp-file:/system42/installation/install-server.hl
   else
 
     // Figuring out which page to load according to argument supplied in [_form]

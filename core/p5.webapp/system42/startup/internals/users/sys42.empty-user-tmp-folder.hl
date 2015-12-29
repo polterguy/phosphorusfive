@@ -1,8 +1,7 @@
 
 /*
- * Logs in the user, creating a persistent cookie on disc for the current session if successful.
- * Pass in [_username] and [_password] as the credentials you wish to check. If login is not
- * successful, then return value will be false, otherwise true
+ * Empties the currently logged in user's "tmp" folder, invoked when
+ * user is logging out of system
  */
 
 set-protected-event:sys42.empty-user-tmp-folder

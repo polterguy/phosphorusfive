@@ -280,18 +280,11 @@
     <None Include="media\bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <None Include="media\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
     <None Include="system42\startup\pf.web.load-ui.hl" />
-    <None Include="system42\startup\pages\create-default-pages.hl" />
     <None Include="system42\startup\misc-events\sys42.get-widget.hl" />
-    <None Include="system42\startup\misc-events\sys42.get-content-type.hl" />
     <None Include="system42\misc\content-types.hl" />
-    <None Include="system42\server-startup\create-initial-user.hl" />
-    <None Include="system42\server-startup\set-root-password.hl" />
-    <None Include="system42\server-startup\system-finished.hl" />
     <None Include="system42\startup\misc-events\sys42.invoke-secure-webservice.hl" />
     <None Include="system42\startup\misc-events\sys42.evaluate-secure-webservice.hl" />
-    <None Include="system42\startup\misc-events\sys42.verify-signature-is-friend.hl" />
     <None Include="system42\misc\trusted-friends.hl" />
-    <None Include="system42\startup\misc-events\sys42.expired-webservice-invocation.hl" />
     <None Include="system42\cms\page-types\controls.hl" />
     <None Include="system42\cms\page-types\html.hl" />
     <None Include="system42\cms\page-types\lambda.hl" />
@@ -317,21 +310,27 @@
     <None Include="system42\cms\page-editor\templates\create-new-html-page.hl" />
     <None Include="system42\cms\page-editor\templates\create-new-lambda-page.hl" />
     <None Include="system42\apps\users\edit-users.hl" />
-    <None Include="system42\server-startup\install-server.hl" />
-    <None Include="system42\startup\users\sys42.empty-user-tmp-folder.hl" />
-    <None Include="system42\startup\users\sys42.verify-access.hl" />
     <None Include="system42\startup\misc-dialog-events\sys42.confirm-window.hl" />
     <None Include="system42\startup\misc-dialog-events\sys42.info-window.hl" />
     <None Include="system42\startup\misc-dialog-events\sys42.show-code-window.hl" />
     <None Include="system42\startup\misc-dialog-events\sys42.unzip-window.hl" />
     <None Include="system42\startup\misc-dialog-events\sys42.wizard-window.hl" />
     <None Include="system42\startup\misc-dialog-events\sys42.zip-window.hl" />
+    <None Include="system42\installation\create-initial-user.hl" />
+    <None Include="system42\installation\install-server.hl" />
+    <None Include="system42\installation\set-root-password.hl" />
+    <None Include="system42\installation\system-finished.hl" />
+    <None Include="system42\startup\misc-events\internals\sys42.verify-signature-is-friend.hl" />
+    <None Include="system42\startup\misc-events\internals\sys42.expired-webservice-invocation.hl" />
+    <None Include="system42\startup\misc-events\internals\sys42.get-content-type.hl" />
+    <None Include="system42\startup\internals\pages\create-default-pages.hl" />
+    <None Include="system42\startup\internals\users\sys42.empty-user-tmp-folder.hl" />
+    <None Include="system42\startup\internals\users\sys42.verify-access.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />
     <Folder Include="system42\startup\misc-dialog-events\" />
     <Folder Include="system42\misc\" />
-    <Folder Include="system42\server-startup\" />
     <Folder Include="code\configuration\" />
     <Folder Include="system42\cms\" />
     <Folder Include="system42\cms\page-types\" />
@@ -343,5 +342,10 @@
     <Folder Include="system42\apps\file-browser\" />
     <Folder Include="system42\cms\page-editor\" />
     <Folder Include="system42\apps\users\" />
+    <Folder Include="system42\installation\" />
+    <Folder Include="system42\startup\misc-events\internals\" />
+    <Folder Include="system42\startup\internals\" />
+    <Folder Include="system42\startup\internals\pages\" />
+    <Folder Include="system42\startup\internals\users\" />
   </ItemGroup>
 </Project>

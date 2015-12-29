@@ -99,9 +99,9 @@ namespace p5.web.widgets
                 // Looping through all widgets supplied
                 foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "list-widget-ajax-events")) {
 
-                    // Then looping through all attribute keys, filtering everything out that does not start with "on"
+                    // Then looping through all attribute keys, filtering everything out that does not start with "on" of "_on"
                     Node curNode = new Node(idxWidget.ID);
-                    foreach (var idxAtr in idxWidget.AttributeKeys.Where (ix => !ix.StartsWith ("on"))) {
+                    foreach (var idxAtr in idxWidget.AttributeKeys.Where (ix => ix.StartsWith ("on") || ix.StartsWith ("_on"))) {
 
                         // Adding this attribute
                         curNode.Add(idxAtr);

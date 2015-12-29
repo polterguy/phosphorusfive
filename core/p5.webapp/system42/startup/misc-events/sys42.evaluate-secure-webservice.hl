@@ -1,11 +1,25 @@
 
 /*
- * Responsible for creating the Active Event that evaluates
- * a cryptographically secure web service lambda invocation.
- * Will decrypt the given HTTP request, retrieve the first
- * "application/x-hyperlisp" MIME entity, and evaluate it,
- * before encrypting and signing the result and returning
- * it to caller.
+ * Responsible for creating the Active Event that evaluates a cryptographically secure web 
+ * service lambda invocation. Will decrypt the given HTTP request, retrieve the first
+ * "application/x-hyperlisp" MIME entity, and evaluate it, before encrypting and signing the 
+ * result and returning it to caller.
+ *
+ * Pairs up perfectly with [sys42.invoke-secure-webservice], being the other side of the equation.
+ *
+ * Only a MIME request, correctly encrypted, and digitally signed, by a PGP private key matching 
+ * the list of trusted friends from "/system42/misc/trusted-friends.hl" file will be evaluated. 
+ * All other requests will be denied, and thrown  away. In addition, only requests that are 
+ * "younger" than whatever can be found in web.config file "webServiceInvocationsFreshTime"
+ * will be evaluated, but only if they have not been evaluated before by this server.
+ *
+ * The result of the evaluation of the specified Hyperlisp, will be encrypted and 
+ * cryptographically signed, with private server key, before returned to caller as MIME.
+ *
+ * Active event takes no arguments, but will automatically decrypt incoming MIME from the current 
+ * HTTP response, using the server (Marvin) private PGP key for decryption, and signing results.
+ * 
+ * The PGP key used to sign the incoming MIME message, will be used for encrypting the returned result
  */
 
 set-protected-event:sys42.evaluate-secure-webservice
@@ -46,12 +60,13 @@ set-protected-event:sys42.evaluate-secure-webservice
         :x:/././*/lisp2lambda/*/id?value
 
       /*
-       * Oops, this ID has already been executed before, which indicates somebody snatched up our
-       * entire request, and reposted it in an attempt to create confusion! MAJOR SECURITY CONCERN!
+       * Oops, this ID has already been executed before, or request is too old, which indicates 
+       * somebody possibly snatched up our entire request, and reposted it, in an attempt at creating
+       * confusion! MAJOR SECURITY CONCERN!
        */
       set-http-status-code:500
       set-http-status:500 ID of invocation was reposted or invocation was no longer fresh
-      echo:"Screw you guys, I'm going home!"
+      echo:"... does not compute ...!!"
     else
 
       /*
@@ -106,5 +121,5 @@ set-protected-event:sys42.evaluate-secure-webservice
      */
     set-http-status-code:500
     set-http-status:500 Caller was not a trusted friend of us
-    echo:"Screw you guys, I'm going home!"
+    echo:"... does not compute ...!!"
 

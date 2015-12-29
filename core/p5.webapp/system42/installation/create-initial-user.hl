@@ -109,7 +109,7 @@ belong to the role 'superuser', and is quite powerful, but not as powerful as th
 
                   // Deleting create-superuser widget, and showing user that system is finisihed configured
                   delete-widget:create-default-user
-                  sys42.execute-lisp-file:/system42/server-startup/system-finished.hl
+                  sys42.execute-lisp-file:/system42/installation/system-finished.hl
 
 include-javascript:@"
 p5.keyInstallPressed2 = function(e) {
