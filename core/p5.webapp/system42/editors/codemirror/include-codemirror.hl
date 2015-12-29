@@ -6,25 +6,25 @@
 
 // Making sure necessary JavaScript files are included
 include-javascript-file
-  /system42/codemirror/lib/codemirror.js
-  /system42/codemirror/addon/selection/active-line.js
-  /system42/codemirror/addon/display/placeholder.js
-  /system42/codemirror/addon/display/fullscreen.js
+  /system42/editors/codemirror/lib/codemirror.js
+  /system42/editors/codemirror/addon/selection/active-line.js
+  /system42/editors/codemirror/addon/display/placeholder.js
+  /system42/editors/codemirror/addon/display/fullscreen.js
 
 
 // Making sure language mode file is included
-include-javascript-file:"/system42/codemirror/mode/{0}/{0}.js"
+include-javascript-file:"/system42/editors/codemirror/mode/{0}/{0}.js"
   :x:/../*/_editor/*/*/mode?value
 
 
 // Making sure necessary Stylesheet files are included
 include-stylesheet-file
-  /system42/codemirror/lib/codemirror.css
-  /system42/codemirror/addon/display/fullscreen.css
+  /system42/editors/codemirror/lib/codemirror.css
+  /system42/editors/codemirror/addon/display/fullscreen.css
 
 
 // Making sure theme is included
-include-stylesheet-file:"/system42/codemirror/theme/{0}.css"
+include-stylesheet-file:"/system42/editors/codemirror/theme/{0}.css"
   :x:/../*/_editor/*/*/theme?value
 
 
@@ -64,7 +64,7 @@ send-javascript:@"window.{0} = CodeMirror.fromTextArea(document.getElementById('
   theme:'{2}',
   lineNumbers:true,
   styleActiveLine:true,
-  path:'system42/codemirror/',
+  path:'/system42/editors/codemirror/',
   autofocus:{3},
   extraKeys: {{
     Tab: function(cm) {{

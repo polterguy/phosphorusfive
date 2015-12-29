@@ -10,10 +10,10 @@ apps from scratch, having complete control over every aspect of your systems.
 The purpose of System42 is to provide a starting point and example implementation 
 when developing p5 apps, in addition to being a useful Web Operating System by itself.
 
-System42 contains a minimalistic Web Operating System, allowing you to transparently
-use your web server as an extension of your other devices, sharing, storing and
-having backup of your files, in addition to all other things you'd normally use
-cloud services for. In such a way, System42 becomes an extension of your Intranet,
+System42 contains a minimalistic and extendible Web Operating System, allowing you 
+to transparently use your web server as an extension of your other devices, sharing, 
+storing and having backup of your files, in addition to all other things you'd normally 
+use cloud services for. In such a way, System42 becomes an extension of your Intranet,
 allowing you access to your private files and data, on evey device you own, such
 as your iPhone, Android, Tablets, PCs, Mac OSX computers, etc, etc, etc.
 

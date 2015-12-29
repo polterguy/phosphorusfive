@@ -56,7 +56,7 @@ else-if:x:/../*/_mode?value
 else
   set:x:/../*/sys42.execute-lisp-file/*/*/*/mode?value
     src:x:/../*/_mode?value
-sys42.execute-lisp-file:/system42/codemirror/include-codemirror.hl
+sys42.execute-lisp-file:/system42/editors/codemirror/include-codemirror.hl
   _editor
     editor_surface
       mode

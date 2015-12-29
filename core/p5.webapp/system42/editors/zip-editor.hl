@@ -1,6 +1,6 @@
 
 /*
- * File editor for ZIPPED file. Actually not an editor, simply
+ * File editor for zip files. Actually not an editor, simply
  * invokes [sys42.unzip-file], and nothing else. Here for simplicity to
  * create an "intelligent action" for double-clicking a ZIP file
  */

@@ -5,9 +5,16 @@
 
 
 /*
+ * Needed further down
+ */
+select-data:x:/*/*/p5.page/"={0}"
+  :x:/../*/_id?value
+
+
+/*
  * Setting templates
  */
-list-files:/system42/templates/
+list-files:/system42/cms/templates/
 for-each:x:/-/*?name
   _lit
     literal

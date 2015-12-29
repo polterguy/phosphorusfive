@@ -13,7 +13,8 @@ set-protected-event:p5.web.load-ui
    * Checking if there are less than 2 users, which might happen if
    * owner has explicitly chosen to delete "auth" file, to go through
    * installation process again, or never in fact gone through installation
-   * process at all. When system is installed, there must be at least 2 users!
+   * process at all. 
+   * When system is installed, there must be at least 2 users!
    */
   whoami
   list-users
@@ -24,8 +25,9 @@ set-protected-event:p5.web.load-ui
     or:x:/./-/*?count
       =:int:0
 
-    // Root password is null, making sure we go through installation process
-    sys42.execute-lisp-file:/system42/server-startup/launch-server.hl
+    // Root password is null, or there are less than two user in system, and logged in user is root
+    // Making sure we go through installation process, to finish setup of system
+    sys42.execute-lisp-file:/system42/server-startup/install-server.hl
   else
 
     // Figuring out which page to load according to argument supplied in [_form]
@@ -37,8 +39,8 @@ set-protected-event:p5.web.load-ui
       equals:int:0
 
       // Page not found, loading up our "404 page"
-      sys42.execute-lisp-file:/system42/page-types/special-page/not-found.hl
-        _template:/system42/templates/main.hl
+      sys42.execute-lisp-file:/system42/cms/page-types/special-page/not-found.hl
+        _template:/system42/cms/templates/main.hl
     else
 
       // Adding up all nodes from results of select-data into [execute-lisp-file]
@@ -46,13 +48,13 @@ set-protected-event:p5.web.load-ui
         src:x:/..else/..else/*/select-data/*/*
 
       // Setting value of [execute-lisp-file] to type of page we're loading
-      // If you look in "system42/page-types/" folder, you will see all the
+      // If you look in "system42/cms/page-types/" folder, you will see all the
       // different types of pages that exist in the system. These types of
       // pages are extendible, and can be added to to create custom types of
       // pages. If you extend them, you should probably also create an editor
       // for your page type
       set:x:/+?value
-        src:/system42/page-types/{0}.hl
+        src:/system42/cms/page-types/{0}.hl
           :x:/..else/..else/*/select-data/*/*/type?value
       sys42.execute-lisp-file
         _args

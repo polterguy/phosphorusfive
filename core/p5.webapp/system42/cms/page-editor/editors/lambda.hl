@@ -7,7 +7,7 @@
 /*
  * Including CodeMirror for both [content] editor
  */
-sys42.execute-lisp-file:/system42/codemirror/include-codemirror.hl
+sys42.execute-lisp-file:/system42/editors/codemirror/include-codemirror.hl
   _editor
     editor_surface
       mode:hyperlisp
@@ -25,10 +25,10 @@ select-data:x:/*/*/p5.page/"={0}"
 
 
 /*
- * Setting the content of editor_surface to the [controls] from database
+ * Setting the content of editor_surface to the [lambda] from database
  */
 set:x:/../*/create-widget/*/widgets/*/literal/=editor_surface/*/innerValue?value
-  src:x:/../*/select-data/*/*/controls?value
+  src:x:/../*/select-data/*/*/lambda?value
 
 
 /*
@@ -64,11 +64,13 @@ create-widget
         sys42.get-page-editor-data
           insert-before:x:/../0
             src
-              type:controls
+              type:lambda
           get-widget-property:editor_surface
             innerValue
           insert-before:x:/../0
-            src:controls
+            src:lambda
           set:x:/../0?value
             src:x:/../*/get-widget-property/*/*?value
+
+
 

@@ -12,7 +12,7 @@ if:x:/-?value
     p5.page:/
       type:lambda
       name:Home
-      template:/system42/templates/main.hl
+      template:/system42/cms/templates/main.hl
       lambda:@"/*
  * Default landing page for your system, automatically 
  * created by your own personal Marvin!
@@ -68,73 +68,72 @@ this coffee machine would want to listen to my troubles ...""""</em></blockquote
     p5.page:/root/editor
       type:lambda
       name:Pages
-      template:/system42/templates/main.hl
+      template:/system42/cms/templates/main.hl
       role:root
       lambda:@"
 
 /*
  * simply executes the file that loads up the 'page editor'
  */
-sys42.execute-lisp-file:/system42/root/page-editor/page-editor.hl
+sys42.execute-lisp-file:/system42/cms/page-editor/page-editor.hl
 "
 
     p5.page:/root/executor
       type:lambda
       name:Evaluator
-      template:/system42/templates/main.hl
+      template:/system42/cms/templates/main.hl
       role:root
       lambda:@"
 
 /*
  * simply executes the file that loads up the 'executor'
  */
-sys42.execute-lisp-file:/system42/root/executor.hl
+sys42.execute-lisp-file:/system42/apps/executor.hl
 "
 
     p5.page:/root/users
       name:Users
-      template:/system42/templates/main.hl
+      template:/system42/cms/templates/main.hl
       type:lambda
       role:root
       lambda:@"/*
  * Simply executes the file that loads up the 'Users' page
  */
-sys42.execute-lisp-file:/system42/root/users/edit-users.hl
+sys42.execute-lisp-file:/system42/apps/users/edit-users.hl
 "
 
     p5.page:/superuser/files
       type:lambda
       name:Files
-      template:/system42/templates/main.hl
+      template:/system42/cms/templates/main.hl
       role:superuser
       lambda:@"
 
 /*
  * simply executes the file that loads up the 'file browser'
  */
-sys42.execute-lisp-file:/system42/file-browser/launch.hl
+sys42.execute-lisp-file:/system42/apps/file-browser/launch.hl
 "
 
 
     p5.page:/about
       type:html
       name:About
-      template:/system42/templates/main.hl
+      template:/system42/cms/templates/main.hl
       content:@"<p>Although Phosphorus Five and System42, is the architecture and creation of one single person, me that is, there are numerous others who have one way or another contributed. This page is to say thank you to all of these people.</p>
 
 <ul>
-	<li><a href=""https://github.com/jstedfast/MimeKit/"">MimeKit</a>, <a href=""https://github.com/jstedfast/MailKit"">MailKit</a> and its brilliant creator, Jeffrey Steadfast</li>
-	<li><a href=""https://www.bouncycastle.org/"">The Legion of the Bouncy Castle</a>, and all who contributes to it</li>
-	<li><a href=""http://xamarin.com/"">Xamarin</a>, <a href=""http://www.mono-project.com/"">Mono</a>, and all the other people working on both of these great projects</li>
-	<li><a href=""https://github.com/icsharpcode/SharpZipLib"">SharpZipLib</a>, Mike Krueger and David Pierson, in addition to everyone contributing to this awesome library</li>
-	<li><a href=""http://ckeditor.com/"">CKEditor</a> and Frederico Knabben, its creator</li>
-	<li><a href=""https://codemirror.net/"">CodeMirror</a>, and Marijn Haverbeke</li>
-	<li><a href=""https://htmlagilitypack.codeplex.com/"">HtmlAgilityPack</a> and all participants</li>
-	<li><a href=""http://getbootstrap.com/"">Bootstrap</a>, the CSS framework</li>
-	<li><a href=""https://jquery.com/"">jQuery</a></li>
+	<li>Svein Daniel Solvenus - sveindaniel _at_ solvenus _dot_ no - for providing extensive testing and invaluable feedback, over a long period of time</li>
+	<li><a href=""https://github.com/jstedfast/MimeKit/"">MimeKit</a>, <a href=""https://github.com/jstedfast/MailKit"">MailKit</a> and its brilliant creator, Jeffrey Steadfast, for always responding to my MimeKit/MailKit support requests within minutes, even on x-mas eve</li>
+	<li><a href=""https://www.bouncycastle.org/"">The Legion of the Bouncy Castle</a>, and all who contributes to it, for creating a brilliant cryptography library for .net and Mono</li>
+	<li><a href=""http://xamarin.com/"">Xamarin</a>, <a href=""http://www.mono-project.com/"">Mono</a>, and all the other people working on both of these great projects, for delivering a marvelous IDE and Free Software runtime for .Net </li>
+	<li><a href=""https://github.com/icsharpcode/SharpZipLib"">SharpZipLib</a>, Mike Krueger and David Pierson, in addition to everyone contributing to this awesome library, for delivering an Open Source zip library for .Net and Mono</li>
+	<li><a href=""http://ckeditor.com/"">CKEditor</a> and Frederico Knabben, its creator, for giving out the best HTML wysiwyg editor imaginable as Free Software</li>
+	<li><a href=""https://codemirror.net/"">CodeMirror</a>, and Marijn Haverbeke, for creating a brilliant syntax highlighted code editor for the web</li>
+	<li><a href=""https://htmlagilitypack.codeplex.com/"">HtmlAgilityPack</a> and all participants, for making the job of semantically parsing HTML a breeze</li>
+	<li><a href=""http://getbootstrap.com/"">Bootstrap</a>, the CSS framework, for delivering a brilliant CSS framework, which Phosphorus and System42 is 100% dependent upon</li>
 	<li>Members of the <a href=""http://stackoverflow.com/"">StackOverflow community</a>, for literally bombing my SERP with great answers, everytime I got stuck with a problem</li>
-	<li><a href=""https://stallman.org/"">Richard M. Stallman</a>, for having a lengthy discussion with me about privacy, and providing good advice to me, as early 2009/2010</li>
-	<li><a href=""http://www.stroustrup.com/"">Bjarne Stroustrup</a> for taking my feedback about the 0x C++ standard serious back in 2006/2007, and actually incorporating some of my requests</li>
+	<li><a href=""https://stallman.org/"">Richard M. Stallman</a>, for having a lengthy discussion with me about privacy, and providing good advice to me, as early as 2009/2010</li>
 	<li><a href=""https://www.ted.com/talks/alan_kay_shares_a_powerful_idea_about_ideas"">Alan Kay</a> for inspiring me to perceive computing in an evolutionary perspective</li>
 	<li>Many, many, many developers, all around the world, including most readers of <a href=""http://digi.no"">digi.no</a>, which provided me with valuable feedback</li>
 </ul>

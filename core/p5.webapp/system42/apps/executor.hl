@@ -9,7 +9,7 @@
 /*
  * Including CodeMirror for both execute_input and execute_output
  */
-sys42.execute-lisp-file:/system42/codemirror/include-codemirror.hl
+sys42.execute-lisp-file:/system42/editors/codemirror/include-codemirror.hl
   _editor
     execute_input
       mode:hyperlisp
@@ -19,11 +19,11 @@ sys42.execute-lisp-file:/system42/codemirror/include-codemirror.hl
       keys
         Alt-E:function() {window._execute_lambda();}
         Alt-C:function() {window.execute_output.getDoc().setValue('');}
-sys42.execute-lisp-file:/system42/codemirror/include-codemirror.hl
+sys42.execute-lisp-file:/system42/editors/codemirror/include-codemirror.hl
   _editor
     execute_output
       mode:hyperlisp
-      theme:the-matrix-reduced
+      theme:the-matrix-reduced-secondary
       autofocus:false
       height:"246px"
 

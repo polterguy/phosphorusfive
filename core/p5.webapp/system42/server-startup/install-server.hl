@@ -8,7 +8,7 @@
 /*
  * Loading up main template
  */
-load-file:/system42/templates/main.hl
+load-file:/system42/cms/templates/main.hl
 
 // Removing {content} and setting {header} before evaluating template
 set:x:/-/*/*/create-widget/*/widgets/**/={header}?value
@@ -36,7 +36,8 @@ create-widget:guide
 
 
 /*
- * Checking if user is logged in, and that there exist users in the system
+ * Checking if user is logged in, and that there are more than 0 users in the system,
+ * to determine what to do, and which GUI to show user
  */
 whoami
 list-users
@@ -48,5 +49,6 @@ if:x:/-/*?count
 else-if:x:/../*/whoami/*/role?value
   =:root
 
-  // Possibly a refresh of page, or abandoned setup installation process. Continuing from where we left off
+  // Possibly a refresh of page, or previously abandoned setup installation process
+  // Continuing from where we left off, which is creating initial non-root user
   sys42.execute-lisp-file:/system42/server-startup/create-initial-user.hl

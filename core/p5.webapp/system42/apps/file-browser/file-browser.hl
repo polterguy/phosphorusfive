@@ -4,7 +4,7 @@
 
 
 // including CSS for file browser
-include-stylesheet-file:/system42/file-browser/media/files.css
+include-stylesheet-file:/system42/apps/file-browser/media/files.css
 
 
 /*
@@ -161,7 +161,7 @@ create-widget:file-browser
       oninit
         get-session-value:sys42.file-browser-toolbar-visible
         get-session-value:sys42.original-file-editor-classes
-        if:x:/../*/get-session-value/[0,1]/*?value.bool
+        if:x:/../*/get-session-value/[0,1]/*?value
           =:bool:true
           and:x:/../*/get-session-value/[1,2]/*/*
             not
@@ -174,7 +174,7 @@ create-widget:file-browser
       events
         sys42.show-toolbar
           set-session-value:sys42.file-browser-toolbar-visible
-            src:true
+            src:bool:true
           set-widget-property:file-browser-show-toolbar
             class:hidden
           set-widget-property:file-browser-current-item-toolbar
@@ -368,6 +368,7 @@ create-widget:file-browser
           accesskey:H
           onclick
             set-session-value:sys42.file-browser-toolbar-visible
+              src:bool:false
             set-widget-property:file-browser-show-toolbar
               class:btn btn-default blink toolbar prepend-right-2
             set-widget-property:file-browser-current-item-toolbar
@@ -1416,7 +1417,7 @@ file/folder with that name"
       // Retrieving selected file, and opening up editor
       set:x:/+/0?value
         src:x:/../*/_arg?value
-      sys42.execute-lisp-file:/system42/file-editors/launch.hl
+      sys42.execute-lisp-file:/system42/editors/launch.hl
         _file
         _parent:file-browser-file-editor
 
@@ -1445,7 +1446,7 @@ file/folder with that name"
 
       // Making sure show/hide toolbar is correctly shown
       get-session-value:sys42.file-browser-toolbar-visible
-      if:x:/../*/get-session-value/[1,2]/*?value.bool
+      if:x:/../*/get-session-value/[1,2]/*?value
         sys42.show-toolbar
       else
         set-widget-property:file-browser-show-toolbar

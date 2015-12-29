@@ -8,13 +8,13 @@
  * Setting CKEditor's basepath, notice this must occur BEFORE 
  * we include the CKEditor's JavaScript files!
  */
-include-javascript:"window.CKEDITOR_BASEPATH='/system42/ckeditor/';"
+include-javascript:"window.CKEDITOR_BASEPATH='/system42/editors/ckeditor/';"
 
 
 /*
  * Loading CKEditor's JavaScript file
  */
-include-javascript-file:/system42/ckeditor/ckeditor.js
+include-javascript-file:/system42/editors/ckeditor/ckeditor.js
 
 
 /*
@@ -42,7 +42,7 @@ set:x:/../*/create-widget/*/parent?value
 /*
  * Populating the "template" drop down select list
  */
-list-files:/system42/templates/
+list-files:/system42/cms/templates/
 for-each:x:/-/*
   _literal
     literal

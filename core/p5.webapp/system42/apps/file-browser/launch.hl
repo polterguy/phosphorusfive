@@ -36,10 +36,12 @@ else
 
   // There were no files to download
 
-  // Making sure we start up in "default directory", unless user already
-  // has another directory selected. In addition we're making sure that
-  // the system won't start inside a directory the user does not have
-  // access to
+  /*
+   * Making sure we start up in "default directory", unless user already
+   * has another directory selected. In addition we're making sure that
+   * the system won't start inside a directory the user does not have
+   * access to
+   */
   whoami
   get-session-value:sys42.current-folder
   if:x:/..else/*/get-session-value/*?value
@@ -50,14 +52,23 @@ else
         :x:/..else/*/whoami/*/username?value
         not
 
-    // Either there was no current directory, or the current directory
-    // was a directory that the user did not have access to. Therefor
-    // we set the "current folder" to the user's "Home" directory
+    /*
+     * Either there was no current directory, or the current directory
+     * was a directory that the user did not have access to. Therefor
+     * we set the "current folder" to the user's "Home" directory
+     */
     set-session-value:sys42.current-folder
       src:/users/{0}/documents/
         :x:/..else/*/whoami/*/username?value
 
+    // Making sure toolbar is visible by default, unless explicitly hidden previously
+    get-session-value:sys42.file-browser-toolbar-visible
+    if:x:/-/*/*
+      not
+      set-session-value:sys42.file-browser-toolbar-visible
+        src:bool:true
+
   // Starting the actual file-browser implementation
-  sys42.execute-lisp-file:/system42/file-browser/file-browser.hl
+  sys42.execute-lisp-file:/system42/apps/file-browser/file-browser.hl
 
 

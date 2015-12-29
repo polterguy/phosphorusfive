@@ -6,8 +6,8 @@
  * new pages, and edit existing pages. In addition, it creates the 
  * "general properties toolbar" when a page is selected for editing.
  * The rest is done by "Specialized editors", found in 
- * "system42/root/page-editor/editors", in addition to the templates
- * for new pages foun in "system42/root/page-editor/templates".
+ * "system42/cms/page-editor/editors", in addition to the templates
+ * for new pages foun in "system42/cms/page-editor/templates".
  *
  * To support custom editors for your own types of pages, you will need
  * one file in both of those directories, matching the [type] of page
@@ -64,7 +64,7 @@ create-widget:page-editor
 
 
                 /*
-                 * Here we loop through all files in "system42/root/page-editor/editors",
+                 * Here we loop through all files in "system42/cms/page-editor/editors",
                  * and create one "create new page" option item for each of those files
                  */
                 sys42.populate-create-new-page
@@ -73,7 +73,7 @@ create-widget:page-editor
                     parent:create-new-page
                     value:_default
                     innerValue:New page ...
-                  list-files:/system42/root/page-editor/editors/
+                  list-files:/system42/cms/page-editor/editors/
                   for-each:x:/-/*?name
                     split:x:/./*/__dp?value
                       =:/
@@ -92,13 +92,13 @@ create-widget:page-editor
 
                 /*
                  * Here we create a new page, according to what option user selected, by
-                 * executing "system42/root/page-editor/templates/create-new-X-page.hl"
+                 * executing "system42/cms/page-editor/templates/create-new-X-page.hl"
                  * which is expected to create a new default page of selected type X
                  */
                 sys42.create-new-page
                   get-widget-property:create-new-page
                     value
-                  sys42.execute-lisp-file:/system42/root/page-editor/templates/create-new-{0}-page.hl
+                  sys42.execute-lisp-file:/system42/cms/page-editor/templates/create-new-{0}-page.hl
                     :x:/../*/get-widget-property/*/*?value
                   add:x:/../*/insert-data/0
                     src:"type:{0}"
@@ -260,7 +260,7 @@ create-widget:page-editor
          * that it loads up the "common toolbar" for common settings, such as
          * "Name", "URL", etc, in addition to starting the custom editor, which
          * depends upon the [type] of page, and can be found in
-         * "system42/root/page-editor/editors"
+         * "system42/cms/page-editor/editors"
          */
         sys42.edit-page
           clear-widget:page-editor-surface
@@ -275,7 +275,7 @@ create-widget:page-editor
               src:"_id:{0}"
                 :x:/../*/sys42.get-currently-edited-page?value
             sys42.create-editor-toolbar
-            sys42.execute-lisp-file:/system42/root/page-editor/editors/{0}.hl
+            sys42.execute-lisp-file:/system42/cms/page-editor/editors/{0}.hl
               :x:/..if/*/select-data/*?value
               _parent-widget:page-editor-editor-surface
 
@@ -287,5 +287,5 @@ create-widget:page-editor
         sys42.create-editor-toolbar
           add:x:/+
             src:x:/../*/_id
-          sys42.execute-lisp-file:/system42/root/page-editor/editor-toolbar.hl
+          sys42.execute-lisp-file:/system42/cms/page-editor/editor-toolbar.hl
 

@@ -96,8 +96,14 @@ namespace p5.security.helpers
             // Reading up passwords file
             using (TextReader reader = new StreamReader (File.OpenRead (pwdFilePath))) {
 
-                // Returning file as lambda, making sure we decrypt it first
-                _authFileContent = Utilities.Convert<Node> (context, Utilities.DecryptMarvin (context, reader.ReadToEnd ()));
+                // Returning file as lambda, making sure we decrypt it first, but only if user has explicitly
+                // declared a decryption key to use through web.config
+                var gpgEmailAddress = context.RaiseNative("p5.security.get-marvin-pgp-key").Get<string>(context);
+                var gpgPassword = context.RaiseNative("p5.security.get-marvin-pgp-key-password").Get<string>(context);
+                if (!string.IsNullOrEmpty (gpgEmailAddress) && !string.IsNullOrEmpty (gpgPassword))
+                    _authFileContent = Utilities.Convert<Node> (context, Utilities.DecryptMarvin (context, reader.ReadToEnd ()));
+                else
+                    _authFileContent = Utilities.Convert<Node> (context, reader.ReadToEnd ());
 
                 // Returning cached version
                 return _authFileContent;
@@ -118,8 +124,14 @@ namespace p5.security.helpers
             // Saving file
             using (TextWriter writer = new StreamWriter (File.Create (pwdFilePath))) {
             
-                // Writing auth file content to disc, making sure we store it encrypted
-                writer.Write (Utilities.EncryptMarvin (context, Utilities.Convert<string> (context, authFileNode.Children)));
+                // Writing auth file content to disc, making sure we store it encrypted, but only if user
+                // has supplied an encryption and decryption key through web.config
+                var gpgEmailAddress = context.RaiseNative("p5.security.get-marvin-pgp-key").Get<string>(context);
+                var gpgPassword = context.RaiseNative("p5.security.get-marvin-pgp-key-password").Get<string>(context);
+                if (!string.IsNullOrEmpty (gpgEmailAddress) && !string.IsNullOrEmpty (gpgPassword))
+                    writer.Write (Utilities.EncryptMarvin (context, Utilities.Convert<string> (context, authFileNode.Children)));
+                else
+                    writer.Write (Utilities.Convert<string> (context, authFileNode.Children));
             }
         }
 
