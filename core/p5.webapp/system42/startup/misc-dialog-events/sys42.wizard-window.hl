@@ -1,9 +1,27 @@
 
 /*
- * Responsible for creating the Active Event that shows the user a modal dialog,
- * to make him type in arbitrary pieces of data
+ * Responsible for creating the Active Event that shows the user a modal window,
+ * to make him type in arbitrary pieces of data, where the fields user is shown,
+ * is configurable by caller
+ *
+ * [_header]  - Header of modal wizard window
+ * [_body]    - Explanatory text of dialogue
+ * [_onok]    - Lambda callback to evaluate upon user clicking OK button, and
+ *              all fields have been validated
+ * [_widgets] - List of widgets (simple syntax) for displaying in modal wizard window
+ *              Notice that these can be either "text", "password", "number" or "email",
+ *              and the value becomes the ID of the widget, and also the callback value
+ *              which you can find beneath [_widgets] of your callback lambda code when
+ *              user clicks OK button. If you supply a [mandatory] child node of your
+ *              widget, with the value of true, then field will be considered mandatory,
+ *              and user cannot close window with OK button, before he or she has supplied
+ *              a value for it. If you supply an [autocomplete] child, with the value of [off],
+ *              then dialogue will force autocomplete off, even if the browser is Google Chrome.
+ *              Besides from the above mentioned arguments, the rest of the children will be added
+ *              as properties and attributes for your specified widget. For an example of usage, 
+ *              see "sys42.zip-window" Active Event
  */
-set-protected-event:sys42.modal-wizard
+set-protected-event:sys42.wizard-window
 
   /*
    * Making sure we delete any previously created dialogs
@@ -13,29 +31,29 @@ set-protected-event:sys42.modal-wizard
    */
   if
     fetch:x:/0/0?value
-      widget-exist:modal-wizard
-    delete-widget:modal-wizard
+      widget-exist:wizard-window
+    delete-widget:wizard-window
 
   /*
-   * Setting [header] and [body] property of Modal Dialog
+   * Setting [_header] and [_body] property of Modal Dialogue
    */
-  set:x:/../*/create-widget/**/literal/=modal-wizard-header/*/innerValue?value
-    src:x:/../*/header?value
-  set:x:/../*/create-widget/**/literal/=modal-wizard-body/*/innerValue?value
-    src:x:/../*/body?value
+  set:x:/../*/create-widget/**/literal/=wizard-window-header/*/innerValue?value
+    src:x:/../*/_header?value
+  set:x:/../*/create-widget/**/literal/=wizard-window-body/*/innerValue?value
+    src:x:/../*/_body?value
 
   /*
-   * Appending [onok] code into OK onclick button's event handler's [_eval] node
+   * Appending [_onok] code into OK onclick button's event handler's [_eval] node
    */
-  add:x:/../*/create-widget/**/literal/=modal-wizard-ok/*/onclick/**/_eval
-    src:x:/../*/onok/*
+  add:x:/../*/create-widget/**/literal/=wizard-window-ok/*/onclick/**/_eval
+    src:x:/../*/_onok/*
 
   /*
-   * Appending all dynamically created widgets as sources to retrieve value of 
+   * Appending all dynamically created widgets as sources to retrieve values of 
    * inside of [onclick] of OK button
    */
-  add:x:/../*/create-widget/**/literal/=modal-wizard-ok/*/onclick/*/_widgets
-    src:x:/../*/controls/*?value
+  add:x:/../*/create-widget/**/literal/=wizard-window-ok/*/onclick/*/_widgets
+    src:x:/../*/_widgets/*?value
 
   /*
    * This is simply NOT FUCKING "OK" GOOGLE CHROME DEVS!
@@ -48,7 +66,7 @@ set-protected-event:sys42.modal-wizard
    * 
    * Remember IE6 ...!!
    */
-  if:x:/../*/controls/*/*/autocomplete/=off
+  if:x:/../*/_widgets/*/*/autocomplete/=off
     // Turning OFF autocomplete for Google Chrome!
     _literal
       literal:auto-complete-force-off
@@ -59,13 +77,13 @@ set-protected-event:sys42.modal-wizard
       src:x:/././*/_literal/*
 
   /*
-   * Appending dynamically declared [controls] into body of dialogue, but first
+   * Appending dynamically declared [_widgets] into body of dialogue, but first
    * changing [mandatory] to [_mandatory], to make it avoid rendering attribute
    * to client side!
    */
-  set:x:/../*/controls/*/*/mandatory?name
+  set:x:/../*/_widgets/*/*/mandatory?name
     src:_mandatory
-  for-each:x:/../*/controls/*
+  for-each:x:/../*/_widgets/*
 
     // Figuring out which type of control to create
     if:x:/..for-each/*/__dp/#?name
@@ -131,24 +149,24 @@ set-protected-event:sys42.modal-wizard
                   class:x:/./-/0?name
 
       // Adding decorated template control to body of modal dialogue, BEFORE error widget
-      insert-before:x:/../*/create-widget/**/container/=modal-wizard-controls/*/widgets/*/literal/=error-txt
+      insert-before:x:/../*/create-widget/**/container/=wizard-window-controls/*/widgets/*/literal/=error-txt
         src:x:/..if/*/_controls/*
 
 
   // Making sure dialog is visible, and setting focus to first input control in dialogue
   send-javascript:@"
-$('#modal-wizard').modal('toggle');
+$('#wizard-window').modal('toggle');
 setTimeout (function (){{
-$('#modal-wizard').on('shown.bs.modal', function () {{
+$('#wizard-window').on('shown.bs.modal', function () {{
     $('#{0}').focus().select();
 }})}}, 250);"
-    :x:/../*/create-widget/**(/container/=modal-wizard-controls/*/widgets/**/void|/literal/=modal-wizard-ok)/[0,1]?value
+    :x:/../*/create-widget/**(/container/=wizard-window-controls/*/widgets/**/void|/literal/=wizard-window-ok)/[0,1]?value
 
 
   /*
    * Creating actual modal Widget
    */
-  create-widget:modal-wizard
+  create-widget:wizard-window
     class:modal fade
     widgets
       container
@@ -171,19 +189,19 @@ $('#modal-wizard').on('shown.bs.modal', function () {{
                     data-dismiss:modal
                     aria-label:Close
                     innerValue:&times;
-                  literal:modal-wizard-header
+                  literal:wizard-window-header
                     element:h4
                     innerValue
 
               /*
-               * Body of dialog, contains [body] and dynamically created controls
+               * Body of dialog, contains [_body] and dynamically created controls
                */
               container
                 class:modal-body form
                 widgets
-                  literal:modal-wizard-body
+                  literal:wizard-window-body
                     innerValue
-                  container:modal-wizard-controls
+                  container:wizard-window-controls
                     class:form-group
 
 
@@ -207,7 +225,7 @@ $('#modal-wizard').on('shown.bs.modal', function () {{
               container
                 class:modal-footer
                 widgets
-                  literal:modal-wizard-ok
+                  literal:wizard-window-ok
                     element:button
                     class:btn btn-default
                     innerValue:OK
@@ -270,7 +288,7 @@ $('#modal-wizard').on('shown.bs.modal', function () {{
                           =:bool:true
 
                           // Hiding dialog if evaluation of [onok] yields true!
-                          send-javascript:@"$('#modal-wizard').modal('toggle');"
+                          send-javascript:@"$('#wizard-window').modal('toggle');"
                         else
 
                           // Client code did not accept values, there should now be some sort of "error text"
@@ -286,7 +304,7 @@ $('#modal-wizard').on('shown.bs.modal', function () {{
   include-javascript:@"
   p5.keyModalWizardPress = function(e) {
     if(e.keyCode == 13) {
-      p5.$('modal-wizard-ok').raise('onclick');
+      p5.$('wizard-window-ok').raise('onclick');
       return false;
     }
   }"

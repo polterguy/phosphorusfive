@@ -122,7 +122,7 @@ create-widget:hyperlisp-editor
             get-session-value:sys42.selected-file-browser-object
             save-file:x:/../*/get-session-value/*/*/object?value
               src:x:/../*/get-widget-property/*/*?value
-            sys42.info-feedback:@"File was successfully saved"
+            sys42.info-window:@"File was successfully saved"
 
 
     /*

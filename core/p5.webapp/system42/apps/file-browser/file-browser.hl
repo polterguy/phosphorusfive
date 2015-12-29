@@ -145,7 +145,7 @@ create-widget:file-browser
           sys42.update-file-browser-toolbar
 
           // Showing feedback to user
-          sys42.info-feedback:File '{0}' was successfully uploaded
+          sys42.info-window:File '{0}' was successfully uploaded
             :x:/../*/get-widget-property/*/file-name/*?value
           delete-widget-property:file-name
             value
@@ -336,7 +336,7 @@ create-widget:file-browser
           accesskey:Z
           title:Zip - Z
           onclick
-            sys42.zip-file
+            sys42.file-manager-zip-file
           widgets
             literal
               element:span
@@ -352,7 +352,7 @@ create-widget:file-browser
           accesskey:U
           title:Unzip - U
           onclick
-            sys42.unzip-file
+            sys42.file-manager-unzip-file
           widgets
             literal
               element:span
@@ -403,7 +403,7 @@ create-widget:file-browser
           sys42.update-file-browser-toolbar
 
           // Showing popup to user, informing him that action was successful
-          sys42.info-feedback:@"{0} was stored in clipboard"
+          sys42.info-window:@"{0} was stored in clipboard"
             :x:/../*/get-session-value/*/*/type?value
 
 
@@ -425,7 +425,7 @@ create-widget:file-browser
           sys42.update-file-browser-toolbar
 
           // Showing popup to user, informing him that action was successful
-          sys42.info-feedback:@"{0} was stored in clipboard"
+          sys42.info-window:@"{0} was stored in clipboard"
             :x:/../*/get-session-value/*/*/type?value
 
 
@@ -507,7 +507,7 @@ create-widget:file-browser
           sys42.update-file-browser-toolbar
 
           // Showing popup to user, informing him that action was successful
-          sys42.info-feedback:@"{0} was pasted into current folder"
+          sys42.info-window:@"{0} was pasted into current folder"
             :x:/../*/get-session-value/*/*/type?value
 
 
@@ -636,14 +636,14 @@ create-widget:file-browser
                   or:x:/./-?value
 
                   // That filename is taken up by another file on system
-                  set:x:/+/*/_message?value
+                  set:x:/+/*/_body?value
                     src:@"Sorry, I cannot rename your '{0}' to <strong>'{1}'</strong>, since there's already 
 another file/folder with that name"
                       :x:/../*/get-session-value/*/*/type?value
                       :x:/../*/get-widget-property/*/*/value?value
-                  sys42.confirm-action
+                  sys42.confirm-window
                     _header:Object exist from before
-                    _message
+                    _body
                     _onok
                       send-javascript:@"$('#rename-file-object').focus().select();"
                 else
@@ -683,7 +683,7 @@ another file/folder with that name"
                   delete-widget:rename-file-object
 
                   // Showing popup to user, informing him that action was successful
-                  sys42.info-feedback:@"File was renamed to '{0}'"
+                  sys42.info-window:@"File was renamed to '{0}'"
                     :x:/../*/get-widget-property/*/*?value
 
 
@@ -701,35 +701,35 @@ another file/folder with that name"
             =:/
 
           // Setting Header of dialog, including either "file" or "folder"
-          set:x:/../*/sys42.confirm-action/*/_header?value
+          set:x:/../*/sys42.confirm-window/*/_header?value
             src:Please confirm deletion of {0}
               :x:/../*/get-session-value/*/*/type?value
 
           // Setting body of dialog, including "file/folder" and file-/folder name
-          set:x:/../*/sys42.confirm-action/*/_message?value
+          set:x:/../*/sys42.confirm-window/*/_body?value
             src:Are you sure you wish to delete the {0}; <strong>'{1}'</strong>, this action cannot be undone!
               :x:/../*/get-session-value/*/*/type?value
               :x:/../*/split/0/-?name
 
           // Making sure we raise the correct Active Event upon "OK" of dialog
-          set:x:/../*/sys42.confirm-action/*/_onok/0?name
+          set:x:/../*/sys42.confirm-window/*/_onok/0?name
             src:delete-{0}
               :x:/../*/get-session-value/*/*/type?value
 
           // Setting file-/folder name and path to delete upon "OK" of dialog
-          set:x:/../*/sys42.confirm-action/*/_onok/0?value
+          set:x:/../*/sys42.confirm-window/*/_onok/0?value
             src:x:/../*/get-session-value/*/*/object?value
 
           // Setting filename and object type to info-feedback window popdown
-          set:x:/../*/sys42.confirm-action/*/_onok/*/sys42.info-feedback/0?value
+          set:x:/../*/sys42.confirm-window/*/_onok/*/sys42.info-window/0?value
             src:x:/../*/get-session-value/*/*/type?value
-          set:x:/../*/sys42.confirm-action/*/_onok/*/sys42.info-feedback/1?value
+          set:x:/../*/sys42.confirm-window/*/_onok/*/sys42.info-window/1?value
             src:x:/../*/split/0/-?name
 
           // Showing "Confirmation Modal Dialog" to have user confirm he wants to delete file or folder
-          sys42.confirm-action
+          sys42.confirm-window
             _header
-            _message
+            _body
             _onok
 
               // This becomes an Active Event invocation for either [delete-file] or [delete-folder] with
@@ -747,7 +747,7 @@ another file/folder with that name"
               sys42.create-current-folder-content
 
               // Showing popup to user, informing him that action was successful
-              sys42.info-feedback:@"{0} '{1}' was succesfully deleted"
+              sys42.info-window:@"{0} '{1}' was succesfully deleted"
                 :
                 :
 
@@ -804,13 +804,13 @@ another file/folder with that name"
                       :x:/../*/get-widget-property/*/*?value
 
                   // File exist from before, informing user that we can't create it
-                  set:x:/+/*/_message?value
+                  set:x:/+/*/_body?value
                     src:@"Sorry, I cannot create file <strong>'{0}'</strong>, since there's already another 
 file/folder with that name"
                       :x:/../*/get-widget-property/*/*/value?value
-                  sys42.confirm-action
+                  sys42.confirm-window
                     _header:Object exist from before
-                    _message
+                    _body
                 else
                   create-folder:{0}{1}/
                     :x:/../*/get-session-value/*?value
@@ -840,7 +840,7 @@ file/folder with that name"
                   sys42.update-file-browser-toolbar
 
                   // Showing feedback to user that folder was created
-                  sys42.info-feedback:@"Folder '{0}' was succesfully created"
+                  sys42.info-window:@"Folder '{0}' was succesfully created"
                     :x:/../*/get-widget-property/*/*?value
 
 
@@ -896,13 +896,13 @@ file/folder with that name"
                       :x:/../*/get-widget-property/*/*?value
 
                   // File exist from before, informing user that we can't create it
-                  set:x:/+/*/_message?value
+                  set:x:/+/*/_body?value
                     src:@"Sorry, I cannot create file <strong>'{0}'</strong>, since there's already another 
 file/folder with that name"
                       :x:/../*/get-widget-property/*/*/value?value
-                  sys42.confirm-action
+                  sys42.confirm-window
                     _header:Object exist from before
-                    _message
+                    _body
                 else
 
                   // Creating file
@@ -934,14 +934,14 @@ file/folder with that name"
                   sys42.update-file-browser-toolbar
 
                   // Showing feedback to user that file was created
-                  sys42.info-feedback:@"File '{0}' was succesfully created"
+                  sys42.info-window:@"File '{0}' was succesfully created"
                     :x:/../*/get-widget-property/*/*?value
 
 
         /*
          * Raised when "Zip file" button is clicked
          */
-        sys42.zip-file
+        sys42.file-manager-zip-file
 
           // Retrieving currently selected file, which will be the file we zip
           get-session-value:sys42.selected-file-browser-object
@@ -953,7 +953,7 @@ file/folder with that name"
           split:x:/../*/get-session-value/[0,1]/*/*/object?value
             =:/
           eval-x:x:/+/*/_to
-          sys42.zip-with-password:x:/../*/get-session-value/[0,1]/*/*/object?value
+          sys42.zip-window:x:/../*/get-session-value/[0,1]/*/*/object?value
             _to:{0}{1}.zip
               :x:/../*/get-session-value/[1,2]/*?value
               :x:/../*/split/[0,1]/0/-?name
@@ -979,7 +979,7 @@ file/folder with that name"
               // Retrieving currently selected file, which will be the file we zip
               get-session-value:sys42.selected-file-browser-object
 
-              sys42.info-feedback:@"{0} '{1}' was successfully zipped"
+              sys42.info-window:@"{0} '{1}' was successfully zipped"
                 :x:/././*/get-session-value/*/*/type?value
                 :x:/././*/split/0/-?name
 
@@ -990,7 +990,7 @@ file/folder with that name"
         /*
          * Raised when "Unzip file" button is clicked
          */
-        sys42.unzip-file
+        sys42.file-manager-unzip-file
 
           // Retrieving currently selected file, which will be the file we unzip
           get-session-value:sys42.selected-file-browser-object
@@ -1000,7 +1000,7 @@ file/folder with that name"
 
           // Unzipping file
           eval-x:x:/+|/+/*/_to|/+/*/_onok(/1|/2)
-          sys42.unzip-with-password:x:/../*/get-session-value/[0,1]/*/*/object?value
+          sys42.unzip-window:x:/../*/get-session-value/[0,1]/*/*/object?value
             _to:x:/../*/get-session-value/[1,2]/*?value
             _onok
 
@@ -1013,7 +1013,7 @@ file/folder with that name"
               // Giving user feedback of that operation was successful
               split:x:/../*/get-session-value/[0,1]/*/*/object?value
                 =:/
-              sys42.info-feedback:@"'{0}' was successfully unzipped"
+              sys42.info-window:@"'{0}' was successfully unzipped"
                 :x:/../*/split/0/-?name
 
 

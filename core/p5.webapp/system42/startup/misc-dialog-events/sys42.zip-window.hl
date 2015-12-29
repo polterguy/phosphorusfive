@@ -5,28 +5,28 @@
  * of zip file after zipping it
  */
 
-set-protected-event:sys42.zip-with-password
+set-protected-event:sys42.zip-window
 
   /*
    * Asks user if he or she wants to associate a password with zip file created,
    * making sure we pass in the foldername of folder to zip and zip file to zip to
    */
-  set:x:/../*/sys42.modal-wizard/*/onok/**/_source?value
+  set:x:/../*/sys42.wizard-window/*/_onok/**/_source?value
     src:x:/../*/_arg?value
-  set:x:/../*/sys42.modal-wizard/*/onok/**/_destination?value
+  set:x:/../*/sys42.wizard-window/*/_onok/**/_destination?value
     src:x:/../*/_to?value
-  add:x:/../*/sys42.modal-wizard/*/onok/*/else
+  add:x:/../*/sys42.wizard-window/*/_onok/*/else
     src:x:/../*/_onok/*
 
 
   /*
    * Using "Modal Wizard" dialogue to retrieve zip password from user
    */
-  sys42.modal-wizard
-    header:Supply a password for zip file
-    body:@"If you supply a password for your zip file, then it will be encrypted with 256 bits AES encryption, using your password
+  sys42.wizard-window
+    _header:Supply a password for zip file
+    _body:@"If you supply a password for your zip file, then it will be encrypted with 256 bits AES encryption, using your password
 as the key. If you do not supply a password, then your zip file will not be encrypted, and easily opened by anyone who have access to it"
-    controls
+    _widgets
       password:password
         label:Password
         placeholder:Supply password ...
@@ -35,7 +35,7 @@ as the key. If you do not supply a password, then your zip file will not be encr
         label:Repeat
         placeholder:Repeat password ...
         autocomplete:off
-    onok
+    _onok
 
       // Checking that passwords matches
       if:x:/../*/password?value
@@ -62,6 +62,7 @@ as the key. If you do not supply a password, then your zip file will not be encr
           to:x:/..else/*/_destination?value
           password:x:/../*/password?value
 
-        // Making sure we return "success" to caller, such that modal dialogue can be successfully closed
+        // Making sure we return "success" to Wizard Window, 
+        // such that modal dialogue can be successfully closed
         set:x:/..?value
           src:bool:true

@@ -92,7 +92,7 @@ belong to the role 'superuser', and is quite powerful, but not as powerful as th
                   value
                 if:x:/../*/get-widget-property/*/user-password/*?value
                   !=:x:/../*/get-widget-property/*/password-repeat/*?value
-                  sys42.info-feedback:Sorry, passwords don't match
+                  sys42.info-window:Sorry, passwords don't match
                     _error:true
                   send-javascript:@"$('#user-password').focus().select();"
                 else

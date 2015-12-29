@@ -85,7 +85,7 @@ body {
     }
 }
 
-.info-feedback {
+.info-window {
     background:#28211c;
     max-width:300px;
     position:fixed;
@@ -101,7 +101,7 @@ body {
     margin-top:-100px;
 }
 
-.info-feedback-more {
+.info-window-more {
     animation-duration: 6s;
 }
 

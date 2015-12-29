@@ -106,7 +106,7 @@ Maybe it works if you login ...?"
                     // Reloading page to make sure everything is wired up together correctly
                     reload-location
                   else
-                    sys42.info-feedback:Sorry, wrong credentials
+                    sys42.info-window:Sorry, wrong credentials
                       _error:true
   set:x:/../*/load-file/*/*/create-widget/*/widgets/**/={content}/.
 

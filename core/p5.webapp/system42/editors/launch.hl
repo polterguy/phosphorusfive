@@ -60,7 +60,7 @@ else
   /*
    * No existing editor
    */
-  sys42.info-feedback:"Sorry, I do no know how to edit '{0}' files"
+  sys42.info-window:"Sorry, I do no know how to edit '{0}' files"
     :x:/../*/split/0/-?name
 
 

@@ -1,9 +1,19 @@
 
 /*
  * Responsible for creating the Active Event that shows the user a small
- * information box dropdown
+ * informational window, providing feedback to user
+ *
+ * Arguments;
+ *
+ * [_arg] or value - Message, or epxression leading to message, you wish to display to user
+ * [_error]        - If true, will make the text appear dark red, mutually exclusive with [_warning]
+ * [_warning]      - If true, will make text appear orange, mutually exclusive with [_error]
+ * [_time]         - If value is "more", then window will stick for a slightly longer time than its default, providing
+ *                   more time to read content of window
+ *
+ * You cannot show more than one instance of this window at the time
  */
-set-protected-event:sys42.info-feedback
+set-protected-event:sys42.info-window
 
   /*
    * Making sure we delete any previously created windows
@@ -13,13 +23,13 @@ set-protected-event:sys42.info-feedback
    */
   if
     fetch:x:/0/0?value
-      widget-exist:info-feedback
-    delete-widget:info-feedback
+      widget-exist:info-window
+    delete-widget:info-window
 
   /*
    * Setting properties of window
    */
-  set:x:/../*/create-widget/**/literal/=info-feedback-msg/*/innerValue?value
+  set:x:/../*/create-widget/**/literal/=info-window-message/*/innerValue?value
     src:x:/../*/_arg?value
 
   /*
@@ -44,13 +54,13 @@ set-protected-event:sys42.info-feedback
   if:x:/../*/_time?value
     =:more
     set:x:/../*/create-widget/*/class?value
-      src:info-feedback info-feedback-more
+      src:info-window info-window-more
 
   /*
    * Creating actual window popdown
    */
-  create-widget:info-feedback
-    class:info-feedback
+  create-widget:info-window
+    class:info-window
     widgets
-      literal:info-feedback-msg
+      literal:info-window-message
         innerValue

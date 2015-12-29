@@ -178,7 +178,7 @@ create-widget:edit-users
                                       value
                                     if:x:/../*/get-widget-property/*/*?value
                                       !=:
-                                      sys42.info-feedback:@"Unless absolutely necessary, you should NOT change user's password! 
+                                      sys42.info-window:@"Unless absolutely necessary, you should NOT change user's password! 
 Leave password field blank to keep existing password!"
                                         _warning:true
                                         _time:more
@@ -240,7 +240,7 @@ Leave password field blank to keep existing password!"
                                     value
                                   if:x:/../*/get-widget-property/*/user-password/*?value
                                     !=:x:/../*/get-widget-property/*/user-password-repeat/*?value
-                                    sys42.info-feedback:Passwords does not match!
+                                    sys42.info-window:Passwords does not match!
                                       _error:true
                                     send-javascript:"$('#user-password').focus().select();"
                                   else
@@ -249,7 +249,7 @@ Leave password field blank to keep existing password!"
                                       password:x:/../*/get-widget-property/*/user-password/*?value
                                     set-widget-property:x:/../*/_widgets/*/~password?name
                                       value:
-                                    sys42.info-feedback:User was succesfully saved
+                                    sys42.info-window:User was succesfully saved
                                     send-javascript:"$('#edit-existing-user-select').focus().select();"
 
 
@@ -266,9 +266,9 @@ Leave password field blank to keep existing password!"
                               accesskey:M
                               title:Deletes currently selected user
                               onclick
-                                sys42.confirm-action
+                                sys42.confirm-window
                                   _header:Confirm deletion of user
-                                  _message:@"Please confirm that you really wish to delete this user. 
+                                  _body:@"Please confirm that you really wish to delete this user. 
 <strong>All files belonging to user will be deleted</strong>. This action cannot be undone!"
                                   _onok
                                     get-widget-property:edit-existing-user-select
@@ -305,11 +305,11 @@ Leave password field blank to keep existing password!"
             /*
              * Displaying modal dialogue to retrieve new user's username and password
              */
-            sys42.modal-wizard
-              header:Type in username/password of new user
-              body:@"Please supply a username and a password for your new user. <br>
+            sys42.wizard-window
+              _header:Type in username/password of new user
+              _body:@"Please supply a username and a password for your new user. <br>
 <strong>Notice that the username cannot be changed after the user has been created!</strong>"
-              controls
+              _widgets
                 text:username
                   label:Username
                   mandatory:true
@@ -325,7 +325,7 @@ Leave password field blank to keep existing password!"
                   mandatory:true
                   placeholder:Please repeat the password for user ...
                   autocomplete:off
-              onok
+              _onok
                 if:x:/../*/password?value
                   =:x:/../*/password-repeat?value
 

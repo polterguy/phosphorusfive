@@ -282,13 +282,8 @@
     <None Include="system42\startup\pf.web.load-ui.hl" />
     <None Include="system42\startup\pages\create-default-pages.hl" />
     <None Include="system42\startup\misc-events\sys42.get-widget.hl" />
-    <None Include="system42\startup\misc-dialog-events\sys42.confirm-action.hl" />
-    <None Include="system42\startup\misc-dialog-events\sys42.show-code.hl" />
-    <None Include="system42\startup\users\user-events\sys42.verify-access.hl" />
     <None Include="system42\startup\misc-events\sys42.get-content-type.hl" />
     <None Include="system42\misc\content-types.hl" />
-    <None Include="system42\startup\misc-dialog-events\sys42.info-feedback.hl" />
-    <None Include="system42\startup\users\user-events\sys42.empty-user-tmp-folder.hl" />
     <None Include="system42\server-startup\create-initial-user.hl" />
     <None Include="system42\server-startup\set-root-password.hl" />
     <None Include="system42\server-startup\system-finished.hl" />
@@ -297,9 +292,6 @@
     <None Include="system42\startup\misc-events\sys42.verify-signature-is-friend.hl" />
     <None Include="system42\misc\trusted-friends.hl" />
     <None Include="system42\startup\misc-events\sys42.expired-webservice-invocation.hl" />
-    <None Include="system42\startup\misc-dialog-events\sys42.modal-wizard.hl" />
-    <None Include="system42\startup\misc-dialog-events\sys42.unzip-with-password.hl" />
-    <None Include="system42\startup\misc-dialog-events\sys42.zip-with-password.hl" />
     <None Include="system42\cms\page-types\controls.hl" />
     <None Include="system42\cms\page-types\html.hl" />
     <None Include="system42\cms\page-types\lambda.hl" />
@@ -326,11 +318,18 @@
     <None Include="system42\cms\page-editor\templates\create-new-lambda-page.hl" />
     <None Include="system42\apps\users\edit-users.hl" />
     <None Include="system42\server-startup\install-server.hl" />
+    <None Include="system42\startup\users\sys42.empty-user-tmp-folder.hl" />
+    <None Include="system42\startup\users\sys42.verify-access.hl" />
+    <None Include="system42\startup\misc-dialog-events\sys42.confirm-window.hl" />
+    <None Include="system42\startup\misc-dialog-events\sys42.info-window.hl" />
+    <None Include="system42\startup\misc-dialog-events\sys42.show-code-window.hl" />
+    <None Include="system42\startup\misc-dialog-events\sys42.unzip-window.hl" />
+    <None Include="system42\startup\misc-dialog-events\sys42.wizard-window.hl" />
+    <None Include="system42\startup\misc-dialog-events\sys42.zip-window.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />
     <Folder Include="system42\startup\misc-dialog-events\" />
-    <Folder Include="system42\startup\users\user-events\" />
     <Folder Include="system42\misc\" />
     <Folder Include="system42\server-startup\" />
     <Folder Include="code\configuration\" />

@@ -115,7 +115,7 @@ create-widget:executor
             set:x:/../*/_exe/#/*
             add:x:/../*/_exe/#
               src:x:/../*/lisp2lambda/*
-            _exe:node:""
+            _exe:node:"evaluator-code"
 
             // Notice, [eval-mutable], since we want to retrieve transformed code after execution!
             eval-mutable:x:/../*/_exe/#
@@ -124,7 +124,7 @@ create-widget:executor
             lambda2lisp:x:/../*/_exe/#/*
             return-response-object:code
               src:x:/./-?value
-            sys42.info-feedback:@"Code was successfully executed"
+            sys42.info-window:@"Code was successfully executed"
 
 
     /*
