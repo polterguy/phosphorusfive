@@ -36,7 +36,8 @@ else
 
   /*
    * User is not logged in, explaining that he may have success accessing this page
-   * if he logs in
+   * if he logs in. Since we're creating a "big" login form here though, we hide the
+   * login button from the main menu, if it exist
    */
   add:x:/../*/load-file/*/*/create-widget/*/widgets/**/={content}/./.
     src
@@ -67,7 +68,11 @@ Maybe it works if you login ...?"
                     class:form-control
                     placeholder:Username ...
                     oninit
-                      send-javascript:@"$('#login-username').focus().select();"
+                      send-javascript:@"setTimeout(function(){$('#login-username').focus().select();},250);"
+                      if
+                        fetch:x:/0/0?value
+                          widget-exist:login-menu-button
+                        delete-widget:login-menu-button
                     onkeypress:"return p5.keyLoginPress(event);"
               container
                 class:input-group prepend-left

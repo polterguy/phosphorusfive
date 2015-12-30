@@ -248,6 +248,7 @@ create-widget
                       p5.page
                         name
                         template
+                  sys42.create-main-menu
 
                   // Since URL of page (and hence ID) might have changed, we'll need to go through this again
                   sys42.set-currently-edited-page:x:/../*/get-widget-property/*/page-url/*?value
@@ -302,6 +303,7 @@ create-widget
                   sys42.set-currently-edited-page
                   sys42.populate-select-page
                   clear-widget:page-editor-surface
+                  sys42.create-main-menu
 
 
 

@@ -123,7 +123,7 @@ sys42.execute-lisp-file:/system42/apps/file-browser/launch.hl
       content:@"<p>Although Phosphorus Five and System42, is the architecture and creation of one single person, me that is, there are numerous others who have one way or another contributed. This page is to say thank you to all of these people.</p>
 
 <ul>
-	<li>Svein Daniel Solvenus - sveindaniel _at_ solvenus _dot_ no - for providing extensive testing and invaluable feedback, over a long period of time</li>
+	<li>Svein Daniel Solvenus - sveindaniel_phosphorus_at_solvenus_dot_no - for providing extensive testing and invaluable feedback, over a long period of time</li>
 	<li><a href=""https://github.com/jstedfast/MimeKit/"">MimeKit</a>, <a href=""https://github.com/jstedfast/MailKit"">MailKit</a> and its brilliant creator, Jeffrey Steadfast, for always responding to my MimeKit/MailKit support requests within minutes, even on x-mas eve</li>
 	<li><a href=""https://www.bouncycastle.org/"">The Legion of the Bouncy Castle</a>, and all who contributes to it, for creating a brilliant cryptography library for .net and Mono</li>
 	<li><a href=""http://xamarin.com/"">Xamarin</a>, <a href=""http://www.mono-project.com/"">Mono</a>, and all the other people working on both of these great projects, for delivering a marvelous IDE and Free Software runtime for .Net </li>

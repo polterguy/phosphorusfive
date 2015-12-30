@@ -129,6 +129,7 @@ create-widget:page-editor
                   sys42.set-currently-edited-page:x:/../*/insert-data/0?value
                   sys42.populate-select-page
                   sys42.edit-page
+                  sys42.create-main-menu
 
 
     /*

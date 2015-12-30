@@ -1,97 +1,7 @@
 /*
- * Template for showing any type of page
+ * Template for showing [p5.page] objects. Will create
+ * a black navbar menu at the top
  */
-
-
-/*
- * Retrieving current Context user
- */
-whoami
-
-
-/*
- * Creating our menu, from all pages in database, and adding into the 
- * [container:menu] parts of our create-widget Active Event below.
- * But only the pages the user has access to according to his role
- */
-select-data:x:/*/*/p5.page
-for-each:x:/-/*
-
-  // Menu item "template"
-  _menu-item
-    container
-      element:li
-      widgets
-        literal
-          element:a
-          has-id:false
-          innerValue
-          href
-
-  // Verifying user has access to page object
-  if
-    sys42.verify-access:x:/..for-each/*/__dp/#/*/role?value
-    set:x:/./-/**/literal/*/innerValue?value
-      src:x:/..for-each/*/__dp/#/*/name?value
-    set:x:/./-/**/literal/*/href?value
-      src:x:/..for-each/*/__dp/#?value
-    add:x:/../*/create-widget/*/widgets/**/container/=menu/*/widgets
-      src:x:/././-/0
-
-
-/*
- * Adding login/logout button to navbar
- */
-add:x:/../*/create-widget/*/widgets/**/container/=menu/*/widgets
-  src
-    container
-      element:li
-      widgets
-        literal:login-logout-btn
-          element:a
-          innerValue:Login
-          href:
-          onclick
-            set-widget-property:login-wrapper
-              visible:true
-
-            // JavaScript to make sure we set focus to username input field,
-            // and are able to trap Carriage Return and Escape in username/password fields
-            send-javascript:"$('#toggle-navbar').click();$('#username').focus().select();"
-            include-javascript:@"p5.loginUsernameKeyPressed = function(e) {
-  if(e.keyCode == 13) {
-    p5.$('login').raise('onclick');
-    return false;
-  }
-}
-p5.loginUsernameKeyUp = function(e) {
-  if(e.keyCode == 27) {
-    p5.$('login-hide').raise('onclick');
-  }
-}"
-
-
-
-/*
- * Modifying navbar Login button to Logout, if user is logged in
- */
-if:x:/../*/whoami/*/default?value
-  not
-
-  // User is logged in, changing "Login" to "Logout"
-  set:x:/../*/create-widget/**/literal/=login-logout-btn/*/innerValue?value
-    src:Logout {0}
-      :x:/../*/whoami/*/username?value
-  set:x:/../*/create-widget/**/literal/=login-logout-btn/*/onclick/*
-  add:x:/../*/create-widget/**/literal/=login-logout-btn/*/onclick
-    src
-      list-session-keys
-      set-session-value:x:/-/*?name
-      sys42.empty-user-tmp-folder
-      logout
-      reload-location
-  set:x:/../*/create-widget/**/container/=login-wrapper
-    
 
 
 /*
@@ -104,7 +14,8 @@ create-widget:template-root
     /*
      * Our main bootstrap navbar menu, stuck to the top
      */
-    container:menu-wrapper
+    container
+      has-id:false
       element:nav
       class:navbar navbar-default navbar-fixed-top navbar-inverse
       widgets
@@ -123,28 +34,227 @@ create-widget:template-root
                   data-toggle:collapse
                   data-target:#navbar-main
                   aria-expanded:false
-                  innerValue:"<span class=\"icon-bar\"></span>"
+                  innerValue:@"<span class=""icon-bar""></span>"
                 literal
                   has-id:false
                   element:a
                   href:"http://phosphorusfive.wordpress.com"
                   class:navbar-brand navbar-icon-p5
-                  title:A Phosphorus Five production!
-            container:navbar-main
+                  title:Got Privacy ...?
+            container
+              has-id:false
               class:collapse navbar-collapse
               widgets
-                container:menu
-                  has-id:false
+                container:main-menu
                   element:ul
                   class:nav navbar-nav
-                  widgets
+                  oninit
+                    sys42.create-main-menu
+                  events
+
+
+                    /*
+                     * Creates the menu of our page
+                     */
+                    sys42.create-main-menu
+
+                      /*
+                       * Making sure we delete any previous menus created
+                       */
+                      clear-widget:main-menu
+
+                      /*
+                       * Retrieving current Context user for later, since we'll need to check his role, 
+                       * to see which pages he or she has access to
+                       */
+                      whoami
+
+                      /*
+                       * Selecting all [p5.page] objects from database, and looping through them, to
+                       * create a menu item for each [p5.page] object current Context user has access to
+                       */
+                      select-data:x:/*/*/p5.page
+                      for-each:x:/-/*
+
+                        // Menu item "template"
+                        _create-item
+                          create-literal-widget
+                            parent:main-menu
+                            element:li
+                            innerValue
+
+                        // Verifying user has access to currently iterated [p5.page] object
+                        if
+                          sys42.verify-access:x:/..for-each/*/__dp/#/*/role?value
+                          set:x:/..for-each/*/_create-item/*/*/innerValue?value
+                            src:@"<a href=""{0}"">{1}</a>"
+                              :x:/..for-each/*/__dp/#?value
+                              :x:/..for-each/*/__dp/#/*/name?value
+                          eval:x:/..for-each/*/_create-item
+                          
+                      /*
+                       * Adding login/logout button to menu
+                       */
+                      if:x:/../*/whoami/*/default?value
+                        =:bool:true
+
+                        /*
+                         * This is the default Context user, and hence user is not logged in
+                         * Creating our login menu item
+                         */
+                        create-widget:login-menu-button
+                          parent:main-menu
+                          element:li
+                          widgets
+                            literal
+                              element:a
+                              href:
+                              innerValue:Login
+                              onclick
+                                sys42.show-login-window
+                              events
+
+                                /*
+                                 * Shows the login user window
+                                 */
+                                sys42.show-login-window
+
+                                  /*
+                                   * Making sure we hide login menu button
+                                   */
+                                  set-widget-property:login-menu-button
+                                    visible:false
+
+                                  /*
+                                   * Sends and includes JavaScript to page, to be able to handle Carriage Return and Escape 
+                                   * keys in login window
+                                   */
+                                  send-javascript:"$('#toggle-navbar').click();setTimeout(function(){$('#username').focus().select();},250);"
+                                  include-javascript:@"p5.loginUsernameKeyPressed = function(e) {
+  if(e.keyCode == 13) {
+    p5.$('login-button').raise('onclick');
+    return false;
+  }
+}
+p5.loginUsernameKeyUp = function(e) {
+  if(e.keyCode == 27) {
+    p5.$('login-button').raise('_onhide');
+  }
+}"
+
+                                  /*
+                                   * Creates the window encapsulating the login window
+                                   */
+                                  create-widget:login-wrapper
+                                    class:form-inline col-md-5 col-md-push-1 col-xs-3 flash-from-right
+                                    parent:header-wrapper
+                                    widgets
+                                      container:login-controls
+                                        class:form-group
+                                        widgets
+                                          void:username
+                                            class:form-control input-sm
+                                            element:input
+                                            type:text
+                                            placeholder:Username ...
+                                            onkeypress:"return p5.loginUsernameKeyPressed(event);"
+                                            onkeyup:"p5.loginUsernameKeyUp(event);"
+                                          void:password
+                                            class:form-control input-sm
+                                            element:input
+                                            type:password
+                                            placeholder:Password ...
+                                            onkeypress:"return p5.loginUsernameKeyPressed(event);"
+                                            onkeyup:"p5.loginUsernameKeyUp(event);"
+                                          literal:login-button
+                                            element:button
+                                            class:btn btn-default form-control input-sm
+                                            innerValue:login
+                                            onclick
+                                              sys42.login-button-clicked
+                                            _onhide
+                                              delete-widget:login-wrapper
+                                              set-widget-property:login-menu-button
+                                                visible:true
+                                            events
+
+                                              /*
+                                               * Logs in user according to values of "username" and "password" widgets
+                                               * in login form
+                                               */
+                                              sys42.login-button-clicked
+
+                                                /*
+                                                 * Retrieves username and password supplied by user
+                                                 */
+                                                get-widget-property:username
+                                                  value
+                                                get-widget-property:password
+                                                  value
+
+                                                /*
+                                                 * Sets the username and password field's values to our [login] Active Event
+                                                 */
+                                                set:x:/+2/0/*/username?value
+                                                  src:x:/././*/get-widget-property/[0,1]/+/<?value
+                                                set:x:/+1/0/*/password?value
+                                                  src:x:/././*/get-widget-property/[1,2]/+/<?value
+                                                if
+                                                  login
+                                                    username
+                                                    password
+                                                    persist:bool:true
+
+                                                  /*
+                                                   * User was successfully logged in, reloading location to
+                                                   * make sure user sees page in context of his newly logged in credentials
+                                                   */
+                                                  reload-location
+                                                else
+
+                                                  /*
+                                                   * User supplied wrong credentials
+                                                   */
+                                                  set-widget-property:login-controls
+                                                    class:form-group has-error
+                                                  send-javascript:"p5.wrongCredentials();"
+                                      
+
+                      else
+
+                        /*
+                         * User has previously logged in with his or hers credentials
+                         * Creating the logout button
+                         */
+                        create-widget
+                          parent:main-menu
+                          element:li
+                          widgets
+                            literal
+                              element:a
+                              href:
+                              innerValue:Logout
+                              onclick
+                                sys42.logout
+                              events
+
+                                /*
+                                 * Deleting all user's session items and emptying "tmp" folder, 
+                                 * before logging user out and reloading location, to make sure user
+                                 * sees page in context of default Context user
+                                 */
+                                sys42.logout
+                                  list-session-keys
+                                  set-session-value:x:/-/*?name
+                                  sys42.empty-user-tmp-folder
+                                  logout
+                                  reload-location
 
 
     /*
-     * Page content starts here, header and login/logout wrapper first
+     * Page content starts here, header first
      */
-    container
-      has-id:false
+    container:header-wrapper
       class:row
       widgets
         container
@@ -160,71 +270,9 @@ create-widget:template-root
               innerValue:{header}
 
 
-        /*
-         * Login/logout widgets and helpers
-         */
-        container:login-wrapper
-          class:form-inline col-md-5 col-md-push-1 col-xs-3 flash-from-right
-          visible:false
-          widgets
-            container:login-controls
-              class:form-group
-              widgets
-                void:username
-                  class:form-control input-sm
-                  element:input
-                  type:text
-                  placeholder:Username ...
-                  onkeypress:"return p5.loginUsernameKeyPressed(event);"
-                  onkeyup:"p5.loginUsernameKeyUp(event);"
-                void:password
-                  class:form-control input-sm
-                  element:input
-                  type:password
-                  placeholder:Password ...
-                  onkeypress:"return p5.loginUsernameKeyPressed(event);"
-                  onkeyup:"p5.loginUsernameKeyUp(event);"
-                literal:login
-                  element:button
-                  class:btn btn-default form-control input-sm
-                  innerValue:login
-                  onclick
-                    get-widget-property:username
-                      value
-                    get-widget-property:password
-                      value
-                    set:x:/+2/0/*/username?value
-                      src:x:/././*/get-widget-property/[0,1]/+/<?value
-                    set:x:/+1/0/*/password?value
-                      src:x:/././*/get-widget-property/[1,2]/+/<?value
-                    if
-                      login
-                        username
-                        password
-                        persist:bool:true
-
-                      // Reloading page to make sure everything is wired up together correctly
-                      reload-location
-                    else
-
-                      // Oops, wrong credentials, or something
-                      set-widget-property:login-controls
-                        class:form-group has-error
-                      send-javascript:"p5.wrongCredentials();"
-
-                // Invisible button to be able to hide login wrapper when user presses Escape key
-                void:login-hide
-                  element:input
-                  type:button
-                  style:"display:none;"
-                  onclick
-                    set-widget-property:login-wrapper
-                      visible:false
-
-
     /*
      * Actual dynamic content comes here, after navbar menu at top, 
-     * and header + login/logout widgets
+     * and header above
      */
     container:content
       class:row content-row
@@ -243,6 +291,7 @@ create-widget:template-root
       widgets
         literal
           element:small
+          has-id:false
           class:col-md-6 text-muted text-center col-md-push-3 prepend-top col-xs-12
           innerValue:@"Liberated Software, Copyleft © 
 <a href=""https://phosphorusfive.wordpress.com/2015/11/22/liberated-software-defined/"">Thomas Hansen</a>"
