@@ -139,7 +139,7 @@ namespace p5.web.widgets
                 foreach (var widgetId in XUtil.Iterate<string> (context, e.Args, true)) {
 
                     // Adding a boolean as result node, with widget's ID as name, indicating existence of widget
-                    e.Args.Add(widgetId, FindControl<Control>(widgetId, Manager.AjaxPage) != null);
+                    e.Args.Add(widgetId, FindControl<Widget>(widgetId, Manager.AjaxPage) != null);
                 }
             }
         }

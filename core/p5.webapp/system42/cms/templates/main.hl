@@ -1,6 +1,8 @@
 /*
  * Template for showing [p5.page] objects. Will create
- * a black navbar menu at the top
+ * a black navbar menu at the top, containing links
+ * to pages user has access to, in addition to a login
+ * or logout button which allows user to login and logout
  */
 
 
@@ -12,7 +14,7 @@ create-widget:template-root
   widgets
 
     /*
-     * Our main bootstrap navbar menu, stuck to the top
+     * Our main bootstrap navbar menu, stuck to the top, by default
      */
     container
       has-id:false
@@ -27,6 +29,10 @@ create-widget:template-root
               has-id:false
               class:navbar-header
               widgets
+
+                /*
+                 * Toggles visibility of navbar, only visible in small screen resolutions
+                 */
                 literal:toggle-navbar
                   element:button
                   type:button
@@ -35,16 +41,61 @@ create-widget:template-root
                   data-target:#navbar-main
                   aria-expanded:false
                   innerValue:@"<span class=""icon-bar""></span>"
-                literal
-                  has-id:false
+
+                /*
+                 * X-Ray button, to inspect widgets on page
+                 */
+                literal:x-ray
                   element:a
-                  href:"http://phosphorusfive.wordpress.com"
+                  href:
                   class:navbar-brand navbar-icon-p5
-                  title:Got Privacy ...?
+                  title:X-Ray Inspector
+                  accesskey:Q
+                  _on-x-ray
+                    get-http-param:_x-ray-clicked
+                    add:x:/+
+                      src:x:/./-/*
+                    sys42.execute-lisp-file:/system42/apps/x-ray-inspector/launch.hl
+                  onclick
+                    sys42.info-window:@"Click any element on screen to view its server side Hyperlisp code. Refresh page to turn off X-Ray Inspector"
+                      _time:more
+                    send-javascript:@"$('*').click(function(e){e.preventDefault();});
+$('[onclick]').removeAttr('onclick');
+$('body').css('cursor', 'pointer');
+$('body').css('background-color', 'rgba(125,255,128,.5)');
+$('body').click( function(e) {
+  var path = '';
+  var cur = e.target;
+  while (cur !== null) {
+    if(cur.id) {
+      if(path !== '') {
+        path += '|';
+      }
+      path += cur.id;
+    }
+    cur = cur.parentNode;
+  }
+  p5.$('x-ray').raise('_on-x-ray', {
+    onbefore: function (pars,evt){
+      pars.push(['_x-ray-clicked', path]);
+    }
+  });
+  $('body').off('click');
+  $('body').css('cursor', 'default');
+});
+"
+
+            /*
+             * Main menu items wrapper
+             */
             container
               has-id:false
               class:collapse navbar-collapse
               widgets
+
+                /*
+                 * This is where all your menu items ends up, as child widgets
+                 */
                 container:main-menu
                   element:ul
                   class:nav navbar-nav
@@ -146,7 +197,7 @@ p5.loginUsernameKeyUp = function(e) {
                                    * Creates the window encapsulating the login window
                                    */
                                   create-widget:login-wrapper
-                                    class:form-inline col-md-5 col-md-push-1 col-xs-3 flash-from-right
+                                    class:form-inline col-md-5 col-md-push-1 col-xs-3 flash-from-left
                                     parent:header-wrapper
                                     widgets
                                       container:login-controls

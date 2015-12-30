@@ -326,6 +326,7 @@
     <None Include="system42\startup\internals\pages\create-default-pages.hl" />
     <None Include="system42\startup\internals\users\sys42.empty-user-tmp-folder.hl" />
     <None Include="system42\startup\internals\users\sys42.verify-access.hl" />
+    <None Include="system42\apps\x-ray-inspector\launch.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />
@@ -347,5 +348,6 @@
     <Folder Include="system42\startup\internals\" />
     <Folder Include="system42\startup\internals\pages\" />
     <Folder Include="system42\startup\internals\users\" />
+    <Folder Include="system42\apps\x-ray-inspector\" />
   </ItemGroup>
 </Project>

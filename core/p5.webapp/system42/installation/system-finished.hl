@@ -9,7 +9,7 @@
  */
 create-widget:finished
   parent:guide
-  class:flash-from-right
+  class:flash-from-left
   widgets
 
 

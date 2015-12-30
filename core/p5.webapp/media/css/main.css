@@ -127,7 +127,7 @@ body {
     animation-duration: .3s;
 }
 
-@keyframes animate-flash-from-right {
+@keyframes animate-flash-from-left {
     0% {
         margin-left:-4000px;
     }
@@ -136,8 +136,8 @@ body {
     }
 }
 
-.flash-from-right {
-    animation-name:animate-flash-from-right;
+.flash-from-left {
+    animation-name:animate-flash-from-left;
     animation-duration:.5s;
     position:relative;
 }

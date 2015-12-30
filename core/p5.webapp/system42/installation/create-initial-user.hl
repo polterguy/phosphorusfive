@@ -10,7 +10,7 @@
  */
 create-widget:create-default-user
   parent:guide
-  class:flash-from-right
+  class:flash-from-left
   widgets
 
 

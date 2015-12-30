@@ -41,7 +41,8 @@ set-protected-event:sys42.get-widget
       src:x:/./-/*/*
     get-widget-ajax-event:x:/-2/*?name
 
-    // Removing all root node children of event nodes who's names are "_event"
+    // Removing all root node children of event nodes who's names are "_event", before 
+    // adding ajax events into "return collection" of event
     set:x:/-/**/~on/*/_event
     add:x:/../0/-
       src:x:/./-2/*/*
@@ -67,6 +68,18 @@ set-protected-event:sys42.get-widget
         src:x:/..for-each/*/sys42.get-widget/*
       add:x:/../0/-/*/widgets
         src
+
+    // Widget lambda events, at last
+    list-widget-lambda-events:x:/../*/list-widgets/0?value
+    add:x:/+
+      src:x:/./-/*/*
+    get-widget-lambda-event:x:/-2/*?name
+    if:x:/-3/*/*
+      // We have lambda events
+      add:x:/../0/-
+        src:events
+      add:x:/../0/-/*/events
+        src:x:/././-/*/*
 
     // Removing zeroth item of list-widget, to decrement while loop condition
     set:x:/../*/list-widgets/0

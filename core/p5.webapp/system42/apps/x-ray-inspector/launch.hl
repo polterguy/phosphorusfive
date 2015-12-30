@@ -1,0 +1,103 @@
+
+/*
+ * Allows the user to inspect any widget on page
+ */
+
+
+/*
+ * Including CodeMirror to view code for widget
+ */
+sys42.execute-lisp-file:/system42/editors/codemirror/include-codemirror.hl
+  _editor
+    view_x_rays
+      mode:hyperlisp
+      theme:the-matrix-reduced
+      autofocus:true
+      fullscreen:true
+      height:620px
+
+
+/*
+ * Finding first widget from DOM element that user clicked
+ */
+split:x:/../*/_x-ray-clicked?value
+  =:|
+_past-content:bool:false
+while:x:/../*/split/*?count
+  >:int:0
+  if
+    fetch:x:/0/0?value
+      widget-exist:x:/../*/split/0?name
+    /*
+     * We have found a widget, making sure we append it as option into select drop down list
+     */
+    if:x:/../*/split/0?name
+      =:cnt
+      set:x:/../*/_past-content?value
+        src:bool:true
+    if:x:/../*/_past-content?value
+      add:x:/./+2/*/*
+        src:disabled
+    eval-x:x:/+/*/**
+    insert-after:x:/../*/create-widget/**/container/=select-ray-widget/*/widgets/0
+      src
+        literal
+          element:option
+          has-id:false
+          innerValue:x:/../*/split/0?name
+    if:x:/../*/create-widget/**/literal/=view_x_rays/*/innerValue?value
+      not
+
+      /*
+       * We have found our first existing Widget in hierarchy of DOM elements clicked
+       */
+      sys42.get-widget:x:/../*/split/0?name
+      lambda2lisp:x:/-/*
+      set:x:/../*/create-widget/**/literal/=view_x_rays/*/innerValue?value
+        src:x:/./-?value
+      add:x:/../*/create-widget/**/container/=select-ray-widget/*/widgets/0/-
+        src:selected
+
+  // Removing first item in split list
+  set:x:/../*/split/0
+
+
+/*
+ * Creating actual form to show the executor
+ */
+create-widget:x-ray-inspector
+  parent:cnt
+  style:"position:fixed;top:0;left:0;width:100%;height:100%;z-index:2500;background-color:rgba(0,0,0,.7);"
+  class:row
+  widgets
+
+    container:select-ray-widget
+      element:select
+      class:form-control flash-from-left
+      style:"width:500px;margin-left:5%;margin-top:50px;"
+      onchange
+        get-widget-property:select-ray-widget
+          value
+        sys42.get-widget:x:/../*/get-widget-property/*/*?value
+        lambda2lisp:x:/-/*
+        send-javascript:@"window.view_x_rays.getDoc().setValue(`{0}`);"
+          :x:/./-?value
+      widgets
+        literal
+          has-id:false
+          element:option
+          innerValue:Select widget ...
+          disabled
+
+
+    /*
+     * Widget code textarea element, transformed into a CodeMirror widget
+     */
+    container
+      style:"margin-left:auto;margin-right:auto;width:90%;margin-top:5px;"
+      widgets
+        literal:view_x_rays
+          element:textarea
+          innerValue
+
+
