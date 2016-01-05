@@ -247,7 +247,7 @@ namespace p5.exp
                 case "**":
 
                     // Flatten descendants token
-                    current.AddIterator (new IteratorFlatten ());
+                    current.AddIterator (new IteratorDescendants ());
                     break;
                 case ".":
 
@@ -297,7 +297,7 @@ namespace p5.exp
                         if (Utilities.IsNumber (token)) {
 
                             // Numbered child token
-                            current.AddIterator (new IteratorNumbered (int.Parse (token)));
+                            current.AddIterator (new IteratorNumberedChild (int.Parse (token)));
                         } else {
 
                             // Defaulting to "named iterator"

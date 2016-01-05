@@ -14,7 +14,7 @@ namespace p5.exp.iterators
     ///     Iterator for returning the n'th children of previous iterator result
     /// </summary>
     [Serializable]
-    public class IteratorNumbered : Iterator
+    public class IteratorNumberedChild : Iterator
     {
         private readonly int _number;
 
@@ -22,7 +22,7 @@ namespace p5.exp.iterators
         ///     Initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorNumbered" /> class
         /// </summary>
         /// <param name="number">The n'th child to return, if it exists, from previous result-set</param>
-        public IteratorNumbered (int number)
+        public IteratorNumberedChild (int number)
         {
             _number = number;
         }

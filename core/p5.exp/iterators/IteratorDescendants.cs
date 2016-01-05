@@ -13,7 +13,7 @@ namespace p5.exp.iterators
     ///     Returns all nodes, and descendants, of previous iterator
     /// </summary>
     [Serializable]
-    public class IteratorFlatten : Iterator
+    public class IteratorDescendants : Iterator
     {
         public override IEnumerable<Node> Evaluate (ApplicationContext context)
         {

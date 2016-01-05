@@ -48,14 +48,12 @@
     <Compile Include="Tokenizer.cs" />
     <Compile Include="iterators\Iterator.cs" />
     <Compile Include="iterators\IteratorChildren.cs" />
-    <Compile Include="iterators\IteratorFlatten.cs" />
     <Compile Include="iterators\IteratorGroup.cs" />
     <Compile Include="iterators\IteratorLeftParent.cs" />
     <Compile Include="iterators\IteratorModulo.cs" />
     <Compile Include="iterators\IteratorNamed.cs" />
     <Compile Include="iterators\IteratorNamedAncestor.cs" />
     <Compile Include="iterators\IteratorNode.cs" />
-    <Compile Include="iterators\IteratorNumbered.cs" />
     <Compile Include="iterators\IteratorParent.cs" />
     <Compile Include="iterators\IteratorRange.cs" />
     <Compile Include="iterators\IteratorReference.cs" />
@@ -75,6 +73,8 @@
     <Compile Include="NodeExtensions.cs" />
     <Compile Include="exceptions\LambdaSecurityException.cs" />
     <Compile Include="CollectionBase.cs" />
+    <Compile Include="iterators\IteratorDescendants.cs" />
+    <Compile Include="iterators\IteratorNumberedChild.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
