@@ -51,10 +51,10 @@ for-each:x:/-/*
       value
       innerValue
   set:x:/-/*/literal/*/value?value
-    src:x:/..for-each/*/__dp/#?value
+    src:x:/..for-each/*/_dp/#?value
   set:x:/-2/*/literal/*/innerValue?value
-    src:x:/..for-each/*/__dp/#?value
-  if:x:/..for-each/*/__dp/#?value
+    src:x:/..for-each/*/_dp/#?value
+  if:x:/..for-each/*/_dp/#?value
     not-equals:x:/../*/select-data/*/*/template?value
     set:x:/..for-each/*/_literal/*/literal/*/selected
   add:x:/../*/create-widget/*/widgets/**/container/=page-template/*/widgets

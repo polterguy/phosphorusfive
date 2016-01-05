@@ -46,8 +46,8 @@ if:x:/../*/_editor/*/*/keys/*
       src:@"{0},
     ""{1}"":{2}"
         :x:/../*/_keys?value
-        :x:/..for-each/*/__dp/#?name
-        :x:/..for-each/*/__dp/#?value
+        :x:/..for-each/*/_dp/#?name
+        :x:/..for-each/*/_dp/#?value
 
 
 set:x:/../*/send-javascript/5?value

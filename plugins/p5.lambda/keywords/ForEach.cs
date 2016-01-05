@@ -103,11 +103,11 @@ namespace p5.lambda.keywords
         }
 
         /*
-         * Invokes [for-each] scope once, setting the [__dp] correctly and resetting the for-each scope afterwards
+         * Invokes [for-each] scope once, setting the [_dp] correctly and resetting the for-each scope afterwards
          */
         private static void IterateForEach (ApplicationContext context, object source, Node args, Node oldForEach)
         {
-            var dp = new Node ("__dp", source);
+            var dp = new Node ("_dp", source);
             args.Insert (0, dp);
 
             context.RaiseLambda ("eval-mutable", args);

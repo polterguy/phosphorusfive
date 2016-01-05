@@ -78,16 +78,16 @@ create-widget:edit-users
                     innerValue:Select user ...
                   list-users
                   for-each:x:/-/*?name
-                    if:x:/./*/__dp?value
+                    if:x:/./*/_dp?value
                       =:x:/../*/_arg?value
                       add:x:/..for-each/*/create-literal-widget
                         src:selected
                     add:x:/..for-each/*/create-literal-widget
                       src:"value:{0}"
-                        :x:/..for-each/*/__dp?value
+                        :x:/..for-each/*/_dp?value
                     add:x:/..for-each/*/create-literal-widget
                       src:"innerValue:{0}"
-                        :x:/..for-each/*/__dp?value
+                        :x:/..for-each/*/_dp?value
                     create-literal-widget
                       element:option
                       parent:edit-existing-user-select

@@ -62,8 +62,8 @@ _x
   foo4:do you wish to become my friend?
 for-each:x:/./_x/*/?node
   p5.console.write-line:"{0}:{1}"
-    :x:/././__dp/#/?name
-    :x:/././__dp/#/?value
+    :x:/././_dp/#/?name
+    :x:/././_dp/#/?value
 ```
 
 The above example assumes a handler for *"p5.console.write-line"*, which is implemented

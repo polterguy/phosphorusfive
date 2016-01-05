@@ -22,16 +22,16 @@ for-each:x:/-/*?name
       element:option
       value
       innerValue
-  split:x:/./*/__dp?value
+  split:x:/./*/_dp?value
     =:/
   split:x:/-/0/-?name
     =:.
   set:x:/..for-each/*/_lit/*/*/value?value
-    src:x:/..for-each/*/__dp?value
+    src:x:/..for-each/*/_dp?value
   set:x:/..for-each/*/_lit/*/*/innerValue?value
     src:x:/..for-each/*/split/[1,2]/0?name
   if:x:/../*/select-data/[0,1]/*/*/template?value
-    equals:x:/..for-each/*/__dp?value
+    equals:x:/..for-each/*/_dp?value
     add:x:/..for-each/*/_lit/*
       src
         selected
@@ -51,11 +51,11 @@ for-each:x:/-/*?name
       value
       innerValue
   set:x:/..for-each/*/_lit/*/*/value?value
-    src:x:/..for-each/*/__dp?value
+    src:x:/..for-each/*/_dp?value
   set:x:/..for-each/*/_lit/*/*/innerValue?value
-    src:x:/..for-each/*/__dp?value
+    src:x:/..for-each/*/_dp?value
   if:x:/../*/select-data/[0,1]/*/*/role?value
-    equals:x:/..for-each/*/__dp?value
+    equals:x:/..for-each/*/_dp?value
     add:x:/..for-each/*/_lit/*
       src:selected
   add:x:/../*/create-widget/**/container/=page-role/*/widgets

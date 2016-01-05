@@ -86,13 +86,13 @@ set-protected-event:sys42.wizard-window
   for-each:x:/../*/_widgets/*
 
     // Figuring out which type of control to create
-    if:x:/..for-each/*/__dp/#?name
+    if:x:/..for-each/*/_dp/#?name
       =:text
-      or:x:/..for-each/*/__dp/#?name
+      or:x:/..for-each/*/_dp/#?name
         =:password
-      or:x:/..for-each/*/__dp/#?name
+      or:x:/..for-each/*/_dp/#?name
         =:number
-      or:x:/..for-each/*/__dp/#?name
+      or:x:/..for-each/*/_dp/#?name
         =:email
 
       // Creating some sort of "text" control
@@ -111,18 +111,18 @@ set-protected-event:sys42.wizard-window
 
       // Label control properties
       set:x:/..if/*/_controls/*/container/*/widgets/0/*/innerValue?value
-        src:x:/..for-each/*/__dp/#/*/label?value
+        src:x:/..for-each/*/_dp/#/*/label?value
 
       // Input control properties
       set:x:/./*/_controls/*/container/*/widgets/1?value
-        src:x:/..for-each/*/__dp/#?value
+        src:x:/..for-each/*/_dp/#?value
       set:x:/./*/_controls/*/container/*/widgets/1/*/type?value
-        src:x:/..for-each/*/__dp/#?name
+        src:x:/..for-each/*/_dp/#?name
       add:x:/./*/_controls/*/container/*/widgets/1
-        src:x:/..for-each/*/__dp/#/*(!/label)
+        src:x:/..for-each/*/_dp/#/*(!/label)
 
       // Checking if this is mandatory field, and if so, adding [onblur] to reset CSS class when changed
-      if:x:/..for-each/*/__dp/#/*/_mandatory?value.bool
+      if:x:/..for-each/*/_dp/#/*/_mandatory?value.bool
         =:bool:true
         add:x:/..if/..if/*/_controls/*/container/*/widgets/*/void
           src
@@ -242,16 +242,16 @@ $('#wizard-window').on('shown.bs.modal', function () {{
                       for-each:x:/../*/get-widget-property/*
 
                         // Checking if any of the mandatory fields are missing
-                        if:x:/..for-each/*/__dp/#/*/_mandatory?value.bool
+                        if:x:/..for-each/*/_dp/#/*/_mandatory?value.bool
                           =:bool:true
-                          and:x:/..for-each/*/__dp/#/*/value?value
+                          and:x:/..for-each/*/_dp/#/*/value?value
                             =:
 
                           // Missing [_mandatory] field!! Only setting focus to the FIRST control that's missing
                           if:x:/../*/_evaluate?value
                             =:bool:true
                             send-javascript:@"$('#{0}').focus().select();"
-                              :x:/..for-each/*/__dp/#?name
+                              :x:/..for-each/*/_dp/#?name
 
                           // Making sure [_evaluate] becomes false, such that dialogue doesn't close, and evaluates [onok]
                           set:x:/../*/_evaluate?value
@@ -259,19 +259,19 @@ $('#wizard-window').on('shown.bs.modal', function () {{
 
                           // Adding error feedback to mandatory controls that are missing values
                           // But only if "error" class is not already set!
-                          get-widget-property:x:/..for-each/*/__dp/#?name
+                          get-widget-property:x:/..for-each/*/_dp/#?name
                             class
                           if:x:/-/*/*/=~error
                             not
-                            set-widget-property:x:/..for-each/*/__dp/#?name
+                            set-widget-property:x:/..for-each/*/_dp/#?name
                               class:"{0} error"
                                 :x:/./././-/*/*?value
 
                         // Adding control's value into [eval]
                         add:x:/../**/eval
                           src:"{0}:{1}"
-                            :x:/..for-each/*/__dp/#?name
-                            :x:/..for-each/*/__dp/#/*/value?value
+                            :x:/..for-each/*/_dp/#?name
+                            :x:/..for-each/*/_dp/#/*/value?value
 
                       // Contains code to be executed as user clicks OK
                       _eval

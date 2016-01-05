@@ -38,6 +38,7 @@ namespace p5.web.widgets
         /// <param name="context">Context for current request</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "create-widget", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "create-container-widget", Protection = EventProtection.LambdaClosed)]
         [ActiveEvent (Name = "create-void-widget", Protection = EventProtection.LambdaClosed)]
         [ActiveEvent (Name = "create-literal-widget", Protection = EventProtection.LambdaClosed)]
         public void create_widget (ApplicationContext context, ActiveEventArgs e)

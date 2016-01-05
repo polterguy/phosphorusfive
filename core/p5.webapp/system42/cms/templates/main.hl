@@ -136,11 +136,11 @@ $('body').click( function(e) {
 
                         // Verifying user has access to currently iterated [p5.page] object
                         if
-                          sys42.verify-access:x:/..for-each/*/__dp/#/*/role?value
+                          sys42.verify-access:x:/..for-each/*/_dp/#/*/role?value
                           set:x:/..for-each/*/_create-item/*/*/innerValue?value
                             src:@"<a href=""{0}"">{1}</a>"
-                              :x:/..for-each/*/__dp/#?value
-                              :x:/..for-each/*/__dp/#/*/name?value
+                              :x:/..for-each/*/_dp/#?value
+                              :x:/..for-each/*/_dp/#/*/name?value
                           eval:x:/..for-each/*/_create-item
                           
                       /*

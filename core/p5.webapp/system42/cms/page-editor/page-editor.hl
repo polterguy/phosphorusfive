@@ -75,7 +75,7 @@ create-widget:page-editor
                     innerValue:New page ...
                   list-files:/system42/cms/page-editor/editors/
                   for-each:x:/-/*?name
-                    split:x:/./*/__dp?value
+                    split:x:/./*/_dp?value
                       =:/
                     split:x:/-/0/-?name
                       =:.
@@ -108,7 +108,7 @@ create-widget:page-editor
                   select-data:x:/*/*/p5.page/"=~/change-this-"
                   _high:int:1
                   for-each:x:/../*/select-data/*?value
-                    split:x:/./*/__dp?value
+                    split:x:/./*/_dp?value
                       =:-
                     if
                       can-convert:x:/./-/0/-?name
@@ -205,13 +205,13 @@ create-widget:page-editor
                   select-data:x:/*/*/p5.page
                   for-each:x:/-/*
                     set:x:/..for-each/*/create-literal-widget/*/value?value
-                      src:x:/..for-each/*/__dp/#?value
+                      src:x:/..for-each/*/_dp/#?value
                     set:x:/..for-each/*/create-literal-widget/*/innerValue?value
                       src:{0} - [{1}]
-                        :x:/..for-each/*/__dp/#/*/name?value
-                        :x:/..for-each/*/__dp/#/*/type?value
+                        :x:/..for-each/*/_dp/#/*/name?value
+                        :x:/..for-each/*/_dp/#/*/type?value
                     if:x:/../*/sys42.get-currently-edited-page?value
-                      equals:x:/..for-each/*/__dp/#?value
+                      equals:x:/..for-each/*/_dp/#?value
                       add:x:/..for-each/*/create-literal-widget
                         src
                           selected

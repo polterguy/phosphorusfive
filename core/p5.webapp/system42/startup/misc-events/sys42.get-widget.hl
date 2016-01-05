@@ -62,7 +62,7 @@ set-protected-event:sys42.get-widget
           widgets
     for-each:x:/-2/*/*?value
       set:x:/+?value
-        src:x:/..for-each/*/__dp?value
+        src:x:/..for-each/*/_dp?value
       sys42.get-widget
       add:x:/+/*/src
         src:x:/..for-each/*/sys42.get-widget/*

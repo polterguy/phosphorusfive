@@ -619,7 +619,7 @@ create-widget:file-browser
                   set:x:/../*/_new-filepath?value
                     src:{0}{1}/
                       :x:/../*/_new-filepath?value
-                      :x:/..for-each/*/__dp?value
+                      :x:/..for-each/*/_dp?value
 
                 // Retrieving new file-/folder name
                 get-widget-property:rename-file-object
@@ -1167,11 +1167,11 @@ file/folder with that name"
         set:x:/../*/_path?value
           src:{0}{1}/
             :x:/../*/_path?value
-            :x:/..for-each/*/__dp/#?name
+            :x:/..for-each/*/_dp/#?name
 
         // Creating a button for each folder leading to current folder
         set:x:/..for-each/*/create-literal-widget/*/innerValue?value
-          src:x:/..for-each/*/__dp/#?name
+          src:x:/..for-each/*/_dp/#?name
         set:x:/..for-each/*/create-literal-widget/*/onclick/*/sys42.change-current-folder?value
           src:x:/../*/_path?value
 
@@ -1186,7 +1186,7 @@ file/folder with that name"
         set:x:/..for-each/*/create-literal-widget/*/onclick/*/set-session-value/*/*/object?value
           src:{0}{1}/
             :x:/../*/_path?value
-            :x:/..for-each/*/__dp/#/>?name
+            :x:/..for-each/*/_dp/#/>?name
 
         // Creating bread-crumb button widget part, which now should be populated 
         // dyanmically according to above logic
@@ -1242,14 +1242,14 @@ file/folder with that name"
       for-each:x:/../*/list-folders/*?name
 
         // Removing trailing "/" and setting innerValue and title
-        split:x:/..for-each/*/__dp?value
+        split:x:/..for-each/*/_dp?value
           =:/
         set:x:/..for-each/*/create-literal-widget/*(/innerValue|/title)?value
           src:x:/..for-each/*/split/0/-?name
 
         // Making sure event handler for widget is correctly wired up
         set:x:/..for-each/*/create-literal-widget/*/onclick/0?value
-          src:x:/..for-each/*/__dp?value
+          src:x:/..for-each/*/_dp?value
 
         // Actually creating folder object widget
         create-literal-widget
@@ -1277,14 +1277,14 @@ file/folder with that name"
       for-each:x:/../*/list-files/*?name
 
         // Removing trailing "/" and setting innerValue
-        split:x:/..for-each/*/__dp?value
+        split:x:/..for-each/*/_dp?value
           =:/
         set:x:/..for-each/*/create-literal-widget/*(/innerValue|/title)?value
           src:x:/..for-each/*/split/0/-?name
 
         // Making sure event handler for widget is correctly wired up
         set:x:/..for-each/*/create-literal-widget/*/onclick/0?value
-          src:x:/..for-each/*/__dp?value
+          src:x:/..for-each/*/_dp?value
 
         // Actually creating folder object widget
         create-literal-widget
@@ -1434,8 +1434,8 @@ file/folder with that name"
       // when editor was opened
       get-session-value:sys42.original-file-editor-classes
       for-each:x:/-/*/*/*
-        set-widget-property:x:/./*/__dp/#?name
-          class:x:/././*/__dp/#/*?value
+        set-widget-property:x:/./*/_dp/#?name
+          class:x:/././*/_dp/#/*?value
 
       // Removing CSS classes from widgets hidden out of session
       set-session-value:sys42.original-file-editor-classes

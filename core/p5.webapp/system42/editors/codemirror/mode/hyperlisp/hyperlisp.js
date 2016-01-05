@@ -210,6 +210,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'set-cache-value':
         case 'set-cookie':
         case 'create-widget':
+        case 'create-container-widget':
         case 'create-literal-widget':
         case 'create-void-widget':
         case 'set-widget-ajax-event':

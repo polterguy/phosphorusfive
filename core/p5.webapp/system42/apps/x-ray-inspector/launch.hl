@@ -38,7 +38,7 @@ while:x:/../*/split/*?count
     if:x:/../*/_past-content?value
       add:x:/./+2/*/*
         src:disabled
-    eval-x:x:/+/*/**
+    eval-x:x:/+/**
     insert-after:x:/../*/create-widget/**/container/=select-ray-widget/*/widgets/0
       src
         literal
