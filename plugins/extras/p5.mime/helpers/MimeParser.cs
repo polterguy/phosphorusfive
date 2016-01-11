@@ -37,7 +37,20 @@ namespace p5.mime.helpers
             string attachmentFolder)
         {
             // Retrieving passwords from args
-            if (args["decryption-keys"] != null) {
+            if (args ["decryption-keys"] == null) {
+
+                // Caller did not supply decryption keys, adding up the machine server key anyway
+                Passwords = new List<GnuPrivacyContext.KeyPasswordMapper>();
+                var key = context.RaiseNative ("p5.security.get-marvin-pgp-key").Get<string> (Context);
+                string email = "foo@bar.com", fingerprint = "";
+                if (key.IndexOf ("@") == -1)
+                    fingerprint = key;
+                else
+                    email = key;
+                var password = context.RaiseNative ("p5.security.get-marvin-pgp-key-password").Get<string> (Context);
+                var mailboxAdr = string.IsNullOrEmpty (fingerprint) ? new MailboxAddress ("", email) : new SecureMailboxAddress ("", email, fingerprint);
+                Passwords.Add (new GnuPrivacyContext.KeyPasswordMapper (mailboxAdr, password));
+            } else {
 
                 // Caller supplied decryption keys, enumerating them, and storing to list of key, making sure we DETACH them
                 // from args, such that they don't leave method in case of exception

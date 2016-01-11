@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{8FAEDF6F-8F53-441B-ACE1-5E8330F8CE00}"
@@ -56,10 +56,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "p5.webapp", "core\p5.webapp\p5.webapp.csproj", "{B6F3798D-ADBE-4033-A2CD-E01F3B2BF16A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "lambda.exe", "core\lambda.exe\lambda.exe.csproj", "{6C5F05C3-5480-42D0-8FA3-00B8749EAC5C}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{548E6881-A758-4DE6-B860-CFFB6BB57518}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "p5.tests", "tests\p5.tests.csproj", "{D709ED7D-C599-4703-B192-613F0EFF7D97}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{D324EDB9-E389-4183-B7E9-B4C4D281C238}"
 EndProject

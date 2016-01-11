@@ -188,10 +188,11 @@ CodeMirror.defineMode("hyperlisp", function() {
         case '%':
         case '^':
         case 'lambda2lisp':
-        case 'set-event':
-        case 'set-protected-event':
+        case 'create-event':
+        case 'create-protected-event':
         case 'login':
         case 'create-user':
+        case 'eval-x':
         case 'eval-mutable':
         case 'move-file':
         case 'copy-file':
@@ -268,7 +269,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'get-title':
         case 'set-location':
         case 'get-location':
-        case 'get-events':
+        case 'get-event':
         case 'file-exist':
         case 'load-file':
         case 'load-text-file':
@@ -305,8 +306,8 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'list-http-params':
         case 'get-http-method':
         case 'get-request-body':
-        case 'delete-events':
-        case 'list-events':
+        case 'delete-event':
+        case 'vocabulary':
         case 'set-http-status':
         case 'set-http-status-code':
         case 'date-now':

@@ -27,8 +27,8 @@ namespace p5.mime
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.mime.load", Protection = EventProtection.LambdaClosed)]
-        public static void p5_mime_load (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.mime.load-file", Protection = EventProtection.LambdaClosed)]
+        public static void p5_mime_load_file (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up after ourselves
             using (new Utilities.ArgsRemover (e.Args, true)) {

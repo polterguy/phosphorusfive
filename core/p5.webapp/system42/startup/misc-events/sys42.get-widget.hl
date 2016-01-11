@@ -7,7 +7,7 @@
  * Pass in ID of widget to recursively iterate as value, expression or [_arg]
  */
 
-set-protected-event:sys42.get-widget
+create-protected-event:sys42.get-widget
 
   // Figuring out type of widget
   list-widgets:x:/../*/_arg?value

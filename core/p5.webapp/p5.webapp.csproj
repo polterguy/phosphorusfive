@@ -327,6 +327,7 @@
     <None Include="system42\startup\internals\users\sys42.empty-user-tmp-folder.hl" />
     <None Include="system42\startup\internals\users\sys42.verify-access.hl" />
     <None Include="system42\apps\x-ray-inspector\launch.hl" />
+    <None Include="system42\cms\templates\x-ray.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />

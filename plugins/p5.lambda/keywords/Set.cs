@@ -31,18 +31,20 @@ namespace p5.lambda.keywords
                     context);
 
             // Figuring out source type, for then to execute the corresponding logic
-            if (e.Args.Children.Count > 0 && e.Args.LastChild.Name == "rel-src") {
+            if (e.Args.Children.Count > 0 && e.Args.LastChild.Name != "src") {
 
-                // Iterating through all destinations, figuring out source relative to each destinations
+                // Iterating through all destinations, figuring out source either relative to each destinations,
+                // or using Active Event source invocation
                 foreach (var idxDestination in destEx.Evaluate (context, e.Args, e.Args)) {
 
                     // Source is relative to destination, postponing figuring it out, until we're inside 
                     // our destination nodes, on each iteration, passing in destination node as data source
                     idxDestination.Value = XUtil.SourceSingle (context, e.Args, idxDestination.Node);
                 }
-            } else {
+            } else if (e.Args.Children.Count == 0 || e.Args.LastChild.Name == "src") {
 
-                // Static source, hence retrieving source before iteration starts, in case destination and source overlaps
+                // Static source, or "null source", hence retrieving source before iteration starts, 
+                // in case destination and source overlaps
                 var source = XUtil.SourceSingle (context, e.Args);
 
                 // Iterating through all destinations, updating with source

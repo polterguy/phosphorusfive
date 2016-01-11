@@ -11,7 +11,7 @@
  * There can only be one instance of this window at the time on page
  */
 
-set-protected-event:sys42.unzip-window
+create-protected-event:sys42.unzip-window
 
   /*
    * Asks the user for his password to unzip the file

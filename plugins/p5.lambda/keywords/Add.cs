@@ -28,15 +28,28 @@ namespace p5.lambda.keywords
             if (!(e.Args.Value is Expression))
                 throw new LambdaException ("[add] was not given a destination expression", e.Args, context);
 
-            // Figuring out source type
-            if (e.Args.Children.Count > 0 && e.Args.LastChild.Name == "rel-src") {
+            // Retrieving source nodes
+            var srcNodes = e.Args.Children.Where (ix => ix.Name != "").ToList ();
 
-                // Relative source
-                AppendRelativeSource (e.Args, context);
-            } else {
+            // Sanity check
+            if (srcNodes.Count != 1)
+                throw new LambdaException (
+                    "[add] must be given exactly one source child node",
+                    e.Args,
+                    context);
+
+            // OK, we're sane, so far ...
+            var srcNode = srcNodes[0];
+
+            // Figuring out source type
+            if (srcNode.Name == "src") {
 
                 // Static source
                 AppendStaticSource (e.Args, context);
+            } else {
+
+                // Relative source
+                AppendRelativeOrEventSource (e.Args, context);
             }
         }
         
@@ -58,7 +71,10 @@ namespace p5.lambda.keywords
                 // Verifying destination actually is a node
                 var curDest = idxDestination.Value as Node;
                 if (curDest == null)
-                    throw new LambdaException ("Cannot [add] into something that's not a node", args, context);
+                    throw new LambdaException (
+                        "Cannot [add] into something that's not a node", 
+                        args, 
+                        context);
 
                 // Looping through each source
                 foreach (var idxSource in sourceNodes) {
@@ -72,7 +88,7 @@ namespace p5.lambda.keywords
         /*
          * Appends a relative source into destination
          */
-        private static void AppendRelativeSource (Node args, ApplicationContext context)
+        private static void AppendRelativeOrEventSource (Node args, ApplicationContext context)
         {
             // Looping through each destination
             foreach (var idxDestination in args.Get<Expression> (context).Evaluate (context, args, args)) {

@@ -56,6 +56,13 @@ namespace p5.mime
                 // Looping through each MIME message supplied
                 foreach (var idxMimeMessage in XUtil.Iterate<string> (context, e.Args, true)) {
 
+                    // Sanity check
+                    if (string.IsNullOrEmpty (idxMimeMessage))
+                        throw new LambdaException (
+                            "No MIME message provided to [p5.mime.parse]",
+                            e.Args,
+                            context);
+
                     // Loading MIME entity from stream
                     using (var writer = new StreamWriter (new MemoryStream ())) {
 

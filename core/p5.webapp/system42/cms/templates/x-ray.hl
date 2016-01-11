@@ -43,13 +43,47 @@ create-widget:template-root
                   innerValue:@"<span class=""icon-bar""></span>"
 
                 /*
-                 * Logo
+                 * X-Ray button, to inspect widgets on page
                  */
                 literal:x-ray
                   element:a
-                  href:http://phosphorusfive.wordpress.com
+                  href:
                   class:navbar-brand navbar-icon-p5
-                  title:Got Privacy ...?
+                  title:X-Ray Inspector
+                  accesskey:Q
+                  _on-x-ray
+                    get-http-param:_x-ray-clicked
+                    add:x:/+
+                      src:x:/./-/*
+                    sys42.execute-lisp-file:/system42/apps/x-ray-inspector/launch.hl
+                  onclick
+                    sys42.info-window:@"Click any element on screen to view its server side Hyperlisp code. Refresh page to turn off X-Ray Inspector"
+                      _time:more
+                    send-javascript:@"$('*').click(function(e){e.preventDefault();});
+$('[onclick]').removeAttr('onclick');
+$('body').css('cursor', 'pointer');
+$('body').css('background-color', 'rgba(125,255,128,.5)');
+$('body').click( function(e) {
+  var path = '';
+  var cur = e.target;
+  while (cur !== null) {
+    if(cur.id) {
+      if(path !== '') {
+        path += '|';
+      }
+      path += cur.id;
+    }
+    cur = cur.parentNode;
+  }
+  p5.$('x-ray').raise('_on-x-ray', {
+    onbefore: function (pars,evt){
+      pars.push(['_x-ray-clicked', path]);
+    }
+  });
+  $('body').off('click');
+  $('body').css('cursor', 'default');
+});
+"
 
             /*
              * Main menu items wrapper

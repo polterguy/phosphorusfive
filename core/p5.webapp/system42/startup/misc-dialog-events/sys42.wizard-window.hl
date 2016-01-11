@@ -21,7 +21,7 @@
  *              as properties and attributes for your specified widget. For an example of usage, 
  *              see "sys42.zip-window" Active Event
  */
-set-protected-event:sys42.wizard-window
+create-protected-event:sys42.wizard-window
 
   /*
    * Making sure we delete any previously created dialogs

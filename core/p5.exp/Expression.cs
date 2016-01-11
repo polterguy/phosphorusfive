@@ -236,40 +236,72 @@ namespace p5.exp
                     break;
                 case "..":
 
+                    // Sanity check!
+                    if (previousToken != "/")
+                        throw new ExpressionException (Value, "Missing '/' before possible iterator");
+
                     // Root node token
                     current.AddIterator (new IteratorRoot ());
                     break;
                 case "*":
+
+                    // Sanity check!
+                    if (previousToken != "/")
+                        throw new ExpressionException (Value, "Missing '/' before possible iterator");
 
                     // All children token
                     current.AddIterator (new IteratorChildren ());
                     break;
                 case "**":
 
+                    // Sanity check!
+                    if (previousToken != "/")
+                        throw new ExpressionException (Value, "Missing '/' before possible iterator");
+
                     // Flatten descendants token
                     current.AddIterator (new IteratorDescendants ());
                     break;
                 case ".":
+
+                    // Sanity check!
+                    if (previousToken != "/")
+                        throw new ExpressionException (Value, "Missing '/' before possible iterator");
 
                     // Parent node token
                     current.AddIterator (new IteratorParent ());
                     break;
                 case "#":
 
+                    // Sanity check!
+                    if (previousToken != "/")
+                        throw new ExpressionException (Value, "Missing '/' before possible iterator");
+
                     // Reference node token
                     current.AddIterator (new IteratorReference ());
                     break;
                 case "<":
+
+                    // Sanity check!
+                    if (previousToken != "/")
+                        throw new ExpressionException (Value, "Missing '/' before possible iterator");
 
                     // Left shift token
                     current.AddIterator (new IteratorShiftLeft ());
                     break;
                 case ">":
 
+                    // Sanity check!
+                    if (previousToken != "/")
+                        throw new ExpressionException (Value, "Missing '/' before possible iterator");
+
                     // Right shift token
                     current.AddIterator (new IteratorShiftRight ());
                     break;
                 default:
+
+                    // Sanity check!
+                    if (previousToken != "/")
+                        throw new ExpressionException (Value, "Missing '/' before possible iterator");
 
                     // Handles everything else
                     if (token.StartsWith ("=")) {

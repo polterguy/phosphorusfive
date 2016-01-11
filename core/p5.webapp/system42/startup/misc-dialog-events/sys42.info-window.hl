@@ -13,7 +13,7 @@
  *
  * You cannot show more than one instance of this window at the time
  */
-set-protected-event:sys42.info-window
+create-protected-event:sys42.info-window
 
   /*
    * Making sure we delete any previously created windows

@@ -9,7 +9,7 @@
  * (Marvin key) of your system, which can be configured in web.config
  */
 
-set-protected-event:sys42.invoke-secure-webservice
+create-protected-event:sys42.invoke-secure-webservice
 
   // Retrieving key and password for signing MIME entity
   p5.security.get-marvin-pgp-key

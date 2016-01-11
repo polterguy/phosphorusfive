@@ -4,7 +4,7 @@
  * if a web service invocation has expired or not
  */
 
-set-protected-event:sys42.expired-webservice-invocation
+create-protected-event:sys42.expired-webservice-invocation
 
   // Retrieving current time, and calculating delta from "creation of web service invocation to current time"
   date-now

@@ -5,7 +5,7 @@
  * to exeute can be given either as an expression, or a constant. Multiple files can be executed at 
  * the same time, by providing an expression that leads to multiple results
  */
-set-event:sys42.execute-lisp-file
+create-event:sys42.execute-lisp-file
 
   // loading up all files given as arguments
   load-file:x:/../*/_arg?value
@@ -26,7 +26,7 @@ set-event:sys42.execute-lisp-file
  * [sys42.execute-lisp-folder] node, which might be either an expression or a constant. You can
  * pass in multiple folders by using expressions as an argument.
  */
-set-event:sys42.execute-lisp-folder
+create-event:sys42.execute-lisp-folder
 
   // listing all files in directories we're given
   list-files:x:/../*/_arg?value

@@ -369,80 +369,58 @@ namespace p5.exp
             Node evaluatedNode, 
             Node dataSource)
         {
-            // Finding first [src] or [rel-src] node
-            var firstSourceNode = evaluatedNode.Children.FirstOrDefault (ix => ix.Name != "");
+            // Retrieving all children who's value is not "", as potential source nodes
+            var srcNodes = evaluatedNode.Children.Where (ix => ix.Name != "").ToList ();
 
             // Returning early if there is no source
-            if (firstSourceNode == null)
+            if (srcNodes.Count == 0)
                 return null; // no source!
 
-            // Checking what type of source we have, it might be [src], [rel-src] or any Active Event
-            if (firstSourceNode.Name != "src" && firstSourceNode.Name != "rel-src") {
+            // Sanity check, making sure there's only one source node
+            if (srcNodes.Count > 1)
+                throw new LambdaException (
+                    string.Format ("Multiple source nodes found for [{0}] invocation", evaluatedNode.Name), 
+                    evaluatedNode, 
+                    context);
 
-                // Active Event invocation source, iterating through all source events, invoking Active 
-                // event, updating with result from Active Event invocation.
-                // Logic here is that if value of executed node changes, and is not null, then value has presedence,
-                // otherwise children nodes of executed node will be used as source.
-                // Note, if ONE of the executed Active Events returns something as "value", then no nodes
-                // returned from Active Events as children will be even evaluated as source candidates
-                Node tmpRetVal = new Node ();
-                foreach (var idxSrcNode in evaluatedNode.Children.Where (idx => idx.Name != "")) {
+            // OK, we're sane, so far ...
+            var srcNode = srcNodes [0];
 
-                    // Raising currently iterated Active Event source, but storing value to see if it changes
-                    var oldValue = idxSrcNode.Value;
-                    context.RaiseLambda (idxSrcNode.Name, idxSrcNode);
+            // Checking what type of source we have, it might be [src], [rel-src] or any Active Event invocation
+            if (srcNode.Name == "src" || srcNode.Name == "rel-src") {
 
-                    // Checking if we should use value or children as source, value has presedence, 
-                    // but only if it exist, and has changed!
-                    if ((oldValue == null && idxSrcNode.Value != null) || 
-                        (oldValue != null && idxSrcNode.Value != null && !oldValue.Equals (idxSrcNode.Value))) {
-
-                        // Value has presedence
-                        if (tmpRetVal.Value == null)
-                            tmpRetVal.Value = idxSrcNode.Value;
-                        else
-                            tmpRetVal.Value = tmpRetVal.Get<string> (context) + idxSrcNode.Value; // Concatenating as strings
-                        tmpRetVal.Clear (); // Dropping all other potential candidates!
-                    } else {
-
-                        // Children nodes are used
-                        tmpRetVal.AddRange (idxSrcNode.Clone ().Children);
-                    }
-                }
-                return SourceSingleImplementation (context, tmpRetVal, tmpRetVal);
+                // Returning "simple source"
+                // To support having sources which differs from evaluated lambda, such as [select-data] requires, 
+                // we pass in dataSource if dataSource differs from evaluatedNode, otherwise we pass in source node 
+                // itself as dataSource
+                return SourceSingleImplementation (
+                    context,
+                    srcNode, 
+                    dataSource == evaluatedNode ? srcNode : dataSource);
             } else {
 
-                // Simple source, there might still exist several [src] or [rel-src] children, 
-                // making sure we use them all, and making sure [src] and [rel-src] is not mixed!
-                string srcType = null;
+                // Active Event invocation source, invoking Active Event, return source as result from Active Event invocation.
+                // Cloning Active Event source node, such that we can reset node after invocation, and invoke event immutable
+                var origSrcNode = srcNode.Clone ();
 
-                // Used as return value
-                Node retVal = new Node ();
+                // Adding "Data Node" as argument to Active Event
+                srcNode.Add ("_dn", dataSource);
 
-                // Iterating through each [src] and/or [rel-src], verify that they're never mixed in same operation
-                foreach (var idxSource in evaluatedNode.Children.Where (ix => ix.Name == "src" || ix.Name == "rel-src")) {
+                // Making sure source evaluation is immutable, regardless of whether or not exceptions occur!
+                try {
 
-                    // Making sure [src] and [rel-src] is never mixed
-                    if (srcType == null)
-                        srcType = idxSource.Name;
-                    else if (srcType != idxSource.Name)
-                        throw new LambdaException (
-                            "You cannot mix [src] with [rel-src] for the same operation", 
-                            evaluatedNode, 
-                            context);
+                    // Raising Active Event given as source
+                    context.RaiseLambda (srcNode.Name, srcNode);
 
-                    // Retrieving surrently iterated source
-                    var curSource = SourceSingleImplementation (
-                        context,
-                        idxSource, 
-                        dataSource == evaluatedNode ? idxSource : dataSource);
+                    // Returning result of Active Event invocation as source
+                    return SourceSingleImplementation (context, srcNode, srcNode);
+                } finally {
 
-                    // Appending to retval
-                    retVal.Add ("", curSource);
+                    // Making sure we reset source node back to its original state, such that evaluation of Active Event becomes immutable
+                    srcNode.Value = origSrcNode.Value;
+                    srcNode.Name = origSrcNode.Name;
+                    srcNode.Clear ().AddRange (origSrcNode.Children);
                 }
-
-                // Making sure we return one single source object
-                return Single<object> (context, retVal);
             }
         }
 
@@ -454,27 +432,35 @@ namespace p5.exp
             Node evaluatedNode, 
             Node dataSource)
         {
+            // Prioritizing value!
             if (evaluatedNode.Value != null) {
 
                 // This might be an expression, or a constant, converting value to single object, somehow
                 return Single<object> (context, evaluatedNode, dataSource);
             } else {
 
-                // There are no values in [src] node, trying to create source out of [src]'s children
-                if (evaluatedNode.Children.Count == 1) {
+                // There is no value in [src] node, trying to create source out of [src]'s children
+                if (evaluatedNode.Children.Count == 0) {
 
-                    // Source is a constant node, making sure we clone it, in case source and destination overlaps
+                    // "null source"
+                    return null;
+                } else if (evaluatedNode.Children.Count == 1) {
+
+                    // Source is a constant node, making sure we clone it, before returning it
                     return evaluatedNode.FirstChild.Clone ();
                 } else {
 
-                    // More than one source, returning "wrapper node", since we need a single source
-                    return evaluatedNode.Clone ();
+                    // More than one source, which is a logical error!
+                    throw new LambdaException (
+                        "Sorry, I cannot create a sane single source from given argument, there are multiple children, and no value", 
+                        evaluatedNode, 
+                        context);
                 }
             }
         }
 
         /// <summary>
-        ///    Will return multiple values if feasable
+        ///    Will return multiple values if possible
         /// </summary>
         /// <returns>The nodes</returns>
         /// <param name="evaluatedNode">Evaluated node</param>
@@ -499,80 +485,54 @@ namespace p5.exp
             Node dataSource)
         {
             // Finding first [src] or [rel-src] node
-            var firstSourceNode = evaluatedNode.Children.FirstOrDefault (ix => ix.Name != "");
+            var srcNodes = evaluatedNode.Children.Where (ix => ix.Name != "").ToList ();
 
             // Returning early if there is no source
-            if (firstSourceNode == null)
+            if (srcNodes.Count == 0)
                 return null; // no source!
 
+            // Sanity check!
+            if (srcNodes.Count != 1)
+                throw new LambdaException (
+                    string.Format ("Multiple source nodes found for [{0}]", evaluatedNode.Name),
+                    evaluatedNode,
+                    context);
+
+            // OK, we're sane, so far ...
+            var srcNode = srcNodes [0];
+
             // Checking what type of source we have, it might be [src], [rel-src] or any Active Event
-            if (firstSourceNode.Name != "src" && firstSourceNode.Name != "rel-src") {
+            if (srcNode.Name == "src" || srcNode.Name == "rel-src") {
 
-                // Active Event invocation source, iterating through all source events, invoking Active 
-                // event, updating with result from Active Event invocation.
-                // Logic here is that if value of executed node changes, and is not null, then value has presedence,
-                // otherwise children nodes of executed node will be used as source.
-                // Note, if ONE of the executed Active Events returns something as "value", then no nodes
-                // returned from Active Events as children will be even evaluated as source candidates
-                Node tmpRetVal = new Node ();
-                foreach (var idxSrcNode in evaluatedNode.Children.Where (idx => idx.Name != "")) {
-
-                    // Raising currently iterated Active Event source, but storing value to see if it changes
-                    var oldValue = idxSrcNode.Value;
-                    context.RaiseLambda (idxSrcNode.Name, idxSrcNode);
-
-                    // Checking if we should use value or children as source, value has presedence, 
-                    // but only if it exist, and has changed!
-                    if ((oldValue == null && idxSrcNode.Value != null) || 
-                        (oldValue != null && idxSrcNode.Value != null && !oldValue.Equals (idxSrcNode.Value))) {
-
-                        // Value has presedence
-                        if (idxSrcNode.Value is Node) {
-
-                            // Value is node
-                            tmpRetVal.Add (idxSrcNode.Get<Node> (context).Clone ());
-                        } else {
-
-                            // Value is NOT node, converting to node list before adding, but adding CHILDREN since conversion creates a "wrapper node"
-                            tmpRetVal.AddRange (idxSrcNode.Get<Node> (context).Children);
-                        }
-                    } else {
-
-                        // Children nodes are used, since there was no Value in Active Event invocation node after 
-                        // invocation, or value was never changed!
-                        tmpRetVal.AddRange (idxSrcNode.Clone ().Children);
-                    }
-                }
-                return SourceNodesImplementation (context, tmpRetVal, tmpRetVal);
+                // Simple source, either [src] or [rel-src]
+                return SourceNodesImplementation (
+                    context,
+                    srcNode, 
+                    dataSource == evaluatedNode ? srcNode : dataSource);
             } else {
 
-                // Simple source, either [src] or [rel-src], but there might still exist multiple [src] or [rel-src] nodes!
-                var retVal = new List<Node> ();
+                // Active Event invocation source, invoking Active Event, return source as result from Active Event invocation.
+                // Cloning Active Event source node, such that we can reset node after invocation, and invoke event immutable
+                var origSrcNode = srcNode.Clone ();
 
-                // Iterating through each [src] or [rel-src] nodes, making sure there's only [src] sources or only [rel-src] sources
-                // since these cannot be mixed!
-                string srcType = null;
-                foreach (var idxSource in evaluatedNode.Children.Where (ix => ix.Name == "src" || ix.Name == "rel-src")) {
+                // Adding "Data Node" as argument to Active Event
+                srcNode.Add ("_dn", dataSource);
 
-                    // Basic syntax checking, to avoid mixing [rel-src] and [src]
-                    if (srcType == null)
-                        srcType = idxSource.Name;
-                    else if (srcType != idxSource.Name)
-                        throw new LambdaException ("You cannot mix [src] and [rel-src] in same operation", evaluatedNode, context);
+                // Making sure source evaluation is immutable, regardless of whether or not exceptions occur!
+                try {
 
-                    // Getting currently iterated source
-                    var curSrc = SourceNodesImplementation (
-                        context,
-                        idxSource, 
-                        dataSource == evaluatedNode ? idxSource : dataSource);
+                    // Raising Active Event given as source
+                    context.RaiseLambda (srcNode.Name, srcNode);
 
-                    // Appending currently iterated source into return value, but verify that there actually IS a source first!
-                    if (curSrc != null)
-                        retVal.AddRange (curSrc);
+                    // Returning result of Active Event invocation as source
+                    return SourceNodesImplementation (context, srcNode, srcNode);
+                } finally {
+
+                    // Making sure we reset source node back to its original state, such that evaluation of Active Event becomes immutable
+                    srcNode.Value = origSrcNode.Value;
+                    srcNode.Name = origSrcNode.Name;
+                    srcNode.Clear ().AddRange (origSrcNode.Children);
                 }
-
-                // Returning source
-                return retVal;
             }
         }
 
@@ -618,7 +578,11 @@ namespace p5.exp
                     // Source is not an expression, but a string value. This will trigger a conversion
                     // from string, to node, creating a "root node" during conversion. We are discarding this 
                     // "root" node, and only adding children of that automatically generated root node
-                    sourceNodes.AddRange (Utilities.Convert<Node> (context, FormatNode(context, evaluatedNode)).Children.Select (idx => idx.Clone ()));
+                    sourceNodes.AddRange (
+                        Utilities.Convert<Node> (
+                            context, 
+                            FormatNode(context, evaluatedNode))
+                        .Children);
                 } else if (evaluatedNode.Value == null) {
 
                     // Source has no value, neither static string values, nor expressions.
@@ -627,8 +591,14 @@ namespace p5.exp
                 } else {
 
                     // Source is not an expression, but has a non-string value. Making sure we create a node
-                    // out of that value, returning that node back to caller
-                    sourceNodes.Add (new Node ("", evaluatedNode.Value));
+                    // out of that value, returning that node back to caller. Making sure we do NOT return the
+                    // automatically created "wrapper" object, which is created in this process, but rather its children!
+                    var strValue = Utilities.Convert<string> (context, evaluatedNode.Value, "");
+                    sourceNodes.AddRange (
+                        Utilities.Convert<Node> (
+                            context, 
+                            strValue)
+                        .Children);
                 }
             }
 

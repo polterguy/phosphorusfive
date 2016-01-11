@@ -22,7 +22,7 @@
  * The PGP key used to sign the incoming MIME message, will be used for encrypting the returned result
  */
 
-set-protected-event:sys42.evaluate-secure-webservice
+create-protected-event:sys42.evaluate-secure-webservice
 
   // Retrieving key and password for decrypting MIME entity
   // Later used to sign the result, before returning it to caller

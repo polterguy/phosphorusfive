@@ -78,18 +78,22 @@ namespace p5.core
                 return (T) value;
 
             // Trying installed converters from ApplicationContext
-            if (typeof (T) == typeof (string)) {
+            if (typeof(T) == typeof(string)) {
 
                 // Converting from object, to string
-                var retVal = Convert2String (value, context, encode);
+                var retVal = Convert2String(value, context, encode);
                 if (retVal != null)
-                    return (T) (object) retVal;
-            } else if (value.GetType () == typeof (string)) {
+                    return (T)(object)retVal;
+            } else if (value.GetType() == typeof(string)) {
 
                 // Converting from string to object
-                var retVal = Convert2Object<T> (value, context);
-                if (retVal != null && !retVal.Equals (default (T)))
+                var retVal = Convert2Object<T>(value, context);
+                if (retVal != null && !retVal.Equals(default (T)))
                     return retVal;
+            } else if (typeof(T) == typeof(Node)) {
+
+                // Converting to Node somehow, and value is NOT string, creating string out of value first
+                return (T)(object)Convert<Node> (context, Convert<string> (context, value), defaultValue as Node).FirstChild.UnTie ();
             }
 
             // Checking if type is IConvertible

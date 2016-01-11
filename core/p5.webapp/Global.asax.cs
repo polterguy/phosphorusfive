@@ -90,12 +90,24 @@ namespace p5
             #region [ -- Common helper Active Event sinks to retrieve global settings -- ]
 
             /// <summary>
+            ///     Returns the TimeSpan for how old a Web Service invocation can be before it is considered to be "out of date"
+            /// </summary>
+            /// <param name="context">Application Context</param>
+            /// <param name="e">Parameters passed into Active Event</param>
+            [ActiveEvent (Name = "p5.security.get-web-service-invocation-fresh-time", Protection = EventProtection.LambdaClosed)]
+            public static void p5_security_get_web_service_invocation_fresh_time (ApplicationContext context, ActiveEventArgs e)
+            {
+                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
+                e.Args.Value = Utilities.Convert<TimeSpan> (context, configuration.WebServiceInvocationsFreshTime);
+            }
+
+            /// <summary>
             ///     Returns the name of the server PGP key to use for encryption operations
             /// </summary>
             /// <param name="context">Application Context</param>
             /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.security.get-marvin-pgp-key", Protection = EventProtection.LambdaClosed)]
-            public static void p5_security_get_marvin_pgp_key (ApplicationContext context, ActiveEventArgs e)
+            [ActiveEvent (Name = "p5.security.get-marvin-pgp-key", Protection = EventProtection.NativeClosed)]
+            private static void p5_security_get_marvin_pgp_key (ApplicationContext context, ActiveEventArgs e)
             {
                 var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
                 e.Args.Value = configuration.MarvinPgpKey;
@@ -106,23 +118,11 @@ namespace p5
             /// </summary>
             /// <param name="context">Application Context</param>
             /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.security.get-marvin-pgp-key-password", Protection = EventProtection.LambdaClosed)]
-            public static void p5_security_get_marvin_pgp_key_password (ApplicationContext context, ActiveEventArgs e)
+            [ActiveEvent (Name = "p5.security.get-marvin-pgp-key-password", Protection = EventProtection.NativeClosed)]
+            private static void p5_security_get_marvin_pgp_key_password (ApplicationContext context, ActiveEventArgs e)
             {
                 var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
                 e.Args.Value = configuration.MarvinPgpKeyPassword;
-            }
-
-            /// <summary>
-            ///     Returns the TimeSpan for how old a Web Service invocation can be before it is considered to be "out of date"
-            /// </summary>
-            /// <param name="context">Application Context</param>
-            /// <param name="e">Parameters passed into Active Event</param>
-            [ActiveEvent (Name = "p5.security.get-web-service-invocation-fresh-time", Protection = EventProtection.LambdaClosed)]
-            public static void p5_security_get_web_service_invocation_fresh_time (ApplicationContext context, ActiveEventArgs e)
-            {
-                var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
-                e.Args.Value = Utilities.Convert<TimeSpan> (context, configuration.WebServiceInvocationsFreshTime);
             }
 
             /// <summary>

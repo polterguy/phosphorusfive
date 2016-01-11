@@ -5,7 +5,7 @@
  * of zip file after zipping it
  */
 
-set-protected-event:sys42.zip-window
+create-protected-event:sys42.zip-window
 
   /*
    * Asks user if he or she wants to associate a password with zip file created,

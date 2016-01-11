@@ -46,14 +46,14 @@ namespace p5.lambda.keywords
             if (!(args.Value is Expression))
                 throw new LambdaException ("Not a valid destination expression given, make sure you set [" + args.Name + "]'s value to an expression using :x:", args, context);
 
-            if (args.Children.Count > 0 && args.LastChild.Name == "rel-src") {
-
-                // Relative source
-                InsertRelativeSource (args, context, after);
-            } else {
+            if (args.Children.Count > 0 && args.LastChild.Name == "src") {
 
                 // Static source
                 InsertStaticSource (args, context, after);
+            } else {
+
+                // Relative source
+                InsertRelativeSource (args, context, after);
             }
         }
 
@@ -78,11 +78,14 @@ namespace p5.lambda.keywords
                 if (curDest == null)
                     throw new LambdaException ("cannot [insert-before] or [insert-after] into something that's not a node", args, context);
 
+                // Finding index of currently iterated destination
+                var index = curDest.Parent.IndexOf (curDest) + (after ? 1 : 0);
+
                 // Looping through each node in source
                 foreach (var idxSourceNode in sourceNodes) {
 
-                    // Inserting copy into currently iterated destination
-                    curDest.Parent.Insert (curDest.Parent.IndexOf (curDest) + (after ? 1 : 0), idxSourceNode.Clone ());
+                    // Inserting copy into currently iterated destination, and incrementing index by one
+                    curDest.Parent.Insert (index++, idxSourceNode.Clone ());
                 }
             }
         }
@@ -100,11 +103,14 @@ namespace p5.lambda.keywords
                 if (curDest == null)
                     throw new LambdaException ("cannot [insert-before] or [insert-after] into something that's not a node", args, context);
 
+                // Finding index of currently iterated destination
+                var index = curDest.Parent.IndexOf (curDest) + (after ? 1 : 0);
+
                 // Evaluating source relative to destination, and iterating over each relative source
                 foreach (var idxSource in XUtil.SourceNodes (context, args, idxDestination.Node)) {
 
                     // Inserting copy of source into currently iterated destination
-                    curDest.Parent.Insert (curDest.Parent.IndexOf (curDest) + (after ? 1 : 0), idxSource.Clone ());
+                    curDest.Parent.Insert (index++, idxSource.Clone ());
                 }
             }
         }

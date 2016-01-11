@@ -4,7 +4,7 @@
  * trust. Input is fingerprint of public key
  */
 
-set-protected-event:sys42.verify-signature-is-friend
+create-protected-event:sys42.verify-signature-is-friend
 
   /*
    * Loading list of friends we trust
