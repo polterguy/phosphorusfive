@@ -135,10 +135,10 @@ create-widget:file-browser
           eval-x:x:/+/**/object
           set-session-value:sys42.selected-file-browser-object
             src
-              type:file
               object:{0}{1}
                 :x:/../*/get-session-value/*?value
                 :x:/../*/get-widget-property/*/file-name/*?value
+                type:file
           sys42.create-selected-object-clues:{0}{1}
             :x:/../*/get-session-value/*/*?value
             :x:/../*/get-widget-property/*/file-name/*?value
@@ -393,7 +393,7 @@ create-widget:file-browser
           // Putting currently active object into session, 
           // to store which object has been "Copied"
           get-session-value:sys42.selected-file-browser-object
-          add:x:/../*/set-session-value/*
+          add:x:/../*/set-session-value/*/*
             src:x:/./-/*/*
           set-session-value:sys42.copied-file-browser-object
             src
@@ -404,7 +404,7 @@ create-widget:file-browser
 
           // Showing popup to user, informing him that action was successful
           sys42.info-window:@"{0} was stored in clipboard"
-            :x:/../*/get-session-value/*/*/type?value
+            :x:/../*/get-session-value/*/*/*/type?value
 
 
         /*
@@ -415,7 +415,7 @@ create-widget:file-browser
           // Putting currently active object into session, 
           // to store which object has been "Cut"
           get-session-value:sys42.selected-file-browser-object
-          add:x:/../*/set-session-value/*
+          add:x:/../*/set-session-value/*/*
             src:x:/./-/*/*
           set-session-value:sys42.copied-file-browser-object
             src
@@ -426,7 +426,7 @@ create-widget:file-browser
 
           // Showing popup to user, informing him that action was successful
           sys42.info-window:@"{0} was stored in clipboard"
-            :x:/../*/get-session-value/*/*/type?value
+            :x:/../*/get-session-value/*/*/*/type?value
 
 
         /*
@@ -439,7 +439,7 @@ create-widget:file-browser
           // filepath
           get-session-value:sys42.copied-file-browser-object
           get-session-value:sys42.current-folder
-          split:x:/../*/get-session-value/[0,1]/*/*/object?value
+          split:x:/../*/get-session-value/[0,1]/*/*/*/object?value
             =:/
 
           // This will do the actual work after modifying "foo-bar" to correct Active Event
@@ -453,11 +453,11 @@ create-widget:file-browser
           set:x:/../*/_x-copy-move-file/0?name
             src:{0}-{1}
               :x:/../*/get-session-value/[0,1]/*/*/operation?value
-              :x:/../*/get-session-value/[0,1]/*/*/type?value
+              :x:/../*/get-session-value/[0,1]/*/*/*/*/type?value
 
           // Setting source file for operation
           set:x:/../*/_x-copy-move-file/0?value
-            src:x:/../*/get-session-value/[0,1]/*/*/object?value
+            src:x:/../*/get-session-value/[0,1]/*/*/*/object?value
 
           // Setting destination filepath for operation
           set:x:/../*/_x-copy-move-file/0/0?value
@@ -466,7 +466,7 @@ create-widget:file-browser
               :x:/../*/split/0/-?name
 
           // Making sure we append "/" at end if type of source is a folder
-          if:x:/../*/get-session-value/[0,1]/*/*/type?value
+          if:x:/../*/get-session-value/[0,1]/*/*/*/*/type?value
             =:folder
             set:x:/../*/_x-copy-move-file/0/0?value
               src:{0}{1}
@@ -478,14 +478,14 @@ create-widget:file-browser
 
           // Updating currently selected object to be the new file/folder that
           // was moved/copied
-          set:x:/../*/set-session-value/*/*/type?value
-            src:x:/../*/get-session-value/[0,1]/*/*/type?value
+          set:x:/../*/set-session-value/*/*/*/type?value
+            src:x:/../*/get-session-value/[0,1]/*/*/*/*/type?value
           set:x:/../*/set-session-value/*/*/object?value
             src:x:/../*/eval?value
           set-session-value:sys42.selected-file-browser-object
             src
-              type
               object
+                type
 
           // Re-creating folder content, to reflect our new file/folder here ...
           sys42.create-current-folder-content
@@ -508,7 +508,7 @@ create-widget:file-browser
 
           // Showing popup to user, informing him that action was successful
           sys42.info-window:@"{0} was pasted into current folder"
-            :x:/../*/get-session-value/*/*/type?value
+            :x:/../*/get-session-value/*/*/*/type?value
 
 
         /*
@@ -519,7 +519,7 @@ create-widget:file-browser
           // Retrieving currently selected file, and passing onto session
           // value tracking which file to download, before we refresh browser window
           get-session-value:sys42.selected-file-browser-object
-          if:x:/-/*/*/type?value
+          if:x:/-/*/*/*/type?value
             =:file
 
             // Downloading file
@@ -565,10 +565,10 @@ create-widget:file-browser
           // or not this is "file" or "folder"
           set:x:/../*/create-literal-widget/*/placeholder?value
             src:New name of {0} ...
-              :x:/../*/get-session-value/*/*/type?value
+              :x:/../*/get-session-value/*/*/*/type?value
           set:x:/../*/create-literal-widget/*/title?value
             src:New name of {0} ...
-              :x:/../*/get-session-value/*/*/type?value
+              :x:/../*/get-session-value/*/*/*/type?value
 
           // Setting focus to "Rename" textbox
           send-javascript:@"$('#rename-file-object').focus().select();"
@@ -639,7 +639,7 @@ create-widget:file-browser
                   set:x:/+/*/_body?value
                     src:@"Sorry, I cannot rename your '{0}' to <strong>'{1}'</strong>, since there's already 
 another file/folder with that name"
-                      :x:/../*/get-session-value/*/*/type?value
+                      :x:/../*/get-session-value/*/*/*/type?value
                       :x:/../*/get-widget-property/*/*/value?value
                   sys42.confirm-window
                     _header:Object exist from before
@@ -651,8 +651,8 @@ another file/folder with that name"
                   // Renaming file/folder
                   set:x:/..else/*/foo-bar2?name
                     src:move-{0}
-                      :x:/../*/get-session-value/*/*/type?value
-                  if:x:/../*/get-session-value/*/*/type?value
+                      :x:/../*/get-session-value/*/*/*/type?value
+                  if:x:/../*/get-session-value/*/*/*/type?value
                     =:folder
                     set:x:/./+/*?value
                       src:{0}{1}/
@@ -703,18 +703,18 @@ another file/folder with that name"
           // Setting Header of dialog, including either "file" or "folder"
           set:x:/../*/sys42.confirm-window/*/_header?value
             src:Please confirm deletion of {0}
-              :x:/../*/get-session-value/*/*/type?value
+              :x:/../*/get-session-value/*/*/*/type?value
 
           // Setting body of dialog, including "file/folder" and file-/folder name
           set:x:/../*/sys42.confirm-window/*/_body?value
             src:Are you sure you wish to delete the {0}; <strong>'{1}'</strong>, this action cannot be undone!
-              :x:/../*/get-session-value/*/*/type?value
+              :x:/../*/get-session-value/*/*/*/type?value
               :x:/../*/split/0/-?name
 
           // Making sure we raise the correct Active Event upon "OK" of dialog
           set:x:/../*/sys42.confirm-window/*/_onok/0?name
             src:delete-{0}
-              :x:/../*/get-session-value/*/*/type?value
+              :x:/../*/get-session-value/*/*/*/type?value
 
           // Setting file-/folder name and path to delete upon "OK" of dialog
           set:x:/../*/sys42.confirm-window/*/_onok/0?value
@@ -722,7 +722,7 @@ another file/folder with that name"
 
           // Setting filename and object type to info-feedback window popdown
           set:x:/../*/sys42.confirm-window/*/_onok/*/sys42.info-window/0?value
-            src:x:/../*/get-session-value/*/*/type?value
+            src:x:/../*/get-session-value/*/*/*/type?value
           set:x:/../*/sys42.confirm-window/*/_onok/*/sys42.info-window/1?value
             src:x:/../*/split/0/-?name
 
@@ -826,8 +826,8 @@ file/folder with that name"
                       :x:/../*/get-widget-property/*/*?value
                   set-session-value:sys42.selected-file-browser-object
                     src
-                      type:folder
                       object
+                        type:folder
 
                   // Listing current folder's folders and files again, and showing visual clues for
                   // selected item
@@ -920,8 +920,8 @@ file/folder with that name"
                       :x:/../*/get-widget-property/*/*?value
                   set-session-value:sys42.selected-file-browser-object
                     src
-                      type:file
                       object
+                        type:file
 
                   // Listing current folder's folders and files again, and showing visual clues for
                   // selected item
@@ -963,8 +963,8 @@ file/folder with that name"
                 src:x:/././*/zip?value
               set-session-value:sys42.selected-file-browser-object
                 src
-                  type:file
                   object
+                    type:file
 
               // Re-creating current folder's content, since it now has also all the files from the GZIP archive
               sys42.create-current-folder-content
@@ -980,7 +980,7 @@ file/folder with that name"
               get-session-value:sys42.selected-file-browser-object
 
               sys42.info-window:@"{0} '{1}' was successfully zipped"
-                :x:/././*/get-session-value/*/*/type?value
+                :x:/././*/get-session-value/*/*/*/type?value
                 :x:/././*/split/0/-?name
 
               // Updating toolbar, since we've now selected a ZIP file
@@ -1070,7 +1070,7 @@ file/folder with that name"
 
         // Checking if this is a file, and if it ends with "zip", at which point
         // "Unzip file" button should be enabled
-        if:x:/../*/get-session-value/*/*/type?value
+        if:x:/../*/get-session-value/*/*/*/type?value
           =:file
           split:x:/../*/get-session-value/*/*/object?value
             =:.
@@ -1145,8 +1145,8 @@ file/folder with that name"
           sys42.change-current-folder:/
           set-session-value:sys42.selected-file-browser-object
             src
-              type:folder
               object
+                type:folder
 
           // Making sure folder where we came from becomes selected
           sys42.create-selected-object-clues:x:/-/*/*/object?value
@@ -1204,8 +1204,8 @@ file/folder with that name"
             // toolbar and visual clues
             set-session-value:sys42.selected-file-browser-object
               src
-                type:folder
                 object
+                  type:folder
             sys42.create-selected-object-clues:x:/-/*/*/object?value
             sys42.update-file-browser-toolbar
 
@@ -1324,7 +1324,7 @@ file/folder with that name"
 
       // Checking if folder is already selected
       get-session-value:sys42.selected-file-browser-object
-      if:x:/../*/get-session-value/*/*/type?value
+      if:x:/../*/get-session-value/*/*/*/type?value
         =:folder
         and:x:/../*/get-session-value/*/*/object?value
           =:x:/../*/_arg?value
@@ -1346,8 +1346,8 @@ file/folder with that name"
           src:x:/../*/_arg?value
         set-session-value:sys42.selected-file-browser-object
           src
-            type:folder
             object
+              type:folder
         sys42.create-selected-object-clues:x:/../*/_arg?value
 
         // Refreshing toolbar
@@ -1362,7 +1362,7 @@ file/folder with that name"
 
       // Checking if file is already selected
       get-session-value:sys42.selected-file-browser-object
-      if:x:/../*/get-session-value/*/*/type?value
+      if:x:/../*/get-session-value/*/*/*/type?value
         =:file
         and:x:/../*/get-session-value/*/*/object?value
           =:x:/../*/_arg?value
@@ -1376,8 +1376,8 @@ file/folder with that name"
           src:x:/../*/_arg?value
         set-session-value:sys42.selected-file-browser-object
           src
-            type:file
             object
+              type:file
 
         // Showing selected object clues
         sys42.create-selected-object-clues:x:/../*/_arg?value

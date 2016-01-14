@@ -43,18 +43,40 @@ namespace p5.exp
                 functor (args.Get<string> (context), args [0].Value);
             } else {
 
-                // Retrieving source
-                var source = Source (args.LastChild, context);
+                if (args.Children.Count > 0 && args.LastChild.Name != "src") {
 
-                // Looping through each destination, invoking functor for each object
-                foreach (var idxKey in XUtil.Iterate<string> (context, args, true)) {
+                    // Sanity check!
+                    var destEx = args.Value as Expression;
+                    if (destEx == null)
+                        throw new LambdaException (
+                            string.Format ("Not a valid destination expression given to Set, value was '{0}', expected expression", args.Value),
+                            args, 
+                            context);
 
-                    // Making sure caller does not try to set "protected data"
-                    if (idxKey.IndexOf ("_") == 0)
-                        throw new LambdaException ("User tried to update protected value in collection", args, context);
+                    // Iterating through all destinations, figuring out source either relative to each destinations,
+                    // or using Active Event source invocation
+                    foreach (var idxDestination in destEx.Evaluate (context, args, args)) {
 
-                    // Invoking functor
-                    functor (idxKey, source);
+                        // Source is relative to destination, postponing figuring it out, until we're inside 
+                        // our destination nodes, on each iteration, passing in destination node as data source
+                        functor (idxDestination.Value.ToString (), XUtil.SourceSingle (context, args, idxDestination.Node));
+                    }
+                } else {
+
+                    // Static source, or "null source", hence retrieving source before iteration starts, 
+                    // in case destination and source overlaps
+                    var source = XUtil.SourceSingle (context, args);
+
+                    // Looping through each destination, invoking functor for each object
+                    foreach (var idxKey in XUtil.Iterate<string> (context, args, true)) {
+
+                        // Making sure caller does not try to set "protected data"
+                        if (idxKey.IndexOf ("_") == 0)
+                            throw new LambdaException ("User tried to update protected value in collection", args, context);
+
+                        // Invoking functor
+                        functor (idxKey, source);
+                    }
                 }
             }
         }
@@ -163,58 +185,6 @@ namespace p5.exp
                     }
                 }
             }
-        }
-
-        /*
-         * Helper to retrieve source for setters
-         */
-        private static object Source (Node evaluatedNode, ApplicationContext context)
-        {
-            object source = null;
-
-            // We have a [src] parameter here, figuring out what it points to, or contains
-            if (evaluatedNode == null) {
-                return null;
-            } else if (XUtil.IsExpression (evaluatedNode.Value)) {
-
-                // This is an expression which might lead to multiple results, trying to return one result,
-                // but will resort to returning List of objects if necssary
-                var tmpList = new List<object> (XUtil.Iterate<object> (context, evaluatedNode, evaluatedNode));
-                switch (tmpList.Count) {
-                    case 0:
-                        // No source values
-                        break;
-                    case 1:
-                        // One single object in list, returning only that single object
-                        source = tmpList [0];
-                        break;
-                    default:
-                        source = tmpList;
-                        break;
-                }
-            } else if (evaluatedNode.Value != null) {
-
-                // Source is a constant, might still be formatted
-                source = XUtil.FormatNode (context, evaluatedNode, evaluatedNode);
-
-                if (source is Node)
-                    source = (source as Node).Clone ();
-            } else {
-
-                // There are no value in [src] node, trying to create source out of [src]'s children
-                if (evaluatedNode.Children.Count == 1) {
-
-                    // Source is a constant node, making sure we clone it, in case source and destination overlaps
-                    source = evaluatedNode.FirstChild.Clone ();
-                } else {
-
-                    // More than one source, making sure we clone them, before we return the clones
-                    source = evaluatedNode.Clone ().Children;
-                }
-            }
-
-            // returning source
-            return source;
         }
     }
 }
