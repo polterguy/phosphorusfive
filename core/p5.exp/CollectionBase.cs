@@ -34,7 +34,7 @@ namespace p5.exp
         /// <param name="context">Application Context</param>
         /// <param name="node">Root node of collection Active Event invoker</param>
         /// <param name="functor">Callback functor, will be invoked once for each key</param>
-        public static void Set (ApplicationContext context, Node args, SetDelegate functor, bool isNative = false)
+        public static void Set (ApplicationContext context, Node args, SetDelegate functor, bool isNative)
         {
             // Special handling of native invocations
             if (isNative) {
@@ -43,7 +43,7 @@ namespace p5.exp
                 functor (args.Get<string> (context), args [0].Value);
             } else {
 
-                if (args.Children.Count > 0 && args.LastChild.Name != "src") {
+                if (args.Children.Count (ix => ix.Name != "") > 0 && args.LastChild.Name != "src") {
 
                     // Sanity check!
                     var destEx = args.Value as Expression;
@@ -57,9 +57,14 @@ namespace p5.exp
                     // or using Active Event source invocation
                     foreach (var idxDestination in destEx.Evaluate (context, args, args)) {
 
+                        // Making sure caller does not try to set "protected data"
+                        var idxKey = Utilities.Convert<string> (context, idxDestination.Value);
+                        if (idxKey.IndexOf ("_") == 0)
+                            throw new LambdaException ("User tried to update protected value in collection", args, context);
+
                         // Source is relative to destination, postponing figuring it out, until we're inside 
                         // our destination nodes, on each iteration, passing in destination node as data source
-                        functor (idxDestination.Value.ToString (), XUtil.SourceSingle (context, args, idxDestination.Node));
+                        functor (idxKey, XUtil.SourceSingle (context, args, idxDestination.Node));
                     }
                 } else {
 
@@ -87,7 +92,7 @@ namespace p5.exp
         /// <param name="context">Application Context</param>
         /// <param name="node">Root node of collection Active Event invoker</param>
         /// <param name="functor">Callback functor, will be invoked once for each key</param>
-        public static void Get (ApplicationContext context, Node args, GetDelegate functor, bool isNative = false)
+        public static void Get (ApplicationContext context, Node args, GetDelegate functor, bool isNative)
         {
             // Special handling of native invocations
             if (isNative) {
@@ -156,7 +161,7 @@ namespace p5.exp
         /// <param name="context">Application Context</param>
         /// <param name="node">Root node of Active Event invoked</param>
         /// <param name="functor">Callback functor, will be invoked once to retrieve all keys from collection</param>
-        public static void List (ApplicationContext context, Node node, IEnumerable list, bool isNative = false)
+        public static void List (ApplicationContext context, Node node, IEnumerable list, bool isNative)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (node, true)) {

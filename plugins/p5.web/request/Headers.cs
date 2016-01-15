@@ -22,17 +22,7 @@ namespace p5.web.ui.request
         [ActiveEvent (Name = "get-http-header", Protection = EventProtection.LambdaClosed)]
         public static void get_http_header (ApplicationContext context, ActiveEventArgs e)
         {
-            // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args, true)) {
-
-                // Looping through each parameter requested by caller
-                foreach (var idx in XUtil.Iterate<string> (context, e.Args)) {
-
-                    // Adding parameter's name/value as Node return value
-                    if (HttpContext.Current.Request.Headers [idx] != null)
-                        e.Args.Add (idx, HttpContext.Current.Request.Headers [idx]);
-                }
-            }
+            CollectionBase.Get (context, e.Args, key => HttpContext.Current.Request.Headers [key], e.NativeSource);
         }
 
         /// <summary>
@@ -43,7 +33,7 @@ namespace p5.web.ui.request
         [ActiveEvent (Name = "list-http-headers", Protection = EventProtection.LambdaClosed)]
         public static void list_http_headers (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.List (context, e.Args, HttpContext.Current.Request.Headers.AllKeys);
+            CollectionBase.List (context, e.Args, HttpContext.Current.Request.Headers.AllKeys, e.NativeSource);
         }
     }
 }

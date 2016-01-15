@@ -33,7 +33,7 @@ namespace p5.web.storage
                     // adding object
                     HttpContext.Current.Application [key] = value;
                 }
-            });
+            }, e.NativeSource);
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace p5.web.storage
         [ActiveEvent (Name = "get-global-value", Protection = EventProtection.LambdaClosed)]
         public static void get_global_value (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.Get (context, e.Args, key => HttpContext.Current.Application [key]);
+            CollectionBase.Get (context, e.Args, key => HttpContext.Current.Application [key], e.NativeSource);
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace p5.web.storage
         [ActiveEvent (Name = "list-global-keys", Protection = EventProtection.LambdaClosed)]
         public static void list_global_keys (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.List (context, e.Args, HttpContext.Current.Application.AllKeys);
+            CollectionBase.List (context, e.Args, HttpContext.Current.Application.AllKeys, e.NativeSource);
         }
     }
 }

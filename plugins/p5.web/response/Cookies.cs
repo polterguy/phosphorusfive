@@ -37,7 +37,7 @@ namespace p5.web.ui.response
                     // Creating cookie
                     HttpContext.Current.Response.Cookies.Add (CreateCookieFromNode (e.Args, context, key, value));
                 }
-            });
+            }, e.NativeSource);
         }
 
         /*

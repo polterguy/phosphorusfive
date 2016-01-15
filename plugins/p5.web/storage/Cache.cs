@@ -34,7 +34,7 @@ namespace p5.web.storage
                     // Adding object
                     HttpContext.Current.Cache [key] = value;
                 }
-            });
+            }, e.NativeSource);
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace p5.web.storage
         [ActiveEvent (Name = "get-cache-value", Protection = EventProtection.LambdaClosed)]
         public static void get_cache_value (ApplicationContext context, ActiveEventArgs e)
         {
-            p5.exp.CollectionBase.Get (context, e.Args, key => HttpContext.Current.Cache [key]);
+            p5.exp.CollectionBase.Get (context, e.Args, key => HttpContext.Current.Cache [key], e.NativeSource);
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace p5.web.storage
             foreach (DictionaryEntry idx in HttpContext.Current.Cache) {
                 retVal.Add (idx.Key.ToString ());
             }
-            p5.exp.CollectionBase.List (context, e.Args, retVal);
+            p5.exp.CollectionBase.List (context, e.Args, retVal, e.NativeSource);
         }
     }
 }

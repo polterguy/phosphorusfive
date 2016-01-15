@@ -35,7 +35,7 @@ namespace p5.web.storage
                     // Adding object
                     HttpContext.Current.Items [key] = value;
                 }
-            });
+            }, e.NativeSource);
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace p5.web.storage
         [ActiveEvent (Name = "get-context-value", Protection = EventProtection.LambdaClosed)]
         public static void get_context_value (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.Get (context, e.Args, key => HttpContext.Current.Items [key]);
+            CollectionBase.Get (context, e.Args, key => HttpContext.Current.Items [key], e.NativeSource);
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace p5.web.storage
         [ActiveEvent (Name = "list-context-keys", Protection = EventProtection.LambdaClosed)]
         public static void list_context_keys (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.List (context, e.Args, HttpContext.Current.Items.Keys);
+            CollectionBase.List (context, e.Args, HttpContext.Current.Items.Keys, e.NativeSource);
         }
     }
 }

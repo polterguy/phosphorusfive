@@ -22,17 +22,7 @@ namespace p5.web.ui.request
         [ActiveEvent (Name = "get-http-param", Protection = EventProtection.LambdaClosed)]
         public static void get_http_param (ApplicationContext context, ActiveEventArgs e)
         {
-            // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args, true)) {
-
-                // Looping through each parameter requested by caller
-                foreach (var idx in XUtil.Iterate<string> (context, e.Args)) {
-
-                    // Adding parameter's name/value as Node return value
-                    if (HttpContext.Current.Request.Params [idx] != null)
-                        e.Args.Add (idx, HttpContext.Current.Request.Params [idx]);
-                }
-            }
+            CollectionBase.Get (context, e.Args, key => HttpContext.Current.Request.Params [key], e.NativeSource);
         }
 
         /// <summary>
@@ -43,7 +33,7 @@ namespace p5.web.ui.request
         [ActiveEvent (Name = "list-http-params", Protection = EventProtection.LambdaClosed)]
         public static void list_http_params (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.List (context, e.Args, HttpContext.Current.Request.Params.AllKeys);
+            CollectionBase.List (context, e.Args, HttpContext.Current.Request.Params.AllKeys, e.NativeSource);
         }
     }
 }

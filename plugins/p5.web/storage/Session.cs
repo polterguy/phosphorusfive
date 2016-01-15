@@ -35,7 +35,7 @@ namespace p5.web.storage
                     // Adding object
                     HttpContext.Current.Session [key] = value;
                 }
-            });
+            }, e.NativeSource);
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace p5.web.storage
         [ActiveEvent (Name = "get-session-value", Protection = EventProtection.LambdaClosed)]
         public static void get_session_value (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.Get (context, e.Args, key => HttpContext.Current.Session [key]);
+            CollectionBase.Get (context, e.Args, key => HttpContext.Current.Session [key], e.NativeSource);
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace p5.web.storage
         [ActiveEvent (Name = "list-session-keys", Protection = EventProtection.LambdaClosed)]
         public static void list_session_keys (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.List (context, e.Args, HttpContext.Current.Session.Keys);
+            CollectionBase.List (context, e.Args, HttpContext.Current.Session.Keys, e.NativeSource);
         }
     }
 }

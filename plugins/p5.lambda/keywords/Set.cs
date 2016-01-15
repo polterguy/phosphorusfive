@@ -3,6 +3,7 @@
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
+using System.Linq;
 using p5.core;
 using p5.exp;
 using p5.exp.exceptions;
@@ -31,7 +32,7 @@ namespace p5.lambda.keywords
                     context);
 
             // Figuring out source type, for then to execute the corresponding logic
-            if (e.Args.Children.Count > 0 && e.Args.LastChild.Name != "src") {
+            if (e.Args.Children.Count (ix => ix.Name != "") > 0 && e.Args.LastChild.Name != "src") {
 
                 // Iterating through all destinations, figuring out source either relative to each destinations,
                 // or using Active Event source invocation
