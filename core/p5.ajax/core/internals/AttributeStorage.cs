@@ -101,7 +101,6 @@ namespace p5.ajax.core.internals
         /// <value>The names of all attributes stored in this instance</value>
         public IEnumerable<string> Keys {
             get {
-                /// \todo refactor, too much repetition
                 Dictionary<string, bool> _alreadySen = new Dictionary<string, bool> ();
                 foreach (var idx in this._dynamicallyAddedThisRequest) {
                     yield return idx.Name;

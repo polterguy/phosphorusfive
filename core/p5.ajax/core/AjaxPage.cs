@@ -52,7 +52,11 @@ namespace p5.ajax
             ///     Returns the ajax manager for your page
             /// </summary>
             /// <value>the ajax manager</value>
-            public Manager Manager { get; private set; }
+            public Manager Manager
+            {
+                get;
+                private set;
+            }
 
             /// <summary>
             ///     Registers JavaScript files for your page

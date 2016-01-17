@@ -20,7 +20,8 @@ namespace p5.ajax.core.filters
         /// </summary>
         /// <param name="manager">The manager this instance is rendering for</param>
         public HtmlFilter (Manager manager)
-            : base (manager) { }
+            : base (manager)
+        { }
 
         /// <summary>
         ///     Renders the response
@@ -28,7 +29,7 @@ namespace p5.ajax.core.filters
         /// <returns>The HTML response returned back to client</returns>
         protected override string RenderResponse ()
         {
-            TextReader reader = new StreamReader (this, Encoding);
+            TextReader reader = new StreamReader (this, ContentEncoding);
             var content = reader.ReadToEnd ();
             content = IncludeStylesheetFiles (content);
             content = IncludeJavaScript (content);
@@ -42,14 +43,14 @@ namespace p5.ajax.core.filters
         private string IncludeStylesheetFiles (string content)
         {
             if ((Manager.Page as IAjaxPage).StylesheetFilesToPush.Count == 0)
-                return content; // nothing to do here
+                return content; // Nothing to do here
 
-            // Stripping away "</body>...</html>" from the end, and keeping the "</body>...</html>" parts to concatenate into result after
-            // inserting all JavaScript files inbetween
+            // Stripping away "</body>...</html>" from the end, and keeping the "</body>...</html>" 
+            // parts to concatenate into result after inserting all JavaScript files inbetween
             var endBuffer = "";
             var idxPosition = 0;
             for (; idxPosition < content.Length; idxPosition ++) {
-                if (endBuffer.EndsWith (">") && endBuffer.EndsWith ("<head>", StringComparison.InvariantCultureIgnoreCase))
+                if (endBuffer.EndsWith ("<head>"))
                     break;
                 endBuffer += content [idxPosition];
             }

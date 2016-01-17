@@ -26,7 +26,7 @@ namespace p5.web.ui.response
         [ActiveEvent (Name = "set-cookie", Protection = EventProtection.LambdaClosed)]
         public static void set_cookie (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.Set (context, e.Args, delegate (string key, object value) {
+            Collection.Set (context, e.Args, delegate (string key, object value) {
                 if (value == null) {
 
                     // Removing existing cookie

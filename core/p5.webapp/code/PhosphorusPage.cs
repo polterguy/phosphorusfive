@@ -72,7 +72,7 @@ namespace p5.webapp.code
         public void set_page_value (ApplicationContext context, ActiveEventArgs e)
         {
             // Using collection helper to traverse all keys supplied by caller
-            p5.exp.CollectionBase.Set (context, e.Args, (key, value) => {
+            p5.exp.Collection.Set (context, e.Args, (key, value) => {
 
                 // Checking if this is delete operation
                 if (value == null) {
@@ -95,7 +95,7 @@ namespace p5.webapp.code
         [ActiveEvent (Name = "get-page-value", Protection = EventProtection.LambdaClosed)]
         public void get_page_value (ApplicationContext context, ActiveEventArgs e)
         {
-            p5.exp.CollectionBase.Get (context, e.Args, key => ViewState [key], e.NativeSource);
+            p5.exp.Collection.Get (context, e.Args, key => ViewState [key], e.NativeSource);
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace p5.webapp.code
         [ActiveEvent (Name = "list-page-keys", Protection = EventProtection.LambdaClosed)]
         public void list_page_keys (ApplicationContext context, ActiveEventArgs e)
         {
-            p5.exp.CollectionBase.List (context, e.Args, ViewState.Keys, e.NativeSource);
+            p5.exp.Collection.List (context, e.Args, ViewState.Keys, e.NativeSource);
         }
 
         #endregion

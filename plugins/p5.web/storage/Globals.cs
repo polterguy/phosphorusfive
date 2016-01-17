@@ -25,7 +25,7 @@ namespace p5.web.storage
         [ActiveEvent (Name = "set-global-value", Protection = EventProtection.LambdaClosed)]
         public static void set_global_value (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.Set (context, e.Args, delegate (string key, object value) {
+            Collection.Set (context, e.Args, delegate (string key, object value) {
                 if (value == null) {
                     // removing object, if it exists
                     HttpContext.Current.Application.Remove (key);
@@ -44,7 +44,7 @@ namespace p5.web.storage
         [ActiveEvent (Name = "get-global-value", Protection = EventProtection.LambdaClosed)]
         public static void get_global_value (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.Get (context, e.Args, key => HttpContext.Current.Application [key], e.NativeSource);
+            Collection.Get (context, e.Args, key => HttpContext.Current.Application [key], e.NativeSource);
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace p5.web.storage
         [ActiveEvent (Name = "list-global-keys", Protection = EventProtection.LambdaClosed)]
         public static void list_global_keys (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.List (context, e.Args, HttpContext.Current.Application.AllKeys, e.NativeSource);
+            Collection.List (context, e.Args, HttpContext.Current.Application.AllKeys, e.NativeSource);
         }
     }
 }

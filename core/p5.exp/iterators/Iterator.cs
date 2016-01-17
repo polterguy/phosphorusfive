@@ -22,7 +22,11 @@ namespace p5.exp.iterators
         ///     Gets or sets the left or "previous iterator"
         /// </summary>
         /// <value>Its previous iterator in its chain of iterators</value>
-        public Iterator Left { get; set; }
+        public Iterator Left
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         ///     Evaluates the iterator

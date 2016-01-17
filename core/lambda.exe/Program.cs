@@ -20,28 +20,25 @@ namespace lambda_exe
     public static class Program
     {
         /// <summary>
-        ///     Returns the application base path as value of given args node
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.core.application-folder", Protection = EventProtection.NativeClosed)]
-        private static void p5_core_application_folder (ApplicationContext context, ActiveEventArgs e)
-        {
-            string retVal = Assembly.GetExecutingAssembly().Location.Replace ("\\", "/");
-            if (retVal.EndsWith("/"))
-                retVal = retVal.Substring(0, retVal.Length - 1);
-            e.Args.Value = retVal;
-        }
-
-        /// <summary>
         ///     Allows you to write one line of text back to the console
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.console.write", Protection = EventProtection.LambdaClosed)]
-        public static void console_write_line (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.console.write-line", Protection = EventProtection.LambdaClosed)]
+        public static void p5_console_write_line (ApplicationContext context, ActiveEventArgs e)
         {
             Console.WriteLine (XUtil.Single<string> (context, e.Args, true));
+        }
+
+        /// <summary>
+        ///     Allows you to read one line of text from the console
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "p5.console.read-line", Protection = EventProtection.LambdaClosed)]
+        public static void p5_console_read_line (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = Console.ReadLine();
         }
 
         /// <summary>
@@ -59,17 +56,8 @@ namespace lambda_exe
                     OutputInstructions ();
                 } else {
 
-                    // Initializing plugins that must be here in order for lambda executioner to function
-                    Loader.Instance.LoadAssembly (Assembly.GetExecutingAssembly ());
-                    Loader.Instance.LoadAssembly ("plugins/", "p5.hyperlisp");
-                    Loader.Instance.LoadAssembly ("plugins/", "p5.types");
-                    Loader.Instance.LoadAssembly ("plugins/", "p5.lambda");
-                    Loader.Instance.LoadAssembly ("plugins/", "p5.math");
-                    Loader.Instance.LoadAssembly ("plugins/", "p5.io");
-                    Loader.Instance.LoadAssembly ("plugins/", "p5.crypto");
-                    Loader.Instance.LoadAssembly ("plugins/", "p5.html");
-                    Loader.Instance.LoadAssembly ("plugins/", "p5.io.zip");
-                    Loader.Instance.LoadAssembly ("plugins/", "p5.net");
+                    // Loading the default plugins
+                    LoadDefaultPlugins ();
 
                     // Handling our command-line arguments, which might load up more plugins
                     bool immediate;
@@ -105,6 +93,38 @@ namespace lambda_exe
                 Console.WriteLine ();
                 Console.WriteLine (err.StackTrace);
             }
+        }
+
+        /// <summary>
+        ///     Returns the application base path as value of given args node
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.core.application-folder", Protection = EventProtection.NativeClosed)]
+        private static void p5_core_application_folder (ApplicationContext context, ActiveEventArgs e)
+        {
+            string retVal = Assembly.GetExecutingAssembly().Location.Replace ("\\", "/");
+            if (retVal.EndsWith("/"))
+                retVal = retVal.Substring(0, retVal.Length - 1);
+            e.Args.Value = retVal;
+        }
+
+        /*
+         * Loads the default plugins
+         */
+        private static void LoadDefaultPlugins ()
+        {
+            // Initializing plugins that must be here in order for lambda executioner to function
+            Loader.Instance.LoadAssembly (Assembly.GetExecutingAssembly());
+            Loader.Instance.LoadAssembly ("plugins/", "p5.hyperlisp");
+            Loader.Instance.LoadAssembly ("plugins/", "p5.types");
+            Loader.Instance.LoadAssembly ("plugins/", "p5.lambda");
+            Loader.Instance.LoadAssembly ("plugins/", "p5.math");
+            Loader.Instance.LoadAssembly ("plugins/", "p5.io");
+            Loader.Instance.LoadAssembly ("plugins/", "p5.crypto");
+            Loader.Instance.LoadAssembly ("plugins/", "p5.html");
+            Loader.Instance.LoadAssembly ("plugins/", "p5.io.zip");
+            Loader.Instance.LoadAssembly ("plugins/", "p5.net");
         }
 
         /*
@@ -219,7 +239,8 @@ namespace lambda_exe
                 } else if (nextIsInput) {
 
                     // User tried to supply more than one input file
-                    throw new ArgumentException ("You cannot submit more than one execution file to the lambda executor");
+                    throw new ArgumentException (
+                        "You cannot submit more than one execution file to the lambda executor");
                 } else if (idx == "-f") {
 
                     // Next argument is a path to an input Hyperlisp file
@@ -250,7 +271,8 @@ namespace lambda_exe
 
             // Basic syntax checking
             if (exeNode.Value == null && !immediate)
-                throw new ArgumentException ("No execution file given to lambda executor, neither was immediate mode chosen");
+                throw new ArgumentException (
+                    "No execution file given to lambda executor, neither was immediate mode chosen");
 
             // Returning lambda to caller
             return exeNode;

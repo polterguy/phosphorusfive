@@ -23,7 +23,7 @@ namespace p5.web.ui.request
         [ActiveEvent (Name = "get-cookie", Protection = EventProtection.LambdaClosed)]
         public static void get_cookie (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.Get (context, e.Args, delegate (string key) {
+            Collection.Get (context, e.Args, delegate (string key) {
 
                 // Fetching cookie
                 var cookie = HttpContext.Current.Request.Cookies.Get (key);
@@ -44,7 +44,7 @@ namespace p5.web.ui.request
         [ActiveEvent (Name = "list-cookie-keys", Protection = EventProtection.LambdaClosed)]
         public static void list_cookie_keys (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.List (context, e.Args, HttpContext.Current.Request.Cookies.AllKeys, e.NativeSource);
+            Collection.List (context, e.Args, HttpContext.Current.Request.Cookies.AllKeys, e.NativeSource);
         }
     }
 }

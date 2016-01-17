@@ -26,18 +26,30 @@ namespace p5.core
         ///     Arguments passed in and returned from Active Events
         /// </summary>
         /// <value>the arguments</value>
-        public Node Args { get; private set; }
+        public Node Args
+        {
+            get;
+            private set;
+        }
 
         /// <summary>
         ///     Name of the Active Event raised
         /// </summary>
         /// <value>the name</value>
-        public string Name { get; private set; }
+        public string Name
+        {
+            get;
+            private set;
+        }
 
         /// <summary>
         ///     True if source of event is native code, otherwise false
         /// </summary>
         /// <value>the name</value>
-        public bool NativeSource { get; private set; }
+        public bool NativeSource
+        {
+            get;
+            private set;
+        }
     }
 }

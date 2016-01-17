@@ -56,7 +56,11 @@ namespace p5.ajax.core
         ///     Returns the page for this instance
         /// </summary>
         /// <value>The page</value>
-        public Page Page { get; private set; }
+        public Page Page
+        {
+            get;
+            private set;
+        }
 
         /// <summary>
         ///     Returns true if this request is a Phosphorus Ajax request

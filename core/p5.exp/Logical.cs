@@ -56,13 +56,21 @@ namespace p5.exp
         ///     Returns the last <see cref="phosphorus.expressions.iterators.Iterator" /> in the list of iterators belonging to this logical
         /// </summary>
         /// <value>The last iterator in the chain of iterators</value>
-        public Iterator Iterator { get; private set; }
+        public Iterator Iterator
+        {
+            get;
+            private set;
+        }
 
         /// <summary>
         ///     Gets the type of logical
         /// </summary>
         /// <value>The type of logical</value>
-        private LogicalType TypeOfLogical { get; set; }
+        private LogicalType TypeOfLogical
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         ///     Adds an iterator to the current logical group

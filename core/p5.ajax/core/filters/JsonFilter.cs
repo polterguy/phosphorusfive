@@ -34,7 +34,7 @@ namespace p5.ajax.core.filters
         /// <returns>The response returned back to client</returns>
         protected override string RenderResponse ()
         {
-            TextReader reader = new StreamReader (this, Encoding);
+            TextReader reader = new StreamReader (this, ContentEncoding);
             var content = reader.ReadToEnd ();
 
             // Registering viewstate for change

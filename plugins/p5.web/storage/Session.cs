@@ -24,7 +24,7 @@ namespace p5.web.storage
         [ActiveEvent (Name = "set-session-value", Protection = EventProtection.LambdaClosed)]
         public static void set_session_value (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.Set (context, e.Args, delegate (string key, object value) {
+            Collection.Set (context, e.Args, delegate (string key, object value) {
 
                 if (value == null) {
 
@@ -46,7 +46,7 @@ namespace p5.web.storage
         [ActiveEvent (Name = "get-session-value", Protection = EventProtection.LambdaClosed)]
         public static void get_session_value (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.Get (context, e.Args, key => HttpContext.Current.Session [key], e.NativeSource);
+            Collection.Get (context, e.Args, key => HttpContext.Current.Session [key], e.NativeSource);
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace p5.web.storage
         [ActiveEvent (Name = "list-session-keys", Protection = EventProtection.LambdaClosed)]
         public static void list_session_keys (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.List (context, e.Args, HttpContext.Current.Session.Keys, e.NativeSource);
+            Collection.List (context, e.Args, HttpContext.Current.Session.Keys, e.NativeSource);
         }
     }
 }

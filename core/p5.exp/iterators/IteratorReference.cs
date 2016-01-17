@@ -18,8 +18,7 @@ namespace p5.exp.iterators
         public override IEnumerable<Node> Evaluate (ApplicationContext context)
         {
             foreach (var idxCurrent in Left.Evaluate (context)) {
-                if (idxCurrent.Value is Node)
-                    yield return idxCurrent.Get<Node> (context);
+                yield return idxCurrent.Get<Node> (context);
             }
         }
     }

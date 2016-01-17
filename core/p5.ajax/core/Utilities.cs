@@ -8,7 +8,7 @@ using System.Linq;
 namespace p5.ajax.core
 {
     /// <summary>
-    ///     Utility class, containing useful helpers for p5 ajax
+    ///     Utility class, containing useful helpers for p5.ajax
     /// </summary>
     public static class Utilities
     {

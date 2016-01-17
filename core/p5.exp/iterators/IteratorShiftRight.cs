@@ -18,7 +18,14 @@ namespace p5.exp.iterators
     {
         public override IEnumerable<Node> Evaluate (ApplicationContext context)
         {
-            return Left.Evaluate (context).Select (idxCurrent => idxCurrent.NextNode).Where (next => next != null);
+            foreach (var idxCurrent in Left.Evaluate (context)) {
+                var next = idxCurrent.NextNode;
+                if (next != null) {
+                    yield return next;
+                } else {
+                    yield return idxCurrent.Root;
+                }
+            }
         }
     }
 }

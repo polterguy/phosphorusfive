@@ -24,7 +24,7 @@ namespace p5.web.storage
         [ActiveEvent (Name = "set-context-value", Protection = EventProtection.LambdaClosed)]
         public static void set_context_value (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.Set (context, e.Args, delegate (string key, object value) {
+            Collection.Set (context, e.Args, delegate (string key, object value) {
 
                 if (value == null) {
 
@@ -46,7 +46,7 @@ namespace p5.web.storage
         [ActiveEvent (Name = "get-context-value", Protection = EventProtection.LambdaClosed)]
         public static void get_context_value (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.Get (context, e.Args, key => HttpContext.Current.Items [key], e.NativeSource);
+            Collection.Get (context, e.Args, key => HttpContext.Current.Items [key], e.NativeSource);
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace p5.web.storage
         [ActiveEvent (Name = "list-context-keys", Protection = EventProtection.LambdaClosed)]
         public static void list_context_keys (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.List (context, e.Args, HttpContext.Current.Items.Keys, e.NativeSource);
+            Collection.List (context, e.Args, HttpContext.Current.Items.Keys, e.NativeSource);
         }
     }
 }

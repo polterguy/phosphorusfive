@@ -32,7 +32,7 @@ namespace p5.exp.iterators
                 _like = true;
             } else if (name.StartsWith ("\\")) {
 
-                // Escaped "like operator"
+                // Escaped "named operator"
                 Name = name.Substring (1);
             } else {
 

@@ -17,31 +17,46 @@ namespace p5.ajax.core
         ///     Returns the manager for your page
         /// </summary>
         /// <value>The manager</value>
-        Manager Manager { get; }
+        Manager Manager
+        {
+            get;
+        }
 
         /// <summary>
         ///     Returns the list of JavaScript files/objects page contains
         /// </summary>
         /// <value>The JavaScript files to push back to client</value>
-        List<Tuple<string, bool>> JavaScriptToPush { get; }
+        List<Tuple<string, bool>> JavaScriptToPush
+        {
+            get;
+        }
 
         /// <summary>
         ///     Returns the list of new JavaScript files/objects page added during this request
         /// </summary>
         /// <value>The JavaScript files to push back to client</value>
-        List<Tuple<string, bool>> NewJavaScriptToPush { get; }
+        List<Tuple<string, bool>> NewJavaScriptToPush
+        {
+            get;
+        }
 
         /// <summary>
         ///     Returns the list of Stylesheet files that page contains
         /// </summary>
         /// <value>The CSS files to push back to client</value>
-        List<string> StylesheetFilesToPush { get; }
+        List<string> StylesheetFilesToPush
+        {
+            get;
+        }
         
         /// <summary>
         ///     Returns the list of Stylesheet files that was added during this request
         /// </summary>
         /// <value>The CSS files to push back to client</value>
-        List<string> NewStylesheetFilesToPush { get; }
+        List<string> NewStylesheetFilesToPush
+        {
+            get;
+        }
 
         /// <summary>
         ///     Registers a JavaScript file to be included on to the client-side

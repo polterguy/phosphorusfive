@@ -16,7 +16,7 @@ namespace p5.exp
     /// <summary>
     ///     Helper class to help set, get and list collections
     /// </summary>
-    public static class CollectionBase
+    public static class Collection
     {
         /// <summary>
         ///     Callback functor object for Get operation
@@ -115,41 +115,7 @@ namespace p5.exp
                         // Retrieving object by invoking functor with key
                         var value = functor (idxKey);
 
-                        // Checking if value is not null, and if not, adding result, 
-                        // according to what type of value we're given
-                        if (value != null) {
-
-                            // Adding key node, and value as object, if value is not node, otherwise
-                            // appending value nodes beneath key node
-                            var resultNode = args.Add (idxKey).LastChild;
-                            if (value is Node) {
-
-                                // Value is Node
-                                resultNode.Add ((value as Node).Clone ());
-                            } else if (value is IEnumerable<Node>) {
-
-                                // Value is a bunch of nodes, adding them all
-                                foreach (var idxValue in value as IEnumerable<Node>) {
-                                    resultNode.Add (idxValue.Clone ());
-                                }
-                            } else if (value is IEnumerable<object>) {
-
-                                // Value is a bunch of object values, adding them all as values of children appended into args
-                                foreach (var idxValue in value as IEnumerable<object>) {
-                                    resultNode.Add ("", idxValue);
-                                }
-                            } else {
-
-                                // Value is any "other type of value", returning it anyway, even though it
-                                // cannot possibly have come from p5 lambda, to allow user to retrieve "any values"
-                                // that exists
-                                resultNode.Value = value;
-                            }
-                        } else {
-
-                            // There was no value in collection for key, reflecting this fact back to caller
-                            args.Add (idxKey, null);
-                        }
+                        DecorateArgsWithValue (args, idxKey, value);
                     }
                 }
             }
@@ -188,6 +154,40 @@ namespace p5.exp
                             node.Add (idxKey);
                         }
                     }
+                }
+            }
+        }
+
+        /*
+         * Given key and value, will put value of object into args
+         */
+        private static void DecorateArgsWithValue (Node args, string key, object value)
+        {
+            // Adding node for given key, defaulting to null value
+            var resultNode = args.Add (key).LastChild;
+
+            // Checking if value is not null, and if not, adding result, 
+            // according to what type of value we're given
+            if (value != null) {
+
+                // Adding key node, and value as object, if value is not node, otherwise
+                // appending value nodes beneath key node
+                if (value is Node) {
+
+                    // Value is Node
+                    resultNode.Add ((value as Node).Clone ());
+                } else if (value is IEnumerable<Node>) {
+
+                    // Value is a bunch of nodes, adding them all
+                    resultNode.AddRange ((value as IEnumerable<Node>).Select (ix => ix.Clone ()));
+                } else if (value is IEnumerable<object>) {
+
+                    // Value is a bunch of object values, adding them all as values of children appended into args
+                    resultNode.AddRange ((value as IEnumerable<object>).Select (ix => new Node ("", ix)));
+                } else {
+
+                    // Value is any "other type of value", returning it "as is"
+                    resultNode.Value = value;
                 }
             }
         }

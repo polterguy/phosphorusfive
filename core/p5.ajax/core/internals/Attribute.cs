@@ -28,18 +28,29 @@ namespace p5.ajax.core.internals
         /// <param name="name">Name of your attribute</param>
         /// <param value="name">Value of your attribute</param>
         internal Attribute (string name, string value)
-            : this (name) { Value = value; }
+            : this (name)
+        {
+            Value = value;
+        }
 
         /// <summary>
         ///     Gets the name of your attribute
         /// </summary>
         /// <value>The name</value>
-        internal string Name { get; private set; }
+        internal string Name
+        {
+            get;
+            private set;
+        }
 
         /// <summary>
         ///     Gets the value of your attribute
         /// </summary>
         /// <value>The value</value>
-        internal string Value { get; private set; }
+        internal string Value
+        {
+            get;
+            private set;
+        }
     }
 }

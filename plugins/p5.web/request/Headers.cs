@@ -22,7 +22,7 @@ namespace p5.web.ui.request
         [ActiveEvent (Name = "get-http-header", Protection = EventProtection.LambdaClosed)]
         public static void get_http_header (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.Get (context, e.Args, key => HttpContext.Current.Request.Headers [key], e.NativeSource);
+            Collection.Get (context, e.Args, key => HttpContext.Current.Request.Headers [key], e.NativeSource);
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace p5.web.ui.request
         [ActiveEvent (Name = "list-http-headers", Protection = EventProtection.LambdaClosed)]
         public static void list_http_headers (ApplicationContext context, ActiveEventArgs e)
         {
-            CollectionBase.List (context, e.Args, HttpContext.Current.Request.Headers.AllKeys, e.NativeSource);
+            Collection.List (context, e.Args, HttpContext.Current.Request.Headers.AllKeys, e.NativeSource);
         }
     }
 }

@@ -10,10 +10,10 @@ using p5.core;
 namespace p5.exp.iterators
 {
     /// <summary>
-    ///     <see cref="phosphorus.core.Node" /> Iterator
+    ///     IdentityIterator, returning current <see cref="phosphorus.core.Node" />
     /// </summary>
     [Serializable]
-    public class IteratorNode : Iterator
+    public class IteratorIdentity : Iterator
     {
         private Node _node;
 

@@ -45,7 +45,7 @@ namespace p5.exp.iterators
             object value = _value;
             if (!string.IsNullOrEmpty (_type) && _type != "string") {
 
-                // Verifying caller only supplies "lie" to string types!
+                // Verifying caller only supplies "like" to string types!
                 if (_like)
                     throw new ExpressionException ("Cannot use 'like' addition to value iterator when value is not of type string");
 

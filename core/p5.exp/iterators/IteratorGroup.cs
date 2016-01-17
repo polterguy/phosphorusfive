@@ -15,6 +15,29 @@ namespace p5.exp.iterators
     [Serializable]
     public class IteratorGroup : Iterator
     {
+        /// <summary>
+        ///     Root iterators for nested IteratorGroup iterators
+        /// </summary>
+        [Serializable]
+        private class IteratorLeftParent : Iterator
+        {
+            private readonly Iterator _leftParent;
+
+            /// <summary>
+            ///     Initializes a new instance of the <see cref="phosphorus.expressions.iterators.IteratorLeftParent" /> class
+            /// </summary>
+            /// <param name="leftParent">The last iterator of the parent group iterator</param>
+            public IteratorLeftParent (Iterator leftParent)
+            {
+                _leftParent = leftParent;
+            }
+
+            public override IEnumerable<Node> Evaluate (ApplicationContext context)
+            {
+                return _leftParent.Evaluate (context);
+            }
+        }
+
         private readonly Iterator _groupRoot;
         private readonly List<Logical> _logicals = new List<Logical> ();
 
@@ -23,7 +46,7 @@ namespace p5.exp.iterators
         /// </summary>
         internal IteratorGroup ()
         {
-            _groupRoot = new IteratorNode ();
+            _groupRoot = new IteratorIdentity ();
             AddLogical (new Logical (Logical.LogicalType.Or));
         }
 
@@ -43,11 +66,15 @@ namespace p5.exp.iterators
         ///     Returns the parent group
         /// </summary>
         /// <value>the parent group</value>
-        public IteratorGroup ParentGroup { get; private set; }
+        public IteratorGroup ParentGroup
+        {
+            get;
+            private set;
+        }
         
         internal Node GroupRootNode {
-            get { return ((IteratorNode)_groupRoot).RootNode; }
-            set { ((IteratorNode)_groupRoot).RootNode = value; }
+            get { return ((IteratorIdentity)_groupRoot).RootNode; }
+            set { ((IteratorIdentity)_groupRoot).RootNode = value; }
         }
 
         /// <summary>

@@ -12,7 +12,7 @@ using System.Text;
 namespace p5.ajax.core.filters
 {
     /// <summary>
-    ///     Base class for all http response filters in p5 ajax
+    ///     Base class for all http response filters in p5.ajax
     /// </summary>
     public abstract class Filter : Stream
     {
@@ -28,20 +28,28 @@ namespace p5.ajax.core.filters
             Manager = manager;
             _stream = new MemoryStream ();
             _next = Manager.Page.Response.Filter;
-            Encoding = Manager.Page.Response.ContentEncoding;
+            ContentEncoding = Manager.Page.Response.ContentEncoding;
         }
 
         /// <summary>
         ///     Returns the manager for this filter
         /// </summary>
         /// <value>the manager</value>
-        protected Manager Manager { get; private set; }
+        protected Manager Manager
+        {
+            get;
+            private set;
+        }
 
         /// <summary>
         ///     Gets the encoding used when rendering the response
         /// </summary>
         /// <value>The encoding</value>
-        public Encoding Encoding { get; set; }
+        protected Encoding ContentEncoding
+        {
+            get;
+            private set;
+        }
 
         /// <summary>
         ///     Returns a value indicating whether this instance can read
@@ -132,27 +140,36 @@ namespace p5.ajax.core.filters
             _stream.Seek (0, SeekOrigin.Begin);
             var responseContent = RenderResponse ();
             base.Close ();
-            var buffer = Encoding.GetBytes (responseContent);
+            var buffer = ContentEncoding.GetBytes (responseContent);
             _next.Write (buffer, 0, buffer.Length);
         }
 
         /// <summary>
         ///     Flush this instance
         /// </summary>
-        public override void Flush () { _stream.Flush (); }
+        public override void Flush ()
+        {
+            _stream.Flush ();
+        }
 
         /// <summary>
         ///     Seek the specified offset and origin
         /// </summary>
         /// <param name="offset">Offset</param>
         /// <param name="origin">Origin from where to count your offset from</param>
-        public override long Seek (long offset, SeekOrigin origin) { return _stream.Seek (offset, origin); }
+        public override long Seek (long offset, SeekOrigin origin)
+        {
+            return _stream.Seek (offset, origin);
+        }
 
         /// <summary>
         ///     Sets the length
         /// </summary>
         /// <param name="value">New length of stream</param>
-        public override void SetLength (long value) { _stream.SetLength (value); }
+        public override void SetLength (long value)
+        {
+            _stream.SetLength (value);
+        }
 
         /// <summary>
         ///     Reads into the specified buffer, offset and count
@@ -160,7 +177,10 @@ namespace p5.ajax.core.filters
         /// <param name="buffer">Buffer to hold the content you wish to read</param>
         /// <param name="offset">Offset from where you start reading</param>
         /// <param name="count">Number of bytes to read</param>
-        public override int Read (byte[] buffer, int offset, int count) { return _stream.Read (buffer, offset, count); }
+        public override int Read (byte[] buffer, int offset, int count)
+        {
+            return _stream.Read (buffer, offset, count);
+        }
 
         /// <summary>
         ///     Write the specified buffer's content, offset and count
@@ -168,7 +188,10 @@ namespace p5.ajax.core.filters
         /// <param name="buffer">Buffer containing bytes to write</param>
         /// <param name="offset">Offset from where to start reading from the buffer</param>
         /// <param name="count">Number of bytes to write</param>
-        public override void Write (byte[] buffer, int offset, int count) { _stream.Write (buffer, offset, count); }
+        public override void Write (byte[] buffer, int offset, int count)
+        {
+            _stream.Write (buffer, offset, count);
+        }
 
         /// <summary>
         ///     Disposes this instance
@@ -185,12 +208,18 @@ namespace p5.ajax.core.filters
         ///     Reads one byte
         /// </summary>
         /// <returns>The byte it just read</returns>
-        public override int ReadByte () { return _stream.ReadByte (); }
+        public override int ReadByte ()
+        {
+            return _stream.ReadByte ();
+        }
 
         /// <summary>
         ///     Writes one byte
         /// </summary>
         /// <param name="value">The byte you wish to write</param>
-        public override void WriteByte (byte value) { _stream.WriteByte (value); }
+        public override void WriteByte (byte value)
+        {
+            _stream.WriteByte (value);
+        }
     }
 }

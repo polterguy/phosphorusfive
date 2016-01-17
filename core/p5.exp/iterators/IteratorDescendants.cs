@@ -30,7 +30,7 @@ namespace p5.exp.iterators
                 }
 
                 // At this point, stop is either node where to stop iterator, or null, at which point we iterate until null is reached
-                for (var idxNext = idxCurrent.NextNode; idxNext != null && !idxNext.Equals (stop); idxNext = idxNext.NextNode) {
+                for (var idxNext = idxCurrent.NextNode; idxNext != null && idxNext != stop; idxNext = idxNext.NextNode) {
                     yield return idxNext;
                 }
             }
