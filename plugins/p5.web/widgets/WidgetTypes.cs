@@ -78,7 +78,7 @@ namespace p5.web.widgets
             var widget = parent.CreatePersistentControl<T> (
                 args.Get<string> (context),
                 position);
-            widget.ElementType = elementType;
+            widget.Element = elementType;
 
             // Decorating widget properties/events, and create child widgets
             DecorateWidget (context, widget, args);
@@ -103,7 +103,7 @@ namespace p5.web.widgets
                         widget.InvisibleElement = idxArg.Get<string> (context);
                         break;
                     case "element":
-                        widget.ElementType = idxArg.Get<string> (context);
+                        widget.Element = idxArg.Get<string> (context);
                         break;
                     case "has-id":
                         widget.HasID = idxArg.Get<bool> (context);
@@ -157,7 +157,7 @@ namespace p5.web.widgets
             
             // Making sure "input" type "radio" widgets have a value corresponding to 
             // their ID, unless value is explicitly given
-            if (widget.ElementType == "input" && widget ["type"] == "radio") {
+            if (widget.Element == "input" && widget ["type"] == "radio") {
                 widget ["value"] = widget.ID;
             }
         }
@@ -176,7 +176,7 @@ namespace p5.web.widgets
             }
 
             // Making sure "input", "select" and "textarea" widgets have a name corresponding to their ID
-            switch (widget.ElementType) {
+            switch (widget.Element) {
                 case "input":
                 case "textarea":
                 case "select":

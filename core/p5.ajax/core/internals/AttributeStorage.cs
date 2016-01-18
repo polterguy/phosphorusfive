@@ -263,7 +263,7 @@ namespace p5.ajax.core.internals
 
             // Removing stuff that's not actually attributes, but still persisted here for convenience,
             // in addition to all "private attributes" (meaning server-side only attributes)
-            lst.RemoveAll (ix => ix.Name == "outerHTML" || ix.Name == "innerValue" || ix.Name == "Tag" || ix.Name.StartsWith ("_"));
+            lst.RemoveAll (ix => ix.Name == "outerHTML" || ix.Name == "innerValue" || ix.Name == "Element" || ix.Name.StartsWith ("_"));
 
             // Rendering to html writer
             foreach (var idx in lst) {

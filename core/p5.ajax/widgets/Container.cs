@@ -32,21 +32,21 @@ namespace p5.ajax.widgets
         private List<Control> _originalCollection;
 
         // Overridden to supply default element
-        public override string ElementType
+        public override string Element
         {
             get
             {
-                if (string.IsNullOrEmpty (base.ElementType))
+                if (string.IsNullOrEmpty (base.Element))
                     return "div";
-                return base.ElementType;
+                return base.Element;
             }
-            set { base.ElementType = value; }
+            set { base.Element = value; }
         }
 
         public override string this [string name]
         {
             get {
-                if (name == "value" && ElementType == "select" && AllChildrenHasIds ()) {
+                if (name == "value" && Element == "select" && AllChildrenHasIds ()) {
 
                     // Special treatment for select HTML elements, to make it resemble what goes on on the client-side
                     string retVal = "";
@@ -64,7 +64,7 @@ namespace p5.ajax.widgets
             set {
                 if (name == "innerValue")
                     throw new ArgumentException ("you cannot set the 'innerValue' property of the '" + ID + "' Container widget");
-                if (name == "value" && ElementType == "select" && AllChildrenHasIds ()) {
+                if (name == "value" && Element == "select" && AllChildrenHasIds ()) {
 
                     // Special treatment for select HTML elements, to make it resemble what goes on on the client-side
                     var splits = value.Split (',');
@@ -92,7 +92,7 @@ namespace p5.ajax.widgets
 
         public override bool HasAttribute (string name)
         {
-            if (name == "value" && ElementType == "select") {
+            if (name == "value" && Element == "select") {
 
                 // Special treatment for select HTML elements, to make it resemble what goes on on the client-side
                 foreach (Control idxCtrl in Controls) {

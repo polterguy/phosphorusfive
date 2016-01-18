@@ -111,14 +111,14 @@ namespace p5.ajax.widgets
         ///     Gets or sets the element type used to render your widget
         /// </summary>
         /// <value>The HTML element used to render widget</value>
-        public virtual string ElementType
+        public virtual string Element
         {
-            get { return this ["Tag"]; }
+            get { return this ["Element"]; }
             set
             {
                 if (value.ToLower () != value)
                     throw new ArgumentException ("p5.ajax doesn't like uppercase element names", "value");
-                this ["Tag"] = value;
+                this ["Element"] = value;
             }
         }
 
@@ -269,8 +269,8 @@ namespace p5.ajax.widgets
         protected virtual void LoadFormData ()
         {
             if (!HasAttribute ("disabled")) {
-                if (!string.IsNullOrEmpty (this ["name"]) || ElementType == "option") {
-                    switch (ElementType) {
+                if (!string.IsNullOrEmpty (this ["name"]) || Element == "option") {
+                    switch (Element) {
                         case "input":
                             switch (this ["type"]) {
                                 case "radio":
@@ -542,9 +542,9 @@ namespace p5.ajax.widgets
         {
             // Render opening tag
             if (HasID) {
-                writer.Write (@"<{0} id=""{1}""", ElementType, ClientID);
+                writer.Write (@"<{0} id=""{1}""", Element, ClientID);
             } else {
-                writer.Write (@"<{0}", ElementType);
+                writer.Write (@"<{0}", Element);
             }
 
             // Render attributes
@@ -554,7 +554,7 @@ namespace p5.ajax.widgets
                 writer.Write (">");
                 RenderChildren (writer);
                 if (RenderType == RenderingType.normal)
-                    writer.Write ("</{0}>", ElementType);
+                    writer.Write ("</{0}>", Element);
             } else {
                 // No content in widget
                 switch (RenderType) {
@@ -565,7 +565,7 @@ namespace p5.ajax.widgets
                         writer.Write (">");
                         break;
                     case RenderingType.normal:
-                        writer.Write ("></{0}>", ElementType);
+                        writer.Write ("></{0}>", Element);
                         break;
                 }
             }

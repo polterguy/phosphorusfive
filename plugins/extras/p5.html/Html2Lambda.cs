@@ -4,6 +4,7 @@
  */
 
 using System;
+using System.Linq;
 using HtmlAgilityPack;
 using p5.core;
 using p5.exp;
@@ -18,19 +19,13 @@ namespace p5.html
     /// </summary>
     public static class Html2Lambda
     {
-        static Html2Lambda ()
-        {
-            // Making sure "form" element conforms to relational DOM structure
-            HtmlNode.ElementsFlags.Remove ("form");
-        }
-
         /// <summary>
         ///     Parses an HTML document, and creates a p5 lambda node structure from the results
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "p5.html.html2lambda", Protection = EventProtection.LambdaClosed)]
-        public static void p5_html_html2lambda (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "html2lambda", Protection = EventProtection.LambdaClosed)]
+        public static void html2lambda (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args, true)) {
@@ -47,6 +42,15 @@ namespace p5.html
         }
 
         /*
+         * Static CTOR to make sure we set state of HtmlNode to respect form tag as relational element
+         */
+        static Html2Lambda ()
+        {
+            // Making sure "form" element conforms to relational DOM structure
+            HtmlNode.ElementsFlags.Remove ("form");
+        }
+
+        /*
          * Helper for above, recursively parses HTML node given
          */
         private static void ParseHtmlDocument (Node resultNode, HtmlNode htmlNode)
@@ -54,10 +58,8 @@ namespace p5.html
             // Skipping document node
             if (htmlNode.Name != "#document") {
 
-                // Looping through each attribute
-                foreach (var idxAtr in htmlNode.Attributes) {
-                    resultNode.Add (new Node ("@" + idxAtr.Name, idxAtr.Value));
-                }
+                // Adding all attributes
+                resultNode.AddRange (htmlNode.Attributes.Select (ix => new Node ("@" + ix.Name, ix.Value)));
 
                 // Then the name of HTML element
                 resultNode.Name = htmlNode.Name;

@@ -141,7 +141,7 @@ namespace p5.samples
                 throw new ApplicationException ("widget had wrong innerValue");
 
             var literal = container.CreatePersistentControl<p5.Literal> ();
-            literal.ElementType = "strong";
+            literal.Element = "strong";
             literal.innerValue = "howdy world";
 
             existing = new List<p5.Literal> (container.GetChildControls<p5.Literal> ());
@@ -156,7 +156,7 @@ namespace p5.samples
         protected void sandbox_invoke_insert_child_onclick (p5.Container container, EventArgs e)
         {
             var literal = container.CreatePersistentControl<p5.Literal> (null, 0);
-            literal.ElementType = "strong";
+            literal.Element = "strong";
             literal.innerValue = "howdy world";
 
             var existing = new List<p5.Literal> (container.GetChildControls<p5.Literal> ());
@@ -171,7 +171,7 @@ namespace p5.samples
         protected void sandbox_invoke_add_child_check_exist_1_onclick (p5.Container container, EventArgs e)
         {
             var literal = container.CreatePersistentControl<p5.Literal> ();
-            literal.ElementType = "strong";
+            literal.Element = "strong";
             literal.innerValue = "howdy world";
         }
 
@@ -189,7 +189,7 @@ namespace p5.samples
                 throw new ApplicationException ("widget had wrong innerValue");
 
             var literal = container.CreatePersistentControl<p5.Literal> ();
-            literal.ElementType = "strong";
+            literal.Element = "strong";
             literal.innerValue = "howdy world 2";
 
             existing = new List<p5.Literal> (container.GetChildControls<p5.Literal> ());
@@ -204,7 +204,7 @@ namespace p5.samples
         protected void sandbox_invoke_insert_child_check_exist_1_onclick (p5.Container container, EventArgs e)
         {
             var literal = container.CreatePersistentControl<p5.Literal> (null, 0);
-            literal.ElementType = "strong";
+            literal.Element = "strong";
             literal.innerValue = "howdy world";
         }
 
@@ -222,7 +222,7 @@ namespace p5.samples
                 throw new ApplicationException ("widget had wrong innerValue");
 
             var literal = container.CreatePersistentControl<p5.Literal> (null, 1);
-            literal.ElementType = "strong";
+            literal.Element = "strong";
             literal.innerValue = "howdy world 2";
 
             existing = new List<p5.Literal> (container.GetChildControls<p5.Literal> ());
@@ -254,7 +254,7 @@ namespace p5.samples
             var literals = new List<p5.Literal> (container.GetChildControls<p5.Literal> ());
             container.RemoveControlPersistent (literals [0]);
             var literal = container.CreatePersistentControl<p5.Literal> (null, 0);
-            literal.ElementType = "strong";
+            literal.Element = "strong";
             literal.innerValue = "howdy world";
         }
 
@@ -270,12 +270,12 @@ namespace p5.samples
 
             // parent is sandbox_invoke_remove_many
             var lit1 = container.CreatePersistentControl<p5.Literal> (null, 0);
-            lit1.ElementType = "strong";
+            lit1.Element = "strong";
             lit1.innerValue = "howdy";
 
             // parent is sandbox_invoke_remove_many_5
             var lit2 = ((p5.Container) ((p5.Container) container.Controls [2]).Controls [1]).CreatePersistentControl<p5.Literal> ();
-            lit2.ElementType = "em";
+            lit2.Element = "em";
             lit2.innerValue = "world";
         }
         
@@ -287,7 +287,7 @@ namespace p5.samples
 
             // adding another control with same ID
             var lit1 = container.CreatePersistentControl<p5.Literal> ("sandbox_invoke_add_similar_child", 0);
-            lit1.ElementType = "strong";
+            lit1.Element = "strong";
             lit1.innerValue = "howdy";
         }
 
@@ -302,11 +302,11 @@ namespace p5.samples
                 throw new ApplicationException ("control count not correct on postback");
             if (((p5.Literal) container.Controls [0]).innerValue != "howdy")
                 throw new ApplicationException ("control value not correct on postback");
-            if (((p5.Literal) container.Controls [0]).ElementType != "strong")
+            if (((p5.Literal) container.Controls [0]).Element != "strong")
                 throw new ApplicationException ("control element not correct on postback");
             if (((p5.Literal) container.Controls [2].Controls [1].Controls [2]).innerValue != "world")
                 throw new ApplicationException ("control value not correct on postback");
-            if (((p5.Literal) container.Controls [2].Controls [1].Controls [2]).ElementType != "em")
+            if (((p5.Literal) container.Controls [2].Controls [1].Controls [2]).Element != "em")
                 throw new ApplicationException ("control element not correct on postback");
         }
     }

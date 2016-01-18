@@ -27,7 +27,7 @@ create-protected-event:sys42.show-code-window
     lambda2lisp:x:/../*/_arg/*
 
     // HTML-encoding HTML
-    p5.html.html-encode:x:/-?value
+    html-encode:x:/-?value
 
     // Setting the literal content to the nodes converted to Hyperlisp (or default code)
     set:x:/../**/literal/*/element/=pre/./*/innerValue?value

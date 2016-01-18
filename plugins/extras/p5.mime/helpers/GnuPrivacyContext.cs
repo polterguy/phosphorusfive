@@ -5,6 +5,7 @@
 
 using System;
 using System.Text;
+using System.Security;
 using System.Collections.Generic;
 using MimeKit;
 using MimeKit.Cryptography;
@@ -96,6 +97,9 @@ namespace p5.mime.helpers
             }
         }
 
+        /*
+         * Returns the password from an email address or a fingerprint supplied
+         */
         private string FromEmailMappedPasswords (PgpSecretKey key)
         {
             // Looping through all MailboxAddresses we've got
@@ -121,7 +125,7 @@ namespace p5.mime.helpers
             }
 
             // Throwing exception since we found no password for requested key, showing user the first UserId object from Secret Key
-            throw new System.Security.SecurityException (string.Format("No password supplied for GnuPG private key '{0}'", LastUsedUserId));
+            throw new SecurityException (string.Format("No password supplied for GnuPG private key '{0}'", LastUsedUserId));
         }
     }
 }

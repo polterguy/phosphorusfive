@@ -66,7 +66,7 @@ namespace p5.mime.helpers
         /// <summary>
         ///     Creates a MimeEntity according to declaration in EntityNode, and returns to caller
         /// </summary>
-        public MimeEntity Create()
+        public MimeEntity Create ()
         {
             // Recursively creates a MimeEntity according to given EntityNode
             return Create (EntityNode);
@@ -83,7 +83,7 @@ namespace p5.mime.helpers
             // Figuring out which type to create
             switch (entityNode.Name) {
                 case "multipart":
-                retVal = CreateMultipart (entityNode);
+                    retVal = CreateMultipart (entityNode);
                     break;
                 case "text":
                 case "image":
@@ -197,41 +197,22 @@ namespace p5.mime.helpers
             // Retrieving signature node to use for signing operation
             var signatureNode = entityNode ["signature"];
 
-            // Figuring out which private key to use for signing entity
-            string email = "foo@bar.com", fingerprint = "", password = "";
-            if (signatureNode.Children.Count (ix => ix.Name == "email" || ix.Name == "fingerprint") == 0) {
+            // Getting signature email as provided by caller
+            var signatureAddress = GetSignatureMailboxAddress (signatureNode);
 
-                // Using server's private key
-                var key = Context.RaiseNative ("p5.security.get-marvin-pgp-key").Get<string> (Context);
-                if (key.IndexOf ("@") == -1)
-                    fingerprint = key;
-                else
-                    email = key;
-                password = Context.RaiseNative ("p5.security.get-marvin-pgp-key-password").Get<string> (Context);
-            } else {
-
-                // Using provided key and password
-                password = signatureNode.Children.First (ix => ix.Name == "email" || ix.Name == "fingerprint").GetChildValue ("password", Context, "");
-                email = signatureNode.GetChildValue ("email", Context, "foo@bar.com");
-                fingerprint = signatureNode.GetChildValue ("fingerprint", Context, "");
-            }
+            // Figuring out signature Digest Algorithm to use for signature, defaulting to Sha256
+            var algo = signatureNode.GetChildValue ("digest-algorithm", Context, DigestAlgorithm.Sha256);
 
             // Creating our Gnu Privacy Guard context
             using (var ctx = new GnuPrivacyContext ()) {
 
                 // Setting password to retrieve signing certificate from GnuPG context
-                ctx.Password = password;
-
-                // Creating a MailboxAddress to sign Multipart on behalf of
-                SecureMailboxAddress signAdr = new SecureMailboxAddress ("", email, fingerprint);
-
-                // Figuring out signature Digest Algorithm to use for signature, defaulting to Sha256
-                var algo = signatureNode.GetChildValue ("digest-algorithm", Context, DigestAlgorithm.Sha256);
+                ctx.Password = signatureAddress.Item1;
 
                 // Signing content of email and returning to caller
                 return MultipartSigned.Create (
                     ctx, 
-                    signAdr, 
+                    signatureAddress.Item2, 
                     algo, 
                     entity);
             }
@@ -247,37 +228,11 @@ namespace p5.mime.helpers
             // Retrieving node that declares encryption settings for us
             var encryptionNode = entityNode ["encryption"];
 
+            // Retrieving MailboxAddresses to encrypt message for
+            var receivers = GetReceiversMailboxAddress (encryptionNode);
+
             // Creating our Gnu Privacy Guard context
             using (var ctx = new GnuPrivacyContext ()) {
-
-                // Retrieving MailboxAddresses to encrypt message for
-                var receivers = new List<MailboxAddress> ();
-                foreach (var idxReceiverNode in encryptionNode.Children) {
-
-                    // Checking if email address was given, or if fingerprint was given
-                    if (idxReceiverNode.Name == "email")
-                        receivers.Add (new MailboxAddress ("", idxReceiverNode.Get<string> (Context)));
-                    else if (idxReceiverNode.Name == "fingerprint")
-                        receivers.Add (new SecureMailboxAddress ("", "foo@bar.com", idxReceiverNode.Get<string> (Context)));
-                    else
-                        throw new LambdaException (
-                            string.Format ("Sorry, don't know how to encrypt for a [{0}] type of node", idxReceiverNode.Name),
-                            idxReceiverNode,
-                            Context);
-                }
-
-                // Checking if there were any explicit receivers to encrypt for
-                if (receivers.Count == 0) {
-
-                    // No explicit receivers, encrypting message with server key, since caller supplied an [encryption] node
-                    string email = "foo@bar.com", fingerprint = "";
-                    var key = Context.RaiseNative ("p5.security.get-marvin-pgp-key").Get<string> (Context);
-                    if (key.IndexOf ("@") == -1)
-                        fingerprint = key;
-                    else
-                        email = key;
-                    receivers.Add (new SecureMailboxAddress ("", email, fingerprint));
-                }
 
                 // Encrypting content of email and returning to caller
                 var retVal = MultipartEncrypted.Encrypt (
@@ -302,12 +257,87 @@ namespace p5.mime.helpers
             MimeEntity entity)
         {
             // Retrieving [signature] and [encryption] nodes
-            var signNode = entityNode ["signature"];
-            var encNode = entityNode ["encryption"];
+            var signatureNode = entityNode ["signature"];
+            var encryptionNode = entityNode ["encryption"];
 
+            // Getting signature email as provided by caller
+            var signatureAddress = GetSignatureMailboxAddress (signatureNode);
+
+            // Retrieving MailboxAddresses to encrypt message for
+            var receivers = GetReceiversMailboxAddress (encryptionNode);
+
+            // Figuring out signature Digest Algorithm to use for signature, defaulting to Sha256
+            var algo = signatureNode.GetChildValue ("digest-algorithm", Context, DigestAlgorithm.Sha256);
+
+            // Creating our Gnu Privacy Guard context
+            using (var ctx = new GnuPrivacyContext ()) {
+
+                // Setting password to retrieve signing certificate from GnuPG context
+                ctx.Password = signatureAddress.Item1;
+
+                // Signing and Encrypting content of email
+                var retVal = MultipartEncrypted.SignAndEncrypt (
+                    ctx, 
+                    signatureAddress.Item2, 
+                    algo, 
+                    receivers, 
+                    entity);
+
+                // Setting preamble and epilogue AFTER encryption, to give opportunity to give receiver hints
+                retVal.Preamble = entityNode.GetChildValue<string> ("preamble", Context, null);
+                retVal.Epilogue = entityNode.GetChildValue<string> ("epilogue", Context, null);
+
+                // Returning encrypted Multipart
+                return retVal;
+            }
+        }
+
+        /*
+         * Returns list of MailboxAddresses according to given node
+         */
+        private List<MailboxAddress> GetReceiversMailboxAddress (Node encryptionNode)
+        {
+            var retVal = new List<MailboxAddress> ();
+            foreach (var idxRec in encryptionNode.Children) {
+
+                // Checking if email address was given, or if fingerprint was given
+                if (idxRec.Name == "email")
+                    retVal.Add (new MailboxAddress ("", idxRec.Get<string> (Context)));
+                else if (idxRec.Name == "fingerprint")
+                    retVal.Add (new SecureMailboxAddress ("", "foo@bar.com", idxRec.Get<string> (Context)));
+                else
+                    throw new LambdaException (
+                        string.Format ("Sorry, don't know how to encrypt for a [{0}] type of node, I only understand [email] or [fingerprint]", idxRec.Name),
+                        idxRec,
+                        Context);
+            }
+
+            // Checking if there were any explicit receivers to encrypt for
+            if (retVal.Count == 0) {
+
+                // No explicit receivers, encrypting message with server key, since caller supplied an [encryption] node
+                var email = "foo@bar.com";
+                var fingerprint = "";
+                var key = Context.RaiseNative ("p5.security.get-marvin-pgp-key").Get<string> (Context);
+                if (key.IndexOf ("@") == -1)
+                    fingerprint = key;
+                else
+                    email = key;
+                retVal.Add (new SecureMailboxAddress ("", email, fingerprint));
+            }
+
+            // Returning list of mailboxes
+            return retVal;
+        }
+
+        /*
+         * Returns email for signing entity, and password to release private key from GnuPG
+         */
+        private Tuple<string, MailboxAddress> GetSignatureMailboxAddress (Node signatureNode)
+        {
             // Figuring out which private key to use for signing entity
             string email = "foo@bar.com", fingerprint = "", password = "";
-            if (signNode.Children.Count (ix => ix.Name == "email" || ix.Name == "fingerprint") == 0) {
+            if (signatureNode.Children.Count (ix => ix.Name == "email" || ix.Name == "fingerprint") == 0) {
 
                 // Using server's private key
                 var key = Context.RaiseNative ("p5.security.get-marvin-pgp-key").Get<string> (Context);
@@ -319,68 +349,13 @@ namespace p5.mime.helpers
             } else {
 
                 // Using provided key and password
-                password = signNode.Children.First (ix => ix.Name == "email" || ix.Name == "fingerprint").GetChildValue ("password", Context, "");
-                email = signNode.GetChildValue ("email", Context, "foo@bar.com");
-                fingerprint = signNode.GetChildValue ("fingerprint", Context, "");
+                password = signatureNode.Children.First (ix => ix.Name == "email" || ix.Name == "fingerprint").GetChildValue ("password", Context, "");
+                email = signatureNode.GetChildValue ("email", Context, "foo@bar.com");
+                fingerprint = signatureNode.GetChildValue ("fingerprint", Context, "");
             }
 
-            // Creating our Gnu Privacy Guard context
-            using (var ctx = new GnuPrivacyContext ()) {
-
-                // Setting password to retrieve signing certificate from GnuPG context
-                ctx.Password = password;
-
-                // Creating a MailboxAddress to sign Multipart on behalf of
-                SecureMailboxAddress sigAdr = new SecureMailboxAddress ("", email, fingerprint);
-
-                // Retrieving MailboxAddresses to encrypt message for
-                var rec = new List<MailboxAddress> ();
-                foreach (var idxRec in encNode.Children) {
-
-                    // Checking if email address was given, or if fingerprint was given
-                    if (idxRec.Name == "email")
-                        rec.Add (new MailboxAddress ("", idxRec.Get<string> (Context)));
-                    else if (idxRec.Name == "fingerprint")
-                        rec.Add (new SecureMailboxAddress ("", "foo@bar.com", idxRec.Get<string> (Context)));
-                    else
-                        throw new LambdaException (
-                            string.Format ("Sorry, don't know how to encrypt for a [{0}] type of node, I only understand [email] or [fingerprint]", idxRec.Name),
-                            idxRec,
-                            Context);
-                }
-
-                // Checking if there were any explicit receivers to encrypt for
-                if (rec.Count == 0) {
-
-                    // No explicit receivers, encrypting message with server key, since caller supplied an [encryption] node
-                    email = "foo@bar.com";
-                    fingerprint = "";
-                    var key = Context.RaiseNative ("p5.security.get-marvin-pgp-key").Get<string> (Context);
-                    if (key.IndexOf ("@") == -1)
-                        fingerprint = key;
-                    else
-                        email = key;
-                    rec.Add (new SecureMailboxAddress ("", email, fingerprint));
-                }
-
-                // Figuring out signature Digest Algorithm to use for signature, defaulting to Sha256
-                var algo = signNode.GetChildValue ("digest-algorithm", Context, DigestAlgorithm.Sha256);
-
-                // Signing and Encrypting content of email
-                var retVal = MultipartEncrypted.SignAndEncrypt (
-                    ctx, 
-                    sigAdr, 
-                    algo, 
-                    rec, 
-                    entity);
-
-                // Setting preamble and epilogue AFTER encryption, to give opportunity to give receiver hints
-                retVal.Preamble = entityNode.GetChildValue<string> ("preamble", Context, null);
-                retVal.Epilogue = entityNode.GetChildValue<string> ("epilogue", Context, null);
-
-                // Returning encrypted Multipart
-                return retVal;
-            }
+            // Creating a MailboxAddress to sign Multipart on behalf of
+            return new Tuple<string, MailboxAddress> (password, new SecureMailboxAddress ("", email, fingerprint));
         }
 
         /*

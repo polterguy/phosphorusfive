@@ -17,15 +17,15 @@ namespace p5.ajax.widgets
     public class Literal : Widget
     {
         // Overridden to supply default html element
-        public override string ElementType
+        public override string Element
         {
             get
             {
-                if (string.IsNullOrEmpty (base.ElementType))
+                if (string.IsNullOrEmpty (base.Element))
                     return "p";
-                return base.ElementType;
+                return base.Element;
             }
-            set { base.ElementType = value; }
+            set { base.Element = value; }
         }
 
         /// <summary>
@@ -42,19 +42,19 @@ namespace p5.ajax.widgets
         public override string this [string name]
         {
             get {
-                if (name == "value" && ElementType == "textarea") {
+                if (name == "value" && Element == "textarea") {
 
                     // Special treatment for textarea, to make it resemble what goes on on the client-side
                     return base ["innerValue"];
                 }
-                if (name == "value" && ElementType == "option" && !base.HasAttribute ("value"))
+                if (name == "value" && Element == "option" && !base.HasAttribute ("value"))
 
                     // By default, option HTML elements returns their "innerValue" if they have no value attribute
                     return this ["innerValue"];
                 return base [name];
             }
             set {
-                if (name == "value" && ElementType == "textarea") {
+                if (name == "value" && Element == "textarea") {
 
                     // Special treatment for textarea, to make it resemble what goes on on the client-side
                     base ["innerValue"] = value;
@@ -66,7 +66,7 @@ namespace p5.ajax.widgets
 
         public override bool HasAttribute (string name)
         {
-            if (name == "value" && ElementType == "textarea") {
+            if (name == "value" && Element == "textarea") {
 
                 // Special treatment for textarea, to make it resemble what goes on on the client-side
                 return HasAttribute ("innerValue");

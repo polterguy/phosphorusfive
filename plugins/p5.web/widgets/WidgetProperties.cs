@@ -58,7 +58,7 @@ namespace p5.web.widgets
                             CreatePropertyReturn (e.Args, nameNode, idxWidget, idxWidget.InvisibleElement);
                             break;
                         case "element":
-                            CreatePropertyReturn (e.Args, nameNode, idxWidget, idxWidget.ElementType);
+                            CreatePropertyReturn (e.Args, nameNode, idxWidget, idxWidget.Element);
                             break;
                         case "has-id":
                             CreatePropertyReturn (e.Args, nameNode, idxWidget, idxWidget.HasID);
@@ -97,7 +97,7 @@ namespace p5.web.widgets
                         idxWidget.InvisibleElement = valueNode.GetExValue<string> (context);
                         break;
                     case "element":
-                        idxWidget.ElementType = valueNode.GetExValue<string> (context);
+                        idxWidget.Element = valueNode.GetExValue<string> (context);
                         break;
                     case "has-id":
                         idxWidget.HasID = valueNode.GetExValue<bool> (context);
@@ -167,8 +167,8 @@ namespace p5.web.widgets
                     // First listing "static properties"
                     if (!widget.Visible)
                         curNode.Add ("visible", false);
-                    if ((widget is Container && widget.ElementType != "div") || (widget is Literal && widget.ElementType != "p"))
-                        curNode.Add ("element", widget.ElementType);
+                    if ((widget is Container && widget.Element != "div") || (widget is Literal && widget.Element != "p"))
+                        curNode.Add ("element", widget.Element);
                     if (!widget.HasID)
                         curNode.Add ("has-id", false);
 
@@ -176,7 +176,7 @@ namespace p5.web.widgets
                     foreach (var idxAtr in widget.AttributeKeys) {
 
                         // Dropping the Tag property and all events, except events that are "JavaScript declarations"
-                        if (idxAtr == "Tag" || ((idxAtr.StartsWith ("on") || idxAtr.StartsWith ("_on")) && widget [idxAtr] == "common_event_handler"))
+                        if (idxAtr == "Element" || ((idxAtr.StartsWith ("on") || idxAtr.StartsWith ("_on")) && widget [idxAtr] == "common_event_handler"))
                             continue;
                         curNode.Add (idxAtr, widget [idxAtr]);
                     }
