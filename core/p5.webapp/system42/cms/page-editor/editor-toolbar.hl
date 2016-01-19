@@ -265,9 +265,18 @@ Your page currently has {0} levels!"
                       :x:/././-/*?count
                       _warning:true
                       _time:more
+                    set-widget-property:page-url
+                      style:"background-color:rgba(255,0,0,.2);"
+                      title:@"This is a bad idea!
+Try to avoid using more than two levels (/) in your URLs.
+Among other things, your page becomes inacessible on tablets and phones!"
+                    send-javascript:"$('#page-url').focus().select();"
                   else
                     sys42.info-window:Page '{0}' was successfully saved
                       :x:/../*/get-widget-property/*/page-name/*?value
+                    set-widget-property:page-url
+                      style
+                      title
 
 
             /*

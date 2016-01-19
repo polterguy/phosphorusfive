@@ -17,9 +17,8 @@
 
 .toolbar {
     position:fixed;
-    right:0;
     right:25px;
-    margin-top:-40px;
+    margin-top:-57px;
 }
 
 .toolbar button:disabled {

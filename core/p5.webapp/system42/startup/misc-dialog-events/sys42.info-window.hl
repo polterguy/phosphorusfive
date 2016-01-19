@@ -51,7 +51,6 @@ create-protected-event:sys42.info-window
   /*
    * Checking if this is feedback needs "more time" to stick on screen
    */
-  sys42.show-code-window:x:/..
   if:x:/../*/_time?value
     =:more
     set:x:/../*/create-widget/*/class?value

@@ -112,7 +112,9 @@ create-widget:template-root
                           if:x:/./*/split/*?count
                             >:int:1
 
-                            // This was a "nested" item, checking if parent items for current item is already created
+                            // This was a "nested" item, checking if parent item(s) for current item is already created
+                            // We do support nested menu items, although if user creates a page with more than two levels
+                            // of nesting, we warn during creation of page that it is "not a good idea!"
                             set:x:/././*/split/0/-
                             _cur
                             _last:main-menu
@@ -213,7 +215,7 @@ p5.loginUsernameKeyUp = function(e) {
                                    * Creates the window encapsulating the login window
                                    */
                                   create-widget:login-wrapper
-                                    class:form-inline col-md-5 col-md-push-1 col-xs-3 flash-from-left
+                                    class:form-inline col-md-4 col-md-push-1 col-xs-3 flash-from-left
                                     parent:header-wrapper
                                     widgets
                                       container:login-controls

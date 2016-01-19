@@ -26,7 +26,7 @@ create-widget:edit-users
      * The "Edit Existing user ..." drop down select list
      */
     container
-      class:col-xs-11 form-group
+      class:col-xs-10 form-group
       widgets
         container
           class:input-group
@@ -136,7 +136,7 @@ create-widget:edit-users
                          * Which role user belongs to
                          */
                         container
-                          class:col-xs-3 form-group
+                          class:col-xs-12 col-md-3 form-group
                           widgets
                             container
                               class:input-group
@@ -157,7 +157,7 @@ create-widget:edit-users
                          * Password of user
                          */
                         container
-                          class:col-xs-3 form-group
+                          class:col-xs-12 col-md-3 form-group
                           widgets
                             container
                               class:input-group
@@ -169,7 +169,7 @@ create-widget:edit-users
                                   element:input
                                   type:password
                                   class:form-control
-                                  placeholder:Users password ...
+                                  placeholder:Password ...
                                   title:Leave blank to keep existing password
                                   onkeypress:"return p5.keyPressEditUser(event);"
                                   autocomplete:off
@@ -187,7 +187,7 @@ create-widget:edit-users
                          * Repeat password of user
                          */
                         container
-                          class:col-xs-3 form-group
+                          class:col-xs-12 col-md-3 form-group
                           widgets
                             container
                               class:input-group
@@ -199,7 +199,7 @@ create-widget:edit-users
                                   element:input
                                   type:password
                                   class:form-control
-                                  placeholder:Password repeat ...
+                                  placeholder:Repeat ...
                                   title:Leave blank to keep existing password
                                   onkeypress:"return p5.keyPressEditUser(event);"
                                   autocomplete:off
@@ -209,7 +209,7 @@ create-widget:edit-users
                          * Save user button
                          */
                         container
-                          class:col-xs-2 form-group
+                          class:col-xs-6 col-md-1 form-group
                           widgets
                             literal:save-user-button
                               element:button
@@ -256,7 +256,7 @@ create-widget:edit-users
                          * The "Delete user" button
                          */
                         container
-                          class:col-xs-1 form-group
+                          class:col-xs-6 col-md-2 form-group
                           widgets
                             literal
                               element:button
@@ -291,7 +291,7 @@ create-widget:edit-users
      * The "Create new user" button
      */
     container
-      class:col-xs-1 form-group
+      class:col-xs-2 form-group
       widgets
         literal
           element:button
