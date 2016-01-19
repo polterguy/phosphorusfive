@@ -20,6 +20,10 @@ namespace p5.mime.helpers
     /// </summary>
     public class MimeCreator
     {
+        private ApplicationContext _context;
+        private Node _entityNode;
+        private List<Stream> _streams;
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="p5.mime.helpers.MimeCreator"/> class.
         /// </summary>
@@ -31,36 +35,9 @@ namespace p5.mime.helpers
             Node entityNode,
             List<Stream> streams)
         {
-            Context = context;
-            EntityNode = entityNode;
-            Streams = streams;
-        }
-
-        /// <summary>
-        ///     Returns the Application Context used for the creating MimeEntity
-        /// </summary>
-        /// <value>The Application Context</value>
-        public ApplicationContext Context {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        ///     Returns the Node used to create MimeEntity from
-        /// </summary>
-        /// <value>The result node</value>
-        public Node EntityNode {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        ///    Streams created during creation process of instance. It is caller's responsibility to close and dispose these streams
-        /// </summary>
-        /// <value>The list of streams created during creation process</value>
-        public List<Stream> Streams {
-            get;
-            private set;
+            _context = context;
+            _entityNode = entityNode;
+            _streams = streams;
         }
 
         /// <summary>
@@ -69,7 +46,7 @@ namespace p5.mime.helpers
         public MimeEntity Create ()
         {
             // Recursively creates a MimeEntity according to given EntityNode
-            return Create (EntityNode);
+            return Create (_entityNode);
         }
 
         /*
@@ -77,6 +54,13 @@ namespace p5.mime.helpers
          */
         private MimeEntity Create (Node entityNode)
         {
+            // Sanity check
+            if (entityNode.Value == null || !(entityNode.Value is string) || string.IsNullOrEmpty (entityNode.Value as string))
+                throw new LambdaException (
+                    string.Format ("No media subtype provided for '{0}' to MIME builder", entityNode.Name), 
+                    entityNode, 
+                    _context);
+
             // Setting up a return value
             MimeEntity retVal = null;
 
@@ -95,6 +79,11 @@ namespace p5.mime.helpers
                 case "model":
                     retVal = CreateLeafPart (entityNode);
                     break;
+                default:
+                    throw new LambdaException (
+                        string.Format ("Unknown media type '{0}' for MIME builder", entityNode.Name), 
+                        entityNode, 
+                        _context);
             }
 
             // Figuring out if entity should be encrypted and/or signed
@@ -126,13 +115,13 @@ namespace p5.mime.helpers
         private Multipart CreateMultipart(Node multipartNode)
         {
             // Setting up a return value
-            Multipart multipart = new Multipart (multipartNode.Get<string> (Context));
+            Multipart multipart = new Multipart (multipartNode.Get<string> (_context));
 
             // Adding headers
             DecorateEntityHeaders (multipart, multipartNode);
 
             // Setting preamble (additional information), but only if multipart is NOT going to be encrypted later
-            multipart.Preamble = multipartNode.GetChildValue<string> ("preamble", Context, null);
+            multipart.Preamble = multipartNode.GetChildValue<string> ("preamble", _context, null);
 
             // Looping through all children nodes of multipartNode that are not properties of multipart, assuming they're child entities
             // All headers have Capital letters in them, and preamble and epilogue are settings for the multipart itself
@@ -148,7 +137,7 @@ namespace p5.mime.helpers
             }
 
             // Setting epilogue (additional information), but only if multipart is NOT going to be encrypted later
-            multipart.Epilogue = multipartNode.GetChildValue<string> ("epilogue", Context, null);
+            multipart.Epilogue = multipartNode.GetChildValue<string> ("epilogue", _context, null);
 
             // Returning multipart to caller
             return multipart;
@@ -180,7 +169,7 @@ namespace p5.mime.helpers
                 throw new LambdaException (
                     "No content found for MIME part, use either [content] or [filename] to supply content",
                     mimePartNode,
-                    Context);
+                    _context);
             }
 
             // Returning MimePart to caller
@@ -201,7 +190,7 @@ namespace p5.mime.helpers
             var signatureAddress = GetSignatureMailboxAddress (signatureNode);
 
             // Figuring out signature Digest Algorithm to use for signature, defaulting to Sha256
-            var algo = signatureNode.GetChildValue ("digest-algorithm", Context, DigestAlgorithm.Sha256);
+            var algo = signatureNode.GetChildValue ("digest-algorithm", _context, DigestAlgorithm.Sha256);
 
             // Creating our Gnu Privacy Guard context
             using (var ctx = new GnuPrivacyContext ()) {
@@ -241,8 +230,8 @@ namespace p5.mime.helpers
                     entity);
 
                 // Setting preamble and epilogue AFTER encryption, to give opportunity to give hints to receiver
-                retVal.Preamble = entityNode.GetChildValue<string> ("preamble", Context, null);
-                retVal.Epilogue = entityNode.GetChildValue<string> ("epilogue", Context, null);
+                retVal.Preamble = entityNode.GetChildValue<string> ("preamble", _context, null);
+                retVal.Epilogue = entityNode.GetChildValue<string> ("epilogue", _context, null);
 
                 // Returning encrypted Multipart
                 return retVal;
@@ -267,7 +256,7 @@ namespace p5.mime.helpers
             var receivers = GetReceiversMailboxAddress (encryptionNode);
 
             // Figuring out signature Digest Algorithm to use for signature, defaulting to Sha256
-            var algo = signatureNode.GetChildValue ("digest-algorithm", Context, DigestAlgorithm.Sha256);
+            var algo = signatureNode.GetChildValue ("digest-algorithm", _context, DigestAlgorithm.Sha256);
 
             // Creating our Gnu Privacy Guard context
             using (var ctx = new GnuPrivacyContext ()) {
@@ -284,8 +273,8 @@ namespace p5.mime.helpers
                     entity);
 
                 // Setting preamble and epilogue AFTER encryption, to give opportunity to give receiver hints
-                retVal.Preamble = entityNode.GetChildValue<string> ("preamble", Context, null);
-                retVal.Epilogue = entityNode.GetChildValue<string> ("epilogue", Context, null);
+                retVal.Preamble = entityNode.GetChildValue<string> ("preamble", _context, null);
+                retVal.Epilogue = entityNode.GetChildValue<string> ("epilogue", _context, null);
 
                 // Returning encrypted Multipart
                 return retVal;
@@ -302,23 +291,23 @@ namespace p5.mime.helpers
 
                 // Checking if email address was given, or if fingerprint was given
                 if (idxRec.Name == "email")
-                    retVal.Add (new MailboxAddress ("", idxRec.Get<string> (Context)));
+                    retVal.Add (new MailboxAddress ("", idxRec.Get<string> (_context)));
                 else if (idxRec.Name == "fingerprint")
-                    retVal.Add (new SecureMailboxAddress ("", "foo@bar.com", idxRec.Get<string> (Context)));
+                    retVal.Add (new SecureMailboxAddress ("", "foo@bar.com", idxRec.Get<string> (_context)));
                 else
                     throw new LambdaException (
                         string.Format ("Sorry, don't know how to encrypt for a [{0}] type of node, I only understand [email] or [fingerprint]", idxRec.Name),
                         idxRec,
-                        Context);
+                        _context);
             }
 
-            // Checking if there were any explicit receivers to encrypt for
+            // Checking if there were any explicit receivers to encrypt for, and if not, we encrypt for current machine by default
             if (retVal.Count == 0) {
 
                 // No explicit receivers, encrypting message with server key, since caller supplied an [encryption] node
                 var email = "foo@bar.com";
                 var fingerprint = "";
-                var key = Context.RaiseNative ("p5.security.get-marvin-pgp-key").Get<string> (Context);
+                var key = _context.RaiseNative ("p5.security.get-marvin-pgp-key").Get<string> (_context);
                 if (key.IndexOf ("@") == -1)
                     fingerprint = key;
                 else
@@ -326,7 +315,7 @@ namespace p5.mime.helpers
                 retVal.Add (new SecureMailboxAddress ("", email, fingerprint));
             }
 
-            // Returning list of mailboxes
+            // Returning list of mailboxes to encrypt for
             return retVal;
         }
 
@@ -340,21 +329,21 @@ namespace p5.mime.helpers
             if (signatureNode.Children.Count (ix => ix.Name == "email" || ix.Name == "fingerprint") == 0) {
 
                 // Using server's private key
-                var key = Context.RaiseNative ("p5.security.get-marvin-pgp-key").Get<string> (Context);
+                var key = _context.RaiseNative ("p5.security.get-marvin-pgp-key").Get<string> (_context);
                 if (key.IndexOf ("@") == -1)
                     fingerprint = key;
                 else
                     email = key;
-                password = Context.RaiseNative ("p5.security.get-marvin-pgp-key-password").Get<string> (Context);
+                password = _context.RaiseNative ("p5.security.get-marvin-pgp-key-password").Get<string> (_context);
             } else {
 
                 // Using provided key and password
-                password = signatureNode.Children.First (ix => ix.Name == "email" || ix.Name == "fingerprint").GetChildValue ("password", Context, "");
-                email = signatureNode.GetChildValue ("email", Context, "foo@bar.com");
-                fingerprint = signatureNode.GetChildValue ("fingerprint", Context, "");
+                password = signatureNode.Children.First (ix => ix.Name == "email" || ix.Name == "fingerprint").GetChildValue ("password", _context, "");
+                email = signatureNode.GetChildValue ("email", _context, "foo@bar.com");
+                fingerprint = signatureNode.GetChildValue ("fingerprint", _context, "");
             }
 
-            // Creating a MailboxAddress to sign Multipart on behalf of
+            // Returning MailboxAddress to sign entity on behalf of
             return new Tuple<string, MailboxAddress> (password, new SecureMailboxAddress ("", email, fingerprint));
         }
 
@@ -370,7 +359,7 @@ namespace p5.mime.helpers
             foreach (var idxHeader in entityNode.Children.Where (ix => ix.Name.ToLower () != ix.Name && ix.Name != "Content-Type")) {
 
                 // Adding currently iterated MIME header to entity
-                entity.Headers.Replace (idxHeader.Name, idxHeader.Get<string> (Context));
+                entity.Headers.Replace (idxHeader.Name, idxHeader.Get<string> (_context));
             }
         }
 
@@ -385,7 +374,7 @@ namespace p5.mime.helpers
             var stream = new MemoryStream ();
 
             // This is probably not much point, but for consistency reasons, we still choose to do it
-            Streams.Add (stream);
+            _streams.Add (stream);
 
             // Applying content object, but first checking type of object, special handling of blob/byte[]
             if (contentNode.Value is byte[]) {
@@ -401,7 +390,7 @@ namespace p5.mime.helpers
                 StreamWriter streamWriter = new StreamWriter (stream);
 
                 // Writing content to streamWrite
-                streamWriter.Write (contentNode.Get<string> (Context));
+                streamWriter.Write (contentNode.Get<string> (_context));
                 streamWriter.Flush ();
                 stream.Position = 0;
             }
@@ -409,7 +398,7 @@ namespace p5.mime.helpers
             // Retrieving ContentEncoding to use for reading stream
             ContentEncoding encoding = ContentEncoding.Default;
             if (contentNode ["Content-Encoding"] != null)
-                encoding = (ContentEncoding)Enum.Parse (typeof(ContentEncoding), contentNode ["Content-Encoding"].Get<string> (Context));
+                encoding = (ContentEncoding)Enum.Parse (typeof(ContentEncoding), contentNode ["Content-Encoding"].Get<string> (_context));
 
             // Creating a ContentObject for MimePart from MemoryStream
             entity.ContentObject = new ContentObject (stream, encoding);
@@ -423,15 +412,15 @@ namespace p5.mime.helpers
             MimePart entity)
         {
             // File content object, creating a stream to supply to Content Object
-            string fileName = fileNode.Get<string> (Context);
+            string fileName = fileNode.Get<string> (_context);
 
             // Verifying user is authorised to read from file given
-            Context.RaiseNative ("p5.io.authorize.read-file", new Node ("", fileName).Add ("args", fileNode));
+            _context.RaiseNative ("p5.io.authorize.read-file", new Node ("", fileName).Add ("args", fileNode));
 
             // Retrieving ContentEncoding to use for reading stream
             ContentEncoding encoding = ContentEncoding.Default;
             if (fileNode ["Content-Encoding"] != null)
-                encoding = (ContentEncoding)Enum.Parse (typeof(ContentEncoding), fileNode ["Content-Encoding"].Get<string> (Context));
+                encoding = (ContentEncoding)Enum.Parse (typeof(ContentEncoding), fileNode ["Content-Encoding"].Get<string> (_context));
 
             // Defaulting Filename of Content-Disposition, unless explicitly given
             if (entity.ContentDisposition == null) {
@@ -443,8 +432,8 @@ namespace p5.mime.helpers
 
             // Applying content object, notice that the stream created here, is owned by the caller, hence there is
             // no disposal done
-            Stream stream = File.OpenRead (Common.GetRootFolder (Context) + fileName);
-            Streams.Add (stream);
+            Stream stream = File.OpenRead (Common.GetRootFolder (_context) + fileName);
+            _streams.Add (stream);
             entity.ContentObject = new ContentObject (stream, encoding);
         }
     }

@@ -84,7 +84,7 @@ namespace p5.core
                 var retVal = Convert2String(value, context, encode);
                 if (retVal != null)
                     return (T)(object)retVal;
-            } else if (value.GetType() == typeof(string)) {
+            } else if (value.GetType() == typeof(string) || typeof(T) == typeof(byte[])) {
 
                 // Converting from string to object
                 var retVal = Convert2Object<T>(value, context);
@@ -93,7 +93,7 @@ namespace p5.core
             } else if (typeof(T) == typeof(Node)) {
 
                 // Converting to Node somehow, and value is NOT string, creating string out of value first
-                return (T)(object)Convert<Node> (context, Convert<string> (context, value), defaultValue as Node).FirstChild.UnTie ();
+                return (T)(object)Convert<Node>(context, Convert<string>(context, value), defaultValue as Node).FirstChild.UnTie();
             }
 
             // Checking if type is IConvertible

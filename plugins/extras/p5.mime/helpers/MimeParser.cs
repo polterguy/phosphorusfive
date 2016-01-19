@@ -20,8 +20,13 @@ namespace p5.mime.helpers
     /// </summary>
     public class MimeParser
     {
+        private ApplicationContext _context;
+        private Node _args;
+        private MimeEntity _rootEntity;
         private bool _attachmentFolderExist;
         private int _noNameAttachments;
+        private string _attachmentFolder;
+        private List<GnuPrivacyContext.KeyPasswordMapper> _passwords;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="p5.mime.helpers.MimeParser"/> class.
@@ -39,92 +44,19 @@ namespace p5.mime.helpers
             // Retrieving passwords from args
             if (args ["decryption-keys"] == null) {
 
-                // Caller did not supply decryption keys, adding up the machine server key anyway
-                Passwords = new List<GnuPrivacyContext.KeyPasswordMapper>();
-                var key = context.RaiseNative ("p5.security.get-marvin-pgp-key").Get<string> (Context);
-                string email = "foo@bar.com", fingerprint = "";
-                if (key.IndexOf ("@") == -1)
-                    fingerprint = key;
-                else
-                    email = key;
-                var password = context.RaiseNative ("p5.security.get-marvin-pgp-key-password").Get<string> (Context);
-                var mailboxAdr = string.IsNullOrEmpty (fingerprint) ? new MailboxAddress ("", email) : new SecureMailboxAddress ("", email, fingerprint);
-                Passwords.Add (new GnuPrivacyContext.KeyPasswordMapper (mailboxAdr, password));
+                // Adding machine decryption key, since no explicit decryption key was supplied
+                AddMachineDecryptionKey (context);
             } else {
 
-                // Caller supplied decryption keys, enumerating them, and storing to list of key, making sure we DETACH them
-                // from args, such that they don't leave method in case of exception
-                Passwords = new List<GnuPrivacyContext.KeyPasswordMapper>();
-                var keys = args["decryption-keys"].UnTie ();
-                foreach (var idxKey in keys.Children) {
-                    if (idxKey.Name == "email")
-                        Passwords.Add (
-                            new GnuPrivacyContext.KeyPasswordMapper (
-                                new MailboxAddress ("", idxKey.Get<string> (context)), 
-                                idxKey.GetChildValue<string> ("password", context)));
-                    else if (idxKey.Name == "fingerprint")
-                        Passwords.Add (
-                            new GnuPrivacyContext.KeyPasswordMapper (
-                                new SecureMailboxAddress ("", "foo@bar.com", idxKey.Get<string> (context)), 
-                                idxKey.GetChildValue<string> ("password", context)));
-                    else
-                        throw new LambdaException (
-                            string.Format ("I don't know how to use a '{0}' to lookup a decryption key from GnuPG", idxKey.Name),
-                            args,
-                            context);
-                }
+                // Caller supplied explicit decryption keys, making sure we add them up as keys to use for decrypting MIME entities
+                AddExplicitDecryptionKeys (context, args);
             }
 
             // Retrieving other arguments
-            Context = context;
-            Args = args;
-            RootEntity = entity;
-            if (!string.IsNullOrEmpty (AttachmentFolder) && (attachmentFolder [0] != '/' || attachmentFolder [attachmentFolder.Length - 1] != '/'))
-                throw new LambdaException ("Attachment folder was not a valid path", Args, context);
-            AttachmentFolder = attachmentFolder;
-        }
-
-        /// <summary>
-        ///     Returns the Application Context used for the processing operation
-        /// </summary>
-        /// <value>The Application Context</value>
-        public ApplicationContext Context {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        ///     Returns the Node used to store the results of the processing operation
-        /// </summary>
-        /// <value>The result node</value>
-        public Node Args {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        ///     Returns the root MimeEntity being processed
-        /// </summary>
-        /// <value>The root entity</value>
-        public MimeEntity RootEntity {
-            get;
-            private set;
-        }
-
-        /*
-         * Password used to retrieve private PGP key from GnuPG
-         */
-        private List<GnuPrivacyContext.KeyPasswordMapper> Passwords {
-            get;
-            set;
-        }
-
-        /*
-         * Folder where to store attachments found in MIME entity
-         */
-        private string AttachmentFolder {
-            get;
-            set;
+            _context = context;
+            _args = args;
+            _rootEntity = entity;
+            _attachmentFolder = attachmentFolder;
         }
 
         /// <summary>
@@ -132,7 +64,57 @@ namespace p5.mime.helpers
         /// </summary>
         public void Process ()
         {
-            ProcessEntity (RootEntity, Args);
+            ProcessEntity (_rootEntity, _args);
+        }
+
+        /*
+         * Adds up machine decryption key
+         */
+        private void AddMachineDecryptionKey (ApplicationContext context)
+        {
+            // Caller did not supply decryption keys, adding up the machine server key anyway
+            _passwords = new List<GnuPrivacyContext.KeyPasswordMapper> ();
+            var key = context.RaiseNative ("p5.security.get-marvin-pgp-key").Get<string> (_context);
+            string email = "foo@bar.com", fingerprint = "";
+
+            // Figuring out if this is email or fingerprint
+            if (key.IndexOf ("@") == -1)
+                fingerprint = key;
+            else
+                email = key;
+
+            // Retrieving password for machine key
+            var password = context.RaiseNative ("p5.security.get-marvin-pgp-key-password").Get<string> (_context);
+            var mailboxAdr = string.IsNullOrEmpty (fingerprint) ? new MailboxAddress ("", email) : new SecureMailboxAddress ("", email, fingerprint);
+            _passwords.Add (new GnuPrivacyContext.KeyPasswordMapper (mailboxAdr, password));
+        }
+
+        /*
+         * Adds up explicitly given decryption keys and passwords to retrieve key from GnuPG
+         */
+        private void AddExplicitDecryptionKeys (ApplicationContext context, Node args)
+        {
+            // Caller supplied decryption keys, enumerating them, and storing to list of key, making sure we DETACH them
+            // from args, such that they don't leave method in case of exception
+            _passwords = new List<GnuPrivacyContext.KeyPasswordMapper> ();
+            var keys = args ["decryption-keys"].UnTie ();
+
+            // Looping through each decryption key specified by caller
+            foreach (var idxKey in keys.Children) {
+                if (idxKey.Name == "email") {
+
+                    // Email lookup
+                    _passwords.Add (new GnuPrivacyContext.KeyPasswordMapper (new MailboxAddress ("", idxKey.Get<string> (context)), idxKey.GetChildValue<string> ("password", context)));
+                } else if (idxKey.Name == "fingerprint") {
+
+                    // Fingerprint lookup
+                    _passwords.Add (new GnuPrivacyContext.KeyPasswordMapper (new SecureMailboxAddress ("", "foo@bar.com", idxKey.Get<string> (context)), idxKey.GetChildValue<string> ("password", context)));
+                } else {
+
+                    // Oops ...
+                    throw new LambdaException (string.Format ("I don't know how to use a '{0}' to lookup a decryption key from GnuPG", idxKey.Name), args, context);
+                }
+            }
         }
 
         /*
@@ -143,7 +125,7 @@ namespace p5.mime.helpers
             if (entity is MimePart) {
 
                 // Leaf entity
-                ProcessMimePart (entity as MimePart, args);
+                ProcessLeafPart (entity as MimePart, args);
             } else {
 
                 // Some sort of Multipart, can also be encrypted or signed
@@ -154,7 +136,7 @@ namespace p5.mime.helpers
         /*
          * Processes a MimePart (leaf entity)
          */
-        private void ProcessMimePart (MimePart part, Node args)
+        private void ProcessLeafPart (MimePart part, Node args)
         {
             Node entityNode = args.Add (part.ContentType.MediaType, part.ContentType.MediaSubtype).LastChild;
             ProcessHeaders (part, entityNode);
@@ -176,7 +158,7 @@ namespace p5.mime.helpers
          */
         private bool TreatAsAttachment (MimePart part)
         {
-            if (string.IsNullOrEmpty (AttachmentFolder))
+            if (string.IsNullOrEmpty (_attachmentFolder))
                 return false; // We cannot store attachments, unless caller supplies an [attachment-folder] argument
             if (part.IsAttachment) {
 
@@ -198,7 +180,7 @@ namespace p5.mime.helpers
             EnsureAttachmentFolderExist ();
 
             // Creating an intelligent filename
-            string rootFolder = Common.GetRootFolder (Context).TrimEnd ('/');
+            string rootFolder = Common.GetRootFolder (_context).TrimEnd ('/');
             string fileName = "";
             if (part.ContentDisposition == null || string.IsNullOrEmpty (part.ContentDisposition.FileName)) {
                 fileName = "noname";
@@ -210,15 +192,15 @@ namespace p5.mime.helpers
             }
 
             // Verifying user is authorized to writing to destination file
-            Context.RaiseNative ("p5.io.authorize.modify-file", new Node ("", AttachmentFolder + fileName).Add ("args", Args));
+            _context.RaiseNative ("p5.io.authorize.modify-file", new Node ("", _attachmentFolder + fileName).Add ("args", _args));
 
             // Saving attachment to disc
-            using (FileStream stream = File.Create (rootFolder + AttachmentFolder + fileName)) {
+            using (FileStream stream = File.Create (rootFolder + _attachmentFolder + fileName)) {
                 part.ContentObject.DecodeTo (stream);
             }
 
             // Making sure we return to caller the entire filename that was used to persist the file
-            entityNode.Add ("filename", AttachmentFolder + fileName);
+            entityNode.Add ("filename", _attachmentFolder + fileName);
         }
 
         /*
@@ -231,13 +213,16 @@ namespace p5.mime.helpers
                 return;
             
             // Verifying user is authorized to writing to destination folder
-            Context.RaiseNative ("p5.io.authorize.modify-folder", new Node ("", AttachmentFolder).Add ("args", Args));
+            _context.RaiseNative ("p5.io.authorize.modify-folder", new Node ("", _attachmentFolder).Add ("args", _args));
 
             // Verifies folder exist, and creates entire path if not
-            string baseFolder = Common.GetRootFolder (Context).TrimEnd ('/') + "/";
-            string[] folderSplits = AttachmentFolder.Split (new char [] {'/'}, StringSplitOptions.RemoveEmptyEntries);
+            string baseFolder = Common.GetRootFolder (_context).TrimEnd ('/') + "/";
+            string[] folderSplits = _attachmentFolder.Split (new char [] {'/'}, StringSplitOptions.RemoveEmptyEntries);
+
+            // Looping through each "entity" in folder path
             foreach (var idxFolder in folderSplits) {
 
+                // Making sure we create folder if not existing
                 baseFolder += idxFolder + "/";
                 if (!Directory.Exists (baseFolder))
                     Directory.CreateDirectory (baseFolder);
@@ -315,7 +300,7 @@ namespace p5.mime.helpers
             if (!string.IsNullOrEmpty ((multipart.Preamble ?? "").Trim ()))
                 entityNode.Add ("preamble", multipart.Preamble.Trim ());
 
-            if (multipart is MultipartEncrypted && Passwords != null && Passwords.Count > 0) {
+            if (multipart is MultipartEncrypted) {
 
                 // Encrypted Multipart, might also be signed
                 ProcessEncryptedMultipart (multipart as MultipartEncrypted, entityNode);
@@ -346,7 +331,7 @@ namespace p5.mime.helpers
                 using (var ctx = new GnuPrivacyContext ()) {
 
                     // Associating our KeyPasswordMapper collection with GnuPG CryptographyContext
-                    ctx.Passwords = Passwords;
+                    ctx.Passwords = _passwords;
 
                     // Decrypting entity, making sure we retrieve signatures at the same time, if there are any
                     DigitalSignatureCollection signatures;
@@ -361,7 +346,6 @@ namespace p5.mime.helpers
                     // Parsing decrypted result
                     ProcessEntity (decryptedMultipart, entityNode);
                 }
-
             } catch (Exception err) {
 
                 // Couldn't decrypt Multipart, returning raw cipher content!

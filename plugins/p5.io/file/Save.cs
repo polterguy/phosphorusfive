@@ -31,20 +31,34 @@ namespace p5.io.file
                 // Getting root folder
                 var rootFolder = Common.GetRootFolder (context);
 
-                // Getting filename
-                string fileName = XUtil.Single<string> (context, e.Args);
+                // Checking if we're given an expression as destination, to make sure we support [rel-src] and Active Event source
+                if (XUtil.IsExpression (e.Args.Value)) {
 
-                // Verifying user is allowed to save to file
-                context.RaiseNative ("p5.io.authorize.modify-file", new Node ("", fileName).Add ("args", e.Args));
+                    // Destination is an expression, which means we might have a [rel-src] or Active Event source
+                    var destEx = e.Args.Value as Expression;
+                    foreach (var idxDestination in destEx.Evaluate (context, e.Args, e.Args)) {
 
-                // Getting source, or content of file
-                var source = Utilities.Convert<string> (context, XUtil.SourceSingle (context, e.Args));
+                        // Retrieving content to save, possibly relative to currently iterated expression result
+                        var content = XUtil.SourceSingle (context, e.Args, idxDestination.Node);
 
-                // Saving file
-                using (TextWriter writer = File.CreateText (rootFolder + fileName)) {
+                        // Saving currently iterated file
+                        SaveTextFile (
+                            context, 
+                            e.Args, 
+                            rootFolder + Utilities.Convert<string> (context, idxDestination.Value), 
+                            Utilities.Convert<string> (context, content));
+                    }
+                } else {
 
-                    // Writing content to file stream
-                    writer.Write (source);
+                    // Retrieving content to save
+                    var content = Utilities.Convert<string> (context, XUtil.SourceSingle (context, e.Args));
+
+                    // Destination was not an expression, assuming constant filepath, possibly formatted
+                    SaveTextFile (
+                        context,
+                        e.Args,
+                        rootFolder + e.Args.GetExValue<string> (context),
+                        content);
                 }
             }
         }
@@ -62,19 +76,75 @@ namespace p5.io.file
                 // Getting root folder
                 var rootFolder = Common.GetRootFolder (context);
 
-                // Getting filename
-                string fileName = XUtil.Single<string> (context, e.Args);
+                // Checking if we're given an expression as destination, to make sure we support [rel-src] and Active Event source
+                if (XUtil.IsExpression (e.Args.Value)) {
 
-                // Verifying user is allowed to save to file
-                context.RaiseNative ("p5.io.authorize.modify-file", new Node ("", fileName).Add ("args", e.Args));
+                    // Destination is an expression, which means we might have a [rel-src] or Active Event source
+                    var destEx = e.Args.Value as Expression;
+                    foreach (var idxDestination in destEx.Evaluate (context, e.Args, e.Args)) {
 
-                // Getting source, or content of file
-                var source = Utilities.Convert<byte[]> (context, XUtil.SourceSingle (context, e.Args));
+                        // Retrieving content to save, possibly relative to currently iterated expression result
+                        var content = XUtil.SourceSingle (context, e.Args, idxDestination.Node);
 
-                // Saving file
-                using (FileStream stream = File.Create (rootFolder + fileName)) {
-                    stream.Write (source, 0, source.Length);
+                        // Saving currently iterated file
+                        SaveBinaryFile (
+                            context, 
+                            e.Args, 
+                            rootFolder + Utilities.Convert<string> (context, idxDestination.Value), 
+                            Utilities.Convert<byte[]> (context, content));
+                    }
+                } else {
+
+                    // Retrieving content to save
+                    var content = Utilities.Convert<byte[]> (context, XUtil.SourceSingle (context, e.Args));
+
+                    // Destination was not an expression, assuming constant filepath
+                    SaveBinaryFile (
+                        context,
+                        e.Args,
+                        rootFolder + e.Args.GetExValue<string> (context),
+                        content);
                 }
+            }
+        }
+
+        /*
+         * Saves the specified text file, retrieving source from args
+         */
+        private static void SaveTextFile (
+            ApplicationContext context, 
+            Node args, 
+            string fileName,
+            string content)
+        {
+            // Verifying user is allowed to save to file
+            context.RaiseNative ("p5.io.authorize.modify-file", new Node ("", fileName).Add ("args", args));
+
+            // Saving file
+            using (TextWriter writer = File.CreateText (fileName)) {
+
+                // Writing content to file stream
+                writer.Write (content);
+            }
+        }
+
+        /*
+         * Saves the specified text file, retrieving source from args
+         */
+        private static void SaveBinaryFile (
+            ApplicationContext context, 
+            Node args, 
+            string fileName,
+            byte[] content)
+        {
+            // Verifying user is allowed to save to file
+            context.RaiseNative ("p5.io.authorize.modify-file", new Node ("", fileName).Add ("args", args));
+
+            // Saving file
+            using (FileStream stream = File.Create (fileName)) {
+
+                // Writing content to file stream
+                stream.Write (content, 0, content.Length);
             }
         }
     }

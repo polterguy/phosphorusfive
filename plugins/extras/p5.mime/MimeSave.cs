@@ -34,7 +34,7 @@ namespace p5.mime
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // Keeping base folder to application around
-                string baseFolder = Common.GetRootFolder (context).TrimEnd ('/');
+                string baseFolder = Common.GetRootFolder (context);
 
                 // Retrieving filename supplied by caller to serialize MimeEntity to
                 var filename = XUtil.Single<string> (context, e.Args, true);

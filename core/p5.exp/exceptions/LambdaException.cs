@@ -15,6 +15,7 @@ namespace p5.exp.exceptions
     {
         private readonly ApplicationContext _context;
         private readonly Node _node;
+        private readonly int _lineNo;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LambdaException" /> class
@@ -28,13 +29,21 @@ namespace p5.exp.exceptions
             // Need to find root to append current evaluation scope to stack trace!
             _node = node.Root.Clone ();
 
+            // Figuring out which line number error node has in hierarchy
+            var idxCurrent = node;
+            int idxNo = 0;
+            while (idxCurrent != node.Root) {
+                idxCurrent = idxCurrent.PreviousNode;
+                idxNo += 1;
+            }
+            _lineNo = idxNo + 1;
+
             // Storing context since we need it to convert to Hyperlisp later
             _context = context;
         }
 
         /*
-         * Overiding StackTrace from Exception class to provide "Hyperlisp stack trace" as an additional piece 
-         * of contextual information
+         * Overiding StackTrace from Exception class to provide "Hyperlisp stack trace" instead of default stacktrace
          */
         public override string StackTrace
         {
@@ -43,9 +52,19 @@ namespace p5.exp.exceptions
                 var convert = new Node ();
                 convert.Add (_node);
                 _context.RaiseNative ("lambda2lisp", convert);
-                return string.Format ("p5 lambda stack trace;\r\n{0}\r\n\r\nC# stack trace;\r\n{1}",
-                    convert.Get<string> (_context),
-                    base.StackTrace);
+                string lisp = convert.Get<string> (_context);
+                int curPosCrLf = 0, noCrLf = 0;
+                while (noCrLf != _lineNo) {
+                    var newLineIndex = lisp.IndexOf ("\r\n", curPosCrLf + 2);
+                    if (newLineIndex == -1) {
+                        curPosCrLf = lisp.Length;
+                        break;
+                    }
+                    curPosCrLf = newLineIndex;
+                    noCrLf += 1;
+                }
+                lisp = lisp.Substring (0, curPosCrLf) + "<<================================================" + lisp.Substring (curPosCrLf);
+                return string.Format ("Hyperlisp stack trace;\r\n{0}", lisp);
             }
         }
     }
