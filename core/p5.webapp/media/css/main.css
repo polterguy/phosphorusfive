@@ -16,7 +16,39 @@ body {
 }
 
 /*
- * To ensure content is filling the whole screen, regardless of its size
+ * Making sure navbar inverse dropdown is also black
+ */
+.navbar-inverse .dropdown-menu>li>a,
+.navbar-inverse .navbar-nav .open .dropdown-menu {
+    background-color:#222;
+    border-color:#080808;
+    color:#999;
+}
+
+.navbar-inverse .dropdown-menu>li>a:hover {
+    color:#fff;
+    background-color:#000;
+}
+
+/*
+ * To support multiple levels of dropdown menus for bootstrap
+ */
+.nav li.dropdown ul.dropdown-menu li:hover>ul {
+    display:block; 
+    position:absolute; 
+    left:100%;
+}
+
+.nav li.dropdown ul.dropdown-menu ul {
+    display: none;
+    float:right;
+    position: relative;
+    top: auto;
+    margin-top: -30px;
+}
+
+/*
+ * To ensure content is filling the whole screen, regardless of its height
  */
 .content-row {
     min-height:632px;

@@ -254,8 +254,20 @@ create-widget
                   sys42.set-currently-edited-page:x:/../*/get-widget-property/*/page-url/*?value
                   sys42.populate-select-page
                   sys42.edit-page
-                  sys42.info-window:Page '{0}' was successfully saved
-                    :x:/../*/get-widget-property/*/page-name/*?value
+
+                  // Checking how many levels of nesting we have in page, to warn user of that more than two levels are BAD
+                  split:x:/../*/get-widget-property/*/page-url/*/value?value
+                    =:/
+                  if:x:/-/*?count
+                    >:int:2
+                    sys42.info-window:@"In general, it is considered bad practice to have more than two levels of nested menus! 
+Your page currently has {0} levels!"
+                      :x:/././-/*?count
+                      _warning:true
+                      _time:more
+                  else
+                    sys42.info-window:Page '{0}' was successfully saved
+                      :x:/../*/get-widget-property/*/page-name/*?value
 
 
             /*

@@ -106,46 +106,57 @@ create-widget:template-root
                               :x:/..for-each/*/_dp/#?value
                               :x:/..for-each/*/_dp/#/*/name?value
 
-                          // Checking if this is a nested menu item (we support two levels of nesting currently)
+                          // Checking if this is a nested menu item
                           split:x:/..for-each/*/_dp/#?value
                             =:/
                           if:x:/./*/split/*?count
                             >:int:1
 
-                            // This was a "nested" item, checking if root item for current item is already created
-                            if
-                              fetch:x:/0/0?value
-                                widget-exist:{0}-menu-item
-                                  :x:/./././././*/split/0?name
-                              not
+                            // This was a "nested" item, checking if parent items for current item is already created
+                            set:x:/././*/split/0/-
+                            _cur
+                            _last:main-menu
+                            for-each:x:/././*/split/*?name
+                              set:x:/././*/_cur?value
+                                src:{0}{1}
+                                  :x:/././././*/_cur?value
+                                  :x:/..for-each/*/_dp?value
+                              if
+                                fetch:x:/0/0?value
+                                  widget-exist:{0}-menu-item
+                                    :x:/..for-each/./*/_cur?value
+                                not
 
-                              // root item for current nested item is not created, creating it
-                              eval-x:x:/+/**/innerValue|/+|/+/**/container
-                              create-container-widget:{0}-menu-wrp
-                                :x:/././././*/split/0?name
-                                parent:main-menu
-                                element:li
-                                class:dropdown
-                                widgets
-                                  literal
-                                    element:a
-                                    href:#
-                                    class:dropdown-toggle
-                                    data-toggle:dropdown
-                                    role:button
-                                    aria-haspopup:true
-                                    aria-expanded:false
-                                    innerValue:@"{0} <span class=""caret""></span>"
-                                      :x:/./././././././*/split/0?name
-                                  container:{0}-menu-item
-                                    :x:/././././././*/split/0?name
-                                    element:ul
-                                    class:dropdown-menu
+                                // Root item for current nested item is not created, creating it
+                                eval-x:x:/+|/+/**
+                                create-container-widget:{0}-menu-wrp
+                                  :x:/..for-each/./*/_cur?value
+                                  parent:x:/..for-each/./*/_last?value
+                                  element:li
+                                  class:dropdown
+                                  widgets
+                                    literal
+                                      element:a
+                                      href:#
+                                      class:dropdown-toggle
+                                      data-toggle:dropdown
+                                      role:button
+                                      aria-haspopup:true
+                                      aria-expanded:false
+                                      innerValue:@"{0} <span class=""caret""></span>"
+                                        :x:/..for-each/*/_dp?value
+                                    container:{0}-menu-item
+                                      :x:/..for-each/./*/_cur?value
+                                      element:ul
+                                      class:dropdown-menu
 
-                            // Updating [parent] for current item to be root item for group
-                            set:x:/..for-each/*/_create-item/*/*/parent?value
-                              src:{0}-menu-item
-                                :x:/././././*/split/0?name
+                              // Updating [parent] for current item to be root item for group
+                              set:x:/..for-each/..for-each/*/_create-item/*/*/parent?value
+                                src:{0}-menu-item
+                                  :x:/..for-each/./*/_cur?value
+                              set:x:/..for-each/./*/_last?value
+                                src:{0}-menu-item
+                                  :x:/..for-each/./*/_cur?value
                           eval:x:/..for-each/*/_create-item
                           
                       /*
