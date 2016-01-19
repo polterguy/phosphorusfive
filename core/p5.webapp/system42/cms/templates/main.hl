@@ -17,16 +17,13 @@ create-widget:template-root
      * Our main bootstrap navbar menu, stuck to the top, by default
      */
     container
-      has-id:false
       element:nav
       class:navbar navbar-default navbar-fixed-top navbar-inverse
       widgets
         container
-          has-id:false
           class:container-fluid
           widgets
             container
-              has-id:false
               class:navbar-header
               widgets
 
@@ -54,8 +51,7 @@ create-widget:template-root
             /*
              * Main menu items wrapper
              */
-            container
-              has-id:false
+            container:navbar-main
               class:collapse navbar-collapse
               widgets
 
@@ -103,10 +99,53 @@ create-widget:template-root
                         // Verifying user has access to currently iterated [p5.page] object
                         if
                           sys42.verify-access:x:/..for-each/*/_dp/#/*/role?value
-                          set:x:/..for-each/*/_create-item/*/*/innerValue?value
+
+                          // Creating menu item, settings properties first
+                          set:x:/..for-each/*/_create-item/*/create-literal-widget/*/innerValue?value
                             src:@"<a href=""{0}"">{1}</a>"
                               :x:/..for-each/*/_dp/#?value
                               :x:/..for-each/*/_dp/#/*/name?value
+
+                          // Checking if this is a nested menu item (we support two levels of nesting currently)
+                          split:x:/..for-each/*/_dp/#?value
+                            =:/
+                          if:x:/./*/split/*?count
+                            >:int:1
+
+                            // This was a "nested" item, checking if root item for current item is already created
+                            if
+                              fetch:x:/0/0?value
+                                widget-exist:{0}-menu-item
+                                  :x:/./././././*/split/0?name
+                              not
+
+                              // root item for current nested item is not created, creating it
+                              eval-x:x:/+/**/innerValue|/+|/+/**/container
+                              create-container-widget:{0}-menu-wrp
+                                :x:/././././*/split/0?name
+                                parent:main-menu
+                                element:li
+                                class:dropdown
+                                widgets
+                                  literal
+                                    element:a
+                                    href:#
+                                    class:dropdown-toggle
+                                    data-toggle:dropdown
+                                    role:button
+                                    aria-haspopup:true
+                                    aria-expanded:false
+                                    innerValue:@"{0} <span class=""caret""></span>"
+                                      :x:/./././././././*/split/0?name
+                                  container:{0}-menu-item
+                                    :x:/././././././*/split/0?name
+                                    element:ul
+                                    class:dropdown-menu
+
+                            // Updating [parent] for current item to be root item for group
+                            set:x:/..for-each/*/_create-item/*/*/parent?value
+                              src:{0}-menu-item
+                                :x:/././././*/split/0?name
                           eval:x:/..for-each/*/_create-item
                           
                       /*

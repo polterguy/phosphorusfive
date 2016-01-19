@@ -18,6 +18,7 @@
 .toolbar {
     position:fixed;
     right:0;
+    right:25px;
     margin-top:-40px;
 }
 

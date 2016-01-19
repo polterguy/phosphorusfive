@@ -155,7 +155,7 @@ create-widget:file-browser
      * "Show toolbar" button
      */
     container:file-browser-show-toolbar
-      class:btn btn-default blink toolbar prepend-right-2
+      class:btn btn-default blink toolbar
       title:Show menu - S
       accesskey:S
       oninit
@@ -178,7 +178,7 @@ create-widget:file-browser
           set-widget-property:file-browser-show-toolbar
             class:hidden
           set-widget-property:file-browser-current-item-toolbar
-            class:btn-group prepend-right-2 prepend-bottom toolbar
+            class:btn-group prepend-bottom toolbar
       widgets
         literal
           element:span
@@ -370,7 +370,7 @@ create-widget:file-browser
             set-session-value:sys42.file-browser-toolbar-visible
               src:bool:false
             set-widget-property:file-browser-show-toolbar
-              class:btn btn-default blink toolbar prepend-right-2
+              class:btn btn-default blink toolbar
             set-widget-property:file-browser-current-item-toolbar
               class:hidden toolbar
           widgets
@@ -1450,7 +1450,7 @@ file/folder with that name"
         sys42.show-toolbar
       else
         set-widget-property:file-browser-show-toolbar
-          class:btn btn-default blink toolbar prepend-right-2
+          class:btn btn-default blink toolbar
 
 
 /*

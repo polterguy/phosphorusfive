@@ -33,7 +33,6 @@ namespace p5.io.file
                 var rootFolder = Common.GetRootFolder (context);
 
                 // Multiple filename source, returning existence of all files
-                e.Args.Value = false;
                 foreach (var idxFile in XUtil.Iterate<string> (context, e.Args, true)) {
 
                     // Verifying user is authorized to reading from currently iterated file
@@ -51,6 +50,8 @@ namespace p5.io.file
                         e.Args.Value = true;
                     }
                 }
+                if (XUtil.IsExpression (e.Args.Value))
+                    e.Args.Value = false;
             }
         }
     }

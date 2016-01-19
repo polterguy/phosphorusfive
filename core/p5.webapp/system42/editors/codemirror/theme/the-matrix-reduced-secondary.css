@@ -3,7 +3,7 @@
  * Slightly modified version of "the-matrix" to reduce brightness of comments and gutters
  */
 
-.cm-s-the-matrix-reduced-secondary.CodeMirror { background: #000; color: #008803; z-index:1049;}
+.cm-s-the-matrix-reduced-secondary.CodeMirror { background: #000; color: #008803;}
 .cm-s-the-matrix-reduced-secondary div.CodeMirror-selected { background: #055; }
 .cm-s-the-matrix-reduced-secondary .CodeMirror-line::selection, .cm-s-the-matrix-reduced .CodeMirror-line > span::selection, .cm-s-the-matrix-reduced .CodeMirror-line > span > span::selection { background: rgba(45, 45, 45, 0.99); }
 .cm-s-the-matrix-reduced-secondary .CodeMirror-line::-moz-selection, .cm-s-the-matrix-reduced .CodeMirror-line > span::-moz-selection, .cm-s-the-matrix-reduced .CodeMirror-line > span > span::-moz-selection { background: rgba(45, 45, 45, 0.99); }
