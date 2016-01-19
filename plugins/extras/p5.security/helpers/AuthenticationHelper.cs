@@ -170,7 +170,7 @@ namespace p5.security.helpers
             VerifyUsernameValid (username);
 
             // Creating user salt, and retrieving system salt
-            var userSalt = AuthFile.CreateNewSalt ();
+            var userSalt = AuthFile.CreateNewSalt (context);
             var serverSalt = context.RaiseNative ("p5.security.get-password-salt").Get<string> (context);
 
             // Then salting password with user salt, before salting it with system salt
@@ -296,7 +296,7 @@ namespace p5.security.helpers
 
                         // Changing user's password
                         // Creating user salt, and retrieving system salt
-                        var userSalt = AuthFile.CreateNewSalt ();
+                        var userSalt = AuthFile.CreateNewSalt (context);
                         var serverSalt = context.RaiseNative ("p5.security.get-password-salt").Get<string> (context);
 
                         // Then salting password with user salt and system, before salting it with system salt

@@ -13,28 +13,19 @@ using p5.exp.exceptions;
 namespace p5.io.file
 {
     /// <summary>
-    ///     Class to help copy a file
+    ///     Class to help copy and/or rename a file
     /// </summary>
     public static class Copy
     {
         /// <summary>
-        ///     Copies a file
+        ///     Copies or renames a file
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "copy-file", Protection = EventProtection.LambdaClosed)]
-        public static void copy_file (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "rename-file", Protection = EventProtection.LambdaClosed)]
+        public static void copy_rename_file (ApplicationContext context, ActiveEventArgs e)
         {
-            /*
-             * We do not remove value of arguments here, since it is used for returning value of 
-             * new filename, since it might not necessarily be the same as the one caller requested, 
-             * if file exist from before
-             */
-
-            // Basic syntax checking
-            if (e.Args.Value == null || e.Args.LastChild == null || e.Args.LastChild.Name != "to")
-                throw new ArgumentException ("[copy-file] needs both a value and a [to] node");
-
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args)) {
 

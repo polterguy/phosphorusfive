@@ -31,7 +31,7 @@ namespace p5.io.file
                 var rootFolder = Common.GetRootFolder (context);
 
                 // Iterating through each path given
-                foreach (var idxFile in Common.GetSource (e.Args, context)) {
+                foreach (var idxFile in XUtil.Iterate<string> (context, e.Args, true)) {
 
                     // Verifying user is authorized to writing to destination file
                     context.RaiseNative ("p5.io.authorize.modify-file", new Node ("", idxFile).Add ("args", e.Args));

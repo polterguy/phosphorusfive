@@ -18,13 +18,12 @@ namespace p5.io.file
     public static class Load
     {
         /// <summary>
-        ///     Loads text files from disc
+        ///     Loads files from disc
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "load-file", Protection = EventProtection.LambdaClosed)]
-        [ActiveEvent (Name = "load-text-file", Protection = EventProtection.LambdaClosed)]
-        public static void file_text_load (ApplicationContext context, ActiveEventArgs e)
+        public static void file_load (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args, true)) {
@@ -33,7 +32,7 @@ namespace p5.io.file
                 var rootFolder = Common.GetRootFolder (context);
 
                 // Iterating through each file path given
-                foreach (var idxFile in Common.GetSource (e.Args, context)) {
+                foreach (var idxFile in XUtil.Iterate<string> (context, e.Args, true)) {
 
                     // Verifying user is authorized to reading from currently iterated file
                     context.RaiseNative ("p5.io.authorize.read-file", new Node ("", idxFile).Add ("args", e.Args));
@@ -41,72 +40,83 @@ namespace p5.io.file
                     // Checking to see if file exists
                     if (File.Exists (rootFolder + idxFile)) {
 
-                        // File exists, loading it as text file, and appending text into node,
-                        // with filename as name, and content as value
-                        using (TextReader reader = File.OpenText (rootFolder + idxFile)) {
+                        // File exists, figuring out file type
+                        if (IsTextFile (idxFile)) {
 
-                            // Reading file content
-                            string fileContent = reader.ReadToEnd ();
-                            if (idxFile.EndsWith (".hl") && e.Args.GetExChildValue ("convert", context, true)) {
+                            // Loading file as string/text
+                            LoadTextFile (context, e.Args, rootFolder + idxFile);
+                        } else {
 
-                                // Automatically converting to Hyperlisp before returning
-                                e.Args.Add (new Node (idxFile, null, Utilities.Convert<Node> (context, fileContent).Children));
-                            } else {
-
-                                // Adding file content as string
-                                e.Args.Add (new Node (idxFile, fileContent));
-                            }
+                            // Loading file as blob/byte[]
+                            LoadBinaryFile (e.Args, rootFolder + idxFile);
                         }
                     } else {
 
-                        // File didn't exist
-                        throw new LambdaException (string.Format ("Couldn't find file '{0}'", idxFile), e.Args, context);
+                        // Oops, file didn't exist!
+                        throw new LambdaException (
+                            string.Format ("Couldn't find file '{0}'", idxFile), 
+                            e.Args, 
+                            context);
                     }
                 }
             }
         }
 
-        /// <summary>
-        ///     Loads zero or more binary files from disc
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "load-binary-file", Protection = EventProtection.LambdaClosed)]
-        public static void load_binary_file (ApplicationContext context, ActiveEventArgs e)
+        /*
+         * Determines if file is text according to file extension
+         */
+        private static bool IsTextFile (string fileName)
         {
-            // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args, true)) {
+            switch (Path.GetExtension (fileName)) {
+                case ".txt":
+                case ".md":
+                case ".css":
+                case ".js":
+                case ".html":
+                case ".htm":
+                case ".hl":
+                case ".xml":
+                    return true;
+                default:
+                    return false;
+            }
+        }
 
-                // Retrieving root folder of app
-                var rootFolder = Common.GetRootFolder (context);
+        /*
+         * Loads specified as text and appends into args
+         */
+        private static void LoadTextFile (ApplicationContext context, Node args, string fileName)
+        {
+            using (TextReader reader = File.OpenText (fileName)) {
 
-                // Iterating through each file path given
-                foreach (var idxFilename in XUtil.Iterate<string> (context, e.Args)) {
+                // Reading file content
+                string fileContent = reader.ReadToEnd ();
 
-                    // Verifying user is authorized to reading from currently iterated file
-                    context.RaiseNative ("p5.io.authorize.read-file", new Node ("", idxFilename).Add ("args", e.Args));
+                // Checking if we should automatically convert file content to lambda
+                if (fileName.EndsWith (".hl") && args.GetExChildValue ("convert", context, true)) {
 
-                    // Checking to see if file exists
-                    if (File.Exists (rootFolder + idxFilename)) {
-
-                        // File exists, loading it as text file, and appending text into node
-                        // with filename as name, and content as value
-                        using (FileStream stream = File.OpenRead (rootFolder + idxFilename)) {
-
-                            // Loading binary content
-                            byte[] buffer = new byte [stream.Length];
-                            stream.Read (buffer, 0, buffer.Length);
-                            e.Args.Add (new Node (idxFilename, buffer));
-                        }
-                    } else {
-
-                        // File didn't exist
-                        throw new LambdaException (
-                            string.Format ("Couldn't find file '{0}'", idxFilename), 
-                            e.Args, 
-                            context);
-                    }
+                    // Automatically converting to Hyperlisp before returning
+                    args.Add (fileName, null, Utilities.Convert<Node> (context, fileContent).Children);
                 }
+                else {
+
+                    // Adding file content as string
+                    args.Add (fileName, fileContent);
+                }
+            }
+        }
+
+        /*
+         * Loads a binary file and appends as blob/byte[] into args
+         */
+        private static void LoadBinaryFile (Node args, string fileName)
+        {
+            using (FileStream stream = File.OpenRead (fileName)) {
+
+                // Reading file content
+                var buffer = new byte [stream.Length];
+                stream.Read (buffer, 0, buffer.Length);
+                args.Add (fileName, buffer);
             }
         }
     }

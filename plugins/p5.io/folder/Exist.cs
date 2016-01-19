@@ -32,12 +32,9 @@ namespace p5.io.folder
                 // Getting root folder
                 var rootFolder = Common.GetRootFolder (context);
 
-                // Retrieving source
-                var sourceFiles = Common.GetSource (e.Args, context).ToList ();
-
                 // Multiple folder source, returning existence of all folders
                 e.Args.Value = false;
-                foreach (var idxFolder in sourceFiles) {
+                foreach (var idxFolder in XUtil.Iterate<string> (context, e.Args, true)) {
 
                     // Verifying user is authorized to reading from currently iterated folder
                     context.RaiseNative ("p5.io.authorize.read-folder", new Node ("", idxFolder).Add ("args", e.Args));

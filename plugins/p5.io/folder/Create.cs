@@ -34,7 +34,7 @@ namespace p5.io.folder
                 var rootFolder = Common.GetRootFolder (context);
 
                 // Iterating through each folder caller wants to create
-                foreach (var idxFolder in Common.GetSource (e.Args, context)) {
+                foreach (var idxFolder in XUtil.Iterate<string> (context, e.Args, true)) {
 
                     // Verifying user is authorized to writing to destination
                     context.RaiseNative ("p5.io.authorize.modify-folder", new Node ("", idxFolder).Add ("args", e.Args));

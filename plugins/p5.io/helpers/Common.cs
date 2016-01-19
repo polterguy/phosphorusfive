@@ -75,35 +75,5 @@ namespace p5.io.common
             }
             return string.Format (baseFolder + "{0} copy {1}/", newFolderName, idxNo);
         }
-
-        /*
-         * Used to retrieve source for operations such as [file-exist], [load-file] etc ...
-         */
-        public static IEnumerable<string> GetSource (Node args, ApplicationContext context)
-        {
-            if (args.Value != null) {
-                foreach (var idx in XUtil.Iterate<string> (context, args)) {
-
-                    yield return idx;
-                }
-                yield break;
-            } else {
-                var objRetVal = XUtil.SourceSingle (context, args);
-                if (objRetVal is Node) {
-
-                    // Converting to a single string
-                    objRetVal = ((Node)objRetVal).Get<string> (context);
-                } else if (objRetVal is IEnumerable<Node>) {
-
-                    // Converting to a single string
-                    foreach (var idx in objRetVal as IEnumerable<Node>) {
-                    
-                        yield return idx.Get<string> (context);
-                    }
-                    yield break;
-                }
-                yield return Utilities.Convert<string> (context, objRetVal) ?? "";
-            }
-        }
     }
 }

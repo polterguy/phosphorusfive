@@ -17,12 +17,11 @@ namespace p5.io.file
     public static class Save
     {
         /// <summary>
-        ///     Saves a file to disc
+        ///     Saves files to disc
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "save-file", Protection = EventProtection.LambdaClosed)]
-        [ActiveEvent (Name = "save-text-file", Protection = EventProtection.LambdaClosed)]
         public static void save_file (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
@@ -34,76 +33,33 @@ namespace p5.io.file
                 // Checking if we're given an expression as destination, to make sure we support [rel-src] and Active Event source
                 if (XUtil.IsExpression (e.Args.Value)) {
 
-                    // Destination is an expression, which means we might have a [rel-src] or Active Event source
+                    // Destination is an expression, which means we might have a [rel-src], [src] or Active Event invocation source
                     var destEx = e.Args.Value as Expression;
                     foreach (var idxDestination in destEx.Evaluate (context, e.Args, e.Args)) {
 
                         // Retrieving content to save, possibly relative to currently iterated expression result
-                        var content = XUtil.SourceSingle (context, e.Args, idxDestination.Node);
+                        var content = XUtil.SourceSingle (context, e.Args, e.Args.LastChild.Name == "src" ? e.Args : idxDestination.Node);
 
                         // Saving currently iterated file
-                        SaveTextFile (
+                        SaveFile (
                             context, 
                             e.Args, 
-                            rootFolder + Utilities.Convert<string> (context, idxDestination.Value), 
-                            Utilities.Convert<string> (context, content));
-                    }
-                } else {
-
-                    // Retrieving content to save
-                    var content = Utilities.Convert<string> (context, XUtil.SourceSingle (context, e.Args));
-
-                    // Destination was not an expression, assuming constant filepath, possibly formatted
-                    SaveTextFile (
-                        context,
-                        e.Args,
-                        rootFolder + e.Args.GetExValue<string> (context),
-                        content);
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Saves a binary file to disc
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "save-binary-file", Protection = EventProtection.LambdaClosed)]
-        public static void save_binary_file (ApplicationContext context, ActiveEventArgs e)
-        {
-            // Making sure we clean up and remove all arguments passed in after execution
-            using (new Utilities.ArgsRemover (e.Args, true)) {
-
-                // Getting root folder
-                var rootFolder = Common.GetRootFolder (context);
-
-                // Checking if we're given an expression as destination, to make sure we support [rel-src] and Active Event source
-                if (XUtil.IsExpression (e.Args.Value)) {
-
-                    // Destination is an expression, which means we might have a [rel-src] or Active Event source
-                    var destEx = e.Args.Value as Expression;
-                    foreach (var idxDestination in destEx.Evaluate (context, e.Args, e.Args)) {
-
-                        // Retrieving content to save, possibly relative to currently iterated expression result
-                        var content = XUtil.SourceSingle (context, e.Args, idxDestination.Node);
-
-                        // Saving currently iterated file
-                        SaveBinaryFile (
-                            context, 
-                            e.Args, 
-                            rootFolder + Utilities.Convert<string> (context, idxDestination.Value), 
+                            rootFolder,
+                            Utilities.Convert<string> (context, idxDestination.Value), 
                             Utilities.Convert<byte[]> (context, content));
                     }
                 } else {
 
                     // Retrieving content to save
-                    var content = Utilities.Convert<byte[]> (context, XUtil.SourceSingle (context, e.Args));
+                    var content = XUtil.SourceSingle (context, e.Args);
 
-                    // Destination was not an expression, assuming constant filepath
-                    SaveBinaryFile (
+                    // Destination was not an expression, assuming constant filepath, possibly formatted
+                    SaveFile (
                         context,
                         e.Args,
-                        rootFolder + e.Args.GetExValue<string> (context),
-                        content);
+                        rootFolder,
+                        e.Args.GetExValue<string> (context),
+                        Utilities.Convert<byte[]> (context, content));
                 }
             }
         }
@@ -111,29 +67,10 @@ namespace p5.io.file
         /*
          * Saves the specified text file, retrieving source from args
          */
-        private static void SaveTextFile (
+        private static void SaveFile (
             ApplicationContext context, 
             Node args, 
-            string fileName,
-            string content)
-        {
-            // Verifying user is allowed to save to file
-            context.RaiseNative ("p5.io.authorize.modify-file", new Node ("", fileName).Add ("args", args));
-
-            // Saving file
-            using (TextWriter writer = File.CreateText (fileName)) {
-
-                // Writing content to file stream
-                writer.Write (content);
-            }
-        }
-
-        /*
-         * Saves the specified text file, retrieving source from args
-         */
-        private static void SaveBinaryFile (
-            ApplicationContext context, 
-            Node args, 
+            string rootFolder,
             string fileName,
             byte[] content)
         {
@@ -141,7 +78,7 @@ namespace p5.io.file
             context.RaiseNative ("p5.io.authorize.modify-file", new Node ("", fileName).Add ("args", args));
 
             // Saving file
-            using (FileStream stream = File.Create (fileName)) {
+            using (FileStream stream = File.Create (rootFolder + fileName)) {
 
                 // Writing content to file stream
                 stream.Write (content, 0, content.Length);

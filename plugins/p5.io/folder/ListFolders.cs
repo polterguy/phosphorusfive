@@ -31,7 +31,7 @@ namespace p5.io.folder
                 var rootFolder = Common.GetRootFolder (context);
 
                 // Iterating through each folder passed in by caller
-                foreach (var idxFolder in Common.GetSource (e.Args, context)) {
+                foreach (var idxFolder in XUtil.Iterate<string> (context, e.Args, true)) {
 
                     // Verifying user is authorized to reading from currently iterated folder
                     context.RaiseNative ("p5.io.authorize.read-folder", new Node ("", idxFolder).Add ("args", e.Args));

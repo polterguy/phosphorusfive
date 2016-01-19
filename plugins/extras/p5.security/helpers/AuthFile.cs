@@ -66,13 +66,9 @@ namespace p5.security.helpers
         /*
          * Creates a new "salt" for use with hashing of passwords
          */
-        internal static string CreateNewSalt()
+        internal static string CreateNewSalt(ApplicationContext context)
         {
-            // Generate a random salt
-            RNGCryptoServiceProvider csprng = new RNGCryptoServiceProvider ();
-            byte[] salt = new byte [24];
-            csprng.GetBytes (salt);
-            return Convert.ToBase64String (salt);
+            return context.RaiseNative ("create-cs-random-string").Get<string> (context);
         }
 
         #region [ -- Private helper methods -- ]
