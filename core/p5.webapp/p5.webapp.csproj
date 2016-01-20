@@ -141,6 +141,7 @@
     <Content Include="system42\apps\file-browser\media\files.css" />
     <Content Include="system42\apps\file-browser\media\folder.png" />
     <Content Include="system42\editors\codemirror\theme\the-matrix-reduced-secondary.css" />
+    <Content Include="system42\apps\users\media\users.css" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -268,10 +269,6 @@
       <Project>{2D694F51-5055-4EC8-8767-C2011E010DD5}</Project>
       <Name>p5.mime</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\plugins\extras\p5.mongo\p5.mongo.csproj">
-      <Project>{DB520A20-0EFD-42A5-B3F2-38374768F2FD}</Project>
-      <Name>p5.mongo</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="system42\application-startup.hl" />
@@ -332,6 +329,8 @@
     <None Include="system42\startup\internals\users\sys42.verify-access.hl" />
     <None Include="system42\apps\x-ray-inspector\launch.hl" />
     <None Include="system42\cms\templates\x-ray.hl" />
+    <None Include="system42\apps\users\edit-specific-user.hl" />
+    <None Include="system42\startup\internals\users\sys42.get-default-user-settings.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />
@@ -354,5 +353,6 @@
     <Folder Include="system42\startup\internals\pages\" />
     <Folder Include="system42\startup\internals\users\" />
     <Folder Include="system42\apps\x-ray-inspector\" />
+    <Folder Include="system42\apps\users\media\" />
   </ItemGroup>
 </Project>

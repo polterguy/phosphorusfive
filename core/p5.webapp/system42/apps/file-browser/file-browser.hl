@@ -60,6 +60,8 @@ dz.processNextFile = function () {
 };
 "
 
+set-widget-property:header
+  visible:false
 
 /*
  * Creating main file system browser widget
@@ -152,44 +154,10 @@ create-widget:file-browser
 
 
     /*
-     * "Show toolbar" button
-     */
-    container:file-browser-show-toolbar
-      class:btn btn-default blink toolbar
-      title:Show menu - S
-      accesskey:S
-      oninit
-        get-session-value:sys42.file-browser-toolbar-visible
-        get-session-value:sys42.original-file-editor-classes
-        if:x:/../*/get-session-value/[0,1]/*?value
-          =:bool:true
-          and:x:/../*/get-session-value/[1,2]/*/*
-            not
-          sys42.show-toolbar
-        else-if:x:/../*/get-session-value/[1,2]/*/*
-          set-widget-property:file-browser-show-toolbar
-            class:hidden
-      onclick
-        sys42.show-toolbar
-      events
-        sys42.show-toolbar
-          set-session-value:sys42.file-browser-toolbar-visible
-            src:bool:true
-          set-widget-property:file-browser-show-toolbar
-            class:hidden
-          set-widget-property:file-browser-current-item-toolbar
-            class:btn-group prepend-bottom toolbar
-      widgets
-        literal
-          element:span
-          class:glyphicon glyphicon-menu-left
-
-
-    /*
      * Toolbar widget for showing "Copy", "Cut", "Paste", "Rename" buttons etc ...
      */
     container:file-browser-current-item-toolbar
-      class:hidden toolbar
+      class:toolbar btn-group
       widgets
 
 
@@ -328,7 +296,7 @@ create-widget:file-browser
 
 
         /*
-         * "GZIP file" button
+         * "ZIP file" button
          */
         container:zip-file-button
           element:button
@@ -357,26 +325,6 @@ create-widget:file-browser
             literal
               element:span
               class:glyphicon glyphicon-share
-
-
-        /*
-         * "Hide toolbar" button
-         */
-        container:file-browser-hide-toolbar
-          class:btn btn-default blink
-          title:Hide menu - H
-          accesskey:H
-          onclick
-            set-session-value:sys42.file-browser-toolbar-visible
-              src:bool:false
-            set-widget-property:file-browser-show-toolbar
-              class:btn btn-default blink toolbar
-            set-widget-property:file-browser-current-item-toolbar
-              class:hidden toolbar
-          widgets
-            literal
-              element:span
-              class:glyphicon glyphicon-menu-right
 
 
       /*
@@ -1022,7 +970,7 @@ file/folder with that name"
      * in the folder hierarchy
      */
     container:file-browser-bread-crumb
-      class:btn-group prepend-bottom
+      class:btn-group prepend-bottom prepend-top-2
 
 
     /*
@@ -1445,12 +1393,7 @@ file/folder with that name"
         innerValue:Files
 
       // Making sure show/hide toolbar is correctly shown
-      get-session-value:sys42.file-browser-toolbar-visible
-      if:x:/../*/get-session-value/[1,2]/*?value
-        sys42.show-toolbar
-      else
-        set-widget-property:file-browser-show-toolbar
-          class:btn btn-default blink toolbar
+      sys42.show-toolbar
 
 
 /*

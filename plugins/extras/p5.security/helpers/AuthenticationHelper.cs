@@ -313,7 +313,7 @@ namespace p5.security.helpers
                     foreach (var idxNode in args.Children.Where (ix => ix.Name != "username" && ix.Name != "password" && ix.Name != "role")) {
 
                         // Removing old value of specified object, if one exist
-                        authFile["users"].FindOrCreate (idxNode.Name).UnTie ();
+                        authFile["users"][username].FindOrCreate (idxNode.Name).UnTie ();
 
                         // Only adding nodes with some sort of actual value, which allows for deletion of old values if "null" value nodes are submitted
                         if (idxNode.Value != null || idxNode.Children.Count > 0)

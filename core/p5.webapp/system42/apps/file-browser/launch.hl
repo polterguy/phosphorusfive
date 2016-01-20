@@ -61,13 +61,6 @@ else
       src:/users/{0}/documents/
         :x:/..else/*/whoami/*/username?value
 
-    // Making sure toolbar is visible by default, unless explicitly hidden previously
-    get-session-value:sys42.file-browser-toolbar-visible
-    if:x:/-/*/*
-      not
-      set-session-value:sys42.file-browser-toolbar-visible
-        src:bool:true
-
   // Starting the actual file-browser implementation
   sys42.execute-lisp-file:/system42/apps/file-browser/file-browser.hl
 

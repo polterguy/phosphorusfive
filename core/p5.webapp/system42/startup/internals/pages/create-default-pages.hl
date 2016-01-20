@@ -32,7 +32,16 @@ if:x:/-/*/role?value
         innerValue:@""<img src=""""/media/images/marvin-headshot.png"""" style=""""float:right;"""" class=""""prepend-left"""" />
 <blockquote><em>""""Hi there owner. I am so pleased to see you! [<strong>*wagging tail*</strong>]! Please tell me what to do! 
 I am your servant! FYI, the first thing you will notice with me, is that this page is only visible for you! If you log out
-and refresh the page, you will see a completely different page, showing the <em>""""dynamic features"""" of Phosphorus Five!</em>""""</em></blockquote>""
+and refresh the page, you will see a different page, showing the dynamic features of Phosphorus Five!""""</em></blockquote>
+
+<p>A great place for you to start, is one of these links</p>
+
+<ul>
+    <li><a href=""""/root/editor"""">Pages</a></li>
+    <li><a href=""""/root/executor"""">Evaluator</a></li>
+    <li><a href=""""/root/users"""">Users</a></li>
+    <li><a href=""""/superuser/files"""">File system</a></li>
+</ul>""
 
 else-if:x:/-2/*/role?value
   =:superuser

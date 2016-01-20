@@ -1,0 +1,235 @@
+/*
+ * Creates the web widget that allows for
+ * editing a specific user in the system
+ */
+
+
+// Checking if there exist an "edit existing user" widget from before, 
+// and if so, deletes it
+if
+  fetch:x:/0/0?value
+    widget-exist:edit-user-properties
+  delete-widget:edit-user-properties
+
+// Getting username of currently selected user from "select" widget
+get-widget-property:edit-existing-user-select
+  value
+
+// Making sure the selected user is not "_default" (which means no user was selected)
+if:x:/../*/get-widget-property/*/*?value
+  !=:_default
+
+  /*
+   * Making sure we store which user is currently being edited
+   */
+  set-session-value:sys42.currently-edited-user
+    src:x:/../*/get-widget-property/[0,1]/*/*?value
+
+  /*
+   * Include JavaScript to trap Carriage Return in widget
+   */
+  include-javascript:@"p5.keyPressEditUser = function(e) {
+  if(e.keyCode == 13) {
+    p5.$('save-user-button').raise('onclick');
+    return false;
+  }
+}"
+
+  /*
+   * User selected an actual user, now create the widget that shows that user's data
+   */
+  create-widget:edit-user-properties
+    parent:content
+    class:edit-user
+    widgets
+
+      /*
+       * Which role user belongs to
+       */
+      container
+        class:col-xs-12 col-md-4 form-group
+        widgets
+          container
+            class:input-group
+            widgets
+              literal
+                class:input-group-addon
+                innerValue:Role
+              void:user-role
+                element:input
+                type:text
+                class:form-control
+                placeholder:Users role ...
+                onkeypress:"return p5.keyPressEditUser(event);"
+                autocomplete:off
+
+
+      /*
+       * Password of user
+       */
+      container
+        class:col-xs-12 col-md-4 form-group
+        widgets
+          container
+            class:input-group
+            widgets
+              literal
+                class:input-group-addon
+                innerValue:Password
+              void:user-password
+                element:input
+                type:password
+                class:form-control
+                placeholder:Password ...
+                title:Leave blank to keep existing password
+                onkeypress:"return p5.keyPressEditUser(event);"
+                autocomplete:off
+                onchange
+                  get-widget-property:user-password
+                    value
+                  if:x:/../*/get-widget-property/*/*?value
+                    !=:
+                    sys42.info-window:@"Unless absolutely necessary, you should not change a user's password!"
+                      _warning:true
+                      _time:more
+
+
+      /*
+       * Repeat password of user
+       */
+      container
+        class:col-xs-12 col-md-4 form-group
+        widgets
+          container
+            class:input-group
+            widgets
+              literal
+                class:input-group-addon
+                innerValue:Repeat
+              void:user-password-repeat
+                element:input
+                type:password
+                class:form-control
+                placeholder:Repeat ...
+                title:Leave blank to keep existing password
+                onkeypress:"return p5.keyPressEditUser(event);"
+                autocomplete:off
+
+
+      /*
+       * Settings for user
+       */
+      container
+        class:col-xs-12 form-group
+        widgets
+          literal:user-settings
+            element:textarea
+            rows:15
+            class:form-control
+            placeholder:Settings for user ...
+
+
+      /*
+       * Save user button
+       */
+      container
+        class:col-xs-3 col-xs-push-6 col-md-push-8 col-md-2 form-group
+        widgets
+          literal:save-user-button
+            element:button
+            class:form-control btn btn-primary
+            innerValue:Save
+            accesskey:S
+            onclick
+              sys42.save-edited-user
+
+
+            /*
+             * Lambda events for Save button
+             */
+            events
+
+
+              /*
+               * Saves currently edited user
+               */
+              sys42.save-edited-user
+                _widgets
+                  edit-existing-user-select
+                  user-role
+                  user-password
+                  user-password-repeat
+                  user-settings
+                get-widget-property:x:/../*/_widgets/*?name
+                  value
+                if:x:/../*/get-widget-property/*/user-password/*?value
+                  !=:x:/../*/get-widget-property/*/user-password-repeat/*?value
+                  sys42.info-window:Passwords does not match!
+                    _error:true
+                  send-javascript:"$('#user-password').focus().select();"
+                else
+                  if:x:/../*/get-widget-property/*/user-settings/*?value
+                    !=:
+                    lisp2lambda:x:/../*/get-widget-property/*/user-settings/*?value
+                    add:x:/./+
+                      src:x:/./-/*
+                  edit-user:x:/../*/get-widget-property/*/edit-existing-user-select/*?value
+                    role:x:/../*/get-widget-property/*/user-role/*?value
+                    password:x:/../*/get-widget-property/*/user-password/*?value
+                  set-widget-property:x:/../*/_widgets/*/~password?name
+                    value:
+                  get-user:x:/../*/get-widget-property/*/edit-existing-user-select/*?value
+                  add:x:/+
+                    src:x:/./-/*/*(!/role)
+                  lambda2lisp
+                  set-widget-property:user-settings
+                    value:x:/./-?value
+                  sys42.info-window:User was succesfully saved
+                  send-javascript:"$('#edit-existing-user-select').focus().select();"
+
+
+      /*
+       * The "Delete user" button
+       */
+      container
+        class:col-xs-3 col-xs-push-6 col-md-push-8 col-md-2 form-group
+        widgets
+          literal
+            element:button
+            class:form-control btn btn-default
+            innerValue:-
+            accesskey:M
+            title:Deletes currently selected user
+            onclick
+              sys42.confirm-window
+                _header:Confirm deletion of user
+                _body:@"Please confirm that you really wish to delete this user. 
+<strong>All files belonging to user will be deleted</strong>. This action cannot be undone!"
+                _onok
+                  get-widget-property:edit-existing-user-select
+                    value
+                  delete-user:x:/../*/get-widget-property/*/*?value
+                  sys42.populate-edit-existing-user
+                  delete-widget:edit-user-properties
+
+
+  /*
+   * Populating values of widget created above according
+   * to user's data
+   */
+  get-user:x:/../*/get-widget-property/*/edit-existing-user-select/*?value
+  set-widget-property:user-role
+    value:x:/././*/get-user/*/*/role?value
+  add:x:/+
+    src:x:/./-2/*/*(!/role)
+  lambda2lisp
+  set-widget-property:user-settings
+    value:x:/./-?value
+  send-javascript:"$('#user-role').focus().select();"
+else
+
+  /*
+   * Removing currently edited user out from session
+   */
+  set-session-value:sys42.currently-edited-user
+

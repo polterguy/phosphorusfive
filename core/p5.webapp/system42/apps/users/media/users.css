@@ -1,0 +1,12 @@
+
+/*
+ * Stylesheet file for editing users in system
+ */
+
+.edit-user {
+    background-color:rgba(128,128,128,.03);
+    display:inline-block;
+    padding-top:15px;
+    border-radius:10px;
+}
+

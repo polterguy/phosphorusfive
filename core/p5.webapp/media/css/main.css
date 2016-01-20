@@ -61,6 +61,10 @@ body {
     margin-top:15px;
 }
 
+.prepend-top-2 {
+    margin-top:45px;
+}
+
 /*
  * Helper to give some space after element is finished
  */
