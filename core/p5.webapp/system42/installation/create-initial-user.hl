@@ -96,12 +96,15 @@ belong to the role 'superuser', and is quite powerful, but not as powerful as th
                     _error:true
                   send-javascript:@"$('#user-password').focus().select();"
                 else
-                  set:x:/+2/*/username?value
+                  set:x:/+4/*/username?value
                     src:x:/../*/get-widget-property/*/user-username/*?value
-                  set:x:/+/*/password?value
+                  set:x:/+3/*/password?value
                     src:x:/../*/get-widget-property/*/user-password/*?value
 
                   // Creating superuser
+                  sys42.get-default-user-settings
+                  add:x:/+
+                    src:x:/./-/*
                   create-user
                     username
                     password
