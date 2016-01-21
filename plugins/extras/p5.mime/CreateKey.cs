@@ -34,85 +34,14 @@ namespace p5.mime
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "__p5.crypto.create-pgp-keypair", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "p5.crypto.create-pgp-keypair", Protection = EventProtection.LambdaClosed)]
         public static void p5_crypto_create_pgp_keypair (ApplicationContext context, ActiveEventArgs e)
         {
-            // Creating our keypair
-            IAsymmetricCipherKeyPairGenerator kpg = new RsaKeyPairGenerator ();
-            kpg.Init (
-                new RsaKeyGenerationParameters (
-                    BigInteger.ValueOf (e.Args.GetExChildValue ("public-exponent", context, 65537L)), 
-                    new SecureRandom (), 
-                    e.Args.GetExChildValue("size", context, 2048), 
-                    e.Args.GetExChildValue("certainty", context, 5)));
-            AsymmetricCipherKeyPair kp = kpg.GenerateKeyPair();
-
-            // Creating secret PGP key
-            PgpSecretKey secretKey = new PgpSecretKey (
-                PgpSignature.DefaultCertification,
-                PublicKeyAlgorithmTag.RsaGeneral,
-                kp.Public,
-                kp.Private,
-                e.Args.GetExChildValue("date", context, DateTime.Now.AddYears (3)),
-                e.Args.GetExChildValue<string>("identity", context),
-                SymmetricKeyAlgorithmTag.Cast5,
-                e.Args.GetExChildValue<string> ("password", context).ToCharArray (),
-                null,
-                null,
-                new SecureRandom ());
-
-            // Creating GnuPG context to let MimeKit import keys into GnuPG database
-            using (var ctx = new GnuPrivacyContext ()) {
-
-                // Serializing public keyring bundle to ArmoredOutputStream, before letting MimeKit do its stuff!
-                using (var publicStream = new MemoryStream ()) {
-
-                    // Putting public key into KeyRingBundle, which is actually what MimeKit's Import takes as an argument
-                    var publicRing = new PgpPublicKeyRing (secretKey.PublicKey.GetEncoded ());
-                    var publicBundle = new PgpPublicKeyRingBundle (new [] { publicRing });
-
-                    // We'll need an armored stream for MimeKit here, wrapping our MemoryStream
-                    using (var armoredPublic = new ArmoredOutputStream (publicStream)) {
-                        publicBundle.Encode (armoredPublic);
-                        armoredPublic.Flush ();
-                        publicStream.Flush ();
-                    }
-                    publicStream.Position = 0; // Important!
-                    ctx.Import (publicStream);
-                }
-
-                // Serializing private keyring bundle to ArmoredOutputStream, before letting MimeKit do its stuff!
-                using (var privateStream = new MemoryStream ()) {
-
-                    // Putting secret key into KeyRingBundle, which is actually what MimeKit's ImportSecretKeys takes as an argument
-                    var secretRing = new PgpSecretKeyRing (secretKey.GetEncoded ());
-                    var secretBundle = new PgpSecretKeyRingBundle (new [] { secretRing });
-
-                    // We'll need an armored stream for MimeKit here, wrapping our MemoryStream
-                    using (var armoredSecret = new ArmoredOutputStream (privateStream)) {
-                        secretBundle.Encode (armoredSecret);
-                        armoredSecret.Flush ();
-                        privateStream.Flush ();
-                    }
-                    privateStream.Position = 0; // Important!
-                    ctx.ImportSecretKeys (privateStream);
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Creates and saves a private PGP keypair to GnuPG context
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.crypto.create-pgp-keypair", Protection = EventProtection.LambdaClosed)]
-        public static void _p5_crypto_create_pgp_keypair (ApplicationContext context, ActiveEventArgs e)
-        {
-            // Retrieving identity (normally an email address) and password
+            // Retrieving identity (normally an email address), password and other parameters to key generator
             string identity = e.Args.GetExChildValue<string> ("identity", context);
             string password = e.Args.GetExChildValue<string> ("password", context);
             DateTime expires = e.Args.GetExChildValue ("expires", context, DateTime.Now.AddYears (3));
-            int strength = e.Args.GetExChildValue<int> ("strength", context, 2048);
+            int strength = e.Args.GetExChildValue<int> ("strength", context, 4096);
             long publicExponent = e.Args.GetExChildValue ("public-exponent", context, 65537L);
             int certainty = e.Args.GetExChildValue ("certainty", context, 5);
 
