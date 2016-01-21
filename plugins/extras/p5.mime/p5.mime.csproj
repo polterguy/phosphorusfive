@@ -55,6 +55,7 @@
     <Compile Include="helpers\MimeCreator.cs" />
     <Compile Include="MimeInit.cs" />
     <Compile Include="MimeSave.cs" />
+    <Compile Include="CreateKey.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\core\p5.core\p5.core.csproj">
