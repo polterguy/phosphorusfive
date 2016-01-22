@@ -37,59 +37,40 @@ namespace p5.mime
         [ActiveEvent (Name = "p5.crypto.create-pgp-keypair", Protection = EventProtection.LambdaClosed)]
         public static void p5_crypto_create_pgp_keypair (ApplicationContext context, ActiveEventArgs e)
         {
-            // Retrieving identity (normally an email address), password and other parameters to key generator
+            // Retrieving identity (normally an email address) and password
             string identity = e.Args.GetExChildValue<string> ("identity", context);
             string password = e.Args.GetExChildValue<string> ("password", context);
-            DateTime expires = e.Args.GetExChildValue ("expires", context, DateTime.Now.AddYears (3));
-            int strength = e.Args.GetExChildValue<int> ("strength", context, 4096);
-            long publicExponent = e.Args.GetExChildValue ("public-exponent", context, 65537L);
-            int certainty = e.Args.GetExChildValue ("certainty", context, 5);
-
-            if (string.IsNullOrEmpty (password) || string.IsNullOrEmpty (identity))
+            if (string.IsNullOrEmpty (identity) || string.IsNullOrEmpty (password))
                 throw new LambdaException (
                     "Minimum [identity] and [password] needs to be supplied to create a PGP keypair",
                     e.Args,
                     context);
 
-            // Generate public/private key rings
-            PgpKeyRingGenerator generator = GetKeyRingGenerator (identity, password, expires, strength, publicExponent, certainty);
+            // Retrieving other parameters to PGP keypair creation
+            DateTime expires = e.Args.GetExChildValue ("expires", context, DateTime.Now.AddYears (3));
+            int strength = e.Args.GetExChildValue<int> ("strength", context, 4096);
+            long publicExponent = e.Args.GetExChildValue ("public-exponent", context, 65537L);
+            int certainty = e.Args.GetExChildValue ("certainty", context, 5);
+
+            // Generate public/secret keyrings
+            PgpKeyRingGenerator generator = GetKeyRingGenerator (
+                identity, 
+                password, 
+                expires, 
+                strength, 
+                publicExponent, 
+                certainty);
             PgpPublicKeyRing publicRing = generator.GeneratePublicKeyRing ();
             PgpSecretKeyRing secretRing = generator.GenerateSecretKeyRing ();
 
             // Creating GnuPG context to let MimeKit import keys into GnuPG database
             using (var ctx = new GnuPrivacyContext ()) {
 
-                // Serializing public keyring bundle to ArmoredOutputStream, before letting MimeKit do its stuff!
-                using (var publicStream = new MemoryStream ()) {
+                // Saves public keyring
+                SavePublicKeyRing (ctx, publicRing);
 
-                    // Putting public key into KeyRingBundle, which is actually what MimeKit's Import takes as an argument
-                    var publicBundle = new PgpPublicKeyRingBundle (new [] { publicRing });
-
-                    // We'll need an armored stream for MimeKit here, wrapping our MemoryStream
-                    using (var armoredPublic = new ArmoredOutputStream (publicStream)) {
-                        publicBundle.Encode (armoredPublic);
-                        armoredPublic.Flush ();
-                        publicStream.Flush ();
-                    }
-                    publicStream.Position = 0; // Important!
-                    ctx.Import (publicStream);
-                }
-
-                // Serializing private keyring bundle to ArmoredOutputStream, before letting MimeKit do its stuff!
-                using (var privateStream = new MemoryStream ()) {
-
-                    // Putting secret key into KeyRingBundle, which is actually what MimeKit's ImportSecretKeys takes as an argument
-                    var secretBundle = new PgpSecretKeyRingBundle (new [] { secretRing });
-
-                    // We'll need an armored stream for MimeKit here, wrapping our MemoryStream
-                    using (var armoredSecret = new ArmoredOutputStream (privateStream)) {
-                        secretBundle.Encode (armoredSecret);
-                        armoredSecret.Flush ();
-                        privateStream.Flush ();
-                    }
-                    privateStream.Position = 0; // Important!
-                    ctx.ImportSecretKeys (privateStream);
-                }
+                // Saves private keyring
+                SaveSecretKeyRing (ctx, secretRing);
             }
         }
 
@@ -104,29 +85,16 @@ namespace p5.mime
             long publicExponent,
             int certainty)
         {
-
-            KeyRingParams keyRingParams = new KeyRingParams (strength, publicExponent, certainty);
-            keyRingParams.Password = password;
-            keyRingParams.Identity = identity;
-            keyRingParams.PrivateKeyEncryptionAlgorithm = SymmetricKeyAlgorithmTag.Aes256;
-            keyRingParams.SymmetricAlgorithms = new SymmetricKeyAlgorithmTag[] {
-                SymmetricKeyAlgorithmTag.Aes256,
-                SymmetricKeyAlgorithmTag.Aes192,
-                SymmetricKeyAlgorithmTag.Aes128
-            };
-
-            keyRingParams.HashAlgorithms = new HashAlgorithmTag [] {
-                HashAlgorithmTag.Sha256,
-                HashAlgorithmTag.Sha1,
-                HashAlgorithmTag.Sha384,
-                HashAlgorithmTag.Sha512,
-                HashAlgorithmTag.Sha224,
-            };
-
+            // Creating our generator
             IAsymmetricCipherKeyPairGenerator generator = GeneratorUtilities.GetKeyPairGenerator ("RSA");
-            generator.Init (keyRingParams.RsaParams);
+            generator.Init (
+                new RsaKeyGenerationParameters(
+                    BigInteger.ValueOf(publicExponent), 
+                    new SecureRandom(), 
+                    strength, 
+                    certainty));
 
-            /* Create the master (signing-only) key. */
+            // Creates the master key (signing-only key)
             PgpKeyPair masterKeyPair = new PgpKeyPair (
                 PublicKeyAlgorithmTag.RsaGeneral,
                 generator.GenerateKeyPair (),
@@ -135,14 +103,22 @@ namespace p5.mime
             PgpSignatureSubpacketGenerator masterSubpckGen = new PgpSignatureSubpacketGenerator ();
             masterSubpckGen.SetKeyFlags(false, PgpKeyFlags.CanSign | PgpKeyFlags.CanCertify);
             masterSubpckGen.SetPreferredSymmetricAlgorithms(false,
-                (from a in keyRingParams.SymmetricAlgorithms
-                    select (int) a).ToArray());
+                new SymmetricKeyAlgorithmTag[] {
+                    SymmetricKeyAlgorithmTag.Aes256,
+                    SymmetricKeyAlgorithmTag.Aes192,
+                    SymmetricKeyAlgorithmTag.Aes128
+                }.Select (ix => (int)ix).ToArray ());
             masterSubpckGen.SetPreferredHashAlgorithms(false,
-                (from a in keyRingParams.HashAlgorithms
-                    select (int) a).ToArray());
+                new HashAlgorithmTag [] {
+                    HashAlgorithmTag.Sha256,
+                    HashAlgorithmTag.Sha1,
+                    HashAlgorithmTag.Sha384,
+                    HashAlgorithmTag.Sha512,
+                    HashAlgorithmTag.Sha224,
+                }.Select (ix => (int)ix).ToArray ());
             masterSubpckGen.SetKeyExpirationTime (false, (long)(expires - DateTime.Now).TotalSeconds);
 
-            /* Create a signing and encryption key for daily use. */
+            // Create signing and encryption key, for daily use
             PgpKeyPair encKeyPair = new PgpKeyPair(
                 PublicKeyAlgorithmTag.RsaGeneral,
                 generator.GenerateKeyPair (),
@@ -153,53 +129,74 @@ namespace p5.mime
                 PgpKeyFlags.CanEncryptCommunications | 
                 PgpKeyFlags.CanEncryptStorage | 
                 PgpKeyFlags.CanSign);
+            encSubpckGen.SetKeyExpirationTime (false, (long)(expires - DateTime.Now).TotalSeconds);
 
-            masterSubpckGen.SetPreferredSymmetricAlgorithms(false,
-                (from a in keyRingParams.SymmetricAlgorithms
-                    select (int) a).ToArray());
-            masterSubpckGen.SetPreferredHashAlgorithms(false,
-                (from a in keyRingParams.HashAlgorithms
-                    select (int) a).ToArray());
-
-            /* Create the key ring. */
+            // Creating keyring
             PgpKeyRingGenerator keyRingGen = new PgpKeyRingGenerator(
                 PgpSignature.DefaultCertification,
                 masterKeyPair,
-                keyRingParams.Identity,
-                keyRingParams.PrivateKeyEncryptionAlgorithm.Value,
-                keyRingParams.GetPassword (),
+                identity,
+                SymmetricKeyAlgorithmTag.Aes256,
+                password.ToCharArray (),
                 true,
                 masterSubpckGen.Generate (),
                 null,
                 new SecureRandom ());
 
-            /* Add encryption subkey. */
+            // Add encryption subkey
             keyRingGen.AddSubKey (encKeyPair, encSubpckGen.Generate(), null);
 
+            // Returning keyring to caller
             return keyRingGen;
-
         }
 
         /*
-         * Helper parameters class for creating PGP key
+         * Saves public keyring
          */
-        class KeyRingParams
+        private static GnuPrivacyContext SavePublicKeyRing (GnuPrivacyContext ctx, PgpPublicKeyRing publicRing)
         {
-            public SymmetricKeyAlgorithmTag? PrivateKeyEncryptionAlgorithm { get; set; }
-            public SymmetricKeyAlgorithmTag[] SymmetricAlgorithms { get; set; }
-            public HashAlgorithmTag[] HashAlgorithms { get; set; }
-            public RsaKeyGenerationParameters RsaParams { get; set; }
-            public string Identity { get; set; }
-            public string Password { get; set; }
+            // Serializing public keyring bundle to ArmoredOutputStream, before letting MimeKit do its stuff!
+            using (var publicStream = new MemoryStream ()) {
 
-            public char[] GetPassword() {
-                return Password.ToCharArray ();
+                // Putting public key into KeyRingBundle, which is actually what MimeKit's Import takes as an argument
+                var publicBundle = new PgpPublicKeyRingBundle (new[] {
+                    publicRing
+                });
+
+                // We'll need an armored stream for MimeKit here, wrapping our MemoryStream
+                using (var armoredPublic = new ArmoredOutputStream (publicStream)) {
+                    publicBundle.Encode (armoredPublic);
+                    armoredPublic.Flush ();
+                    publicStream.Flush ();
+                }
+                publicStream.Position = 0; // Important!
+                ctx.Import (publicStream);
             }
+            return ctx;
+        }
 
-            public KeyRingParams(int strength, long publicExponent, int certainty) {
-                RsaParams = new RsaKeyGenerationParameters(BigInteger.ValueOf(publicExponent), new SecureRandom(), strength, certainty);
+        /*
+         * Saves private keyring
+         */
+        private static void SaveSecretKeyRing (GnuPrivacyContext ctx, PgpSecretKeyRing secretRing)
+        {
+            // Serializing private keyring bundle to ArmoredOutputStream, before letting MimeKit do its stuff!
+            using (var privateStream = new MemoryStream ()) {
+
+                // Putting secret key into KeyRingBundle, which is actually what MimeKit's ImportSecretKeys takes as an argument
+                var secretBundle = new PgpSecretKeyRingBundle (new[] {
+                    secretRing
+                });
+
+                // We'll need an armored stream for MimeKit here, wrapping our MemoryStream
+                using (var armoredSecret = new ArmoredOutputStream (privateStream)) {
+                    secretBundle.Encode (armoredSecret);
+                    armoredSecret.Flush ();
+                    privateStream.Flush ();
+                }
+                privateStream.Position = 0; // Important!
+                ctx.ImportSecretKeys (privateStream);
             }
-
         }
     }
 }
