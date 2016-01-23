@@ -60,7 +60,7 @@ dz.processNextFile = function () {
 };
 "
 
-set-widget-property:header
+_set-widget-property:header
   visible:false
 
 /*

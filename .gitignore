@@ -200,3 +200,5 @@ core/p5.webapp/_auth.hl
 core/p5.webapp/users.tar.gz
 
 core/p5.webapp/auth
+
+core/p5.webapp/system42/startup/internals/server-salt.hl

@@ -325,7 +325,8 @@ namespace p5
             private static void p5_security_get_password_salt (ApplicationContext context, ActiveEventArgs e)
             {
                 var configuration = ConfigurationManager.GetSection ("phosphorus") as PhosphorusConfiguration;
-                e.Args.Value = configuration.PasswordSalt;
+                string dynamicSalt = context.RaiseNative("p5.security.get-dynamic-password-salt").Get(context, "");
+                e.Args.Value = configuration.PasswordSalt + dynamicSalt;
             }
 
             /// <summary>
@@ -337,15 +338,12 @@ namespace p5
             private static void p5_security_get_pseudo_random_seed (ApplicationContext context, ActiveEventArgs e)
             {
                 string retVal = HttpContext.Current.Request.RawUrl.ToString();
-                retVal += HttpContext.Current.Request.ApplicationPath;
                 retVal += HttpContext.Current.Request.ContentLength.ToString ();
                 retVal += HttpContext.Current.Request.Cookies.Count.ToString ();
                 retVal += HttpContext.Current.Request.Headers.ToString();
                 retVal += HttpContext.Current.Request.Params.ToString();
                 retVal += HttpContext.Current.Request.PhysicalApplicationPath;
                 retVal += HttpContext.Current.Request.Browser.ToString();
-                retVal += HttpContext.Current.Cache.Count.ToString ();
-                retVal += HttpContext.Current.Session.Count.ToString();
                 retVal += HttpContext.Current.Session.SessionID;
                 foreach (var idxCookie in HttpContext.Current.Request.Cookies.AllKeys) {
                     retVal += HttpContext.Current.Request.Cookies[idxCookie].Name + HttpContext.Current.Request.Cookies[idxCookie].Value;

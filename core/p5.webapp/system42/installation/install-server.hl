@@ -44,8 +44,17 @@ list-users
 if:x:/-/*?count
   =:int:0
 
-  // Need to set root password, and do other types of installation setup things
-  sys42.execute-lisp-file:/system42/installation/set-root-password.hl
+  if
+    fetch:x:/0/0
+      vocabulary:p5.security.get-dynamic-password-salt
+    not
+
+    // Need to create server dynamic salt
+    sys42.execute-lisp-file:/system42/installation/create-dynamic-salt.hl
+  else
+
+    // Need to set root password, and do other types of installation setup things
+    sys42.execute-lisp-file:/system42/installation/set-root-password.hl
 else-if:x:/../*/whoami/*/role?value
   =:root
 

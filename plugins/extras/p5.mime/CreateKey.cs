@@ -238,20 +238,21 @@ namespace p5.mime
                     new Node ("resolution", 4096)})).Get<string> (context);
 
             // Then we append the Hyperlisp for the entire code tree
+            // Notice, this will even include the GnuPG password in our seed, in sha2 hashed form!
             var code = Utilities.Convert<string> (context, args.Root);
-            seed += code;
+            seed += context.RaiseNative ("sha256-hash", new Node ("", code)).Get<string> (context);;
 
             // Then appending "seed generator" from BouncyCastle
-            seed += Utilities.Convert<string> (context, new ThreadedSeedGenerator ().GenerateSeed (64, false));
+            seed += Utilities.Convert<string> (context, new ThreadedSeedGenerator ().GenerateSeed (64, false), "", true);
 
             // Then adding current thread ID
-            seed += System.Threading.Thread.CurrentThread.ManagedThreadId;
+            seed += System.Threading.Thread.CurrentThread.ManagedThreadId.ToString ();
 
             // Then appending a Guid
             seed += Guid.NewGuid ().ToString ();
 
             // Then adding random seeds generated from "around our application" (Global.asax adds up session, cookies, browser, IP, etc)
-            // p5.lambda adds up [vocabulary], etc, etc, etc
+            // p5.lambda adds up [vocabulary], Security adds up user's settings, etc, etc, etc
             seed += context.RaiseNative ("p5.security.get-pseudo-random-seed").Get<string> (context);
 
             // At this point, I am fairly certain that we have a pretty random and cryptographically secure seed
@@ -262,6 +263,7 @@ namespace p5.mime
             // In addition, there are multiple hash invocations being runned, either directly or indirectly, meaning it becomes very
             // expensive to do a brute force attack on random number generator, leaving us with something that is "close to guaranteed"
             // being a good random number generator, assuming SecureRandom does its job!
+            // And the seed should be about 5-6 kilobytes long, making it very expensive to brute force guess
             // Meaning, guessing the random number generators output, is literally IMPOSSIBLE!
             byte[] rawSeed = Utilities.Convert<byte[]>(context, seed);
             SecureRandom retVal = new SecureRandom ();

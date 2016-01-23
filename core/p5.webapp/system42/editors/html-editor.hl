@@ -24,8 +24,6 @@ set-widget-property:x:/-2/*?name
   class:hide
 set-session-value:sys42.original-file-editor-classes
   src:x:/./-2
-set-widget-property:file-browser-show-toolbar
-  class:hidden
 
 
 /*

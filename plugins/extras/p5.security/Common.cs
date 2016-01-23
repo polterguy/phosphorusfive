@@ -46,5 +46,19 @@ namespace p5.security
                 context.UpdateTicket (AuthenticationHelper.GetTicket (context));
             }
         }
+
+        /// <summary>
+        ///     Returns a pseudo random string, generated from sha2 hash of user's settings
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.security.get-pseudo-random-seed", Protection = EventProtection.NativeOpen)]
+        private static void p5_security_get_pseudo_random_seed (ApplicationContext context, ActiveEventArgs e)
+        {
+            Node node = new Node ("", AuthenticationHelper.GetTicket (context).Username);
+            AuthenticationHelper.GetUser (context, node);
+            string retVal = Utilities.Convert<string> (context, node);
+            e.Args.Value = e.Args.Get<string> (context, "") + context.RaiseNative ("sha256-hash", new Node ("", retVal)).Value;
+        }
     }
 }
