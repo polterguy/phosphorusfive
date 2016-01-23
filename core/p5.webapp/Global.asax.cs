@@ -328,6 +328,37 @@ namespace p5
                 e.Args.Value = configuration.PasswordSalt;
             }
 
+            /// <summary>
+            ///     Returns a pseudo random string, generated from client IP, browser string, etc
+            /// </summary>
+            /// <param name="context">Application Context</param>
+            /// <param name="e">Parameters passed into Active Event</param>
+            [ActiveEvent (Name = "p5.security.get-pseudo-random-seed", Protection = EventProtection.NativeOpen)]
+            private static void p5_security_get_pseudo_random_seed (ApplicationContext context, ActiveEventArgs e)
+            {
+                string retVal = HttpContext.Current.Request.RawUrl.ToString();
+                retVal += HttpContext.Current.Request.ApplicationPath;
+                retVal += HttpContext.Current.Request.ContentLength.ToString ();
+                retVal += HttpContext.Current.Request.Cookies.Count.ToString ();
+                retVal += HttpContext.Current.Request.Headers.ToString();
+                retVal += HttpContext.Current.Request.Params.ToString();
+                retVal += HttpContext.Current.Request.PhysicalApplicationPath;
+                retVal += HttpContext.Current.Request.Browser.ToString();
+                retVal += HttpContext.Current.Cache.Count.ToString ();
+                retVal += HttpContext.Current.Session.Count.ToString();
+                retVal += HttpContext.Current.Session.SessionID;
+                foreach (var idxCookie in HttpContext.Current.Request.Cookies.AllKeys) {
+                    retVal += HttpContext.Current.Request.Cookies[idxCookie].Name + HttpContext.Current.Request.Cookies[idxCookie].Value;
+                }
+                foreach (string idxSession in HttpContext.Current.Session.Keys) {
+                    retVal += HttpContext.Current.Session[idxSession].ToString();
+                }
+                foreach (Assembly idxAsm in AppDomain.CurrentDomain.GetAssemblies ()) {
+                    retVal += idxAsm.CodeBase + idxAsm.FullName;;
+                }
+                e.Args.Value = e.Args.Get<string> (context, "") + context.RaiseNative ("sha256-hash", new Node ("", retVal)).Value;
+            }
+
             #endregion
 
             #region [ -- Private helper methods -- ]

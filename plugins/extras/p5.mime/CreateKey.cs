@@ -18,6 +18,7 @@ using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Bcpg;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Security;
+using Org.BouncyCastle.Crypto.Prng;
 using Org.BouncyCastle.Bcpg.OpenPgp;
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
@@ -214,8 +215,11 @@ namespace p5.mime
         private static SecureRandom CreateNewSecureRandom (ApplicationContext context, Node args)
         {
             // First we use the seed provided by caller through the [seed] argument
+            // If no [seed] is provided, we default to a Cryptographically Secure random number
+            // [seed] is intended to be physically typed in by user, before keypair is created!
             string seed = args.GetExChildValue<string> ("seed", context, context.RaiseNative (
-                "create-cs-random", new Node ("", null)).Get<string> (context));
+                "create-cs-random", 
+                new Node ("", null)).Get<string> (context));
 
             // Then we change the given seed with the hashed seed, in case we get another run through this method,
             // such that the seed changes from each pass
@@ -227,17 +231,44 @@ namespace p5.mime
             // Then we append the ticks of server
             seed += DateTime.Now.Ticks.ToString ();
 
-            // Then we append a cryptographically secure random number of 24 bytes, encoded as base 64
-            seed += context.RaiseNative ("create-cs-random", new Node ("", null)).Get<string> (context);
+            // Then we append a cryptographically secure random number of 4096 bytes, encoded as base 64
+            seed += context.RaiseNative (
+                "create-cs-random", 
+                new Node ("", null, new Node[] {
+                    new Node ("resolution", 4096)})).Get<string> (context);
+
+            // Then we append the Hyperlisp for the entire code tree
+            var code = Utilities.Convert<string> (context, args.Root);
+            seed += code;
+
+            // Then appending "seed generator" from BouncyCastle
+            seed += Utilities.Convert<string> (context, new ThreadedSeedGenerator ().GenerateSeed (64, false));
+
+            // Then adding current thread ID
+            seed += System.Threading.Thread.CurrentThread.ManagedThreadId;
+
+            // Then appending a Guid
+            seed += Guid.NewGuid ().ToString ();
+
+            // Then adding random seeds generated from "around our application" (Global.asax adds up session, cookies, browser, IP, etc)
+            // p5.lambda adds up [vocabulary], etc, etc, etc
+            seed += context.RaiseNative ("p5.security.get-pseudo-random-seed").Get<string> (context);
 
             // At this point, I am fairly certain that we have a pretty random and cryptographically secure seed
             // Provided that SecureRandom from BouncyCastle is implemented correctly, we should now have a VERY, VERY, VERY unique,
             // and cryptographically secure Random Number Generator!!
+            // And since the seed is not "setting the seed", but rather "stirring up with additional entropy", this logic should
+            // with extremely high certainty make sure we now have a very, very, very random seed for our Random number generator!
+            // In addition, there are multiple hash invocations being runned, either directly or indirectly, meaning it becomes very
+            // expensive to do a brute force attack on random number generator, leaving us with something that is "close to guaranteed"
+            // being a good random number generator, assuming SecureRandom does its job!
+            // Meaning, guessing the random number generators output, is literally IMPOSSIBLE!
             byte[] rawSeed = Utilities.Convert<byte[]>(context, seed);
             SecureRandom retVal = new SecureRandom ();
 
             // Applying seed, and returning SecureRandom to caller!
             retVal.SetSeed (rawSeed);
+
             return retVal;
         }
     }
