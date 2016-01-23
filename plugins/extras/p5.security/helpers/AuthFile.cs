@@ -68,7 +68,7 @@ namespace p5.security.helpers
          */
         internal static string CreateNewSalt(ApplicationContext context)
         {
-            return context.RaiseNative ("create-cs-random-string").Get<string> (context);
+            return context.RaiseNative ("create-cs-random").Get<string> (context);
         }
 
         #region [ -- Private helper methods -- ]

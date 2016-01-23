@@ -23,7 +23,7 @@ create-protected-event:sys42.invoke-secure-webservice
    * and the invocation id will be stored for some time, making sure the same invocation
    * is not allowed to execute again, before the timestamp has gone "out of date".
    */
-  create-cs-random-string
+  create-cs-random
   date-now
 
   /*
@@ -64,7 +64,7 @@ create-protected-event:sys42.invoke-secure-webservice
 
         content:@"id:{0}
 timestamp:date:""{1}"""
-          :x:/../*/create-cs-random-string?value
+          :x:/../*/create-cs-random?value
           :x:/../*/date-now?value.string
 
       // The actual Hyperlisp content of our MIME message

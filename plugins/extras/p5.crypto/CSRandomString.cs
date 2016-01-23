@@ -21,8 +21,8 @@ namespace phosphorus.crypto
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "create-cs-random-string", Protection = EventProtection.LambdaClosed)]
-        public static void create_cs_random_string (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "create-cs-random", Protection = EventProtection.LambdaClosed)]
+        public static void create_cs_random (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args)) {
@@ -36,8 +36,16 @@ namespace phosphorus.crypto
                     // Filling buffer with random bytes
                     csRandomGenerator.GetBytes (buffer);
 
-                    // Converting buffer bytes to base64 encoded string and returning to caller
-                    e.Args.Value = Convert.ToBase64String (buffer);
+                    // Checking if caller wants "raw bytes"
+                    if (e.Args.GetExChildValue ("raw", context, false)) {
+
+                        // Returning raw bytes
+                        e.Args.Value = buffer;
+                    } else {
+
+                        // Converting buffer bytes to base64 encoded string and returning to caller
+                        e.Args.Value = Convert.ToBase64String (buffer);
+                    }
                 }
             }
         }

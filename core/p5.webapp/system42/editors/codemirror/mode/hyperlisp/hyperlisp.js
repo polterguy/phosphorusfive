@@ -311,7 +311,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'set-http-status':
         case 'set-http-status-code':
         case 'date-now':
-        case 'create-cs-random-string':
+        case 'create-cs-random':
         case 'list-users':
         case 'get-user':
         case 'delete-user':

@@ -28,13 +28,21 @@ namespace phosphorus.crypto
             using (new Utilities.ArgsRemover (e.Args)) {
 
                 // Retrieving value to hash as a single string
-                var whatToHash = XUtil.Single<string> (context, e.Args, true);
+                var whatToHash = XUtil.Single<byte[]> (context, e.Args, true);
 
                 // Creating Sha256 hash, and returning as value of args
                 using (var sha256 = SHA256.Create ()) {
 
-                    // Returning Sha256 hash as base64 encoded string
-                    e.Args.Value = Convert.ToBase64String (sha256.ComputeHash (Encoding.UTF8.GetBytes (whatToHash)));
+                    // Checking if caller wants "raw bytes"
+                    if (e.Args.GetExChildValue ("raw", context, false)) {
+
+                        // Returning Sha256 hash as raw bytes
+                        e.Args.Value = sha256.ComputeHash (whatToHash);
+                    } else {
+
+                        // Returning Sha256 hash as base64 encoded string
+                        e.Args.Value = Convert.ToBase64String (sha256.ComputeHash (whatToHash));
+                    }
                 }
             }
         }
