@@ -33,7 +33,6 @@ namespace p5.io.folder
                 var rootFolder = Common.GetRootFolder (context);
 
                 // Multiple folder source, returning existence of all folders
-                e.Args.Value = false;
                 foreach (var idxFolder in XUtil.Iterate<string> (context, e.Args, true)) {
 
                     // Verifying user is authorized to reading from currently iterated folder
@@ -51,6 +50,8 @@ namespace p5.io.folder
                         e.Args.Value = true;
                     }
                 }
+                if (XUtil.IsExpression (e.Args.Value))
+                    e.Args.Value = false;
             }
         }
     }

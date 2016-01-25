@@ -55,8 +55,7 @@ namespace p5.security
         [ActiveEvent (Name = "p5.security.get-pseudo-random-seed", Protection = EventProtection.NativeOpen)]
         private static void p5_security_get_pseudo_random_seed (ApplicationContext context, ActiveEventArgs e)
         {
-            Node node = new Node ("", AuthenticationHelper.GetTicket (context).Username);
-            AuthenticationHelper.GetUser (context, node);
+            var node = AuthFile.GetAuthFile (context);
             string retVal = Utilities.Convert<string> (context, node);
             e.Args.Value = e.Args.Get<string> (context, "") + context.RaiseNative ("sha256-hash", new Node ("", retVal)).Value;
         }

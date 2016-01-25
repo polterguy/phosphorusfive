@@ -46,7 +46,7 @@ namespace p5.io.file
                             e.Args, 
                             rootFolder,
                             Utilities.Convert<string> (context, idxDestination.Value), 
-                            Utilities.Convert<byte[]> (context, content));
+                            Utilities.Convert<byte[]> (context, content, new byte[0]));
                     }
                 } else {
 
@@ -59,7 +59,7 @@ namespace p5.io.file
                         e.Args,
                         rootFolder,
                         e.Args.GetExValue<string> (context),
-                        Utilities.Convert<byte[]> (context, content));
+                        Utilities.Convert<byte[]> (context, content, new byte[0]));
                 }
             }
         }

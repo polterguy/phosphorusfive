@@ -339,7 +339,6 @@ namespace p5
             {
                 string retVal = HttpContext.Current.Request.RawUrl.ToString();
                 retVal += HttpContext.Current.Request.ContentLength.ToString ();
-                retVal += HttpContext.Current.Request.Cookies.Count.ToString ();
                 retVal += HttpContext.Current.Request.Headers.ToString();
                 retVal += HttpContext.Current.Request.Params.ToString();
                 retVal += HttpContext.Current.Request.PhysicalApplicationPath;
@@ -350,9 +349,6 @@ namespace p5
                 }
                 foreach (string idxSession in HttpContext.Current.Session.Keys) {
                     retVal += HttpContext.Current.Session[idxSession].ToString();
-                }
-                foreach (Assembly idxAsm in AppDomain.CurrentDomain.GetAssemblies ()) {
-                    retVal += idxAsm.CodeBase + idxAsm.FullName;;
                 }
                 e.Args.Value = e.Args.Get<string> (context, "") + context.RaiseNative ("sha256-hash", new Node ("", retVal)).Value;
             }

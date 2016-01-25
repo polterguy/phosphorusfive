@@ -25,11 +25,23 @@ if
   sys42.execute-lisp-file:/system42/editors/{0}-editor.hl
     :x:/../*/split/0/-?name
 else-if:x:/../*/split/0/-?name
+  =:txt
+  /*
+   * Loading generic CodeMirror editor in .MD mode
+   */
+  add:x:/./*/sys42.execute-lisp-file
+    src:"_parent:{0}"
+      :x:/../*/_parent?value
+  add:x:/./*/sys42.execute-lisp-file
+    src:"_file:{0}"
+      :x:/../*/_file?value
+  sys42.execute-lisp-file:/system42/editors/code-mirror-editor.hl
+    _theme:the-matrix-reduced
+    _mode:md
+else-if:x:/../*/split/0/-?name
   =:hl
   or:x:/../*/split/0/-?name
     =:css
-  or:x:/../*/split/0/-?name
-    =:txt
   or:x:/../*/split/0/-?name
     =:js
   or:x:/../*/split/0/-?name

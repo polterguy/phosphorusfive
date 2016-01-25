@@ -214,62 +214,74 @@ namespace p5.mime
          */
         private static SecureRandom CreateNewSecureRandom (ApplicationContext context, Node args)
         {
-            // First we use the seed provided by caller through the [seed] argument
-            // If no [seed] is provided, we default to a Cryptographically Secure random number
-            // [seed] is intended to be physically typed in by user, before keypair is created!
-            string seed = args.GetExChildValue<string> ("seed", context, context.RaiseNative (
-                "create-cs-random", 
-                new Node ("", null)).Get<string> (context));
+            // First we retrieve the seed provided by caller through the [seed] argument, defaulting to "foobar" if no user seed is provided
+            string userSeed = args.GetExChildValue<string> ("seed", context, "foobar");
 
-            // Then we change the given seed with the hashed seed, in case we get another run through this method,
-            // such that the seed changes from each pass
-            args.FindOrCreate ("seed").Value = context.RaiseNative ("sha256-hash", new Node ("", seed)).Get<string> (context);
+            // Then we change the given seed by hashing it, such that each pass through this method creates a different user provided seed
+            args.FindOrCreate ("seed").Value = context.RaiseNative ("sha512-hash", new Node ("", userSeed)).Get<string> (context);
 
-            // Then we append the server salt to the seed
-            seed += context.RaiseNative ("p5.security.get-password-salt").Get<string> (context);
-
-            // Then we append the ticks of server
-            seed += DateTime.Now.Ticks.ToString ();
-
-            // Then we append a cryptographically secure random number of 4096 bytes, encoded as base 64
-            seed += context.RaiseNative (
+            // Then we retrieve a cryptographically secure random number of 128 bytes
+            var rndBytes = context.RaiseNative (
                 "create-cs-random", 
                 new Node ("", null, new Node[] {
-                    new Node ("resolution", 4096)})).Get<string> (context);
+                    new Node ("resolution", 128),
+                    new Node ("raw", true)})).Get<byte[]> (context);
+
+            // Then retrieving "seed generator" from BouncyCastle
+            var bcSeed = new ThreadedSeedGenerator ().GenerateSeed (128, false);
+
+            // Then we retrieve the server password salt
+            string serverPasswordSalt = context.RaiseNative ("p5.security.get-password-salt").Get<string> (context);
+
+            // Then we retrieve the ticks of server
+            string serverSeed = DateTime.Now.Ticks.ToString ();
 
             // Then we append the Hyperlisp for the entire code tree
             // Notice, this will even include the GnuPG password in our seed, in sha2 hashed form!
+            // In addition, every time the Hyperlisp active Event calling this method changes, the seed will change
             var code = Utilities.Convert<string> (context, args.Root);
-            seed += context.RaiseNative ("sha256-hash", new Node ("", code)).Get<string> (context);;
-
-            // Then appending "seed generator" from BouncyCastle
-            seed += Utilities.Convert<string> (context, new ThreadedSeedGenerator ().GenerateSeed (64, false), "", true);
+            serverSeed += context.RaiseNative ("sha256-hash", new Node ("", code)).Get<string> (context);;
 
             // Then adding current thread ID
-            seed += System.Threading.Thread.CurrentThread.ManagedThreadId.ToString ();
+            serverSeed += System.Threading.Thread.CurrentThread.ManagedThreadId.ToString ();
 
-            // Then appending a Guid
-            seed += Guid.NewGuid ().ToString ();
+            // Then appending a randomly created Guid, which is created using MAC address of network card, and server ticks
+            serverSeed += Guid.NewGuid ().ToString ();
 
             // Then adding random seeds generated from "around our application" (Global.asax adds up session, cookies, browser, IP, etc)
             // p5.lambda adds up [vocabulary], Security adds up user's settings, etc, etc, etc
-            seed += context.RaiseNative ("p5.security.get-pseudo-random-seed").Get<string> (context);
+            serverSeed += context.RaiseNative ("p5.security.get-pseudo-random-seed").Get<string> (context);
 
-            // At this point, I am fairly certain that we have a pretty random and cryptographically secure seed
+            // Then we hash the server seed and the user seed with sha512, to create maximum size, and spread bytes evenly around [0-255] value range
+            byte[] serverSeedBytes = context.RaiseNative ("sha512-hash", new Node ("", serverSeed, new Node[] {new Node ("raw", true)})).Get<byte[]> (context);
+            byte[] userSeedBytes = context.RaiseNative ("sha512-hash", new Node ("", userSeed, new Node[] {new Node ("raw", true)})).Get<byte[]> (context);
+            byte[] serverPasswordSaltBytes = context.RaiseNative ("sha512-hash", new Node ("", serverPasswordSalt, new Node[] {new Node ("raw", true)})).Get<byte[]> (context);
+
+            // Then we "braid" all the different parts together, to make sure no single parts of our seed becomes predictable due to weaknesses in one or more of
+            // our seed generators
+            List<byte> seedBytesList = new List<byte>();
+            for (int idx = 0; idx < Math.Max (serverSeedBytes.Length, Math.Max (userSeedBytes.Length, Math.Max (rndBytes.Length, Math.Max (bcSeed.Length, serverPasswordSalt.Length)))); idx++) {
+                seedBytesList.Add (userSeedBytes [idx % userSeedBytes.Length]);
+                seedBytesList.Add (serverSeedBytes [idx % serverSeedBytes.Length]);
+                seedBytesList.Add (rndBytes [idx % rndBytes.Length]);
+                seedBytesList.Add (bcSeed [idx % bcSeed.Length]);
+                seedBytesList.Add (serverPasswordSaltBytes [idx % serverPasswordSaltBytes.Length]);
+            }
+
+            // At this point, we are fairly certain that we have a pretty random and cryptographically secure seed
             // Provided that SecureRandom from BouncyCastle is implemented correctly, we should now have a VERY, VERY, VERY unique,
-            // and cryptographically secure Random Number Generator!!
+            // and cryptographically secure Random Number seed!!
             // And since the seed is not "setting the seed", but rather "stirring up with additional entropy", this logic should
             // with extremely high certainty make sure we now have a very, very, very random seed for our Random number generator!
-            // In addition, there are multiple hash invocations being runned, either directly or indirectly, meaning it becomes very
+            // In addition, there are multiple hash invocations running, either directly or indirectly, meaning it becomes very
             // expensive to do a brute force attack on random number generator, leaving us with something that is "close to guaranteed"
             // being a good random number generator, assuming SecureRandom does its job!
-            // And the seed should be about 5-6 kilobytes long, making it very expensive to brute force guess
-            // Meaning, guessing the random number generators output, is literally IMPOSSIBLE!
-            byte[] rawSeed = Utilities.Convert<byte[]>(context, seed);
+            // In addition, our seed is at this point 640 bytes long, which translates into 5120 bits, meaning in no ways we have unintentionally
+            // reduced the resolution of SecureRandom by applying "low resolution seeds" ...
+            // In addition, our seed should be evenly distributed in the [0,255] range, and also no single parts of our seed should be predictable,
+            // unless every single method above fails, due to seed being "braided together".
             SecureRandom retVal = new SecureRandom ();
-
-            // Applying seed, and returning SecureRandom to caller!
-            retVal.SetSeed (rawSeed);
+            retVal.SetSeed (seedBytesList.ToArray ());
 
             return retVal;
         }
