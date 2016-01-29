@@ -8,14 +8,14 @@ create-event:sys42.get-default-user-settings
     src
       smtp
         server:smtp.gmail.com
-        port:465
-        ssl:true
+        port:int:465
+        ssl:bool:true
         username:your-google-username@gmail.com
         password:Your-Google-Password
       pop3
         server:pop.gmail.com
-        port:995
-        ssl:true
+        port:int:995
+        ssl:bool:true
         username:your-google-username@gmail.com
         password:Your-Google-Password
 

@@ -45,6 +45,7 @@
     <Compile Include="Roles.cs" />
     <Compile Include="helpers\AuthFile.cs" />
     <Compile Include="Common.cs" />
+    <Compile Include="Profile.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

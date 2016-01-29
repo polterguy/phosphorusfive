@@ -309,19 +309,107 @@ namespace p5.security.helpers
                     // Updating user's role
                     authFile ["users"][username]["role"].Value = userRole;
 
+                    // Removing old settings
+                    authFile["users"][username].Children.RemoveAll (ix => ix.Name != "password" && ix.Name != "role" && ix.Name != "cookie-salt");
+
                     // Adding all other specified objects to user
                     foreach (var idxNode in args.Children.Where (ix => ix.Name != "username" && ix.Name != "password" && ix.Name != "role")) {
 
-                        // Removing old value of specified object, if one exist
-                        authFile["users"][username].FindOrCreate (idxNode.Name).UnTie ();
-
-                        // Only adding nodes with some sort of actual value, which allows for deletion of old values if "null" value nodes are submitted
-                        if (idxNode.Value != null || idxNode.Children.Count > 0)
-                            authFile["users"][username].Add (idxNode.Clone ());
+                        authFile["users"][username].Add (idxNode.Clone ());
                     }
                 });
         }
             
+        /*
+         * Retrieves settings for currently logged in user
+         */
+        public static void GetSettings (ApplicationContext context, Node args)
+        {
+            // Retrieving "auth" file in node format
+            var authFile = AuthFile.GetAuthFile (context);
+
+            // Checking if user exist
+            if (authFile ["users"] [context.Ticket.Username] == null)
+                throw new LambdaException (
+                    "You do not exist",
+                    args,
+                    context);
+
+            args.AddRange (authFile["users"][context.Ticket.Username].Clone ().Children.Where (ix => ix.Name != "password" && ix.Name != "cookie-salt" && ix.Name != "role"));
+        }
+
+        /*
+         * Changes the settings for currently logged in user
+         */
+        public static void ChangeSettings (ApplicationContext context, Node args)
+        {
+            string username = context.Ticket.Username;
+
+            // Locking access to password file as we edit user object
+            AuthFile.ModifyAuthFile (
+                context, 
+                delegate (Node authFile) {
+
+                    // Removing old settings
+                    authFile["users"][username].Children.RemoveAll (ix => ix.Name != "password" && ix.Name != "role" && ix.Name != "cookie-salt");
+
+                    // Changing all settings for user
+                    foreach (var idxNode in args.Children) {
+
+                        authFile["users"][username].Add (idxNode.Clone ());
+                    }
+                });
+        }
+
+        /*
+         * Changes the password for currently logged in user
+         */
+        public static void ChangePassword (ApplicationContext context, Node args)
+        {
+            string password = args.GetExValue(context, "");
+            if (string.IsNullOrEmpty (password))
+                throw new LambdaException ("No password supplied", args, context);
+            
+            string username = context.Ticket.Username;
+
+            // Locking access to password file as we edit user object
+            AuthFile.ModifyAuthFile (
+                context, 
+                delegate (Node authFile) {
+
+                    // Changing user's password
+                    // Creating user salt, and retrieving system salt
+                    var userSalt = AuthFile.CreateNewSalt (context);
+                    var serverSalt = context.RaiseNative ("p5.security.get-password-salt").Get<string> (context);
+
+                    // Then salting password with user salt and system, before salting it with system salt
+                    var userPasswordFingerprint = context.RaiseNative ("sha256-hash", new Node ("", userSalt + password)).Get<string> (context);
+                    var systemFingerprint = context.RaiseNative ("sha256-hash", new Node ("", serverSalt + userPasswordFingerprint)).Get<string> (context);
+                    authFile ["users"][username]["password"].Value = systemFingerprint;
+                    authFile["users"][username]["cookie-salt"].Value = userSalt;
+                });
+        }
+
+        /*
+         * Deletes the currently logged in user
+         */
+        public static void DeleteMyUser (ApplicationContext context, Node args)
+        {
+            string username = context.Ticket.Username;
+
+            // Locking access to password file as we delete user object
+            AuthFile.ModifyAuthFile (
+                context, 
+                delegate (Node authFile) {
+
+                    // Removing user
+                    authFile["users"][username].UnTie ();
+                });
+
+            // Deleting user's home directory
+            context.RaiseNative ("delete-folder", new Node ("", "/users/" + username + "/"));
+        }
+
         /*
          * Returns all existing roles in system
          */

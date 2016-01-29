@@ -28,7 +28,7 @@ namespace p5.mime
     /// <summary>
     ///     Class wrapping the creation of PGP private key pairs
     /// </summary>
-    public static class CreateKey
+    public static class CreatePgpKeyPair
     {
         /// <summary>
         ///     Creates and saves a private PGP keypair to GnuPG context
@@ -56,7 +56,7 @@ namespace p5.mime
                 long publicExponent = e.Args.GetExChildValue ("public-exponent", context, 65537L);
                 int certainty = e.Args.GetExChildValue ("certainty", context, 5);
 
-                // Generate public/secret keyrings
+                // Generate public/secret keys
                 PgpKeyRingGenerator generator = GetKeyRingGenerator (
                                                 context,
                                                 e.Args,
@@ -73,11 +73,14 @@ namespace p5.mime
                 using (var ctx = new GnuPrivacyContext ()) {
 
                     // Saves public keyring
-                    SavePublicKeyRing (ctx, publicRing);
+                    ctx.Import (publicRing);
 
                     // Saves private keyring
-                    SaveSecretKeyRing (ctx, secretRing);
+                    ctx.Import (secretRing);
                 }
+
+                // In case no [seed] was given, we remove the automatically generated seed ...
+                e.Args ["seed"].UnTie ();
             }
         }
 
@@ -166,50 +169,6 @@ namespace p5.mime
         }
 
         /*
-         * Saves public keyring
-         */
-        private static void SavePublicKeyRing (GnuPrivacyContext ctx, PgpPublicKeyRing publicRing)
-        {
-            // Serializing public keyring bundle to ArmoredOutputStream, before letting MimeKit do its stuff!
-            using (var memStream = new MemoryStream ()) {
-
-                // Putting public key into KeyRingBundle, which is actually what MimeKit's Import takes as an argument
-                var publicBundle = new PgpPublicKeyRingBundle (new [] { publicRing });
-
-                // We'll need an armored stream for MimeKit here, wrapping our MemoryStream
-                using (var armoredStream = new ArmoredOutputStream (memStream)) {
-                    publicBundle.Encode (armoredStream);
-                    armoredStream.Flush ();
-                    memStream.Flush ();
-                }
-                memStream.Position = 0; // Important!
-                ctx.Import (memStream);
-            }
-        }
-
-        /*
-         * Saves private keyring
-         */
-        private static void SaveSecretKeyRing (GnuPrivacyContext ctx, PgpSecretKeyRing secretRing)
-        {
-            // Serializing private keyring bundle to ArmoredOutputStream, before letting MimeKit do its stuff!
-            using (var memStream = new MemoryStream ()) {
-
-                // Putting secret key into KeyRingBundle, which is actually what MimeKit's ImportSecretKeys takes as an argument
-                var secretBundle = new PgpSecretKeyRingBundle (new [] { secretRing });
-
-                // We'll need an armored stream for MimeKit here, wrapping our MemoryStream
-                using (var armoredStream = new ArmoredOutputStream (memStream)) {
-                    secretBundle.Encode (armoredStream);
-                    armoredStream.Flush ();
-                    memStream.Flush ();
-                }
-                memStream.Position = 0; // Important!
-                ctx.ImportSecretKeys (memStream);
-            }
-        }
-
-        /*
          * Creates and seeds a new SecureRandom to be used for keypair creation
          */
         private static SecureRandom CreateNewSecureRandom (ApplicationContext context, Node args)
@@ -252,13 +211,27 @@ namespace p5.mime
             // p5.lambda adds up [vocabulary], Security adds up user's settings, etc, etc, etc
             serverSeed += context.RaiseNative ("p5.security.get-pseudo-random-seed").Get<string> (context);
 
+            // Then we hash the user seed, multiple times, depending upon the length of the supplied user seed
+            // This is done this way, to avoid reducing the resolution of the user-provided seed, such that the longer seed the user
+            // provides, the better the strength of the key becomes, and the more difficult a brute force of a user seed guess becomes
+            // Basically, we create a new hash, for each 100 characters in user provided seed. This makes a brute force significantly more
+            // difficult, since the resolution of the user-provided seed is kept, while also making a brute force more expensive, due
+            // to multiple hashes having to be done
+            List<byte> userSeedByteList = new List<byte>();
+            for (int idx = 0; idx < userSeed.Length; idx += 100) {
+                var subStr = userSeed.Substring (idx, Math.Min (100, userSeed.Length - idx));
+                byte[] buffer = context.RaiseNative ("sha512-hash", new Node ("", subStr, new Node[] {new Node ("raw", true)})).Get<byte[]> (context);
+                userSeedByteList.AddRange (buffer);
+            }
+            byte[] userSeedBytes = userSeedByteList.ToArray ();
+            args ["seed"].Value = userSeedBytes;
+
             // Then we hash the server seed and the user seed with sha512, to create maximum size, and spread bytes evenly around [0-255] value range
             byte[] serverSeedBytes = context.RaiseNative ("sha512-hash", new Node ("", serverSeed, new Node[] {new Node ("raw", true)})).Get<byte[]> (context);
-            byte[] userSeedBytes = context.RaiseNative ("sha512-hash", new Node ("", userSeed, new Node[] {new Node ("raw", true)})).Get<byte[]> (context);
             byte[] serverPasswordSaltBytes = context.RaiseNative ("sha512-hash", new Node ("", serverPasswordSalt, new Node[] {new Node ("raw", true)})).Get<byte[]> (context);
 
             // Then we "braid" all the different parts together, to make sure no single parts of our seed becomes predictable due to weaknesses in one or more of
-            // our seed generators
+            // our seed generators. Meaning, if at least ONE of our "seed generators" are well functioning, then the entire result will be difficult to predict
             List<byte> seedBytesList = new List<byte>();
             for (int idx = 0; idx < Math.Max (serverSeedBytes.Length, Math.Max (userSeedBytes.Length, Math.Max (rndBytes.Length, Math.Max (bcSeed.Length, serverPasswordSalt.Length)))); idx++) {
                 seedBytesList.Add (userSeedBytes [idx % userSeedBytes.Length]);

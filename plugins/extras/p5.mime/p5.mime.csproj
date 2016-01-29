@@ -35,10 +35,10 @@
     <Reference Include="System.Security" />
     <Reference Include="System.Web" />
     <Reference Include="BouncyCastle">
-      <HintPath>..\..\..\packages\MimeKit.1.2.19\lib\net45\BouncyCastle.dll</HintPath>
+      <HintPath>..\..\..\packages\MimeKit.1.2.20.2\lib\net45\BouncyCastle.dll</HintPath>
     </Reference>
     <Reference Include="MimeKit">
-      <HintPath>..\..\..\packages\MimeKit.1.2.19\lib\net45\MimeKit.dll</HintPath>
+      <HintPath>..\..\..\packages\MimeKit.1.2.20.2\lib\net45\MimeKit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -55,7 +55,7 @@
     <Compile Include="helpers\MimeCreator.cs" />
     <Compile Include="MimeInit.cs" />
     <Compile Include="MimeSave.cs" />
-    <Compile Include="CreateKey.cs" />
+    <Compile Include="CreatePgpKeyPair.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\core\p5.core\p5.core.csproj">

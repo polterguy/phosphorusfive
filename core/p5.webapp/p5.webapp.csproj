@@ -332,6 +332,7 @@
     <None Include="system42\apps\users\edit-specific-user.hl" />
     <None Include="system42\startup\internals\users\sys42.get-default-user-settings.hl" />
     <None Include="system42\installation\create-dynamic-salt.hl" />
+    <None Include="system42\apps\profile\launch.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />
@@ -355,5 +356,6 @@
     <Folder Include="system42\startup\internals\users\" />
     <Folder Include="system42\apps\x-ray-inspector\" />
     <Folder Include="system42\apps\users\media\" />
+    <Folder Include="system42\apps\profile\" />
   </ItemGroup>
 </Project>

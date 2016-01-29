@@ -22,28 +22,6 @@ namespace p5.security
     internal static class Users
     {
         /// <summary>
-        ///     Logs in a user to be associated with the ApplicationContext
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "login", Protection = EventProtection.LambdaClosed)]
-        public static void login (ApplicationContext context, ActiveEventArgs e)
-        {
-            AuthenticationHelper.Login (context, e.Args);
-        }
-
-        /// <summary>
-        ///     Logs out a user from the ApplicationContext
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "logout", Protection = EventProtection.LambdaClosed)]
-        public static void logout (ApplicationContext context, ActiveEventArgs e)
-        {
-            AuthenticationHelper.Logout (context);
-        }
-
-        /// <summary>
         ///     Creates a new user
         /// </summary>
         /// <param name="context">Application Context</param>
@@ -98,19 +76,6 @@ namespace p5.security
         public static void delete_user (ApplicationContext context, ActiveEventArgs e)
         {
             AuthenticationHelper.DeleteUser (context, e.Args);
-        }
-
-        /// <summary>
-        ///     Returns the currently logged in Context user
-        /// </summary>
-        /// <param name="context">Application Context</param>
-        /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "whoami", Protection = EventProtection.LambdaClosed)]
-        public static void whoami (ApplicationContext context, ActiveEventArgs e)
-        {
-            e.Args.Add("username", AuthenticationHelper.GetTicket (context).Username);
-            e.Args.Add("role", AuthenticationHelper.GetTicket (context).Role);
-            e.Args.Add("default", AuthenticationHelper.GetTicket (context).IsDefault);
         }
     }
 }

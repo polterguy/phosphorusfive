@@ -116,14 +116,23 @@ sys42.execute-lisp-file:/system42/apps/users/edit-users.hl
       name:Files
       template:/system42/cms/templates/main.hl
       role:superuser
-      lambda:@"
-
-/*
- * simply executes the file that loads up the 'file browser'
+      lambda:@"/*
+ * Simply executes the file that loads up the 'file browser'
  */
 sys42.execute-lisp-file:/system42/apps/file-browser/launch.hl
 "
 
+
+    p5.page:/profile
+      name:Profile
+      template:/system42/cms/templates/main.hl
+      type:lambda
+      role:user
+      lambda:@"/*
+ * Simply executes the file that loads up the 'Profile' page
+ */
+sys42.execute-lisp-file:/system42/apps/profile/launch.hl
+"
 
     p5.page:/about
       type:html
