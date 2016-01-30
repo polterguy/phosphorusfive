@@ -551,13 +551,25 @@ namespace p5.security.helpers
             if (!Directory.Exists (rootFolder + "/users/" + username + "/documents/public"))
                 Directory.CreateDirectory(rootFolder + "/users/" + username + "/documents/public");
 
-            if (!Directory.Exists (rootFolder + "/users/" + username + "/tmp"))
-                Directory.CreateDirectory(rootFolder + "/users/" + username + "/tmp");
+            if (!Directory.Exists (rootFolder + "/users/" + username + "/temp"))
+                Directory.CreateDirectory(rootFolder + "/users/" + username + "/temp");
 
             if (!File.Exists (rootFolder + "/users/" + username + "/documents/private/web.config"))
                 File.Copy (
                     rootFolder + "/users/root/documents/private/web.config", 
                     rootFolder + "/users/" + username + "/documents/private/web.config");
+            if (!File.Exists (rootFolder + "/users/" + username + "/documents/private/README.md"))
+                File.Copy (
+                    rootFolder + "/users/root/documents/private/README.md", 
+                    rootFolder + "/users/" + username + "/documents/private/README.md");
+            if (!File.Exists (rootFolder + "/users/" + username + "/documents/public/README.md"))
+                File.Copy (
+                    rootFolder + "/users/root/documents/public/README.md", 
+                    rootFolder + "/users/" + username + "/documents/public/README.md");
+            if (!File.Exists (rootFolder + "/users/" + username + "/temp/README.md"))
+                File.Copy (
+                    rootFolder + "/users/root/temp/README.md", 
+                    rootFolder + "/users/" + username + "/temp/README.md");
         }
 
         /*

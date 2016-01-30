@@ -486,7 +486,7 @@ create-widget:file-browser
               =:/
 
             zip:x:/../*/get-session-value/*/*/object?value
-              to:/users/{0}/tmp/{1}.zip
+              to:/users/{0}/temp/{1}.zip
                 :x:/..else/*/whoami/*/username?value
                 :x:/..else/*/split/0/-?name
             set-session-value:sys42.download-file

@@ -337,7 +337,7 @@
     <None Include="system42\startup\internals\server-salt.hl" />
     <None Include="users\root\documents\public\README.md" />
     <None Include="users\root\documents\private\README.md" />
-    <None Include="users\root\tmp\README.md" />
+    <None Include="users\root\temp\README.md" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />
@@ -363,6 +363,6 @@
     <Folder Include="system42\apps\users\media\" />
     <Folder Include="system42\apps\profile\" />
     <Folder Include="users\root\documents\public\" />
-    <Folder Include="users\root\tmp\" />
+    <Folder Include="users\root\temp\" />
   </ItemGroup>
 </Project>
