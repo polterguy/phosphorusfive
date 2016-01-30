@@ -26,11 +26,11 @@ if:x:/-/*?value
     src:attachment; filename={0}
       :x:/././-/0/-?name
 
-  // Returning file
-  echo-file:x:/../*/get-session-value/*?value
-
   // Clearing session value
   set-session-value:sys42.download-file
+
+  // Returning file
+  echo-file:x:/../*/get-session-value/*?value
 
 else
 

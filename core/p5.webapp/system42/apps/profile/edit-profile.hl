@@ -3,6 +3,21 @@
  * Main entry point for the profile page
  */
 
+
+whoami
+if:x:/-/*/role?value
+  =:root
+  // Warning user that he should not create a profile as root!
+  sys42.confirm-window
+    _header:Warning!
+    _body:@"You should not use the root user for anything but administrating your system, 
+and installing applications, etc. If you use your root account for only such things, it doesn't make
+any sense to change its profile settings. Click OK to logout your root account, and login as your
+superuser to change your superuser profile!"
+    _onok
+      logout
+      reload-location
+
 /*
  * Include JavaScript to trap Carriage Return in widget
  */

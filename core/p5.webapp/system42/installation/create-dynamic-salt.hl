@@ -19,10 +19,11 @@ create-widget:set-server-salt
      */
     literal
       element:blockquote
-      innerValue:@"<em>""Welcome to System42. I am Marvin, and I will be your guide. The first thing you will have to do, is to create
-a <strong>random server salt</strong>, used to make it more difficult to hack your system. Provide a random set of characters in the
-form below. You do not have to remember these characters, and you should NOT in fact write them down! Try to create this with at least
-100 characters, using all different types of characters, such as $%&123*@()[/]{} and so on!""</em>"
+      innerValue:@"<em>""Welcome to System42, I am Marvin, and I will be your guide in these parts of our galaxy. Before you can start
+benefitting from my superior brain, you will have to go through some simple settings. The first thing you will have to do, is to create a 
+<strong>random server salt</strong>, used to make it more difficult to hack your system. Provide a random set of characters in the form 
+below. You do not have to remember these characters, and you should NOT in fact write them down! Try to create this with at least 100 
+characters, using all different types of characters, such as $%&123*@()[/]{} and so on!""</em>"
 
 
     /*
@@ -45,14 +46,9 @@ form below. You do not have to remember these characters, and you should NOT in 
           onclick
             get-widget-property:server-salt
               value
-            eval-x:x:/+/0/0/0
-            _evt
-              create-protected-event:p5.security.get-dynamic-password-salt
-                set:x:/..?value
-                  src:x:/../*/get-widget-property/*/*?value
-            save-file:/system42/startup/internals/server-salt.hl
-              src:x:/../*/_evt/*
-            eval:x:/../*/_evt
+            eval-x:x:/+/0
+            insert-data
+              server-salt:x:/../*/get-widget-property/*/*?value
             delete-widget:set-server-salt
             sys42.execute-lisp-file:/system42/installation/set-root-password.hl
 

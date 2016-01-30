@@ -125,7 +125,7 @@ create-widget:file-browser
           get-session-value:sys42.current-folder
 
           // Saving files
-          save-binary-file:{0}{1}
+          save-file:{0}{1}
             :x:/../*/get-session-value/*?value
             :x:/../*/get-widget-property/*/file-name/*?value
             src:x:/../*/p5.string.decode-base64/*?value

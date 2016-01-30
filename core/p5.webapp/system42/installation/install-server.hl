@@ -45,9 +45,8 @@ if:x:/-/*?count
   =:int:0
 
   if
-    fetch:x:/0/0
-      vocabulary:p5.security.get-dynamic-password-salt
-    not
+    select-data:x:/*/*/server-salt?count
+    =:int:0
 
     // Need to create server dynamic salt
     sys42.execute-lisp-file:/system42/installation/create-dynamic-salt.hl

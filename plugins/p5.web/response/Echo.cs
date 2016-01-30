@@ -62,9 +62,14 @@ namespace p5.web.ui.response
             // Retrieving root node of web application
             var rootFolder = context.RaiseNative ("p5.core.application-folder").Get<string> (context);
 
-            // Rendering file back to client over response
-            var fullPath = rootFolder + XUtil.Single<string> (context, e.Args);
-            using (Stream fileStream = File.OpenRead (fullPath)) {
+            // Finding filename
+            var fileName = XUtil.Single<string> (context, e.Args);
+
+            // Verifying user is authorized to reading from currently iterated file
+            context.RaiseNative ("p5.io.authorize.read-file", new Node ("", fileName).Add ("args", e.Args));
+
+            // Rendering file back to client
+            using (Stream fileStream = File.OpenRead (rootFolder + fileName)) {
                 fileStream.CopyTo (HttpContext.Current.Response.OutputStream);
             }
 

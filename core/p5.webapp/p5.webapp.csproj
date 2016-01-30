@@ -332,7 +332,8 @@
     <None Include="system42\apps\users\edit-specific-user.hl" />
     <None Include="system42\startup\internals\users\sys42.get-default-user-settings.hl" />
     <None Include="system42\installation\create-dynamic-salt.hl" />
-    <None Include="system42\apps\profile\launch.hl" />
+    <None Include="system42\apps\profile\edit-profile.hl" />
+    <None Include="system42\startup\internals\server-salt.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />

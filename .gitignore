@@ -181,8 +181,7 @@ UpgradeLog*.htm
 # Microsoft Fakes
 FakesAssemblies/
 
-# ignoring unit tests output directory
-test-results/
+# ignoring userprefs file
 p5.userprefs
 
 #p5.data files
@@ -195,10 +194,4 @@ dox/doxygen-output
 core/p5.webapp/users
 
 #auth file
-core/p5.webapp/_auth.hl
-
-core/p5.webapp/users.tar.gz
-
 core/p5.webapp/auth
-
-core/p5.webapp/system42/startup/internals/server-salt.hl

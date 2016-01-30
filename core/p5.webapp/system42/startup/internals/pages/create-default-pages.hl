@@ -131,7 +131,7 @@ sys42.execute-lisp-file:/system42/apps/file-browser/launch.hl
       lambda:@"/*
  * Simply executes the file that loads up the 'Profile' page
  */
-sys42.execute-lisp-file:/system42/apps/profile/launch.hl
+sys42.execute-lisp-file:/system42/apps/profile/edit-profile.hl
 "
 
     p5.page:/about
