@@ -337,6 +337,7 @@
     <None Include="system42\startup\internals\server-salt.hl" />
     <None Include="users\root\documents\public\README.md" />
     <None Include="users\root\documents\private\README.md" />
+    <None Include="users\root\tmp\README.md" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />
