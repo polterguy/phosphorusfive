@@ -42,7 +42,7 @@ namespace p5.lambda.keywords
                     // our destination nodes, on each iteration, passing in destination node as data source
                     idxDestination.Value = XUtil.SourceSingle (context, e.Args, idxDestination.Node);
                 }
-            } else if (e.Args.Children.Count == 0 || e.Args.LastChild.Name == "src") {
+            } else if (e.Args.Children.Count(ix => ix.Name != "") == 0 || e.Args.LastChild.Name == "src") {
 
                 // Static source, or "null source", hence retrieving source before iteration starts, 
                 // in case destination and source overlaps
