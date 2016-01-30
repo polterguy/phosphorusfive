@@ -142,6 +142,7 @@
     <Content Include="system42\apps\file-browser\media\folder.png" />
     <Content Include="system42\editors\codemirror\theme\the-matrix-reduced-secondary.css" />
     <Content Include="system42\apps\users\media\users.css" />
+    <Content Include="users\root\documents\private\web.config" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -334,6 +335,8 @@
     <None Include="system42\installation\create-dynamic-salt.hl" />
     <None Include="system42\apps\profile\edit-profile.hl" />
     <None Include="system42\startup\internals\server-salt.hl" />
+    <None Include="users\root\documents\public\README.md" />
+    <None Include="users\root\documents\private\README.md" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />
@@ -358,5 +361,7 @@
     <Folder Include="system42\apps\x-ray-inspector\" />
     <Folder Include="system42\apps\users\media\" />
     <Folder Include="system42\apps\profile\" />
+    <Folder Include="users\root\documents\public\" />
+    <Folder Include="users\root\tmp\" />
   </ItemGroup>
 </Project>

@@ -191,7 +191,16 @@ core/p5.webapp/db
 dox/doxygen-output
 
 #user files
-core/p5.webapp/users
+core/p5.webapp/users/*
+!core/p5.webapp/users/root
+!core/p5.webapp/users/root/tmp
+!core/p5.webapp/users/root/documents
+!core/p5.webapp/users/root/documents/private
+!core/p5.webapp/users/root/documents/public
+!core/p5.webapp/users/root/documents/private/web.config
+!core/p5.webapp/users/root/documents/private/README.md
+!core/p5.webapp/users/root/documents/public/README.md
+**/.DS_Store
 
 #auth file
 core/p5.webapp/auth
