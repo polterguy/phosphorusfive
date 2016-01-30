@@ -197,6 +197,9 @@ core/p5.webapp/users/*
 !core/p5.webapp/users/root/documents/private/README.md
 !core/p5.webapp/users/root/temp/README.md
 
+#web.config
+core/p5.webapp/web.config
+
 #all MAC directory files
 **/.DS_Store
 
