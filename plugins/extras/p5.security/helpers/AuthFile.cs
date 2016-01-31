@@ -136,10 +136,15 @@ namespace p5.security.helpers
                 // has supplied an encryption and decryption key through web.config
                 var gpgEmailAddress = context.RaiseNative("p5.security.get-marvin-pgp-key").Get<string>(context);
                 var gpgPassword = context.RaiseNative("p5.security.get-marvin-pgp-key-password").Get<string>(context);
-                if (!string.IsNullOrEmpty (gpgEmailAddress) && !string.IsNullOrEmpty (gpgPassword))
-                    writer.Write (Utilities.EncryptMarvin (context, Utilities.Convert<string> (context, authFileNode.Children)));
-                else
+                if (!string.IsNullOrEmpty (gpgEmailAddress) && !string.IsNullOrEmpty (gpgPassword)) {
+                    try {
+                        writer.Write (Utilities.EncryptMarvin (context, Utilities.Convert<string> (context, authFileNode.Children)));
+                    } catch {
+                        writer.Write (Utilities.Convert<string> (context, authFileNode.Children));
+                    }
+                } else {
                     writer.Write (Utilities.Convert<string> (context, authFileNode.Children));
+                }
             }
         }
 

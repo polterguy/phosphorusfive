@@ -126,8 +126,7 @@ namespace p5.core
             // key from Gnu Privacy Guard
             var mimeEntity = new Node ("p5.mime.create")
                 .Add ("text", "plain").LastChild
-                    .Add ("encryption").LastChild
-                        .Add ("email", gpgEmailAddress).Parent
+                    .Add ("encryption")
                     .Add ("content", plainText).Root;
 
             // Using [p5.mime.create] as actual encryption implementation
@@ -149,10 +148,7 @@ namespace p5.core
 
             // Invoking [p5.mime.parse] Active Event, passing in password to use for retrieving private
             // key from Gnu Privacy Guard
-            Node decryptNode = new Node ("p5.mime.parse", cipherText)
-                .Add ("decryption-keys").LastChild
-                    .Add ("email", gpgEmailAddress).LastChild
-                        .Add("password", gpgPassword).Root;
+            Node decryptNode = new Node ("p5.mime.parse", cipherText);
 
             // Using [p5.mime.parse] as actual decryption implementation
             var resultNode = context.RaiseNative (decryptNode.Name, decryptNode);

@@ -75,6 +75,24 @@ namespace p5.mime.helpers
         }
 
         /// <summary>
+        ///     Saves the secret key ring bundle
+        /// </summary>
+        public void SaveSecretKeyRingBundle (PgpSecretKeyRingBundle bundle)
+        {
+            this.SecretKeyRingBundle = bundle;
+            this.SaveSecretKeyRingBundle ();
+        }
+
+        /// <summary>
+        ///     Saves the public key ring bundle
+        /// </summary>
+        public void SavePublicKeyRingBundle (PgpPublicKeyRingBundle bundle)
+        {
+            this.PublicKeyRingBundle = bundle;
+            this.SavePublicKeyRingBundle ();
+        }
+
+        /// <summary>
         ///     Gets the password for the specified key, used as sink by MimeKit to decrypt private key
         /// </summary>
         /// <returns>The password for the requested key</returns>

@@ -6,6 +6,7 @@
 create-event:sys42.get-default-user-settings
   insert-before:x:
     src
+      email-address:Your Full Name <your-google-email-address@gmail.com>
       smtp
         server:smtp.gmail.com
         port:int:465

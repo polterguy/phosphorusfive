@@ -43,13 +43,13 @@ create-widget:edit-profile
      * Change password button
      */
     container
-      class:col-xs-6 col-md-4 form-group
+      class:col-xs-6 col-md-2 form-group
       widgets
         literal:change-password
           element:button
           class:form-control btn btn-default
           title:Click to change password
-          innerValue:Change your password
+          innerValue:Change password
           onclick
             _widgets
               user-password
@@ -60,6 +60,77 @@ create-widget:edit-profile
               disabled
             send-javascript:@"$('#user-password').focus().select();"
             sys42.info-window:@"Please supply a new password for your account"
+
+    /*
+     * Create GnuPG keypair button
+     */
+    container
+      class:col-xs-6 col-md-2 form-group
+      widgets
+        literal:create-pgp-keypair
+          element:button
+          class:form-control btn btn-default
+          title:Click to create a cryptographic GnuPG keypair
+          innerValue:Create key
+          onclick
+            user-settings
+            html-encode:x:/../*/user-settings/*/email-address?value
+            eval-x:x:/+/*/_body|/+/*/_header
+            sys42.confirm-window
+              _header:Create keypair for '{0}'
+                :x:/../*/html-encode?value
+              _body:@"Do you wish to create a GnuPG PGP private and public keypair and associate with your account? This will allow you
+to receive encrypted email, among other things?<br/>
+Please notice that your key will be associated with the email address of <em>'{0}'</em>, if this is not right, then please change your email
+address before you create your key!<br/><br/>
+Please verify <strong>'{0}'</strong> is your actual name and email address! If it is not, close this window in the upper right corner, and
+change your name and email address settings first!"
+                :x:/../*/html-encode?value
+              _onok
+                sys42.wizard-window
+                  _header:Provide a seed
+                  _body:@"Please provide a seed for the random number generator. This should be a random sequence of characters, 
+preferably at least a 100 characters long! You do not need to remember your seed, but your keypair becomes more secure the longer your seed is!<br/><br/>
+In addition, you need to choose a password to retrieve your private key from the GnuPG database. This password you must remember!"
+                  _widgets
+                    textarea:seed
+                      mandatory:true
+                      placeholder:Please supply a seed for the random number generator ...
+                    password:password
+                      label:Password
+                      mandatory:true
+                      placeholder:Please supply a password for keypair ...
+                      autocomplete:off
+                    password:password-repeat
+                      label:Repeat
+                      mandatory:true
+                      placeholder:Please repeat the password for keypair ...
+                      autocomplete:off
+                  _onok
+                    if:x:/../*/password?value
+                      =:x:/../*/password-repeat?value
+
+                      /*
+                       * Passwords matched each other
+                       */
+                      user-settings
+                      eval-x:x:/+/*
+                      sys42.create-pgp-keypair
+                        _identity:x:/..if/*/user-settings/*/email-address?value
+                        _password:x:/../*/password?value
+                        _seed:x:/../*/seed?value
+                      sys42.info-window:@"Creating your keypair might take some time. Come back later, and check when it is done!"
+                        _time:more
+                      set:x:/..?value
+                        src:bool:true
+                    else
+
+                      /*
+                       * Failure" Passwords did not match! Signaling that fact to caller
+                       */
+                      set:x:/..?value
+                        src:Passwords don't match
+                      send-javascript:@"$('#password').focus().select();"
 
     /*
      * Password of user

@@ -337,6 +337,8 @@ namespace p5
             [ActiveEvent (Name = "p5.security.get-pseudo-random-seed", Protection = EventProtection.NativeOpen)]
             private static void p5_security_get_pseudo_random_seed (ApplicationContext context, ActiveEventArgs e)
             {
+                if (HttpContext.Current == null || HttpContext.Current.Session == null)
+                    return;
                 string retVal = HttpContext.Current.Request.RawUrl.ToString();
                 retVal += HttpContext.Current.Request.ContentLength.ToString ();
                 retVal += HttpContext.Current.Request.Headers.ToString();

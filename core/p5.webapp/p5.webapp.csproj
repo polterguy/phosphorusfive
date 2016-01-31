@@ -338,6 +338,7 @@
     <None Include="users\root\documents\public\README.md" />
     <None Include="users\root\documents\private\README.md" />
     <None Include="users\root\temp\README.md" />
+    <None Include="system42\startup\internals\create-pgp-key.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />
