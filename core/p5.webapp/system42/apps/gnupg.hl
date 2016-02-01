@@ -1,0 +1,126 @@
+
+/*
+ * Shows the form that allows for editing the GnuPG database
+ */
+
+
+/*
+ * Looping through each public key, adding to table widget below
+ */
+p5.crypto.list-public-keys
+p5.crypto.list-private-keys
+for-each:x:/../*/p5.crypto.list-public-keys/*
+  _widgets
+    container
+      _key-id
+      element:tr
+      style:"cursor:pointer;"
+      onclick
+        get-widget-property:x:/../*/_event?value
+          _key-id
+        p5.crypto.get-key-details:x:/-/*/*?value
+        format-date:x:/-/*/creation-time?value
+          format:d. MMM yyyy
+        format-date:x:/-2/*/expires?value
+          format:d. MMM yyyy
+        join:x:/../*/p5.crypto.get-key-details/*/user-ids/*?value
+          =:"\r\n"
+        html-encode:x:/-?value
+        eval-x:x:/+
+        _tbl:@"<table class=""table""><thead><tr><th>Field</th><th>Value</th></tr></thead>
+<tr>
+  <td>Algorithm</td>
+  <td>{0}</td>
+</tr>
+<tr>
+  <td>Strength</td>
+  <td>{1}</td>
+</tr>
+<tr>
+  <td>Creation date</td>
+  <td>{2}</td>
+</tr>
+<tr>
+  <td>Encryption key</td>
+  <td>{3}</td>
+</tr>
+<tr>
+  <td>Master key</td>
+  <td>{4}</td>
+</tr>
+<tr>
+  <td>Revoked</td>
+  <td>{5}</td>
+</tr>
+<tr>
+  <td>Version</td>
+  <td>{6}</td>
+</tr>
+<tr>
+  <td>Expires</td>
+  <td>{7}</td>
+</tr>
+<tr>
+  <td colspan=""2""><pre><small>{8}</small></pre></td>
+</tr>
+</table>"
+          :x:/../*/p5.crypto.get-key-details/*/algorithm?value
+          :x:/../*/p5.crypto.get-key-details/*/strength?value
+          :x:/../*/format-date/[0,1]?value
+          :x:/../*/p5.crypto.get-key-details/*/is-encryption-key?value
+          :x:/../*/p5.crypto.get-key-details/*/is-master-key?value
+          :x:/../*/p5.crypto.get-key-details/*/is-revoked?value
+          :x:/../*/p5.crypto.get-key-details/*/version?value
+          :x:/../*/format-date/[1,2]?value
+          :x:/../*/html-encode?value
+        eval-x:x:/+/*/_body
+        sys42.confirm-window
+          _header:Key details
+          _body:x:/../*/_tbl?value
+        _sys42.show-code-window:x:/..
+      widgets
+        literal
+          element:td
+          innerValue:pub
+        literal
+          element:td
+          innerValue
+        literal
+          element:td
+          innerValue
+  html-encode:x:/..for-each/*/_dp/#?name
+  set:x:/./*/_widgets/**/literal/[1,2]/*/innerValue?value
+    src:x:/./-?value
+  set:x:/./*/_widgets/**/literal/[2,3]/*/innerValue?value
+    src:x:/..for-each/*/_dp/#?value
+  set:x:/..for-each/*/_widgets/*/container/*/_key-id?value
+    src:x:/..for-each/*/_dp/#?value
+
+  // Checking if this public key has a private key associated with it, and if so, changing the UI to reflect this fact
+  if:x:/../*/p5.crypto.list-private-keys/*/={0}
+    :x:/..for-each/*/_dp/#?value
+    set:x:/..for-each/*/_widgets/**/literal/[0,1]/*/innerValue?value
+      src:sec/pub
+    add:x:/..for-each/*/_widgets/*/container
+      src:"class:bold"
+
+  // Adding key row to table widget
+  add:x:/../*/create-widget/=gnu-pg-keys/*/widgets
+    src:x:/..for-each/*/_widgets/*
+
+
+/*
+ * Keypair widget(s)
+ */
+create-literal-widget
+  element:h3
+  parent:content
+  innerValue:Public keys
+create-widget:gnu-pg-keys
+  parent:content
+  element:table
+  class:table table-hover
+  widgets
+    literal
+      element:thead
+      innerValue:@"<tr><th>Type</th><th>User ID</th><th>Key ID</th></tr>"

@@ -134,6 +134,18 @@ sys42.execute-lisp-file:/system42/apps/file-browser/launch.hl
 sys42.execute-lisp-file:/system42/apps/profile/edit-profile.hl
 "
 
+
+    p5.page:/root/gnupg-database
+      name:GnuPG
+      template:/system42/cms/templates/main.hl
+      type:lambda
+      role:root
+      lambda:@"/*
+ * Simply executes the file that loads up the 'GnuPG database' page
+ */
+sys42.execute-lisp-file:/system42/apps/gnupg.hl
+"
+
     p5.page:/about
       type:html
       name:About

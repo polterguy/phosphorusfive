@@ -89,7 +89,8 @@ if:x:/../*/get-widget-property/*/*?value
                     value
                   if:x:/../*/get-widget-property/*/*?value
                     !=:
-                    sys42.info-window:@"Unless absolutely necessary, you should not change a user's password!"
+                    sys42.info-window:@"Unless absolutely necessary, you should not change a user's password!
+Keep the password fields empty to keep existing password!"
                       _warning:true
                       _time:more
 
@@ -128,6 +129,44 @@ if:x:/../*/get-widget-property/*/*?value
             class:form-control
             placeholder:Settings for user ...
 
+      /*
+       * Information about private PGP keypair of user
+       */
+      container
+        class:col-xs-12
+        widgets
+          literal:pgp-key-info
+            oninit
+
+              // Getting user's settings
+              get-widget-property:edit-existing-user-select
+                value
+              get-user:x:/-/*/*?value
+              if:x:/-/*/*/email-address?value
+
+                // Checking if user has a private PGP key associated with his account
+                split:x:/../*/get-user/*/*/email-address?value
+                  =:<
+                split:x:/-/1?name
+                  =:>
+                p5.crypto.list-private-keys:x:/-/0?name
+                if:x:/..if/*/p5.crypto.list-private-keys/*?count
+                  >:int:0
+
+                  // User has a private PGP key associated with his account
+                  html-encode:x:/..if/..if/*/p5.crypto.list-private-keys/*?name
+                  set-widget-property:pgp-key-info
+                    innerValue:@"This user has a private PGP key, with the ID of <em>'{0}'</em> and the identity of <em>'{1}'</em>"
+                      :x:/..if/..if/*/p5.crypto.list-private-keys/*?value
+                      :x:/..if/*/html-encode?value
+                else
+                  set-widget-property:pgp-key-info
+                    innerValue:@"<strong>This user does not have a private PGP keypair</strong>"
+                    class:error air-padding rounded-corners
+              else
+                set-widget-property:pgp-key-info
+                  innerValue:@"<strong>This user does not have a private PGP keypair</strong>"
+                  class:error air-padding rounded-corners
 
       /*
        * Save user button
@@ -209,6 +248,7 @@ if:x:/../*/get-widget-property/*/*?value
                   get-widget-property:edit-existing-user-select
                     value
                   delete-user:x:/../*/get-widget-property/*/*?value
+                  set-session-value:sys42.currently-edited-user
                   sys42.populate-edit-existing-user
                   delete-widget:edit-user-properties
 

@@ -98,6 +98,18 @@ body {
     margin-left:60px;
 }
 
+.air-padding {
+    padding:15px;
+}
+
+.bold {
+    font-weight:bold;
+}
+
+.rounded-corners {
+    border-radius:5px;
+}
+
 
 /*
  * Info feedback popdown dialog animations, and CSS class

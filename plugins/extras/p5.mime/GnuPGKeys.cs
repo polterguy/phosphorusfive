@@ -57,7 +57,7 @@ namespace p5.mime
                                     if (string.IsNullOrEmpty (filter) || identity.Contains (filter)) {
 
                                         // Returning identity and key ID to caller
-                                        e.Args.Add (identity, idxSecretKey.KeyId);
+                                        e.Args.Add (identity, idxSecretKey.KeyId.ToString ("X"));
 
                                         // We'll risk adding the same key twice unless we break here!
                                         break;
@@ -87,7 +87,7 @@ namespace p5.mime
                 // Creating new GnuPG context
                 using (var ctx = new GnuPrivacyContext ()) {
 
-                    // Looping through each secret key in GnuPG database
+                    // Looping through each public key in GnuPG database
                     foreach (PgpPublicKeyRing idxRing in ctx.PublicKeyRingBundle.GetKeyRings ()) {
 
                         // Looping through each key in keyring
@@ -104,12 +104,61 @@ namespace p5.mime
                                     if (string.IsNullOrEmpty (filter) || userID.Contains (filter)) {
 
                                         // Returning identity and key ID to caller
-                                        e.Args.Add (userID, idxPublicKey.KeyId);
+                                        e.Args.Add (userID, idxPublicKey.KeyId.ToString ("X"));
 
                                         // We'll risk adding the same key twice unless we break here!
                                         break;
                                     }
                                 }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Lists all public keys matching the given filter from the GnuPG database
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "p5.crypto.get-key-details", Protection = EventProtection.LambdaClosed)]
+        private static void p5_crypto_get_key_details (ApplicationContext context, ActiveEventArgs e)
+        {
+            // House cleaning
+            using (new Utilities.ArgsRemover (e.Args, true)) {
+
+                // Getting key ID to look for
+                string keyID = e.Args.GetExValue<string> (context, null);
+                if (string.IsNullOrEmpty (keyID))
+                    throw new LambdaException ("No ID given to use for looking up key", e.Args, context);
+
+                // Creating new GnuPG context
+                using (var ctx = new GnuPrivacyContext ()) {
+
+                    // Looping through each public key in GnuPG database
+                    foreach (PgpPublicKeyRing idxRing in ctx.PublicKeyRingBundle.GetKeyRings ()) {
+
+                        // Looping through each key in keyring
+                        foreach (PgpPublicKey idxPublicKey in idxRing.GetPublicKeys ()) {
+
+                            // Checking if this is the requested key
+                            if (idxPublicKey.KeyId.ToString ("X") == keyID) {
+
+                                // This is the key we're looking for
+                                e.Args.Add ("algorithm", idxPublicKey.Algorithm.ToString ());
+                                e.Args.Add ("strength", idxPublicKey.BitStrength);
+                                e.Args.Add ("creation-time", idxPublicKey.CreationTime);
+                                e.Args.Add ("is-encryption-key", idxPublicKey.IsEncryptionKey);
+                                e.Args.Add ("is-master-key", idxPublicKey.IsMasterKey);
+                                e.Args.Add ("is-revoked", idxPublicKey.IsRevoked ());
+                                e.Args.Add ("version", idxPublicKey.Version);
+                                DateTime expires = idxPublicKey.CreationTime.AddSeconds (idxPublicKey.GetValidSeconds ());
+                                e.Args.Add ("expires", expires);
+                                foreach (var idxUserId in idxPublicKey.GetUserIds()) {
+                                    e.Args.FindOrCreate ("user-ids").Add ("", idxUserId);
+                                }
+                                return;
                             }
                         }
                     }
