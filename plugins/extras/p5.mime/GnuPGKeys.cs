@@ -35,7 +35,7 @@ namespace p5.mime
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // Checking if user provided a filter
-                string filter = e.Args.Get<string> (context, null);
+                string filter = e.Args.GetExValue<string> (context, null);
 
                 // Creating new GnuPG context
                 using (var ctx = new GnuPrivacyContext ()) {
@@ -82,7 +82,7 @@ namespace p5.mime
             using (new Utilities.ArgsRemover (e.Args, true)) {
 
                 // Checking if user provided a filter
-                string filter = e.Args.Get<string> (context, null);
+                string filter = e.Args.GetExValue<string> (context, null);
 
                 // Creating new GnuPG context
                 using (var ctx = new GnuPrivacyContext ()) {

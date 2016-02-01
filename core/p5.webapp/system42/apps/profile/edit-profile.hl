@@ -72,6 +72,28 @@ create-widget:edit-profile
           class:form-control btn btn-default
           title:Click to create a cryptographic GnuPG keypair
           innerValue:Create key
+          oninit
+            user-settings
+            p5.crypto.list-private-keys:x:/-/*/email-address?value
+            if:x:/-/*?count
+              >:int:0
+              set-widget-property:create-pgp-keypair
+                disabled
+                title:You already have a key associated with your account!
+              get-session-value:sys42.key-is-created
+              if:x:/-/0?value
+                =:true
+                sys42.confirm-window
+                  _header:Your keypair is finished!
+                  _body:Your key is finished, and you can start encrypting your data and communication!
+                set-session-value:sys42.key-is-created
+            else
+              get-session-value:sys42.key-is-created
+              if:x:/-/*?value
+                set-widget-property:create-pgp-keypair
+                  disabled
+                  title:Your key is still not finished!
+                sys42.info-window:Your key is still under construction!
           onclick
             user-settings
             html-encode:x:/../*/user-settings/*/email-address?value
@@ -123,6 +145,11 @@ In addition, you need to choose a password to retrieve your private key from the
                         _time:more
                       set:x:/..?value
                         src:bool:true
+                      set-widget-property:create-pgp-keypair
+                        disabled
+                        title:Your key is under construction, refresh page to check if it is done!
+                      set-session-value:sys42.key-is-created
+                        src:true
                     else
 
                       /*
