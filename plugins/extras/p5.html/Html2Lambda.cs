@@ -59,15 +59,14 @@ namespace p5.html
             if (htmlNode.Name != "#document") {
 
                 // Adding all attributes
-                resultNode.AddRange (htmlNode.Attributes.Select (ix => new Node ("@" + ix.Name, ix.Value)));
+                resultNode.AddRange (htmlNode.Attributes.Select (ix => new Node ("@" + ix.Name, ix.Value.Replace ("&lt;", "<").Replace ("&gt;", ">").Replace ("&amp;", "&"))));
 
                 // Then the name of HTML element
                 resultNode.Name = htmlNode.Name;
-                if (htmlNode.ChildNodes.Count == 1 && htmlNode.ChildNodes [0].Name == "#text") {
+                if (htmlNode.Name == "#text") {
 
                     // This is a "simple node", with no children, only HTML content
                     resultNode.Value = htmlNode.InnerText.Replace ("&lt;", "<").Replace ("&gt;", ">").Replace ("&amp;", "&");
-                    return; // don't care about children
                 }
             }
 
@@ -75,8 +74,9 @@ namespace p5.html
             foreach (var idxChild in htmlNode.ChildNodes) {
 
                 // We don't add comments or empty elements
-                if (idxChild.Name != "#comment" &&
-                    (idxChild.HasAttributes || idxChild.HasChildNodes || !string.IsNullOrEmpty (idxChild.InnerText.Trim ()))) {
+                if (idxChild.Name != "#comment") {
+                    if (idxChild.Name == "#text" && string.IsNullOrEmpty (idxChild.InnerText.Trim ()))
+                        continue;
                     resultNode.Add (new Node ());
                     ParseHtmlDocument (resultNode.LastChild, idxChild);
                 }

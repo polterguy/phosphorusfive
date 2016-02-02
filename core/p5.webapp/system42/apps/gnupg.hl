@@ -27,7 +27,7 @@ for-each:x:/../*/p5.crypto.list-public-keys/*
           =:"\r\n"
         html-encode:x:/-?value
         eval-x:x:/+
-        _tbl:@"<table class=""table""><thead><tr><th>Field</th><th>Value</th></tr></thead>
+        _tbl:@"<table class=""table table-hover""><thead><tr><th>Field</th><th>Value</th></tr></thead>
 <tr>
   <td>Algorithm</td>
   <td>{0}</td>
@@ -77,7 +77,20 @@ for-each:x:/../*/p5.crypto.list-public-keys/*
         sys42.confirm-window
           _header:Key details
           _body:x:/../*/_tbl?value
-        _sys42.show-code-window:x:/..
+          _extra-buttons
+            literal
+              _key-id
+              element:button
+              class:btn btn-default
+              innerValue:Delete key
+              onclick
+                send-javascript:@"$('#confirm-window').modal('toggle');"
+                get-widget-property:x:/../*/_event?value
+                  _key-id
+                p5.crypto.delete-private-key:x:/../*/get-widget-property/*/*?value
+                p5.crypto.delete-public-key:x:/../*/get-widget-property/*/*?value
+                delete-widget:gnu-pg-keys
+                sys42.execute-lisp-file:/system42/apps/gnupg.hl
       widgets
         literal
           element:td
@@ -89,17 +102,17 @@ for-each:x:/../*/p5.crypto.list-public-keys/*
           element:td
           innerValue
   html-encode:x:/..for-each/*/_dp/#?name
-  set:x:/./*/_widgets/**/literal/[1,2]/*/innerValue?value
+  set:x:/./*/_widgets/*/container/*/widgets/**/literal/[1,2]/*/innerValue?value
     src:x:/./-?value
-  set:x:/./*/_widgets/**/literal/[2,3]/*/innerValue?value
+  set:x:/./*/_widgets/*/container/*/widgets/**/literal/[2,3]/*/innerValue?value
     src:x:/..for-each/*/_dp/#?value
-  set:x:/..for-each/*/_widgets/*/container/*/_key-id?value
+  set:x:/..for-each/*/_widgets/**/_key-id?value
     src:x:/..for-each/*/_dp/#?value
 
   // Checking if this public key has a private key associated with it, and if so, changing the UI to reflect this fact
   if:x:/../*/p5.crypto.list-private-keys/*/={0}
     :x:/..for-each/*/_dp/#?value
-    set:x:/..for-each/*/_widgets/**/literal/[0,1]/*/innerValue?value
+    set:x:/..for-each/*/_widgets/*/container/*/widgets/**/literal/[0,1]/*/innerValue?value
       src:sec/pub
     add:x:/..for-each/*/_widgets/*/container
       src:"class:bold"
@@ -109,13 +122,123 @@ for-each:x:/../*/p5.crypto.list-public-keys/*
     src:x:/..for-each/*/_widgets/*
 
 
+
+/*
+ * Create search text box
+ */
+if
+  fetch:x:/0/0?value
+    widget-exist:search-wrp
+  delete-widget:search-wrp
+create-widget:search-wrp
+  parent:content
+  class:col-xs-12 col-md-4 col-md-push-8 form-group
+  widgets
+    void:search-input
+      element:input
+      type:search
+      class:form-control
+      placeholder:Lookup key from keyserver ...
+      onkeypress:"return p5.searchKeyPressed(event);"
+      _onsearch
+
+        /*
+         * Retrieving keys matching search from pgp.mit.edu, and displaying in a table widget, 
+         * allowing user to inspect and download keys
+         */
+        if
+          fetch:x:/0/0?value
+            widget-exist:search-result
+          delete-widget:search-result
+        get-widget-property:search-input
+          value
+        p5.net.http-get:"https://pgp.mit.edu/pks/lookup?search={0}&fingerprint=on"
+          :x:/../*/get-widget-property/*/*?value
+        html2lambda:x:/-/**/content?value
+        if:x:/../*/p5.net.http-get/*/result/*/status?value
+          !=:OK
+          sys42.info-window:@"No results for query"
+        else
+          for-each:x:/../*/html2lambda/**/pre/[1,]/*/a/*/#text/=~@/.
+            _widget
+              container
+                element:tr
+                widgets
+                  literal
+                    element:td
+                    innerValue
+                  literal
+                    element:td
+                    innerValue
+                  container
+                    element:td
+                    widgets
+                      literal
+                        element:button
+                        _get-key-url
+                        class:btn btn-default
+                        innerValue:Get
+                        onclick
+                          get-widget-property:x:/../*/_event?value
+                            _get-key-url
+                          p5.net.http-get:{0}{1}
+                            :"https://pgp.mit.edu"
+                            :x:/../*/get-widget-property/*/*?value
+                          html2lambda:x:/-/**/content?value
+                          p5.crypto.import-public-pgp-key::x:/../**/pre/*/#text?value
+                          delete-widget:gnu-pg-keys
+                          delete-widget:search-result
+                          sys42.execute-lisp-file:/system42/apps/gnupg.hl
+            html-encode:x:/..for-each/*/_dp/#/*/#text?value
+            set:x:/..for-each/*/_widget/*/*/widgets/*/literal/[0,1]/*/innerValue?value
+              src:x:/./-?value
+            html-encode:x:/..for-each/*/_dp/#/+?value
+            set:x:/..for-each/*/_widget/*/*/widgets/*/literal/[1,2]/*/innerValue?value
+              src:"<pre>{0}</pre>"
+                :x:/././-?value
+            set:x:/..for-each/*/_widget/*/*/widgets/*/container/*/widgets/*/literal/*/_get-key-url?value
+              src:x:/..for-each/*/_dp/#/./*/a/[0,1]/*/@href?value
+            add:x:/..for-each/./*/create-widget/*/widgets
+              src:x:/..for-each/*/_widget/*
+          create-widget:search-result
+            parent:content
+            position:1
+            element:table
+            class:table
+            widgets
+              container
+                element:thead
+                widgets
+                  container
+                    element:tr
+                    widgets
+                      literal
+                        element:th
+                        innerValue:Identity
+                      literal
+                        element:th
+                        innerValue:Fingerprint
+                      literal
+                        element:th
+                        innerValue:Get key
+          sys42.info-window:@"Search finished, see results below"
+          _sys42.show-code-window:x:/..
+    literal
+      element:span
+      class:glyphicon glyphicon-search form-control-feedback
+      innerValue:&nbsp;&nbsp;
+
+
+include-javascript:@"p5.searchKeyPressed = function(e) {
+  if(e.keyCode == 13) {
+    p5.$('search-input').raise('_onsearch');
+    return false;
+  }
+}"
+
 /*
  * Keypair widget(s)
  */
-create-literal-widget
-  element:h3
-  parent:content
-  innerValue:Public keys
 create-widget:gnu-pg-keys
   parent:content
   element:table
@@ -124,3 +247,66 @@ create-widget:gnu-pg-keys
     literal
       element:thead
       innerValue:@"<tr><th>Type</th><th>User ID</th><th>Key ID</th></tr>"
+
+/*
+ * Create keypair button, but only if it does not exist from before
+ */
+if
+  fetch:x:/0/0?value
+    widget-exist:create-keypair
+  delete-widget:create-keypair
+create-widget:create-keypair
+  parent:content
+  class:text-right
+  widgets
+    literal
+      element:button
+      class:btn btn-default
+      innerValue:Create keypair
+      onclick
+        sys42.wizard-window
+          _header:Create keypair
+          _body:@"Please provide a seed, an identity, and a password for your keypair"
+          _widgets
+            textarea:seed
+              placeholder:Seed for random number generator ...
+              mandatory:true
+            text:identity
+              label:Identity
+              placeholder:Identity; John Doe <john@doe.com> ...
+              mandatory:true
+            password:password
+              label:Password
+              mandatory:true
+              placeholder:Please provide a password for keypair ...
+              autocomplete:off
+            password:password-repeat
+              label:Password
+              mandatory:true
+              placeholder:Please repeat password ...
+              autocomplete:off
+          _onok
+            if:x:/../*/password?value
+              =:x:/../*/password-repeat?value
+
+              /*
+               * Passwords matched each other
+               */
+              set:x:/..?value
+                src:bool:true
+              eval-x:x:/+/*/*
+              fork
+                p5.crypto.create-pgp-keypair
+                  identity:x:/../*/identity?value
+                  password:x:/../*/password?value
+                  seed:x:/../*/seed?value
+              sys42.info-window:@"Creating your key might take some time, refresh page to check if it is done"
+                _time:more
+            else
+
+              /*
+               * Failure" Passwords did not match! Signaling that fact to caller
+               */
+              set:x:/..?value
+                src:Passwords don't match
+              send-javascript:@"$('#password').focus().select();"

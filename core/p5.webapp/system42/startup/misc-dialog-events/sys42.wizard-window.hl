@@ -329,8 +329,8 @@ $('#wizard-window').on('shown.bs.modal', function () {{
                       if:x:/../*/_evaluate?value
 
                         // Evaluating callback [onok], makings sure [offset] prevents properties of dynamic controls to be evaluated
-                        set:x:/+/*/*/offset?value
-                          src:x:/./+/*/*?count
+                        set:x:/+/*/offset?value
+                          src:x:/./+/*?count
                         eval:x:/./-
                           offset
                         if:x:/-?value

@@ -40,6 +40,12 @@ create-protected-event:sys42.confirm-window
   add:x:/../*/create-widget/**/literal/=confirm-window-ok/*/onclick
     src:x:/../*/_onok/*
 
+  /*
+   * Appending additional buttons into footer of dialogue
+   */
+  insert-before:x:/../*/create-widget/**/class/=modal-footer/./*/widgets/*/literal/=confirm-window-ok
+    src:x:/../*/_extra-buttons/*
+
 
   /*
    * Creating actual modal Widget
@@ -109,9 +115,3 @@ $('#confirm-window').on('shown.bs.modal', function () {
 
                       // Hiding dialog
                       send-javascript:@"$('#confirm-window').modal('toggle');"
-
-
-
-
-
-

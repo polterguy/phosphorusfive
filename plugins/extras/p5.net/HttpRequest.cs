@@ -360,7 +360,7 @@ namespace p5.net
             HttpWebRequest request, 
             Node args)
         {
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse ();
+            HttpWebResponse response = (HttpWebResponse)request.GetResponseNoException ();
             Node result = args.Add ("result", request.RequestUri.ToString ()).LastChild;
 
             // Getting response HTTP headers
@@ -418,7 +418,7 @@ namespace p5.net
             Node args)
         {
             // Retrieving response and creating our [result] node
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse ();
+            HttpWebResponse response = (HttpWebResponse)request.GetResponseNoException ();
             Node result = args.Add ("result", request.RequestUri.ToString ()).LastChild;
 
             // Getting response HTTP headers
@@ -445,7 +445,7 @@ namespace p5.net
             context.RaiseNative ("p5.io.authorize.modify-file", new Node ("", filename).Add ("args", args));
 
             // Retrieving HTTP response
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse ();
+            HttpWebResponse response = (HttpWebResponse)request.GetResponseNoException ();
             Node result = args.Add ("result").LastChild;
 
             // Getting HTTP response headers
@@ -475,12 +475,9 @@ namespace p5.net
             Node args, 
             HttpWebRequest request)
         {
-            // We only add [Status] node if status was NOT OK! At which point we also supply the error description to caller
-            if (response.StatusCode != HttpStatusCode.OK) {
-
-                args.Add ("status", response.StatusCode.ToString ());
-                args.Add ("Status-Description", response.StatusDescription);
-            }
+            // Adding status code
+            args.Add ("status", response.StatusCode.ToString ());
+            args.Add ("Status-Description", response.StatusDescription);
 
             // Checking to see if Content-Type is given, and if so, adding header to caller
             if (!string.IsNullOrEmpty (response.ContentType))
@@ -507,6 +504,24 @@ namespace p5.net
                 // Checking if header is not one of those already handled, and if not, handling it
                 if (idxHeader != "Server" && idxHeader != "Content-Type")
                     args.Add (idxHeader, response.Headers [idxHeader]);
+            }
+        }
+
+        /*
+         * Helper to retrieve response without exception, if possible
+         */
+        private static HttpWebResponse GetResponseNoException(this HttpWebRequest req)
+        {
+            try
+            {
+                return (HttpWebResponse)req.GetResponse();
+            }
+            catch (WebException we)
+            {
+                var resp = we.Response as HttpWebResponse;
+                if (resp == null)
+                    throw;
+                return resp;
             }
         }
     }

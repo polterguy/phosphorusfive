@@ -171,8 +171,8 @@ namespace p5.mime
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.crypto.remove-private-key", Protection = EventProtection.LambdaClosed)]
-        private static void p5_crypto_remove_private_key (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.crypto.delete-private-key", Protection = EventProtection.LambdaClosed)]
+        private static void p5_crypto_delete_private_key (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning
             using (new Utilities.ArgsRemover (e.Args, true)) {
@@ -185,14 +185,14 @@ namespace p5.mime
                     var bundle = ctx.SecretKeyRingBundle;
 
                     // Looping through each ID given by caller
-                    foreach (var idxId in XUtil.Iterate<long> (context, e.Args, true)) {
+                    foreach (var idxId in XUtil.Iterate<string> (context, e.Args, true)) {
 
                         // Looping through each public key ring in GnuPG database until we find given ID
                         foreach (PgpSecretKeyRing idxSecretKeyRing in bundle.GetKeyRings ()) {
 
                             // Looping through each key in keyring
                             foreach (PgpSecretKey idxSecretKey in idxSecretKeyRing.GetSecretKeys ()) {
-                                if (idxId == idxSecretKey.KeyId) {
+                                if (idxId == idxSecretKey.KeyId.ToString ("X")) {
 
                                     // Removing entire keyring, and signaling to save keyring bundle
                                     somethingWasRemoved = true;
@@ -217,8 +217,8 @@ namespace p5.mime
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.crypto.remove-public-key", Protection = EventProtection.LambdaClosed)]
-        private static void p5_crypto_remove_public_key (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.crypto.delete-public-key", Protection = EventProtection.LambdaClosed)]
+        private static void p5_crypto_delete_public_key (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning
             using (new Utilities.ArgsRemover (e.Args, true)) {
@@ -231,14 +231,14 @@ namespace p5.mime
                     var bundle = ctx.PublicKeyRingBundle;
 
                     // Looping through each ID given by caller
-                    foreach (var idxId in XUtil.Iterate<long> (context, e.Args, true)) {
+                    foreach (var idxId in XUtil.Iterate<string> (context, e.Args, true)) {
 
                         // Looping through each public key ring in GnuPG database until we find given ID
                         foreach (PgpPublicKeyRing idxPublicKeyRing in bundle.GetKeyRings ()) {
 
                             // Looping through each key in keyring
                             foreach (PgpPublicKey idxPublicKey in idxPublicKeyRing.GetPublicKeys ()) {
-                                if (idxId == idxPublicKey.KeyId) {
+                                if (idxId == idxPublicKey.KeyId.ToString ("X")) {
 
                                     // Removing entire keyring, and signaling to save keyring bundle
                                     somethingWasRemoved = true;

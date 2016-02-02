@@ -57,6 +57,7 @@
     <Compile Include="MimeSave.cs" />
     <Compile Include="CreatePgpKeyPair.cs" />
     <Compile Include="GnuPGKeys.cs" />
+    <Compile Include="ImportPGPKey.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\core\p5.core\p5.core.csproj">
