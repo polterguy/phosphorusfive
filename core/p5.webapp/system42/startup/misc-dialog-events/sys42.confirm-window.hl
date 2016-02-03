@@ -93,12 +93,13 @@ $('#confirm-window').on('shown.bs.modal', function () {
               /*
                * Body of dialog
                */
-              container
+              container:confirm-window-body-wrapper
                 class:modal-body
                 widgets
 
                   // Actual literal widget containing body of dialogue
                   literal:confirm-window-body
+                    element:div
                     innerValue
 
               /*

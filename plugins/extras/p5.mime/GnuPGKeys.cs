@@ -14,6 +14,7 @@ using helpers = p5.mime.helpers;
 using p5.exp.exceptions;
 using MimeKit;
 using MimeKit.Cryptography;
+using Org.BouncyCastle.Bcpg;
 using Org.BouncyCastle.Bcpg.OpenPgp;
 
 namespace p5.mime
@@ -158,6 +159,53 @@ namespace p5.mime
                                 e.Args.Add ("fingerprint", BitConverter.ToString (idxPublicKey.GetFingerprint ()).Replace ("-", ""));
                                 foreach (var idxUserId in idxPublicKey.GetUserIds()) {
                                     e.Args.FindOrCreate ("user-ids").Add ("", idxUserId);
+                                }
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Lists all public keys matching the given filter from the GnuPG database
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Active Event arguments</param>
+        [ActiveEvent (Name = "p5.crypto.get-public-key", Protection = EventProtection.LambdaClosed)]
+        private static void p5_crypto_get_public_key (ApplicationContext context, ActiveEventArgs e)
+        {
+            // House cleaning
+            using (new Utilities.ArgsRemover (e.Args)) {
+
+                // Getting key ID to look for
+                string keyID = e.Args.GetExValue<string> (context, null);
+                if (string.IsNullOrEmpty (keyID))
+                    throw new LambdaException ("No ID given to use for looking up key", e.Args, context);
+
+                // Creating new GnuPG context
+                using (var ctx = new GnuPrivacyContext ()) {
+
+                    // Looping through each public key in GnuPG database
+                    foreach (PgpPublicKeyRing idxRing in ctx.PublicKeyRingBundle.GetKeyRings ()) {
+
+                        // Looping through each key in keyring
+                        foreach (PgpPublicKey idxPublicKey in idxRing.GetPublicKeys ()) {
+
+                            // Checking if this is the requested key
+                            if (idxPublicKey.KeyId.ToString ("X") == keyID) {
+
+                                // This is the key we're looking for
+                                using (var memStream = new MemoryStream ()) {
+                                    using (var armored = new ArmoredOutputStream (memStream)) {
+                                        idxPublicKey.Encode (armored);
+                                        armored.Flush ();
+                                    }
+                                    memStream.Flush ();
+                                    memStream.Position = 0;
+                                    var sr = new StreamReader (memStream);
+                                    e.Args.Value = sr.ReadToEnd ();
                                 }
                                 return;
                             }

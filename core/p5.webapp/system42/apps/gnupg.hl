@@ -96,6 +96,52 @@ for-each:x:/../*/p5.crypto.list-public-keys/*
                 p5.crypto.delete-public-key:x:/../*/get-widget-property/*/*?value
                 delete-widget:gnu-pg-keys
                 sys42.execute-lisp-file:/system42/apps/gnupg.hl
+            literal
+              _key-id
+              element:button
+              class:btn btn-default
+              innerValue:Submit to keyserver
+              onclick:@"return p5.getClicked(event);"
+              _onclick
+                send-javascript:@"$('#confirm-window').modal('toggle');"
+                get-widget-property:x:/../*/_event?value
+                  _key-id
+                p5.crypto.get-public-key:x:/-/*/*?value
+                url-encode:x:/../*/p5.crypto.get-public-key?value
+                p5.net.http-post:"https://pgp.mit.edu/pks/add"
+                  Content-Type:application/x-www-form-urlencoded
+                  content:@"keytext={0}"
+                    :x:/../*/url-encode?value
+                if:x:/-/*/result/*/status?value
+                  =:OK
+
+                  /*
+                   * Success
+                   */
+                  sys42.info-window:Key successfully added to <em>pgp.mit.edu</em> keyserver!
+                else
+
+                  /*
+                   * Error
+                   */
+                  sys42.info-window:Oops, something went wrong while submitting your key to keyserver!!
+                    _error:true
+                    _time:more
+            literal
+              _key-id
+              element:button
+              class:btn btn-default
+              innerValue:View public key
+              onclick
+                get-widget-property:x:/../*/_event?value
+                  _key-id
+                p5.crypto.get-public-key:x:/-/*/*?value
+                eval-x:x:/+/*/innerValue
+                create-literal-widget
+                  element:pre
+                  parent:confirm-window-body-wrapper
+                  position:1
+                  innerValue:x:/../*/p5.crypto.get-public-key?value
       widgets
         literal
           element:td
@@ -143,7 +189,7 @@ create-widget:search-wrp
       element:input
       type:search
       class:form-control
-      placeholder:Lookup key from keyserver ...
+      placeholder:Lookup key from MIT PGP keyserver ...
       onkeypress:"return p5.searchKeyPressed(event);"
       _onsearch
 
@@ -355,7 +401,7 @@ if
   delete-widget:modal-layer
 create-widget:modal-layer
   parent:content
-  style:"position:fixed;top:0;left:0;width:100%;height:100%;z-index:500;background-color:rgba(0,0,0,.2);"
+  style:"position:fixed;top:0;left:0;width:100%;height:100%;z-index:2000;background-color:rgba(0,0,0,.2);"
   class:hidden
   widgets
     literal

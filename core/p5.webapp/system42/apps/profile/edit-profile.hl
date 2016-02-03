@@ -123,12 +123,12 @@ In addition, you need to choose a password to retrieve your private key from the
                     password:password
                       label:Password
                       mandatory:true
-                      placeholder:Please supply a password for keypair ...
+                      placeholder:Please supply a password for private key ...
                       autocomplete:off
                     password:password-repeat
                       label:Repeat
                       mandatory:true
-                      placeholder:Please repeat the password for keypair ...
+                      placeholder:Please repeat the password for private key ...
                       autocomplete:off
                   _onok
                     if:x:/../*/password?value

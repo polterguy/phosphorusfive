@@ -12,17 +12,17 @@ using p5.exp;
 namespace p5.html
 {
     /// <summary>
-    ///     Class to help encode and decode HTML
+    ///     Class to help URL-encode and URL-decode
     /// </summary>
-    public static class HtmlEncoder
+    public static class UrlEncoder
     {
         /// <summary>
-        ///     Encodes HTML
+        ///     URL encodes a string
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "html-encode", Protection = EventProtection.LambdaClosed)]
-        public static void html_encode (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "url-encode", Protection = EventProtection.LambdaClosed)]
+        public static void url_encode (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args)) {
@@ -34,7 +34,7 @@ namespace p5.html
                 foreach (var idxHtmlFragment in XUtil.Iterate<string> (context, e.Args, true)) {
 
                     // Changing to 'safe HTML'
-                    builder.Append (HttpUtility.HtmlEncode (idxHtmlFragment));
+                    builder.Append (HttpUtility.UrlEncode (idxHtmlFragment));
                 }
 
                 // Returning "encoded HTML" back to caller
@@ -43,12 +43,12 @@ namespace p5.html
         }
 
         /// <summary>
-        ///     Decodes HTML
+        ///     URL decodes a string
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
-        [ActiveEvent (Name = "html-decode", Protection = EventProtection.LambdaClosed)]
-        public static void html_decode (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "url-decode", Protection = EventProtection.LambdaClosed)]
+        public static void url_decode (ApplicationContext context, ActiveEventArgs e)
         {
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args)) {
@@ -60,7 +60,7 @@ namespace p5.html
                 foreach (var idx in XUtil.Iterate<string> (context, e.Args, true)) {
 
                     // Changing to 'safe HTML'
-                    builder.Append (HttpUtility.HtmlDecode (idx));
+                    builder.Append (HttpUtility.UrlEncode (idx));
                 }
 
                 // Returning decoded HTML to caller
