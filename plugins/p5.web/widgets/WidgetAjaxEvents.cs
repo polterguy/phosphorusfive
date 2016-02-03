@@ -86,6 +86,26 @@ namespace p5.web.widgets
         }
 
         /// <summary>
+        ///     Raises the specified ajax event(s) for specified widget(s)
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "raise-widget-ajax-event", Protection = EventProtection.LambdaClosed)]
+        public void raise_widget_ajax_event (ApplicationContext context, ActiveEventArgs e)
+        {
+            // Looping through all widgets
+            foreach (var idxWidget in FindWidgets<Widget> (context, e.Args, "raise-widget-ajax-event")) {
+
+                // Looping through events requested by caller
+                foreach (var idxEventNameNode in e.Args.Children) {
+
+                    // Raising specified event
+                    idxWidget.InvokeEventHandler (idxEventNameNode.Name);
+                }
+            }
+        }
+
+        /// <summary>
         ///     Lists all existing ajax events for given widget(s)
         /// </summary>
         /// <param name="context">Application Context</param>

@@ -95,6 +95,8 @@ create-widget:edit-profile
                   title:Your key is still not finished!
                 sys42.info-window:Your key is still under construction!
           onclick
+            raise-widget-ajax-event:save-profile-button
+              onclick
             user-settings
             html-encode:x:/../*/user-settings/*/email-address?value
             eval-x:x:/+/*/_body|/+/*/_header

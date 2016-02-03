@@ -343,7 +343,7 @@ namespace p5.ajax.widgets
         /// </summary>
         /// <param name="eventName">Event name such as 'onclick', or name of C# method on Page, UserControl, or MasterPage</param>
         /// <exception cref="NotImplementedException"></exception>
-        protected void InvokeEventHandler (string eventName)
+        public void InvokeEventHandler (string eventName)
         {
             var eventHandlerName = eventName; // Defaulting to event name for WebMethod invocations from JavaScript
             if (HasAttribute (eventName)) {
