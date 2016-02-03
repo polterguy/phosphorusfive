@@ -61,6 +61,10 @@ for-each:x:/../*/p5.crypto.list-public-keys/*
   <td>{7}</td>
 </tr>
 <tr>
+  <td>Fingerprint</td>
+  <td>{9}</td>
+</tr>
+<tr>
   <td colspan=""2""><pre><small>{8}</small></pre></td>
 </tr>
 </table>"
@@ -73,6 +77,7 @@ for-each:x:/../*/p5.crypto.list-public-keys/*
           :x:/../*/p5.crypto.get-key-details/*/version?value
           :x:/../*/format-date/[1,2]?value
           :x:/../*/html-encode?value
+          :x:/../*/p5.crypto.get-key-details/*/fingerprint?value
         eval-x:x:/+/*/_body
         sys42.confirm-window
           _header:Key details
@@ -178,7 +183,8 @@ create-widget:search-wrp
                         _get-key-url
                         class:btn btn-default
                         innerValue:Get
-                        onclick
+                        onclick:@"return p5.getClicked(event);"
+                        _onclick
                           get-widget-property:x:/../*/_event?value
                             _get-key-url
                           p5.net.http-get:{0}{1}
@@ -189,6 +195,7 @@ create-widget:search-wrp
                           delete-widget:gnu-pg-keys
                           delete-widget:search-result
                           sys42.execute-lisp-file:/system42/apps/gnupg.hl
+                          sys42.info-window:@"Key was added to your GnuPG database"
             html-encode:x:/..for-each/*/_dp/#/*/#text?value
             set:x:/..for-each/*/_widget/*/*/widgets/*/literal/[0,1]/*/innerValue?value
               src:x:/./-?value
@@ -231,9 +238,37 @@ create-widget:search-wrp
 
 include-javascript:@"p5.searchKeyPressed = function(e) {
   if(e.keyCode == 13) {
-    p5.$('search-input').raise('_onsearch');
+    p5.$('search-input').raise('_onsearch', {
+      onbefore:function () {
+          $('#modal-layer').toggleClass('hidden');
+          $('#search-input').prop('disabled',true);
+      },
+      onsuccess:function () {
+          $('#modal-layer').toggleClass('hidden');
+          $('#search-input').prop('disabled',false);
+      },
+      onerror:function () {
+          $('#modal-layer').toggleClass('hidden');
+          $('#search-input').prop('disabled',false);
+      }
+    });
     return false;
   }
+},
+
+p5.getClicked = function (e) {
+p5.$(e.target.id).raise('_onclick', {
+  onbefore:function () {
+      $('#modal-layer').toggleClass('hidden');
+  },
+  onsuccess:function () {
+      $('#modal-layer').toggleClass('hidden');
+  },
+  onerror:function () {
+      $('#modal-layer').toggleClass('hidden');
+  }
+});
+return false;
 }"
 
 /*
@@ -310,3 +345,20 @@ create-widget:create-keypair
               set:x:/..?value
                 src:Passwords don't match
               send-javascript:@"$('#password').focus().select();"
+
+/*
+ * Creating modal layer
+ */
+if
+  fetch:x:/0/0?value
+    widget-exist:modal-layer
+  delete-widget:modal-layer
+create-widget:modal-layer
+  parent:content
+  style:"position:fixed;top:0;left:0;width:100%;height:100%;z-index:500;background-color:rgba(0,0,0,.2);"
+  class:hidden
+  widgets
+    literal
+      element:h1
+      style:"margin-top:100px;margin-left:40%;"
+      innerValue:Please wait ...

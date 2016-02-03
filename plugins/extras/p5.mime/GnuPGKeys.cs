@@ -155,6 +155,7 @@ namespace p5.mime
                                 e.Args.Add ("version", idxPublicKey.Version);
                                 DateTime expires = idxPublicKey.CreationTime.AddSeconds (idxPublicKey.GetValidSeconds ());
                                 e.Args.Add ("expires", expires);
+                                e.Args.Add ("fingerprint", BitConverter.ToString (idxPublicKey.GetFingerprint ()).Replace ("-", ""));
                                 foreach (var idxUserId in idxPublicKey.GetUserIds()) {
                                     e.Args.FindOrCreate ("user-ids").Add ("", idxUserId);
                                 }
