@@ -24,7 +24,7 @@ for-each:x:/../*/p5.crypto.list-public-keys/*
         format-date:x:/-2/*/expires?value
           format:d. MMM yyyy
         join:x:/../*/p5.crypto.get-key-details/*/user-ids/*?value
-          =:"\r\n"
+          separator:"\r\n"
         html-encode:x:/-?value
         eval-x:x:/+
         _tbl:@"<table class=""table table-hover""><thead><tr><th>Field</th><th>Value</th></tr></thead>
@@ -141,7 +141,16 @@ for-each:x:/../*/p5.crypto.list-public-keys/*
                   element:pre
                   parent:confirm-window-body-wrapper
                   position:1
-                  innerValue:x:/../*/p5.crypto.get-public-key?value
+                  innerValue:@"{0}
+
+<strong>Hint, using your public key as a signature for your emails
+is probably a smart thing!
+You can also feature it on a publicly visible web page!
+If you submit your key to a key server, others can also
+look it up, and use it to send you encrypted emails!</strong>"
+                    :x:/../*/p5.crypto.get-public-key?value
+                set-widget-property:x:/../*/_event?value
+                  disabled
       widgets
         literal
           element:td
@@ -350,23 +359,26 @@ create-widget:create-keypair
           _body:@"Please provide a seed, an identity, and a password for your keypair"
           _widgets
             textarea:seed
-              placeholder:Seed for random number generator ...
+              placeholder:@"Seed for random number generator. The more random characters you provide here, the more secure your private key will be. Type in at least 500-1000 random characters here, such as 'ƒµ˛¸UTgh/&5dg67'. 500 characters will fill the textarea entirely."
               mandatory:true
             text:identity
               label:Identity
               placeholder:Identity; John Doe <john@doe.com> ...
               mandatory:true
+              autocomplete:off
             password:password
               label:Password
               mandatory:true
-              placeholder:Please provide a password for keypair ...
+              placeholder:Provide a password for the private key ...
               autocomplete:off
             password:password-repeat
               label:Password
               mandatory:true
-              placeholder:Please repeat password ...
+              placeholder:Repeat password ...
               autocomplete:off
           _onok
+            get-widget-property:strength
+              value
             if:x:/../*/password?value
               =:x:/../*/password-repeat?value
 
@@ -381,6 +393,7 @@ create-widget:create-keypair
                   identity:x:/../*/identity?value
                   password:x:/../*/password?value
                   seed:x:/../*/seed?value
+                  strength:x:/../*/get-widget-property/*/*?value
               sys42.info-window:@"Creating your key might take some time, refresh page to check if it is done"
                 _time:more
             else
@@ -391,6 +404,36 @@ create-widget:create-keypair
               set:x:/..?value
                 src:Passwords don't match
               send-javascript:@"$('#password').focus().select();"
+        get-parent-widget:password-repeat
+        eval-x:x:/+/*/after
+        create-widget
+          after:x:/./-2/*?value
+          class:prepend-left prepend-top prepend-bottom prepend-right input-group
+          widgets
+            literal
+              class:input-group-addon
+              innerValue:Bit strength
+            container:strength
+              element:select
+              class:form-control
+              title:Suggested value here is 4096. Anything less is insecure, anything above 4096 will take a lot of time to create.
+              widgets
+                literal
+                  element:option
+                  innerValue:1024
+                literal
+                  element:option
+                  innerValue:2048
+                literal
+                  element:option
+                  innerValue:4096
+                  selected
+                literal
+                  element:option
+                  innerValue:8192
+                literal
+                  element:option
+                  innerValue:16384
 
 /*
  * Creating modal layer

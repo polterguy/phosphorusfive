@@ -48,6 +48,8 @@ namespace p5.web.widgets
          */
         protected T FindControl<T> (string id, Control startWidget) where T : Control
         {
+            if (id == null || startWidget == null)
+                return null;
             if (startWidget.ID == id)
                 return startWidget as T;
             return (from Control idxChild in startWidget.Controls select FindControl<T> (id, idxChild)).FirstOrDefault (tmpRet => tmpRet != null);

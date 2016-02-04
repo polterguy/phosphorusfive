@@ -3,6 +3,9 @@
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details
  */
 
+using System;
+using System.Linq;
+using System.Collections.Generic;
 using p5.core;
 using p5.exp;
 using p5.exp.exceptions;
@@ -15,7 +18,7 @@ namespace p5.lambda.keywords
     public static class Split
     {
         /// <summary>
-        ///     The [split] keyword, allows you to split a single string into multiple values
+        ///     The [split] keyword, allows you to split a string into multiple strings, either by index or string
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -30,57 +33,48 @@ namespace p5.lambda.keywords
                 if (source == null)
                     return; // Nothing to split
 
-                // Retrieving separators (which strings to split upon)
-                Node sepNode = e.Args ["="];
-                string separator = sepNode == null ? null : XUtil.Single<string> (context, sepNode);
-                Node valueSepNode = e.Args ["=="];
-                string valueSep = valueSepNode == null ? null : XUtil.Single<string> (context, valueSepNode);
+                // Retrieving separator objects (which might be integers or strings)
+                var sepObjects = e.Args.Children
+                    .Where (ix => ix.Name == "=")
+                    .Select (ix => ix.GetExValue<object> (context))
+                    .ToList ();
 
-                // Retrieving whether or not we should trim each split result
-                Node trimNode = e.Args ["trim"];
-                bool trim = trimNode == null ? false : trimNode.GetExValue (context, false);
-                if (string.IsNullOrEmpty (separator) && !trim && valueSep == null) {
+                // Checking if there were any separators
+                if (sepObjects.Count > 0) {
 
-                    // Special case, splitting into each character in string
-                    foreach (var idxCh in source) {
-                        e.Args.Add (idxCh.ToString ());
+                    // We have separator objects, now checking type of separator objects
+                    if (sepObjects [0] is string) {
+
+                        // String split operation, converting entire array to string array
+                        var sepStrings = sepObjects.Select (ix => Utilities.Convert<string> (context, ix)).ToList ();
+                        sepStrings.RemoveAll (ix => string.IsNullOrEmpty (ix));
+                        foreach (var idxString in source.Split (sepStrings.ToArray (), System.StringSplitOptions.RemoveEmptyEntries)) {
+                            e.Args.Add (idxString);
+                        }
+                    } else if (sepObjects [0] is int) {
+
+                        // Integer split operation, converting all values to integers and running substring upon all values
+                        var sepIntegers = sepObjects.Select (ix => Utilities.Convert<int> (context, ix, -1)).ToList ();
+                        sepIntegers.RemoveAll (ix => ix <= 0 || ix >= source.Length);
+                        var start = 0;
+                        foreach (var idxSplitInteger in sepIntegers) {
+                            e.Args.Add (source.Substring (start, idxSplitInteger - start));
+                            start = idxSplitInteger;
+                        }
+                        e.Args.Add (source.Substring (start));
+                    } else {
+
+                        // Oops ...!!
+                        throw new LambdaException (
+                            "Don't know how to split upon anything else but integers and strings", 
+                            e.Args, 
+                            context);
                     }
                 } else {
 
-                    // Splitting source
-                    string[] entities = source.Split (
-                        new string[] { separator }, 
-                        System.StringSplitOptions.RemoveEmptyEntries);
-
-                    // Looping through each split result
-                    foreach (var idxSplitResult in entities) {
-
-                        if (valueSep == null) {
-
-                            // No name/value separator given or found
-                            e.Args.Add (trim ? idxSplitResult.Trim () : idxSplitResult);
-                        } else {
-
-                            // Caller requests to split further into name/value
-                            string[] valueNameEntities = idxSplitResult.Split (
-                                new string[] { valueSep }, 
-                                System.StringSplitOptions.RemoveEmptyEntries);
-
-                            // Basic syntax checking, or "data checking"
-                            if (valueNameEntities.Length > 2)
-                                throw new LambdaException ("Value/Name separator found more than 2 instances in; " + idxSplitResult, e.Args, context);
-
-                            // Checking if we found both name and value
-                            if (valueNameEntities.Length == 2) {
-
-                                // Both name and value where found
-                                e.Args.Add (trim ? valueNameEntities [0].Trim () : valueNameEntities [0], trim ? valueNameEntities [1].Trim () : valueNameEntities [1]);
-                            } else {
-
-                                // Only value was found
-                                e.Args.Add (trim ? idxSplitResult.Trim () : idxSplitResult); // couldn't split string into name/value, no value separator found
-                            }
-                        }
+                    // Special case, no separators, splitting entire string into characters
+                    foreach (var idxCh in source) {
+                        e.Args.Add (idxCh.ToString ());
                     }
                 }
             }

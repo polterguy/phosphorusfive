@@ -119,9 +119,6 @@ namespace p5.core
             ApplicationContext context, 
             string plainText)
         {
-            // Retrieving default server GnuPG email to use for encryption
-            var gpgEmailAddress = context.RaiseNative("p5.security.get-marvin-pgp-key").Get<string>(context);
-
             // Invoking [p5.mime.create] Active Event, passing in email to use for retrieving public
             // key from Gnu Privacy Guard
             var mimeEntity = new Node ("p5.mime.create")
@@ -142,10 +139,6 @@ namespace p5.core
             ApplicationContext context, 
             string cipherText)
         {
-            // Retrieving default server GnuPG password and email to use for decryption
-            var gpgEmailAddress = context.RaiseNative("p5.security.get-marvin-pgp-key").Get<string>(context);
-            var gpgPassword = context.RaiseNative("p5.security.get-marvin-pgp-key-password").Get<string>(context);
-
             // Invoking [p5.mime.parse] Active Event, passing in password to use for retrieving private
             // key from Gnu Privacy Guard
             Node decryptNode = new Node ("p5.mime.parse", cipherText);

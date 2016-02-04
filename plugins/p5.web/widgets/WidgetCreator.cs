@@ -101,6 +101,8 @@ namespace p5.web.widgets
         {
             // Finding parent widget first, which defaults to "main container" widget, if no parent is given
             var parent = FindControl<Widget>(args.GetChildValue ("parent", context, "cnt"), Manager.AjaxPage);
+            var before = FindControl<Widget>(args.GetChildValue<string> ("before", context, null), Manager.AjaxPage);
+            var after = FindControl<Widget>(args.GetChildValue<string>   ("after", context, null), Manager.AjaxPage);
 
             // Creating our widget by raising the active event responsible for creating it
             var createNode = args.Clone ();
@@ -121,6 +123,10 @@ namespace p5.web.widgets
                 CreateWidgetLambdaEvents (createNode.Get<string> (context), eventNode.UnTie (), context);
 
             createNode.Insert (0, new Node ("_parent", parent));
+            if (before != null)
+                createNode.Add ("_before", before);
+            if (after != null)
+                createNode.Add ("_after", after);
             context.RaiseNative ("p5.web.widgets." + type, createNode);
 
             // Getting [oninit], if any, for entire hierarchy, and invoking each of them, in "breadth first" order

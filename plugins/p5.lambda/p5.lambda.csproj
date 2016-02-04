@@ -41,6 +41,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="helpers\Conditions.cs" />
@@ -58,6 +59,14 @@
     <Compile Include="ComparisonOperators.cs" />
     <Compile Include="keywords\Fetch.cs" />
     <Compile Include="EvalExpression.cs" />
+    <Compile Include="keywords\IndexOf.cs" />
+    <Compile Include="keywords\Length.cs" />
+    <Compile Include="keywords\Trim.cs" />
+    <Compile Include="keywords\Replace.cs" />
+    <Compile Include="keywords\ToUpper.cs" />
+    <Compile Include="keywords\ToLower.cs" />
+    <Compile Include="keywords\LambdaRegex.cs" />
+    <Compile Include="keywords\LambdaRegexReplace.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

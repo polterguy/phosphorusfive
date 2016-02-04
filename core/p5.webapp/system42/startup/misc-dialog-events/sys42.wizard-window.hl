@@ -301,6 +301,9 @@ $('#wizard-window').on('shown.bs.modal', function () {{
                             =:bool:true
                             send-javascript:@"$('#{0}').focus().select();"
                               :x:/..for-each/*/_dp/#?name
+                            set-widget-property:error-txt
+                              innerValue:Missing mandatory field!
+                              style:
 
                           // Making sure [_evaluate] becomes false, such that dialogue doesn't close, and evaluates [onok]
                           set:x:/../*/_evaluate?value

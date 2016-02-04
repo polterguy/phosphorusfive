@@ -222,6 +222,11 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'set-page-value':
         case 'format-date':
         case 'edit-user':
+        case 'index-of':
+        case 'trim':
+        case 'replace':
+        case 'regex':
+        case 'regex-replace':
           state.indent += 2;
           return this.styles.keyword;
 
@@ -331,6 +336,9 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'sqrt':
         case 'tan':
         case 'tanh':
+        case 'length':
+        case 'to-upper':
+        case 'to-lower':
           return this.styles.keyword;
 
         // default handling

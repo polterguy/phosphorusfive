@@ -73,6 +73,20 @@ namespace p5.web.widgets
             // Creating widget as persistent control
             var parent = args.GetChildValue<Container> ("_parent", context);
             var position = args.GetChildValue ("position", context, -1);
+            var after = args.GetChildValue <Control>("_after", context, null);
+            var before = args.GetChildValue <Control>("_before", context, null);
+
+            // If parent is "cnt" (which is the default value) and position is -1 (which is default)
+            // then we check if after or before was supplied, and if so, we use them to find both parent and position
+            if (parent.ID == "cnt" && position == -1) {
+                if (before != null) {
+                    parent = before.Parent as Container;
+                    position = parent.Controls.IndexOf (before);
+                } else if (after != null) {
+                    parent = after.Parent as Container;
+                    position = parent.Controls.IndexOf (after) + 1;
+                }
+            }
 
             // Creating control as persistent control, and setting HTML element type
             var widget = parent.CreatePersistentControl<T> (
@@ -123,6 +137,10 @@ namespace p5.web.widgets
                     case "_parent":
                     case "position":
                     case "parent":
+                    case "before":
+                    case "after":
+                    case "_before":
+                    case "_after":
                     case "has-name":
                     case "oninit":
                         // Skipping these buggers, since they're handled elsewhere

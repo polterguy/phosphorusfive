@@ -59,7 +59,7 @@ create-widget:edit-profile
             set-widget-property:change-password
               disabled
             send-javascript:@"$('#user-password').focus().select();"
-            sys42.info-window:@"Please supply a new password for your account"
+            sys42.info-window:@"Supply a new password for your account"
 
     /*
      * Create GnuPG keypair button
@@ -114,21 +114,26 @@ change your name and email address settings first!"
                 sys42.wizard-window
                   _header:Provide a seed
                   _body:@"Please provide a seed for the random number generator. This should be a random sequence of characters, 
-preferably at least a 100 characters long! You do not need to remember your seed, but your keypair becomes more secure the longer your seed is!<br/><br/>
-In addition, you need to choose a password to retrieve your private key from the GnuPG database. This password you must remember!"
+preferably at least a 500 characters long! You do not need to remember your seed, but your keypair becomes more secure the longer your seed is!
+500 characters should at least fill the entire textarea<br/><br/>
+In addition, you need to choose a password to retrieve your private key from the GnuPG database. This password you must remember,
+to retrieve your key from the GnuPG database! Your key will be created as RSA general, with a bit strength of 4096 bits, using your settings 
+email and name as its 'identity'.<br/><br/>
+When you have created your key, you can request the root/admin of your server to submit your key to the MIT PGP keyserver, which
+will allow your peers to download your key from a keyserver."
                   _widgets
                     textarea:seed
                       mandatory:true
-                      placeholder:Please supply a seed for the random number generator ...
+                      placeholder:Supply a seed for the random number generator which is a sequence of random characters, such as e.g. '•Ω÷≈†µüı˛$%754adfgDFggDF%34' ...
                     password:password
                       label:Password
                       mandatory:true
-                      placeholder:Please supply a password for private key ...
+                      placeholder:Supply a password for your private key ...
                       autocomplete:off
                     password:password-repeat
-                      label:Repeat
+                      label:Password
                       mandatory:true
-                      placeholder:Please repeat the password for private key ...
+                      placeholder:Repeat the password for your private key ...
                       autocomplete:off
                   _onok
                     if:x:/../*/password?value

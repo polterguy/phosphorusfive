@@ -57,7 +57,14 @@ namespace p5.security
         {
             var node = AuthFile.GetAuthFile (context);
             string retVal = Utilities.Convert<string> (context, node);
-            e.Args.Value = e.Args.Get<string> (context, "") + context.RaiseNative ("sha256-hash", new Node ("", retVal)).Value;
+            List<byte> userSeedByteList = new List<byte>();
+            for (int idx = 0; idx < retVal.Length; idx += 100) {
+                var subStr = retVal.Substring (idx, Math.Min (100, retVal.Length - idx));
+                byte[] buffer = context.RaiseNative ("sha512-hash", new Node ("", subStr, new Node[] {new Node ("raw", true)})).Get<byte[]> (context);
+                userSeedByteList.AddRange (buffer);
+            }
+            byte[] userSeedBytes = userSeedByteList.ToArray ();
+            e.Args.Value = BitConverter.ToString (userSeedBytes).Replace ("-", "");
         }
     }
 }
