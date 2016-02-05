@@ -227,6 +227,9 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'replace':
         case 'regex':
         case 'regex-replace':
+        case 'try':
+        case 'catch':
+        case 'finally':
           state.indent += 2;
           return this.styles.keyword;
 
@@ -339,6 +342,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'length':
         case 'to-upper':
         case 'to-lower':
+        case 'throw':
           return this.styles.keyword;
 
         // default handling

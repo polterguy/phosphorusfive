@@ -67,6 +67,7 @@
     <Compile Include="keywords\ToLower.cs" />
     <Compile Include="keywords\LambdaRegex.cs" />
     <Compile Include="keywords\LambdaRegexReplace.cs" />
+    <Compile Include="keywords\Exceptions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

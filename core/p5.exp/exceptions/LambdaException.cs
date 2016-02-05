@@ -64,7 +64,7 @@ namespace p5.exp.exceptions
                     noCrLf += 1;
                 }
                 lisp = lisp.Substring (0, curPosCrLf) + "<<================================================" + lisp.Substring (curPosCrLf);
-                return string.Format ("Hyperlisp stack trace;\r\n{0}", lisp);
+                return lisp;
             }
         }
     }

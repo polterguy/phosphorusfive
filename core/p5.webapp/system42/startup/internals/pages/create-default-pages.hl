@@ -34,13 +34,16 @@ if:x:/-/*/role?value
 I am your servant! FYI, the first thing you will notice with me, is that this page is only visible for you! If you log out
 and refresh the page, you will see a different page, showing the dynamic features of Phosphorus Five!""""</em></blockquote>
 
-<p>A great place for you to start, is one of these links</p>
+<p>Some great placed for you to start, can be found below</p>
 
 <ul>
     <li><a href=""""/root/editor"""">Pages</a></li>
     <li><a href=""""/root/executor"""">Evaluator</a></li>
     <li><a href=""""/root/users"""">Users</a></li>
-    <li><a href=""""/superuser/files"""">File system</a></li>
+    <li><a href=""""/root/gnupg-database"""">Gnu Privacy Guard</a></li>
+    <li><a href=""""/root/tests"""">Unit Tests</a></li>
+    <li><a href=""""/superuser/files"""">File System</a></li>
+    <li><a href=""""/user/profile"""">Profile</a></li>
 </ul>""
 
 else-if:x:/-2/*/role?value
@@ -144,6 +147,18 @@ sys42.execute-lisp-file:/system42/apps/profile/edit-profile.hl
  * Simply executes the file that loads up the 'GnuPG database' page
  */
 sys42.execute-lisp-file:/system42/apps/gnupg.hl
+"
+
+
+    p5.page:/root/tests
+      name:Tests
+      template:/system42/cms/templates/main.hl
+      type:lambda
+      role:root
+      lambda:@"/*
+ * Simply executes the file that loads up the unit tests page
+ */
+sys42.execute-lisp-file:/system42/tests/index.hl
 "
 
     p5.page:/about
