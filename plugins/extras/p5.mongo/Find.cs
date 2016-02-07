@@ -21,15 +21,15 @@ namespace p5.mongo
     /// <summary>
     ///     Class wrapping the MongoDB find
     /// </summary>
-    public static class Select
+    public static class Find
     {
         /// <summary>
         ///     Finds documents from your MongoDB database
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Active Event arguments</param>
-        [ActiveEvent (Name = "p5.mongo.select", Protection = EventProtection.LambdaClosed)]
-        public static void p5_mongo_select (ApplicationContext context, ActiveEventArgs e)
+        [ActiveEvent (Name = "p5.mongo.find", Protection = EventProtection.LambdaClosed)]
+        public static void p5_mongo_find (ApplicationContext context, ActiveEventArgs e)
         {
             // House cleaning
             using (new Utilities.ArgsRemover (e.Args, true)) {
@@ -37,7 +37,7 @@ namespace p5.mongo
                 // Retrieving table name and running sanity check
                 var tableName = e.Args.Get<string> (context);
                 if (string.IsNullOrEmpty (tableName))
-                    throw new LambdaException ("No table name supplied to [p5.mongo.select]", e.Args, context);
+                    throw new LambdaException ("No table name supplied to [p5.mongo.find]", e.Args, context);
 
                 // Retrieving filter, defaulting to empty
                 var filter = Filter.CreateFilter (context, e.Args);
@@ -67,7 +67,7 @@ namespace p5.mongo
                     var idxNode = e.Args.Add (tableName, id).LastChild;
 
                     // Parsing document, and stuffing results into idxNode, making sure we skip the "_id" element for main document
-                    ParseDocument (context, idxNode, idxDoc, true);
+                    ParseDocument (context, idxNode, idxDoc, "_id");
 
                     // Checking if we've reached [count]
                     if (++idxCount == count)
@@ -114,14 +114,14 @@ namespace p5.mongo
         /*
          * Parses a BsonDocument and returns it to caller in args
          */
-        private static void ParseDocument (
+        public static void ParseDocument (
             ApplicationContext context, 
             Node docNode, 
             BsonDocument doc,
-            bool skipID)
+            string skipID)
         {
             // Looping through each element in BsonDocument
-            foreach (var idxEl in skipID ? doc.Elements.Where (ix => ix.Name != "_id") : doc.Elements) {
+            foreach (var idxEl in doc.Elements.Where (ix => ix.Name != skipID)) {
 
                 // Adding currently iterated element
                 var idxNode = docNode.Add (idxEl.Name).LastChild;
@@ -156,7 +156,7 @@ namespace p5.mongo
                 elNode.Value = value.ToUniversalTime ();
                 break;
             case BsonType.Document:
-                ParseDocument (context, elNode, value.AsBsonDocument, false);
+                ParseDocument (context, elNode, value.AsBsonDocument, null);
                 break;
             case BsonType.Double:
                 elNode.Value = value.AsDouble;
