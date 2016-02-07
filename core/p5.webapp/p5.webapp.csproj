@@ -270,6 +270,10 @@
       <Project>{2D694F51-5055-4EC8-8767-C2011E010DD5}</Project>
       <Name>p5.mime</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\plugins\extras\p5.mongo\p5.mongo.csproj">
+      <Project>{CD99A0A7-F544-46D6-AC0E-547F2E17125F}</Project>
+      <Name>p5.mongo</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="system42\application-startup.hl" />
@@ -340,6 +344,7 @@
     <None Include="users\root\temp\README.md" />
     <None Include="system42\apps\gnupg.hl" />
     <None Include="system42\startup\internals\sys42.create-pgp-key.hl" />
+    <None Include="system42\tests\index.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />
@@ -366,5 +371,6 @@
     <Folder Include="system42\apps\profile\" />
     <Folder Include="users\root\documents\public\" />
     <Folder Include="users\root\temp\" />
+    <Folder Include="system42\tests\" />
   </ItemGroup>
 </Project>

@@ -1,0 +1,7 @@
+/*
+ * Allows the user to run all unit tests in system
+ */
+
+// Verifies user is root first
+whoami
+sys42.show-code-window:x:/..
