@@ -99,6 +99,23 @@ namespace p5.web.widgets
             Node args, 
             string type)
         {
+            // Sanity check, only one of [parent], [before] or [after] can be supplied
+            // And [position] can only be supplied if [parent] is supplied
+            if (args ["parent"] != null) {
+                if (args ["after"] != null || args ["before"] != null)
+                    throw new LambdaException ("Supply only one of [parent], [after] or [before]", args, context);
+            } else if (args ["after"] != null) {
+                if (args ["parent"] != null || args ["before"] != null)
+                    throw new LambdaException ("Supply only one of [parent], [after] or [before]", args, context);
+                if (args ["position"] != null)
+                    throw new LambdaException ("[position] can only be supplied with [parent]", args, context);
+            } else if (args ["before"] != null) {
+                if (args ["after"] != null || args ["parent"] != null)
+                    throw new LambdaException ("Supply only one of [parent], [after] or [before]", args, context);
+                if (args ["position"] != null)
+                    throw new LambdaException ("[position] can only be supplied with [parent]", args, context);
+            }
+
             // Finding parent widget first, which defaults to "main container" widget, if no parent is given
             var parent = FindControl<Widget>(args.GetChildValue ("parent", context, "cnt"), Manager.AjaxPage);
             var before = FindControl<Widget>(args.GetChildValue<string> ("before", context, null), Manager.AjaxPage);
@@ -124,9 +141,9 @@ namespace p5.web.widgets
 
             createNode.Insert (0, new Node ("_parent", parent));
             if (before != null)
-                createNode.Add ("_before", before);
+                createNode ["before"].Value = before;
             if (after != null)
-                createNode.Add ("_after", after);
+                createNode ["after"].Value = after;
             context.RaiseNative ("p5.web.widgets." + type, createNode);
 
             // Getting [oninit], if any, for entire hierarchy, and invoking each of them, in "breadth first" order

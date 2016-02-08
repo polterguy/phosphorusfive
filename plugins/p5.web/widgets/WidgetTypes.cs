@@ -73,19 +73,17 @@ namespace p5.web.widgets
             // Creating widget as persistent control
             var parent = args.GetChildValue<Container> ("_parent", context);
             var position = args.GetChildValue ("position", context, -1);
-            var after = args.GetChildValue <Control>("_after", context, null);
-            var before = args.GetChildValue <Control>("_before", context, null);
+            var after = args.GetChildValue <Control>("after", context, null);
+            var before = args.GetChildValue <Control>("before", context, null);
 
             // If parent is "cnt" (which is the default value) and position is -1 (which is default)
             // then we check if after or before was supplied, and if so, we use them to find both parent and position
-            if (parent.ID == "cnt" && position == -1) {
-                if (before != null) {
-                    parent = before.Parent as Container;
-                    position = parent.Controls.IndexOf (before);
-                } else if (after != null) {
-                    parent = after.Parent as Container;
-                    position = parent.Controls.IndexOf (after) + 1;
-                }
+            if (before != null) {
+                parent = before.Parent as Container;
+                position = parent.Controls.IndexOf (before);
+            } else if (after != null) {
+                parent = after.Parent as Container;
+                position = parent.Controls.IndexOf (after) + 1;
             }
 
             // Creating control as persistent control, and setting HTML element type
@@ -122,9 +120,6 @@ namespace p5.web.widgets
                     case "has-id":
                         widget.HasID = idxArg.Get<bool> (context);
                         break;
-                    case "enable-viewstate":
-                        widget.EnableViewState = idxArg.Get<bool> (context);
-                        break;
                     case "render-type":
                         widget.RenderType = (Widget.RenderingType) Enum.Parse (typeof (Widget.RenderingType), idxArg.Get<string> (context));
                         break;
@@ -139,8 +134,6 @@ namespace p5.web.widgets
                     case "parent":
                     case "before":
                     case "after":
-                    case "_before":
-                    case "_after":
                     case "has-name":
                     case "oninit":
                         // Skipping these buggers, since they're handled elsewhere
@@ -213,7 +206,23 @@ namespace p5.web.widgets
 
                 // Passing in parent widget, when invoking creational Active Event for currently iterated widget
                 idxChild.Insert (0, new Node ("_parent", widget));
-                context.RaiseNative ("p5.web.widgets." + idxChild.Name, idxChild);
+                switch (idxChild.Name) {
+                case "literal":
+                case "container":
+                case "void":
+                    context.RaiseNative ("p5.web.widgets." + idxChild.Name, idxChild);
+                    break;
+                default:
+                    idxChild.Add ("element", idxChild.Name);
+                    if (idxChild ["innerValue"] != null) {
+                        context.RaiseNative ("p5.web.widgets.literal", idxChild);
+                    } else if (idxChild ["widgets"] != null) {
+                        context.RaiseNative ("p5.web.widgets.container", idxChild);
+                    } else {
+                        context.RaiseNative ("p5.web.widgets.void", idxChild);
+                    }
+                    break;
+                }
             }
         }
 
@@ -249,8 +258,8 @@ namespace p5.web.widgets
                 CreateEventHandler (context, widget, node);
             } else {
 
-                // This is a normal attribute
-                widget [node.Name] = node.Get<string> (context);
+                // This is a normal attribute, making sure we escape attribute if necessary
+                widget [node.Name.StartsWith ("\\") ? node.Name.Substring(1) : node.Name] = node.Get<string> (context);
             }
         }
 

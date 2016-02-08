@@ -106,7 +106,7 @@ namespace p5.web.widgets
                         idxWidget.RenderType = (Widget.RenderingType) Enum.Parse (typeof (Widget.RenderingType), valueNode.GetExValue<string> (context));
                         break;
                     default:
-                        idxWidget [valueNode.Name] = valueNode.GetExValue<string> (context);
+                        idxWidget [valueNode.Name.StartsWith ("\\") ? valueNode.Name.Substring(1) : valueNode.Name] = valueNode.GetExValue<string> (context);
                         break;
                     }
                 }
@@ -140,7 +140,7 @@ namespace p5.web.widgets
                     case "render-type":
                         throw new LambdaException ("Cannot remove property '" + nameNode.Name + "' of widget", e.Args, context);
                     default:
-                        widget.RemoveAttribute (nameNode.Name);
+                        widget.RemoveAttribute (nameNode.Name.StartsWith ("\\") ? nameNode.Name.Substring(1) : nameNode.Name);
                         break;
                     }
                 }
@@ -193,13 +193,16 @@ namespace p5.web.widgets
          */
         private static void CreatePropertyReturn (Node node, Node nameNode, Widget widget, object value = null)
         {
+            var propertyName = nameNode.Name.StartsWith ("\\") ? nameNode.Name.Substring (1) : nameNode.Name;
             // Checking if widget has the attribute, if it doesn't, we don't even add any return nodes at all, to make it possible
             // to separate widgets which has the property, but no value, (such as the selected property on checkboxes for instance),
             // and widgets that does not have the property at all
-            if (value == null && !widget.HasAttribute (nameNode.Name))
+            if (value == null && !widget.HasAttribute (propertyName))
                 return;
 
-            node.FindOrCreate (widget.ID).Add (nameNode.Name).LastChild.Value = value == null ? widget [nameNode.Name] : value;
+            node.FindOrCreate (widget.ID).Add (nameNode.Name).LastChild.Value = value == null ? 
+                widget [propertyName] : 
+                value;
         }
         #endregion
     }

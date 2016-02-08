@@ -56,14 +56,14 @@ namespace p5.html
                     builder.Append (' ', 4);
                 }
                 builder.Append (string.Format ("<{0}{1}>", idxNode.Name, GetAttributes (idxNode)));
-                bool hadChildren = Convert (context, idxNode.Children.Where (ix => !ix.Name.StartsWith ("@")), builder, level + 1);
+                bool hadChildren = Convert (context, idxNode.Children.Where (ix => !ix.Name.StartsWith ("@") && ix.Name != "#text"), builder, level + 1);
                 if (hadChildren) {
                     builder.Append ("\r\n");
                     for (int idxSpacer = 0; idxSpacer < level; idxSpacer++) {
                         builder.Append (' ', 4);
                     }
                 } else {
-                    builder.Append ((idxNode.Get<string> (context) ?? "").Replace ("&", "&amp;").Replace ("<", "&lt;").Replace (">", "&gt;"));
+                    builder.Append ((idxNode.GetChildValue<string> ("#text", context, "")).Replace ("&", "&amp;").Replace ("<", "&lt;").Replace (">", "&gt;"));
                 }
                 builder.Append (string.Format ("</{0}>", idxNode.Name));
             }
