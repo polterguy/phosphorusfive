@@ -6,7 +6,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 using p5.exp;
 using p5.core;
@@ -115,7 +114,7 @@ namespace p5.mongo
                 var id = BsonTypeMapper.MapToDotNetValue (idxIndexCursor.Elements.First (ix => ix.Name == "name").Value).ToString ();
                 var idxNode = e.Args.Add (id).LastChild;
 
-                Select.ParseDocument (context, idxNode, idxIndexCursor, "name");
+                DocumentParser.ParseDocument (context, idxNode, idxIndexCursor, "name");
             }
         }
 

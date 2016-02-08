@@ -49,6 +49,8 @@
     <Compile Include="Helpers\ObjectIdType.cs" />
     <Compile Include="Index.cs" />
     <Compile Include="Find.cs" />
+    <Compile Include="Helpers\DocumentParser.cs" />
+    <Compile Include="Aggregate.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
