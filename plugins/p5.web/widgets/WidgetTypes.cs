@@ -62,6 +62,20 @@ namespace p5.web.widgets
             e.Args.Value = CreateWidget<Void> (context, e.Args, "input");
         }
 
+        /// <summary>
+        ///     Creates a simple text web widget
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "p5.web.widgets.text", Protection = EventProtection.NativeClosed)]
+        public void p5_web_controls_text (ApplicationContext context, ActiveEventArgs e)
+        {
+            var ctrl = new LiteralControl ();
+            ctrl.Text = e.Args.Get<string> (context);
+            var parent = e.Args.GetChildValue<Container> ("_parent", context);
+            parent.Controls.Add (ctrl);
+        }
+
         /*
          * Creates a widget from the given node
          */
@@ -210,6 +224,7 @@ namespace p5.web.widgets
                 case "literal":
                 case "container":
                 case "void":
+                case "text":
                     context.RaiseNative ("p5.web.widgets." + idxChild.Name, idxChild);
                     break;
                 default:

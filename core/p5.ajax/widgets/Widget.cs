@@ -451,7 +451,8 @@ namespace p5.ajax.widgets
             if (IsPhosphorusRequest) {
                 if (Page.Request.Params ["_p5_widget"] == ClientID) {
                     Page.LoadComplete += delegate {
-                        // event was raised for this widget
+
+                        // Event was raised for this widget
                         InvokeEventHandler (Page.Request.Params ["_p5_event"]);
                     };
                 }
@@ -521,13 +522,13 @@ namespace p5.ajax.widgets
                     return true;
             }
 
-            // in-visible control among ancestors was found!
+            // In-visible control among ancestors was found!
             return false;
         }
 
         private bool IsAncestorRendering ()
         {
-            // Returns true if any of its ancestors are rendering html
+            // Returns true if any of its ancestors are rendering HTML
             var idx = Parent;
             while (idx != null) {
                 var wdg = idx as Widget;

@@ -42,32 +42,20 @@ namespace p5.html
         /*
          * Helper for above
          */
-        private static bool Convert (
+        private static void Convert (
             ApplicationContext context, 
             IEnumerable<Node> nodes, 
-            StringBuilder builder, 
-            int level = 0)
+            StringBuilder builder)
         {
-            bool retVal = false;
             foreach (Node idxNode in nodes) {
-                retVal = true;
-                builder.Append ("\r\n");
-                for (int idxSpacer = 0; idxSpacer < level; idxSpacer++) {
-                    builder.Append (' ', 4);
+                if (idxNode.Name == "#text") {
+                    builder.Append (idxNode.Get<string>(context));
+                    continue;
                 }
                 builder.Append (string.Format ("<{0}{1}>", idxNode.Name, GetAttributes (idxNode)));
-                bool hadChildren = Convert (context, idxNode.Children.Where (ix => !ix.Name.StartsWith ("@") && ix.Name != "#text"), builder, level + 1);
-                if (hadChildren) {
-                    builder.Append ("\r\n");
-                    for (int idxSpacer = 0; idxSpacer < level; idxSpacer++) {
-                        builder.Append (' ', 4);
-                    }
-                } else {
-                    builder.Append ((idxNode.GetChildValue<string> ("#text", context, "")).Replace ("&", "&amp;").Replace ("<", "&lt;").Replace (">", "&gt;"));
-                }
+                Convert (context, idxNode.Children.Where (ix => !ix.Name.StartsWith ("@")), builder);
                 builder.Append (string.Format ("</{0}>", idxNode.Name));
             }
-            return retVal;
         }
 
         /*
