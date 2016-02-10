@@ -7,6 +7,7 @@ using System;
 using System.Linq;
 using System.Text;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using p5.core;
 using p5.exp;
 using p5.exp.exceptions;
@@ -19,7 +20,7 @@ namespace p5.lambda.keywords
     public static class Replace
     {
         /// <summary>
-        ///     The [replace] keyword, allows you to replace occurrencies of strings with other strings
+        ///     The [replace] keyword, allows you to replace occurrencies of a string or regular expression with another strings
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -29,18 +30,28 @@ namespace p5.lambda.keywords
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args)) {
 
-                // Figuring out source value for [length]
+                // Figuring out source value
                 string source = XUtil.Single<string> (context, e.Args, true);
                 if (source == null)
                     return; // Nothing to check
 
                 // Retrieving what to replace
-                var what = e.Args.GetExChildValue ("what", context, "");
+                var what = e.Args.GetExChildValue<object> ("what", context, null);
                 var with = e.Args.GetExChildValue ("with", context, "");
-                if (string.IsNullOrEmpty (what))
+                if (what == null || (what is string && string.IsNullOrEmpty (what as string)))
                     throw new LambdaException ("No [what] argument supplied to [replace]", e.Args, context);
 
-                e.Args.Value = source.Replace (what, with);
+                // Checking type of what
+                if (what is Regex) {
+
+                    // Regular expression search
+                    var regex = what as Regex;
+                    e.Args.Value = regex.Replace (source, with);
+                } else {
+
+                    // Simple string search
+                    e.Args.Value = source.Replace (Utilities.Convert<string> (context, what), with);
+                }
             }
         }
     }

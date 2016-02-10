@@ -38,7 +38,8 @@ namespace p5.exp
             // A formatted node is defined as having one or more children with "" as name
             // and a value which is of type string
             return evaluatedNode.Value is string && 
-                (evaluatedNode.Value as string).Contains ("{0}") && 
+                (evaluatedNode.Value as string).Contains ("{") && 
+                (evaluatedNode.Value as string).Contains ("}") && 
                 evaluatedNode.Children.Count (ix => ix.Name == "") > 0;
         }
 
@@ -376,14 +377,7 @@ namespace p5.exp
             if (srcNodes.Count == 0)
                 return null; // no source!
 
-            // Sanity check, making sure there's only one source node
-            if (srcNodes.Count > 1)
-                throw new LambdaException (
-                    string.Format ("Multiple source nodes found for [{0}] invocation", evaluatedNode.Name), 
-                    evaluatedNode, 
-                    context);
-
-            // OK, we're sane, so far ...
+            // Assuming first node with non-empty name is source node ...
             var srcNode = srcNodes [0];
 
             // Checking what type of source we have, it might be [src], [rel-src] or any Active Event invocation
@@ -491,14 +485,7 @@ namespace p5.exp
             if (srcNodes.Count == 0)
                 return null; // no source!
 
-            // Sanity check!
-            if (srcNodes.Count != 1)
-                throw new LambdaException (
-                    string.Format ("Multiple source nodes found for [{0}]", evaluatedNode.Name),
-                    evaluatedNode,
-                    context);
-
-            // OK, we're sane, so far ...
+            // Assuming first node with non-empty name is source node
             var srcNode = srcNodes [0];
 
             // Checking what type of source we have, it might be [src], [rel-src] or any Active Event

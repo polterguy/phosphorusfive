@@ -24,7 +24,7 @@ for-each:x:/../*/p5.crypto.list-public-keys/*
         format-date:x:/-2/*/expires?value
           format:d. MMM yyyy
         join:x:/../*/p5.crypto.get-key-details/*/user-ids/*?value
-          separator:"\r\n"
+          sep:"\r\n"
         html-encode:x:/-?value
         eval-x:x:/+
         _tbl:@"<table class=""table table-hover""><thead><tr><th>Field</th><th>Value</th></tr></thead>

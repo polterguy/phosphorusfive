@@ -4,6 +4,7 @@
  */
 
 using System;
+using System.Web;
 using System.Linq;
 using HtmlAgilityPack;
 using p5.core;
@@ -59,14 +60,14 @@ namespace p5.html
             if (htmlNode.Name != "#document") {
 
                 // Adding all attributes
-                resultNode.AddRange (htmlNode.Attributes.Select (ix => new Node ("@" + ix.Name, ix.Value.Replace ("&lt;", "<").Replace ("&gt;", ">").Replace ("&amp;", "&"))));
+                resultNode.AddRange (htmlNode.Attributes.Select (ix => new Node ("@" + ix.Name, HttpUtility.HtmlDecode (ix.Value))));
 
                 // Then the name of HTML element
                 resultNode.Name = htmlNode.Name;
                 if (htmlNode.Name == "#text") {
 
                     // This is a "simple node", with no children, only HTML content
-                    resultNode.Value = htmlNode.InnerText.Replace ("&lt;", "<").Replace ("&gt;", ">").Replace ("&amp;", "&");
+                    resultNode.Value = HttpUtility.HtmlDecode (htmlNode.InnerText);
                 }
             }
 

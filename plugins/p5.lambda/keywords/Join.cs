@@ -27,7 +27,7 @@ namespace p5.lambda.keywords
             using (new Utilities.ArgsRemover (e.Args)) {
 
                 // Retrieving separator character(s)
-                var insertBetweenNodes = e.Args.GetExChildValue ("separator", context, "");
+                var insertBetweenNodes = e.Args.GetExChildValue ("sep", context, "");
 
                 // Used as buffer
                 StringBuilder result = new StringBuilder ();

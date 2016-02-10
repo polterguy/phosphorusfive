@@ -19,7 +19,7 @@ namespace p5.lambda.keywords
     public static class Length
     {
         /// <summary>
-        ///     The [length] keyword, retrieves the length of the specified string
+        ///     The [length] keyword, retrieves the length of the specified string, performing conversion if necessary
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -29,12 +29,8 @@ namespace p5.lambda.keywords
             // Making sure we clean up and remove all arguments passed in after execution
             using (new Utilities.ArgsRemover (e.Args)) {
 
-                // Figuring out source value for [length]
-                string source = XUtil.Single<string> (context, e.Args, true);
-                if (source == null)
-                    return; // Nothing to check
-
-                e.Args.Value = source.Length;
+                // Returning length of constant or expression, converted to string if necessary
+                e.Args.Value = XUtil.Single<string> (context, e.Args, true, "").Length;
             }
         }
     }

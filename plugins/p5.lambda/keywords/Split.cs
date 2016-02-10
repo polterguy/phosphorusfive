@@ -6,6 +6,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using p5.core;
 using p5.exp;
 using p5.exp.exceptions;
@@ -33,7 +34,7 @@ namespace p5.lambda.keywords
                 if (source == null)
                     return; // Nothing to split
 
-                // Retrieving separator objects (which might be integers or strings)
+                // Retrieving separator objects (which might be multiple integers, multiple strings or a single regular expression)
                 var sepObjects = e.Args.Children
                     .Where (ix => ix.Name == "=")
                     .Select (ix => ix.GetExValue<object> (context))
@@ -47,26 +48,33 @@ namespace p5.lambda.keywords
 
                         // String split operation, converting entire array to string array
                         var sepStrings = sepObjects.Select (ix => Utilities.Convert<string> (context, ix)).ToList ();
-                        sepStrings.RemoveAll (ix => string.IsNullOrEmpty (ix));
-                        foreach (var idxString in source.Split (sepStrings.ToArray (), System.StringSplitOptions.RemoveEmptyEntries)) {
-                            e.Args.Add (idxString);
-                        }
+                        e.Args.AddRange (
+                            source.Split (
+                                sepStrings.ToArray (), 
+                                System.StringSplitOptions.RemoveEmptyEntries).Select (ix => new Node (ix)));
                     } else if (sepObjects [0] is int) {
 
                         // Integer split operation, converting all values to integers and running substring upon all values
                         var sepIntegers = sepObjects.Select (ix => Utilities.Convert<int> (context, ix, -1)).ToList ();
-                        sepIntegers.RemoveAll (ix => ix <= 0 || ix >= source.Length);
+                        sepIntegers.Sort ();
                         var start = 0;
                         foreach (var idxSplitInteger in sepIntegers) {
                             e.Args.Add (source.Substring (start, idxSplitInteger - start));
                             start = idxSplitInteger;
                         }
                         e.Args.Add (source.Substring (start));
+                    } else if (sepObjects [0] is Regex) {
+
+                        // Regex split operation, converting all values to regular expressions, and running Regex.Split on result
+                        if (sepObjects.Count > 1)
+                            throw new LambdaException ("When supplying a regex to [split], only one [=] operator is allowed", e.Args, context);
+                        var sepRegex = sepObjects [0] as Regex;
+                        e.Args.AddRange (sepRegex.Split (source).Select (ix => new Node (ix)));
                     } else {
 
                         // Oops ...!!
                         throw new LambdaException (
-                            "Don't know how to split upon anything else but integers and strings", 
+                            "Don't know how to split upon anything else but integers, strings and regular expressions", 
                             e.Args, 
                             context);
                     }
