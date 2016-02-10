@@ -1,7 +1,99 @@
 /*
- * Allows the user to run all unit tests in system
+ * Allows the user to evaluate unit tests in system
  */
 
-// Verifies user is root first
+/*
+ * Verifies user is root first, since only root
+ * can run unit tests
+ */
 whoami
-sys42.show-code-window:x:/..
+if:x:/-/*/role?value
+  !=:root
+  throw:Only root user can run Unit Tests
+
+/*
+ * List all files in directory, but removing "index.hl",
+ * assuming all other files are unit test files
+ */
+list-files:/system42/tests/
+set:x:@"/-/*/""/system42/tests/index.hl"""
+
+/*
+ * Databinding unit tests files to table widget
+ */
+databind:x:/../*/create-widget/=unit-test-files/*/widgets
+  src:x:/../*/list-files/*
+  template
+    tr
+      {_file-row}:x:?name
+      widgets
+        td
+          {innerValue}:x:?name
+        td
+          style:"width:60%;"
+          innerValue:Undetermined
+          {_file-result}:x:?name
+        td
+          widgets
+            button
+              class:btn btn-default btn-xs
+              style:"width:100px;"
+              innerValue:Run
+              onclick
+                {_file}:x:?name
+                if
+                  sys42.evaluate-unit-test-file:x:/../*/_file?value
+                  find-widget
+                    _file-result:x:/../*/_file?value
+                  html-encode:x:/..if/*/sys42.evaluate-unit-test-file?value
+                  set-widget-property:x:/-2/*?value
+                    innerValue:@"<pre>{0}</pre>"
+                      :x:/././-?value
+                  find-widget
+                    _file-row:x:/../*/_file?value
+                  set-widget-property:x:/-/*?value
+                    class:error
+                else
+                  find-widget
+                    _file-result:x:/../*/_file?value
+                  set-widget-property:x:/-/*?value
+                    innerValue:Success!
+                  find-widget
+                    _file-row:x:/../*/_file?value
+                  set-widget-property:x:/-/*?value
+                    class:success
+
+/*
+ * Creating widget showing all unit test files in a table
+ */
+create-widget:unit-test-files
+  parent:content
+  element:table
+  class:table
+  events
+
+    /*
+     * Evaluates one Unit Test file
+     */
+    sys42.evaluate-unit-test-file
+      load-file:x:/../*/_arg?value
+      for-each:x:/-/*/*
+        _test
+        set:x:/-?value
+          src:x:/..for-each/*/_dp/#
+        try
+          eval:x:/..for-each/*/_test?value
+        catch
+          set:x:/..?value
+            src:@"""{0}""
+
+{1}"
+              :x:/..catch/*/message?value
+              :x:/..catch/*/stack-trace?value
+
+
+  widgets
+    thead
+      innerValue:@"<tr><th>File</th><th>Result</th><th>Evaluate</th></tr>"
+
+

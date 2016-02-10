@@ -1,0 +1,12 @@
+/*
+ * Allows the user to run all unit tests in system
+ */
+
+test-identity-expression
+  insert-before:x:
+    src
+      foo:bar
+  if:x:/../0?name
+    !=:foo
+    throw:@"Assert error, expected [foo], got [{0}]!"
+      :x:/../0?name

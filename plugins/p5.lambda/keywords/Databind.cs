@@ -17,7 +17,7 @@ namespace p5.lambda.keywords
     public static class Databind
     {
         /// <summary>
-        ///     The [databind] keyword allows you to databind a collection
+        ///     The [databind] keyword allows you to databind a p5.lambda object to another p5.lambda object
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -81,13 +81,12 @@ namespace p5.lambda.keywords
             Node current, 
             Node dataSource)
         {
-            // Defaulting processing of children to true
-            Node retVal = null;
+            // Creating our default return value
+            var retVal = new Node ();
 
             // Checking if node has databound expression
             if (current.Name.StartsWith ("{") &&
-                current.Name.EndsWith ("}") &&
-                (XUtil.IsExpression (current.Value) || XUtil.IsFormatted (current))) {
+                current.Name.EndsWith ("}")) {
 
                 // Retrieving expression, and evaluating it
                 var ex = current.Value as Expression;
@@ -95,6 +94,8 @@ namespace p5.lambda.keywords
 
                     // Databound expression
                     var match = ex.Evaluate (context, dataSource, current);
+
+                    // Checking if this is an "inner databind operation", meaning a "sub template"
                     if ((match.TypeOfMatch == p5.exp.Match.MatchType.node && 
                         (string.IsNullOrEmpty (match.Convert) || match.Convert == "node")) || match.Convert == "node") {
 
@@ -103,45 +104,45 @@ namespace p5.lambda.keywords
                         // in inner datasource expression, treating the children nodes as "inner templates"
                         foreach (var idxSourceNode in XUtil.Iterate<Node> (context, current, dataSource)) {
 
-                            // Creating return value
-                            var tmpRetVal = new Node ();
-                            tmpRetVal.Name = current.Name.Substring (1, current.Name.Length - 2);
+                            // Creating return value databound to inner databound expression
+                            // Notice we ABORT the yielding of return values after this loop, to avoid returning the "retVal" itself,
+                            // but rather only return the results of this loop
+                            var tmpRetVal = new Node (current.Name.Substring (1, current.Name.Length - 2));
                             tmpRetVal.AddRange (CreateInsertionFromTemplate (context, current, idxSourceNode));
                             yield return tmpRetVal;
                         }
+
+                        // Aborting the rest of our yield operation!
+                        yield break;
                     } else {
 
                         // Node is databound as simple value, using Single implementation on value
-                        retVal = new Node ();
                         retVal.Name = current.Name.Substring (1, current.Name.Length - 2);
                         retVal.Value = XUtil.Single<object> (context, current, dataSource);
                     }
                 } else {
 
-                    // Databound formatted node
-                    retVal = new Node ();
+                    // Node was possibly databound, but not as an expression, but rather a formatting expression
                     retVal.Name = current.Name.Substring (1, current.Name.Length - 2);
                     retVal.Value = XUtil.Single<object> (context, current, dataSource);
                 }
             } else {
 
-                // Node was not databound
-                retVal = new Node ();
-                retVal.Name = current.Name;
+                // Node was not databound, returning "as is", making sure we support escaped curly braces
+                if (current.Name.StartsWith ("\\"))
+                    retVal.Name = current.Name.Substring (1);
+                else
+                    retVal.Name = current.Name;
                 retVal.Value = current.Value;
             }
 
-            // Looping through each child node of template, but only if we should
-            if (retVal != null) {
+            // Looping through all children of template, processing recursively
+            foreach (var idxTemplateChild in current.Children) {
 
-                // Looping through all children of template, processing recursively
-                foreach (var idxTemplateChild in current.Children) {
-
-                    // Recursively databinding children of template node
-                    retVal.AddRange (ProcessTemplateChild (context, idxTemplateChild, dataSource));
-                }
-                yield return retVal;
+                // Recursively databinding children of template node
+                retVal.AddRange (ProcessTemplateChild (context, idxTemplateChild, dataSource));
             }
+            yield return retVal;
         }
     }
 }

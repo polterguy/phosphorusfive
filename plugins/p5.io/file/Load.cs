@@ -44,11 +44,11 @@ namespace p5.io.file
                         if (IsTextFile (idxFile)) {
 
                             // Loading file as string/text
-                            LoadTextFile (context, e.Args, rootFolder + idxFile);
+                            LoadTextFile (context, e.Args, rootFolder, idxFile);
                         } else {
 
                             // Loading file as blob/byte[]
-                            LoadBinaryFile (e.Args, rootFolder + idxFile);
+                            LoadBinaryFile (e.Args, rootFolder, idxFile);
                         }
                     } else {
 
@@ -85,9 +85,13 @@ namespace p5.io.file
         /*
          * Loads specified as text and appends into args
          */
-        private static void LoadTextFile (ApplicationContext context, Node args, string fileName)
+        private static void LoadTextFile (
+            ApplicationContext context, 
+            Node args, 
+            string rootFolder,
+            string fileName)
         {
-            using (TextReader reader = File.OpenText (fileName)) {
+            using (TextReader reader = File.OpenText (rootFolder + fileName)) {
 
                 // Reading file content
                 string fileContent = reader.ReadToEnd ();
@@ -109,9 +113,12 @@ namespace p5.io.file
         /*
          * Loads a binary file and appends as blob/byte[] into args
          */
-        private static void LoadBinaryFile (Node args, string fileName)
+        private static void LoadBinaryFile (
+            Node args, 
+            string rootFolder,
+            string fileName)
         {
-            using (FileStream stream = File.OpenRead (fileName)) {
+            using (FileStream stream = File.OpenRead (rootFolder + fileName)) {
 
                 // Reading file content
                 var buffer = new byte [stream.Length];

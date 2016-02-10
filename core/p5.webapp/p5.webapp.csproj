@@ -345,6 +345,7 @@
     <None Include="system42\apps\gnupg.hl" />
     <None Include="system42\startup\internals\sys42.create-pgp-key.hl" />
     <None Include="system42\tests\index.hl" />
+    <None Include="system42\tests\expressions.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />
