@@ -1,0 +1,17 @@
+/*
+ * Contains [for-each] unit tests in system
+ */
+
+/*
+ * Tests a simple value type of [for-each]
+ */
+for-each-value
+  _data
+    foo1:foo1
+    foo2:foo2
+  _result
+  for-each:x:/../*/_data/*?value
+    set:x:/./-?value
+      src:{0}{1}
+        :x:/../*/_result?value
+        :x:/..for-each/*/_dp?value

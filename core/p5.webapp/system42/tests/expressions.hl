@@ -1,8 +1,23 @@
 /*
- * Allows the user to run all unit tests in system
+ * Contains expression unit tests for system
  */
 
-test-identity-expression
+/*
+ * Tests that "identity expression" behaves as expected!
+ */
+identity-expression
+  insert-before:x:
+    src
+      foo:bar
+  if:x:/../0?name
+    !=:foo
+    throw:@"Assert error, expected [foo], got [{0}]!"
+      :x:/../0?name
+
+/*
+ * Tests that "identity expression" behaves as expected!
+ */
+identity-expression2
   insert-before:x:
     src
       foo:bar

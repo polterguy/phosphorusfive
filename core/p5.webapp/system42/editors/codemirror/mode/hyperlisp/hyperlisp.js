@@ -217,6 +217,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'set-widget-ajax-event':
         case 'set-widget-lambda-event':
         case 'return-response-object':
+        case 'raise-widget-ajax-event':
         case 'zip':
         case 'unzip':
         case 'set-page-value':

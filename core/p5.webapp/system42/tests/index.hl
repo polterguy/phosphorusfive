@@ -25,14 +25,30 @@ databind:x:/../*/create-widget/=unit-test-files/*/widgets
   src:x:/../*/list-files/*
   template
     tr
+
+      /*
+       * Used for retrieving unit test file row, to signal success or failure
+       */
       {_file-row}:x:?name
       widgets
+
+        /*
+         * Unit test filename
+         */
         td
           {innerValue}:x:?name
+
+        /*
+         * Result text from unit test evaluation of file
+         */
         td
           style:"width:60%;"
           innerValue:Undetermined
           {_file-result}:x:?name
+
+        /*
+         * Evaluates a single unit test file
+         */
         td
           widgets
             button
@@ -40,24 +56,48 @@ databind:x:/../*/create-widget/=unit-test-files/*/widgets
               style:"width:100px;"
               innerValue:Run
               onclick
+
+                /*
+                 * Evaluates the databound unit test file, which may contain
+                 * multiple unit tests. [_file] is filename of unit test file
+                 */
                 {_file}:x:?name
                 if
                   sys42.evaluate-unit-test-file:x:/../*/_file?value
+                  =:bool:false
+
+                  /*
+                   * Error while evaluating unit test file, setting result
+                   * widget to "message" + "stack-trace" of exception
+                   */
                   find-widget
                     _file-result:x:/../*/_file?value
-                  html-encode:x:/..if/*/sys42.evaluate-unit-test-file?value
-                  set-widget-property:x:/-2/*?value
-                    innerValue:@"<pre>{0}</pre>"
-                      :x:/././-?value
+                  _error-html
+                  for-each:x:/..if/*/sys42.evaluate-unit-test-file/*/_error?value
+                    html-encode:x:/./*/_dp?value
+                    set:x:/./-?value
+                      src:{0}<pre>{1}</pre>
+                        :x:/..for-each/-?value
+                        :x:/..for-each/*/html-encode?value
+                  set-widget-property:x:/./*/find-widget/*/[0,1]?value
+                    innerValue:x:/././*/_error-html?value
                   find-widget
                     _file-row:x:/../*/_file?value
                   set-widget-property:x:/-/*?value
                     class:error
                 else
+
+                  /*
+                   * Success while evaluating unit test file, providing feedback to
+                   * user through settings row to green and feedback message to "Success!"
+                   */
                   find-widget
                     _file-result:x:/../*/_file?value
-                  set-widget-property:x:/-/*?value
-                    innerValue:Success!
+                  join:x:/../*/if/*/sys42.evaluate-unit-test-file/*/_success?value
+                    sep:"\r\n"
+                  set-widget-property:x:/-2/*?value
+                    innerValue:<pre>{0}</pre>
+                      :x:/././-?value
                   find-widget
                     _file-row:x:/../*/_file?value
                   set-widget-property:x:/-/*?value
@@ -83,17 +123,42 @@ create-widget:unit-test-files
           src:x:/..for-each/*/_dp/#
         try
           eval:x:/..for-each/*/_test?value
+          add:x:/..
+            src:"_success:{0}"
+              :x:/..for-each/*/_dp/#?name
         catch
           set:x:/..?value
-            src:@"""{0}""
+            src:bool:false
+          eval-x:x:/+/*/*
+          add:x:/..
+            src
+              _error:@"{0}; ""{1}""
 
-{1}"
-              :x:/..catch/*/message?value
-              :x:/..catch/*/stack-trace?value
+{2}"
+                :x:/..for-each/*/_dp/#?name
+                :x:/..catch/*/message?value
+                :x:/..catch/*/stack-trace?value
 
 
   widgets
     thead
-      innerValue:@"<tr><th>File</th><th>Result</th><th>Evaluate</th></tr>"
+      widgets
+        tr
+          widgets
+            th
+              innerValue:File
+            th
+              innerValue:Result
+            th
+              widgets
+                button
+                  class:btn btn-primary
+                  style:"width:150px;"
+                  innerValue:Run all
+                  onclick
+                    find-widget
+                      innerValue:Run
+                    raise-widget-ajax-event:x:/../*/find-widget/*?value
+                      onclick
 
 
