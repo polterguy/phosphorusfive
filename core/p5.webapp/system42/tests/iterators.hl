@@ -68,3 +68,245 @@ iterator-children
     !=:foo1foo6
     throw:@"Assert error, expected [foo1foo6], got [{0}]!"
       :x:/././-2?value
+
+/*
+ * Test the modulo iterator
+ */
+iterator-modulo
+  _data
+    foo1
+    foo2
+    foo3
+    foo4
+  set:x:/-?value
+    src:x:/./-/*/%2?name
+  if:x:/-2?value
+    !=:foo2foo4
+    throw:@"Assert error, expected [foo2foo4], got [{0}]!"
+      :x:/././-2?value
+
+/*
+ * Test the named iterator
+ */
+iterator-named
+  _data
+    foo1
+    foo2
+    foo3
+    foo4
+  set:x:/-?value
+    src:x:/./-/*/foo2?name
+  if:x:/-2?value
+    !=:foo2
+    throw:@"Assert error, expected [foo2], got [{0}]!"
+      :x:/././-2?value
+
+/*
+ * Test the named ancestor iterator
+ */
+iterator-named-ancestor
+  _data
+    foo1
+      foo2
+        foo3
+          foo4
+  set:x:/-?value
+    src:x:/./-/**/foo4/..foo1?name
+  if:x:/-2?value
+    !=:foo1
+    throw:@"Assert error, expected [foo1], got [{0}]!"
+      :x:/././-2?value
+
+/*
+ * Test the number child iterator
+ */
+iterator-numbered-child
+  _data
+    foo1
+    foo2
+    foo3
+    foo4
+  set:x:/-?value
+    src:x:/./-/2?name
+  if:x:/-2?value
+    !=:foo3
+    throw:@"Assert error, expected [foo3], got [{0}]!"
+      :x:/././-2?value
+
+/*
+ * Test the parent iterator
+ */
+iterator-parent
+  _data
+    foo1
+      foo2
+        foo3
+          foo4
+  set:x:/-?value
+    src:x:/./-/**/foo4/./.?name
+  if:x:/-2?value
+    !=:foo2
+    throw:@"Assert error, expected [foo2], got [{0}]!"
+      :x:/././-2?value
+
+/*
+ * Test the left-shift iterator
+ */
+iterator-left-shift
+  _data
+    foo1
+      foo2
+        foo3
+          foo4
+        foo5
+          foo6
+      foo7
+  set:x:/-?value
+    src:x:/./-/**/foo7/<|/./-/**/foo7/</<|/./-/**/foo7/</</<|/./-/**/foo7/</</</<?name
+  if:x:/-2?value
+    !=:foo6foo5foo4foo3
+    throw:@"Assert error, expected [foo7foo6foo5foo4], got [{0}]!"
+      :x:/././-2?value
+
+/*
+ * Test the right-shift iterator
+ */
+iterator-right-shift
+  _data
+    foo1
+      foo2
+        foo3
+          foo4
+        foo5
+          foo6
+      foo7
+  set:x:/-?value
+    src:x:/./-/0|/./-/0/>|/./-/0/>/>|/./-/0/>/>/>|/./-/0/>/>/>/>|/./-/0/>/>/>/>/>|/./-/0/>/>/>/>/>/>?name
+  if:x:/-2?value
+    !=:foo1foo2foo3foo4foo5foo6foo7
+    throw:@"Assert error, expected [foo1foo2foo3foo4foo5foo6foo7], got [{0}]!"
+      :x:/././-2?value
+
+/*
+ * Test the sibling iterator
+ */
+iterator-sibling
+  _data
+    foo1
+    foo2
+    foo3
+    foo4
+    foo5
+    foo6
+    foo7
+  set:x:/-?value
+    src:x:/./-/0|/./-/0/+|/./-/3/-|/./-/6/+4|/./-/0/-3?name
+  if:x:/-2?value
+    !=:foo1foo2foo3foo4foo5
+    throw:@"Assert error, expected [foo1foo2foo3foo4foo5], got [{0}]!"
+      :x:/././-2?value
+
+/*
+ * Test the value iterator for simple value
+ */
+iterator-value-simple
+  _data
+    foo1:bar1
+    foo2:bar2
+    foo3:bar3
+  set:x:/-?value
+    src:x:/./-/*/=bar2?name
+  if:x:/-2?value
+    !=:foo2
+    throw:@"Assert error, expected [foo2], got [{0}]!"
+      :x:/././-2?value
+
+/*
+ * Test the value iterator for value "like" expression
+ */
+iterator-value-like-string
+  _data
+    foo1:bar1
+    foo2:bar2
+    foo3:bar3
+  set:x:/-?value
+    src:x:/./-/*/=~r2?name
+  if:x:/-2?value
+    !=:foo2
+    throw:@"Assert error, expected [foo2], got [{0}]!"
+      :x:/././-2?value
+
+/*
+ * Test the value iterator for empty value "like" expression
+ */
+iterator-value-like-empty-null
+  _data
+    foo1
+    foo2:
+    foo3:bar3
+  set:x:/-?value
+    src:x:/./-/*/=~?name
+  if:x:/-2?value
+    !=:foo1foo2
+    throw:@"Assert error, expected [foo1foo2], got [{0}]!"
+      :x:/././-2?value
+
+/*
+ * Test the value iterator for escaped value "like" expression
+ */
+iterator-value-like-escaped
+  _data
+    foo1:foo1
+    foo2:~
+    foo3:bar3
+  set:x:/-?value
+    src:x:/./-/*/=\~?name
+  if:x:/-2?value
+    !=:foo2
+    throw:@"Assert error, expected [foo2], got [{0}]!"
+      :x:/././-2?value
+
+/*
+ * Test the name iterator for "like" comparison
+ */
+iterator-name-like
+  _data
+    foo1:bar1
+    foo2:bar2
+    foo3:bar3
+  set:x:/-?value
+    src:x:/./-/*/~oo2?value
+  if:x:/-2?value
+    !=:bar2
+    throw:@"Assert error, expected [bar2], got [{0}]!"
+      :x:/././-2?value
+
+/*
+ * Test the name iterator for "empty" comparison
+ */
+iterator-name-empty
+  _data
+    foo1:bar1
+    :bar2
+    foo3:bar3
+  set:x:/-?value
+    src:x:/./-/*//?value
+  if:x:/-2?value
+    !=:bar2
+    throw:@"Assert error, expected [bar2], got [{0}]!"
+      :x:/././-2?value
+
+/*
+ * Test the name iterator for "empty" comparison
+ */
+iterator-name-like-escaped
+  _data
+    foo1:bar1
+    ~:bar2
+    foo3:bar3
+  set:x:/-?value
+    src:x:/./-/*/\~?value
+  if:x:/-2?value
+    !=:bar2
+    throw:@"Assert error, expected [bar2], got [{0}]!"
+      :x:/././-2?value
