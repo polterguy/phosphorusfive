@@ -109,14 +109,24 @@ databind:x:/../*/create-widget/=unit-test-files/*/widgets
                     class:success
 
                 /*
+                 * Updating unit test count
+                 */
+                get-session-value:sys42.unit-test-count
+                if:x:/-/*?value
+                  +:x:/./-/*?value
+                    _:x:/../*/sys42.evaluate-unit-test-file/*(/_success|/_error)?count
+                  set-session-value:sys42.unit-test-count
+                    src:x:/./-?value
+
+                /*
                  * Providing textual feedback to user about state of unit tests
                  */
                 find-widget
                   _file-result:x:/../*/_file?value
                 join:x:/../*/sys42.evaluate-unit-test-file/*/_success?value
-                  sep:"\r\n"
+                  sep:", "
                 set-widget-property:x:/-2/*?value
-                  innerValue:@"{0}<pre>{1}</pre>"
+                  innerValue:@"{0}<p>{1}</p>"
                     :x:/../*/_html?value
                     :x:/././-?value
 
@@ -216,10 +226,22 @@ create-widget:unit-test-files
                   class:btn btn-primary form-control
                   innerValue:Evaluate all
                   onclick
+                    date-now
+                    set-session-value:sys42.unit-test-count
+                      src:int:0
                     find-widget
                       innerValue:Evaluate
                     raise-widget-ajax-event:x:/../*/find-widget/*?value
                       onclick
+                    get-session-value:sys42.unit-test-count
+                    date-now
+                    -:x:/-?value
+                      _:x:/../*/date-now/[0,1]?value
+                    eval-x:x:/+
+                    sys42.info-window:@"{0} unit tests evaluated in {1:ss\:fff} seconds"
+                      :x:/./-4/*?value
+                      :x:/./-2?value
+                      _time:more
 
 
 create-widget:add-unit-test
@@ -262,6 +284,26 @@ create-widget:add-unit-test
               save-file:{0}{1}
                 :/system42/tests/
                 :x:/../*/filename?value
+                src:@"/*
+ * Contains unit tests for testing [whatever] in system
+ */
+
+/*
+ * Tests that checks that ""foo1"" behaves correctly
+ */
+foo1
+  _some-test-code-goes-here
+  if:bool:false
+    throw:@""Assert error, expected [something], got [something-else]!""
+
+/*
+ * Tests that checks that ""foo2"" behaves correctly
+ */
+foo2
+  _some-other-piece-of-test-code-goes-here
+  if:bool:false
+    throw:@""Assert error, expected [something], got [something-else]!""
+"
               set:x:/..?value
                 src:bool:true
               delete-widget:add-unit-test
