@@ -1362,6 +1362,26 @@ file/folder with that name"
      */
     sys42.create-file-editor
 
+      // Making sure we destroy any previous editors
+      clear-widget:file-browser-file-editor
+
+      // Hiding all toolbars, but before we do that, we need to store the original CSS classes
+      _widgets
+        file-browser-bread-crumb
+        file-browser-current-folder-content
+        file-browser-current-item-toolbar
+      get-widget-property:x:/-/*?name
+        class
+      set-widget-property:x:/-2/*?name
+        class:hide
+      set-session-value:sys42.original-file-editor-classes
+        src:x:/./-2
+
+      // Changing header of page to reflect we're in edit mode
+      set-widget-property:header
+        innerValue:Editing <small>{0}</small>
+          :x:/../*/_arg?value
+
       // Retrieving selected file, and opening up editor
       set:x:/+/0?value
         src:x:/../*/_arg?value

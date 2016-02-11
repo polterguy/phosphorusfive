@@ -347,6 +347,7 @@
     <None Include="system42\tests\index.hl" />
     <None Include="system42\tests\expressions.hl" />
     <None Include="system42\tests\for-each.hl" />
+    <None Include="system42\tests\iterators.hl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="media\jquery\" />

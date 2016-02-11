@@ -4,28 +4,6 @@
  */
 
 
-// Changing header to reflect which file is edited
-set-widget-property:header
-  innerValue:Editing <small>{0}</small>
-    :x:/../*/_file?value
-
-
-// Deleting any previous editors
-clear-widget:file-browser-file-editor
-
-// Storing original CSS classes in session for all widgets we're hiding
-_widgets
-  file-browser-bread-crumb
-  file-browser-current-folder-content
-  file-browser-current-item-toolbar
-get-widget-property:x:/-/*?name
-  class
-set-widget-property:x:/-2/*?name
-  class:hide
-set-session-value:sys42.original-file-editor-classes
-  src:x:/./-2
-
-
 /*
  * Setting CKEditor's basepath, notice this must occur BEFORE 
  * we include the CKEditor's JavaScript files!
@@ -54,6 +32,14 @@ set:x:/../*/create-widget/*/parent?value
   src:x:/../*/_parent?value
 set:x:/../**/literal/=editor_surface/*/innerValue?value
   src:x:/../*/load-file/*?value
+
+
+/*
+ * Checking if an explicit widget id was given for editor
+ */
+if:x:/../*/_widget-id?value
+  set:x:/../*/create-widget?value
+    src:x:/../*/_widget-id?value
 
 
 /*
@@ -91,8 +77,8 @@ create-widget:html-editor
           onclick
             get-widget-property:editor_surface
               innerValue
-            get-session-value:sys42.selected-file-browser-object
-            save-file:x:/../*/get-session-value/*/*/object?value
+            get-session-value:sys42.editor.edited-file
+            save-file:x:/../*/get-session-value/*?value
               src:x:/../*/get-widget-property/*/*?value
             sys42.info-window:@"File was successfully saved"
 

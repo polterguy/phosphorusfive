@@ -27,7 +27,8 @@ databind:x:/../*/create-widget/=unit-test-files/*/widgets
     tr
 
       /*
-       * Used for retrieving unit test file row, to signal success or failure
+       * Used for retrieving unit test file row, to signal success or failure,
+       * through red or green color on row as a whole
        */
       {_file-row}:x:?name
       widgets
@@ -36,10 +37,21 @@ databind:x:/../*/create-widget/=unit-test-files/*/widgets
          * Unit test filename
          */
         td
-          {innerValue}:x:?name
+          widgets
+            a
+              {innerValue}:x:?name
+              href:#
+              onclick
+                sys42.launch-unit-test-editor
+                  {_file}:x:?name
 
         /*
-         * Result text from unit test evaluation of file
+         * Result text from evaluation of file, contains
+         * either one or more bugs, or the names of all
+         * unit tests that ran. Value depends upon whether
+         * or not evaluation of unit tests was a success
+         * or not. Before test is ran, "Undetermined" is
+         * its value
          */
         td
           style:"width:60%;"
@@ -47,14 +59,16 @@ databind:x:/../*/create-widget/=unit-test-files/*/widgets
           {_file-result}:x:?name
 
         /*
-         * Evaluates a single unit test file
+         * Button that allows evaluation of a single unit test file.
+         * Notice that you cannot run a single unit test, you can however
+         * run a single unit test file
          */
         td
           widgets
             button
               class:btn btn-default btn-xs
               style:"width:100px;"
-              innerValue:Run
+              innerValue:Evaluate
               onclick
 
                 /*
@@ -109,8 +123,45 @@ databind:x:/../*/create-widget/=unit-test-files/*/widgets
 create-widget:unit-test-files
   parent:content
   element:table
-  class:table
+  class:table table-hover
   events
+
+    /*
+     * Invoked when a unit test file is being edited
+     */
+    sys42.launch-unit-test-editor
+
+      // Changing header of page to reflect we're in edit mode
+      set-widget-property:header
+        innerValue:Editing test file <small>{0}</small>
+          :x:/../*/_file?value
+
+      // Launching editor
+      eval-x:x:/+/*
+      sys42.execute-lisp-file:/system42/editors/launch.hl
+        _file:x:/../*/_file?value
+        _parent:content
+        _widget-id:unit-test-file-editor
+
+      // Hiding unit test table
+      set-widget-property:unit-test-files
+        visible:false
+
+    /*
+     * Invoked when file editor is destroyed
+     */
+    sys42.destroy-file-editor
+
+      // Changing header of page back to original state
+      set-widget-property:header
+        innerValue:Tests
+
+      // Deleting editor widget
+      delete-widget:unit-test-file-editor
+
+      // Making unit test table visible again
+      set-widget-property:unit-test-files
+        visible:true
 
     /*
      * Evaluates one Unit Test file
@@ -140,6 +191,10 @@ create-widget:unit-test-files
                 :x:/..catch/*/stack-trace?value
 
 
+  /*
+   * Widgets that are being databound above to show table containing all unit test
+   * files in system
+   */
   widgets
     thead
       widgets
@@ -154,10 +209,10 @@ create-widget:unit-test-files
                 button
                   class:btn btn-primary
                   style:"width:150px;"
-                  innerValue:Run all
+                  innerValue:Evaluate all
                   onclick
                     find-widget
-                      innerValue:Run
+                      innerValue:Evaluate
                     raise-widget-ajax-event:x:/../*/find-widget/*?value
                       onclick
 

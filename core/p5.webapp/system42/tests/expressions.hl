@@ -15,13 +15,66 @@ identity-expression
       :x:/../0?name
 
 /*
- * Tests that "identity expression" behaves as expected!
+ * Tests value expression
  */
-identity-expression2
-  insert-before:x:
-    src
-      foo:bar
+value-expression
+  _data
+  set:x:/-?value
+    src:success
+  if:x:/../0?value
+    !=:success
+    throw:@"Assert error, expected [success], got [{0}]!"
+      :x:/../0?value
+
+/*
+ * Tests name expression
+ */
+name-expression
+  _data
+  set:x:/-?name
+    src:success
+  if:x:/../0?name
+    !=:success
+    throw:@"Assert error, expected [success], got [{0}]!"
+      :x:/../0?name
+
+/*
+ * Tests node expression
+ */
+node-expression
+  _data
+  set:x:/-
+    src:"foo:bar"
   if:x:/../0?name
     !=:foo
-    throw:@"Assert error, expected [foo], got [{0}]!"
-      :x:/../0?name
+    or:x:/../0?value
+      !=:bar
+    throw:@"Assert error, expected [foo:bar], got [{0}]!"
+      :x:/../0?node.string
+
+/*
+ * Tests reference expression
+ */
+reference-expression
+  _data:node:
+  add:x:/-/#
+    src
+      foo:bar
+  if:x:/../0/#/0?name
+    !=:foo
+    or:x:/../0/#/0?value
+      !=:bar
+    throw:@"Assert error, expected [foo:bar], got [{0}]!"
+      :x:/../0/#/0?node.string
+
+/*
+ * Tests count expression
+ */
+count-expression
+  _data
+    foo1
+    foo2
+  if:x:/../0/*?count
+    !=:int:2
+    throw:@"Assert error, expected [2], got [{0}]!"
+      :x:/../0/*?count
