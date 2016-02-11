@@ -231,4 +231,35 @@ create-widget:add-unit-test
       innerValue:+
       title:Create new unit test file
       onclick
-        sys42.show-code-window:x:/..
+        sys42.wizard-window
+          _header:Name of unit test file
+          _body:Please provide a filename for your new test file
+          _widgets
+            text:filename
+              label:Filename
+              placeholder:Name of file ...
+              mandatory:true
+          _onok
+            split:x:/../*/filename?value
+              =:.
+            if:x:/-/*?count
+              =:int:1
+              set:x:/../*/filename?value
+                src:{0}.hl
+                  :x:/../*/filename?value
+            split:x:/../*/filename?value
+              =:/
+            if:x:/-/*?count
+              >:int:1
+              set:x:/..?value
+                src:Please only provide filename, no paths!
+              send-javascript:@"$('#filename').focus().select();"
+            else
+              save-file:{0}{1}
+                :/system42/tests/
+                :x:/../*/filename?value
+              set:x:/..?value
+                src:bool:true
+              delete-widget:add-unit-test
+              delete-widget:unit-test-files
+              sys42.execute-lisp-file:/system42/tests/index.hl
