@@ -5,7 +5,7 @@
 /*
  * Tests that "identity expression" behaves as expected!
  */
-expression-identity
+identity
   insert-before:x:
     src
       foo:bar
@@ -19,7 +19,7 @@ expression-identity
 /*
  * Tests value expression
  */
-expression-value
+value
   _data
   set:x:/-?value
     src:success
@@ -31,7 +31,7 @@ expression-value
 /*
  * Tests name expression
  */
-expression-name
+name
   _data
   set:x:/-?name
     src:success
@@ -43,7 +43,7 @@ expression-name
 /*
  * Tests node expression
  */
-expression-node
+node
   _data
   set:x:/-
     src:"foo:bar"
@@ -57,7 +57,7 @@ expression-node
 /*
  * Tests count expression
  */
-expression-count
+count
   _data
     foo1
     foo2

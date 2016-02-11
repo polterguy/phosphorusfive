@@ -1,0 +1,77 @@
+/*
+ * Contains unit tests for testing 
+ * boolean algebraic expressions in system
+ */
+
+/*
+ * Tests that logical OR behaves as expected
+ */
+or
+  _data
+    foo1:bar1
+    foo2:bar2
+  set:x:/-?value
+    src:x:/./-/*/foo1|/./-/*/foo2?value
+  if:x:/../0?value
+    !=:bar1bar2
+    throw:@"Assert error, expected [bar1bar2], got [{0}]!"
+      :x:/../0?value
+
+/*
+ * Tests that logical AND behaves as expected
+ */
+and
+  _data
+    foo1:bar1
+    foo2:bar2
+  set:x:/-?value
+    src:x:/./-/*/foo1&/./-/*/=bar1?value
+  if:x:/../0?value
+    !=:bar1
+    throw:@"Assert error, expected [bar1], got [{0}]!"
+      :x:/../0?value
+
+/*
+ * Tests that no logical has precedense, but are evaluated
+ * exclusively in left-associative order
+ */
+left-associative
+  _data
+    foo1:bar1
+    foo2:bar2
+    foo3:bar3
+  set:x:/-?value
+    src:x:/./-/*/foo1|/./-/*/foo2&/./-/*/=bar1?value
+  if:x:/../0?value
+    !=:bar1
+    throw:@"Assert error, expected [bar1], got [{0}]!"
+      :x:/../0?value
+
+/*
+ * Tests that logical NOT behaves as expected
+ */
+not
+  _data
+    foo1:bar1
+    foo2:bar2
+  set:x:/-?value
+    src:x:/./-/*!/./-/*/=bar2?value
+  if:x:/../0?value
+    !=:bar1
+    throw:@"Assert error, expected [bar1], got [{0}]!"
+      :x:/../0?value
+
+/*
+ * Tests that logical NOT behaves as expected
+ */
+xor
+  _data
+    foo1:br1
+    foo2:bar2
+    fo3:bar3
+  set:x:/-?value
+    src:x:/./-/*/~foo^/./-/*/=~ba?value
+  if:x:/../0?value
+    !=:br1bar3
+    throw:@"Assert error, expected [br1bar3], got [{0}]!"
+      :x:/../0?value

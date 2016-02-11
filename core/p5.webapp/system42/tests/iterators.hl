@@ -5,7 +5,7 @@
 /*
  * Test the reference iterator
  */
-iterator-reference
+reference
   _data:node:
   set:x:/-/#?name
     src:foo
@@ -21,7 +21,7 @@ iterator-reference
 /*
  * Test the range iterator
  */
-iterator-range
+range
   _data
     foo1
     foo2
@@ -37,7 +37,7 @@ iterator-range
 /*
  * Test the descendant iterator
  */
-iterator-descendant
+descendant
   _data
     foo1
       foo2
@@ -56,7 +56,7 @@ iterator-descendant
 /*
  * Test the children iterator
  */
-iterator-children
+children
   _data
     foo1
       foo2
@@ -72,7 +72,7 @@ iterator-children
 /*
  * Test the modulo iterator
  */
-iterator-modulo
+modulo
   _data
     foo1
     foo2
@@ -88,7 +88,7 @@ iterator-modulo
 /*
  * Test the named iterator
  */
-iterator-named
+named
   _data
     foo1
     foo2
@@ -104,7 +104,7 @@ iterator-named
 /*
  * Test the named ancestor iterator
  */
-iterator-named-ancestor
+ancestor
   _data
     foo1
       foo2
@@ -120,7 +120,7 @@ iterator-named-ancestor
 /*
  * Test the number child iterator
  */
-iterator-numbered-child
+numbered-child
   _data
     foo1
     foo2
@@ -136,7 +136,7 @@ iterator-numbered-child
 /*
  * Test the parent iterator
  */
-iterator-parent
+parent
   _data
     foo1
       foo2
@@ -152,7 +152,7 @@ iterator-parent
 /*
  * Test the left-shift iterator
  */
-iterator-left-shift
+left-shift
   _data
     foo1
       foo2
@@ -171,7 +171,7 @@ iterator-left-shift
 /*
  * Test the right-shift iterator
  */
-iterator-right-shift
+right-shift
   _data
     foo1
       foo2
@@ -190,7 +190,7 @@ iterator-right-shift
 /*
  * Test the sibling iterator
  */
-iterator-sibling
+sibling
   _data
     foo1
     foo2
@@ -209,7 +209,7 @@ iterator-sibling
 /*
  * Test the value iterator for simple value
  */
-iterator-value-simple
+value-simple
   _data
     foo1:bar1
     foo2:bar2
@@ -224,7 +224,7 @@ iterator-value-simple
 /*
  * Test the value iterator for value "like" expression
  */
-iterator-value-like-string
+value-like-string
   _data
     foo1:bar1
     foo2:bar2
@@ -239,7 +239,7 @@ iterator-value-like-string
 /*
  * Test the value iterator for empty value "like" expression
  */
-iterator-value-like-empty-null
+value-like-empty-null
   _data
     foo1
     foo2:
@@ -254,7 +254,7 @@ iterator-value-like-empty-null
 /*
  * Test the value iterator for escaped value "like" expression
  */
-iterator-value-like-escaped
+value-like-escaped
   _data
     foo1:foo1
     foo2:~
@@ -269,7 +269,7 @@ iterator-value-like-escaped
 /*
  * Test the name iterator for "like" comparison
  */
-iterator-name-like
+name-like
   _data
     foo1:bar1
     foo2:bar2
@@ -284,7 +284,7 @@ iterator-name-like
 /*
  * Test the name iterator for "empty" comparison
  */
-iterator-name-empty
+name-empty
   _data
     foo1:bar1
     :bar2
@@ -299,7 +299,7 @@ iterator-name-empty
 /*
  * Test the name iterator for "empty" comparison
  */
-iterator-name-like-escaped
+name-like-escaped
   _data
     foo1:bar1
     ~:bar2

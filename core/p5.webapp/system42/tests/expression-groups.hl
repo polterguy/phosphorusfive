@@ -1,0 +1,34 @@
+/*
+ * Contains unit tests for testing 
+ * grouping of expressions in system
+ */
+
+/*
+ * Tests that a simple child group evaluates 
+ * on the results of the outer main root expression
+ */
+simple
+  _data
+    foo1:bar1
+  set:x:/-?value
+    src:x:/./-(/*)?value
+  if:x:/../0?value
+    !=:bar1
+    throw:@"Assert error, expected [bar1], got [{0}]!"
+      :x:/../0?value
+
+/*
+ * Tests that a nested child group evaluates 
+ * on the results of the outer group
+ */
+nested
+  _data
+    foo1:bar1
+      foo2:bar2
+  set:x:/-?value
+    src:x:/./-(/*(/*))?value
+  if:x:/../0?value
+    !=:bar2
+    throw:@"Assert error, expected [bar2], got [{0}]!"
+      :x:/../0?value
+

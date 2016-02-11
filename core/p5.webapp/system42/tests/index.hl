@@ -224,10 +224,14 @@ create-widget:unit-test-files
 
 create-widget:add-unit-test
   parent:content
-  class:col-xs-6 col-xs-push-6 col-md-2 col-md-push-10 text-right prepend-top
+  class:col-xs-6 col-xs-push-6 col-md-4 col-md-push-8 col-lg-3 col-lg-push-9 text-right prepend-top
   widgets
+
+    /*
+     * Creates new unit test file
+     */
     button
-      class:btn btn-default form-control
+      class:btn btn-default col-xs-6
       innerValue:+
       title:Create new unit test file
       onclick
@@ -263,3 +267,15 @@ create-widget:add-unit-test
               delete-widget:add-unit-test
               delete-widget:unit-test-files
               sys42.execute-lisp-file:/system42/tests/index.hl
+
+    /*
+     * Clear unit tests
+     */
+    button
+      class:btn btn-default col-xs-6
+      innerValue:Clear
+      title:Clear unit tests
+      onclick
+        delete-widget:add-unit-test
+        delete-widget:unit-test-files
+        sys42.execute-lisp-file:/system42/tests/index.hl
