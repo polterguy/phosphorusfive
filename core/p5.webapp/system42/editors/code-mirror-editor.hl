@@ -47,6 +47,7 @@ sys42.execute-lisp-file:/system42/editors/codemirror/include-codemirror.hl
  */
 load-file:x:/../*/_file?value
   convert:false
+html-encode:x:/-/*?value
 
 
 /*
@@ -64,7 +65,7 @@ if:x:/../*/_widget-id?value
 set:x:/../*/create-widget/*/parent?value
   src:x:/../*/_parent?value
 set:x:/../**/literal/=editor_surface/*/innerValue?value
-  src:x:/../*/load-file/*?value
+  src:x:/../*/html-encode?value
 
 
 /*

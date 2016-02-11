@@ -5,19 +5,21 @@
 /*
  * Tests that "identity expression" behaves as expected!
  */
-identity-expression
+expression-identity
   insert-before:x:
     src
       foo:bar
   if:x:/../0?name
     !=:foo
-    throw:@"Assert error, expected [foo], got [{0}]!"
-      :x:/../0?name
+    or:x:/../0?value
+      !=:bar
+    throw:@"Assert error, expected [foo:bar], got [{0}]!"
+      :x:/../0
 
 /*
  * Tests value expression
  */
-value-expression
+expression-value
   _data
   set:x:/-?value
     src:success
@@ -29,7 +31,7 @@ value-expression
 /*
  * Tests name expression
  */
-name-expression
+expression-name
   _data
   set:x:/-?name
     src:success
@@ -41,7 +43,7 @@ name-expression
 /*
  * Tests node expression
  */
-node-expression
+expression-node
   _data
   set:x:/-
     src:"foo:bar"
@@ -53,24 +55,9 @@ node-expression
       :x:/../0?node.string
 
 /*
- * Tests reference expression
- */
-reference-expression
-  _data:node:
-  add:x:/-/#
-    src
-      foo:bar
-  if:x:/../0/#/0?name
-    !=:foo
-    or:x:/../0/#/0?value
-      !=:bar
-    throw:@"Assert error, expected [foo:bar], got [{0}]!"
-      :x:/../0/#/0?node.string
-
-/*
  * Tests count expression
  */
-count-expression
+expression-count
   _data
     foo1
     foo2
