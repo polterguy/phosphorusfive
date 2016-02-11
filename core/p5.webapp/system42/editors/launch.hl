@@ -32,6 +32,7 @@ if
     src:x:/../*/_file?value
 else-if:x:/../*/split/0/-?name
   =:txt
+
   /*
    * Loading generic CodeMirror editor in .MD mode
    */

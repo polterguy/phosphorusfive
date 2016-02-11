@@ -66,8 +66,7 @@ databind:x:/../*/create-widget/=unit-test-files/*/widgets
         td
           widgets
             button
-              class:btn btn-default btn-xs
-              style:"width:100px;"
+              class:btn btn-default form-control
               innerValue:Evaluate
               onclick
 
@@ -76,25 +75,24 @@ databind:x:/../*/create-widget/=unit-test-files/*/widgets
                  * multiple unit tests. [_file] is filename of unit test file
                  */
                 {_file}:x:?name
-                if
-                  sys42.evaluate-unit-test-file:x:/../*/_file?value
-                  =:bool:false
+                _html
+                sys42.evaluate-unit-test-file:x:/../*/_file?value
+                if:x:/-/*/_error
 
                   /*
                    * Error while evaluating unit test file, setting result
-                   * widget to "message" + "stack-trace" of exception
+                   * to ell error "messages" + "stack-trace" of exception
                    */
-                  find-widget
-                    _file-result:x:/../*/_file?value
-                  _error-html
-                  for-each:x:/..if/*/sys42.evaluate-unit-test-file/*/_error?value
+                  for-each:x:/../*/sys42.evaluate-unit-test-file/*/_error?value
                     html-encode:x:/./*/_dp?value
-                    set:x:/./-?value
-                      src:{0}<pre>{1}</pre>
-                        :x:/..for-each/-?value
+                    set:x:/../*/_html?value
+                      src:@"{0}<pre class=""error"">{1}</pre>"
+                        :x:/../*/_html?value
                         :x:/..for-each/*/html-encode?value
-                  set-widget-property:x:/./*/find-widget/*/[0,1]?value
-                    innerValue:x:/././*/_error-html?value
+
+                  /*
+                   * Setting unit tests table row to class "error"
+                   */
                   find-widget
                     _file-row:x:/../*/_file?value
                   set-widget-property:x:/-/*?value
@@ -102,20 +100,25 @@ databind:x:/../*/create-widget/=unit-test-files/*/widgets
                 else
 
                   /*
-                   * Success while evaluating unit test file, providing feedback to
-                   * user through settings row to green and feedback message to "Success!"
+                   * Success while evaluating unit test file, no errors.
+                   * Setting unit tests table row to class "success"
                    */
-                  find-widget
-                    _file-result:x:/../*/_file?value
-                  join:x:/../*/if/*/sys42.evaluate-unit-test-file/*/_success?value
-                    sep:"\r\n"
-                  set-widget-property:x:/-2/*?value
-                    innerValue:<pre>{0}</pre>
-                      :x:/././-?value
                   find-widget
                     _file-row:x:/../*/_file?value
                   set-widget-property:x:/-/*?value
                     class:success
+
+                /*
+                 * Providing textual feedback to user about state of unit tests
+                 */
+                find-widget
+                  _file-result:x:/../*/_file?value
+                join:x:/../*/sys42.evaluate-unit-test-file/*/_success?value
+                  sep:"\r\n"
+                set-widget-property:x:/-2/*?value
+                  innerValue:@"{0}<pre>{1}</pre>"
+                    :x:/../*/_html?value
+                    :x:/././-?value
 
 /*
  * Creating widget showing all unit test files in a table
@@ -123,7 +126,7 @@ databind:x:/../*/create-widget/=unit-test-files/*/widgets
 create-widget:unit-test-files
   parent:content
   element:table
-  class:table table-hover
+  class:table
   events
 
     /*
@@ -143,8 +146,10 @@ create-widget:unit-test-files
         _parent:content
         _widget-id:unit-test-file-editor
 
-      // Hiding unit test table
+      // Hiding unit test table and "add" button
       set-widget-property:unit-test-files
+        visible:false
+      set-widget-property:add-unit-test
         visible:false
 
     /*
@@ -159,8 +164,10 @@ create-widget:unit-test-files
       // Deleting editor widget
       delete-widget:unit-test-file-editor
 
-      // Making unit test table visible again
+      // Making unit test table and "add button" visible again
       set-widget-property:unit-test-files
+        visible:true
+      set-widget-property:add-unit-test
         visible:true
 
     /*
@@ -178,8 +185,6 @@ create-widget:unit-test-files
             src:"_success:{0}"
               :x:/..for-each/*/_dp/#?name
         catch
-          set:x:/..?value
-            src:bool:false
           eval-x:x:/+/*/*
           add:x:/..
             src
@@ -205,10 +210,10 @@ create-widget:unit-test-files
             th
               innerValue:Result
             th
+              class:text-right
               widgets
                 button
-                  class:btn btn-primary
-                  style:"width:150px;"
+                  class:btn btn-primary form-control
                   innerValue:Evaluate all
                   onclick
                     find-widget
@@ -217,3 +222,13 @@ create-widget:unit-test-files
                       onclick
 
 
+create-widget:add-unit-test
+  parent:content
+  class:col-xs-6 col-xs-push-6 col-md-2 col-md-push-10 text-right prepend-top
+  widgets
+    button
+      class:btn btn-default form-control
+      innerValue:+
+      title:Create new unit test file
+      onclick
+        sys42.show-code-window:x:/..
