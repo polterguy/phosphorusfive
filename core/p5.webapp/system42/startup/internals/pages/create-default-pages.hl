@@ -32,19 +32,47 @@ if:x:/-/*/role?value
         innerValue:@""<img src=""""/media/images/marvin-headshot.png"""" style=""""float:right;"""" class=""""prepend-left"""" />
 <blockquote><em>""""Hi there owner. I am so pleased to see you! [<strong>*wagging tail*</strong>]! Please tell me what to do! 
 I am your servant! FYI, the first thing you will notice with me, is that this page is only visible for you! If you log out
-and refresh the page, you will see a different page, showing the dynamic features of Phosphorus Five!""""</em></blockquote>
+and refresh the page, you will see a different page, showing the dynamic features of Phosphorus Five!""""<br/><br/>
 
-<p>Some great placed for you to start, can be found below</p>
+""""System 42 and Phosphorus Five is a Web Operating System, allowing you to create your own 'Silicon
+Valley', keeping your files secure, but accessible from any device, sending encrypted emails, or receiving encrypted emails, 
+creating a website, setting up a file sharing service, setting up your own blog, video directory, publishing system, 
+etc, etc, etc. You can also setup System42 such that your friends have access to use features, create articles, send and receive emails, 
+retrieve or edit files, and so on. Basically, System 42 is your own private little version of 'Silicon Valley' :)""""<br/><br/>
 
-<ul>
-    <li><a href=""""/root/editor"""">Pages</a></li>
-    <li><a href=""""/root/executor"""">Evaluator</a></li>
-    <li><a href=""""/root/users"""">Users</a></li>
-    <li><a href=""""/root/gnupg-database"""">Gnu Privacy Guard</a></li>
-    <li><a href=""""/root/tests"""">Unit Tests</a></li>
-    <li><a href=""""/superuser/files"""">File System</a></li>
-    <li><a href=""""/user/profile"""">Profile</a></li>
-</ul>""
+""""Below you can find some of the main links in your system, that allows you to get started with Phosphorus Five and System42.""""</em></blockquote>
+
+<table class=""""table table-hover"""">
+    <thead><tr><th>Link</th><th>Explanation</th></tr></thead>
+    <tr>
+        <td><a href=""""/root/editor"""">Pages</a></td>
+        <td>Allows you to edit your pages like you would in a CMS, or even create rich Web Applications</td>
+    </tr>
+    <tr>
+        <td><a href=""""/root/executor"""">Evaluator</a></td>
+        <td>Hyperlisp evaluator <em>""""shell""""</em> allowing you to evaluate Hyperlisp, almost like you would with a Linux Terminal window</td>
+    </tr>
+    <tr>
+        <td><a href=""""/root/users"""">Users</a></td>
+        <td>Edit users in your system, allowing your friends to gain privileged access to your system</td>
+    </tr>
+    <tr>
+        <td><a href=""""/root/gnupg-database"""">Gnu Privacy Guard</a></td>
+        <td>Manage your OpenPGP cryptography keys, create, delete or view all GnuPG cryptography key pairs in your server</td>
+    </tr>
+    <tr>
+        <td><a href=""""/root/tests"""">Unit Tests</a></td>
+        <td>Allows you to verify the integrity of your system by evaluating its unit tests, or even edit and/or add unit tests to your system</td>
+    </tr>
+    <tr>
+        <td><a href=""""/superuser/files"""">File System</a></td>
+        <td>Browse your server's file system, almost the same way you would with for instance the File Explorer in Windows</td>
+    </tr>
+    <tr>
+        <td><a href=""""/user/profile"""">Profile</a></td>
+        <td>Change, edit, or view your profile (user account)</td>
+    </tr>
+</table>""
 
 else-if:x:/-2/*/role?value
   =:superuser
