@@ -91,7 +91,7 @@ namespace p5.lambda.keywords
                 // Node is databound to an Active Event source
                 var activeEventName = current.Name.Substring (2, current.Name.Length - 3);
 
-                // Keeping original node around, such that we can reset template after invocation of Active Event
+                // Keeping original node around, such that we can reset template, after invocation of Active Event
                 var originalNode = current.Clone ();
                 try {
 
@@ -100,9 +100,17 @@ namespace p5.lambda.keywords
                     current.Insert (0, new Node ("_arg", dataSource));
                     context.RaiseLambda (current.Name, current);
 
-                    // Looping through result of Active Event invocation, and returning result to caller
-                    foreach (var idxResult in current.Children) {
-                        yield return idxResult.Clone ();
+                    // Returning result, prioritising value
+                    if (current.Value != null && current.Value != originalNode.Value) {
+    
+                        // Returning value of invocation as result
+                        yield return current.Get<Node> (context).Clone ();
+                    } else {
+
+                        // Looping through result of Active Event invocation, and returning result to caller
+                        foreach (var idxResult in current.Children) {
+                            yield return idxResult.Clone ();
+                        }
                     }
 
                     // Aborting the rest of our yield operation!

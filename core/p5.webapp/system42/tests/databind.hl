@@ -79,6 +79,7 @@ event-source
         {name}:x:/*/name?value
         {@eval}:x:/../*/_x
           _static-arg:static
+        {@eval}:x:/../*/_x2
   _x
     if:x:/../*/_arg/#/*/adr
       insert-before:x:/../0
@@ -86,11 +87,19 @@ event-source
           :x:/../*/_static-arg?value
           :x:/../*/_arg/#/*/adr/*/str?value
           :x:/../*/_arg/#/*/adr/*/zip?value
+      insert-before:x:/../1
+        src:"foo:bar"
+  _x2
+    set:x:/..?value
+      src:node:"foo2:bar2"
   if:x:/../*/_dest
     !=:node:@"_dest
   result
     name:John Doe
     adr:static, Dunbar, 987654
+    foo:bar
+    foo2:bar2
   result
-    name:Jane Doe"
+    name:Jane Doe
+    foo2:bar2"
     throw:@"Assert error, result not as expected!"
