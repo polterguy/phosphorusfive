@@ -19,6 +19,18 @@ list-files:/system42/tests/
 set:x:@"/-/*/""/system42/tests/index.hl"""
 
 /*
+ * Callback invoked while databinding innerValue of unit test name
+ */
+_eval-name
+  split:x:/../*/_dn/#?name
+    =:/
+    =:.
+  eval-x:x:/+/*/*
+  insert-before:x:/../0
+    src
+      innerValue:x:/../*/split/0/-2?name
+
+/*
  * Databinding unit tests files to table widget
  */
 databind:x:/../*/create-widget/=unit-test-files/*/widgets
@@ -39,8 +51,9 @@ databind:x:/../*/create-widget/=unit-test-files/*/widgets
         td
           widgets
             a
-              {innerValue}:x:?name
+              {@eval}:x:/../*/_eval-name
               href:#
+              title:Click to edit or view unit test file
               onclick
                 sys42.launch-unit-test-editor
                   {_file}:x:?name
@@ -228,7 +241,7 @@ create-widget:unit-test-files
         tr
           widgets
             th
-              innerValue:File
+              innerValue:Unit test file
             th
               innerValue:Result
             th

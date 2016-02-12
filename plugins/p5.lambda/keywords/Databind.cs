@@ -97,7 +97,7 @@ namespace p5.lambda.keywords
 
                     // Setting accurate name for node, adding datasource as [_arg], and invoking Active Event source
                     current.Name = activeEventName;
-                    current.Insert (0, new Node ("_arg", dataSource));
+                    current.Insert (0, new Node ("_dn", dataSource));
                     context.RaiseLambda (current.Name, current);
 
                     // Returning result, prioritising value

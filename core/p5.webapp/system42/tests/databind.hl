@@ -81,12 +81,12 @@ event-source
           _static-arg:static
         {@eval}:x:/../*/_x2
   _x
-    if:x:/../*/_arg/#/*/adr
+    if:x:/../*/_dn/#/*/adr
       insert-before:x:/../0
         src:@"adr:{0}, {1}, {2}"
           :x:/../*/_static-arg?value
-          :x:/../*/_arg/#/*/adr/*/str?value
-          :x:/../*/_arg/#/*/adr/*/zip?value
+          :x:/../*/_dn/#/*/adr/*/str?value
+          :x:/../*/_dn/#/*/adr/*/zip?value
       insert-before:x:/../1
         src:"foo:bar"
   _x2
