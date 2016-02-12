@@ -1,0 +1,96 @@
+/*
+ * Contains unit tests for testing 
+ * the [databind] features of system
+ */
+
+/*
+ * Tests simple [databind]
+ */
+simple
+  _data
+    foo1:bar1
+    foo2:bar2
+  _dest
+  databind:x:/-
+    src:x:/../*/_data/*
+    template
+      result
+        {name}:x:?name
+        {value}:x:?value
+  if:x:/../*/_dest
+    !=:node:@"_dest
+  result
+    name:foo1
+    value:bar1
+  result
+    name:foo2
+    value:bar2"
+    throw:@"Assert error, result not as expected!"
+
+/*
+ * Tests recursive [databind]
+ */
+recursive
+  _data
+    foo1
+      name:John Doe
+      adr
+        str:Dunbar
+        zip:987654
+    foo2
+      name:Jane Doe
+  _dest
+  databind:x:/-
+    src:x:/../*/_data/*
+    template
+      result
+        {name}:x:/*/name?value
+        {adr}:x:/*/adr
+          {str}:x:/*/str?value
+          {zip}:x:/*/zip?value
+  if:x:/../*/_dest
+    !=:node:@"_dest
+  result
+    name:John Doe
+    adr
+      str:Dunbar
+      zip:987654
+  result
+    name:Jane Doe"
+    throw:@"Assert error, result not as expected!"
+
+/*
+ * Tests event source [databind]
+ */
+event-source
+  _data
+    foo1
+      name:John Doe
+      adr
+        str:Dunbar
+        zip:987654
+    foo2
+      name:Jane Doe
+  _dest
+  databind:x:/-
+    src:x:/../*/_data/*
+    template
+      result
+        {name}:x:/*/name?value
+        {@eval}:x:/../*/_x
+          _static-arg:static
+  _x
+    if:x:/../*/_arg/#/*/adr
+      insert-before:x:/../0
+        src:@"adr:{0}, {1}, {2}"
+          :x:/../*/_static-arg?value
+          :x:/../*/_arg/#/*/adr/*/str?value
+          :x:/../*/_arg/#/*/adr/*/zip?value
+  if:x:/../*/_dest
+    !=:node:@"_dest
+  result
+    name:John Doe
+    adr:static, Dunbar, 987654
+  result
+    name:Jane Doe"
+    throw:@"Assert error, result not as expected!"

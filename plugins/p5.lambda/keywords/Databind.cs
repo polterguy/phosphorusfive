@@ -85,7 +85,37 @@ namespace p5.lambda.keywords
             var retVal = new Node ();
 
             // Checking if node has databound expression
-            if (current.Name.StartsWith ("{") &&
+            if (current.Name.StartsWith ("{@") &&
+                current.Name.EndsWith ("}")) {
+
+                // Node is databound to an Active Event source
+                var activeEventName = current.Name.Substring (2, current.Name.Length - 3);
+
+                // Keeping original node around, such that we can reset template after invocation of Active Event
+                var originalNode = current.Clone ();
+                try {
+
+                    // Setting accurate name for node, adding datasource as [_arg], and invoking Active Event source
+                    current.Name = activeEventName;
+                    current.Insert (0, new Node ("_arg", dataSource));
+                    context.RaiseLambda (current.Name, current);
+
+                    // Looping through result of Active Event invocation, and returning result to caller
+                    foreach (var idxResult in current.Children) {
+                        yield return idxResult.Clone ();
+                    }
+
+                    // Aborting the rest of our yield operation!
+                    yield break;
+                } finally {
+
+                    // House cleaning after invocation
+                    current.Name = originalNode.Name;
+                    current.Value = originalNode.Value;
+                    current.Clear ();
+                    current.AddRange (originalNode.Children);
+                }
+            } else if (current.Name.StartsWith ("{") &&
                 current.Name.EndsWith ("}")) {
 
                 // Retrieving expression, and evaluating it
