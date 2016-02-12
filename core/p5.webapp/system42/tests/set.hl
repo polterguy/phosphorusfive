@@ -1,0 +1,127 @@
+/*
+ * Contains unit tests for testing [set] in system
+ */
+
+/*
+ * Tests that "set" behaves correctly with value
+ */
+value
+  _data
+  set:x:/-?value
+    src:success
+  if:x:/../0?value
+    !=:success
+    throw:@"Assert error, expected [success], got [{0}]!"
+      :x:/../0?value
+
+/*
+ * Tests that "set" behaves correctly with name
+ */
+name
+  _data
+  set:x:/-?name
+    src:success
+  if:x:/../0?name
+    !=:success
+    throw:@"Assert error, expected [success], got [{0}]!"
+      :x:/../0?name
+
+/*
+ * Tests that "set" behaves correctly with node
+ */
+node
+  _data
+  set:x:/-
+    src:"_foo:success"
+  if:x:/../0?node.string
+    !=:"_foo:success"
+    throw:@"Assert error, expected [_foo:success], got [{0}]!"
+      :x:/../0?node.string
+
+/*
+ * Tests that "set" behaves correctly when setting name to null
+ */
+null-name
+  _data
+  set:x:/-?name
+  if:x:/../0?name
+    !=:
+    throw:@"Assert error, expected [], got [{0}]!"
+      :x:/../0?name
+
+/*
+ * Tests that "set" behaves correctly when setting value to null
+ */
+null-value
+  _data
+  set:x:/-?value
+  if:x:/../0?value
+    !=
+    throw:@"Assert error, expected null, got [{0}]!"
+      :x:/../0?value
+
+/*
+ * Tests that "set" behaves correctly when setting node to null
+ */
+null-node
+  _data
+  set:x:/-
+  if:x:/../0?name
+    !=:set
+    throw:@"Assert error, expected null-node, got [{0}]!"
+      :x:/../0?node.string
+
+/*
+ * Tests that "set" behaves correctly when setting multiple values
+ * to static string
+ */
+multiple-destinations
+  _data
+    foo1
+    foo2
+  set:x:/-/*?value
+    src:success
+  if:x:/../0/0?value
+    !=:success
+    or:x:/../0/1?value
+      !=:success
+    throw:@"Assert error, expected [success], got [{0}]!"
+      :x:/../0/*?value
+
+/*
+ * Tests that "set" behaves correctly with [rel-src]
+ */
+rel-src
+  _data
+    foo1
+    foo2
+  set:x:/-/*?value
+    rel-src:x:?name
+  if:x:/../0/0?value
+    !=:foo1
+    or:x:/../0/1?value
+      !=:foo2
+    throw:@"Assert error, expected [foo1] and [foo2], got [{0}]!"
+      :x:/../0/*?value
+
+/*
+ * Tests that "set" behaves correctly with event source,
+ * referencing [_dn] or data node of Active Event
+ */
+event-src
+  _data
+    foo1
+    foo2
+  _x
+    set:x:/..?value
+      src:{0}{1}
+        :XX
+        :x:/../*/_dn/#?name
+  set:x:/-2/*?value
+    eval:x:/./-
+  if:x:/../0/0?value
+    !=:XXfoo1
+    or:x:/../0/1?value
+      !=:XXfoo2
+    throw:@"Assert error, expected [XXfoo1] and [XXfoo2], got [{0}]!"
+      :x:/../0/*?value
