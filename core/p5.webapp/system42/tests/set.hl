@@ -15,6 +15,18 @@ value
       :x:/../0?value
 
 /*
+ * Tests that "set" behaves correctly with [src] being expression
+ */
+expression-source
+  _data
+  set:x:/-?value
+    src:x:/../0?name
+  if:x:/../0?value
+    !=:_data
+    throw:@"Assert error, expected [_data], got [{0}]!"
+      :x:/../0?value
+
+/*
  * Tests that "set" behaves correctly with name
  */
 name
@@ -37,6 +49,18 @@ node
     !=:"_foo:success"
     throw:@"Assert error, expected [_foo:success], got [{0}]!"
       :x:/../0?node.string
+
+/*
+ * Tests that "set" behaves correctly when setting value to node
+ */
+node-source
+  _data
+  set:x:/-?value
+    src:node:"_foo:success"
+  if:x:/../0?value
+    !=:node:"_foo:success"
+    throw:@"Assert error, expected [_foo:success], got [{0}]!"
+      :x:/../0?value.string
 
 /*
  * Tests that "set" behaves correctly when setting name to null
@@ -85,8 +109,23 @@ multiple-destinations
     !=:success
     or:x:/../0/1?value
       !=:success
-    throw:@"Assert error, expected [success], got [{0}]!"
-      :x:/../0/*?value
+    throw:@"Assert error, expected [success] and [success], got [{0}] and [{1}]!"
+      :x:/../0/0?value
+      :x:/../0/1?value
+
+/*
+ * Tests that "set" behaves correctly when given multiple source values
+ */
+multiple-source
+  _data
+    foo1
+    foo2
+  set:x:/-?value
+    src:x:/../0/*?name
+  if:x:/../0?value
+    !=:foo1foo2
+    throw:@"Assert error, expected [foo1foo2], got [{0}]!"
+      :x:/../0?value
 
 /*
  * Tests that "set" behaves correctly with [rel-src]
@@ -101,8 +140,9 @@ rel-src
     !=:foo1
     or:x:/../0/1?value
       !=:foo2
-    throw:@"Assert error, expected [foo1] and [foo2], got [{0}]!"
-      :x:/../0/*?value
+    throw:@"Assert error, expected [foo1] and [foo2], got [{0}] and [{1}]!"
+      :x:/../0/0?value
+      :x:/../0/1?value
 
 /*
  * Tests that "set" behaves correctly with event source,
@@ -123,5 +163,6 @@ event-src
     !=:XXfoo1
     or:x:/../0/1?value
       !=:XXfoo2
-    throw:@"Assert error, expected [XXfoo1] and [XXfoo2], got [{0}]!"
-      :x:/../0/*?value
+    throw:@"Assert error, expected [XXfoo1] and [XXfoo2], got [{0}] and [{1}]!"
+      :x:/../0/0?value
+      :x:/../0/1?value

@@ -39,6 +39,8 @@ sys42.execute-lisp-file:/system42/editors/codemirror/include-codemirror.hl
       autofocus:true
       fullscreen:true
       height:596px
+      keys
+        Alt-S:@"function(cm) {p5.$('save-editor-content').raise('onclick');}"
 
 
 /*
@@ -96,10 +98,12 @@ create-widget:hyperlisp-editor
         /*
          * "Save" button
          */
-        literal
+        literal:save-editor-content
           element:button
           class:btn btn-default
           innerValue:Save
+          accesskey:S
+          title:Save - S
           onclick
             get-widget-property:editor_surface
               innerValue

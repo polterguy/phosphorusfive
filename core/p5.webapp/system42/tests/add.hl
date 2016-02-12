@@ -1,0 +1,64 @@
+/*
+ * Contains unit tests for testing [add] in system
+ */
+
+/*
+ * Tests that "add" behaves correctly with value
+ */
+static-source
+  _data
+  add:x:/-
+    src
+      foo:bar
+  if:x:/../0/0
+    !=:node:"foo:bar"
+    throw:@"Assert error, expected [foo:bar], got [{0}]!"
+      :x:/../0/0?node.string
+
+/*
+ * Tests that "add" behaves correctly when source is expression
+ */
+expression-source
+  _data
+  _src
+    foo:bar
+  add:x:/-2
+    src:x:/../*/_src/*
+  if:x:/../0/0
+    !=:node:"foo:bar"
+    throw:@"Assert error, expected [foo:bar], got [{0}]!"
+      :x:/../0/0?node.string
+
+/*
+ * Tests that "add" behaves correctly when source is [rel-src]
+ */
+rel-source
+  _data
+    foo:bar
+  add:x:/-/*
+    rel-src:x:?name
+  if:x:/../0/0/0
+    !=:node:"foo"
+    throw:@"Assert error, expected [foo], got [{0}]!"
+      :x:/../0/0/0?node.string
+
+/*
+ * Tests that "add" behaves correctly when source is Active Event
+ */
+event-source
+  _data
+    foo1:bar1
+    foo2:bar2
+  _x
+    set:x:/..?value
+      src:"{0}{1}:success"
+        :x:/../*/_dn/#?name
+        :x:/../*/_dn/#?value
+  add:x:/-2/*
+    eval:x:/./-
+  if:x:/../0/0/0
+    !=:node:"foo1bar1:success"
+    or:x:/../0/1/0
+      !=:node:"foo2bar2:success"
+    throw:@"Assert error, expected [foo1bar1:success] and [foo2bar2:success], got [{0}]!"
+      :x:/../0/0/*?node.string

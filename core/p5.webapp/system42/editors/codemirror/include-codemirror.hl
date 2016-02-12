@@ -31,9 +31,7 @@ include-stylesheet-file:"/system42/editors/codemirror/theme/{0}.css"
 // Making sure fullscreen is toggled if it should be allowed
 if:x:/../*/_editor/*/*/fullscreen?value.bool
   set:x:/../*/send-javascript/4?value
-    src:@",""Alt-F"": function(cm) {
-  cm.setOption('fullScreen', !cm.getOption('fullScreen'));
-}"
+    src:@",""Alt-F"": function(cm) {cm.setOption('fullScreen', !cm.getOption('fullScreen'));}"
 else
   set:x:/../*/send-javascript/4?value
     src:""
