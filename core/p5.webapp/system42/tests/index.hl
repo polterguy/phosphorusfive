@@ -81,7 +81,9 @@ databind:x:/../*/create-widget/=unit-test-files/*/widgets
 
                   /*
                    * Error while evaluating unit test file, setting result
-                   * to ell error "messages" + "stack-trace" of exception
+                   * to ell error "messages" + "stack-trace" of exception,
+                   * and making sure we signal in context value that error 
+                   * occurred
                    */
                   for-each:x:/../*/sys42.evaluate-unit-test-file/*/_error?value
                     html-encode:x:/./*/_dp?value
@@ -89,24 +91,34 @@ databind:x:/../*/create-widget/=unit-test-files/*/widgets
                       src:@"{0}<pre class=""error"">{1}</pre>"
                         :x:/../*/_html?value
                         :x:/..for-each/*/html-encode?value
+                  set-context-value:sys42.unit-test-errors
+                    src:bool:true
 
                   /*
-                   * Setting unit tests table row to class "error"
+                   * Setting unit tests table row to class "error", and button
+                   * CSS class to warning
                    */
                   find-widget
                     _file-row:x:/../*/_file?value
                   set-widget-property:x:/-/*?value
                     class:error
+                  set-widget-property:x:/../*/_event?value
+                    class:btn btn-warning form-control
+                    disabled
                 else
 
                   /*
                    * Success while evaluating unit test file, no errors.
-                   * Setting unit tests table row to class "success"
+                   * Setting unit tests table row to class "success" and
+                   * button CSS class to success
                    */
                   find-widget
                     _file-row:x:/../*/_file?value
                   set-widget-property:x:/-/*?value
                     class:success
+                  set-widget-property:x:/../*/_event?value
+                    class:btn btn-success form-control
+                    disabled
 
                 /*
                  * Updating unit test count
@@ -124,9 +136,9 @@ databind:x:/../*/create-widget/=unit-test-files/*/widgets
                 find-widget
                   _file-result:x:/../*/_file?value
                 join:x:/../*/sys42.evaluate-unit-test-file/*/_success?value
-                  sep:", "
+                  sep:"]\r\n</li><li>["
                 set-widget-property:x:/-2/*?value
-                  innerValue:@"{0}<p>{1}</p>"
+                  innerValue:@"{0}<pre><ol><li>[{1}]</li></ol></pre>"
                     :x:/../*/_html?value
                     :x:/././-?value
 
@@ -226,6 +238,8 @@ create-widget:unit-test-files
                   class:btn btn-primary form-control
                   innerValue:Evaluate all
                   onclick
+                    set-context-value:sys42.unit-test-errors
+                      src:bool:false
                     date-now
                     set-session-value:sys42.unit-test-count
                       src:int:0
@@ -242,6 +256,15 @@ create-widget:unit-test-files
                       :x:/./-4/*?value
                       :x:/./-2?value
                       _time:more
+                    get-context-value:sys42.unit-test-errors
+                    if:x:/-/*?value
+                      set-widget-property:x:/../*/_event?value
+                        class:btn btn-warning form-control
+                        disabled
+                    else
+                      set-widget-property:x:/../*/_event?value
+                        class:btn btn-success form-control
+                        disabled
 
 
 create-widget:add-unit-test

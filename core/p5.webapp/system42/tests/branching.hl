@@ -1,0 +1,210 @@
+/*
+ * Contains unit tests for testing [if], 
+ * [else-if] and [else] in system
+ */
+
+/*
+ * Tests that "if" behaves correctly with two static sources
+ */
+static-if
+  if:success
+    !=:success
+    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+
+/*
+ * Tests that "if" behaves correctly with two static 
+ * sources of integer types
+ */
+static-int-if
+  if:int:5
+    !=:int:5
+    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+
+/*
+ * Tests that "if" behaves correctly with two static 
+ * sources of different types
+ */
+static-different-types
+  if:5
+    =:int:5
+    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+
+/*
+ * Tests that "if" behaves correctly with two expression 
+ * sources of different types
+ */
+expression-different-types
+  _data
+    foo1:int:5
+    foo2:5
+  if:x:/../*/_data/0?value
+    =:x:/../*/_data/1?value
+    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+
+/*
+ * Tests that "if" behaves correctly with two expressions 
+ * leading to nodes evaluation
+ */
+expression-nodes
+  _data
+    foo1
+      foo2:bar2
+      foo3:int:5
+    foo1
+      foo2:bar2
+      foo3:int:5
+  if:x:/../*/_data/0
+    !=:x:/../*/_data/1
+    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+
+/*
+ * Tests that "if" behaves correctly with two expressions 
+ * leading to nodes evaluation that should yield false
+ */
+expression-nodes-deep-false
+  _data
+    foo1
+      foo2:bar2
+        error:5
+      foo3:int:5
+    foo1
+      foo2:bar2
+        error:int:5
+      foo3:int:5
+  if:x:/../*/_data/0
+    =:x:/../*/_data/1
+    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+
+/*
+ * Tests that "if" behaves correctly with logical AND
+ */
+and-if
+  _data
+    foo1:bar1
+    foo2:bar2
+  if:x:/../*/_data/0?name
+    =:foo1
+    and:x:/../*/_data/1?name
+      =:foo2
+      // success
+  else
+    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+
+/*
+ * Tests that "if" behaves correctly with logical OR
+ */
+or-if
+  _data
+    foo1:bar1
+    foo2:bar2
+  if:x:/../*/_data/0?name
+    =:error
+    or:x:/../*/_data/1?name
+      =:foo2
+      // success
+  else
+    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+
+/*
+ * Tests that "if" behaves correctly with logical OR 
+ * combined with logical AND
+ */
+or-if-and
+  _data
+    foo1:bar1
+    foo2:bar2
+  if:x:/../*/_data/0?name
+    =:error
+    or:x:/../*/_data/1?name
+      =:foo2
+      // success
+      and:x:/../*/_data/1?value
+        =:bar2
+  else
+    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+
+/*
+ * Tests that "if" behaves correctly with logical OR 
+ * combined with logical AND, that should yield false
+ */
+or-if-and-false
+  _data
+    foo1:bar1
+    foo2:bar2
+  if:x:/../*/_data/0?name
+    =:error
+    or:x:/../*/_data/1?name
+      =:foo2
+      // success
+      and:x:/../*/_data/1?value
+        =:bar1
+    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+
+/*
+ * Tests that "if" behaves correctly and gives logical
+ * AND precedence in condition evaluation
+ */
+and-precedence
+  _data
+    foo1:bar1
+    foo2:bar2
+  if:x:/../*/_data/0?name
+    =:foo1
+    and:x:/../*/_data/0?value
+      =:error
+
+    /*
+     * The next three parts should evaluate to true,
+     * making the entire [if] evaluate to true, due
+     * to AND having precedence in conditions
+     */
+    or:x:/../*/_data/1?name
+      =:foo2
+    and:x:/../*/_data/1?value
+      =:bar2
+    and:x:/../*/_data/0?name
+      =:foo1
+
+    /*
+     * Evaluates to false
+     */
+    or:error1
+      =:error2
+    and:error3
+      =:error4
+    // success
+  else
+    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+
+/*
+ * Tests that "else" behaves correctly and evaluates 
+ * if [if] evaluates to false
+ */
+else
+  _data
+  if:x:/../*/_data?name
+    =:error
+    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+  else
+    set:x:/../0?value
+      src:success
+  if:x:/../*/_data?value
+    !=:success
+    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+
+/*
+ * Tests that "else-if" behaves correctly and evaluates 
+ * if [if] evaluates to false
+ */
+else-if
+  _data
+  if:x:/../*/_data?name
+    =:error
+    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+  else-if:x:/../*/_data?name
+    =:_data
+    set:x:/../0?value
+      src:success
+  if:x:/../*/_data?value
+    !=:success
+    throw:@"Assert error, if evaluated to true when it should evaluate to false"
