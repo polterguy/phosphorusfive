@@ -189,6 +189,187 @@ sys42.execute-lisp-file:/system42/apps/gnupg.hl
 sys42.execute-lisp-file:/system42/tests/index.hl
 "
 
+
+    p5.page:/examples/ajax-widgets-1
+      name:Ajax Widgets 1
+      template:/system42/cms/templates/main.hl
+      type:lambda
+      role:root
+      lambda:@"/*
+ * This example shows you how to dynamically create
+ * an Ajax Web Widget hierarchy.
+ */
+
+/*
+ * The [create-widget] Active Event is at the core, creating
+ * a [container] type of widget, which allows for children widgets
+ * inside its [widgets] child. The value of the [create-widget]
+ * node becomes the ID of the HTML element rendered.
+ * If you wish, you can replace the [create-widget] with either
+ * [create-literal-widget] or [create-void-widget]
+ */
+create-widget:foo
+
+  /*
+   * Which widget is the parent widget, or where to inject
+   * our widget
+   */
+  parent:content
+
+  /*
+   * Override the HTML element used to render your widget
+   */
+  element:strong
+
+  /*
+   * You can add up any attribute to your widget, by simply
+   * adding a child node with the specified name, and the 
+   * specified value. The next node will add a CSS class
+   * attribute to the HTML element rendered, with the value
+   * of 'col-xs-12', which is a Bootstrap CSS class
+   */
+  class:col-xs-12
+
+  /*
+   * The next is wrapper for all children widgets of our
+   * root widget
+   */
+  widgets
+
+    /*
+     * The next node creates a [literal] type of widget. There
+     * are three (actually four) different types of widgets;
+     *   1. [literal] - has the [innerValue] attribute, that
+     *      sets the innerHTML of your HTML element
+     *   2. [container] - has the [widgets] element, that 
+     *      sets the children widget collection for your widget
+     *   3. [void] - that has neither [innerValue] nor [widgets],
+     *      since it does not allow any content inside of its HTML tag.
+     *   4. [tex] - that is a simple text literal, taking only a piece
+     *      of HTML as its value, rendering without any element at all.
+     */
+    literal:bar
+    
+      /*
+       * This becomes the 'innerHTML' value of our widget
+       */
+      innerValue:Howdy Lambda World!
+
+      /*
+       * All attributes starting with on, will automatically
+       * be rendered as DOM events. If the attribute has a value,
+       * it will be rendered as a JavaScript piece of code. If it
+       * has children nodes, these nodes will be threaded as server-side 
+       * Hyperlisp, to be evaluated as the user interacts with the widget,
+       * raising the specified DOM event.
+       */
+      onclick
+        sys42.info-window:Hello World 2.0
+
+    /*
+     * If you do not use any of the predefined widget types, such
+     * as [literal], [container], [void] or [text], then the widget
+     * will be rendered with the specified tag, and checked during
+     * evaluation if it has a [widgets] node, or an [innerValue] node,
+     * and late bound to your specified type to become either a [container]
+     * or a [literal] widget. The next node will be rendered as a [literal]
+     * widget
+     */
+    a
+      href:""http://google.com""
+      innerValue:Go to Google!
+
+    /*
+     * Creates a [container] widget, with its own children widgets. This
+     * becomes a [container] type of widget, because it does not have an
+     * [innerValue], but rather a [widgets] child widget control collection.
+     * HTML element will be rendered as a 'ul' HTML element, since that's its 
+     * name. The ID of the HTML element, will be automatically created as a unique
+     * 8 digit long hexadecimal value, since no value of [ul] was explicitly assigned
+     */
+    ul
+      class:prepend-top
+      widgets
+        li
+          innerValue:foo 1
+
+          /*
+           * JavaScript event rendered to client as JavaScript
+           */
+          onclick:""alert('foo 1 clicked');""
+        li
+          innerValue:foo 2
+
+          /*
+           * JavaScript event rendered to client as JavaScript
+           */
+          onclick:""alert('foo 2 clicked');"""
+
+
+    p5.page:/examples/databind-1
+      name:Databind 1
+      template:/system42/cms/templates/main.hl
+      type:lambda
+      role:root
+      lambda:@"/*
+ * This example shows you how to use the [databind]
+ * Active Event to create a table that is databound towards
+ * some sort of data source. To understand how this page is
+ * wired together, please visit;
+ * https://phosphorusfive.wordpress.com/2016/02/13/hyperlisp-101-databind/
+ */
+
+/*
+ * Data source
+ */
+_data
+  person
+    name:Thomas Hansen
+    phone:98765432
+    adr
+      str:Dunbar
+      no:54
+  person
+    name:John Doe
+    phone:12345678
+    adr
+      str:Rocky
+      no:67
+  person
+    name:Jane Doe
+    phone:91919191
+    adr
+      str:Glen Allen
+      no:76543
+
+/*
+ * Databinding table widget below to datasource above
+ */
+databind:x:/../*/create-widget/*/widgets
+  src:x:/../*/_data/*
+  template
+    tr
+      widgets
+        td
+          {innerValue}:x:/*/name?value
+        td
+          {innerValue}:x:/*/phone?value
+        td
+          {innerValue}:x:/*/adr/*/str?value
+        td
+          {innerValue}:x:/*/adr/*/no?value
+
+/*
+ * Creating our databound widget
+ */
+create-widget
+  parent:content
+  element:table
+  class:table table-hover
+  widgets
+    text:@""<thead><tr><th>Name</th><th>Phone</th><th>Street</th><th>Number</th></tr></thead>"""
+
+
     p5.page:/about
       type:html
       name:About
