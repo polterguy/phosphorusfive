@@ -370,6 +370,113 @@ create-widget
     text:@""<thead><tr><th>Name</th><th>Phone</th><th>Street</th><th>Number</th></tr></thead>"""
 
 
+    p5.page:/examples/databind-2
+      name:Databind 2
+      template:/system42/cms/templates/main.hl
+      type:lambda
+      role:root
+      lambda:@"/*
+ * This example shows you how to use the [databind]
+ * Active Event to databind towards *ANY* data, by creating
+ * a table HTML element, that wraps every single 'leaf node'
+ * in your datasource, automatically creating relevant table 
+ * columns for your table.
+ *
+ * Notice that this type of logic can be used for databinding
+ * literally any type of datasource, generically, and will
+ * adapt according to the datasource supplied. This is therefor
+ * a 'generic' [databind] piece of logic, working for anything,
+ * as long as each databound object instance have the same structure
+ */
+
+/*
+ * PS!
+ * Try changing your datasource to 'anything'. As long as
+ * each 'instance' in your datasource has the same structure,
+ * it should work, and create one column for each leaf node value in
+ * your datasource!
+ */
+_data
+  person
+    name:Thomas Hansen
+    phone:98765432
+    adr
+      str:Dunbar
+      no:54
+  person
+    name:John Doe
+    phone:12345678
+    adr
+      str:Rocky
+      no:67
+  person
+    name:Jane Doe
+    phone:91919191
+    adr
+      str:Glen Allen
+      no:76543
+
+/*
+ * Databinding table widget below to datasource above.
+ * Notice the difference in the [src] node from this example
+ * and the 'Databind 1' example, that ensures that only
+ * leaf nodes' are being a part of your data source.
+ *
+ * Notice also that we have TWO [databind] invocations, one
+ * for creating the table headers, and the second one to create
+ * the table rows. Notice how the first [databind] that binds the
+ * headers, only selects the 1st data source instance, by using the
+ * range iterator. (the [0,1] parts)
+ *
+ * Notice also how we only select nodes that does NOT have children,
+ * meaning only the 'leaf nodes', which is done through the inner expression
+ * in the (!/0/.) parts
+ */
+
+// Databinding headers of table
+databind:x:/../*/create-widget/*/widgets/*/thead/*/widgets/*/tr/*/widgets
+  src:x:/../*/_data/*/[0,1]/**(!/0/.)
+  template
+    th
+      {innerValue}:x:?name
+
+// Databinding rows of table
+databind:x:/../*/create-widget/*/widgets
+  src:x:/../*/_data/*
+  template
+
+    tr
+      widgets
+
+        /*
+         * Inner databound expression, will loop once for each
+         * result from inner expression, and create one td HTML element
+         * for each. The expression supplied here, will retrieve all
+         * nodes that does NOT have 'children nodes', effectively returning
+         * all 'leaf nodes'.
+         *
+         * When you supply an expression to a databound node, that returns a
+         * node result, instead of a value or a name, it will be treated as
+         * an 'inner databind expression', looping once for each result, recursively
+         * inside of your 'outer databind expression'
+         */
+        {td}:x:/**(!/0/.)
+          {innerValue}:x:?value
+
+/*
+ * Creating our databound widget
+ */
+create-widget
+  parent:content
+  element:table
+  class:table table-hover
+  widgets
+    thead
+      widgets
+        tr
+          widgets"
+
+
     p5.page:/about
       type:html
       name:About
