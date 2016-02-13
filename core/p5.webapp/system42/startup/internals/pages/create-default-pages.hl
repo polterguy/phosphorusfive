@@ -359,6 +359,9 @@ databind:x:/../*/create-widget/*/widgets
         td
           {innerValue}:x:/*/adr/*/no?value
 
+// Uncomment the line below to see the results of our [databind] invocation
+// sys42.show-code-window:x:/..
+
 /*
  * Creating our databound widget
  */
@@ -463,6 +466,8 @@ databind:x:/../*/create-widget/*/widgets
         {td}:x:/**(!/0/.)
           {innerValue}:x:?value
 
+// Uncomment the line below to see the results of our [databind] invocations
+// sys42.show-code-window:x:/..
 /*
  * Creating our databound widget
  */
@@ -475,6 +480,288 @@ create-widget
       widgets
         tr
           widgets"
+
+
+    p5.page:/examples/cryptoxifier
+      name:Cryptoxifier
+      type:lambda
+      template:/system42/cms/templates/main.hl
+      role:root
+      lambda:@"/*
+ * Creates a web widget that allows you to encrypt and decrypt plain text,
+ * and cipher text, using OpenPGP cryptography. This application requires that
+ * you have a Marvin PGP key defined in your web.config file
+ */
+
+/*
+ * Informing user that he'll need to have a 'machine Marvin' cryptography key
+ * defined to use app
+ */
+sys42.confirm-window
+  _header:Info!
+  _body:@""This app requires that you have a Marvin machine cryptography key created and defined in web.config, 
+otherwise it won't work! Make sure you have valid settings in <em>'marvinPgpKey'</em> and <em>'marvinPgpKeyPassword'</em>
+in your web.config file! And that these settings maps to an existing key in your GnuPG database!""
+
+create-widget:crypto-wrapper
+  parent:content
+  class:col-xs-12 flash-from-left form
+  widgets
+    container
+      class:form-group
+      widgets
+        container
+          class:input-group
+          widgets
+            literal
+              class:input-group-addon
+              innerValue:PGP key email
+            void:pgp-key
+              events
+
+                /*
+                 * Stores your last used PGP encryption key in yoru session, such
+                 * that the 'app' remembers it across page loads
+                 */
+                sys42.store-currently-used-encryption-key
+                  get-widget-property:pgp-key
+                    value
+                  set-session-value:sys42.store-currently-used-encryption-key
+                    src:x:/../*/get-widget-property/*/*?value
+              oninit
+
+                /*
+                 * Retrieves tha last used encryption key from session, if any,
+                 * and sets the 'Encryption key' property to that value
+                 */
+                get-session-value:sys42.store-currently-used-encryption-key
+                set-widget-property:pgp-key
+                  value:x:/../*/get-session-value/*?value
+              element:input
+              type:text
+              placeholder:Encryption key ...
+              class:form-control
+              oninit
+
+                /*
+                 * Using jQuery to set focus to PGP key input text field
+                 */
+                send-javascript:""$('#pgp-key').focus().select();""
+    container
+      class:form-group prepend-top
+      widgets
+
+        /*
+         * This is the input text, which might be cipher text, or plain text
+         */
+        literal:input-text
+          element:textarea
+          class:form-control
+          rows:10
+          placeholder:Input text ...
+    container
+      class:form-group col-xs-push-3 col-xs-9
+      widgets
+      
+        /*
+         * 'Encrypt' button, that assumes your input text is plain text,
+         * and encrypts it using the specified encryption key
+         */
+        literal:encrypt
+          element:button
+          innerValue:Encrypt
+          class:btn btn-default col-xs-4
+          onclick
+
+            /*
+             * Storing key used for later
+             */
+            sys42.store-currently-used-encryption-key
+            _widgets
+              input-text
+              pgp-key
+
+            /*
+             * Retrieving the values of 'input-text' and 'pgp-key'
+             */
+            get-widget-property:x:/../*/_widgets/*?name
+              value
+              innerValue
+
+            /*
+             * If no encryption key is supplied, we assume user is encrypting to himself,
+             * using the default enryption key, by simply removing the email node as a child 
+             * of the [encryption] node
+             */
+            if:x:/-/*/pgp-key/*/value?value
+              =:
+              set:x:/./+2/**/encryption/*
+
+            /*
+             * Forward evaluates expressions inside of [p5.mime.create]
+             */
+            eval-x:x:/+/*/**
+            p5.mime.create
+              text:plain
+                encryption
+                  email:x:/../*/get-widget-property/*/pgp-key/*/value?value
+                content:x:/../*/get-widget-property/*/input-text/*/innerValue?value
+                
+            /*
+             * Changing output text widget's innerValue to encrypted text
+             */
+            set-widget-property:output-text
+              innerValue:x:/../*/p5.mime.create/*/result?value
+        literal:decrypt
+          element:button
+          innerValue:Decrypt
+          class:btn btn-default col-xs-4
+          onclick
+
+            /*
+             * Retrieving the values of 'input-text'
+             */
+            get-widget-property:input-text
+              innerValue
+
+            /*
+             * Parsing mime, assuming decryption key to use is 'machine key'
+             */
+            p5.mime.parse:x:/../*/get-widget-property/*/*?value
+
+            /*
+             * Settings output text to decrypted mime content, and removing
+             * entire 'input text' to make field ready for next operation
+             */
+            set-widget-property:output-text
+              innerValue:x:/../*/p5.mime.parse/**/content?value
+            set-widget-property:input-text
+              innerValue:
+
+            /*
+             * Using jQuery to set focus to 'input text field'
+             */
+            send-javascript:""$('#input-text').focus().select();""
+        literal:clear-txt
+          element:button
+          innerValue:Clear
+          class:btn btn-default col-xs-4
+          onclick
+
+            /*
+             * Clearing all input/output widgets on page
+             */
+            _widgets
+              input-text
+              output-text
+            set-widget-property:x:/-/*?name
+              innerValue:
+            send-javascript:""$('#input-text').focus().select();""
+    container
+      class:form-group prepend-top
+      widgets
+      
+        /*
+         * Used to holde output of either encryption or decryption operation
+         */
+        literal:output-text
+          element:textarea
+          class:form-control
+          rows:10
+          placeholder:Output text ..."
+
+
+    p5.page:/examples/link-scraper
+      name:Link scraper
+      type:lambda
+      template:/system42/cms/templates/main.hl
+      role:root
+      lambda:@"/*
+ * This little application allows the user to type
+ * in a URL, for then to fetch the document at the
+ * supplied URL, and extract all links from that page,
+ * that are in 'absolute format', displaying the links 
+ * as an ordered list.
+ *
+ * 'absolute format' means the link starts with 'http'
+ */
+
+/*
+ * Uses the 'wizard window' to fetch a URL from user
+ */
+sys42.wizard-window
+  _header:Supply a link to fetch!
+  _body:Type in a URL for a website from which to fetch all absolute links from. Please notice that this process might take some time ...
+  _widgets
+    text:url-to-fetch
+      label:URL
+      placeholde:Type in a URL ...
+      mandatory:true
+  _onok
+
+    /*
+     * Checks if URL contains a 'http' part, and if not,
+     * add 'http://' to its beginning
+     */
+    index-of:x:/../*/url-to-fetch?value
+      what:http
+    if:x:/-/*?count
+      =:int:0
+      set:x:/../*/url-to-fetch?value
+        src:{0}{1}
+          :""http://""
+          :x:/../*/url-to-fetch?value
+
+    /*
+     * Using the p5 net HTTP-GET Active Event to fetch the document from
+     * the specified URL
+     */
+    p5.net.http-get:x:/../*/url-to-fetch?value
+
+    /*
+     * Creating a p5.lambda structure from the HTML retrieved from the 
+     * specified URL
+     */
+    html2lambda:x:/-/**/content?value
+
+    /*
+     * Databinding our [create-widget] Active Event below to the hyperlinks
+     * found in the HTML document
+     */
+    databind:x:/../*/create-widget/*/widgets
+      src:x:/../*/html2lambda/**/a
+      template
+        li
+          widgets
+            a
+              {href}:x:/*/@href?value
+              {innerValue}:x:/*/#text?value
+              target:_blank
+
+    /*
+     * Removing all URLs that have either empty anchor text,
+     * empty URL, or does not contain the text 'http' in them
+     */
+    set:x:/+3/**/a/*/href(!/=~{0})/././.
+      :http
+    set:x:/+2/**/a/*/href/=~/././.
+    set:x:/+/**/a/*/innerValue/=~/././.
+
+    /*
+     * Creating a widget to display all hyperlinks found.
+     * Widget is of type 'ul', and each link is wrapped inside of a
+     * 'li' HTML element
+     */
+    create-widget:links
+      parent:content
+      element:ol
+      widgets
+
+    /*
+     * Returning 'true' to wizard-window, to make sure the window is closed
+     */
+    set:x:/..?value
+      src:bool:true"
 
 
     p5.page:/about
