@@ -56,21 +56,22 @@ namespace p5.xml
 
             // Then the name of HTML element
             resultNode.Name = xmlNode.Name;
-            if (xmlNode.Name == "#text") {
+            if (xmlNode.ChildNodes.Count == 1 && xmlNode.ChildNodes [0].Name == "#text") {
 
                 // This is a "simple node", with no children, only HTML content
-                resultNode.Value = xmlNode.InnerText;
-            }
+                resultNode.Value = xmlNode.ChildNodes [0].InnerText;
+            } else {
 
-            // Then looping through each child HTML element
-            foreach (XmlNode idxChild in xmlNode.ChildNodes) {
+                // Then looping through each child HTML element
+                foreach (XmlNode idxChild in xmlNode.ChildNodes) {
 
-                // We don't add comments or empty elements
-                if (idxChild.LocalName != "#comment") {
-                    if (idxChild.LocalName == "#text" && string.IsNullOrEmpty (idxChild.InnerText.Trim ()))
-                        continue;
-                    resultNode.Add (new Node ());
-                    ParseXmlDocument (resultNode.LastChild, idxChild);
+                    // We don't add comments or empty elements
+                    if (idxChild.LocalName != "#comment") {
+                        if (idxChild.LocalName == "#text" && string.IsNullOrEmpty (idxChild.InnerText.Trim ()))
+                            continue;
+                        resultNode.Add (new Node ());
+                        ParseXmlDocument (resultNode.LastChild, idxChild);
+                    }
                 }
             }
         }
