@@ -979,6 +979,100 @@ create-widget:todo-main-form
               text:@""<thead><tr><th>Item</th><th style='width:100px;'>Delete</th></tr></thead>"""
 
 
+    p5.page:/examples/rss-reader
+      name:RSS reader
+      type:lambda
+      template:/system42/cms/templates/main.hl
+      role:root
+      lambda:@"/*
+ * Example that shows how to load an RSS document,
+ * parse it using the [xml2lambda] Active Event, 
+ * and [databind] the results to an unordered list
+ */
+
+/*
+ * Fetch the RSS XML feed. Try to fetch it first from
+ * cache, if that's not successful, we fetch it from its URL,
+ * and puts the resulting XML into cache. Regardless of from
+ * where it's fetched, after fetching it, it will be stored into
+ * [_result]'s value, which will be used for parsing it afterwards
+ */
+_result
+
+// Checking cache
+get-cache-value:sys42.examples.rss-feed
+if:x:/-/*?value
+
+  /*
+   * We found our RSS/XML in cache, no need to go to RSS URL
+   */
+  set:x:/../*/_result?value
+    src:x:/../*/get-cache-value/*?value
+else
+
+  /*
+   * We did not find the RSS in our cache, fetching it
+   * from the URL, and storing into cache, before setting
+   * the [_result] node's value to the XML/RSS
+   */
+  p5.net.http-get:@""http://digg.com/rss/top.rss""
+  set-cache-value:sys42.examples.rss-feed
+    src:x:/..else/*/p5.net.http-get/**/content?value
+  set:x:/../*/_result?value
+    src:x:/..else/*/p5.net.http-get/**/content?value
+
+/*
+ * Transform the RSS XML into a p5.lambda structure
+ */
+xml2lambda:x:/../*/_result?value
+
+/*
+ * Change the inner value of the header of our CMS page
+ */
+set-widget-property:header
+  innerValue:x:/../*/xml2lambda/*/rss/*/channel/*/title/*/#text?value
+
+/*
+ * Databind the widget below to the items from digg's RSS feed
+ */
+databind:x:/../*/create-widget/*/widgets
+  src:x:/../*/xml2lambda/*/rss/*/channel/*/item
+  template
+    li
+      widgets
+        a
+          href:#
+          {innerValue}:x:/*/title/*/#text?value
+          onclick
+            eval-x:x:/../*/create-widget/*/after
+            create-widget
+              after:x:/../*/_event?value
+              element:p
+              widgets
+                strong
+                  {innerValue}:x:/*/description/*/#text?value
+                br
+                a
+                  {href}:x:/*/link/*/#text?value
+                  innerValue:Read more ...
+                  target:_blank
+            set-widget-property:x:/../*/_event?value
+              element:em
+                
+
+/*
+ * Creates the ul widget that contains the list of RSS items fetched
+ */
+eval-x:x:/+/**/innerValue
+create-widget
+  parent:content
+  element:ul
+  widgets
+    p
+      innerValue:<em>{0}</em>
+        :x:/../*/xml2lambda/*/rss/*/channel/*/description/*/#text?value"
+
+
     p5.page:/about
       type:html
       name:About

@@ -3,6 +3,7 @@
  * Phosphorus Five is licensed under the terms of the MIT license, see the enclosed LICENSE file for details.
  */
 
+using System;
 using System.Web;
 using System.Collections;
 using System.Collections.Generic;
@@ -24,6 +25,10 @@ namespace p5.web.storage
         [ActiveEvent (Name = "set-cache-value", Protection = EventProtection.LambdaClosed)]
         public static void set_cache_value (ApplicationContext context, ActiveEventArgs e)
         {
+            // Retrieving for how long the value should be set in cache, before removed
+            var minutes = e.Args.GetExChildValue ("minutes", context, 30);
+
+            // Settings cache value
             p5.exp.Collection.Set (context, e.Args, delegate (string key, object value) {
                 if (value == null) {
 
@@ -32,7 +37,12 @@ namespace p5.web.storage
                 } else {
 
                     // Adding object
-                    HttpContext.Current.Cache [key] = value;
+                    HttpContext.Current.Cache.Insert (
+                        key, 
+                        value, 
+                        null, 
+                        DateTime.Now.AddMinutes (minutes), 
+                        System.Web.Caching.Cache.NoSlidingExpiration);
                 }
             }, e.NativeSource);
         }

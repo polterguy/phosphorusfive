@@ -43,7 +43,7 @@ namespace p5.exp
                 functor (args.Get<string> (context), args [0].Value);
             } else {
 
-                if (args.Children.Count (ix => ix.Name != "") > 0 && args.LastChild.Name != "src") {
+                if (args.Children.Count (ix => ix.Name != "") > 0 && args ["src"] == null) {
 
                     // Sanity check!
                     var destEx = args.Value as Expression;

@@ -388,7 +388,9 @@ namespace p5.net
                             result.Add ("content", reader.ReadToEnd());
                         }
                     }
-                } else if (response.ContentType.StartsWith ("text")) {
+                } else if (response.ContentType.StartsWith ("text") || 
+                    response.ContentType.StartsWith ("application/rss+xml") ||
+                    response.ContentType.StartsWith ("application/xml")) {
 
                     // Text response
                     using (TextReader reader = new StreamReader (stream, Encoding.GetEncoding (response.CharacterSet ?? "UTF8"))) {

@@ -192,7 +192,6 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'create-protected-event':
         case 'login':
         case 'create-user':
-        case 'eval-x':
         case 'eval-mutable':
         case 'move-file':
         case 'copy-file':
@@ -267,8 +266,6 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'list-widgets':
         case 'get-widget-ajax-event':
         case 'get-widget-lambda-event':
-        case 'delete-widget-ajax-event':
-        case 'delete-widget-lambda-event':
         case 'list-widget-ajax-events':
         case 'list-widget-lambda-events':
         case 'include-javascript':
@@ -343,6 +340,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'tanh':
         case 'length':
         case 'throw':
+        case 'eval-x':
           return this.styles.keyword;
 
         // default handling

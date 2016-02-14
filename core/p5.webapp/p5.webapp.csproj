@@ -274,6 +274,10 @@
       <Project>{CD99A0A7-F544-46D6-AC0E-547F2E17125F}</Project>
       <Name>p5.mongo</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\plugins\extras\p5.xml\p5.xml.csproj">
+      <Project>{045D3D94-7A30-445D-B578-1DE5A5BE5C3B}</Project>
+      <Name>p5.xml</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="system42\application-startup.hl" />

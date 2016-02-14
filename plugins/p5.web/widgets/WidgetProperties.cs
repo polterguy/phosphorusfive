@@ -95,15 +95,20 @@ namespace p5.web.widgets
                         break;
                     case "invisible-element":
                         idxWidget.InvisibleElement = valueNode.GetExValue<string> (context);
+                        if (!idxWidget.Visible)
+                            idxWidget.ReRender ();
                         break;
                     case "element":
                         idxWidget.Element = valueNode.GetExValue<string> (context);
+                        idxWidget.ReRender ();
                         break;
                     case "has-id":
                         idxWidget.HasID = valueNode.GetExValue<bool> (context);
+                        idxWidget.ReRender ();
                         break;
                     case "render-type":
                         idxWidget.RenderType = (Widget.RenderingType) Enum.Parse (typeof (Widget.RenderingType), valueNode.GetExValue<string> (context));
+                        idxWidget.ReRender ();
                         break;
                     default:
                         idxWidget [valueNode.Name.StartsWith ("\\") ? valueNode.Name.Substring(1) : valueNode.Name] = valueNode.GetExValue<string> (context);

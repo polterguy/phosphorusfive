@@ -76,6 +76,7 @@ namespace p5.web.widgets
 
                         // Deleting existing ajax event
                         Manager.WidgetAjaxEventStorage.Remove (idxWidget.ID, idxEventNameNode.Name);
+                        idxWidget.RemoveAttribute (idxEventNameNode.Name);
                     } else {
 
                         // Setting Widget's Ajax event to whatever we were given
