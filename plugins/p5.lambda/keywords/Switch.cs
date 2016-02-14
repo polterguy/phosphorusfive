@@ -41,17 +41,37 @@ namespace p5.lambda.keywords
             if (value == null) {
 
                 // Finding first [case] with null value, defaulting to existing [default]
-                eval = e.Args.Children.FirstOrDefault (ix => ix.Name == "case" && ix.Value == null) ?? eval;
+                eval = e.Args.Children.FirstOrDefault (ix => ix.Name == "case" && ix.GetExValue<object> (context) == null) ?? eval;
             } else {
 
-                // Finding first [case] that matches value, defaulting to existing [default]
-                eval = e.Args.Children.FirstOrDefault (ix => 
-                    ix.Name == "case" && value.Equals (ix.GetExValue<object> (context))) ?? eval;
+                // Special case for node comparison
+                if (value is Node) {
+
+                    // Doing CompareTo
+                    eval = e.Args.Children.FirstOrDefault (ix => 
+                        ix.Name == "case" && (value as Node).CompareTo (ix.GetExValue<object> (context)) == 0) ?? eval;
+                    
+                } else {
+
+                    // Finding first [case] that matches value, defaulting to existing [default]
+                    eval = e.Args.Children.FirstOrDefault (ix => 
+                        ix.Name == "case" && value.Equals (ix.GetExValue<object> (context))) ?? eval;
+                }
             }
 
-            // Evaluating eval, unless it is null
+            // Evaluating eval, unless it is null, but before we do, we set all [case] and [default] to boolean false
+            foreach (var idxChild in e.Args.Children) {
+                idxChild.Value = false;
+            }
             if (eval != null) {
-                context.RaiseLambda ("eval-mutable", eval);
+
+                // Supporting "fallthrough"
+                while (eval != null && eval.Children.Count == 0)
+                    eval = eval.NextSibling;
+                if (eval != null) {
+                    eval.Value = true;
+                    context.RaiseLambda ("eval-mutable", eval);
+                }
             }
         }
     }

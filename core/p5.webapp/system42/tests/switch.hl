@@ -7,8 +7,150 @@
  */
 constant
   _result
-  switch:foo
-    case:foo
+  switch:foo2
+    case:foo1
+      set:x:/../*/_result?value
+        src:error
+    case:foo2
+      set:x:/../*/_result?value
+        src:success
+  if:x:/../*/_result?value
+    !=:success
+    throw:@"Assert error, [switch] did not evaluate correctly!"
+
+/*
+ * Tests that [switch] behaves correctly with only expressions
+ */
+expressions
+  _result
+  _input:foo2
+    foo1
+    foo2
+  switch:x:/../*/_input?value
+    case:x:/../*/_input/0?name
+      set:x:/../*/_result?value
+        src:error
+    case:x:/../*/_input/1?name
+      set:x:/../*/_result?value
+        src:success
+  if:x:/../*/_result?value
+    !=:success
+    throw:@"Assert error, [switch] did not evaluate correctly!"
+
+/*
+ * Tests that [switch] behaves correctly with constant, evaluating "null"
+ */
+null-constant
+  _result
+  switch
+    case:foo1
+      set:x:/../*/_result?value
+        src:error
+    case
+      set:x:/../*/_result?value
+        src:success
+  if:x:/../*/_result?value
+    !=:success
+    throw:@"Assert error, [switch] did not evaluate correctly!"
+
+/*
+ * Tests that [switch] behaves correctly with only expressions
+ */
+null-expressions
+  _result
+  _input
+    "":foo1
+    ""
+  switch:x:/../*/_input?value
+    case:x:/../*/_input/0?value
+      set:x:/../*/_result?value
+        src:error
+    case:x:/../*/_input/1?value
+      set:x:/../*/_result?value
+        src:success
+  if:x:/../*/_result?value
+    !=:success
+    throw:@"Assert error, [switch] did not evaluate correctly!"
+
+/*
+ * Tests that [switch] behaves correctly with constant node comparison
+ */
+constant-node-comparison
+  _result
+  _input
+    foo1
+    foo2
+  switch:x:/../*/_input
+    case:node:@"_input
+  foo1
+  foo3"
+      set:x:/../*/_result?value
+        src:error
+    case:node:@"_input
+  foo1
+  foo2"
+      set:x:/../*/_result?value
+        src:success
+  if:x:/../*/_result?value
+    !=:success
+    throw:@"Assert error, [switch] did not evaluate correctly!"
+
+/*
+ * Tests that [switch] behaves correctly with expression leading 
+ * to node comparison
+ */
+expression-node-comparison
+  _result
+  _input
+    foo1
+    foo2
+  _input
+    foo1
+    foo3
+  _input
+    foo1
+    foo2
+  switch:x:/../*/_input/[0,1]
+    case:x:/../*/_input/[1,2]
+      set:x:/../*/_result?value
+        src:error
+    case:x:/../*/_input/[2,3]
+      set:x:/../*/_result?value
+        src:success
+  if:x:/../*/_result?value
+    !=:success
+    throw:@"Assert error, [switch] did not evaluate correctly!"
+
+/*
+ * Tests that [switch] behaves correctly with fallthrough
+ */
+fallthrough
+  _result:error
+  switch:foo2
+    case:foo1
+      set:x:/../*/_result?value
+        src:error
+    case:foo2
+    case:fallthrough
+      set:x:/../*/_result?value
+        src:success
+  if:x:/../*/_result?value
+    !=:success
+    throw:@"Assert error, [switch] did not evaluate correctly!"
+
+/*
+ * Tests that [switch] behaves correctly when [default] should be evaluated
+ */
+default
+  _result:error
+  switch:foo3
+    case:foo1
+      set:x:/../*/_result?value
+        src:error
+    case:foo2
+      set:x:/../*/_result?value
+        src:error
+    default
       set:x:/../*/_result?value
         src:success
   if:x:/../*/_result?value
