@@ -764,6 +764,221 @@ sys42.wizard-window
       src:bool:true"
 
 
+    p5.page:/examples/todo-app
+      name:TODO app
+      type:lambda
+      template:/system42/cms/templates/main.hl
+      role:root
+      lambda:@"/*
+ * Creates a 'TODO' CRUD application, that stores
+ * its data in the p5 database as 'todo-item' records.
+ *
+ * Shows how to include and consume JavaScript in your form,
+ * to among other things trap CR/LF in textboxes.
+ *
+ * Shows how to insert, select and delete items from the p5.data
+ * database.
+ *
+ * Shows how to create beautiful forms using the Bootstrap CSS
+ * classes that are included in Phosphorus Five.
+ * 
+ * etc, etc, etc ...
+ */
+
+
+/*
+ * Include JavaScript to trap Carriage Return key in 'new item' textbox.
+ * This JavaScript function is consumed in 'onkeypress' further down on page
+ */
+include-javascript:@""
+p5.examples = {};
+p5.examples.todo_item_enter(e) {
+  if(e.keyCode == 13) {
+    p5.$('add-new-todo-item-button').raise('onclick');
+    return false;
+  }
+}""
+
+/*
+ * Creates the main widget that contains our entire TODO form
+ */
+create-widget:todo-main-form
+  parent:content
+  widgets
+
+    /*
+     * Wraps our 'add new item' part, with some Bootstrap CSS classes,
+     * to beautify the form
+     */
+    container
+      class:form-group col-xs-11
+      widgets
+        container
+          class:input-group
+          widgets
+            span
+              class:input-group-addon
+              innerValue:Add item
+
+            /*
+             * This is the actual 'new item textbox' parts
+             */
+            input:todo-item-txt
+              type:text
+              class:form-control
+              placeholder:Type in your item here ...
+
+              /*
+               * Making sure we handle Carriage Return key in textbox
+               */
+              onkeypress:@""return p5.examples.todo_item_enter(event);""
+
+              /*
+               * Making sure 'new item' textbox initially has focus when
+               * form is loaded
+               */
+              oninit
+              
+                /*
+                 * Making sure 'input new item' textbox gets focus initially when form
+                 * is loaded
+                 */
+                send-javascript:@""$('#todo-item-txt').select().focus();""
+
+    /*
+     * The button that saves your new TODO item
+     */
+    button:add-new-todo-item-button
+      class:btn btn-primary col-xs-1
+      innerValue:+
+      onclick
+
+        /*
+         * Retrieves the textbox value
+         */
+        get-widget-property:todo-item-txt
+          value
+
+        /*
+         * Forward evaluates expression in [insert-data]
+         */
+        eval-x:x:/+/*/*
+        insert-data
+          todo-item
+            txt:x:/../*/get-widget-property/*/*?value
+
+        /*
+         * Databinds table showing all TODO items
+         */
+        sys42.examples.databind-todo-list
+
+        /*
+         * Making sure 'new item' textbox gets focus again, and selects all text,
+         * using jQuery
+         */
+        send-javascript:@""$('#todo-item-txt').select().focus();""
+
+    /*
+     * Wrapper around your TODO items from your database. Basically
+     * contains a table HTML element, wrapped inside a div element, where
+     * the table HTML element is dynamically created according to your
+     * database [todo-item] items
+     */
+    container:todo-item-wrapper
+      class:prepend-top
+      oninit
+
+        /*
+         * Initially databinding and creating our table HTML element, containing
+         * all [todo-item]'s from database
+         */
+        sys42.examples.databind-todo-list
+
+      /*
+       * All widgets can have an [events] segment associated with them,
+       * which are local events for the page, only existing as long as widget exists.
+       * Here we supply our 'databind TODO items' Active Event
+       */
+      events
+
+        /*
+         * This Active Event simply databinds a table HTML element, and stuffs it into
+         * our 'todo-item-wrapper' div HTML element
+         */
+        sys42.examples.databind-todo-list
+
+          /*
+           * Making sure we clean our widgets from any previous databind operations
+           */
+          clear-widget:todo-item-wrapper
+
+          /*
+           * Selects all TODO items from database (all items being of type [todo-item])
+           */
+          select-data:x:/*/*/todo-item
+
+          /*
+           * Databinds the table widget below to [todo-item]'s from database
+           */
+          databind:x:/+/*/widgets
+            src:x:/../*/select-data/*
+            template
+              tr
+                widgets
+                  td
+                    {innerValue}:x:/*/txt?value
+                  td
+                    widgets
+                      a
+                        class:glyphicon glyphicon-remove-circle
+                        href:#
+                        onclick
+
+                          /*
+                           * This 'static' ID will be databound, just like any other node in
+                           * the [template] parts of your [databind] invocation. This just so
+                           * happens to contain the ID of the currently iterated [todo-item].
+                           * Which means we can retrieve which item was clicked when deletion
+                           * of one item is requested.
+                           */
+                          {_id}:x:?value
+
+                          /*
+                           * Deletes the specified [todo-item] from database.
+                           * Notice how we make sure we use the guid type in our 
+                           * value iterator by adding the :guid: type declaration for
+                           * our value iterator below
+                           */
+                          delete-data:x:@""/*/*/todo-item/""""=:guid:{0}""""""
+                            :x:/../*/_id?value
+
+                          /*
+                           * Databinds the table HTML widget again, since we've now deleted on item
+                           * from database
+                           */
+                          sys42.examples.databind-todo-list
+
+                          /*
+                           * Make sure we set focus to 'new item' textbox afterwards
+                           */
+                          send-javascript:@""$('#todo-item-txt').select().focus();""
+
+          /*
+           * This is the actual table HTML element that contains all of 
+           * our [todo-item] from database
+           */
+          create-widget
+            parent:todo-item-wrapper
+            element:table
+            class:table
+            widgets
+
+              /*
+               * Simple 'static' text widget to provide headers for table HTML element
+               */
+              text:@""<thead><tr><th>Item</th><th style='width:100px;'>Delete</th></tr></thead>"""
+
+
     p5.page:/about
       type:html
       name:About

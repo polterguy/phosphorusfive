@@ -36,6 +36,10 @@ namespace p5.lambda.keywords
             // Retrieving source
             var source = XUtil.SourceNodes (context, e.Args);
 
+            // Sanity check, checking there actually is a source, and if not, returning early
+            if (source == null)
+                return;
+
             // Databinding destination(s) by looping through each destinations given
             var ex = e.Args.Get<Expression> (context);
             foreach (var idxDest in ex.Evaluate (context, e.Args, e.Args)) {
