@@ -1,0 +1,69 @@
+/*
+ * Contains unit tests for testing [match] in system
+ */
+
+/*
+ * Tests that match behaves correctly when given a simple regex
+ * without any groups
+ */
+simple
+  _data:Thomas Hansen
+  match:x:/-?value
+    what:regex:/hansen/i
+  if:x:/-/*/*?name
+    !=:Hansen
+    throw:"Expected [Hansen], got {0}"
+    :x:/../*/match/*/*?name
+
+/*
+ * Tests that match behaves correctly when given a single group
+ */
+single-group
+  _data:Thomas Hansen
+  match:x:/-?value
+    what:regex:/(?<surname>hansen)/i
+    surname
+  if:x:/-/*/*?name
+    !=:surname
+    or:x:/./-/*/*?value
+      !=:Hansen
+    throw:"Expected [Hansen], got {0}"
+    :x:/../*/match/*/*?name
+
+/*
+ * Tests that match behaves correctly when given mutiple groups
+ */
+multiple-groups
+  _data:Thomas Hansen
+  match:x:/-?value
+    what:regex:/(?<firstname>thomas)* (?<surname>hansen)/i
+    surname
+    firstname
+  if:x:/-/*/0?name
+    !=:surname
+    or:x:/./-/*/0?value
+      !=:Hansen
+    or:x:/./-/*/1?name
+      !=:firstname
+    or:x:/./-/*/1?value
+      !=:Thomas
+    or:x:/./-/*/*?count
+      !=:int:2
+    throw:"Expected multiple groups"
+
+/*
+ * Tests that match behaves correctly when given multiple groups,
+ * but only one is requested as result
+ */
+multiple-groups-single-requested
+  _data:Thomas Hansen
+  match:x:/-?value
+    what:regex:/(?<firstname>thomas)* (?<surname>hansen)/i
+    surname
+  if:x:/-/*/*?name
+    !=:surname
+    or:x:/./-/*/*?value
+      !=:Hansen
+    or:x:/./-/*/*?count
+      !=:int:1
+    throw:"Expected only surname"

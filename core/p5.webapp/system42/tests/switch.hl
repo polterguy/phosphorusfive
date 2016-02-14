@@ -1,0 +1,16 @@
+/*
+ * Contains unit tests for testing [switch] in system
+ */
+
+/*
+ * Tests that [switch] behaves correctly with only constants
+ */
+constant
+  _result
+  switch:foo
+    case:foo
+      set:x:/../*/_result?value
+        src:success
+  if:x:/../*/_result?value
+    !=:success
+    throw:@"Assert error, [switch] did not evaluate correctly!"

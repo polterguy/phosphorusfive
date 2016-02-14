@@ -231,6 +231,9 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'databind':
         case 'template':
         case 'sort':
+        case 'switch':
+        case 'case':
+        case 'default':
           state.indent += 2;
           return this.styles.keyword;
 
