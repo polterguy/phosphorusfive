@@ -141,10 +141,14 @@ namespace p5.math
 
                     // Finding value of object, which might be an Active Event invocation, a constant, or an expression
                     dynamic nextValue;
-                    if (idxChild.Name.StartsWith ("_")) {
+                    if (idxChild.Name == "_") {
 
                         // Simple value, or expression yielding value to use
                         nextValue = idxChild.GetExValue<object> (context, (object)0);
+                    } else if (idxChild.Name.StartsWith ("_")) {
+
+                        // Possible [_dn] or other ignored node
+                        continue;
                     } else {
 
                         // Active Event invocation to retrieve value to use

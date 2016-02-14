@@ -133,6 +133,10 @@ namespace p5.lambda
 
             // Actual execution of block
             ExecuteAll (exe, context);
+
+            // Checking if we returned prematurely due to [return] invocation
+            if (exe.FirstChild != null && exe.FirstChild.Name == "_return")
+                exe.FirstChild.UnTie ();
         }
 
         /*

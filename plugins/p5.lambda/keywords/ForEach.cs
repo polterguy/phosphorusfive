@@ -33,7 +33,8 @@ namespace p5.lambda.keywords
                 // Value of node is a Node in itself, iterating its children
                 foreach (var idxSource in nodeValue.Children) {
 
-                    IterateForEach (context, idxSource, e.Args, oldForEach);
+                    if (!IterateForEach (context, idxSource, e.Args, oldForEach))
+                        break;
                 }
             } else {
 
@@ -43,7 +44,8 @@ namespace p5.lambda.keywords
                     // Value of node is a string, converting to node and iterating the converted node's children
                     foreach (var idxSource in Utilities.Convert<Node> (context, strValue).Children) {
 
-                        IterateForEach (context, idxSource, e.Args, oldForEach);
+                        if (!IterateForEach (context, idxSource, e.Args, oldForEach))
+                            break;
                     }
                 } else {
 
@@ -53,7 +55,8 @@ namespace p5.lambda.keywords
                         // Value of node is an expression, evaluating that expression, and iterating the evaluated results
                         foreach (var idxSource in e.Args.Get<Expression> (context).Evaluate (context, e.Args, e.Args)) {
 
-                            IterateForEach (context, idxSource.Value, e.Args, oldForEach);
+                            if (!IterateForEach (context, idxSource.Value, e.Args, oldForEach))
+                                break;
                         }
                     } else {
 
@@ -63,7 +66,8 @@ namespace p5.lambda.keywords
                             // Value is a "list of something", iterating each value in the list
                             foreach (var idxSource in enumerableValue) {
 
-                                IterateForEach (context, idxSource, e.Args, oldForEach);
+                                if (!IterateForEach (context, idxSource, e.Args, oldForEach))
+                                    break;
                             }
                         } else {
 
@@ -88,7 +92,8 @@ namespace p5.lambda.keywords
                                     foreach (var idxSource in sourceNode.Children) {
 
                                         // Iterating on the values returned from Active Event invocation
-                                        IterateForEach (context, idxSource, e.Args, oldForEach);
+                                        if (!IterateForEach (context, idxSource, e.Args, oldForEach))
+                                            break;
                                     }
                                 } else {
 
@@ -103,16 +108,19 @@ namespace p5.lambda.keywords
         }
 
         /*
-         * Invokes [for-each] scope once, setting the [_dp] correctly and resetting the for-each scope afterwards
+         * Invokes [for-each] scope once, setting the [_dp] correctly and resetting the for-each scope afterwards.
+         * Returns true if iteration should continue
          */
-        private static void IterateForEach (ApplicationContext context, object source, Node args, Node oldForEach)
+        private static bool IterateForEach (ApplicationContext context, object source, Node args, Node oldForEach)
         {
             var dp = new Node ("_dp", source);
             args.Insert (0, dp);
 
             context.RaiseLambda ("eval-mutable", args);
+            bool shouldStop = args.Root.FirstChild != null && args.Root.FirstChild.Name == "_return";
             args.Clear ();
             args.AddRange (oldForEach.Clone ().Children);
+            return !shouldStop;
         }
     }
 }

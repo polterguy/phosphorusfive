@@ -74,3 +74,35 @@ return-nodes
     !=:node:"foo:bar"
     throw:@"Assert error, expected [success],got {0}!"
       :x:/..if/*/eval?value
+
+/*
+ * Tests that return behaves correctly when returning from inside a [while]
+ */
+in-while
+  _x
+    _data:int:5
+    while:x:/../*/_data?value
+      !=:int:0
+      set:x:/../*/_data?value
+        -:x:/../*/_data?value
+          _:int:1
+      return:x:/../*/_data?value
+  if
+    eval:x:/./-
+    !=:int:4
+    throw:@"Assert error, expected [while] to have prematurely stopped evaluation!"
+
+/*
+ * Tests that return behaves correctly when returning from inside a [for-each]
+ */
+in-for-each
+  _x
+    _data
+      foo1:success
+      foo2:error
+    for-each:x:/-/*?value
+      return:x:/./*/_dp?value
+  if
+    eval:x:/./-
+    !=:success
+    throw:@"Assert error, expected [for-each] to have prematurely stopped evaluation!"

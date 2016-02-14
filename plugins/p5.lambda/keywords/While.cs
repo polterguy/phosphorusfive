@@ -47,6 +47,11 @@ namespace p5.lambda.keywords
                 e.Args.Clear ();
                 e.Args.AddRange (oldWhile.Clone ().Children);
 
+                // Checking if we got a [return] invocation during evaluation
+                if (e.Args.Root.FirstChild != null && e.Args.Root.FirstChild.Name == "_return")
+                    return;
+
+                // Checking if we're overflowing maximum number of iterations, unless [_unchecked] was true
                 if (!uncheck && iterations++ > 10000)
                     throw new LambdaException (
                         "Possible infinite loop encountered, more than 10.000 iterations of [while] loop", 
