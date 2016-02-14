@@ -918,6 +918,13 @@ create-widget:todo-main-form
           select-data:x:/*/*/todo-item
 
           /*
+           * Checking if there are any [todo-item]'s, and if not, returning immediately
+           */
+          if:x:/-/*?count
+            =:int:0
+            return
+
+          /*
            * Databinds the table widget below to [todo-item]'s from database
            */
           databind:x:/+/*/widgets

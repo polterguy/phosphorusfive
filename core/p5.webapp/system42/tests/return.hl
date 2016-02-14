@@ -25,40 +25,6 @@ return-value
 
 /*
  * Tests that return behaves correctly when evaluation returning
- * from is a nested evaluation
- */
-nested
-  _x
-    _x2
-      return
-      throw:Code that was never suppoed to be evaluated was evaluated
-    eval:x:/-
-    return:success
-    throw:Code that was never suppoed to be evaluated was evaluated
-  if
-    eval:x:/../*/_x
-    !=:success
-    throw:@"Assert error, expected [success],got {0}!"
-      :x:/..if/*/eval?value
-
-/*
- * Tests that return behaves correctly when evaluation returning
- * from is inside an if
- */
-nested-2
-  _x
-    if:x:/..?name
-      =:_x
-      return:success
-    throw:Code that was never suppoed to be evaluated was evaluated
-  if
-    eval:x:/../*/_x
-    !=:success
-    throw:@"Assert error, expected [success],got {0}!"
-      :x:/..if/*/eval?value
-
-/*
- * Tests that return behaves correctly when evaluation returning
  * from is inside an if
  */
 return-nodes
@@ -76,9 +42,46 @@ return-nodes
       :x:/..if/*/eval?value
 
 /*
+ * Tests that return behaves correctly when evaluation returning
+ * from is a nested evaluation
+ */
+nested-eval
+  _x
+    _x2
+      return:success1
+      throw:Code that was never suppoed to be evaluated was evaluated
+    if
+      eval:x:/./-
+      !=:success1
+      throw:Assertion error, expected [success1]
+    return:success2
+    throw:Code that was never suppoed to be evaluated was evaluated
+  if
+    eval:x:/../*/_x
+    !=:success2
+    throw:@"Assert error, expected [success],got {0}!"
+      :x:/..if/*/eval?value
+
+/*
+ * Tests that return behaves correctly when evaluation returning
+ * from is inside an if
+ */
+inside-if
+  _x
+    if:x:/..?name
+      =:_x
+      return:success
+    throw:Code that was never suppoed to be evaluated was evaluated
+  if
+    eval:x:/../*/_x
+    !=:success
+    throw:@"Assert error, expected [success],got {0}!"
+      :x:/..if/*/eval?value
+
+/*
  * Tests that return behaves correctly when returning from inside a [while]
  */
-in-while
+inside-while
   _x
     _data:int:5
     while:x:/../*/_data?value
@@ -86,23 +89,103 @@ in-while
       set:x:/../*/_data?value
         -:x:/../*/_data?value
           _:int:1
+      insert-before:x:/../0
+        src:"foo:{0}"
+          :x:/../*/_data?value
       return:x:/../*/_data?value
   if
     eval:x:/./-
     !=:int:4
+    or:x:/-2/*?count
+      !=:int:1
+    or:x:/-3/0
+      !=:node:"foo:4"
     throw:@"Assert error, expected [while] to have prematurely stopped evaluation!"
 
 /*
  * Tests that return behaves correctly when returning from inside a [for-each]
  */
-in-for-each
+inside-for-each
   _x
     _data
       foo1:success
       foo2:error
     for-each:x:/-/*?value
+      insert-before:x:/../0
+        src:x:/././*/_dp?value
       return:x:/./*/_dp?value
   if
     eval:x:/./-
     !=:success
+    or:x:/-2/0
+      !=:node:success
+    or:x:/-3/*?count
+      !=:int:1
+    throw:@"Assert error, expected [for-each] to have prematurely stopped evaluation!"
+
+/*
+ * Tests that return behaves correctly when evaluation returning
+ * from is inside an if, which again is inside an if
+ */
+inside-nested-if
+  _x
+    if:x:/..?name
+      =:_x
+      if:x:/..?name
+        =:_x
+        return:success
+    throw:Code that was never suppoed to be evaluated was evaluated
+  if
+    eval:x:/../*/_x
+    !=:success
+    throw:@"Assert error, expected [success],got {0}!"
+      :x:/..if/*/eval?value
+
+/*
+ * Tests that return behaves correctly when returning from inside a [while],
+ * which again is inside another [while]
+ */
+inside-nested-while
+  _x
+    _data:int:5
+    while:x:/../*/_data?value
+      !=:int:0
+      while:x:/../*/_data
+        set:x:/../*/_data?value
+          -:x:/../*/_data?value
+            _:int:1
+        insert-before:x:/../0
+          src:"foo:{0}"
+            :x:/../*/_data?value
+        return:x:/../*/_data?value
+  if
+    eval:x:/./-
+    !=:int:4
+    or:x:/-2/*?count
+      !=:int:1
+    or:x:/-3/0
+      !=:node:"foo:4"
+    throw:@"Assert error, expected [while] to have prematurely stopped evaluation!"
+
+/*
+ * Tests that return behaves correctly when returning from inside a [for-each],
+ * which again is inside another nested [for-each]
+ */
+inside-nested-for-each
+  _x
+    _data
+      foo1:success
+      foo2:error
+    for-each:x:/-/*?value
+      for-each:x:/./*
+        insert-before:x:/../0
+          src:x:/./././*/_dp?value
+        return:x:/././*/_dp?value
+  if
+    eval:x:/./-
+    !=:success
+    or:x:/-2/0
+      !=:node:success
+    or:x:/-3/*?count
+      !=:int:1
     throw:@"Assert error, expected [for-each] to have prematurely stopped evaluation!"
