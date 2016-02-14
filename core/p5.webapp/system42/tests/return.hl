@@ -1,0 +1,76 @@
+/*
+ * Contains unit tests for testing [return] in system
+ */
+
+/*
+ * Tests that return behaves correctly and immediately returns
+ * from an evaluation
+ */
+simple
+  return
+  throw:@"Assert error, code that should never have been evaluated was evaluated!"
+
+/*
+ * Tests that return behaves correctly and can return 
+ * values from evaluations
+ */
+return-value
+  _x
+    return:success
+  if
+    eval:x:/../*/_x
+    !=:success
+    throw:@"Assert error, expected [success],got {0}!"
+      :x:/..if/*/eval?value
+
+/*
+ * Tests that return behaves correctly when evaluation returning
+ * from is a nested evaluation
+ */
+nested
+  _x
+    _x2
+      return
+      throw:Code that was never suppoed to be evaluated was evaluated
+    eval:x:/-
+    return:success
+    throw:Code that was never suppoed to be evaluated was evaluated
+  if
+    eval:x:/../*/_x
+    !=:success
+    throw:@"Assert error, expected [success],got {0}!"
+      :x:/..if/*/eval?value
+
+/*
+ * Tests that return behaves correctly when evaluation returning
+ * from is inside an if
+ */
+nested-2
+  _x
+    if:x:/..?name
+      =:_x
+      return:success
+    throw:Code that was never suppoed to be evaluated was evaluated
+  if
+    eval:x:/../*/_x
+    !=:success
+    throw:@"Assert error, expected [success],got {0}!"
+      :x:/..if/*/eval?value
+
+/*
+ * Tests that return behaves correctly when evaluation returning
+ * from is inside an if
+ */
+return-nodes
+  _x
+    if:x:/..?name
+      =:_x
+      return
+        foo:bar
+    throw:Code that was never suppoed to be evaluated was evaluated
+  if
+    fetch:x:/0/0
+      eval:x:/../*/_x
+    !=:node:"foo:bar"
+    throw:@"Assert error, expected [success],got {0}!"
+      :x:/..if/*/eval?value

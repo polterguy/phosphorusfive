@@ -67,8 +67,6 @@ namespace p5.xml
 
                     // We don't add comments or empty elements
                     if (idxChild.LocalName != "#comment") {
-                        if (idxChild.LocalName == "#text" && string.IsNullOrEmpty (idxChild.InnerText.Trim ()))
-                            continue;
                         resultNode.Add (new Node ());
                         ParseXmlDocument (resultNode.LastChild, idxChild);
                     }

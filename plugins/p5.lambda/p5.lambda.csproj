@@ -66,6 +66,7 @@
     <Compile Include="keywords\Match.cs" />
     <Compile Include="keywords\Databind.cs" />
     <Compile Include="keywords\Sort.cs" />
+    <Compile Include="keywords\Return.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

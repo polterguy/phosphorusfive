@@ -104,6 +104,10 @@ namespace p5.lambda
             // Actual execution of nodes
             ExecuteAll (exeCopy, context);
 
+            // Checking if we returned prematurely due to [return] invocation
+            if (exeCopy.FirstChild != null && exeCopy.FirstChild.Name == "_return")
+                exeCopy.FirstChild.UnTie ();
+
             // Returning all nodes created inside of execution block, and ONLY these nodes, plus value of lambda block.
             // Notice, this means clearing the evalNode's children collection ONLY the first time we execute it
             if (isFirst)
@@ -174,6 +178,10 @@ namespace p5.lambda
                     // Raising the given Active Event normally, taking inheritance chain into account
                     context.RaiseLambda (idxExe.Name, idxExe);
                 }
+
+                // Checking if we're supposed to return from evaluation
+                if (exe.Root.FirstChild != null && exe.Root.FirstChild.Name == "_return")
+                    return; // Breaking evaluation of any further code
 
                 // Prioritizing "NextSibling", in case this node created new nodes, while having
                 // nextFallback as "fallback node", in case current execution node removed current execution node.

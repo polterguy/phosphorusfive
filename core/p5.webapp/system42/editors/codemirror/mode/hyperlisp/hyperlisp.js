@@ -341,6 +341,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'length':
         case 'throw':
         case 'eval-x':
+        case 'return':
           return this.styles.keyword;
 
         // default handling
