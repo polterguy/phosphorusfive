@@ -1,0 +1,99 @@
+/*
+ * Contains unit tests for testing [split] in system
+ */
+
+/*
+ * Tests that split behaves as expected when given a simple string
+ */
+simple-string
+  split:thomas,hansen
+    =:,
+  if:x:/-/*?count
+    !=:int:2
+    or:x:/./-/0?name
+      !=:thomas
+    or:x:/./-/1?name
+      !=:hansen
+    throw:@"Assert error, [split] misbehaved!"
+
+/*
+ * Tests that split behaves as expected when given a single integer
+ */
+integer
+  split:thomashansen
+    =:int:6
+  if:x:/-/*?count
+    !=:int:2
+    or:x:/./-/0?name
+      !=:thomas
+    or:x:/./-/1?name
+      !=:hansen
+    throw:@"Assert error, [split] misbehaved!"
+
+/*
+ * Tests that split behaves as expected when given two integers
+ */
+two-integers
+  split:thomashansenjohn
+    =:int:6
+    =:int:12
+  if:x:/-/*?count
+    !=:int:3
+    or:x:/./-/0?name
+      !=:thomas
+    or:x:/./-/1?name
+      !=:hansen
+    or:x:/./-/2?name
+      !=:john
+    throw:@"Assert error, [split] misbehaved!"
+
+/*
+ * Tests that split behaves as expected when given a simple string
+ */
+two-strings
+  split:thomas,hansen john
+    =:,
+    =:" "
+  if:x:/-/*?count
+    !=:int:3
+    or:x:/./-/0?name
+      !=:thomas
+    or:x:/./-/1?name
+      !=:hansen
+    or:x:/./-/2?name
+      !=:john
+    throw:@"Assert error, [split] misbehaved!"
+
+/*
+ * Tests that split behaves as expected
+ */
+regex
+  split:thomas,hansen john,doe
+    =:regex:/[, ]/
+  if:x:/-/*?count
+    !=:int:4
+    or:x:/./-/0?name
+      !=:thomas
+    or:x:/./-/1?name
+      !=:hansen
+    or:x:/./-/2?name
+      !=:john
+    or:x:/./-/3?name
+      !=:doe
+    throw:@"Assert error, [split] misbehaved!"
+
+/*
+ * Tests that split behaves as expected
+ */
+two-regex-throw
+  _result
+  try
+    split:thomas
+      =:regex:/[, ]/
+      =:regex:/hom/
+  catch
+    set:x:/../*/_result?value
+      src:success
+  if:x:/../*/_result?value
+    !=:success
+    throw:@"Assert error, [split] misbehaved and did not throw exception when expected!"

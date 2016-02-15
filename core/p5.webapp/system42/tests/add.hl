@@ -62,3 +62,61 @@ event-source
       !=:node:"foo2bar2:success"
     throw:@"Assert error, expected [foo1bar1:success] and [foo2bar2:success], got [{0}]!"
       :x:/../0/0/*?node.string
+
+/*
+ * Tests that "add" behaves correctly when given no source, and
+ * that it throws exception
+ */
+no-source-throws
+  _result
+  try
+    add:x:/../*/_result
+  catch
+    set:x:/../*/_result?value
+      src:success
+  if:x:/../*/_result?value
+    !=:success
+    throw:@"Assert error, expected [add] to throw an exception!"
+
+/*
+ * Tests that "add" behaves correctly when given no destination, and
+ * that it throws exception
+ */
+no-destination-throws
+  _result
+  try
+    add
+      src
+        foo:bar
+  catch
+    set:x:/../*/_result?value
+      src:success
+  if:x:/../*/_result?value
+    !=:success
+    throw:@"Assert error, expected [add] to throw an exception!"
+
+/*
+ * Tests that "add" behaves correctly when given value destination, and
+ * that it throws exception
+ */
+value-destination-throws
+  _result
+  try
+    add:x:/../*/_result?value
+      src
+        foo:bar
+  catch
+    set:x:/../*/_result?value
+      src:success
+  if:x:/../*/_result?value
+    !=:success
+    throw:@"Assert error, expected [add] to throw an exception!"
+
+/*
+ * Tests that "add" behaves correctly when given value destination, and
+ * that it throws exception
+ */
+oblivion-destination-no-throw
+  add:x:/../*/_non-existing
+    src
+      foo:bar
