@@ -1,0 +1,34 @@
+/*
+ * Contains unit tests for testing [retrieve] in system
+ */
+
+/*
+ * Tests that checks that [retrieve] behaves as expected when given constant hierarchy
+ */
+static-body
+  retrieve
+    src:x:/+/**/foo
+    _howdy
+      bar
+        foo:success
+  if:x:/-/*
+    !=:node:"foo:success"
+    throw:@"Assert error, [retrieve] misbehaved"
+
+/*
+ * Tests that checks that [retrieve] behaves as expected when given [eval] to evaluate
+ */
+evaluation-body
+  retrieve
+    src:x:/+/*(/foo1|/foo2)
+    eval
+      insert-before:x:
+        src
+          foo1:success1
+          foo2:success2
+          foo3:error
+  if:x:/-
+    !=:node:@"retrieve
+  foo1:success1
+  foo2:success2"
+    throw:@"Assert error, [retrieve] misbehaved"

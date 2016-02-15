@@ -1,0 +1,92 @@
+/*
+ * Contains unit tests for testing [eval] in system
+ */
+
+/*
+ * Tests that [eval] behaves correctly when given an expression to evaluate,
+ * and eval returns value
+ */
+expression-value-result
+  _x
+    set:x:/..?value
+      src:success
+  eval:x:/-
+  if:x:/-
+    !=:node:@"eval:success"
+    throw:@"Assert error, [eval] misbehaved"
+
+/*
+ * Tests that [eval] behaves correctly when given an expression to evaluate,
+ * and eval returns node set
+ */
+expression-node-result
+  _x
+    insert-before:x:
+      src:"result:success"
+  eval:x:/-
+  if:x:/-
+    !=:node:@"eval
+  result:success"
+    throw:@"Assert error, [eval] misbehaved"
+
+/*
+ * Tests that [eval] behaves correctly when given children to evaluate,
+ * and returning value
+ */
+evaluate-children-value-result
+  eval
+    set:x:/..?value
+      src:success
+  if:x:/-
+    !=:node:@"eval:success"
+    throw:@"Assert error, [eval] misbehaved"
+
+/*
+ * Tests that [eval] behaves correctly when given children to evaluate,
+ * and returning nodes
+ */
+evaluate-children-node-result
+  eval
+    insert-before:x:
+      src
+        result:success
+  if:x:/-
+    !=:node:@"eval
+  result:success"
+    throw:@"Assert error, [eval] misbehaved"
+
+/*
+ * Tests that [eval] behaves correctly when given arguments to 
+ * an expression evaluation
+ */
+argument
+  _x
+    set:x:/..?value
+      src:"{0}-success"
+        :x:/../*/_data?value
+  eval:x:/-
+    _data:very-much
+  if:x:/-?value
+    !=:very-much-success
+    throw:@"Assert error, [eval] misbehaved"
+
+/*
+ * Tests that [eval] behaves correctly when given arguments to 
+ * an expression evaluation, and argument is a node passed by
+ * reference
+ */
+reference-argument
+  _input:success
+  _x
+    set:x:/..?value
+      src:"{0}-{1}"
+        :x:/../*/_data?value
+        :x:/../*/_data2/#/../*/_input?value
+  set:x:/+/*/_data2?value
+    src:x:/..
+  eval:x:/-2
+    _data:very-much
+    _data2
+  if:x:/-?value
+    !=:very-much-success
+    throw:@"Assert error, [eval] misbehaved"

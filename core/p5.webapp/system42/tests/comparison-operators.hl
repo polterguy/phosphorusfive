@@ -1,0 +1,162 @@
+/*
+ * Contains unit tests for testing comparison operators, 
+ * such as =, !=, <=, etc in system
+ */
+
+/*
+ * Tests that = behaves correctly
+ */
+equals
+  _src1:foo1
+  _src2:foo2
+  if:x:/../*/_src1?value
+    =:x:/../*/_src2?value
+    throw:@"Assert error, equals operator misbehaved"
+
+/*
+ * Tests that != behaves correctly
+ */
+not-equals
+  _src1:foo
+  _src2:foo
+  if:x:/../*/_src1?value
+    !=:x:/../*/_src2?value
+    throw:@"Assert error, not-equals operator misbehaved"
+
+/*
+ * Tests that > behaves correctly with string type,
+ * and no match should be found
+ */
+more-than-no-match
+  _src1:aaa
+  _src2:bbb
+  if:x:/../*/_src1?value
+    >:x:/../*/_src2?value
+    throw:@"Assert error, more-than operator misbehaved"
+
+/*
+ * Tests that < behaves correctly with string type,
+ * and no match should be found
+ */
+less-than-no-match
+  _src1:bbb
+  _src2:aaa
+  if:x:/../*/_src1?value
+    <:x:/../*/_src2?value
+    throw:@"Assert error, more-than operator misbehaved"
+
+/*
+ * Tests that > behaves correctly with string type,
+ * and match should be found
+ */
+more-than-match
+  _src1:bbc
+  _src2:bbb
+  if:x:/../*/_src1?value
+    >:x:/../*/_src2?value
+    // Do nothing
+  else
+    throw:@"Assert error, more-than operator misbehaved"
+
+/*
+ * Tests that < behaves correctly with string type,
+ * and match should be found
+ */
+less-than-match
+  _src1:bbb
+  _src2:bbc
+  if:x:/../*/_src1?value
+    <:x:/../*/_src2?value
+    // Do nothing
+  else
+    throw:@"Assert error, more-than operator misbehaved"
+
+/*
+ * Tests that >= behaves correctly with string type, 
+ * and no match should be found
+ */
+more-than-equals-no-match
+  _src1:aaa
+  _src2:bbb
+  if:x:/../*/_src1?value
+    >=:x:/../*/_src2?value
+    throw:@"Assert error, more-than operator misbehaved"
+
+/*
+ * Tests that <= behaves correctly with string type,
+ * and no match should be found
+ */
+less-than-equals-no-match
+  _src1:bbb
+  _src2:aaa
+  if:x:/../*/_src1?value
+    <=:x:/../*/_src2?value
+    throw:@"Assert error, more-than operator misbehaved"
+
+/*
+ * Tests that >= behaves correctly with string type, 
+ * and match should be found
+ */
+more-than-equals-match
+  _src1:bbb
+  _src2:bbb
+  if:x:/../*/_src1?value
+    >=:x:/../*/_src2?value
+    // Do nothing
+  else
+    throw:@"Assert error, more-than operator misbehaved"
+
+/*
+ * Tests that <= behaves correctly with string type,
+ * and match should be found
+ */
+less-than-equals-match
+  _src1:aaa
+  _src2:aaa
+  if:x:/../*/_src1?value
+    <=:x:/../*/_src2?value
+    // Do nothing
+  else
+    throw:@"Assert error, more-than operator misbehaved"
+
+/*
+ * Tests that = behaves correctly when types differ
+ */
+equals-type-difference
+  _src1:int:5
+  _src2:5
+  if:x:/../*/_src1?value
+    =:x:/../*/_src2?value
+    throw:@"Assert error, equal operator misbehaved"
+
+/*
+ * Tests that != behaves correctly when types differ
+ */
+not-equals-type-difference
+  _src1:int:5
+  _src2:5
+  if:x:/../*/_src1?value
+    !=:x:/../*/_src2?value
+    // Do nothing
+  else
+    throw:@"Assert error, equal operator misbehaved"
+
+/*
+ * Tests mixed operators joined together
+ */
+mixed
+  _src1:int:5
+  _src2:5
+  if:x:/../*/_src1?value
+    !=:x:/../*/_src2?value.int
+    or:x:/../*/_src1?value.string
+      !=:x:/../*/_src2?value
+    or:thomas
+      !=:thomas
+    or:abba
+      >=:b
+    or:x:/../*/_src1?value
+      >:int:5
+    or:x:/../*/_src1?value
+      <:int:4
+    throw:@"Assert error, equal operator misbehaved"

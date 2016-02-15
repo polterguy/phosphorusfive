@@ -1,0 +1,45 @@
+/*
+ * Contains unit tests for testing [fetch] in system
+ */
+
+/*
+ * Tests that [fetch] behaves as expected when given constant node hierarchy
+ */
+constant
+  fetch:x:/0/**/success-node?value
+    _foo
+      _bar
+        success-node:success
+  if:x:/-
+    !=:node:@"fetch:success"
+    throw:@"Assert error, [fetch] misbehaved"
+
+/*
+ * Tests that [fetch] behaves as expected when given code to evaluate
+ */
+evaluation
+  fetch:x:/**/success-node?value
+    insert-before:x:
+      src:@"{0}-{1}:{2}{3}"
+        :success
+        :node
+        :succ
+        :ess
+  if:x:/../*/fetch
+    !=:node:@"fetch:success"
+    throw:@"Assert error, [fetch] misbehaved"
+
+/*
+ * Tests that [fetch] behaves as expected when fetching a node
+ */
+node-result
+  fetch:x:/**/success-node
+    insert-before:x:
+      src:@"{0}-{1}:{2}{3}"
+        :success
+        :node
+        :succ
+        :ess
+  if:x:/../*/fetch/#
+    !=:node:@"success-node:success"
+    throw:@"Assert error, [fetch] misbehaved"
