@@ -252,6 +252,10 @@ CodeMirror.defineMode("hyperlisp", function() {
         case '>=':
         case 'less-than-equals':
         case '<=':
+        case '~':
+        case 'contains':
+        case '!~':
+        case 'not-contains':
         case 'lisp2lambda':
         case 'sha256-hash':
         case 'widget-exist':

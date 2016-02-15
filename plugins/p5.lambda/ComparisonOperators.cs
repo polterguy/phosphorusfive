@@ -96,6 +96,34 @@ namespace p5.lambda
         }
 
         /// <summary>
+        ///     Contains comparison operator, yields true if parent's value contains the string in contains value
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "contains", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "~", Protection = EventProtection.LambdaClosed)]
+        public static void contains (ApplicationContext context, ActiveEventArgs e)
+        {
+            var lhs = e.Args.Parent.GetExValue (context, "");
+            var rhs = e.Args.GetExValue (context, "");
+            e.Args.Value = lhs.Contains (rhs);
+        }
+
+        /// <summary>
+        ///     Not-contains comparison operator, yields true if parent's value does not contain the string in not-contains value
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "not-contains", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "!~", Protection = EventProtection.LambdaClosed)]
+        public static void not_contains (ApplicationContext context, ActiveEventArgs e)
+        {
+            var lhs = e.Args.Parent.GetExValue (context, "");
+            var rhs = e.Args.GetExValue (context, "");
+            e.Args.Value = !lhs.Contains (rhs);
+        }
+
+        /// <summary>
         ///     Returns all comparison operators in Phosphorus Five
         /// </summary>
         /// <param name="context">Application Context</param>
@@ -109,12 +137,16 @@ namespace p5.lambda
             e.Args.Add ("<");
             e.Args.Add (">=");
             e.Args.Add ("<=");
+            e.Args.Add ("~");
+            e.Args.Add ("!~");
             e.Args.Add ("equals");
             e.Args.Add ("not-equals");
             e.Args.Add ("more-than");
             e.Args.Add ("less-than");
             e.Args.Add ("more-than-equals");
             e.Args.Add ("less-than-equals");
+            e.Args.Add ("contains");
+            e.Args.Add ("not-contains");
         }
 
         /*

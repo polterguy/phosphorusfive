@@ -24,6 +24,50 @@ not-equals
     throw:@"Assert error, not-equals operator misbehaved"
 
 /*
+ * Tests that ~ behaves correctly
+ */
+contains-match
+  _src1:foobar
+  _src2:foo
+  if:x:/../*/_src1?value
+    ~:x:/../*/_src2?value
+    // Do nothing
+  else
+    throw:@"Assert error, not-equals operator misbehaved"
+
+/*
+ * Tests that ~ behaves correctly
+ */
+contains-no-match
+  _src1:foobar
+  _src2:fooX
+  if:x:/../*/_src1?value
+    ~:x:/../*/_src2?value
+    throw:@"Assert error, not-equals operator misbehaved"
+
+/*
+ * Tests that ~ behaves correctly
+ */
+not-contains-match
+  _src1:foobar
+  _src2:foo
+  if:x:/../*/_src1?value
+    !~:x:/../*/_src2?value
+    throw:@"Assert error, not-equals operator misbehaved"
+
+/*
+ * Tests that ~ behaves correctly
+ */
+not-contains-no-match
+  _src1:foobar
+  _src2:fooX
+  if:x:/../*/_src1?value
+    !~:x:/../*/_src2?value
+    // Do nothing
+  else
+    throw:@"Assert error, not-equals operator misbehaved"
+
+/*
  * Tests that > behaves correctly with string type,
  * and no match should be found
  */

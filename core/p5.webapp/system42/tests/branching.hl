@@ -208,3 +208,45 @@ else-if
   if:x:/../*/_data?value
     !=:success
     throw:@"Assert error, if evaluated to true when it should evaluate to false"
+
+/*
+ * Tests that a deep comparison is grouping and ordering its
+ * conditions correctly
+ */
+deep-comparison-equals
+  _data
+    foo1:bar1
+    foo2:bar2
+  if:x:/../*/_data?name
+    !=:_data
+    or:x:/../*/_data/0?name
+      =:foo1
+      and:x:/../*/_data/0?value
+        =:bar1
+        and:x:/../*/_data/1?name
+          =:foo2
+          and:x:/../*/_data/1?value
+            =:bar2
+    // Do nothing
+  else
+    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+
+/*
+ * Tests that a deep comparison is grouping and ordering its
+ * conditions correctly
+ */
+deep-comparison-not-equals
+  _data
+    foo1:bar1
+    foo2:bar2
+  if:x:/../*/_data?name
+    !=:_data
+    or:x:/../*/_data/0?name
+      =:foo1
+      and:x:/../*/_data/0?value
+        =:bar1
+        and:x:/../*/_data/1?name
+          =:foo2
+          and:x:/../*/_data/1?value
+            =:ERROR
+    throw:@"Assert error, if evaluated to true when it should evaluate to false"
