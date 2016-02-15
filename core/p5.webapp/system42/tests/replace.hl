@@ -1,0 +1,41 @@
+/*
+ * Contains unit tests for testing [replace] in system
+ */
+
+/*
+ * Tests that [replace] behaves as expected when given constant [what] and [with]
+ */
+constant
+  _data:Thomas Dumbfuck Hansen
+  replace:x:/-?value
+    what:Dumbfuck
+    with:Brilliant
+  if:x:/../*/replace?value
+    !=:Thomas Brilliant Hansen
+    throw:@"Assert error, [replace] misbehaved"
+
+/*
+ * Tests that [replace] behaves as expected when given expression [what] and [with]
+ */
+expression
+  _with:Brilliant
+  _what:Dumbfuck
+  _data:Thomas Dumbfuck Hansen
+  replace:x:/-?value
+    what:x:/../*/_what?value
+    with:x:/../*/_with?value
+  if:x:/../*/replace?value
+    !=:Thomas Brilliant Hansen
+    throw:@"Assert error, [replace] misbehaved"
+
+/*
+ * Tests that [replace] behaves as expected when given regex [what] and constant [with]
+ */
+regex
+  _data:Thomas Dumbfuck Hansen is Dumbfuck
+  replace:x:/-?value
+    what:regex:/dumbfuck/i
+    with:Brilliant
+  if:x:/../*/replace?value
+    !=:Thomas Brilliant Hansen is Brilliant
+    throw:@"Assert error, [replace] misbehaved"

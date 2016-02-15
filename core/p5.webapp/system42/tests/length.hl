@@ -1,0 +1,22 @@
+/*
+ * Contains unit tests for testing [length] in system
+ */
+
+/*
+ * Tests that [length] behaves as expected when given a constant
+ */
+constant
+  length:Thomas Hansen
+  if:x:/-?value
+    !=:int:13
+    throw:@"Assert error, [length] misbehaved!"
+
+/*
+ * Tests that [length] behaves as expected when given an expression
+ */
+expression
+  _data:Thomas Hansen
+  length:x:/-?value
+  if:x:/-?value
+    !=:int:13
+    throw:@"Assert error, [length] misbehaved!"

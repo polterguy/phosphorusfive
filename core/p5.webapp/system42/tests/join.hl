@@ -1,0 +1,46 @@
+/*
+ * Contains unit tests for testing [join] in system
+ */
+
+/*
+ * Tests that [join] behaves as expected
+ */
+simple
+  _data
+    foo1
+    foo2
+    foo3
+  join:x:/-/*?name
+  if:x:/-?value
+    !=:foo1foo2foo3
+    throw:@"Assert error, [join] misbehaved!"
+
+/*
+ * Tests that [join] behaves as expected when given [sep] argument
+ */
+separator
+  _data
+    foo1
+    foo2
+    foo3
+  join:x:/-/*?name
+    sep:,
+  if:x:/-?value
+    !=:foo1,foo2,foo3
+    throw:@"Assert error, [join] misbehaved!"
+
+/*
+ * Tests that [join] behaves as expected when given [sep] argument,
+ * being an expression
+ */
+separator-expression
+  _sep:-
+  _data
+    foo1
+    foo2
+    foo3
+  join:x:/-/*?name
+    sep:x:/../*/_sep?value
+  if:x:/-?value
+    !=:foo1-foo2-foo3
+    throw:@"Assert error, [join] misbehaved!"

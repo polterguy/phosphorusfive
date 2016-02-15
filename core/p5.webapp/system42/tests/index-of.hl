@@ -1,0 +1,48 @@
+/*
+ * Contains unit tests for testing [index-of] in system
+ */
+
+/*
+ * Tests that [index-of] behaves as expected when given a single search,
+ * yielding one result
+ */
+single-result
+  _data:foobarhowdy
+  index-of:x:/-?value
+    what:bar
+  if:x:/-/*?value
+    !=:int:3
+    or:x:/./-/*?count
+      !=:int:1
+    throw:@"Assert error, [index-of] returned wrong result!"
+
+/*
+ * Tests that [index-of] behaves as expected when given a single search,
+ * yielding multiple results
+ */
+multiple-results
+  _data:foobarhowdybar
+  index-of:x:/-?value
+    what:bar
+  if:x:/-/0?value
+    !=:int:3
+    or:x:/./-/1?value
+      !=:int:11
+    or:x:/./-/*?count
+      !=:int:2
+    throw:@"Assert error, [index-of] returned wrong result!"
+
+/*
+ * Tests that [index-of] behaves as expected when given a regex search
+ */
+regex
+  _data:Thomas hansen thomas
+  index-of:x:/-?value
+    what:regex:/thomas/i
+  if:x:/-/0?value
+    !=:int:0
+    or:x:/./-/1?value
+      !=:int:14
+    or:x:/./-/*?count
+      !=:int:2
+    throw:@"Assert error, [index-of] returned wrong result!"
