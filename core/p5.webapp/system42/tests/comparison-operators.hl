@@ -11,7 +11,7 @@ equals
   _src2:foo2
   if:x:/../*/_src1?value
     =:x:/../*/_src2?value
-    throw:@"Assert error, equals operator misbehaved"
+    throw:@"Assert error, [equals] operator misbehaved"
 
 /*
  * Tests that != behaves correctly
@@ -21,7 +21,7 @@ not-equals
   _src2:foo
   if:x:/../*/_src1?value
     !=:x:/../*/_src2?value
-    throw:@"Assert error, not-equals operator misbehaved"
+    throw:@"Assert error, [not-equals] operator misbehaved"
 
 /*
  * Tests that ~ behaves correctly
@@ -33,7 +33,7 @@ contains-match
     ~:x:/../*/_src2?value
     // Do nothing
   else
-    throw:@"Assert error, not-equals operator misbehaved"
+    throw:@"Assert error, [contains] operator misbehaved"
 
 /*
  * Tests that ~ behaves correctly
@@ -43,7 +43,29 @@ contains-no-match
   _src2:fooX
   if:x:/../*/_src1?value
     ~:x:/../*/_src2?value
-    throw:@"Assert error, not-equals operator misbehaved"
+    throw:@"Assert error, [contains] operator misbehaved"
+
+/*
+ * Tests that ~ behaves correctly
+ */
+contains-regex-match
+  _src1:foobar
+  _src2:regex:/FoO/i
+  if:x:/../*/_src1?value
+    ~:x:/../*/_src2?value
+    // Do nothing
+  else
+    throw:@"Assert error, [contains] operator misbehaved"
+
+/*
+ * Tests that ~ behaves correctly
+ */
+contains-regex-no-match
+  _src1:foobar
+  _src2:regex:/Foo/
+  if:x:/../*/_src1?value
+    ~:x:/../*/_src2?value
+    throw:@"Assert error, [contains] operator misbehaved"
 
 /*
  * Tests that ~ behaves correctly
@@ -53,7 +75,7 @@ not-contains-match
   _src2:foo
   if:x:/../*/_src1?value
     !~:x:/../*/_src2?value
-    throw:@"Assert error, not-equals operator misbehaved"
+    throw:@"Assert error, [not-contains] operator misbehaved"
 
 /*
  * Tests that ~ behaves correctly
@@ -65,7 +87,29 @@ not-contains-no-match
     !~:x:/../*/_src2?value
     // Do nothing
   else
-    throw:@"Assert error, not-equals operator misbehaved"
+    throw:@"Assert error, [not-contains] operator misbehaved"
+
+/*
+ * Tests that !~ behaves correctly
+ */
+not-contains-regex-match
+  _src1:foobar
+  _src2:regex:/FoO/i
+  if:x:/../*/_src1?value
+    !~:x:/../*/_src2?value
+    throw:@"Assert error, [not-contains] operator misbehaved"
+
+/*
+ * Tests that !~ behaves correctly
+ */
+not-contains-regex-no-match
+  _src1:foobar
+  _src2:regex:/Foo/
+  if:x:/../*/_src1?value
+    !~:x:/../*/_src2?value
+    // Do nothing
+  else
+    throw:@"Assert error, [not-contains] operator misbehaved"
 
 /*
  * Tests that > behaves correctly with string type,
@@ -76,7 +120,7 @@ more-than-no-match
   _src2:bbb
   if:x:/../*/_src1?value
     >:x:/../*/_src2?value
-    throw:@"Assert error, more-than operator misbehaved"
+    throw:@"Assert error, [more-than] operator misbehaved"
 
 /*
  * Tests that < behaves correctly with string type,
@@ -87,7 +131,7 @@ less-than-no-match
   _src2:aaa
   if:x:/../*/_src1?value
     <:x:/../*/_src2?value
-    throw:@"Assert error, more-than operator misbehaved"
+    throw:@"Assert error, [less-than] operator misbehaved"
 
 /*
  * Tests that > behaves correctly with string type,
@@ -100,7 +144,7 @@ more-than-match
     >:x:/../*/_src2?value
     // Do nothing
   else
-    throw:@"Assert error, more-than operator misbehaved"
+    throw:@"Assert error, [more-than] operator misbehaved"
 
 /*
  * Tests that < behaves correctly with string type,
@@ -113,7 +157,7 @@ less-than-match
     <:x:/../*/_src2?value
     // Do nothing
   else
-    throw:@"Assert error, more-than operator misbehaved"
+    throw:@"Assert error, [less-than] operator misbehaved"
 
 /*
  * Tests that >= behaves correctly with string type, 
@@ -124,7 +168,7 @@ more-than-equals-no-match
   _src2:bbb
   if:x:/../*/_src1?value
     >=:x:/../*/_src2?value
-    throw:@"Assert error, more-than operator misbehaved"
+    throw:@"Assert error, [more-than-equals] operator misbehaved"
 
 /*
  * Tests that <= behaves correctly with string type,
@@ -135,7 +179,7 @@ less-than-equals-no-match
   _src2:aaa
   if:x:/../*/_src1?value
     <=:x:/../*/_src2?value
-    throw:@"Assert error, more-than operator misbehaved"
+    throw:@"Assert error, [less-than-equals] operator misbehaved"
 
 /*
  * Tests that >= behaves correctly with string type, 
@@ -148,7 +192,7 @@ more-than-equals-match
     >=:x:/../*/_src2?value
     // Do nothing
   else
-    throw:@"Assert error, more-than operator misbehaved"
+    throw:@"Assert error, [more-than-equals] operator misbehaved"
 
 /*
  * Tests that <= behaves correctly with string type,
@@ -161,7 +205,7 @@ less-than-equals-match
     <=:x:/../*/_src2?value
     // Do nothing
   else
-    throw:@"Assert error, more-than operator misbehaved"
+    throw:@"Assert error, [less-than-equals] operator misbehaved"
 
 /*
  * Tests that = behaves correctly when types differ
@@ -171,7 +215,7 @@ equals-type-difference
   _src2:5
   if:x:/../*/_src1?value
     =:x:/../*/_src2?value
-    throw:@"Assert error, equal operator misbehaved"
+    throw:@"Assert error, [equals] operator misbehaved"
 
 /*
  * Tests that != behaves correctly when types differ
@@ -183,7 +227,7 @@ not-equals-type-difference
     !=:x:/../*/_src2?value
     // Do nothing
   else
-    throw:@"Assert error, equal operator misbehaved"
+    throw:@"Assert error, [not-equals] operator misbehaved"
 
 /*
  * Tests mixed operators joined together
@@ -203,4 +247,6 @@ mixed
       >:int:5
     or:x:/../*/_src1?value
       <:int:4
-    throw:@"Assert error, equal operator misbehaved"
+    or:x:/../*/_src1?value
+      !~:regex:/5/
+    throw:@"Assert error, mixed operators misbehaved"

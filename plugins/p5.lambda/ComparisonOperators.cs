@@ -6,6 +6,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using p5.exp;
 using p5.core;
 using p5.exp.exceptions;
@@ -96,7 +97,7 @@ namespace p5.lambda
         }
 
         /// <summary>
-        ///     Contains comparison operator, yields true if parent's value contains the string in contains value
+        ///     Contains comparison operator, yields true if parent's value contains the string/regex in contains value
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
@@ -104,9 +105,22 @@ namespace p5.lambda
         [ActiveEvent (Name = "~", Protection = EventProtection.LambdaClosed)]
         public static void contains (ApplicationContext context, ActiveEventArgs e)
         {
+            // Retrieving left hand side
             var lhs = e.Args.Parent.GetExValue (context, "");
-            var rhs = e.Args.GetExValue (context, "");
-            e.Args.Value = lhs.Contains (rhs);
+
+            // Retrieving right hand side
+            var rhs = e.Args.GetExValue<object> (context, null);
+
+            // Checking if we were given a regex, or "anything else"
+            if (rhs is Regex) {
+
+                // Regular expression "like"
+                e.Args.Value = (rhs as Regex).IsMatch (lhs);
+            } else {
+
+                // Simple string "like"
+                e.Args.Value = lhs.Contains (Utilities.Convert<string> (context, rhs, ""));
+            }
         }
 
         /// <summary>
@@ -118,9 +132,22 @@ namespace p5.lambda
         [ActiveEvent (Name = "!~", Protection = EventProtection.LambdaClosed)]
         public static void not_contains (ApplicationContext context, ActiveEventArgs e)
         {
+            // Retrieving left hand side
             var lhs = e.Args.Parent.GetExValue (context, "");
-            var rhs = e.Args.GetExValue (context, "");
-            e.Args.Value = !lhs.Contains (rhs);
+
+            // Retrieving right hand side
+            var rhs = e.Args.GetExValue<object> (context, null);
+
+            // Checking if we were given a regex, or "anything else"
+            if (rhs is Regex) {
+
+                // Regular expression "like"
+                e.Args.Value = !(rhs as Regex).IsMatch (lhs);
+            } else {
+
+                // Simple string "like"
+                e.Args.Value = !lhs.Contains (Utilities.Convert<string> (context, rhs, ""));
+            }
         }
 
         /// <summary>
