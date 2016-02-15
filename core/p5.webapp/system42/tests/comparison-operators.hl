@@ -250,3 +250,57 @@ mixed
     or:x:/../*/_src1?value
       !~:regex:/5/
     throw:@"Assert error, mixed operators misbehaved"
+
+/*
+ * Tests that Active Event evaluation "operator" behaves as expected,
+ * when a match should occur
+ */
+evaluation-match
+  _x
+    set:x:/..?value
+      src:bool:true
+  if
+    eval:x:/../*/_x
+    // Do nothing
+  else
+    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+
+/*
+ * Tests that Active Event evaluation "operator" behaves as expected,
+ * when a match should not occur
+ */
+evaluation-no-match
+  _x
+    set:x:/..?value
+      src:bool:false
+  if
+    eval:x:/../*/_x
+    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+
+/*
+ * Tests that Active Event evaluation "operator" behaves as expected,
+ * when a match should occur, and result is "not" with the [not] operator
+ */
+evaluation-not-no-match
+  _x
+    set:x:/..?value
+      src:bool:true
+  if
+    eval:x:/../*/_x
+    not
+    throw:@"Assert error, if evaluated to true when it should evaluate to false"
+
+/*
+ * Tests that Active Event evaluation "operator" behaves as expected,
+ * when a match should not occur, and result is "not" with the [not] operator
+ */
+evaluation-not-match
+  _x
+    set:x:/..?value
+      src:bool:false
+  if
+    eval:x:/../*/_x
+    not
+    // Do nothing
+  else
+    throw:@"Assert error, if evaluated to true when it should evaluate to false"

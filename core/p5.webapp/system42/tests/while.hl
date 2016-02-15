@@ -41,3 +41,36 @@ integer-comparison
     or:x:/../*/_int?value
       !=:int:0
     throw:@"Assert error, [while] misbehaved!"
+
+/*
+ * Tests that [while] behaves as expected when condition
+ * is a boolean expression value
+ */
+boolean-expression-comparison
+  _result
+  _bool:bool:true
+  while:x:/-?value
+    set:x:/../*/_result?value
+      src:{0}*
+        :x:/../*/_result?value
+    set:x:/../*/_bool?value
+      src:bool:false
+  if:x:/../*/_result?value
+    !=:*
+    throw:@"Assert error, [while] misbehaved!"
+
+/*
+ * Tests that [while] behaves as expected when condition
+ * is a boolean constant value
+ */
+boolean-constant-comparison
+  _result
+  while:bool:true
+    set:x:/../*/_result?value
+      src:{0}*
+        :x:/../*/_result?value
+    set:x:/../*/while?value
+      src:bool:false
+  if:x:/../*/_result?value
+    !=:*
+    throw:@"Assert error, [while] misbehaved!"
