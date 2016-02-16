@@ -1081,6 +1081,254 @@ create-widget
         :x:/../*/xml2lambda/*/rss/*/channel/*/description?value"
 
 
+    p5.page:/examples/address-book
+      name:Address Book
+      type:lambda
+      template:/system42/cms/templates/main.hl
+      role:root
+      lambda:@"/*
+ * Creates an Address Book application, that allows you
+ * to maintain a list of contacts, and their addresses 
+ * and phone numbers. Please notice that this is a web
+ * version and port of the famous 'Address Book' application
+ * from Qt, only with much more features, and way less code ... ;)
+ */
+
+include-javascript:@""
+p5.examples = {};
+p5.examples.address_search_enter = function(e) {
+  if(e.keyCode == 13) {
+    p5.$('search-address-book').raise('_onsearch');
+    return false;
+  }
+}""
+
+create-widget:address-book-main
+  parent:content
+  class:col-xs-12
+  oninit
+
+    /*
+     * Making sure we initially create our address 
+     * list table widget
+     */
+    sys42.examples.databind-address-book
+
+  widgets
+    container
+      class:col-xs-12 col-md-6 col-md-push-6
+      widgets
+        input:search-address-book
+          class:form-control
+          type:search
+          placeholder:Search (handles basic regular expressions) ...
+          onkeypress:""return p5.examples.address_search_enter(event);""
+          _onsearch
+            get-widget-property:search-address-book
+              value
+            sys42.examples.databind-address-book:x:/../*/get-widget-property/*/*?value
+            send-javascript:@""$('#search-address-book').select().focus();""
+    button:add-button
+      class:col-xs-2 col-xs-push-10 col-md-1 col-md-push-11 btn btn-primary
+      innerValue:+
+      title:Create new contact ...
+      onclick
+        sys42.wizard-window
+          _header:New contact
+          _body:Please provide the contact details
+          _widgets
+            text:name
+              label:Name
+              placeholder:Contact name ...
+              mandatory:true
+            text:phone
+              label:Phone
+              placeholder:Contact phone no ...
+              mandatory:true
+            text:email
+              label:Email
+              placeholder:Contact email address ...
+              mandatory:true
+            textarea:address
+              placeholder:Contact address ...
+              mandatory:true
+          _onok
+            eval-x:x:/+/*/*
+            insert-data
+              examples.address-book-item
+                name:x:/../*/name?value
+                phone:x:/../*/phone?value
+                email:x:/../*/email?value
+                address:x:/../*/address?value
+            set:x:/..?value
+              src:bool:true
+            sys42.examples.databind-address-book
+
+  /*
+   * Events for widget
+   */
+  events
+
+    /*
+     * Databinds table widget towards items in database
+     */
+    sys42.examples.databind-address-book
+
+      /*
+       * Checking if table widget already exists, and if so, delete old table
+       */
+      if
+        fetch:x:/0/0?value
+          widget-exist:address-list
+        delete-widget:address-list
+
+      /*
+       * Selecting all address items from database, unless [_arg] is given, at 
+       * which point we filter fields according to [_arg]'s value
+       */
+      if:x:/../*/_arg
+        not
+        or:x:/../*/_arg?value
+          =:
+        set:x:/./+2
+          src
+            select-data:x:/*/*/examples.address-book-item
+      else
+        set:x:/./+
+          src
+            select-data:x:@""/*/*/examples.address-book-item/*/""""=:regex:/{0}/i""""/.""
+              :x:/../*/_arg?value
+      _select
+
+      /*
+       * Databinding table widget below
+       */
+      databind:x:/../*/create-widget/*/widgets
+        src:x:/../*/select-data/*
+        template
+          tr
+            widgets
+              td
+                widgets
+                  button
+                    class:btn btn-default
+                    innerValue:Edit
+                    onclick
+                      sys42.wizard-window
+                        _header:Edit contact
+                        _body:Please provide new contact details
+                        _widgets
+                          text:name
+                            label:Name
+                            placeholder:Contact name ...
+                            mandatory:true
+                            {value}:x:/*/name?value
+                          text:phone
+                            label:Phone
+                            placeholder:Contact phone no ...
+                            mandatory:true
+                            {value}:x:/*/phone?value
+                          text:email
+                            label:Email
+                            placeholder:Contact email address ...
+                            mandatory:true
+                            {value}:x:/*/email?value
+                          textarea:address
+                            placeholder:Contact address ...
+                            mandatory:true
+                            {innerValue}:x:/*/address?value
+                        _onok
+                          {_id}:x:?value
+                          _sys42.show-code-window:x:/..
+                          eval-x:x:/../*/update-data/*/src/**
+                          update-data:x:@""/*/*/""""=:guid:{0}""""""
+                            :x:/../*/_id?value
+                            src
+                              examples.address-book-item:x:/../*/_id?value
+                                name:x:/../*/name?value
+                                phone:x:/../*/phone?value
+                                email:x:/../*/email?value
+                                address:x:/../*/address?value
+                          set:x:/..?value
+                            src:bool:true
+                          sys42.examples.databind-address-book
+              td
+                widgets
+                  strong
+                    {innerValue}:x:/*/name?value
+              td
+                widgets
+                  a
+                    {href}:""tel:{0}""
+                      :x:/*/phone?value
+                    {innerValue}:x:/*/phone?value
+              td
+                widgets
+                  a
+                    href:#
+                    {innerValue}:x:/*/email?value
+                    onclick
+                      sys42.wizard-window
+                        _header:Send an email
+                        _body:@""Please provide header and body of email you wish to send to person.
+Please notice that this feature requires that you've setup your web.config with a valid SMTP server and username/password combination ...""
+                        _widgets
+                          text:subject
+                            label:Subject
+                            mandatory:true
+                            placeholder:Subject line ...
+                          textarea:body
+                            mandatory:true
+                            placeholder:Body of email ...
+                        _onok
+                          {_email}:x:/*/email?value
+                          eval-x:x:/../*/p5.mail.smtp.send-email/**
+                          p5.mail.smtp.send-email
+                            envelope
+                              Subject:x:/../*/subject?value
+                              To
+                                :x:/../*/_email?value
+                              body
+                                signature
+                                encryption
+                                text:plain
+                                  content:x:/../*/body?value
+                          set:x:/..?value
+                            src:bool:true
+              td
+                widgets
+                  pre
+                    {innerValue}:x:/*/address?value
+              td
+                style:""width:70px;""
+                widgets
+                  button
+                    class:btn btn-default
+                    style:""width:100%;""
+                    onclick
+                      sys42.confirm-window
+                        _header:Confirm deletion of item
+                        _body:Please confirm that you wish to delete this item. Action cannot be undone after deletion is done!
+                        _onok
+                          delete-data:x:@""/*/*/""""=:guid:{0}""""""
+                            {}:x:?value
+                          sys42.examples.databind-address-book
+                    widgets
+                      span
+                        class:glyphicon glyphicon-remove
+
+      /*
+       * Creating our address item table widget
+       */
+      create-widget:address-list
+        before:add-button
+        element:table
+        class:table table-hover
+        widgets
+          thead
+            innerValue:<tr><th>Edit</th><th>Name</th><th>Phone</th><th>Email</th><th>Address</th><th>Delete</th></tr>"
+
+
     p5.page:/about
       type:html
       name:About
