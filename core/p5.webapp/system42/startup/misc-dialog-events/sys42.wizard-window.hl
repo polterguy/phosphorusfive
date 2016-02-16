@@ -104,6 +104,7 @@ create-protected-event:sys42.wizard-window
               class:input-group-addon
               innerValue
             void
+              _control
               element:input
               type
               class:form-control
@@ -157,6 +158,7 @@ create-protected-event:sys42.wizard-window
       _controls
         container
           class:prepend-left prepend-top prepend-bottom prepend-right
+          _control
           widgets
             literal
               element:textarea
@@ -209,7 +211,7 @@ setTimeout (function (){{
 $('#wizard-window').on('shown.bs.modal', function () {{
     $('#{0}').focus().select();
 }})}}, 250);"
-    :x:/../*/create-widget/**(/container/=wizard-window-controls/*/widgets/**(/literal/*/element/=textarea/.|/void)|/literal/=wizard-window-ok)/[0,1]?value
+    :x:/../*/create-widget/**/_control/./[0,1]?value
 
 
   /*
@@ -275,6 +277,7 @@ $('#wizard-window').on('shown.bs.modal', function () {{
                 class:modal-footer
                 widgets
                   literal:wizard-window-ok
+                    _control
                     element:button
                     class:btn btn-default
                     innerValue:OK
@@ -320,10 +323,13 @@ $('#wizard-window').on('shown.bs.modal', function () {{
                                 :x:/./././-/*/*?value
 
                         // Adding control's value into [eval]
+                        set:x:/+2/*/*?name
+                          src:x:/..for-each/*/_dp/#?name
+                        set:x:/+/*/*?value
+                          src:x:/..for-each/*/_dp/#/*/value?value
                         add:x:/../**/eval
-                          src:"{0}:{1}"
-                            :x:/..for-each/*/_dp/#?name
-                            :x:/..for-each/*/_dp/#/*/value?value
+                          src
+                            x:x
 
                       // Contains code to be executed as user clicks OK
                       _eval

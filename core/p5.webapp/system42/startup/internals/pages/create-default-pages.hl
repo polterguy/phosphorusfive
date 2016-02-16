@@ -792,7 +792,7 @@ sys42.wizard-window
  */
 include-javascript:@""
 p5.examples = {};
-p5.examples.todo_item_enter(e) {
+p5.examples.todo_item_enter = function(e) {
   if(e.keyCode == 13) {
     p5.$('add-new-todo-item-button').raise('onclick');
     return false;

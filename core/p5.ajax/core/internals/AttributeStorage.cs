@@ -150,6 +150,10 @@ namespace p5.ajax.core.internals
         /// <param name="value">Value of attribute</param>
         internal void SetAttributeFormData (string name, string value)
         {
+            // Making sure we normalize Carriage Return, such that they're always in "canonical form"
+            if (value != null && value.Contains ("\n") && !value.Contains ("\r\n"))
+                value = value.Replace ("\n", "\r\n");
+
             // Adding attribute to form data list
             SetAttributeInternal (_formDataThisRequest, name, value);
 

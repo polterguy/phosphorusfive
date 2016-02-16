@@ -6,6 +6,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using p5.core;
 using p5.exp.exceptions;
 
@@ -56,7 +57,11 @@ namespace p5.exp.iterators
             }
 
             // Filtering away all previous matches that does not match the specified value
-            if (_like) {
+            if (value is Regex) {
+
+                // Special case for regular expressions
+                return Left.Evaluate (context).Where (idxCurrent => (value as Regex).IsMatch (idxCurrent.Get<string>(context)));
+            } else if (_like) {
                 
                 // Special case for empty value, making sure we return either empty or null values
                 if (string.IsNullOrEmpty (_value)) {

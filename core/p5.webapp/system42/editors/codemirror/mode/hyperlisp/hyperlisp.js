@@ -162,7 +162,6 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'and':
         case 'or':
         case 'xor':
-        case 'not':
         case 'can-convert':
         case 'eval':
         case 'if':
@@ -238,6 +237,7 @@ CodeMirror.defineMode("hyperlisp", function() {
           return this.styles.keyword;
 
         // Afterwards keywords not needing indentation
+        case 'not':
         case 'src':
         case 'sleep':
         case 'equals':
