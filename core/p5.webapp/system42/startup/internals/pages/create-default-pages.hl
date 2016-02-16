@@ -1124,9 +1124,7 @@ create-widget:address-book-main
           placeholder:Search (handles basic regular expressions) ...
           onkeypress:""return p5.examples.address_search_enter(event);""
           _onsearch
-            get-widget-property:search-address-book
-              value
-            sys42.examples.databind-address-book:x:/../*/get-widget-property/*/*?value
+            sys42.examples.databind-address-book
             send-javascript:@""$('#search-address-book').select().focus();""
     button:add-button
       class:col-xs-2 col-xs-push-10 col-md-1 col-md-push-11 btn btn-primary
@@ -1162,6 +1160,8 @@ create-widget:address-book-main
                 address:x:/../*/address?value
             set:x:/..?value
               src:bool:true
+            set-widget-property:search-address-book
+              value
             sys42.examples.databind-address-book
 
   /*
@@ -1186,7 +1186,9 @@ create-widget:address-book-main
        * Selecting all address items from database, unless [_arg] is given, at 
        * which point we filter fields according to [_arg]'s value
        */
-      if:x:/../*/_arg
+      get-widget-property:search-address-book
+        value
+      if:x:/-/*/*?value
         not
         or:x:/../*/_arg?value
           =:
@@ -1197,7 +1199,7 @@ create-widget:address-book-main
         set:x:/./+
           src
             select-data:x:@""/*/*/examples.address-book-item/*/""""=:regex:/{0}/i""""/.""
-              :x:/../*/_arg?value
+              :x:/../*/get-widget-property/*/*?value
       _select
 
       /*
