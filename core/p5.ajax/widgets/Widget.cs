@@ -396,7 +396,8 @@ namespace p5.ajax.widgets
                             (Page as IAjaxPage).Manager.RegisterWidgetChanges (ClientID, "outerHTML", GetWidgetHtml ());
                         } else if (RenderMode == RenderingMode.ReRenderChildren) {
 
-                            // Re-rendering all children controls
+                            // Re-rendering all children controls, but also renders changes to widget ...
+                            _attributes.RegisterChanges ((Page as IAjaxPage).Manager, ClientID);
                             RenderChildrenWidgetsAsJson (writer);
                         } else {
 

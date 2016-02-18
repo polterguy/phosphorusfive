@@ -48,5 +48,16 @@ namespace p5.types.types
         {
             e.Args.Value = "guid";
         }
+
+        /// <summary>
+        ///     Returns a new randomly created Guid
+        /// </summary>
+        /// <param name="context">Application Context</param>
+        /// <param name="e">Parameters passed into Active Event</param>
+        [ActiveEvent (Name = "new-guid", Protection = EventProtection.LambdaClosed)]
+        private static void new_guid (ApplicationContext context, ActiveEventArgs e)
+        {
+            e.Args.Value = Guid.NewGuid ();
+        }
     }
 }

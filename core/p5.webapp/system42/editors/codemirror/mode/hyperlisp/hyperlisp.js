@@ -201,6 +201,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'save-binary-file':
         case 'update-data':
         case 'insert-data':
+        case 'append-data':
         case 'set-context-value':
         case 'set-session-value':
         case 'set-global-value':
@@ -216,6 +217,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'set-widget-lambda-event':
         case 'return-response-object':
         case 'raise-widget-ajax-event':
+        case 'get-widget-property':
         case 'zip':
         case 'unzip':
         case 'set-page-value':
@@ -233,6 +235,8 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'switch':
         case 'case':
         case 'default':
+        case 'find-widget':
+        case 'find-widget-like':
           state.indent += 2;
           return this.styles.keyword;
 
@@ -259,8 +263,6 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'lisp2lambda':
         case 'sha256-hash':
         case 'widget-exist':
-        case 'find-widget':
-        case 'find-widget-like':
         case 'reload-location':
         case 'whoami':
         case 'logout':
@@ -305,7 +307,6 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'echo':
         case 'echo-file':
         case 'echo-mime':
-        case 'get-widget-property':
         case 'delete-widget-property':
         case 'list-widget-properties':
         case 'list-page-keys':
@@ -349,6 +350,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'throw':
         case 'eval-x':
         case 'return':
+        case 'new-guid':
           return this.styles.keyword;
 
         // default handling

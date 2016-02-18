@@ -21,11 +21,12 @@ namespace p5.data
     public static class Insert
     {
         /// <summary>
-        ///     Inserts nodes into database
+        ///     Inserts or appends nodes into database
         /// </summary>
         /// <param name="context">Application Context</param>
         /// <param name="e">Parameters passed into Active Event</param>
         [ActiveEvent (Name = "insert-data", Protection = EventProtection.LambdaClosed)]
+        [ActiveEvent (Name = "append-data", Protection = EventProtection.LambdaClosed)]
         public static void insert_data (ApplicationContext context, ActiveEventArgs e)
         {
             /*
@@ -42,6 +43,8 @@ namespace p5.data
             // Acquiring lock on database
             lock (Common.Lock) {
 
+                var forceAppend = e.Name == "append-data";
+
                 // Used to store how many items are actually affected
                 int affectedItems = 0;
 
@@ -57,7 +60,7 @@ namespace p5.data
                         foreach (var idxInner in idx.Children) {
 
                             // Inserting node
-                            InsertNode (idxInner, context, changed);
+                            InsertNode (idxInner, context, changed, forceAppend);
                         }
                     } else {
 
@@ -65,7 +68,7 @@ namespace p5.data
                         using (new Utilities.ArgsRemover (idx)) {
 
                             // Inserting node
-                            InsertNode (idx, context, changed);
+                            InsertNode (idx, context, changed, forceAppend);
                         }
                     }
 
@@ -84,13 +87,17 @@ namespace p5.data
         /*
          * Inserts one node into database
          */
-        private static void InsertNode (Node node, ApplicationContext context, List<Node> changed)
+        private static void InsertNode (
+            Node node, 
+            ApplicationContext context, 
+            List<Node> changed,
+            bool forceAppend)
         {
             // Syntax checking insert node
             SyntaxCheckInsertNode (node, context);
 
             // Finding next available database file node
-            var fileNode = Common.GetAvailableFileNode (context);
+            var fileNode = Common.GetAvailableFileNode (context, forceAppend);
 
             // Figuring out which file Node updated belongs to, and storing in changed list
             if (!changed.Contains (fileNode))

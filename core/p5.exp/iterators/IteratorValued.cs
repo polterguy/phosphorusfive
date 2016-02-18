@@ -60,7 +60,7 @@ namespace p5.exp.iterators
             if (value is Regex) {
 
                 // Special case for regular expressions
-                return Left.Evaluate (context).Where (idxCurrent => (value as Regex).IsMatch (idxCurrent.Get<string>(context)));
+                return Left.Evaluate (context).Where (idxCurrent => (value as Regex).IsMatch (idxCurrent.Get<string>(context, "")));
             } else if (_like) {
                 
                 // Special case for empty value, making sure we return either empty or null values

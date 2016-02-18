@@ -34,6 +34,11 @@ namespace p5.lambda.keywords
                 if (source == null)
                     return; // Nothing to split
 
+                // Checking if we should explicitly keep empty items
+                StringSplitOptions options = e.Args.GetExChildValue ("keep-empty", context, false) ? 
+                    StringSplitOptions.None : 
+                    StringSplitOptions.RemoveEmptyEntries;
+
                 // Retrieving separator objects (which might be multiple integers, multiple strings or a single regular expression)
                 var sepObjects = e.Args.Children
                     .Where (ix => ix.Name == "=")
@@ -51,7 +56,20 @@ namespace p5.lambda.keywords
                         e.Args.AddRange (
                             source.Split (
                                 sepStrings.ToArray (), 
-                                System.StringSplitOptions.RemoveEmptyEntries).Select (ix => new Node (ix)));
+                                options).Select (ix => new Node (ix)));
+
+                        // If string ends with split-string, we add an empty item back to caller, if options is to keep empty items
+                        if (options == StringSplitOptions.None) {
+                            bool addEmpty = false;
+                            foreach (var idxSplitString in sepObjects.Select (ix => Utilities.Convert<string> (context, ix))) {
+                                if (source.EndsWith (idxSplitString)) {
+                                    addEmpty = true;
+                                    break;
+                                }
+                            }
+                            if (addEmpty)
+                                e.Args.Add ("");
+                        }
                     } else if (sepObjects [0] is int) {
 
                         // Integer split operation, converting all values to integers and running substring upon all values

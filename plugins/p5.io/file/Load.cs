@@ -76,6 +76,7 @@ namespace p5.io.file
                 case ".htm":
                 case ".hl":
                 case ".xml":
+                case ".csv":
                     return true;
                 default:
                     return false;

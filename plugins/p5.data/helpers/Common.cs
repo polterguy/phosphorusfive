@@ -135,16 +135,24 @@ namespace p5.data.helpers
         ///     Gets the first available file node
         /// </summary>
         /// <returns>The next available file node</returns>
-        /// <param name="context">Aplication context</param>
-        public static Node GetAvailableFileNode (ApplicationContext context)
+        /// <param name="context">Application context</param>
+        /// <param name="forceAppend">If true, node will be appended into database, otherwise first available node will be used</param>
+        public static Node GetAvailableFileNode (ApplicationContext context, bool forceAppend)
         {
             // Searching through database to see if there are any nodes we can use from before
             var objectsPerFile = int.Parse (ConfigurationManager.AppSettings ["database-nodes-per-file"] ?? "32");
-            foreach (var idxFileNode in Database.Children) {
+            if (forceAppend) {
+                if (Database.Children.Count > 0) {
+                    if (Database.Children [Database.Children.Count - 1].Children.Count < objectsPerFile)
+                        return Database.Children [Database.Children.Count - 1];
+                }
+            } else {
+                foreach (var idxFileNode in Database.Children) {
 
-                // Checking if currently iterated file has room for more data
-                if (idxFileNode.Children.Count < objectsPerFile)
-                    return idxFileNode; // We found an available node
+                    // Checking if currently iterated file has room for more data
+                    if (idxFileNode.Children.Count < objectsPerFile)
+                        return idxFileNode; // We found an available node
+                }
             }
 
             // Creating new node and appending into database

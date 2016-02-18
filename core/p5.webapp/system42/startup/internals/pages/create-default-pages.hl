@@ -1094,6 +1094,10 @@ create-widget
  * from Qt, only with much more features, and way less code ... ;)
  */
 
+/*
+ * Include JavaScript to be able to trap carriage return in search
+ * textbox
+ */
 include-javascript:@""
 p5.examples = {};
 p5.examples.address_search_enter = function(e) {
@@ -1103,6 +1107,11 @@ p5.examples.address_search_enter = function(e) {
   }
 }""
 
+/*
+ * Main address book widget, contains search field, 
+ * add new address book item button, and table showing list of
+ * address book items
+ */
 create-widget:address-book-main
   parent:content
   class:col-xs-12
@@ -1118,12 +1127,22 @@ create-widget:address-book-main
     container
       class:col-xs-12 col-md-6 col-md-push-6
       widgets
+
+        /*
+         * Search for items in address book widget
+         */
         input:search-address-book
           class:form-control
           type:search
-          placeholder:Search (handles basic regular expressions) ...
+          placeholder:Search ...
           onkeypress:""return p5.examples.address_search_enter(event);""
           _onsearch
+
+            /*
+             * Since [sys42.examples.databind-address-book] takes care of
+             * checking search criteria, we simply invoke it here, and give focus
+             * to search field afterwards
+             */
             sys42.examples.databind-address-book
             send-javascript:@""$('#search-address-book').select().focus();""
     button:add-button
@@ -1131,6 +1150,10 @@ create-widget:address-book-main
       innerValue:+
       title:Create new contact ...
       onclick
+
+        /*
+         * Using wizard window to create new contact
+         */
         sys42.wizard-window
           _header:New contact
           _body:Please provide the contact details
@@ -1151,17 +1174,37 @@ create-widget:address-book-main
               placeholder:Contact address ...
               mandatory:true
           _onok
+
+            /*
+             * Forward evaluates all expressions inside [insert-data]
+             */
             eval-x:x:/+/*/*
+
+            /*
+             * Insert new contact into p5 database
+             */
             insert-data
               examples.address-book-item
                 name:x:/../*/name?value
                 phone:x:/../*/phone?value
                 email:x:/../*/email?value
                 address:x:/../*/address?value
+
+            /*
+             * Making sure we return true, to close wizard window
+             */
             set:x:/..?value
               src:bool:true
+
+            /*
+             * Removing value from search box
+             */
             set-widget-property:search-address-book
               value
+
+            /*
+             * re-databind address book widget table
+             */
             sys42.examples.databind-address-book
 
   /*
@@ -1192,14 +1235,29 @@ create-widget:address-book-main
         not
         or:x:/../*/_arg?value
           =:
+
+        /*
+         * No search criteria, fetching all items
+         */
         set:x:/./+2
           src
             select-data:x:/*/*/examples.address-book-item
       else
+
+        /*
+         * Search criteria in search widget, fetching only items matching criteria.
+         * Notice, using regular expression to search
+         */
         set:x:/./+
           src
             select-data:x:@""/*/*/examples.address-book-item/*/""""=:regex:/{0}/i""""/.""
               :x:/../*/get-widget-property/*/*?value
+
+      /*
+       * This will be transformed by one of the above [if]/[else] logics to
+       * a [select-data], with an expression, according to whether ot not
+       * we've got a search criteria
+       */
       _select
 
       /*
@@ -1216,6 +1274,10 @@ create-widget:address-book-main
                     class:btn btn-default
                     innerValue:Edit
                     onclick
+
+                      /*
+                       * Using wizard window to edit existing contact
+                       */
                       sys42.wizard-window
                         _header:Edit contact
                         _body:Please provide new contact details
@@ -1241,7 +1303,10 @@ create-widget:address-book-main
                             {innerValue}:x:/*/address?value
                         _onok
                           {_id}:x:?value
-                          _sys42.show-code-window:x:/..
+
+                          /*
+                           * Forward evaluates all expressions inside of [src] inside of [update-data]
+                           */
                           eval-x:x:/../*/update-data/*/src/**
                           update-data:x:@""/*/*/""""=:guid:{0}""""""
                             :x:/../*/_id?value
@@ -1251,8 +1316,16 @@ create-widget:address-book-main
                                 phone:x:/../*/phone?value
                                 email:x:/../*/email?value
                                 address:x:/../*/address?value
+
+                          /*
+                           * Returning true to make sure wizard window is closed
+                           */
                           set:x:/..?value
                             src:bool:true
+
+                          /*
+                           * Re-databinding address book items table widget
+                           */
                           sys42.examples.databind-address-book
               td
                 widgets
@@ -1261,6 +1334,11 @@ create-widget:address-book-main
               td
                 widgets
                   a
+
+                    /*
+                     * Making sure telephone number is 'clickable' on smart 
+                     * phones and similar devices
+                     */
                     {href}:""tel:{0}""
                       :x:/*/phone?value
                     {innerValue}:x:/*/phone?value
@@ -1270,8 +1348,20 @@ create-widget:address-book-main
                     href:#
                     {innerValue}:x:/*/email?value
                     onclick
+
+                      /*
+                       * Using wizard window to send person an email.
+                       * Notice that this logic depends upon your web.config
+                       * being correctly setup with an SMTP server setting,
+                       * and you having a private key defined in web.config,
+                       * and in case you wish to encrypt email sent, you having 
+                       * access to a GnuPG public encryption key matching the 
+                       * person's email address
+                       */
+                      eval-x:x:/+/*/_header
                       sys42.wizard-window
-                        _header:Send an email
+                        _header:Send an email to {0}
+                          {}:x:/*/email?value
                         _body:@""Please provide header and body of email you wish to send to person.
 Please notice that this feature requires that you've setup your web.config with a valid SMTP server and username/password combination ...""
                         _widgets
@@ -1284,6 +1374,10 @@ Please notice that this feature requires that you've setup your web.config with 
                             placeholder:Body of email ...
                         _onok
                           {_email}:x:/*/email?value
+
+                          /*
+                           * Forward evaluates all expressions inside of [p5.mail.smtp.send-email]
+                           */
                           eval-x:x:/../*/p5.mail.smtp.send-email/**
                           p5.mail.smtp.send-email
                             envelope
@@ -1295,6 +1389,10 @@ Please notice that this feature requires that you've setup your web.config with 
                                 encryption
                                 text:plain
                                   content:x:/../*/body?value
+
+                          /*
+                           * Returning true to make sure wizard window is closed
+                           */
                           set:x:/..?value
                             src:bool:true
               td
@@ -1308,6 +1406,11 @@ Please notice that this feature requires that you've setup your web.config with 
                     class:btn btn-default
                     style:""width:100%;""
                     onclick
+
+                      /*
+                       * Using confirm window to confirm deletion of address book item,
+                       * before deletion is accepted
+                       */
                       sys42.confirm-window
                         _header:Confirm deletion of item
                         _body:Please confirm that you wish to delete this item. Action cannot be undone after deletion is done!
@@ -1329,6 +1432,1256 @@ Please notice that this feature requires that you've setup your web.config with 
         widgets
           thead
             innerValue:<tr><th>Edit</th><th>Name</th><th>Phone</th><th>Email</th><th>Address</th><th>Delete</th></tr>"
+
+
+    p5.page:/examples/csv-editor
+      name:CSV editor
+      type:lambda
+      template:/system42/cms/templates/main.hl
+      role:root
+      lambda:@"/*
+ * Shows how you could create a CSV file editor, for
+ * editing CSV files. Will iterate all .csv files in
+ * your /documents/private folder, and ask you if you 
+ * wish to import these files, to allow editing these 
+ * files, in a web User Interface
+ */
+
+/*
+ * Include JavaScript to be able to trap carriage return in search
+ * textbox
+ */
+include-javascript:@""p5.examples = {};
+p5.examples.csv_editor_search_enter = function(e) {
+  if(e.keyCode == 13) {
+    p5.$('search-csv-editor').raise('_onsearch');
+    return false;
+  }
+}""
+
+
+/*
+ * Showing user some general information about application,
+ * and informing user that he has to upload his CSV files
+ * to his private document folder, with the possibility of
+ * letting him open up his file manager, to do just that.
+ */
+whoami
+list-files:/users/{0}/documents/private/
+  :x:/../*/whoami/*/username?value
+  filter:csv
+select-data:x:/*/*/examples.csv-file-declaration?count
+if:x:/-?value
+  =:int:0
+  and:x:/../*/list-files/*?count
+    =:int:0
+
+  /*
+   * User has no CSV files in his private documents folder, and
+   * neither does he have any previously imported CSV files in database
+   */
+  eval-x:x:/+/*/_body
+  sys42.confirm-window
+    _header:General information
+    _body:@""<p>This app will allow you to import any CSV files you have in your <em>'/users/{0}/documents/private/'</em> folder, and
+edit these files, almost like you would in for instance Microsoft Office or Open Office, only through a web interface.</p>
+<p>If there are no files to import, then please go to your file browser, and drag and drop
+one or more .csv files to your browser, from within your <em>'/users/{0}/documents/private/'</em> folder.</p>
+
+<p>Each file you upload and import like this, will be stored in your database, and you can use this app as a CRUD application,
+to allow editing these items in a CRUD manner ...</p>
+
+<p>When you are done uploading your CSV files, then just click <em>'back'</em> in your browser to come back to this app,
+and import your CSV file(s) ...</p>
+
+<p>This app does not feature paging, in addition it uses the p5 database, which is in-memory, meaning if you have humongously large
+CSV files, you will probably not be able to adequately edit them. First of all, all items are visible on the same page, always, 
+which makes it slow to edit humongously large files. Secondly, items are stored in memory, making your web server perform
+badly due to memory hogs.</p>
+
+<p>If you have needs for something that scales better, and has the capacity to edit files with
+millions of records, feel free to contact me on <a href='mailto:phosphorusfive@gmail.com'>phosphorusfive@gmail.com</a>, 
+and I can probably create something that scales better for you ... (in exchange for money)</p>""
+      :x:/../*/whoami/*/username?value
+    _extra-buttons
+
+      /*
+       * An additional button to our confirm window,
+       * that allows user to open up his file manager,
+       * in the correct folder, to let him upload CSV files,
+       * such that they can be handled by application
+       */
+      button
+        class:btn btn-default
+        innerValue:Upload CSV files
+        onclick
+          whoami
+          set-session-value:sys42.current-folder
+            src:/users/{0}/documents/private/
+              :x:/../*/whoami/*/username?value
+          set-location:/superuser/files
+else-if:x:/-2?value
+  =:int:0
+  and:x:/../*/list-files/*?count
+    >:int:0
+
+  /*
+   * User has CSV files in his private documents folder, informing
+   * him that he has to import these to allow editing them
+   */
+  sys42.confirm-window
+    _header:Additional information
+    _body:@""Now click <em>'Import CSV file'</em> to choose which CSV files you wish to import into your Phosphorus Five database""
+    _onok
+      send-javascript:@""$('#import-csv-file-btn').focus();""
+
+/*
+ * Creating main CSV file editor widget
+ */
+create-widget:main-csv-editor
+  parent:content
+  widgets
+
+    /*
+     * Wraps the import/close button
+     */
+    div:csv-import-button-wrapper
+      class:col-xs-12 text-right prepend-bottom
+      widgets
+        div
+          class:col-xs-6 col-xs-push-6 col-md-3 col-md-push-9
+          widgets
+
+            /*
+             * Button that shows 'help' window
+             */
+            button:csv-files-help
+              class:btn btn-default form-control
+              innerValue:Help
+              onclick
+                sys42.confirm-window
+                  _header:Help
+                  _body:@""<img src='/media/images/marvin-headshot.png' style='float:right;' /><p>This is a small CSV file editor. It allows you to import, edit, and export canonical CSV files. 
+It can only handle CSV files with comma values (','), and without quoted items. It also requires a header row in your CSV files.
+It does not scale very well, since there
+is no paging, and all items are stored in the memory based Phosphorus Five database. There is no sorting, and no aggregating
+features in it. It also does not allow you to create new CSV files.</p>
+<p>If these are features which are crucial to you, and you are willing to pay for such features, you can contact me on
+<a href='mailto:phosphorusfive@gmail.com'>phosphorusfive@gmail.com</a>, and I might be able to help you out.</p>
+
+<p>My living is created from creating additional features to Phosphorus Five, which I give away for free as Open Source and
+Free Software. If you want to donate money to me, either in exchange for features, or simply because you for some reasons
+like me, feel free to contact me through the above email.</p>""
+
+            /*
+             * Button that shows 'import CSV files' table widget
+             */
+            button:import-csv-file-btn
+              class:btn btn-default form-control
+              innerValue:Import CSV file
+              onclick
+
+                /*
+                 * Checking the innerValue of our Import button, and
+                 * if it is 'Import CSV file', we show the import table,
+                 * and allow the user to import his CSV files. Otherwise,
+                 * we delete the import file table. This way, we use the
+                 * same button to show the list of CSV files the user can
+                 * import, as we use to hide the table
+                 */
+                if
+                  fetch:x:/0/0/0?value
+                    get-widget-property:import-csv-file-btn
+                      innerValue
+                  =:Import CSV file
+
+                  /*
+                   * Making sure we 'unselect' file to edit item from select list
+                   */
+                  set-widget-property:select-csv-file-to-edit
+                    value:_default
+
+                  /*
+                   * Showing our import CSV file table
+                   */
+                  sys42.examples.show-csv-files
+                  set-widget-property:import-csv-file-btn
+                    innerValue:Close
+                else
+
+                  /*
+                   * Hiding our import CSV file table
+                   */
+                  delete-widget:import-csv-file-table
+                  set-widget-property:import-csv-file-btn
+                    innerValue:Import CSV file
+
+            /*
+             * Select dropdown list that allows user to select previously
+             * imported CSV files for editing
+             */
+            select:select-csv-file-to-edit
+              title:Choose which CSV file to edit
+              class:form-control
+              oninit
+              
+                /*
+                 * Initially populating select dropdown list 
+                 * with all different types of CSV objects
+                 */
+                sys42.examples.populate-csv-types-select-list
+
+              events
+
+                sys42.examples.populate-csv-types-select-list
+
+                  /*
+                   * Checking if import table widget exists, and if
+                   * it does, we delete it
+                   */
+                  if
+                    fetch:x:/0/0?value
+                      widget-exist:import-csv-file-table
+                    delete-widget:import-csv-file-table
+                    set-widget-property:import-csv-file-btn
+                      innerValue:Import CSV file
+
+                  /*
+                   * Populating select CSV file to edit dropdown with all
+                   * types of files we have imported into our database
+                   */
+                  select-data:x:/*/*/~examples.csv-file-declaration
+                  if:x:/-/*?count
+                    >:int:0
+                    clear-widget:select-csv-file-to-edit
+                    create-literal-widget
+                      parent:select-csv-file-to-edit
+                      element:option
+                      value:_default
+                      innerValue:Choose CSV file to edit ...
+                    for-each:x:/../*/select-data/*
+                      eval-x:x:/+/*
+                      create-literal-widget
+                        parent:select-csv-file-to-edit
+                        element:option
+                        value:x:/..for-each/*/_dp/#/*/type?value
+                        innerValue:x:/..for-each/*/_dp/#/*/type?value
+              onchange
+                sys42.examples.edit-csv-objects
+              widgets
+                option
+                  value:_default
+                  innerValue:You have no CSV files!
+
+            /*
+             * Textbox that allows user to filter CSV files according to
+             * some search criteria
+             */
+            input:search-csv-editor
+              type:search
+              class:form-control
+              placeholder:Filter ...
+              onkeypress:@""return p5.examples.csv_editor_search_enter(event);""
+              _onsearch
+                sys42.examples.csv-editor-filter
+
+    /*
+     * Wraps the import file main table widget, that shows
+     * all files user can import from his private documents folder
+     */
+    div:import-file-wrapper
+      class:col-xs-12
+      events
+        sys42.examples.show-csv-files
+
+          /*
+           * Making sure we delete any existing 'edit CSV items' widgets
+           */
+          if
+            fetch:x:/0/0?value
+              widget-exist:csv-items-table
+            delete-widget:csv-items-table
+
+          /*
+           * Evaluation object, used in databinding, for
+           * getting 'friendly name' of filename (without the path)
+           */
+          _x-get-name
+            split:x:/../*/_dn/#?name
+              =:/
+            split:x:/-/0/-
+              =:.
+            eval-x:x:/+/*/*
+            insert-before:x:
+              src
+                innerValue:x:/../*/split/[1,2]/0?name
+
+          /*
+           * Finding username of user, to list files from user's private
+           * documents folder
+           */
+          whoami
+          list-files:/users/{0}/documents/private/
+            :x:/../*/whoami/*/username?value
+            filter:csv
+
+          /*
+           * Databinding 'import CSV files' table towards files from
+           * user's private documents folder. Her we show simple databinding,
+           * in addition to Active Event databinding, invoking [eval] to
+           * evaluation object above to create a friendly filename, without the
+           * extension and the full path
+           */
+          databind:x:/../*/create-widget/*/widgets
+            src:x:/../*/list-files/*
+            template
+              tr
+                {title}:x:?name
+                widgets
+                  td
+                    {@eval}:x:/../*/_x-get-name
+                  td
+                    widgets
+                      button
+                        class:btn btn-default
+                        innerValue:Import file
+                        onclick
+
+                          /*
+                           * User clicked the 'Import' button, to import one
+                           CSV file. Now asking user to confirm action, since 
+                           * this will delete all existing items in database of 
+                           * the same type, before we actually do import
+                           */
+                          sys42.confirm-window
+                            _header:Confirm import!
+                            _body:@""This will <strong>delete all previously imported and edited items of specified type</strong>. Are you
+sure you wish to do this? This action cannot be undone afterwards!""
+                            _onok
+
+                              /*
+                               * This guy will be databound to the name of the file,
+                               * with the full path, and file extension
+                               */
+                              {_filename}:x:?name
+
+                              /*
+                               * Loads file, and splits on each carriage/return
+                               */
+                              load-file:x:/../*/_filename?value
+
+                              /*
+                               * Splitting file upon carriage return, to get each
+                               * 'record' in file.
+                               */
+                              split:x:/../*/load-file/*?value
+                                =:""\r\n""
+
+                              /*
+                               * Splitting first row in file upon ',', to fetch
+                               * all column headers in file. This logic assumes the
+                               * first row is a 'headers row'.
+                               */
+                              split:x:/-/0?name
+                                =:,
+
+                              /*
+                               * Splitting filename upon first '/', and then '.', to retrieve
+                               * only the filename for file, to use as an 'object type declaration'
+                               * when inserting items into database
+                               */
+                              split:x:/../*/_filename?value
+                                =:/
+                                =:.
+
+                              /*
+                               * Adding each item from first line in file to the
+                               * [insert-data] operation that inserts the 'declaration'
+                               * for our CSV file
+                               */
+                              add:x:/../*/insert-data/[0,1]/*/*/columns
+                                src:x:/../*/split/[1,2]/*?name
+
+                              /*
+                               * Deleting all old items of specified type from database
+                               */
+                              delete-data:x:@""/*/*/~examples.csv-file-/*/type/""""={0}""""/.""
+                                :x:/../*/split/[2,3]/0/-2?name
+
+                              /*
+                               * Inserting 'type declaration item' into database
+                               */
+                              eval-x:x:/+/*/*
+
+                              /*
+                               * Inserts CSV file's 'declaration' object, that contains
+                               * the filename (in friendly format, without extension and path),
+                               * and the columns headers from file. Basically the first line
+                               * from our CSV file
+                               */
+                              insert-data
+                                examples.csv-file-declaration
+                                  type:x:/../*/split/[2,3]/0/-2?name
+                                  columns
+
+                              /*
+                               * Now that we have inserted 'type declaration object' into
+                               * database, we can insert each item in file. First we remove
+                               * column header declaration from file. Then we use [databind]
+                               * to databind an [insert-data] invocation, which inserts each
+                               * item record into our database
+                               */
+                              set:x:/../*/split/[0,1]/0
+
+                              /*
+                               * Used as callback during [databind] to create items, making sure
+                               * we create it such that it inserts both column names and column values.
+                               * Adding columns to evaluation object from the column names from CSV file
+                               */
+                              add:x:/+/*/_columns
+                                src:x:/../*/split/[1,2]/*?name
+                              _x-create-insert-item
+                                _columns
+
+                                /*
+                                 * Splits each line in CSV file on every occurrency of ',',
+                                 * making sure we keep also empty string values, to get
+                                 * the count right
+                                 */
+                                split:x:/../*/_dn/#?name
+                                  keep-empty:true
+                                  =:,
+
+                                /*
+                                 * Adding each value for column up as return value
+                                 */
+                                for-each:x:/../*/_columns/*
+                                  set:x:/./*/_dp/#?value
+                                    src:x:/../*/split/0?name
+                                  set:x:/../*/split/0
+
+                                /*
+                                 * Here we make sure our evaluation object for [databind]
+                                 * returns all columns, and their values for row
+                                 */
+                                insert-before:x:
+                                  src:x:/../*/_columns/*
+
+                              /*
+                               * Databinding [append-data] below, for appending items into database.
+                               * [append-data] will make sure it appends the data items at the end, to not
+                               * mess up original order of items
+                               */
+                              eval-x:x:/+/*/*/*/type
+                              databind:x:/../*/append-data
+                                src:x:/../*/split/[0,1]/*
+                                template
+                                  examples.csv-file-content
+                                    type:x:/../*/split/[2,3]/0/-2?name
+                                    items
+
+                                      /*
+                                       * Notice that since we're inside a double nested [databind]
+                                       * operation here, we need to 'escape' our '{', such that it
+                                       * doesn't become evaluated by the outer most (first) [databind],
+                                       * but rather exclusively by the second (inner) [databind]
+                                       */
+                                      \{@eval}:x:/../*/_x-create-insert-item
+
+                              /*
+                               * At this point, [append-data] below should contain one record for 
+                               * each line in file, except header line
+                               */
+                              append-data
+
+                              /*
+                               * Re-populating the select list of which files
+                               * to edit, in addition to deleting any existing
+                               * 'editing CSV items' widget
+                               */
+                              sys42.examples.populate-csv-types-select-list
+
+                              /*
+                               * Settings currently imported file into 'edit mode' by
+                               * settings the selected item of select CSV file to edit
+                               * widget to file that was imported, before invoking our
+                               * edit file Active Event
+                               */
+                              set-widget-property:select-csv-file-to-edit
+                                value:x:/../*/split/[2,3]/0/-2?name
+
+                              /*
+                               * After import, we by default edit the content of the 
+                               * newly imported file
+                               */
+                              sys42.examples.edit-csv-objects
+
+                              /*
+                               * Providing some feedback to user about operation, making sure
+                               * we forward evaluest expressions inside our [sys42.info-window]
+                               */
+                              eval-x:x:/+
+                              sys42.info-window:{0} items successfully imported as '{1}'
+                                :x:/../*/insert-data/[1,2]/*?count
+                                :x:/../*/split/[2,3]/0/-2?name
+
+          /*
+           * this is the table HTML widget, that shows all CSV files
+           * user can import
+           */
+          create-widget:import-csv-file-table
+            parent:import-file-wrapper
+            element:table
+            class:table table-hover
+            widgets
+
+              /*
+               * The [text] widget, is not a 'real widget', but in fact only
+               * a place holder for HTML, injected directly into the DOM, at
+               * the specified position. For simplicity, we use [text] here to
+               * render the table headers
+               */
+              text:@""<thead><tr><th>Filename</th><th style=""""width:100px;"""">Import</th></tr></thead>""
+
+        /*
+         * Creates table that allows user to edit objects of specified type
+         */
+        sys42.examples.edit-csv-objects
+
+          /*
+           * Deleting import table, if it exists
+           */
+          if
+            fetch:x:/0/0?value
+              widget-exist:import-csv-file-table
+            delete-widget:import-csv-file-table
+            set-widget-property:import-csv-file-btn
+              innerValue:Import CSV file
+
+          /*
+           * Deleting previously created table widget, if it exists
+           */
+          if
+            fetch:x:/0/0?value
+              widget-exist:csv-items-table
+            delete-widget:csv-items-table
+
+          /*
+           * Fetching selected option from dropdown, and initiating
+           * editing of objects of specified type
+           */
+          get-widget-property:select-csv-file-to-edit
+            value
+
+          /*
+           * Retrieves filter for items to show, if any
+           */
+          get-widget-property:search-csv-editor
+            value
+
+          /*
+           * If user selected [_default] select dropdown list item,
+           * we simply return, since that signifies he is finished editing
+           * CSV objects
+           */
+          if:x:/../*/get-widget-property/[0,1]/*/*?value
+            =:_default
+            return
+
+          /*
+           * Selecting 'type declaration object' first
+           */
+          select-data:x:@""/*/*/~examples.csv-file-declaration/*/type/""""={0}""""/.""
+            :x:/../*/get-widget-property/[0,1]/*/*?value
+
+          /*
+           * This piece of logic, will dynamically exchange the [select-data]
+           * operation, according to whether or not the user has provided
+           * a filter (search) criteria or not. Either it will select all
+           * items (if no filter is given), or it will select only those items
+           * matching the filter criteria, which becomes a regular expression
+           * search through all values of items
+           */
+          if:x:/../*/get-widget-property/[1,2]/*/*?value
+            =:
+
+            /*
+             * User has NOT provided a filter, simply selecting all items from database
+             * Please notice, if you want paging with this app, I can probably create
+             * it for you, in exchange for some money
+             */
+            set:x:/../*/_select-data
+              src
+                select-data:x:@""/*/*/~examples.csv-file-content/*/type/""""={0}""""/.""
+                  :x:/../*/get-widget-property/[0,1]/*/*?value
+          else
+
+            /*
+             * User HAS provided a filter
+             * Using regular expressions to filter upon values from items in database
+             */
+            set:x:/../*/_select-data
+              src
+                select-data:x:@""/*/*/~examples.csv-file-content/*/type/""""={0}""""/./*/items/*/""""=:regex:/{1}/i""""/./.""
+                  :x:/../*/get-widget-property/[0,1]/*/*?value
+                  :x:/../*/get-widget-property/[1,2]/*/*?value
+
+          /*
+           * This will be dynamically created according to filter logic
+           * above, and be exchanged with a [select-data] invocation
+           */
+          _select-data
+
+          /*
+           * Databinding table widget's header
+           */
+          databind:x:/../*/create-widget/*/widgets/*/thead/*/widgets/*/tr/*/widgets
+            src:x:/../*/select-data/[0,1]/0/*/columns/*
+            template
+              th
+                {innerValue}:x:?name
+
+          /*
+           * Adding up delete column header
+           */
+          add:x:/../*/create-widget/*/widgets/*/thead/*/widgets/*/tr/*/widgets
+            src
+              th
+
+          /*
+           * Then databinding table widget's rows, using a callback to get 
+           * each column
+           */
+          _x-insert-row
+            for-each:x:/../*/_dn/#/*/items/*?value
+              eval-x:x:/+/*/*/*
+              insert-before:x:/.
+                src
+                  td
+                    innerValue:x:/..for-each/*/_dp?value
+
+          /*
+           * Now we can invoke [databind], with evaluation callback,
+           * to create each data item row in table showing CSV file in
+           * edit mode
+           */
+          databind:x:/../*/create-widget/*/widgets
+            src:x:/../*/select-data/[1,2]/*
+            template
+              tr
+
+                /*
+                 * This will create a 'hidden' attribute on widget, not
+                 * visible on the client-side (since it starts with an underscore '_'),
+                 * but possible to retrieve from the server-side. This will become
+                 * an [_id] attribute, with the value being the ID from database,
+                 * which we're using later when we're deleting items, such that we
+                 * can more easily delete the HTML table's row (tr element) from
+                 * the widget hierarchy, to prevent forcing a re-databind, and flush, 
+                 * of entire HTML for table as deletion of items is done
+                 */
+                {_id}:x:?value
+                widgets
+                  td
+                    widgets
+
+                      /*
+                       * Edit single CSV item (row)'s properties button
+                       */
+                      button
+                        class:btn btn-default
+                        innerValue:Edit
+                        title:Click to edit item ...
+
+                        /*
+                         * To make it easier to retrieve id of item
+                         * user wants to delete, we databind also a hidden attribute
+                         * on button HTML element to the id from database
+                         */
+                        {_id-btn}:x:?value
+                        onclick
+                          get-widget-property:x:/../*/_event?value
+                            _id-btn
+                          sys42.examples.edit-csv-item:x:/../*/get-widget-property/*/*?value
+
+                  /*
+                   * Hooks into our evaluation object above, that creates each
+                   * row's content for item
+                   */
+                  {@eval}:x:/../*/_x-insert-row
+                  td
+                    widgets
+
+                      /*
+                       * Button that allows user to delete a single
+                       * item from CSV file
+                       */
+                      button
+                        class:btn btn-default glyphicon glyphicon-remove
+                        title:Click to delete item
+                        onclick
+
+                          /*
+                           * Asking user to confirm his actions, before deletion is done,
+                           * since this operation cannot be undone
+                           */
+                          sys42.confirm-window
+                            _header:Confirm action
+                            _body:@""Please confirm deletion of item from database. 
+This action cannot be undone when it is finished""
+                            _onok
+
+                              /*
+                               * For simplicity, we databind the [_id] node below to
+                               * the id of the item from the database. We could have
+                               * used [get-parent-widget] a couple of times, but this
+                               * would have created more complex Hyperlisp, in addition
+                               * to more dependencies upon the widget hierarchy
+                               */
+                              {_id}:x:?value
+
+                              /*
+                               * Actual deletion of item from database
+                               */
+                              delete-data:x:@""/*/*/""""=:guid:{0}""""""
+                                :x:/../*/_id?value
+
+                              /*
+                               * Instead of re-databinding the entire grid, we
+                               * simply remove the tr HTML item from the table.
+                               * I love p5.ajax ;)
+                               */
+                              find-widget
+                                _id:x:/../*/_id?value.string
+                              delete-widget:x:/-/*?value
+
+          /*
+           * Adding last row(s), which is simply the 'add new item' button,
+           * and the 'Save to CSV file' button
+           */
+          +:x:/../*/select-data/[0,1]/0/*/columns/*?count
+            _:int:1
+          eval-x:x:/+/*/*/*/*/*
+          add:x:/../*/create-widget/*/widgets
+            src
+              tr
+                widgets
+                  td
+
+                    /*
+                     * Since we're referring to a named item (named iterator), 
+                     * which happens to have a name that is also an iterator type
+                     * declaration, we need to escape the iterator's name with a '\'
+                     */
+                    colspan:x:/../*/\+?value
+                  td
+                    widgets
+
+                      /*
+                       * Add new item button
+                       */
+                      button:add-new-item
+                        class:btn btn-primary glyphicon glyphicon-plus
+                        title:Create new item ...
+                        onclick
+
+                          /*
+                           * If this Active Event is invoked without an ID,
+                           * it will create a new item instead of editing an 
+                           * existing item
+                           */
+                          sys42.examples.edit-csv-item
+              tr
+                widgets
+                  td
+                    colspan:x:/../*/\+?value
+                  td
+                    widgets
+
+                      /*
+                       * Export CSV items to file button
+                       */
+                      button:export-csv-file
+                        class:btn btn-default glyphicon glyphicon-floppy-disk
+                        title:Save CSV file ...
+                        onclick
+                          sys42.examples.save-csv-file
+
+          /*
+           * Now we can actually create our table HTML element, 
+           * wrapping CSV file's headers, content, and a couple of 
+           * helper buttons at the bottom
+           */
+          create-widget:csv-items-table
+            parent:main-csv-editor
+            element:table
+            class:table table-hover
+            widgets
+              thead
+                widgets
+                  tr
+                    widgets
+                      th
+            events
+
+              /*
+               * Filters table of csv items
+               */
+              sys42.examples.csv-editor-filter
+
+                /*
+                 * Using jQuery to set focus back to search textbox again,
+                 * before we re-databind the HTML table showing the content
+                 * of the CSV file
+                 */
+                send-javascript:@""$('#search-csv-editor').focus().select();""
+                sys42.examples.edit-csv-objects
+
+        /*
+         * Updates a single item in table, to conserve bandwidth usage.
+         * Expects an ID to database record wrapping item
+         */
+        sys42.examples.re-databind-item
+
+          /*
+           * Finding the HTML tr element that wraps the CSV item
+           * on form. See above comments about 'hidden attribute' further
+           * up in this file.
+           */
+          find-widget
+            _id:x:/../*/_arg?value.string
+
+          /*
+           * Retrieving the CSV item from database, matching the given ID
+           */
+          select-data:x:@""/*/*/""""=:guid:{0}""""""
+            :x:/../*/_arg?value
+
+          /*
+           * Removing all tds of row, except the first and last,
+           * which are the edit and delete buttons
+           */
+          get-children-widgets:x:/../*/find-widget/*?value
+          for-each:x:/-/*/*/[1,]
+
+            /*
+             * This [if], combined with the range iterator in the [for-each], and
+             * the [set] invocation inside of the [if], will ensure that the first 
+             * and last td HTML widgets are NOT removed. This is done since these 
+             * widgets are the 'Edit item button' and the 'Delete item button'
+             */
+            if:x:/../*/get-children-widgets/*/*?count
+              >:int:2
+              delete-widget:x:/..for-each/*/_dp/#?value
+              set:x:/..for-each/*/_dp/#
+
+          /*
+           * Now looping through the results from [select-data] (or rather
+           * the [items] from the record) and creating a td HTML widget for
+           * each item's value
+           */
+          for-each:x:/../*/select-data/*/*/items/*
+
+            /*
+             * Forward evaluates expressions inside of [create-literal-widget]
+             */
+            eval-x:x:/+/*
+
+            /*
+             * The [before] argument, will insert the item before the
+             * 'Delete item button', which means that the record's values
+             * will be injected in between the 'Edit item button' and the 
+             * 'Delete item button'. Notice, if we had used [after] here, 
+             * and chosen the 'Edit item button' as the value, the values would
+             * have been added in reverse order, messing things up 100%
+             */
+            create-literal-widget
+              before:x:/../*/get-children-widgets/*/0/-?value
+              element:td
+              innerValue:x:/..for-each/*/_dp/#?value
+
+        /*
+         * Allows user to edit or create a CSV item
+         */
+        sys42.examples.edit-csv-item
+
+          /*
+           * If no [_arg] argument is passed in, we're supposed to create
+           * a new CSV item. If an [_arg] is supplied, we're editing an
+           * existing item
+           */
+          if:x:/../*/_arg?value
+            not
+
+            /*
+             * Creating new item, figuring out item's type, by
+             * retrieving the value of the 'Select CSV file to edit'
+             * select dropdown list
+             */
+            get-widget-property:select-csv-file-to-edit
+              value
+            eval-x:x:/+/*/*/*
+
+            /*
+             * Dynamically changing the [_select-data] invocation
+             * below to reflect the fact of that we're interested in
+             * the type declaration of item, and not any specific item
+             */
+            set:x:/../*/_select-data
+              src
+                select-data:x:@""/*/*/examples.csv-file-declaration/*/type/""""={0}""""/.""
+                  :x:/..if/*/get-widget-property/*/*?value
+          else
+
+            /*
+             * Dynamically changing the [_select-data] invocation
+             * below to reflect the fact of that we're interested in
+             * a specific CSV item from database
+             */
+            set:x:/../*/_select-data
+              src
+                select-data:x:@""/*/*/""""=:guid:{0}""""""
+                  :x:/../*/_arg?value
+
+          /*
+           * The next node, will be dynamically changed, according to
+           * logic above, to either becomes a 'select item' or a 'select
+           * item type' invocation
+           */
+          _select-data
+
+          /*
+           * Evaluation callback provided to [databind], to (among other things)
+           * create a unique ID for HTML input element, such that wizard window
+           * below, will function properly
+           */
+          _x-create-template-item
+
+            /*
+             * Since the name of the column we're editing, might
+             * contain illegal characters for an HTML element's ID,
+             * we create a new random Guid, to use as parts of the ID
+             * for our wizard window input elements
+             */
+            new-guid
+            _label
+
+            /*
+             * If length of name of column is longer than 10 characters,
+             * we remove parts of the name, to make sure the label, associated
+             * with the input control, has room to display the name, without messing
+             * up the formatting of our wizard window input element. The [if] and
+             * [else-if] below, do just that
+             */
+            if
+              length:x:/../*/_dn/#?name
+              >:int:10
+
+              /*
+               * Name of column was more than 10 characters, making sure
+               * we remove everything above 10 characters, and add up
+               * something resembling the ellipsis characters, to signal
+               * that column name has been truncated
+               */
+              set:x:/../*/_label?value
+                fetch:x:/0/0?name
+                  split:x:/../*/_dn/#?name
+                    =:int:10
+              set:x:/../*/_label?value
+                src:{0}...
+                  :x:/../*/_label?value
+            else
+
+              /*
+               * No need to trim label, since it's below or equal to 
+               * 10 characters in length
+               */
+              set:x:/../*/_label?value
+                src:x:/../*/_dn/#?name
+
+            /*
+             * Forward evaluates all expression inside of [insert-before]
+             */
+            eval-x:x:/+/*/**
+
+            /*
+             * The next piece of logic, will return a [text] item to
+             * caller, which is used to [databind] the [_widgets] of
+             * our wizard window, making sure we get a textbox input
+             * for each value of our CSV item
+             */
+            insert-before:x:
+              src
+                text:item-value-{0}
+                  :x:/../*/new-guid?value.string
+                  label:x:/../*/_label?value
+                  value:x:/../*/_dn/#?value
+                  placeholder:x:/../*/_dn/#?name
+                  title:x:/../*/_dn/#?name
+
+          /*
+           * Dynamically creating our textbox input elements of
+           * our wizard window, by invoking [databind], supplying the
+           * above evaluation object as [template]. This is a nice
+           * example of that [databind] can be used for things you
+           * wouldn't normally use it for in a traditional sense
+           */
+          databind:x:/../*/sys42.wizard-window/*/_widgets
+            src:x:/../*/select-data/*/*(/items/*|/columns/*)
+            template
+              {@eval}:x:/../*/_x-create-template-item
+
+          /*
+           * The [_onok] of our wizard window, has different logic if
+           * we're editing an existing item, or creating a new item. The
+           * next [if], makes sure the wizard window gains access to the ID
+           * of the element from the database, and knows it is 'Editing an
+           * existing item', if that's its purpose
+           */
+          if:x:/../*/_arg?value
+            set:x:/../*/sys42.wizard-window/**/_data-id?value
+              src:x:/../*/_arg?value.guid
+          sys42.wizard-window
+            _header:Edit item
+            _body:Please provide new data for item ...
+            _widgets
+            _onok
+            
+              /*
+               * If [_data-id] has a value, we're editing an existing
+               * item, and its ID can be found in [_data-id]'s value.
+               * Otherwise we're creating a new item
+               */
+              _data-id
+
+              /*
+               * Checking if we're editing an existing item, or creating 
+               * a new item
+               */
+              if:x:/../*/_data-id?value
+
+                /*
+                 * Editing existing item.
+                 * First selecting item from database, before updating
+                 * all item's values to reflect new values, and using
+                 * [update-data] to save changes to database, before
+                 * re-databinding that single item in table widget
+                 */
+                select-data:x:@""/*/*/""""=:guid:{0}""""""
+                  :x:/../*/_data-id?value
+
+                /*
+                 * Looping through all values in item, updating to reflect new
+                 * value after editing. Notice that this is looping through each
+                 * value returned from database, assuming the order is the same
+                 * in our wizard window textbox input value list
+                 */
+                for-each:x:/..if/*/select-data/*/*/items/*
+
+                  /*
+                   * This logic assumes (correctly) that in database, each
+                   * value of item, is stored sequentially correctly, such
+                   * that the first value, corresponds to the first result from
+                   * wizard window (which can be found as '~item-value-xxx', where
+                   * 'xxx' is some Guid, randomly created. First it fetches that
+                   * return value, as the first of the return values matchin
+                   * '~item-value-' from the wizard window, before it removes 
+                   * that same node. This is why the range iterator is in use below.
+                   * Notice also that we set the values inside our [select-data] here,
+                   * which is later [add]'ed into our [update-data] invocation
+                   */
+                  set:x:/./*/_dp/#?value
+                    src:x:/../*/~item-value-/[0,1]?value
+
+                  /*
+                   * Removing the item we retrieved the value from above in
+                   * the [set]
+                   */
+                  set:x:/../*/~item-value-/[0,1]
+
+                /*
+                 * Adding the now changed values from our [select-data] into
+                 * our [update-data] invocation
+                 */
+                add:x:/..if/*/update-data/*/src
+                  src:x:/..if/*/select-data/*
+
+                /*
+                 * Updating item in database
+                 */
+                update-data:x:@""/*/*/""""=:guid:{0}""""""
+                  :x:/../*/_data-id?value
+                  src
+
+                /*
+                 * To conserve bandwidth, we try to avoid re-databinding
+                 * entire table widget, but rather only its row. This next
+                 * Active Event invocation do just that!
+                 */
+                sys42.examples.re-databind-item:x:/../*/_data-id?value
+              else
+
+                /*
+                 * Inserting new item.
+                 * Since we were not given an ID to any item, we assume (correctly)
+                 * that this is an insertion operation, and not an edit existing item 
+                 * operation. Retrieve type of object to insert, as value of our 
+                 * 'Select CSV file to edit' select dropdown listbox
+                 */
+                get-widget-property:select-csv-file-to-edit
+                  value
+
+                /*
+                 * Fetching the type declaration item from database, such that we
+                 * can now which columns to insert into database
+                 */
+                select-data:x:@""/*/*/examples.csv-file-declaration/*/type/""""={0}""""/.""
+                  :x:/..else/*/get-widget-property/*/*?value
+
+                /*
+                 * Adding all columns from [select-data] into [append-data], such
+                 * that we get the columns ordered correctly according to type declaration
+                 * of CSV item
+                 */
+                add:x:/..else/*/append-data/*/*/items
+                  src:x:/..else/*/select-data/*/*/columns/*
+
+                /*
+                 * Looping through each result from wizard window.
+                 * See above comments (about editing) to understand how 
+                 * this logic works
+                 */
+                for-each:x:/..else/*/append-data/*/*/items/*
+                  set:x:/./*/_dp/#?value
+                    src:x:/../*/~item-value-/[0,1]?value
+                  set:x:/../*/~item-value-/[0,1]
+
+                /*
+                 * Forward evaluates all expressions inside of [append-data]
+                 */
+                eval-x:x:/+/*/*/type
+
+                /*
+                 * At this point, we should have a perfectly valid [append-data]
+                 * invocation, creating a record, matching the declaration object
+                 * for CSV file items
+                 */
+                append-data
+                  examples.csv-file-content
+                    type:x:/..else/*/get-widget-property/*/*?value
+                    items
+
+                /*
+                 * re-databind entire form (TODO; Make it possible to only
+                 * re-binding the last row by creating a new table tr element)
+                 */
+                sys42.examples.edit-csv-objects
+
+                /*
+                 * Providing feedback to user
+                 */
+                sys42.info-window:@""Item was successfully appended into database. If it is not visible on page, make sure you remove your filter""
+                  _time:more
+
+              /*
+               * Returning true to wizard window, to signal that
+               * window can be closed
+               */
+              set:x:/..?value
+                src:bool:true
+
+        /*
+         * Saves CSV file to disk
+         */
+        sys42.examples.save-csv-file
+
+          /*
+           * Asking user to confirm action, since this will (probably)
+           * overwrite any old files, with the same name
+           */
+          sys42.confirm-window
+            _header:Confirm saving
+            _body:@""This operation will <strong>overwrite your existing CSV file</strong>, in your <em>/documents/private/</em> folder.
+Are you sure you wish to do this? This operation cannot be undone once finished.""
+            _onok
+
+              /*
+               * This node's value, will be dynamically built, containing the
+               * CSV file's content, according to the items in the database
+               */
+              _file-content
+
+              /*
+               * Retrieving friendly name of CSV file we're editing, to use
+               * as basis for filename/path
+               */
+              get-widget-property:select-csv-file-to-edit
+                value
+
+              /*
+               * Retrieving declaration object from database, to create first line
+               * in CSV file, according to header names
+               */
+              select-data:x:@""/*/*/examples.csv-file-declaration/*/type/""""={0}""""/.""
+                :x:/../*/get-widget-property/*/*?value
+
+              /*
+               * Settings first line in file to column names, according to type
+               * declaration object for file
+               */
+              set:x:/../*/_file-content?value
+                join:x:/../*/select-data/[0,1]/*/*/columns/*?name
+                  sep:,
+
+              /*
+               * Retrieving each CSV file item from database, and concatenating into
+               * [_file-content] above, with an initial carriage return, to separate records
+               */
+              select-data:x:@""/*/*/examples.csv-file-content/*/type/""""={0}""""/.""
+                :x:/../*/get-widget-property/*/*?value
+
+              /*
+               * Looping through each CSV item of specified type, retrieved from 
+               * database above
+               */
+              for-each:x:/-/*
+
+                /*
+                 * Joining each value from database for currently iterated
+                 * item, with a ',' in between each value
+                 */
+                join:x:/./*/_dp/#/*/items/*?value
+                  sep:,
+
+                /*
+                 * Appending current line to [_file-content], with a 
+                 * carriage return in between each item
+                 */
+                set:x:/../*/_file-content?value
+                  src:""{0}\r\n{1}""
+                    :x:/../*/_file-content?value
+                    :x:/..for-each/*/join?value
+
+              /*
+               * Retrieving username of currently logged in user,
+               * to use as basis for figuring out which filepath to
+               * use
+               */
+              whoami
+
+              /*
+               * Saving CSV file to '/users/{USERNAME}/documents/private'
+               */
+              save-file:/users/{0}/documents/private/{1}.csv
+                :x:/../*/whoami/*/username?value
+                :x:/../*/select-data/[0,1]/*/*/type?value
+                src:x:/../*/_file-content?value
+
+              /*
+               * Feedback to user that operation was successful
+               */
+              sys42.info-window:File was successfully saved
+      widgets"
 
 
     p5.page:/about

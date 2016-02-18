@@ -274,7 +274,7 @@
                     // Inserting html child widget
                     var pos = parseInt(key.substring(9), 10);
                     var fragment = document.createDocumentFragment();
-                    var tmpEl = document.createElement("div");
+                    var tmpEl = document.createElement(this.el.tagName);
                     tmpEl.innerHTML = value;
                     fragment.appendChild(tmpEl.firstChild);
                     this.el.insertBefore(fragment, this.el.children[pos]);
