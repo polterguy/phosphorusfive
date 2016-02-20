@@ -48,8 +48,12 @@ namespace p5.lambda.keywords
                 e.Args.AddRange (oldWhile.Clone ().Children);
 
                 // Checking if we got a [return] invocation during evaluation
-                if (e.Args.Root.FirstChild != null && e.Args.Root.FirstChild.Name == "_return")
+                if (e.Args.Root.FirstChild != null && e.Args.Root.FirstChild.Name == "_return") {
                     return;
+                } else if (e.Args.Root.FirstChild != null && e.Args.Root.FirstChild.Name == "_break") {
+                    e.Args.Root.FirstChild.UnTie ();
+                    return;
+                }
 
                 // Checking if we're overflowing maximum number of iterations, unless [_unchecked] was true
                 if (!uncheck && iterations++ > 10000)

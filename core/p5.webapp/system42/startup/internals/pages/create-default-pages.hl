@@ -1749,7 +1749,7 @@ like me, feel free to contact me through the above email.</p>""
 
                           /*
                            * User clicked the 'Import' button, to import one
-                           CSV file. Now asking user to confirm action, since 
+                           * CSV file. Now asking user to confirm action, since 
                            * this will delete all existing items in database of 
                            * the same type, before we actually do import
                            */
@@ -1809,7 +1809,7 @@ sure you wish to do this? This action cannot be undone afterwards!""
                                 :x:/../*/split/[2,3]/0/-2?name
 
                               /*
-                               * Inserting 'type declaration item' into database
+                               * Forward evaluates expressions in [insert-data]
                                */
                               eval-x:x:/+/*/*
 
@@ -1834,65 +1834,90 @@ sure you wish to do this? This action cannot be undone afterwards!""
                               set:x:/../*/split/[0,1]/0
 
                               /*
-                               * Used as callback during [databind] to create items, making sure
-                               * we create it such that it inserts both column names and column values.
-                               * Adding columns to evaluation object from the column names from CSV file
+                               * If file did not in fact contain anything but the headers, we
+                               * don't even try to import any items
                                */
-                              add:x:/+/*/_columns
-                                src:x:/../*/split/[1,2]/*?name
-                              _x-create-insert-item
-                                _columns
+                              if:x:/../*/split/[0,1]?count
+                                >:int:0
 
                                 /*
-                                 * Splits each line in CSV file on every occurrency of ',',
-                                 * making sure we keep also empty string values, to get
-                                 * the count right
+                                 * Used as callback during [databind] to create items, making sure
+                                 * we create it such that it inserts both column names and column values.
+                                 * Adding columns to evaluation object from the column names from CSV file
                                  */
-                                split:x:/../*/_dn/#?name
-                                  keep-empty:true
-                                  =:,
+                                add:x:/+/*/_columns
+                                  src:x:/../*/split/[1,2]/*?name
+                                _x-create-insert-item
+                                  _columns
+
+                                  /*
+                                   * Splits each line in CSV file on every occurrency of ',',
+                                   * making sure we keep also empty string values, to get
+                                   * the count right
+                                   */
+                                  split:x:/../*/_dn/#?name
+                                    keep-empty:true
+                                    =:,
+
+                                  /*
+                                   * Adding each value for column up as return value
+                                   */
+                                  for-each:x:/../*/_columns/*
+                                    set:x:/./*/_dp/#?value
+                                      src:x:/../*/split/0?name
+                                    set:x:/../*/split/0
+
+                                  /*
+                                   * Here we make sure our evaluation object for [databind]
+                                   * returns all columns, and their values for row
+                                   */
+                                  insert-before:x:
+                                    src:x:/../*/_columns/*
 
                                 /*
-                                 * Adding each value for column up as return value
+                                 * Databinding [append-data] below, for appending items into database.
+                                 * [append-data] will make sure it appends the data items at the end, to not
+                                 * mess up original order of items
                                  */
-                                for-each:x:/../*/_columns/*
-                                  set:x:/./*/_dp/#?value
-                                    src:x:/../*/split/0?name
-                                  set:x:/../*/split/0
+                                eval-x:x:/+/*/*/*/type
+                                databind:x:/..if/*/append-data
+                                  src:x:/../*/split/[0,1]/*
+                                  template
+                                    examples.csv-file-content
+                                      type:x:/../*/split/[2,3]/0/-2?name
+                                      items
+
+                                        /*
+                                         * Notice that since we're inside a double nested [databind]
+                                         * operation here, we need to 'escape' our '{', such that it
+                                         * doesn't become evaluated by the outer most (first) [databind],
+                                         * but rather exclusively by the second (inner) [databind]
+                                         */
+                                        \{@eval}:x:/../*/_x-create-insert-item
 
                                 /*
-                                 * Here we make sure our evaluation object for [databind]
-                                 * returns all columns, and their values for row
+                                 * At this point, [append-data] below should contain one record for 
+                                 * each line in file, except header line
                                  */
-                                insert-before:x:
-                                  src:x:/../*/_columns/*
+                                append-data
 
-                              /*
-                               * Databinding [append-data] below, for appending items into database.
-                               * [append-data] will make sure it appends the data items at the end, to not
-                               * mess up original order of items
-                               */
-                              eval-x:x:/+/*/*/*/type
-                              databind:x:/../*/append-data
-                                src:x:/../*/split/[0,1]/*
-                                template
-                                  examples.csv-file-content
-                                    type:x:/../*/split/[2,3]/0/-2?name
-                                    items
+                                /*
+                                 * Providing some feedback to user about operation, making sure
+                                 * we forward evaluest expressions inside our [sys42.info-window]
+                                 */
+                                eval-x:x:/+
+                                sys42.info-window:{0} items successfully imported as '{1}'
+                                  :x:/..if/*/append-data/[1,2]/*?count
+                                  :x:/../*/split/[2,3]/0/-2?name
 
-                                      /*
-                                       * Notice that since we're inside a double nested [databind]
-                                       * operation here, we need to 'escape' our '{', such that it
-                                       * doesn't become evaluated by the outer most (first) [databind],
-                                       * but rather exclusively by the second (inner) [databind]
-                                       */
-                                      \{@eval}:x:/../*/_x-create-insert-item
+                              else
 
-                              /*
-                               * At this point, [append-data] below should contain one record for 
-                               * each line in file, except header line
-                               */
-                              append-data
+                                /*
+                                 * File container no items, alerting user
+                                 */
+                                eval-x:x:/+
+                                sys42.info-window:There were no items in file, but successfully created '{1}' object type declaration
+                                  :x:/../*/split/[2,3]/0/-2?name
 
                               /*
                                * Re-populating the select list of which files
@@ -1915,15 +1940,6 @@ sure you wish to do this? This action cannot be undone afterwards!""
                                * newly imported file
                                */
                               sys42.examples.edit-csv-objects
-
-                              /*
-                               * Providing some feedback to user about operation, making sure
-                               * we forward evaluest expressions inside our [sys42.info-window]
-                               */
-                              eval-x:x:/+
-                              sys42.info-window:{0} items successfully imported as '{1}'
-                                :x:/../*/insert-data/[1,2]/*?count
-                                :x:/../*/split/[2,3]/0/-2?name
 
           /*
            * this is the table HTML widget, that shows all CSV files

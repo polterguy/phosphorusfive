@@ -52,3 +52,21 @@ node
     !=:@"foo1:bar1foo2:bar2"
     throw:@"Assert error, expected [foo1:bar1foo2:bar2], got [{0}]!"
       :x:/../0?value
+
+/*
+ * Tests that [for-each] behaves correctly when break'ed
+ */
+break
+  _data
+    foo1:bar1
+    foo2:bar2
+  for-each:x:/../*/_data/*
+    set:x:/./-?value
+      src:{0}{1}
+        :x:/../0?value
+        :x:/..for-each/*/_dp/#?node.string
+    break
+  if:x:/../0?value
+    !=:@"foo1:bar1"
+    throw:@"Assert error, expected [foo1:bar1], got [{0}]!"
+      :x:/../0?value

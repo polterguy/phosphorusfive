@@ -169,23 +169,25 @@ create-widget:unit-test-files
      */
     sys42.launch-unit-test-editor
 
-      // Changing header of page to reflect we're in edit mode
-      set-widget-property:header
-        innerValue:Editing test file <small>{0}</small>
-          :x:/../*/_file?value
-
       // Launching editor
-      eval-x:x:/+/*
-      sys42.execute-lisp-file:/system42/editors/launch.hl
-        _file:x:/../*/_file?value
-        _parent:content
-        _widget-id:unit-test-file-editor
+      eval-x:x:/+/0/*
+      if
+        sys42.execute-lisp-file:/system42/editors/launch.hl
+          _file:x:/../*/_file?value
+          _parent:content
+          _widget-id:unit-test-file-editor
+        =:bool:true
 
-      // Hiding unit test table and "add" button
-      set-widget-property:unit-test-files
-        visible:false
-      set-widget-property:add-unit-test
-        visible:false
+        // Changing header of page to reflect we're in edit mode
+        set-widget-property:header
+          innerValue:Editing test file <small>{0}</small>
+            :x:/../*/_file?value
+
+        // Hiding unit test table and "add" button
+        set-widget-property:unit-test-files
+          visible:false
+        set-widget-property:add-unit-test
+          visible:false
 
     /*
      * Invoked when file editor is destroyed

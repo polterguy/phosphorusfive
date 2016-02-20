@@ -310,3 +310,37 @@ name-like-escaped
     !=:bar2
     throw:@"Assert error, expected [bar2], got [{0}]!"
       :x:/././-2?value
+
+/*
+ * Test the distinct name iterator
+ */
+distinct-name
+  _data
+    foo1:su
+    foo1:error
+    foo2:cc
+    foo2:error
+    foo3:ess
+  set:x:/-?value
+    src:x:/./-/*/$?value
+  if:x:/-2?value
+    !=:success
+    throw:@"Assert error, expected [success], got [{0}]!"
+      :x:/././-2?value
+
+/*
+ * Test the distinct value iterator
+ */
+distinct-value
+  _data
+    su:foo1
+    error:foo1
+    cc:foo2
+    error:foo2
+    ess:int:4
+  set:x:/-?value
+    src:x:/./-/*/=$?name
+  if:x:/-2?value
+    !=:success
+    throw:@"Assert error, expected [success], got [{0}]!"
+      :x:/././-2?value

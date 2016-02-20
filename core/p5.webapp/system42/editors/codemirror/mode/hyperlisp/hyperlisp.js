@@ -351,6 +351,7 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'eval-x':
         case 'return':
         case 'new-guid':
+        case 'break':
           return this.styles.keyword;
 
         // default handling

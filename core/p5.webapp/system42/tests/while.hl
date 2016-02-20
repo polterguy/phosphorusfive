@@ -74,3 +74,19 @@ boolean-constant-comparison
   if:x:/../*/_result?value
     !=:*
     throw:@"Assert error, [while] misbehaved!"
+/*
+ * Tests that [while] behaves as expected when break'ed
+ */
+break
+  _input
+    foo1
+    foo2
+    foo3
+  _output
+  while:x:/../*/_input/0
+    add:x:/../*/_output
+      src:x:/../*/_input/0
+    break
+  if:x:/../*/_output/*?count
+    !=:int:1
+    throw:@"Assert error, [while] misbehaved!"

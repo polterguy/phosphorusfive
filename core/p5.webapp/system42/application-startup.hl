@@ -18,6 +18,8 @@ create-event:sys42.execute-lisp-file
   eval:x:/-2/*
   insert-before:x:
     src:x:/./-/*
+  set:x:/..?value
+    src:x:/../*/eval?value
 
 
 /*
