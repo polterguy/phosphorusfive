@@ -352,6 +352,8 @@ CodeMirror.defineMode("hyperlisp", function() {
         case 'return':
         case 'new-guid':
         case 'break':
+        case 'url-encode':
+        case 'url-decode':
           return this.styles.keyword;
 
         // default handling

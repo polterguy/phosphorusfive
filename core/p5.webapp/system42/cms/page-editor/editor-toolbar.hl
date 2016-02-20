@@ -253,7 +253,6 @@ create-widget
                   // Since URL of page (and hence ID) might have changed, we'll need to go through this again
                   sys42.set-currently-edited-page:x:/../*/get-widget-property/*/page-url/*?value
                   sys42.populate-select-page
-                  sys42.edit-page
 
                   // Checking how many levels of nesting we have in page, to warn user of that more than two levels are BAD
                   split:x:/../*/get-widget-property/*/page-url/*/value?value

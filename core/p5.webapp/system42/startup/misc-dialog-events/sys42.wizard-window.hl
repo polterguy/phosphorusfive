@@ -158,12 +158,12 @@ create-protected-event:sys42.wizard-window
       _controls
         container
           class:prepend-left prepend-top prepend-bottom prepend-right
-          _control
           widgets
-            literal
-              element:textarea
+            textarea
+              _control
               rows:7
               class:form-control
+              innerValue
 
       // Input control properties
       set:x:/./*/_controls/*/container/*/widgets/0?value
